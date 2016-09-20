@@ -10,6 +10,7 @@ BICst.BROADCAST = {
     REFRESH_PREFIX: "refresh_",//刷新事件 + wId
     LINKAGE_PREFIX: "linkage_",//联动事件 + wId
     RESET_PREFIX: "reset_",//重置事件 + wId
+    GLOBAL_STYLE_PREFIX: "global_style_",//样式改变事件 + wId
 
     SRC_PREFIX: "src_", //数据源(字段)增删事件 + srcId
 

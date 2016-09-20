@@ -13,7 +13,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
     },
     _defaultConfig: function () {
         return BI.extend(BIDezi.DetailTableView.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-dashboard-widget"
+            baseCls: "bi-dashboard-widget bi-global-style-select"
         })
     },
 
@@ -41,6 +41,11 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         });
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
             self.model.set("clicked", {});
+        });
+
+        //全局样式的修改
+        BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
+            self._refreshGlobalStyle(globalStyle);
         });
     },
 
@@ -232,6 +237,17 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         this.filterPane.setVisible(!this.filterPane.isVisible());
     },
 
+    _refreshGlobalStyle: function (globalStyle) {
+        var titleFont = BI.isNotNull(globalStyle) ?
+            globalStyle.titleFont : BI.Utils.getGSTitleFont();
+        if (BI.isNotNull(titleFont)) {
+            try {
+                this._refreshTitlePosition();
+            } catch (e) {
+            }
+        }
+    },
+
     _refreshTableAndFilter: function () {
         BI.isNotNull(this.filterPane) && this.filterPane.populate();
         this.tablePopulate();
@@ -306,5 +322,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         this.tablePopulate();
         this._refreshLayout();
         this._refreshTitlePosition();
+
+        this._refreshGlobalStyle();
     }
 });
