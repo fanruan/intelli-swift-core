@@ -10,7 +10,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
 
     _defaultConfig: function () {
         return BI.extend(BI.MultiAxisChart.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-axis-chart"
+            baseCls: "bi-multi-axis-chart"
         })
     },
 
