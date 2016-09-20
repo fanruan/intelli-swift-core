@@ -10,6 +10,7 @@ import com.fr.data.dao.CommonFieldColumnMapper;
 import com.fr.data.dao.FieldColumnMapper;
 import com.fr.data.dao.ObjectTableMapper;
 import com.fr.data.dao.PrimaryKeyFCMapper;
+import com.fr.fs.anchor.impl.PrivilegeAnchor;
 import com.fr.fs.web.platform.entry.BaseEntry;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;

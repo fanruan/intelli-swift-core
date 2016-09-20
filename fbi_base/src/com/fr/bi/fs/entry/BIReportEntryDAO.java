@@ -55,6 +55,7 @@ public class BIReportEntryDAO extends EntryDAO<BIReportEntry> {
     protected int getEntryType() {
     return EntryConstants.BIREPORT;
 }
+
     public void transfer(BIReportEntry entry) throws Exception {
         createSession(DatabaseAction.TRANSFER).transfer(entry);
     }

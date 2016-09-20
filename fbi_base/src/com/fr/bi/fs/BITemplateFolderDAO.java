@@ -20,5 +20,4 @@ public interface  BITemplateFolderDAO {
 
     public List<BITemplateFolderNode> findByName(String name) throws Exception;
 
-    void transfer(BITemplateFolderDAO biTemplateFolderDAO)throws Exception;
 }
