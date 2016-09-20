@@ -53,6 +53,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     private NodeExpander expander;
     private TreeIterator iter;
     private boolean useRealData;
+    private boolean cacheAble;
 
     public RootDimensionGroup(NoneDimensionGroup root, DimensionCalculator[] cks, BIDimension[] dimensions, NodeExpander expander, BISession session, TargetCalculator calculator, BIWidget widget, boolean useRealData) {
         setRoot(root);
@@ -381,6 +382,9 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     private ISingleDimensionGroup getLightCacheFromSession(GroupConnectionValue gv, NoneDimensionGroup ng, int deep) {
+        if (!cacheAble){
+            return createSingleDimensionGroup(gv, ng, deep);
+        }
         ISingleDimensionGroup sg;
         GroupKey groupKey = SingleDimensionGroup.createGroupKey(ng.tableKey, cks[deep], ComparatorUtils.equals(ng.tableKey, BIBusinessTable.createEmptyTable()) ? getCKGvigetter(gv, deep) : ng.node.getGroupValueIndex(), useRealData);
         ISingleDimensionGroup singleDimensionGroup = GroupCache.getLightDimensionGroupCache(session, groupKey);
@@ -393,6 +397,9 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     private ISingleDimensionGroup getLightCacheFromSession(Object[] data, NoneDimensionGroup ng, int deep) {
+        if (!cacheAble){
+            return createSingleDimensionGroup(data, ng, deep);
+        }
         ISingleDimensionGroup sg;
         GroupKey groupKey = SingleDimensionGroup.createGroupKey(ng.tableKey, cks[deep], ComparatorUtils.equals(ng.tableKey, BIBusinessTable.createEmptyTable()) ? getCKGvigetter(data, deep) : ng.node.getGroupValueIndex(), useRealData);
         ISingleDimensionGroup singleDimensionGroup = GroupCache.getLightDimensionGroupCache(session, groupKey);
@@ -603,6 +610,10 @@ public class RootDimensionGroup implements IRootDimensionGroup {
             return groupEnd();
         }
         return ReturnStatus.Success;
+    }
+
+    public void setCacheAble(boolean cacheAble) {
+        this.cacheAble = cacheAble;
     }
 
     private static class TreePageComparator implements Comparator<int[]> {

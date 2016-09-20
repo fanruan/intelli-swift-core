@@ -739,6 +739,7 @@ public class DimensionGroupFilter {
         RootDimensionGroup[] rootDimensionGroups = new RootDimensionGroup[mergerInfoList.size()];
         for (int i = 0; i < rootDimensionGroups.length; i++) {
             rootDimensionGroups[i] = mergerInfoList.get(i).getRootDimensionGroup();
+            rootDimensionGroups[i].setCacheAble(shouldNotTraverse());
         }
         return rootDimensionGroups;
     }
