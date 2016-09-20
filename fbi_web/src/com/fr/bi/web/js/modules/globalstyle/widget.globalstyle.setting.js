@@ -211,7 +211,20 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
             self.fireEvent(BI.GlobalStyleSetting.EVENT_CHART);
         });
         this.chartColour.populate();
-        var chartColourWrapper = this._createWrapper(BI.i18nText("BI-Chart_Colour"), this.chartColour);
+        //var chartColourWrapper = this._createWrapper(BI.i18nText("BI-Chart_Colour"), this.chartColour);//取消屏蔽后还要改回来
+        var chartColourWrapper=BI.createWidget({
+            type:"bi.left",
+            cls: "global-style-wrapper-bottom",
+            items:[{
+                type: "bi.label",
+                cls: "global-style-item-label",
+                text: BI.i18nText("BI-Chart_Colour") + ":",
+                textAlign: "left",
+                height: this._const.HEIGHT,
+                width: 110
+            },this.chartColour],
+            vgap: 10
+        });
 
         //图表文字
         this.chartWordStyle = BI.createWidget({
@@ -267,7 +280,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
                 titleWordStyleWrapper,
                 chartStyleWrapper,
                 chartColourWrapper,
-                chartWordWrapper,
+                //chartWordWrapper,//不能用暂时屏蔽掉
                 controlThemeWrapper
             ],
             hgap: 20

@@ -1185,7 +1185,8 @@ BICst.BACKGROUND_TYPE = {
     COLOR: 1,
     IMAGE: 2
 };
-
+//临时解决方案
+BICst.GLOBALDEFAULRCHARTCOLOR=["#19a0da","#65bbe6","#b2daf3","#338ede","#5a99e6","#9bbff2","#4278e5","#688eed","#96adf2","#4356e6","#6772f0","#a0a3fa","#19a0da","#65bbe6","#b2daf3","#338ede","#5a99e6","#9bbff2","#4278e5","#688eed","#96adf2","#4356e6","#6772f0","#a0a3fa","#19a0da","#65bbe6","#b2daf3","#338ede","#5a99e6","#9bbff2","#4278e5","#688eed"];
 BICst.GLOBALPREDICTIONSTYLE = {
 
     DEFAULT: {
@@ -1194,7 +1195,8 @@ BICst.GLOBALPREDICTIONSTYLE = {
         "titleBackground": {"type": 1, "value": "#ffffff"},
         "titleFont": {"font-weight": "normal", "font-style": "normal", "text-align": "left", "color": "#000000"},
         "chartStyle": 1,
-        "chartColor": ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
+       // "chartColor": ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
+        "chartColor":BICst.GLOBALDEFAULRCHARTCOLOR,
         "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#b2b2b2"},
         "controlTheme": "#d4dadd"
     },
@@ -1205,7 +1207,8 @@ BICst.GLOBALPREDICTIONSTYLE = {
         "titleBackground": {"type": 1, "value": "#2b2d3a"},
         "titleFont": {"font-weight": "bold", "font-style": "normal", "text-align": "left", "color": "#ffffff"},
         "chartStyle": 1,
-        "chartColor": ["#79d2f4", "#55b5e5", "#25cdea", "#1ba8ed", "#537af4"],
+        //"chartColor": ["#79d2f4", "#55b5e5", "#25cdea", "#1ba8ed", "#537af4"],
+        "chartColor":BICst.GLOBALDEFAULRCHARTCOLOR,
         "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#b2b2b2"},
         "controlTheme": "#25cdea"
     },
@@ -1216,7 +1219,8 @@ BICst.GLOBALPREDICTIONSTYLE = {
         "titleBackground": {"type": 1, "value": "#5e6472"},
         "titleFont": {"font-weight": "bold", "font-style": "italic", "text-align": "left", "color": "#ffffff"},
         "chartStyle": 1,
-        "chartColor": ["#f4ab98", "#f1c15f", "#e18169", "#af7e7e", "#6f6870"],
+       // "chartColor": ["#f4ab98", "#f1c15f", "#e18169", "#af7e7e", "#6f6870"],
+        "chartColor":BICst.GLOBALDEFAULRCHARTCOLOR,
         "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#5e6472"},
         "controlTheme": "#af7e7e"
     }
