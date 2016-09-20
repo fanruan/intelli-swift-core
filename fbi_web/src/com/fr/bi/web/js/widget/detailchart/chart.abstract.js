@@ -42,8 +42,8 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         NUM_SEPARATORS: false,
         FONT_STYLE: {
             "fontFamily": "inherit",
-            "color": "#808080",
-            "fontSize": "12px"
+            "color": "inherit",
+            "fontSize": "inherit"
         }
     },
 

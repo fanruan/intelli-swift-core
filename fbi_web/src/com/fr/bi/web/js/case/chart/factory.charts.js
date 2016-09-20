@@ -104,7 +104,7 @@ BI.ChartCombineFormatItemFactory = {
                         "categoryFormat": this._contentFormat
                     },
                     "style": {
-                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
+                        "fontFamily": "inherit", "color": "inherit", "fontSize": "inherit"
                     },
                     "align": "bottom",
                     "enabled": true
@@ -119,7 +119,7 @@ BI.ChartCombineFormatItemFactory = {
                     },
                     "backgroundColor": "rgb(255,255,0)",
                     "style": {
-                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
+                        "fontFamily": "inherit", "color": "inherit", "fontSize": "inherit"
                     },
                     "align": "inside",
                     "enabled": true
@@ -134,7 +134,7 @@ BI.ChartCombineFormatItemFactory = {
                         "categoryFormat": this._contentFormat
                     },
                     "style": {
-                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
+                        "fontFamily": "inherit", "color": "inherit", "fontSize": "inherit"
                     },
                     "align": "bottom",
                     "enabled": true
@@ -223,7 +223,7 @@ BI.ChartCombineFormatItemFactory = {
                 "borderWidth": 1,
                 "formatter": this._contentFormat2Decimal,
                 "style": {
-                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
+                    "fontFamily": "inherit", "color": "inherit", "fontSize": "inherit"
                 }
             },
             "borderColor": "rgb(238,238,238)",
@@ -235,7 +235,7 @@ BI.ChartCombineFormatItemFactory = {
                 "borderWidth": 0,
                 "visible": true,
                 "style": {
-                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#1a1a1a", "fontSize": "12px"
+                    "fontFamily": "inherit", "color": "inherit", "fontSize": "inherit"
                 },
                 "position": "right",
                 "enabled": false
