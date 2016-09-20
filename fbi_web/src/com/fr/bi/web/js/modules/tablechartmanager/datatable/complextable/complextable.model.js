@@ -112,10 +112,6 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         return this.pageOperator;
     },
 
-    isShowNumber: function () {
-        return this.showNumber;
-    },
-
     getThemeColor: function () {
         return this.themeColor;
     },
@@ -223,7 +219,6 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
      */
     _resetPartAttrs: function () {
         var wId = this.options.wId;
-        this.showNumber = BI.Utils.getWSShowNumberByID(wId);         //显示行号
         this.showRowTotal = BI.Utils.getWSShowRowTotalByID(wId);    //显示行汇总
         this.showColTotal = BI.Utils.getWSShowColTotalByID(wId);    //显示列汇总
         this.openRowNode = BI.Utils.getWSOpenRowNodeByID(wId);      //展开所有行表头节点
@@ -391,14 +386,17 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
     // 处理列 针对于children
     // 要将所有的最外层的values处理成children
     _parseColTableItems: function (tempItems) {
+        var self = this;
         this.items = [];
         var children = [];
         BI.each(tempItems, function (i, tItem) {
             children = children.concat(tItem.children);
-            children.push({
-                text: BI.i18nText("BI-Summary_Values"),
-                values: tItem.values
-            });
+            if (self.showRowTotal === true) {
+                children.push({
+                    text: BI.i18nText("BI-Summary_Values"),
+                    values: tItem.values
+                });
+            }
         });
         this.items = [{
             children: children
@@ -495,15 +493,15 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         parseCrossItem2Array(crossItems, crossPV, []);
 
         var item = {
-            children: this._createTableItems(left.c, 0, null, dims)
+            children: this._createTableItems(left.c, 0, null, dims, crossPV)
         };
         if (this.showRowTotal === true) {
             //汇总值
             var sums = [], ob = {index: 0};
             if (BI.isNotNull(left.s.c) && BI.isNotNull(left.s.s)) {
-                this._createTableSumItems(left.s.c, sums, [], ob, true);
+                this._createTableSumItems(left.s.c, sums, [], ob, true, crossPV);
             } else {
-                BI.isArray(left.s) && this._createTableSumItems(left.s, sums, [], ob, true);
+                BI.isArray(left.s) && this._createTableSumItems(left.s, sums, [], ob, true, crossPV);
             }
             if (this.showColTotal === true) {
                 var outerValues = [];
@@ -528,24 +526,23 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         }
         return {
             crossItem: crossItem,
-            item: item,
-            crossPV: crossPV
+            item: item
         }
     },
 
     /**
      * 交叉表的(指标)汇总值
      */
-    _createTableSumItems: function (s, sum, pValues, ob, isLast) {
+    _createTableSumItems: function (s, sum, pValues, ob, isLast, crossPV) {
         var self = this;
         BI.each(s, function (i, v) {
             if (BI.isObject(v)) {
                 var sums = v.s, child = v.c;
                 if (BI.isNotNull(sums) && BI.isNotNull(child)) {
-                    self._createTableSumItems(child, sum, pValues, ob, isLast);
-                    self.showColTotal === true && self._createTableSumItems(sums, sum, pValues, ob, isLast);
+                    self._createTableSumItems(child, sum, pValues, ob, isLast, crossPV);
+                    self.showColTotal === true && self._createTableSumItems(sums, sum, pValues, ob, isLast, crossPV);
                 } else if (BI.isNotNull(sums)) {
-                    self._createTableSumItems(sums, sum, pValues, ob, isLast);
+                    self._createTableSumItems(sums, sum, pValues, ob, isLast, crossPV);
                 }
 
             } else {
@@ -558,7 +555,7 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
                     type: "bi.target_body_normal_cell",
                     text: v,
                     dId: tId,
-                    // clicked: pValues.concat(self.crossPV[ob.index]),
+                    clicked: pValues.concat(crossPV[ob.index]),
                     cls: isLast ? "last summary-cell" : ""
                 });
                 ob.index++;
@@ -569,16 +566,16 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
     /**
      * 表items
      */
-    _createTableItems: function (c, currentLayer, parent, dims) {
+    _createTableItems: function (c, currentLayer, parent, dims, crossPV) {
         var self = this, items = [];
         currentLayer++;
         BI.each(c, function (i, child) {
             //可以直接使用每一层中的树节点的parent.id + child.n作为id，第一层无需考虑，因为第一层不可能有相同值
             //考虑到空字符串问题
-            var cId = BI.isEmptyString(child.n) ? self.EMPTY_VALUE : child.n;
+            var currDid = dims.dimIds[currentLayer - 1], currValue = child.n;
+            var cId = currDid + (BI.isEmptyString(child.n) ? self.EMPTY_VALUE : child.n);
             var nodeId = BI.isNotNull(parent) ? parent.get("id") + cId : cId;
             var node = new BI.Node(nodeId);
-            var currDid = dims.dimIds[currentLayer - 1], currValue = child.n;
             node.set("name", currValue);
             self.tree.addNode(parent, node);
             var pValues = [];
@@ -621,7 +618,7 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
             }
             //有c->说明有children，构造children，并且需要在children中加入汇总情况（如果有并且需要）
             if (BI.isNotNull(child.c)) {
-                item.children = self._createTableItems(child.c, currentLayer, node, dims) || [];
+                item.children = self._createTableItems(child.c, currentLayer, node, dims, crossPV) || [];
                 //在tableForm为 行展开模式 的时候 如果不显示汇总行 只是最后一行不显示汇总
                 if (self.showRowTotal === true || self.getTableForm() === BICst.TABLE_FORM.OPEN_COL) {
                     var vs = [];
@@ -645,10 +642,10 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
                 if (BI.isNotNull(child.s.c) || BI.isArray(child.s.s)) {
                     //交叉表，pValue来自于行列表头的结合
                     var ob = {index: 0};
-                    self._createTableSumItems(child.s.c, values, pValues, ob);
+                    self._createTableSumItems(child.s.c, values, pValues, ob, false, crossPV);
                     //显示列汇总 有指标
                     if (self.showColTotal === true && self.targetIds.length > 0) {
-                        self._createTableSumItems(child.s.s, values, pValues, ob);
+                        self._createTableSumItems(child.s.s, values, pValues, ob, false, crossPV);
                     }
                 } else {
                     BI.each(child.s, function (j, sum) {
@@ -955,7 +952,6 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
             self.mergeCols.push(i);
             self.freezeCols.push(i);
         });
-        // this.showNumber === true && this.freezeCols.push(this.freezeCols.length);
         BI.each(this.header, function (i, id) {
             cSize.push("");
         });

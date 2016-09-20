@@ -450,12 +450,6 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
     },
 
     _afterTablePopulate: function () {
-        if (this.model.isShowNumber()) {
-            this.table.showSequence();
-        } else {
-            this.table.hideSequence();
-        }
-        //css
         this.table.setStyleAndColor(this.model.getTableStyle(), this.model.getThemeColor());
     },
 
