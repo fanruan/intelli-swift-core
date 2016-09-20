@@ -1047,14 +1047,6 @@ Data.Utils = {
                 var opts = formatItems(data, t);
                 return formatConfigForAccumulateBar(opts[1], opts[0]);
             case BICst.WIDGET.COMPARE_BAR:
-                var t = [];
-                BI.each(data, function (idx, axisItems) {
-                    var type = [];
-                    BI.each(axisItems, function (id, item) {
-                        type.push(BICst.WIDGET.BAR);
-                    });
-                    t.push(type);
-                });
                 var result = [];
                 var i = BI.UUID();
                 BI.each(data, function (idx, item) {
@@ -1072,6 +1064,14 @@ Data.Utils = {
                 });
                 BI.each(data, function (idx, item) {
                     result = BI.concat(result, item);
+                });
+                var t = [];
+                BI.each([result], function (idx, axisItems) {
+                    var type = [];
+                    BI.each(axisItems, function (id, item) {
+                        type.push(BICst.WIDGET.BAR);
+                    });
+                    t.push(type);
                 });
                 var opts = formatItems([result], t);
                 return formatConfigForCompareBar(opts[1], opts[0]);

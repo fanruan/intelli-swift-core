@@ -241,16 +241,16 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
             num_separators: options.num_separators || false
         };
-        this.options.items = items;
+        this.options.items = this._formatItems(items);
         var types = [];
-        BI.each(items, function (idx, axisItems) {
+        BI.each(this.options.items, function (idx, axisItems) {
             var type = [];
             BI.each(axisItems, function (id, item) {
                 type.push(BICst.WIDGET.BAR);
             });
             types.push(type);
         });
-        this.combineChart.populate(this._formatItems(items), types);
+        this.combineChart.populate(this.options.items, types);
     },
 
     resize: function () {
