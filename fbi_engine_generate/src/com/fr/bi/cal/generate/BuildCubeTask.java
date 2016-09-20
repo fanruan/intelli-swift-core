@@ -100,7 +100,6 @@ public class BuildCubeTask implements CubeTask {
             if (!cubeBuildSucceed) {
                 checkTaskFinish();
             }
-
             String message = result.get();
             BILogger.getLogger().info(message);
             if (cubeBuildSucceed) {
@@ -163,7 +162,7 @@ public class BuildCubeTask implements CubeTask {
                 }
                 BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
                 replaceSuccess = cubeBuild.replaceOldCubes();
-                BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
+                BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
                 CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).clear();
                 if (!replaceSuccess) {
                     BILogger.getLogger().error("cube replace failed after " + i + " times try!It will try again in 5s");
@@ -182,13 +181,6 @@ public class BuildCubeTask implements CubeTask {
                 BILogger.getLogger().error(e1.getMessage(), e1);
             }
             return false;
-        } finally {
-            try {
-                BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
-                CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).clear();
-            } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
-            }
         }
     }
 
