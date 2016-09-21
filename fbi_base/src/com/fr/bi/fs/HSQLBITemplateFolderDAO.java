@@ -81,5 +81,7 @@ public class HSQLBITemplateFolderDAO extends PlatformDataAccessObject implements
     public List<BITemplateFolderNode> findByName(String name) throws Exception{
         return createSession().listByFieldValue(BITemplateFolderNode.class, BITableMapper.BI_CREATED_TEMPLATE_FOLDER.FIELD_FOLDER_NAME, name);
     }
-
+    public void transfer(BITemplateFolderNode var1) throws Exception{
+        this.createSession(DatabaseAction.TRANSFER).transfer(var1);
+    }
 }

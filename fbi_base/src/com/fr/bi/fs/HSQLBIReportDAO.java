@@ -176,4 +176,11 @@ public class HSQLBIReportDAO extends PlatformDataAccessObject implements BIRepor
             }
         }
     }
+    public void transfer(BISharedReportNode var1) throws Exception{
+        this.createSession(DatabaseAction.TRANSFER).transfer(var1);
+    }
+
+    public void transfer(BIReportNode var1) throws Exception{
+        this.createSession(DatabaseAction.TRANSFER).transfer(var1);
+    }
 }
