@@ -10,12 +10,8 @@
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   border-radius: 2px;
-  color: #1a1a1a;
 }
 .bi-report-save-as-float-box .template-location-label {
   font-size: 16px;
   color: #808080;
-}
-.bi-report-save-as-float-box .template-location-combo {
-  color: #1a1a1a;
 }

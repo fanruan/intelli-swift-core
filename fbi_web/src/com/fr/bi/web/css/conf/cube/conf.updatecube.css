@@ -2,7 +2,6 @@
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
 .bi-update-cube-pane .cube-path-label {
-  color: #1a1a1a;
   font-weight: bold;
 }
 .bi-update-cube-pane .notify-path {

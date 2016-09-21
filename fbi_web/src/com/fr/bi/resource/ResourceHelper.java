@@ -1814,6 +1814,11 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/utils/zindex.css",
                 "com/fr/bi/web/css/utils/special.css",
 
+                //默认主题配色
+                "com/fr/bi/web/css/themes/default.css",
+                "com/fr/bi/web/css/themes/light.css",
+                "com/fr/bi/web/css/themes/dark.css",
+
 
                 //基础控件---start
 
