@@ -121,14 +121,6 @@ public class TableDataBIReportDAO implements BIReportDAO, BISharedReportDAO {
     public void removeSharedByReport(long reportId, long createBy) {
         BITableDataDAOManager.getInstance().removeSharedByReport(reportId, createBy);
     }
-
-    @Override
-    public void transfer(BISharedReportNode var1) throws Exception {
-
-    }
-    @Override
-    public void transfer(BIReportNode var1) throws Exception {
-
-    }
+    
 
 }
