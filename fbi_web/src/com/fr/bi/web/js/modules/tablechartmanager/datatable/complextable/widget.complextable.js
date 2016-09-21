@@ -4,7 +4,8 @@
 BI.ComplexTable = BI.inherit(BI.Pane, {
     _defaultConfig: function () {
         return BI.extend(BI.ComplexTable.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-complex-table"
+            baseCls: "bi-complex-table",
+            overlap: false
         });
     },
 
