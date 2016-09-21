@@ -84,4 +84,8 @@ public class HSQLBITemplateFolderDAO extends PlatformDataAccessObject implements
     public void transfer(BITemplateFolderNode var1) throws Exception{
         this.createSession(DatabaseAction.TRANSFER).transfer(var1);
     }
+    public List findAll() throws Exception {
+        return this.createSession().list(BITemplateFolderNode.class);
+    }
+
 }

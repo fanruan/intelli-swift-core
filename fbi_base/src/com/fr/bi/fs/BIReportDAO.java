@@ -33,4 +33,8 @@ public interface BIReportDAO extends OpenDAO<BIReportNode> {
     @Override
     List<BIReportNode> listAll() throws Exception;
 
+    void transfer(BIReportNode var)throws Exception;
+
+
+
 }

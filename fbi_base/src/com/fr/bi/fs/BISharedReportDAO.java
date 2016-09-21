@@ -19,4 +19,5 @@ public interface BISharedReportDAO {
 
     void removeSharedByReport(long reportId, long createBy) throws Exception;
 
+    void transfer(BISharedReportNode var1) throws Exception;
 }
