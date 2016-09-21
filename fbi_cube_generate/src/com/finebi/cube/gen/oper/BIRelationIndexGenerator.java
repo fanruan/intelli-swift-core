@@ -194,6 +194,11 @@ public class BIRelationIndexGenerator extends BIProcessor {
             buildReverseIndex(tableRelation, reverse);
             tableRelation.addRelationNULLIndex(0, nullIndex);
         } catch (Exception e) {
+            try {
+                BILogger.getLogger().error("error relation :" + relation.toString() + " the exception is:" + "relation information used as listed:" + relation.getPrimaryTable().getSourceID() + "." + relation.getPrimaryField().getColumnName() + " to " + relation.getForeignTable().getSourceID() + "." + relation.getForeignField().getColumnName());
+            } catch (Exception e1) {
+                BILogger.getLogger().error(e1.getMessage(), e1);
+            }
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         } finally {
             if (primaryTable != null) {
