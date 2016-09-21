@@ -9,6 +9,7 @@ import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
+import com.finebi.cube.utils.relation.BITableRelationUtils;
 import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.data.source.SQLTableSource;
 import com.fr.bi.conf.data.source.ServerTableSource;
@@ -199,7 +200,6 @@ public abstract class AbstractCubeBuild implements CubeBuild {
                 ICubeFieldSource field = it.next();
                 name2Field.put(field.getFieldName(), field);
             }
-
             tableDBFieldMaps.put(tableSource, name2Field);
         }
     }
@@ -215,8 +215,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         }
         ICubeFieldSource primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
         ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
-        boolean isSourceRelationValid = null != primaryField && null != foreignField && null != primaryTable && null != foreignTable;
-        if (!isTableRelationValid(relation) || !isSourceRelationValid) {
+        if (!isTableRelationValid(relation)) {
             BILogger.getLogger().error("tableSourceRelation invalid:" + relation.toString());
             return null;
         }
@@ -233,7 +232,9 @@ public abstract class AbstractCubeBuild implements CubeBuild {
 
 
     protected boolean isTableRelationValid(BITableRelation relation) {
-        return allBusinessTable.contains(relation.getPrimaryTable()) && allBusinessTable.contains(relation.getForeignTable());
+        boolean relationValid = BITableRelationUtils.isRelationValid(relation);
+        return allBusinessTable.contains(relation.getPrimaryTable()) && allBusinessTable.contains(relation.getForeignTable()) && relationValid;
+
     }
 
     protected BITableSourceRelationPath convertPath(BITableRelationPath path) throws BITablePathConfusionException {

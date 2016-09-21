@@ -33,6 +33,7 @@ import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.bi.util.BICubeDBUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.core.db.dml.Table;
@@ -49,8 +50,6 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.fr.bi.util.BICubeDBUtils.getColumnName;
-import static com.fr.bi.util.BICubeDBUtils.getColumnNum;
 
 /**
  * Created by kary on 16/7/13.
@@ -168,7 +167,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         com.fr.data.impl.Connection connection = ((DBTableSource) tableSource).getConnection();
         SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
         sqlStatement.setSql(partDeleteSQL);
-        String columnName = getColumnName(connection, sqlStatement, partDeleteSQL);
+        String columnName = BICubeDBUtils.getColumnName(connection, sqlStatement, partDeleteSQL);
         ICubeFieldSource f = null;
         for (ICubeFieldSource field : fields) {
             if (ComparatorUtils.equals(field.getFieldName(), columnName)) {
@@ -236,12 +235,12 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         sqlStatement.setSql(sql);
         Dialect dialect = DialectFactory.generateDialect(sqlStatement.getSqlConn(), connection.getDriver());
         String finalSql = null;
-        int columnNum = getColumnNum(connection, sqlStatement, sql);
+        int columnNum = BICubeDBUtils.getColumnNum(connection, sqlStatement, sql);
         if (columnNum == fields.length) {
             finalSql = sql;
         }
         if (columnNum == 1) {
-            String columnName = getColumnName(connection, sqlStatement, sql);
+            String columnName = BICubeDBUtils.getColumnName(connection, sqlStatement, sql);
             ICubeFieldSource f = getiCubeFieldSource(fields, columnName);
             if (f == null) return null;
             if (tableSource.getType() == BIBaseConstant.TABLETYPE.DB) {
