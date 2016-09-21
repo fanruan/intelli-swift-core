@@ -216,14 +216,14 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         return colRegions;
     },
 
-    //仅有行表头
-    _isOnlyRowExist: function () {
-        return BI.size(this._getRowRegions()) > 0 && BI.size(this._getColRegions()) === 0;
+    //行表头是否存在
+    _isRowRegionExist: function () {
+        return BI.size(this._getRowRegions()) > 0;
     },
 
-    //仅有列表头
-    _isOnlyColExist: function () {
-        return BI.size(this._getRowRegions()) === 0 && BI.size(this._getColRegions()) > 0;
+    //列表头是否存在
+    _isColRegionExist: function () {
+        return BI.size(this._getColRegions()) > 0;
     },
 
     /**
@@ -319,7 +319,7 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
     _createGroupTableItems: function () {
         var self = this;
         var tempItems = [];
-        if (BI.isNotNull(this.data.c) && BI.isNotNull(this.data.s)) {
+        if (BI.isNotNull(this.data.c) || BI.isNotNull(this.data.s)) {
             this.data = [this.data];
         }
         BI.each(this.data, function (i, data) {
@@ -470,7 +470,8 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         var children = [];
         BI.each(tempItems, function (i, tItem) {
             children = children.concat(tItem.children);
-            if (self.showRowTotal === true) {
+            if (self.showRowTotal === true &&
+                (self._isColRegionExist() || self._isRowRegionExist())) {
                 children.push({
                     text: BI.i18nText("BI-Summary_Values"),
                     values: tItem.values
@@ -1040,6 +1041,37 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         parseHeader(this.crossItems);
     },
 
+    //仅有列表头的交叉表
+    _createCrossHeader4OnlyCross: function () {
+        var self = this;
+        BI.each(this.crossDimIds, function (i, dId) {
+            if (BI.isNotNull(dId)) {
+                self.crossHeader.push({
+                    type: "bi.normal_header_cell",
+                    dId: dId,
+                    text: BI.Utils.getDimensionNameByID(dId),
+                    sortFilterChange: function (v) {
+                        self.resetETree();
+                        self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
+                        self.headerOperatorCallback(v, dId);
+                    }
+                });
+            }
+        });
+    },
+
+    _createCrossItems4OnlyCross: function () {
+        var self = this;
+        var tempCrossItems = [];
+        if (BI.isNotNull(this.data.c) || BI.isNotNull(this.data.s)) {
+            this.data = [this.data];
+        }
+        BI.each(this.data, function (i, data) {
+            tempCrossItems.push(self._createCrossPartItems(data.c, 0, null, self._getDimsByDataPos(0, i)));
+        });
+        this._parseRowTableCrossItems(tempCrossItems);
+    },
+
     _setOtherCrossAttrs: function () {
         var self = this;
         //冻结列
@@ -1082,6 +1114,25 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         }
     },
 
+    _setOtherAttrs4OnlyCross: function () {
+        var self = this;
+        this.columnSize = [""];
+        this.freezeCols = [];
+        this.mergeCols = [0];
+        function parseSizeOfCrossItems(items) {
+            BI.each(items, function (i, item) {
+                if (BI.isNotNull(item.children)) {
+                    parseSizeOfCrossItems(item.children);
+                } else {
+                    self.columnSize.push("");
+                }
+            });
+        }
+
+        parseSizeOfCrossItems(this.crossItems);
+
+    },
+
     createGroupTableAttrs: function () {
         //几个回调
         this.headerOperatorCallback = arguments[0];
@@ -1092,8 +1143,7 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         this._refreshDimsInfo();
 
         //仅有列表头的时候
-        if (this.dimIds.length === 0 &&
-            this.crossDimIds.length > 0 &&
+        if (this._isColRegionExist() && !this._isRowRegionExist() &&
             this.targetIds.length === 0) {
             this._createCrossHeader4OnlyCross();
             this._createCrossItems4OnlyCross();

@@ -4,7 +4,8 @@
 BI.ComplexTable = BI.inherit(BI.Pane, {
     _defaultConfig: function () {
         return BI.extend(BI.ComplexTable.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-complex-table"
+            baseCls: "bi-complex-table",
+            overlap: false
         });
     },
 
@@ -303,10 +304,10 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
             }
             self.model.setDataAndPage(jsonData);
             try {
-                if (self.model._isOnlyRowExist()) {
-                    self._prepareGroupTableData()
-                } else {
+                if (self.model._isColRegionExist()) {
                     self._prepareData();
+                } else {
+                    self._prepareGroupTableData()
                 }
                 self._refreshTable();
             } catch (e) {
@@ -484,10 +485,10 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
             self.model.setDataAndPage(jsonData);
             // try {
             //考虑只有行表头情况
-            if (self.model._isOnlyRowExist()) {
-                self._prepareGroupTableData()
-            } else {
+            if (self.model._isColRegionExist()) {
                 self._prepareData();
+            } else {
+                self._prepareGroupTableData()
             }
             if (self.model.getTableForm() !== self.tableForm) {
                 self._createTable();
