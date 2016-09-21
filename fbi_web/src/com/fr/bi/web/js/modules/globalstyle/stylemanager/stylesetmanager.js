@@ -33,9 +33,23 @@ BI.StyleSetManager = BI.inherit(FR.OB, {
             setLoad.loadStyle(id, result);
         }
     },
-
+    setThemeStyle: function (gs) {
+        gs = gs || {};
+        if (BI.isNotNull(gs.predictionValue)) {
+            var style = gs.predictionValue.currentStyle;
+            if (style == BICst.GLOBALPREDICTIONSTYLE.DEFAULT) {
+                $("body").removeClass("bi-theme-default bi-theme-dark bi-theme-light").addClass("bi-theme-default");
+            }
+            if (style == BICst.GLOBALPREDICTIONSTYLE.ONE) {
+                $("body").removeClass("bi-theme-default bi-theme-dark bi-theme-light").addClass("bi-theme-dark");
+            }
+            if (style == BICst.GLOBALPREDICTIONSTYLE.TWO) {
+                $("body").removeClass("bi-theme-default bi-theme-dark bi-theme-light").addClass("bi-theme-light");
+            }
+        }
+    },
     setGlobalStyle: function (id, globalStyle) {
-        if(BI.isNotNull(globalStyle)){
+        if (BI.isNotNull(globalStyle)) {
             if (BI.isNotNull(globalStyle.mainBackground)) {
                 var mainBackground = this._getBackgroundValue(globalStyle, "mainBackground");
             }
@@ -121,6 +135,14 @@ BI.StyleSetManager = BI.inherit(FR.OB, {
                         "border-left": border,
                         "border-right": border,
                         "border-top": border
+                    },
+                    ".bi-control-widget .bi-filter-pane": {"border-top": border, "border-left": border},
+                    ".bi-control-widget .bi-filter-item": {"border-right": border, "border-bottom": border},
+                    ".bi-control-widget .bi-select-text-trigger": {"border": border},
+                    ".bi-control-widget .bi-filter-expander": {"border-right": "0px", "border-bottom": "0px"},
+                    ".bi-control-widget .bi-filter-expander > table > tbody > tr > td.first-element": {
+                        "border-right": border + " !important",
+                        "border-bottom": border + " !important"
                     }
                 };
                 this.setStyle(id, style);

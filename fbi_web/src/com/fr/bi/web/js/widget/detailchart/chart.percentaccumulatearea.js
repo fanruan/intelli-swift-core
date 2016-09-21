@@ -43,7 +43,7 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         });
     },
 
-    _formatConfig: function(config, items){
+    _formatConfig: function (config, items) {
         var self = this;
         config.colors = this.config.chart_color;
         config.style = formatChartStyle();
@@ -53,7 +53,7 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
         config.zoom.zoomTool.enabled = this.config.show_zoom;
-        if(this.config.show_zoom === true){
+        if (this.config.show_zoom === true) {
             delete config.dataSheet;
             delete config.zoom.zoomType;
         }
@@ -85,25 +85,11 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${PERCENT}";
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        if (config.plotOptions.dataLabels.enabled === true) {
-            BI.each(items, function (idx, item) {
-                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.num_separators) {
-                    item.dataLabels = {
-                        "style": self.constants.FONT_STYLE,
-                        "align": "outside",
-                        enabled: true,
-                        formatter: {
-                            identifier: "${VALUE}",
-                            valueFormat: config.yAxis[0].formatter
-                        }
-                    };
-                }
-            });
-        }
+        this.formatDataLabelForAxis(config.plotOptions.dataLabels.enabled, items, config.yAxis[0].formatter);
 
         return [items, config];
 
-        function formatChartStyle(){
+        function formatChartStyle() {
             switch (self.config.chart_style) {
                 case BICst.CHART_STYLE.STYLE_GRADUAL:
                     return "gradual";
@@ -113,11 +99,11 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.AbstractChart, {
             }
         }
 
-        function formatCordon(){
-            BI.each(self.config.cordon, function(idx, cor){
-                if(idx === 0 && self.xAxis.length > 0){
+        function formatCordon() {
+            BI.each(self.config.cordon, function (idx, cor) {
+                if (idx === 0 && self.xAxis.length > 0) {
                     var magnify = self.calcMagnify(self.config.x_axis_number_level);
-                    self.xAxis[0].plotLines = BI.map(cor, function(i, t){
+                    self.xAxis[0].plotLines = BI.map(cor, function (i, t) {
                         return BI.extend(t, {
                             value: t.value.div(magnify),
                             width: 1,
@@ -129,7 +115,7 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.AbstractChart, {
                         });
                     });
                 }
-                if(idx > 0 && self.yAxis.length >= idx){
+                if (idx > 0 && self.yAxis.length >= idx) {
                     var magnify = 1;
                     switch (idx - 1) {
                         case self.constants.LEFT_AXIS:
@@ -142,7 +128,7 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.AbstractChart, {
                             magnify = self.calcMagnify(self.config.right_y_axis_second_number_level);
                             break;
                     }
-                    self.yAxis[idx - 1].plotLines = BI.map(cor, function(i, t){
+                    self.yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
                         return BI.extend(t, {
                             value: t.value.div(magnify),
                             width: 1,
@@ -157,7 +143,7 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.AbstractChart, {
             })
         }
 
-        function getXYAxisUnit(numberLevelType, position){
+        function getXYAxisUnit(numberLevelType, position) {
             var unit = "";
             switch (numberLevelType) {
                 case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -173,10 +159,10 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.AbstractChart, {
                     unit = BI.i18nText("BI-Yi");
                     break;
             }
-            if(position === self.constants.X_AXIS){
+            if (position === self.constants.X_AXIS) {
                 self.config.x_axis_unit !== "" && (unit = unit + self.config.x_axis_unit)
             }
-            if(position === self.constants.LEFT_AXIS){
+            if (position === self.constants.LEFT_AXIS) {
                 self.config.left_y_axis_unit !== "" && (unit = unit + self.config.left_y_axis_unit)
             }
 
@@ -186,10 +172,10 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         }
     },
 
-    _formatItems: function(items){
-        return BI.map(items, function(idx, item){
+    _formatItems: function (items) {
+        return BI.map(items, function (idx, item) {
             var i = BI.UUID();
-            return BI.map(item, function(id, it){
+            return BI.map(item, function (id, it) {
                 return BI.extend({}, it, {stack: i, stackByPercent: true});
             });
         });
@@ -226,9 +212,9 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         this.options.items = items;
 
         var types = [];
-        BI.each(items, function(idx, axisItems){
+        BI.each(items, function (idx, axisItems) {
             var type = [];
-            BI.each(axisItems, function(id, item){
+            BI.each(axisItems, function (id, item) {
                 type.push(BICst.WIDGET.AREA);
             });
             types.push(type);
@@ -241,7 +227,7 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         this.combineChart.resize();
     },
 
-    magnify: function(){
+    magnify: function () {
         this.combineChart.magnify();
     }
 });
