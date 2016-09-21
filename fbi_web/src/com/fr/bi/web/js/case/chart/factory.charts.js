@@ -81,7 +81,7 @@ BI.ChartCombineFormatItemFactory = {
                 "hinge": "rgb(101,107,109)",
                 "dataLabels": {
                     "autoAdjust": true,
-                    "style": {"fontFamily": "inherit", "color": "inherit", "fontSize": "inherit"},
+                    "style": {"fontFamily": "inherit", "color": "inherit", "fontSize": "12px"},
                     "formatter": {
                         "identifier": "${VALUE}",
                         "valueFormat": this._contentFormat2Decimal,
@@ -104,7 +104,7 @@ BI.ChartCombineFormatItemFactory = {
                         "categoryFormat": this._contentFormat
                     },
                     "style": {
-                        "fontFamily": "inherit", "color": "inherit", "fontSize": "inherit"
+                        "fontFamily": "inherit", "color": "inherit", "fontSize": "12px"
                     },
                     "align": "bottom",
                     "enabled": true
@@ -119,7 +119,7 @@ BI.ChartCombineFormatItemFactory = {
                     },
                     "backgroundColor": "rgb(255,255,0)",
                     "style": {
-                        "fontFamily": "inherit", "color": "inherit", "fontSize": "inherit"
+                        "fontFamily": "inherit", "color": "inherit", "fontSize": "12px"
                     },
                     "align": "inside",
                     "enabled": true
@@ -134,7 +134,7 @@ BI.ChartCombineFormatItemFactory = {
                         "categoryFormat": this._contentFormat
                     },
                     "style": {
-                        "fontFamily": "inherit", "color": "inherit", "fontSize": "inherit"
+                        "fontFamily": "inherit", "color": "inherit", "fontSize": "12px"
                     },
                     "align": "bottom",
                     "enabled": true
@@ -223,7 +223,7 @@ BI.ChartCombineFormatItemFactory = {
                 "borderWidth": 1,
                 "formatter": this._contentFormat2Decimal,
                 "style": {
-                    "fontFamily": "inherit", "color": "inherit", "fontSize": "inherit"
+                    "fontFamily": "inherit", "color": "inherit", "fontSize": "12px"
                 }
             },
             "borderColor": "rgb(238,238,238)",
@@ -235,7 +235,7 @@ BI.ChartCombineFormatItemFactory = {
                 "borderWidth": 0,
                 "visible": true,
                 "style": {
-                    "fontFamily": "inherit", "color": "inherit", "fontSize": "inherit"
+                    "fontFamily": "inherit", "color": "inherit", "fontSize": "12px"
                 },
                 "position": "right",
                 "enabled": false
