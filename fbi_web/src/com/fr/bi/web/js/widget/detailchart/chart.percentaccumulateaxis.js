@@ -86,7 +86,10 @@ BI.PercentAccumulateAxisChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${PERCENT}";
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        this.formatDataLabelForAxis(config.plotOptions.dataLabels.enabled, items, config.yAxis[0].formatter);
+        this.formatDataLabelForAxis(config.plotOptions.dataLabels.enabled, items, config.yAxis[0].formatter, this.config.chart_font);
+
+        //全局样式的图表文字
+        this.setFontStyle(this.config.chart_font, config);
 
         return [items, config];
 
@@ -109,7 +112,7 @@ BI.PercentAccumulateAxisChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.constants.FONT_STYLE,
+                                "style" : self.config.chart_font,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -134,7 +137,7 @@ BI.PercentAccumulateAxisChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.constants.FONT_STYLE,
+                                "style" : self.config.chart_font,
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -205,7 +208,8 @@ BI.PercentAccumulateAxisChart = BI.inherit(BI.AbstractChart, {
             show_label: BI.isNull(options.show_label) ? true : options.show_label,
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
-            num_separators: options.num_separators || false
+            num_separators: options.num_separators || false,
+            chart_font: options.chart_font || c.FONT_STYLE
         };
         this.options.items = items;
 

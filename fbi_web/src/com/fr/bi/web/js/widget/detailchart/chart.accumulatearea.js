@@ -46,7 +46,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
-        config.zoom.zoomTool.enable = this.config.show_zoom;
+        config.zoom.zoomTool.enabled = this.config.show_zoom;
         if (this.config.show_zoom === true) {
             delete config.dataSheet;
             delete config.zoom.zoomType;
@@ -100,7 +100,10 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         });
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        this.formatDataLabel(config.plotOptions.dataLabels.enabled, items, config);
+        this.formatDataLabel(config.plotOptions.dataLabels.enabled, items, config, this.config.chart_font);
+
+        //全局样式的图表文字
+        this.setFontStyle(this.config.chart_font, config);
 
         return [items, config];
 
@@ -141,7 +144,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.constants.FONT_STYLE,
+                                "style" : self.config.chart_font,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -166,7 +169,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.constants.FONT_STYLE,
+                                "style" : self.config.chart_font,
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -220,7 +223,8 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
             num_separators: options.num_separators || false,
-            right_num_separators: options.right_num_separators || false
+            right_num_separators: options.right_num_separators || false,
+            chart_font: options.chart_font || c.FONT_STYLE
         };
         this.options.items = items;
         this.yAxis = [];

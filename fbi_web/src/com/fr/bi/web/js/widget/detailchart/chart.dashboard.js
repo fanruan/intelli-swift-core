@@ -66,7 +66,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                             getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS) + '</div>';
                     }
                 },
-                style: config.plotOptions.valueLabel.style,
+                style: self.config.chart_font,
                 useHtml: true
             };
             switch (self.config.chart_dashboard_type) {
@@ -327,7 +327,8 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             min_scale: options.min_scale,
             max_scale: options.max_scale,
             show_percentage: options.show_percentage || c.NOT_SHOW,
-            num_separators: options.num_separators || false
+            num_separators: options.num_separators || false,
+            chart_font: options.chart_font || c.FONT_STYLE
         };
         o.items = this._formatItems(items);
         var types = [];

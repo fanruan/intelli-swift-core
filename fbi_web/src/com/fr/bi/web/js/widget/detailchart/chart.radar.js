@@ -56,7 +56,9 @@ BI.RadarChart = BI.inherit(BI.AbstractChart, {
         delete config.xAxis;
         delete config.yAxis;
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        this.formatDataLabelForAxis(config.plotOptions.dataLabels.enabled, items, config.radiusAxis[0].formatter);
+        this.formatDataLabelForAxis(config.plotOptions.dataLabels.enabled, items, config.radiusAxis[0].formatter, this.config.chart_font);
+
+        config.legend.style = this.config.chart_font;
 
         return [items, config];
 
@@ -135,7 +137,8 @@ BI.RadarChart = BI.inherit(BI.AbstractChart, {
             show_data_label: options.show_data_label || false,
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             cordon: options.cordon || [],
-            num_separators: options.num_separators || false
+            num_separators: options.num_separators || false,
+            chart_font: options.chart_font || c.FONT_STYLE
         };
         this.options.items = items;
         var types = [];

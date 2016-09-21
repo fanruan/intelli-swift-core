@@ -101,6 +101,13 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
                 item.dataLabels.formatter.YFormat = config.yAxis[0].formatter;
             });
         }
+
+        //全局样式图表文字
+        config.yAxis[0].title.style = config.yAxis[0].labelStyle = this.config.chart_font;
+        config.xAxis[0].title.style = config.xAxis[0].labelStyle = this.config.chart_font;
+        config.plotOptions.dataLabels.style = this.config.chart_font;
+        config.plotOptions.legend.style = this.config.chart_font;
+
         return [items, config];
 
         function formatChartStyle() {
@@ -122,7 +129,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.constants.FONT_STYLE,
+                                "style": self.config.chart_font,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -147,7 +154,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.constants.FONT_STYLE,
+                                "style": self.config.chart_font,
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -233,6 +240,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
             tooltip: options.tooltip || [],
             num_separators: options.num_separators || false,
             right_num_separators: options.right_num_separators || false,
+            chart_font: options.chart_font || c.FONT_STYLE
         };
         this.options.items = items;
         var types = [];
@@ -256,3 +264,229 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
 });
 BI.ScatterChart.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut('bi.scatter_chart', BI.ScatterChart);
+var a = {
+    "title": "",
+    "chartType": "scatter",
+    "plotOptions": {
+        "rotatable": false,
+        "startAngle": 0,
+        "borderRadius": 0,
+        "endAngle": 360,
+        "innerRadius": "0.0%",
+        "layout": "horizontal",
+        "hinge": "rgb(101,107,109)",
+        "dataLabels": {
+            "autoAdjust": true,
+            "style": {"fontFamily": "inherit", "color": "inherit", "fontSize": "12px"},
+            "formatter": {"identifier": "${X}${Y}"},
+            "align": "outside",
+            "enabled": false
+        },
+        "percentageLabel": {
+            "formatter": {"identifier": "${PERCENT}"},
+            "style": {"fontFamily": "inherit", "color": "inherit", "fontSize": "12px"},
+            "align": "bottom",
+            "enabled": true
+        },
+        "valueLabel": {
+            "formatter": {"identifier": "${SERIES}${VALUE}"},
+            "backgroundColor": "rgb(255,255,0)",
+            "style": {"fontFamily": "inherit", "color": "inherit", "fontSize": "12px"},
+            "align": "inside",
+            "enabled": true
+        },
+        "hingeBackgroundColor": "rgb(220,242,249)",
+        "seriesLabel": {
+            "formatter": {"identifier": "${CATEGORY}"},
+            "style": {"fontFamily": "inherit", "color": "inherit", "fontSize": "12px"},
+            "align": "bottom",
+            "enabled": true
+        },
+        "style": "pointer",
+        "paneBackgroundColor": "rgb(252,252,252)",
+        "needle": "rgb(229,113,90)",
+        "large": false,
+        "connectNulls": false,
+        "shadow": true,
+        "curve": false,
+        "sizeBy": "area",
+        "tooltip": {
+            "shared": false,
+            "padding": 5,
+            "backgroundColor": "rgba(0,0,0,0.4980392156862745)",
+            "borderColor": "rgb(0,0,0)",
+            "shadow": false,
+            "borderRadius": 2,
+            "borderWidth": 0,
+            "follow": false,
+            "enabled": true,
+            "animation": true,
+            "style": {
+                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                "color": "#c4c6c6",
+                "fontSize": "12px",
+                "fontWeight": ""
+            }
+        },
+        "maxSize": 80,
+        "fillColorOpacity": 1,
+        "step": false,
+        "force": false,
+        "minSize": 15,
+        "displayNegative": true,
+        "categoryGap": "16.0%",
+        "borderColor": "rgb(255,255,255)",
+        "borderWidth": 1,
+        "gap": "22.0%",
+        "animation": true,
+        "lineWidth": 2,
+        "bubble": {
+            "large": false,
+            "connectNulls": false,
+            "shadow": true,
+            "curve": false,
+            "sizeBy": "area",
+            "maxSize": 80,
+            "minSize": 15,
+            "lineWidth": 0,
+            "animation": true,
+            "fillColorOpacity": 0.699999988079071,
+            "marker": {"symbol": "circle", "radius": 28.39695010101295, "enabled": true}
+        },
+        "marker": {"symbol": "circle", "radius": 4.5, "enabled": true}
+    },
+    "dTools": {
+        "enabled": false,
+        "style": {"fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#1a1a1a", "fontSize": "12px"},
+        "backgroundColor": "white"
+    },
+    "dataSheet": {
+        "enabled": false,
+        "borderColor": "rgb(0,0,0)",
+        "borderWidth": 1,
+        "style": {"fontFamily": "inherit", "color": "inherit", "fontSize": "12px"}
+    },
+    "borderColor": "rgb(238,238,238)",
+    "shadow": false,
+    "legend": {
+        "borderColor": "rgb(204,204,204)",
+        "borderRadius": 0,
+        "shadow": false,
+        "borderWidth": 0,
+        "visible": true,
+        "style": {"fontFamily": "inherit", "color": "inherit", "fontSize": "12px"},
+        "position": "bottom",
+        "enabled": true,
+        "maxHeight": 80
+    },
+    "rangeLegend": {
+        "range": {
+            "min": 0,
+            "color": [[0, "rgb(182,226,255)"], [0.5, "rgb(109,196,255)"], [1, "rgb(36,167,255)"]],
+            "max": 266393
+        }, "enabled": false
+    },
+    "zoom": {"zoomType": "xy", "zoomTool": {"visible": false, "resize": true, "from": "", "to": ""}},
+    "plotBorderColor": "rgba(255,255,255,0)",
+    "tools": {
+        "hidden": true,
+        "toImage": {"enabled": true},
+        "sort": {"enabled": true},
+        "enabled": false,
+        "fullScreen": {"enabled": true}
+    },
+    "plotBorderWidth": 0,
+    "colors": ["#19a0da", "#65bbe6", "#b2daf3", "#338ede", "#5a99e6", "#9bbff2", "#4278e5", "#688eed", "#96adf2", "#4356e6", "#6772f0", "#a0a3fa", "#19a0da", "#65bbe6", "#b2daf3", "#338ede", "#5a99e6", "#9bbff2", "#4278e5", "#688eed", "#96adf2", "#4356e6", "#6772f0", "#a0a3fa", "#19a0da", "#65bbe6", "#b2daf3", "#338ede", "#5a99e6", "#9bbff2", "#4278e5", "#688eed"],
+    "borderRadius": 0,
+    "borderWidth": 0,
+    "style": "normal",
+    "plotShadow": false,
+    "plotBorderRadius": 0,
+    "xAxis": [{
+        "type": "value",
+        "title": {"style": {"color": "purple"}, "text": "省", "align": "center"},
+        "labelStyle": {"color": "purple"},
+        "position": "bottom",
+        "gridLineWidth": 1,
+        "plotLines": []
+    }],
+    "yAxis": [{
+        "type": "value",
+        "title": {"style": {"color": "purple"}, "text": "城市地区维度表记录数", "rotation": -90},
+        "labelStyle": {"color": "purple"},
+        "position": "left",
+        "gridLineWidth": 1,
+        "plotLines": []
+    }],
+    "series": [{
+        "type": "scatter",
+        "name": "安徽省",
+        "data": [{"x": "83", "y": "83", "seriesName": "安徽省", "targetIds": ["b43ac0fcada2fc6c", "29c89ecc2a0b96a0"]}],
+        "yAxis": 0
+    }, {
+        "type": "scatter",
+        "name": "北京市",
+        "data": [{"x": "3", "y": "3", "seriesName": "北京市", "targetIds": ["b43ac0fcada2fc6c", "29c89ecc2a0b96a0"]}],
+        "yAxis": 0
+    }, {
+        "type": "scatter",
+        "name": "福建省",
+        "data": [{"x": "69", "y": "69", "seriesName": "福建省", "targetIds": ["b43ac0fcada2fc6c", "29c89ecc2a0b96a0"]}],
+        "yAxis": 0
+    }, {
+        "type": "scatter",
+        "name": "甘肃省",
+        "data": [{"x": "81", "y": "81", "seriesName": "甘肃省", "targetIds": ["b43ac0fcada2fc6c", "29c89ecc2a0b96a0"]}],
+        "yAxis": 0
+    }, {
+        "type": "scatter",
+        "name": "广东省",
+        "data": [{"x": "89", "y": "89", "seriesName": "广东省", "targetIds": ["b43ac0fcada2fc6c", "29c89ecc2a0b96a0"]}],
+        "yAxis": 0
+    }, {
+        "type": "scatter",
+        "name": "广西壮族自治区",
+        "data": [{
+            "x": "93",
+            "y": "93",
+            "seriesName": "广西壮族自治区",
+            "targetIds": ["b43ac0fcada2fc6c", "29c89ecc2a0b96a0"]
+        }],
+        "yAxis": 0
+    }, {
+        "type": "scatter",
+        "name": "贵州省",
+        "data": [{"x": "80", "y": "80", "seriesName": "贵州省", "targetIds": ["b43ac0fcada2fc6c", "29c89ecc2a0b96a0"]}],
+        "yAxis": 0
+    }, {
+        "type": "scatter",
+        "name": "海南省",
+        "data": [{"x": "19", "y": "19", "seriesName": "海南省", "targetIds": ["b43ac0fcada2fc6c", "29c89ecc2a0b96a0"]}],
+        "yAxis": 0
+    }, {
+        "type": "scatter",
+        "name": "河北省",
+        "data": [{"x": "152", "y": "152", "seriesName": "河北省", "targetIds": ["b43ac0fcada2fc6c", "29c89ecc2a0b96a0"]}],
+        "yAxis": 0
+    }, {
+        "type": "scatter",
+        "name": "河南省",
+        "data": [{"x": "128", "y": "128", "seriesName": "河南省", "targetIds": ["b43ac0fcada2fc6c", "29c89ecc2a0b96a0"]}],
+        "yAxis": 0
+    }, {
+        "type": "scatter",
+        "name": "黑龙江省",
+        "data": [{"x": "78", "y": "78", "seriesName": "黑龙江省", "targetIds": ["b43ac0fcada2fc6c", "29c89ecc2a0b96a0"]}],
+        "yAxis": 0
+    }, {
+        "type": "scatter",
+        "name": "湖北省",
+        "data": [{"x": "79", "y": "79", "seriesName": "湖北省", "targetIds": ["b43ac0fcada2fc6c", "29c89ecc2a0b96a0"]}],
+        "yAxis": 0
+    }, {
+        "type": "scatter",
+        "name": "湖南省",
+        "data": [{"x": "101", "y": "101", "seriesName": "湖南省", "targetIds": ["b43ac0fcada2fc6c", "29c89ecc2a0b96a0"]}],
+        "yAxis": 0
+    }]
+}

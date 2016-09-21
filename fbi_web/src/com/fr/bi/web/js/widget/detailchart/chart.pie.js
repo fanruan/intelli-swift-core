@@ -42,6 +42,7 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.dataLabels.align = "outside";
         config.plotOptions.dataLabels.connectorWidth = "outside";
         config.plotOptions.dataLabels.formatter.identifier = "${VALUE}${PERCENT}";
+        config.plotOptions.dataLabels.style = this.config.chart_font;
         BI.each(items, function (idx, item) {
             BI.each(item.data, function (id, da) {
                 da.y = self.formatXYDataWithMagnify(da.y, 1);
@@ -115,7 +116,8 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
             chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
             show_data_label: options.show_data_label || false,
             chart_inner_radius: options.chart_inner_radius || 0,
-            chart_total_angle: options.chart_total_angle || BICst.PIE_ANGLES.TOTAL
+            chart_total_angle: options.chart_total_angle || BICst.PIE_ANGLES.TOTAL,
+            chart_font: options.chart_font || c.FONT_STYLE
         };
         this.options.items = items;
 

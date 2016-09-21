@@ -606,6 +606,13 @@
             return gs.widgetBackground;
         },
 
+        getGSChartFont: function (){
+            var gs = this.getGlobalStyle();
+            return BI.extend(gs.chartFont, {
+                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3"
+            });
+        },
+
         getGSTitleBackground: function () {
             var gs = this.getGlobalStyle();
             return gs.titleBackground;
