@@ -212,20 +212,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
         });
         this.chartColour.populate();
         var chartColourWrapper = this._createWrapper(BI.i18nText("BI-Chart_Colour"), this.chartColour);
-        // var chartColourWrapper=BI.createWidget({
-        //     type:"bi.left",
-        //     cls: "global-style-wrapper-bottom",
-        //     items:[{
-        //         type: "bi.label",
-        //         cls: "global-style-item-label",
-        //         text: BI.i18nText("BI-Chart_Colour") + ":",
-        //         textAlign: "left",
-        //         height: this._const.HEIGHT,
-        //         width: 110
-        //     },this.chartColour],
-        //     vgap: 10
-        // });
-
+        
         //图表文字
         this.chartWordStyle = BI.createWidget({
             type: "bi.global_style_index_chart_tool_bar",
