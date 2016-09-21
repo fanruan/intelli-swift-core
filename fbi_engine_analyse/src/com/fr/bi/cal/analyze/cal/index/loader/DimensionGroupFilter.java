@@ -359,12 +359,13 @@ public class DimensionGroupFilter {
                     continue;
                 }
                 GroupConnectionValue chain = root.getChild();
-                while (firstChangeDeep != 0){
+                int deep = firstChangeDeep;
+                while (deep != 0){
                     if (chain == null){
                         break;
                     }
                     chain = chain.getChild();
-                    firstChangeDeep--;
+                    deep--;
                 }
                 if (chain != null){
                     chain.getCurrentValue().releaseMemNode();
