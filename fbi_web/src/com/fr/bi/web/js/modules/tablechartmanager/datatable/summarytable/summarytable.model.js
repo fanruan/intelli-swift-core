@@ -1078,6 +1078,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
 
     },
 
+    //无列表头
     createGroupTableAttrs: function () {
         //几个回调
         this.headerOperatorCallback = arguments[0];
