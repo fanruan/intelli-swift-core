@@ -76,15 +76,17 @@ public class StringINUserFilterValue extends StringRangeFilterValue {
             try {
                 Object[] values = BIConfigureManagerCenter.getCubeConfManager().getLoginFieldValue(field, user.getUserId());
                 if (values != null) {
-                    for(int i = 0; i < values.length; i++) {
-                        valueSet.getValues().add(values[i].toString());
+                    for (int i = 0; i < values.length; i++) {
+                        if (values[i] != null) {
+                            valueSet.getValues().add(values[i].toString());
+                        }
                     }
                 }
             } catch (Exception e) {
                 BILogger.getLogger().error(e.getMessage(), e);
             }
         }
-        if(ComparatorUtils.equals(fieldId, DBConstant.SYSTEM_USER_NAME)) {
+        if (ComparatorUtils.equals(fieldId, DBConstant.SYSTEM_USER_NAME)) {
             try {
                 valueSet.getValues().add(UserControl.getInstance().getUser(user.getUserId()).getUsername());
             } catch (Exception e) {
