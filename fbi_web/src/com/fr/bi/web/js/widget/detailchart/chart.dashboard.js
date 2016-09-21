@@ -35,7 +35,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
     _formatConfig: function (config, items) {
         var self = this, o = this.options;
         formatChartDashboardStyle();
-        config.chartType = "dashboard";
+        config.chartType = "gauge";
         delete config.xAxis;
         delete config.yAxis;
         return [items, config];
