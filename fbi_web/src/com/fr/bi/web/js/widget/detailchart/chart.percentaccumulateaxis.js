@@ -86,19 +86,8 @@ BI.PercentAccumulateAxisChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${PERCENT}";
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        if (config.plotOptions.dataLabels.enabled === true) {
-            BI.each(items, function (idx, item) {
-                item.dataLabels = {
-                    "style": self.constants.FONT_STYLE,
-                    "align": "outside",
-                    enabled: true,
-                    formatter: {
-                        identifier: "${VALUE}",
-                        valueFormat: config.yAxis[0].formatter
-                    }
-                };
-            });
-        }
+        this.formatDataLabelForAxis(config.plotOptions.dataLabels.enabled, items, config.yAxis[0].formatter);
+
         return [items, config];
 
         function formatChartStyle() {

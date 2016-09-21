@@ -132,19 +132,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         });
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        if (config.plotOptions.dataLabels.enabled === true) {
-            BI.each(items, function (idx, item) {
-                item.dataLabels = {
-                    "style": "{fontFamily:inherit, color: #808080, fontSize: 12px}",
-                    align: outside,
-                    enabled: true,
-                    formatter: {
-                        identifier: "${VALUE}",
-                        valueFormat: config.yAxis[item.yAxis].formatter
-                    }
-                };
-            });
-        }
+        this.formatDataLabel(config.plotOptions.dataLabels.enabled, items, config);
 
         return [BI.concat(otherItem, lineItem), config];
     },
