@@ -1,3 +1,39 @@
 /****添加计算宽度的--运算符直接需要space****/
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
+.bi-theme-light .bi-control-widget .bi-multi-select-trigger .bi-multi-select-searcher.bi-searcher .bi-text {
+  color: #1a1a1a;
+}
+.bi-theme-light .bi-control-widget .bi-multi-select-editor.bi-single.bi-simple-state-editor .bi-text {
+  color: #1a1a1a;
+}
+.bi-theme-light .bi-control-widget .bi-numerical-interval .numerical-interval-small-editor .bi-text {
+  color: #1a1a1a;
+}
+.bi-theme-light .bi-control-widget .bi-editor.numerical-interval-big-editor .bi-text {
+  color: #1a1a1a;
+}
+.bi-theme-light .bi-control-widget .bi-year-trigger .bi-text {
+  color: #1a1a1a;
+}
+.bi-theme-light .bi-control-widget .bi-month-trigger .bi-text {
+  color: #1a1a1a;
+}
+.bi-theme-light .bi-control-widget .bi-quarter-trigger .bi-text {
+  color: #1a1a1a;
+}
+.bi-theme-light .bi-control-widget .bi-date-trigger .bi-text {
+  color: #1a1a1a;
+}
+.bi-theme-light .bi-control-widget .bi-select-text-trigger .bi-text {
+  color: #1a1a1a;
+}
+.bi-theme-light .bi-control-widget .bi-custom-tree.bi-button-map .first-element .bi-single.bi-basic-button.cursor-pointer.bi-text-button.display-block.bi-label.bi-absolute-layout .bi-text {
+  color: #1a1a1a;
+}
+.bi-theme-light .bi-control-widget .bi-single.bi-basic-button.cursor-pointer.bi-text-button.display-block.condition-and-or.bi-label .bi-text {
+  color: #1a1a1a;
+}
+.bi-theme-light .bi-control-widget .bi-single.bi-center-layout.bi-grid-layout.bi-horizon-auto-layout .bi-single.bi-label.bi-absolute-layout .bi-single.bi-text .bi-text {
+  color: #1a1a1a;
+}

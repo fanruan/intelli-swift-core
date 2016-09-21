@@ -200,6 +200,40 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         }
     },
 
+    formatDataLabel: function (state, items, config) {
+        var self = this;
+        if (state === true) {
+            BI.each(items, function (idx, item) {
+                item.dataLabels = {
+                    "style": self.constants.FONT_STYLE,
+                    "align": "outside",
+                    enabled: true,
+                    formatter: {
+                        identifier: "${VALUE}",
+                        valueFormat: config.yAxis[item.yAxis].formatter
+                    }
+                };
+            });
+        }
+    },
+
+    formatDataLabelForAxis: function (state, items, format){
+        var self = this;
+        if (state === true) {
+            BI.each(items, function (idx, item) {
+                item.dataLabels = {
+                    "style": self.constants.FONT_STYLE,
+                    "align": "outside",
+                    enabled: true,
+                    formatter: {
+                        identifier: "${VALUE}",
+                        valueFormat: format
+                    }
+                };
+            });
+        }
+    },
+
     _formatItems: function (items) {
         return items;
     },

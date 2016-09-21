@@ -189,6 +189,7 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         });
     },
 
+    //获取有效的行表头区域
     _getRowRegions: function () {
         var rowRegions = {};
         var view = BI.Utils.getWidgetViewByID(this.wId);
@@ -201,6 +202,7 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         return rowRegions;
     },
 
+    //获取有效的列表头区域
     _getColRegions: function () {
         var colRegions = {};
         var view = BI.Utils.getWidgetViewByID(this.wId);
@@ -212,6 +214,16 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
             }
         });
         return colRegions;
+    },
+
+    //仅有行表头
+    _isOnlyRowExist: function () {
+        return BI.size(this._getRowRegions()) > 0 && BI.size(this._getColRegions()) === 0;
+    },
+
+    //仅有列表头
+    _isOnlyColExist: function () {
+        return BI.size(this._getRowRegions()) === 0 && BI.size(this._getColRegions()) > 0;
     },
 
     /**
@@ -302,6 +314,73 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
     },
 
     /**
+     * 无列表头当作分组表处理
+     */
+    _createGroupTableItems: function () {
+        var self = this;
+        var tempItems = [];
+        if (BI.isNotNull(this.data.c) && BI.isNotNull(this.data.s)) {
+            this.data = [this.data];
+        }
+        BI.each(this.data, function (i, data) {
+            tempItems.push(self._createSingleGroupTableItems(data, self._getDimsByDataPos(i).dimIds));
+        });
+        this._parseColTableItems(tempItems);
+    },
+
+    _createSingleGroupTableItems: function (data, dimIds) {
+        var self = this;
+        var currentLayer = 0;
+        var item = {
+            children: this._createTableItems(data.c, currentLayer, null, {dimIds: dimIds}) || []
+        };
+        //汇总
+        if (this.showRowTotal === true && BI.isNotEmptyArray(data.s)) {
+            var outerValues = [];
+            if (dimIds.length > 0) {
+                BI.each(data.s, function (i, v) {
+                    var tId = self.targetIds[i];
+                    outerValues.push({
+                        type: "bi.target_body_normal_cell",
+                        text: v,
+                        dId: tId,
+                        cls: "summary-cell last",
+                        clicked: [{}]
+                    });
+                });
+                item.values = outerValues;
+            } else {
+                //使用第一个值作为一个维度
+                BI.each(data.s, function (i, v) {
+                    if (i === 0) {
+                        return;
+                    }
+                    var tId = self.targetIds[i];
+                    outerValues.push({
+                        type: "bi.target_body_normal_cell",
+                        text: v,
+                        dId: tId,
+                        cls: "summary-cell",
+                        clicked: [{}]
+                    });
+                });
+                item.children.push({
+                    type: "bi.target_body_normal_cell",
+                    text: data.s[0],
+                    dId: self.targetIds[0],
+                    cls: "summary-cell",
+                    clicked: [{}],
+                    tag: BI.UUID(),
+                    isSum: true,
+                    values: outerValues
+                });
+                item.values = item;
+            }
+        }
+        return item;
+    },
+
+    /**
      * 基本的复杂表结构
      * 有几个维度的分组表示就有几个表
      * view: {10000: [a, b], 10001: [c, d]}, 20000: [e, f], 20001: [g, h], 20002: [i, j], 30000: [k]}
@@ -336,8 +415,8 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         var sortedRowRIds = BI.sortBy(BI.keys(rowRegions));
         var sortedColRIds = BI.sortBy(BI.keys(colRegions));
         return {
-            dimIds: rowRegions[sortedRowRIds[row]],
-            crossDimIds: colRegions[sortedColRIds[col]]
+            dimIds: sortedRowRIds.length > 0 ? rowRegions[sortedRowRIds[row]] : [],
+            crossDimIds: sortedColRIds.length > 0 ? colRegions[sortedColRIds[col]] : []
         };
     },
 
@@ -550,7 +629,6 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
                 if (self.targetIds.length === 0) {
                     tId = self.crossDimIds[i];
                 }
-
                 sum.push({
                     type: "bi.target_body_normal_cell",
                     text: v,
@@ -840,6 +918,26 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
     },
 
     /**
+     * 无列表头当作分组表处理
+     */
+    _createGroupTableHeader: function () {
+        var self = this;
+        BI.each(this.dimIds.concat(this.targetIds), function (i, dId) {
+            BI.isNotNull(dId) &&
+            self.header.push({
+                type: "bi.normal_header_cell",
+                dId: dId,
+                text: BI.Utils.getDimensionNameByID(dId),
+                sortFilterChange: function (v) {
+                    self.resetETree();
+                    self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
+                    self.headerOperatorCallback(v, dId);
+                }
+            });
+        });
+    },
+
+    /**
      * 交叉表——header and crossHeader
      */
     _createCrossTableHeader: function () {
@@ -962,6 +1060,55 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
                 self.columnSize.push("");
             });
         }
+    },
+
+    _setOtherGroupAttrs: function () {
+        var self = this;
+        //冻结列
+        this.freezeCols = [];
+        //合并列，列大小
+        this.mergeCols = [];
+        BI.each(this.dimIds, function (i, id) {
+            self.mergeCols.push(i);
+            self.freezeCols.push(i);
+        });
+        var dtIds = this.dimIds.concat(this.targetIds);
+        if (this.columnSize.length !== dtIds.length) {
+            //重置列宽
+            this.columnSize = [];
+            BI.each(dtIds, function (i, id) {
+                self.columnSize.push("");
+            });
+        }
+    },
+
+    createGroupTableAttrs: function () {
+        //几个回调
+        this.headerOperatorCallback = arguments[0];
+        this.expanderCallback = arguments[1];
+        this.clickedCallback = arguments[2];
+
+        this._resetPartAttrs();
+        this._refreshDimsInfo();
+
+        //仅有列表头的时候
+        if (this.dimIds.length === 0 &&
+            this.crossDimIds.length > 0 &&
+            this.targetIds.length === 0) {
+            this._createCrossHeader4OnlyCross();
+            this._createCrossItems4OnlyCross();
+            this._setOtherAttrs4OnlyCross();
+            return;
+        }
+
+        //header
+        this._createGroupTableHeader();
+
+        //items
+        this._createGroupTableItems();
+
+        //others
+        this._setOtherGroupAttrs();
     },
 
     createTableAttrs: function () {
