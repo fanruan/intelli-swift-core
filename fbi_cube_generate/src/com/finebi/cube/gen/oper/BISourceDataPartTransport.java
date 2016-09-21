@@ -217,12 +217,14 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
     /**
      * 以前SQL数据集和数据表的SQL语句使用两套逻辑处理
      * 统一逻辑，select id和 select a1,a2,a3都是合理的
+     *
      * @param fields
      * @param sql
      * @return
      * @throws Exception
      */
     private String getModifySql(ICubeFieldSource[] fields, String sql) throws Exception {
+        sql = addDateCondition(sql);
         com.fr.data.impl.Connection connection = null;
         if (tableSource.getType() == BIBaseConstant.TABLETYPE.DB) {
             connection = ((DBTableSource) tableSource).getConnection();
@@ -231,13 +233,14 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             connection = ((SQLTableSource) tableSource).getConnection();
         }
         SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
-        sqlStatement.setSql(addDateCondition(sql));
+        sqlStatement.setSql(sql);
         Dialect dialect = DialectFactory.generateDialect(sqlStatement.getSqlConn(), connection.getDriver());
         String finalSql = null;
-        int columnNum=getColumnNum(connection,sqlStatement,sql);
-        if (columnNum==fields.length){
+        int columnNum = getColumnNum(connection, sqlStatement, sql);
+        if (columnNum == fields.length) {
             finalSql = sql;
-        }if (columnNum==1) {
+        }
+        if (columnNum == 1) {
             String columnName = getColumnName(connection, sqlStatement, sql);
             ICubeFieldSource f = getiCubeFieldSource(fields, columnName);
             if (f == null) return null;
@@ -249,8 +252,8 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             if (tableSource.getType() == BIBaseConstant.TABLETYPE.SQL) {
                 finalSql = ((SQLTableSource) tableSource).getQuery() + " t" + " WHERE " + "t." + columnName + " IN " + "(" + sql + ")";
             }
-        }else {
-            BILogger.getLogger().error("SQL syntax error: "+tableSource.getTableName()+" columns length incorrect "+sql);
+        } else {
+            BILogger.getLogger().error("SQL syntax error: " + tableSource.getTableName() + " columns length incorrect " + sql);
         }
         return finalSql;
     }
