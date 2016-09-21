@@ -4,18 +4,11 @@
 BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
     _const: {
         WHITE: "#ffffff",
-        GRAY: "#cccccc",
-        PAGE_ONE: 1,
-        PAGE_TWO: 2
-        // FIRST_PAGE_CUSTOM_STYLE_NUMBER: 3,
-        // ALL_PREDICTION_STYLE_NUMBER: 5
+        GRAY: "#cccccc"
     },
     _defaultConfig: function () {
         return BI.extend(BI.GlobalStyleIndexPredictionStyle.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-global-style-index-prediction-style",
-            initTotalPage: 1,
-            initCurrentPage: 1,
-            allUserCustomStyle: []
+            baseCls: "bi-global-style-index-prediction-style"
         })
     },
 
@@ -23,20 +16,14 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
         BI.GlobalStyleIndexPredictionStyle.superclass._init.apply(this, arguments);
 
         var o = this.options, self = this;
-        this.totalPage = o.initTotalPage;
-        this.currentPage = o.initCurrentPage;
-        this.allUserCustomStyle = o.allUserCustomStyle;
 
         this.leftButton = BI.createWidget({
             type: "bi.global_style_canvas_button",
             direction: "left",
             initState: false
         });
-        this.leftButton.on(BI.GlobalStyleCanvasButton.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GlobalStyleIndexPredictionStyle.PAGE_CHANGE, "left");
-        });
         var leftLayout = BI.createWidget({
-            type: "bi.float_center_adapt",
+            type: "bi.center_adapt",
             items: [this.leftButton]
         });
 
@@ -45,11 +32,8 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
             direction: "right",
             initState: true
         });
-        this.rightButton.on(BI.GlobalStyleCanvasButton.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GlobalStyleIndexPredictionStyle.PAGE_CHANGE, "right");
-        });
         var rightLayout = BI.createWidget({
-            type: "bi.float_center_adapt",
+            type: "bi.center_adapt",
             items: [this.rightButton]
         });
 
@@ -65,7 +49,7 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
             }]
         });
         this.centerButtonGroup.on(BI.ButtonGroup.EVENT_CHANGE, function (v) {
-            self.fireEvent(BI.GlobalStyleIndexPredictionStyle.EVENT_CHANGE, this)
+            self.fireEvent(BI.GlobalStyleIndexPredictionStyle.EVENT_CHANGE, this.getValue()[0])
         });
 
         var centerItems = BI.createWidget({
@@ -168,10 +152,10 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
             value: value
         });
         button.on(BI.GlobalStyleUserCustomButton.EVENT_SELECT, function () {
-            self.fireEvent(BI.GlobalStyleIndexPredictionStyle.CUSTOM_SELECT, this)
+            self.fireEvent(BI.GlobalStyleIndexPredictionStyle.CUSTOM_SELECT)
         });
         button.on(BI.GlobalStyleUserCustomButton.EVENT_DELETE, function () {
-            self.fireEvent(BI.GlobalStyleIndexPredictionStyle.CUSTOM_DELETE, this)
+            self.fireEvent(BI.GlobalStyleIndexPredictionStyle.CUSTOM_DELETE)
         });
         return button
     },
@@ -243,10 +227,7 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
-        return {
-            "currentStyle": this.centerButtonGroup.getValue()[0],
-            "allUserCustomStyle": this.allUserCustomStyle
-        }
+        return this.allUserCustomStyle;
     },
 
     setValue: function (v) {
@@ -278,7 +259,8 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
         this._populate();
     },
 
-    populate: function (currentPage) {
+    populate: function (globalStyle) {
+        var globalStyle =BI.Utils.
         this.currentPage = currentPage;
         this._populate();
     },

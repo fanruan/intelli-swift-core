@@ -539,3 +539,13 @@ BICst.WIDGET_STATUS = {
     EDIT: 2,
     DETAIL: 3
 };
+
+BI.THEME_DETAULT = "bi-theme-default";
+BI.THEME_DARK = "bi-theme-dark";
+BI.THEME_LIGHT = "bi-theme-light";
+
+//全局样式start
+BICst.BACKGROUND_TYPE = {
+    COLOR: 1,
+    IMAGE: 2
+};

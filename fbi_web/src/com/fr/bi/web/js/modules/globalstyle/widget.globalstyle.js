@@ -12,6 +12,7 @@ BI.GlobalStyle = BI.inherit(BI.Widget, {
     _init: function () {
         BI.GlobalStyle.superclass._init.apply(this, arguments);
         var self = this;
+        this.manager = new BI.StyleSetManager;
         var globalStyleButton = BI.createWidget({
             type: "bi.icon_text_item",
             cls: "toolbar-global-style-font",
@@ -28,10 +29,6 @@ BI.GlobalStyle = BI.inherit(BI.Widget, {
                     type: "bi.global_style_setting"
                 });
                 BI.Layers.show(BICst.GLOBAL_STYLE_LAYER);
-                var v = BI.Utils.getGlobalStyle();
-                if (BI.isNull(v.predictionValue)) {
-                    self.fireEvent(BI.GlobalStyle.EVENT_SET, BICst.GLOBALPREDICTIONSTYLE.DEFAULT)
-                }
                 cacheGS = BI.Utils.getGlobalStyle();
 
                 self.globalStyleSetting.on(BI.GlobalStyleSetting.EVENT_CANCEL, function () {
@@ -82,11 +79,10 @@ BI.GlobalStyle = BI.inherit(BI.Widget, {
         return this.globalStyleSetting.getValue();
     },
 
-    populate: function (gs) {
-        var globalStyle = gs || BI.Utils.getGlobalStyle();
-        var manager = new BI.StyleSetManager;
-        manager.setThemeStyle(globalStyle);
-        manager.setGlobalStyle("globalstyle", globalStyle);
+    populate: function () {
+        var globalStyle = BI.Utils.getGlobalStyle();
+        this.manager.setThemeStyle(globalStyle);
+        this.manager.setGlobalStyle("globalstyle", globalStyle);
     }
 });
 BI.GlobalStyle.EVENT_SET = "EVENT_SET";

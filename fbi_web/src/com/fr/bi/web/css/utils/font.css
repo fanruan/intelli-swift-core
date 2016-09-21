@@ -3498,3 +3498,21 @@
   content: "\e600";
   color: #f07d0a;
 }
+.page-left-font .b-font:before {
+  content: "\e6cc";
+  color: #808080;
+}
+.page-left-font.native .b-font:before,
+.page-left-font.disabled .b-font:before {
+  content: "\e6cc";
+  color: #808080;
+}
+.page-right-font .b-font:before {
+  content: "\e6cd";
+  color: #808080;
+}
+.page-right-font.native .b-font:before,
+.page-right-font.disabled .b-font:before {
+  content: "\e6cd";
+  color: #808080;
+}

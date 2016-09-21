@@ -303,10 +303,9 @@ BIDezi.PaneView = BI.inherit(BI.View, {
     },
 
     refresh: function () {
+        this.globalStyle.populate();
         this._refreshButtons();
         this.dashboard.populate();
         this._refreshWidgets();
-
-        this.globalStyle.populate();
     }
 });
