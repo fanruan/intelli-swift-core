@@ -48,6 +48,9 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
                 da.y = self.formatXYDataWithMagnify(da.y, 1);
             })
         });
+
+        config.legend.style = this.config.chart_font;
+
         return [items, config];
 
         function formatChartStyle(){

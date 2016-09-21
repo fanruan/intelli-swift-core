@@ -240,7 +240,6 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         }
         config.xAxis[0].title.style = fontStyle;
         config.xAxis[0].labelStyle = fontStyle;
-        config.plotOptions.dataLabels.style = fontStyle;
         config.legend.style = fontStyle;
         BI.each(config.yAxis, function (idx, axis) {
             axis.labelStyle = fontStyle;

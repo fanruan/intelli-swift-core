@@ -84,7 +84,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         if (config.plotOptions.dataLabels.enabled === true) {
             BI.each(items, function (idx, item) {
                 item.dataLabels = {
-                    "style": self.constants.FONT_STYLE,
+                    "style": self.config.chart_font,
                     "align": "outside",
                     enabled: true,
                     formatter: {
@@ -103,11 +103,9 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         }
 
         //全局样式图表文字
-        if(config.plotOptions.legend) config.plotOptions.legend.style = this.config.chart_font;
+        config.legend.style = this.config.chart_font;
         config.yAxis[0].title.style = config.yAxis[0].labelStyle = this.config.chart_font;
         config.xAxis[0].title.style = config.xAxis[0].labelStyle = this.config.chart_font;
-        config.plotOptions.dataLabels.style = this.config.chart_font;
-
 
         return [items, config];
 
