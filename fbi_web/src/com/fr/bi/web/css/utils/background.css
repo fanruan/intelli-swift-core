@@ -480,8 +480,8 @@
   z-index: 2;
 }
 .scatter-text-tip-background {
-  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/text/text/scatter_text.png') no-repeat center center;
-  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/text/text/scatter_text.png');
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/text/scatter_text.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/charts/text/scatter_text.png');
   _background: none;
   background-color: #ffffff;
   z-index: 2;

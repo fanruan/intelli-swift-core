@@ -81,10 +81,10 @@ BI.TableChartManagerAspect = function () {
                 !((tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-text-tip-background" : "axis-tip-background");
                 break;
             case BICst.WIDGET.LINE:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "line-tip-text-background" : "line-tip-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "line-text-tip-background" : "line-tip-background");
                 break;
             case BICst.WIDGET.AREA:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "area-tip-text-background" : "area-tip-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "area-text-tip-background" : "area-tip-background");
                 break;
             case BICst.WIDGET.ACCUMULATE_AXIS:
                 !((tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-accu-text-tip-background" : "axis-accu-tip-background");

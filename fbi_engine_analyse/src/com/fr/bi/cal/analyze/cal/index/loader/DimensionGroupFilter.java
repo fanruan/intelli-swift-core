@@ -355,14 +355,22 @@ public class DimensionGroupFilter {
     private void clearLastIndex(GroupConnectionValue[] roots, int firstChangeDeep) {
         if (roots != null){
             for (GroupConnectionValue root : roots){
+                if (root == null){
+                    continue;
+                }
                 GroupConnectionValue chain = root.getChild();
                 while (firstChangeDeep != 0){
+                    if (chain == null){
+                        break;
+                    }
                     chain = chain.getChild();
                     firstChangeDeep--;
                 }
-                chain.getCurrentValue().releaseMemNode();
-                while ((chain = chain.getChild()) != null){
+                if (chain != null){
                     chain.getCurrentValue().releaseMemNode();
+                    while ((chain = chain.getChild()) != null){
+                        chain.getCurrentValue().releaseMemNode();
+                    }
                 }
             }
         }
@@ -739,6 +747,7 @@ public class DimensionGroupFilter {
         RootDimensionGroup[] rootDimensionGroups = new RootDimensionGroup[mergerInfoList.size()];
         for (int i = 0; i < rootDimensionGroups.length; i++) {
             rootDimensionGroups[i] = mergerInfoList.get(i).getRootDimensionGroup();
+            rootDimensionGroups[i].setCacheAble(shouldNotTraverse());
         }
         return rootDimensionGroups;
     }
