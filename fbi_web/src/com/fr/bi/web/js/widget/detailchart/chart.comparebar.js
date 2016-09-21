@@ -87,21 +87,8 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
 
         config.chartType = "bar";
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        if (config.plotOptions.dataLabels.enabled === true) {
-            BI.each(items, function (idx, item) {
-                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.num_separators) {
-                    item.dataLabels = {
-                        "style": self.constants.FONT_STYLE,
-                        "align": "outside",
-                        enabled: true,
-                        formatter: {
-                            identifier: "${VALUE}",
-                            valueFormat: config.xAxis[0].formatter
-                        }
-                    };
-                }
-            });
-        }
+        this.formatDataLabelForAxis(config.plotOptions.dataLabels.enabled, items, config.xAxis[0].formatter);
+
         config.plotOptions.tooltip.formatter.valueFormat = config.xAxis[0].formatter;
 
         return [items, config];
@@ -241,16 +228,16 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
             num_separators: options.num_separators || false
         };
-        this.options.items = items;
+        this.options.items = this._formatItems(items);
         var types = [];
-        BI.each(items, function (idx, axisItems) {
+        BI.each(this.options.items, function (idx, axisItems) {
             var type = [];
             BI.each(axisItems, function (id, item) {
                 type.push(BICst.WIDGET.BAR);
             });
             types.push(type);
         });
-        this.combineChart.populate(this._formatItems(items), types);
+        this.combineChart.populate(this.options.items, types);
     },
 
     resize: function () {

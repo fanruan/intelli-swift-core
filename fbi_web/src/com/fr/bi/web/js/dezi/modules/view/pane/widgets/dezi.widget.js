@@ -14,7 +14,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
 
     _defaultConfig: function () {
         return BI.extend(BIDezi.WidgetView.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-dashboard-widget"
+            baseCls: "bi-dashboard-widget bi-global-style-select"
         })
     },
 
@@ -42,6 +42,10 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         });
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
             self.model.set("clicked", {});
+        });
+        //全局样式的修改
+        BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
+            self._refreshGlobalStyle(globalStyle);
         });
     },
 
@@ -330,6 +334,17 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             .removeClass("dashboard-title-center").addClass(cls);
     },
 
+    _refreshGlobalStyle: function (globalStyle) {
+        var titleFont = BI.isNotNull(globalStyle) ?
+            globalStyle.titleFont : BI.Utils.getGSTitleFont();
+        if (BI.isNotNull(titleFont)) {
+            try {
+                this._refreshTitlePosition();
+            } catch (e) {
+            }
+        }
+    },
+
     _expandWidget: function () {
         var wId = this.model.get("id");
         var type = this.model.get("type");
@@ -410,5 +425,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         this._refreshTableAndFilter();
         this._refreshLayout();
         this._refreshTitlePosition();
+
+        this._refreshGlobalStyle();
     }
 });

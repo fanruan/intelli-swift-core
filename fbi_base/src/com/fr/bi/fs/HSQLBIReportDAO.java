@@ -3,6 +3,7 @@ package com.fr.bi.fs;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
 import com.fr.cache.list.IntList;
 import com.fr.data.dao.DataAccessObjectSession;
+import com.fr.data.dao.DatabaseAction;
 import com.fr.fs.base.entity.User;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.dao.PlatformDataAccessObject;
@@ -175,5 +176,18 @@ public class HSQLBIReportDAO extends PlatformDataAccessObject implements BIRepor
             }
         }
     }
+    public void transferSharedReport(BISharedReportNode var1) throws Exception{
+        this.createSession(DatabaseAction.TRANSFER).transfer(var1);
+    }
 
+    public void transferReport(BIReportNode var1) throws Exception{
+        this.createSession(DatabaseAction.TRANSFER).transfer(var1);
+    }
+
+    public List findReportAll() throws Exception {
+        return this.createSession().list(BIReportNode.class);
+    }
+    public List findShareReportAll() throws Exception {
+        return this.createSession().list(BISharedReportNode.class);
+    }
 }

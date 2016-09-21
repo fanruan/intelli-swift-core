@@ -2,13 +2,14 @@
  * Created by Young's on 2016/9/14.
  */
 BI.ComplexTable = BI.inherit(BI.Pane, {
-    _defaultConfig: function() {
+    _defaultConfig: function () {
         return BI.extend(BI.ComplexTable.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-complex-table" 
+            baseCls: "bi-complex-table",
+            overlap: false
         });
     },
-    
-    _init: function() {
+
+    _init: function () {
         BI.ComplexTable.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.model = new BI.ComplexTableModel({
@@ -200,7 +201,7 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
         });
         this.table.on(BI.StyleTable.EVENT_TABLE_AFTER_COLUMN_RESIZE, function () {
             var columnSize = BI.clone(this.getColumnSize());
-            self.fireEvent(BI.SummaryTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(self.model.getWidgetId()), {column_size: columnSize})});
+            self.fireEvent(BI.ComplexTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(self.model.getWidgetId()), {column_size: columnSize})});
         });
         this.table.on(BI.StyleTable.EVENT_TABLE_AFTER_INIT, function () {
             self._resizeTableColumnSize();
@@ -278,7 +279,7 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
                 })
             }
             this.table.setColumnSize(columnSize);
-            this.fireEvent(BI.SummaryTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(this.model.getWidgetId()), {column_size: columnSize})});
+            this.fireEvent(BI.ComplexTable.EVENT_CHANGE, {settings: BI.extend(BI.Utils.getWidgetSettingsByID(this.model.getWidgetId()), {column_size: columnSize})});
         }
     },
 
@@ -302,23 +303,11 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
                 return;
             }
             self.model.setDataAndPage(jsonData);
-            var widgetType = BI.Utils.getWidgetTypeByID(wId);
             try {
-                switch (widgetType) {
-                    case BICst.WIDGET.TABLE:
-                        self._prepareData4GroupTable();
-                        break;
-                    case BICst.WIDGET.CROSS_TABLE:
-                        //如果没有列表头，还是以分组表展示——后台传这样的数据
-                        if (BI.isNotNull(self.model.getData().t)) {
-                            self._prepareData4CrossTable();
-                        } else {
-                            self._prepareData4GroupTable();
-                        }
-                        break;
-                    case BICst.WIDGET.COMPLEX_TABLE:
-                        self._populateComplexTable();
-                        break;
+                if (self.model._isColRegionExist()) {
+                    self._prepareData();
+                } else {
+                    self._prepareGroupTableData()
                 }
                 self._refreshTable();
             } catch (e) {
@@ -344,26 +333,14 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
                 return;
             }
             self.model.setDataAndPage(jsonData);
-            var widgetType = BI.Utils.getWidgetTypeByID(wId);
             try {
-                switch (widgetType) {
-                    case BICst.WIDGET.TABLE:
-                        self.model.createGroupTableAttrs(BI.bind(self._onClickHeaderOperator, self), BI.bind(self._populateNoDimsChange, self), BI.bind(self._onClickBodyCellOperator, self));
-                        break;
-                    case BICst.WIDGET.CROSS_TABLE:
-                        if (BI.isNotNull(self.model.getData().t)) {
-                            self.model.createCrossTableAttrs(BI.bind(self._onClickHeaderOperator, self), BI.bind(self._populateNoDimsChange, self), BI.bind(self._onClickBodyCellOperator, self));
-                        } else {
-                            self.model.createGroupTableAttrs(BI.bind(self._onClickHeaderOperator, self), BI.bind(self._populateNoDimsChange, self), BI.bind(self._onClickBodyCellOperator, self));
-                        }
-                        break;
-                }
+                self.model.createTableAttrs();
                 callback(self.model.getItems(), self.model.getHeader(), self.model.getCrossItems(), self.model.getCrossHeader());
             } catch (e) {
                 self.errorPane.setErrorInfo("error happens during populate for table: " + e);
                 self.errorPane.setVisible(true);
             }
-            self.fireEvent(BI.SummaryTable.EVENT_CHANGE, {
+            self.fireEvent(BI.ComplexTable.EVENT_CHANGE, {
                 _page_: {
                     h: self.table.getHPage(),
                     v: self.table.getVPage()
@@ -372,21 +349,12 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
         }, this.model.getExtraInfo());
     },
 
-    /**
-     * 分组表
-     * @private
-     */
-    _prepareData4GroupTable: function () {
-        //创建表格的各种属性——回调各种点击事件
-        this.model.createGroupTableAttrs(BI.bind(this._onClickHeaderOperator, this), BI.bind(this._populateNoDimsChange, this), BI.bind(this._onClickBodyCellOperator, this));
+    _prepareData: function () {
+        this.model.createTableAttrs(BI.bind(this._onClickHeaderOperator, this), BI.bind(this._populateNoDimsChange, this), BI.bind(this._onClickBodyCellOperator, this));
     },
 
-    /**
-     * 交叉表
-     * @private
-     */
-    _prepareData4CrossTable: function () {
-        this.model.createCrossTableAttrs(BI.bind(this._onClickHeaderOperator, this), BI.bind(this._populateNoDimsChange, this), BI.bind(this._onClickBodyCellOperator, this));
+    _prepareGroupTableData: function () {
+        this.model.createGroupTableAttrs(BI.bind(this._onClickHeaderOperator, this), BI.bind(this._populateNoDimsChange, this), BI.bind(this._onClickBodyCellOperator, this));
     },
 
     /**
@@ -410,7 +378,7 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
      * @private
      */
     _onClickBodyCellOperator: function (clicked) {
-        this.fireEvent(BI.SummaryTable.EVENT_CHANGE, {clicked: clicked});
+        this.fireEvent(BI.ComplexTable.EVENT_CHANGE, {clicked: clicked});
     },
 
     _onClickHeaderCellFilter: function (dId) {
@@ -436,7 +404,7 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
             popup.on(BI.DimensionFilterPopup.EVENT_CHANGE, function (v) {
                 var dimensions = BI.Utils.getWidgetDimensionsByID(self.options.wId);
                 dimensions[dId].filter_value = v;
-                self.fireEvent(BI.SummaryTable.EVENT_CHANGE, {dimensions: dimensions});
+                self.fireEvent(BI.ComplexTable.EVENT_CHANGE, {dimensions: dimensions});
             });
         } else {
             var popup = BI.createWidget({
@@ -451,8 +419,7 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
                 } else {
                     delete targetFilter[dId];
                 }
-
-                self.fireEvent(BI.SummaryTable.EVENT_CHANGE, {filter_value: targetFilter});
+                self.fireEvent(BI.ComplexTable.EVENT_CHANGE, {filter_value: targetFilter});
             });
         }
         BI.Popovers.create(dId, popup).open(dId);
@@ -468,11 +435,7 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
         } else {
             ob.sort = {sort_target: dId, type: v};
         }
-        this.fireEvent(BI.SummaryTable.EVENT_CHANGE, ob);
-    },
-
-    _populateComplexTable: function () {
-
+        this.fireEvent(BI.ComplexTable.EVENT_CHANGE, ob);
     },
 
     _populateTable: function () {
@@ -496,12 +459,6 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
     },
 
     _afterTablePopulate: function () {
-        if (this.model.isShowNumber()) {
-            this.table.showSequence();
-        } else {
-            this.table.hideSequence();
-        }
-        //css
         this.table.setStyleAndColor(this.model.getTableStyle(), this.model.getThemeColor());
     },
 
@@ -526,33 +483,22 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
                 return;
             }
             self.model.setDataAndPage(jsonData);
-            var widgetType = BI.Utils.getWidgetTypeByID(widgetId);
-            try {
-                switch (widgetType) {
-                    case BICst.WIDGET.TABLE:
-                        self._prepareData4GroupTable();
-                        break;
-                    case BICst.WIDGET.CROSS_TABLE:
-                        //如果没有列表头，还是以分组表展示——后台传这样的数据
-                        if (BI.isNotNull(self.model.getData().t)) {
-                            self._prepareData4CrossTable();
-                        } else {
-                            self._prepareData4GroupTable();
-                        }
-                        break;
-                    case BICst.WIDGET.COMPLEX_TABLE:
-                        self._populateComplexTable();
-                        break;
-                }
-                if (self.model.getTableForm() !== self.tableForm) {
-                    self._createTable();
-                }
-                self.table.setVPage(1);
-                self._populateTable();
-            } catch (e) {
-                self.errorPane.setErrorInfo("error happens during populate table: " + e);
-                self.errorPane.setVisible(true);
+            // try {
+            //考虑只有行表头情况
+            if (self.model._isColRegionExist()) {
+                self._prepareData();
+            } else {
+                self._prepareGroupTableData()
             }
+            if (self.model.getTableForm() !== self.tableForm) {
+                self._createTable();
+            }
+            self.table.setVPage(1);
+            self._populateTable();
+            // } catch (e) {
+            //     self.errorPane.setErrorInfo("error happens during populate table: " + e);
+            //     self.errorPane.setVisible(true);
+            // }
         }, this.model.getExtraInfo());
     },
 
@@ -570,6 +516,7 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
             this.table.empty();
         }
     }
-    
+
 });
+BI.ComplexTable.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.complex_table", BI.ComplexTable);

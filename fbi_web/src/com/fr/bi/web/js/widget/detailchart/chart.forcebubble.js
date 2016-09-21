@@ -7,7 +7,7 @@ BI.ForceBubbleChart = BI.inherit(BI.AbstractChart, {
 
     _defaultConfig: function () {
         return BI.extend(BI.ForceBubbleChart.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-force-chart"
+            baseCls: "bi-force-bubble-chart"
         })
     },
 

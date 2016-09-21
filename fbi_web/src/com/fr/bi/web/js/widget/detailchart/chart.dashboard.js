@@ -35,7 +35,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
     _formatConfig: function (config, items) {
         var self = this, o = this.options;
         formatChartDashboardStyle();
-        config.chartType = "dashboard";
+        config.chartType = "gauge";
         delete config.xAxis;
         delete config.yAxis;
         return [items, config];
@@ -66,9 +66,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                             getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS) + '</div>';
                     }
                 },
-                style: BI.extend(config.plotOptions.valueLabel.style, {
-                    color: '#000000'
-                }),
+                style: config.plotOptions.valueLabel.style,
                 useHtml: true
             };
             switch (self.config.chart_dashboard_type) {

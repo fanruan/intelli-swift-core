@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
+import com.fr.data.dao.DatabaseAction;
 import com.fr.fs.dao.PlatformDataAccessObject;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
@@ -125,6 +126,9 @@ public class BIReportNodeLockDAO extends PlatformDataAccessObject {
 				}
 			}
 		}
+	}
+	public void transfer(BIReportNodeLock var1) throws Exception{
+		this.createSession(DatabaseAction.TRANSFER).transfer(var1);
 	}
 
 }

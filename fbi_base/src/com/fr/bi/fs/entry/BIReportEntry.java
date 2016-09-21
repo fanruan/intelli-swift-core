@@ -30,6 +30,7 @@ public class BIReportEntry extends BaseEntry {
     private static final int COLUMNSIZE_ID = 10;
     private static final int COLUMNSIZE_STRING = 255;
     private static final int COLUMNSIZE_BOOLEAN = 1;
+    private static final int COLUMNSIZE_INTEGER = 5;
 
     private long reportId;
     private long createBy;
@@ -64,11 +65,19 @@ public class BIReportEntry extends BaseEntry {
     public String getMobileCoverId() {
         return mobileCoverId;
     }
-
     @Override
     public void setMobileCoverId(String mobileCoverId) {
         this.mobileCoverId = mobileCoverId;
     }
+
+    public void setSystemReport(boolean systemReport){
+        this.systemReport=systemReport;
+    }
+
+    public boolean isSystemReport(){
+        return systemReport;
+    }
+
 
     public static final ObjectTableMapper TABLE_MAPPER = new ObjectTableMapper(
             BIReportEntry.class, new Table(TABLE_NAME),

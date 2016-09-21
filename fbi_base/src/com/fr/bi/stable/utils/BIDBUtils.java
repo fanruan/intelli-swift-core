@@ -494,7 +494,7 @@ public class BIDBUtils {
         return sql;
     }
 
-    private static String createSqlString(Dialect dialect, ICubeFieldSource[] columns) {
+    public static String createSqlString(Dialect dialect, ICubeFieldSource[] columns) {
         StringBuffer sb = new StringBuffer();
         ArrayList<String> list = new ArrayList<String>();
         for (int i = 0; i < columns.length; i++) {

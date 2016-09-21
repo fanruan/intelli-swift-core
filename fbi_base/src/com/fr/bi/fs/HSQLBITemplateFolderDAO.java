@@ -2,6 +2,7 @@ package com.fr.bi.fs;
 
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
 import com.fr.data.dao.DataAccessObjectSession;
+import com.fr.data.dao.DatabaseAction;
 import com.fr.fs.dao.PlatformDataAccessObject;
 
 import java.util.HashMap;
@@ -80,4 +81,11 @@ public class HSQLBITemplateFolderDAO extends PlatformDataAccessObject implements
     public List<BITemplateFolderNode> findByName(String name) throws Exception{
         return createSession().listByFieldValue(BITemplateFolderNode.class, BITableMapper.BI_CREATED_TEMPLATE_FOLDER.FIELD_FOLDER_NAME, name);
     }
+    public void transfer(BITemplateFolderNode var1) throws Exception{
+        this.createSession(DatabaseAction.TRANSFER).transfer(var1);
+    }
+    public List findAll() throws Exception {
+        return this.createSession().list(BITemplateFolderNode.class);
+    }
+
 }
