@@ -20,7 +20,9 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
                 style: this.constants.FONT_STYLE
             },
             labelStyle: this.constants.FONT_STYLE,
-            formatter: function(){ return this > 0 ? this : (-1) * this },
+            formatter: function () {
+                return this > 0 ? this : (-1) * this
+            },
             gridLineWidth: 0
         }];
         this.yAxis = [{
@@ -87,17 +89,15 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
         //为了给数据标签加个%,还要遍历所有的系列，唉
         if (config.plotOptions.dataLabels.enabled === true) {
             BI.each(items, function (idx, item) {
-                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.num_separators) {
-                    item.dataLabels = {
-                        "style": self.constants.FONT_STYLE,
-                        "align": "outside",
-                        enabled: true,
-                        formatter: {
-                            identifier: "${VALUE}",
-                            valueFormat: config.xAxis[0].formatter
-                        }
-                    };
-                }
+                item.dataLabels = {
+                    "style": self.constants.FONT_STYLE,
+                    "align": "outside",
+                    enabled: true,
+                    formatter: {
+                        identifier: "${VALUE}",
+                        valueFormat: config.xAxis[0].formatter
+                    }
+                };
             });
         }
         config.plotOptions.tooltip.formatter.valueFormat = config.xAxis[0].formatter;

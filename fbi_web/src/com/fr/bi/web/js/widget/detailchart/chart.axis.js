@@ -47,7 +47,7 @@ BI.AxisChart = BI.inherit(BI.AbstractChart, {
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
         config.zoom.zoomTool.enabled = this.config.show_zoom;
-        if(this.config.show_zoom === true){
+        if (this.config.show_zoom === true) {
             delete config.dataSheet;
             delete config.zoom.zoomType;
         }
@@ -101,41 +101,26 @@ BI.AxisChart = BI.inherit(BI.AbstractChart, {
 
         var lineItem = [];
         var otherItem = [];
-        BI.each(items, function(idx, item){
-            if(item.type === "line"){
+        BI.each(items, function (idx, item) {
+            if (item.type === "line") {
                 lineItem.push(item);
-            }else{
+            } else {
                 otherItem.push(item);
             }
         });
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        if(config.plotOptions.dataLabels.enabled === true){
-            BI.each(items, function(idx, item){
-                var isNeedFormatDataLabel = false;
-                switch (config.yAxis[item.yAxis].axisIndex) {
-                    case self.constants.LEFT_AXIS:
-                        if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.num_separators){
-                            isNeedFormatDataLabel = true;
-                        }
-                        break;
-                    case self.constants.RIGHT_AXIS:
-                        if(self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.right_num_separators){
-                            isNeedFormatDataLabel = true;
-                        }
-                        break;
-                }
-                if(isNeedFormatDataLabel === true){
-                    item.dataLabels = {
-                        "style": self.constants.FONT_STYLE,
-                        "align": "outside",
-                        enabled: true,
-                        formatter: {
-                            identifier: "${VALUE}",
-                            valueFormat: config.yAxis[item.yAxis].formatter
-                        }
-                    };
-                }
+        if (config.plotOptions.dataLabels.enabled === true) {
+            BI.each(items, function (idx, item) {
+                item.dataLabels = {
+                    "style": self.constants.FONT_STYLE,
+                    "align": "outside",
+                    enabled: true,
+                    formatter: {
+                        identifier: "${VALUE}",
+                        valueFormat: config.yAxis[item.yAxis].formatter
+                    }
+                };
             });
         }
 
