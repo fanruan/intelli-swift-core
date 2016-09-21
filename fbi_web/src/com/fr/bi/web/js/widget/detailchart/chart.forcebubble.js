@@ -31,7 +31,6 @@ BI.ForceBubbleChart = BI.inherit(BI.AbstractChart, {
         this.formatChartLegend(config, this.config.chart_legend);
 
         config.plotOptions.force = true;
-        config.plotOptions.force = true;
         config.plotOptions.shadow = this.config.bubble_style !== this.constants.NO_PROJECT;
         config.plotOptions.dataLabels.enabled = true;
         config.plotOptions.dataLabels.align = "inside";
