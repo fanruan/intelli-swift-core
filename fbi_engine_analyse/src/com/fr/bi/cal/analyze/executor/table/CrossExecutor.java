@@ -4,6 +4,7 @@ import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
+import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBBoxElement;
@@ -207,7 +208,7 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
         } else {
             for (int k = 0; k < keys.length; k++) {
                 Object v = node.getSummaryValue(keys[k]);
-                CBCell cell = new CBCell(v == null ? NONEVALUE : v);
+                CBCell cell = new CBCell(ExecutorUtils.formatExtremeSumValue(v));
                 cell.setColumn(column + (pos * keys.length) + k + widget.isOrder());
                 cell.setRow(row);
                 cell.setRowSpan(1);

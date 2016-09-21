@@ -8,6 +8,7 @@ import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.SQLStatement;
 import com.fr.bi.stable.dbdealer.*;
+import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.data.core.db.DBUtils;
@@ -134,7 +135,7 @@ public abstract class DBExtractorImpl implements DBExtractor {
             boolean needCharSetConvert = StringUtils.isNotBlank(originalCharSetName)
                     && StringUtils.isNotBlank(newCharSetName);
             Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
-            String sqlString = createSqlString(dialect, columns);
+            String sqlString = BIDBUtils.createSqlString(dialect, columns);
             sql.setSelect(sqlString);
             String query = dealWithSqlCharSet(sql.toString(), connection);
             BILogger.getLogger().info("Start Query sql:" + query);
@@ -161,22 +162,6 @@ public abstract class DBExtractorImpl implements DBExtractor {
         return row;
     }
 
-    private String createSqlString(Dialect dialect, ICubeFieldSource[] columns) {
-        StringBuffer sb = new StringBuffer();
-        ArrayList<String> list = new ArrayList<String>();
-        for (int i = 0; i < columns.length; i++) {
-            if (columns[i].isUsable()) {
-                list.add(dialect.column2SQL(columns[i].getFieldName()));
-            }
-        }
-        for (int i = 0; i < list.size(); i++) {
-            if (i != 0) {
-                sb.append(",");
-            }
-            sb.append(list.get(i));
-        }
-        return sb.toString();
-    }
 
     private String dealWithSqlCharSet(String sql, com.fr.data.impl.Connection database) {
         if (StringUtils.isNotBlank(database.getOriginalCharsetName()) && StringUtils.isNotBlank(database.getNewCharsetName())) {
