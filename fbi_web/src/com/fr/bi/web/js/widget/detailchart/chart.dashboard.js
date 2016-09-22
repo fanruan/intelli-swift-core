@@ -38,6 +38,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
         config.chartType = "gauge";
         delete config.xAxis;
         delete config.yAxis;
+        config.gaugeAxis[0].labelStyle = this.config.chart_font;
         return [items, config];
 
         function formatChartDashboardStyle() {
