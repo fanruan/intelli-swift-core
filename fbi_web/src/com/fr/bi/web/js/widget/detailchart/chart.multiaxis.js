@@ -132,7 +132,18 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         });
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        this.formatDataLabel(config.plotOptions.dataLabels.enabled, items, config);
+        this.formatDataLabel(config.plotOptions.dataLabels.enabled, items, config, this.config.chart_font);
+
+        //全局样式的图表文字
+        if (config.dataSheet) {
+            config.dataSheet.style = this.config.chart_font;
+        }
+        config.xAxis[0].title.style = config.xAxis[0].labelStyle = this.config.chart_font;
+        config.legend.style = this.config.chart_font;
+        config.plotOptions.dataLabels.style = this.config.chart_font;
+        BI.each(config.yAxis, function (idx, axis) {
+            axis.title.style = self.config.chart_font;
+        });
 
         return [BI.concat(otherItem, lineItem), config];
     },
@@ -277,7 +288,8 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
             num_separators: options.num_separators || false,
             right_num_separators: options.right_num_separators || false,
-            right2_num_separators: options.right2_num_separators || false
+            right2_num_separators: options.right2_num_separators || false,
+            chart_font: options.chart_font || c.FONT_STYLE
         };
         this.options.items = items;
 

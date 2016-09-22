@@ -1202,7 +1202,7 @@ BICst.GLOBALPREDICTIONSTYLE = {
         "chartStyle": 1,
        // "chartColor": ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
         "chartColor":BICst.GLOBALDEFAULRCHARTCOLOR,
-        "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#b2b2b2"},
+        "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#1a1a1a"},
         "controlTheme": "#d4dadd"
     },
 

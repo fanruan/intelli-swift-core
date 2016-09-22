@@ -84,7 +84,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         if (config.plotOptions.dataLabels.enabled === true) {
             BI.each(items, function (idx, item) {
                 item.dataLabels = {
-                    "style": self.constants.FONT_STYLE,
+                    "style": self.config.chart_font,
                     "align": "outside",
                     enabled: true,
                     formatter: {
@@ -101,6 +101,12 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
                 item.dataLabels.formatter.YFormat = config.yAxis[0].formatter;
             });
         }
+
+        //全局样式图表文字
+        config.legend.style = this.config.chart_font;
+        config.yAxis[0].title.style = config.yAxis[0].labelStyle = this.config.chart_font;
+        config.xAxis[0].title.style = config.xAxis[0].labelStyle = this.config.chart_font;
+
         return [items, config];
 
         function formatChartStyle() {
@@ -122,7 +128,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.constants.FONT_STYLE,
+                                "style": self.config.chart_font,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -147,7 +153,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.constants.FONT_STYLE,
+                                "style": self.config.chart_font,
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -233,6 +239,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
             tooltip: options.tooltip || [],
             num_separators: options.num_separators || false,
             right_num_separators: options.right_num_separators || false,
+            chart_font: options.chart_font || c.FONT_STYLE
         };
         this.options.items = items;
         var types = [];

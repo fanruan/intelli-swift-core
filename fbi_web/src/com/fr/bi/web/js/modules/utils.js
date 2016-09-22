@@ -479,22 +479,22 @@
                 obj.settings = widget.settings;
                 obj.value = widget.value;
                 //组件表头上指标的排序和过滤
-                if(BI.has(widget, "sort") && BI.isNotNull(widget.sort)){
+                if (BI.has(widget, "sort") && BI.isNotNull(widget.sort)) {
                     obj.sort = BI.extend({}, widget.sort, {
                         sort_target: createDimensionsAndTargets(widget.sort.sort_target).id
                     })
                 }
 
-                if(BI.has(widget, "sort_sequence") && BI.isNotNull(widget.sort_sequence)){
+                if (BI.has(widget, "sort_sequence") && BI.isNotNull(widget.sort_sequence)) {
                     obj.sort_sequence = [];
-                    BI.each(widget.sort_sequence, function(idx, dId){
+                    BI.each(widget.sort_sequence, function (idx, dId) {
                         obj.sort_sequence.push(createDimensionsAndTargets(dId).id);
                     })
                 }
 
-                if(BI.has(widget, "filter_value") && BI.isNotNull(widget.filter_value)){
+                if (BI.has(widget, "filter_value") && BI.isNotNull(widget.filter_value)) {
                     var filterValue = {};
-                    BI.each(widget.filter_value, function(target_id, filter_value){
+                    BI.each(widget.filter_value, function (target_id, filter_value) {
                         var newId = createDimensionsAndTargets(target_id).id;
                         filterValue[newId] = checkFilter(filter_value, target_id, newId);
                     });
@@ -517,10 +517,10 @@
                     BI.extend(filter, oldFilter);
                     //防止死循环
                     if (BI.has(oldFilter, "target_id")) {
-                        if(oldFilter.target_id !== dId){
+                        if (oldFilter.target_id !== dId) {
                             var result = createDimensionsAndTargets(oldFilter.target_id);
                             filter.target_id = result.id;
-                        }else{
+                        } else {
                             filter.target_id = newId;
                         }
                     }
@@ -604,6 +604,14 @@
         getGSWidgetBackground: function () {
             var gs = this.getGlobalStyle();
             return gs.widgetBackground;
+        },
+
+        getGSChartFont: function () {
+            var gs = this.getGlobalStyle();
+            return BI.extend(gs.chartFont, {
+                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                "fontSize": "12px"
+            });
         },
 
         getGSTitleBackground: function () {
@@ -1726,27 +1734,27 @@
             if (BI.isNull(relations[from])) {
                 return [];
             }
-            if(BI.isNull(relations[from][to])){
+            if (BI.isNull(relations[from][to])) {
                 return [];
             }
             return removeCircleInPath();
 
-            function removeCircleInPath(){
+            function removeCircleInPath() {
                 var relationOrder = [];
-                return BI.filter(relations[from][to], function(idx, path){
+                return BI.filter(relations[from][to], function (idx, path) {
                     var orders = [];
-                    var hasCircle = BI.any(path, function(id, relation){
+                    var hasCircle = BI.any(path, function (id, relation) {
                         var prev = BI.Utils.getTableIdByFieldID(BI.Utils.getPrimaryIdFromRelation(relation));
                         var last = BI.Utils.getTableIdByFieldID(BI.Utils.getForeignIdFromRelation(relation));
-                        var result = BI.find(relationOrder, function(i, order){
-                            if(order[0] === last && order[1] === prev){
+                        var result = BI.find(relationOrder, function (i, order) {
+                            if (order[0] === last && order[1] === prev) {
                                 return true;
                             }
                         });
                         orders.push([prev, last]);
                         return BI.isNotNull(result);
                     });
-                    if(hasCircle === false){
+                    if (hasCircle === false) {
                         relationOrder = BI.concat(relationOrder, orders);
                     }
                     return hasCircle === false;
@@ -2755,9 +2763,9 @@
             }
             if (BI.isNotNull(end)) {
                 var endTime = parseComplexDate(end);
-                if(BI.isNotNull(endTime)){
+                if (BI.isNotNull(endTime)) {
                     filterValue.end = new Date(endTime).getOffsetDate(1).getTime() - 1
-                }else{
+                } else {
                     delete filterValue.end;
                 }
             }
@@ -2775,9 +2783,9 @@
                     }
                     if (BI.isNotNull(wValue.end)) {
                         var endTime = parseComplexDate(wValue.end);
-                        if(BI.isNotNull(endTime)){
+                        if (BI.isNotNull(endTime)) {
                             filterValue.end = new Date(endTime).getOffsetDate(1).getTime() - 1;
-                        }else{
+                        } else {
                             delete filterValue.end;
                         }
                     }
@@ -2786,14 +2794,14 @@
                     if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.end)) {
                         var s = parseComplexDate(wValue.start);
                         var e = parseComplexDate(wValue.end);
-                        if(BI.isNotNull(s) && BI.isNotNull(e)){
+                        if (BI.isNotNull(s) && BI.isNotNull(e)) {
                             filterValue.start = new Date(2 * s - e).getOffsetDate(-1).getTime();
-                        }else{
+                        } else {
                             delete filterValue.start
                         }
-                        if(BI.isNotNull(s)){
+                        if (BI.isNotNull(s)) {
                             filterValue.end = new Date(s).getTime() - 1;
-                        }else{
+                        } else {
                             delete filterValue.end;
                         }
                     } else if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.start.year)) {
@@ -2813,7 +2821,7 @@
                     if (BI.isNotNull(date)) {
                         var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
                         filterValue.start = value.start;
-                        if(BI.isNotNull(value.end)){
+                        if (BI.isNotNull(value.end)) {
                             filterValue.end = new Date(value.end).getOffsetDate(1).getTime() - 1;
                         }
                     }
@@ -2824,7 +2832,7 @@
             var date = getDateControlValue(filterValue.wId);
             if (BI.isNotNull(date)) {
                 var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
-                if(BI.isNotNull(value.start)){
+                if (BI.isNotNull(value.start)) {
                     filterValue.end = new Date(value.start).getTime() - 1;
                 }
             }
@@ -2833,7 +2841,7 @@
             var date = getDateControlValue(filterValue.wId);
             if (BI.isNotNull(date)) {
                 var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
-                if(BI.isNotNull(value.start)){
+                if (BI.isNotNull(value.start)) {
                     filterValue.start = new Date(value.start).getTime();
                 }
             }
