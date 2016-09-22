@@ -845,6 +845,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/globalstyle/indexitem/widget.globalstyle.indexalignchooser.css",
                 "com/fr/bi/web/css/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.indexpredictionstyle.css",
                 "com/fr/bi/web/css/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.usercustombutton.css",
+                "com/fr/bi/web/css/modules/globalstyle/indexitem/predictionstyle/pagination/widget.globalstyle.pagination.icon.css",
                 "com/fr/bi/web/css/modules/globalstyle/indexitem/uploadimage/widget.uploadimage.preview.css",
 
                 "com/fr/bi/web/css/modules/globalupdate/widget.globalupdate.setting.css",
@@ -1530,9 +1531,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indexcharttoolbar.js",
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indexalignchooser.js",
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.indexpredictionstyle.js",
-                "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.leftright.canvasbutton.js",
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.usercustombutton.js",
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.stylebutton.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/pagination/widget.globalstyle.pagination.icon.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/pagination/widget.globalstyle.pagination.js",
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/uploadimage/widget.uploadimage.preview.js",
                 "com/fr/bi/web/js/modules/globalstyle/stylemanager/stylesetmanager.js",
 

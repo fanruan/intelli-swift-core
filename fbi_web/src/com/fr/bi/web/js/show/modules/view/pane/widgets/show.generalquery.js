@@ -6,22 +6,22 @@ BIShow.GeneralQueryView = BI.inherit(BI.View, {
         TOOL_ICON_WIDTH: 20,
         TOOL_ICON_HEIGHT: 20
     },
-    
-    _defaultConfig: function(){
+
+    _defaultConfig: function () {
         return BI.extend(BIShow.GeneralQueryView.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-dashboard-widget"
+            baseCls: "bi-dashboard-widget bi-control-widget"
         })
     },
-    
-    _init: function(){
+
+    _init: function () {
         BIShow.GeneralQueryView.superclass._init.apply(this, arguments);
         var self = this;
-        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function(){
+        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function () {
             self._resetValue();
         });
     },
-    
-    _render: function(vessel){
+
+    _render: function (vessel) {
         var self = this;
         this._buildWidgetTitle();
         this._createTools();
@@ -29,7 +29,7 @@ BIShow.GeneralQueryView = BI.inherit(BI.View, {
         this.filter = BI.createWidget({
             type: "bi.general_query_filter"
         });
-        this.filter.on(BI.GeneralQueryFilter.EVENT_CHANGE, function(){
+        this.filter.on(BI.GeneralQueryFilter.EVENT_CHANGE, function () {
             self.model.set("value", this.getValue());
         });
 
@@ -43,19 +43,19 @@ BIShow.GeneralQueryView = BI.inherit(BI.View, {
                 right: 10,
                 bottom: 10
             }, {
-                el: this.title,
-                top: 10,
-                left: 10,
-                right: 110
+                el: this.titleWrapper,
+                top: 0,
+                left: 0,
+                right: 0
             }, {
                 el: this.tools,
                 top: 0,
                 right: 10
             }]
         });
-        this.widget.element.hover(function(){
+        this.widget.element.hover(function () {
             self.tools.setVisible(true);
-        }, function(){
+        }, function () {
             if (!self.widget.element.parent().parent().hasClass("selected")) {
                 self.tools.setVisible(false);
             }
@@ -74,11 +74,22 @@ BIShow.GeneralQueryView = BI.inherit(BI.View, {
                 height: 25,
                 allowBlank: false,
                 errorText: BI.i18nText("BI-Control_Widget_Name_Can_Not_Repeat"),
-                validationChecker: function(v){
+                validationChecker: function (v) {
                     return BI.Utils.checkWidgetNameByID(v, id);
                 }
             });
-            this.title.on(BI.ShelterEditor.EVENT_CHANGE, function(){
+            this.titleWrapper = BI.createWidget({
+                type: "bi.absolute",
+                height: 35,
+                cls: "dashboard-widget-title",
+                items: [{
+                    el: this.title,
+                    left: 10,
+                    top: 10,
+                    right: 10
+                }]
+            });
+            this.title.on(BI.ShelterEditor.EVENT_CHANGE, function () {
                 self.model.set("name", this.getValue());
             });
         } else {
@@ -86,7 +97,7 @@ BIShow.GeneralQueryView = BI.inherit(BI.View, {
         }
     },
 
-    _createTools: function(){
+    _createTools: function () {
         var self = this;
         this.tools = BI.createWidget({
             type: "bi.icon_button",
@@ -95,22 +106,22 @@ BIShow.GeneralQueryView = BI.inherit(BI.View, {
             width: this._constants.TOOL_ICON_WIDTH,
             height: this._constants.TOOL_ICON_HEIGHT
         });
-        this.tools.on(BI.IconButton.EVENT_CHANGE, function(){
+        this.tools.on(BI.IconButton.EVENT_CHANGE, function () {
             self._resetValue();
         });
         this.tools.setVisible(false);
     },
 
-    _resetValue: function(){
+    _resetValue: function () {
         this.model.set("value", []);
         this.refresh();
     },
-    
-    change: function(){
+
+    change: function () {
         BI.Utils.broadcastAllWidgets2Refresh();
     },
-    
-    refresh: function(){
+
+    refresh: function () {
         this._buildWidgetTitle();
         this.filter.populate(this.model.get("value"));
     }

@@ -16,7 +16,6 @@ BI.GlobalStyleStyleButton = BI.inherit(BI.BasicButton, {
     _init: function () {
         BI.GlobalStyleStyleButton.superclass._init.apply(this, arguments);
         var o = this.options;
-        this.value = o.value;
         var canvas = BI.createWidget({
             type: "bi.canvas",
             element: this.element,
@@ -33,14 +32,6 @@ BI.GlobalStyleStyleButton = BI.inherit(BI.BasicButton, {
         canvas.rect(20, 37, 70, 6, o.value.chartColor[1]);
         canvas.rect(20, 47, 50, 6, o.value.chartColor[2]);
         canvas.stroke();
-    },
-
-    getValue: function () {
-        return this.value;
-    },
-
-    setValue: function (v) {
-        this.value = v;
     },
 
     doClick: function () {

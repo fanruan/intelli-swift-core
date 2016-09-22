@@ -451,7 +451,6 @@ BICst.PERCENTAGE = {
 };
 
 
-
 BICst.TABLE_MAX_ROW = 20;
 BICst.TABLE_MAX_COL = 7;
 
@@ -540,12 +539,54 @@ BICst.WIDGET_STATUS = {
     DETAIL: 3
 };
 
-BI.THEME_DETAULT = "bi-theme-default";
-BI.THEME_DARK = "bi-theme-dark";
-BI.THEME_LIGHT = "bi-theme-light";
+BICst.THEME_DEFAULT = "bi-theme-default";
+BICst.THEME_DARK = "bi-theme-dark";
+BICst.THEME_LIGHT = "bi-theme-light";
 
 //全局样式start
 BICst.BACKGROUND_TYPE = {
     COLOR: 1,
     IMAGE: 2
 };
+
+//临时解决方案
+BICst.GLOBAL_DEFAULT_CHART_COLOR = ["#19a0da", "#65bbe6", "#b2daf3", "#338ede", "#5a99e6", "#9bbff2", "#4278e5", "#688eed", "#96adf2", "#4356e6", "#6772f0", "#a0a3fa", "#19a0da", "#65bbe6", "#b2daf3", "#338ede", "#5a99e6", "#9bbff2", "#4278e5", "#688eed", "#96adf2", "#4356e6", "#6772f0", "#a0a3fa", "#19a0da", "#65bbe6", "#b2daf3", "#338ede", "#5a99e6", "#9bbff2", "#4278e5", "#688eed"];
+BICst.GLOBAL_PREDICTION_STYLE = {
+
+    DEFAULT: {
+        "theme": BICst.THEME_DEFAULT,
+        "mainBackground": {"type": 1, "value": ""},
+        "widgetBackground": {"type": 1, "value": ""},
+        "titleBackground": {"type": 1, "value": ""},
+        "titleFont": {},
+        "chartStyle": 1,
+        "chartColor": BICst.GLOBAL_DEFAULT_CHART_COLOR,
+        "chartFont": {},
+        "controlTheme": ""
+    },
+
+    DARK: {
+        "theme": BICst.THEME_DARK,
+        "mainBackground": {"type": 1, "value": "#212338"},
+        "widgetBackground": {"type": 1, "value": "#2b2d4a"},
+        "titleBackground": {"type": 1, "value": "#2b2d3a"},
+        "titleFont": {"font-weight": "bold", "font-style": "normal", "text-align": "left", "color": "#ffffff"},
+        "chartStyle": 1,
+        "chartColor": BICst.GLOBAL_DEFAULT_CHART_COLOR,
+        "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#b2b2b2"},
+        "controlTheme": "#25cdea"
+    },
+
+    LIGHT: {
+        "theme": BICst.THEME_LIGHT,
+        "mainBackground": {"type": 1, "value": "#dae0e0"},
+        "widgetBackground": {"type": 1, "value": "#f7f7f7"},
+        "titleBackground": {"type": 1, "value": "#5e6472"},
+        "titleFont": {"font-weight": "bold", "font-style": "italic", "text-align": "left", "color": "#ffffff"},
+        "chartStyle": 1,
+        "chartColor": BICst.GLOBAL_DEFAULT_CHART_COLOR,
+        "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#5e6472"},
+        "controlTheme": "#af7e7e"
+    }
+};
+//全局样式stop

@@ -13,7 +13,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
     },
     _defaultConfig: function () {
         return BI.extend(BIDezi.DetailTableView.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-dashboard-widget bi-global-style-select"
+            baseCls: "bi-dashboard-widget"
         })
     },
 
@@ -73,10 +73,10 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                 top: 0,
                 right: 10
             }, {
-                el: this.title,
-                left: 10,
-                top: 10,
-                right: 10
+                el: this.titleWrapper,
+                top: 0,
+                left: 0,
+                right: 0
             }, {
                 el: this.table,
                 left: 10,
@@ -120,6 +120,17 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                 validationChecker: function (v) {
                     return BI.Utils.checkWidgetNameByID(v, id);
                 }
+            });
+            this.titleWrapper = BI.createWidget({
+                type: "bi.absolute",
+                height: 35,
+                cls: "dashboard-widget-title",
+                items: [{
+                    el: this.title,
+                    left: 10,
+                    right: 10,
+                    top: 10
+                }]
             });
             this.title.on(BI.ShelterEditor.EVENT_CHANGE, function () {
                 self.model.set("name", this.getValue());
@@ -238,14 +249,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
     },
 
     _refreshGlobalStyle: function (globalStyle) {
-        var titleFont = BI.isNotNull(globalStyle) ?
-            globalStyle.titleFont : BI.Utils.getGSTitleFont();
-        if (BI.isNotNull(titleFont)) {
-            try {
-                this._refreshTitlePosition();
-            } catch (e) {
-            }
-        }
+        this._refreshTitlePosition();
     },
 
     _refreshTableAndFilter: function () {

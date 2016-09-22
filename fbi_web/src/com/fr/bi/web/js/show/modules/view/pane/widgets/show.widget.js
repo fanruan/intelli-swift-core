@@ -72,10 +72,10 @@ BIShow.WidgetView = BI.inherit(BI.View, {
                 top: 0,
                 right: 10
             }, {
-                el: this.title,
-                left: 10,
-                top: 10,
-                right: 50
+                el: this.titleWrapper,
+                left: 0,
+                top: 0,
+                right: 0
             }, {
                 el: this.tableChart,
                 left: 10,
@@ -121,6 +121,17 @@ BIShow.WidgetView = BI.inherit(BI.View, {
                 validationChecker: function (v) {
                     return BI.Utils.checkWidgetNameByID(v, id);
                 }
+            });
+            this.titleWrapper = BI.createWidget({
+                type: "bi.absolute",
+                height: 35,
+                cls: "dashboard-widget-title",
+                items: [{
+                    el: this.title,
+                    left: 10,
+                    top: 10,
+                    right: 10
+                }]
             });
             this.title.on(BI.ShelterEditor.EVENT_CHANGE, function () {
                 self.model.set("name", this.getValue());

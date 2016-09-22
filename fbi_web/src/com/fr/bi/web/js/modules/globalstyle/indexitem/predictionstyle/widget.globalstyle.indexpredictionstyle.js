@@ -3,9 +3,9 @@
  */
 BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
     _const: {
-        WHITE: "#ffffff",
-        GRAY: "#cccccc"
+        pageCount: 6
     },
+
     _defaultConfig: function () {
         return BI.extend(BI.GlobalStyleIndexPredictionStyle.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-global-style-index-prediction-style"
@@ -16,25 +16,33 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
         BI.GlobalStyleIndexPredictionStyle.superclass._init.apply(this, arguments);
 
         var o = this.options, self = this;
+        this.customStyles = [];
 
         this.leftButton = BI.createWidget({
-            type: "bi.global_style_canvas_button",
-            direction: "left",
-            initState: false
+            type: "bi.icon_button",
+            cls: "page-left-font",
+            height: 26,
+            width: 14
         });
-        var leftLayout = BI.createWidget({
-            type: "bi.center_adapt",
-            items: [this.leftButton]
+        this.leftButton.on(BI.IconButton.EVENT_CHANGE, function () {
+            self._onPageChange(self.currentPage - 1);
         });
 
         this.rightButton = BI.createWidget({
-            type: "bi.global_style_canvas_button",
-            direction: "right",
-            initState: true
+            type: "bi.icon_button",
+            cls: "page-right-font",
+            height: 26,
+            width: 14
         });
-        var rightLayout = BI.createWidget({
-            type: "bi.center_adapt",
-            items: [this.rightButton]
+        this.rightButton.on(BI.IconButton.EVENT_CHANGE, function () {
+            self._onPageChange(self.currentPage + 1);
+        });
+
+        this.pagination = BI.createWidget({
+            type: "bi.global_style_pagination"
+        });
+        this.pagination.on(BI.GlobalStylePagination.EVENT_CHANGE, function () {
+            self._onPageChange(this.getValue());
         });
 
         this.centerButtonGroup = BI.createWidget({
@@ -49,242 +57,139 @@ BI.GlobalStyleIndexPredictionStyle = BI.inherit(BI.Widget, {
             }]
         });
         this.centerButtonGroup.on(BI.ButtonGroup.EVENT_CHANGE, function (v) {
-            self.fireEvent(BI.GlobalStyleIndexPredictionStyle.EVENT_CHANGE, this.getValue()[0])
+            self.fireEvent(BI.GlobalStyleIndexPredictionStyle.EVENT_CHANGE)
         });
 
         var centerItems = BI.createWidget({
             type: "bi.htape",
             items: [{
-                el: leftLayout,
+                el: {
+                    type: "bi.center_adapt",
+                    items: [this.leftButton]
+                },
                 width: 29
             }, {
                 el: this.centerButtonGroup
             }, {
-                el: rightLayout,
+                el: {
+                    type: "bi.center_adapt",
+                    items: [this.rightButton]
+                },
                 width: 29
             }]
         });
 
-
-        this.bottomItem = BI.createWidget({
-            type: "bi.button_group",
-            items: [],
-            layouts: [{
-                type: "bi.horizontal_adapt"
-            }],
-            height: 40
-        });
-        this._populate();
         BI.createWidget({
             type: "bi.vtape",
             element: this.element,
             items: [{
                 el: {
-                    type: "bi.label"
+                    type: "bi.layout"
                 },
                 height: 9
             }, {
-                el: centerItems,
-                height: 160
+                el: centerItems
             }, {
-                el: this.bottomItem
+                el: this.pagination,
+                height: 20
             }]
         })
     },
 
-    _createButton: function (value, title) {
-        return BI.createWidget({
-            type: "bi.global_style_style_button",
-            cls: "button-shadow",
-            title: title,
-            value: value
-        })
-    },
-
-    _getCanvasColour: function (isSelected) {
-        if (isSelected) {
-            return this._const.WHITE
-        } else {
-            return this._const.GRAY
-        }
-    },
-
-    _currentPager: function (totalNumber, currentNumber) {
-        var self = this;
-        var canvas = BI.createWidget({
-            type: "bi.canvas",
-            height: 10,
-            width: totalNumber * 15 - 5
-        });
-        BI.each(BI.makeArray(totalNumber), function (i) {
-            canvas.circle(i * 15 + 5, 5, 5, self._getCanvasColour(i == (currentNumber - 1)))
-        });
-        canvas.stroke();
-        return canvas
-    },
-
-    _createAdministratorStyle: function () {
-        return this._createButton(BICst.GLOBALPREDICTIONSTYLE.DEFAULT, BI.i18nText("BI-Administrator_Set_Style"))
-    },
-
-    _createPredictionStyleOne: function () {
-        return this._createButton(BICst.GLOBALPREDICTIONSTYLE.ONE, BI.i18nText("BI-Prediction_Style_One"))
-    },
-
-    _createPredictionStyleTwo: function () {
-        return this._createButton(BICst.GLOBALPREDICTIONSTYLE.TWO, BI.i18nText("BI-Prediction_Style_Two"))
-    },
-
-    // _createPredictionStyleThree: function () {
-    //     return this._createButton(3, BI.i18nText("BI-Prediction_Style_Three"), "")
-    // },
-    //
-    // _createPredictionStyleFour: function () {
-    //     return this._createButton(4, BI.i18nText("BI-Prediction_Style_Four"), "")
-    // },
-
-    _createUserCustomButton: function (name, value) {
+    _createUserCustomStyleButton: function (style) {
         var self = this;
         var button = BI.createWidget({
             type: "bi.global_style_user_custom_button",
             cls: "button-shadow",
-            text: name,
-            value: value
-        });
-        button.on(BI.GlobalStyleUserCustomButton.EVENT_SELECT, function () {
-            self.fireEvent(BI.GlobalStyleIndexPredictionStyle.CUSTOM_SELECT)
+            text: style.name,
+            value: style.style,
+            cannotDelete: style.cannotDelete
         });
         button.on(BI.GlobalStyleUserCustomButton.EVENT_DELETE, function () {
-            self.fireEvent(BI.GlobalStyleIndexPredictionStyle.CUSTOM_DELETE)
+            self.removeStyle(this.getValue());
+            self.fireEvent(BI.GlobalStyleIndexPredictionStyle.EVENT_DELETE);
         });
-        return button
+        return button;
     },
 
-    _setAllButton: function () {
-        if (this.totalPage == this.currentPage == this._const.PAGE_ONE) {
-            this.leftButton.setState(false);
-            this.rightButton.setState(false);
+    canAddMoreStyles: function () {
+        return this.customStyles.length < 5;
+    },
+
+    addStyle: function (style) {
+        if (this.canAddMoreStyles() && !BI.deepContains(this.customStyles, style) && !BI.deepContains(BICst.GLOBAL_PREDICTION_STYLE, style)) {
+            this.customStyles.push(style);
+            this._populate(this.customStyles);
+            return true;
         }
-        if (this.totalPage == this._const.PAGE_TWO) {
-            if (this.currentPage == this._const.PAGE_ONE) {
-                this.leftButton.setState(false);
-                this.rightButton.setState(true);
+        return false;
+    },
+
+    removeStyle: function (style) {
+        if (BI.deepRemove(this.customStyles, style)) {
+            if ((this.customStyles.length + BI.size(BICst.GLOBAL_PREDICTION_STYLE)) % this._const.pageCount === 0) {
+                this.currentPage--;
+                if (this.currentPage < 1) {
+                    this.currentPage = 1;
+                }
             }
-            if (this.currentPage == this._const.PAGE_TWO) {
-                this.leftButton.setState(true);
-                this.rightButton.setState(false);
-            }
+            this._populate(this.customStyles);
         }
-        this.bottomItem.populate([this._currentPager(this.totalPage, this.currentPage)]);
-    },
-
-    _populatePageOne: function () {
-        var self = this;
-        var style = [this._createAdministratorStyle(), this._createPredictionStyleOne(), this._createPredictionStyleTwo()];
-        BI.each(self.allUserCustomStyle, function (i, value) {
-            if (i < 3) {
-                value.currentStyle = i + 5;
-                style.push(self._createUserCustomButton(BI.i18nText("BI-Custom_Style_" + (i + 1)), value))
-            }
-        });
-        this.centerButtonGroup.populate(style);
-    },
-
-    _populatePageTwo: function () {
-        var self = this;
-        var style = [];
-        BI.each(self.allUserCustomStyle, function (i, value) {
-            if (i >= 3) {
-                value.currentStyle = i + 5;
-                style.push(self._createUserCustomButton(BI.i18nText("BI-Custom_Style_" + (i + 1)), value))
-            }
-        });
-        this.centerButtonGroup.populate(style);
-    },
-
-    deleteCustomButton: function (button) {
-        var value = button.getValue();
-        var index = (value.currentStyle - 5);
-        this.allUserCustomStyle.splice(index, 1);
-        if (this.getCustomNumber() <= 3) {
-            this.currentPage = this._const.PAGE_ONE
-        }
-        this._populate();
-    },
-
-    addUserCustomButton: function (value) {
-        value.currentStyle = (this.allUserCustomStyle.length + 5);
-        this.allUserCustomStyle.push(value);
-        if (this.getCustomNumber() > 3) {
-            this.currentPage = this._const.PAGE_TWO;
-        }
-        this._populate();
-        this.centerButtonGroup.setValue(value);
-    },
-
-    getCustomNumber: function () {
-        return this.allUserCustomStyle.length;
     },
 
     getValue: function () {
-        return this.allUserCustomStyle;
+        return this.centerButtonGroup.getValue()[0];
     },
 
     setValue: function (v) {
-        if (BI.isNotNull(v)) {
-            if (BI.isNotNull(v.allUserCustomStyle)) {
-                this.allUserCustomStyle = v.allUserCustomStyle;
-            }
-            if (BI.isNotNull(v.currentStyle)) {
-                if (v.currentStyle.currentStyle >= 8) {// 8 = 3 + 5
-                    this.currentPage = this._const.PAGE_TWO;
-                }
-            }
-            this._populate();
-            if (BI.isNotNull(v) && BI.isNotNull(v.currentStyle)) {
-                this.centerButtonGroup.setValue(v.currentStyle);
-            }
-        } else {
-            this._populate();
-        }
+        this.centerButtonGroup.setValue(v);
     },
 
-    pageChange: function (direction) {
-        if (direction === "left") {
-            this.currentPage--;
-        }
-        if (direction === "right") {
-            this.currentPage++;
-        }
-        this._populate();
+    getStyles: function () {
+        return this.customStyles;
     },
 
-    populate: function (globalStyle) {
-        var globalStyle =BI.Utils.
+    _onPageChange: function (currentPage) {
         this.currentPage = currentPage;
+        this._populate(this.customStyles);
+    },
+
+    populate: function () {
+        this.currentPage = 1;
         this._populate();
     },
 
-    _populate: function () {
-        if (this.allUserCustomStyle.length <= 3) {
-            this.totalPage = this._const.PAGE_ONE;
-            this.currentPage = this._const.PAGE_ONE;
-            this._setAllButton();
-            this._populatePageOne();
+    _populate: function (customStyles) {
+        var self = this;
+        if (customStyles) {
+            this.customStyles = customStyles;
         } else {
-            this.totalPage = this._const.PAGE_TWO;
-            this._setAllButton();
-            if (this.currentPage == this._const.PAGE_ONE) {
-                this._populatePageOne();
-            }
-            if (this.currentPage == this._const.PAGE_TWO) {
-                this._populatePageTwo();
-            }
+            var gs = BI.Utils.getGlobalStyle();
+            this.customStyles = gs.predictionStyle || [];
         }
+        var styles = [];
+        BI.each(BICst.GLOBAL_PREDICTION_STYLE, function (name, style) {
+            styles.push({
+                name: BI.i18nText("BI-Prediction_Style") + (styles.length + 1),
+                style: style,
+                cannotDelete: true
+            });
+        });
+        styles = styles.concat(BI.map(this.customStyles, function (i, style) {
+            return {
+                name: BI.i18nText("BI-Custom_Style") + (i + 1),
+                style: style
+            }
+        }));
+        this.centerButtonGroup.populate(BI.map(styles.slice((this.currentPage - 1) * this._const.pageCount, this.currentPage * this._const.pageCount), function (i, style) {
+            return self._createUserCustomStyleButton(style);
+        }));
+        this.leftButton.setEnable(this.currentPage > 1);
+        this.rightButton.setEnable(styles.length > this.currentPage * this._const.pageCount);
+        this.pagination.populate(this.customStyles);
+        this.pagination.setValue(this.currentPage);
     }
 });
-BI.GlobalStyleIndexPredictionStyle.CUSTOM_SELECT = "BI.GlobalStyleIndexPredictionStyle.CUSTOM_SELECT";
-BI.GlobalStyleIndexPredictionStyle.CUSTOM_DELETE = "BI.GlobalStyleIndexPredictionStyle.CUSTOM_DELETE";
-BI.GlobalStyleIndexPredictionStyle.PAGE_CHANGE = "BI.GlobalStyleIndexPredictionStyle.PAGE_CHANGE";
+BI.GlobalStyleIndexPredictionStyle.EVENT_DELETE = "BI.GlobalStyleIndexPredictionStyle.EVENT_DELETE";
 BI.GlobalStyleIndexPredictionStyle.EVENT_CHANGE = "BI.GlobalStyleIndexPredictionStyle.EVENT_CHANGE";
 $.shortcut("bi.global_style_index_prediction_style", BI.GlobalStyleIndexPredictionStyle);

@@ -3516,3 +3516,23 @@
   content: "\e6cd";
   color: #808080;
 }
+.page-pagination-font .b-font:before {
+  content: "\e6a2";
+  color: #cccccc;
+}
+.page-pagination-font:hover .b-font:before,
+.page-pagination-font:focus .b-font:before,
+.page-pagination-font.hover .b-font:before {
+  content: "\e6a2";
+  color: #cccccc;
+}
+.page-pagination-font:active .b-font:before,
+.page-pagination-font.active .b-font:before {
+  content: "\e6a2";
+  color: #ffffff;
+}
+.page-pagination-font.native .b-font:before,
+.page-pagination-font.disabled .b-font:before {
+  content: "\e6a2";
+  color: #cccccc;
+}
