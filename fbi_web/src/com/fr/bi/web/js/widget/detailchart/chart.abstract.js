@@ -206,6 +206,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             BI.each(items, function (idx, item) {
                 item.dataLabels = {
                     "align": "outside",
+                    "autoAdjust": true,
                     style: style,
                     enabled: true,
                     formatter: {
@@ -223,6 +224,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             BI.each(items, function (idx, item) {
                 item.dataLabels = {
                     "align": "outside",
+                    "autoAdjust": true,
                     style: style,
                     enabled: true,
                     formatter: {

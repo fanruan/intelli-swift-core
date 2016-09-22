@@ -3,20 +3,29 @@
  */
 package com.fr.bi.web.conf.services;
 
+import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.relation.relation.IRelationContainer;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.data.ICubeResourceDiscovery;
+import com.finebi.cube.location.BICubeResourceRetrieval;
+import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
+import com.finebi.cube.structure.BICube;
+import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.exception.BITableRelationConfusionException;
 import com.fr.bi.stable.exception.BITableUnreachableException;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
+import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.web.utils.WebUtils;
 
@@ -51,7 +60,15 @@ public class BIGetMultiPathAction extends AbstractBIConfigureAction {
         JSONObject multiPathJo = getMultiPath(userId);
         JSONObject jo = new JSONObject();
         JSONObject translations = BICubeConfigureCenter.getAliasManager().getTransManager(userId).createJSON();
-        jo.put("cubeEnd", BIConfigureManagerCenter.getLogManager().getConfigVersion(userId).getTime());
+        try {
+            ICubeConfiguration cubeConfiguration = BICubeConfiguration.getConf(Long.toString(userId));
+            ICubeResourceRetrievalService retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
+            BICube cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
+            jo.put("cubeEnd", cube.getCubeVersion());
+        } catch (JSONException e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+//                jo.put("cubeEnd", BIConfigureManagerCenter.getLogManager().getConfigVersion(userId).getTime());
         jo.put("translations", translations);
         jo.put("relations", multiPathJo.optJSONArray("relations"));
         jo.put("disabledRelations", multiPathJo.optJSONArray("disabledRelations"));

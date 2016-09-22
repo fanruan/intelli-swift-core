@@ -73,6 +73,7 @@ BI.CordonItem = BI.inherit(BI.Single,{
                 return BI.isNumeric(v);
             },
             value: o.cordon_value,
+            watermark: "=",
             errorText: BI.i18nText("BI-Numerical_Interval_Input_Data"),
             height: 30,
             width: 230

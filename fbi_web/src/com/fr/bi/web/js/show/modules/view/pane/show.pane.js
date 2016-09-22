@@ -112,7 +112,6 @@ BIShow.PaneView = BI.inherit(BI.View, {
         this.globalStyle = BI.createWidget({
             type: "bi.global_style"
         });
-        this.globalStyle.populate();
         return BI.createWidget({
             type: "bi.absolute",
             cls: "dashboard-toolbar",

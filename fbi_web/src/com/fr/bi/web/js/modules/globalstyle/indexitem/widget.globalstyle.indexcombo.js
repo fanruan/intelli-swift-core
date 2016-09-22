@@ -72,11 +72,10 @@ BI.GlobalStyleIndexBackground = BI.inherit(BI.Widget, {
     },
 
     setValue: function (v) {
-        if (BI.isNotNull(v) && BI.isNotNull(v.type)) {
-            this.combo.setValue(v.type);
-            this.tab.setSelect(v.type);
-            this.tab.setValue(v.value);
-        }
+        v || (v = {});
+        this.combo.setValue(v.type || BICst.BACKGROUND_TYPE.COLOR);
+        this.tab.setSelect(v.type || BICst.BACKGROUND_TYPE.COLOR);
+        this.tab.setValue(v.value);
     }
 });
 BI.GlobalStyleIndexBackground.EVENT_CHANGE = "EVENT_CHANGE";

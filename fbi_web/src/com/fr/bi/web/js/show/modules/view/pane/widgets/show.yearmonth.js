@@ -40,9 +40,10 @@ BIShow.YearMonthWidgetView = BI.inherit(BI.View, {
             type: "bi.absolute",
             element: vessel,
             items: [{
-                el: this.title,
-                top: 10,
-                left: 10
+                el: this.titleWrapper,
+                left: 0,
+                top: 0,
+                right: 0
             }, {
                 el: this.combo,
                 top: 10,
@@ -77,6 +78,17 @@ BIShow.YearMonthWidgetView = BI.inherit(BI.View, {
                 validationChecker: function (v) {
                     return BI.Utils.checkWidgetNameByID(v, id);
                 }
+            });
+            this.titleWrapper = BI.createWidget({
+                type: "bi.absolute",
+                height: 35,
+                cls: "dashboard-widget-title",
+                items: [{
+                    el: this.title,
+                    left: 10,
+                    top: 10,
+                    right: 10
+                }]
             });
             this.title.on(BI.ShelterEditor.EVENT_CHANGE, function () {
                 self.model.set("name", this.getValue());

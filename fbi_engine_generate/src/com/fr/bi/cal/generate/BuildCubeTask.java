@@ -186,6 +186,9 @@ public class BuildCubeTask implements CubeTask {
                 BILogger.getLogger().error(e1.getMessage(), e1);
             }
             return false;
+        }finally {
+            BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
+            CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         }
     }
 
