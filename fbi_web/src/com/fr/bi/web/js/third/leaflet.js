@@ -3167,6 +3167,8 @@
         },
 
         _onResize: function () {
+            this._sizeChanged = true;
+            
             L.Util.cancelAnimFrame(this._resizeRequest);
             this._resizeRequest = L.Util.requestAnimFrame(
                 function () { this.invalidateSize({debounceMoveend: true}); }, this);
@@ -7356,8 +7358,8 @@
     });
 
 
-    L.scatterMarker = function (latlng, options, data, renderer) {
-        return new L.ScatterMarker(latlng, options, data, renderer);
+    L.scatterMarker = function (latlng, options, data, vanchartMap) {
+        return new L.ScatterMarker(latlng, options, data, vanchartMap);
     };
 
     //固定pixel大小的标记点
@@ -7368,11 +7370,11 @@
             radius:'4.5'
         },
 
-        initialize: function (latlng, options, data, renderer) {
+        initialize: function (latlng, options, data, vanchartMap) {
             L.setOptions(this, options);
             this._latlng = L.latLng(latlng);
             this._data = data;
-            this.renderer = renderer;
+            this.vanchartMap = vanchartMap;
         },
 
         // @method getLatLng(): LatLng
@@ -7405,7 +7407,7 @@
             }else{
                 this._container.style.left = p.x + 'px';
                 this._container.style.top = p.y + 'px';
-                this._path.v = this.renderer.path2vml(this._getMarkerPath());
+                this._path.v = this.vanchartMap.path2vml(this._getMarkerPath());
             }
         },
 
@@ -8287,6 +8289,7 @@
 
         _initText:function(layer){
             layer._text = L.SVG.create('text');
+            layer._text.style['pointer-events'] = 'none';
         },
 
         _addText:function(layer){
@@ -9760,7 +9763,7 @@
             if(vanchart && vanchart.components.rangeLegend){
                 var rangeLegend = vanchart.components.rangeLegend;
                 if(rangeLegend.options.visible){
-                    if(VanUtils.containsPoint(rangeLegend.bounds, [first.clientX, first.clientY])){
+                    if(VanUtils.containsPoint(rangeLegend.bounds, [first.layerX || first.clientX, first.layerY || first.clientY])){
                         return;
                     }
                 }
