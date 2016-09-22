@@ -27,6 +27,14 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
             position: "bottom"
         }];
 
+        this.angleAxis = [{
+            type: "category",
+            title: {
+                style: this.constants.FONT_STYLE
+            },
+            labelStyle: this.constants.FONT_STYLE
+        }];
+
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
             formatConfig: BI.bind(this._formatConfig, this),
@@ -56,6 +64,7 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
 
         config.radiusAxis = this.radiusAxis;
+        config.angleAxis = this.angleAxis;
         config.radiusAxis[0].formatter = self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level, this.config.num_separators);
         formatNumberLevelInYaxis(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS, config.radiusAxis[0].formatter);
         config.radiusAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + title : title;
@@ -65,7 +74,12 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
         delete config.xAxis;
         delete config.yAxis;
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        this.formatDataLabelForAxis(config.plotOptions.dataLabels.enabled, items, config.radiusAxis[0].formatter);
+        this.formatDataLabelForAxis(config.plotOptions.dataLabels.enabled, items, config.radiusAxis[0].formatter, this.config.chart_font);
+
+        //全局样式的图表文字
+        config.radiusAxis[0].labelStyle = config.radiusAxis[0].title.style = this.config.chart_font;
+        config.angleAxis[0].labelStyle = config.angleAxis[0].title.style = this.config.chart_font;
+        config.legend.style = this.config.chart_font;
 
         return [items, config];
 
@@ -144,7 +158,8 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
             show_data_label: options.show_data_label || false,
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             cordon: options.cordon || [],
-            num_separators: options.num_separators || false
+            num_separators: options.num_separators || false,
+            chart_font: options.chart_font || c.FONT_STYLE
         };
         this.options.items = items;
         var types = [];

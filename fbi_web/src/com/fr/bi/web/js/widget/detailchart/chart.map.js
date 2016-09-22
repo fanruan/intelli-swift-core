@@ -48,7 +48,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.dataLabels.formatter.valueFormat = function () {
             return BI.contentFormat(arguments[0], formatterArray[0]);
         };
-
+        config.plotOptions.dataLabels.style = this.config.chart_font;
         config.geo = this.config.geo;
         if (this.config.show_background_layer === true && BI.isNotNull(this.config.background_layer_info)) {
             if (this.config.background_layer_info.type === BICst.WMS_SERVER) {
@@ -81,6 +81,8 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                 data: []
             })
         }
+
+
         return [items, config];
 
         function formatRangeLegend() {
@@ -334,7 +336,8 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
             map_styles: options.map_styles || [],
             auto_custom: options.auto_custom || c.AUTO_CUSTOM,
             show_background_layer: options.show_background_layer || false,
-            background_layer_info: options.background_layer_info
+            background_layer_info: options.background_layer_info,
+            chart_font: options.chart_font || c.FONT_STYLE
         };
         this.options.items = items;
 

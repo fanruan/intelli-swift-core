@@ -2114,12 +2114,12 @@ public class ResourceHelper {
 
                 //const
                 "com/fr/bi/web/js/data/data.js",
+                "com/fr/bi/web/js/data/constant/biconst.js",
                 "com/fr/bi/web/js/data/constant/constant.js",
                 "com/fr/bi/web/js/data/constant/strings.js",
                 "com/fr/bi/web/js/data/constant/enums.js",
                 "com/fr/bi/web/js/data/constant/colors.js",
                 "com/fr/bi/web/js/data/constant/attrs.js",
-                "com/fr/bi/web/js/data/constant/biconst.js",
                 "com/fr/bi/web/js/data/pool/pool.js",
                 "com/fr/bi/web/js/data/pool/pool.buffer.js",
                 "com/fr/bi/web/js/data/pool/pool.sharing.js",
