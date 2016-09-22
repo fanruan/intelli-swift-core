@@ -60,7 +60,8 @@ BI.RadarChart = BI.inherit(BI.AbstractChart, {
 
         //全局样式
         config.legend.style = this.config.chart_font;
-        config.plotOptions.dataLabels.style =config.plotOptions.valueLabel.style = config.plotOptions.seriesLabel.style = this.config.chart_font;
+        config.radiusAxis[0].title.style = config.radiusAxis[0].labelStyle = this.config.chart_font;
+
         return [items, config];
 
         function formatChartStyle() {
