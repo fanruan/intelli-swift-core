@@ -94,6 +94,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
                 item.dataLabels = {
                     "style": self.config.chart_font,
                     "align": "outside",
+                    "autoAdjust": true,
                     enabled: true,
                     formatter: {
                         identifier: "${VALUE}",
