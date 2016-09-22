@@ -97,8 +97,8 @@ public class BITableMapper {
                         new CommonFieldColumnMapper(FIELD_REPORT_ID, Types.BIGINT, new ColumnSize(10), false),
                         new CommonFieldColumnMapper(FIELD_CREATE_BY, Types.BIGINT, new ColumnSize(10), false),
                         new CommonFieldColumnMapper(FIELD_SHARE_TO, Types.BIGINT, new ColumnSize(10), false),
-                        new CommonFieldColumnMapper(FIELD_CREATE_BY_NAME, Types.VARCHAR, new ColumnSize(50), false),
-                        new CommonFieldColumnMapper(FIELD_SHARE_TO_NAME, Types.VARCHAR, new ColumnSize(50), false)
+                        new CommonFieldColumnMapper(FIELD_CREATE_BY_NAME, Types.VARCHAR, new ColumnSize(50), true),
+                        new CommonFieldColumnMapper(FIELD_SHARE_TO_NAME, Types.VARCHAR, new ColumnSize(50), true)
                 }
         );
     }
