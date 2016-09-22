@@ -840,12 +840,13 @@ public class ResourceHelper {
                 //全局样式
                 "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.css",
                 "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.setting.css",
-                "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.indexcombo.css",
-                "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.indextitletoolbar.css",
-                "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.indexalignchooser.css",
-                "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.indexpredictionstyle.css",
-                "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.usercustombutton.css",
-                "com/fr/bi/web/css/modules/globalstyle/uploadimage/widget.uploadimage.preview.css",
+                "com/fr/bi/web/css/modules/globalstyle/indexitem/widget.globalstyle.indexcombo.css",
+                "com/fr/bi/web/css/modules/globalstyle/indexitem/widget.globalstyle.indextitletoolbar.css",
+                "com/fr/bi/web/css/modules/globalstyle/indexitem/widget.globalstyle.indexalignchooser.css",
+                "com/fr/bi/web/css/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.indexpredictionstyle.css",
+                "com/fr/bi/web/css/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.usercustombutton.css",
+                "com/fr/bi/web/css/modules/globalstyle/indexitem/predictionstyle/pagination/widget.globalstyle.pagination.icon.css",
+                "com/fr/bi/web/css/modules/globalstyle/indexitem/uploadimage/widget.uploadimage.preview.css",
 
                 "com/fr/bi/web/css/modules/globalupdate/widget.globalupdate.setting.css",
 
@@ -1516,10 +1517,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/fit/fit.widget.js",
                 "com/fr/bi/web/js/modules/fit/fit.js",
 
-                //全局样式
-                "com/fr/bi/web/js/modules/globalstyle/widget.globalstyle.js",
-                "com/fr/bi/web/js/modules/globalstyle/widget.globalstyle.setting.js",
-
                 //联动
                 "com/fr/bi/web/js/modules/linkage/model.linkage.js",
                 "com/fr/bi/web/js/modules/linkage/linkage.target.js",
@@ -1534,9 +1531,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indexcharttoolbar.js",
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indexalignchooser.js",
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.indexpredictionstyle.js",
-                "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.leftright.canvasbutton.js",
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.usercustombutton.js",
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/widget.globalstyle.stylebutton.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/pagination/widget.globalstyle.pagination.icon.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/predictionstyle/pagination/widget.globalstyle.pagination.js",
                 "com/fr/bi/web/js/modules/globalstyle/indexitem/uploadimage/widget.uploadimage.preview.js",
                 "com/fr/bi/web/js/modules/globalstyle/stylemanager/stylesetmanager.js",
 
@@ -2116,12 +2114,12 @@ public class ResourceHelper {
 
                 //const
                 "com/fr/bi/web/js/data/data.js",
+                "com/fr/bi/web/js/data/constant/biconst.js",
                 "com/fr/bi/web/js/data/constant/constant.js",
                 "com/fr/bi/web/js/data/constant/strings.js",
                 "com/fr/bi/web/js/data/constant/enums.js",
                 "com/fr/bi/web/js/data/constant/colors.js",
                 "com/fr/bi/web/js/data/constant/attrs.js",
-                "com/fr/bi/web/js/data/constant/biconst.js",
                 "com/fr/bi/web/js/data/pool/pool.js",
                 "com/fr/bi/web/js/data/pool/pool.buffer.js",
                 "com/fr/bi/web/js/data/pool/pool.sharing.js",

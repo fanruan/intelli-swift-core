@@ -48,9 +48,10 @@ BIDezi.NumberWidgetView = BI.inherit(BI.View, {
                 top: 0,
                 right: 10
             }, {
-                el: this.title,
-                top: 10,
-                left: 10
+                el: this.titleWrapper,
+                top: 0,
+                left: 0,
+                right: 0
             }, {
                 el: this.combo,
                 top: 10,
@@ -86,6 +87,17 @@ BIDezi.NumberWidgetView = BI.inherit(BI.View, {
                 validationChecker: function (v) {
                     return BI.Utils.checkWidgetNameByID(v, id);
                 }
+            });
+            this.titleWrapper = BI.createWidget({
+                type: "bi.absolute",
+                height: 35,
+                cls: "dashboard-widget-title",
+                items: [{
+                    el: this.title,
+                    left: 10,
+                    top: 10,
+                    right: 10
+                }]
             });
             this.title.on(BI.ShelterEditor.EVENT_CHANGE, function () {
                 self.model.set("name", this.getValue());
@@ -142,12 +154,9 @@ BIDezi.NumberWidgetView = BI.inherit(BI.View, {
         });
         this.tools.setVisible(false);
     },
-    _refreshGlobalStyle: function (globalStyle) {
-        var titleFont = BI.isNotNull(globalStyle) ?
-            globalStyle.titleFont : BI.Utils.getGSTitleFont();
-        if (BI.isNotNull(titleFont)) {
-            this._refreshTitlePosition();
-        }
+
+    _refreshGlobalStyle: function () {
+        this._refreshTitlePosition();
     },
 
     _refreshTitlePosition: function () {
@@ -171,21 +180,21 @@ BIDezi.NumberWidgetView = BI.inherit(BI.View, {
             this.widget.attr("items")[2].top = 10;
             if (width < minComboWidth + minNameWidth + 48) {
                 this.combo.setVisible(false);
-                this.widget.attr("items")[1].right = 10;
+                this.widget.attr("items")[1].right = 0;
             } else if (width < nameWidth + minComboWidth + 48) {
                 this.combo.setVisible(true);
-                this.widget.attr("items")[1].right = minComboWidth + 25;
+                this.widget.attr("items")[1].right = minComboWidth + 15;
                 this.widget.attr("items")[2].left = width - 15 - minComboWidth;
             } else {
                 this.combo.setVisible(true);
-                this.widget.attr("items")[1].right = width - 33 - nameWidth;
+                this.widget.attr("items")[1].right = width - 43 - nameWidth;
                 this.widget.attr("items")[2].left = 33 + nameWidth;
             }
         } else {
             // this.widget.attr("items")[0].left = "";
             // this.widget.attr("items")[0].right = 10;
             this.combo.setVisible(true);
-            this.widget.attr("items")[1].right = 10;
+            this.widget.attr("items")[1].right = 0;
             this.widget.attr("items")[2].top = 35;
             this.widget.attr("items")[2].left = 10;
         }
