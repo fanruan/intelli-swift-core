@@ -565,9 +565,6 @@ public class BIDBUtils {
 
 
     public static void dealWithJDBCConnection(JDBCDatabaseConnection jdbcDatabaseConnection) {
-        if (jdbcDatabaseConnection == null) {
-            return;
-        }
         DBCPConnectionPoolAttr attr = jdbcDatabaseConnection.getDbcpAttr();
         if (attr == null) {
             attr = new DBCPConnectionPoolAttr();
