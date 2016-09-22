@@ -1186,44 +1186,6 @@ BICst.BUBBLE_CHART_STYLE_GROUP = [{
     value: BICst.CHART_SHAPE.PROJECTOR
 }];
 
-//临时解决方案
-BICst.GLOBAL_DEFAULT_CHART_COLOR=["#19a0da","#65bbe6","#b2daf3","#338ede","#5a99e6","#9bbff2","#4278e5","#688eed","#96adf2","#4356e6","#6772f0","#a0a3fa","#19a0da","#65bbe6","#b2daf3","#338ede","#5a99e6","#9bbff2","#4278e5","#688eed","#96adf2","#4356e6","#6772f0","#a0a3fa","#19a0da","#65bbe6","#b2daf3","#338ede","#5a99e6","#9bbff2","#4278e5","#688eed"];
-BICst.GLOBALPREDICTIONSTYLE = {
-
-    DEFAULT: {
-        "mainBackground": {"type": 1, "value": "#f3f3f3"},
-        "widgetBackground": {"type": 1, "value": "#ffffff"},
-        "titleBackground": {"type": 1, "value": "#ffffff"},
-        "titleFont": {"font-weight": "normal", "font-style": "normal", "text-align": "left", "color": "#000000"},
-        "chartStyle": 1,
-        "chartColor":BICst.GLOBAL_DEFAULT_CHART_COLOR,
-        "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#b2b2b2"},
-        "controlTheme": "#d4dadd"
-    },
-
-    ONE: {
-        "mainBackground": {"type": 1, "value": "#212338"},
-        "widgetBackground": {"type": 1, "value": "#2b2d4a"},
-        "titleBackground": {"type": 1, "value": "#2b2d3a"},
-        "titleFont": {"font-weight": "bold", "font-style": "normal", "text-align": "left", "color": "#ffffff"},
-        "chartStyle": 1,
-        "chartColor":BICst.GLOBAL_DEFAULT_CHART_COLOR,
-        "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#b2b2b2"},
-        "controlTheme": "#25cdea"
-    },
-
-    TWO: {
-        "mainBackground": {"type": 1, "value": "#dae0e0"},
-        "widgetBackground": {"type": 1, "value": "#f7f7f7"},
-        "titleBackground": {"type": 1, "value": "#5e6472"},
-        "titleFont": {"font-weight": "bold", "font-style": "italic", "text-align": "left", "color": "#ffffff"},
-        "chartStyle": 1,
-        "chartColor":BICst.GLOBAL_DEFAULT_CHART_COLOR,
-        "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#5e6472"},
-        "controlTheme": "#af7e7e"
-    }
-};
-//全局样式stop
 //表设置所有默认属性（应该是包含分组表、交叉表、复杂表和其他所有图表）
 BICst.DEFAULT_CHART_SETTING = {
     table_form: BICst.TABLE_FORM.OPEN_ROW,

@@ -617,15 +617,16 @@
         },
 
         getGSNamePos: function () {
-            var gs = this.getGlobalStyle();
-            if (BI.isNotNull(gs.titleFont)) {
-                if (gs["titleFont"]["text-align"] === "left") {
+            var titleFont = this.getGSTitleFont();
+            if (BI.isNotNull(titleFont)) {
+                if (titleFont["text-align"] === "left") {
                     return BICst.DASHBOARD_WIDGET_NAME_POS_LEFT
                 }
-                if (gs["titleFont"]["text-align"] === "center") {
+                if (titleFont["text-align"] === "center") {
                     return BICst.DASHBOARD_WIDGET_NAME_POS_CENTER
                 }
             }
+            return BICst.DASHBOARD_WIDGET_NAME_POS_LEFT
         },
 
         //global style ---- end ----
