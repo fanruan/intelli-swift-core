@@ -10388,8 +10388,8 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
             }
         },
 
-        showTooltip:function(point, event){
-            this.components[ComponentLibrary.TOOLTIP_COMPONENT].showWithPoint(point, event)
+        showTooltip:function(point, event, fmtPoint){
+            this.components[ComponentLibrary.TOOLTIP_COMPONENT].showWithPoint(point, event, fmtPoint)
         },
 
         hideTooltip:function(){
@@ -10438,18 +10438,24 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
 
         remove:function(){
             this.clearTimeQueue();
+
             this.renderer.remove();
-            this.renderer = this.plotClip
-                = this.chartBackgroundGroup
-                = this.trendLineGroup
-                = this.seriesGroup
-                = this.clipSeriesGroup
-                = this.seriesTextGroup = null;
+            this._leaflet && this._leaflet.remove();
             this.handler.destroy();
+
+            this.renderer = this.plotClip = this._leaflet = this.handler
+                = this.chartBackgroundGroup = this.trendLineGroup = this.seriesGroup
+                = this.clipSeriesGroup = this.seriesTextRenderGroup = this.seriesTextDivGroup =null;
         },
 
         resize:function(){
+
             var dom = this.dom;
+            if(this._leaflet){
+                this._leaflet._onResize();
+                dom = this._leaflet.getContainer();
+            }
+
             this.width = this._getDomWidth(dom);
             this.height = this._getDomHeight(dom);
 
@@ -12490,10 +12496,10 @@ define('chart/Point',['require','../utils/QueryUtils','../utils/BaseUtils','../u
                         if (!prev) {
                             return curr;
                         }
-                        return (prev.getTargetValue() > curr.getTargetValue()) ? prev : curr;
+                        return (curr.getTargetValue() > prev.getTargetValue()) ? curr : prev;
                     }, 0);
                 vanchart.getSharedAxis().drawHighlightBackground(valid);
-                series.vanchart.showTooltip(max, ev);
+                series.vanchart.showTooltip(max, ev, valid[0]);
                 vanchart.hoverPoints = valid;
             } else {
                 series.onPointMouseOver.call(point, ev);
@@ -17970,7 +17976,11 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./TreeSe
                     chSum += Math.abs(c[i].chSum);
                 }
 
-                var orderType = this.orderType;
+                var orderType = this.orderType === true ?
+                    1 :
+                    this.orderType === false ?
+                    -1 :
+                    null;
                 c.sort(function(a, b){
                     if (!a.value) {
                         return -1;
@@ -18192,8 +18202,8 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./TreeSe
 
                 if (children && (n = children.length)) {
                     var i = -1, n, c, d, hd;
-                    dx = node.value ? dx / node.value : 0;
-                    hdx = node.chSum ? hdx / node.chSum : 0;
+                    dx = node.value ? dx / Math.abs(node.value) : 0;
+                    hdx = node.chSum ? hdx / Math.abs(node.chSum) : 0;
                     while (++i < n) {
                         c = children[i];
                         d = Math.abs(c.value) * dx;
@@ -21715,13 +21725,31 @@ define('chart/Radar',['require','./Series','../utils/BaseUtils','../Constants','
                 this.remove();
             }
 
-            this.stack = this.columnType ? 'radar-column' : this.stack;
+            this.stack = this.columnType ? 'radar-column'+this.stack : this.stack;
 
             BaseUtils.extend(this, columnType ? ColumnRadar : LineRadar);
         },
 
         _getAxisTypes:function(){
             return ['angleAxis', 'radiusAxis', 'polar'];
+        },
+
+        _bindAxis:function(){
+            var series = this,
+                seriesOptions = series.options,
+                vanchart = series.vanchart;
+
+            series._getAxisTypes().forEach(function(axisType){
+
+                if(vanchart[axisType]){
+                    var targetAxis = vanchart[axisType](seriesOptions['polar']);
+                    if(targetAxis){
+                        targetAxis.series.push(series);
+                        series[axisType] = targetAxis;
+                    }
+                }
+
+            });
         },
 
         _getDefaultFillColorOpacity: function () {
@@ -22695,10 +22723,11 @@ define('component/Tooltip',['require','./Base','../utils/BaseUtils','../Constant
             }
         },
 
-        showWithPoint:function(point, event){
+        showWithPoint:function(point, event, formatPoint){
             if(point && point.tooltip){
-                var opt = point.tooltip, seriesChart = point.series;
-                var tooltipText = point.series.calculateTooltipContent(point);
+                var opt = point.tooltip, seriesChart = point.series,
+                    fmtPoint = formatPoint || point;
+                var tooltipText = fmtPoint.series.calculateTooltipContent(fmtPoint);
                 var tooltipDim  = this.calculateTooltipDivDim(opt, tooltipText);
                 //优先从地图那边取数据点提示的位置
                 var pos = seriesChart.getTooltipPos(point, tooltipDim, event);
@@ -28612,20 +28641,17 @@ define('component/AngleAxis',['require','./Base','./CategoryAxis','../utils/Base
         },
 
         _calculateTickData:function(){
-            var radius = this.polar.radius;
+            var radius = this.polar.radius, bounds;
+            if (this.isBreakLabels) {
+                bounds = this._getTestBoundsAndRadius().testBounds;
+            }
             this.tickData.map(function (t) {
-                this._getCateLabelBounds(radius, t);
+                this._getCateLabelBounds(radius, t, bounds);
             }, this);
             this._updateMainAndMinorTickData();
         },
 
-        _updatePolarBounds: function () {
-
-            if (this.polar.radius) {
-                return;
-            }
-
-            // no radius setting, auto adjust
+        _getTestBoundsAndRadius: function () {
             var plotBounds = this.vanchart.getPlotBounds();
             var center = this.polar.center;
 
@@ -28649,6 +28675,23 @@ define('component/AngleAxis',['require','./Base','./CategoryAxis','../utils/Base
                 width: plotBounds.width,
                 height: plotBounds.height
             };
+
+            return {
+                testBounds: testBounds,
+                radius: radius
+            }
+        },
+
+        _updatePolarBounds: function () {
+
+            if (this.polar.radius) {
+                return;
+            }
+
+            // no radius setting, auto adjust
+            var tmp = this._getTestBoundsAndRadius();
+            var radius = tmp.radius;
+            var testBounds = tmp.testBounds;
 
             if (this.options.showLabel) {
                 if (!this._testRadius(radius, testBounds)) {
@@ -28743,7 +28786,7 @@ define('component/AngleAxis',['require','./Base','./CategoryAxis','../utils/Base
             }
         },
 
-        _getCateLabelBounds:function(radius, cateTick){
+        _getCateLabelBounds:function(radius, cateTick, testBounds){
 
             var category = cateTick.tickValue;
             var dim = cateTick.tickRectDim;
@@ -28751,6 +28794,7 @@ define('component/AngleAxis',['require','./Base','./CategoryAxis','../utils/Base
             var index = domain.indexOf(category);
             var arcPoint = BaseUtils.getArcPoint(radius + PADDING_GAP, index * this.piece);
             var pos;
+            var cfg = this.options;
 
             var position = this._getPolarPosition(category);
 
@@ -28772,6 +28816,21 @@ define('component/AngleAxis',['require','./Base','./CategoryAxis','../utils/Base
                         y:arcPoint[1] - dim.height/2
                     };
 
+                    if (testBounds && this.isBreakLabels && (pos.x + dim.width) > (testBounds.x + testBounds.width)) {
+                        var width = testBounds.x + testBounds.width - arcPoint[0];
+                        var style = BaseUtils.extend({
+                            width:width+'px',
+                            'word-break': 'break-all',
+                            'white-space': 'normal'
+                        }, cfg.labelStyle);
+                        dim = BaseUtils.getTextWrapDimension(cateTick.tickContent, style);
+                        pos = {
+                            style:style,
+                            x:arcPoint[0],
+                            y:arcPoint[1] - dim.height/2
+                        };
+                    }
+
                     break;
 
                 case BOTTOM:
@@ -28789,6 +28848,22 @@ define('component/AngleAxis',['require','./Base','./CategoryAxis','../utils/Base
                         x:arcPoint[0] - dim.width,
                         y:arcPoint[1] - dim.height/2
                     };
+
+                    if (testBounds && this.isBreakLabels && pos.x < testBounds.x) {
+                        var width = arcPoint[0] - testBounds.x;
+                        var style = BaseUtils.extend({
+                            width:width+'px',
+                            'word-break': 'break-all',
+                            'white-space': 'normal',
+                            'text-align': 'right'
+                        }, cfg.labelStyle);
+                        dim = BaseUtils.getTextWrapDimension(cateTick.tickContent, style);
+                        pos = {
+                            style:style,
+                            x:arcPoint[0] - dim.width,
+                            y:arcPoint[1] - dim.height/2
+                        };
+                    }
 
                     break;
             }
@@ -28824,7 +28899,8 @@ define('component/AngleAxis',['require','./Base','./CategoryAxis','../utils/Base
                 - testBounds.x
             ];
 
-            var minRadius = Math.min.apply(null, tmpBounds);
+            var minBounds = Math.min.apply(null, tmpBounds);
+            var minRadius = minBounds;
 
             var domain = this.scale.domain();
             var self = this;
@@ -28858,6 +28934,14 @@ define('component/AngleAxis',['require','./Base','./CategoryAxis','../utils/Base
                     minRadius = Math.min(minRadius, radius);
                 }
             });
+
+            if (minRadius < minBounds * 2 / 3) {
+                minRadius =  minBounds * 2 / 3;
+                // this.breakLabels(this.tickData);
+                if (!this.options.labelRotation && !this.options.useHtml) {
+                    this.isBreakLabels = true; // break labels in render
+                }
+            }
 
             return minRadius - PADDING_GAP;
         },
@@ -28969,9 +29053,10 @@ define('component/AngleAxis',['require','./Base','./CategoryAxis','../utils/Base
             var R = this.vanchart.renderer;
             var angleAxis = this;
             var cfg = angleAxis.options;
+            var isBreakLabels = this.isBreakLabels;
 
             var labelStyle = cfg.labelStyle;
-            var useHtml = cfg.useHtml;
+            var useHtml = cfg.useHtml || isBreakLabels;
 
             var ticks = angleAxis.tickData;
 
@@ -29007,8 +29092,9 @@ define('component/AngleAxis',['require','./Base','./CategoryAxis','../utils/Base
                             dy: '0.85em'
                         };
 
+                        var style = d.tickPos.style || labelStyle;
                         ele.textContent(d.tickContent)
-                            .style(labelStyle)
+                            .style(style)
                             .attr(attr);
 
                         ele.vRotate(d.labelRotation);

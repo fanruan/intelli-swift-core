@@ -54,7 +54,7 @@ BI.StyleSetManager = BI.inherit(FR.OB, {
         var titleBackground = this._getBackgroundValue(globalStyle, "titleBackground");
         var titleFont = globalStyle.titleFont;
 
-        var color = globalStyle.controlTheme;
+        var color = globalStyle.controlTheme || "#ffffff";
         var border = " 1px solid " + color;
         var rgb = BI.DOM.hex2rgb(color);
         var json = BI.DOM.rgb2json(rgb);
