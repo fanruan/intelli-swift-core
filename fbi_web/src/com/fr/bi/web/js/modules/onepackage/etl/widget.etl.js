@@ -241,11 +241,29 @@ BI.ETL = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Shift_Out_Package"),
             cls: "etl-remove-table",
             handler: function () {
-                //TODO 判断该表是否被使用
-                BI.Msg.confirm(BI.i18nText("BI-Is_Delete_Table"), BI.i18nText("BI-Is_Delete_Table"), function (flag) {
-                    if (flag === true) {
-                        self.fireEvent(BI.ETL.EVENT_REMOVE);
+                var mask = BI.createWidget({
+                    type: "bi.loading_mask",
+                    masker: BICst.BODY_ELEMENT,
+                    text: BI.i18nText("BI-Loading")
+                });
+                BI.Utils.checkTableInUse({
+                    id: self.model.getId()
+                }, function (res) {
+                    if (BI.isNotNull(res) && res.is_use === true) {
+                        BI.Msg.confirm(BI.i18nText("BI-Is_Delete_Table"), BI.i18nText("BI-Table_In_Use_Tip"), function (flag) {
+                            if (flag === true) {
+                                self.fireEvent(BI.ETL.EVENT_REMOVE);
+                            }
+                        });
+                    } else {
+                        BI.Msg.confirm(BI.i18nText("BI-Is_Delete_Table"), BI.i18nText("BI-Is_Delete_Table"), function (flag) {
+                            if (flag === true) {
+                                self.fireEvent(BI.ETL.EVENT_REMOVE);
+                            }
+                        });
                     }
+                }, function() {
+                    mask.destroy();
                 });
             }
         });

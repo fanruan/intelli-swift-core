@@ -2,51 +2,19 @@ package com.fr.bi.cal.stable.utils;
 
 import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
-import com.fr.base.BaseUtils;
-import com.fr.base.BaseXMLUtils;
-import com.fr.bi.fs.BIDesignSetting;
-import com.fr.bi.fs.BIFileRepository;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.BIFieldID;
+import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
-import com.fr.stable.CodeUtils;
 
-import java.io.File;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 public class BIReportUtils {
-
-    public static JSONObject getBIReportNodeJSON(BIReportNode node) throws Exception {
-        String nodePath = CodeUtils.decodeText(node.getPath());
-        /**
-         * 兼容以前的绝对路径
-         */
-        String dirString = BIFileRepository.getInstance().getBIDirName(node.getUserId());
-        //屏蔽系统文件路径问题
-        int nodeLength = nodePath.lastIndexOf("\\" + dirString + "\\");
-        nodeLength = nodeLength == -1 ? nodePath.lastIndexOf("/" + dirString + "/") : nodeLength;
-        if (nodeLength > -1) {
-            // +2 左右两个路径分隔符
-            nodePath = nodePath.substring(nodeLength + dirString.length() + 2);
-        }
-        if (nodePath.startsWith("\\") || nodePath.startsWith("/")) {
-            nodePath = nodePath.substring(1);
-        }
-        File parent = BIFileRepository.getInstance().getBIDirFile(node.getUserId());
-        File file = new File(parent, nodePath);
-        if (!file.exists()) {
-            throw new RuntimeException("can't find file:" + node.getPath() + "! might be delete or move!");
-        }
-        BIDesignSetting setting = (BIDesignSetting) BaseXMLUtils.readXMLFile(
-                BaseUtils.readResource(file.getAbsolutePath()),
-                new BIDesignSetting());
-        return setting.getReportSetting();
-    }
 
     /**
      * daniel
@@ -69,7 +37,7 @@ public class BIReportUtils {
     }
 
     public static Set<BusinessField> getUsedFieldByReportNode(BIReportNode node, long userId) throws Exception {
-        JSONObject reportSetting = getBIReportNodeJSON(node);
+        JSONObject reportSetting = BIReadReportUtils.getBIReportNodeJSON(node);
         JSONObject widgets = reportSetting.getJSONObject("widgets");
         Set<BusinessField> fields = new HashSet<BusinessField>();
         Iterator it = widgets.keys();

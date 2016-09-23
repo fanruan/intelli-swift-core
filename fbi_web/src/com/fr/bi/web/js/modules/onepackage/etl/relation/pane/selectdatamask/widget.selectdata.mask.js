@@ -4,13 +4,13 @@
  * 带有蒙版的选择字段（设置表关联）
  */
 BI.SelectDataWithMask = BI.inherit(BI.Widget, {
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.SelectDataWithMask.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-select-data-with-mask"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.SelectDataWithMask.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.model = o.model;
@@ -22,11 +22,11 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
             masker: this.element,
             text: BI.i18nText("BI-Loading")
         });
-        BI.Utils.getAllPackages(function(packs){
+        BI.Utils.getAllPackages(function (packs) {
             self.packs = packs;
             //选中当前业务包
             self.selectDataPane.setPackage(BI.Utils.getCurrentPackageId4Conf());
-        }, function() {
+        }, function () {
             mask.destroy();
         });
 
@@ -35,7 +35,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
             showRelativeTables: false,
             showExcelView: false,
             showDateGroup: false,
-            packageCreator: function() {
+            packageCreator: function () {
                 return BI.Utils.getAllGroupedPackagesTreeJSON4Conf();
             },
             tablesCreator: function (packageId) {
@@ -45,7 +45,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
                 return self._getFieldsStructureByTableId(tableId);
             }
         });
-        this.selectDataPane.on(BI.PackageSelectDataService.EVENT_CLICK_ITEM, function(){
+        this.selectDataPane.on(BI.PackageSelectDataService.EVENT_CLICK_ITEM, function () {
             self.fireEvent(BI.SelectDataWithMask.EVENT_CHANGE, arguments);
         });
 
@@ -92,7 +92,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
         })
     },
 
-    _createSelectDataBottom: function(){
+    _createSelectDataBottom: function () {
         var self = this;
         var cancelButton = BI.createWidget({
             type: "bi.button",
@@ -101,7 +101,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
             height: 30,
             text: BI.i18nText("BI-Cancel")
         });
-        cancelButton.on(BI.Button.EVENT_CHANGE, function(){
+        cancelButton.on(BI.Button.EVENT_CHANGE, function () {
             self.fireEvent(BI.SelectDataWithMask.EVENT_VALUE_CANCEL);
         });
         return BI.createWidget({
@@ -112,7 +112,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
         })
     },
 
-    _initAllRelationTables: function(){
+    _initAllRelationTables: function () {
         var self = this;
         var relations = this.model.getRelations(), fieldId = this.model.getFieldId();
         //灰化：所有已与当前表建立过关联关系的表灰化
@@ -122,7 +122,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
         BI.each(connectionSet, function (i, pf) {
             var primaryKey = pf.primaryKey, foreignKey = pf.foreignKey;
             //修改的就不用灰化了
-            if(self.fieldId === primaryKey.field_id || self.fieldId === foreignKey.field_id) {
+            if (self.fieldId === primaryKey.field_id || self.fieldId === foreignKey.field_id) {
                 return;
             }
             if (fieldId === primaryKey.field_id) {
@@ -130,6 +130,15 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
             } else if (fieldId === foreignKey.field_id) {
                 self.allRelationFields.push(primaryKey.field_id);
             }
+        });
+    },
+
+    _isTableOpen: function (table) {
+        var self = this;
+        return BI.some(table.fields, function (i, fs) {
+            return BI.some(fs, function (j, field) {
+                return field.id === self.fieldId;
+            });
         });
     },
 
@@ -147,20 +156,20 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
                     text: translations[id],
                     value: id,
                     isParent: true,
-                    open: false,
+                    open: self._isTableOpen(table),
                     title: translations[id]
                 });
             });
         } else {
             var tables = self.packs[pId];
-            BI.each(tables, function(id, table){
+            BI.each(tables, function (id, table) {
                 tablesStructure.push({
                     id: id,
                     type: "bi.select_data_level0_node",
                     text: translations[id],
                     value: id,
                     isParent: true,
-                    open: false,
+                    open: self._isTableOpen(table),
                     title: translations[id]
                 });
             });
@@ -176,7 +185,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
         var fieldType = this.model.getFieldTypeByFieldId(this.model.getFieldId());
         if (BI.isNotNull(tables[tableId])) {
             var fields = [];
-            BI.each(tables[tableId].fields[0], function(i, field){
+            BI.each(tables[tableId].fields[0], function (i, field) {
                 fieldType === field.field_type && fields.push(field);
             });
             BI.each(fields, function (i, field) {
@@ -195,11 +204,11 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
                 })
             });
         } else {
-            BI.some(this.packs, function(pId, pack){
-                return BI.some(pack, function(tId, fields){
-                    if(tableId === tId) {
-                        BI.each(fields, function(i, field){
-                            if(field.field_type === fieldType) {
+            BI.some(this.packs, function (pId, pack) {
+                return BI.some(pack, function (tId, fields) {
+                    if (tableId === tId) {
+                        BI.each(fields, function (i, field) {
+                            if (field.field_type === fieldType) {
                                 fieldStructure.push({
                                     id: field.id,
                                     pId: tableId,
@@ -222,7 +231,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
         return fieldStructure;
     },
 
-    destroy: function(){
+    destroy: function () {
         this.selectDataPane.destroy();
     }
 });
