@@ -45,6 +45,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
         this.predictionStyle.on(BI.GlobalStyleIndexPredictionStyle.EVENT_CHANGE, function () {
             self._setValue(this.getValue());
             self.fireEvent(BI.GlobalStyleSetting.EVENT_CHANGE);
+            self.fireEvent(BI.GlobalStyleSetting.EVENT_CHART);
         });
         this.predictionStyle.on(BI.GlobalStyleIndexPredictionStyle.EVENT_DELETE, function () {
             self.fireEvent(BI.GlobalStyleSetting.EVENT_CHANGE);

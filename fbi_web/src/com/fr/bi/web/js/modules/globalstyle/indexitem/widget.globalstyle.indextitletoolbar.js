@@ -78,7 +78,7 @@ BI.GlobalStyleIndexTitleToolBar = BI.inherit(BI.Widget, {
         this.bold.setSelected(v["font-weight"] === "bold");
         this.italic.setSelected(v["font-style"] === "italic");
         this.alignChooser.setValue(v["text-align"] || "left");
-        this.colorchooser.setValue(v["color"] || "#000000");
+        this.colorchooser.setValue(v["color"] || "");
     }
 });
 BI.GlobalStyleIndexTitleToolBar.EVENT_CHANGE = "EVENT_CHANGE";
