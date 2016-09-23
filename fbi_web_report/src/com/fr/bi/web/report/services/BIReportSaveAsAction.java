@@ -1,11 +1,11 @@
 package com.fr.bi.web.report.services;
 
-import com.fr.bi.cal.stable.utils.BIReportUtils;
 import com.fr.bi.fs.BIDAOUtils;
 import com.fr.bi.fs.BIDesignReport;
 import com.fr.bi.fs.BIDesignSetting;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.bi.web.report.utils.BIFSReportUtils;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
@@ -37,7 +37,7 @@ public class BIReportSaveAsAction extends ActionNoSessionCMD {
         JSONObject jo = new JSONObject();
         BIReportNode node = BIDAOUtils.findByID(Long.parseLong(reportId), Long.parseLong(createBy));
         if (node != null) {
-            JSONObject reportSetting = BIReportUtils.getBIReportNodeJSON(node);
+            JSONObject reportSetting = BIReadReportUtils.getBIReportNodeJSON(node);
             BIDesignReport report = new BIDesignReport(new BIDesignSetting(reportSetting.toString()));
             long newId = BIFSReportUtils.createNewBIReport(report, userId, reportName, reportLocation, realTime == null ? "" : realTime);
             jo.put(BIBaseConstant.REPORT_ID, newId);
