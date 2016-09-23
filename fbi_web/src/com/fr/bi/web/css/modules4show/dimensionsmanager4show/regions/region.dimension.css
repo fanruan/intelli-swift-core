@@ -17,3 +17,9 @@
   -moz-border-radius: 2px;
   border-radius: 2px;
 }
+.bi-dimension-region .dimension-container .virtual-drop-area {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  border: 1px dashed #178cdf;
+}
