@@ -554,6 +554,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                 self._populateTable();
             } catch (e) {
                 self.errorPane.setErrorInfo("error happens during populate table: " + e);
+                console.error(e);
                 self.errorPane.setVisible(true);
             }
         }, this.model.getExtraInfo());

@@ -1,7 +1,7 @@
 /**
  * Created by zcf on 2016/9/8.
  */
-BI.GlobalStyleStyleButton = BI.inherit(BI.BasicButton, {
+BI.GlobalStyleStyleButton = BI.inherit(BI.Single, {
 
     _defaultConfig: function () {
         var conf = BI.GlobalStyleStyleButton.superclass._defaultConfig.apply(this, arguments);
@@ -32,13 +32,6 @@ BI.GlobalStyleStyleButton = BI.inherit(BI.BasicButton, {
         canvas.rect(20, 37, 70, 6, o.value.chartColor[1]);
         canvas.rect(20, 47, 50, 6, o.value.chartColor[2]);
         canvas.stroke();
-    },
-
-    doClick: function () {
-        BI.GlobalStyleStyleButton.superclass.doClick.apply(this, arguments);
-        if (this.isValid()) {
-            this.fireEvent(BI.GlobalStyleStyleButton.EVENT_CHANGE);
-        }
     }
 });
 BI.GlobalStyleStyleButton.EVENT_CHANGE = "BI.GlobalStyleStyleButton.EVENT_CHANGE";

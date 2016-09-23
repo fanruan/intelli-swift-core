@@ -698,7 +698,8 @@ BI.ETL = BI.inherit(BI.Widget, {
                 info: {
                     reopen: true,
                     isGenerated: status.isGenerated,
-                    tableInfo: table
+                    tableInfo: table,
+                    relationfieldNames: self.model.constructFieldNamesWhichHasRelation()
                 }
             });
             BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);
@@ -780,7 +781,8 @@ BI.ETL = BI.inherit(BI.Widget, {
                 info: {
                     reopen: true,
                     isGenerated: status.isGenerated,
-                    tableInfo: table
+                    tableInfo: table,
+                    relationfieldNames: self.model.constructFieldNamesWhichHasRelation()
                 }
             });
             BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);
@@ -1110,7 +1112,8 @@ BI.ETL = BI.inherit(BI.Widget, {
             info: {
                 reopen: false,
                 isGenerated: false,
-                tableInfo: self.model.getTableById(tId)
+                tableInfo: self.model.getTableById(tId),
+                relationFieldNames: self.model.constructFieldNamesWhichHasRelation()
             }
         });
         BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);
@@ -1134,7 +1137,8 @@ BI.ETL = BI.inherit(BI.Widget, {
                 reopen: false,
                 isGenerated: false,
                 tableInfo: self.model.getTableById(tId),
-                relations: self.model.getRelations()
+                relations: self.model.getRelations(),
+                relationFieldNames: self.model.constructFieldNamesWhichHasRelation()
             }
         });
         BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);

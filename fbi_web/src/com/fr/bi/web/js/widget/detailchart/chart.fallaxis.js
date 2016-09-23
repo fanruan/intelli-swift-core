@@ -248,7 +248,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
                     return axis;
                 }),
                 stack: "stackedFall",
-                name: ""
+                name: BI.UUID()
             };
         })];
     },

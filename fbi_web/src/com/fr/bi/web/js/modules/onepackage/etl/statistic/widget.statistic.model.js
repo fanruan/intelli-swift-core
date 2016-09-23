@@ -228,6 +228,7 @@ BI.GroupStatisticModel = BI.inherit(BI.Widget, {
         this.tables = info.tableInfo.tables;
         this.old_tables = BI.extend(info.tableInfo, {id: BI.UUID()});
         this.isGenerated = info.isGenerated;
+        this.relationFieldNames = info.relationFieldNames;
     },
 
     getDimensionNameById: function (id) {
@@ -287,6 +288,10 @@ BI.GroupStatisticModel = BI.inherit(BI.Widget, {
         });
         result = result || {};
         return result.text;
+    },
+
+    getRelationFieldsName: function(){
+        return this.relationFieldNames;
     },
 
     getValuesForCustomGroup: function (id, callback) {
