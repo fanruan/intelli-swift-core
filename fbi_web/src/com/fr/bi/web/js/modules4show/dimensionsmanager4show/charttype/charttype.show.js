@@ -78,7 +78,7 @@ BI.ChartTypeShow = BI.inherit(BI.Widget, {
                 if (item.value === BICst.WIDGET.MAP) {
                     if (item.value === wType) {
                         result.push(BI.extend({
-                            type: "bi.map_type_combo_show",
+                            type: "bi.map_type_combo",
                             width: 40,
                             iconWidth: 24,
                             iconHeight: 24

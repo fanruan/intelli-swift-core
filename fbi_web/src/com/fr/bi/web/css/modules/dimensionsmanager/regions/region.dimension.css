@@ -29,7 +29,7 @@
 }
 .bi-dimension-region .forbidden-mask {
   background: #1a1a1a;
-  opacity: 0.2;
-  filter: alpha(opacity=20);
+  opacity: 0.05;
+  filter: alpha(opacity=5);
   z-index: 1;
 }
