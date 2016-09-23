@@ -394,6 +394,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 selectedTab.populate(data, op, types);
             } catch (e) {
                 self.errorPane.setErrorInfo("error happens during populate chart: " + e);
+                console.error(e);
                 self.errorPane.setVisible(true);
             }
         });
