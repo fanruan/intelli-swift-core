@@ -107,6 +107,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
         });
         this.savePredictionBtn.on(BI.TextButton.EVENT_CHANGE, function () {
             self._savePrediction();
+            self.fireEvent(BI.GlobalStyleSetting.EVENT_CHANGE);
         });
         var saveLabel = BI.createWidget({
             type: "bi.right",
