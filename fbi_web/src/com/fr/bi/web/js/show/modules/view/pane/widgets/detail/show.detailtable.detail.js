@@ -41,7 +41,7 @@ BIShow.DetailTableDetailView = BI.inherit(BI.BarFloatSection, {
         var self = this;
         var dimensionsVessel = {};
         this.dimensionsManager = BI.createWidget({
-            type: "bi.dimensions_manager",
+            type: "bi.dimensions_manager_show",
             wId: this.model.get("id"),
             dimensionCreator: function (dId, regionType, op) {
                 var relationItem = op.relationItem;
@@ -71,7 +71,7 @@ BIShow.DetailTableDetailView = BI.inherit(BI.BarFloatSection, {
             }
         });
 
-        this.dimensionsManager.on(BI.DimensionsManager.EVENT_CHANGE, function () {
+        this.dimensionsManager.on(BI.DimensionsManagerShow.EVENT_CHANGE, function () {
             var values = this.getValue();
             self.model.set(values);
             this.populate();
