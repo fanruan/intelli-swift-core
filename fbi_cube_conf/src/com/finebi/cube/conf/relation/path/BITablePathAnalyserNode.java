@@ -57,6 +57,7 @@ public class BITablePathAnalyserNode extends BISetContainer<BITablePathAnalyserN
         /**
          * 获得全部的直接子节点；
          */
+
         Iterator<BITablePathAnalyserNode> childNodesIt = getContainer().iterator();
         Set<BITableRelationPath> result = new HashSet<BITableRelationPath>();
         registerScannedNode(scannedNodes, this);
@@ -108,10 +109,10 @@ public class BITablePathAnalyserNode extends BISetContainer<BITablePathAnalyserN
     private boolean isScanned(Map<BITablePathAnalyserNode, Integer> scannedNodes, BITablePathAnalyserNode currentNode) {
         if (scannedNodes.containsKey(currentNode)) {
             /*蛋疼自循环，自循环时判断是否经过第二次，其他时候判断是否链到自身*/
-            return scannedNodes.get(currentNode) > 1 || (!ComparatorUtils.equals(currentNode, this) && scannedNodes.get(currentNode) > 0);
+            return scannedNodes.get(currentNode) > 1 || (!ComparatorUtils.equals(currentNode, this) && scannedNodes.get(this) > 0);
         } else {
-            return false;
         }
+        return false;
     }
 
     public void removePathNode(BITablePathAnalyserNode node) throws BIPathNodeAbsentException {
