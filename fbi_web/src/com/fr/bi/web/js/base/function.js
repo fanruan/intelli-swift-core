@@ -174,11 +174,11 @@ $(function () {
 
         isDarkColor: function (hex) {
             if (!hex) {
-                return true;
+                return false;
             }
             var rgb = this.rgb2json(this.hex2rgb(hex));
             var grayLevel = (rgb.r * 0.299 + rgb.g * 0.587 + rgb.b * 0.114);
-            if (grayLevel >= 192) {
+            if (grayLevel < 192) {
                 return true;
             }
             return false;

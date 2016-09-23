@@ -192,7 +192,7 @@ BI.StyleTable = BI.inherit(BI.Widget, {
 
         var isDark = BI.DOM.isDarkColor(color);
 
-        var fontColor = isDark ? this._const.dark : this._const.light;
+        var fontColor = isDark ? this._const.light : this._const.dark;
 
         var $rowHeader = $table.find(".layer-tree-table-title");
         switch (style) {
