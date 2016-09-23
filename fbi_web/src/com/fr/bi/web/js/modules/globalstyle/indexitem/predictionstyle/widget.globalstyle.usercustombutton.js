@@ -1,7 +1,7 @@
 /**
  * Created by zcf on 2016/9/5.
  */
-BI.GlobalStyleUserCustomButton = BI.inherit(BI.BasicButton, {
+BI.GlobalStyleUserCustomButton = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.GlobalStyleUserCustomButton.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-global-style-user-custom-button",

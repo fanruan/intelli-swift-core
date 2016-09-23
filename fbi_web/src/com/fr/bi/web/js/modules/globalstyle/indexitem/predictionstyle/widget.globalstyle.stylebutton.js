@@ -37,7 +37,7 @@ BI.GlobalStyleStyleButton = BI.inherit(BI.BasicButton, {
     doClick: function () {
         BI.GlobalStyleStyleButton.superclass.doClick.apply(this, arguments);
         if (this.isValid()) {
-            this.fireEvent(BI.GlobalStyleStyleButton.EVENT_CHANGE, this);
+            this.fireEvent(BI.GlobalStyleStyleButton.EVENT_CHANGE);
         }
     }
 });
