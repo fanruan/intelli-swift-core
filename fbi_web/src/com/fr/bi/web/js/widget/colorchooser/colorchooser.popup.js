@@ -127,8 +127,8 @@ BI.ColorChooserPopup = BI.inherit(BI.Widget, {
                     cls: "color-chooser-popup-title",
                     items: [{
                         el: this.colorEditor,
-                        left: 5,
-                        right: 5,
+                        left: 0,
+                        right: 0,
                         top: 5
                     }]
                 },

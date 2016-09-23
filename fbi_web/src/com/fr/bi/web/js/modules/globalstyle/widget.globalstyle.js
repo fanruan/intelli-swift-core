@@ -41,11 +41,12 @@ BI.GlobalStyle = BI.inherit(BI.Widget, {
             this.globalStyleSetting.on(BI.GlobalStyleSetting.EVENT_CANCEL, function () {
                 BI.Layers.hide(BICst.GLOBAL_STYLE_LAYER);
                 self.fireEvent(BI.GlobalStyle.EVENT_SET, cacheGS);
+                self.populate();
             });
             this.globalStyleSetting.on(BI.GlobalStyleSetting.EVENT_CHANGE, function () {
                 var gs = self.getValue();
-                self.populate();
                 self.fireEvent(BI.GlobalStyle.EVENT_SET, gs);
+                self.populate();
             });
             this.globalStyleSetting.on(BI.GlobalStyleSetting.EVENT_SAVE, function () {
                 BI.Layers.hide(BICst.GLOBAL_STYLE_LAYER);
