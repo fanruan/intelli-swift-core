@@ -26,6 +26,9 @@ BI.GlobalStyleUserCustomButton = BI.inherit(BI.BasicButton, {
             type: "bi.icon_button",
             cls: "close-red-font"
         });
+        this.deleteButton.on(BI.IconButton.EVENT_CHANGE, function () {
+            self.fireEvent(BI.GlobalStyleUserCustomButton.EVENT_DELETE);
+        });
         this.widget = BI.createWidget({
             type: "bi.absolute",
             element: this.element,
