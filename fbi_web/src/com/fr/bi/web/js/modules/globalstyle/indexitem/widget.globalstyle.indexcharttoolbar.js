@@ -63,7 +63,7 @@ BI.GlobalStyleIndexChartToolBar = BI.inherit(BI.Widget, {
         v || (v = {});
         this.bold.setSelected(v["font-weight"] === "bold");
         this.italic.setSelected(v["font-style"] === "italic");
-        this.colorchooser.setValue(v["color"] || "#000000");
+        this.colorchooser.setValue(v["color"] || "");
     }
 });
 BI.GlobalStyleIndexChartToolBar.EVENT_CHANGE = "EVENT_CHANGE";

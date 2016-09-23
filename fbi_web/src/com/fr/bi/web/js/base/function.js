@@ -173,7 +173,7 @@ $(function () {
         },
 
         rgb2hex: function (rgbColour) {
-            if (rgbColour.substr(0, 3) != "rgb") {
+            if (!rgbColour || rgbColour.substr(0, 3) != "rgb") {
                 return "";
             }
             var rgbValues = rgbColour.match(/\d+(\.\d+)?/g);
@@ -187,6 +187,9 @@ $(function () {
         },
 
         rgb2json: function (rgbColour) {
+            if (!rgbColour) {
+                return {};
+            }
             var rgbValues = rgbColour.match(/\d+(\.\d+)?/g);
             return {
                 r: BI.parseInt(rgbValues[0]),
@@ -206,6 +209,9 @@ $(function () {
         },
 
         json2rgb: function (rgb) {
+            if (!BI.isKey(rgb.r) || !BI.isKey(rgb.g) || !BI.isKey(rgb.b)) {
+                return "";
+            }
             return "rgb(" + rgb.r + "," + rgb.g + "," + rgb.b + ")";
         },
 
@@ -220,6 +226,9 @@ $(function () {
         },
 
         hex2rgb: function (color) {
+            if (!color) {
+                return "";
+            }
             var tempValue = "rgb(", colorArray;
 
             if (color.length === 7) {
