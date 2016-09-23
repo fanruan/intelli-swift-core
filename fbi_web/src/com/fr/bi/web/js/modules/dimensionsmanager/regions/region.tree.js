@@ -116,6 +116,10 @@ BI.TreeRegion = BI.inherit(BI.AbstractRegion, {
         return this.containers[dId];
     },
 
+    _getDragTipContent: function() {
+        return BI.i18nText("BI-Drag_Left_Field");
+    },
+
 
     getValue: function () {
         var result = [];

@@ -57,6 +57,79 @@ BI.DimensionRegion = BI.inherit(BI.AbstractRegion, {
         return this.containers[dId];
     },
 
+    _getDragTipContent: function () {
+        return BI.i18nText("BI-Drag_Left_Field");
+    },
+
+    _fieldDragStart: function (fields) {
+        this.fields = fields;
+        var onlyCounter = !BI.some(fields, function (i, fieldId) {
+            return BI.Utils.getFieldTypeByID(fieldId) !== BICst.COLUMN.COUNTER;
+        });
+        if (onlyCounter) {
+            this._showForbiddenMask();
+        }
+    },
+
+    _fieldDragStop: function () {
+        this.fields = null;
+        this._hideForbiddenMask();
+    },
+
+    _getFieldDropOverHepler: function () {
+        //可以放置的字段 + 不可放置的字段
+        var total = this.fields.length;
+        var counters = 0;
+        BI.each(this.fields, function (i, fieldId) {
+            if (BI.Utils.getFieldTypeByID(fieldId) === BICst.COLUMN.COUNTER) {
+                counters++;
+            }
+        });
+        if (counters > 0 && counters !== total) {
+            return BI.createWidget({
+                type: "bi.left",
+                cls: "helper-warning",
+                items: [{
+                    type: "bi.left",
+                    cls: "drag-helper-active-font",
+                    items: [{
+                        type: "bi.icon",
+                        width: 20,
+                        height: 20
+                    }, {
+                        type: "bi.label",
+                        text: total - counters
+                    }],
+                    lgap: 5
+                }, {
+                    type: "bi.left",
+                    cls: "drag-helper-forbidden-font",
+                    items: [{
+                        type: "bi.icon",
+                        width: 20,
+                        height: 20
+                    }, {
+                        type: "bi.label",
+                        text: counters
+                    }],
+                    lgap: 5
+                }],
+                rgap: 5
+            });
+        } else if (counters === total) {
+            return BI.createWidget({
+                type: "bi.left",
+                cls: "helper-warning drag-helper-forbidden-font",
+                items: [{
+                    type: "bi.icon",
+                    width: 20,
+                    height: 20
+                }],
+                hgap: 5
+            });
+        }
+    },
+
     getValue: function () {
         var result = [];
         var dimensions = $(".dimension-container", this.center.element);

@@ -107,7 +107,12 @@ BI.NewAnalysisFloatBox = BI.inherit(BI.BarPopoverSection, {
     rebuildSouth: function (south) {
         var self = this;
         this.checkBox = BI.createWidget({
-            type: "bi.checkbox"
+            type: "bi.multi_select_item",
+            cls: "real-time-report",
+            value: BI.i18nText("BI-Realtime_Report"),
+            logic: {
+                dynamic: true
+            }
         });
         this.saveButton = BI.createWidget({
             type: "bi.button",
@@ -123,11 +128,7 @@ BI.NewAnalysisFloatBox = BI.inherit(BI.BarPopoverSection, {
             element: south,
             cls: "bi-new-analysis-south",
             items: {
-                left: [this.checkBox, {
-                    type: "bi.label",
-                    cls: "real-time-report",
-                    text: BI.i18nText("BI-Realtime_Report")
-                }],
+                left: [this.checkBox],
                 right: [{
                     type: "bi.button",
                     level: "ignore",

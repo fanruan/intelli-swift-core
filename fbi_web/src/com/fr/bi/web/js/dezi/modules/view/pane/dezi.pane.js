@@ -217,7 +217,6 @@ BIDezi.PaneView = BI.inherit(BI.View, {
         });
         this.globalStyle.on(BI.GlobalStyle.EVENT_SET, function (v) {
             self.model.set("globalStyle", v);
-            this.populate(v);
             BI.Broadcasts.send(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, v);
         });
         this.globalStyle.on(BI.GlobalStyle.EVENT_CHART_CHANGE, function () {
@@ -303,10 +302,9 @@ BIDezi.PaneView = BI.inherit(BI.View, {
     },
 
     refresh: function () {
+        this.globalStyle.populate();
         this._refreshButtons();
         this.dashboard.populate();
         this._refreshWidgets();
-
-        this.globalStyle.populate();
     }
 });

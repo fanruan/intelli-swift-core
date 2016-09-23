@@ -187,6 +187,7 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.ACCUMULATE_RADAR:
                 BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
                 BI.removeAt(item, 1);

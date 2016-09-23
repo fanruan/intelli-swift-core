@@ -102,10 +102,6 @@ BI.DimensionsManagerShow = BI.inherit(BI.Widget, {
         }else{
             this.chartType.setValue(widgetType);
         }
-        if (BI.isNull(this.chartType.getValue())) {
-            this.container.attr("items")[0].height = 0;
-            this.container.resize();
-        }
         this.tab.setSelect(widgetType);
         this.tab.populate(views);
     }

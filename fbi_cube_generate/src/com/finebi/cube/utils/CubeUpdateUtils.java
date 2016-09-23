@@ -12,18 +12,27 @@ import com.finebi.cube.structure.BICube;
 import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.ITableKey;
 import com.fr.bi.common.factory.BIFactoryHelper;
+import com.fr.bi.conf.data.source.DBTableSource;
+import com.fr.bi.conf.data.source.ETLTableSource;
+import com.fr.bi.conf.data.source.SQLTableSource;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BIRelationAbsentException;
 import com.fr.bi.stable.exception.BITableAbsentException;
+import com.fr.bi.stable.utils.file.BIFileUtils;
 
+import java.io.File;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
  * Created by kary on 16/7/14.
  */
 public class CubeUpdateUtils {
-    private static boolean forceCheck=false;
+    private static boolean forceCheck = false;
+
     /*是否需要更新cube*/
     public static boolean cubeStatusCheck(long userId) {
 //        return isNeedUpdate(userId)&&forceCheck;
@@ -75,4 +84,43 @@ public class CubeUpdateUtils {
         com.finebi.cube.utils.CubeUpdateUtils.forceCheck = forceCheck;
     }
 
+    public static Map recordTableAndRelationInfo(long userId) {
+        Set<CubeTableSource> sources = new HashSet<CubeTableSource>();
+        Set<BusinessTable> allTables = BICubeConfigureCenter.getPackageManager().getAllTables(userId);
+        for (BusinessTable table : allTables) {
+            sources.add(table.getTableSource());
+        }
+        Map<String, String> sourceInfo = new HashMap<String, String>();
+        for (CubeTableSource source : sources) {
+            if (source instanceof SQLTableSource) {
+                String queryName = ((SQLTableSource) source).getSqlConnection() + "@" + ((SQLTableSource) source).getQuery() + ((SQLTableSource) source).getSqlConnection();
+                sourceInfo.put(queryName, source.getSourceID());
+            }
+            if (source instanceof DBTableSource) {
+                sourceInfo.put(source.toString(), source.getSourceID());
+            }
+            if (source.getType() == BIBaseConstant.TABLETYPE.ETL) {
+                StringBuffer EtlInfo = new StringBuffer();
+                EtlInfo.append("ETL,parents as listed：");
+                for (CubeTableSource tableSource : ((ETLTableSource) source).getParents()) {
+                    EtlInfo.append(tableSource.getSourceID() + tableSource.getTableName());
+                }
+                sourceInfo.put(EtlInfo.toString(), source.getSourceID());
+            }
+        }
+        Map<String, String> relationMap = new HashMap<String, String>();
+        Set<BITableRelation> tableRelations = BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(userId);
+        for (BITableRelation relation : tableRelations) {
+            relationMap.put(relation.getPrimaryTable().getTableSource().toString() + "." + relation.getPrimaryField().getFieldName() + ">>" + relation.getForeignTable().getTableSource().toString() + "." + relation.getForeignField().getFieldName(), relation.getPrimaryTable().getTableSource().getSourceID() + "||" + relation.getForeignTable().getTableSource().getSourceID());
+        }
+        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(userId));
+        String cubeTablePath = new File(advancedConf.getRootURI().getPath()).getParent() + File.separatorChar + "tableInfo";
+        String cubeRelationPath = new File(advancedConf.getRootURI().getPath()).getParent() + File.separatorChar + "relationInfo";
+        BIFileUtils.writeFile(cubeTablePath, sourceInfo.toString());
+        BIFileUtils.writeFile(cubeRelationPath, relationMap.toString());
+        Map<String, String> info = new HashMap();
+        info.put("tableInfo", sourceInfo.toString());
+        info.put("relationInfo", relationMap.toString());
+        return info;
+    }
 }
