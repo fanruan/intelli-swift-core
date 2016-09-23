@@ -562,7 +562,7 @@ BICst.GLOBAL_PREDICTION_STYLE = {
         "chartStyle": 1,
         "chartColor": BICst.GLOBAL_DEFAULT_CHART_COLOR,
         "chartFont": {},
-        "controlTheme": "#d4dadd"
+        "controlTheme": ""
     },
 
     DARK: {
