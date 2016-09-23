@@ -75,32 +75,35 @@ BI.ChartTypeShow = BI.inherit(BI.Widget, {
                     }));
                 }
             } else {
-                if (item.value === BICst.WIDGET.MAP) {
-                    if (item.value === wType) {
-                        result.push(BI.extend({
-                            type: "bi.map_type_combo",
-                            width: 40,
-                            iconWidth: 24,
-                            iconHeight: 24
-                        }, {
-                            cls: "chart-type-combo"
-                        }));
+                if (item.value === wType) {
+                    var subType = BI.Utils.getWidgetSubTypeByID(wId);
+                    //地图
+                    if (BI.isNotNull(subType)) {
+                        item.value = subType;
+                        item.cls = MapConst.INNER_MAP_INFO.MAP_LAYER[subType] === 0 ? "drag-map-china-icon" : "drag-map-svg-icon";
+                        item.title = self._getMapNameBySubType(subType);
                     }
-                } else {
-                    if (item.value === wType) {
-                        result.push(BI.extend({
-                            type: "bi.icon_button",
-                            width: 40,
-                            iconWidth: 24,
-                            iconHeight: 24
-                        }, item, {
-                            cls: item.cls + " chart-type-icon"
-                        }));
-                    }
+                    result.push(BI.extend({
+                        type: "bi.icon_button",
+                        width: 40,
+                        iconWidth: 24,
+                        iconHeight: 24
+                    }, item, {
+                        cls: item.cls + " chart-type-icon"
+                    }));
                 }
             }
         });
         return result;
+    },
+
+    _getMapNameBySubType: function(subType) {
+        if (BI.isNotNull(MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME[subType])) {
+            return MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME[subType];
+        }
+        if (BI.isNotNull(MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType])) {
+            return MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType];
+        }
     },
 
     getValue: function () {
