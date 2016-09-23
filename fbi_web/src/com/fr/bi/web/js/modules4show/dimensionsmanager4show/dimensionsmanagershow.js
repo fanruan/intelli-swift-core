@@ -97,10 +97,14 @@ BI.DimensionsManagerShow = BI.inherit(BI.Widget, {
         this.model.populate();
         var views = this.model.getViews();
         var widgetType = this.model.getType();
-        if(widgetType === BICst.WIDGET.MAP){
+        if (widgetType === BICst.WIDGET.MAP) {
             this.chartType.setValue(BI.Utils.getWidgetSubTypeByID(o.wId));
-        }else{
+        } else {
             this.chartType.setValue(widgetType);
+        }
+        if (widgetType === BICst.WIDGET.DETAIL) {
+            this.container.attr("items")[0].height = 0;
+            this.container.resize();
         }
         this.tab.setSelect(widgetType);
         this.tab.populate(views);
