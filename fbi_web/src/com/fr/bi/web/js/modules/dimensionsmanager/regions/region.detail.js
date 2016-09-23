@@ -160,6 +160,10 @@ BI.DetailRegion = BI.inherit(BI.AbstractRegion, {
         return this.containers[dId];
     },
 
+    _getDragTipContent: function() {
+        return BI.i18nText("BI-Drag_Left_Field");
+    },
+
 
     _createCalTargetItem: function () {
         var calItem = {

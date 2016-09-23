@@ -3498,6 +3498,24 @@
   content: "\e600";
   color: #f07d0a;
 }
+.drag-helper-forbidden-font .b-font:before {
+  content: "\e6dc";
+  color: #e85050;
+}
+.drag-helper-forbidden-font.native .b-font:before,
+.drag-helper-forbidden-font.disabled .b-font:before {
+  content: "\e6dc";
+  color: #e85050;
+}
+.drag-helper-active-font .b-font:before {
+  content: "\e6dd";
+  color: #58cc7d;
+}
+.drag-helper-active-font.native .b-font:before,
+.drag-helper-active-font.disabled .b-font:before {
+  content: "\e6dd";
+  color: #58cc7d;
+}
 .page-left-font .b-font:before {
   content: "\e6cc";
   color: #808080;

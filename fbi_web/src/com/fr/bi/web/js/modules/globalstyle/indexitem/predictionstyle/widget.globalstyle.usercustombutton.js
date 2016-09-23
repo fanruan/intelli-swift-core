@@ -3,8 +3,9 @@
  */
 BI.GlobalStyleUserCustomButton = BI.inherit(BI.BasicButton, {
     _defaultConfig: function () {
-        return BI.extend(BI.GlobalStyleUserCustomButton.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-global-style-user-custom-button",
+        var conf = BI.GlobalStyleUserCustomButton.superclass._defaultConfig.apply(this, arguments);
+        return BI.extend(conf, {
+            baseCls: conf.baseCls + " bi-global-style-user-custom-button",
             text: "",
             selected: false,
             value: null,
@@ -24,15 +25,6 @@ BI.GlobalStyleUserCustomButton = BI.inherit(BI.BasicButton, {
         this.deleteButton = BI.createWidget({
             type: "bi.icon_button",
             cls: "close-red-font"
-        });
-        this.button.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
-        });
-        this.button.on(BI.GlobalStyleStyleButton.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GlobalStyleUserCustomButton.EVENT_CHANGE)
-        });
-        this.deleteButton.on(BI.IconButton.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GlobalStyleUserCustomButton.EVENT_DELETE)
         });
         this.widget = BI.createWidget({
             type: "bi.absolute",
@@ -63,6 +55,13 @@ BI.GlobalStyleUserCustomButton = BI.inherit(BI.BasicButton, {
 
     setValue: function (v) {
         this.button.setValue(v);
+    },
+
+    doClick: function () {
+        BI.GlobalStyleUserCustomButton.superclass.doClick.apply(this, arguments);
+        if (this.isValid()) {
+            this.fireEvent(BI.GlobalStyleUserCustomButton.EVENT_CHANGE);
+        }
     }
 });
 BI.GlobalStyleUserCustomButton.EVENT_CHANGE = "BI.GlobalStyleUserCustomButton.EVENT_CHANGE";
