@@ -114,9 +114,9 @@ BI.ColorPickerEditor = BI.inherit(BI.Widget, {
         }
         this.colorShow.element.css("background-color", color);
         var json = BI.DOM.rgb2json(BI.DOM.hex2rgb(color));
-        this.R.setValue(json.r || "");
-        this.G.setValue(json.g || "");
-        this.B.setValue(json.b || "");
+        this.R.setValue(BI.isNull(json.r) ? "" : json.r);
+        this.G.setValue(BI.isNull(json.g) ? "" : json.g);
+        this.B.setValue(BI.isNull(json.b) ? "" : json.b);
     },
 
     getValue: function () {
