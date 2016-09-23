@@ -108,8 +108,25 @@ BI.ETLModel = BI.inherit(FR.OB, {
             BI.each(arr, function(id, field){
                 fieldsIdName[field.field_name] = translations[field.id];
             });
-        })
+        });
         return fieldsIdName;
+    },
+
+    /**
+     * 会减少字段的etl操作不提供带关联的字段
+     *
+     */
+    constructFieldNamesWhichHasRelation: function () {
+        var fieldsName = [];
+        var primKeyMap = this.relations.primKeyMap, foreignKeyMap = this.relations.foreignKeyMap;
+        BI.each(this.getFields(), function(idx, arr){
+            BI.each(arr, function(id, field){
+                if(BI.has(primKeyMap, field.id) || BI.has(foreignKeyMap, field.id)){
+                    fieldsName.push(field.field_name);
+                }
+            });
+        });
+        return fieldsName;
     },
 
 
