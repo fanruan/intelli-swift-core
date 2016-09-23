@@ -355,6 +355,7 @@ StyleTableView = BI.inherit(BI.View, {
         var table1 = BI.createWidget({
             type: "bi.style_table",
             color: "#0088cc",
+            style: BI.StyleTable.STYLE1,
             el: {
                 el: {
                     type: "bi.sequence_table",
