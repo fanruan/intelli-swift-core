@@ -40,7 +40,7 @@ BI.FitWidget = BI.inherit(BI.BasicButton, {
             }, {
                 el: this.draggable,
                 left: 5,
-                top: 0,
+                top: 5,
                 right: 5
             }]
         });

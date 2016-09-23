@@ -329,8 +329,9 @@ BI.MultiDateParamPopup = BI.inherit(BI.Widget, {
             case BICst.MULTI_DATE_PARAM:
                 this.dateTab.setSelect(BICst.MULTI_DATE_PARAM_CARD);
                 this.cur = BICst.MULTI_DATE_PARAM_CARD;
-                this.textButton.setVisible(false);
+                this.textButton.setVisible(true);
                 this.param.setValue(value);
+                self._setInnerValue(this.param);
                 break;
             default:
                 if (BI.isNull(v)) {
