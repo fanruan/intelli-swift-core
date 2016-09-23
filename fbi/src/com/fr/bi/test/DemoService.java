@@ -3,10 +3,9 @@ package com.fr.bi.test;
 import com.fr.base.TemplateUtils;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.analyze.session.BIWeblet;
-import com.fr.bi.cal.stable.utils.BIReportUtils;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.fs.BISuperManagetDAOManager;
-import com.fr.bi.test.*;
+import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -58,7 +57,7 @@ public class DemoService extends NoSessionIDService {
             map.put("sessionID", sessionID);
             if (!list.isEmpty()) {
                 BIReportNode node = list.get(0);
-                JSONObject reportSetting = BIReportUtils.getBIReportNodeJSON(node);
+                JSONObject reportSetting = BIReadReportUtils.getBIReportNodeJSON(node);
                 map.put("popConfig", reportSetting);
             } else {
                 map.put("popConfig", "null");
