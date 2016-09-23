@@ -199,6 +199,9 @@ $(function () {
         },
 
         rgba2json: function (rgbColour) {
+            if (!rgbColour) {
+                return {};
+            }
             var rgbValues = rgbColour.match(/\d+(\.\d+)?/g);
             return {
                 r: BI.parseInt(rgbValues[0]),
@@ -216,6 +219,9 @@ $(function () {
         },
 
         json2rgba: function (rgba) {
+            if (!BI.isKey(rgba.r) || !BI.isKey(rgba.g) || !BI.isKey(rgba.b)) {
+                return "";
+            }
             return "rgba(" + rgba.r + "," + rgba.g + "," + rgba.b + "," + rgba.a + ")";
         },
 
