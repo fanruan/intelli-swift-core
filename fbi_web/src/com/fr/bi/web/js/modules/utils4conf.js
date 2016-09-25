@@ -490,5 +490,11 @@ BI.extend(BI.Utils, {
         Data.Req.reqPrimaryTablesByTable(table, function (res) {
             callback(res);
         }, complete);
+    },
+    
+    checkTableInUse: function(data, callback, complete) {
+        Data.Req.reqCheckTableInUse(data, function(res) {
+            callback(res);
+        }, complete);
     }
 });
