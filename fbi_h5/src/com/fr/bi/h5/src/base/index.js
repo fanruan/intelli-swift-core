@@ -29,7 +29,6 @@ export Animatable from './Animatable/Animatable'
 
 export Infinite from './Infinite/Infinite'
 export AutoSizer from './AutoSizer'
-export CellMeasurer from './CellMeasurer'
 export InfiniteLoader from './InfiniteLoader'
 export Grid from './Grid'
 export VirtualScroll from './VirtualScroll'
