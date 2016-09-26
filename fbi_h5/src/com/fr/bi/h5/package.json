@@ -72,14 +72,11 @@
     "core-js": "^2.0.0",
     "dom-helpers": "^2.4.0",
     "domkit": "0.0.1",
-    "fbjs": "^0.8.3",
+    "fbjs": "^0.8.4",
     "history": "^3.0.0",
     "immutable": "^3.8.1",
     "linebreak": "^0.3.0",
     "lodash": "^4.15.0",
-    "normalize.css": "^4.0.0",
-    "object-assign": "^4.1.0",
-    "promise": "^7.1.1",
     "react": "^15.3.0",
     "react-addons-pure-render-mixin": "^15.3.0",
     "react-addons-shallow-compare": "^15.3.0",
@@ -89,7 +86,6 @@
     "react-timer-mixin": "^0.13.3",
     "rebound": "0.0.13",
     "redux": "^3.5.2",
-    "reset.css": "^2.0.2",
-    "scroller": "0.0.3"
+    "reset.css": "^2.0.2"
   }
 }
