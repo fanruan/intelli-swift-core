@@ -20,7 +20,6 @@ import com.fr.bi.stable.io.newio.NIOUtils;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
-import com.fr.fs.control.UserControl;
 import com.fr.general.GeneralContext;
 import com.fr.stable.EnvChangedListener;
 
@@ -165,7 +164,7 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
         }
     }
 
-    public String clearUserMap() {
+    public String clearUserMapCache() {
         synchronized (CubeReadingTableIndexLoader.class) {
 //            for (Long userId : userMap.keySet()) {
 //                BILogger.getLogger().info(userId + userMap.get(userId).toString());
@@ -176,7 +175,17 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
 //                    loader.clear();
 //                }
 //            }
-            userMap.remove(UserControl.getInstance().getSuperManagerID());
+//            lastSource = new ThreadLocal<CubeTableSource>();
+//            lastService = new ThreadLocal<ICubeTableService>();
+//            userMap.remove(UserControl.getInstance().getSuperManagerID());
+            for (String s : childLoaderMap.keySet()) {
+                if (s.equals("com.fr.bi.module.BICoreModule")&&null!=childLoaderMap.get(s)) {
+                    childLoaderMap.get(s).clear();
+                }
+            }
+            lastSource = new ThreadLocal<CubeTableSource>();
+            lastService = new ThreadLocal<ICubeTableService>();
+
         }
         return userMap.toString();
     }

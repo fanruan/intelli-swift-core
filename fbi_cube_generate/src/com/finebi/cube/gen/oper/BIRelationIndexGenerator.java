@@ -49,7 +49,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
         try {
             relationColumnKeyInfo = getRelationColumnKeyInfo();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILogger.getLogger().error(e.getMessage(), e);
         }
         try {
             buildRelationIndex();

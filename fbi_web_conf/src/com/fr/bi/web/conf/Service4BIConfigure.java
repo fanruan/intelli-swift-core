@@ -109,7 +109,7 @@ public class Service4BIConfigure extends NoSessionIDService {
             new BISaveLoginFieldAction(),
             new BIPersistTableInfoAction(),
             new BICacheClearAction(),
-            new BIUserMapClearAction(),
+            new BIUserMapCacheClearAction(),
             new BIChildMapClearAction(),
             new BIRemoveTableInUseCheckAction()
 

@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Created by kary on 2016/9/12.
  */
-public class BIUserMapClearAction extends AbstractBIConfigureAction {
+public class BIUserMapCacheClearAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         WebUtils.printAsJSON(res, new JSONObject().put("result", "userMap_clear:"+clearCache()));
@@ -20,12 +20,12 @@ public class BIUserMapClearAction extends AbstractBIConfigureAction {
 
     @Override
     public String getCMD() {
-        return "userMap_clear";
+        return "userMapCache_clear";
     }
 
     private String clearCache() {
         BILogger.getLogger().info("start clear userMap");
-        String readingCubeReader = CubeReaderCacheUtils.clearUserMap();
+        String readingCubeReader = CubeReaderCacheUtils.clearUserMapCache();
         BILogger.getLogger().info("userMap clear finished");
         return readingCubeReader;
     }

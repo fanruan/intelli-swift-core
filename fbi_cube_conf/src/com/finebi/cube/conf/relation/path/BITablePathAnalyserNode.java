@@ -113,6 +113,7 @@ public class BITablePathAnalyserNode extends BISetContainer<BITablePathAnalyserN
         if (scannedNodes.containsKey(currentNode)) {
             /*蛋疼自循环，自循环时判断是否经过第二次，其他时候判断是否链到自身*/
 //            return scannedNodes.get(currentNode) > 1 || (!ComparatorUtils.equals(currentNode, this) && scannedNodes.get(this) > 0);
+            //现在自循环以新增公式列的方式实现了
             return scannedNodes.get(currentNode) > 0;
         } else {
             return false;
