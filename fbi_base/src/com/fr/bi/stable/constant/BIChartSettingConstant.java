@@ -169,11 +169,11 @@ public class BIChartSettingConstant {
 
     public static final class CUSTOM_FORMAT {
         public static final String VALUEFORMAT = "(window.BH ? BI.contentFormat(this, \"#.##;-#.##\") : this)";
-        public static final String PERCENTVALUEFORMAT = "(window.BH ? BI.contentFormat(arguments[0], '#0.00%') : arguments[0])";
+        public static final String PERCENTVALUEFORMAT = "(window.BH ? BI.contentFormat(arguments[0], '#0.00%;-#0.00%') : arguments[0])";
         public static final String THISPERCENTVALUEFORMAT = "(window.BH ? BI.contentFormat(this, '#0.00%') : this)";
-        public static final String NUMSEPARATORS = "(window.BH ? BI.contentFormat(arguments[0], '#,###.##') : arguments[0])";
-        public static final String PERCENTNUMSEPARATORS = "(window.BH ? BI.contentFormat(arguments[0], '#,##0%') : arguments[0])";
-        public static final String THISPERCENTNUMSEPARATORS = "(window.BH ? BI.contentFormat(this, '#,##0%') : this)";
+        public static final String NUMSEPARATORS = "(window.BH ? BI.contentFormat(arguments[0], '#,###.##;-#,###.##') : arguments[0])";
+        public static final String PERCENTNUMSEPARATORS = "(window.BH ? BI.contentFormat(arguments[0], '#,##0%;-#,##0%') : arguments[0])";
+        public static final String THISPERCENTNUMSEPARATORS = "(window.BH ? BI.contentFormat(this, '#,##0%;-#.##0%') : this)";
     }
     
     public static final int[] MINIMALIST_WIDGET = new int[]{
