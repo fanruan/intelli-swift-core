@@ -2885,4 +2885,22 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/data/utils.js"
         };
     }
+
+    public static String[] getH5Js(){
+        return new String[] {
+                "com/fr/bi/web/js/third/zepto.min.js",
+                "com/fr/bi/web/js/third/d3.js",
+                "com/fr/bi/web/js/third/leaflet.js",
+                "com/fr/bi/web/js/third/vancharts-all.js",
+                "com/fr/bi/web/js/core/foundation.js",
+                "com/fr/bi/web/js/data/data.js",
+                "com/fr/bi/web/js/data/constant/biconst.js",
+                "com/fr/bi/web/js/data/constant/constant.js",
+                "com/fr/bi/web/js/data/constant/strings.js",
+                "com/fr/bi/web/js/data/constant/enums.js",
+                "com/fr/bi/web/js/data/constant/colors.js",
+                "com/fr/bi/web/js/data/constant/attrs.js",
+                "com/fr/bi/web/mobile/mobile.data.js"
+        };
+    }
 }
