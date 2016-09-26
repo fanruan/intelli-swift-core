@@ -70,7 +70,7 @@ BI.DatabaseTablesPane = BI.inherit(BI.LoadingPane, {
         }
 
         //没有表的
-        if (BI.isEmptyArray(this.dataLinkTables)) {
+        if (BI.isEmptyArray(this.dataLinkTables) || this._checkEmptyServerDataTable()) {
             if (connName === BI.i18nText("BI-Server_Data_Set")) {
                 this.wrapper.addItem({
                     el: {
@@ -174,6 +174,17 @@ BI.DatabaseTablesPane = BI.inherit(BI.LoadingPane, {
             right: 0,
             bottom: 0
         });
+    },
+
+    _checkEmptyServerDataTable: function(){
+        if (BI.has(this.dataLinkTables[0], "tables")) {
+            var tables = this.dataLinkTables[0].tables;
+            if(BI.has(tables[0], "group")){
+                var group = tables[0].group;
+                return BI.isEmptyArray(group);
+            }
+        }
+        return false;
     },
 
     _createSchemaCard: function (v) {
