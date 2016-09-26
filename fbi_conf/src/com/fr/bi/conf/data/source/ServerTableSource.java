@@ -195,14 +195,14 @@ public class ServerTableSource extends DBTableSource {
         return oldCount;
     }
 
-    private long writeDBSimpleIndex(final Traversal<BIDataValue> travel, final com.fr.data.impl.Connection connect, String query, ICubeFieldSource[] fields) {
+    private long writeDBSimpleIndex(final Traversal<BIDataValue> travel, final com.fr.data.impl.Connection connect, String query, final ICubeFieldSource[] fields) {
         SQLStatement sql = new SQLStatement(connect);
         sql.setFrom("(\n" + query + "\n) " + "t");
         return DBQueryExecutor.getInstance().runSQL(sql, fields, new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue v) {
                 try {
-                    dealWithOneData(travel, v);
+                    dealWithOneData(travel, fields, v);
                 } catch (Exception e) {
                     BILogger.getLogger().error(e.getMessage(), e);
                 }
