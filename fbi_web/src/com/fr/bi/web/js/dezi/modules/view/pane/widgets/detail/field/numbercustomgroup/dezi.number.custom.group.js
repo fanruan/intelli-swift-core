@@ -45,7 +45,7 @@ BIDezi.NumberCustomGroupView = BI.inherit(BI.BarFloatSection, {
         });
 
         this.group.on(BI.NumberIntervalCustomGroup.EVENT_ERROR, function () {
-            self.sure.setValue(BI.i18nText("BI-Correct_The_Errors_Red"));
+            self.sure.setWarningTitle(BI.i18nText("BI-Correct_The_Errors_Red"));
             self.sure.setEnable(false);
         });
 
