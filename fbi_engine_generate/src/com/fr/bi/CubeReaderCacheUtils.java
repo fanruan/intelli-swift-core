@@ -13,4 +13,8 @@ public class CubeReaderCacheUtils {
     public static void clearCubeReader() {
         CubeReadingTableIndexLoader.getInstance(UserControl.getInstance().getSuperManagerID()).clear();
     }
+
+    public static String clearUserMap() {
+       return   ((CubeReadingTableIndexLoader) CubeReadingTableIndexLoader.getInstance(UserControl.getInstance().getSuperManagerID())).clearUserMap();
+    }
 }
