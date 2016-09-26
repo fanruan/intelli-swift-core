@@ -82,7 +82,6 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
             })
         }
 
-
         return [items, config];
 
         function formatRangeLegend() {
@@ -106,7 +105,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                 var to = this.to;
                 if (BI.isNotEmptyArray(items) && BI.has(items[0], "settings")) {
 
-                    if(items[0].settings.num_separators){
+                    if (items[0].settings.num_separators) {
                         to = BI.contentFormat(to, "#,##0")
                     }
 
@@ -137,20 +136,20 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
             switch (format) {
                 case self.constants.NORMAL:
                     formatter = '#.##';
+                    if (num_separators) formatter = '#,###.##';
                     break;
                 case self.constants.ZERO2POINT:
                     formatter = '#0';
+                    if (num_separators) formatter = '#,###';
                     break;
                 case self.constants.ONE2POINT:
                     formatter = '#0.0';
+                    if (num_separators) formatter = '#,###.0';
                     break;
                 case self.constants.TWO2POINT:
                     formatter = '#0.00';
+                    if (num_separators) formatter = '#,###.0';
                     break;
-            }
-
-            if (num_separators) {
-                formatter = '#,##0'
             }
 
             switch (numberLevel) {
@@ -167,11 +166,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                     formatter += BI.i18nText("BI-Yi");
                     break;
                 case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                    if (format === self.constants.NORMAL) {
-                        formatter = '#0%'
-                    } else {
-                        formatter += '%';
-                    }
+                    formatter += '%';
                     break;
             }
 

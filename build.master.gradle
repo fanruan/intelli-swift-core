@@ -9,7 +9,7 @@ def jarname='fr-bi-server-4.0.jar'
 //指定生成的jar包版本
 version='4.0'
 //获取什么分支名
-FileTree files =fileTree(dir:'./',include:'build.gradle')
+FileTree files =fileTree(dir:'./',include:'build.*.gradle')
 def buildDir=files[0].path.substring(0,files[0].path.lastIndexOf ('\\'))
 def branchName=buildDir.substring(buildDir.lastIndexOf ('\\')+1)
 
@@ -66,7 +66,7 @@ sourceSets{
 }
 //声明外部依赖
 dependencies{
-	compile fileTree(dir:"${BI_HOME}/${branchName}",include:'lib/**/*.jar')
+	compile fileTree(dir:"${BI_HOME}/lib/${branchName}",include:'**/*.jar')
 	testCompile 'junit:junit:4.12'
 }
 //指明无法编译文件所在路径
