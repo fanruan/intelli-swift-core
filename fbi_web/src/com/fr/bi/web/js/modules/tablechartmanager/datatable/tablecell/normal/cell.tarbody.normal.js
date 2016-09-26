@@ -80,7 +80,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 if(separators){
                     num = BI.contentFormat(num, '#,###.##;-#,###.##')
                 } else {
-                    num = BI.contentFormat(num, '#.##')
+                    num = BI.contentFormat(num, '#.##;-#.##')
                 }
                 return num;
                 break;
@@ -96,14 +96,14 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 if(separators){
                     num = BI.contentFormat(num, '#,###.0;-#,###.0')
                 } else {
-                    num = BI.contentFormat(num, '#.0')
+                    num = BI.contentFormat(num, '#.0;-#.0')
                 }
                 return num;
             case BICst.TARGET_STYLE.FORMAT.TWO2POINT:
                 if(separators){
                     num = BI.contentFormat(num, '#,###.00;-#,###.00')
                 } else {
-                    num = BI.contentFormat(num, '#.00')
+                    num = BI.contentFormat(num, '#.00;-#.00')
                 }
                 return num;
         }
@@ -205,15 +205,15 @@ BI.extend(BI.TargetBodyNormalCell, {
         }
         switch (numLevel) {
             case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                return BI.contentFormat(BI.parseFloat(text.div(10000).toFixed(2)), "#.##");
+                return BI.contentFormat(BI.parseFloat(text.div(10000).toFixed(2)), "#.##;-#.##");
             case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                return BI.contentFormat(BI.parseFloat(text.div(1000000).toFixed(2)), "#.##");
+                return BI.contentFormat(BI.parseFloat(text.div(1000000).toFixed(2)), "#.##;-#.##");
             case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                return BI.contentFormat(BI.parseFloat(text.div(100000000).toFixed(2)), "#.##");
+                return BI.contentFormat(BI.parseFloat(text.div(100000000).toFixed(2)), "#.##;-#.##");
             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                return BI.contentFormat(text * 100, "#.##");
+                return BI.contentFormat(text * 100, "#.##;-#.##");
             default:
-                return BI.parseFloat(BI.contentFormat(text.toFixed(2), "#.##"));
+                return BI.parseFloat(BI.contentFormat(text.toFixed(2), "#.##;-#.##"));
         }
     }
 });
