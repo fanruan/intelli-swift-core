@@ -91,10 +91,10 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
                     formatter: {
                         identifier: "${X}${Y}",
                         "XFormat": function () {
-                            return BI.contentFormat(arguments[0], '#.##')
+                            return BI.contentFormat(arguments[0], '#.##;-#.##')
                         },
                         "YFormat": function () {
-                            return BI.contentFormat(arguments[0], '#.##')
+                            return BI.contentFormat(arguments[0], '#.##;-#.##')
                         }
                     }
                 };
@@ -184,7 +184,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
             });
             if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                 config.plotOptions.tooltip.formatter.valueFormat = function () {
-                    return BI.contentFormat(arguments[0], '#0%')
+                    return BI.contentFormat(arguments[0], '#0%;-#0%')
                 };
             }
         }

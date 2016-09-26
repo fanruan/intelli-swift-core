@@ -89,13 +89,13 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                     formatter: {
                         identifier: "${X}${Y}${SIZE}",
                         "XFormat": function () {
-                            return BI.contentFormat(arguments[0], '#.##')
+                            return BI.contentFormat(arguments[0], '#.##;-#.##')
                         },
                         "YFormat": function () {
-                            return BI.contentFormat(arguments[0], '#.##')
+                            return BI.contentFormat(arguments[0], '#.##;-#.##')
                         },
                         "sizeFormat": function () {
-                            return BI.contentFormat(arguments[0], '#.##')
+                            return BI.contentFormat(arguments[0], '#.##;-#.##')
                         }
                     }
                 };

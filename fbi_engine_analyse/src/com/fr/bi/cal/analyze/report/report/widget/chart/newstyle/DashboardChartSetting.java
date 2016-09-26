@@ -195,7 +195,7 @@ public class DashboardChartSetting extends BIAbstractChartSetting {
         } else {
             String v = "this";
             if(options.getBoolean("num_separators")){
-                v = "BI.contentFormat(this, \"#,###\")";
+                v = "BI.contentFormat(this, \"#,###;-#,###\")";
             }
             gaugeAxis.getJSONObject(0).put("formatter", "function () {" +
                     "return" + v + getXYAxisTitle(options.getInt("dashboard_number_level"), BIChartSettingConstant.DASHBOARD_AXIS, true, options.getString("dashboard_unit"), "") +
