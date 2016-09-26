@@ -294,8 +294,10 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
     },
 
     _savePrediction: function () {
-        this.predictionStyle.addStyle(this._getValue());
-        this._checkPredictionBtn();
+        if(this.predictionStyle.addStyle(this._getValue())) {
+            this._checkPredictionBtn();
+            this.fireEvent(BI.GlobalStyleSetting.EVENT_CHANGE);
+        }
     },
 
     _checkPredictionBtn: function () {
@@ -331,7 +333,7 @@ BI.GlobalStyleSetting = BI.inherit(BI.Widget, {
     getValue: function () {
         var v = this._getValue();
         v.predictionStyle = this.predictionStyle.getStyles();
-        return v;
+        return BI.deepClone(v);
     },
 
     setValue: function (v) {

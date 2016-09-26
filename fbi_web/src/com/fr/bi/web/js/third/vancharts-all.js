@@ -4111,6 +4111,11 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
             }
         }
 
+        if(opt.backgroundImage){
+            cssText.push('background-image:url(' + opt.backgroundImage + ')');
+            cssText.push('background-size:100% 100%');
+        }
+
         if (opt.borderWidth != null) {
             cssText.push('border-width:' + opt.borderWidth + 'px');
         }
@@ -6021,7 +6026,7 @@ define('HammerHandler',['require','./utils/BaseUtils','./Constants','./dom/DomEv
 
             var hammer = this.hammer = new Hammer.Manager(container);
 
-            hammer.add(new Hammer.Pan());
+            hammer.add(new Hammer.Pan({threshold: 0}));
 
             hammer.add(new Hammer.Tap());
 
@@ -7099,6 +7104,13 @@ define('vector/SvgRenderer',['require','./Renderer','../utils/DomUtils','./Eleme
                 }
 
                 elem.style.cssText = serializedCss;
+
+                //todo fireFox下面style会多一个'none'
+                //http://stackoverflow.com/questions/15123953/svg-fill-url-behaving-strangely-in-firefox
+                if(styles.fill){
+                    elem.style.fill = styles.fill;
+                }
+
             }
         },
 
@@ -8080,368 +8092,397 @@ define('theme/options',['require','../Constants','../utils/QueryUtils','../utils
     var QueryUtils = require('../utils/QueryUtils');
     var BaseUtils = require('../utils/BaseUtils');
 
-    var options = {};
-
-    var normalTooltip = {
-        formatter: {
-            identifier: "${CATEGORY}${SERIES}${VALUE}"
-        },
-        enabled:true,
-        animation:true,
-        follow:false,
-        backgroundColor:'rgba(0,0,0,0.5)',
-        borderColor:null,
-        borderWidth:0,
-        borderRadius:2,
-        shadow:true,
-        hideDelay:500,
-        shared:false,
-        padding:5
-    };
-
-    var disabledTooltip = BaseUtils.clone(normalTooltip);
-    QueryUtils.merge(disabledTooltip, {formatter: {enabled: false}}, true);
-
-    var seriesXYSizeTooltip = BaseUtils.clone(normalTooltip);
-    QueryUtils.merge(seriesXYSizeTooltip, {formatter: {identifier: "${SERIES}${X}${Y}${SIZE}"}}, true);
-
-    var seriesValueTooltip = BaseUtils.clone(normalTooltip);
-    QueryUtils.merge(seriesValueTooltip, {formatter: {identifier: "${SERIES}${VALUE}"}}, true);
-
-    var nameSeriesValueTooltip = BaseUtils.clone(normalTooltip);
-    QueryUtils.merge(nameSeriesValueTooltip, {formatter: {identifier: "${NAME}${SERIES}${VALUE}", shared:true}}, true);
-
-    var nameSeriesValueSizeTooltip = BaseUtils.clone(normalTooltip);
-    QueryUtils.merge(nameSeriesValueSizeTooltip, {formatter: {identifier: "${NAME}${SERIES}${VALUE}${SIZE}", shared:true}}, true);
-
-
-    var linePlotOptions = {
-
-        large:false,
-        connectNulls:false,
-        lineWidth:2,
-        step:false,
-        curve:false,
-
-        marker:{
-            radius:4.5
-        },
-
-        dataLabels:{
-            "formatter": {
-                "identifier": "${Y}"
+    function normalTooltipFun(){
+        return {
+            formatter: {
+                identifier: "${CATEGORY}${SERIES}${VALUE}"
             },
-            "enabled": false,
-            "align": "outside"
-        },
+            enabled: true,
+            animation: true,
+            follow: false,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            borderColor: null,
+            borderWidth: 0,
+            borderRadius: 2,
+            shadow: true,
+            hideDelay: 500,
+            shared: false,
+            padding: 5
+        }
+    }
 
-        tooltip:normalTooltip
+    function disabledTooltipFun() {
+        return QueryUtils.merge(normalTooltipFun(), {formatter: {enabled: false}}, true);
+    }
 
-    };
+    function seriesXYSizeTooltipFun() {
+        return QueryUtils.merge(normalTooltipFun(), {formatter: {identifier: "${SERIES}${X}${Y}${SIZE}"}}, true);
+    }
 
-    var areaPlotOptions = QueryUtils.merge({}, linePlotOptions, true);
-    QueryUtils.merge(areaPlotOptions, {fillColor:true, fillColorOpacity:0.15}, true);
+    function seriesValueTooltipFun() {
+        return QueryUtils.merge(normalTooltipFun(), {formatter: {identifier: "${SERIES}${VALUE}"}}, true);
+    }
 
-    var columnPlotOptions = {
-        categoryGap: '20%',
-        gap: '20%',
+    function nameSeriesValueTooltipFun() {
+        return QueryUtils.merge(normalTooltipFun(), {formatter: {identifier: "${NAME}${SERIES}${VALUE}", shared:true}}, true);
+    }
 
-        borderRadius:0,
-        borderWidth:1,
-        borderColor:'white',
+    function nameSeriesValueSizeTooltipFun() {
+        return QueryUtils.merge(normalTooltipFun(), {formatter: {identifier: "${NAME}${SERIES}${VALUE}${SIZE}", shared:true}}, true);
+    }
 
-        dataLabels:{
-            "formatter": {
-                "identifier": "${Y}"
+    function linePlotOptionsFun() {
+        return {
+            large: false,
+            connectNulls: false,
+            lineWidth: 2,
+            step: false,
+            curve: false,
+
+            marker: {
+                radius: 4.5
             },
-            "enabled": false,
-            "align": "inside"
-        },
 
-        tooltip:normalTooltip
-    };
-
-    var piePlotOptions = {
-        rotatable:true,
-        startAngle:0,
-        endAngle:360,
-
-        borderWidth:1,
-        borderColor:'white',
-
-        dataLabels:{
-            "formatter": {
-                "identifier": "${Y}"
+            dataLabels: {
+                "formatter": {
+                    "identifier": "${Y}"
+                },
+                "enabled": false,
+                "align": "outside"
             },
-            "enabled": false,
-            "align": "inside"
-        },
 
-        tooltip:seriesValueTooltip
-    };
+            tooltip: normalTooltipFun()
+        }
+    }
 
-    var scatterPlotOptions = {
-        large:false,
-        lineWidth:0,
-        curve:false,
+    function areaPlotOptionsFun() {
+        return QueryUtils.merge(linePlotOptionsFun(), {fillColor:true, fillColorOpacity:0.15}, true);
+    }
 
-        marker:{
-            radius:4.5
-        },
+    function columnPlotOptionsFun() {
+        return {
+            categoryGap: '20%',
+            gap: '20%',
 
-        opacity: 1,
+            borderRadius: 0,
+            borderWidth: 1,
+            borderColor: 'white',
 
-        tooltip:seriesXYSizeTooltip,
-
-        dataLabels:{
-            "formatter": {
-                "identifier": "${X}${Y}${SIZE}"
+            dataLabels: {
+                "formatter": {
+                    "identifier": "${Y}"
+                },
+                "enabled": false,
+                "align": "inside"
             },
-            "enabled": false,
-            "align": "outside"
+
+            tooltip: normalTooltipFun()
         }
-    };
+    }
 
-    var bubblePlotOptions = {
-        large:false,
-        force:false,
-        displayNegative:true,
-        shadow:true,
-        minSize: 12,
-        maxSize: 60,
-        sizeBy:'area',
-        opacity:0.7,
+    function piePlotOptionsFun() {
+        return {
+            rotatable: true,
+            startAngle: 0,
+            endAngle: 360,
 
-        tooltip:seriesXYSizeTooltip,
+            borderWidth: 1,
+            borderColor: 'white',
 
-        dataLabels:{
-            "formatter": {
-                "identifier": "${X}${Y}${SIZE}"
+            dataLabels: {
+                "formatter": {
+                    "identifier": "${Y}"
+                },
+                "enabled": false,
+                "align": "inside"
             },
-            "enabled": false,
-            "align": "inside"
+
+            tooltip: seriesValueTooltipFun()
         }
-    };
+    }
 
-    var radarPlotOptions = {
-        polar:0,
+    function scatterPlotOptionsFun() {
+        return {
+            large: false,
+            lineWidth: 0,
+            curve: false,
 
-        fillColor:false,
-        fillColorOpacity:0.15,
-
-        columnType:false,
-
-        marker:{
-            radius:4.5
-        },
-
-        lineWidth:2,
-
-        shape: 'circle',
-
-        dataLabels:{
-            "formatter": {
-                "identifier": "${Y}"
+            marker: {
+                radius: 4.5
             },
-            "enabled": false,
-            "align": "outside"
-        },
 
-        tooltip:normalTooltip
-    };
+            opacity: 1,
 
-    var gaugePlotOptions = {
+            tooltip: seriesXYSizeTooltipFun(),
 
-        layout:'horizontal',
+            dataLabels: {
+                "formatter": {
+                    "identifier": "${X}${Y}${SIZE}"
+                },
+                "enabled": false,
+                "align": "outside"
+            }
+        }
+    }
 
-        tooltip:disabledTooltip
+    function bubblePlotOptionsFun() {
+        return {
+            large: false,
+            force: false,
+            displayNegative: true,
+            shadow: true,
+            minSize: 12,
+            maxSize: 60,
+            sizeBy: 'area',
+            opacity: 0.7,
 
-    };
+            tooltip: seriesXYSizeTooltipFun(),
 
-    var mapPlotOptions = {
-        color:'#cccccc',
-        opacity:0.75,
-        borderColor:'#ffffff',
-        borderWidth:1,
-        borderOpacity:1,
+            dataLabels: {
+                "formatter": {
+                    "identifier": "${X}${Y}${SIZE}"
+                },
+                "enabled": false,
+                "align": "inside"
+            }
+        }
+    }
 
-        tooltip:nameSeriesValueSizeTooltip,
+    function radarPlotOptionsFun() {
+        return {
+            polar: 0,
 
-        dataLabels:{
-            "formatter": {
-                "identifier": "${NAME}"
+            fillColor: false,
+            fillColorOpacity: 0.15,
+
+            columnType: false,
+
+            marker: {
+                radius: 4.5
             },
-            "enabled": false,
-            "align": "inside"
-        }
-    };
 
-    var pointMapPlotOptions = {
-        opacity:1,
+            lineWidth: 2,
 
-        dataLabels:{
-            "formatter": {
-                "identifier": "${NAME}"
+            shape: 'circle',
+
+            dataLabels: {
+                "formatter": {
+                    "identifier": "${Y}"
+                },
+                "enabled": false,
+                "align": "outside"
             },
-            "enabled": false,
-            "align": "outside"
-        },
 
-        tooltip:nameSeriesValueSizeTooltip
-    };
+            tooltip: normalTooltipFun()
+        }
+    }
 
-    var multiPiePlotOptions = {
-        borderWidth: 1,
-        borderColor: 'rgb(255,255,255)',
-        rotatable: true,
-        gradual: 'lighter',
-        innerRadius: 0,
-        startAngle: 0,
-        endAngle: 360,
-        drilldown: true,
+    function gaugePlotOptionsFun(){
+        return {
 
-        tooltip:nameSeriesValueTooltip,
+            layout: 'horizontal',
 
-        dataLabels:{
-            "formatter": {
-                "identifier": "${NAME}"
+            tooltip: disabledTooltipFun()
+        }
+    }
+
+    function mapPlotOptionsFun() {
+        return {
+            color: '#cccccc',
+            opacity: 0.75,
+            borderColor: '#ffffff',
+            borderWidth: 1,
+            borderOpacity: 1,
+
+            tooltip: nameSeriesValueSizeTooltipFun(),
+
+            dataLabels: {
+                "formatter": {
+                    "identifier": "${NAME}"
+                },
+                "enabled": false,
+                "align": "inside"
+            }
+        }
+    }
+
+    function pointMapPlotOptionsFun() {
+        return {
+            opacity: 1,
+
+            dataLabels: {
+                "formatter": {
+                    "identifier": "${NAME}"
+                },
+                "enabled": false,
+                "align": "outside"
             },
-            "enabled": false,
-            "align": "inside"
+
+            tooltip: nameSeriesValueSizeTooltipFun()
         }
-    };
+    }
 
-    var treeMapPlotOptions = {
-        borderWidth: 1,
-        borderColor: 'rgb(255,255,255)',
-        zoom: true,
+    function multiPiePlotOptionsFun() {
+        return {
+            borderWidth: 1,
+            borderColor: 'rgb(255,255,255)',
+            rotatable: true,
+            gradual: 'lighter',
+            innerRadius: 0,
+            startAngle: 0,
+            endAngle: 360,
+            drilldown: true,
 
-        tooltip:nameSeriesValueTooltip,
+            tooltip: nameSeriesValueTooltipFun(),
 
-        dataLabels: {
-            "formatter": {
-                "identifier": "${NAME}"
-            },
-            "enabled": false,
-            align: 'top'
+            dataLabels: {
+                "formatter": {
+                    "identifier": "${NAME}"
+                },
+                "enabled": false,
+                "align": "inside"
+            }
         }
-    };
+    }
 
+    function treeMapPlotOptionsFun() {
+        return {
+            borderWidth: 1,
+            borderColor: 'rgb(255,255,255)',
+            zoom: true,
 
+            tooltip: nameSeriesValueTooltipFun(),
 
-    options[Constants.PIE_CHART] = {
-        plotOptions: {
-
-            pie:piePlotOptions
-
+            dataLabels: {
+                "formatter": {
+                    "identifier": "${NAME}"
+                },
+                "enabled": false,
+                align: 'top'
+            }
         }
-    };
+    }
 
-    options[Constants.MULTIPIE_CHART] = {
+    function optionsFun() {
 
-        plotOptions: {
+        var options = {};
 
-            multiPie:multiPiePlotOptions
+        options[Constants.PIE_CHART] = {
+            plotOptions: {
 
-        }
-    };
+                pie: piePlotOptionsFun()
 
-    options[Constants.TREEMAP_CHART] = {
+            }
+        };
 
-        plotOptions: {
+        options[Constants.MULTIPIE_CHART] = {
 
-            treeMap:treeMapPlotOptions
+            plotOptions: {
 
-        }
-    };
+                multiPie: multiPiePlotOptionsFun()
 
-    options[Constants.COLUMN_CHART] = {
-        plotOptions: {
+            }
+        };
 
-            column:columnPlotOptions
+        options[Constants.TREEMAP_CHART] = {
 
-        }
+            plotOptions: {
 
-    };
+                treeMap: treeMapPlotOptionsFun()
 
-    options[Constants.BAR_CHART] = {
-        plotOptions:{
+            }
+        };
 
-            bar:columnPlotOptions
-        }
+        options[Constants.COLUMN_CHART] = {
+            plotOptions: {
 
-    };
+                column: columnPlotOptionsFun()
 
-    options[Constants.LINE_CHART] = {
+            }
 
-        plotOptions:{
+        };
 
-            line:linePlotOptions
+        options[Constants.BAR_CHART] = {
+            plotOptions: {
 
-        }
-    };
+                bar: columnPlotOptionsFun()
+            }
 
-    options[Constants.AREA_CHART] = {
+        };
 
-        plotOptions:{
+        options[Constants.LINE_CHART] = {
 
-            area:areaPlotOptions
+            plotOptions: {
 
-        }
-    };
+                line: linePlotOptionsFun()
 
-    options[Constants.GAUGE_CHART] = {
-        plotOptions: {
-            gauge:gaugePlotOptions
-        }
+            }
+        };
 
-    };
+        options[Constants.AREA_CHART] = {
 
-    options[Constants.RADAR_CHART] = {
+            plotOptions: {
 
-        plotOptions:{
+                area: areaPlotOptionsFun()
 
-            radar:radarPlotOptions
+            }
+        };
 
-        }
+        options[Constants.GAUGE_CHART] = {
+            plotOptions: {
+                gauge: gaugePlotOptionsFun()
+            }
 
-    };
+        };
 
-    options[Constants.SCATTER_CHART] = {
-        plotOptions: {
+        options[Constants.RADAR_CHART] = {
 
-            scatter:scatterPlotOptions
+            plotOptions: {
 
-        }
+                radar: radarPlotOptionsFun()
 
-    };
+            }
 
-    options[Constants.BUBBLE_CHART] = {
-        plotOptions: {
+        };
 
-            bubble:bubblePlotOptions
+        options[Constants.SCATTER_CHART] = {
+            plotOptions: {
 
-        }
+                scatter: scatterPlotOptionsFun()
 
-    };
+            }
 
-    options[Constants.AREA_MAP] = {
-        plotOptions:{
+        };
 
-            areaMap:mapPlotOptions
+        options[Constants.BUBBLE_CHART] = {
+            plotOptions: {
 
-        }
-    };
+                bubble: bubblePlotOptionsFun()
 
-    options[Constants.POINT_MAP] = {
-        plotOptions:{
+            }
 
-           pointMap:pointMapPlotOptions
+        };
 
-        }
-    };
+        options[Constants.AREA_MAP] = {
+            plotOptions: {
 
-    return options
+                areaMap: mapPlotOptionsFun()
+
+            }
+        };
+
+        options[Constants.POINT_MAP] = {
+            plotOptions: {
+
+                pointMap: pointMapPlotOptionsFun()
+
+            }
+        };
+
+        return options;
+    }
+
+    return optionsFun();
 });
 /**
  * Created by eason on 15/7/17.
@@ -8453,515 +8494,536 @@ define('theme/config',['require','../Constants','../utils/QueryUtils','./options
     var QueryUtils = require('../utils/QueryUtils');
     var Options = require('./options');
 
-    var config = {};
-
-    var nullTitle = {
-        align:'center',
-        backgroundColor:null,
-        borderRadius:0,
-        floating:false,
-        x:0,
-        y:0,
-        text:null,
-        style:{
-            color:'#333333',
-            fontSize:'22px',
-            fontFamily:'Verdana'
-        },
-        useHtml:false
-    };
+    function nullTitleFun() {
+        return {
+            align: 'center',
+            backgroundColor: null,
+            borderRadius: 0,
+            floating: false,
+            x: 0,
+            y: 0,
+            text: null,
+            style: {
+                color: '#333333',
+                fontSize: '22px',
+                fontFamily: 'Verdana'
+            },
+            useHtml: false
+        }
+    }
 
     var gradualStyle = 'gradual';
 
-    var xyZoom = {
-        zoomType:'xy',
-        zoomTool:{
-            enabled:false,
-            resize:true
+    function xyZoomFun() {
+        return {
+            zoomType: 'xy',
+            zoomTool: {
+                enabled: false,
+                resize: true
+            }
         }
-    };
+    }
 
-    var rangeLegend = {
-        visible:true,
-        enabled:true,
-        borderColor:'#cccccc',
-        borderWidth:0,
-        hiddenColor:'#cccccc',
-        hoverColor:'#293C55',
-        style:{
-            color:'#666666',
-            fontFamily:'Verdana',
-            fontSize:'14px'
-        },
-        position:'right',
-        floating:false,
-        x:0,
-        y:0,
-        layout:'vertical',
-        continuous:true,
-        margin:10
-    };
-
-    var disabledRangeLegend = QueryUtils.merge({}, rangeLegend, true);
-    QueryUtils.merge(disabledRangeLegend, {enabled:false}, true);
-
-    var disabledLegend = {
-        visible:true,
-        enabled:false,
-        hiddenColor:'#cccccc',
-        hoverColor:'#293C55',
-        borderRadius:0,
-        borderColor:'#cccccc',
-        borderWidth:0,
-        backgroundColor:null,
-        style:{
-            color:'#666666',
-            fontFamily:'Verdana',
-            fontSize:'14px'
-        },
-        position:'right',
-        floating:false,
-        layout:'vertical',
-        x:0,
-        y:0,
-        shadow:false,
-        margin:10
-    };
-
-    var xCategoryAxis = {
-        type:'category',
-        position:'bottom',
-        onZero:false,
-        reversed:false,
-        title:{
-            text:null,
-            align:'center',
-            rotation:0,
-            useHtml:false,
-            style:{
-                color:'#666666',
-                fontFamily:'Verdana',
-                fontSize:'14px'
-            }
-        },
-        lineWidth:1,
-        lineColor:'#cccccc',
-        showArrow:false,
-        enableTick:true,
-        enableMinorTick:false,
-
-        minorTickColor:'#cccccc',
-        minorTickWidth:1,
-        minorTickLength:2,
-
-        tickColor:'#cccccc',
-        tickWidth:1,
-        tickLength:4,
-
-        tickPadding:6,
-        gridLineWidth:0,
-        gridLineColor:'#dddddd',
-
-        showLabel:true,
-        labelStyle:{
-            color:'#666666',
-            fontFamily:'Verdana',
-            fontSize:'14px'
-        },
-        labelRotation:0,
-        useHtml:false
-    };
-
-    var yValueAxis = {
-        type:'value',
-        position:'left',
-        onZero:false,
-        reversed:false,
-        title:{
-            text:null,
-            align:'center',
-            rotation:0,
-            useHtml:false,
-            style:{
-                color:'#666666',
-                fontFamily:'Verdana',
-                fontSize:'14px'
-            }
-        },
-        lineWidth:0,
-        lineColor:'#cccccc',
-        showArrow:false,
-        enableTick:false,
-        enableMinorTick:false,
-
-        minorTickColor:'#cccccc',
-        minorTickWidth:1,
-        minorTickLength:2,
-
-        tickColor:'#cccccc',
-        tickWidth:1,
-        tickLength:4,
-
-        tickPadding:6,
-        gridLineWidth:1,
-        gridLineColor:'#dddddd',
-
-        showLabel:true,
-        labelStyle:{
-            color:'#666666',
-            fontFamily:'Verdana',
-            fontSize:'14px'
-        },
-        labelRotation:0,
-        useHtml:false
-    };
-
-    var xValueAxis = QueryUtils.merge({}, xCategoryAxis, true);
-    QueryUtils.merge(xValueAxis, {type:'value'}, true);
-
-    var yCategoryAxis = QueryUtils.merge({}, yValueAxis, true);
-    QueryUtils.merge(yCategoryAxis, {type:'category'}, true);
-
-    var angleAxis = {
-        type:'category',
-
-        lineWidth:1,
-        lineColor:'#cccccc',
-
-        gridLineWidth:1,
-        gridLineColor:'#dddddd',
-
-        showLabel:true,
-        labelStyle:{
-            color:'#666666',
-            fontFamily:'Verdana',
-            fontSize:'9pt'
-        },
-        labelRotation:0,
-        useHtml:false
-    };
-
-    var radiusAxis = QueryUtils.merge({}, angleAxis, true);
-    QueryUtils.merge(radiusAxis, {type:'value'}, true);
-
-    config[Constants.PIE_CHART] = {
-        style:gradualStyle,
-
-        plotOptions:Options[Constants.PIE_CHART].plotOptions.pie
-    };
-
-    config[Constants.COLUMN_CHART] = {
-
-        style:gradualStyle,
-
-        zoom:xyZoom,
-
-        xAxis:[xCategoryAxis],
-
-        yAxis:[yValueAxis],
-
-        plotOptions:Options[Constants.COLUMN_CHART].plotOptions.column
-    };
-
-    config[Constants.BAR_CHART] = {
-        style:gradualStyle,
-
-        zoom:xyZoom,
-
-        xAxis:[xValueAxis],
-
-        yAxis:[yCategoryAxis],
-
-        plotOptions:Options[Constants.BAR_CHART].plotOptions.bar
-
-    };
-
-    config[Constants.LINE_CHART] = {
-        zoom:xyZoom,
-
-        xAxis:[xCategoryAxis],
-
-        yAxis:[yValueAxis],
-
-        plotOptions:Options[Constants.LINE_CHART].plotOptions.line
-    };
-
-    config[Constants.AREA_CHART] = {
-        zoom:xyZoom,
-
-        xAxis:[xCategoryAxis],
-
-        yAxis:[yValueAxis],
-
-        plotOptions:Options[Constants.AREA_CHART].plotOptions.area
-    };
-
-    config[Constants.GAUGE_CHART] = {
-
-        legend:disabledLegend,
-
-        gaugeAxis:[{
-            type:'value',
-            showLabel:true,
-            step:1,
-
-            enableTick:true,
-            tickColor:'#BBBBBB',
-            tickWidth:1,
-
-            enableMinorTick:true,
-            minorTickColor:'#e2e2e2',
-            minorTickWidth:1,
-
-            labelStyle:{
-                color:'#666666',
-                fontFamily:'Verdana',
-                fontSize:'10px'
-            }
-        }],
-
-        plotOptions:Options[Constants.GAUGE_CHART].plotOptions.gauge
-    };
-
-    config[Constants.POINTER_GAUGE] = {
-        seriesLabel:{
-            enabled:true,
-            align:Constants.BOTTOM,
-            useHtml:false,
-            style:{
-                color:'#333333',
-                fontSize:'14px',
-                fontFamily:'Verdana'
+    function rangeLegendFun() {
+        return {
+            visible: true,
+            enabled: true,
+            borderColor: '#cccccc',
+            borderWidth: 0,
+            hiddenColor: '#cccccc',
+            hoverColor: '#293C55',
+            style: {
+                color: '#666666',
+                fontFamily: 'Verdana',
+                fontSize: '14px'
             },
-            formatter:{
-                identifier: "${CATEGORY}"
-            }
-        },
+            position: 'right',
+            floating: false,
+            x: 0,
+            y: 0,
+            layout: 'vertical',
+            continuous: true,
+            margin: 10
+        }
+    }
 
-        valueLabel:{
-            enabled:true,
-            useHtml:false,
-            backgroundColor:'#F5F5F7',
-            style:{
-                color:'#333333',
-                fontSize:'11px',
-                fontFamily:'Verdana'
+    function disabledRangeLegendFun() {
+        return QueryUtils.merge(rangeLegendFun(), {enabled:false}, true);
+    }
+
+    function disabledLegendFun() {
+        return {
+            visible: true,
+            enabled: false,
+            hiddenColor: '#cccccc',
+            hoverColor: '#293C55',
+            borderRadius: 0,
+            borderColor: '#cccccc',
+            borderWidth: 0,
+            backgroundColor: null,
+            style: {
+                color: '#666666',
+                fontFamily: 'Verdana',
+                fontSize: '14px'
             },
-            formatter:{
-                identifier: "${SERIES}${VALUE}",
-                valueFormat: d3.format('.2')
-            }
-        },
+            position: 'right',
+            floating: false,
+            layout: 'vertical',
+            x: 0,
+            y: 0,
+            shadow: false,
+            margin: 10
+        }
+    }
 
-        needle:'#E5715A',
-        hinge:'#656B6D',
-        hingeBackgroundColor:'#DCF2F9',
-        paneBackgroundColor:'#FCFCFC'
-    };
+    function xCategoryAxisFun() {
+        return {
+            type: 'category',
+            position: 'bottom',
+            onZero: false,
+            reversed: false,
+            title: {
+                text: null,
+                align: 'center',
+                rotation: 0,
+                useHtml: false,
+                style: {
+                    color: '#666666',
+                    fontFamily: 'Verdana',
+                    fontSize: '14px'
+                }
+            },
+            lineWidth: 1,
+            lineColor: '#cccccc',
+            showArrow: false,
+            enableTick: true,
+            enableMinorTick: false,
 
-    config[Constants.SLOT_GAUGE] = {
-        percentageLabel:{
-            enabled:true,
-            useHtml:false,
-            style:{
-                fontSize:'36px',
-                fontFamily:'Verdana',
-                fontWeight:'bold',
-                textShadow:'0px 2px 0px rgba(0,0,0,0.08)'
+            minorTickColor: '#cccccc',
+            minorTickWidth: 1,
+            minorTickLength: 2,
+
+            tickColor: '#cccccc',
+            tickWidth: 1,
+            tickLength: 4,
+
+            tickPadding: 6,
+            gridLineWidth: 0,
+            gridLineColor: '#dddddd',
+
+            showLabel: true,
+            labelStyle: {
+                color: '#666666',
+                fontFamily: 'Verdana',
+                fontSize: '14px'
+            },
+            labelRotation: 0,
+            useHtml: false
+        }
+    }
+
+    function yValueAxisFun() {
+        return {
+            type: 'value',
+            position: 'left',
+            onZero: false,
+            reversed: false,
+            title: {
+                text: null,
+                align: 'center',
+                rotation: 0,
+                useHtml: false,
+                style: {
+                    color: '#666666',
+                    fontFamily: 'Verdana',
+                    fontSize: '14px'
+                }
+            },
+            lineWidth: 0,
+            lineColor: '#cccccc',
+            showArrow: false,
+            enableTick: false,
+            enableMinorTick: false,
+
+            minorTickColor: '#cccccc',
+            minorTickWidth: 1,
+            minorTickLength: 2,
+
+            tickColor: '#cccccc',
+            tickWidth: 1,
+            tickLength: 4,
+
+            tickPadding: 6,
+            gridLineWidth: 1,
+            gridLineColor: '#dddddd',
+
+            showLabel: true,
+            labelStyle: {
+                color: '#666666',
+                fontFamily: 'Verdana',
+                fontSize: '14px'
+            },
+            labelRotation: 0,
+            useHtml: false
+        }
+    }
+
+    function xValueAxisFun() {
+        return QueryUtils.merge(xCategoryAxisFun(), {type:'value'}, true);
+    }
+
+    function yCategoryAxisFun() {
+        return QueryUtils.merge(yValueAxisFun(), {type:'category'}, true);
+    }
+
+    function angleAxisFun() {
+        return {
+            type: 'category',
+
+            lineWidth: 1,
+            lineColor: '#cccccc',
+
+            gridLineWidth: 1,
+            gridLineColor: '#dddddd',
+
+            showLabel: true,
+            labelStyle: {
+                color: '#666666',
+                fontFamily: 'Verdana',
+                fontSize: '9pt'
+            },
+            labelRotation: 0,
+            useHtml: false
+        }
+    }
+
+    function radiusAxisFun() {
+        return QueryUtils.merge(angleAxisFun(), {type:'value'}, true);
+    }
+
+    function configFun() {
+
+        var config = {};
+
+        config[Constants.PIE_CHART] = {
+            style: gradualStyle,
+
+            plotOptions: Options[Constants.PIE_CHART].plotOptions.pie
+        };
+
+        config[Constants.COLUMN_CHART] = {
+
+            style: gradualStyle,
+
+            zoom: xyZoomFun(),
+
+            xAxis: [xCategoryAxisFun()],
+
+            yAxis: [yValueAxisFun()],
+
+            plotOptions: Options[Constants.COLUMN_CHART].plotOptions.column
+        };
+
+        config[Constants.BAR_CHART] = {
+            style: gradualStyle,
+
+            zoom: xyZoomFun(),
+
+            xAxis: [xValueAxisFun()],
+
+            yAxis: [yCategoryAxisFun()],
+
+            plotOptions: Options[Constants.BAR_CHART].plotOptions.bar
+
+        };
+
+        config[Constants.LINE_CHART] = {
+            zoom: xyZoomFun(),
+
+            xAxis: [xCategoryAxisFun()],
+
+            yAxis: [yValueAxisFun()],
+
+            plotOptions: Options[Constants.LINE_CHART].plotOptions.line
+        };
+
+        config[Constants.AREA_CHART] = {
+            zoom: xyZoomFun(),
+
+            xAxis: [xCategoryAxisFun()],
+
+            yAxis: [yValueAxisFun()],
+
+            plotOptions: Options[Constants.AREA_CHART].plotOptions.area
+        };
+
+        config[Constants.GAUGE_CHART] = {
+
+            legend: disabledLegendFun(),
+
+            gaugeAxis: [{
+                type: 'value',
+                showLabel: true,
+                step: 1,
+
+                enableTick: true,
+                tickColor: '#BBBBBB',
+                tickWidth: 1,
+
+                enableMinorTick: true,
+                minorTickColor: '#e2e2e2',
+                minorTickWidth: 1,
+
+                labelStyle: {
+                    color: '#666666',
+                    fontFamily: 'Verdana',
+                    fontSize: '10px'
+                }
+            }],
+
+            plotOptions: Options[Constants.GAUGE_CHART].plotOptions.gauge
+        };
+
+        config[Constants.POINTER_GAUGE] = {
+            seriesLabel: {
+                enabled: true,
+                align: Constants.BOTTOM,
+                useHtml: false,
+                style: {
+                    color: '#333333',
+                    fontSize: '14px',
+                    fontFamily: 'Verdana'
+                },
+                formatter: {
+                    identifier: "${CATEGORY}"
+                }
             },
 
-            formatter:{
-                identifier: "${PERCENT}",
-                percentFormat: d3.format('.2%')
-            }
-        },
-
-        valueLabel:{
-            enabled:true,
-            useHtml:false,
-            style:{
-                color:'#666666',
-                fontSize:'14px',
-                fontFamily:'Verdana'
-            },
-            formatter:{
-                identifier: "${CATEGORY}${VALUE}",
-                valueFormat: d3.format('.2')
-            }
-        },
-
-        needle:'#ffffff',
-        slotBackgroundColor:'#eeeeee'
-    };
-
-    config[Constants.RING_GAUGE] = {
-        percentageLabel:{
-            enabled:true,
-
-            useHtml:false,
-
-            style:{
-                fontSize:'24px',
-                fontFamily:'Verdana',
-                fontWeight:'bold'
+            valueLabel: {
+                enabled: true,
+                useHtml: false,
+                backgroundColor: '#F5F5F7',
+                style: {
+                    color: '#333333',
+                    fontSize: '11px',
+                    fontFamily: 'Verdana'
+                },
+                formatter: {
+                    identifier: "${SERIES}${VALUE}",
+                    valueFormat: d3.format('.2')
+                }
             },
 
-            formatter:{
-                identifier: "${PERCENT}",
-                percentFormat: d3.format('.2%')
-            }
+            needle: '#E5715A',
+            hinge: '#656B6D',
+            hingeBackgroundColor: '#DCF2F9',
+            paneBackgroundColor: '#FCFCFC'
+        };
 
-        },
+        config[Constants.SLOT_GAUGE] = {
+            percentageLabel: {
+                enabled: true,
+                useHtml: false,
+                style: {
+                    fontSize: '36px',
+                    fontFamily: 'Verdana',
+                    fontWeight: 'bold',
+                    textShadow: '0px 2px 0px rgba(0,0,0,0.08)'
+                },
 
-        valueLabel:{
-            enabled:true,
-
-            useHtml:false,
-
-            style:{
-                color:'#777777',
-                fontSize:'12px',
-                fontFamily:'Verdana'
+                formatter: {
+                    identifier: "${PERCENT}",
+                    percentFormat: d3.format('.2%')
+                }
             },
 
-            formatter:{
-                identifier: "${CATEGORY}${VALUE}",
-                valueFormat: d3.format('.2')
-            }
-        },
-
-        clockwise:false,
-        paneBackgroundColor:'#eeeeee',
-        innerPaneBackgroundColor:'#f4f4f4'
-
-    };
-
-    config[Constants.THERMOMETER_GAUGE] = {
-
-        percentageLabel:{
-            enabled:true,
-
-            useHtml:false,
-
-            align:'left',
-
-            style:{
-                color:'#333333',
-                fontSize:'12px',
-                fontFamily:'Verdana',
-                fontWeight:'bold'
+            valueLabel: {
+                enabled: true,
+                useHtml: false,
+                style: {
+                    color: '#666666',
+                    fontSize: '14px',
+                    fontFamily: 'Verdana'
+                },
+                formatter: {
+                    identifier: "${CATEGORY}${VALUE}",
+                    valueFormat: d3.format('.2')
+                }
             },
 
-            formatter:{
-                identifier: "${PERCENT}",
-                percentFormat: d3.format('.2%')
-            }
-        },
+            needle: '#ffffff',
+            slotBackgroundColor: '#eeeeee'
+        };
 
-        valueLabel:{
-            enabled:true,
+        config[Constants.RING_GAUGE] = {
+            percentageLabel: {
+                enabled: true,
 
-            useHtml:false,
+                useHtml: false,
 
-            align:'left',
+                style: {
+                    fontSize: '24px',
+                    fontFamily: 'Verdana',
+                    fontWeight: 'bold'
+                },
 
-            style:{
-                color:'#bababa',
-                fontSize:'12px',
-                fontFamily:'Verdana'
+                formatter: {
+                    identifier: "${PERCENT}",
+                    percentFormat: d3.format('.2%')
+                }
+
             },
 
-            formatter:{
-                identifier: "${CATEGORY}${VALUE}",
-                valueFormat: d3.format('.2')
-            }
+            valueLabel: {
+                enabled: true,
 
-        },
+                useHtml: false,
 
-        needle:'#ffffff',
-        slotBackgroundColor:'#eeeeee',
-        thermometerLayout:'vertical'
+                style: {
+                    color: '#777777',
+                    fontSize: '12px',
+                    fontFamily: 'Verdana'
+                },
 
-    };
+                formatter: {
+                    identifier: "${CATEGORY}${VALUE}",
+                    valueFormat: d3.format('.2')
+                }
+            },
 
-    config[Constants.RADAR_CHART] = {
+            clockwise: false,
+            paneBackgroundColor: '#eeeeee',
+            innerPaneBackgroundColor: '#f4f4f4'
 
-        polar: {},
+        };
 
-        angleAxis:[angleAxis],
+        config[Constants.THERMOMETER_GAUGE] = {
 
-        radiusAxis:[radiusAxis],
+            percentageLabel: {
+                enabled: true,
 
-        plotOptions:Options[Constants.RADAR_CHART].plotOptions.radar
-    };
+                useHtml: false,
 
-    config[Constants.SCATTER_CHART] = {
-        zoom:xyZoom,
+                align: 'left',
 
-        rangeLegend:disabledRangeLegend,
+                style: {
+                    color: '#333333',
+                    fontSize: '12px',
+                    fontFamily: 'Verdana',
+                    fontWeight: 'bold'
+                },
 
-        xAxis:[xValueAxis],
+                formatter: {
+                    identifier: "${PERCENT}",
+                    percentFormat: d3.format('.2%')
+                }
+            },
 
-        yAxis:[yValueAxis],
+            valueLabel: {
+                enabled: true,
 
-        plotOptions:Options[Constants.SCATTER_CHART].plotOptions.scatter
+                useHtml: false,
 
-    };
+                align: 'left',
 
-    config[Constants.BUBBLE_CHART] = {
-        zoom:xyZoom,
+                style: {
+                    color: '#bababa',
+                    fontSize: '12px',
+                    fontFamily: 'Verdana'
+                },
 
-        rangeLegend:disabledRangeLegend,
+                formatter: {
+                    identifier: "${CATEGORY}${VALUE}",
+                    valueFormat: d3.format('.2')
+                }
 
-        xAxis:[xValueAxis],
+            },
 
-        yAxis:[yValueAxis],
+            needle: '#ffffff',
+            slotBackgroundColor: '#eeeeee',
+            thermometerLayout: 'vertical'
 
-        plotOptions:Options[Constants.BUBBLE_CHART].plotOptions.bubble
+        };
 
-    };
+        config[Constants.RADAR_CHART] = {
 
-    config[Constants.MULTIPIE_CHART] = {
-        innerRadiusPct: 2/3,
+            polar: {},
 
-        plotOptions:Options[Constants.MULTIPIE_CHART].plotOptions.multiPie
+            angleAxis: [angleAxisFun()],
 
-    };
+            radiusAxis: [radiusAxisFun()],
 
-    config[Constants.TREEMAP_CHART] = {
-        topLabelGap: 6,
+            plotOptions: Options[Constants.RADAR_CHART].plotOptions.radar
+        };
 
-        plotOptions:Options[Constants.TREEMAP_CHART].plotOptions.treeMap
-    };
+        config[Constants.SCATTER_CHART] = {
+            zoom: xyZoomFun(),
 
-    config[Constants.AREA_MAP] = {
-        title:nullTitle,
+            rangeLegend: disabledRangeLegendFun(),
 
-        rangeLegend:rangeLegend,
+            xAxis: [xValueAxisFun()],
 
-        legend:disabledLegend,
+            yAxis: [yValueAxisFun()],
 
-        plotOptions:Options[Constants.AREA_MAP].plotOptions.areaMap
+            plotOptions: Options[Constants.SCATTER_CHART].plotOptions.scatter
 
-    };
+        };
 
-    config[Constants.POINT_MAP] = {
-        title:nullTitle,
+        config[Constants.BUBBLE_CHART] = {
+            zoom: xyZoomFun(),
 
-        rangeLegend:rangeLegend,
+            rangeLegend: disabledRangeLegendFun(),
 
-        legend:disabledLegend,
+            xAxis: [xValueAxisFun()],
 
-        icon:{
-            iconUrl:'../../doc/example/marker-icon.png',
-            iconSize: [25, 41]
-        },
+            yAxis: [yValueAxisFun()],
 
-        plotOptions:Options[Constants.POINT_MAP].plotOptions.pointMap
-    };
+            plotOptions: Options[Constants.BUBBLE_CHART].plotOptions.bubble
 
+        };
 
-    return config;
+        config[Constants.MULTIPIE_CHART] = {
+            innerRadiusPct: 2 / 3,
+
+            plotOptions: Options[Constants.MULTIPIE_CHART].plotOptions.multiPie
+
+        };
+
+        config[Constants.TREEMAP_CHART] = {
+            topLabelGap: 6,
+
+            plotOptions: Options[Constants.TREEMAP_CHART].plotOptions.treeMap
+        };
+
+        config[Constants.AREA_MAP] = {
+            title: nullTitleFun(),
+
+            rangeLegend: rangeLegendFun(),
+
+            legend: disabledLegendFun(),
+
+            plotOptions: Options[Constants.AREA_MAP].plotOptions.areaMap
+
+        };
+
+        config[Constants.POINT_MAP] = {
+            title: nullTitleFun(),
+
+            rangeLegend: rangeLegendFun(),
+
+            legend: disabledLegendFun(),
+
+            icon: {
+                iconUrl: '../../doc/example/marker-icon.png',
+                iconSize: [25, 41]
+            },
+
+            plotOptions: Options[Constants.POINT_MAP].plotOptions.pointMap
+        };
+
+        return config;
+    }
+    return configFun();
 });
 /**
  * Created by eason on 15/6/15.
@@ -8969,126 +9031,130 @@ define('theme/config',['require','../Constants','../utils/QueryUtils','./options
  */
 define('theme/default',[],function(){
 
-    var tooltip = {
-        enabled:true,
-        animation:true,
-        follow:false,
-        backgroundColor:'rgba(0,0,0,0.5)',
-        borderColor:null,
-        borderWidth:0,
-        borderRadius:2,
-        shadow:true,
-        hideDelay:500,
-        shared:false,
-        formatter: {
-            identifier: "${CATEGORY}${SERIES}${VALUE}"
-        },
-        padding:5
-    };
+    function tooltipFun() {
+        return {
+            enabled: true,
+            animation: true,
+            follow: false,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            borderColor: null,
+            borderWidth: 0,
+            borderRadius: 2,
+            shadow: true,
+            hideDelay: 500,
+            shared: false,
+            formatter: {
+                identifier: "${CATEGORY}${SERIES}${VALUE}"
+            },
+            padding: 5
+        }
+    }
 
-    var config = {
-        colors:['#63b2ee','#76da91','#f8cb7f','#f89588','#7cd6cf','#9192ab','#7898e1','#efa666','#eddd86','#9987ce'],
+    function configFun() {
+        return {
+            colors: ['#63b2ee', '#76da91', '#f8cb7f', '#f89588', '#7cd6cf', '#9192ab', '#7898e1', '#efa666', '#eddd86', '#9987ce'],
 
-        plotOptions:{
-            animation:true,
+            plotOptions: {
+                animation: true,
 
-            visible:true,
+                visible: true,
 
-            dataLabels:{
-                enabled:false,
-                align:'center'
+                dataLabels: {
+                    enabled: false,
+                    align: 'center'
+                },
+
+                tooltip: tooltipFun()
             },
 
-            tooltip:tooltip
-        },
+            tooltip: tooltipFun(),
 
-        tooltip:tooltip,
-
-        tools:{
-            enabled:true,
-            hidden:true,
-            sort:{
-                enabled:true
+            tools: {
+                enabled: true,
+                hidden: true,
+                sort: {
+                    enabled: true
+                },
+                toImage: {
+                    enabled: true
+                },
+                fullScreen: {
+                    enabled: true
+                }
             },
-            toImage:{
-                enabled:true
+
+            inverted: false,
+
+            dTools: {
+                style: {
+                    "fontFamily": "Microsoft Yahei",
+                    "color": "#b2b2b2",
+                    "fontSize": "12px",
+                    "fontWeight": ""
+                },
+                currentColor: '#62b2ef',
+                backgroundColor: 'white',
+                enabled: false
             },
-            fullScreen:{
-                enabled:true
-            }
-        },
 
-        inverted:false,
-
-        dTools:{
-            style:{
-                "fontFamily": "Microsoft Yahei",
-                "color": "#b2b2b2",
-                "fontSize": "12px",
-                "fontWeight": ""
+            title: {
+                align: 'center',
+                backgroundColor: null,
+                borderRadius: 0,
+                floating: false,
+                x: 0,
+                y: 0,
+                text: "title",
+                style: {
+                    color: '#333333',
+                    fontSize: '22px',
+                    fontFamily: 'Verdana'
+                },
+                useHtml: false
             },
-            currentColor:'#62b2ef',
-            backgroundColor:'white',
-            enabled:false
-        },
 
-        title:{
-            align:'center',
-            backgroundColor:null,
-            borderRadius:0,
-            floating:false,
-            x:0,
-            y:0,
-            text:"title",
-            style:{
-                color:'#333333',
-                fontSize:'22px',
-                fontFamily:'Verdana'
+            legend: {
+                visible: true,
+                enabled: true,
+                hiddenColor: '#cccccc',
+                hoverColor: '#293C55',
+                borderRadius: 0,
+                borderColor: '#cccccc',
+                borderWidth: 0,
+                backgroundColor: null,
+                style: {
+                    color: '#666666',
+                    fontFamily: 'Verdana',
+                    fontSize: '14px'
+                },
+                position: 'right',
+                floating: false,
+                layout: 'vertical',
+                x: 0,
+                y: 0,
+                shadow: false,
+                margin: 10
             },
-            useHtml:false
-        },
 
-        legend:{
-            visible:true,
-            enabled:true,
-            hiddenColor:'#cccccc',
-            hoverColor:'#293C55',
-            borderRadius:0,
-            borderColor:'#cccccc',
-            borderWidth:0,
-            backgroundColor:null,
-            style:{
-                color:'#666666',
-                fontFamily:'Verdana',
-                fontSize:'14px'
-            },
-            position:'right',
-            floating:false,
-            layout:'vertical',
-            x:0,
-            y:0,
-            shadow:false,
-            margin:10
-        },
+            backgroundColor: null,
+            backgroundImage: null,
+            borderColor: '#CCCCCC',
+            borderWidth: 0,
+            borderRadius: 0,
+            shadow: false,
 
-        backgroundColor:null,
-        backgroundImage:null,
-        borderColor:  '#CCCCCC',
-        borderWidth: 0,
-        borderRadius: 0,
-        shadow: false,
+            plotBackgroundColor: null,
+            plotBackgroundImage: null,
+            plotBorderColor: '#CCCCCC',
+            plotBorderWidth: 0,
+            plotBorderRadius: 0,
+            plotShadow: false,
 
-        plotBackgroundColor:null,
-        plotBackgroundImage:null,
-        plotBorderColor:  '#CCCCCC',
-        plotBorderWidth: 0,
-        plotBorderRadius: 0,
-        plotShadow: false,
+            drag: false
+        }
+    }
 
-        drag:false
-    };
-
-    return config;
+    return configFun();
 });
 /**
  * Created by eason on 15/6/17.
@@ -9428,6 +9494,7 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
             this.orderMap = {};
             this.cateMap = {};
             this.seriesOrder = [];
+            this.scale = 1;//按比例缩放的时候的参数
 
             var option = this.currentOption, vanchart = this,
                 seriesData = option.series, chartType = option.chartType;
@@ -10448,6 +10515,10 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
                 = this.clipSeriesGroup = this.seriesTextRenderGroup = this.seriesTextDivGroup =null;
         },
 
+        isMap:function(){
+            return false;
+        },
+
         resize:function(){
 
             var dom = this.dom;
@@ -10569,6 +10640,7 @@ define('VanChartMap',['require','./VanChart','./utils/BaseUtils','./utils/PathUt
             this._leaflet.vanchart = this;
 
             BaseUtils.setDomBackground(dom, {
+                backgroundImage:option.backgroundImage,
                 backgroundColor:option.backgroundColor,
                 borderColor:option.borderColor,
                 borderWidth:option.borderWidth,
@@ -10632,6 +10704,7 @@ define('VanChartMap',['require','./VanChart','./utils/BaseUtils','./utils/PathUt
             var series = this.series;
             var seriesOptions = this.currentOption.series;
             geo.originSeries = seriesOptions;
+            geo.seriesOrder = this.seriesOrder;
 
             this.layerMap[0] = [];
             this.layerMap[0][0] = {series:series, geo:geo, layerIndex:this.layerIndex};
@@ -10705,17 +10778,25 @@ define('VanChartMap',['require','./VanChart','./utils/BaseUtils','./utils/PathUt
 
             drillGeo = new Geo(drilldown.geo, ComponentLibrary.GEO_COMPONENT, vanchartMap);
 
+            var seriesOrder = [], validMap = {};
+
             drilldown.series.forEach(function(sery, index){
                 var classType = sery.type || vanchartMap.currentOption.chartType;
                 var Class = ChartLibrary.get(classType);
 
                 drillSeries[classType] = drillSeries[classType] || [];
                 drillSeries[classType].push(new Class(sery, vanchartMap, index));
+
+                if(!validMap[classType]){
+                    seriesOrder.push(classType);
+                    validMap[classType] = true;
+                }
             });
 
             //has been initialized
             point.geo = drillGeo;
             point.drillSeries = drillSeries;
+            drillGeo.seriesOrder = seriesOrder;
             drillGeo.originSeries = drilldown.series;
 
             var nextLayerIndex = this.layerIndex + 1;
@@ -10729,7 +10810,7 @@ define('VanChartMap',['require','./VanChart','./utils/BaseUtils','./utils/PathUt
         },
 
         drillDown:function(dataPoint){
-            if(dataPoint.drilldown){
+            if(dataPoint.drilldown && dataPoint.drilldown !== true){
 
                 if(!dataPoint.geo){
                     dataPoint = this._createDrillDownWhenLoaded(dataPoint);
@@ -10737,6 +10818,12 @@ define('VanChartMap',['require','./VanChart','./utils/BaseUtils','./utils/PathUt
 
                 var vanchart = this;
 
+                this._setNewGeo(dataPoint.geo, vanchart.components.geo);
+
+                this._showVanMap(dataPoint.geo, dataPoint.drillSeries, true);
+
+
+                //显示之后才设置lastMap
                 vanchart.lastIconData = vanchart.lastIconData || [];
                 vanchart.lastIconData[this.layerIndex] = {
                     zoomListener:dataPoint.geo.getZoomListener(),
@@ -10744,9 +10831,6 @@ define('VanChartMap',['require','./VanChart','./utils/BaseUtils','./utils/PathUt
                     geo:vanchart.getComponent(ComponentLibrary.GEO_COMPONENT)
                 };
 
-                this._setNewGeo(dataPoint.geo, vanchart.components.geo);
-
-                this._showVanMap(dataPoint.geo, dataPoint.drillSeries, true);
             }
         },
 
@@ -10766,6 +10850,7 @@ define('VanChartMap',['require','./VanChart','./utils/BaseUtils','./utils/PathUt
             var vanchart = this;
             vanchart.series = series;
             vanchart.components.geo = geo;
+            vanchart.seriesOrder = geo.seriesOrder;
             vanchart.currentOption.series = geo.originSeries;
             vanchart.hoverPoint = null;
 
@@ -11091,8 +11176,7 @@ define('VanChartMap',['require','./VanChart','./utils/BaseUtils','./utils/PathUt
 
         //重新计算每个标签的位置
         _fixConflictLabel:function(areaText, bubbleText, scatterText, imageText){
-            var vanchart = this, leaflet = vanchart._leaflet;
-            var geo = vanchart.getComponent(ComponentLibrary.GEO_COMPONENT);
+            var vanchart = this;
 
             var pointsText = areaText.concat(bubbleText, scatterText, imageText);
 
@@ -11102,9 +11186,7 @@ define('VanChartMap',['require','./VanChart','./utils/BaseUtils','./utils/PathUt
 
             pointsText.forEach(function(point){
                 if(point.dataLabels && point.feature && point.feature.properties.center){
-                    var latlng = geo.getDataPointLatLng(point);
-                    var pixels = leaflet.latLngToContainerPoint(latlng);
-                    var labelBounds = BaseUtils.makeBounds(pixels, point.labelDim);
+                    var labelBounds = vanchart._getTextBounds(point);
                     point.labelPos = labelBounds;
                     manager.addBounds(labelBounds);
                 }
@@ -11112,9 +11194,7 @@ define('VanChartMap',['require','./VanChart','./utils/BaseUtils','./utils/PathUt
 
             pointsText.forEach(function(point){
                 if(point.dataLabels && ((point.feature && !point.feature.properties.center) || point.lnglat)){
-                    var latlng = geo.getDataPointLatLng(point);
-                    var pixels = leaflet.latLngToContainerPoint(latlng);
-                    var labelBounds = BaseUtils.makeBounds(pixels, point.labelDim);
+                    var labelBounds = vanchart._getTextBounds(point);
                     if(!manager.isOverlapped(labelBounds)){
                         point.labelPos = labelBounds;
                         manager.addBounds(labelBounds);
@@ -11123,6 +11203,26 @@ define('VanChartMap',['require','./VanChart','./utils/BaseUtils','./utils/PathUt
                     }
                 }
             });
+        },
+
+        _getTextBounds:function(point){
+            var vanchart = this, leaflet = vanchart._leaflet;
+            var geo = vanchart.getComponent(ComponentLibrary.GEO_COMPONENT);
+            var latlng = geo.getDataPointLatLng(point);
+            var pixels = leaflet.latLngToContainerPoint(latlng);
+            var y = pixels.y;
+
+            if(point.series.type == Constants.AREA_MAP){
+                y -= point.labelDim.height/2
+            }else if(point.marker && !BaseUtils.isImageMarker(point.marker.symbol)){
+                var radius = point.marker.radius || 4.5;
+                y -= (radius + point.labelDim.height);
+            }else{
+                var iconHeight = point.icon.iconSize[1];
+                y -= (iconHeight/2 + point.labelDim.height);
+            }
+
+            return BaseUtils.makeBounds([pixels.x, y], point.labelDim);
         },
 
         _updateAreaMap:function(area, leaflet){
@@ -11494,6 +11594,10 @@ define('VanChartMap',['require','./VanChart','./utils/BaseUtils','./utils/PathUt
 
         path2vml:function(path){
             return PathUtils.path2vml(path);
+        },
+
+        isMap:function(){
+            return true;
         }
 
     });
@@ -11605,11 +11709,7 @@ define('VanChartForceBubble',['require','./VanChart','./utils/BaseUtils','./Comp
                     point.graphic.attr(attrs);
                 }
 
-                if(point.textGraphic){
-                    point.textGraphic.attr('transform', BaseUtils.makeTranslate(point.labelPos))
-                }else{
-                    point.series._createTextGraphic(point);
-                }
+                this._updatePointTextGraphic(point);
             }
         },
 
@@ -11792,6 +11892,29 @@ define('VanChartForceBubble',['require','./VanChart','./utils/BaseUtils','./Comp
             }
         },
 
+        _updatePointTextGraphic:function(point){
+            if(point.textGraphic){
+                if(point.labelPos){
+                    point.textGraphic.attr('transform', BaseUtils.makeTranslate(point.labelPos));
+                }else{
+                    point.textGraphic.remove();
+                    point.textGraphic = null;
+                }
+            }else{
+                point.series._createTextGraphic(point);
+            }
+        },
+
+        _drawMoreLabels: function () {
+            var vanchart = this, visibleNodes = vanchart.forceBubbleNodes;
+
+            if(vanchart.getShowMoreLabelTime() != 0){
+                visibleNodes.forEach(function(point){
+                    point.series._showAndExitMoreLabel(point.originalPoint, point.x, point.y, null, null, vanchart.group);
+                });
+            }
+        },
+
         _updateWithForce:function(maxRadius){
 
             var vanchart = this, visibleNodes = vanchart.forceBubbleNodes, plotBounds = vanchart.getPlotBounds();
@@ -11801,11 +11924,26 @@ define('VanChartForceBubble',['require','./VanChart','./utils/BaseUtils','./Comp
                 .size([plotBounds.width, plotBounds.height])
                 .gravity(.05).charge(0).on("tick", tick)
                 .on('end', function(){
+                    if (vanchart._moreLabelTimeOut) {
+                        clearTimeout(vanchart._moreLabelTimeOut);
+                    }
 
-                    visibleNodes.forEach(function(point){
-                        vanchart._calculateLabelPos(point);
-                        point.series._createTextGraphic(point.originalPoint);
-                    });
+                    vanchart._moreLabelTimeOut = setTimeout(function () {
+                        vanchart._changeDataState = false;
+
+                        visibleNodes.forEach(function(point){
+                            var originalPoint = point.originalPoint;
+
+                            originalPoint.moreLabelG && originalPoint.moreLabelG.remove();
+                            originalPoint.moreLabelG = null;
+
+                            vanchart._calculateLabelPos(point);
+                            vanchart._updatePointTextGraphic(originalPoint)
+                        });
+
+                    }, vanchart.getShowMoreLabelTime());
+
+                    vanchart._drawMoreLabels();
 
                 }).start();
 
@@ -11822,15 +11960,14 @@ define('VanChartForceBubble',['require','./VanChart','./utils/BaseUtils','./Comp
                     .each(collide(.5));
 
                 bubbleS.each(function(){
-                    d3.select(this).attr('transform', function(d){
+                    d3.select(this).attr('transform', function(node){
 
-                        if(d.originalPoint.textGraphic){
-                            var x = -d.labelDim.width/2 + d.x;
-                            var y = -d.labelDim.height/2 + d.y;
-                            d.originalPoint.textGraphic.attr('transform', BaseUtils.makeTranslate([x, y]))
+                        if(node.originalPoint.textGraphic){
+                            vanchart._calculateLabelPos(node);
+                            vanchart._updatePointTextGraphic(node.originalPoint);
                         };
 
-                        return BaseUtils.makeTranslate([d.x, d.y]);
+                        return BaseUtils.makeTranslate([node.x, node.y]);
                     })
                 });
             }
@@ -13483,12 +13620,14 @@ define('chart/Series',['require','../utils/BaseUtils','../utils/QueryUtils','../
             var formatter = tooltip.formatter, content = '';
             if(typeof formatter == 'object'){
                 var style = tooltip.style, label = formatter.identifier;
+
+                //当有地图的时候,不可见的点的数据点提示也要展示
                 var hasMap = this.vanchart.vanChartType == 'vanChartMap', hasRangeLegend = this.vanchart.getComponent(ComponentLibrary.RANGE_LEGEND_COMPONENT);
                 if(tooltip.shared && points && points.length){
 
                     content += this._createCategoryLine(point, label, style, formatter);
                     points
-                        .filter(function (p) { return p.visible && !p.isNull && p.tooltip && p.tooltip.shared })
+                        .filter(function (p) { return (p.visible || hasMap) && !p.isNull && p.tooltip && p.tooltip.shared })
                         .forEach(function(point){
                         var dotColor = (hasMap && hasRangeLegend) ? points[0].color : point.color;
 
@@ -14182,14 +14321,14 @@ define('chart/Series',['require','../utils/BaseUtils','../utils/QueryUtils','../
             return moreLabel.style || {"fontFamily": "verdana", "fontSize": "9pt"};
         },
 
-        _showAndExitMoreLabel:function(d, centerX, centerY, centerXFunc, centerYFunc){
+        _showAndExitMoreLabel:function(d, centerX, centerY, centerXFunc, centerYFunc, parentG){
             if(d.depth == 0){//多层饼图
                 return;
             }
 
             var series = this, vanchart = series.vanchart, renderer = vanchart.renderer, animation = series.animation;
 
-            var textLabelGroup = series.group;
+            var textLabelGroup = parentG || series.group;
 
             var lastValue = d._lastValue || 0;
 
@@ -14922,6 +15061,7 @@ define('chart/Bar',['require','../utils/BaseUtils','../utils/ColorUtils','../Con
 
             var tickLength = categoryAxis.getTickLength();//分类轴是一个分类的宽度，值轴日期轴是整个坐标轴的宽度
             var rangeLength = categoryAxis._getRange();
+            rangeLength = Math.abs(rangeLength[1] - rangeLength[0]);
 
             var width = 0, offset = 0;
 
@@ -17268,7 +17408,7 @@ define('chart/Bubble',['require','./Series','../utils/BaseUtils','../Constants',
         },
 
         _getPointKey: function (point) {
-            return '' + point.x + point.y;
+            return this.vanchart.isMap() ? point.name : ('' + point.x + point.y);
         },
 
         getPointValue4MinMax: function (point) {
@@ -17594,6 +17734,10 @@ define('chart/ForceBubble',['require','./Bubble','../Constants','../utils/BaseUt
             return 'y';
         },
 
+        _getPointKey: function (point) {
+            return '' + point.x;
+        },
+
         getAttrs:function(node){
             return {
                 'r': node.radius,
@@ -17752,6 +17896,10 @@ define('chart/Scatter',['require','./Series','../utils/BaseUtils','../Constants'
 
         getStyle:function(p){
             return {};
+        },
+
+        _getPointKey: function (point) {
+            return this.vanchart.isMap() ? point.name : ('' + point.x + point.y);
         },
 
         getAttrs:function(p){
@@ -19362,7 +19510,7 @@ define('chart/PointerGauge',['require','../Constants','../utils/BaseUtils','../u
             if(!this.textGraphicGroup){
                 var vanchart = this.vanchart, textRenderGroup = vanchart.seriesTextRenderGroup, textDivGroup = vanchart.seriesTextDivGroup;
                 this.textGraphicGroup = vanchart.renderer.vgroup();
-                textRenderGroup.addTo(this.group);
+                this.textGraphicGroup.renderG.addTo(this.group);
                 textDivGroup.append(this.textGraphicGroup.divG);
             }
 
@@ -20819,7 +20967,7 @@ define('chart/Gauge',['require','../Constants','../utils/BaseUtils','./Series','
             this.gaugeType = gaugeType;
             this.thermometerLayout = thermometerLayout;
 
-            BaseUtils.extend(this, PROTOTYPES[gaugeType]);
+            BaseUtils.extend(this, Gauge.prototype, PROTOTYPES[gaugeType]);
         },
 
         doLayout:function(){
@@ -20838,7 +20986,7 @@ define('chart/Gauge',['require','../Constants','../utils/BaseUtils','./Series','
             series.defaultBands = (series.bands || []).concat(series._getDefaultBands(series.gaugeAxis.scale.domain()));
 
             series.points.forEach(function (point) {
-                point.color = series._getBandsColor(point) || point.color;
+                point.color = series._getColorFromBands(point.getTargetValue(), series.defaultBands) || point.color;
                 point.mouseOverColor = ColorUtils.getHighLightColor(point.color);
                 point.clickColor = ColorUtils.getClickColor(point.color);
             });
@@ -21177,7 +21325,7 @@ define('chart/Gauge',['require','../Constants','../utils/BaseUtils','./Series','
         },
 
         _onSinglePointerMouseMove:function(ev){
-            if(this.points && this.points.length > 0){
+            if(this.points && this.points.length == 1){
                 this.vanchart.showTooltip(this.points[0], ev);
             }
 
@@ -21822,6 +21970,14 @@ define('chart/Radar',['require','./Series','../utils/BaseUtils','../Constants','
         
         _getPathSegment:function(dataPoints, connectNulls){
 
+            var series = this, polar = series.polar, angleAxis = polar.angleAxis, cateScale = angleAxis.scale;
+
+            dataPoints = [].concat(dataPoints);
+
+            dataPoints.sort(function(pointA, pointB){
+                return cateScale(pointA.category) - cateScale(pointB.category);
+            });
+
             var pathSeg = [];
 
             var tmp = [];
@@ -22255,14 +22411,15 @@ define('component/Base',['require','../utils/BaseUtils','../utils/ColorUtils','.
             }
 
             //有marker的图例,跟marker的类型一致,跟具体的图表类型无关
-            if(marker){
+            //优先读取image属性
+            if(sery.image && BaseUtils.isSupportSVG()){
+                //图片类型的填充系列用图片作为图例标记
+                icon = sery.image;
+            }else if(marker){
                 icon = marker.symbol;
                 if(sery.type == Constants.SCATTER_CHART && !BaseUtils.isImageMarker(icon)){
                     icon = Constants.SCATTER_ICON + marker.symbol;
                 }
-            } else if(sery.image && BaseUtils.isSupportSVG()){
-                //图片类型的填充系列用图片作为图例标记
-                icon = sery.image;
             }
 
             return icon;
@@ -22902,8 +23059,9 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
                 endSize = isHorizontal ? t_e.width : t_e.height
             }
 
-            startSize = Math.round(startSize/2);
-            endSize = Math.round(endSize/2);
+            //标签与四周保证有个边距
+            startSize = Math.round(startSize/2) + PADDING;
+            endSize = Math.round(endSize/2) + PADDING;
 
             if (isHorizontal) {
                 startSize = Math.max(startSize - plotBounds.x, 0);
@@ -24219,6 +24377,8 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
         _drawAxisTitle: function () {
             var cfg = this.options, title = cfg.title;
             if (!title || !title.text) {
+                this.titleGroup && this.titleGroup.remove();
+                this.titleGroup = null;
                 return;
             }
             var R = this.vanchart.renderer, axisGroup = this.axisGroup;
@@ -25027,7 +25187,7 @@ define('component/ValueAxis',['require','./Base','./BaseAxis','../utils/BaseUtil
         updateAxisScale:function(min, max){
             
             //值轴为底轴的时候,固定最大最小值才有效
-            var domain = this._calculateNiceDomain(min, max, min, max);
+            var domain = this._calculateNiceDomain(min, max, this._isBaseAxis() ? min : undefined, max);
 
             this.scale.domain(domain);
 
@@ -25568,6 +25728,9 @@ define('component/LegendItem',['require','../dom/Evented','../Constants','../uti
             this.graphic.attr({'transform':BaseUtils.makeTranslate([this.legendX, this.legendY + itemHeight/2])});
 
             if(LegendIconFactory.hasIcon(d.legendIconType)){
+                g.image && g.image.remove();
+                g.image = null;
+
                 g.path = g.path || renderer.path().addTo(g);
                 g.path.attr('d', LegendIconFactory.getLegendIconPath(d.legendIconType))
                     .attr('transform', BaseUtils.makeTranslate([0, -iconSize.height/2]))
@@ -25578,6 +25741,9 @@ define('component/LegendItem',['require','../dom/Evented','../Constants','../uti
                     g.path.style('stroke', markerColor).style('stroke-width',1);
                 }
             }else{
+                g.path && g.path.remove();
+                g.path = null;
+                
                 g.image = g.image || renderer.image().addTo(g);
                 g.image.attr({'x':0, 'y':-iconSize.height/2, 'width':12, 'height':12, 'preserveAspectRatio': 'none'})
                     .imageContent(d.legendIconType);
@@ -27070,7 +27236,11 @@ define('component/ToolBar',['require','./Base','../utils/BaseUtils','../Constant
 
         render:function(){
             var renderer = this.vanchart.renderer;
-            if(!this.toolbarGroup){
+
+            if(this.toolbarGroup){
+                return;//工具栏只刷新一次
+                
+            }else{
                 this.toolbarGroup = renderer.group().add();
 
                 //todo 没有精力再去整体改写leaflet的源码了,要组合两者只能这么用
@@ -30823,9 +30993,20 @@ define('component/DataSheet',['require','./Base','../utils/BaseUtils','../utils/
 
         fixBoundsByPlot:function() {
             var plotBounds = this.vanchart.getPlotBounds();
+
+            var xAxisComponent = this.vanchart.getComponent(ComponentLibrary.X_AXIS_COMPONENT);
+            var posY = plotBounds.y + plotBounds.height;
+            if(xAxisComponent && xAxisComponent._axisList.length){
+                xAxisComponent._axisList.forEach(function(axis){
+                    if(axis.getPosition() == Constants.BOTTOM){
+                        posY = Math.max(posY, axis.bounds.y + axis.bounds.height);
+                    }
+                })
+            }
+
             this.bounds = {
                 x: plotBounds.x - this.maxSeriesWidth,
-                y: plotBounds.y + plotBounds.height,
+                y: posY,
                 width: this.maxSeriesWidth + plotBounds.width,
                 height: this.sheetHeight
             };

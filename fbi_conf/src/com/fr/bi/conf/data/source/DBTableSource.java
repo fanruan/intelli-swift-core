@@ -148,6 +148,9 @@ public class DBTableSource extends AbstractTableSource {
             throw new RuntimeException(Inter.getLocText("BI-Not_Support_10w_data"));
         }
         if (travel != null) {
+            if (v.getValue() instanceof String && v.getValue() == null) {
+                v = new BIDataValue(v.getRow(), v.getCol(), "");
+            }
             travel.actionPerformed(v);
         }
 
@@ -186,13 +189,12 @@ public class DBTableSource extends AbstractTableSource {
     }
 
 
-
-    protected long dealWithInsert(final Traversal<BIDataValue> traversal, ICubeFieldSource[] fields, String SQL, long rowCount, com.fr.data.impl.Connection connection ) {
+    protected long dealWithInsert(final Traversal<BIDataValue> traversal, ICubeFieldSource[] fields, String SQL, long rowCount, com.fr.data.impl.Connection connection) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
         long t = System.currentTimeMillis();
         try {
-            SQLRegUtils regUtils=new SQLRegUtils(SQL);
-            if (!regUtils.isSql()){
+            SQLRegUtils regUtils = new SQLRegUtils(SQL);
+            if (!regUtils.isSql()) {
                 BILogger.getLogger().error("SQL syntax error");
                 return 0;
             }
@@ -218,6 +220,7 @@ public class DBTableSource extends AbstractTableSource {
         }
         return rowCount;
     }
+
     /**
      * 获取某个字段的distinct值
      *
@@ -317,10 +320,10 @@ public class DBTableSource extends AbstractTableSource {
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
-        if(jo.has("connection_name")) {
+        if (jo.has("connection_name")) {
             dbName = jo.getString("connection_name");
         }
-        if(jo.has("table_name")) {
+        if (jo.has("table_name")) {
             tableName = jo.getString("table_name");
         }
     }

@@ -54,12 +54,17 @@ BI.StyleSetManager = BI.inherit(FR.OB, {
         var titleBackground = this._getBackgroundValue(globalStyle, "titleBackground");
         var titleFont = globalStyle.titleFont;
 
-        var color = globalStyle.controlTheme || "#ffffff";
-        var border = " 1px solid " + color;
-        var rgb = BI.DOM.hex2rgb(color);
-        var json = BI.DOM.rgb2json(rgb);
-        json.a = 0.2;
-        var rgba = BI.DOM.json2rgba(json);
+        var color = globalStyle.controlTheme || "";
+        if(color) {
+            var border = " 1px solid " + color;
+            var rgb = BI.DOM.hex2rgb(color);
+            var json = BI.DOM.rgb2json(rgb);
+            json.a = 0.2;
+            var rgba = BI.DOM.json2rgba(json);
+        } else {
+            var border = "";
+            var rgba = "";
+        }
 
         var style = {
             ".bi-fit-4show ": {"background": mainBackground},

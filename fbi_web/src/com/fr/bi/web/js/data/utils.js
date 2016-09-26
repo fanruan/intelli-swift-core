@@ -6269,8 +6269,18 @@ Data.Utils = {
                 gridLineWidth: config.show_grid_line === true ? 1 : 0
             });
 
+            var lineItem = [];
+            var otherItem = [];
+            BI.each(items, function (idx, item) {
+                if (item.type === "line") {
+                    lineItem.push(item);
+                } else {
+                    otherItem.push(item);
+                }
+            });
+
             return BI.extend(configs, {
-                series: items
+                series: BI.concat(otherItem, lineItem)
             });
 
             function formatChartStyle() {

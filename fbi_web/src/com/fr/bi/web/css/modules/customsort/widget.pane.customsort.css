@@ -3,6 +3,7 @@
 /**** custom color(自定义颜色,用于特定场景) ****/
 .bi-custom-sort-item {
   border: 1px solid #d4dadd;
+  background: #ffffff;
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   border-radius: 2px;
@@ -12,7 +13,8 @@
   filter: alpha(opacity=3);
 }
 .bi-sortable-holder {
-  background-color: #1a1a1a;
-  opacity: 0.1;
-  filter: alpha(opacity=10);
+  border: 1px dashed #d4dadd;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
 }

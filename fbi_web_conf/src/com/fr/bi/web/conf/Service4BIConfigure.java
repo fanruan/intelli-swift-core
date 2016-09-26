@@ -62,19 +62,10 @@ public class Service4BIConfigure extends NoSessionIDService {
             new BIModifyDataLinkAction(),
 
 
-            new BIRemoveTableSettedExcelAction(),
             new BIGetPreviewTableDataConfAction(),
             new BIImportDBTableConnectionAction(),
 
-            new BIImportExcel4SetField(),
-            new BISetTableFieldAction(),
-            new BIGetTableExcelFieldAction(),
-            new BISaveExcelViewAction(),
-
             new BIGetTransFromDBAction(),
-
-            new BIGetFieldsInNewTableAction(),
-
 
             new BIModifyGlobalUpdateSettingAction(),
             new BIGetCubeGenerateStatusAction(),
@@ -117,7 +108,9 @@ public class Service4BIConfigure extends NoSessionIDService {
             new BIGetFieldValueByFieldIdAction(),
             new BISaveLoginFieldAction(),
             new BIPersistTableInfoAction(),
-            new BICacheClearAction()
+            new BICacheClearAction(),
+
+            new BIRemoveTableInUseCheckAction()
 
     };
 

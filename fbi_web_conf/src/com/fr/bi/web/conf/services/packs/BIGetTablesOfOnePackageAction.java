@@ -1,7 +1,6 @@
 package com.fr.bi.web.conf.services.packs;
 
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
-import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.pack.data.BIBusinessPackage;
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.table.BusinessTable;
