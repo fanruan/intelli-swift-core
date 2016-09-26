@@ -1410,7 +1410,7 @@ Data.Utils = {
                                 to += BI.i18nText("BI-Yi");
                                 break;
                             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                                to = BI.contentFormat(BI.parseFloat(to), "#0%");
+                                to = BI.contentFormat(BI.parseFloat(to), "#0%;-#0%");
                                 break;
                         }
                     }
@@ -1547,9 +1547,9 @@ Data.Utils = {
             delete configs.zoom;
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.plotOptions.dataLabels.useHtml = true;
-            configs.plotOptions.dataLabels.formatter = "function() { var a = '<div style = " + '"padding: 5px; background-color: rgba(0,0,0,0.4980392156862745);border-color: rgb(0,0,0); border-radius:2px; border-width:0px;">' + "' + (BI.isArray(this.name) ? '' : this.name + ',')" + "+ BI.contentFormat(this.value, '#.##') +'</div>'; return a;}";
+            configs.plotOptions.dataLabels.formatter = "function() { var a = '<div style = " + '"padding: 5px; background-color: rgba(0,0,0,0.4980392156862745);border-color: rgb(0,0,0); border-radius:2px; border-width:0px;">' + "' + (BI.isArray(this.name) ? '' : this.name + ',')" + "+ BI.contentFormat(this.value, '#.##;-#.##') +'</div>'; return a;}";
             configs.plotOptions.tooltip.shared = true;
-            configs.plotOptions.tooltip.formatter = "function(){var tip = BI.isArray(this.name) ? '' : this.name; BI.each(this.points, function(idx, point){tip += ('<div>' + point.seriesName + ':' + BI.contentFormat((point.size || point.y), '#.##') + '</div>');});return tip; }";
+            configs.plotOptions.tooltip.formatter = "function(){var tip = BI.isArray(this.name) ? '' : this.name; BI.each(this.points, function(idx, point){tip += ('<div>' + point.seriesName + ':' + BI.contentFormat((point.size || point.y), '#.##;-#.##') + '</div>');});return tip; }";
             configs.geo = {
                 "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
                 "attribution": "<a><img src='http://webapi.amap.com/theme/v1.3/mapinfo_05.png'>&copy; 2016 AutoNavi</a>"
@@ -1664,10 +1664,10 @@ Data.Utils = {
                             formatter: {
                                 identifier: "${X}${Y}",
                                 "XFormat": function () {
-                                    return BI.contentFormat(arguments[0], '#.##')
+                                    return BI.contentFormat(arguments[0], '#.##;-#.##')
                                 },
                                 "YFormat": function () {
-                                    return BI.contentFormat(arguments[0], '#.##')
+                                    return BI.contentFormat(arguments[0], '#.##;-#.##')
                                 }
                             }
                         };
@@ -1787,7 +1787,7 @@ Data.Utils = {
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0%')
+                        return BI.contentFormat(arguments[0], '#0%;-#0%')
                     };
                 }
             }
@@ -2678,7 +2678,7 @@ Data.Utils = {
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0%')
+                        return BI.contentFormat(arguments[0], '#0%;-#0%')
                     };
                 }
             }
@@ -3212,9 +3212,9 @@ Data.Utils = {
             }
             configs.plotOptions.tooltip.formatter.valueFormat = function () {
                 if (this > 0) {
-                    return BI.contentFormat(arguments[0], '#.##')
+                    return BI.contentFormat(arguments[0], '#.##;-#.##')
                 } else {
-                    return (-1) * BI.contentFormat(arguments[0], '#.##')
+                    return (-1) * BI.contentFormat(arguments[0], '#.##;-#.##')
                 }
             };
 
@@ -3837,7 +3837,7 @@ Data.Utils = {
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0%')
+                        return BI.contentFormat(arguments[0], '#0%;-#0%')
                     }
                 }
             }
@@ -4083,7 +4083,7 @@ Data.Utils = {
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0%')
+                        return BI.contentFormat(arguments[0], '#0%;-#0%')
                     };
                 }
             }
@@ -4468,7 +4468,7 @@ Data.Utils = {
                 });
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0%')
+                        return BI.contentFormat(arguments[0], '#0%;-#0%')
                     };
                 }
             }
@@ -4739,7 +4739,7 @@ Data.Utils = {
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0%')
+                        return BI.contentFormat(arguments[0], '#0%;-#0%')
                     };
                 }
             }
@@ -5045,7 +5045,7 @@ Data.Utils = {
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0%')
+                        return BI.contentFormat(arguments[0], '#0%;-#0%')
                     };
                 }
             }
@@ -5350,7 +5350,7 @@ Data.Utils = {
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0%')
+                        return BI.contentFormat(arguments[0], '#0%;-#0%')
                     };
                 }
             }
@@ -5540,7 +5540,7 @@ Data.Utils = {
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0%')
+                        return BI.contentFormat(arguments[0], '#0%;-#0%')
                     };
                 }
             }
@@ -5729,7 +5729,7 @@ Data.Utils = {
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0%')
+                        return BI.contentFormat(arguments[0], '#0%;-#0%')
                     };
                 }
             }
@@ -6003,7 +6003,7 @@ Data.Utils = {
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0%')
+                        return BI.contentFormat(arguments[0], '#0%;-#0%')
                     };
                 }
             }
@@ -6365,7 +6365,7 @@ Data.Utils = {
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0%')
+                        return BI.contentFormat(arguments[0], '#0%;-#0%')
                     };
                 }
             }
@@ -6585,11 +6585,11 @@ Data.Utils = {
             }
 
             function contentFormat2Decimal() {
-                return BI.contentFormat(arguments[0], '#.##')
+                return BI.contentFormat(arguments[0], '#.##;-#.##')
             }
 
             function contentFormatPercentage() {
-                return BI.contentFormat(arguments[0], '#.##%')
+                return BI.contentFormat(arguments[0], '#.##%;-#.##%')
             }
 
             function combineConfig() {

@@ -1,0 +1,14 @@
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.tool-filter .b-font:before {
+  content: '\e624';
+  color: #808080;
+}
+.tool-filter:active .b-font:before {
+  content: '\e624';
+  color: #009de3;
+}
+.tool-filter.disabled .b-font:before {
+  content: '\e624';
+  color: #808080;
+}

@@ -79,7 +79,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
                 if(separators){
                     num = BI.contentFormat(num, '#,###.##;-#,###.##')
                 } else {
-                    num = BI.contentFormat(num, '#.##')
+                    num = BI.contentFormat(num, '#.##;-#.##')
                 }
                 return num;
                 break;
@@ -95,14 +95,14 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
                 if(separators){
                     num = BI.contentFormat(num, '#,###.0;-#,###.0')
                 } else {
-                    num = BI.contentFormat(num, '#.0')
+                    num = BI.contentFormat(num, '#.0;-#.0')
                 }
                 return num;
             case BICst.TARGET_STYLE.FORMAT.TWO2POINT:
                 if(separators){
                     num = BI.contentFormat(num, '#,###.00;-#,###.00')
                 } else {
-                    num = BI.contentFormat(num, '#.00')
+                    num = BI.contentFormat(num, '#.00;-#.00')
                 }
                 return num;
         }

@@ -2033,8 +2033,8 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         var occupied = this._getRegionOccupied();
         var width = this.scrollContainer.element[0].clientWidth, height = this.scrollContainer.element[0].clientHeight;
         return {
-            x: BI.parseFloat(BI.contentFormat((occupied.left + occupied.width) / width, "#.##")),
-            y: BI.parseFloat(BI.contentFormat((occupied.top + occupied.height) / height, "#.##"))
+            x: BI.parseFloat(BI.contentFormat((occupied.left + occupied.width) / width, "#.##;-#.##")),
+            y: BI.parseFloat(BI.contentFormat((occupied.top + occupied.height) / height, "#.##;-#.##"))
         }
     },
 

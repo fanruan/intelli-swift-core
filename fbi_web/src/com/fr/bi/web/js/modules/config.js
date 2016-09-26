@@ -85,11 +85,11 @@ BICst.DASHBOARD_WIDGETS = [[{
         title: BI.i18nText("BI-Cross_Table"),
         value: BICst.WIDGET.CROSS_TABLE,
         cls: "drag-cross-icon"
-    }, {
-        text: BI.i18nText("BI-Complex_Table"),
-        title: BI.i18nText("BI-Complex_Table"),
-        value: BICst.WIDGET.COMPLEX_TABLE,
-        cls: "drag-complex-icon"
+    // }, {
+    //     text: BI.i18nText("BI-Complex_Table"),
+    //     title: BI.i18nText("BI-Complex_Table"),
+    //     value: BICst.WIDGET.COMPLEX_TABLE,
+    //     cls: "drag-complex-icon"
     }]
 }, {
     text: BI.i18nText("BI-Column_Chart"),

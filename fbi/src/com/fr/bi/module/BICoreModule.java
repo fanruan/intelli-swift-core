@@ -25,6 +25,7 @@ import com.fr.bi.conf.manager.excelview.BIExcelViewManager;
 import com.fr.bi.conf.manager.update.BIUpdateSettingManager;
 import com.fr.bi.conf.provider.*;
 import com.fr.bi.fs.*;
+import com.fr.bi.h5.services.Service4BIH5;
 import com.fr.bi.resource.ResourceConstants;
 import com.fr.bi.resource.ResourceHelper;
 import com.fr.bi.stable.utils.BIDBUtils;
@@ -371,6 +372,7 @@ public class BICoreModule extends AbstractModule {
 
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_FORMULA_JS, ResourceHelper.getFormulaCollectionJS(), ResourceHelper.FormulaTransmitter);
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_MOBILE_JS, ResourceHelper.getMobileJs());
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_H5_JS, ResourceHelper.getH5Js());
     }
 
     public void loadResources (Locale[] locales) {
@@ -408,7 +410,8 @@ public class BICoreModule extends AbstractModule {
                 new Service4BIMobile(),
                 new Service4BIBase(),
 
-                new Service4FineCube()
+                new Service4FineCube(),
+                new Service4BIH5(),
         };
     }
 

@@ -1,0 +1,242 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>${reportName}</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+</head>
+<style>
+    html {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    body {
+        color: #1a1a1a;
+        width: 100%;
+        height: 100%;
+
+        box-sizing: border-box;
+
+        -moz-osx-font-smoothing: grayscale;
+        -webkit-font-smoothing: antialiased;
+
+        user-select: none;
+    }
+
+    #app {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        display: flex;
+    }
+
+    #loader {
+        position: relative;
+        margin: 0 auto;
+        align-self: center;
+        width: 90px;
+        height: 90px;
+    }
+
+    #loading, #loading:before,
+    #loading:after {
+        width: 30px;
+        height: 30px;
+        position: absolute;
+        border-radius: 50%;
+        animation: l 1.8s infinite ease-in-out;
+    }
+
+    #loading:before,
+    #loading:after {
+        content: '';
+        position: absolute;
+        top: 0;
+    }
+
+    #loading {
+        left: 30px;
+        animation-delay: -0.5s;
+    }
+
+    #loading:before {
+        left: -30px;
+        animation-delay: -1s;
+    }
+
+    #loading:after {
+        left: 30px;
+    }
+
+    @keyframes l {
+        0%,
+        100% {
+            box-shadow: 0 30px 0 0 #009de3;
+        }
+        50% {
+            box-shadow: 0 30px 0 -15px #009de3;
+        }
+    }
+</style>
+<body>
+<div id="app">
+    <div id="loader">
+        <div id="loading">
+        </div>
+    </div>
+</div>
+
+<script>__REACT_DEVTOOLS_GLOBAL_HOOK__ = parent.__REACT_DEVTOOLS_GLOBAL_HOOK__</script>
+<script type="text/javascript">
+    if (!window.BH) {
+        window.BH = {
+            servletURL: "${servletURL}",
+            sessionID: ${sessionID}
+        };
+    }
+    if(!window.FR){
+        window.FR = {
+            servletURL: "${servletURL}",
+            jsonEncode: function (o) {
+                //james:这个Encode是抄的EXT的
+                var useHasOwn = {}.hasOwnProperty ? true : false;
+
+                // crashes Safari in some instances
+                //var validRE = /^("(\\.|[^"\\\n\r])*?"|[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t])+?$/;
+
+                var m = {
+                    "\b": '\\b',
+                    "\t": '\\t',
+                    "\n": '\\n',
+                    "\f": '\\f',
+                    "\r": '\\r',
+                    '"': '\\"',
+                    "\\": '\\\\'
+                };
+
+                var encodeString = function (s) {
+                    if (/["\\\x00-\x1f]/.test(s)) {
+                        return '"' + s.replace(/([\x00-\x1f\\"])/g, function (a, b) {
+                                    var c = m[b];
+                                    if (c) {
+                                        return c;
+                                    }
+                                    c = b.charCodeAt();
+                                    return "\\u00" +
+                                            Math.floor(c / 16).toString(16) +
+                                            (c % 16).toString(16);
+                                }) + '"';
+                    }
+                    return '"' + s + '"';
+                };
+
+                var encodeArray = function (o) {
+                    var a = ["["], b, i, l = o.length, v;
+                    for (i = 0; i < l; i += 1) {
+                        v = o[i];
+                        switch (typeof v) {
+                            case "undefined":
+                            case "function":
+                            case "unknown":
+                                break;
+                            default:
+                                if (b) {
+                                    a.push(',');
+                                }
+                                a.push(v === null ? "null" : FR.jsonEncode(v));
+                                b = true;
+                        }
+                    }
+                    a.push("]");
+                    return a.join("");
+                };
+
+                if (typeof o == "undefined" || o === null) {
+                    return "null";
+                } else if ($.isArray(o)) {
+                    return encodeArray(o);
+                } else if (o instanceof Date) {
+                    /*
+                     * alex:原来只是把年月日时分秒简单地拼成一个String,无法decode
+                     * 现在这么处理就可以decode了,但是JS.jsonDecode和Java.JSONObject也要跟着改一下
+                     */
+                    return FR.jsonEncode({
+                        __time__: o.getTime()
+                    })
+                } else if (typeof o == "string") {
+                    return encodeString(o);
+                } else if (typeof o == "number") {
+                    return isFinite(o) ? String(o) : "null";
+                } else if (typeof o == "boolean") {
+                    return String(o);
+                } else if ($.isFunction(o)) {
+                    return String(o);
+                } else {
+                    var a = ["{"], b, i, v;
+                    for (i in o) {
+                        if (!useHasOwn || o.hasOwnProperty(i)) {
+                            v = o[i];
+                            switch (typeof v) {
+                                case "undefined":
+                                case "unknown":
+                                    break;
+                                default:
+                                    if (b) {
+                                        a.push(',');
+                                    }
+                                    a.push(FR.jsonEncode(i), ":",
+                                            v === null ? "null" : FR.jsonEncode(v));
+                                    b = true;
+                            }
+                        }
+                    }
+                    a.push("}");
+                    return a.join("");
+                }
+            },
+            cjkEncodeDO: function (o) {
+                if ($.isPlainObject(o)) {
+                    var result = {};
+                    $.each(o, function (k, v) {
+                        if (!(typeof v == "string")) {
+                            v = FR.jsonEncode(v);
+                        }
+                        //wei:bug 43338，如果key是中文，cjkencode后o的长度就加了1，ie9以下版本死循环，所以新建对象result。
+                        k = FR.cjkEncode(k);
+                        result[k] = FR.cjkEncode(v);
+                    });
+                    return result;
+                }
+                return o;
+            },
+            ajax: function (options) {
+                if (options) {
+                    options.data = FR.cjkEncodeDO(options.data);
+                }
+                $.ajax(options);
+            }
+        };
+    }
+    BH.STORE = {
+        reportId: ${reportId},
+        popConfig: ${popConfig},
+        sessionID: ${sessionID},
+        description: '${description}',
+        createBy: '${createBy}',
+        reportName: "${reportName}",
+        userId: '${userId}',
+        reg: ${reg}
+    };
+</script>
+<script type="text/javascript" src="${servletURL}?op=emb&resource=h5.js"></script>
+<script src="${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/vendor.js"></script>
+<script src="${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/entry.js&__pre__=true"></script>
+</body>
+</html>
