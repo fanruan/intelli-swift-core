@@ -148,7 +148,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                     break;
                 case self.constants.TWO2POINT:
                     formatter = '#0.00';
-                    if (num_separators) formatter = '#,###.0';
+                    if (num_separators) formatter = '#,###.00';
                     break;
             }
 
