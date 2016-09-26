@@ -312,6 +312,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         transfer_filter: BI.Utils.getWSTransferFilterByID(o.wId),
                         left_y_axis_reversed: BI.Utils.getWSLeftYAxisReversedByID(o.wId),
                         right_y_axis_reversed: BI.Utils.getWSRightYAxisReversedByID(o.wId),
+                        chart_font: BI.Utils.getGSChartFont(o.wId),
                         line_width: BICst.DEFAULT_CHART_SETTING.mini_line_width,
                         show_label: BICst.DEFAULT_CHART_SETTING.mini_show_label,
                         enable_tick: BICst.DEFAULT_CHART_SETTING.mini_enable_tick,
@@ -382,6 +383,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         num_separators: BI.Utils.getWSNumberSeparatorsByID(o.wId),
                         right_num_separators: BI.Utils.getWSRightNumberSeparatorsByID(o.wId),
                         right2_num_separators: BI.Utils.getWSRight2NumberSeparatorsByID(o.wId),
+                        chart_font: BI.Utils.getGSChartFont(o.wId),
                         background_layer_info: MapConst.WMS_INFO[BI.Utils.getWSBackgroundLayerInfoByID(o.wId)]
                     }, {
                         cordon: self.model.getCordon(),
@@ -392,6 +394,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 selectedTab.populate(data, op, types);
             } catch (e) {
                 self.errorPane.setErrorInfo("error happens during populate chart: " + e);
+                console.error(e);
                 self.errorPane.setVisible(true);
             }
         });

@@ -45,6 +45,13 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
                 });
                 break;
             case BICst.WIDGET.COMPLEX_TABLE:
+                this.chartSetting = BI.createWidget({
+                    type: "bi.complex_table_setting",
+                    wId: wId
+                });
+                this.chartSetting.on(BI.ComplexTableSetting.EVENT_CHANGE, function () {
+                    self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
+                });
                 break;
             case BICst.WIDGET.DETAIL:
                 this.chartSetting = BI.createWidget({

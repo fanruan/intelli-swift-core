@@ -48,7 +48,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.dataLabels.formatter.valueFormat = function () {
             return BI.contentFormat(arguments[0], formatterArray[0]);
         };
-
+        config.plotOptions.dataLabels.style = this.config.chart_font;
         config.geo = this.config.geo;
         if (this.config.show_background_layer === true && BI.isNotNull(this.config.background_layer_info)) {
             if (this.config.background_layer_info.type === BICst.WMS_SERVER) {
@@ -81,6 +81,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                 data: []
             })
         }
+
         return [items, config];
 
         function formatRangeLegend() {
@@ -104,7 +105,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                 var to = this.to;
                 if (BI.isNotEmptyArray(items) && BI.has(items[0], "settings")) {
 
-                    if(items[0].settings.num_separators){
+                    if (items[0].settings.num_separators) {
                         to = BI.contentFormat(to, "#,##0")
                     }
 
@@ -135,20 +136,20 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
             switch (format) {
                 case self.constants.NORMAL:
                     formatter = '#.##';
+                    if (num_separators) formatter = '#,###.##';
                     break;
                 case self.constants.ZERO2POINT:
                     formatter = '#0';
+                    if (num_separators) formatter = '#,###';
                     break;
                 case self.constants.ONE2POINT:
                     formatter = '#0.0';
+                    if (num_separators) formatter = '#,###.0';
                     break;
                 case self.constants.TWO2POINT:
                     formatter = '#0.00';
+                    if (num_separators) formatter = '#,###.0';
                     break;
-            }
-
-            if (num_separators) {
-                formatter = '#,##0'
             }
 
             switch (numberLevel) {
@@ -165,11 +166,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                     formatter += BI.i18nText("BI-Yi");
                     break;
                 case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                    if (format === self.constants.NORMAL) {
-                        formatter = '#0%'
-                    } else {
-                        formatter += '%';
-                    }
+                    formatter += '%';
                     break;
             }
 
@@ -334,7 +331,8 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
             map_styles: options.map_styles || [],
             auto_custom: options.auto_custom || c.AUTO_CUSTOM,
             show_background_layer: options.show_background_layer || false,
-            background_layer_info: options.background_layer_info
+            background_layer_info: options.background_layer_info,
+            chart_font: options.chart_font || c.FONT_STYLE
         };
         this.options.items = items;
 

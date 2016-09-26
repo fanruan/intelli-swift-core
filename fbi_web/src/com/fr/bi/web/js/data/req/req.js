@@ -163,15 +163,6 @@ Data.Req = BIReq = {
         }, complete)
     },
 
-    reqFieldsInNewTable: function (table, id, callback) {
-        BI.requestAsync("fr_bi_configure", "get_fields_new_table", {
-            table: table,
-            id: id
-        }, function (res) {
-            callback(res);
-        })
-    },
-
     reqTablesOfOnePackage: function (pId, callback, complete) {
         BI.requestAsync("fr_bi_configure", "get_tables_of_one_package", {
             id: pId
@@ -329,5 +320,11 @@ Data.Req = BIReq = {
 
     reqGetChartPreStyle: function () {
         return BI.requestSync('fr_bi_base', 'get_config_setting', null);
+    },
+    
+    reqCheckTableInUse: function(data, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "remove_table_in_use_check", data, function(res) {
+            callback(res);
+        }, complete);
     }
 };

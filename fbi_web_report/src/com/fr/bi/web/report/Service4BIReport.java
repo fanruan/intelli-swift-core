@@ -18,6 +18,7 @@ import com.fr.fs.web.service.AbstractFSAuthService;
 import com.fr.general.ComparatorUtils;
 import com.fr.privilege.base.PrivilegeVote;
 import com.fr.stable.fun.Service;
+import com.fr.stable.web.RequestCMDReceiver;
 import com.fr.web.core.ActionCMD;
 import com.fr.web.core.WebActionsDispatcher;
 import com.fr.web.utils.WebUtils;
@@ -33,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 public class Service4BIReport implements Service {
 
 
-    private static ActionCMD[] actions = {
+    private static RequestCMDReceiver[] actions = {
             new FSMainBIReportAction(),
             new BIGetAllUserInfoAction(),
             new BIGetUserListOperation(),

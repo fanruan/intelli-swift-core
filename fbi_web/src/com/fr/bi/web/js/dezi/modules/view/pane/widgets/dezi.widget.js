@@ -14,7 +14,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
 
     _defaultConfig: function () {
         return BI.extend(BIDezi.WidgetView.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-dashboard-widget bi-global-style-select"
+            baseCls: "bi-dashboard-widget"
         })
     },
 
@@ -77,10 +77,10 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                 top: 0,
                 right: 10
             }, {
-                el: this.title,
-                left: 10,
-                top: 10,
-                right: 10
+                el: this.titleWrapper,
+                top: 0,
+                left: 0,
+                right: 0
             }, {
                 el: this.tableChart,
                 left: 10,
@@ -134,6 +134,17 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                 validationChecker: function (v) {
                     return BI.Utils.checkWidgetNameByID(v, id);
                 }
+            });
+            this.titleWrapper = BI.createWidget({
+                type: "bi.absolute",
+                height: 35,
+                cls: "dashboard-widget-title",
+                items: [{
+                    el: this.title,
+                    left: 10,
+                    top: 10,
+                    right: 10
+                }]
             });
             this.title.on(BI.ShelterEditor.EVENT_CHANGE, function () {
                 self.model.set("name", this.getValue());
@@ -314,11 +325,11 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     _refreshLayout: function () {
         var showTitle = BI.Utils.getWSShowNameByID(this.model.get("id"));
         if (showTitle === false) {
-            this.title.setVisible(false);
+            this.titleWrapper.setVisible(false);
             this.widget.attr("items")[0].top = 0;
             this.widget.attr("items")[2].top = 20;
         } else {
-            this.title.setVisible(true);
+            this.titleWrapper.setVisible(true);
             this.widget.attr("items")[0].top = 10;
             this.widget.attr("items")[2].top = 35;
         }
@@ -334,15 +345,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             .removeClass("dashboard-title-center").addClass(cls);
     },
 
-    _refreshGlobalStyle: function (globalStyle) {
-        var titleFont = BI.isNotNull(globalStyle) ?
-            globalStyle.titleFont : BI.Utils.getGSTitleFont();
-        if (BI.isNotNull(titleFont)) {
-            try {
-                this._refreshTitlePosition();
-            } catch (e) {
-            }
-        }
+    _refreshGlobalStyle: function () {
+        this._refreshTitlePosition();
     },
 
     _expandWidget: function () {

@@ -591,20 +591,24 @@ if (!window.BI) {
         },
 
         deepRemove: function (obj, target) {
+            var done = false;
             var i;
             if (BI.isArray(obj)) {
                 for (i = 0; i < obj.length; i++) {
                     if (BI.isEqual(target, obj[i])) {
                         obj.splice(i--, 1);
+                        done = true;
                     }
                 }
             } else {
                 BI.each(obj, function (i, v) {
                     if (BI.isEqual(target, obj[i])) {
                         delete obj[i];
+                        done = true;
                     }
                 });
             }
+            return done;
         },
 
         deepWithout: function (obj, target) {

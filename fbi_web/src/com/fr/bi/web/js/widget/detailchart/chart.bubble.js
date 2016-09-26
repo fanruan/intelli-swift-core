@@ -70,52 +70,44 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         config.chartType = "bubble";
 
         if (BI.isNotEmptyArray(this.config.tooltip)) {
-            config.plotOptions.tooltip.formatter = function() {
+            config.plotOptions.tooltip.formatter = function () {
                 var y = self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level, self.config.num_separators)(this.y);
                 var x = self.formatTickInXYaxis(self.config.x_axis_style, self.config.x_axis_number_level, self.config.right_num_separators)(this.x);
                 return this.seriesName + '<div>(X)' + self.config.tooltip[0] + ':' + x + '</div><div>(Y)' + self.config.tooltip[1]
-                + ':' + y + '</div><div>(' + BI.i18nText("BI-Size") + ')' + self.config.tooltip[2] + ':' + this.size + '</div>'
+                    + ':' + y + '</div><div>(' + BI.i18nText("BI-Size") + ')' + self.config.tooltip[2] + ':' + this.size + '</div>'
             };
         }
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
         if (config.plotOptions.dataLabels.enabled === true) {
             BI.each(items, function (idx, item) {
-                var isNeedFormatDataLabelX = false;
-                var isNeedFormatDataLabelY = false;
-                if (self.config.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.right_num_separators) {
-                    isNeedFormatDataLabelX = true;
-                }
-                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.num_separators) {
-                    isNeedFormatDataLabelY = true;
-                }
-                if (isNeedFormatDataLabelX === true || isNeedFormatDataLabelY === true) {
-                    item.dataLabels = {
-                        "style": self.constants.FONT_STYLE,
-                        "align": "outside",
-                        enabled: true,
-                        formatter: {
-                            identifier: "${X}${Y}${SIZE}",
-                            "XFormat": function () {
-                                return BI.contentFormat(arguments[0], '#.##')
-                            },
-                            "YFormat": function () {
-                                return BI.contentFormat(arguments[0], '#.##')
-                            },
-                            "sizeFormat": function () {
-                                return BI.contentFormat(arguments[0], '#.##')
-                            }
+                item.dataLabels = {
+                    "style" : self.config.chart_font,
+                    "align": "outside",
+                    "autoAdjust": true,
+                    enabled: true,
+                    formatter: {
+                        identifier: "${X}${Y}${SIZE}",
+                        "XFormat": function () {
+                            return BI.contentFormat(arguments[0], '#.##')
+                        },
+                        "YFormat": function () {
+                            return BI.contentFormat(arguments[0], '#.##')
+                        },
+                        "sizeFormat": function () {
+                            return BI.contentFormat(arguments[0], '#.##')
                         }
-                    };
-                    if (isNeedFormatDataLabelX === true) {
-                        item.dataLabels.formatter.XFormat = config.xAxis[0].formatter;
                     }
-                    if (isNeedFormatDataLabelY === true) {
-                        item.dataLabels.formatter.YFormat = config.yAxis[0].formatter;
-                    }
-                }
+                };
+                item.dataLabels.formatter.XFormat = config.xAxis[0].formatter;
+                item.dataLabels.formatter.YFormat = config.yAxis[0].formatter;
             });
         }
+
+        //全局样式图表文字
+        config.yAxis[0].title.style = config.yAxis[0].labelStyle = this.config.chart_font;
+        config.xAxis[0].title.style = config.xAxis[0].labelStyle = this.config.chart_font;
+        config.legend.style = this.config.chart_font;
 
         return [items, config];
 
@@ -138,7 +130,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.constants.FONT_STYLE,
+                                "style" : self.config.chart_font,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -163,7 +155,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.constants.FONT_STYLE,
+                                "style" : self.config.chart_font,
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -250,7 +242,8 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             tooltip: options.tooltip || [],
             bubble_style: options.bubble_style || c.NO_PROJECT,
             num_separators: options.num_separators || false,
-            right_num_separators: options.right_num_separators || false
+            right_num_separators: options.right_num_separators || false,
+            chart_font: options.chart_font || c.FONT_STYLE
         };
         this.options.items = items;
         var types = [];

@@ -27,4 +27,16 @@ public class BICubeDBUtils {
         }
         return StringUtils.EMPTY;
     }
+
+    public static int getColumnNum(com.fr.data.impl.Connection connection, SQLStatement statement, String sql) {
+        try {
+            java.sql.Connection conn = statement.getSqlConn();
+            Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
+            ColumnInformation column = DBUtils.checkInColumnInformation(conn, dialect, sql)[0];
+            return DBUtils.checkInColumnInformation(conn, dialect, sql).length;
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
+        return 0;
+    }
 }

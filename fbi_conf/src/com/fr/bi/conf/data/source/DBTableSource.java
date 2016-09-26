@@ -16,6 +16,7 @@ import com.fr.bi.data.DBQueryExecutor;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.CubeConstant;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
@@ -143,18 +144,21 @@ public class DBTableSource extends AbstractTableSource {
         return BIBaseConstant.TABLETYPE.DB;
     }
 
-    void dealWithOneData(Traversal<BIDataValue> travel, BIDataValue v) {
+    void dealWithOneData(Traversal<BIDataValue> travel,ICubeFieldSource[] fields, BIDataValue v) {
         if (!VT4FBI.supportBigData() && v.getRow() >= CubeConstant.LICMAXROW) {
             throw new RuntimeException(Inter.getLocText("BI-Not_Support_10w_data"));
         }
         if (travel != null) {
+            if (v.getValue() == null && fields[v.getCol()].getFieldType() == DBConstant.COLUMN.STRING) {
+                v = new BIDataValue(v.getRow(), v.getCol(), "");
+            }
             travel.actionPerformed(v);
         }
 
     }
 
     @Override
-    public long read(final Traversal<BIDataValue> travel, ICubeFieldSource[] fields, ICubeDataLoader loader) {
+    public long read(final Traversal<BIDataValue> travel, final ICubeFieldSource[] fields, ICubeDataLoader loader) {
         long rowCount = 0;
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
         long t = System.currentTimeMillis();
@@ -163,7 +167,7 @@ public class DBTableSource extends AbstractTableSource {
                 @Override
                 public void actionPerformed(BIDataValue v) {
                     try {
-                        dealWithOneData(travel, v);
+                        dealWithOneData(travel, fields, v);
                     } catch (Exception e) {
                         BILogger.getLogger().error(e.getMessage(), e);
                     }
@@ -186,13 +190,12 @@ public class DBTableSource extends AbstractTableSource {
     }
 
 
-
-    protected long dealWithInsert(final Traversal<BIDataValue> traversal, ICubeFieldSource[] fields, String SQL, long rowCount, com.fr.data.impl.Connection connection ) {
+    protected long dealWithInsert(final Traversal<BIDataValue> traversal, final ICubeFieldSource[] fields, String SQL, long rowCount, com.fr.data.impl.Connection connection) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
         long t = System.currentTimeMillis();
         try {
-            SQLRegUtils regUtils=new SQLRegUtils(SQL);
-            if (!regUtils.isSql()){
+            SQLRegUtils regUtils = new SQLRegUtils(SQL);
+            if (!regUtils.isSql()) {
                 BILogger.getLogger().error("SQL syntax error");
                 return 0;
             }
@@ -202,7 +205,7 @@ public class DBTableSource extends AbstractTableSource {
                 @Override
                 public void actionPerformed(BIDataValue v) {
                     try {
-                        dealWithOneData(traversal, v);
+                        dealWithOneData(traversal, fields, v);
                     } catch (Exception e) {
                         BILogger.getLogger().error(e.getMessage(), e);
                     }
@@ -218,6 +221,7 @@ public class DBTableSource extends AbstractTableSource {
         }
         return rowCount;
     }
+
     /**
      * 获取某个字段的distinct值
      *
@@ -317,10 +321,10 @@ public class DBTableSource extends AbstractTableSource {
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
-        if(jo.has("connection_name")) {
+        if (jo.has("connection_name")) {
             dbName = jo.getString("connection_name");
         }
-        if(jo.has("table_name")) {
+        if (jo.has("table_name")) {
             tableName = jo.getString("table_name");
         }
     }

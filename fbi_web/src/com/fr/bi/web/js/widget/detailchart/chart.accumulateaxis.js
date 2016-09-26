@@ -82,7 +82,7 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
             }
         });
 
-        config.xAxis[0].title.text = this.config.show_x_axis_title === true ?  this.config.x_axis_title : "";
+        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title : "";
         config.xAxis[0].title.align = "center";
         BI.extend(config.xAxis[0], {
             lineWidth: self.config.line_width,
@@ -94,34 +94,10 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
         config.chartType = "column";
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        if (config.plotOptions.dataLabels.enabled === true) {
-            BI.each(items, function (idx, item) {
-                var isNeedFormatDataLabel = false;
-                switch (config.yAxis[item.yAxis].axisIndex) {
-                    case self.constants.LEFT_AXIS:
-                        if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.num_separators) {
-                            isNeedFormatDataLabel = true;
-                        }
-                        break;
-                    case self.constants.RIGHT_AXIS:
-                        if (self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.right_num_separators) {
-                            isNeedFormatDataLabel = true;
-                        }
-                        break;
-                }
-                if (isNeedFormatDataLabel === true) {
-                    item.dataLabels = {
-                        "style": self.constants.FONT_STYLE,
-                        "align": "outside",
-                        enabled: true,
-                        formatter: {
-                            identifier: "${VALUE}",
-                            valueFormat: config.yAxis[item.yAxis].formatter
-                        }
-                    };
-                }
-            });
-        }
+        this.formatDataLabel(config.plotOptions.dataLabels.enabled, items, config, this.config.chart_font);
+
+        //全局样式的图表文字
+        this.setFontStyle(this.config.chart_font, config);
 
         return [items, config];
 
@@ -134,7 +110,7 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.constants.FONT_STYLE,
+                                "style" : self.config.chart_font,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -159,7 +135,7 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.constants.FONT_STYLE,
+                                "style" : self.config.chart_font,
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -254,7 +230,8 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
             num_separators: options.num_separators || false,
-            right_num_separators: options.right_num_separators || false
+            right_num_separators: options.right_num_separators || false,
+            chart_font: options.chart_font || c.FONT_STYLE
         };
         this.options.items = items;
         this.yAxis = [];

@@ -2,13 +2,14 @@
  * Created by Young's on 2016/9/14.
  */
 BI.ComplexTable = BI.inherit(BI.Pane, {
-    _defaultConfig: function() {
+    _defaultConfig: function () {
         return BI.extend(BI.ComplexTable.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-complex-table" 
+            baseCls: "bi-complex-table",
+            overlap: false
         });
     },
-    
-    _init: function() {
+
+    _init: function () {
         BI.ComplexTable.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.model = new BI.ComplexTableModel({
@@ -303,7 +304,11 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
             }
             self.model.setDataAndPage(jsonData);
             try {
-                self._prepareData();
+                if (self.model._isColRegionExist()) {
+                    self._prepareData();
+                } else {
+                    self._prepareGroupTableData()
+                }
                 self._refreshTable();
             } catch (e) {
                 self.errorPane.setErrorInfo("error happens during populate table: " + e);
@@ -344,8 +349,12 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
         }, this.model.getExtraInfo());
     },
 
-    _prepareData: function() {
-        this.model.createTableAttrs();
+    _prepareData: function () {
+        this.model.createTableAttrs(BI.bind(this._onClickHeaderOperator, this), BI.bind(this._populateNoDimsChange, this), BI.bind(this._onClickBodyCellOperator, this));
+    },
+
+    _prepareGroupTableData: function () {
+        this.model.createGroupTableAttrs(BI.bind(this._onClickHeaderOperator, this), BI.bind(this._populateNoDimsChange, this), BI.bind(this._onClickBodyCellOperator, this));
     },
 
     /**
@@ -450,12 +459,6 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
     },
 
     _afterTablePopulate: function () {
-        if (this.model.isShowNumber()) {
-            this.table.showSequence();
-        } else {
-            this.table.hideSequence();
-        }
-        //css
         this.table.setStyleAndColor(this.model.getTableStyle(), this.model.getThemeColor());
     },
 
@@ -481,12 +484,17 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
             }
             self.model.setDataAndPage(jsonData);
             // try {
+            //考虑只有行表头情况
+            if (self.model._isColRegionExist()) {
                 self._prepareData();
-                if (self.model.getTableForm() !== self.tableForm) {
-                    self._createTable();
-                }
-                self.table.setVPage(1);
-                self._populateTable();
+            } else {
+                self._prepareGroupTableData()
+            }
+            if (self.model.getTableForm() !== self.tableForm) {
+                self._createTable();
+            }
+            self.table.setVPage(1);
+            self._populateTable();
             // } catch (e) {
             //     self.errorPane.setErrorInfo("error happens during populate table: " + e);
             //     self.errorPane.setVisible(true);
@@ -508,7 +516,7 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
             this.table.empty();
         }
     }
-    
+
 });
 BI.ComplexTable.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.complex_table", BI.ComplexTable);

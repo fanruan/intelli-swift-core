@@ -10,7 +10,6 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIFileUtils;
-import com.fr.general.DateUtils;
 
 import java.io.File;
 import java.util.HashSet;
@@ -113,8 +112,6 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
     @Override
     public boolean copyFileFromOldCubes() {
         try {
-            BILogger.getLogger().info("start copy some files");
-            Long t = System.currentTimeMillis();
             ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(userId));
             ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(userId));
             if (new File(tempConf.getRootURI().getPath()).exists()) {
@@ -123,7 +120,6 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
             if (new File(advancedConf.getRootURI().getPath()).exists()) {
                 BIFileUtils.copyFolder(new File(advancedConf.getRootURI().getPath()), new File(tempConf.getRootURI().getPath()));
             }
-            BILogger.getLogger().info("copy files cost time: " + DateUtils.timeCostFrom(t));
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());
         }

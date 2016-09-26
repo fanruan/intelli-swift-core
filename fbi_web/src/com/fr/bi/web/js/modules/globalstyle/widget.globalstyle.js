@@ -11,8 +11,8 @@ BI.GlobalStyle = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.GlobalStyle.superclass._init.apply(this, arguments);
-        this.id = BI.UUID();
         var self = this;
+        this.manager = new BI.StyleSetManager;
         var globalStyleButton = BI.createWidget({
             type: "bi.icon_text_item",
             cls: "toolbar-global-style-font",
@@ -22,71 +22,65 @@ BI.GlobalStyle = BI.inherit(BI.Widget, {
             width: 90
         });
         globalStyleButton.on(BI.Button.EVENT_CHANGE, function () {
-            var cacheGS = {};
-            if (BI.isNull(self.globalStyle)) {
-                var layer = BI.Layers.create(BICst.GLOBAL_STYLE_LAYER);
-                self.globalStyleSetting = BI.createWidget({
-                    type: "bi.global_style_setting"
-                });
-                BI.Layers.show(BICst.GLOBAL_STYLE_LAYER);
-                var v = BI.Utils.getGlobalStyle();
-                if (BI.isNull(v.predictionValue)) {
-                    self.fireEvent(BI.GlobalStyle.EVENT_SET, BICst.GLOBALPREDICTIONSTYLE.DEFAULT)
-                }
-                cacheGS = BI.Utils.getGlobalStyle();
-
-                self.globalStyleSetting.on(BI.GlobalStyleSetting.EVENT_CANCEL, function () {
-                    BI.Layers.hide(BICst.GLOBAL_STYLE_LAYER);
-                    self.fireEvent(BI.GlobalStyle.EVENT_SET, cacheGS);
-                });
-                self.globalStyleSetting.on(BI.GlobalStyleSetting.EVENT_CHANGE, function () {
-                    var gs = self.getValue();
-                    self.fireEvent(BI.GlobalStyle.EVENT_SET, gs);
-                });
-                self.globalStyleSetting.on(BI.GlobalStyleSetting.EVENT_SAVE, function () {
-                    BI.Layers.hide(BICst.GLOBAL_STYLE_LAYER);
-                    var gs = this.getValue();
-                    cacheGS = gs;
-                    self.fireEvent(BI.GlobalStyle.EVENT_SET, gs);
-                });
-                self.globalStyleSetting.on(BI.GlobalStyleSetting.EVENT_CHART, function () {
-                    self.fireEvent(BI.GlobalStyle.EVENT_CHART_CHANGE);
-                });
-                BI.createWidget({
-                    type: "bi.absolute",
-                    element: layer,
-                    cls: "bi-global-style",
-                    items: [{
-                        el: {
-                            type: "bi.default",
-                            cls: "global-style-mask"
-                        },
-                        top: 0,
-                        right: 0,
-                        bottom: 0,
-                        left: 0
-                    }, {
-                        el: self.globalStyleSetting,
-                        top: 40,
-                        left: 140,
-                        bottom: 10
-                    }]
-                });
-            } else {
-                BI.Layers.show(BICst.GLOBAL_STYLE_LAYER);
-                this.globalStyleSetting.populate();
-            }
+            self._createGlobalStylePane();
         });
+    },
+
+    _createGlobalStylePane: function () {
+        var self = this;
+        var cacheGS = {};
+        if (BI.isNull(this.globalStyleSetting)) {
+            var layer = BI.Layers.create(BICst.GLOBAL_STYLE_LAYER);
+            this.globalStyleSetting = BI.createWidget({
+                type: "bi.global_style_setting"
+            });
+            this.globalStyleSetting.populate();
+            BI.Layers.show(BICst.GLOBAL_STYLE_LAYER);
+            cacheGS = BI.Utils.getGlobalStyle();
+
+            this.globalStyleSetting.on(BI.GlobalStyleSetting.EVENT_CANCEL, function () {
+                BI.Layers.hide(BICst.GLOBAL_STYLE_LAYER);
+                self.fireEvent(BI.GlobalStyle.EVENT_SET, cacheGS);
+                self.populate();
+            });
+            this.globalStyleSetting.on(BI.GlobalStyleSetting.EVENT_CHANGE, function () {
+                var gs = self.getValue();
+                self.fireEvent(BI.GlobalStyle.EVENT_SET, gs);
+                self.populate();
+            });
+            this.globalStyleSetting.on(BI.GlobalStyleSetting.EVENT_SAVE, function () {
+                BI.Layers.hide(BICst.GLOBAL_STYLE_LAYER);
+                var gs = this.getValue();
+                cacheGS = gs;
+                self.fireEvent(BI.GlobalStyle.EVENT_SET, gs);
+            });
+            this.globalStyleSetting.on(BI.GlobalStyleSetting.EVENT_CHART, function () {
+                self.fireEvent(BI.GlobalStyle.EVENT_CHART_CHANGE);
+            });
+            BI.createWidget({
+                type: "bi.absolute",
+                element: layer,
+                items: [{
+                    el: this.globalStyleSetting,
+                    top: 40,
+                    left: 140,
+                    bottom: 10
+                }]
+            });
+        } else {
+            BI.Layers.show(BICst.GLOBAL_STYLE_LAYER);
+            this.globalStyleSetting.populate();
+        }
     },
 
     getValue: function () {
         return this.globalStyleSetting.getValue();
     },
 
-    populate: function (gs) {
-        var globalStyle = gs || BI.Utils.getGlobalStyle();
-        var manager = new BI.StyleSetManager;
-        manager.setGlobalStyle(this.id, globalStyle);
+    populate: function () {
+        var globalStyle = BI.Utils.getGlobalStyle();
+        this.manager.setThemeStyle(globalStyle);
+        this.manager.setGlobalStyle("globalstyle", globalStyle);
     }
 });
 BI.GlobalStyle.EVENT_SET = "EVENT_SET";

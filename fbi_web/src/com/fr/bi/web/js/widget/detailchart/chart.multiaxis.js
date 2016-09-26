@@ -20,10 +20,10 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         this.xAxis = [{
             type: "category",
             title: {
-                style: {"fontFamily":"inherit","color":"#808080","fontSize":"12px","fontWeight":""}
+                style: {"fontFamily": "inherit", "color": "#808080", "fontSize": "12px", "fontWeight": ""}
             },
             labelStyle: {
-                "fontFamily":"inherit","color":"#808080","fontSize":"12px"
+                "fontFamily": "inherit", "color": "#808080", "fontSize": "12px"
             },
             position: "bottom",
             gridLineWidth: 0
@@ -39,7 +39,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         });
     },
 
-    _formatConfig: function(config, items){
+    _formatConfig: function (config, items) {
         var self = this, o = this.options;
         config.colors = this.config.chart_color;
         config.style = this.formatChartStyle();
@@ -49,15 +49,15 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
         config.zoom.zoomTool.enabled = this.config.show_zoom;
-        if(this.config.show_zoom === true){
+        if (this.config.show_zoom === true) {
             delete config.dataSheet;
             delete config.zoom.zoomType;
         }
 
         config.yAxis = this.yAxis;
-        BI.each(config.yAxis, function(idx, axis){
+        BI.each(config.yAxis, function (idx, axis) {
             var title = "";
-            switch (axis.axisIndex){
+            switch (axis.axisIndex) {
                 case self.constants.LEFT_AXIS:
                     title = self.getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
                     axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + title : title;
@@ -122,49 +122,28 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
 
         var lineItem = [];
         var otherItem = [];
-        BI.each(items, function(idx, item){
+        BI.each(items, function (idx, item) {
             item.color = [config.yAxis[idx].labelStyle.color];
-            if(item.type === "line"){
+            if (item.type === "line") {
                 lineItem.push(item);
-            }else{
+            } else {
                 otherItem.push(item);
             }
         });
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        if(config.plotOptions.dataLabels.enabled === true){
-            BI.each(items, function(idx, item){
-                var isNeedFormatDataLabel = false;
-                switch (config.yAxis[item.yAxis].axisIndex) {
-                    case self.constants.LEFT_AXIS:
-                        if(self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.num_separators){
-                            isNeedFormatDataLabel = true;
-                        }
-                        break;
-                    case self.constants.RIGHT_AXIS:
-                        if(self.config.right_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.right_num_separators){
-                            isNeedFormatDataLabel = true;
-                        }
-                        break;
-                    case self.constants.RIGHT_AXIS_SECOND:
-                        if(self.config.right_y_axis_second_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.right2_num_separators){
-                            isNeedFormatDataLabel = true;
-                        }
-                        break;
-                }
-                if(isNeedFormatDataLabel === true){
-                    item.dataLabels = {
-                        "style": "{fontFamily:inherit, color: #808080, fontSize: 12px}",
-                        "align": "outside",
-                        enabled: true,
-                        formatter: {
-                            identifier: "${VALUE}",
-                            valueFormat: config.yAxis[item.yAxis].formatter
-                        }
-                    };
-                }
-            });
+        this.formatDataLabel(config.plotOptions.dataLabels.enabled, items, config, this.config.chart_font);
+
+        //全局样式的图表文字
+        if (config.dataSheet) {
+            config.dataSheet.style = this.config.chart_font;
         }
+        config.xAxis[0].title.style = config.xAxis[0].labelStyle = this.config.chart_font;
+        config.legend.style = this.config.chart_font;
+        config.plotOptions.dataLabels.style = this.config.chart_font;
+        BI.each(config.yAxis, function (idx, axis) {
+            axis.title.style = self.config.chart_font;
+        });
 
         return [BI.concat(otherItem, lineItem), config];
     },
@@ -289,7 +268,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
             right_y_axis_reversed: options.right_y_axis_reversed || false,
             right_y_axis_second_reversed: options.right_y_axis_second_reversed || false,
             left_y_axis_number_level: options.left_y_axis_number_level || c.NORMAL,
-            right_y_axis_number_level:  options.right_y_axis_number_level || c.NORMAL,
+            right_y_axis_number_level: options.right_y_axis_number_level || c.NORMAL,
             right_y_axis_second_number_level: options.right_y_axis_second_number_level || c.NORMAL,
             x_axis_unit: options.x_axis_unit || "",
             left_y_axis_unit: options.left_y_axis_unit || "",
@@ -309,22 +288,23 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
             num_separators: options.num_separators || false,
             right_num_separators: options.right_num_separators || false,
-            right2_num_separators: options.right2_num_separators || false
+            right2_num_separators: options.right2_num_separators || false,
+            chart_font: options.chart_font || c.FONT_STYLE
         };
         this.options.items = items;
 
         this.yAxis = [];
-        BI.each(types, function(idx, type){
-            if(BI.isEmptyArray(type)){
+        BI.each(types, function (idx, type) {
+            if (BI.isEmptyArray(type)) {
                 return;
             }
             var newYAxis = {
                 type: "value",
                 title: {
-                    style: {"fontFamily":"inherit","color":"#808080","fontSize":"12px","fontWeight":""}
+                    style: {"fontFamily": "inherit", "color": "#808080", "fontSize": "12px", "fontWeight": ""}
                 },
                 labelStyle: {
-                    "fontFamily":"inherit","color":"#808080","fontSize":"12px"
+                    "fontFamily": "inherit", "color": "#808080", "fontSize": "12px"
                 },
                 position: idx > 0 ? "right" : "left",
                 lineWidth: 1,
@@ -341,7 +321,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         this.combineChart.resize();
     },
 
-    magnify: function(){
+    magnify: function () {
         this.combineChart.magnify();
     }
 });

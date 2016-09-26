@@ -494,7 +494,7 @@ public class BIDBUtils {
         return sql;
     }
 
-    private static String createSqlString(Dialect dialect, ICubeFieldSource[] columns) {
+    public static String createSqlString(Dialect dialect, ICubeFieldSource[] columns) {
         StringBuffer sb = new StringBuffer();
         ArrayList<String> list = new ArrayList<String>();
         for (int i = 0; i < columns.length; i++) {
@@ -565,6 +565,9 @@ public class BIDBUtils {
 
 
     public static void dealWithJDBCConnection(JDBCDatabaseConnection jdbcDatabaseConnection) {
+        if (jdbcDatabaseConnection == null) {
+            return;
+        }
         DBCPConnectionPoolAttr attr = jdbcDatabaseConnection.getDbcpAttr();
         if (attr == null) {
             attr = new DBCPConnectionPoolAttr();

@@ -42,7 +42,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         NUM_SEPARATORS: false,
         FONT_STYLE: {
             "fontFamily": "inherit",
-            "color": "#808080",
+            "color": "inherit",
             "fontSize": "12px"
         }
     },
@@ -168,25 +168,25 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         switch (type) {
             case this.constants.NORMAL:
                 formatter = '#.##';
-                if(separators){
+                if (separators) {
                     formatter = '#,###.##'
                 }
                 break;
             case this.constants.ZERO2POINT:
                 formatter = '#0';
-                if(separators){
+                if (separators) {
                     formatter = '#,###';
                 }
                 break;
             case this.constants.ONE2POINT:
                 formatter = '#0.0';
-                if(separators){
+                if (separators) {
                     formatter = '#,###.0';
                 }
                 break;
             case this.constants.TWO2POINT:
                 formatter = '#0.00';
-                if(separators){
+                if (separators) {
                     formatter = '#,###.00';
                 }
                 break;
@@ -198,6 +198,55 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         return function () {
             return BI.contentFormat(arguments[0], formatter)
         }
+    },
+
+    formatDataLabel: function (state, items, config, style) {
+        var self = this;
+        if (state === true) {
+            BI.each(items, function (idx, item) {
+                item.dataLabels = {
+                    "align": "outside",
+                    "autoAdjust": true,
+                    style: style,
+                    enabled: true,
+                    formatter: {
+                        identifier: "${VALUE}",
+                        valueFormat: config.yAxis[item.yAxis].formatter
+                    }
+                };
+            });
+        }
+    },
+
+    formatDataLabelForAxis: function (state, items, format, style) {
+        var self = this;
+        if (state === true) {
+            BI.each(items, function (idx, item) {
+                item.dataLabels = {
+                    "align": "outside",
+                    "autoAdjust": true,
+                    style: style,
+                    enabled: true,
+                    formatter: {
+                        identifier: "${VALUE}",
+                        valueFormat: format
+                    }
+                };
+            });
+        }
+    },
+
+    setFontStyle: function (fontStyle, config) {
+        if (config.dataSheet) {
+            config.dataSheet.style = fontStyle;
+        }
+        config.xAxis[0].title.style = fontStyle;
+        config.xAxis[0].labelStyle = fontStyle;
+        config.legend.style = fontStyle;
+        BI.each(config.yAxis, function (idx, axis) {
+            axis.labelStyle = fontStyle;
+            axis.title.style = fontStyle;
+        })
     },
 
     _formatItems: function (items) {
