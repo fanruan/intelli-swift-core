@@ -108,7 +108,6 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
 
     @Override
     public boolean needReadCurrentValue() {
-
         return true;
     }
 
