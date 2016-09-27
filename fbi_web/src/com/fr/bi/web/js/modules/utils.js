@@ -524,6 +524,17 @@
                             filter.target_id = newId;
                         }
                     }
+                    //维度公式过滤所用到的指标ID也要替换掉
+                    if(BI.has(oldFilter, "formula_ids")){
+                        var ids = oldFilter.formula_ids || [];
+                        if(BI.isNotEmptyArray(ids) && BI.isNull(BI.Utils.getFieldTypeByID(ids[0]))){
+                            BI.each(ids, function (id, tId) {
+                                var result = createDimensionsAndTargets(tId);
+                                filter.filter_value = filter.filter_value.replaceAll(tId, result.id);
+                                filter.formula_ids[id] = result.id;
+                            });
+                        }
+                    }
                 }
                 return filter;
             }
