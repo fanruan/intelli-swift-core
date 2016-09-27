@@ -105,13 +105,6 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         return new SortedSingleDimensionGroup(singleDimensionGroup, sortedNode);
     }
 
-    public static GroupKey createGroupKey(BusinessTable tableKey, DimensionCalculator column, GroupValueIndex gvi, boolean useRealData) {
-        DimensionCalculator[] columnKey = new DimensionCalculator[2];
-        columnKey[0] = new UserRightColumnKey(gvi, tableKey);
-        columnKey[1] = column;
-        return new GroupKey(tableKey, columnKey, useRealData);
-    }
-
     protected boolean isTurnOnWhenInit() {
         return true;
     }
@@ -639,6 +632,11 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
     @Override
     public int getCurrentTotalRow() {
         return root.getChildLength();
+    }
+
+    @Override
+    public Object[] getData() {
+        return data;
     }
 
 }
