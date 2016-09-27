@@ -731,6 +731,8 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         }
         this.rulesDisplay.setValue(BI.Utils.getWSShowRulesByID(wId));
         this._colorSettingChange(BI.Utils.getWSShowRulesByID(wId));
+        this.fixedConditions.setValue(BI.Utils.getWSBubbleFixedColorsByID(wId));
+        this.gradientConditions.setValue(BI.Utils.getWSBubbleGradientsByID(wId));
         this.bubbleStyleGroup.setValue(BI.Utils.getWSBubbleStyleByID(wId));
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
@@ -768,6 +770,8 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         return {
             rules_display: this.rulesDisplay.getValue()[0],
             bubble_style: this.bubbleStyleGroup.getValue()[0],
+            fixed_colors: this.fixedConditions.getValue(),
+            gradient_colors: this.gradientConditions.getValue(),
             transfer_filter: this.transferFilter.isSelected(),
             chart_color: this.colorSelect.getValue()[0],
             left_y_axis_style: this.lYAxisStyle.getValue()[0],
@@ -797,6 +801,8 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     setValue: function (v) {
         this.rulesDisplay.setValue(v.rules_display);
+        this.fixedConditions.setValue(v.fixed_colors);
+        this.gradientConditions.setValue(v.gradient_colors);
         this.bubbleStyleGroup.setValue(v.bubble_style);
         this.transferFilter.setSelected(v.transfer_filter);
         this.colorSelect.setValue(v.chart_color);
