@@ -109,7 +109,7 @@ public class BuildCubeTask implements CubeTask {
                 long start = System.currentTimeMillis();
                 boolean replaceSuccess = replaceOldCubes();
                 if (replaceSuccess) {
-                    BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), cubeBuild.getTableRelationSet());
+                    BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId());
                     BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
                     BILogger.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
                 } else {

@@ -133,21 +133,37 @@ public abstract class AbstractCubeBuild implements CubeBuild {
 
     @Override
     public boolean replaceOldCubes() {
-        List<String> copyFailedFiles = new ArrayList<String>();
         ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(userId));
         ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(userId));
-        if (new File(advancedConf.getRootURI().getPath()).exists()) {
-            copyFailedFiles = BIFileUtils.deleteFiles(new File(advancedConf.getRootURI().getPath()));
-        }
-        if (copyFailedFiles.size() > 0) {
-            BILogger.getLogger().error("error: delete old cube failed");
-            for (String fileName : copyFailedFiles) {
-                BILogger.getLogger().error("failed file:" + fileName);
-            }
-            return false;
-        }
+        ICubeConfiguration advancedTempConf = BICubeConfiguration.getAdvancedTempConf(Long.toString(userId));
+        String advancedPath = advancedConf.getRootURI().getPath();
+        String tCubePath = tempConf.getRootURI().getPath();
+        String tempFolderPath = advancedTempConf.getRootURI().getPath();
         try {
-            return BIFileUtils.renameFolder(new File(tempConf.getRootURI().getPath()), new File(advancedConf.getRootURI().getPath()));
+            if (new File(tempFolderPath).exists()){
+                BIFileUtils.delete(new File(tempFolderPath));
+            }
+            if (new File(advancedPath).exists() &&! new File(tempFolderPath).exists()) {
+                boolean renameFolder = BIFileUtils.renameFolder(new File(advancedPath), new File(tempFolderPath));
+                if (!renameFolder) {
+                    BILogger.getLogger().error("rename Advanced to tempFolder failed");
+                    return false;
+                }
+            }
+            if (new File(tCubePath).exists()) {
+                boolean renameFolder = BIFileUtils.renameFolder(new File(tCubePath), new File(advancedPath));
+                if (!renameFolder) {
+                    BILogger.getLogger().error("rename tCube to Advanced failed");
+                    return false;
+                }
+            }
+            if (new File(tempFolderPath).exists()) {
+                boolean deleteTempFolder = BIFileUtils.delete(new File(tempFolderPath));
+                if (!deleteTempFolder) {
+                    BILogger.getLogger().error("delete tempFolder failed ");
+                }
+            }
+            return true;
         } catch (IOException e) {
             BILogger.getLogger().error(e.getMessage(), e);
             return false;

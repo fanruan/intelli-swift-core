@@ -92,7 +92,7 @@ BI.MultiSelectTrigger = BI.inherit(BI.Trigger, {
 
         this.numberCounter.on(BI.Events.VIEW, function (b) {
             BI.nextTick(function () {//自动调整宽度
-                wrapper.attr("items")[1].width = (b === true ? self.numberCounter.element.outerWidth() + 4 : 0);
+                wrapper.attr("items")[1].width = (b === true ? self.numberCounter.element.outerWidth() + 8 : 0);
                 wrapper.resize();
             });
         });
