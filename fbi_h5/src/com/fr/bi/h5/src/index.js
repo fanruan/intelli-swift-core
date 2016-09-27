@@ -24,8 +24,7 @@ class AppContainer extends Component {
                 ref="main"
                 className={StyleSheet.rootClassName}
                 style={styles.appContainer}>
-                <App
-                    {...this.props}/>
+                <App />
                 <Portal />
             </View>
         );
