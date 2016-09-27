@@ -366,6 +366,13 @@ BI.DetailTablePopupSelectData = BI.inherit(BI.Widget, {
                     }]
                 });
                 return help.element;
+            },
+            start: function(event, ui) {
+                //通知region
+                BI.Broadcasts.send(BICst.BROADCAST.FIELD_DRAG_START, self.searcher.getValue());
+            },
+            stop: function(event, ui) {
+                BI.Broadcasts.send(BICst.BROADCAST.FIELD_DRAG_STOP);
             }
         }
     },

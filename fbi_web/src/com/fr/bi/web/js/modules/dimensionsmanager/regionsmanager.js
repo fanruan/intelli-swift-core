@@ -34,7 +34,7 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
                 this.regions[BICst.REGION.DIMENSION1] = this._createTreeDimensionRegion();
                 break;
             case BICst.WIDGET.DETAIL:
-                this.regions[BICst.REGION.DIMENSION1] = this._createDetailDimensionRegion();
+                this.regions[BICst.REGION.DIMENSION1] = this._createDetailDimensionRegion(BI.i18nText("BI-Data"));
                 break;
             case BICst.WIDGET.CROSS_TABLE:
                 this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Row_Header"), BICst.REGION.DIMENSION1);
@@ -196,12 +196,13 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
         return region;
     },
 
-    _createDetailDimensionRegion: function () {
+    _createDetailDimensionRegion: function (titleName) {
         var self = this, o = this.options;
         var region = BI.createWidget({
             type: "bi.detail_region",
             dimensionCreator: o.dimensionCreator,
-            wId: o.wId
+            wId: o.wId,
+            titleName: titleName
         });
 
         region.on(BI.AbstractRegion.EVENT_CHANGE, function () {
