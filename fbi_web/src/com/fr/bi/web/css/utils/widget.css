@@ -109,7 +109,7 @@ textarea::-webkit-scrollbar {
   -webkit-appearance: none;
   background-color: transparent;
   width: 6px;
-  height: 6px;
+  height: 9px;
 }
 div::-webkit-scrollbar-thumb,
 textarea::-webkit-scrollbar-thumb {
