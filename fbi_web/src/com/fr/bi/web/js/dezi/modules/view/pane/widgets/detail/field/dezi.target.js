@@ -234,6 +234,7 @@ BIDezi.TargetView = BI.inherit(BI.View, {
         this.calculateTargetButton = BI.createWidget({
             type: "bi.icon_button",
             cls: "calculate-target-font",
+            title: BI.i18nText("BI-Modify_Cal_Target"),
             height: this.constants.DIMENSION_BUTTON_HEIGHT
 
         });
