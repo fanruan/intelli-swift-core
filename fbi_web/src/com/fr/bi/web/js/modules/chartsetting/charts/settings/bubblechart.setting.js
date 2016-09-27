@@ -157,7 +157,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
         var tableStyle = BI.createWidget({
             type: "bi.horizontal_adapt",
-            columnSize: [100],
+            columnSize: [80],
             verticalAlign: "top",
             cls: "single-line-settings",
             items: [{
@@ -179,29 +179,25 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.rulesDisplay]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.dimensionColor],
-                    lgap: 15
+                    items: [this.dimensionColor]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.addGradientButton],
-                    lgap: 15
+                    items: [this.addGradientButton]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.addConditionButton],
-                    lgap: 15
+                    items: [this.addConditionButton]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Total_Style"),
-                    cls: "attr-names",
-                    lgap: 15
+                    cls: "attr-names"
                 }, {
                     el: {
                         type: "bi.vertical_adapt",
                         items: [this.bubbleStyleGroup]
-                    },
-                    lgap: constant.SIMPLE_H_GAP
+                    }
                 }, this.fixedColorSetting, this.gradientColorSetting], {
-                    height: constant.SINGLE_LINE_HEIGHT
+                    height: constant.SINGLE_LINE_HEIGHT,
+                    lgap: constant.SIMPLE_H_GAP
                 })
             }]
         });
@@ -437,13 +433,13 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.customYScale]
-                }], {
+                }, {
                     type: "bi.vertical_adapt",
                     items: [this.YSeparators]
-                }, {
+                }], {
+                    lgap: constant.SIMPLE_H_GAP,
                     height: constant.SINGLE_LINE_HEIGHT
-                }),
-                lgap: constant.SIMPLE_H_GAP
+                })
             }]
         });
 
@@ -495,13 +491,13 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.customXScale]
-                }], {
+                }, {
                     type: "bi.vertical_adapt",
                     items: [this.XSeparators]
-                }, {
-                    height: constant.SINGLE_LINE_HEIGHT
-                }),
-                lgap: constant.SIMPLE_H_GAP
+                }], {
+                    height: constant.SINGLE_LINE_HEIGHT,
+                    lgap: constant.SIMPLE_H_GAP
+                })
             }]
         });
 
@@ -598,7 +594,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.gridLine]
-                }/*, {
+                }, {
                  type: "bi.vertical_adapt",
                  items: [{
                  type: "bi.label",
@@ -611,7 +607,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                  text: "px"
                  }],
                  hgap: 3
-                 }*/], {
+                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
                 lgap: constant.SIMPLE_H_GAP
@@ -675,7 +671,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [tableStyle, YAxis, XAxis, showElement, otherAttr/*, modeChange*/],
+            items: [tableStyle, YAxis, XAxis, showElement, otherAttr, modeChange],
             hgap: 10
         })
     },
@@ -683,27 +679,32 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
     _colorSettingChange: function (v) {
         switch (v) {
             case BICst.DISPLAY_RULES.DIMENSION:
-                //this.dimensionColor.setVisible(true);
+                this.dimensionColor.setVisible(true);
                 this.addConditionButton.setVisible(false);
                 this.fixedColorSetting.setVisible(false);
                 this.addGradientButton.setVisible(false);
                 this.gradientColorSetting.setVisible(false);
                 break;
             case BICst.DISPLAY_RULES.FIXED:
-                //this.dimensionColor.setVisible(false);
+                this.dimensionColor.setVisible(false);
                 this.addConditionButton.setVisible(true);
                 this.fixedColorSetting.setVisible(true);
                 this.addGradientButton.setVisible(false);
                 this.gradientColorSetting.setVisible(false);
                 break;
             case BICst.DISPLAY_RULES.GRADIENT:
-                //this.dimensionColor.setVisible(false);
+                this.dimensionColor.setVisible(false);
                 this.addConditionButton.setVisible(false);
                 this.fixedColorSetting.setVisible(false);
                 this.addGradientButton.setVisible(true);
                 this.gradientColorSetting.setVisible(true);
                 break;
         }
+    },
+
+    _bigDataMode: function (v) {
+        this.showDataLabel.setEnable(v);
+        this.transferFilter.setEnable(v)
     },
 
     populate: function () {
@@ -749,7 +750,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.bubbleSizeFrom.setValue(BI.Utils.getWSMinBubbleSizeByID(wId));
         this.bubbleSizeTo.setValue(BI.Utils.getWSMaxBubbleSizeByID(wId));
         this.bigDataMode.setSelected(BI.Utils.getWSBigDataModelByID(wId));
-        // this._bigDataMode(!BI.Utils.getWSBigDataModelByID(wId));
+        this._bigDataMode(!BI.Utils.getWSBigDataModelByID(wId));
         this.showYCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
         this.customYScale.setValue(BI.Utils.getWSCustomYScale(wId));
         this.customYScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
