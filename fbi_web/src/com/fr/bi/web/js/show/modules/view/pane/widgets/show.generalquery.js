@@ -42,15 +42,15 @@ BIShow.GeneralQueryView = BI.inherit(BI.View, {
                 left: 0,
                 right: 0
             }, {
-                el: this.tools,
-                top: 0,
-                right: 10
-            }, {
                 el: this.filter,
                 top: 10,
                 left: 10,
                 right: 10,
                 bottom: 10
+            }, {
+                el: this.tools,
+                top: 0,
+                right: 10
             }]
         });
         this.widget.element.hover(function () {
