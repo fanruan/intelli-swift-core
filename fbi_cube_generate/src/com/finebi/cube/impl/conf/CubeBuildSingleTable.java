@@ -323,7 +323,9 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
     private void copyFilesFromOldCubes(ICubeResourceRetrievalService tempResourceRetrieval, ICubeResourceRetrievalService advancedResourceRetrieval, CubeTableSource source) throws BICubeResourceAbsentException, BITablePathEmptyException, IOException {
         ICubeResourceLocation from = advancedResourceRetrieval.retrieveResource(new BITableKey(source));
         ICubeResourceLocation to = tempResourceRetrieval.retrieveResource(new BITableKey(source));
-        BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
+        if (new File(from.getAbsolutePath()).exists()) {
+            BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
+        }
     }
 
     @Override
@@ -331,7 +333,7 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
         ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(biUser.getUserId()));
         ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(biUser.getUserId()));
         try {
-            BIFileUtils.moveFile(tempConf.getRootURI().getPath().toString(), advancedConf.getRootURI().getPath().toString());
+             BIFileUtils.moveFile(tempConf.getRootURI().getPath().toString(), advancedConf.getRootURI().getPath().toString());
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage());
         }

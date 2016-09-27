@@ -248,7 +248,7 @@ BIDezi.PaneView = BI.inherit(BI.View, {
 
     _refreshButtons: function () {
         var operatorIndex = this.model.get("getOperatorIndex");
-        var records = Data.SharingPool.cat("records") || new BI.Queue(30);
+        var records = Data.SharingPool.cat("records") || new BI.Queue(10);
         //模拟一下change的时候发生的事（坑爹的回调里做的事，没办法这边实时拿到）
         //避免改对象
         var imitationRecords = BI.makeArray(records.size(), "");
