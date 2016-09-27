@@ -37,16 +37,16 @@ BIShow.GeneralQueryView = BI.inherit(BI.View, {
             type: "bi.absolute",
             element: vessel,
             items: [{
+                el: this.titleWrapper,
+                top: 0,
+                left: 0,
+                right: 0
+            }, {
                 el: this.filter,
                 top: 10,
                 left: 10,
                 right: 10,
                 bottom: 10
-            }, {
-                el: this.titleWrapper,
-                top: 0,
-                left: 0,
-                right: 0
             }, {
                 el: this.tools,
                 top: 0,

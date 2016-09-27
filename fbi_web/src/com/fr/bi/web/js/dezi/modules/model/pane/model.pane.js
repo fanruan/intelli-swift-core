@@ -28,7 +28,7 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         var self = this;
         this.operatorIndex = 0;
         this.saveDebounce = BI.debounce(function (widgets, dims, layoutType, globalStyle) {
-            var records = Data.SharingPool.cat("records") || new BI.Queue(30);
+            var records = Data.SharingPool.cat("records") || new BI.Queue(10);
             records.splice(self.operatorIndex + 1);
             records.push({
                 dimensions: dims,

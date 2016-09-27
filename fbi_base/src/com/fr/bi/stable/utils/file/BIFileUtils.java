@@ -219,8 +219,8 @@ public class BIFileUtils {
                     boolean success = files[i].renameTo(moveFile);
                     //失败就copy一份过去
                     if (!success) {
-                        BIFileUtils.copyFile(files[i], moveFile);
                         FRContext.getLogger().info("Warning!FILE:" + files[i].getAbsolutePath() + " OR FILE:" + moveFile.getAbsolutePath() + "is open by other thread");
+                        BIFileUtils.copyFile(files[i], moveFile);
                     }
                 }
             }
@@ -272,10 +272,6 @@ public class BIFileUtils {
         return lstFileNames;
     }
 
-    public static void main(String[] args) {
-        List<String> list = getListFiles("D:\\", "less", true);
-
-    }
 
     public static void copyFile(String fileName, File old_f, File new_f) {
         File tmp = new File(old_f, fileName);
