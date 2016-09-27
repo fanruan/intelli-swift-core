@@ -8,7 +8,7 @@ BI.ListLabel = BI.inherit(BI.Widget, {
     _constant: {
         MAX_COLUMN_SIZE: 40,
         DEFAULT_LABEL_GAP: 25,
-        DEFAULT_LEFT_GAP: 12,
+        DEFAULT_LEFT_GAP: 20,
         LABEL_HEIGHT: 40,
     },
 
@@ -28,11 +28,11 @@ BI.ListLabel = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Unlimited"),
             value: "*"
         });
-        var title = o.showTitle ? BI.createWidget({
+        var title = BI.createWidget({
             type: "bi.label",
-            text: o.title + " :",
+            text: o.title + ":",
             height: this._constant.LABEL_HEIGHT
-        }) : {};
+        });
         this.container = BI.createWidget({
             type: "bi.list_label_item_group",
             items: BI.createItems(this.items.slice(0, this._constant.MAX_COLUMN_SIZE), {
@@ -44,8 +44,8 @@ BI.ListLabel = BI.inherit(BI.Widget, {
                 height: this._constant.LABEL_HEIGHT
             }]
         });
-        this.container.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            self.fireEvent(BI.ListLabel.EVENT_CHANGE, arguments);
+        this.container.on(BI.ButtonGroup.EVENT_CHANGE, function (value, obj) {
+            self.fireEvent(BI.ListLabel.EVENT_CHANGE, value, obj.options.id);
         });
         this.minTip = BI.createWidget({
             type: "bi.label",
@@ -66,14 +66,16 @@ BI.ListLabel = BI.inherit(BI.Widget, {
             items: [this.container, this.minTip, this.maxTip],
             height: this._constant.LABEL_HEIGHT
         });
+        var allItems = o.showTitle ? [title, {
+            el: this.right,
+            lgap: this._constant.DEFAULT_LEFT_GAP
+        }] : [this.right];
+
         BI.createWidget({
             type: "bi.inline",
-            items: [title, {
-                el: this.right,
-                lgap: this._constant.DEFAULT_LEFT_GAP
-            }],
+            items: allItems,
             element: this.element
-        })
+        });
     },
 
     addItems: function (v) {

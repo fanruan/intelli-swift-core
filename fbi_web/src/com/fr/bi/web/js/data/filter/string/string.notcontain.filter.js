@@ -6,7 +6,7 @@
     BI.StringNotContainValue.prototype = {
         constructor: BI.StringNotContainValue,
 
-        isStringContain: function(target){
+        isStringNotContain: function(target){
             if (this.value == null && target == null) {
                 return true;
             }
@@ -19,7 +19,7 @@
         getFilterResult: function(array) {
             var self = this;
             return BI.filter(array, function(idx, val){
-                return self.isStringContain(val);
+                return self.isStringNotContain(val);
             });
         }
     }

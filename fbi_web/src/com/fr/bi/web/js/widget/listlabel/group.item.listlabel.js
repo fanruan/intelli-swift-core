@@ -69,10 +69,14 @@ BI.ListLabelItemGroup = BI.inherit(BI.ButtonGroup, {
     },
 
     _checkBtnState: function () {
+        var self = this;
         if (BI.isEmptyArray(this.getValue()) || (this.getValue().length === 1 && BI.isEqual(this.getValue()[0], "*"))) {
             BI.each(this.buttons, function (idx, btn) {
                 if (btn.getValue() === "*") {
                     btn.setSelected(true);
+                    if(self.isVisible()) {
+                        self.fireEvent(BI.ButtonGroup.EVENT_CHANGE, btn.getValue(), btn);
+                    }
                 }
             });
         } else {
