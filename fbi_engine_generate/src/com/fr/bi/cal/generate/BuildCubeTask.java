@@ -104,7 +104,7 @@ public class BuildCubeTask implements CubeTask {
                 checkTaskFinish();
             }
 
-//            if (cubeBuildSucceed) {
+            if (cubeBuildSucceed) {
                 cube.addVersion(System.currentTimeMillis());
                 long start = System.currentTimeMillis();
                 boolean replaceSuccess = replaceOldCubes();
@@ -116,11 +116,11 @@ public class BuildCubeTask implements CubeTask {
                     message = "Cube replace failed ,the Cube files will not be replaced ";
                     BILogger.getLogger().error(message);
                 }
-//            } else {
-//                message = "Cube build failed ,the Cube files will not be replaced ";
-//                BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), message, biUser.getUserId());
-//                BILogger.getLogger().error(message);
-//            }
+            } else {
+                message = "Cube build failed ,the Cube files will not be replaced ";
+                BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), message, biUser.getUserId());
+                BILogger.getLogger().error(message);
+            }
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
         } finally {
