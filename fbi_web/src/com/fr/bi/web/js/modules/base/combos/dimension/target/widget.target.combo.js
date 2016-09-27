@@ -133,7 +133,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
     },
 
     _rebuildItems: function(){
-        var o = this.options;
+        var self = this, o = this.options;
         var item = this.defaultItems();
         var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
         var regionType = BI.Utils.getRegionTypeByDimensionID(o.dId);
@@ -389,7 +389,35 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
                 break;
         }
-        return item;
+        return addSummaryType();
+
+        function addSummaryType() {
+            var summaryItem = {};
+            BI.find(item, function(idx, ite){
+                summaryItem = BI.find(ite, function(id, it){
+                    var itE = BI.stripEL(it);
+                    return itE.value === BICst.TARGET_COMBO.SUMMERY_TYPE;
+                });
+                return BI.isNotNull(summaryItem);
+            });
+            var selectedValue = BI.i18nText("BI-Qiu_Sum");
+            switch (self._assertGroup(BI.Utils.getDimensionGroupByID(o.dId)).type) {
+                case BICst.SUMMARY_TYPE.SUM:
+                    selectedValue = BI.i18nText("BI-Qiu_Sum");
+                    break;
+                case BICst.SUMMARY_TYPE.AVG:
+                    selectedValue = BI.i18nText("BI-Qiu_Avg");
+                    break;
+                case BICst.SUMMARY_TYPE.MAX:
+                    selectedValue = BI.i18nText("BI-Qiu_Max");
+                    break;
+                case BICst.SUMMARY_TYPE.MIN:
+                    selectedValue = BI.i18nText("BI-Qiu_Min");
+                    break;
+            }
+            summaryItem.el.text = BI.i18nText("BI-Summary_Style") + "(" + selectedValue + ")";
+            return item;
+        }
     },
 
     _createValue: function () {
