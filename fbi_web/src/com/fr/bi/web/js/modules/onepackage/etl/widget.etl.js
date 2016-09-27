@@ -289,8 +289,10 @@ BI.ETL = BI.inherit(BI.Widget, {
                     this.saveButton
                 ]
             },
-            lhgap: this.constants.ETL_PANE_BUTTON_GAP,
-            rhgap: this.constants.ETL_PANE_BUTTON_GAP
+            llgap: this.constants.ETL_PANE_BUTTON_GAP,
+            lrgap: this.constants.ETL_DATA_SET_PANE_GAP,
+            rrgap: this.constants.ETL_PANE_BUTTON_GAP,
+            rlgap: this.constants.ETL_DATA_SET_PANE_GAP
         })
     },
 

@@ -35,7 +35,7 @@ BI.Fit = BI.inherit(BI.Widget, {
             type: "bi.border",
             element: this.element,
             items: {
-                "west": {el: nav, width: 140, right: 1},
+                "west": {el: nav, width: 120, right: 1},
                 "center": {el: this.arrangement}
             }
         });
@@ -295,10 +295,10 @@ BI.Fit = BI.inherit(BI.Widget, {
             type: "bi.absolute",
             items: [{
                 el: dragGroup,
-                top: 10,
-                left: 20,
-                right: 20,
-                bottom: 10
+                top: 5,
+                left: 10,
+                right: 10,
+                bottom: 5
             }]
         });
     },
