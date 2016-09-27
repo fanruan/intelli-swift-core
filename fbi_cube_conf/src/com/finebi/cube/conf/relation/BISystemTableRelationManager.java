@@ -152,9 +152,9 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
     }
 
     @Override
-    public void finishGenerateCubes(long userId, Set<BITableRelation> relationSet) {
+    public void finishGenerateCubes(long userId) {
         userId = UserControl.getInstance().getSuperManagerID();
-        getUserGroupConfigManager(userId).finishGenerateCubes(relationSet);
+        getUserGroupConfigManager(userId).finishGenerateCubes();
     }
 
     @Override
