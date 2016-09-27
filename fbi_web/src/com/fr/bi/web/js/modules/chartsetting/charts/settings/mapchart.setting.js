@@ -46,7 +46,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: 0,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.colorChooser]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
@@ -97,10 +97,10 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.left",
             cls: "detail-style",
             items: BI.createItems([{
-                type: "bi.center_adapt",
+                type: "bi.vertical_adapt",
                 items: [this.styleRadio]
             }, {
-                type: "bi.center_adapt",
+                type: "bi.vertical_adapt",
                 items: [this.addConditionButton]
             }, this.conditions], {
                 height: constant.SINGLE_LINE_HEIGHT
@@ -224,7 +224,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
                 cls: "line-title",
                 lgap: constant.SIMPLE_H_GAP
             }, {
-                type: "bi.center_adapt",
+                type: "bi.vertical_adapt",
                 items: [this.transferFilter],
                 lgap: 30
             }], {

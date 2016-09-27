@@ -5,13 +5,13 @@
  */
 BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.BubbleChartSetting.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-charts-setting bi-bubble-chart-setting"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.BubbleChartSetting.superclass._init.apply(this, arguments);
         var self = this, o = this.options, constant = BI.AbstractChartSetting;
 
@@ -58,7 +58,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.chart_add_gradient_condition_group"
         });
 
-        this.gradientConditions.on(BI.ChartAddGradientConditionGroup.EVENT_CHANGE, function() {
+        this.gradientConditions.on(BI.ChartAddGradientConditionGroup.EVENT_CHANGE, function () {
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
         });
 
@@ -68,7 +68,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             height: constant.BUTTON_HEIGHT
         });
 
-        this.addGradientButton.on(BI.Button.EVENT_CHANGE, function() {
+        this.addGradientButton.on(BI.Button.EVENT_CHANGE, function () {
             self.gradientConditions.addItem();
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
         });
@@ -97,7 +97,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             height: constant.BUTTON_HEIGHT
         });
 
-        this.addConditionButton.on(BI.Button.EVENT_CHANGE, function() {
+        this.addConditionButton.on(BI.Button.EVENT_CHANGE, function () {
             self.fixedConditions.addItem();
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
         });
@@ -107,7 +107,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: "100%"
         });
 
-        this.conditions.on(BI.ChartAddConditionGroup.EVENT_CHANGE, function() {
+        this.conditions.on(BI.ChartAddConditionGroup.EVENT_CHANGE, function () {
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
         });
 
@@ -117,7 +117,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
         this.colorSelect.populate();
 
-        this.colorSelect.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function(){
+        this.colorSelect.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
@@ -129,7 +129,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 textHeight: constant.BUTTON_HEIGHT,
                 cls: "attr-names"
             }, {
-                type: "bi.center_adapt",
+                type: "bi.vertical_adapt",
                 items: [this.colorSelect],
                 lgap: constant.SIMPLE_H_GAP
             }])
@@ -157,7 +157,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
         var tableStyle = BI.createWidget({
             type: "bi.horizontal_adapt",
-            columnSize: [80],
+            columnSize: [100],
             verticalAlign: "top",
             cls: "single-line-settings",
             items: [{
@@ -170,39 +170,37 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             }, {
                 type: "bi.left",
                 cls: "detail-style",
-                items: BI.createItems([/*{
+                items: BI.createItems([{
                     type: "bi.label",
                     text: BI.i18nText("BI-Display_Rules"),
                     cls: "attr-names"
-                },  {
-                    el: {
-                        type: "bi.center_adapt",
-                        items: [this.rulesDisplay]
-                    },
-                   lgap: constant.SIMPLE_H_GAP
-                }, */{
-                    type: "bi.center_adapt",
-                    items: [this.dimensionColor]
-                },/* {
-                    type: "bi.center_adapt",
-                    items: [this.addGradientButton],
-                    lgap:15
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
+                    items: [this.rulesDisplay]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.dimensionColor],
+                    lgap: 15
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.addGradientButton],
+                    lgap: 15
+                }, {
+                    type: "bi.vertical_adapt",
                     items: [this.addConditionButton],
                     lgap: 15
-                }, */{
+                }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Total_Style"),
                     cls: "attr-names",
                     lgap: 15
                 }, {
                     el: {
-                        type: "bi.center_adapt",
+                        type: "bi.vertical_adapt",
                         items: [this.bubbleStyleGroup]
                     },
                     lgap: constant.SIMPLE_H_GAP
-                }/*, this.fixedColorSetting, this.gradientColorSetting*/], {
+                }, this.fixedColorSetting, this.gradientColorSetting], {
                     height: constant.SINGLE_LINE_HEIGHT
                 })
             }]
@@ -216,7 +214,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BICst.TARGET_STYLE_FORMAT
         });
 
-        this.lYAxisStyle.on(BI.Segment.EVENT_CHANGE, function(){
+        this.lYAxisStyle.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
@@ -227,7 +225,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BICst.TARGET_STYLE_LEVEL
         });
 
-        this.numberLevellY.on(BI.Segment.EVENT_CHANGE, function(){
+        this.numberLevellY.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
@@ -238,7 +236,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BICst.TARGET_STYLE_FORMAT
         });
 
-        this.XAxisStyle.on(BI.Segment.EVENT_CHANGE, function(){
+        this.XAxisStyle.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
@@ -249,7 +247,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BICst.TARGET_STYLE_LEVEL
         });
 
-        this.numberLevelX.on(BI.Segment.EVENT_CHANGE, function(){
+        this.numberLevelX.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
@@ -262,7 +260,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             watermark: BI.i18nText("BI-Custom_Input")
         });
 
-        this.LYUnit.on(BI.SignEditor.EVENT_CONFIRM, function(){
+        this.LYUnit.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
@@ -274,7 +272,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             watermark: BI.i18nText("BI-Custom_Input")
         });
 
-        this.XUnit.on(BI.SignEditor.EVENT_CONFIRM, function(){
+        this.XUnit.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
@@ -285,7 +283,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 90
         });
 
-        this.isShowTitleLY.on(BI.Controller.EVENT_CHANGE, function(){
+        this.isShowTitleLY.on(BI.Controller.EVENT_CHANGE, function () {
             this.isSelected() ? self.editTitleLY.setVisible(true) : self.editTitleLY.setVisible(false);
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
@@ -296,7 +294,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             height: constant.EDITOR_HEIGHT,
             cls: "unit-input"
         });
-        this.editTitleLY.on(BI.SignEditor.EVENT_CONFIRM, function(){
+        this.editTitleLY.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
@@ -306,7 +304,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 90
         });
 
-        this.isShowTitleX.on(BI.Controller.EVENT_CHANGE, function(){
+        this.isShowTitleX.on(BI.Controller.EVENT_CHANGE, function () {
             this.isSelected() ? self.editTitleX.setVisible(true) : self.editTitleX.setVisible(false);
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
@@ -318,7 +316,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "unit-input"
         });
 
-        this.editTitleX.on(BI.SignEditor.EVENT_CONFIRM, function(){
+        this.editTitleX.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
@@ -412,7 +410,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.lYAxisStyle]
                 }, {
                     type: "bi.label",
@@ -420,7 +418,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.numberLevellY]
                 }, {
                     type: "bi.label",
@@ -428,10 +426,10 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.LYUnit]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.isShowTitleLY, this.editTitleLY]
                 }, {
                     type: "bi.vertical_adapt",
@@ -470,7 +468,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.XAxisStyle]
                 }, {
                     type: "bi.label",
@@ -478,7 +476,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.numberLevelX]
                 }, {
                     type: "bi.label",
@@ -486,10 +484,10 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.XUnit]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.isShowTitleX, this.editTitleX]
                 }, {
                     type: "bi.vertical_adapt",
@@ -498,7 +496,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.vertical_adapt",
                     items: [this.customXScale]
                 }], {
-            	      type: "bi.vertical_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.XSeparators]
                 }, {
                     height: constant.SINGLE_LINE_HEIGHT
@@ -515,7 +513,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BICst.CHART_LEGEND
         });
 
-        this.legend.on(BI.Segment.EVENT_CHANGE, function(){
+        this.legend.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
@@ -526,7 +524,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 115
         });
 
-        this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function(){
+        this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
@@ -537,7 +535,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 115
         });
 
-        this.gridLine.on(BI.Controller.EVENT_CHANGE, function(){
+        this.gridLine.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
@@ -592,28 +590,28 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Legend_Normal"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.legend]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.gridLine]
                 }/*, {
-                    type: "bi.center_adapt",
-                    items: [{
-                        type: "bi.label",
-                        text: BI.i18nText("BI-Bubble_Size")
-                    }, this.bubbleSizeFrom, {
-                        type: "bi.label",
-                        text: "px <" + BI.i18nText("BI-Diameter") + "≤"
-                    }, this.bubbleSizeTo, {
-                        type: "bi.label",
-                        text: "px"
-                    }],
-                    hgap: 3
-                }*/], {
+                 type: "bi.vertical_adapt",
+                 items: [{
+                 type: "bi.label",
+                 text: BI.i18nText("BI-Bubble_Size")
+                 }, this.bubbleSizeFrom, {
+                 type: "bi.label",
+                 text: "px <" + BI.i18nText("BI-Diameter") + "≤"
+                 }, this.bubbleSizeTo, {
+                 type: "bi.label",
+                 text: "px"
+                 }],
+                 hgap: 3
+                 }*/], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
                 lgap: constant.SIMPLE_H_GAP
@@ -652,7 +650,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.bigDataMode.on(BI.Controller.EVENT_CHANGE, function () {
-            self._bigDataMode(!this.isSelected());
+            // self._bigDataMode(!this.isSelected());
             if (this.isSelected()) {
                 self.rulesDisplay.setValue(BICst.DISPLAY_RULES.GRADIENT);
                 self._colorSettingChange(BICst.DISPLAY_RULES.GRADIENT)
@@ -661,7 +659,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         var modeChange = BI.createWidget({
-            type:"bi.left_right_vertical_adapt",
+            type: "bi.left_right_vertical_adapt",
             cls: "single-line-settings",
             items: {
                 left: [{
@@ -683,7 +681,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
     },
 
     _colorSettingChange: function (v) {
-        switch(v) {
+        switch (v) {
             case BICst.DISPLAY_RULES.DIMENSION:
                 //this.dimensionColor.setVisible(true);
                 this.addConditionButton.setVisible(false);
@@ -708,22 +706,22 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         }
     },
 
-    populate: function(){
+    populate: function () {
         var wId = this.options.wId;
         var view = BI.Utils.getWidgetViewByID(wId);
         var titleLY = BI.Utils.getWSLeftYAxisTitleByID(wId), titleX = BI.Utils.getWSXAxisTitleByID(wId);
-        if(titleLY === ""){
-            BI.any(view[BICst.REGION.TARGET1], function(idx, dId){
-                if(BI.Utils.isDimensionUsable(dId)){
+        if (titleLY === "") {
+            BI.any(view[BICst.REGION.TARGET1], function (idx, dId) {
+                if (BI.Utils.isDimensionUsable(dId)) {
                     titleLY = BI.Utils.getDimensionNameByID(dId);
                     return true;
                 }
                 return false;
             });
         }
-        if(titleX === ""){
-            BI.any(view[BICst.REGION.DIMENSION1], function(idx, dId){
-                if(BI.Utils.isDimensionUsable(dId)){
+        if (titleX === "") {
+            BI.any(view[BICst.REGION.DIMENSION1], function (idx, dId) {
+                if (BI.Utils.isDimensionUsable(dId)) {
                     titleX = BI.Utils.getDimensionNameByID(dId);
                     return true;
                 }
@@ -751,7 +749,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.bubbleSizeFrom.setValue(BI.Utils.getWSMinBubbleSizeByID(wId));
         this.bubbleSizeTo.setValue(BI.Utils.getWSMaxBubbleSizeByID(wId));
         this.bigDataMode.setSelected(BI.Utils.getWSBigDataModelByID(wId));
-        this._bigDataMode(!BI.Utils.getWSBigDataModelByID(wId));
+        // this._bigDataMode(!BI.Utils.getWSBigDataModelByID(wId));
         this.showYCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
         this.customYScale.setValue(BI.Utils.getWSCustomYScale(wId));
         this.customYScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
@@ -765,7 +763,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false);
     },
 
-    getValue: function(){
+    getValue: function () {
         return {
             rules_display: this.rulesDisplay.getValue()[0],
             bubble_style: this.bubbleStyleGroup.getValue()[0],
@@ -796,7 +794,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         }
     },
 
-    setValue: function(v){
+    setValue: function (v) {
         this.rulesDisplay.setValue(v.rules_display);
         this.bubbleStyleGroup.setValue(v.bubble_style);
         this.transferFilter.setSelected(v.transfer_filter);
