@@ -32,14 +32,14 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
             type: "bi.absolute",
             element: vessel,
             items: [{
-                el: this.tools,
-                top: 0,
-                right: 10
-            }, {
                 el: this.titleWrapper,
                 top: 0,
                 left: 0,
                 right: 0
+            }, {
+                el: this.tools,
+                top: 0,
+                right: 10
             }, {
                 el: this.filter,
                 top: 10,
