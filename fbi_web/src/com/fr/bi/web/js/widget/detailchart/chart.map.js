@@ -106,7 +106,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                 if (BI.isNotEmptyArray(items) && BI.has(items[0], "settings")) {
 
                     if (items[0].settings.num_separators) {
-                        to = BI.contentFormat(to, "#,##0")
+                        to = BI.contentFormat(to, "#,##0;-#,##0")
                     }
 
                     switch (items[0].settings.num_level || c.NORMAL) {
@@ -123,7 +123,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                             to += BI.i18nText("BI-Yi");
                             break;
                         case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                            to = BI.contentFormat(BI.parseFloat(to), "#0%");
+                            to = BI.contentFormat(BI.parseFloat(to), "#0%;-#0%");
                             break;
                     }
                 }
