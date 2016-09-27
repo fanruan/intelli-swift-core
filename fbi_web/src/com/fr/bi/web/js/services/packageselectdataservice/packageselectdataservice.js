@@ -623,11 +623,11 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 });
                 return help.element;
             },
-            start: function(event, ui) {
+            start: function (event, ui) {
                 //通知region
                 BI.Broadcasts.send(BICst.BROADCAST.FIELD_DRAG_START, self.searcher.getValue());
             },
-            stop: function(event, ui) {
+            stop: function (event, ui) {
                 BI.Broadcasts.send(BICst.BROADCAST.FIELD_DRAG_STOP);
             }
         }
@@ -769,6 +769,11 @@ BI.PackageSelectDataService.EVENT_CLICK_ITEM = "EVENT_CLICK_ITEM";
 BI.extend(BI.PackageSelectDataService, {
     RELATION_TABLE: "__relation_table__",
 
+    //TODO 判断咨询环列关联
+    _hasSelfRelation: function (fields) {
+
+    },
+
     getAllRelativeFields: function (tableId, fields, map) {
         map = map || {};
         var newFields = [];
@@ -785,7 +790,10 @@ BI.extend(BI.PackageSelectDataService, {
                 }
             }
         });
-        if (store.length > 0) {
+        if (store.length > 0 &&
+            BI.every(store, function (i, name) {
+                return map2Id[name] != null;
+            })) {
             BI.each(fields, function (i, field) {
                 var fieldName = BI.Utils.getOriginalFieldNameByID(field.id);
                 var name = fieldName.split("-")[0];

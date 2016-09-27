@@ -4,6 +4,7 @@
 BI.ETLReq = {
     reqSaveTable: function(data, callback){
         data.sessionID = Data.SharingPool.get("sessionID");
+        data.table[ETLCst.ITEMS][0].operator.sessionID = Data.SharingPool.get("sessionID");
         BI.requestAsync("fr_bi_analysis_etl", "save_table", data, function(res){
             BI.Utils.afterSaveTable(res);
             callback();
@@ -69,6 +70,7 @@ BI.ETLReq = {
 
     reqPreviewTable: function(data, callback){
         data.sessionID = Data.SharingPool.get("sessionID");
+        data[ETLCst.ITEMS][0].operator.sessionID = Data.SharingPool.get("sessionID");
         if(data[ETLCst.ITEMS][0][ETLCst.FIELDS].length === 0){
             callback({
                 value:[]
