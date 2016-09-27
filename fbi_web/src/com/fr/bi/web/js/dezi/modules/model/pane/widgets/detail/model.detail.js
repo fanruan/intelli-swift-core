@@ -16,6 +16,17 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
 
     _init: function () {
         BIDezi.DetailModel.superclass._init.apply(this, arguments);
+        var self = this;
+        BI.Broadcasts.on(BICst.BROADCAST.DATA_LABEL_PREFIX+this.get("id"), function (v) {
+            self.set("settings", BI.extend(self.get("settings"),{
+                data_label: v
+            }));
+        });
+        BI.Broadcasts.on(BICst.BROADCAST.IMAGE_CHANGE_PREFIX+this.get("id"), function (v) {
+            self.set("settings", BI.extend(self.get("settings"),{
+                images: v
+            }));
+        });
     },
 
     similar: function (ob, key) {
@@ -57,6 +68,14 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                     if(BI.isNotNull(tSort) && tSort.sort_target === key2) {
                         self.set("sort", {}, {silent: true});
                     }
+                }else{
+                    //图表样式的过滤条件
+                    BI.each(dimension.data_label, function(idx, filter){
+                        checkFilter(filter);
+                    });
+                    BI.each(dimension.data_image, function (idx, filter) {
+                        checkFilter(filter);
+                    })
                 }
             });
             var allIds = BI.keys(dimensions);

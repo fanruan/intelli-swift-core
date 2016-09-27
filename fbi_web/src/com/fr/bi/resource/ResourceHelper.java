@@ -1546,6 +1546,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/fragments/multirelation/item.tablefield.multirelation.js",
                 "com/fr/bi/web/js/fragments/multirelation/view.searcher.multirelation.js",
 
+                //标签样式面板
+                "com/fr/bi/web/js/modules/datalabel/datalabel.popup.js",
+
                 //业务包面板
                 "com/fr/bi/web/js/modules/onepackage/onepackagetablespane/widget.packagetables.pane.js",
                 "com/fr/bi/web/js/modules/onepackage/onepackagetablespane/widget.packagesearcher.resultpane.js",
@@ -2382,6 +2385,34 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.horizontal.js",
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.vertical.js",
                 "com/fr/bi/web/js/data/utils.js",
+                //filter
+                "com/fr/bi/web/js/data/filter/filtervalue.factory.js",
+                "com/fr/bi/web/js/data/filter/filter.factory.js",
+                "com/fr/bi/web/js/data/filter/objectcondition/obj.general.and.filter.js",
+                "com/fr/bi/web/js/data/filter/objectcondition/obj.general.or.filter.js",
+                "com/fr/bi/web/js/data/filter/objectcondition/obj.single.filter.js",
+                "com/fr/bi/web/js/data/filter/objectcondition/filter.obj.factory.js",
+                "com/fr/bi/web/js/data/filter/condition/empty.filter.js",
+                "com/fr/bi/web/js/data/filter/condition/general.and.filter.js",
+                "com/fr/bi/web/js/data/filter/condition/general.or.filter.js",
+                "com/fr/bi/web/js/data/filter/condition/single.filter.js",
+                "com/fr/bi/web/js/data/filter/number/number.equal.filter.js",
+                "com/fr/bi/web/js/data/filter/number/number.inrange.filter.js",
+                "com/fr/bi/web/js/data/filter/number/number.kth.filter.js",
+                "com/fr/bi/web/js/data/filter/number/number.largethan.or.equal.filter.js",
+                "com/fr/bi/web/js/data/filter/number/number.lessthan.filter.js",
+                "com/fr/bi/web/js/data/filter/number/number.notequal.filter.js",
+                "com/fr/bi/web/js/data/filter/number/number.notinrange.filter.js",
+                "com/fr/bi/web/js/data/filter/number/number.notnull.filter.js",
+                "com/fr/bi/web/js/data/filter/number/number.null.filter.js",
+                "com/fr/bi/web/js/data/filter/string/string.contain.filter.js",
+                "com/fr/bi/web/js/data/filter/string/string.endwith.filter.js",
+                "com/fr/bi/web/js/data/filter/string/string.in.filter.js",
+                "com/fr/bi/web/js/data/filter/string/string.notcontain.filter.js",
+                "com/fr/bi/web/js/data/filter/string/string.notin.filter.js",
+                "com/fr/bi/web/js/data/filter/string/string.notnull.filter.js",
+                "com/fr/bi/web/js/data/filter/string/string.null.filter.js",
+                "com/fr/bi/web/js/data/filter/string/string.startwith.filter.js",
 
                 "com/fr/bi/web/js/case/case.js",
                 "com/fr/bi/web/js/case/layer/panel.js",
@@ -2716,6 +2747,14 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/copy2group/button.add.copy2group.js",
                 "com/fr/bi/web/js/widget/copy2group/toolbar.copy2group.js",
                 "com/fr/bi/web/js/widget/copy2group/combo.copy2group.js",
+
+                //文本标签
+                "com/fr/bi/web/js/widget/listlabel/listlabel.js",
+                "com/fr/bi/web/js/widget/listlabel/group.item.listlabel.js",
+
+                //树标签
+                "com/fr/bi/web/js/widget/treelabel/treelabel.js",
+                "com/fr/bi/web/js/widget/treelabel/treelabel.view.js",
 
                 //单选下拉树
                 "com/fr/bi/web/js/widget/singletree/singletree.combo.js",

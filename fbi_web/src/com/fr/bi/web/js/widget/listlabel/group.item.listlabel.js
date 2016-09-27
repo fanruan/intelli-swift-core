@@ -1,0 +1,112 @@
+/**
+ * Created by fay on 2016/9/14.
+ */
+BI.ListLabelItemGroup = BI.inherit(BI.ButtonGroup, {
+    _defaultConfig: function () {
+        return BI.extend(BI.ListLabelItemGroup.superclass._defaultConfig.apply(this, arguments), {
+            chooseType: BI.Selection.Multi
+        });
+    },
+
+    _init: function () {
+        BI.ListLabelItemGroup.superclass._init.apply(this, arguments);
+        if (BI.isEmptyArray(this.getValue())) {
+            BI.each(this.buttons, function (idx, button) {
+                if (button.getValue() === "*") {
+                    button.setSelected(true);
+                }
+            });
+        }
+        this._checkBtnStyle();
+    },
+
+    _createBtns: function (items) {
+        var o = this.options;
+        return BI.createWidgets(BI.createItems(items, {
+            type: "bi.text_button",
+            cls: "list-label-button"
+        }));
+    },
+
+
+    _btnsCreator: function (items) {
+        var self = this, args = Array.prototype.slice.call(arguments), o = this.options;
+        var buttons = this._createBtns(items);
+        args[0] = buttons;
+
+        BI.each(this.behaviors, function (i, behavior) {
+            behavior.doBehavior.apply(behavior, args);
+        });
+        BI.each(buttons, function (i, btn) {
+            btn.on(BI.Controller.EVENT_CHANGE, function (type, value, obj) {
+                if (type === BI.Events.CLICK) {
+                    switch (o.chooseType) {
+                        case BI.ButtonGroup.CHOOSE_TYPE_MULTI:
+                            if (btn.getValue() === "*") {
+                                self.setValue(["*"]);
+                            } else {
+                                self._checkBtnState();
+                            }
+                            self._checkBtnStyle();
+                            break;
+                        case BI.ButtonGroup.CHOOSE_TYPE_SINGLE:
+                            self.setValue(btn.getValue());
+                            break;
+                        case BI.ButtonGroup.CHOOSE_TYPE_NONE:
+                            self.setValue([]);
+                            break;
+                    }
+                    self.fireEvent(BI.ButtonGroup.EVENT_CHANGE, value, obj);
+                }
+                self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
+            });
+            btn.on(BI.Events.DESTROY, function () {
+                BI.remove(self.buttons, btn);
+            });
+        });
+
+        return buttons;
+    },
+
+    _checkBtnState: function () {
+        if (BI.isEmptyArray(this.getValue()) || (this.getValue().length === 1 && BI.isEqual(this.getValue()[0], "*"))) {
+            BI.each(this.buttons, function (idx, btn) {
+                if (btn.getValue() === "*") {
+                    btn.setSelected(true);
+                }
+            });
+        } else {
+            BI.each(this.buttons, function (idx, btn) {
+                if (btn.getValue() === "*") {
+                    btn.setSelected(false);
+                }
+            });
+        }
+    },
+
+    _checkBtnStyle: function () {
+        BI.each(this.buttons, function (idx, btn) {
+            if (btn.isSelected()) {
+                btn.doHighLight();
+            } else {
+                btn.unHighLight();
+            }
+        });
+    },
+
+    removeAllItems: function () {
+        var indexes = [];
+        for (var i = 1; i < this.buttons.length; i++) {
+            indexes.push(i);
+        }
+        this.removeItemAt(indexes);
+    },
+
+    setValue: function (v) {
+        BI.ListLabelItemGroup.superclass.setValue.apply(this, arguments);
+        this._checkBtnState();
+        this._checkBtnStyle();
+    }
+});
+
+$.shortcut('bi.list_label_item_group', BI.ListLabelItemGroup);

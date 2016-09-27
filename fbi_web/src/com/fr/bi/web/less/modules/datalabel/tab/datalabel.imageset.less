@@ -1,0 +1,35 @@
+@import "../../../bibase";
+
+.image-set-tab {
+  border-top: 1px solid @border-color-normal;
+  background-color: @color-bi-background-gray;
+}
+
+.image-set-tab-item {
+  &.active {
+    background-color: @color-bi-background-default;
+  }
+  color: @color-bi-text-black;
+  border-right: 1px solid @border-color-normal;
+}
+
+.image-set-delete.close-font {
+  background-color: @color-bi-background-delete;
+  .b-font {
+    &:before {
+      color: @color-bi-text;
+    }
+  }
+}
+
+.bi-image-set {
+  border-left: 1px solid @border-color-normal;
+}
+
+.image-group {
+  white-space: normal;
+}
+
+.header-label {
+  color: @color-bi-text-gray
+}

@@ -132,6 +132,12 @@ BIDezi.TargetView = BI.inherit(BI.View, {
                 case BICst.TARGET_COMBO.STYLE_SETTING:
                     if (s === BICst.TARGET_COMBO.CORDON) {
                         self._buildCordonPane();
+                    } else if (s === BICst.TARGET_COMBO.DATA_LABEL) {
+                        self._buildDataLabelPane();
+                    } else if(s === BICst.TARGET_COMBO.DATA_LABEL_OTHER) {
+                        self._buildDataLabelPane4ScatterBubble();
+                    } else if(s === BICst.TARGET_COMBO.DATA_IMAGE) {
+                        self._buildDataImagePane();
                     } else {
                         self._buildStyleSettingPane();
                     }
@@ -173,6 +179,12 @@ BIDezi.TargetView = BI.inherit(BI.View, {
                 case BICst.TARGET_COMBO.STYLE_SETTING:
                     if (s === BICst.TARGET_COMBO.CORDON) {
                         self._buildCordonPane();
+                    } else if (s === BICst.TARGET_COMBO.DATA_LABEL) {
+                        self._buildDataLabelPane();
+                    } else if(s === BICst.TARGET_COMBO.DATA_LABEL_OTHER) {
+                        self._buildDataLabelPane4ScatterBubble();
+                    } else if(s === BICst.TARGET_COMBO.DATA_IMAGE) {
+                        self._buildDataImagePane();
                     } else {
                         self._buildStyleSettingPane();
                     }
@@ -202,6 +214,12 @@ BIDezi.TargetView = BI.inherit(BI.View, {
                 case BICst.CALCULATE_TARGET_COMBO.FORM_SETTING:
                     if (s === BICst.TARGET_COMBO.CORDON) {
                         self._buildCordonPane();
+                    } else if (s === BICst.TARGET_COMBO.DATA_LABEL) {
+                        self._buildDataLabelPane();
+                    } else if(s === BICst.TARGET_COMBO.DATA_LABEL_OTHER) {
+                        self._buildDataLabelPane4ScatterBubble();
+                    } else if(s === BICst.TARGET_COMBO.DATA_IMAGE) {
+                        self._buildDataImagePane();
                     } else {
                         self._buildStyleSettingPane();
                     }
@@ -372,6 +390,48 @@ BIDezi.TargetView = BI.inherit(BI.View, {
         });
         popup.on(BI.CordonPopup.EVENT_CHANGE, function (v) {
             self.model.set("cordon", v);
+        });
+        BI.Popovers.create(id, popup).open(id);
+        popup.populate();
+    },
+
+    _buildDataLabelPane: function () {
+        var self = this, id = this.model.get("id");
+        BI.Popovers.remove(id);
+        var popup = BI.createWidget({
+            type: "bi.data_label_popup",
+            dId: this.model.get("id")
+        });
+        popup.on(BI.DataLabelPopup.EVENT_CHANGE, function (v) {
+            self.model.set("data_label", v);
+        });
+        BI.Popovers.create(id, popup).open(id);
+        popup.populate();
+    },
+
+    _buildDataImagePane: function () {
+        var self = this, id = this.model.get("id");
+        BI.Popovers.remove(id);
+        var popup = BI.createWidget({
+            type: "bi.data_image_popup",
+            dId: this.model.get("id")
+        });
+        popup.on(BI.DataLabelPopup.EVENT_CHANGE, function (v) {
+            self.model.set("data_image", v);
+        });
+        BI.Popovers.create(id, popup).open(id);
+        popup.populate();
+    },
+
+    _buildDataLabelPane4ScatterBubble: function () {
+        var self = this, id = this.model.get("id");
+        BI.Popovers.remove(id);
+        var popup = BI.createWidget({
+            type: "bi.data_label_popup",
+            dId: this.model.get("id")
+        });
+        popup.on(BI.DataLabelPopup.EVENT_CHANGE, function (v) {
+            BI.Broadcasts.send(BICst.BROADCAST.DATA_LABEL_PREFIX+BI.Utils.getWidgetIDByDimensionID(id), v);
         });
         BI.Popovers.create(id, popup).open(id);
         popup.populate();
