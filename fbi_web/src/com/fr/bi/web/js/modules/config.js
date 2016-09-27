@@ -1267,7 +1267,21 @@ BICst.DEFAULT_CHART_SETTING = {
     bubble_display: BICst.DISPLAY_RULES.DIMENSION,
     bubble_style: BICst.CHART_SHAPE.NO_PROJECTOR,
     show_background_layer: true,
-    background_layer_info: BI.i18nText("BI-GAO_DE_MAP")
+    background_layer_info: BI.i18nText("BI-GAO_DE_MAP"),
+    show_y_custom_scale: false,
+    show_x_custom_scale: false,
+    show_z_custom_scale: false,
+    custom_scale: {
+        maxScale: {
+            scale: null
+        },
+        minScale: {
+            scale: null
+        },
+        interval: {
+            scale: null
+        }
+    }
 };
 
 BICst.DASHBOARD_STYLE_CONDITIONS = [{
