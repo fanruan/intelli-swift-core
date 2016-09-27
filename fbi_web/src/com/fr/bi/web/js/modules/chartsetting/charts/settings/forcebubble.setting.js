@@ -178,12 +178,16 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Display_Rules"),
                     cls: "attr-names"
-                }, {
+                },  {
+                    el: {
+                        type: "bi.vertical_adapt",
+                        items: [this.rulesDisplay]
+                    }
+                },{
                     el: {
                         type: "bi.vertical_adapt",
                         items: [this.colorSelect]
-                    },
-                    lgap: constant.SIMPLE_H_GAP
+                    }
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.dimensionColor]
@@ -197,9 +201,9 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
                         items: [this.bubbleStyleGroup]
                     }
                 }, this.fixedColorSetting, this.gradientColorSetting], {
-                    height: constant.SINGLE_LINE_HEIGHT
-                }),
-                lgap: constant.SIMPLE_H_GAP
+                    height: constant.SINGLE_LINE_HEIGHT,
+                    lgap: constant.SIMPLE_H_GAP
+                })
             }]
         });
 
