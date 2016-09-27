@@ -4,7 +4,8 @@
 BI.ChartDrillCell = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.ChartDrillCell.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-chart-drill-cell"
+            baseCls: "bi-chart-drill-cell",
+            disableDownButton: false
         })
     },
 
@@ -111,7 +112,7 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
         if (BI.isNull(upDrillName)) {
             this.upDrill.setEnable(false);
         }
-        if (BI.isEmptyArray(downChildren)) {
+        if (BI.isEmptyArray(downChildren) || this.options.disableDownButton) {
             this.downDrill.setEnable(false);
             this.downTrigger.setEnable(false);
         } else {

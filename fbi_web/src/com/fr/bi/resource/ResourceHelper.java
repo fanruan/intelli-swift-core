@@ -1198,6 +1198,49 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/filter/detailtable/filter.detailtable.js",
                 "com/fr/bi/web/js/modules/filter/auth/filter.authority.js",
 
+                //数据标签
+                "com/fr/bi/web/js/modules/datalabel/datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/tab.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/texttoolbar.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/font.chooser.texttoolbar.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/select.content.texttoolbar.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/imageset.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/styleset.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/chart.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/tab/button.image.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/item.filter.datalabel.abstract.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/group.condition.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/selectdata4datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/common/item.numberfield.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/common/item.stringfield.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/common/factory.filteritem.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/common/item.notypefieldl.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/common/widget.datalabelselectfield.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/scatter/item.numberfield.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/scatter/item.multifield.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/scatter/item.stringfield.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/scatter/factory.filteritem.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/scatter/item.notypefieldl.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/scatter/widget.datalabelselectfield.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/bubble/item.numberfield.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/bubble/item.multifield.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/bubble/item.stringfield.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/bubble/factory.filteritem.datalabel.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/bubble/item.notypefieldl.js",
+                "com/fr/bi/web/js/modules/datalabel/condition/bubble/widget.datalabelselectfield.js",
+
+                //数据图片
+                "com/fr/bi/web/js/modules/dataimage/dataimage.js",
+                "com/fr/bi/web/js/modules/dataimage/dataimage.popup.js",
+                "com/fr/bi/web/js/modules/dataimage/condition/group.condition.dataimage.js",
+                "com/fr/bi/web/js/modules/dataimage/image/styleset.dataimage.js",
+                "com/fr/bi/web/js/modules/dataimage/image/image.combo.dataimage.js",
+                "com/fr/bi/web/js/modules/dataimage/condition/common/item.notypefield.js",
+                "com/fr/bi/web/js/modules/dataimage/condition/common/item.numberfield.js",
+                "com/fr/bi/web/js/modules/dataimage/condition/common/item.stringfield.js",
+                "com/fr/bi/web/js/modules/dataimage/condition/common/factory.filteritem.dataimage.js",
+                "com/fr/bi/web/js/modules/dataimage/condition/common/widget.dataimageselectfield.js",
+
                 //计算指标
                 "com/fr/bi/web/js/modules/calculatetarget/calculatetarget4summary/calculatetargetpopup.summary.js",
                 "com/fr/bi/web/js/modules/calculatetarget/calculatetarget4summary/model.calculatetargetpopup.summary.js",
@@ -1450,6 +1493,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addcondition.group.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addgradientcondition.item.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/addcondition/chart.addgradientcondition.group.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/customscale/formula/customscale.formula.field.tree.midleaf.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/customscale/formula/customscale.formula.field.tree.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/customscale/formula/customscale.formula.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/customscale/formula/customscale.formula.pane.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/customscale/combo.customscale.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/customscale/customscale.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/customscale/trigger.customscale.js",
@@ -1956,6 +2003,14 @@ public class ResourceHelper {
                 //单选下拉树
                 "com/fr/bi/web/css/widget/singletree/combo.single.tree.css",
 
+                //文本标签
+                "com/fr/bi/web/css/widget/listlabel/listlabel.css",
+                "com/fr/bi/web/css/widget/listlabel/group.item.listlabel.css",
+
+                //树标签
+                "com/fr/bi/web/css/widget/treelabel/treelabel.css",
+                "com/fr/bi/web/css/widget/treelabel/treelabel.view.css",
+
                 //文本工具栏
                 "com/fr/bi/web/css/widget/texttoolbar/alignchooser/texttoolbar.alignchooser.css",
                 "com/fr/bi/web/css/widget/texttoolbar/texttoolbar.css",
@@ -1968,6 +2023,14 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/widget/image/button/upload.css",
                 "com/fr/bi/web/css/widget/image/button/href/image.button.href.css",
                 "com/fr/bi/web/css/widget/image/button/size/image.button.size.css",
+
+                //数据标签
+                "com/fr/bi/web/css/modules/datalabel/datalabel.css",
+                "com/fr/bi/web/css/modules/datalabel/condition/datalabel.condition.css",
+                "com/fr/bi/web/css/modules/datalabel/condition/datalabel.conditionitem.css",
+                "com/fr/bi/web/css/modules/datalabel/tab/datalabel.imageset.css",
+                "com/fr/bi/web/css/modules/datalabel/tab/datalabel.texttoolbar.css",
+                "com/fr/bi/web/css/modules/datalabel/tab/datalabel.barchart.css",
 
                 //可选下拉树
                 "com/fr/bi/web/css/widget/selecttree/combo.select.tree.css",

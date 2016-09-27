@@ -7,13 +7,13 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function () {
         return BI.extend(BI.BarChartsSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-charts-setting"
+            baseCls: "bi-charts-setting bi-bar-chart-setting"
         })
     },
 
     _init: function () {
         BI.BarChartsSetting.superclass._init.apply(this, arguments);
-        var self = this, constant = BI.AbstractChartSetting;
+        var self = this, o = this.options, constant = BI.AbstractChartSetting;
 
         this.colorSelect = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",
@@ -227,6 +227,30 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.BarChartsSetting.EVENT_CHANGE);
         });
 
+        //左轴刻度自定义
+        this.showYCustomScale = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Scale_Customize"),
+            width: 115
+        });
+
+        this.showYCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
+            self.customYScale.setVisible(this.isSelected());
+            if (!this.isSelected()) {
+                self.customYScale.setValue({})
+            }
+            self.fireEvent(BI.BarChartsSetting.EVENT_CHANGE)
+        });
+
+        this.customYScale = BI.createWidget({
+            type: "bi.custom_scale",
+            wId: o.wId
+        });
+
+        this.customYScale.on(BI.CustomScale.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BarChartsSetting.EVENT_CHANGE)
+        });
+
         this.showElement = BI.createWidget({
             type: "bi.horizontal_adapt",
             cls: "single-line-settings",
@@ -345,6 +369,12 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.isShowTitleLY, this.editTitleLY]
                 }, {
                     type: "bi.vertical_adapt",
+                    items: [this.showYCustomScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.customYScale]
+        }, {
+            type: "bi.vertical_adapt",
                     items: [this.separators]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
@@ -459,6 +489,9 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
         this.minimalistModel.setSelected(BI.Utils.getWSMinimalistByID(wId));
         this._invisible(!BI.Utils.getWSMinimalistByID(wId));
+        this.showYCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
+        this.customYScale.setValue(BI.Utils.getWSCustomYScale(wId));
+        this.customYScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
         this.separators.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
@@ -482,6 +515,8 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             show_data_label: this.showDataLabel.isSelected(),
             show_grid_line: this.gridLine.isSelected(),
             minimalist_model: this.minimalistModel.isSelected(),
+            show_y_custom_scale: this.showYCustomScale.isSelected(),
+            custom_y_scale: this.customYScale.getValue(),
             num_separators: this.separators.isSelected()
         }
     },
@@ -502,6 +537,8 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showDataLabel.setSelected(v.show_data_label);
         this.gridLine.setSelected(v.show_grid_line);
         this.minimalistModel.setSelected(v.minimalist_model);
+        this.showYCustomScale.setSelected(v.show_y_custom_scale);
+        this.customYScale.setValue(v.custom_y_scale);
         this.separators.setSelected(v.num_separators);
     }
 });

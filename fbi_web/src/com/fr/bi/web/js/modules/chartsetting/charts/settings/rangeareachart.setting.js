@@ -7,13 +7,13 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.RangeAreaChartsSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-charts-setting"
+            baseCls: "bi-charts-setting bi-range-area-chart-setting"
         })
     },
 
     _init: function(){
         BI.RangeAreaChartsSetting.superclass._init.apply(this, arguments);
-        var self = this, constant = BI.AbstractChartSetting;
+        var self = this, o = this.options, constant = BI.AbstractChartSetting;
 
         this.colorSelect = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",
@@ -361,7 +361,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.minimalistModel.on(BI.Controller.EVENT_CHANGE, function () {
             self._invisible(!this.isSelected());
-            self.fireEvent(BI.BarChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
         });
 
         var modelChange = BI.createWidget({
@@ -434,6 +434,10 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
         this.minimalistModel.setSelected(BI.Utils.getWSMinimalistByID(wId));
         this._invisible(!BI.Utils.getWSMinimalistByID(wId));
+        this.showYCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
+        this.customYScale.setValue(BI.Utils.getWSCustomYScale(wId));
+        this.customYScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
+
         this.separators.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
@@ -461,6 +465,8 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             show_data_label: this.showDataLabel.isSelected(),
             show_grid_line: this.gridLine.isSelected(),
             minimalist_model: this.minimalistModel.isSelected(),
+            show_y_custom_scale: this.showYCustomScale.isSelected(),
+            custom_y_scale: this.customYScale.getValue(),
             num_separators: this.separators.isSelected()
         }
     },
@@ -480,6 +486,8 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showDataLabel.setSelected(v.show_data_label);
         this.gridLine.setSelected(v.show_grid_line);
         this.minimalistModel.setSelected(v.minimalist_model);
+        this.showYCustomScale.setSelected(v.show_y_custom_scale);
+        this.customYScale.setValue(v.custom_y_scale);
         this.separators.setSelected(v.num_separators);
     }
 });

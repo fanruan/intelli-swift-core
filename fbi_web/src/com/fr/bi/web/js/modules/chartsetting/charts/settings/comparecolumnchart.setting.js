@@ -5,15 +5,15 @@
  */
 BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.CompareColumnChartsSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-charts-setting"
+            baseCls: "bi-charts-setting bi-compare-column-chart-setting"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.CompareColumnChartsSetting.superclass._init.apply(this, arguments);
-        var self = this, constant = BI.AbstractChartSetting;
+        var self = this, o = this.options, constant = BI.AbstractChartSetting;
 
         this.colorSelect = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",
@@ -21,7 +21,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
         this.colorSelect.populate();
 
-        this.colorSelect.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function(){
+        this.colorSelect.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
         });
 
@@ -93,7 +93,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BICst.TARGET_STYLE_FORMAT
         });
 
-        this.lYAxisStyle.on(BI.Segment.EVENT_CHANGE, function(){
+        this.lYAxisStyle.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
         });
 
@@ -104,7 +104,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BICst.TARGET_STYLE_LEVEL
         });
 
-        this.numberLevellY.on(BI.Segment.EVENT_CHANGE, function(){
+        this.numberLevellY.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
         });
 
@@ -115,7 +115,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BICst.TARGET_STYLE_FORMAT
         });
 
-        this.rYAxisStyle.on(BI.Segment.EVENT_CHANGE, function(){
+        this.rYAxisStyle.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
         });
 
@@ -126,7 +126,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BICst.TARGET_STYLE_LEVEL
         });
 
-        this.numberLevelrY.on(BI.Segment.EVENT_CHANGE, function(){
+        this.numberLevelrY.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
         });
 
@@ -321,6 +321,53 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
         });
 
+        //正轴刻度自定义
+        this.showYCustomScale = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Scale_Customize"),
+            width: 115
+        });
+
+        this.showYCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
+            self.customYScale.setVisible(this.isSelected());
+            if (!this.isSelected()) {
+                self.customYScale.setValue({})
+            }
+            self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE)
+        });
+
+        this.customYScale = BI.createWidget({
+            type: "bi.custom_scale",
+            wId: o.wId
+        });
+
+        this.customYScale.on(BI.CustomScale.EVENT_CHANGE, function () {
+            self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE)
+        });
+
+        //逆轴刻度自定义
+        this.showXCustomScale = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Scale_Customize"),
+            width: 115
+        });
+
+        this.showXCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
+            self.customXScale.setVisible(this.isSelected());
+            if (!this.isSelected()) {
+                self.customXScale.setValue({})
+            }
+            self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE)
+        });
+
+        this.customXScale = BI.createWidget({
+            type: "bi.custom_scale",
+            wId: o.wId
+        });
+
+        this.customXScale.on(BI.CustomScale.EVENT_CHANGE, function () {
+            self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE)
+        });
         //千分符
         this.YSeparators = BI.createWidget({
             type: "bi.multi_select_item",
@@ -463,6 +510,12 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.isShowTitleLY, this.editTitleLY]
+    }, {
+            type: "bi.vertical_adapt",
+                    items: [this.showYCustomScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.customYScale]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.YSeparators]
@@ -516,6 +569,12 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.isShowTitleRY, this.editTitleRY]
                 }, {
                     type: "bi.vertical_adapt",
+                    items: [this.showXCustomScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.customXScale]
+                }, {
+                    type: "bi.vertical_adapt",
                     items: [this.XSeparators]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
@@ -530,8 +589,8 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             value: BI.i18nText("BI-Bind_Target_Condition"),
             width: 170
         });
-        this.transferFilter.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+        this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
         });
 
         this.otherAttr = BI.createWidget({
@@ -557,7 +616,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.minimalistModel.on(BI.Controller.EVENT_CHANGE, function () {
             self._invisible(!this.isSelected());
-            self.fireEvent(BI.BarChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE)
         });
 
         var modelChange = BI.createWidget({
@@ -649,6 +708,12 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showZoom.setSelected(BI.Utils.getWSShowZoomByID(wId));
         this.minimalistModel.setSelected(BI.Utils.getWSMinimalistByID(wId));
         this._invisible(!BI.Utils.getWSMinimalistByID(wId));
+        this.showYCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
+        this.customYScale.setValue(BI.Utils.getWSCustomYScale(wId));
+        this.customYScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
+        this.showXCustomScale.setSelected(BI.Utils.getWSShowXCustomScale(wId));
+        this.customXScale.setValue(BI.Utils.getWSCustomXScale(wId));
+        this.customXScale.setVisible(BI.Utils.getWSShowXCustomScale(wId));
         this.YSeparators.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
         this.XSeparators.setSelected(BI.Utils.getWSRightNumberSeparatorsByID(wId));
 
@@ -681,6 +746,10 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             show_grid_line: this.gridLine.isSelected(),
             show_zoom: this.showZoom.isSelected(),
             minimalist_model: this.minimalistModel.isSelected(),
+            show_y_custom_scale: this.showYCustomScale.isSelected(),
+            custom_y_scale: this.customYScale.getValue(),
+            show_x_custom_scale: this.showXCustomScale.isSelected(),
+            custom_x_scale: this.customXScale.getValue(),
             num_separators: this.YSeparators.isSelected(),
             right_num_separators: this.XSeparators.isSelected()
         }
@@ -709,6 +778,10 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.gridLine.setSelected(v.show_grid_line);
         this.showZoom.setSelected(v.show_zoom);
         this.minimalistModel.setSelected(v.minimalist_model);
+        this.showYCustomScale.setSelected(v.show_y_custom_scale);
+        this.customYScale.setValue(v.custom_y_scale);
+        this.showXCustomScale.setSelected(v.show_x_custom_scale);
+        this.customXScale.setValue(v.custom_x_scale);
         this.YSeparators.setSelected(v.num_separators);
         this.XSeparators.setSelected(v.right_num_separators)
     }

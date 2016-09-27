@@ -590,12 +590,87 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         return clicked;
     },
 
-    getWidgetData: function(type, callback){
+    _calculateValue: function (data, type) {
+        var calculateValue = {};
+        switch (type) {
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.ACCUMULATE_AREA:
+            case BICst.WIDGET.ACCUMULATE_RADAR:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.LINE:
+            case BICst.WIDGET.AREA:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.COMPARE_AREA:
+            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.RANGE_AREA:
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.COMPARE_BAR:
+            case BICst.WIDGET.COMBINE_CHART:
+            case BICst.WIDGET.DONUT:
+            case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+            case BICst.WIDGET.DASHBOARD:
+                BI.each(data, function (i, items) {
+                    BI.each(items, function (id, item) {
+                        var max = null, min = null, average = null, targetId = null;
+                        BI.each(item.data, function (idx, da) {
+                            if (BI.isNull(max) || max < da.y) {
+                                max = da.y
+                            }
+                            if (BI.isNull(min) || min > da.y) {
+                                min = da.y
+                            }
+                            average += da.y;
+                            targetId = da.targetIds[0];
+                        });
+                        calculateValue[targetId] = [BI.contentFormat(max, "#.##"), BI.contentFormat(min, "#.##"),
+                            BI.contentFormat(average / (item.data.length), "#.##")];
+                    })
+                });
+                Data.SharingPool.put("calculateValue", calculateValue);
+                break;
+            case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.SCATTER:
+                var max = null, min = null, average = null, targetId = null;
+                var x_max = null, x_min = null, x_average = null, x_targetId = null;
+                BI.each(data[0], function (i, item) {
+                    if (BI.isNull(max) || max < item.data[0].y) {
+                        max = item.data[0].y
+                    }
+                    if (BI.isNull(min) || min > item.data[0].y) {
+                        min = item.data[0].y
+                    }
+                    average += item.data[0].y;
+                    targetId = item.data[0].targetIds[1];
+
+                    if (BI.isNull(x_max) || x_max < item.data[0].x) {
+                        x_max = item.data[0].x
+                    }
+                    if (BI.isNull(x_min) || x_min > item.data[0].x) {
+                        x_min = item.data[0].x
+                    }
+                    x_average += item.data[0].x;
+                    x_targetId = item.data[0].targetIds[0];
+                });
+                calculateValue[targetId] = [BI.contentFormat(max, "#.##"), BI.contentFormat(min, "#.##"),
+                    BI.contentFormat(average / (data[0].length), "#.##")];
+                calculateValue[x_targetId] = [BI.contentFormat(x_max, "#.##"), BI.contentFormat(x_min, "#.##"),
+                    BI.contentFormat(x_average / (data[0].length), "#.##")];
+                Data.SharingPool.put("calculateValue", calculateValue);
+                break;
+        }
+    },
+
+    getWidgetData: function (type, callback) {
         var self = this, o = this.options;
         var options = {};
         this._refreshDimsInfo();
         var realData = true;
-        if(o.status === BICst.WIDGET_STATUS.DETAIL) {
+        var type = BI.Utils.getWidgetTypeByID(o.wId);
+        if (o.status === BICst.WIDGET_STATUS.DETAIL) {
             realData = BI.Utils.isShowWidgetRealDataByID(o.wId) || false;
         }
         BI.Utils.getWidgetDataByID(o.wId, function (jsonData) {
@@ -604,6 +679,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 return;
             }
             var data = self.parseChartData(jsonData.data);
+            self._calculateValue(data, type);
             var types = [];
             var targetIds = self._getShowTarget();
             var count = 0;
