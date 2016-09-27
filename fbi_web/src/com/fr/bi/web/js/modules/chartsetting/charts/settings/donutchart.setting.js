@@ -7,7 +7,7 @@ BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.DonutChartSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-charts-setting"
+            baseCls: "bi-charts-setting bi-donut-chart-setting"
         })
     },
 
@@ -92,7 +92,7 @@ BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 170
         });
         this.transferFilter.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.DonutChartSetting.EVENT_CHANGE);
         });
 
         //图例

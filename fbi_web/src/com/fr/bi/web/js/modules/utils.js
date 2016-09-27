@@ -722,6 +722,18 @@
                 BICst.DEFAULT_CHART_SETTING.bubble_display;
         },
 
+        getWSBubbleFixedColorsByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.fixed_colors) ? ws.fixed_colors :
+                BICst.DASHBOARD_STYLE_CONDITIONS
+        },
+
+        getWSBubbleGradientsByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.gradient_colors) ? ws.gradient_colors :
+                BICst.BUBBLE_GRADIENT_COLOR
+        },
+
         getWSBubbleStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.bubble_style) ? ws.bubble_style :
@@ -1056,6 +1068,19 @@
                 BICst.DEFAULT_CHART_SETTING.show_grid_line;
         },
 
+
+        getWSMinBubbleSizeByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.bubble_min_size) ? ws.bubble_min_size :
+                BICst.DEFAULT_CHART_SETTING.bubble_min_size
+        },
+
+        getWSMaxBubbleSizeByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.bubble_max_size) ? ws.bubble_max_size :
+                BICst.DEFAULT_CHART_SETTING.bubble_max_size
+        },
+
         getWSNumberSeparatorsByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.num_separators) ? ws.num_separators :
@@ -1080,16 +1105,46 @@
                 BICst.DEFAULT_CHART_SETTING.minimalist_model
         },
 
-        getWSShowCustomScale: function (wid) {
+        getWSBigDataModelByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_custom_scale) ? ws.show_custom_scale :
-                BICst.DEFAULT_CHART_SETTING.show_custom_scale;
+            return BI.isNotNull(ws.big_data_mode) ? ws.big_data_mode :
+                BICst.DEFAULT_CHART_SETTING.big_data_mode
         },
 
-        getWSCustomScale: function (wid) {
+        getWSShowYCustomScale: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.custom_scale) ? ws.custom_scale :
-            {}
+            return BI.isNotNull(ws.show_y_custom_scale) ? ws.show_y_custom_scale :
+                BICst.DEFAULT_CHART_SETTING.show_y_custom_scale;
+        },
+
+        getWSCustomYScale: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.custom_y_scale) ? ws.custom_y_scale :
+                BICst.DEFAULT_CHART_SETTING.custom_scale
+        },
+
+        getWSShowXCustomScale: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_x_custom_scale) ? ws.show_x_custom_scale :
+                BICst.DEFAULT_CHART_SETTING.show_x_custom_scale;
+        },
+
+        getWSCustomXScale: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.custom_x_scale) ? ws.custom_x_scale :
+                BICst.DEFAULT_CHART_SETTING.custom_scale
+        },
+
+        getWSShowZCustomScale: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_z_custom_scale) ? ws.show_z_custom_scale :
+                BICst.DEFAULT_CHART_SETTING.show_z_custom_scale;
+        },
+
+        getWSCustomZScale: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.custom_z_scale) ? ws.custom_z_scale :
+                BICst.DEFAULT_CHART_SETTING.custom_scale
         },
 
         getWSShowZoomByID: function (wid) {
@@ -1450,6 +1505,30 @@
                 return Data.SharingPool.get("dimensions", did, "dimension_map") || {};
             }
             return {};
+        },
+
+        getDatalabelByID: function (did) {
+            if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
+                return Data.SharingPool.get("dimensions", did, "data_label") || {};
+            }
+            return {};
+        },
+
+        getDataimageByID: function (did) {
+            if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
+                return Data.SharingPool.get("dimensions", did, "data_image") || {};
+            }
+            return {};
+        },
+
+        getImagesByID: function (wid) {
+            var settings = this.getWidgetSettingsByID(wid);
+            return settings.images || [];
+        },
+
+        getDatalabelByWidgetID: function (wid) {
+            var settings = this.getWidgetSettingsByID(wid);
+            return settings.data_label || {};
         },
 
         isDimensionByDimensionID: function (dId) {

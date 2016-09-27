@@ -67,6 +67,10 @@ BI.AxisChart = BI.inherit(BI.AbstractChart, {
                         reversed: self.config.left_y_axis_reversed,
                         enableMinorTick: self.config.enable_minor_tick,
                         gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
+                        max: self.config.custom_y_scale.maxScale.scale || null,
+                        min: self.config.custom_y_scale.minScale.scale || null,
+                        tickInterval: BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
+                            self.config.custom_y_scale.interval.scale : null,
                         formatter: self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level, self.config.num_separators)
                     });
                     self.formatNumberLevelInYaxis(config, items, self.config.left_y_axis_number_level, idx, axis.formatter);
@@ -80,6 +84,11 @@ BI.AxisChart = BI.inherit(BI.AbstractChart, {
                         showLabel: self.config.show_label,
                         enableTick: self.config.enable_tick,
                         reversed: self.config.right_y_axis_reversed,
+                        enableMinorTick: self.config.enable_minor_tick,
+                        max: self.config.custom_x_scale.maxScale.scale || null,
+                        min: self.config.custom_x_scale.minScale.scale || null,
+                        tickInterval: BI.isNumber(self.config.custom_x_scale.interval.scale) && self.config.custom_x_scale.interval.scale > 0 ?
+                            self.config.custom_x_scale.interval.scale : null,
                         enableMinorTIck: self.config.enable_minor_tick,
                         formatter: self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level, self.config.right_num_separators),
                         gridLineWidth: self.config.show_grid_line === true ? 1 : 0
@@ -229,6 +238,9 @@ BI.AxisChart = BI.inherit(BI.AbstractChart, {
             show_label: BI.isNull(options.show_label) ? true : options.show_label,
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
+            custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
+            custom_x_scale: options.custom_x_scale || c.CUSTOM_SCALE,
+            chart_demo: options.chart_demo || false,
             num_separators: options.num_separators || false,
             right_num_separators: options.right_num_separators || false,
             chart_font: options.chart_font || c.FONT_STYLE

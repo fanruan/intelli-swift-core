@@ -67,6 +67,11 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
             showLabel: this.config.show_label,
             enableTick: this.config.enable_tick,
             enableMinorTick: this.config.enable_minor_tick,
+            reversed: this.config.left_y_axis_reversed,
+            min: self.config.custom_y_scale.minScale.scale || null,
+            max: self.config.custom_y_scale.maxScale.scale || null,
+            tickInterval: BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
+                self.config.custom_y_scale.interval.scale : null,
             gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
             formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level, this.config.num_separators)
         });
@@ -263,6 +268,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
             left_y_axis_style: options.left_y_axis_style || c.NORMAL,
             show_x_axis_title: options.show_x_axis_title || false,
             show_left_y_axis_title: options.show_left_y_axis_title || false,
+            left_y_axis_reversed: options.left_y_axis_reversed || false,
             left_y_axis_number_level: options.left_y_axis_number_level || c.NORMAL,
             x_axis_unit: options.x_axis_unit || "",
             left_y_axis_unit: options.left_y_axis_unit || "",
@@ -277,6 +283,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
             show_label: BI.isNull(options.show_label) ? true : options.show_label,
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
+            custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
             num_separators: options.num_separators || false,
             chart_font: options.chart_font || c.FONT_STYLE
         };

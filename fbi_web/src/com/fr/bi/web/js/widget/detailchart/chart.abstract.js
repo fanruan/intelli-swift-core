@@ -39,11 +39,25 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         AUTO: 1,
         NOT_SHOW: 2,
         LINE_WIDTH: 1,
+        BUBBLE_MIN_SIZE: 15,
+        BUBBLE_MAX_SIZE: 80,
+        RULE_DISPLAY: 1,
         NUM_SEPARATORS: false,
         FONT_STYLE: {
             "fontFamily": "inherit",
             "color": "inherit",
             "fontSize": "12px"
+        },
+        CUSTOM_SCALE: {
+            maxScale: {
+                scale: null
+            },
+            minScale: {
+                scale: null
+            },
+            interval: {
+                scale: null
+            }
         }
     },
 

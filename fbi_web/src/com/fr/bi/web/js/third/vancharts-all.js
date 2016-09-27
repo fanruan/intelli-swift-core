@@ -12132,7 +12132,7 @@ define('VanCharts',['require','./utils/BaseUtils','./Constants','./VanChart','./
         constructor:VanCharts,
 
         setOptions:function(options){
-            window.console && console.log(JSON.stringify(options));
+            // window.console && console.log(JSON.stringify(options));
             if(!BaseUtils.isArray(options)){
                 options = [options];
             }
