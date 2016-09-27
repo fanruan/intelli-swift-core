@@ -1947,10 +1947,6 @@ webpackJsonp([0],{
 
 	'use strict';
 
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _lib = __webpack_require__(202);
@@ -2061,19 +2057,19 @@ webpackJsonp([0],{
 	    actions: _lib.PropTypes.object.isRequired,
 	    template: _lib.PropTypes.object.isRequired
 	};
-	function mapStateToProps(state) {
-	    /* Populated by react-webpack-redux:reducer */
-	    var props = {
-	        template: state.template
-	    };
-	    return props;
-	}
-	function mapDispatchToProps(dispatch) {
-	    /* Populated by react-webpack-redux:action */
-	    var actionMap = { actions: (0, _redux.bindActionCreators)(TodoActions, dispatch) };
-	    return actionMap;
-	}
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(App);
+	// function mapStateToProps(state) {
+	//     /* Populated by react-webpack-redux:reducer */
+	//     const props = {
+	//         template: state.template
+	//     };
+	//     return props;
+	// }
+	// function mapDispatchToProps(dispatch) {
+	//     /* Populated by react-webpack-redux:action */
+	//     const actionMap = {actions: bindActionCreators(TodoActions, dispatch)};
+	//     return actionMap;
+	// }
+	// export default connect(mapStateToProps, mapDispatchToProps)(App);
 
 /***/ },
 
@@ -2149,6 +2145,14 @@ webpackJsonp([0],{
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
+	var _redux = __webpack_require__(179);
+
+	var _reactRedux = __webpack_require__(172);
+
+	var _todos = __webpack_require__(748);
+
+	var TodoActions = _interopRequireWildcard(_todos);
+
 	var _core = __webpack_require__(325);
 
 	var _lib = __webpack_require__(202);
@@ -2164,6 +2168,8 @@ webpackJsonp([0],{
 	var _Layout = __webpack_require__(877);
 
 	var _Layout2 = _interopRequireDefault(_Layout);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2299,7 +2305,21 @@ webpackJsonp([0],{
 	        paddingLeft: 10
 	    }
 	});
-	exports.default = Main;
+	// export default Main
+
+	function mapStateToProps(state) {
+	    /* Populated by react-webpack-redux:reducer */
+	    var props = {
+	        template: state.template
+	    };
+	    return props;
+	}
+	function mapDispatchToProps(dispatch) {
+	    /* Populated by react-webpack-redux:action */
+	    var actionMap = { actions: (0, _redux.bindActionCreators)(TodoActions, dispatch) };
+	    return actionMap;
+	}
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Main);
 
 /***/ },
 

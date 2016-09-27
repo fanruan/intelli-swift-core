@@ -81,16 +81,16 @@ App.propTypes = {
     actions: PropTypes.object.isRequired,
     template: PropTypes.object.isRequired
 };
-function mapStateToProps(state) {
-    /* Populated by react-webpack-redux:reducer */
-    const props = {
-        template: state.template
-    };
-    return props;
-}
-function mapDispatchToProps(dispatch) {
-    /* Populated by react-webpack-redux:action */
-    const actionMap = {actions: bindActionCreators(TodoActions, dispatch)};
-    return actionMap;
-}
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+// function mapStateToProps(state) {
+//     /* Populated by react-webpack-redux:reducer */
+//     const props = {
+//         template: state.template
+//     };
+//     return props;
+// }
+// function mapDispatchToProps(dispatch) {
+//     /* Populated by react-webpack-redux:action */
+//     const actionMap = {actions: bindActionCreators(TodoActions, dispatch)};
+//     return actionMap;
+// }
+// export default connect(mapStateToProps, mapDispatchToProps)(App);
