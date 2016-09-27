@@ -50,7 +50,7 @@ public class BIWidgetSettingAction extends AbstractBIDeziAction {
         }
         JSONObject json = parseJSON(req);
         String widgetName = json.optString("name");
-        json.put("sessionId", sessionID);
+        json.put("sessionID", sessionID);
         BIWidget widget = BIWidgetFactory.parseWidget(json, userId);
         BIReport biReport = sessionIDInfor.getBIReport();
         int index = biReport.getWidgetIndexByName(widgetName);
