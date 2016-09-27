@@ -413,6 +413,15 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                         delete filter.filter_value;
                     }
                 }
+                //维度公式过滤所用到的指标的话要删掉
+                if(BI.has(oldFilter, "formula_ids")){
+                    var ids = oldFilter.formula_ids || [];
+                    if(BI.isNotEmptyArray(ids) && BI.isNull(BI.Utils.getFieldTypeByID(ids[0]))){
+                        filter.filter_type = BICst.FILTER_TYPE.EMPTY_FORMULA;
+                        delete filter.filter_value;
+                        delete filter.formula_ids;
+                    }
+                }
             }
             return filter;
         }
