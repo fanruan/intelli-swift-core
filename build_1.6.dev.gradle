@@ -33,6 +33,7 @@ def list=[
 		"fbi_web_conf/src",
 		"fbi_web_dezi/src",
 		"fbi_web_report/src",
+		"fbi_h5/src",
 		"fbi_analysis_etl/src",
 		"fbi_cube_base/src",
 		"fbi_cube_conf/src",
