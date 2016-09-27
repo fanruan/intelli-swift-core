@@ -66548,7 +66548,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.Dialog = exports.Table = exports.Collection = exports.VirtualScroll = exports.Grid = exports.InfiniteLoader = exports.CellMeasurer = exports.AutoSizer = exports.Infinite = exports.Animatable = exports.Accordion = exports.SideMenu = exports.GiftedListView = exports.Sortable = exports.Wedge = exports.Rectangle = exports.Circle = exports.ART = exports.IconButton = exports.Icon = exports.HorizontalCenterLayout = exports.VerticalCenterLayout = exports.CenterLayout = exports.GridLayout = exports.VtapeLayout = exports.HtapeLayout = undefined;
+	exports.Dialog = exports.Table = exports.Collection = exports.VirtualScroll = exports.Grid = exports.InfiniteLoader = exports.AutoSizer = exports.Infinite = exports.Animatable = exports.Accordion = exports.SideMenu = exports.GiftedListView = exports.Sortable = exports.Wedge = exports.Rectangle = exports.Circle = exports.ART = exports.IconButton = exports.Icon = exports.HorizontalCenterLayout = exports.VerticalCenterLayout = exports.CenterLayout = exports.GridLayout = exports.VtapeLayout = exports.HtapeLayout = undefined;
 
 	var _HtapeLayout2 = __webpack_require__(752);
 
@@ -66626,31 +66626,27 @@
 
 	var _AutoSizer3 = _interopRequireDefault(_AutoSizer2);
 
-	var _CellMeasurer2 = __webpack_require__(824);
-
-	var _CellMeasurer3 = _interopRequireDefault(_CellMeasurer2);
-
-	var _InfiniteLoader2 = __webpack_require__(827);
+	var _InfiniteLoader2 = __webpack_require__(824);
 
 	var _InfiniteLoader3 = _interopRequireDefault(_InfiniteLoader2);
 
-	var _Grid2 = __webpack_require__(829);
+	var _Grid2 = __webpack_require__(826);
 
 	var _Grid3 = _interopRequireDefault(_Grid2);
 
-	var _VirtualScroll2 = __webpack_require__(840);
+	var _VirtualScroll2 = __webpack_require__(837);
 
 	var _VirtualScroll3 = _interopRequireDefault(_VirtualScroll2);
 
-	var _Collection2 = __webpack_require__(842);
+	var _Collection2 = __webpack_require__(839);
 
 	var _Collection3 = _interopRequireDefault(_Collection2);
 
-	var _Table2 = __webpack_require__(849);
+	var _Table2 = __webpack_require__(846);
 
 	var _Table3 = _interopRequireDefault(_Table2);
 
-	var _Dialog2 = __webpack_require__(865);
+	var _Dialog2 = __webpack_require__(862);
 
 	var _Dialog3 = _interopRequireDefault(_Dialog2);
 
@@ -66683,7 +66679,6 @@
 	exports.Animatable = _Animatable3.default;
 	exports.Infinite = _Infinite3.default;
 	exports.AutoSizer = _AutoSizer3.default;
-	exports.CellMeasurer = _CellMeasurer3.default;
 	exports.InfiniteLoader = _InfiniteLoader3.default;
 	exports.Grid = _Grid3.default;
 	exports.VirtualScroll = _VirtualScroll3.default;
@@ -75576,401 +75571,9 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.defaultCellSizeCache = exports.CellMeasurer = exports.default = undefined;
-
-	var _CellMeasurer2 = __webpack_require__(825);
-
-	var _CellMeasurer3 = _interopRequireDefault(_CellMeasurer2);
-
-	var _defaultCellSizeCache2 = __webpack_require__(826);
-
-	var _defaultCellSizeCache3 = _interopRequireDefault(_defaultCellSizeCache2);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.default = _CellMeasurer3.default;
-	exports.CellMeasurer = _CellMeasurer3.default;
-	exports.defaultCellSizeCache = _defaultCellSizeCache3.default;
-
-/***/ },
-/* 825 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _reactDom = __webpack_require__(34);
-
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-
-	var _reactMixin = __webpack_require__(223);
-
-	var _reactMixin2 = _interopRequireDefault(_reactMixin);
-
-	var _reactAddonsPureRenderMixin = __webpack_require__(226);
-
-	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
-
-	var _defaultCellSizeCache = __webpack_require__(826);
-
-	var _defaultCellSizeCache2 = _interopRequireDefault(_defaultCellSizeCache);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var CellMeasurer = function (_Component) {
-	    _inherits(CellMeasurer, _Component);
-
-	    function CellMeasurer(props, state) {
-	        _classCallCheck(this, CellMeasurer);
-
-	        var _this = _possibleConstructorReturn(this, (CellMeasurer.__proto__ || Object.getPrototypeOf(CellMeasurer)).call(this, props, state));
-
-	        _this._cellSizeCache = props.cellSizeCache || new _defaultCellSizeCache2.default();
-
-	        _this.getColumnWidth = _this.getColumnWidth.bind(_this);
-	        _this.getRowHeight = _this.getRowHeight.bind(_this);
-	        _this.resetMeasurements = _this.resetMeasurements.bind(_this);
-	        _this.resetMeasurementForColumn = _this.resetMeasurementForColumn.bind(_this);
-	        _this.resetMeasurementForRow = _this.resetMeasurementForRow.bind(_this);
-	        return _this;
-	    }
-
-	    _createClass(CellMeasurer, [{
-	        key: 'getColumnWidth',
-	        value: function getColumnWidth(_ref) {
-	            var index = _ref.index;
-
-	            if (this._cellSizeCache.hasColumnWidth(index)) {
-	                return this._cellSizeCache.getColumnWidth(index);
-	            }
-
-	            var rowCount = this.props.rowCount;
-
-
-	            var maxWidth = 0;
-
-	            for (var rowIndex = 0; rowIndex < rowCount; rowIndex++) {
-	                var _measureCell2 = this._measureCell({
-	                    clientWidth: true,
-	                    columnIndex: index,
-	                    rowIndex: rowIndex
-	                });
-
-	                var width = _measureCell2.width;
-
-
-	                maxWidth = Math.max(maxWidth, width);
-	            }
-
-	            this._cellSizeCache.setColumnWidth(index, maxWidth);
-
-	            return maxWidth;
-	        }
-	    }, {
-	        key: 'getRowHeight',
-	        value: function getRowHeight(_ref2) {
-	            var index = _ref2.index;
-
-	            if (this._cellSizeCache.hasRowHeight(index)) {
-	                return this._cellSizeCache.getRowHeight(index);
-	            }
-
-	            var columnCount = this.props.columnCount;
-
-
-	            var maxHeight = 0;
-
-	            for (var columnIndex = 0; columnIndex < columnCount; columnIndex++) {
-	                var _measureCell3 = this._measureCell({
-	                    clientHeight: true,
-	                    columnIndex: columnIndex,
-	                    rowIndex: index
-	                });
-
-	                var height = _measureCell3.height;
-
-
-	                maxHeight = Math.max(maxHeight, height);
-	            }
-
-	            this._cellSizeCache.setRowHeight(index, maxHeight);
-
-	            return maxHeight;
-	        }
-	    }, {
-	        key: 'resetMeasurementForColumn',
-	        value: function resetMeasurementForColumn(columnIndex) {
-	            this._cellSizeCache.clearColumnWidth(columnIndex);
-	        }
-	    }, {
-	        key: 'resetMeasurementForRow',
-	        value: function resetMeasurementForRow(rowIndex) {
-	            this._cellSizeCache.clearRowHeight(rowIndex);
-	        }
-	    }, {
-	        key: 'resetMeasurements',
-	        value: function resetMeasurements() {
-	            this._cellSizeCache.clearAllColumnWidths();
-	            this._cellSizeCache.clearAllRowHeights();
-	        }
-	    }, {
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
-	            this._renderAndMount();
-	        }
-	    }, {
-	        key: 'componentWillReceiveProps',
-	        value: function componentWillReceiveProps(nextProps) {
-	            var cellSizeCache = this.props.cellSizeCache;
-
-
-	            if (cellSizeCache !== nextProps.cellSizeCache) {
-	                this._cellSizeCache = nextProps.cellSizeCache;
-	            }
-
-	            this._updateDivDimensions(nextProps);
-	        }
-	    }, {
-	        key: 'componentWillUnmount',
-	        value: function componentWillUnmount() {
-	            this._unmountContainer();
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var children = this.props.children;
-
-
-	            return children({
-	                getColumnWidth: this.getColumnWidth,
-	                getRowHeight: this.getRowHeight,
-	                resetMeasurements: this.resetMeasurements,
-	                resetMeasurementForColumn: this.resetMeasurementForColumn,
-	                resetMeasurementForRow: this.resetMeasurementForRow
-	            });
-	        }
-	    }, {
-	        key: '_getContainerNode',
-	        value: function _getContainerNode(props) {
-	            var container = props.container;
-
-
-	            if (container) {
-	                return _reactDom2.default.findDOMNode(typeof container === 'function' ? container() : container);
-	            } else {
-	                return document.body;
-	            }
-	        }
-	    }, {
-	        key: '_measureCell',
-	        value: function _measureCell(_ref3) {
-	            var _ref3$clientHeight = _ref3.clientHeight;
-	            var clientHeight = _ref3$clientHeight === undefined ? false : _ref3$clientHeight;
-	            var _ref3$clientWidth = _ref3.clientWidth;
-	            var clientWidth = _ref3$clientWidth === undefined ? true : _ref3$clientWidth;
-	            var columnIndex = _ref3.columnIndex;
-	            var rowIndex = _ref3.rowIndex;
-	            var cellRenderer = this.props.cellRenderer;
-
-
-	            var rendered = cellRenderer({
-	                columnIndex: columnIndex,
-	                rowIndex: rowIndex
-	            });
-
-	            // Handle edge case where this method is called before the CellMeasurer has completed its initial render (and mounted).
-	            this._renderAndMount();
-
-	            // @TODO Keep an eye on this for future React updates as the interface may change:
-	            // https://twitter.com/soprano/status/737316379712331776
-	            _reactDom2.default.unstable_renderSubtreeIntoContainer(this, rendered, this._div);
-
-	            var measurements = {
-	                height: clientHeight && this._div.clientHeight,
-	                width: clientWidth && this._div.clientWidth
-	            };
-
-	            _reactDom2.default.unmountComponentAtNode(this._div);
-
-	            return measurements;
-	        }
-	    }, {
-	        key: '_renderAndMount',
-	        value: function _renderAndMount() {
-	            if (!this._div) {
-	                this._div = document.createElement('div');
-	                this._div.style.display = 'inline-block';
-	                this._div.style.position = 'absolute';
-	                this._div.style.visibility = 'hidden';
-	                this._div.style.zIndex = -1;
-
-	                this._updateDivDimensions(this.props);
-
-	                this._containerNode = this._getContainerNode(this.props);
-	                this._containerNode.appendChild(this._div);
-	            }
-	        }
-	    }, {
-	        key: '_unmountContainer',
-	        value: function _unmountContainer() {
-	            if (this._div) {
-	                this._containerNode.removeChild(this._div);
-
-	                this._div = null;
-	            }
-
-	            this._containerNode = null;
-	        }
-	    }, {
-	        key: '_updateDivDimensions',
-	        value: function _updateDivDimensions(props) {
-	            var height = props.height;
-	            var width = props.width;
-
-
-	            if (height && height !== this._divHeight) {
-	                this._divHeight = height;
-	                this._div.style.height = height + 'px';
-	            }
-
-	            if (width && width !== this._divWidth) {
-	                this._divWidth = width;
-	                this._div.style.width = width + 'px';
-	            }
-	        }
-	    }]);
-
-	    return CellMeasurer;
-	}(_react.Component);
-
-	CellMeasurer.propTypes = {
-	    cellRenderer: _react.PropTypes.func.isRequired,
-
-	    cellSizeCache: _react.PropTypes.object,
-
-	    children: _react.PropTypes.func.isRequired,
-
-	    columnCount: _react.PropTypes.number.isRequired,
-
-	    container: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.func, _react2.default.PropTypes.node]),
-
-	    height: _react.PropTypes.number,
-
-	    rowCount: _react.PropTypes.number.isRequired,
-
-	    width: _react.PropTypes.number
-	};
-
-	_reactMixin2.default.onClass(CellMeasurer, _reactAddonsPureRenderMixin2.default);
-
-	exports.default = CellMeasurer;
-
-/***/ },
-/* 826 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var CellSizeCache = function () {
-	  function CellSizeCache() {
-	    _classCallCheck(this, CellSizeCache);
-
-	    this._cachedColumnWidths = {};
-	    this._cachedRowHeights = {};
-	  }
-
-	  _createClass(CellSizeCache, [{
-	    key: "clearAllColumnWidths",
-	    value: function clearAllColumnWidths() {
-	      this._cachedColumnWidths = {};
-	    }
-	  }, {
-	    key: "clearAllRowHeights",
-	    value: function clearAllRowHeights() {
-	      this._cachedRowHeights = {};
-	    }
-	  }, {
-	    key: "clearColumnWidth",
-	    value: function clearColumnWidth(index) {
-	      delete this._cachedColumnWidths[index];
-	    }
-	  }, {
-	    key: "clearRowHeight",
-	    value: function clearRowHeight(index) {
-	      delete this._cachedRowHeights[index];
-	    }
-	  }, {
-	    key: "getColumnWidth",
-	    value: function getColumnWidth(index) {
-	      return this._cachedColumnWidths[index];
-	    }
-	  }, {
-	    key: "getRowHeight",
-	    value: function getRowHeight(index) {
-	      return this._cachedRowHeights[index];
-	    }
-	  }, {
-	    key: "hasColumnWidth",
-	    value: function hasColumnWidth(index) {
-	      return this._cachedColumnWidths[index] >= 0;
-	    }
-	  }, {
-	    key: "hasRowHeight",
-	    value: function hasRowHeight(index) {
-	      return this._cachedRowHeights[index] >= 0;
-	    }
-	  }, {
-	    key: "setColumnWidth",
-	    value: function setColumnWidth(index, width) {
-	      this._cachedColumnWidths[index] = width;
-	    }
-	  }, {
-	    key: "setRowHeight",
-	    value: function setRowHeight(index, height) {
-	      this._cachedRowHeights[index] = height;
-	    }
-	  }]);
-
-	  return CellSizeCache;
-	}();
-
-	exports.default = CellSizeCache;
-
-/***/ },
-/* 827 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
 	exports.InfiniteLoader = exports.default = undefined;
 
-	var _InfiniteLoader2 = __webpack_require__(828);
+	var _InfiniteLoader2 = __webpack_require__(825);
 
 	var _InfiniteLoader3 = _interopRequireDefault(_InfiniteLoader2);
 
@@ -75980,7 +75583,7 @@
 	exports.InfiniteLoader = _InfiniteLoader3.default;
 
 /***/ },
-/* 828 */
+/* 825 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -76237,7 +75840,7 @@
 	exports.default = InfiniteLoader;
 
 /***/ },
-/* 829 */
+/* 826 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -76247,11 +75850,11 @@
 	});
 	exports.defaultCellRangeRenderer = exports.Grid = exports.default = undefined;
 
-	var _Grid2 = __webpack_require__(830);
+	var _Grid2 = __webpack_require__(827);
 
 	var _Grid3 = _interopRequireDefault(_Grid2);
 
-	var _defaultCellRangeRenderer2 = __webpack_require__(839);
+	var _defaultCellRangeRenderer2 = __webpack_require__(836);
 
 	var _defaultCellRangeRenderer3 = _interopRequireDefault(_defaultCellRangeRenderer2);
 
@@ -76262,7 +75865,7 @@
 	exports.defaultCellRangeRenderer = _defaultCellRangeRenderer3.default;
 
 /***/ },
-/* 830 */
+/* 827 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -76295,31 +75898,31 @@
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
-	var _calculateSizeAndPositionDataAndUpdateScrollOffset = __webpack_require__(831);
+	var _calculateSizeAndPositionDataAndUpdateScrollOffset = __webpack_require__(828);
 
 	var _calculateSizeAndPositionDataAndUpdateScrollOffset2 = _interopRequireDefault(_calculateSizeAndPositionDataAndUpdateScrollOffset);
 
-	var _ScalingCellSizeAndPositionManager = __webpack_require__(832);
+	var _ScalingCellSizeAndPositionManager = __webpack_require__(829);
 
 	var _ScalingCellSizeAndPositionManager2 = _interopRequireDefault(_ScalingCellSizeAndPositionManager);
 
-	var _createCallbackMemoizer = __webpack_require__(834);
+	var _createCallbackMemoizer = __webpack_require__(831);
 
 	var _createCallbackMemoizer2 = _interopRequireDefault(_createCallbackMemoizer);
 
-	var _getOverscanIndices = __webpack_require__(835);
+	var _getOverscanIndices = __webpack_require__(832);
 
 	var _getOverscanIndices2 = _interopRequireDefault(_getOverscanIndices);
 
-	var _scrollbarSize = __webpack_require__(836);
+	var _scrollbarSize = __webpack_require__(833);
 
 	var _scrollbarSize2 = _interopRequireDefault(_scrollbarSize);
 
-	var _updateScrollIndexHelper = __webpack_require__(838);
+	var _updateScrollIndexHelper = __webpack_require__(835);
 
 	var _updateScrollIndexHelper2 = _interopRequireDefault(_updateScrollIndexHelper);
 
-	var _defaultCellRangeRenderer = __webpack_require__(839);
+	var _defaultCellRangeRenderer = __webpack_require__(836);
 
 	var _defaultCellRangeRenderer2 = _interopRequireDefault(_defaultCellRangeRenderer);
 
@@ -77296,7 +76899,7 @@
 	exports.default = Grid;
 
 /***/ },
-/* 831 */
+/* 828 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -77343,7 +76946,7 @@
 	}
 
 /***/ },
-/* 832 */
+/* 829 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -77355,7 +76958,7 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _CellSizeAndPositionManager = __webpack_require__(833);
+	var _CellSizeAndPositionManager = __webpack_require__(830);
 
 	var _CellSizeAndPositionManager2 = _interopRequireDefault(_CellSizeAndPositionManager);
 
@@ -77564,7 +77167,7 @@
 	exports.default = ScalingCellSizeAndPositionManager;
 
 /***/ },
-/* 833 */
+/* 830 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -77866,7 +77469,7 @@
 	exports.default = CellSizeAndPositionManager;
 
 /***/ },
-/* 834 */
+/* 831 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -77908,7 +77511,7 @@
 	}
 
 /***/ },
-/* 835 */
+/* 832 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -77939,12 +77542,12 @@
 	}
 
 /***/ },
-/* 836 */
+/* 833 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var canUseDOM = __webpack_require__(837);
+	var canUseDOM = __webpack_require__(834);
 
 	var size;
 
@@ -77969,14 +77572,14 @@
 	};
 
 /***/ },
-/* 837 */
+/* 834 */
 /***/ function(module, exports) {
 
 	'use strict';
 	module.exports = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
 
 /***/ },
-/* 838 */
+/* 835 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -78042,7 +77645,7 @@
 	}
 
 /***/ },
-/* 839 */
+/* 836 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -78154,7 +77757,7 @@
 	}
 
 /***/ },
-/* 840 */
+/* 837 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -78164,7 +77767,7 @@
 	});
 	exports.VirtualScroll = exports.default = undefined;
 
-	var _VirtualScroll2 = __webpack_require__(841);
+	var _VirtualScroll2 = __webpack_require__(838);
 
 	var _VirtualScroll3 = _interopRequireDefault(_VirtualScroll2);
 
@@ -78174,7 +77777,7 @@
 	exports.VirtualScroll = _VirtualScroll3.default;
 
 /***/ },
-/* 841 */
+/* 838 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -78187,7 +77790,7 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Grid = __webpack_require__(829);
+	var _Grid = __webpack_require__(826);
 
 	var _Grid2 = _interopRequireDefault(_Grid);
 
@@ -78476,7 +78079,7 @@
 	exports.default = VirtualScroll;
 
 /***/ },
-/* 842 */
+/* 839 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -78486,7 +78089,7 @@
 	});
 	exports.Collection = exports.default = undefined;
 
-	var _Collection2 = __webpack_require__(843);
+	var _Collection2 = __webpack_require__(840);
 
 	var _Collection3 = _interopRequireDefault(_Collection2);
 
@@ -78496,7 +78099,7 @@
 	exports.Collection = _Collection3.default;
 
 /***/ },
-/* 843 */
+/* 840 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -78521,15 +78124,15 @@
 
 	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
 
-	var _CollectionView = __webpack_require__(844);
+	var _CollectionView = __webpack_require__(841);
 
 	var _CollectionView2 = _interopRequireDefault(_CollectionView);
 
-	var _calculateSizeAndPositionData2 = __webpack_require__(845);
+	var _calculateSizeAndPositionData2 = __webpack_require__(842);
 
 	var _calculateSizeAndPositionData3 = _interopRequireDefault(_calculateSizeAndPositionData2);
 
-	var _getUpdatedOffsetForIndex = __webpack_require__(848);
+	var _getUpdatedOffsetForIndex = __webpack_require__(845);
 
 	var _getUpdatedOffsetForIndex2 = _interopRequireDefault(_getUpdatedOffsetForIndex);
 
@@ -78747,7 +78350,7 @@
 	exports.default = Collection;
 
 /***/ },
-/* 844 */
+/* 841 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -78780,11 +78383,11 @@
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
-	var _createCallbackMemoizer = __webpack_require__(834);
+	var _createCallbackMemoizer = __webpack_require__(831);
 
 	var _createCallbackMemoizer2 = _interopRequireDefault(_createCallbackMemoizer);
 
-	var _scrollbarSize = __webpack_require__(836);
+	var _scrollbarSize = __webpack_require__(833);
 
 	var _scrollbarSize2 = _interopRequireDefault(_scrollbarSize);
 
@@ -79422,7 +79025,7 @@
 	exports.default = CollectionView;
 
 /***/ },
-/* 845 */
+/* 842 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -79432,7 +79035,7 @@
 	});
 	exports.default = calculateSizeAndPositionData;
 
-	var _SectionManager = __webpack_require__(846);
+	var _SectionManager = __webpack_require__(843);
 
 	var _SectionManager2 = _interopRequireDefault(_SectionManager);
 
@@ -79474,7 +79077,7 @@
 	}
 
 /***/ },
-/* 846 */
+/* 843 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -79490,7 +79093,7 @@
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
 
 
-	var _Section = __webpack_require__(847);
+	var _Section = __webpack_require__(844);
 
 	var _Section2 = _interopRequireDefault(_Section);
 
@@ -79635,7 +79238,7 @@
 	exports.default = SectionManager;
 
 /***/ },
-/* 847 */
+/* 844 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -79709,7 +79312,7 @@
 	exports.default = Section;
 
 /***/ },
-/* 848 */
+/* 845 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -79754,18 +79357,18 @@
 	}
 
 /***/ },
-/* 849 */
+/* 846 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Table = __webpack_require__(850);
-	__webpack_require__(863);
+	var Table = __webpack_require__(847);
+	__webpack_require__(860);
 
 	module.exports = Table;
 
 /***/ },
-/* 850 */
+/* 847 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -79791,14 +79394,14 @@
 	var Easing = _require2.Easing;
 	var Animated = _require2.Animated;
 
-	var TableBufferedRows = __webpack_require__(851);
-	var TableColumnResizeHandle = __webpack_require__(860);
-	var TableRow = __webpack_require__(853);
-	var TableScrollHelper = __webpack_require__(861);
-	var TableWidthHelper = __webpack_require__(862);
-	var TableCellDefault = __webpack_require__(859);
-	var TableColumn = __webpack_require__(857);
-	var TableColumnGroup = __webpack_require__(856);
+	var TableBufferedRows = __webpack_require__(848);
+	var TableColumnResizeHandle = __webpack_require__(857);
+	var TableRow = __webpack_require__(850);
+	var TableScrollHelper = __webpack_require__(858);
+	var TableWidthHelper = __webpack_require__(859);
+	var TableCellDefault = __webpack_require__(856);
+	var TableColumn = __webpack_require__(854);
+	var TableColumnGroup = __webpack_require__(853);
 
 	var cn = __webpack_require__(509);
 	var debounce = __webpack_require__(584);
@@ -80674,7 +80277,7 @@
 	module.exports = Table;
 
 /***/ },
-/* 851 */
+/* 848 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80683,8 +80286,8 @@
 
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(34);
-	var TableRowBuffer = __webpack_require__(852);
-	var TableRow = __webpack_require__(853);
+	var TableRowBuffer = __webpack_require__(849);
+	var TableRow = __webpack_require__(850);
 
 	var cn = __webpack_require__(509);
 
@@ -80840,7 +80443,7 @@
 	module.exports = TableBufferedRows;
 
 /***/ },
-/* 852 */
+/* 849 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80953,7 +80556,7 @@
 	module.exports = TableRowBuffer;
 
 /***/ },
-/* 853 */
+/* 850 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80962,7 +80565,7 @@
 
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(34);
-	var TableCellGroup = __webpack_require__(854);
+	var TableCellGroup = __webpack_require__(851);
 
 	var cn = __webpack_require__(509);
 
@@ -81147,7 +80750,7 @@
 	module.exports = TableRow;
 
 /***/ },
-/* 854 */
+/* 851 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -81156,10 +80759,10 @@
 
 	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
-	var TableHelper = __webpack_require__(855);
+	var TableHelper = __webpack_require__(852);
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(34);
-	var TableCell = __webpack_require__(858);
+	var TableCell = __webpack_require__(855);
 
 	var _require = __webpack_require__(325);
 
@@ -81356,14 +80959,14 @@
 	module.exports = TableCellGroup;
 
 /***/ },
-/* 855 */
+/* 852 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var TableColumnGroup = __webpack_require__(856);
-	var TableColumn = __webpack_require__(857);
+	var TableColumnGroup = __webpack_require__(853);
+	var TableColumn = __webpack_require__(854);
 
 	var DIR_SIGN = +1;
 	// A cell up to 5px outside of the visible area will still be considered visible
@@ -81435,7 +81038,7 @@
 	module.exports = TableHelper;
 
 /***/ },
-/* 856 */
+/* 853 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -81477,7 +81080,7 @@
 	module.exports = TableColumnGroup;
 
 /***/ },
-/* 857 */
+/* 854 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -81537,15 +81140,15 @@
 	module.exports = TableColumn;
 
 /***/ },
-/* 858 */
+/* 855 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
-	var TableCellDefault = __webpack_require__(859);
-	var TableHelper = __webpack_require__(855);
+	var TableCellDefault = __webpack_require__(856);
+	var TableHelper = __webpack_require__(852);
 	var React = __webpack_require__(1);
 
 	var _require = __webpack_require__(202);
@@ -81680,7 +81283,7 @@
 	module.exports = TableCell;
 
 /***/ },
-/* 859 */
+/* 856 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -81757,7 +81360,7 @@
 	module.exports = TableCellDefault;
 
 /***/ },
-/* 860 */
+/* 857 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -81865,7 +81468,7 @@
 	module.exports = TableColumnResizeHandle;
 
 /***/ },
-/* 861 */
+/* 858 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -82163,7 +81766,7 @@
 	module.exports = TableScrollHelper;
 
 /***/ },
-/* 862 */
+/* 859 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -82286,13 +81889,13 @@
 	module.exports = TableWidthHelper;
 
 /***/ },
-/* 863 */
+/* 860 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(864);
+	var content = __webpack_require__(861);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(594)(content, {});
@@ -82312,7 +81915,7 @@
 	}
 
 /***/ },
-/* 864 */
+/* 861 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(593)();
@@ -82326,7 +81929,7 @@
 
 
 /***/ },
-/* 865 */
+/* 862 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -82336,7 +81939,7 @@
 	});
 	exports.default = exports.Dialog = undefined;
 
-	var _Dialog2 = __webpack_require__(866);
+	var _Dialog2 = __webpack_require__(863);
 
 	var _Dialog3 = _interopRequireDefault(_Dialog2);
 
@@ -82346,7 +81949,7 @@
 	exports.default = _Dialog3.default;
 
 /***/ },
-/* 866 */
+/* 863 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
