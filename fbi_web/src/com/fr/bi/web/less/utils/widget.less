@@ -103,12 +103,20 @@ i {
 div, textarea {
   &::-webkit-scrollbar {
     -webkit-appearance: none;
-    background-color: @scroll-color;
+    background-color: transparent;
     width: 6px;
     height: 6px;
   }
   &::-webkit-scrollbar-thumb {
     .border-radius(0);
-    background-color: @scroll-thumb-color;
+    background-color: transparent;
+  }
+  &:hover{
+    &::-webkit-scrollbar{
+      background-color: @scroll-color;
+    }
+    &::-webkit-scrollbar-thumb{
+      background-color: @scroll-thumb-color;
+    }
   }
 }
