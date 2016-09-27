@@ -646,7 +646,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.bigDataMode.on(BI.Controller.EVENT_CHANGE, function () {
-            // self._bigDataMode(!this.isSelected());
+            self._bigDataMode(!this.isSelected());
             if (this.isSelected()) {
                 self.rulesDisplay.setValue(BICst.DISPLAY_RULES.GRADIENT);
                 self._colorSettingChange(BICst.DISPLAY_RULES.GRADIENT)
