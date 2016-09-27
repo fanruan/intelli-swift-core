@@ -1,6 +1,9 @@
 import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
+import * as TodoActions from '../actions/todos';
 import {requestAnimationFrame} from 'core'
 import React, {
     Component,
@@ -136,4 +139,18 @@ const styles = StyleSheet.create({
         paddingLeft: 10
     }
 });
-export default Main
+// export default Main
+
+function mapStateToProps(state) {
+    /* Populated by react-webpack-redux:reducer */
+    const props = {
+        template: state.template
+    };
+    return props;
+}
+function mapDispatchToProps(dispatch) {
+    /* Populated by react-webpack-redux:action */
+    const actionMap = {actions: bindActionCreators(TodoActions, dispatch)};
+    return actionMap;
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Main);
