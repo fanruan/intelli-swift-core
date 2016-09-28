@@ -9,37 +9,15 @@ BI.Slider = BI.inherit(BI.Widget, {
     },
     _init: function () {
         BI.extend(BI.Slider.superclass._init.apply(this, arguments));
-        var self = this;
-        this.active = false;
         this.slider = BI.createWidget({
             type: "bi.icon_button",
-            cls: "slider-normal-icon",
+            cls: "widget-slider-icon",
             element: this.element,
             iconWidth: 30,
             iconHeight: 30,
             height: 30,
             width: 30
         });
-        this.slider.element.hover(function () {
-            if (!self.active) {
-                self.setIcon(true);
-            }
-        }, function () {
-            if (!self.active) {
-                self.setIcon(false);
-            }
-        });
-    },
-    setIcon: function (bool) {
-        if (bool) {
-            this.slider.element.removeClass("slider-normal-icon").addClass("slider-active-icon");
-        } else {
-            this.slider.element.removeClass("slider-active-icon").addClass("slider-normal-icon");
-        }
-    },
-    setMoveState: function (bool) {
-        this.active = bool;
-        this.setIcon(bool);
     }
 });
 $.shortcut("bi.slider", BI.Slider);

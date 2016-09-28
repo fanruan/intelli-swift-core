@@ -29,9 +29,6 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
         this.slider.element.draggable({
             axis: "x",
             containment: this.track.element,
-            start: function () {
-                self.slider.setMoveState(true);
-            },
             drag: function (e, ui) {
                 var percent = (ui.position.left) * 100 / (self.track.getLength() - 30);
                 self._setBlueTrack(percent);
@@ -41,7 +38,6 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
             stop: function (e, ui) {
                 var percent = (ui.position.left) * 100 / (self.track.getLength() - 30);
                 self._setSliderPosition(percent);
-                self.slider.setMoveState(false);
             }
         });
 
@@ -134,9 +130,9 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
         this._setLabelPosition(percent);
         this._setBlueTrack(percent);
     },
-    _setVisible: function (bool) {
-        this.slider.setVisible(bool);
-        this.label.setVisible(bool);
+    _setVisible: function (visible) {
+        this.slider.setVisible(visible);
+        this.label.setVisible(visible);
     },
 
     getValue: function () {
@@ -158,17 +154,23 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
         this.track.reset();
     },
 
-    populate: function (min, max) {
+    populate: function (min, max, value) {
         var minNumber = BI.parseFloat(min);
         var maxNumber = BI.parseFloat(max);
+        var valueNumber = BI.parseFloat(value);
         if (BI.isNotNull(min) && BI.isNotNull(max) && (maxNumber > minNumber )) {
             this.min = minNumber;
             this.max = maxNumber;
             this._setVisible(true);
             this.enable = true;
-            this.label.setValue(minNumber);
             this.label.setErrorText(BI.i18nText("BI-Please_Enter") + minNumber + "-" + maxNumber + BI.i18nText("BI-De") + BI.i18nText("BI-Number"));
-            this._setAllPosition(0);
+            if (BI.isNotNull(value)) {
+                this.label.setValue(valueNumber);
+                this._setAllPosition(this._getPercentByValue(valueNumber));
+            } else {
+                this.label.setValue(minNumber);
+                this._setAllPosition(0);
+            }
         }
     }
 });
