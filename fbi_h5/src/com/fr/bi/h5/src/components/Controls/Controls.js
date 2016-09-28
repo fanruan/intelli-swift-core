@@ -33,7 +33,8 @@ class Controls extends Component {
     constructor(props, context) {
         super(props, context);
         const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        const rows = props.template.getAllControlWidgetIds();
+        this.template = new Template(props.template);
+        const rows = this.template.getAllControlWidgetIds();
         this.state = {
             dataSource: ds.cloneWithRows(rows)
         }
@@ -66,8 +67,8 @@ class Controls extends Component {
     render() {
         const {...props} = this.props;
         return <ScrollView style={styles.wrapper}>
-            {map(props.template.getAllControlWidgetIds(), (id)=> {
-                const widget = props.template.getWidgetById(id);
+            {map(this.template.getAllControlWidgetIds(), (id)=> {
+                const widget = this.template.getWidgetById(id);
                 return <Item key={id} id={id} widget={widget} onPress={()=> {
                     let Component = null;
                     switch (widget.getType()) {

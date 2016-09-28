@@ -2227,6 +2227,7 @@ webpackJsonp([0],{
 	        var _this = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props, context));
 
 	        console.log(props);
+	        _this.template = new _data.Template(props.template);
 	        // template={new Template(template)} actions={actions}
 	        return _this;
 	    }
@@ -2237,7 +2238,7 @@ webpackJsonp([0],{
 	            var props = _objectWithoutProperties(this.props, []);
 
 	            if (route.name === 'index') {
-	                if (props.template.hasControlWidget()) {
+	                if (this.template.hasControlWidget()) {
 	                    return _lib2.default.createElement(
 	                        _lib.View,
 	                        { style: styles.index },
@@ -2337,9 +2338,7 @@ webpackJsonp([0],{
 
 	function mapStateToProps(state) {
 	    /* Populated by react-webpack-redux:reducer */
-	    var props = {
-	        template: new _data.Template(state.template)
-	    };
+	    var props = state;
 	    return props;
 	}
 	function mapDispatchToProps(dispatch) {
@@ -3835,7 +3834,8 @@ webpackJsonp([0],{
 	        var ds = new _lib.ListView.DataSource({ rowHasChanged: function rowHasChanged(r1, r2) {
 	                return r1 !== r2;
 	            } });
-	        var rows = props.template.getAllControlWidgetIds();
+	        _this.template = new _data.Template(props.template);
+	        var rows = _this.template.getAllControlWidgetIds();
 	        _this.state = {
 	            dataSource: ds.cloneWithRows(rows)
 	        };
@@ -3857,13 +3857,15 @@ webpackJsonp([0],{
 	    }, {
 	        key: 'render',
 	        value: function render() {
+	            var _this2 = this;
+
 	            var props = _objectWithoutProperties(this.props, []);
 
 	            return _lib2.default.createElement(
 	                _lib.ScrollView,
 	                { style: styles.wrapper },
-	                (0, _core.map)(props.template.getAllControlWidgetIds(), function (id) {
-	                    var widget = props.template.getWidgetById(id);
+	                (0, _core.map)(this.template.getAllControlWidgetIds(), function (id) {
+	                    var widget = _this2.template.getWidgetById(id);
 	                    return _lib2.default.createElement(_Item2.default, { key: id, id: id, widget: widget, onPress: function onPress() {
 	                            var Component = null;
 	                            switch (widget.getType()) {
@@ -4303,6 +4305,8 @@ webpackJsonp([0],{
 
 	var _base = __webpack_require__(772);
 
+	var _data = __webpack_require__(762);
+
 	var _ChartComponent = __webpack_require__(899);
 
 	var _ChartComponent2 = _interopRequireDefault(_ChartComponent);
@@ -4344,7 +4348,8 @@ webpackJsonp([0],{
 	        var ds = new _lib.ListView.DataSource({ rowHasChanged: function rowHasChanged(r1, r2) {
 	                return r1 !== r2;
 	            } });
-	        var rows = props.template.getAllWidgetIds();
+	        _this.template = new _data.Template(props.template);
+	        var rows = _this.template.getAllWidgetIds();
 	        _this.state = {
 	            dataSource: ds.cloneWithRows(rows)
 	        };
@@ -4365,9 +4370,7 @@ webpackJsonp([0],{
 	    }, {
 	        key: '_renderRow',
 	        value: function _renderRow(rowData, sectionID, rowID) {
-	            var template = this.props.template;
-
-	            var widgetObj = template.getWidgetById(rowData);
+	            var widgetObj = this.template.getWidgetById(rowData);
 	            var type = widgetObj.getType();
 	            var props = {
 	                key: rowData,

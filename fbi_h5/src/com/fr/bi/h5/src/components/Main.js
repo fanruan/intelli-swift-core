@@ -64,13 +64,14 @@ class Main extends Component {
     constructor(props, context) {
         super(props, context);
         console.log(props);
+        this.template = new Template(props.template);
         // template={new Template(template)} actions={actions}
     }
 
     renderScene(route, navigationOperations, onComponentRef) {
         const {...props} = this.props;
         if (route.name === 'index') {
-            if (props.template.hasControlWidget()) {
+            if (this.template.hasControlWidget()) {
                 return <View style={styles.index}>
                     <Layout width={width} height={height - 94} {...props} navigator={navigationOperations}/>
 
@@ -173,9 +174,7 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
     /* Populated by react-webpack-redux:reducer */
-    const props = {
-        template: new Template(state.template)
-    };
+    const props = state;
     return props;
 }
 function mapDispatchToProps(dispatch) {
