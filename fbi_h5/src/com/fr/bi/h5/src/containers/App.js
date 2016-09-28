@@ -63,11 +63,11 @@ import Main from '../components/Main.js'
 //import UIExplorerApp from '../examples/UIExplorer/UIExplorerApp.web'
 
 /* Populated by react-webpack-redux:reducer */
-class App extends Component {
+export default class App extends Component {
     render() {
         const {template, actions} = this.props;
         return (
-            <Main template={new Template(template)} actions={actions}/>
+            <Main />
         )
     }
 }
@@ -78,8 +78,8 @@ class App extends Component {
  *       adjust it here.
  */
 App.propTypes = {
-    actions: PropTypes.object.isRequired,
-    template: PropTypes.object.isRequired
+    // actions: PropTypes.object.isRequired,
+    // template: PropTypes.object.isRequired
 };
 // function mapStateToProps(state) {
 //     /* Populated by react-webpack-redux:reducer */

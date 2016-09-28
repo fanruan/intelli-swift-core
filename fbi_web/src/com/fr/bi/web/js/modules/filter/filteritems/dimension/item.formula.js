@@ -76,7 +76,8 @@ BI.DimensionFormulaFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
         this.formula.on(BI.FormulaCombo.EVENT_CHANGE, function(){
             self._setNodeData({
-                filter_value : this.getValue()
+                filter_value : this.getValue(),
+                formula_ids: this.getFormulaTargetIds()
             });
             o.afterValueChange.apply(self, [self.getValue()]);
         });
@@ -134,7 +135,8 @@ BI.DimensionFormulaFilterItem = BI.inherit(BI.AbstractFilterItem, {
         return {
             id: this.id,
             filter_type: BICst.FILTER_TYPE.FORMULA,
-            filter_value: this.formula.getValue()
+            filter_value: this.formula.getValue(),
+            formula_ids: this.formula.getFormulaTargetIds()
         };
     }
 

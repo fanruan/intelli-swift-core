@@ -24,24 +24,26 @@ class Main extends Component {
         super(props, context);
     }
 
-    render() {
+    componentWillMount(){
         const widgetObj = this.props.widget;
         const wi = widgetObj.createJson();
-        return <View ref={function (ob) {
-            var w = {...wi, page: -1};
-            Fetch(BH.servletURL + '?op=fr_bi_dezi&cmd=chart_setting', {
-                method: "POST",
+        var w = {...wi, page: -1};
+        Fetch(BH.servletURL + '?op=fr_bi_dezi&cmd=chart_setting', {
+            method: "POST",
 
-                body: JSON.stringify({widget: w, sessionID: BH.sessionID})
-            }).then(function (response) {
-                return response.json();// 转换为JSON
-            }).then((data)=> {
-                let vanCharts = VanCharts.init(ReactDOM.findDOMNode(ob));
+            body: JSON.stringify({widget: w, sessionID: BH.sessionID})
+        }).then(function (response) {
+            return response.json();// 转换为JSON
+        }).then((data)=> {
+            let vanCharts = VanCharts.init(ReactDOM.findDOMNode(this.refs.chart));
             console.log(data);
-                vanCharts.setOptions(data);
-            });
+            vanCharts.setOptions(data);
+        });
+    }
 
-        }} style={{height: this.props.height, ...style.wrapper}}></View>
+    render() {
+
+        return <View ref='chart' style={{height: this.props.height, ...style.wrapper}}></View>
     }
 }
 mixin.onClass(Main, PureRenderMixin);
