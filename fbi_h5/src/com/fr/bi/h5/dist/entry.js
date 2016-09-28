@@ -1620,7 +1620,7 @@ webpackJsonp([0],{
 
 	var _ActionTypes = __webpack_require__(199);
 
-	var initialState = BH.STORE;
+	var initialState = BH.STORE.popConfig;
 
 	function todos() {
 	  var state = arguments.length <= 0 || arguments[0] === undefined ? initialState : arguments[0];

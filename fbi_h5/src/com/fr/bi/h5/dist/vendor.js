@@ -66176,7 +66176,7 @@
 	            if (this._widgets[id]) {
 	                return this._widgets[id];
 	            }
-	            this._widgets[id] = new _Widget2.default(this.template.popConfig.widgets[id], id);
+	            this._widgets[id] = new _Widget2.default(this.template.widgets[id], id);
 	            return this._widgets[id];
 	        }
 	    }, {
@@ -66185,7 +66185,7 @@
 	            var _this = this;
 
 	            var res = [];
-	            (0, _core.each)(this.template.popConfig.widgets, function (widget, wId) {
+	            (0, _core.each)(this.template.widgets, function (widget, wId) {
 	                if (!_this.getWidgetById(wId).isControl()) {
 	                    res.push(wId);
 	                }
@@ -66198,7 +66198,7 @@
 	            var _this2 = this;
 
 	            var res = [];
-	            (0, _core.each)(this.template.popConfig.widgets, function (widget, wId) {
+	            (0, _core.each)(this.template.widgets, function (widget, wId) {
 	                if (_this2.getWidgetById(wId).isControl()) {
 	                    res.push(wId);
 	                }
@@ -66210,7 +66210,7 @@
 	        value: function hasControlWidget() {
 	            var _this3 = this;
 
-	            return (0, _core.some)(this.template.popConfig.widgets, function (widget, wId) {
+	            return (0, _core.some)(this.template.widgets, function (widget, wId) {
 	                return _this3.getWidgetById(wId).isControl();
 	            });
 	        }
