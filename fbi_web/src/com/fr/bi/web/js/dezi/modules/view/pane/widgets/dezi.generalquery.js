@@ -156,8 +156,10 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
         return false;
     },
 
-    change: function () {
-        BI.Utils.broadcastAllWidgets2Refresh();
+    change: function (changed, prev, context, options) {
+        if (BI.has(changed, "value")) {
+            BI.Utils.broadcastAllWidgets2Refresh();
+        }
     },
 
     refresh: function () {
