@@ -31,7 +31,7 @@ BI.BusinessPackageExpander = BI.inherit(BI.Widget, {
             type: o.nodeType,
             validationChecker: o.validationChecker,
             cls: "bi-custom-group-group-name",
-            hoverClass: "delete-h-font-package",
+            hoverClass: "delete-button delete-h-font-package",
             height: 40,
             open: true,
             value: o.item.value
