@@ -32,10 +32,6 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
             type: "bi.absolute",
             element: vessel,
             items: [{
-                el: this.tools,
-                top: 0,
-                right: 10
-            }, {
                 el: this.titleWrapper,
                 top: 0,
                 left: 0,
@@ -46,6 +42,10 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
                 left: 10,
                 right: 10,
                 bottom: 10
+            }, {
+                el: this.tools,
+                top: 0,
+                right: 10
             }]
         });
         this.widget.element.hover(function () {
@@ -156,8 +156,10 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
         return false;
     },
 
-    change: function () {
-        BI.Utils.broadcastAllWidgets2Refresh();
+    change: function (changed, prev, context, options) {
+        if (BI.has(changed, "value")) {
+            BI.Utils.broadcastAllWidgets2Refresh();
+        }
     },
 
     refresh: function () {

@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
 
+import com.fr.bi.cal.analyze.cal.store.GroupKey;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 
 import java.util.Iterator;
@@ -9,24 +10,24 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class PageIteratorGroup {
 
-    private Map<TargetGettingKey, IRootDimensionGroup> rowMap = new ConcurrentHashMap<TargetGettingKey, IRootDimensionGroup>();
+    private Map<GroupKey, IRootDimensionGroup> rowMap = new ConcurrentHashMap<GroupKey, IRootDimensionGroup>();
 
-    private Map<TargetGettingKey, IRootDimensionGroup> columnMap = new ConcurrentHashMap<TargetGettingKey, IRootDimensionGroup>();
+    private Map<GroupKey, IRootDimensionGroup> columnMap = new ConcurrentHashMap<GroupKey, IRootDimensionGroup>();
 
-    public PageIteratorGroup(Map<TargetGettingKey, IRootDimensionGroup> rowMap) {
+    public PageIteratorGroup(Map<GroupKey, IRootDimensionGroup> rowMap) {
         this.rowMap = rowMap;
     }
 
-    public PageIteratorGroup(Map<TargetGettingKey, IRootDimensionGroup> rowMap, Map<TargetGettingKey, IRootDimensionGroup> columnMap) {
+    public PageIteratorGroup(Map<GroupKey, IRootDimensionGroup> rowMap, Map<GroupKey, IRootDimensionGroup> columnMap) {
         this(rowMap);
         this.columnMap = columnMap;
     }
 
-    public Map<TargetGettingKey, IRootDimensionGroup> getRowGroup() {
+    public Map<GroupKey, IRootDimensionGroup> getRowGroup() {
         return rowMap;
     }
 
-    public Map<TargetGettingKey, IRootDimensionGroup> getColumnGroup() {
+    public Map<GroupKey, IRootDimensionGroup> getColumnGroup() {
         return columnMap;
     }
 

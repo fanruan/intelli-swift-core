@@ -27,15 +27,10 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         BIDezi.PaneModel.superclass._init.apply(this, arguments);
         var self = this;
         this.operatorIndex = 0;
-        this.saveDebounce = BI.debounce(function (widgets, dims, layoutType, globalStyle) {
-            var records = Data.SharingPool.cat("records") || new BI.Queue(30);
+        this.saveDebounce = BI.debounce(function (record) {
+            var records = Data.SharingPool.cat("records") || new BI.Queue(10);
             records.splice(self.operatorIndex + 1);
-            records.push({
-                dimensions: dims,
-                widgets: widgets,
-                layoutType: layoutType,
-                globalStyle: globalStyle
-            });
+            records.push(record);
             Data.SharingPool.put("records", records);
             self.operatorIndex = records.size() - 1;
         }, 100);
@@ -103,10 +98,7 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         isUndo === true ? this.operatorIndex-- : this.operatorIndex++;
         var ob = Data.SharingPool.cat("records").getElementByIndex(this.operatorIndex);
         this.isUndoRedoSet = true;
-        Data.SharingPool.put("dimensions", ob.dimensions);
-        Data.SharingPool.put("widgets", ob.widgets);
-        Data.SharingPool.put("layoutType", ob.layoutType);
-        Data.SharingPool.put("globalStyle", ob.globalStyle);
+        this._shareData(ob);
         this.set(ob);
     },
 
@@ -155,23 +147,37 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
                 BI.Broadcasts.send(BICst.BROADCAST.WIDGETS_PREFIX);
             }
         }
-        if(BI.has(changed, "globalStyle")) {
+        if (BI.has(changed, "globalStyle")) {
             BI.Broadcasts.send(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, changed.globalStyle);
         }
     },
 
-    refresh: function () {
-        var widgets = this.cat("widgets");
+    _shareData: function (data) {
         var dims = {};
-        BI.each(widgets, function (id, widget) {
+        BI.each(data.widgets, function (id, widget) {
             BI.extend(dims, widget.dimensions);
         });
         Data.SharingPool.put("dimensions", dims);
-        Data.SharingPool.put("widgets", widgets);
-        Data.SharingPool.put("layoutType", this.get("layoutType"));
-        Data.SharingPool.put("layoutRatio", this.get("layoutRatio"));
-        Data.SharingPool.put("globalStyle", this.get("globalStyle"));
+        Data.SharingPool.put("widgets", data.widgets);
+        Data.SharingPool.put("layoutType", data.layoutType);
+        Data.SharingPool.put("layoutRatio", data.layoutRatio);
+        Data.SharingPool.put("globalStyle", data.globalStyle);
+    },
 
+    refresh: function () {
+        var widgets = this.cat("widgets"),
+            layoutType = this.cat("layoutType"),
+            layoutRatio = this.cat("layoutRatio"),
+            globalStyle = this.cat("globalStyle");
+
+        var data = {
+            widgets: widgets,
+            layoutType: layoutType,
+            layoutRatio: layoutRatio,
+            globalStyle: globalStyle
+        };
+
+        this._shareData(data);
         if (this.isIniting) {
             this.isIniting = false;
             //初始放一个control_filters（如果有查询按钮）
@@ -181,6 +187,6 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         }
 
         //用于undo redo
-        this.saveDebounce(widgets, dims, this.get("layoutType"), this.get("globalStyle"));
+        this.saveDebounce(data);
     }
 });
