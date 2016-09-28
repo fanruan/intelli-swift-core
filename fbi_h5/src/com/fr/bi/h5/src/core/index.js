@@ -109,5 +109,4 @@ export clone from 'lodash/clone'
 export cloneDeep from 'lodash/cloneDeep'
 
 
-export sum from 'lodash/sum'
-export sumBy from 'lodash/sumBy'
+export math from 'lodash/math'

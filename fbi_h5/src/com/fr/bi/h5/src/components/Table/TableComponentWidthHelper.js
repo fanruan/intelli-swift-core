@@ -1,4 +1,4 @@
-import {each, sum} from 'core';
+import {each, math} from 'core';
 
 const REMAIN_WIDTH = 8;
 
@@ -40,7 +40,7 @@ class TableComponentWidthHelper {
         const $22 = sumBy(widths, (width, i)=> {
             return (i + 1) * (i + 1);
         });
-        const f1 = sum(widths);
+        const f1 = math.sum(widths);
         const f2 = sumBy(widths, (width, i)=> {
             return (i + 1) * width;
         });
@@ -71,9 +71,9 @@ class TableComponentWidthHelper {
         if (widths.length === 1) {
             return [this.width];
         }
-        const allWidth = sum(widths);
+        const allWidth = math.sum(widths);
         if (this.helper.isFreeze()) {
-            const halfWidth = Math.floor(this.width / 2);
+            const halfWidth = math.floor(this.width / 2);
             if (widths[0] > halfWidth) {
                 if (allWidth + halfWidth - widths[0] < this.width) {
                     const shared = Math.floor((halfWidth - (allWidth - widths[0] / (widths.length - 1))));
@@ -86,7 +86,7 @@ class TableComponentWidthHelper {
                 widths[0] = halfWidth;
             } else {
                 if (allWidth < this.width) {
-                    const shared = Math.floor((this.width - allWidth) / widths.length);
+                    const shared = math.floor((this.width - allWidth) / widths.length);
                     for (let i = 0; i < widths.length; i++) {
                         widths[i] += shared;
                     }
@@ -99,7 +99,7 @@ class TableComponentWidthHelper {
             }
         } else {
             if (allWidth < this.width) {
-                const shared = Math.floor((this.width - allWidth) / widths.length);
+                const shared = math.floor((this.width - allWidth) / widths.length);
                 for (let i = 0; i < widths.length; i++) {
                     widths[i] += shared;
                 }
@@ -112,7 +112,7 @@ class TableComponentWidthHelper {
     getWidth() {
         const result = [];
         each(this.items, (col)=> {
-            result.push(Math.ceil(this.fit(this.getWidthsByOneCol(col)).a * 14 * 1.2) + REMAIN_WIDTH);
+            result.push(math.ceil(this.fit(this.getWidthsByOneCol(col)).a * 14 * 1.2) + REMAIN_WIDTH);
         });
         return this.adjustWidth(result);
     }

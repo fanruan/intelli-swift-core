@@ -1,8 +1,8 @@
 import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
-import { findDOMNode } from 'react-dom'
+import {findDOMNode} from 'react-dom'
 
-import {cn, sc, isNil, requestAnimationFrame, emptyFunction, shallowEqual, isEqual, each} from 'core'
+import {cn, sc, math, isNil, requestAnimationFrame, emptyFunction, shallowEqual, isEqual, each} from 'core'
 import React, {
     Component,
     StyleSheet,
