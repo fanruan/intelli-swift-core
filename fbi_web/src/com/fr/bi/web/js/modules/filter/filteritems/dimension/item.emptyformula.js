@@ -108,7 +108,8 @@ BI.DimensionFormulaEmptyFilterItem = BI.inherit(BI.AbstractFilterItem, {
                 value: BICst.FILTER_TYPE.FORMULA,
                 id: self.id,
                 filter_type: BICst.FILTER_TYPE.FORMULA,
-                filter_value: self.getValue().filter_value
+                filter_value: self.getValue().filter_value,
+                formula_ids: this.getFormulaTargetIds()
             });
             o.afterValueChange.apply(self, [self.getValue()]);
         });

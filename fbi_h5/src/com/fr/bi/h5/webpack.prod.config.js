@@ -2,14 +2,17 @@ const path = require('path');
 var webpack = require('webpack');
 var srcPath = path.join(__dirname, '/src');
 module.exports = {
+    devtool: 'sourcemap',
     entry: {
-        entry: `${srcPath}/index.js`,
-        vendor: ['react', 'react-dom', 'core', 'data', 'lib', 'base']
+        entry: `${srcPath}/index.js`
     },
     output: {
-        filename: "[name].js",
+        filename: "h5.js",
+        sourceMapFilename: 'h5.map',
         path: __dirname + "/dist",
-        publicPath: "?op=resource&encode=utf8&resource=/com/fr/bi/h5/dist/"
+        publicPath: "?op=resource&encode=utf8&resource=/com/fr/bi/h5/dist/",
+        library: 'H5',
+        libraryTarget: 'umd'
     },
     resolve: {
         extensions: ['', '.js', '.jsx'],
@@ -65,15 +68,5 @@ module.exports = {
         ]
     },
     plugins: [
-        new webpack.optimize.CommonsChunkPlugin('vendor',  'vendor.js'),
-        // new webpack.HotModuleReplacementPlugin()
-        //new webpack.DefinePlugin({
-        //    'process.env.NODE_ENV': '"production"'
-        //}),
-        //new webpack.optimize.UglifyJsPlugin({
-        //    compress: {
-        //        warnings: false
-        //    }
-        //})
     ]
 }

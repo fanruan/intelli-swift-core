@@ -10,13 +10,13 @@ class Template {
         if (this._widgets[id]) {
             return this._widgets[id];
         }
-        this._widgets[id] = new Widget(this.template.popConfig.widgets[id], id);
+        this._widgets[id] = new Widget(this.template.widgets[id], id);
         return this._widgets[id];
     }
 
     getAllWidgetIds() {
         const res = [];
-        each(this.template.popConfig.widgets, (widget, wId) => {
+        each(this.template.widgets, (widget, wId) => {
             if (!this.getWidgetById(wId).isControl()) {
                 res.push(wId);
             }
@@ -26,7 +26,7 @@ class Template {
 
     getAllControlWidgetIds() {
         const res = [];
-        each(this.template.popConfig.widgets, (widget, wId) => {
+        each(this.template.widgets, (widget, wId) => {
             if (this.getWidgetById(wId).isControl()) {
                 res.push(wId);
             }
@@ -35,7 +35,7 @@ class Template {
     }
 
     hasControlWidget() {
-        return some(this.template.popConfig.widgets, (widget, wId) => {
+        return some(this.template.widgets, (widget, wId) => {
             return this.getWidgetById(wId).isControl();
         })
     }

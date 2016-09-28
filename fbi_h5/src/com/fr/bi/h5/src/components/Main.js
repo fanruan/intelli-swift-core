@@ -17,7 +17,7 @@ import React, {
     TouchableOpacity
 } from 'lib'
 
-import {Colors} from 'data'
+import {Colors, Template} from 'data'
 
 import Toolbar from './Toolbar'
 import Layout from './Layout'
@@ -63,6 +63,8 @@ class Main extends Component {
 
     constructor(props, context) {
         super(props, context);
+        console.log(props);
+        // template={new Template(template)} actions={actions}
     }
 
     renderScene(route, navigationOperations, onComponentRef) {
@@ -110,8 +112,36 @@ class Main extends Component {
             />
         );
     }
+
+    componentWillMount() {
+
+    }
+
+    componentDidMount() {
+
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        debugger
+    }
+
+    componentWillReceiveProps(nextProps) {
+        debugger
+    }
+
+    componentWillUpdate(nextProps, nextState) {
+
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+
+    }
+
+    componentWillUnmount() {
+
+    }
 }
-mixin.onClass(Main, PureRenderMixin);
+// mixin.onClass(Main, PureRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         flex: 1,
@@ -144,7 +174,7 @@ const styles = StyleSheet.create({
 function mapStateToProps(state) {
     /* Populated by react-webpack-redux:reducer */
     const props = {
-        template: state.template
+        template: new Template(state.template)
     };
     return props;
 }

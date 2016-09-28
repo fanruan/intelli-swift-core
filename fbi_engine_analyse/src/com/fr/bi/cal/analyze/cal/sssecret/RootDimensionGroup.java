@@ -6,7 +6,6 @@ import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
-import com.fr.bi.cal.analyze.cal.adapter.GroupCache;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.cal.store.GroupKey;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -25,7 +24,6 @@ import com.fr.bi.stable.data.key.date.BIDateValueFactory;
 import com.fr.bi.stable.exception.BITableUnreachableException;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.structure.collection.map.lru.FIFOHashMap;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.cache.list.IntList;
@@ -46,16 +44,14 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     protected DimensionCalculator[] cks;
     protected BISession session;
     protected int[][] parentColumnCksIndex;
-    ISingleDimensionGroup singleDimensionGroupCache;
-    FIFOHashMap<GroupKey, ISingleDimensionGroup> cacheMap = new FIFOHashMap<GroupKey, ISingleDimensionGroup>(64);
+    ISingleDimensionGroup[] singleDimensionGroupCache;
     private BIWidget widget;
     private BIDimension[] dimensions;
     private NodeExpander expander;
     private TreeIterator iter;
     private boolean useRealData;
-    private boolean cacheAble;
 
-    public RootDimensionGroup(NoneDimensionGroup root, DimensionCalculator[] cks, BIDimension[] dimensions, NodeExpander expander, BISession session, TargetCalculator calculator, BIWidget widget, boolean useRealData) {
+    public RootDimensionGroup(NoneDimensionGroup root, DimensionCalculator[] cks, BIDimension[] dimensions, NodeExpander expander, BISession session,  BIWidget widget, boolean useRealData) {
         setRoot(root);
         this.cks = cks;
         this.dimensions = dimensions;
@@ -64,6 +60,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         this.iter = new TreeIterator(cks.length);
         this.widget = widget;
         this.useRealData = useRealData;
+        this.singleDimensionGroupCache = new ISingleDimensionGroup[cks.length];
         initParentColumncks();
     }
 
@@ -142,10 +139,6 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         }
     }
 
-    private BusinessTable getRealTableKey4Calculate(DimensionCalculator column, BusinessTable tableKey) {
-        return ComparatorUtils.equals(tableKey, BIBusinessTable.createEmptyTable()) ? column.getField().getTableBelongTo() : tableKey;
-    }
-
     /**
      * 获取A->B->指标  B->指标 A与B之间的关系
      *
@@ -211,7 +204,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     @Override
     public void clearCache() {
-        singleDimensionGroupCache = null;
+        singleDimensionGroupCache = new ISingleDimensionGroup[cks.length];
     }
 
     private int[] getValueStartRow(Object[] value) {
@@ -245,15 +238,13 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     private ISingleDimensionGroup getSingleDimensionGroupCache(Object[] value, NoneDimensionGroup ng, int deep) {
-        if (deep == 0) {
-            if (singleDimensionGroupCache != null) {
-                return singleDimensionGroupCache;
-            }
-        }
         if (ng instanceof TreeNoneDimensionGroup) {
             return ((TreeNoneDimensionGroup) ng).getSingleDimensionGroup();
         }
-        return getLightCacheFromSession(value, ng, deep);
+        if (singleDimensionGroupCache[deep] != null) {
+            return singleDimensionGroupCache[deep];
+        }
+        return createSingleDimensionGroup(value, ng, deep);
     }
 
     /**
@@ -351,64 +342,15 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     protected ISingleDimensionGroup getSingleDimensionGroup(GroupConnectionValue gv, NoneDimensionGroup ng, int deep) {
-        ISingleDimensionGroup sg = null;
-        if (deep == 0) {
-            sg = getFirstCacheDimensionGroup(gv, ng, deep);
-        } else {
-            sg = getLightCacheFromSession(gv, ng, deep);
-        }
-        return sg;
-    }
+        return getCacheDimensionGroup(gv, ng, deep);
 
-    private ISingleDimensionGroup getFirstCacheDimensionGroup(GroupConnectionValue gv, NoneDimensionGroup ng, int deep) {
-        if (singleDimensionGroupCache == null) {
-            singleDimensionGroupCache = createSingleDimensionGroup(gv, ng, deep);
-        }
-        return singleDimensionGroupCache;
     }
 
     private ISingleDimensionGroup getCacheDimensionGroup(GroupConnectionValue gv, NoneDimensionGroup ng, int deep) {
-        GroupKey groupKey = createGroupKey(ng, deep);
-        ISingleDimensionGroup singleDimensionGroup = cacheMap.get(groupKey);
-        if (singleDimensionGroup == null) {
-            singleDimensionGroup = createSingleDimensionGroup(gv, ng, deep);
-            cacheMap.put(groupKey, singleDimensionGroup);
+        if (singleDimensionGroupCache[deep] == null || !ComparatorUtils.equals(singleDimensionGroupCache[deep].getData(), getParentsValuesByGv(gv, deep))){
+            singleDimensionGroupCache[deep] = createSingleDimensionGroup(gv, ng, deep);
         }
-        return singleDimensionGroup;
-    }
-
-    private GroupKey createGroupKey(NoneDimensionGroup ng, int deep) {
-        return SingleDimensionGroup.createGroupKey(ng.tableKey, cks[deep], ng.node.getGroupValueIndex(), useRealData);
-    }
-
-    private ISingleDimensionGroup getLightCacheFromSession(GroupConnectionValue gv, NoneDimensionGroup ng, int deep) {
-        if (!cacheAble){
-            return createSingleDimensionGroup(gv, ng, deep);
-        }
-        ISingleDimensionGroup sg;
-        GroupKey groupKey = SingleDimensionGroup.createGroupKey(ng.tableKey, cks[deep], ComparatorUtils.equals(ng.tableKey, BIBusinessTable.createEmptyTable()) ? getCKGvigetter(gv, deep) : ng.node.getGroupValueIndex(), useRealData);
-        ISingleDimensionGroup singleDimensionGroup = GroupCache.getLightDimensionGroupCache(session, groupKey);
-        if (singleDimensionGroup == null) {
-            singleDimensionGroup = createSingleDimensionGroup(gv, ng, deep);
-            GroupCache.putLightSingleDimensionGroupCache(session, groupKey, singleDimensionGroup);
-        }
-        sg = singleDimensionGroup;
-        return sg;
-    }
-
-    private ISingleDimensionGroup getLightCacheFromSession(Object[] data, NoneDimensionGroup ng, int deep) {
-        if (!cacheAble){
-            return createSingleDimensionGroup(data, ng, deep);
-        }
-        ISingleDimensionGroup sg;
-        GroupKey groupKey = SingleDimensionGroup.createGroupKey(ng.tableKey, cks[deep], ComparatorUtils.equals(ng.tableKey, BIBusinessTable.createEmptyTable()) ? getCKGvigetter(data, deep) : ng.node.getGroupValueIndex(), useRealData);
-        ISingleDimensionGroup singleDimensionGroup = GroupCache.getLightDimensionGroupCache(session, groupKey);
-        if (singleDimensionGroup == null) {
-            singleDimensionGroup = createSingleDimensionGroup(data, ng, deep);
-            GroupCache.putLightSingleDimensionGroupCache(session, groupKey, singleDimensionGroup);
-        }
-        sg = singleDimensionGroup;
-        return sg;
+        return singleDimensionGroupCache[deep];
     }
 
     protected ISingleDimensionGroup createSingleDimensionGroup(GroupConnectionValue gv, NoneDimensionGroup ng, int deep) {
@@ -416,11 +358,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         if ((ComparatorUtils.equals(root.getTableKey(), BIBusinessTable.createEmptyTable()) && deep > 0)) {
             sg = ng.createNoneTargetSingleDimensionGroup(cks, parentColumnCksIndex[deep], cks[deep], getParentsValuesByGv(gv, deep), deep, getCKGvigetter(gv, deep), useRealData);
         } else {
-            if (deep > 0 && singleDimensionGroupCache != null && (singleDimensionGroupCache instanceof AllCalSingleDimensionGroup)) {
-                sg = AllCalSingleDimensionGroup.createInstanceWithCache((AllCalSingleDimensionGroup) singleDimensionGroupCache, ng.getRoot().getGroupValueIndex(), deep);
-            } else {
-                sg = ng.createSingleDimensionGroup(cks, parentColumnCksIndex[deep], cks[deep], getParentsValuesByGv(gv, deep), deep, useRealData);
-            }
+            sg = ng.createSingleDimensionGroup(cks, parentColumnCksIndex[deep], cks[deep], getParentsValuesByGv(gv, deep), deep, useRealData);
         }
         return sg;
     }
@@ -430,11 +368,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         if ((ComparatorUtils.equals(root.getTableKey(), BITable.BI_EMPTY_TABLE()) && deep > 0)) {
             sg = ng.createNoneTargetSingleDimensionGroup(cks, parentColumnCksIndex[deep], cks[deep], data, deep, getCKGvigetter(data, deep), useRealData);
         } else {
-            if (deep > 0 && singleDimensionGroupCache != null && (singleDimensionGroupCache instanceof AllCalSingleDimensionGroup)) {
-                sg = AllCalSingleDimensionGroup.createInstanceWithCache((AllCalSingleDimensionGroup) singleDimensionGroupCache, ng.getRoot().getGroupValueIndex(), deep);
-            } else {
-                sg = ng.createSingleDimensionGroup(cks, parentColumnCksIndex[deep], cks[deep], data, deep, useRealData);
-            }
+            sg = ng.createSingleDimensionGroup(cks, parentColumnCksIndex[deep], cks[deep], data, deep, useRealData);
         }
         return sg;
     }
@@ -610,10 +544,6 @@ public class RootDimensionGroup implements IRootDimensionGroup {
             return groupEnd();
         }
         return ReturnStatus.Success;
-    }
-
-    public void setCacheAble(boolean cacheAble) {
-        this.cacheAble = cacheAble;
     }
 
     private static class TreePageComparator implements Comparator<int[]> {

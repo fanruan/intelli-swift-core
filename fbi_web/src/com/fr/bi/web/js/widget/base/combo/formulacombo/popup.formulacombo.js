@@ -71,6 +71,10 @@ BI.FormulaComboPopup = BI.inherit(BI.Widget, {
         })
     },
 
+    getFormulaTargetIds: function(){
+        return this.formula.getUsedFields();
+    },
+
     getValue: function () {
         return this.formula.getValue();
     },
