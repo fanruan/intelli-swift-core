@@ -49,8 +49,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
         try {
             relationColumnKeyInfo = getRelationColumnKeyInfo();
         } catch (Exception e) {
-            BILogger.getLogger().error("get relationColumnKey failed! relation information used as listed:" + relation.getPrimaryTable().getSourceID() + "." + relation.getPrimaryField().getColumnName() + " to " + relation.getForeignTable().getSourceID() + "." + relation.getForeignField().getColumnName());
-            BILogger.getLogger().error(e.getMessage());
+            BILogger.getLogger().error(e.getMessage(), e);
         }
         try {
             buildRelationIndex();

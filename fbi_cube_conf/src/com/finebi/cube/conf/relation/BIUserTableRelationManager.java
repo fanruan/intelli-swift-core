@@ -141,7 +141,7 @@ public class BIUserTableRelationManager implements Release {
     }
 
 
-    public void finishGenerateCubes(Set<BITableRelation> connectionSet) {
+    public void finishGenerateCubes() {
         synchronized (oldAnalyserHandler) {
             oldAnalyserHandler.clear();
             analysisTableRelationShipService.clear();
