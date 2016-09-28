@@ -223,14 +223,17 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         callback(this.items, floor);
     },
 
-    _getSelectedValues: function (map, values) {
+    _getSelectedValues: function () {
+        this.storeValue = {};
+        var self = this;
         var preValues = [];
+        var values = this.view.getValue();
         for (var i = 0; i < values.length; i++) {
-            if(BI.isEmptyObject(map)) {
+            if(BI.isEmptyObject(this.storeValue)) {
                 BI.each(values[i], function (idx, value) {
                     var temp = {};
                     preValues.push(temp);
-                    map[value] = temp;
+                    self.storeValue[value] = temp;
                 })
             } else {
                 var tempArray = [];
@@ -244,7 +247,19 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
                 preValues = tempArray;
             }
         }
-        return map;
+
+        //检查
+        return this.storeValue;
+    },
+
+    _checkValue: function (map) {
+        var selectedButtons = this.view.getSelectedButtons();
+        // if (BI.isEmptyObject(map)) {
+        //
+        // }
+        // BI.each(map, function (idx, childMap) {
+        //     if(childMap)
+        // })
     },
 
     setValue: function (v) {
@@ -259,9 +274,8 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
-        var resultMap = {};
-        var values = this.view.getValue();
-        return this._getSelectedValues(resultMap, values);
+        this._getSelectedValues();
+        return this.storeValue;
     }
 });
 

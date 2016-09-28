@@ -1532,6 +1532,19 @@ BICst.MAP_STYLE_CONDITIONS = [{
     color: "#a484b9"
 }];
 
+BICst.BUBBLE_GRADIENT_COLOR = [{
+    range: {
+        min: 0,
+        max: 100,
+        closemin: true,
+        closemax: true
+    },
+    color_range: {
+        from_color: "#65B3EE",
+        to_color: "#95E1AA"
+    }
+}];
+
 BICst.CAL_TARGET_TYPE = [{
     text: BI.i18nText("BI-Formula"),
     value: BICst.TARGET_TYPE.FORMULA

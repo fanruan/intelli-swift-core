@@ -159,8 +159,8 @@ public abstract class BIAbstractWidget implements BIWidget {
         if (jo.has("real_data")) {
             realData = jo.optBoolean("real_data", true);
         }
-        if(jo.has("sessionId")) {
-            sessionId = jo.getString("sessionId");
+        if(jo.has("sessionID")) {
+            sessionId = jo.getString("sessionID");
         }
         this.userId = userId;
     }
