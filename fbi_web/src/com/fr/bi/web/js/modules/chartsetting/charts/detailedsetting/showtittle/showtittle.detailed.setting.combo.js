@@ -14,17 +14,19 @@ BI.ShowTitleDetailedSettingCombo = BI.inherit(BI.Widget, {
         BI.ShowTitleDetailedSettingCombo.superclass._init.apply(this, arguments);
         var self = this;
 
-        var textTrigger = BI.createWidget({
-            type: "bi.detailed_setting_trigger",
-            text: BI.i18nText("BI-Set_Details"),
-            width: 200,
-            height: 30
+        var popup = BI.createWidget({
+            type: "bi.show_title_detailed_setting_popup"
         });
 
         BI.createWidget({
-            type: "bi.left",
+            type: "bi.combo",
             element: this.element,
-            items: [textTrigger]
+            el: {
+                type: "bi.detailed_setting_trigger"
+            },
+            popup: {
+                el:  popup
+            }
         })
     }
 });

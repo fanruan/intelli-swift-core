@@ -8,6 +8,7 @@ BI.DetailedSettingTrigger = BI.inherit(BI.Trigger, {
         var conf = BI.DetailedSettingTrigger.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
             baseCls: (conf.baseCls || "") + " bi-detailed-setting-trigger",
+            text: BI.i18nText("BI-Set-Details"),
             height: 30
         });
     },
