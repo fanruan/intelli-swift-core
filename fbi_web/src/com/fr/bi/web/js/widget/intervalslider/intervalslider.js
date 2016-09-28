@@ -108,8 +108,8 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
                 width: "100%",
                 height: 23
             },
-                this._createLayout(this.labelOne, this.labelTwo, 0,90),
-                this._createLayout(this.sliderOne, this.sliderTwo, 30,30)
+                this._createLayout(this.labelOne, this.labelTwo, 0, 90),
+                this._createLayout(this.sliderOne, this.sliderTwo, 30, 30)
             ]
         })
     },
@@ -150,13 +150,13 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
             if ((labelTwoLeft - labelOneLeft) < 90) {
                 this.labelTwo.element.css({"top": 60});
             } else {
-                this.labelTwo.element.css({"top":0});
+                this.labelTwo.element.css({"top": 0});
             }
         } else {
-            if((labelOneLeft-labelTwoLeft)<90){
-                this.labelTwo.element.css({"top":60});
-            }else {
-                this.labelTwo.element.css({"top":0});
+            if ((labelOneLeft - labelTwoLeft) < 90) {
+                this.labelTwo.element.css({"top": 60});
+            } else {
+                this.labelTwo.element.css({"top": 0});
             }
         }
     },
