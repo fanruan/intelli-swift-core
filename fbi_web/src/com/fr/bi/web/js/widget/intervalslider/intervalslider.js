@@ -24,7 +24,7 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
         var self = this;
         var c = this._constant;
         this.track = BI.createWidget({
-            type: "bi.track"
+            type: "bi.single_slider_track"
         });
         this.lowerLabel = BI.createWidget({
             type: "bi.sign_editor",
@@ -63,13 +63,13 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
             self._setUpperSliderPosition(percent);
         });
         this.lowerSlider = BI.createWidget({
-            type: "bi.slider"
+            type: "bi.single_slider_slider"
         });
         this.lowerSliderRegion = BI.createWidget({
             type: "bi.layout"
         });
         this.upperSlider = BI.createWidget({
-            type: "bi.slider"
+            type: "bi.single_slider_slider"
         });
         this.upperSliderRegion = BI.createWidget({
             type: "bi.layout"

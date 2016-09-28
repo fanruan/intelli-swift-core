@@ -69,4 +69,4 @@ BI.Track = BI.inherit(BI.Widget, {
         this.blueTrack.element.css({"left": percent + "%"});
     }
 });
-$.shortcut("bi.track", BI.Track);
+$.shortcut("bi.single_slider_track", BI.Track);

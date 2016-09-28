@@ -20,4 +20,4 @@ BI.Slider = BI.inherit(BI.Widget, {
         });
     }
 });
-$.shortcut("bi.slider", BI.Slider);
+$.shortcut("bi.single_slider_slider", BI.Slider);
