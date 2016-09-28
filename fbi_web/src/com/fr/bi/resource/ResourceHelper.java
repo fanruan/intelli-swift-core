@@ -1957,6 +1957,11 @@ public class ResourceHelper {
                 //时间区间
                 "com/fr/bi/web/css/widget/timeinterval/timeinterval.css",
 
+                //单值滑块
+                "com/fr/bi/web/css/widget/singleslider/track/widget.track.css",
+                "com/fr/bi/web/css/widget/singleslider/slider/widget.slider.css",
+                "com/fr/bi/web/css/widget/singleslider/singleslider.css",
+
                 //选择字段树
                 "com/fr/bi/web/css/widget/selectdata/tree/node/node.level0.css",
                 "com/fr/bi/web/css/widget/selectdata/tree/node/node.level1.css",
@@ -2704,6 +2709,14 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/numericalinterval/combo.numericalinterval.js",
                 "com/fr/bi/web/js/widget/numericalinterval/popup.numericalinterval.js",
                 "com/fr/bi/web/js/widget/numericalinterval/numericalinterval.js",
+
+                //单值滑块
+                "com/fr/bi/web/js/widget/singleslider/singleslider.js",
+                "com/fr/bi/web/js/widget/singleslider/slider/widget.slider.js",
+                "com/fr/bi/web/js/widget/singleslider/track/widget.track.js",
+
+                //区间滑块
+                "com/fr/bi/web/js/widget/intervalslider/intervalslider.js",
 
                 //可以设置参数的下拉框
                 "com/fr/bi/web/js/widget/paramsettingcombo/param0.date.item.js",
