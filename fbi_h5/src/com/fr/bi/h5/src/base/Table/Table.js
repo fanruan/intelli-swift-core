@@ -201,26 +201,12 @@ var Table = React.createClass({
         if (offsetX > maxOffsetScroll) {
             offsetX = maxOffsetScroll + Math.pow(offsetX - maxOffsetScroll, 0.8);
         }
-        if (Math.abs(dy) > Math.abs(dx)) {
-            if (!this._lockX && !this._lockA) {
-                this._lockY = true;
-                this.trans.setValue({x: 0, y: this.state.scrollY - scrollY});
-            }
-        } else {
-            if (!this._lockY) {
-                var x = this.state.scrollX;
-                x += Math.round(-dx);
-
-                if ((!this._lockA && x > 0 && x <= this.state.maxScrollX) || this._lockX) {
-                    this._lockX = true;
-                    this.trans.setValue({x: this.state.scrollX - scrollX, y: 0});
-                } else {
-                    // if (!this._lockX) {
-                    //     this._lockA = true;
-                    //     this.offset.setValue(this.state.offsetX - offsetX);
-                    // }
-                }
-            }
+        if (this._lockY || (Math.abs(dy) > Math.abs(dx) && !this._lockX && !this._lockA)) {
+            this._lockY = true;
+            this.trans.setValue({x: 0, y: this.state.scrollY - scrollY});
+        } else if (this._lockX || (!this._lockY && !this._lockA && scrollX > 0 && scrollX <= this.state.maxScrollX)) {
+            this._lockX = true;
+            this.trans.setValue({x: this.state.scrollX - scrollX, y: 0});
         }
 
         //this._onWheel(-gestureState.dx + this.dx, -gestureState.dy + this.dy);
