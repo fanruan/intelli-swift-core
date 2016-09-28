@@ -21,6 +21,14 @@ BI.ColorChooserTrigger = BI.inherit(BI.Trigger, {
             type: "bi.layout"
         });
 
+        var down = BI.createWidget({
+            type: "bi.icon_button",
+            disableSelected: true,
+            cls: "icon-combo-down-icon trigger-triangle-font",
+            width: 12,
+            height: 8
+        });
+
         BI.createWidget({
             type: "bi.absolute",
             element: this.element,
@@ -30,8 +38,12 @@ BI.ColorChooserTrigger = BI.inherit(BI.Trigger, {
                 right: 3,
                 top: 3,
                 bottom: 3
+            }, {
+                el: down,
+                right: 3,
+                bottom: 3
             }]
-        })
+        });
         if (this.options.value) {
             this.setValue(this.options.value);
         }

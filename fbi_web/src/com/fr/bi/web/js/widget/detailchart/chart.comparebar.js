@@ -57,12 +57,6 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
 
-        config.zoom.zoomTool.enabled = this.config.show_zoom;
-        if (this.config.show_zoom === true) {
-            delete config.dataSheet;
-            delete config.zoom.zoomType;
-        }
-
         config.yAxis = this.yAxis;
         config.yAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + yTitle : yTitle;
         config.yAxis[0].title.rotation = this.constants.ROTATION;
