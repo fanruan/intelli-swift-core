@@ -106,23 +106,38 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
 
         //显示序号
         this.showNumber = BI.createWidget({
-            type: "bi.checkbox"
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Display_Sequence_Number"),
+            cls: "check-text-name",
+            logic: {
+                dynamic: true
+            }
         });
-        this.showNumber.on(BI.Checkbox.EVENT_CHANGE, function () {
+        this.showNumber.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
         //显示汇总
         this.showRowTotal = BI.createWidget({
-            type: "bi.checkbox"
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Total_Row"),
+            cls: "attr-names",
+            logic: {
+                dynamic: true
+            }
         });
-        this.showRowTotal.on(BI.Checkbox.EVENT_CHANGE, function () {
+        this.showRowTotal.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
         //展开所有行表头节点
         this.openRowNode = BI.createWidget({
-            type: "bi.checkbox"
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Open_All_Row_Header_Node"),
+            cls: "attr-names",
+            logic: {
+                dynamic: true
+            }
         });
-        this.openRowNode.on(BI.Checkbox.EVENT_CHANGE, function () {
+        this.openRowNode.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
         //单页最大行数
@@ -143,81 +158,57 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
         var show = BI.createWidget({
             type: "bi.left",
             cls: "single-line-settings",
-            items: [{
+            items: BI.createItems([{
                 type: "bi.label",
                 text: BI.i18nText("BI-Element_Show"),
-                cls: "line-title",
-                height: this.constant.SINGLE_LINE_HEIGHT
+                cls: "line-title"
             }, {
                 type: "bi.vertical_adapt",
-                items: [{
-                    type: "bi.center_adapt",
-                    items: [this.showNumber],
-                    width: this.constant.CHECKBOX_WIDTH,
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Display_Sequence_Number"),
-                    cls: "attr-names",
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }],
-                lgap: this.constant.SIMPLE_L_GAP
+                items: [this.showNumber]
             }, {
                 type: "bi.vertical_adapt",
-                items: [{
-                    type: "bi.center_adapt",
-                    items: [this.showRowTotal],
-                    width: this.constant.CHECKBOX_WIDTH,
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Show_Total_Row"),
-                    cls: "attr-names",
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }],
-                lgap: this.constant.SIMPLE_L_GAP
+                items: [this.showRowTotal]
             }, {
-                type: "bi.left",
-                items: [{
-                    type: "bi.center_adapt",
-                    items: [this.openRowNode],
-                    width: this.constant.CHECKBOX_WIDTH,
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Open_All_Row_Header_Node"),
-                    cls: "attr-names",
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }],
-                lgap: this.constant.SIMPLE_L_GAP
+                type: "bi.vertical_adapt",
+                items: [this.openRowNode]
             }, {
                 type: "bi.vertical_adapt",
                 items: [{
                     type: "bi.label",
                     text: BI.i18nText("BI-Page_Max_Row"),
-                    cls: "attr-names",
-                    height: this.constant.SINGLE_LINE_HEIGHT
+                    cls: "attr-names"
                 }, {
                     type: "bi.center_adapt",
                     items: [this.maxRow],
-                    width: this.constant.EDITOR_WIDTH,
-                    height: this.constant.SINGLE_LINE_HEIGHT
+                    width: this.constant.EDITOR_WIDTH
                 }],
                 lgap: 5
-            }],
+            }], {
+                height: this.constant.SINGLE_LINE_HEIGHT
+            }),
             hgap: this.constant.SIMPLE_H_GAP
         });
 
         //冻结维度
         this.freezeDim = BI.createWidget({
-            type: "bi.checkbox"
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Freeze_Table_Dimensions"),
+            cls: "attr-names",
+            logic: {
+                dynamic: true
+            }
         });
-        this.freezeDim.on(BI.Checkbox.EVENT_CHANGE, function () {
+        this.freezeDim.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
         //联动传递指标过滤条件
         this.transferFilter = BI.createWidget({
-            type: "bi.checkbox"
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Bind_Target_Condition"),
+            cls: "attr-names",
+            logic: {
+                dynamic: true
+            }
         });
         this.transferFilter.on(BI.Checkbox.EVENT_CHANGE, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
@@ -225,40 +216,19 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
         var otherAttr = BI.createWidget({
             type: "bi.left",
             cls: "single-line-settings",
-            items: [{
+            items: BI.createItems([{
                 type: "bi.label",
                 text: BI.i18nText("BI-Interactive_Attr"),
-                cls: "line-title",
+                cls: "line-title"
+            }, {
+                type: "bi.vertical_adapt",
+                items: [this.freezeDim]
+            }, {
+                type: "bi.vertical_adapt",
+                items: [this.transferFilter]
+            }], {
                 height: this.constant.SINGLE_LINE_HEIGHT
-            }, {
-                type: "bi.vertical_adapt",
-                items: [{
-                    type: "bi.center_adapt",
-                    items: [this.freezeDim],
-                    width: this.constant.CHECKBOX_WIDTH,
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Freeze_Table_Dimensions"),
-                    cls: "attr-names",
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }],
-                lgap: this.constant.SIMPLE_L_GAP
-            }, {
-                type: "bi.vertical_adapt",
-                items: [{
-                    type: "bi.center_adapt",
-                    items: [this.transferFilter],
-                    width: this.constant.CHECKBOX_WIDTH,
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Bind_Target_Condition"),
-                    cls: "attr-names",
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }],
-                lgap: this.constant.SIMPLE_L_GAP
-            }],
+            }),
             hgap: this.constant.SIMPLE_H_GAP
         });
         BI.createWidget({

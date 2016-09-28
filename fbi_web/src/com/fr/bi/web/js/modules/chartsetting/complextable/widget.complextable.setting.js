@@ -105,30 +105,50 @@ BI.ComplexTableSetting = BI.inherit(BI.Widget, {
 
         //显示行汇总
         this.showRowTotal = BI.createWidget({
-            type: "bi.checkbox"
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Total_Row"),
+            cls: "attr-names",
+            logic: {
+                dynamic: true
+            }
         });
-        this.showRowTotal.on(BI.Checkbox.EVENT_CHANGE, function () {
+        this.showRowTotal.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.ComplexTableSetting.EVENT_CHANGE);
         });
         //显示列汇总
         this.showColTotal = BI.createWidget({
-            type: "bi.checkbox"
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Total_Col"),
+            cls: "attr-names",
+            logic: {
+                dynamic: true
+            }
         });
-        this.showColTotal.on(BI.Checkbox.EVENT_CHANGE, function () {
+        this.showColTotal.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.ComplexTableSetting.EVENT_CHANGE);
         });
         //展开所有行表头节点
         this.openRowNode = BI.createWidget({
-            type: "bi.checkbox"
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Open_All_Row_Header_Node"),
+            cls: "attr-names",
+            logic: {
+                dynamic: true
+            }
         });
-        this.openRowNode.on(BI.Checkbox.EVENT_CHANGE, function () {
+        this.openRowNode.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.ComplexTableSetting.EVENT_CHANGE);
         });
         //展开所有列表头节点
         this.openColNode = BI.createWidget({
-            type: "bi.checkbox"
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Open_All_Col_Header_Node"),
+            cls: "attr-names",
+            logic: {
+                dynamic: true
+            }
         });
-        this.openColNode.on(BI.Checkbox.EVENT_CHANGE, function () {
+        this.openColNode.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.ComplexTableSetting.EVENT_CHANGE);
         });
         //单页最大行数
@@ -163,67 +183,22 @@ BI.ComplexTableSetting = BI.inherit(BI.Widget, {
         var show = BI.createWidget({
             type: "bi.left",
             cls: "single-line-settings",
-            items: [{
+            items: BI.createItems([{
                 type: "bi.label",
                 text: BI.i18nText("BI-Element_Show"),
-                cls: "line-title",
-                height: this.constant.SINGLE_LINE_HEIGHT
+                cls: "line-title"
             }, {
                 type: "bi.vertical_adapt",
-                items: [{
-                    type: "bi.center_adapt",
-                    items: [this.showRowTotal],
-                    width: this.constant.CHECKBOX_WIDTH,
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Show_Total_Row"),
-                    cls: "attr-names",
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }],
-                lgap: this.constant.SIMPLE_L_GAP
+                items: [this.showRowTotal]
             }, {
                 type: "bi.vertical_adapt",
-                items: [{
-                    type: "bi.center_adapt",
-                    items: [this.showColTotal],
-                    width: this.constant.CHECKBOX_WIDTH,
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Show_Total_Col"),
-                    cls: "attr-names",
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }],
-                lgap: this.constant.SIMPLE_L_GAP
+                items: [this.showColTotal]
             }, {
                 type: "bi.vertical_adapt",
-                items: [{
-                    type: "bi.center_adapt",
-                    items: [this.openRowNode],
-                    width: this.constant.CHECKBOX_WIDTH,
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Open_All_Row_Header_Node"),
-                    cls: "attr-names",
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }],
-                lgap: this.constant.SIMPLE_L_GAP
+                items: [this.openRowNode]
             }, {
                 type: "bi.vertical_adapt",
-                items: [{
-                    type: "bi.center_adapt",
-                    items: [this.openColNode],
-                    width: this.constant.CHECKBOX_WIDTH,
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Open_All_Col_Header_Node"),
-                    cls: "attr-names",
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }],
-                lgap: this.constant.SIMPLE_L_GAP
+                items: [this.openColNode]
             }, {
                 type: "bi.vertical_adapt",
                 items: [{
@@ -252,61 +227,52 @@ BI.ComplexTableSetting = BI.inherit(BI.Widget, {
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }],
                 lgap: 5
-            }],
+            }], {
+                height: this.constant.SINGLE_LINE_HEIGHT
+            }),
             hgap: this.constant.SIMPLE_H_GAP
         });
 
         //冻结维度
         this.freezeDim = BI.createWidget({
-            type: "bi.checkbox"
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Freeze_Table_Dimensions"),
+            cls: "attr-names",
+            logic: {
+                dynamic: true
+            }
         });
-        this.freezeDim.on(BI.Checkbox.EVENT_CHANGE, function () {
+        this.freezeDim.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.ComplexTableSetting.EVENT_CHANGE);
         });
         //联动传递指标过滤条件
         this.transferFilter = BI.createWidget({
-            type: "bi.checkbox"
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Bind_Target_Condition"),
+            cls: "attr-names",
+            logic: {
+                dynamic: true
+            }
         });
-        this.transferFilter.on(BI.Checkbox.EVENT_CHANGE, function () {
+        this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.ComplexTableSetting.EVENT_CHANGE);
         });
         var otherAttr = BI.createWidget({
             type: "bi.left",
             cls: "single-line-settings",
-            items: [{
+            items: BI.createItems([{
                 type: "bi.label",
                 text: BI.i18nText("BI-Interactive_Attr"),
-                cls: "line-title",
+                cls: "line-title"
+            }, {
+                type: "bi.vertical_adapt",
+                items: [this.freezeDim]
+            }, {
+                type: "bi.vertical_adapt",
+                items: [this.transferFilter]
+            }], {
                 height: this.constant.SINGLE_LINE_HEIGHT
-            }, {
-                type: "bi.left",
-                items: [{
-                    type: "bi.center_adapt",
-                    items: [this.freezeDim],
-                    width: this.constant.CHECKBOX_WIDTH,
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Freeze_Table_Dimensions"),
-                    cls: "attr-names",
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }],
-                lgap: this.constant.SIMPLE_L_GAP
-            }, {
-                type: "bi.left",
-                items: [{
-                    type: "bi.center_adapt",
-                    items: [this.transferFilter],
-                    width: this.constant.CHECKBOX_WIDTH,
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Bind_Target_Condition"),
-                    cls: "attr-names",
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }],
-                lgap: this.constant.SIMPLE_L_GAP
-            }],
+            }),
             hgap: this.constant.SIMPLE_H_GAP
         });
         BI.createWidget({
