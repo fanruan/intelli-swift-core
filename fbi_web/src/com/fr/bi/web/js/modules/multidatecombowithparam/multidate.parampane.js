@@ -105,7 +105,7 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
         if (BI.isNull(widgetInfo) || BI.isNull(offset)) {
             return;
         }
-        var paramdate = new Date();
+        var paramdate;
         var wWid = widgetInfo.wId, se = widgetInfo.startOrEnd;
         if (BI.isNotNull(wWid) && BI.isNotNull(se)) {
             var wWValue = BI.Utils.getWidgetValueByID(wWid);
@@ -114,7 +114,8 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
             }
             if (se === BI.MultiDateParamPane.start && BI.isNotNull(wWValue.start)) {
                 paramdate = this.parseComplexDateCommon(wWValue.start);
-            } else {
+            }
+            if (se === BI.MultiDateParamPane.end && BI.isNotNull(wWValue.end)) {
                 paramdate = this.parseComplexDateCommon(wWValue.end);
             }
         } else {
