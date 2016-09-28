@@ -55,11 +55,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
         if(config.dataSheet.enabled === true){
             config.xAxis[0].showLabel = false;
         }
-        config.zoom.zoomTool.enabled = this.config.show_zoom;
-        if(this.config.show_zoom === true){
-            delete config.dataSheet;
-            delete config.zoom.zoomType;
-        }
+        this.formatZoom(config, this.config.show_zoom);
 
         config.yAxis = this.yAxis;
         BI.extend(config.yAxis[0], {
