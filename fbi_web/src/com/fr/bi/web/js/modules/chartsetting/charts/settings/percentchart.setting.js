@@ -97,17 +97,6 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.PercentChartsSetting.EVENT_CHANGE);
         });
 
-        this.numberLevellY = BI.createWidget({
-            type: "bi.segment",
-            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_LEVEL
-        });
-
-        this.numberLevellY.on(BI.Segment.EVENT_CHANGE, function () {
-            self.fireEvent(BI.PercentChartsSetting.EVENT_CHANGE);
-        });
-
         //单位
         this.LYUnit = BI.createWidget({
             type: "bi.sign_editor",
@@ -380,14 +369,6 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.lYAxisStyle]
                 }, {
                     type: "bi.label",
-                    text: BI.i18nText("BI-Num_Level"),
-                    lgap: constant.SIMPLE_H_GAP,
-                    cls: "attr-names"
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.numberLevellY]
-                }, {
-                    type: "bi.label",
                     text: BI.i18nText("BI-Unit_Normal"),
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
@@ -508,7 +489,6 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
         this.chartStyleGroup.setValue(BI.Utils.getWSChartStyleByID(wId));
         this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
-        this.numberLevellY.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
         this.LYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
         this.isShowTitleLY.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
         this.isShowTitleX.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
@@ -537,7 +517,6 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             chart_color: this.colorSelect.getValue()[0],
             chart_style: this.chartStyleGroup.getValue()[0],
             left_y_axis_style: this.lYAxisStyle.getValue()[0],
-            left_y_axis_number_level: this.numberLevellY.getValue()[0],
             left_y_axis_unit: this.LYUnit.getValue(),
             show_left_y_axis_title: this.isShowTitleLY.isSelected(),
             show_x_axis_title: this.isShowTitleX.isSelected(),
@@ -561,7 +540,6 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.colorSelect.setValue(v.chart_color);
         this.chartStyleGroup.setValue(v.chart_style);
         this.lYAxisStyle.setValue(v.left_y_axis_style);
-        this.numberLevellY.setValue(v.left_y_axis_number_level);
         this.LYUnit.setValue(v.left_y_axis_unit);
         this.isShowTitleLY.setSelected(v.show_left_y_axis_title);
         this.isShowTitleX.setSelected(v.x_axis_title);
