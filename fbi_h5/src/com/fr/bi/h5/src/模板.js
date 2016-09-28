@@ -16,9 +16,9 @@ import React, {
     TouchableHighlight
 } from 'lib'
 
-import {Colors, Template} from 'data'
+import {Colors, Template, Widget, Dimension, Target} from 'data'
 
-import {CenterLayout, Icon, Table, AutoSizer} from 'base'
+import {CenterLayout, Icon, Table} from 'base'
 
 import {MultiSelectorWidget} from 'widgets'
 

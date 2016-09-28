@@ -1,7 +1,8 @@
 import {each} from 'core';
+import {Widget, Dimension} from 'data'
 class TableComponentHelper {
-    constructor(widget) {
-        this.widget = widget;
+    constructor($$widget) {
+        this.widget = new Widget($$widget);
         this.data = [];
     }
 
@@ -16,9 +17,9 @@ class TableComponentHelper {
             text: '行表头'
         }];
         ids.forEach((id)=> {
-            const dim = this.widget.getDimensionOrTargetById(id);
+            const $$dim = this.widget.get$$DimensionOrTargetById(id);
             result.push({
-                text: dim.getName()
+                text: new Dimension($$dim).getName()
             })
         });
         return result;

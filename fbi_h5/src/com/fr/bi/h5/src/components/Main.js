@@ -15,7 +15,7 @@ import React, {
     Fetch,
     Navigator,
     TouchableOpacity
-} from 'lib'
+    } from 'lib'
 
 import {Colors, Template} from 'data'
 
@@ -64,7 +64,7 @@ class Main extends Component {
     constructor(props, context) {
         super(props, context);
         console.log(props);
-        this.template = new Template(props.template);
+        this.template = new Template(props.$$template);
         // template={new Template(template)} actions={actions}
     }
 
@@ -87,7 +87,7 @@ class Main extends Component {
                 width={width} height={height - 50}
                 {...props}
                 navigator={navigationOperations}
-            />
+                />
         );
     }
 
@@ -110,7 +110,7 @@ class Main extends Component {
                     }
                     return Navigator.SceneConfigs.FloatFromRight;
                 }}
-            />
+                />
         );
     }
 
@@ -170,16 +170,5 @@ const styles = StyleSheet.create({
         paddingLeft: 10
     }
 });
-// export default Main
 
-function mapStateToProps(state) {
-    /* Populated by react-webpack-redux:reducer */
-    const props = state;
-    return props;
-}
-function mapDispatchToProps(dispatch) {
-    /* Populated by react-webpack-redux:action */
-    const actionMap = {actions: bindActionCreators(TodoActions, dispatch)};
-    return actionMap;
-}
-export default connect(mapStateToProps, mapDispatchToProps)(Main);
+export default Main

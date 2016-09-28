@@ -15,7 +15,7 @@ import React, {
     TouchableHighlight,
     TouchableOpacity,
     TouchableWithoutFeedback
-} from 'lib';
+    } from 'lib';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Template} from 'data';
@@ -63,11 +63,10 @@ import Main from '../components/Main.js'
 //import UIExplorerApp from '../examples/UIExplorer/UIExplorerApp.web'
 
 /* Populated by react-webpack-redux:reducer */
-export default class App extends Component {
+class App extends Component {
     render() {
-        const {template, actions} = this.props;
         return (
-            <Main />
+            <Main {...this.props}/>
         )
     }
 }
@@ -78,19 +77,19 @@ export default class App extends Component {
  *       adjust it here.
  */
 App.propTypes = {
-    // actions: PropTypes.object.isRequired,
-    // template: PropTypes.object.isRequired
+    actions: PropTypes.object.isRequired,
+    $$template: PropTypes.object.isRequired
 };
-// function mapStateToProps(state) {
-//     /* Populated by react-webpack-redux:reducer */
-//     const props = {
-//         template: state.template
-//     };
-//     return props;
-// }
-// function mapDispatchToProps(dispatch) {
-//     /* Populated by react-webpack-redux:action */
-//     const actionMap = {actions: bindActionCreators(TodoActions, dispatch)};
-//     return actionMap;
-// }
-// export default connect(mapStateToProps, mapDispatchToProps)(App);
+function mapStateToProps(state) {
+    /* Populated by react-webpack-redux:reducer */
+    const props = {
+        $$template: state.get('template')
+    };
+    return props;
+}
+function mapDispatchToProps(dispatch) {
+    /* Populated by react-webpack-redux:action */
+    const actionMap = {actions: bindActionCreators(TodoActions, dispatch)};
+    return actionMap;
+}
+export default connect(mapStateToProps, mapDispatchToProps)(App);

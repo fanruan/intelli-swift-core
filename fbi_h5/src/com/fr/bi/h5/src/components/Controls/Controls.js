@@ -16,7 +16,7 @@ import React, {
     Promise
 } from 'lib'
 
-import {Colors, Template} from 'data'
+import {Colors, Template, Widget} from 'data'
 
 import {Icon, Table, AutoSizer, VtapeLayout, HtapeLayout, VerticalCenterLayout, CenterLayout} from 'base'
 
@@ -33,7 +33,7 @@ class Controls extends Component {
     constructor(props, context) {
         super(props, context);
         const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        this.template = new Template(props.template);
+        this.template = new Template(props.$$template);
         const rows = this.template.getAllControlWidgetIds();
         this.state = {
             dataSource: ds.cloneWithRows(rows)
@@ -68,7 +68,7 @@ class Controls extends Component {
         const {...props} = this.props;
         return <ScrollView style={styles.wrapper}>
             {map(this.template.getAllControlWidgetIds(), (id)=> {
-                const widget = this.template.getWidgetById(id);
+                const $$widget = this.template.get$$WidgetById(id);
                 return <Item key={id} id={id} widget={widget} onPress={()=> {
                     let Component = null;
                     switch (widget.getType()) {
@@ -86,9 +86,9 @@ class Controls extends Component {
                         case BICst.WIDGET.YMD:
                     }
                     props.navigator.push({
-                        name: widget.getName(),
+                        name: new Widget($$widget).getName(),
                         Component: Component,
-                        title: widget.getName()
+                        title: new Widget($$widget).getName()
                     });
                 }}/>
             })}

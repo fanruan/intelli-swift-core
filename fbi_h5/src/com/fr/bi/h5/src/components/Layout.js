@@ -13,7 +13,7 @@ import React, {
 } from 'lib'
 
 import {AutoSizer} from 'base'
-import {Colors, Template} from 'data'
+import {Colors, Template, Widget} from 'data'
 
 import ChartComponent from './Chart/ChartComponent.js'
 import TableComponent from './Table/TableComponent.js'
@@ -27,7 +27,7 @@ class Layout extends Component {
     constructor(props, context) {
         super(props, context);
         const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        this.template = new Template(props.template);
+        this.template = new Template(props.$$template);
         const rows = this.template.getAllWidgetIds();
         this.state = {
             dataSource: ds.cloneWithRows(rows)
@@ -45,11 +45,11 @@ class Layout extends Component {
     }
 
     _renderRow(rowData, sectionID, rowID) {
-        const widgetObj = this.template.getWidgetById(rowData);
-        const type = widgetObj.getType();
+        const $$widget = this.template.get$$WidgetById(rowData);
+        const type = new Widget($$widget).getType();
         const props = {
             key: rowData,
-            widget: widgetObj,
+            $$widget,
             width: this.props.width - 40,
             height: 230
         };
