@@ -14,12 +14,13 @@ import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.ComparatorUtils;
 
+import java.util.List;
 import java.util.Map;
 
 public class GroupUtils {
 
 
-    public static NodeAndPageInfo createNextPageMergeNode(IRootDimensionGroup[] roots, TargetCalculator[] calculators, NodeExpander expander, Operator op) {
+    public static NodeAndPageInfo createNextPageMergeNode(IRootDimensionGroup[] roots, List<TargetCalculator[]> calculators, NodeExpander expander, Operator op) {
         NodeDimensionIterator[] iters = op.getPageIterator(roots, expander);
         return createMergePageNode(iters, calculators, op, roots);
     }
@@ -32,7 +33,7 @@ public class GroupUtils {
      * @param iters
      * @param op
      */
-    protected static void merge(GroupConnectionValue[] gc, Node node, NodeDimensionIterator[] iters, TargetCalculator[] calculators, Operator op, IRootDimensionGroup[] roots) {
+    protected static void merge(GroupConnectionValue[] gc, Node node, NodeDimensionIterator[] iters, List<TargetCalculator[]> calculators, Operator op, IRootDimensionGroup[] roots) {
         GroupConnectionValue[] gcvsChild = getGroupConnectionValueChildren(gc);
         gcvsChild = getMinChildGroups(gcvsChild);
         if (isAllEmpty(gcvsChild)) {
@@ -71,7 +72,7 @@ public class GroupUtils {
         }
     }
 
-    private static Node getNode(Node node, TargetCalculator[] calculators, IRootDimensionGroup root, GroupConnectionValue[] gcvsChild, int i, Object data) {
+    private static Node getNode(Node node, List<TargetCalculator[]> calculators, IRootDimensionGroup root, GroupConnectionValue[] gcvsChild, int i, Object data) {
         Node n;
         if (node.getChildLength() > 0) {
             n = node.getChild(0).createCloneNodeWithValue();
@@ -115,7 +116,7 @@ public class GroupUtils {
         return gcvsChild;
     }
 
-    private static NodeAndPageInfo createMergePageNode(NodeDimensionIterator[] iters, TargetCalculator[] calculators, Operator op, IRootDimensionGroup[] roots) {
+    private static NodeAndPageInfo createMergePageNode(NodeDimensionIterator[] iters, List<TargetCalculator[]> calculators, Operator op, IRootDimensionGroup[] roots) {
         Node node = new Node(null, null);
         GroupConnectionValue[] gc = null;
         try {
@@ -257,7 +258,7 @@ public class GroupUtils {
      * @param node
      * @param gcvs
      */
-    private static void addSummaryValue(Node node, GroupConnectionValue[] gcvs, TargetCalculator[] calculators) {
+    private static void addSummaryValue(Node node, GroupConnectionValue[] gcvs, List<TargetCalculator[]> calculators) {
         NoneDimensionGroup[] groups = new NoneDimensionGroup[gcvs.length];
         for (int i = 0; i < gcvs.length; i++) {
             if (gcvs[i] != null) {
@@ -267,20 +268,21 @@ public class GroupUtils {
         for (int i = 0; i < groups.length; i++) {
             if (groups[i] != null && !ComparatorUtils.equals(groups[i].getTableKey(), BIBusinessTable.createEmptyTable())) {
                 if (groups[i] instanceof TreeNoneDimensionGroup) {
-                    Number summaryValue = groups[i].getSummaryValue(calculators[i]);
                     setSummaryValueMap(node, (TreeNoneDimensionGroup) groups[i]);
                     LightNode root = groups[i].getLightNode();
                     NodeUtils.copyIndexMap(node, root);
                     break;
                 }
                 if (MultiThreadManagerImpl.isMultiCall()) {
-                    MultiThreadManagerImpl.getInstance().getExecutorService().submit(new SummaryCall(node, groups[i], calculators[i]));
+                    MultiThreadManagerImpl.getInstance().getExecutorService().submit(new SummaryCall(node, groups[i], calculators.get(i)));
                 } else {
-                    Number v = groups[i].getSummaryValue(calculators[i]);
-                    if (v != null) {
-                        node.setTargetGetter(calculators[i].createTargetGettingKey(), groups[i].getRoot().getGroupValueIndex());
-                        node.setTargetIndex(calculators[i].createTargetGettingKey(), groups[i].getRoot().getGroupValueIndex());
-                        node.setSummaryValue(calculators[i].createTargetGettingKey(), v);
+                    for (TargetCalculator calculator : calculators.get(i)){
+                        Number v = groups[i].getSummaryValue(calculator);
+                        if (v != null) {
+                            node.setTargetGetter(calculator.createTargetGettingKey(), groups[i].getRoot().getGroupValueIndex());
+                            node.setTargetIndex(calculator.createTargetGettingKey(), groups[i].getRoot().getGroupValueIndex());
+                            node.setSummaryValue(calculator.createTargetGettingKey(), v);
+                        }
                     }
                 }
             }

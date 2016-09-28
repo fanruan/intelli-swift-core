@@ -322,7 +322,7 @@ public class BITableRelationManagerTest extends TestCase {
             assertFalse(manager.isRelationGenerated(user.getUserId(),aaCa));
             Set<BITableRelation> biTableRelationSet = new HashSet<BITableRelation>();
             biTableRelationSet.add(aaBa);
-            manager.finishGenerateCubes(user.getUserId(), biTableRelationSet);
+            manager.finishGenerateCubes(user.getUserId());
             assertTrue(manager.isRelationGenerated(user.getUserId(),aaBa));
             assertFalse(manager.isRelationGenerated(user.getUserId(),aaCa));
         } catch (Exception ignore) {

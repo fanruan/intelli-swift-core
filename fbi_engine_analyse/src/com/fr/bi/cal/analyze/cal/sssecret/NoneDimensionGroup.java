@@ -131,11 +131,6 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
 
 
     public ISingleDimensionGroup createSingleDimensionGroup(DimensionCalculator[] pck, int[] pckindex, DimensionCalculator ck, Object[] data, int ckIndex, boolean useRealData) {
-        if(judgeNeedAllCal(needAllCalculate, pck)){
-//            System.out.println("**********************全部计算************************");
-            return AllCalSingleDimensionGroup.createInstance(tableKey, pck, (node == null)? new RoaringGroupValueIndex() : node.getGroupValueIndex(), loader, true);
-        }
-//        System.out.println("**********************非全部计算************************");
         if(ckIndex == 0){
             pck = null;
         }
@@ -143,10 +138,6 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
             return ReverseSingleDimensionGroup.createDimensionGroup(tableKey, pck, pckindex, ck, data, ckIndex, node.getGroupValueIndex(), loader, useRealData);
         }
         return SingleDimensionGroup.createDimensionGroup(tableKey, pck, pckindex, ck, data, ckIndex, node.getGroupValueIndex(), loader, useRealData);
-    }
-
-    public GroupKey createSingleDimensionGroupKey(DimensionCalculator ck, boolean useRealData) {
-        return SingleDimensionGroup.createGroupKey(tableKey, ck, node.getGroupValueIndex(), useRealData);
     }
 
     public ISingleDimensionGroup createNoneTargetSingleDimensionGroup(DimensionCalculator[] pck, int[] pckindex, DimensionCalculator ck, Object[] data, int ckIndex, GroupValueIndex gvi, boolean useRealData) {
