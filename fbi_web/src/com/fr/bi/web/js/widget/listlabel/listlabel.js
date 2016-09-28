@@ -103,6 +103,10 @@ BI.ListLabel = BI.inherit(BI.Widget, {
         this.container.removeAllItems();
     },
 
+    getSelectedButtons: function () {
+        return this.container.getSelectedButtons();
+    },
+
     setValue: function (v) {
         this.container.setValue(v);
     },

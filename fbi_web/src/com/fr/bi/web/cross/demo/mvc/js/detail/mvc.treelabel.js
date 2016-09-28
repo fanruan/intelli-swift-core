@@ -46,7 +46,7 @@ TreeLabelView = BI.inherit(BI.View, {
                         BI.each(tree[i], function (idx, node) {
                             if (contains(ids, node)) {
                                 temp.push(node);
-                                if(BI.contains(selectedValues[i],node.value)) {
+                                if (BI.contains(selectedValues[i], node.value)) {
                                     result.unshift(node);
                                 } else {
                                     result.push(node);
@@ -57,10 +57,25 @@ TreeLabelView = BI.inherit(BI.View, {
                     }
                     callback({items: result});
                 } else {
-                    temp = [];
-                    for (var i = floor+1; i < selectedValues.length; i++) {
-                        var preValues = selectedValues[i-1];
-                    }
+                    callback({
+                        items: [
+                            {id: 1, value: "南京", text: "南京", pId: null},
+                            {id: 2, value: "苏州", text: "苏州", pId: null},
+                            {id: 3, value: "无锡", text: "无锡", pId: null},
+                            {id: 11, value: "玄武区", text: "玄武区", pId: 1},
+                            {id: 21, value: "工业园区", text: "工业园区", pId: 2},
+                            {id: 31, value: "南长区", text: "南长区", pId: 3},
+                            {id: 12, value: "江宁区", text: "江宁区", pId: 1},
+                            {id: 111, value: "40", text: "40", pId: 11},
+                            {id: 112, value: "60", text: "60", pId: 11},
+                            {id: 211, value: "60", text: "60", pId: 21},
+                            {id: 112, value: "40", text: "40", pId: 12}
+                        ]
+                    });
+                    // temp = [];
+                    // for (var i = floor+1; i < selectedValues.length; i++) {
+                    //     var preValues = selectedValues[i-1];
+                    // }
                 }
 
                 function contains(ids, node) {
