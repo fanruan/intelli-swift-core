@@ -6228,7 +6228,6 @@ Data.Utils = {
                 var title = '';
                 switch (axis.axisIndex) {
                     case constants.LEFT_AXIS:
-                        formatNumberLevelInYaxis(config.left_y_axis_number_level, idx);
                         title = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
                         axis.title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + title : title;
                         axis.title.rotation = constants.ROTATION;
@@ -6241,9 +6240,9 @@ Data.Utils = {
                             gridLineWidth: config.show_grid_line === true ? 1 : 0,
                             formatter: formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS)
                         });
+                        formatNumberLevelInYaxis(configs, items, config.left_y_axis_number_level, idx, axis.formatter);
                         break;
                     case constants.RIGHT_AXIS:
-                        formatNumberLevelInYaxis(config.right_y_axis_number_level, idx);
                         title = getXYAxisUnit(config.right_y_axis_number_level, constants.RIGHT_AXIS);
                         axis.title.text = config.show_right_y_axis_title === true ? config.right_y_axis_title + title : title;
                         axis.title.rotation = constants.ROTATION;
@@ -6256,6 +6255,7 @@ Data.Utils = {
                             gridLineWidth: config.show_grid_line === true ? 1 : 0,
                             formatter: formatTickInXYaxis(config.right_y_axis_style, constants.RIGHT_AXIS)
                         });
+                        formatNumberLevelInYaxis(configs, items, config.right_y_axis_number_level, idx, axis.formatter);
                         break;
                 }
             });
@@ -6344,30 +6344,23 @@ Data.Utils = {
                 })
             }
 
-            function formatNumberLevelInYaxis(type, position) {
-                var magnify = calcMagnify(type);
-                if (magnify > 1) {
-                    BI.each(items, function (idx, item) {
-                        BI.each(item.data, function (id, da) {
-                            if (position === item.yAxis) {
-                                if (!BI.isNumber(da.y)) {
-                                    da.y = BI.parseFloat(da.y);
-                                }
-                                da.y = da.y || 0;
-                                da.y = da.y.div(magnify);
-                                da.y = da.y.toFixed(constants.FIX_COUNT);
-                                if (constants.MINLIMIT.sub(da.y) > 0) {
-                                    da.y = 0;
-                                }
+            function formatNumberLevelInYaxis (configs, items, type, position, formatter) {
+                var magnify = this.calcMagnify(type);
+                BI.each(items, function (idx, item) {
+                    BI.each(item.data, function (id, da) {
+                        if (position === item.yAxis) {
+                            if (!BI.isNumber(da.y)) {
+                                da.y = BI.parseFloat(da.y);
                             }
-                        })
-                    })
-                }
-                if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                    configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0%')
-                    };
-                }
+                            da.y = da.y || 0;
+                            da.y = BI.contentFormat(BI.parseFloat(da.y.div(magnify).toFixed(4)), "#.####;-#.####");
+                        }
+                    });
+                    if (position === item.yAxis) {
+                        item.tooltip = BI.deepClone(configs.plotOptions.tooltip);
+                        item.tooltip.formatter.valueFormat = formatter;
+                    }
+                });
             }
 
             function calcMagnify(type) {
