@@ -458,6 +458,8 @@ var _JS = [
 
     "detail/mvc.listlabel.js",
     "detail/mvc.treelabel.js",
+    "detail/mvc.singleslider.js",
+    "detail/mvc.intervalslider.js"
 ];
 
 
@@ -674,6 +676,8 @@ var _Routes = {
     "/select_color_combo": "SelectColorComboView",
     "/list_label": "ListLabelView",
     "/tree_label": "TreeLabelView",
+    "/slider":"SliderView",
+    "/interval_slider":"IntervalSliderView"
 };
 
 var _Models = {};
@@ -1188,6 +1192,12 @@ _Models.detail = [{
 }, {
     id: 33,
     text: "树标签"
+},{
+    id:34,
+    text:"单值滑块"
+},{
+    id:35,
+    text:"区间滑块"
 },
 
 
@@ -1527,6 +1537,14 @@ _Models.detail = [{
         pId: 33,
         text: "树标签",
         value: "tree_label"
+    },{
+        pId:34,
+        text:"滑块",
+        value:"slider"
+    },{
+        pId:35,
+        text:"区间双滑块",
+        value:"interval_slider"
     }];
 _Models.component = [];
 _Models.module = [];
