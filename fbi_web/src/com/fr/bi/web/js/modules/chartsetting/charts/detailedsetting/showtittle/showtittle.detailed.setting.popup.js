@@ -39,7 +39,7 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
                 titleColourWrapper,
                 titleWordStyleWrapper
             ],
-            hgap: 20
+            hgap: 10
         });
     },
 
@@ -71,6 +71,6 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
             }, widget],
             vgap: 10
         }
-    },
+    }
 });
 $.shortcut("bi.show_title_detailed_setting_popup", BI.ShowTitleDetailedSettingPopup);
