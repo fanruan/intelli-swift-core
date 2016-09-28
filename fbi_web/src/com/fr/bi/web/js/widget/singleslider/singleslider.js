@@ -52,6 +52,9 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
         });
         sliderVertical.element.click(function (e) {
             if (self.enable) {
+                console.log(e);
+                console.log(self.track.getLength());
+                console.log(self.element)
                 var percent = e.offsetX * 100 / self.track.getLength();
                 self._setAllPosition(percent);
                 self.label.setValue(self._getValueByPercent(percent));
@@ -141,7 +144,7 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
 
     setValue: function (v) {
         var value = BI.parseFloat(v);
-        if (this._checkValidation(value) && this.enable) {
+        if ((!isNaN(value)) && this._checkValidation(value) && this.enable) {
             this.label.setValue(value);
             var percent = this._getPercentByValue(value);
             this._setAllPosition(percent);
@@ -158,13 +161,13 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
         var minNumber = BI.parseFloat(min);
         var maxNumber = BI.parseFloat(max);
         var valueNumber = BI.parseFloat(value);
-        if (BI.isNotNull(min) && BI.isNotNull(max) && (maxNumber > minNumber )) {
+        if ((!isNaN(minNumber)) && (!isNaN(maxNumber)) && (maxNumber > minNumber )) {
             this.min = minNumber;
             this.max = maxNumber;
             this._setVisible(true);
             this.enable = true;
             this.label.setErrorText(BI.i18nText("BI-Please_Enter") + minNumber + "-" + maxNumber + BI.i18nText("BI-De") + BI.i18nText("BI-Number"));
-            if (BI.isNotNull(value)) {
+            if (!isNaN(valueNumber)) {
                 this.label.setValue(valueNumber);
                 this._setAllPosition(this._getPercentByValue(valueNumber));
             } else {

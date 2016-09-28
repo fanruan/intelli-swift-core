@@ -15,6 +15,22 @@ IntervalSliderView = BI.inherit(BI.View, {
         this.slider = BI.createWidget({
             type: "bi.interval_slider"
         });
+        var min = BI.createWidget({
+            type: "bi.sign_editor",
+            cls: "slider-editor-button",
+            watermark: "Enter Min",
+            errorText: "",
+            height: 28,
+            width: 90
+        });
+        var max = BI.createWidget({
+            type: "bi.sign_editor",
+            cls: "slider-editor-button",
+            watermark: "Enter Max",
+            errorText: "",
+            height: 28,
+            width: 90
+        });
         var button = BI.createWidget({
             type: "bi.button",
             text: "populate",
@@ -22,7 +38,7 @@ IntervalSliderView = BI.inherit(BI.View, {
             width: 30
         });
         button.on(BI.Button.EVENT_CHANGE, function () {
-            self.slider.populate(0, 100)
+            self.slider.populate(min.getValue(), max.getValue());
         });
         var reset = BI.createWidget({
             type: "bi.button",
@@ -31,27 +47,37 @@ IntervalSliderView = BI.inherit(BI.View, {
             width: 30
         });
         reset.on(BI.Button.EVENT_CHANGE, function () {
-            self.slider.reset()
+            // self.slider.reset()
+            self.slider._checkOverlap();
         });
-        var editor = BI.createWidget({
+        var editorOne = BI.createWidget({
             type: "bi.sign_editor",
             cls: "slider-editor-button",
+            watermark: "Enter Value",
+            errorText: "",
+            height: 28,
+            width: 90
+        });
+        var editorTwo = BI.createWidget({
+            type: "bi.sign_editor",
+            cls: "slider-editor-button",
+            watermark: "Enter Value",
             errorText: "",
             height: 28,
             width: 90
         });
         var set = BI.createWidget({
             type: "bi.button",
-            text: "setValue",
+            text: "setValue(Value)",
             height: 30,
             width: 30
         });
         set.on(BI.Button.EVENT_CHANGE, function () {
-            // self.slider.setValue(editor.getValue());
+            self.slider.setValue([editorOne.getValue(),editorTwo.getValue()]);
         });
         var l = BI.createWidget({
             type: "bi.vertical",
-            items: [button, reset, editor, set],
+            items: [min, max, button, reset, editorOne,editorTwo, set],
             hgap: 10,
             vgap: 10
         });
