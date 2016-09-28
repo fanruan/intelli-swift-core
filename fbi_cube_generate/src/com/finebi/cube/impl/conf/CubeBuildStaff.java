@@ -161,7 +161,10 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable {
         if (new File(tempConf.getRootURI().getPath()).exists()) {
             BIFileUtils.delete(new File(tempConf.getRootURI().getPath()));
         }
-        new File(tempConf.getRootURI().getPath()).mkdirs();
+        BICubeConfiguration advancedTempConf = BICubeConfiguration.getAdvancedTempConf(String.valueOf(biUser.getUserId()));
+        if (new File(advancedTempConf.getRootURI().getPath()).exists()) {
+            BIFileUtils.delete(new File(tempConf.getRootURI().getPath()));
+        }
         return true;
     }
 

@@ -282,10 +282,10 @@ BI.ChartCombineFormatItemFactory = {
     },
 
     _contentFormat2Decimal: function () {
-        return BI.contentFormat(arguments[0], '#.##')
+        return BI.contentFormat(arguments[0], '#.##;-#.##')
     },
 
     _contentFormatPercentage: function () {
-        return BI.contentFormat(arguments[0], '#.##%')
+        return BI.contentFormat(arguments[0], '#.##%;-#.##%')
     }
 };

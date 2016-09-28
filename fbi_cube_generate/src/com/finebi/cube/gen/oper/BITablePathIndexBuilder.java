@@ -63,8 +63,9 @@ public class BITablePathIndexBuilder extends BIProcessor {
             CubeRelationEntityGetterService lastRelationEntity = null;
             CubeRelationEntityGetterService frontRelationPathReader = null;
             ICubeRelationEntityService targetPathEntity = null;
-            RelationColumnKey columnKeyInfo = getRelationColumnKeyInfo();
+            RelationColumnKey columnKeyInfo = null;
             try {
+                columnKeyInfo = getRelationColumnKeyInfo();
                 int primaryRowCount = getPrimaryTableRowCount();
                 lastRelationEntity = buildLastRelationReader();
                 frontRelationPathReader = buildFrontRelationPathReader();

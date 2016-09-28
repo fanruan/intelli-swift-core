@@ -242,9 +242,8 @@ public interface BITableRelationConfigurationProvider {
      * 结束生成CUBE
      *
      * @param userId      用户ID
-     * @param relationSet 关联集合
      */
-    void finishGenerateCubes(long userId, Set<BITableRelation> relationSet);
+    void finishGenerateCubes(long userId);
 
     /**
      * 清除用户的全部数据
