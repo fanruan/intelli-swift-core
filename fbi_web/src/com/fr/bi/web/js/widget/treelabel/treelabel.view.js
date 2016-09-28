@@ -122,6 +122,14 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
         });
     },
 
+    getSelectedButtons: function () {
+        var result = [];
+        BI.each(this.items, function (idx, item) {
+            result.push(item.getSelectedButtons());
+        });
+        return result;
+    },
+
     getValue: function () {
         var result = [];
         BI.each(this.items, function (idx, item) {
@@ -129,7 +137,6 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
         });
         return result;
     }
-
 });
 
 $.shortcut('bi.tree_label_view', BI.TreeLabelView);
