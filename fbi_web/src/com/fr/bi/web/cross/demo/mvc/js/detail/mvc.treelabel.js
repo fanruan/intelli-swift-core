@@ -24,11 +24,17 @@ TreeLabelView = BI.inherit(BI.View, {
             [{id: 111, value: "40", text: "40", pId: 11},
                 {id: 112, value: "60", text: "60", pId: 11},
                 {id: 211, value: "60", text: "60", pId: 21},
-                {id: 112, value: "40", text: "40", pId: 12}]
+                {id: 112, value: "40", text: "40", pId: 12}],
+            [{id: 1111, value: "70-89", text: "70-89", pId: 111},
+                {id: 1112, value: "89-100", text: "89-100", pId: 111},
+                {id: 2111, value: "70-89", text: "70-89", pId: 211},
+                {id: 2112, value: "89-100", text: "89-100", pId: 211},
+                {id: 1121, value: "70-89", text: "70-89", pId: 112},
+                {id: 1122, value: "89-100", text: "89-100", pId: 112}]
         ];
         var treeLabel = BI.createWidget({
             type: "bi.tree_label",
-            titles: ["城市", "区域", "面积"],
+            titles: ["城市", "区域", "价格", "面积"],
             itemsCreator: function (options, callback) {
                 if (BI.isEmptyObject(options)) {
                     callback({items: tree});
@@ -69,7 +75,13 @@ TreeLabelView = BI.inherit(BI.View, {
                             {id: 111, value: "40", text: "40", pId: 11},
                             {id: 112, value: "60", text: "60", pId: 11},
                             {id: 211, value: "60", text: "60", pId: 21},
-                            {id: 112, value: "40", text: "40", pId: 12}
+                            {id: 112, value: "40", text: "40", pId: 12},
+                            {id: 1111, value: "70-89", text: "70-89", pId: 111},
+                            {id: 1112, value: "89-100", text: "89-100", pId: 111},
+                            {id: 2111, value: "70-89", text: "70-89", pId: 211},
+                            {id: 2112, value: "89-100", text: "89-100", pId: 211},
+                            {id: 1121, value: "70-89", text: "70-89", pId: 112},
+                            {id: 1122, value: "89-100", text: "89-100", pId: 112}
                         ]
                     });
                     // temp = [];
@@ -102,7 +114,6 @@ TreeLabelView = BI.inherit(BI.View, {
             height: 30,
             width: 60,
             handler: function () {
-                console.log(treeLabel.getValue());
                 BI.Msg.alert('提示', JSON.stringify(treeLabel.getValue()));
             }
         });
