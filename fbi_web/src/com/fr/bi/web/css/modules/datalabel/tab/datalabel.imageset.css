@@ -1,29 +1,29 @@
 /****添加计算宽度的--运算符直接需要space****/
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
-.image-set-tab {
-  border-top: 1px solid #d4dadd;
-  background-color: #f4f4f4;
-}
-.image-set-tab-item {
-  color: #1a1a1a;
-  border-right: 1px solid #d4dadd;
-}
-.image-set-tab-item.active {
-  background-color: #ffffff;
-}
-.image-set-delete.close-font {
-  background-color: #e85050;
-}
-.image-set-delete.close-font .b-font:before {
-  color: #ffffff;
-}
 .bi-image-set {
   border-left: 1px solid #d4dadd;
 }
-.image-group {
+.bi-image-set .image-set-tab {
+  border-top: 1px solid #d4dadd;
+  background-color: #f4f4f4;
+}
+.bi-image-set .image-set-tab-item {
+  color: #1a1a1a;
+  border-right: 1px solid #d4dadd;
+}
+.bi-image-set .image-set-tab-item.active {
+  background-color: #ffffff;
+}
+.bi-image-set .image-set-delete.close-font {
+  background-color: #e85050;
+}
+.bi-image-set .image-set-delete.close-font .b-font:before {
+  color: #ffffff;
+}
+.bi-image-set .image-group {
   white-space: normal;
 }
-.header-label {
+.bi-image-set .header-label {
   color: #808080;
 }
