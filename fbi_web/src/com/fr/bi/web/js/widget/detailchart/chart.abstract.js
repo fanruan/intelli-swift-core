@@ -71,6 +71,14 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         BI.AbstractChart.superclass._init.apply(this, arguments);
     },
 
+    formatZoom: function(config, show_zoom){
+        config.zoom.zoomTool.enabled = this.config.show_zoom;
+        if (show_zoom === true) {
+            delete config.dataSheet;
+            config.zoom.zoomType = "";
+        }
+    },
+
     /**
      * 格式化坐标轴数量级及其所影响的系列的各项属性
      * @param config  配置信息
