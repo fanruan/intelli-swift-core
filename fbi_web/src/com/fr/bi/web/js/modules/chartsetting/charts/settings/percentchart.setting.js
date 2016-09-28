@@ -60,7 +60,7 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                 cls: "detail-style",
                 items: BI.createItems([{
                     type: "bi.label",
-                    text: BI.i18nText("BI-Chart_Color"),
+                    text: BI.i18nText("BI-Color_Setting"),
                     cls: "attr-names"
                 }, {
                     el: {
