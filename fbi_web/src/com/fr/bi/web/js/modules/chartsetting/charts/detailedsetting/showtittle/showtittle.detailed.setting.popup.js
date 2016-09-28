@@ -6,7 +6,7 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
 
     _defaultConfig: function() {
         return BI.extend(BI.ShowTitleDetailedSettingPopup.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-show-title-detailed-setting"
+            baseCls: "bi-show-title-detailed-setting-popup"
         })
     },
 
@@ -21,20 +21,20 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
         this.titleColour.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
             self.fireEvent(BI.ShowTitleDetailedSettingPopup.EVENT_CHANGE);
         });
-        var titleColourWrapper = this._createComboWrapper(BI.i18nText("BI-Title_Colour"), this.titleColour);
+        var titleColourWrapper = this._createComboWrapper(BI.i18nText("BI-Title_Background"), this.titleColour);
 
         //标题文字
         this.titleWordStyle = BI.createWidget({
-            type: "bi.global_style_index_title_tool_bar",
-            cls: "global-style-border"
+            type: "bi.data_label_text_toolbar"
         });
         this.titleWordStyle.on(BI.GlobalStyleIndexTitleToolBar.EVENT_CHANGE, function () {
             self.fireEvent(BI.ShowTitleDetailedSettingPopup.EVENT_CHANGE);
         });
-        var titleWordStyleWrapper = this._createWrapper(BI.i18nText("BI-Title_Word_Style"), this.titleWordStyle);
+        var titleWordStyleWrapper = this._createWrapper(BI.i18nText("BI-Set_Font"), this.titleWordStyle);
 
         this.centerItems = BI.createWidget({
             type: "bi.vertical",
+            element: this.element,
             items: [
                 titleColourWrapper,
                 titleWordStyleWrapper
@@ -52,7 +52,7 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
                 text: name + ":",
                 textAlign: "left",
                 height: 30,
-                width: 105
+                width: 55
             }, widget],
             vgap: 10
         }
@@ -67,7 +67,7 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
                 text: name + ":",
                 textAlign: "left",
                 height: 30,
-                width: 110
+                width: 55
             }, widget],
             vgap: 10
         }
