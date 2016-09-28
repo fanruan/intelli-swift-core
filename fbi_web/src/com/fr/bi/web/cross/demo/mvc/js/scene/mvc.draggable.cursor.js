@@ -19,9 +19,16 @@ DraggableCursorView = BI.inherit(BI.View, {
             height: 30,
             text: "dragging"
         });
+        debugger;
         drag.element.draggable({
             cursor: "move",
-            cursorAt: {left: 10, top: 10}
+            cursorAt: {left: 10, top: 10},
+            start: function() {
+
+            },
+            stop: function() {
+
+            }
         });
         BI.createWidget({
             type: "bi.absolute",
