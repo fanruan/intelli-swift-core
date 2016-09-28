@@ -6345,7 +6345,7 @@ Data.Utils = {
             }
 
             function formatNumberLevelInYaxis (configs, items, type, position, formatter) {
-                var magnify = this.calcMagnify(type);
+                var magnify = calcMagnify(type);
                 BI.each(items, function (idx, item) {
                     BI.each(item.data, function (id, da) {
                         if (position === item.yAxis) {
