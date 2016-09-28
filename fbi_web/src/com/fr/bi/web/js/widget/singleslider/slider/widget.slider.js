@@ -4,7 +4,7 @@
 BI.Slider = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.Slider.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-slider"
+            baseCls: "bi-single-slider-slider"
         });
     },
     _init: function () {
