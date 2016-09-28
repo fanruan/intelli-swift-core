@@ -58,7 +58,7 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
             }
         });
         this.upperLabel.on(BI.Editor.EVENT_CONFIRM, function () {
-            var percent=self._getPercentByValue(this.getValue());
+            var percent = self._getPercentByValue(this.getValue());
             self._setRightPosition(percent);
             self._setUpperSliderPosition(percent);
         });
@@ -79,25 +79,25 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
             axis: "x",
             containment: this.lowerSliderRegion.element,
             drag: function (e, ui) {
-                var percent=(ui.position.left) * 100 / (self.track.getLength() - 30);
+                var percent = (ui.position.left) * 100 / (self.track.getLength() - 30);
                 self._setLeftPosition(percent);
                 self.lowerLabel.setValue(self._getValueByPercent(percent));
             },
-            stop: function (e,ui) {
-                var percent=(ui.position.left) * 100 / (self.track.getLength() - 30);
+            stop: function (e, ui) {
+                var percent = (ui.position.left) * 100 / (self.track.getLength() - 30);
                 self._setLowerSliderPosition(percent);
             }
         });
         this.upperSlider.element.draggable({
             axis: "x",
             containment: this.upperSliderRegion.element,
-            drag: function (e,ui) {
-                var percent=(ui.position.left) * 100 / (self.track.getLength() - 30);
+            drag: function (e, ui) {
+                var percent = (ui.position.left) * 100 / (self.track.getLength() - 30);
                 self._setRightPosition(percent);
                 self.upperLabel.setValue(self._getValueByPercent(percent));
             },
-            stop: function (e,ui) {
-                var percent=(ui.position.left) * 100 / (self.track.getLength() - 30);
+            stop: function (e, ui) {
+                var percent = (ui.position.left) * 100 / (self.track.getLength() - 30);
                 self._setUpperSliderPosition(percent);
             }
         });
@@ -172,25 +172,25 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
     _setLowerSliderRegion: function (width) {
         this.lowerSliderRegion.element.css({"width": width + "%"})
     },
-    _setLeftPosition:function (percent) {
-        this.lowerSliderPercent=percent;
+    _setLeftPosition: function (percent) {
+        this.lowerSliderPercent = percent;
         this._setLowerLabelPosition(percent);
-        this._setUpperSliderRegion((100-percent),percent);
-        this._setBlueTrack((this.upperSliderPercent-percent),percent);
+        this._setUpperSliderRegion((100 - percent), percent);
+        this._setBlueTrack((this.upperSliderPercent - percent), percent);
     },
-    _setRightPosition:function (percent) {
-        this.upperSliderPercent=percent;
+    _setRightPosition: function (percent) {
+        this.upperSliderPercent = percent;
         this._setUpperLabelPosition(percent);
         this._setLowerSliderRegion(percent);
-        this._setBlueTrack((percent-this.lowerSliderPercent),this.lowerSliderPercent);
+        this._setBlueTrack((percent - this.lowerSliderPercent), this.lowerSliderPercent);
     },
-    _setVisible:function (bool) {
+    _setVisible: function (bool) {
         this.lowerLabel.setVisible(bool);
         this.lowerSlider.setVisible(bool);
         this.upperLabel.setVisible(bool);
         this.upperSlider.setVisible(bool);
     },
-    _setAllPosition:function (lowerPercent,upperPercent) {
+    _setAllPosition: function (lowerPercent, upperPercent) {
         this._setLeftPosition(lowerPercent);
         this._setRightPosition(upperPercent);
     },
@@ -200,28 +200,28 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
     _getPercentByValue: function (v) {
         return (v - this.min) * 100 / (this.max - this.min);
     },
-    getValue:function () {
-        return [this.lowerLabel.getValue(),this.upperLabel.getValue()];
+    getValue: function () {
+        return [this.lowerLabel.getValue(), this.upperLabel.getValue()];
     },
-    setValue:function (array) {
+    setValue: function (array) {
         this.lowerLabel.setValue(array[0]);
         this.upperLabel.setValue(array[1]);
-        var lowerPercent=this._getPercentByValue(array[0]);
-        var upperPercent=this._getPercentByValue(array[1]);
-        this._setAllPosition(lowerPercent,upperPercent);
+        var lowerPercent = this._getPercentByValue(array[0]);
+        var upperPercent = this._getPercentByValue(array[1]);
+        this._setAllPosition(lowerPercent, upperPercent);
     },
     reset: function () {
         this._setVisible(false);
         this.track.reset();
     },
-    populate:function (min,max) {
-        this.min=min;
-        this.max=max;
-        if(BI.isNotNull(min)&&BI.isNotNull(max)){
+    populate: function (min, max) {
+        this.min = min;
+        this.max = max;
+        if (BI.isNotNull(min) && BI.isNotNull(max)) {
             this._setVisible(true);
             this.lowerLabel.setValue(min);
             this.upperLabel.setValue(max);
-            this._setAllPosition(0,100);
+            this._setAllPosition(0, 100);
         }
     }
 });

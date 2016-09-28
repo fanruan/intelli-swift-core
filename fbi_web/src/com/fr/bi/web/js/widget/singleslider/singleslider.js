@@ -29,7 +29,7 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
         this.slider.element.draggable({
             axis: "x",
             containment: this.track.element,
-            start:function () {
+            start: function () {
                 self.slider.setMoveState(true);
             },
             drag: function (e, ui) {
