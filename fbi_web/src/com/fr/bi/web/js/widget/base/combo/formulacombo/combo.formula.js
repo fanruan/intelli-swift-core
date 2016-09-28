@@ -29,6 +29,7 @@ BI.FormulaCombo = BI.inherit(BI.Widget, {
     _init: function () {
         BI.FormulaCombo.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
+        this.formula_ids = [];
         this.input = BI.createWidget({
             type: "bi.formula_combo_trigger",
             height: o.height,
@@ -83,6 +84,11 @@ BI.FormulaCombo = BI.inherit(BI.Widget, {
         }
         this.input.setValue(v);
         this.input.setText(BI.Func.getFormulaStringFromFormulaValue(v));
+        this.formulaPopup.setValue(this.input.getValue());
+    },
+
+    getFormulaTargetIds: function() {
+        return this.formulaPopup.getFormulaTargetIds();
     },
 
     getValue: function () {

@@ -1,6 +1,6 @@
 import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
-import ReactDOM from 'react-dom'
+import { findDOMNode } from 'react-dom'
 
 import {cn, sc, isNil, requestAnimationFrame, emptyFunction, shallowEqual, isEqual, each} from 'core'
 import React, {
@@ -23,7 +23,7 @@ import {CenterLayout, Icon, Table, AutoSizer} from 'base'
 import {MultiSelectorWidget} from 'widgets'
 
 
-class TableWidget extends Component {
+class TableComponent extends Component {
     constructor(props, context) {
         super(props, context);
     }
@@ -42,11 +42,24 @@ class TableWidget extends Component {
 
     }
 
-    componentWillReceiveProps() {
+    render() {
+        const {...props} = this.props, {...state} = this.state;
+        return <View style={styles.wrapper}></View>
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
 
     }
 
-    componentWillUpdate() {
+    componentWillReceiveProps(nextProps) {
+
+    }
+
+    componentWillUpdate(nextProps, nextState) {
+
+    }
+
+    componentDidUpdate(prevProps, prevState) {
 
     }
 
@@ -54,16 +67,11 @@ class TableWidget extends Component {
 
     }
 
-    render() {
-        const {...props} = this.props, {...state} = this.state;
-        return <View style={styles.wrapper}></View>
-    }
-
 }
-mixin.onClass(TableWidget, PureRenderMixin);
+mixin.onClass(TableComponent, PureRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         flex: 1
     }
 });
-export default TableWidget
+export default TableComponent

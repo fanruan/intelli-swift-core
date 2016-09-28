@@ -75,7 +75,7 @@ webpackJsonp([0],{
 	                    ref: 'main',
 	                    className: _StyleSheet2.default.rootClassName,
 	                    style: styles.appContainer },
-	                _react2.default.createElement(_App2.default, this.props),
+	                _react2.default.createElement(_App2.default, null),
 	                _react2.default.createElement(_Portal2.default, null)
 	            );
 	        }
@@ -1614,13 +1614,13 @@ webpackJsonp([0],{
 
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	exports.default = todos;
 
 	var _ActionTypes = __webpack_require__(199);
 
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-	var initialState = BH.STORE;
+	var initialState = BH.STORE.popConfig;
 
 	function todos() {
 	  var state = arguments.length <= 0 || arguments[0] === undefined ? initialState : arguments[0];
@@ -1630,13 +1630,7 @@ webpackJsonp([0],{
 	    switch (action.type) {
 	      case _ActionTypes.ADD_TODO:
 	        return {
-	          v: [{
-	            id: state.reduce(function (maxId, todo) {
-	              return Math.max(todo.id, maxId);
-	            }, -1) + 1,
-	            completed: false,
-	            text: action.text
-	          }].concat(_toConsumableArray(state))
+	          v: _extends({}, state)
 	        };
 
 	      case _ActionTypes.DELETE_TODO:
@@ -1947,6 +1941,10 @@ webpackJsonp([0],{
 
 	'use strict';
 
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _lib = __webpack_require__(202);
@@ -2039,7 +2037,7 @@ webpackJsonp([0],{
 	            var template = _props.template;
 	            var actions = _props.actions;
 
-	            return _lib2.default.createElement(_Main2.default, { template: new _data.Template(template), actions: actions });
+	            return _lib2.default.createElement(_Main2.default, null);
 	        }
 	    }]);
 
@@ -2053,9 +2051,10 @@ webpackJsonp([0],{
 	 */
 
 
+	exports.default = App;
 	App.propTypes = {
-	    actions: _lib.PropTypes.object.isRequired,
-	    template: _lib.PropTypes.object.isRequired
+	    // actions: PropTypes.object.isRequired,
+	    // template: PropTypes.object.isRequired
 	};
 	// function mapStateToProps(state) {
 	//     /* Populated by react-webpack-redux:reducer */
@@ -2225,7 +2224,11 @@ webpackJsonp([0],{
 	    function Main(props, context) {
 	        _classCallCheck(this, Main);
 
-	        return _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props, context));
+	        var _this = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props, context));
+
+	        console.log(props);
+	        // template={new Template(template)} actions={actions}
+	        return _this;
 	    }
 
 	    _createClass(Main, [{
@@ -2270,14 +2273,39 @@ webpackJsonp([0],{
 	                }
 	            });
 	        }
+	    }, {
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {}
+	    }, {
+	        key: 'shouldComponentUpdate',
+	        value: function shouldComponentUpdate(nextProps, nextState) {
+	            debugger;
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {
+	            debugger;
+	        }
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate(nextProps, nextState) {}
+	    }, {
+	        key: 'componentDidUpdate',
+	        value: function componentDidUpdate(prevProps, prevState) {}
+	    }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {}
 	    }]);
 
 	    return Main;
 	}(_lib.Component);
+	// mixin.onClass(Main, PureRenderMixin);
+
 
 	Main.propTypes = {};
-
-	_reactMixin2.default.onClass(Main, _reactAddonsPureRenderMixin2.default);
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
 	        flex: 1,
@@ -2310,7 +2338,7 @@ webpackJsonp([0],{
 	function mapStateToProps(state) {
 	    /* Populated by react-webpack-redux:reducer */
 	    var props = {
-	        template: state.template
+	        template: new _data.Template(state.template)
 	    };
 	    return props;
 	}
@@ -4490,24 +4518,30 @@ webpackJsonp([0],{
 	    }
 
 	    _createClass(Main, [{
-	        key: 'render',
-	        value: function render() {
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {
+	            var _this2 = this;
+
 	            var widgetObj = this.props.widget;
 	            var wi = widgetObj.createJson();
-	            return _lib2.default.createElement(_lib.View, { ref: function ref(ob) {
-	                    var w = _extends({}, wi, { page: -1 });
-	                    (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=chart_setting', {
-	                        method: "POST",
+	            var w = _extends({}, wi, { page: -1 });
+	            (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=chart_setting', {
+	                method: "POST",
 
-	                        body: JSON.stringify({ widget: w, sessionID: BH.sessionID })
-	                    }).then(function (response) {
-	                        return response.json(); // 转换为JSON
-	                    }).then(function (data) {
-	                        var vanCharts = VanCharts.init(_reactDom2.default.findDOMNode(ob));
-	                        console.log(data);
-	                        vanCharts.setOptions(data);
-	                    });
-	                }, style: _extends({ height: this.props.height }, style.wrapper) });
+	                body: JSON.stringify({ widget: w, sessionID: BH.sessionID })
+	            }).then(function (response) {
+	                return response.json(); // 转换为JSON
+	            }).then(function (data) {
+	                var vanCharts = VanCharts.init(_reactDom2.default.findDOMNode(_this2.refs.chart));
+	                console.log(data);
+	                vanCharts.setOptions(data);
+	            });
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+
+	            return _lib2.default.createElement(_lib.View, { ref: 'chart', style: _extends({ height: this.props.height }, style.wrapper) });
 	        }
 	    }]);
 
