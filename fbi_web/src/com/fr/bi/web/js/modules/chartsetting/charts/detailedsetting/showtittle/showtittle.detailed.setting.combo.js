@@ -2,16 +2,16 @@
  * 显示标题的详细设置
  * Created by AstronautOO7 on 2016/9/28.
  */
-BI.ShowTitleDetailedSetting = BI.inherit(BI.Widget, {
+BI.ShowTitleDetailedSettingCombo = BI.inherit(BI.Widget, {
 
     _defaultConfig: function() {
-        return BI.extend(BI.ShowTitleDetailedSetting.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.ShowTitleDetailedSettingCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-show-title-detailed-setting"
         })
     },
 
     _init: function() {
-        BI.ShowTitleDetailedSetting.superclass._init.apply(this, arguments);
+        BI.ShowTitleDetailedSettingCombo.superclass._init.apply(this, arguments);
         var self = this;
 
         var textTrigger = BI.createWidget({
@@ -21,10 +21,6 @@ BI.ShowTitleDetailedSetting = BI.inherit(BI.Widget, {
             height: 30
         });
 
-        // var popip = BI.createWidget({
-        //     type:
-        // });
-
         BI.createWidget({
             type: "bi.left",
             element: this.element,
@@ -32,4 +28,4 @@ BI.ShowTitleDetailedSetting = BI.inherit(BI.Widget, {
         })
     }
 });
-$.shortcut("bi.show_title_detailed_setting", BI.ShowTitleDetailedSetting);
+$.shortcut("bi.show_title_detailed_setting_combo", BI.ShowTitleDetailedSettingCombo);

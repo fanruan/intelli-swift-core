@@ -83,7 +83,7 @@ AddConditionView = BI.inherit(BI.View, {
         // });
 
         var textTrigger = BI.createWidget({
-            type: "bi.show_title_detailed_setting",
+            type: "bi.show_title_detailed_setting_combo",
             height: 50,
             width: 200
         });
