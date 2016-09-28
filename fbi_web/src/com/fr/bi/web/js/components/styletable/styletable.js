@@ -200,36 +200,39 @@ BI.StyleTable = BI.inherit(BI.Widget, {
                 var oddColor = this._parseHEXAlpha2HEX(color, 0.2),
                     evenColor = this._parseHEXAlpha2HEX(color, 0.05),
                     summaryColor = this._parseHEXAlpha2HEX(color, 0.4);
+                var oddFontColor = BI.DOM.isDarkColor(BI.DOM.rgb2hex(oddColor)) ? this._const.light : this._const.dark,
+                    evenFontColor = BI.DOM.isDarkColor(BI.DOM.rgb2hex(evenColor)) ? this._const.light : this._const.dark,
+                    summaryFontColor = BI.DOM.isDarkColor(BI.DOM.rgb2hex(summaryColor)) ? this._const.light : this._const.dark;
 
                 //background
-                $topLeft.css("background", color);
-                $topRight.css("background", color);
-                $bottomRight.find(">thead > tr").css("background", color);
-                $bottomLeft.find("> tbody tr.odd").css("background", oddColor);
-                $bottomRight.find("> tbody tr.odd").css("background", oddColor);
-                $bottomLeft.find("> tbody tr.even").css("background", evenColor);
-                $bottomRight.find("> tbody tr.even").css("background", evenColor);
-                $sequenceHeader.css("background", color);
-                $oddSequence.css("background", this._parseHEXAlpha2HEX(color, 0.2));
-                $evenSequence.css("background", this._parseHEXAlpha2HEX(color, 0.05));
-                $bottomLeftSum.css("background", summaryColor);
-                $bottomRightSum.css("background", summaryColor);
-                $sequenceSum.css("background", summaryColor);
-                $bottomLeftSumLast.css("background", color);
-                $bottomRightSumLast.css("background", color);
-                $sequenceSumLast.css("background", color);
+                $topLeft.css({"background": color, "color": fontColor});
+                $topRight.css({"background": color, "color": fontColor});
+                $bottomRight.find(">thead > tr").css({"background": color, "color": fontColor});
+                $bottomLeft.find("> tbody tr.odd").css({"background": oddColor, "color": oddFontColor});
+                $bottomRight.find("> tbody tr.odd").css({"background": oddColor, "color": oddFontColor});
+                $bottomLeft.find("> tbody tr.even").css({"background": evenColor, "color": evenFontColor});
+                $bottomRight.find("> tbody tr.even").css({"background": evenColor, "color": evenFontColor});
+                $sequenceHeader.css({"background": color, "color": fontColor});
+                $oddSequence.css({"background": oddColor, "color": oddFontColor});
+                $evenSequence.css({"background": evenColor, "color": evenFontColor});
+                $bottomLeftSum.css({"background": summaryColor, "color": summaryFontColor});
+                $bottomRightSum.css({"background": summaryColor, "color": summaryFontColor});
+                $sequenceSum.css({"background": summaryColor, "color": summaryFontColor});
+                $bottomLeftSumLast.css({"background": color, "color": fontColor});
+                $bottomRightSumLast.css({"background": color, "color": fontColor});
+                $sequenceSumLast.css({"background": color, "color": fontColor});
 
                 //color
-                $topLeft.css("color", fontColor);
-                $topRight.css("color", fontColor);
-                $bottomRight.find("thead > tr").css("color", fontColor);
-                $sequenceHeader.css("color", fontColor);
-                $bottomLeftSum.css("color", this._const.dark);
-                $bottomRightSum.css("color", this._const.dark);
-                $sequenceSum.css("color", this._const.dark);
-                $bottomLeftSumLast.css("color", fontColor);
-                $bottomRightSumLast.css("color", fontColor);
-                $sequenceSumLast.css("color", fontColor);
+                // $topLeft.css("color", fontColor);
+                // $topRight.css("color", fontColor);
+                // $bottomRight.find("thead > tr").css("color", fontColor);
+                // $sequenceHeader.css("color", fontColor);
+                // $bottomLeftSum.css("color", this._const.dark);
+                // $bottomRightSum.css("color", this._const.dark);
+                // $sequenceSum.css("color", this._const.dark);
+                // $bottomLeftSumLast.css("color", fontColor);
+                // $bottomRightSumLast.css("color", fontColor);
+                // $sequenceSumLast.css("color", fontColor);
 
                 //font weight
                 $bottomLeftSum.css("fontWeight", "bold");
@@ -243,28 +246,28 @@ BI.StyleTable = BI.inherit(BI.Widget, {
                 break;
             case BI.StyleTable.STYLE2:
                 //background
-                $topLeft.css("background", color);
-                $topRight.css("background", color);
-                $bottomRight.find(">thead > tr").css("background", color);
-                $sequenceHeader.css("background", color);
-                $bottomLeftSum.css("background", this._const.light);
-                $bottomRightSum.css("background", this._const.light);
-                $sequenceSum.css("background", this._const.light);
-                $bottomLeftSumLast.css("background", this._const.light);
-                $bottomRightSumLast.css("background", this._const.light);
-                $sequenceSumLast.css("background", this._const.light);
+                $topLeft.css({"background": color, "color": fontColor});
+                $topRight.css({"background": color, "color": fontColor});
+                $bottomRight.find(">thead > tr").css({"background": color, "color": fontColor});
+                $sequenceHeader.css({"background": color, "color": fontColor});
+                // $bottomLeftSum.css({"background": this._const.light});
+                // $bottomRightSum.css({"background": this._const.light});
+                // $sequenceSum.css({"background": this._const.light});
+                // $bottomLeftSumLast.css({"background": this._const.light});
+                // $bottomRightSumLast.css({"background": this._const.light});
+                // $sequenceSumLast.css({"background": this._const.light});
 
                 //color
-                $topLeft.css("color", fontColor);
-                $topRight.css("color", fontColor);
-                $bottomRight.find("thead > tr").css("color", fontColor);
-                $sequenceHeader.css("color", fontColor);
-                $bottomLeftSum.css("color", this._const.dark);
-                $bottomRightSum.css("color", this._const.dark);
-                $sequenceSum.css("color", this._const.dark);
-                $bottomLeftSumLast.css("color", color);
-                $bottomRightSumLast.css("color", color);
-                $sequenceSumLast.css("color", color);
+                // $topLeft.css("color", fontColor);
+                // $topRight.css("color", fontColor);
+                // $bottomRight.find("thead > tr").css("color", fontColor);
+                // $sequenceHeader.css("color", fontColor);
+                // $bottomLeftSum.css("color", this._const.dark);
+                // $bottomRightSum.css("color", this._const.dark);
+                // $sequenceSum.css("color", this._const.dark);
+                // $bottomLeftSumLast.css("color", color);
+                // $bottomRightSumLast.css("color", color);
+                // $sequenceSumLast.css("color", color);
 
                 //font weight
                 $bottomLeftSum.css("fontWeight", "bold");
@@ -278,28 +281,28 @@ BI.StyleTable = BI.inherit(BI.Widget, {
                 break;
             case BI.StyleTable.STYLE3:
                 //background
-                $topLeft.css("background", this._const.light);
-                $topRight.css("background", this._const.light);
-                $bottomRight.find(">thead > tr").css("background", this._const.light);
-                $sequenceHeader.css("background", this._const.light);
-                $bottomLeftSum.css("background", this._const.light);
-                $bottomRightSum.css("background", this._const.light);
-                $sequenceSum.css("background", this._const.light);
-                $bottomLeftSumLast.css("background", color);
-                $bottomRightSumLast.css("background", color);
-                $sequenceSumLast.css("background", color);
+                // $topLeft.css("background", this._const.light);
+                // $topRight.css("background", this._const.light);
+                // $bottomRight.find(">thead > tr").css("background", this._const.light);
+                // $sequenceHeader.css("background", this._const.light);
+                // $bottomLeftSum.css("background", this._const.light);
+                // $bottomRightSum.css("background", this._const.light);
+                // $sequenceSum.css("background", this._const.light);
+                $bottomLeftSumLast.css({"background": color, "color": fontColor});
+                $bottomRightSumLast.css({"background": color, "color": fontColor});
+                $sequenceSumLast.css({"background": color, "color": fontColor});
 
                 //color
-                $topLeft.css("color", this._const.dark);
-                $topRight.css("color", this._const.dark);
-                $bottomRight.find("thead > tr").css("color", this._const.dark);
-                $sequenceHeader.css("color", this._const.dark);
-                $bottomLeftSum.css("color", this._const.dark);
-                $bottomRightSum.css("color", this._const.dark);
-                $sequenceSum.css("color", this._const.dark);
-                $bottomLeftSumLast.css("color", fontColor);
-                $bottomRightSumLast.css("color", fontColor);
-                $sequenceSumLast.css("color", fontColor);
+                // $topLeft.css("color", this._const.dark);
+                // $topRight.css("color", this._const.dark);
+                // $bottomRight.find("thead > tr").css("color", this._const.dark);
+                // $sequenceHeader.css("color", this._const.dark);
+                // $bottomLeftSum.css("color", this._const.dark);
+                // $bottomRightSum.css("color", this._const.dark);
+                // $sequenceSum.css("color", this._const.dark);
+                // $bottomLeftSumLast.css("color", fontColor);
+                // $bottomRightSumLast.css("color", fontColor);
+                // $sequenceSumLast.css("color", fontColor);
 
                 //font weight
                 $bottomLeftSum.css("fontWeight", "bold");

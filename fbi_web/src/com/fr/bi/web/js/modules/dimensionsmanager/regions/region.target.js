@@ -21,7 +21,7 @@ BI.TargetRegion = BI.inherit(BI.AbstractRegion, {
         this.containers = {};
         this.calculateAddButton = BI.createWidget({
             type: "bi.text_button",
-            textHeight: 30,
+            height: 25,
             value: BI.i18nText("BI-Add_Cal_Target")
         });
 

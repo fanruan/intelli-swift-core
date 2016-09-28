@@ -7,7 +7,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function () {
         return BI.extend(BI.MultiAxisChartSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-charts-setting"
+            baseCls: "bi-charts-setting bi-multi-axis-chart-setting"
         })
     },
 
@@ -64,7 +64,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names"
                 }, {
                     el: {
-                        type: "bi.center_adapt",
+                        type: "bi.vertical_adapt",
                         items: [this.colorSelect]
                     },
                     lgap: constant.SIMPLE_H_GAP
@@ -75,7 +75,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP
                 }, {
                     el: {
-                        type: "bi.center_adapt",
+                        type: "bi.vertical_adapt",
                         items: [this.chartSyleGroup]
                     },
                     lgap: constant.SIMPLE_H_GAP
@@ -418,6 +418,78 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
+        //左轴刻度自定义
+        this.showYCustomScale = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Scale_Customize"),
+            width: 115
+        });
+
+        this.showYCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
+            self.customYScale.setVisible(this.isSelected());
+            if (!this.isSelected()) {
+                self.customYScale.setValue({})
+            }
+            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
+        });
+
+        this.customYScale = BI.createWidget({
+            type: "bi.custom_scale",
+            wId: o.wId
+        });
+
+        this.customYScale.on(BI.CustomScale.EVENT_CHANGE, function () {
+            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
+        });
+
+        //右轴1刻度自定义
+        this.showXCustomScale = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Scale_Customize"),
+            width: 115
+        });
+
+        this.showXCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
+            self.customXScale.setVisible(this.isSelected());
+            if (!this.isSelected()) {
+                self.customXScale.setValue({})
+            }
+            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
+        });
+
+        this.customXScale = BI.createWidget({
+            type: "bi.custom_scale",
+            wId: o.wId
+        });
+
+        this.customXScale.on(BI.CustomScale.EVENT_CHANGE, function () {
+            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
+        });
+
+        //右轴2刻度自定义
+        this.showZCustomScale = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Scale_Customize"),
+            width: 115
+        });
+
+        this.showZCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
+            self.customZScale.setVisible(this.isSelected());
+            if (!this.isSelected()) {
+                self.customZScale.setValue({})
+            }
+            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
+        });
+
+        this.customZScale = BI.createWidget({
+            type: "bi.custom_scale",
+            wId: o.wId
+        });
+
+        this.customZScale.on(BI.CustomScale.EVENT_CHANGE, function () {
+            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
+        });
+
         this.showElement = BI.createWidget({
             type: "bi.horizontal_adapt",
             columnSize: [80],
@@ -437,19 +509,19 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Legend_Normal"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.legend]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.showDataTable]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.gridLine]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.showZoom]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
@@ -476,7 +548,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Text_Direction"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.text_direction]
                 }, {
                     type: "bi.label",
@@ -484,10 +556,10 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     textHeight: 30,
                     height: constant.SINGLE_LINE_HEIGHT
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.isShowTitleX]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.editTitleX]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
@@ -516,7 +588,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.lYAxisStyle]
                 }, {
                     type: "bi.label",
@@ -524,7 +596,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.numberLevellY]
                 }, {
                     type: "bi.label",
@@ -532,14 +604,20 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.LYUnit]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.isShowTitleLY, this.editTitleLY]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.reversedLY]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.showYCustomScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.customYScale]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.separatorsLeft]
@@ -570,7 +648,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.rYAxisStyle]
                 }, {
                     type: "bi.label",
@@ -578,7 +656,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.numberLevelrY]
                 }, {
                     type: "bi.label",
@@ -586,14 +664,20 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.RYUnit]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.isShowTitleRY, this.editTitleRY]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.reversedRY]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.showXCustomScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.customXScale]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.separatorsRight]
@@ -624,7 +708,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.rYAxis2Style]
                 }, {
                     type: "bi.label",
@@ -632,7 +716,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.numberLevelrY2]
                 }, {
                     type: "bi.label",
@@ -640,14 +724,20 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.RY2Unit]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.isShowTitleRY2, this.editTitleRY2]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.reversedRY2]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.showZCustomScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.customZScale]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.separatorsRight2]
@@ -665,7 +755,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 170
         });
         this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
         this.otherAttr = BI.createWidget({
@@ -691,7 +781,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.minimalistModel.on(BI.Controller.EVENT_CHANGE, function () {
             self._invisible(!this.isSelected());
-            self.fireEvent(BI.BarChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
         var modelChange = BI.createWidget({
@@ -802,6 +892,15 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showZoom.setSelected(BI.Utils.getWSShowZoomByID(wId));
         this.minimalistModel.setSelected(BI.Utils.getWSMinimalistByID(wId));
         this._invisible(!BI.Utils.getWSMinimalistByID(wId));
+        this.showYCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
+        this.customYScale.setValue(BI.Utils.getWSCustomYScale(wId));
+        this.customYScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
+        this.showXCustomScale.setSelected(BI.Utils.getWSShowXCustomScale(wId));
+        this.customXScale.setValue(BI.Utils.getWSCustomXScale(wId));
+        this.customXScale.setVisible(BI.Utils.getWSShowXCustomScale(wId));
+        this.showZCustomScale.setSelected(BI.Utils.getWSShowZCustomScale(wId));
+        this.customZScale.setValue(BI.Utils.getWSCustomZScale(wId));
+        this.customZScale.setVisible(BI.Utils.getWSShowZCustomScale(wId));
         this.separatorsLeft.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
         this.separatorsRight.setSelected(BI.Utils.getWSRightNumberSeparatorsByID(wId));
         this.separatorsRight2.setSelected(BI.Utils.getWSRight2NumberSeparatorsByID(wId));
@@ -844,6 +943,12 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             show_grid_line: this.gridLine.isSelected(),
             show_zoom: this.showZoom.isSelected(),
             minimalist_model: this.minimalistModel.isSelected(),
+            show_y_custom_scale: this.showYCustomScale.isSelected(),
+            custom_y_scale: this.customYScale.getValue(),
+            show_x_custom_scale: this.showXCustomScale.isSelected(),
+            custom_x_scale: this.customXScale.getValue(),
+            show_z_custom_scale: this.showZCustomScale.isSelected(),
+            custom_z_scale: this.customZScale.getValue(),
             num_separators: this.separatorsLeft.isSelected(),
             right_num_separators: this.separatorsRight.isSelected(),
             right2_num_separators: this.separatorsRight2.isSelected()
@@ -881,6 +986,12 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.gridLine.setSelected(v.show_grid_line);
         this.showZoom.setSelected(v.show_zoom);
         this.minimalistModel.setSelected(v.minimalist_model);
+        this.showYCustomScale.setSelected(v.show_y_custom_scale);
+        this.customYScale.setValue(v.custom_y_scale);
+        this.showXCustomScale.setSelected(v.show_x_custom_scale);
+        this.customXScale.setValue(v.custom_x_scale);
+        this.showZCustomScale.setSelected(v.show_z_custom_scale);
+        this.customZScale.setValue(v.custom_z_scale);
         this.separatorsLeft.setSelected(v.num_separators);
         this.separatorsRight.setSelected(v.right_num_separators);
         this.separatorsRight2.setSelected(v.right2_num_separators)

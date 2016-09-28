@@ -69,6 +69,10 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
         formatNumberLevelInYaxis(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS, config.radiusAxis[0].formatter);
         config.radiusAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + title : title;
         config.radiusAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
+        config.radiusAxis[0].min = this.config.custom_y_scale.minScale.scale || null;
+        config.radiusAxis[0].max = this.config.custom_y_scale.maxScale.scale || null;
+        config.radiusAxis[0].tickInterval = BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
+            self.config.custom_y_scale.interval.scale : null;
         config.chartType = "radar";
         config.plotOptions.columnType = true;
         delete config.xAxis;
@@ -158,6 +162,7 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
             show_data_label: options.show_data_label || false,
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             cordon: options.cordon || [],
+	     custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
             num_separators: options.num_separators || false,
             chart_font: options.chart_font || c.FONT_STYLE
         };

@@ -16,7 +16,7 @@ BI.DetailRegion = BI.inherit(BI.AbstractRegion, {
         this.containers = {};
         this.relationButton = BI.createWidget({
             type: "bi.text_button",
-            textHeight: 30,
+            height: 25,
             value: BI.i18nText("BI-Field_Relation_Setting")
         });
 
@@ -38,7 +38,7 @@ BI.DetailRegion = BI.inherit(BI.AbstractRegion, {
 
         this.calculateAddButton = BI.createWidget({
             type: "bi.text_button",
-            textHeight: 30,
+            height: 25,
             value: BI.i18nText("BI-Add_Cal_Target")
         });
 

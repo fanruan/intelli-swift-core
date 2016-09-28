@@ -7,13 +7,13 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.ScatterChartSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-charts-setting"
+            baseCls: "bi-charts-setting bi-scatter-chart-setting"
         })
     },
 
     _init: function(){
         BI.ScatterChartSetting.superclass._init.apply(this, arguments);
-        var self = this, constant = BI.AbstractChartSetting;
+        var self = this, o = this.options, constant = BI.AbstractChartSetting;
 
         this.colorSelect = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",
@@ -44,7 +44,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names"
                 }, {
                     el: {
-                        type: "bi.center_adapt",
+                        type: "bi.vertical_adapt",
                         items: [this.colorSelect]
                     },
                     lgap: constant.SIMPLE_H_GAP
@@ -223,6 +223,54 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
         });
 
+        //y轴刻度自定义
+        this.showYCustomScale = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Scale_Customize"),
+            width: 115
+        });
+
+        this.showYCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
+            self.customYScale.setVisible(this.isSelected());
+            if (!this.isSelected()) {
+                self.customYScale.setValue({})
+            }
+            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE)
+        });
+
+        this.customYScale = BI.createWidget({
+            type: "bi.custom_scale",
+            wId: o.wId
+        });
+
+        this.customYScale.on(BI.CustomScale.EVENT_CHANGE, function () {
+            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE)
+        });
+
+        //x轴刻度自定义
+        this.showXCustomScale = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Scale_Customize"),
+            width: 115
+        });
+
+        this.showXCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
+            self.customXScale.setVisible(this.isSelected());
+            if (!this.isSelected()) {
+                self.customXScale.setValue({})
+            }
+            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE)
+        });
+
+        this.customXScale = BI.createWidget({
+            type: "bi.custom_scale",
+            wId: o.wId
+        });
+
+        this.customXScale.on(BI.CustomScale.EVENT_CHANGE, function () {
+            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE)
+        });
+
         var showElement = BI.createWidget({
             type: "bi.horizontal_adapt",
             columnSize: [80],
@@ -242,13 +290,13 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Legend_Normal"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.legend]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.gridLine]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
@@ -276,7 +324,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.lYAxisStyle]
                 }, {
                     type: "bi.label",
@@ -284,7 +332,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.numberLevellY]
                 }, {
                     type: "bi.label",
@@ -292,11 +340,17 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.LYUnit]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.isShowTitleLY, this.editTitleLY]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.showYCustomScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.customYScale]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.YSeparators]
@@ -326,7 +380,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.XAxisStyle]
                 }, {
                     type: "bi.label",
@@ -334,7 +388,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.numberLevelX]
                 }, {
                     type: "bi.label",
@@ -342,11 +396,17 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.XUnit]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.isShowTitleX, this.editTitleX]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.showXCustomScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.customXScale]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.XSeparators]
@@ -429,6 +489,14 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
         this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
+        this.bigDataMode.setSelected(BI.Utils.getWSBigDataModelByID(wId));
+        this._bigDataMode(!BI.Utils.getWSBigDataModelByID(wId));
+        this.showYCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
+        this.customYScale.setValue(BI.Utils.getWSCustomYScale(wId));
+        this.customYScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
+        this.showXCustomScale.setSelected(BI.Utils.getWSShowXCustomScale(wId));
+        this.customXScale.setValue(BI.Utils.getWSCustomXScale(wId));
+        this.customXScale.setVisible(BI.Utils.getWSShowXCustomScale(wId));
         this.YSeparators.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
         this.XSeparators.setSelected(BI.Utils.getWSRightNumberSeparatorsByID(wId));
 
@@ -453,6 +521,11 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
             chart_legend: this.legend.getValue()[0],
             show_data_label: this.showDataLabel.isSelected(),
             show_grid_line: this.gridLine.isSelected(),
+            big_data_mode: this.bigDataMode.isSelected(),
+            show_y_custom_scale: this.showYCustomScale.isSelected(),
+            custom_y_scale: this.customYScale.getValue(),
+            show_x_custom_scale: this.showXCustomScale.isSelected(),
+            custom_x_scale: this.customXScale.getValue(),
             num_separators: this.YSeparators.isSelected(),
             right_num_separators: this.XSeparators.isSelected()
         }
@@ -474,6 +547,11 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.legend.setValue(v.chart_legend);
         this.showDataLabel.setSelected(v.show_data_label);
         this.gridLine.setSelected(v.show_grid_line);
+        this.bigDataMode.setSelected(v.big_data_mode);
+        this.showYCustomScale.setSelected(v.show_y_custom_scale);
+        this.customYScale.setValue(v.custom_y_scale);
+        this.showXCustomScale.setSelected(v.show_x_custom_scale);
+        this.customXScale.setValue(v.custom_x_scale);
         this.YSeparators.setSelected(v.num_separators);
         this.XSeparators.setSelected(v.right_num_separators)
     }

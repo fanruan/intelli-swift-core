@@ -82,6 +82,10 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
             lineWidth: this.config.line_width,
             showLabel: this.config.show_label,
             enableTick: this.config.enable_tick,
+            min: self.config.custom_y_scale.minScale.scale || null,
+            max: self.config.custom_y_scale.maxScale.scale || null,
+            tickInterval: BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
+                self.config.custom_y_scale.interval.scale : null,
             enableMinorTick: this.config.enable_minor_tick
         });
 
@@ -229,7 +233,8 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
             show_label: BI.isNull(options.show_label) ? true : options.show_label,
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
-            num_separators: options.num_separators || false,
+	     custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,            
+	     num_separators: options.num_separators || false,
             chart_font: options.chart_font || c.FONT_STYLE
         };
         this.options.items = this._formatItems(items);

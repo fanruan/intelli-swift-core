@@ -16,6 +16,7 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             [{
                 text: BI.i18nText("BI-Style_Setting"),
                 value: BICst.CALCULATE_TARGET_COMBO.FORM_SETTING,
+                warningTitle: BI.i18nText("BI-Unmodified_in_Current_Mode"),
                 cls: "style-set-h-font"
             }],
             [{
@@ -94,6 +95,7 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var wType = BI.Utils.getWidgetTypeByID(wId);
         var minimalist = BI.Utils.getWSMinimalistByID(wId);
         var e = BI.Utils.getExpressionByDimensionID(o.dId);
+        var bigDataMode = BI.Utils.getWSBigDataModelByID(wId);
         var ids = e.ids;
         BI.each(ids , function (idx , id){
             //这边的dimensionId不一定能拿到fieldId,计算指标没有fieldId
@@ -123,6 +125,30 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
             case BICst.WIDGET.COMPARE_AXIS:
             case BICst.WIDGET.FALL_AXIS:
+                item[this.constants.CordonPos][0].cls = "";
+                item[this.constants.CordonPos][0] = {
+                    el: item[this.constants.CordonPos][0],
+                    children: [{
+                        text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
+                        value: BICst.TARGET_COMBO.CORDON
+                    },{
+                        text: BI.i18nText("BI-Data_Label"),
+                        value: BICst.TARGET_COMBO.DATA_LABEL,
+                        warningTitle: BI.i18nText("BI-Data_Label_Donnot_Show")
+                    },{
+                        text: BI.i18nText("BI-Data_Image"),
+                        value: BICst.TARGET_COMBO.DATA_IMAGE,
+                        warningTitle: BI.i18nText("BI-Data_Image_Donnot_Show")
+                    }]
+                };
+                if(minimalist) {
+                    item[this.constants.CordonPos][0].disabled = true
+                }
+                if(!dataLable){
+                    item[this.constants.CordonPos][0].children[1].disabled = true
+                }
+                BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
+                break;
             case BICst.WIDGET.LINE:
             case BICst.WIDGET.AREA:
             case BICst.WIDGET.ACCUMULATE_AREA:
@@ -135,10 +161,17 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     children: [{
                         text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
                         value: BICst.TARGET_COMBO.CORDON
+                    },{
+                        text: BI.i18nText("BI-Data_Label"),
+                        value: BICst.TARGET_COMBO.DATA_LABEL,
+                        warningTitle: BI.i18nText("BI-Data_Label_Donnot_Show")
                     }]
                 };
                 if(minimalist) {
                     item[this.constants.CordonPos][0].disabled = true
+                }
+                if(!dataLable){
+                    item[this.constants.CordonPos][0].children[1].disabled = true
                 }
                 BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
                 break;
@@ -150,10 +183,21 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     children: [{
                         text: BI.i18nText("BI-Cordon") + "(" + BI.i18nText("BI-Horizontal") + ")",
                         value: BICst.TARGET_COMBO.CORDON
+                    },{
+                        text: BI.i18nText("BI-Data_Label"),
+                        value: BICst.TARGET_COMBO.DATA_LABEL,
+                        warningTitle: BI.i18nText("BI-Data_Label_Donnot_Show")
+                    },{
+                        text: BI.i18nText("BI-Data_Image"),
+                        value: BICst.TARGET_COMBO.DATA_IMAGE,
+                        warningTitle: BI.i18nText("BI-Data_Image_Donnot_Show")
                     }]
                 };
                 if(minimalist) {
                     item[this.constants.CordonPos][0].disabled = true
+                }
+                if(!dataLable){
+                    item[this.constants.CordonPos][0].children[1].disabled = true
                 }
                 item[this.constants.CHART_TYPE_POSITION][0].el.disabled = false;
                 break;
@@ -168,8 +212,19 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         text = BI.i18nText("BI-Vertical");
                         break;
                     case BICst.REGION.TARGET3:
+                        item[this.constants.CordonPos][0].cls = "";
+                        item[this.constants.CordonPos][0] = {
+                            el: item[this.constants.CordonPos][0],
+                            children: [{
+                                text: BI.i18nText("BI-Data_Label"),
+                                value: BICst.TARGET_COMBO.DATA_LABEL_OTHER,
+                                warningTitle: BI.i18nText("BI-Data_Label_Donnot_Show")
+                            }]
+                        };
+                        if(!dataLable){
+                            item[this.constants.CordonPos][0].children.disabled = true
+                        }
                         BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
-                        BI.removeAt(item, this.constants.CordonPos);
                         return item;
                 }
                 item[this.constants.CordonPos][0].cls = "";
@@ -178,8 +233,18 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     children: [{
                         text: BI.i18nText("BI-Cordon") + "(" + text + ")",
                         value: BICst.TARGET_COMBO.CORDON
+                    },{
+                        text: BI.i18nText("BI-Data_Label"),
+                        value: BICst.TARGET_COMBO.DATA_LABEL_OTHER,
+                        warningTitle: BI.i18nText("BI-Data_Label_Donnot_Show")
                     }]
                 };
+                if(bigDataMode){
+                    item[this.constants.CordonPos][0].disabled = true;
+                }
+                if(!dataLable){
+                    item[this.constants.CordonPos][0].children[1].disabled = true
+                }
                 BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
                 break;
             case BICst.WIDGET.GIS_MAP:

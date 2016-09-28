@@ -22,9 +22,12 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             type: "bi.drill_push_button"
         });
         this.pushButton.on(BI.DrillPushButton.EVENT_CHANGE, function () {
-            self._onClickPush();
+            self._onClickPush(!self.wrapper.isVisible());
         });
         this.pushButton.element.css("z-index", 1);
+
+        this.hideDrillButtons = BI.debounce(BI.bind(this.hideDrill, this), 3000);
+
         this.outerWrapper = BI.createWidget({
             type: "bi.absolute",
             element: this.element,
@@ -88,15 +91,49 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
     },
 
     populate: function (obj) {
-        var self = this;
+        var self = this, wId = this.options.wId;
         this._initShowChartDrill();
-        this.outerWrapper.setVisible(this.showDrill && BI.isNotNull(obj));
-        if (this.showDrill === false || BI.isNull(obj)) {
+        this.outerWrapper.setVisible(this.showDrill && (!this._checkUPDrillEmpty() || BI.isNotNull(obj)));
+
+        if (this.showDrill === false || (BI.isNull(obj) && this._checkUPDrillEmpty())) {
             this.pushButton.setPushDown();
             return;
         }
         this.pushButton.setPushUp();
-        var wId = this.options.wId;
+
+        if (BI.isNull(obj) && !this._checkUPDrillEmpty()) {
+            this.wrapper.empty();
+            var drillDownMap = BI.Utils.getDrillByID(wId);
+            var drillUpID;
+
+            BI.each(drillDownMap, function (drId, drValue) {
+                drillUpID = drValue[drValue.length - 1].dId;
+            });
+
+            var drill = BI.createWidget({
+                type: "bi.chart_drill_cell",
+                dId: drillUpID,
+                value: BI.i18nText("BI-Unchosen"),
+                disableDownButton: true
+            });
+            drill.on(BI.ChartDrillCell.EVENT_DRILL_UP, function () {
+                self._onClickDrill(drillUpID);
+            });
+            this.wrapper.addItem(drill);
+            var upBounds = BI.Utils.getWidgetBoundsByID(wId);
+            var wi = upBounds.width;
+            var gap = Math.ceil((wi - 200) / 2);
+            this.buttonTop = 35;
+            this.wrapper.setVisible(true);
+            this.outerWrapper.attr("items")[0].left = gap;
+            this.outerWrapper.attr("items")[0].right = gap;
+            this.outerWrapper.attr("items")[1].left = Math.ceil((wi - 60) / 2);
+            this.outerWrapper.attr("items")[1].top = this.buttonTop;
+            this.outerWrapper.resize();
+            this._onClickPush(false);
+            return;
+        }
+
         var dims = BI.Utils.getAllUsableDimDimensionIDs(wId);
         var classification = null, series = null;
         BI.each(dims, function (i, dim) {
@@ -174,7 +211,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
                 this.buttonTop = 70;
             } else if (w >= 400) {
                 hgap = Math.ceil((w - 400) / 2);
-            } else if(w <= 200) {
+            } else if (w <= 200) {
                 this.buttonTop = 70;
             }
         }
@@ -186,12 +223,47 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         this.outerWrapper.resize();
     },
 
-    _onClickPush: function () {
-        var isVisible = !this.wrapper.isVisible();
+    hideDrill: function () {
+        if(this._checkUPDrillEmpty()){
+            this._onClickPush(false)
+        }
+    },
+
+    setDrillVisible: function () {
+        if(this._checkUPDrillEmpty()){
+            this.outerWrapper.setVisible(false)
+        }
+    },
+
+    _checkUPDrillEmpty: function () {
+        var wId = this.options.wId;
+        var drillMap = BI.Utils.getDrillByID(wId);
+        var upDrillID = null, dId = null;
+        BI.each(drillMap, function (drId, ds) {
+            var rType = BI.Utils.getRegionTypeByDimensionID(drId);
+            if (rType === BICst.REGION.DIMENSION1 && ds.length > 0) {
+                dId = ds[ds.length - 1].dId;
+            }
+            if (rType === BICst.REGION.DIMENSION2 && ds.length > 0) {
+                dId = ds[ds.length - 1].dId;
+            }
+            if (ds.length > 0 && (dId === drId || ds[ds.length - 1].dId === dId)) {
+                if (ds.length > 1) {
+                    upDrillID = ds[ds.length - 2].dId
+                } else {
+                    upDrillID = drId;
+                }
+            }
+        });
+        return BI.isNull(upDrillID)
+    },
+
+    _onClickPush: function (isVisible) {
         this.wrapper.setVisible(isVisible);
         this.outerWrapper.attr("items")[1].top = isVisible ? this.buttonTop : 0;
         this.outerWrapper.resize();
         isVisible ? this.pushButton.setPushUp() : this.pushButton.setPushDown();
+        this.hideDrillButtons()
     },
 
     _onClickDrill: function (dId, value, drillId) {

@@ -7,7 +7,7 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function(){
         return BI.extend(BI.GISMapSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-charts-setting"
+            baseCls: "bi-charts-setting bi-gis-map-chart-setting"
         })
     },
 
@@ -41,7 +41,7 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
                 type: "bi.left",
                 cls: "detail-style",
                 items: BI.createItems([{
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
@@ -57,7 +57,7 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 170
         });
         this.transferFilter.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.GISMapSetting.EVENT_CHANGE);
         });
 
         var otherAttr = BI.createWidget({

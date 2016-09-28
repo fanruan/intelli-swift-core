@@ -60,6 +60,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             wId: self.model.get("id"),
             status: BICst.WIDGET_STATUS.EDIT
         });
+
+        this.hideDrill = BI.debounce(BI.bind(this.chartDrill.hideDrill, this.chartDrill), 3000);
         this.tableChartPopupulate = BI.debounce(BI.bind(this.tableChart.populate, this.tableChart), 0);
         this.tableChartResize = BI.debounce(BI.bind(this.tableChart.resize, this.tableChart), 0);
         this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function (widget) {
@@ -67,6 +69,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         });
         this.tableChart.on(BI.TableChartManager.EVENT_CLICK_CHART, function (obj) {
             self._onClickChart(obj);
+            self.hideDrill()
         });
 
         this.widget = BI.createWidget({
@@ -109,6 +112,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
             if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
                 self.tools.setVisible(false);
+                self.chartDrill.setDrillVisible()
             }
         });
     },

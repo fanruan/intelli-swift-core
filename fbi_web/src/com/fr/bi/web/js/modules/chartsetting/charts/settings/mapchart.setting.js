@@ -7,7 +7,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _defaultConfig: function () {
         return BI.extend(BI.MapSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-charts-setting"
+            baseCls: "bi-charts-setting bi-map-chart-setting"
         })
     },
 
@@ -46,7 +46,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: 0,
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.colorChooser]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
@@ -97,10 +97,10 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.left",
             cls: "detail-style",
             items: BI.createItems([{
-                type: "bi.center_adapt",
+                type: "bi.vertical_adapt",
                 items: [this.styleRadio]
             }, {
-                type: "bi.center_adapt",
+                type: "bi.vertical_adapt",
                 items: [this.addConditionButton]
             }, this.conditions], {
                 height: constant.SINGLE_LINE_HEIGHT
@@ -212,7 +212,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 170
         });
         this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.MapSetting.EVENT_CHANGE);
         });
 
         var otherAttr = BI.createWidget({
@@ -224,7 +224,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
                 cls: "line-title",
                 lgap: constant.SIMPLE_H_GAP
             }, {
-                type: "bi.center_adapt",
+                type: "bi.vertical_adapt",
                 items: [this.transferFilter],
                 lgap: 30
             }], {

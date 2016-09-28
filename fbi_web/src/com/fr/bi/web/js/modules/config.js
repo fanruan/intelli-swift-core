@@ -1186,6 +1186,186 @@ BICst.BUBBLE_CHART_STYLE_GROUP = [{
     value: BICst.CHART_SHAPE.PROJECTOR
 }];
 
+//数据标签过滤
+BICst.DATA_LABEL_FILTER_NUMBER_COMBO = [[{
+    text: BI.i18nText("BI-In"),
+    value: BICst.DIMENSION_FILTER_NUMBER.BELONG_VALUE,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_In"),
+    value: BICst.DIMENSION_FILTER_NUMBER.NOT_BELONG_VALUE,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Equal"),
+    value: BICst.TARGET_FILTER_NUMBER.EQUAL_TO,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Equal_To"),
+    value: BICst.TARGET_FILTER_NUMBER.NOT_EQUAL_TO,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Is_Null"),
+    value: BICst.DIMENSION_FILTER_NUMBER.IS_NULL,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Null"),
+    value: BICst.DIMENSION_FILTER_NUMBER.NOT_NULL,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Place"),
+    value: BICst.DIMENSION_FILTER_NUMBER.TOP_N,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Above_Average"),
+    value: BICst.TARGET_FILTER_NUMBER.LARGE_OR_EQUAL_CAL_LINE,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Below_Average"),
+    value: BICst.TARGET_FILTER_NUMBER.SMALL_THAN_CAL_LINE,
+    cls: "dot-e-font"
+}
+]];
+
+BICst.DATA_LABEL_FILTER_STRING_COMBO = [[{
+    text: BI.i18nText("BI-In"),
+    value: BICst.DIMENSION_FILTER_STRING.BELONG_VALUE,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_In"),
+    value: BICst.DIMENSION_FILTER_STRING.NOT_BELONG_VALUE,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Contain"),
+    value: BICst.DIMENSION_FILTER_STRING.CONTAIN,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Contain"),
+    value: BICst.DIMENSION_FILTER_STRING.NOT_CONTAIN,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Is_Null"),
+    value: BICst.DIMENSION_FILTER_STRING.IS_NULL,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_Null"),
+    value: BICst.DIMENSION_FILTER_STRING.NOT_NULL,
+    cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Begin_With"),
+    value: BICst.DIMENSION_FILTER_STRING.BEGIN_WITH,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-End_With"),
+    value: BICst.DIMENSION_FILTER_STRING.END_WITH,
+    cls: "dot-e-font"
+}]];
+
+BICst.DATA_LABEL_FILTER_RANGE_COMBO = [[{
+    text: BI.i18nText("BI-No_Range"),
+    value: BICst.DATA_LABEL_RANGE.ALL,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-In_Classification"),
+    value: BICst.DATA_LABEL_RANGE.Classification,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-In_Series"),
+    value: BICst.DATA_LABEL_RANGE.Series,
+    cls: "dot-e-font"
+}]];
+
+BICst.Font_Family_COMBO = [];
+//全局样式start
+BICst.BACKGROUND_TYPE = {
+    COLOR: 1,
+    IMAGE: 2
+};
+
+BICst.GLOBALPREDICTIONSTYLE = {
+
+    DEFAULT: {
+        "mainBackground": {"type": 1, "value": "#f3f3f3"},
+        "widgetBackground": {"type": 1, "value": "#ffffff"},
+        "titleBackground": {"type": 1, "value": "#ffffff"},
+        "titleFont": {"font-weight": "normal", "font-style": "normal", "text-align": "left", "color": "#000000"},
+        "chartStyle": 1,
+        "chartColor": ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
+        "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#b2b2b2"},
+        "controlTheme": "#d4dadd"
+    },
+
+    ONE: {
+        "mainBackground": {"type": 1, "value": "#212338"},
+        "widgetBackground": {"type": 1, "value": "#2b2d4a"},
+        "titleBackground": {"type": 1, "value": "#2b2d3a"},
+        "titleFont": {"font-weight": "bold", "font-style": "normal", "text-align": "left", "color": "#ffffff"},
+        "chartStyle": 1,
+        "chartColor": ["#79d2f4", "#55b5e5", "#25cdea", "#1ba8ed", "#537af4"],
+        "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#b2b2b2"},
+        "controlTheme": "#25cdea"
+    },
+
+    TWO: {
+        "mainBackground": {"type": 1, "value": "#dae0e0"},
+        "widgetBackground": {"type": 1, "value": "#f7f7f7"},
+        "titleBackground": {"type": 1, "value": "#5e6472"},
+        "titleFont": {"font-weight": "bold", "font-style": "italic", "text-align": "left", "color": "#ffffff"},
+        "chartStyle": 1,
+        "chartColor": ["#f4ab98", "#f1c15f", "#e18169", "#af7e7e", "#6f6870"],
+        "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#5e6472"},
+        "controlTheme": "#af7e7e"
+    }
+};
+//全局样式stop
+BICst.FONT_FAMILY_COMBO = [{
+    text: "微软雅黑",
+    value: "Microsoft YaHei"
+}, {
+    text: "黑体",
+    value: "SimHei"
+}, {
+    text: "幼圆",
+    value: "YouYuan"
+}, {
+    text: "宋体",
+    value: "SimSun"
+}, {
+    text: "楷体",
+    value: "KaiTi"
+}, {
+    text: "华文细黑",
+    value: "STXihei"
+}, {
+    text: "华文黑体",
+    value: "STHeiti"
+}, {
+    text: "华文楷体",
+    value: "STKaiti"
+}, {
+    text: "华文宋体",
+    value: "STSong"
+}, {
+    text: "冬青黑体简体中文",
+    value: "Hiragino Sans GB W3"
+}, {
+    text: "Arial",
+    value: "Arial"
+}, {
+    text: "Microsoft Tai Le",
+    value: "Microsoft Tai Le"
+}, {
+    text: "Tahoma",
+    value: "Tahoma"
+}, {
+    text: "Helvetica",
+    value: "Helvetica"
+}, {
+    text: "Verdana",
+    value: "Verdana"
+}, {
+    text: "Times New Roman",
+    value: "Times New Roman"
+}];
 //表设置所有默认属性（应该是包含分组表、交叉表、复杂表和其他所有图表）
 BICst.DEFAULT_CHART_SETTING = {
     table_form: BICst.TABLE_FORM.OPEN_ROW,
@@ -1267,7 +1447,21 @@ BICst.DEFAULT_CHART_SETTING = {
     bubble_display: BICst.DISPLAY_RULES.DIMENSION,
     bubble_style: BICst.CHART_SHAPE.NO_PROJECTOR,
     show_background_layer: true,
-    background_layer_info: BI.i18nText("BI-GAO_DE_MAP")
+    background_layer_info: BI.i18nText("BI-GAO_DE_MAP"),
+    show_y_custom_scale: false,
+    show_x_custom_scale: false,
+    show_z_custom_scale: false,
+    custom_scale: {
+        maxScale: {
+            scale: null
+        },
+        minScale: {
+            scale: null
+        },
+        interval: {
+            scale: null
+        }
+    }
 };
 
 BICst.DASHBOARD_STYLE_CONDITIONS = [{
@@ -1336,6 +1530,19 @@ BICst.MAP_STYLE_CONDITIONS = [{
         closemax: true
     },
     color: "#a484b9"
+}];
+
+BICst.BUBBLE_GRADIENT_COLOR = [{
+    range: {
+        min: 0,
+        max: 100,
+        closemin: true,
+        closemax: true
+    },
+    color_range: {
+        from_color: "#65B3EE",
+        to_color: "#95E1AA"
+    }
 }];
 
 BICst.CAL_TARGET_TYPE = [{

@@ -62,6 +62,13 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         config.yAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + config.yAxis[0].title.text : config.yAxis[0].title.text;
         config.yAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
+        config.yAxis[0].min = this.config.custom_y_scale.minScale.scale || null;
+        config.yAxis[0].max = this.config.custom_y_scale.maxScale.scale || null;
+        config.yAxis[0].tickInterval = BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
+            self.config.custom_y_scale.interval.scale : null;
+        config.yAxis[0].showLabel = this.config.show_label;
+        config.yAxis[0].enableTick = this.config.enable_tick;
+        config.yAxis[0].enableMinorTick = this.config.enable_minor_tick;
         config.yAxis[0].title.rotation = this.constants.ROTATION;
 
         config.xAxis[0].formatter = self.formatTickInXYaxis(this.config.x_axis_style, this.config.x_axis_number_level, this.config.right_num_separators);
@@ -70,6 +77,13 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + config.xAxis[0].title.text : config.xAxis[0].title.text;
         config.xAxis[0].title.align = "center";
         config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
+        config.xAxis[0].min = this.config.custom_x_scale.minScale.scale || null;
+        config.xAxis[0].max = this.config.custom_x_scale.maxScale.scale || null;
+        config.xAxis[0].tickInterval = BI.isNumber(self.config.custom_x_scale.interval.scale) && self.config.custom_x_scale.interval.scale > 0 ?
+            self.config.custom_x_scale.interval.scale : null;
+        config.xAxis[0].showLabel = this.config.show_label;
+        config.xAxis[0].enableTick = this.config.enable_tick;
+        config.xAxis[0].enableMinorTick = this.config.enable_minor_tick;
         config.chartType = "scatter";
 
         if (BI.isNotEmptyArray(this.config.tooltip)) {
@@ -238,6 +252,13 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             cordon: options.cordon || [],
             tooltip: options.tooltip || [],
+	     custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
+            custom_x_scale: options.custom_x_scale || c.CUSTOM_SCALE,
+            show_label: BI.isNull(options.show_label) ? true : options.show_label,
+            big_data_mode: options.big_data_mode || false,
+            line_width: options.line_width || 0,
+            enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
+            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
             num_separators: options.num_separators || false,
             right_num_separators: options.right_num_separators || false,
             chart_font: options.chart_font || c.FONT_STYLE
