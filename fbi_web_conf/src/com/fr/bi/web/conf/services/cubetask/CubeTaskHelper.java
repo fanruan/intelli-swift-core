@@ -48,7 +48,6 @@ public class CubeTaskHelper {
 /*若有新增表或者新增关联，增量更新，否则进行全量*/
         StringBuffer msg = new StringBuffer();
         if (isPart(userId)) {
-//        if (false){
             Set<BIBusinessTable> businessTables = BICubeGenerateUtils.getTables4CubeGenerate(userId);
             Set<BITableRelation> relations = BICubeGenerateUtils.getRelations4CubeGenerate(userId);
             cubeBuild = new CubeBuildByPart(userId, businessTables, relations);

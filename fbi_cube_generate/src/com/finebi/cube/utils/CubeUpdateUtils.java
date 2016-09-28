@@ -110,7 +110,6 @@ public class CubeUpdateUtils {
         }
         Map<String, String> relationMap = new HashMap<String, String>();
         Set<BITableRelation> tableRelations = BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(userId);
-
         for (BITableRelation relation : tableRelations) {
             relationMap.put(relation.getPrimaryTable().getTableSource().toString() + "." + relation.getPrimaryField().getFieldName() + ">>" + relation.getForeignTable().getTableSource().toString() + "." + relation.getForeignField().getFieldName(), relation.getPrimaryTable().getTableSource().getSourceID() + "||" + relation.getForeignTable().getTableSource().getSourceID());
         }
