@@ -106,6 +106,7 @@ BI.Fit = BI.inherit(BI.Widget, {
                 //cursorAt: {left: 0, top: 0},
                 cursor: BICst.cursorUrl,
                 handle: ".fit-widget-drag-bar",
+                cursor: BICst.cursorUrl,
                 start: function (e, ui) {
                     self._startDrag(id, ui.position, e);
                 },

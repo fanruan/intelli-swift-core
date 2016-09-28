@@ -40,7 +40,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 cls: "detail-style",
                 items: BI.createItems([{
                     type: "bi.label",
-                    text: BI.i18nText("BI-Chart_Color"),
+                    text: BI.i18nText("BI-Color_Setting"),
                     cls: "attr-names"
                 }, {
                     el: {
@@ -427,6 +427,37 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
 
+        //大数据模式
+        this.bigDataMode = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Big_Data_Mode"),
+            width: 120
+        });
+
+        this.bigDataMode.on(BI.Controller.EVENT_CHANGE, function () {
+            self._bigDataMode(!this.isSelected());
+            if (this.isSelected()) {
+                self.rulesDisplay.setValue(BICst.DISPLAY_RULES.GRADIENT);
+                self._colorSettingChange(BICst.DISPLAY_RULES.GRADIENT)
+            }
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+        });
+
+        var modeChange = BI.createWidget({
+            type: "bi.left_right_vertical_adapt",
+            cls: "single-line-settings",
+            items: {
+                left: [{
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Mode_Change"),
+                    cls: "line-title"
+                }, this.bigDataMode]
+            },
+            height: constant.SINGLE_LINE_HEIGHT,
+            lhgap: constant.SIMPLE_H_GAP
+        });
+
+
         var otherAttr = BI.createWidget({
             type: "bi.left_right_vertical_adapt",
             cls: "single-line-settings",
@@ -444,9 +475,14 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [tableStyle, lYAxis, xAxis, showElement, otherAttr],
+            items: [tableStyle, lYAxis, xAxis, showElement, otherAttr, modeChange],
             hgap: 10
         })
+    },
+
+    _bigDataMode: function (v) {
+        this.showDataLabel.setEnable(v);
+        this.transferFilter.setEnable(v)
     },
 
     populate: function(){
