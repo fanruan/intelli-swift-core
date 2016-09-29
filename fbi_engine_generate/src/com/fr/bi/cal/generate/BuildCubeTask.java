@@ -124,14 +124,7 @@ public class BuildCubeTask implements CubeTask {
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
         } finally {
-            BILogger.getLogger().info("start persist data!");
-            long t = System.currentTimeMillis();
-            try {
-                BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
-                BILogger.getLogger().info("persist data finished! time cost: " + DateUtils.timeCostFrom(t));
-            } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
-            }
+
         }
     }
 
