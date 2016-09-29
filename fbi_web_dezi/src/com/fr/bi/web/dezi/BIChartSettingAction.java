@@ -72,13 +72,10 @@ public class BIChartSettingAction extends AbstractBIDeziAction {
         JSONObject configs = BIChartDataConvertFactory.convert((MultiChartWidget) widget, jo.getJSONObject("data"));
 
         try {
-            BIChartSettingFactory.parseChartSetting((MultiChartWidget)widget, configs.getJSONArray("data"), configs.optJSONObject("options"), configs.getJSONArray("types"));
+            WebUtils.printAsJSON(res, BIChartSettingFactory.parseChartSetting((MultiChartWidget)widget, configs.getJSONArray("data"), configs.optJSONObject("options"), configs.getJSONArray("types")));
         }catch (Exception e){
             BILogger.getLogger().error(e.getMessage());
         }
-
-
-        WebUtils.printAsJSON(res, jo);
     }
 
     protected JSONObject parseJSON(HttpServletRequest req) throws Exception {

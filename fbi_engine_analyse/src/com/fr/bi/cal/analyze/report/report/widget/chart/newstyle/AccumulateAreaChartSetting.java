@@ -20,7 +20,7 @@ public class AccumulateAreaChartSetting extends BIAbstractAccumulateChartSetting
     @Override
     public JSONObject getConvertedDataAndSettings(JSONArray data, JSONArray types, JSONObject options) throws JSONException {
         JSONObject DataAndSetting = super.getConvertedDataAndSettings(data, types, options);
-        formatChartLineStyle(DataAndSetting.getJSONObject("config"), options.getInt("chart_line_type"));
+        formatChartLineStyle(DataAndSetting, options.getInt("chart_line_type"));
         return DataAndSetting;
     }
 }

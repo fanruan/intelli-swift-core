@@ -14,6 +14,14 @@ import com.fr.stable.StringUtils;
 public class MapChartSetting extends BIAbstractChartSetting {
     private JSONObject config;
 
+    private final String[] MAP_DEFAULT_COLOR = new String[]{
+            BIChartSettingConstant.LENEGD_DEFAULT_COLOR.COLOR_A,
+            BIChartSettingConstant.LENEGD_DEFAULT_COLOR.COLOR_B,
+            BIChartSettingConstant.LENEGD_DEFAULT_COLOR.COLOR_C,
+            BIChartSettingConstant.LENEGD_DEFAULT_COLOR.COLOR_D,
+            BIChartSettingConstant.LENEGD_DEFAULT_COLOR.COLOR_E,
+    };
+
     public MapChartSetting() {
         this.config = new JSONObject();
     }
@@ -22,27 +30,37 @@ public class MapChartSetting extends BIAbstractChartSetting {
     public JSONObject formatConfig(JSONObject options, JSONArray data) throws JSONException {
         JSONObject plotOptions = this.config.getJSONObject("plotOptions");
         this.config.put("color", options.getJSONArray("chart_color"));
-        this.formatRangeLegend(this.config, data, options.getInt("chart_legend"), options.getJSONArray("map_styles"), options.getInt("auto_custom"), options.getString("theme_color"));
-        this.formatChartLegend(options.optInt("chart_legend"));
+        JSONArray map_styles = options.optJSONArray("map_styles");
+        if (map_styles == null) {
+            map_styles = initDefaultConfig();
+        }
+        this.formatRangeLegend(this.config, data, options.getInt("chart_legend"), map_styles, options.getInt("auto_custom"), options.getString("theme_color"));
+        this.formatChartLegend(this.config, options.optInt("chart_legend"));
         this.config.remove("legend");
         plotOptions.optJSONObject("dataLabels").put("enabled", options.optBoolean("show_data_label"));
         this.config.put("chartType", "areaMap");
 
         plotOptions.getJSONObject("tooltip").put("shared", true);
         JSONArray formatterArray = new JSONArray();
+        String formatterString = "\"";
         for(int i = data.length() - 1; i > -1; i--){
             JSONObject item = data.getJSONObject(i);
             if(item.has("settings")){
                 JSONObject settings = item.getJSONObject("settings");
-                formatterArray.put(formatToolTipAndDataLabel(settings.optInt("format", BIChartSettingConstant.NORMAL), settings.optInt("num_level", BIChartSettingConstant.NORMAL),
-                        settings.optString("unit", ""), settings.optBoolean("num_separators", BIChartSettingConstant.NUM_SEPARATORS)));
+                String formatter = formatToolTipAndDataLabel(settings.optInt("format", BIChartSettingConstant.NORMAL), settings.optInt("num_level", BIChartSettingConstant.NORMAL),
+                        settings.optString("unit", ""), settings.optBoolean("num_separators", BIChartSettingConstant.NUM_SEPARATORS));
+                formatterArray.put(formatter);
+                formatterString += formatter;
+                formatterString += "$";
             }
         }
+        formatterString += "\"";
         plotOptions.getJSONObject("tooltip").put("formatter","function () {" +
-            "var tip = this.name;" +
-            "for(int i = 0; i < this.points.length; i++){" +
-                "var value = point.size || point.y;" +
-                "tip += ('<div>' + point.seriesName + ':' + (window.BH ? BH.contentFormat(value, formatterArray[idx]) : value) + '</div>');" +
+            "var tip = this.name; var formatterString = " + formatterString + ";" +
+            "var formatterArray = formatterString.split('$');" +
+            "for(var i = 0; i < this.points.length; i++){" +
+                "var value = this.points[i].size || this.points[i].y;" +
+                "tip += ('<div>' + this.points[i].seriesName + ':' + (window.BH ? BH.contentFormat(value, formatterArray[i]) : value) + '</div>');" +
             "}"+
             "return tip;}");
         plotOptions.getJSONObject("dataLabels").getJSONObject("formatter").put("valueFormat", "function () {" +
@@ -81,6 +99,19 @@ public class MapChartSetting extends BIAbstractChartSetting {
         }
 
         return this.config.put("series", data);
+    }
+
+    private JSONArray initDefaultConfig() throws JSONException{
+        JSONArray config = new JSONArray();
+        for (int i = 0; i < 5; i++) {
+            JSONObject range = new JSONObject()
+                    .put("min", i * BIChartSettingConstant.INTERVAL)
+                    .put("max", i * BIChartSettingConstant.INTERVAL + BIChartSettingConstant.INTERVAL)
+                    .put("closemin", true)
+                    .put("closemax", i == 2);
+            config.put(new JSONObject().put("range", range).put("color", MAP_DEFAULT_COLOR[i]));
+        }
+        return config;
     }
 
     public String formatToolTipAndDataLabel(int format, int numberLevel, String unit, boolean num_separators) {
@@ -208,8 +239,8 @@ public class MapChartSetting extends BIAbstractChartSetting {
         int numberLevel = BIChartSettingConstant.NORMAL;
         if(items.length() > 0 && items.getJSONObject(0).has("settings")){
             needAddUnitOnLegend = true;
-            numberLevel = items.getJSONObject(0).getJSONObject("settings").getInt("num_level");
-            if(items.getJSONObject(0).getJSONObject("settings").getBoolean("num_separators")){
+            numberLevel = items.getJSONObject(0).getJSONObject("settings").optInt("num_level", BIChartSettingConstant.NORMAL);
+            if(items.getJSONObject(0).getJSONObject("settings").optBoolean("num_separators", false)){
                 initTo = "(window.BH ? BH.contentFormat(to, \"#,##0\") : to)";
             }
         }
@@ -217,23 +248,23 @@ public class MapChartSetting extends BIAbstractChartSetting {
             "var to = this.to;" +
             "if ("+ needAddUnitOnLegend +") {" +
                 "if("+ StringUtils.isNotEmpty(initTo) +"){" +
-                    "to = "+ initTo +
+                    "to = \""+ initTo + "\"" +
                 "}" +
                 "switch ("+ numberLevel +") {" +
                     "case " + BIChartSettingConstant.CHART_TARGET_STYLE.NUM_LEVEL.NORMAL + ":" +
                         "to += '';" +
                         "break;" +
                     "case " + BIChartSettingConstant.CHART_TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND + ":" +
-                        "to +=" + Inter.getLocText("BI-Wan") + ";" +
+                        "to +=\"" + Inter.getLocText("BI-Wan") + "\";" +
                         "break;" +
                     "case " + BIChartSettingConstant.CHART_TARGET_STYLE.NUM_LEVEL.MILLION + ":" +
-                        "to +=" + Inter.getLocText("BI-Million") + ";" +
+                        "to +=\"" + Inter.getLocText("BI-Million") + "\";" +
                         "break;" +
                     "case " + BIChartSettingConstant.CHART_TARGET_STYLE.NUM_LEVEL.YI + ":" +
-                        "to +=" + Inter.getLocText("BI-Yi") + ";" +
+                        "to +=\"" + Inter.getLocText("BI-Yi") + "\";" +
                         "break;" +
                     "case " + BIChartSettingConstant.CHART_TARGET_STYLE.NUM_LEVEL.PERCENT + ":" +
-                        "to = (window.BH ? BH.contentFormat(to, \"#0%\") : to);" +
+                        "to = (window.BH ? BH.contentFormat(to, '#0%') : to);" +
                         "break;"+
                 "}" +
             "}" +
@@ -266,7 +297,7 @@ public class MapChartSetting extends BIAbstractChartSetting {
     }
 
     private String formatNumberLevel(int num_level, double value){
-        return BIChartSettingConstant.TWOFIEXEDFORMAT.format(value / calcMagnify(num_level));
+        return this.getTwoFiexedFormat().format(value / calcMagnify(num_level));
     }
 
     @Override
