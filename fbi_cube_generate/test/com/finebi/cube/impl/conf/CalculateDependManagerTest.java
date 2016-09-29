@@ -13,7 +13,9 @@ import com.fr.bi.stable.exception.BITablePathEmptyException;
 import junit.framework.TestCase;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Created by kary on 2016/6/13.
@@ -32,45 +34,56 @@ public class CalculateDependManagerTest extends TestCase {
     public void testRelation() {
         Set<CubeTableSource> tableABC = addTableABC();
         BITableSourceRelation biTableSourceRelation = BITableSourceRelationTestTool.getMemoryBC();
-        BICubeGenerateRelation biTableSourceRelation4CubeGenerate = calculateDependManager4Test.calRelations(biTableSourceRelation,tableABC);
+        BICubeGenerateRelation biTableSourceRelation4CubeGenerate = calculateDependManager4Test.calRelations(biTableSourceRelation, tableABC);
         assertTrue(biTableSourceRelation4CubeGenerate.getDependTableSourceSet().contains((BIMemoryDataSourceFactory.generateTableC())));
         assertTrue(biTableSourceRelation4CubeGenerate.getDependTableSourceSet().contains((BIMemoryDataSourceFactory.generateTableB())));
     }
 
     public void testRelationPath() {
-        addTableABC();
         BITableSourceRelationPath abcPath = BITableSourceRelationPathTestTool.getABCPath();
+        Set<BITableSourceRelationPath> abcPathSet = new HashSet<BITableSourceRelationPath>();
+        abcPathSet.add(abcPath);
         Set<BITableSourceRelation> relations = new HashSet<BITableSourceRelation>();
         relations.add(BITableSourceRelationTestTool.getMemoryBC());
-        BICubeGenerateRelationPath biTableRelationPath4CubeGenerate = calculateDependManager4Test.calRelationPath(abcPath, relations);
-        assertTrue(biTableRelationPath4CubeGenerate.getDependRelationPathSet().size() == 1);
-        assertTrue(biTableRelationPath4CubeGenerate.getBiTableSourceRelationPath().getSourceID().equals(BITableSourceRelationPathTestTool.getABCPath().getSourceID()));
+        Set<BICubeGenerateRelationPath> biTableRelationPath4CubeGenerate = calculateDependManager4Test.calRelationPath(abcPathSet, relations);
+        Iterator<BICubeGenerateRelationPath> iterator = biTableRelationPath4CubeGenerate.iterator();
+        while (iterator.hasNext()){
+            BICubeGenerateRelationPath path = iterator.next();
+            assertTrue(path.getDependRelationPathSet().size() == 1);
+            assertTrue(path.getBiTableSourceRelationPath().getSourceID().equals(BITableSourceRelationPathTestTool.getABCPath().getSourceID()));
+        }
     }
 
     /*假设A表已经生成*/
     public void testRelation4Part() {
         Set<CubeTableSource> tableC = addTableC();
         BITableSourceRelation biTableSourceRelation = BITableSourceRelationTestTool.getMemoryBC();
-        BICubeGenerateRelation biTableSourceRelation4CubeGenerate = calculateDependManager4Test.calRelations(biTableSourceRelation,tableC);
+        BICubeGenerateRelation biTableSourceRelation4CubeGenerate = calculateDependManager4Test.calRelations(biTableSourceRelation, tableC);
         assertTrue(biTableSourceRelation4CubeGenerate.getDependTableSourceSet().contains((BIMemoryDataSourceFactory.generateTableC())));
         assertTrue(biTableSourceRelation4CubeGenerate.getDependTableSourceSet().size() == 1);
     }
 
     public void testRelationPath4Part() {
-        addTableC();
         BITableSourceRelationPath abcPath = BITableSourceRelationPathTestTool.getABCPath();
+        Set<BITableSourceRelationPath> abcPathSet = new HashSet<BITableSourceRelationPath>();
+        abcPathSet.add(abcPath);
         Set<BITableSourceRelation> relations = new HashSet<BITableSourceRelation>();
         relations.add(BITableSourceRelationTestTool.getMemoryBC());
-        BICubeGenerateRelationPath biTableRelationPath4CubeGenerate = calculateDependManager4Test.calRelationPath(abcPath, relations);
-        assertTrue(biTableRelationPath4CubeGenerate.getDependRelationPathSet().size() == 1);
+        Set<BICubeGenerateRelationPath> biTableRelationPath4CubeGenerateSet = calculateDependManager4Test.calRelationPath(abcPathSet, relations);
+        AtomicReference<BICubeGenerateRelationPath> biTableRelationPath4CubeGenerate = new AtomicReference<BICubeGenerateRelationPath>();
+        Iterator<BICubeGenerateRelationPath> iterator = biTableRelationPath4CubeGenerateSet.iterator();
+        while (iterator.hasNext()) {
+            biTableRelationPath4CubeGenerate.set(iterator.next());
+            break;
+        }
+        assertTrue(biTableRelationPath4CubeGenerate.get().getDependRelationPathSet().size() == 1);
         try {
-            Set<String> ids=new HashSet<String>();
-            for (BITableSourceRelationPath biTableSourceRelationPath : biTableRelationPath4CubeGenerate.getDependRelationPathSet()) {
+            Set<String> ids = new HashSet<String>();
+            for (BITableSourceRelationPath biTableSourceRelationPath : biTableRelationPath4CubeGenerate.get().getDependRelationPathSet()) {
                 ids.add(biTableSourceRelationPath.getSourceID());
             }
-            ;
-            BITableSourceRelationPath pathCopy=new BITableSourceRelationPath();
-            pathCopy.copyFrom(biTableRelationPath4CubeGenerate.getBiTableSourceRelationPath());
+            BITableSourceRelationPath pathCopy = new BITableSourceRelationPath();
+            pathCopy.copyFrom(biTableRelationPath4CubeGenerate.get().getBiTableSourceRelationPath());
             pathCopy.removeLastRelation();
             assertTrue(ids.contains(new BITableSourceRelationPath(abcPath.getLastRelation()).getSourceID()));
         } catch (BITablePathEmptyException e) {
@@ -91,5 +104,5 @@ public class CalculateDependManagerTest extends TestCase {
         cubeTableSourceSet.add(BIMemoryDataSourceFactory.generateTableC());
         return cubeTableSourceSet;
     }
-    
+
 }
