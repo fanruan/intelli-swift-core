@@ -67,12 +67,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
     },
 
     _parseFloatByDot: function (text, dot, separators) {
-        if (text === Infinity || text !== text) {
-            return text;
-        }
-        if (!BI.isNumeric(text)) {
-            return text;
-        }
+        this._getText(text);
         var num = BI.parseFloat(text);
         switch (dot) {
             case BICst.TARGET_STYLE.FORMAT.NORMAL:
@@ -134,13 +129,23 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
         return "";
     },
 
+    _getText: function (text) {
+        if (text === Infinity || text !== text) {
+            return text;
+        }
+        if (!BI.isNumeric(text)) {
+            return text;
+        }
+        return BI.parseFloat(text)
+    },
+
     _createItemWithStyle: function (item) {
         var o = this.options;
         var iconCls = "", color = "";
         var text = o.text;
         var dId = this.options.dId;
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
-        text = BI.parseFloat(text);
+        text = this._getText(text);
         var format = styleSettings.format, numLevel = styleSettings.num_level,
             iconStyle = styleSettings.icon_style, mark = styleSettings.mark,
             num_separators = styleSettings.num_separators;
