@@ -16,7 +16,6 @@ import PanResponder from '../PanResponder/PanResponder.web';
 import dismissKeyboard from '../Utilties/dismissKeyboard.web';
 import { Mixin as NativeMethodsMixin } from '../Utilties/NativeMethodsMixin.web';
 import mixin from 'react-mixin';
-import autobind from 'autobind-decorator';
 
 const deviceSize = Dimensions.get('window');
 const VIEWPAGER_REF = 'viewpager';
