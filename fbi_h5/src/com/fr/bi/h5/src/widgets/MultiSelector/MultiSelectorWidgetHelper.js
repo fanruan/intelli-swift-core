@@ -24,11 +24,14 @@ export default class MultiSelectorWidgetHelper {
     _sortItems() {
         const front = [], items = [];
         this.items.forEach((item)=> {
-            if (this.value.indexOf(item.value) > -1) {
-                front.push({...item, selected: this.type !== 1});
-            } else {
-                items.push({...item, selected: this.type === 1})
-            }
+            // if (this.value.indexOf(item.value) > -1) {
+            //     front.push({...item, selected: this.type !== 1});
+            // } else {
+            items.push({
+                ...item,
+                selected: this.type === 1 ? (this.value.indexOf(item.value) === -1) : (this.value.indexOf(item.value) > -1)
+            });
+            // }
         });
         return front.concat(items);
     }

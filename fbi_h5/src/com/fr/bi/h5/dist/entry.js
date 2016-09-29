@@ -37,17 +37,17 @@ webpackJsonp([0],{
 
 	var _Portal2 = _interopRequireDefault(_Portal);
 
-	__webpack_require__(909);
+	__webpack_require__(912);
 
-	__webpack_require__(911);
+	__webpack_require__(914);
 
-	__webpack_require__(913);
+	__webpack_require__(916);
 
-	__webpack_require__(915);
+	__webpack_require__(918);
 
-	__webpack_require__(917);
+	__webpack_require__(920);
 
-	__webpack_require__(919);
+	__webpack_require__(922);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1827,7 +1827,7 @@ webpackJsonp([0],{
 	  value: true
 	});
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -1844,7 +1844,7 @@ webpackJsonp([0],{
 	var initialState = _immutable2.default.fromJS(BH.STORE.popConfig);
 
 	function todos() {
-	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? initialState : arguments[0];
 	  var action = arguments[1];
 
 	  var _ret = function () {
@@ -2380,7 +2380,7 @@ webpackJsonp([0],{
 
 	var _Toolbar2 = _interopRequireDefault(_Toolbar);
 
-	var _Layout = __webpack_require__(900);
+	var _Layout = __webpack_require__(903);
 
 	var _Layout2 = _interopRequireDefault(_Layout);
 
@@ -2418,7 +2418,7 @@ webpackJsonp([0],{
 	            _lib2.default.createElement(
 	                _lib.Text,
 	                { style: [styles.navBarText, styles.navBarButtonText] },
-	                '\u8FD4\u56DE'
+	                '返回'
 	            )
 	        );
 	    },
@@ -2588,9 +2588,9 @@ webpackJsonp([0],{
 
 	var _base = __webpack_require__(774);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(890);
 
-	var _Controls = __webpack_require__(896);
+	var _Controls = __webpack_require__(899);
 
 	var _Controls2 = _interopRequireDefault(_Controls);
 
@@ -2668,7 +2668,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 887:
+/***/ 890:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2678,15 +2678,15 @@ webpackJsonp([0],{
 	});
 	exports.MultiTreeSelectorWidget = exports.MultiSelectorWidget = exports.TableWidget = undefined;
 
-	var _TableWidget2 = __webpack_require__(888);
+	var _TableWidget2 = __webpack_require__(891);
 
 	var _TableWidget3 = _interopRequireDefault(_TableWidget2);
 
-	var _MultiSelectorWidget2 = __webpack_require__(889);
+	var _MultiSelectorWidget2 = __webpack_require__(892);
 
 	var _MultiSelectorWidget3 = _interopRequireDefault(_MultiSelectorWidget2);
 
-	var _MultiTreeSelectorWidget2 = __webpack_require__(892);
+	var _MultiTreeSelectorWidget2 = __webpack_require__(895);
 
 	var _MultiTreeSelectorWidget3 = _interopRequireDefault(_MultiTreeSelectorWidget2);
 
@@ -2699,7 +2699,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 888:
+/***/ 891:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2830,7 +2830,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 889:
+/***/ 892:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2863,11 +2863,13 @@ webpackJsonp([0],{
 
 	var _base = __webpack_require__(774);
 
-	var _Item = __webpack_require__(890);
+	var _data = __webpack_require__(764);
+
+	var _Item = __webpack_require__(893);
 
 	var _Item2 = _interopRequireDefault(_Item);
 
-	var _MultiSelectorWidgetHelper = __webpack_require__(891);
+	var _MultiSelectorWidgetHelper = __webpack_require__(894);
 
 	var _MultiSelectorWidgetHelper2 = _interopRequireDefault(_MultiSelectorWidgetHelper);
 
@@ -2949,7 +2951,7 @@ webpackJsonp([0],{
 	                overscanRowCount: 0
 	                //noRowsRenderer={this._noRowsRenderer.bind(this)}
 	                , rowCount: this._helper.getSortedItems().length,
-	                rowHeight: 44,
+	                rowHeight: _data.Size.ITEM_HEIGHT,
 	                rowRenderer: this._rowRenderer.bind(this)
 	                //scrollToIndex={scrollToIndex}
 	            });
@@ -2992,7 +2994,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 890:
+/***/ 893:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3104,13 +3106,16 @@ webpackJsonp([0],{
 	                    ),
 	                    _lib2.default.createElement(
 	                        _lib.View,
-	                        { className: (0, _core.cn)('check-box-icon', 'react-view', (0, _core.cn)({
-	                                'active': this.state.selected
-	                            })), style: [styles.icon, { width: 30 }] },
-	                        _lib2.default.createElement(_base.Icon, { width: 16, height: 16 })
+	                        { style: [styles.icon, { width: _data.Size.ITEM_HEIGHT }] },
+	                        _lib2.default.createElement(_base.Checkbox, { selected: this.state.selected })
 	                    )
 	                )
 	            );
+	            //         return <View className={cn('check-box-icon', 'react-view', cn({
+	            //         'active': this.state.selected
+	            // }))} style={[styles.icon, {width: 30}]}>
+	            // <Icon width={16} height={16}></Icon>
+	            //         </View>
 	        }
 	    }]);
 
@@ -3129,7 +3134,7 @@ webpackJsonp([0],{
 	var styles = _lib.StyleSheet.create({
 	    row: {
 	        flexDirection: 'row',
-	        height: 44,
+	        height: _data.Size.ITEM_HEIGHT,
 	        borderBottomColor: _data.Colors.SPLIT,
 	        borderBottomWidth: 1 / _lib.PixelRatio.get()
 	    },
@@ -3152,7 +3157,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 891:
+/***/ 894:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3202,11 +3207,13 @@ webpackJsonp([0],{
 	            var front = [],
 	                items = [];
 	            this.items.forEach(function (item) {
-	                if (_this.value.indexOf(item.value) > -1) {
-	                    front.push(_extends({}, item, { selected: _this.type !== 1 }));
-	                } else {
-	                    items.push(_extends({}, item, { selected: _this.type === 1 }));
-	                }
+	                // if (this.value.indexOf(item.value) > -1) {
+	                //     front.push({...item, selected: this.type !== 1});
+	                // } else {
+	                items.push(_extends({}, item, {
+	                    selected: _this.type === 1 ? _this.value.indexOf(item.value) === -1 : _this.value.indexOf(item.value) > -1
+	                }));
+	                // }
 	            });
 	            return front.concat(items);
 	        }
@@ -3247,7 +3254,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 892:
+/***/ 895:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3280,15 +3287,15 @@ webpackJsonp([0],{
 
 	var _base = __webpack_require__(774);
 
-	var _Item = __webpack_require__(893);
+	var _Item = __webpack_require__(896);
 
 	var _Item2 = _interopRequireDefault(_Item);
 
-	var _MultiTreeSelectorWidgetHelper = __webpack_require__(894);
+	var _MultiTreeSelectorWidgetHelper = __webpack_require__(897);
 
 	var _MultiTreeSelectorWidgetHelper2 = _interopRequireDefault(_MultiTreeSelectorWidgetHelper);
 
-	var _MultiTreeSelectorWidgetAsyncHelper = __webpack_require__(895);
+	var _MultiTreeSelectorWidgetAsyncHelper = __webpack_require__(898);
 
 	var _MultiTreeSelectorWidgetAsyncHelper2 = _interopRequireDefault(_MultiTreeSelectorWidgetAsyncHelper);
 
@@ -3418,7 +3425,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 893:
+/***/ 896:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3625,7 +3632,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 894:
+/***/ 897:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3797,7 +3804,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 895:
+/***/ 898:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3969,7 +3976,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 896:
+/***/ 899:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4002,17 +4009,17 @@ webpackJsonp([0],{
 
 	var _base = __webpack_require__(774);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(890);
 
-	var _MultiSelectorComponent = __webpack_require__(897);
+	var _MultiSelectorComponent = __webpack_require__(900);
 
 	var _MultiSelectorComponent2 = _interopRequireDefault(_MultiSelectorComponent);
 
-	var _MultiTreeSelectorComponent = __webpack_require__(898);
+	var _MultiTreeSelectorComponent = __webpack_require__(901);
 
 	var _MultiTreeSelectorComponent2 = _interopRequireDefault(_MultiTreeSelectorComponent);
 
-	var _Item = __webpack_require__(899);
+	var _Item = __webpack_require__(902);
 
 	var _Item2 = _interopRequireDefault(_Item);
 
@@ -4071,7 +4078,8 @@ webpackJsonp([0],{
 	                { style: styles.wrapper },
 	                (0, _core.map)(this.template.getAllControlWidgetIds(), function (id) {
 	                    var $$widget = _this2.template.get$$WidgetById(id);
-	                    return _lib2.default.createElement(_Item2.default, { key: id, id: id, widget: widget, onPress: function onPress() {
+	                    var widget = new _data.Widget($$widget);
+	                    return _lib2.default.createElement(_Item2.default, { key: id, id: id, $$widget: $$widget, onPress: function onPress() {
 	                            var Component = null;
 	                            switch (widget.getType()) {
 	                                case BICst.WIDGET.STRING:
@@ -4088,9 +4096,9 @@ webpackJsonp([0],{
 	                                case BICst.WIDGET.YMD:
 	                            }
 	                            props.navigator.push({
-	                                name: new _data.Widget($$widget).getName(),
+	                                name: widget.getName(),
 	                                Component: Component,
-	                                title: new _data.Widget($$widget).getName()
+	                                title: widget.getName()
 	                            });
 	                        } });
 	                })
@@ -4141,7 +4149,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 897:
+/***/ 900:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4174,7 +4182,7 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(764);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(890);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4246,7 +4254,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 898:
+/***/ 901:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4279,7 +4287,7 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(764);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(890);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4361,7 +4369,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 899:
+/***/ 902:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4394,7 +4402,7 @@ webpackJsonp([0],{
 
 	var _base = __webpack_require__(774);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(890);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4451,7 +4459,7 @@ webpackJsonp([0],{
 	                        _lib2.default.createElement(
 	                            _lib.Text,
 	                            null,
-	                            props.widget.getName()
+	                            new _data.Widget(props.$$widget).getName()
 	                        )
 	                    )
 	                )
@@ -4468,7 +4476,7 @@ webpackJsonp([0],{
 	_reactMixin2.default.onClass(Item, _reactAddonsPureRenderMixin2.default);
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
-	        height: 44,
+	        height: _data.Size.ITEM_HEIGHT,
 	        padding: '0 4px',
 	        borderBottom: '1px solid ' + _data.Colors.SPLIT
 	    }
@@ -4477,7 +4485,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 900:
+/***/ 903:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4512,23 +4520,23 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(764);
 
-	var _ChartComponent = __webpack_require__(901);
+	var _ChartComponent = __webpack_require__(904);
 
 	var _ChartComponent2 = _interopRequireDefault(_ChartComponent);
 
-	var _TableComponent = __webpack_require__(902);
+	var _TableComponent = __webpack_require__(905);
 
 	var _TableComponent2 = _interopRequireDefault(_TableComponent);
 
-	var _DetailTableComponent = __webpack_require__(907);
+	var _DetailTableComponent = __webpack_require__(910);
 
 	var _DetailTableComponent2 = _interopRequireDefault(_DetailTableComponent);
 
-	var _MultiSelectorComponent = __webpack_require__(897);
+	var _MultiSelectorComponent = __webpack_require__(900);
 
 	var _MultiSelectorComponent2 = _interopRequireDefault(_MultiSelectorComponent);
 
-	var _MultiTreeSelectorComponent = __webpack_require__(898);
+	var _MultiTreeSelectorComponent = __webpack_require__(901);
 
 	var _MultiTreeSelectorComponent2 = _interopRequireDefault(_MultiTreeSelectorComponent);
 
@@ -4671,7 +4679,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 901:
+/***/ 904:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4769,7 +4777,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 902:
+/***/ 905:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4802,21 +4810,21 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(764);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(890);
 
-	var _TableComponentHelper = __webpack_require__(903);
+	var _TableComponentHelper = __webpack_require__(906);
 
 	var _TableComponentHelper2 = _interopRequireDefault(_TableComponentHelper);
 
-	var _TableComponentWidthHelper = __webpack_require__(904);
+	var _TableComponentWidthHelper = __webpack_require__(907);
 
 	var _TableComponentWidthHelper2 = _interopRequireDefault(_TableComponentWidthHelper);
 
-	var _TableCell = __webpack_require__(905);
+	var _TableCell = __webpack_require__(908);
 
 	var _TableCell2 = _interopRequireDefault(_TableCell);
 
-	var _TableHeader = __webpack_require__(906);
+	var _TableHeader = __webpack_require__(909);
 
 	var _TableHeader2 = _interopRequireDefault(_TableHeader);
 
@@ -4932,7 +4940,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 903:
+/***/ 906:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5051,7 +5059,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 904:
+/***/ 907:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5208,7 +5216,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 905:
+/***/ 908:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5241,7 +5249,7 @@ webpackJsonp([0],{
 
 	var _base = __webpack_require__(774);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(890);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5314,7 +5322,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 906:
+/***/ 909:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5347,7 +5355,7 @@ webpackJsonp([0],{
 
 	var _base = __webpack_require__(774);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(890);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5420,7 +5428,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 907:
+/***/ 910:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5453,21 +5461,21 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(764);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(890);
 
-	var _DetailTableComponentHelper = __webpack_require__(908);
+	var _DetailTableComponentHelper = __webpack_require__(911);
 
 	var _DetailTableComponentHelper2 = _interopRequireDefault(_DetailTableComponentHelper);
 
-	var _TableComponentWidthHelper = __webpack_require__(904);
+	var _TableComponentWidthHelper = __webpack_require__(907);
 
 	var _TableComponentWidthHelper2 = _interopRequireDefault(_TableComponentWidthHelper);
 
-	var _TableCell = __webpack_require__(905);
+	var _TableCell = __webpack_require__(908);
 
 	var _TableCell2 = _interopRequireDefault(_TableCell);
 
-	var _TableHeader = __webpack_require__(906);
+	var _TableHeader = __webpack_require__(909);
 
 	var _TableHeader2 = _interopRequireDefault(_TableHeader);
 
@@ -5574,7 +5582,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 908:
+/***/ 911:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5653,13 +5661,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 909:
+/***/ 912:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(910);
+	var content = __webpack_require__(913);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(619)(content, {});
@@ -5680,7 +5688,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 910:
+/***/ 913:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(618)();
@@ -5695,13 +5703,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 911:
+/***/ 914:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(912);
+	var content = __webpack_require__(915);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(619)(content, {});
@@ -5722,7 +5730,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 912:
+/***/ 915:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(618)();
@@ -5737,13 +5745,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 913:
+/***/ 916:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(914);
+	var content = __webpack_require__(917);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(619)(content, {});
@@ -5764,7 +5772,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 914:
+/***/ 917:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(618)();
@@ -5779,13 +5787,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 915:
+/***/ 918:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(916);
+	var content = __webpack_require__(919);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(619)(content, {});
@@ -5806,7 +5814,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 916:
+/***/ 919:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(618)();
@@ -5821,13 +5829,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 917:
+/***/ 920:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(918);
+	var content = __webpack_require__(921);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(619)(content, {});
@@ -5848,7 +5856,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 918:
+/***/ 921:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(618)();
@@ -5863,13 +5871,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 919:
+/***/ 922:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(920);
+	var content = __webpack_require__(923);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(619)(content, {});
@@ -5890,7 +5898,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 920:
+/***/ 923:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(618)();
@@ -5898,7 +5906,7 @@ webpackJsonp([0],{
 
 
 	// module
-	exports.push([module.id, "/****添加计算宽度的--运算符直接需要space****/\r\n/****** common color(常用颜色,可用于普遍场景) *****/\r\n/**** custom color(自定义颜色,用于特定场景) ****/\r\n@font-face {\r\n  font-family: 'h5';\r\n  src: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.woff') format('woff'), /* chrome、firefox */ url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/ url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.svg#svgFontName') format('svg');\r\n  \r\n  /*  iOS 4.1- */\r\n}\r\n.b-font {\r\n  font-family: \"h5\";\r\n  font-style: normal;\r\n  -webkit-font-smoothing: antialiased;\r\n  -webkit-text-stroke-width: 0.2px;\r\n  -moz-osx-font-smoothing: grayscale;\r\n}\r\nhtml {\r\n  height: 100%;\r\n  overflow: hidden;\r\n}\r\nbody {\r\n  position: absolute;\r\n  width: 100%;\r\n  height: 100%;\r\n  margin: 0;\r\n  padding: 0;\r\n  top: 0;\r\n  left: 0;\r\n  background-repeat: repeat;\r\n  -webkit-user-select: none;\r\n  -moz-user-select: none;\r\n  -ms-user-select: none;\r\n  -o-user-select: none;\r\n  user-select: none;\r\n  color: #1a1a1a;\r\n  -webkit-font-smoothing: antialiased;\r\n  -moz-osx-font-smoothing: grayscale;\r\n  text-decoration: none;\r\n  -kthml-user-focus: normal;\r\n  -moz-user-focus: normal;\r\n  -moz-outline: 0 none;\r\n  outline: 0 none;\r\n}\r\n#wrapper {\r\n  position: absolute;\r\n  left: 0;\r\n  right: 0;\r\n  top: 0;\r\n  bottom: 0;\r\n  overflow: hidden;\r\n  overflow-x: hidden;\r\n  overflow-y: hidden;\r\n}\r\na {\r\n  outline: none;\r\n  text-decoration: none;\r\n}\r\na:focus {\r\n  outline: 0;\r\n}\r\ninput,\r\ntextarea {\r\n  margin: 0;\r\n  padding: 0;\r\n  outline: none;\r\n  border: 1px solid #cccccc;\r\n}\r\nul,\r\nol {\r\n  margin: 0;\r\n  padding: 0;\r\n}\r\nul {\r\n  list-style: disc;\r\n}\r\nli {\r\n  list-style-type: none;\r\n}\r\ni {\r\n  font-style: normal;\r\n  -webkit-font-smoothing: antialiased;\r\n  -webkit-text-stroke-width: 0.2px;\r\n  -moz-osx-font-smoothing: grayscale;\r\n}\r\n", ""]);
+	exports.push([module.id, "/****添加计算宽度的--运算符直接需要space****/\n/****** common color(常用颜色,可用于普遍场景) *****/\n/**** custom color(自定义颜色,用于特定场景) ****/\n@font-face {\n  font-family: 'h5';\n  src: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.woff') format('woff'), /* chrome、firefox */ url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/ url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.svg#svgFontName') format('svg');\n  \n  /*  iOS 4.1- */\n}\n.b-font {\n  font-family: \"h5\";\n  font-style: normal;\n  -webkit-font-smoothing: antialiased;\n  -webkit-text-stroke-width: 0.2px;\n  -moz-osx-font-smoothing: grayscale;\n}\nhtml {\n  height: 100%;\n  overflow: hidden;\n}\nbody {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  top: 0;\n  left: 0;\n  background-repeat: repeat;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  -o-user-select: none;\n  user-select: none;\n  color: #1a1a1a;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  text-decoration: none;\n  -kthml-user-focus: normal;\n  -moz-user-focus: normal;\n  -moz-outline: 0 none;\n  outline: 0 none;\n}\n*,\n*:before,\n*:after {\n  box-sizing: border-box;\n}\n#wrapper {\n  position: absolute;\n  left: 0;\n  right: 0;\n  top: 0;\n  bottom: 0;\n  overflow: hidden;\n  overflow-x: hidden;\n  overflow-y: hidden;\n}\na {\n  outline: none;\n  text-decoration: none;\n}\na:focus {\n  outline: 0;\n}\ninput,\ntextarea {\n  margin: 0;\n  padding: 0;\n  outline: none;\n  border: 1px solid #cccccc;\n}\nul,\nol {\n  margin: 0;\n  padding: 0;\n}\nul {\n  list-style: disc;\n}\nli {\n  list-style-type: none;\n}\ni {\n  font-style: normal;\n  -webkit-font-smoothing: antialiased;\n  -webkit-text-stroke-width: 0.2px;\n  -moz-osx-font-smoothing: grayscale;\n}\n", ""]);
 
 	// exports
 

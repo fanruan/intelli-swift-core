@@ -16,7 +16,7 @@ import React, {
     TouchableHighlight
 } from 'lib'
 
-import {Colors, Template} from 'data'
+import {Colors, Size, Template, Widget} from 'data'
 
 import {VerticalCenterLayout, Icon, Table, AutoSizer} from 'base'
 
@@ -59,7 +59,7 @@ class Item extends Component {
         return <TouchableHighlight underlayColor={Colors.PRESS} onPress={this.props.onPress}>
             <View>
                 <VerticalCenterLayout style={styles.wrapper}>
-                    <Text>{props.widget.getName()}</Text>
+                    <Text>{new Widget(props.$$widget).getName()}</Text>
                 </VerticalCenterLayout>
             </View>
         </TouchableHighlight>
@@ -69,7 +69,7 @@ class Item extends Component {
 mixin.onClass(Item, PureRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
-        height: 44,
+        height: Size.ITEM_HEIGHT,
         padding: '0 4px',
         borderBottom: '1px solid ' + Colors.SPLIT
     }

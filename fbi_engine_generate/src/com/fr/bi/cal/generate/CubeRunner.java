@@ -1,13 +1,13 @@
 package com.fr.bi.cal.generate;
 
 import com.finebi.cube.api.BICubeManager;
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.impl.conf.CubeBuildByPart;
 import com.finebi.cube.impl.conf.CubeBuildStaff;
 import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
 import com.fr.bi.common.inter.BrokenTraversal;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
@@ -63,10 +63,10 @@ public class CubeRunner {
                 try {
                     cubeTask.start();
                     cubeTask.run();
+                    cubeTask.end();
                 } catch (Exception e) {
                     BILogger.getLogger().error(e.getMessage(), e);
                 } finally {
-                    cubeTask.end();
                     finish();
                     setStatue(Status.LOADED);
                     BILogger.getLogger().info(BIDateUtils.getCurrentDateTime() + " Build OLAP database Cost:" + DateUtils.timeCostFrom(start));
@@ -166,10 +166,15 @@ public class CubeRunner {
     }
 
     private void finish() {
-        setStatue(Status.REPLACING);
-        CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()).clear();
+        BILogger.getLogger().info("start persist data!");
+        long t = System.currentTimeMillis();
+        try {
+            BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
+            BILogger.getLogger().info("persist data finished! time cost: " + DateUtils.timeCostFrom(t));
+        } catch (Exception e) {
+            BILogger.getLogger().error(e.getMessage(), e);
+        }
         BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
-        setStatue(Status.LOADED);
         /* 前台进度条完成进度最多到90%，当cube文件替换完成后传入调用logEnd，进度条直接到100%*/
         BIConfigureManagerCenter.getLogManager().logEnd(biUser.getUserId());
     }

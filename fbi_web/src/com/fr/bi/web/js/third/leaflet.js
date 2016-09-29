@@ -9763,7 +9763,7 @@
             if(vanchart && vanchart.components.rangeLegend){
                 var rangeLegend = vanchart.components.rangeLegend;
                 if(rangeLegend.options.visible){
-                    if(VanUtils.containsPoint(rangeLegend.bounds, [first.layerX || first.clientX, first.layerY || first.clientY])){
+                    if(VanUtils.containsPoint(rangeLegend.bounds, [first.clientX || first.layerX, first.clientY || first.layerY])){
                         return;
                     }
                 }

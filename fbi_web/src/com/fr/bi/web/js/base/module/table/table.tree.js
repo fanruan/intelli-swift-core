@@ -228,7 +228,7 @@ BI.TableTree = BI.inherit(BI.Widget, {
         }
         var deep = this._getHDeep();
         var vDeep = this._getVDeep();
-        var header = this._createHeader(deep, vDeep);
+        header = this._createHeader(deep, vDeep);
         items = BI.TableTree.formatItems(o.items, deep);
         this.table.populate(items, header);
     },
