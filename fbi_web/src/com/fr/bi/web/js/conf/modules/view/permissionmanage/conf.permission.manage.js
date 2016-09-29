@@ -86,7 +86,7 @@ BIConf.PermissionManageView = BI.inherit(BI.View, {
 
         this.clearButton = BI.createWidget({
             type: "bi.text_button",
-            text: BI.i18nText("BI-Clear"),
+            text: BI.i18nText("BI-Clears"),
             height: 30,
             cls: "select-field"
         });

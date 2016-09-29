@@ -9,6 +9,9 @@
   font-size: 14px;
   color: #808080;
 }
+.bi-widget-filter .main-filter-pane {
+  background: #f4f4f4;
+}
 .bi-widget-filter .filter-pane {
   min-width: 0;
 }

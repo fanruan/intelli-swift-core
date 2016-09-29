@@ -108,7 +108,7 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
         this.showNumber = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Display_Sequence_Number"),
-            cls: "check-text-name",
+            cls: "attr-names",
             logic: {
                 dynamic: true
             }

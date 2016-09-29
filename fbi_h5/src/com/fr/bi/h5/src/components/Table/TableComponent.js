@@ -12,6 +12,7 @@ import React, {
     Fetch
 } from 'lib'
 
+import {Widget} from 'data'
 import {TableWidget} from 'widgets';
 
 import TableComponentHelper from './TableComponentHelper';
@@ -26,7 +27,7 @@ class TableComponent extends Component {
 
     constructor(props, context) {
         super(props, context);
-        this._tableHelper = new TableComponentHelper(props.widget);
+        this._tableHelper = new TableComponentHelper(props.$$widget);
         this._widthHelper = new TableComponentWidthHelper(this._tableHelper, props.width);
 
     }
@@ -44,7 +45,7 @@ class TableComponent extends Component {
     }
 
     _fetchData() {
-        const wi = this.props.widget.createJson();
+        const wi = new Widget(this.props.$$widget).createJson();
         const w = {
             expander: {
                 x: {

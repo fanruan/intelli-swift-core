@@ -15,7 +15,7 @@ import React, {
     Fetch,
     Navigator,
     TouchableOpacity
-} from 'lib'
+    } from 'lib'
 
 import {Colors, Template} from 'data'
 
@@ -64,13 +64,14 @@ class Main extends Component {
     constructor(props, context) {
         super(props, context);
         console.log(props);
+        this.template = new Template(props.$$template);
         // template={new Template(template)} actions={actions}
     }
 
     renderScene(route, navigationOperations, onComponentRef) {
         const {...props} = this.props;
         if (route.name === 'index') {
-            if (props.template.hasControlWidget()) {
+            if (this.template.hasControlWidget()) {
                 return <View style={styles.index}>
                     <Layout width={width} height={height - 94} {...props} navigator={navigationOperations}/>
 
@@ -86,7 +87,7 @@ class Main extends Component {
                 width={width} height={height - 50}
                 {...props}
                 navigator={navigationOperations}
-            />
+                />
         );
     }
 
@@ -109,7 +110,7 @@ class Main extends Component {
                     }
                     return Navigator.SceneConfigs.FloatFromRight;
                 }}
-            />
+                />
         );
     }
 
@@ -169,18 +170,5 @@ const styles = StyleSheet.create({
         paddingLeft: 10
     }
 });
-// export default Main
 
-function mapStateToProps(state) {
-    /* Populated by react-webpack-redux:reducer */
-    const props = {
-        template: new Template(state.template)
-    };
-    return props;
-}
-function mapDispatchToProps(dispatch) {
-    /* Populated by react-webpack-redux:action */
-    const actionMap = {actions: bindActionCreators(TodoActions, dispatch)};
-    return actionMap;
-}
-export default connect(mapStateToProps, mapDispatchToProps)(Main);
+export default Main

@@ -15,6 +15,7 @@ import com.fr.script.Calculator;
 import com.fr.script.CalculatorMap;
 import com.fr.stable.ActorConstants;
 import com.fr.stable.ActorFactory;
+import com.fr.stable.fun.IOFileAttrMark;
 import com.fr.stable.script.CalculatorProvider;
 import com.fr.stable.script.ColumnRowRange;
 import com.fr.web.core.ReportSession;
@@ -145,5 +146,10 @@ public abstract class AbstractSession extends SessionIDInfor implements ReportSe
                 book2Show = book;
             }
         }
+    }
+
+    @Override
+    public IOFileAttrMark getIOFileAttrMark(String tag) {
+        return null;
     }
 }

@@ -1,3 +1,6 @@
 export Template from './Template'
+export Widget from './Template/Widget'
+export Dimension from './Template/Widget/Dimension'
+export Target from './Template/Widget/Target'
 export Colors from './Colors'
 export Size from './Size'

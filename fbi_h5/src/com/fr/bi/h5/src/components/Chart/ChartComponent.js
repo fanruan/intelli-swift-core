@@ -11,6 +11,7 @@ import React, {
     View,
     Fetch
     } from 'lib'
+import {Widget} from 'data'
 
 
 class Main extends Component {
@@ -24,9 +25,9 @@ class Main extends Component {
         super(props, context);
     }
 
-    componentWillMount(){
-        const widgetObj = this.props.widget;
-        const wi = widgetObj.createJson();
+    componentWillMount() {
+        const $$widget = this.props.$$widget;
+        const wi = new Widget($$widget).createJson();
         var w = {...wi, page: -1};
         Fetch(BH.servletURL + '?op=fr_bi_dezi&cmd=chart_setting', {
             method: "POST",

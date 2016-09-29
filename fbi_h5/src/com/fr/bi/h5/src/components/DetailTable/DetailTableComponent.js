@@ -10,7 +10,9 @@ import React, {
     ListView,
     View,
     Fetch
-} from 'lib'
+    } from 'lib'
+
+import {Widget} from 'data'
 
 import {TableWidget} from 'widgets';
 
@@ -28,7 +30,7 @@ class DetailTableComponent extends Component {
 
     constructor(props, context) {
         super(props, context);
-        this._tableHelper = new DetailTableComponentHelper(props.widget);
+        this._tableHelper = new DetailTableComponentHelper(props.$$widget);
         this._widthHelper = new TableComponentWidthHelper(this._tableHelper, props.width);
     }
 
@@ -45,7 +47,7 @@ class DetailTableComponent extends Component {
     }
 
     _fetchData() {
-        const wi = this.props.widget.createJson();
+        const wi = new Widget(this.props.$$widget).createJson();
         Fetch(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
             method: "POST",
             body: JSON.stringify({widget: wi, sessionID: BH.sessionID})
@@ -74,7 +76,7 @@ class DetailTableComponent extends Component {
             itemsCellRenderer={({colIndex, rowIndex, items, ...props}) => {
                 return <TableCell {...items[colIndex][rowIndex]} {...props}/>
             }}
-        >
+            >
         </TableWidget>
     }
 }
