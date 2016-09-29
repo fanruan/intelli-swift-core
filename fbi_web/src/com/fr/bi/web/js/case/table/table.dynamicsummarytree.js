@@ -275,7 +275,9 @@ BI.extend(BI.DynamicSummaryTreeTable, {
             }
             result.push(c.concat(node || []));
         });
-        result.push(header);
+        if (header && header.length > 0) {
+            result.push(header);
+        }
         return result;
     },
 

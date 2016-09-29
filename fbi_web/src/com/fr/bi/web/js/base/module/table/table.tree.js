@@ -55,7 +55,9 @@ BI.TableTree = BI.inherit(BI.Widget, {
             }
             result.push(c.concat(node || []));
         });
-        result.push(header);
+        if (header && header.length > 0) {
+            result.push(header);
+        }
         return result;
     },
 
