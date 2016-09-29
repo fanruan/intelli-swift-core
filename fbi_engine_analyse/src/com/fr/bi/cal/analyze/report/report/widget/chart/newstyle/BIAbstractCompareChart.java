@@ -19,6 +19,8 @@ public abstract class BIAbstractCompareChart extends BIAbstractAxisChartSetting 
     public BIAbstractCompareChart() throws JSONException {
         extraXAxis = new JSONObject()
                 .put("type", "category")
+                .put("position", "top")
+                .put("showLabel", false)
                 .put("title", new JSONObject()
                         .put("style", this.getFontStyle()))
                 .put("labelStyle", this.getFontStyle());
@@ -26,20 +28,18 @@ public abstract class BIAbstractCompareChart extends BIAbstractAxisChartSetting 
 
     @Override
     public JSONObject formatItems(JSONArray data, JSONArray types, JSONObject options) throws JSONException {
-        JSONArray items = new JSONArray();
         for(int i = 0; i < data.length(); i++){
             JSONArray item = data.getJSONArray(i);
-            for(int j = 0; j < items.length(); ){
+            for(int j = 0; j < item.length(); j++){
                 JSONObject it = item.getJSONObject(j);
                 if(i > 0){
-                    item.put(it.put("reversed", true).put("xAxis", 1));
+                    it.put("reversed", true).put("xAxis", 1);
                 }else{
-                    item.put(it.put("reversed", false).put("xAxis", 0));
+                    it.put("reversed", false).put("xAxis", 0);
                 }
             }
-            items.put(item);
         }
-        return super.formatItems(items, types, options);
+        return super.formatItems(data, types, options);
     }
 
     @Override
@@ -53,7 +53,7 @@ public abstract class BIAbstractCompareChart extends BIAbstractAxisChartSetting 
                     axis.getJSONObject("title").put("text", this.getXYAxisTitle(options.optInt("left_y_axis_number_level"), BIChartSettingConstant.LEFT_AXIS, options.optBoolean("show_left_y_axis_title"), options.optString("left_y_axis_unit"), options.optString("left_y_axis_title")));
                     axis.getJSONObject("title").put("rotation", BIChartSettingConstant.ROTATION);
                     axis.put("lineWidth", options.optInt("line_width"))
-                            .put("showLabel", options.optBoolean("showLabel"))
+                            .put("showLabel", options.optBoolean("show_label"))
                             .put("enableTick", options.optBoolean("enable_tick"))
                             .put("reversed", false)
                             .put("enableMinorTick", options.optBoolean("enable_minor_tick"))
@@ -65,7 +65,7 @@ public abstract class BIAbstractCompareChart extends BIAbstractAxisChartSetting 
                     axis.getJSONObject("title").put("text", this.getXYAxisTitle(options.optInt("right_y_axis_number_level"), BIChartSettingConstant.RIGHT_AXIS, options.optBoolean("show_right_y_axis_title"), options.optString("right_y_axis_unit"), options.optString("right_y_axis_title")));
                     axis.getJSONObject("title").put("rotation", BIChartSettingConstant.ROTATION);
                     axis.put("lineWidth", options.optInt("line_width"))
-                            .put("showLabel", options.optBoolean("showLabel"))
+                            .put("showLabel", options.optBoolean("show_label"))
                             .put("enableTick", options.optBoolean("enable_tick"))
                             .put("reversed", true)
                             .put("enableMinorTick", options.optBoolean("enable_minor_tick"))
@@ -75,9 +75,10 @@ public abstract class BIAbstractCompareChart extends BIAbstractAxisChartSetting 
                     break;
             }
             double[] res = this.calculateValueNiceDomain(0, this.maxes.get(axis.getInt("axisIndex")));
-            axis.put("max", res[1] * 2);
-            axis.put("min", res[0] * 2);
-            axis.put("tickInterval", (res[1] - res[0]) / 5);
+            double max = res[1] * 2, min = res[0] * 2;
+            axis.put("max", max);
+            axis.put("min", min);
+            axis.put("tickInterval", (max - min) / 5);
         }
         JSONArray xAxis = config.getJSONArray("xAxis");
         xAxis.getJSONObject(0).getJSONObject("title")
@@ -89,10 +90,9 @@ public abstract class BIAbstractCompareChart extends BIAbstractAxisChartSetting 
                 .put("enableMinorTick", options.optBoolean("enable_minor_tick"))
                 .put("labelRotation", options.optString("text_direction"))
                 .put("gridLineWidth", options.optBoolean("show_grid_line") ? 1 : 0);
-        xAxis.getJSONObject(1)
-                .put("lineWidth", options.optInt("line_width"))
+        xAxis.put(extraXAxis.put("lineWidth", options.optInt("line_width"))
                 .put("enableTick", options.optBoolean("enable_tick"))
-                .put("enableMinorTick", options.optBoolean("enable_minor_tick"));
+                .put("enableMinorTick", options.optBoolean("enable_minor_tick")));
     }
 
     @Override
@@ -106,8 +106,8 @@ public abstract class BIAbstractCompareChart extends BIAbstractAxisChartSetting 
                 JSONObject da = data.getJSONObject(j);
                 if(position == item.optInt("yAxis")){
                     double y = da.optDouble("y", 0);
-                    da.put("y", BIChartSettingConstant.FOURFIEXEDFORMAT.format(y / magnify));
-                    if ((!Double.isNaN(max) || y > max)) {
+                    da.put("y", this.getFourFiexedFormat().format(y / magnify));
+                    if ((Double.isNaN(max) || y > max)) {
                         max = y;
                     }
                 }
@@ -121,12 +121,5 @@ public abstract class BIAbstractCompareChart extends BIAbstractAxisChartSetting 
                 this.maxes.add(max);
             }
         }
-    }
-
-    @Override
-    public JSONObject formatConfig(JSONObject options, JSONArray data) throws JSONException {
-        JSONObject config = super.formatConfig(options, data);
-        config.getJSONArray("xAxis").put(this.extraXAxis);
-        return config;
     }
 }
