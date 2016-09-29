@@ -137,7 +137,9 @@ public class SingleUserBIRecord implements BIRecord {
      */
     @Override
     public void recordToInfoTable(IPersistentTable table, long seconds) {
-        tableLogMap.put(table, new BITableCorrectLog(table, seconds, userId));
+        if (null != table) {
+            tableLogMap.put(table, new BITableCorrectLog(table, seconds, userId));
+        }
     }
 
     /**
