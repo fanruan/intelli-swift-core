@@ -39,7 +39,7 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
                 titleColourWrapper,
                 titleWordStyleWrapper
             ],
-            hgap: 10
+            hgap: 5
         });
     },
 
