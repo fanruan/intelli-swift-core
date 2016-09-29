@@ -10,7 +10,7 @@ import com.fr.report.poly.AbstractPolyReport;
 import com.fr.report.poly.ResultChartBlock;
 import com.fr.report.report.ResultReport;
 import com.fr.stable.ExportConstants;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import com.fr.third.v2.org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import java.awt.*;
 import java.util.List;
@@ -45,7 +45,9 @@ public class BIExcel2007Exporter extends StreamExcel2007Exporter {
         while (offset.x < columnCount) {
             offset.y = 0;
             while (offset.y < rowCount) {
-                this.innerExportReport(new BIExcelExporterBlock(innerReport, offset.x, offset.y, Math.min(columnCount - offset.x, ExportConstants.MAX_COLS_2007), Math.min(rowCount - offset.y, ExportConstants.MAX_ROWS_2007)),
+                this.innerExportReport(new BIExcelExporterBlock(innerReport, offset.x, offset.y,
+                                Math.min(columnCount - offset.x, ExportConstants.MAX_COLS_2007),
+                                Math.min(rowCount - offset.y, ExportConstants.MAX_ROWS_2007)),
                         book.getReportExportAttr(), book.getReportName(0) + (c == 1 ? "" : "_" + c),
                         (SXSSFWorkbook) workbookWrapper.getWorkbook(), cellList, cellFormulaList, 0);
                 offset.y += ExportConstants.MAX_ROWS_2007;
