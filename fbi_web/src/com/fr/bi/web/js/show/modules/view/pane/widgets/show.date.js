@@ -140,7 +140,7 @@ BIShow.DateWidgetView = BI.inherit(BI.View, {
                 this.widget.attr("items")[1].left = width - 15 - minComboWidth;
             } else {
                 this.combo.setVisible(true);
-                this.widget.attr("items")[0].right = width - 33 - nameWidth;
+                this.widget.attr("items")[0].right = width - 43 - nameWidth;
                 this.widget.attr("items")[1].left = 33 + nameWidth;
             }
         } else {
