@@ -2,6 +2,12 @@
  * Created by Young's on 2016/5/17.
  */
 BI.SingleAddRoleSearcher = BI.inherit(BI.Widget, {
+
+    _constant: {
+        SHOW_TIP: 1,
+        SHOW_ROLE: 2
+    },
+
     _defaultConfig: function () {
         return BI.extend(BI.SingleAddRoleSearcher.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-single-add-role-searcher"
@@ -11,19 +17,37 @@ BI.SingleAddRoleSearcher = BI.inherit(BI.Widget, {
     _init: function () {
         BI.SingleAddRoleSearcher.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        this.roles = BI.createWidget({
-            type: "bi.button_group",
-            items: [],
-            chooseType: BI.Selection.Multi,
-            layouts: [{
-                type: "bi.left",
-                scrollable: true,
-                rgap: 10,
-                vgap: 5
-            }]
-        });
-        this.roles.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            self.saveButton.setText(BI.i18nText("BI-Sen_Confirm_Use_Selected_1", this.getValue().length));
+
+        this.tab = BI.createWidget({
+            type: "bi.tab",
+            defaultShowIndex: this._constant.SHOW_ROLE,
+            cardCreator: function (v) {
+                switch (v) {
+                    case self._constant.SHOW_ROLE:
+                        self.roles = BI.createWidget({
+                            type: "bi.button_group",
+                            items: [],
+                            chooseType: BI.Selection.Multi,
+                            layouts: [{
+                                type: "bi.left",
+                                scrollable: true,
+                                rgap: 10,
+                                vgap: 5
+                            }]
+                        });
+                        self.roles.on(BI.ButtonGroup.EVENT_CHANGE, function () {
+                            self.saveButton.setText(BI.i18nText("BI-Sen_Confirm_Use_Selected_1", this.getValue().length));
+                        });
+                        return self.roles;
+                    case self._constant.SHOW_TIP:
+                        self.tip = BI.createWidget({
+                            type: "bi.label",
+                            cls: "tip-comment",
+                            height: 50
+                        });
+                        return self.tip;
+                }
+            }
         });
 
         this.searcher = BI.createWidget({
@@ -70,7 +94,7 @@ BI.SingleAddRoleSearcher = BI.inherit(BI.Widget, {
                 }
             }
         });
-        this.searcher.setAdapter(this.roles);
+        this.searcher.setAdapter(this.tab);
         this.searcher.on(BI.Searcher.EVENT_CHANGE, function () {
             self.saveButton.setText(BI.i18nText("BI-Sen_Confirm_Use_Selected_1", this.getValue().length));
         });
@@ -105,7 +129,7 @@ BI.SingleAddRoleSearcher = BI.inherit(BI.Widget, {
                 },
                 height: 50
             }, {
-                el: this.roles,
+                el: this.tab,
                 height: "fill"
             }, {
                 el: {
@@ -127,10 +151,16 @@ BI.SingleAddRoleSearcher = BI.inherit(BI.Widget, {
         var sortedRoles = BI.sortBy(allRoles, function (index, item) {
             return item.departmentid;
         });
-        var settedRoles = BI.Utils.getPackageAuthorityByID(packageId);
+        var setRoles = BI.Utils.getPackageAuthorityByID(packageId);
+        if (BI.isNotNull(setRoles) && sortedRoles.length === setRoles.length) {
+            this.tab.setSelect(this._constant.SHOW_TIP);
+            this.tip.setText(BI.i18nText("BI-All_Roles_Set_To_Package"));
+            return;
+        }
+        this.tab.setSelect(this._constant.SHOW_ROLE);
         var items = [];
         BI.each(sortedRoles, function (i, role) {
-            var found = BI.some(settedRoles, function (j, r) {
+            var found = BI.some(setRoles, function (j, r) {
                 if (r.role_id === role.id && r.role_type === role.role_type) {
                     return true;
                 }

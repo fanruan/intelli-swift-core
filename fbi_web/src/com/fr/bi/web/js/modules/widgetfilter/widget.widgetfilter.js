@@ -20,6 +20,7 @@ BI.WidgetFilter = BI.inherit(BI.Widget, {
         this.model = new BI.WidgetFilterModel();
         this.tab = BI.createWidget({
             type: "bi.tab",
+            cls: "main-filter-pane",
             cardCreator: function (v) {
                 switch (v) {
                     case self._constants.SHOW_FILTER:

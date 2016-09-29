@@ -4,13 +4,13 @@
  * 关联关系面板
  */
 BI.RelationPane = BI.inherit(BI.Widget, {
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.RelationPane.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-relation-pane"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.RelationPane.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.model = new BI.RelationPaneModel({
@@ -23,25 +23,32 @@ BI.RelationPane = BI.inherit(BI.Widget, {
         var addRelationTable = BI.createWidget({
             type: "bi.button",
             text: "+" + BI.i18nText("BI-Linked_To_Other"),
-            height: 30
+            height: 30,
+            width: 140
         });
-        addRelationTable.on(BI.Button.EVENT_CHANGE, function(){
+        addRelationTable.on(BI.Button.EVENT_CHANGE, function () {
             self._createSelectDataMask();
         });
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
             items: [this.relationTree, {
-                type: "bi.right",
-                items: [addRelationTable],
-                hgap: 10
+                type: "bi.left_right_vertical_adapt",
+                items: {
+                    right: [addRelationTable]
+                },
+                rrgap: 98,
+                height: 60
             }]
         });
+        if (this.model.getRelationIds().length === 0) {
+            this._createSelectDataMask();
+        }
     },
 
-    _drawSVGLine: function(){
+    _drawSVGLine: function () {
         var treeValue = this.relationTree.getValue();
-        if(treeValue.length === 0 || treeValue[0] === ""){
+        if (treeValue.length === 0 || treeValue[0] === "") {
             return;
         }
         var svg = BI.createWidget({
@@ -49,15 +56,15 @@ BI.RelationPane = BI.inherit(BI.Widget, {
         });
         svg.element.css({"z-index": -1});
         var branchLength = treeValue.length;
-        svg.path("M160," + branchLength*105/2 + "L180," + branchLength*105/2)
+        svg.path("M160," + branchLength * 105 / 2 + "L180," + branchLength * 105 / 2)
             .attr({stroke: "gray"});
-        svg.path("M180," + branchLength*105/2 + "L180," + 105/2 +
-            "M180," + branchLength*105/2 + "L" + "180," + 105*(2*branchLength - 1)/2)
+        svg.path("M180," + branchLength * 105 / 2 + "L180," + 105 / 2 +
+            "M180," + branchLength * 105 / 2 + "L" + "180," + 105 * (2 * branchLength - 1) / 2)
             .attr({stroke: "gray"});
         var path = "";
-        BI.each(treeValue, function(i, v){
-            path = path + "M180," + (2*i + 1) * 105/2 + "L200," + (2*i + 1)*105/2 +
-                    "M300," + (2*i + 1)*105/2 + "L340," + (2*i + 1)*105/2;
+        BI.each(treeValue, function (i, v) {
+            path = path + "M180," + (2 * i + 1) * 105 / 2 + "L200," + (2 * i + 1) * 105 / 2 +
+                "M300," + (2 * i + 1) * 105 / 2 + "L340," + (2 * i + 1) * 105 / 2;
         });
         svg.path(path).attr({stroke: "gray"});
         BI.createWidget({
@@ -73,7 +80,7 @@ BI.RelationPane = BI.inherit(BI.Widget, {
         })
     },
 
-    _createSelectDataMask: function(fieldId){
+    _createSelectDataMask: function (fieldId) {
         var self = this, maskId = BI.UUID();
         var mask = BI.Maskers.make(maskId, BICst.BODY_ELEMENT);
         BI.Maskers.show(maskId);
@@ -83,16 +90,16 @@ BI.RelationPane = BI.inherit(BI.Widget, {
             model: this.model,
             field_id: fieldId
         });
-        selectDataMask.on(BI.SelectDataWithMask.EVENT_VALUE_CANCEL, function(){
+        selectDataMask.on(BI.SelectDataWithMask.EVENT_VALUE_CANCEL, function () {
             BI.Maskers.remove(maskId);
         });
-        selectDataMask.on(BI.SelectDataWithMask.EVENT_CHANGE, function(v){
+        selectDataMask.on(BI.SelectDataWithMask.EVENT_CHANGE, function (v) {
             selectDataMask.destroy();
             BI.Maskers.remove(maskId);
             var treeValue = self.relationTree.getValue();
             BI.isEmptyString(treeValue[0]) && (treeValue = []);
-            if(BI.isNotNull(fieldId)) {
-                BI.remove(treeValue, function(index, item){
+            if (BI.isNotNull(fieldId)) {
+                BI.remove(treeValue, function (index, item) {
                     return item.fieldId === fieldId;
                 });
             }
@@ -105,11 +112,11 @@ BI.RelationPane = BI.inherit(BI.Widget, {
         });
     },
 
-    _createRelationTree: function(){
+    _createRelationTree: function () {
         var self = this;
         var relationIds = this.model.getRelationIds();
         var relationChildren = [];
-        BI.each(relationIds, function(i, rId){
+        BI.each(relationIds, function (i, rId) {
             relationChildren.push({
                 fieldId: rId,
                 relationType: self.model.getRelationType(rId),
@@ -121,8 +128,8 @@ BI.RelationPane = BI.inherit(BI.Widget, {
             items: this._createBranchItems(relationChildren)
         });
         this._drawSVGLine();
-        this.relationTree.on(BI.Controller.EVENT_CHANGE, function(type, clickType, fieldId){
-            switch (clickType){
+        this.relationTree.on(BI.Controller.EVENT_CHANGE, function (type, clickType, fieldId) {
+            switch (clickType) {
                 case BI.RelationSettingTable.CLICK_GROUP:
                     break;
                 case BI.RelationSettingTable.CLICK_TABLE:
@@ -137,7 +144,7 @@ BI.RelationPane = BI.inherit(BI.Widget, {
         this.model.setOldRelationValue(this.relationTree.getValue());
     },
 
-    _createBranchItems: function(relationChildren){
+    _createBranchItems: function (relationChildren) {
         return [{
             el: {
                 type: "bi.float_center_adapt",
@@ -156,10 +163,10 @@ BI.RelationPane = BI.inherit(BI.Widget, {
         }];
     },
 
-    _refreshTree: function(relationChildren){
-        if(BI.isNotEmptyArray(relationChildren)){
+    _refreshTree: function (relationChildren) {
+        if (BI.isNotEmptyArray(relationChildren)) {
             var empty = true;
-            BI.each(relationChildren, function(i, v){
+            BI.each(relationChildren, function (i, v) {
                 BI.isNotNull(v.relationType) && (empty = false);
             });
             //TODO 确定按钮状态
@@ -169,7 +176,7 @@ BI.RelationPane = BI.inherit(BI.Widget, {
         this.model.setRelations(this.getValue());
     },
 
-    getValue: function(){
+    getValue: function () {
         return this.model.getParsedRelation(this.relationTree.getValue());
     }
 });

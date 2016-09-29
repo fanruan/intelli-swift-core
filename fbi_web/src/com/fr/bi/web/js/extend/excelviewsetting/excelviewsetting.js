@@ -29,6 +29,7 @@ BI.ExcelViewSetting = BI.inherit(BI.Widget, {
             height: 28,
             handler: function () {
                 self.model.clearRowCol();
+                self.model.setExcelName("");
                 self._clearConf();
             }
         });
