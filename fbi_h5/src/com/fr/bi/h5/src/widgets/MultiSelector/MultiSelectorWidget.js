@@ -2,7 +2,7 @@ import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
 
-import {cn, sc, map, requestAnimationFrame, emptyFunction} from 'core'
+import {cn, sc, clone, map, requestAnimationFrame, emptyFunction} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -24,7 +24,9 @@ import MultiSelectorWidgetHelper from './MultiSelectorWidgetHelper'
 class MultiSelectorWidget extends Component {
     constructor(props, context) {
         super(props, context);
-        this.state = this._getNextState(props);
+        this.state = this._getNextState(props, {
+            selected_values: clone(props.value)
+        });
     }
 
     static propTypes = {};
@@ -42,6 +44,7 @@ class MultiSelectorWidget extends Component {
         const nextState = {...props, ...state};
         return {
             value: nextState.value,
+            selected_values: nextState.selected_values,
             type: nextState.type,
             items: nextState.items,
             hasNext: nextState.hasNext,
@@ -77,7 +80,12 @@ class MultiSelectorWidget extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState(this._getNextState(nextProps));
+        this.setState(this._getNextState(nextProps, {
+            times: 0,
+            selected_values: clone(nextProps.value)
+        }), ()=>{
+            this._fetchData();
+        });
     }
 
     componentWillUpdate() {
@@ -116,9 +124,9 @@ class MultiSelectorWidget extends Component {
 
     _onSelectAll() {
         const type = this.state.type === 2 ? 1 : 2;
-        this._helper.setType(type);
         this.setState({
-            type: type
+            type: type,
+            selected_values: []
         });
     }
 
@@ -144,7 +152,7 @@ class MultiSelectorWidget extends Component {
                     this._helper.disSelectOneValue(rowData.value);
                 }
                 this.setState({
-                    value: this._helper.getValue()
+                    selected_values: this._helper.getSelectedValue()
                 });
             }} {...rowData}/>;
         }

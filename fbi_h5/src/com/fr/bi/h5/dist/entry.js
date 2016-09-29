@@ -2895,7 +2895,9 @@ webpackJsonp([0],{
 
 	        _this.state = {};
 
-	        _this.state = _this._getNextState(props);
+	        _this.state = _this._getNextState(props, {
+	            selected_values: (0, _core.clone)(props.value)
+	        });
 	        return _this;
 	    }
 
@@ -2907,6 +2909,7 @@ webpackJsonp([0],{
 	            var nextState = _extends({}, props, state);
 	            return {
 	                value: nextState.value,
+	                selected_values: nextState.selected_values,
 	                type: nextState.type,
 	                items: nextState.items,
 	                hasNext: nextState.hasNext,
@@ -2944,7 +2947,14 @@ webpackJsonp([0],{
 	    }, {
 	        key: 'componentWillReceiveProps',
 	        value: function componentWillReceiveProps(nextProps) {
-	            this.setState(this._getNextState(nextProps));
+	            var _this3 = this;
+
+	            this.setState(this._getNextState(nextProps, {
+	                times: 0,
+	                selected_values: (0, _core.clone)(nextProps.value)
+	            }), function () {
+	                _this3._fetchData();
+	            });
 	        }
 	    }, {
 	        key: 'componentWillUpdate',
@@ -2990,19 +3000,19 @@ webpackJsonp([0],{
 	        key: '_onSelectAll',
 	        value: function _onSelectAll() {
 	            var type = this.state.type === 2 ? 1 : 2;
-	            this._helper.setType(type);
 	            this.setState({
-	                type: type
+	                type: type,
+	                selected_values: []
 	            });
 	        }
 	    }, {
 	        key: '_moreRenderer',
 	        value: function _moreRenderer() {
-	            var _this3 = this;
+	            var _this4 = this;
 
 	            if (this.state.hasNext === true) {
 	                return _lib2.default.createElement(_base.TextButton, { style: { height: _data.Size.ITEM_HEIGHT }, text: '点击加载更多数据', onPress: function onPress() {
-	                        _this3._fetchData();
+	                        _this4._fetchData();
 	                    } });
 	            } else {
 	                return _lib2.default.createElement(_base.TextButton, { style: { height: _data.Size.ITEM_HEIGHT }, disabled: true, text: '无更多数据' });
@@ -3011,7 +3021,7 @@ webpackJsonp([0],{
 	    }, {
 	        key: '_rowRenderer',
 	        value: function _rowRenderer(_ref) {
-	            var _this4 = this;
+	            var _this5 = this;
 
 	            var index = _ref.index;
 	            var isScrolling = _ref.isScrolling;
@@ -3020,16 +3030,16 @@ webpackJsonp([0],{
 	                return this._moreRenderer();
 	            } else {
 	                var _ret = function () {
-	                    var rowData = _this4._helper.getSortedItems()[index];
+	                    var rowData = _this5._helper.getSortedItems()[index];
 	                    return {
 	                        v: _lib2.default.createElement(_Item2.default, _extends({ key: rowData.value, onSelected: function onSelected(sel) {
 	                                if (sel) {
-	                                    _this4._helper.selectOneValue(rowData.value);
+	                                    _this5._helper.selectOneValue(rowData.value);
 	                                } else {
-	                                    _this4._helper.disSelectOneValue(rowData.value);
+	                                    _this5._helper.disSelectOneValue(rowData.value);
 	                                }
-	                                _this4.setState({
-	                                    value: _this4._helper.getValue()
+	                                _this5.setState({
+	                                    selected_values: _this5._helper.getSelectedValue()
 	                                });
 	                            } }, rowData))
 	                    };
@@ -3239,40 +3249,23 @@ webpackJsonp([0],{
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var MultiSelectorWidgetHelper = function () {
-	    function MultiSelectorWidgetHelper(props) {
+	    function MultiSelectorWidgetHelper(state) {
 	        _classCallCheck(this, MultiSelectorWidgetHelper);
 
-	        this.items = props.items;
-	        this.value = props.value || [];
-	        this.selected = (0, _core.clone)(this.value);
-	        this.type = props.type;
-	        this.sorted = this._sortItems();
+	        this.value = state.value || [];
+	        this.selected_values = state.selected_values;
+	        this.type = state.type;
+	        this.items = this.value.map(function (val) {
+	            return { value: val };
+	        }).concat(state.items);
+	        this.sorted = this._digest();
 	    }
 
 	    _createClass(MultiSelectorWidgetHelper, [{
-	        key: '_sortItems',
-	        value: function _sortItems() {
-	            var _this = this;
-
-	            var front = this.value.map(function (val) {
-	                return {
-	                    value: val,
-	                    selected: _this.type !== 2
-	                };
-	            }),
-	                items = [];
-	            this.items.forEach(function (item) {
-	                items.push(_extends({}, item, {
-	                    selected: _this.type === 2
-	                }));
-	            });
-	            return front.concat(items);
-	        }
-	    }, {
 	        key: '_selectOneValue',
 	        value: function _selectOneValue(val) {
-	            if (this.selected.indexOf(val) === -1) {
-	                this.selected.push(val);
+	            if (this.selected_values.indexOf(val) === -1) {
+	                this.selected_values.push(val);
 	                this.sorted = this._digest();
 	            }
 	        }
@@ -3280,23 +3273,21 @@ webpackJsonp([0],{
 	        key: '_disSelectOneValue',
 	        value: function _disSelectOneValue(val) {
 	            var idx = void 0;
-	            if ((idx = this.selected.indexOf(val)) >= -1) {
-	                this.selected.splice(idx, 1);
+	            if ((idx = this.selected_values.indexOf(val)) > -1) {
+	                this.selected_values.splice(idx, 1);
 	                this.sorted = this._digest();
 	            }
 	        }
 	    }, {
 	        key: '_digest',
 	        value: function _digest() {
-	            var _this2 = this;
+	            var _this = this;
 
-	            var items = [];
-	            this.items.forEach(function (item) {
-	                items.push(_extends({}, item, {
-	                    selected: _this2.type === 2 ? _this2.selected.indexOf(item.value) === -1 : _this2.selected.indexOf(item.value) > -1
-	                }));
+	            return this.items.map(function (item) {
+	                return _extends({}, item, {
+	                    selected: _this.type === 2 ? _this.selected_values.indexOf(item.value) === -1 : _this.selected_values.indexOf(item.value) > -1
+	                });
 	            });
-	            return items;
 	        }
 	    }, {
 	        key: 'selectOneValue',
@@ -3319,27 +3310,12 @@ webpackJsonp([0],{
 	    }, {
 	        key: 'getSelectedValue',
 	        value: function getSelectedValue() {
-	            return (0, _core.clone)(this.selected);
+	            return (0, _core.clone)(this.selected_values);
 	        }
 	    }, {
 	        key: 'getSortedItems',
 	        value: function getSortedItems() {
 	            return this.sorted;
-	        }
-	    }, {
-	        key: 'getValue',
-	        value: function getValue() {
-	            return (0, _core.clone)(this.selected);
-	        }
-	    }, {
-	        key: 'setType',
-	        value: function setType(type) {
-	            this.type = type;
-	            this.sorted = this.items.map(function (item) {
-	                return _extends({}, item, {
-	                    selected: type === 2
-	                });
-	            });
 	        }
 	    }]);
 

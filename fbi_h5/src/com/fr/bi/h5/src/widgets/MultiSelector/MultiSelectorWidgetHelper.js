@@ -1,53 +1,37 @@
 import {clone} from 'core'
 export default class MultiSelectorWidgetHelper {
-    constructor(props) {
-        this.items = props.items;
-        this.value = props.value || [];
-        this.selected = clone(this.value);
-        this.type = props.type;
-        this.sorted = this._sortItems();
-    }
-
-    _sortItems() {
-        const front = this.value.map(val=> {
-            return {
-                value: val,
-                selected: this.type !== 2
-            }
-        }), items = [];
-        this.items.forEach((item)=> {
-            items.push({
-                ...item,
-                selected: this.type === 2
-            });
-        });
-        return front.concat(items);
+    constructor(state) {
+        this.value = state.value || [];
+        this.selected_values = state.selected_values;
+        this.type = state.type;
+        this.items = this.value.map(val=> {
+            return {value: val}
+        }).concat(state.items);
+        this.sorted = this._digest();
     }
 
     _selectOneValue(val) {
-        if (this.selected.indexOf(val) === -1) {
-            this.selected.push(val);
+        if (this.selected_values.indexOf(val) === -1) {
+            this.selected_values.push(val);
             this.sorted = this._digest();
         }
     }
 
     _disSelectOneValue(val) {
         let idx;
-        if ((idx = this.selected.indexOf(val)) >= -1) {
-            this.selected.splice(idx, 1);
+        if ((idx = this.selected_values.indexOf(val)) > -1) {
+            this.selected_values.splice(idx, 1);
             this.sorted = this._digest();
         }
     }
 
     _digest() {
-        const items = [];
-        this.items.forEach((item)=> {
-            items.push({
+        return this.items.map((item)=> {
+            return {
                 ...item,
-                selected: this.type === 2 ? (this.selected.indexOf(item.value) === -1) : (this.selected.indexOf(item.value) > -1)
-            });
+                selected: this.type === 2 ? (this.selected_values.indexOf(item.value) === -1) : (this.selected_values.indexOf(item.value) > -1)
+            };
         });
-        return items;
     }
 
     selectOneValue(val) {
@@ -67,24 +51,10 @@ export default class MultiSelectorWidgetHelper {
     }
 
     getSelectedValue() {
-        return clone(this.selected);
+        return clone(this.selected_values);
     }
 
     getSortedItems() {
         return this.sorted;
-    }
-
-    getValue() {
-        return clone(this.selected);
-    }
-
-    setType(type) {
-        this.type = type;
-        this.sorted = this.items.map((item)=> {
-            return {
-                ...item,
-                selected: type === 2
-            };
-        });
     }
 }
