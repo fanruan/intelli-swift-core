@@ -55,7 +55,9 @@ BI.TableTree = BI.inherit(BI.Widget, {
             }
             result.push(c.concat(node || []));
         });
-        result.push(header);
+        if (header && header.length > 0) {
+            result.push(header);
+        }
         return result;
     },
 
@@ -228,7 +230,7 @@ BI.TableTree = BI.inherit(BI.Widget, {
         }
         var deep = this._getHDeep();
         var vDeep = this._getVDeep();
-        var header = this._createHeader(deep, vDeep);
+        header = this._createHeader(deep, vDeep);
         items = BI.TableTree.formatItems(o.items, deep);
         this.table.populate(items, header);
     },

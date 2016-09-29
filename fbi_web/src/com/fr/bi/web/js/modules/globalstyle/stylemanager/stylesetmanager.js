@@ -76,7 +76,6 @@ BI.StyleSetManager = BI.inherit(FR.OB, {
 
 
             //控件通用规则
-            ".bi-dashboard-widget .bi-combo .bi-trigger": {"border": border},
             ".bi-dashboard-widget .bi-trigger-icon-button": {"border-left": border},
             ".bi-dashboard-widget .bi-trigger-icon-button .b-font:before": {"color": color},
 
