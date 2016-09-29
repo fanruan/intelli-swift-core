@@ -78,7 +78,7 @@ BI.UpdateSingleTableSettingModel = BI.inherit(FR.OB, {
     },
 
     getTimeList: function () {
-        return this.timeList;
+        return BI.deepClone(this.timeList);
     },
 
     getTable: function () {

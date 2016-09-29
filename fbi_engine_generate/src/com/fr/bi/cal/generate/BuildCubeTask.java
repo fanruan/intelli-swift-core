@@ -109,7 +109,7 @@ public class BuildCubeTask implements CubeTask {
                 long start = System.currentTimeMillis();
                 boolean replaceSuccess = replaceOldCubes();
                 if (replaceSuccess) {
-                    BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), cubeBuild.getTableRelationSet());
+                    BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId());
                     BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
                     BILogger.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
                 } else {
@@ -124,14 +124,7 @@ public class BuildCubeTask implements CubeTask {
         } catch (Exception e) {
             BILogger.getLogger().error(e.getMessage(), e);
         } finally {
-            BILogger.getLogger().info("start persist data!");
-            long t = System.currentTimeMillis();
-            try {
-                BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
-                BILogger.getLogger().info("persist data finished! time cost: " + DateUtils.timeCostFrom(t));
-            } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
-            }
+
         }
     }
 

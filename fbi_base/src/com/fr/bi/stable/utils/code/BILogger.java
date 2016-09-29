@@ -1,5 +1,7 @@
 package com.fr.bi.stable.utils.code;
 
+import com.fr.bi.stable.utils.time.BIDateUtils;
+
 /**
  * BI日志输出
  */
@@ -20,21 +22,21 @@ public class BILogger {
     }
 
     public void error(String message) {
-        System.err.println(message);
+        System.err.println(BIDateUtils.getCurrentDateTime()+": "+message);
     }
 
     public void error(String message, Throwable e) {
-        System.err.println(message);
+        System.err.println(BIDateUtils.getCurrentDateTime()+": "+message);
         e.printStackTrace();
     }
 
     public void info(String message) {
-        System.out.println(message);
+        System.out.println(BIDateUtils.getCurrentDateTime()+": "+message);
     }
 
     public void debug(String message) {
         if (verbose) {
-            System.out.println(message);
+            System.out.println(BIDateUtils.getCurrentDateTime()+": "+message);
         }
     }
 }

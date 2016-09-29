@@ -62,7 +62,7 @@ public abstract class AbstractCubeTask implements CubeTask {
     public void end() {
         end = new Date();
         BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
-        BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), cubeBuild.getTableRelationSet());
+        BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId());
         BIConfigureManagerCenter.getLogManager().logEnd(getUserId());
     }
 
