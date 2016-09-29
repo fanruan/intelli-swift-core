@@ -313,7 +313,7 @@ BI.DynamicSummaryLayerTreeTable = BI.inherit(BI.Widget, {
         }
         var deep = this._getHDeep();
         var vDeep = this._getVDeep();
-        var header = this._createHeader(vDeep);
+        header = this._createHeader(vDeep);
         items = this._formatItems(o.items, deep);
         this.table.populate(items, header);
     },
