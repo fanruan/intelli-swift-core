@@ -12,17 +12,17 @@ BI.Track = BI.inherit(BI.Widget, {
         this.backgroundTrack = BI.createWidget({
             type: "bi.layout",
             cls: "background-track",
-            height: 23
+            height: 24
         });
         this.blueTrack = BI.createWidget({
             type: "bi.layout",
             cls: "blue-track",
-            height: 9
+            height: 8
         });
         this.grayTrack = BI.createWidget({
             type: "bi.layout",
             cls: "gray-track",
-            height: 9
+            height: 8
         });
         BI.createWidget({
             type: "bi.absolute",
@@ -47,10 +47,10 @@ BI.Track = BI.inherit(BI.Widget, {
                             width: "0%"
                         }]
                     }],
-                    hgap: 7,
-                    height: 9
+                    hgap: 8,
+                    height: 8
                 },
-                top: 7,
+                top: 8,
                 left: 0,
                 width: "100%"
             }]

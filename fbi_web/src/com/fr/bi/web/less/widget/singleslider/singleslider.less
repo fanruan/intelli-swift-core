@@ -1,6 +1,11 @@
 @import "../../bibase";
 .bi-single-slider{
   & .slider-editor-button{
-    border:1px solid @border-color-normal;
+    &:hover {
+      border:1px solid @border-color-normal;
+    }
+    &.active {
+      border:1px solid @border-color-normal;
+    }
   }
 }
