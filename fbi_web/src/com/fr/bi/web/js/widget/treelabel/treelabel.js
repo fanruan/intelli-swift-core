@@ -253,34 +253,46 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
     },
 
     _getSelectedValues: function () {
-        this.storeValue = {};
-        var self = this;
-        var preValues = [];
-        var values = this._getValue();
-        for (var i = 0; i < values.length; i++) {
-            if (BI.isEmptyObject(this.storeValue)) {
-                BI.each(values[i], function (idx, value) {
-                    var temp = {};
-                    preValues.push(temp);
-                    self.storeValue[value] = temp;
-                })
-            } else {
-                var tempArray = [];
-                BI.each(values[i], function (idx, value) {
-                    BI.each(preValues, function (index, preTemp) {
-                        var temp = {};
-                        tempArray.push(temp);
-                        preTemp[value] = temp;
+        var values = this._getValue().reverse(),
+            temp = [];
+
+        for(var i = values.length-2; i >= 0; i--) {
+            BI.each(values[i], function (idx, value) {
+                if (value.value === "*" || values[i+1][0].value === "*") {
+                    value.children = values[i+1];
+                } else {
+                    temp = [];
+                    BI.each(values[i+1], function (index, node) {
+                        if(values[i+1][index].pId === value.id) {
+                            temp.push(node);
+                        }
                     });
-                });
-                preValues = tempArray;
-            }
+                    value.children = temp;
+                }
+            })
         }
-        return this.storeValue;
+
+
+        return convertToObject(values[0],{});
+
+        function convertToObject(children, map) {
+            if(BI.isEmptyArray(children)) {
+                return {};
+            }
+            BI.each(children, function (idx, child) {
+                var temp = {};
+                if(BI.isNotEmptyArray(child.children)) {
+                    convertToObject(child.children, temp);
+                }
+                map[child.value] = temp;
+            });
+            return map;
+        }
     },
 
     _getValue: function () {
         var selectedButtons = this.view.getSelectedButtons(),
+            allButtons = this.view.getAllButtons(),
             result = [],
             selectedValues = [],
             temp = [];
@@ -307,11 +319,47 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
             }
             selectedValues[idx] = BI.concat(selectedValues[idx], temp);
         });
-        BI.each(selectedValues, function (idx, values) {
-            BI.each(values, function (i, value) {
-                result.push(value);
-            })
+
+        var preValues, preIds=[];
+        temp = [];
+        BI.each(selectedValues[selectedValues.length-1], function (idx, value) {
+            temp.push(value);
         });
+        result.push(temp);
+        for (var i = selectedValues.length - 2; i >= 0; i--) {
+            temp = [];
+            preValues = selectedValues[i + 1];
+            if(BI.isEmptyArray(preValues)) {
+                result.push([{value: "*"}]);
+                continue;
+            }
+            if(preValues[0].value === "*") {
+                preValues = [];
+                if(BI.isEmptyArray(allButtons[i+1])){
+                    result.push(selectedValues[i]);
+                    continue;
+                }
+                BI.each(allButtons[i+1], function (idx, button) {
+                    preValues.push({
+                        id: button.options.id,
+                        pId: button.options.pId,
+                        value: button.options.value
+                    })
+                })
+            }
+            BI.each(preValues, function (idx, value) {
+                preIds = BI.concat(preIds, value.pId);
+            });
+            for (var j = 0; j < selectedValues[i].length; j++) {
+                if (BI.contains(preIds, selectedValues[i][j].id) || selectedValues[i][j].value === "*") {
+                    temp.push(selectedValues[i][j])
+                } else {
+                    selectedValues[i].splice(j, 1);
+                    j--;
+                }
+            }
+            result.push(temp);
+        }
 
         return result;
 

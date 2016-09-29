@@ -130,6 +130,14 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
         return result;
     },
 
+    getAllButtons: function () {
+        var result = [];
+        BI.each(this.items, function (idx, item) {
+            result.push(item.getAllButtons().slice(1))
+        });
+        return result;
+    },
+
     getValue: function () {
         var result = [];
         BI.each(this.items, function (idx, item) {
