@@ -52,10 +52,8 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
         });
         sliderVertical.element.click(function (e) {
             if (self.enable) {
-                console.log(e);
-                console.log(self.track.getLength());
-                console.log(self.element)
-                var percent = e.offsetX * 100 / self.track.getLength();
+                var offset = e.clientX - self.element.offset().left;
+                var percent = offset * 100 / self.track.getLength();
                 self._setAllPosition(percent);
                 self.label.setValue(self._getValueByPercent(percent));
             }
