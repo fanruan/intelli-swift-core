@@ -17,7 +17,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         var iconCls = "", color = "";
         var format = styleSettings.format, numLevel = styleSettings.num_level, num_separators = styleSettings.num_separators;
         text = BI.TargetBodyNormalCell.parseNumByLevel(text, numLevel);
-        text = this._parseFloatByDot(text, format, num_separators);
+        text = BI.parseFloat(text);
         var iconStyle = styleSettings.icon_style, mark = styleSettings.mark;
         iconCls = this._getIconByStyleAndMark(text, iconStyle, mark);
         var conditions = styleSettings.conditions;
@@ -36,6 +36,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 color = co.color;
             }
         });
+        text = this._parseFloatByDot(text, format, num_separators);
         var textLabel = this._createTargetText(text);
         if (BI.isNotEmptyString(color)) {
             textLabel.element.css("color", color);
