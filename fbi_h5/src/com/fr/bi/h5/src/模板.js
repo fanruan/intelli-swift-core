@@ -16,7 +16,7 @@ import React, {
     TouchableHighlight
 } from 'lib'
 
-import {Colors, Template, Widget, Dimension, Target} from 'data'
+import {Colors, Size, Template, Widget, Dimension, Target} from 'data'
 
 import {CenterLayout, Icon, Table} from 'base'
 
@@ -44,7 +44,9 @@ class TableComponent extends Component {
 
     render() {
         const {...props} = this.props, {...state} = this.state;
-        return <View style={styles.wrapper}></View>
+        return <View style={styles.wrapper}>
+
+        </View>
     }
 
     shouldComponentUpdate(nextProps, nextState) {
