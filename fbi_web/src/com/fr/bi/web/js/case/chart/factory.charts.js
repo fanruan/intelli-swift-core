@@ -186,7 +186,6 @@ BI.ChartCombineFormatItemFactory = {
                 "gap": "22.0%",
                 "animation": true,
                 "lineWidth": 2,
-
                 "bubble": {
                     "large": false,
                     "connectNulls": false,

@@ -76,6 +76,7 @@ BI.StyleSetManager = BI.inherit(FR.OB, {
 
 
             //控件通用规则
+            ".bi-dashboard-widget .bi-combo .bi-text-trigger": {"border": border},
             ".bi-dashboard-widget .bi-trigger-icon-button": {"border-left": border},
             ".bi-dashboard-widget .bi-trigger-icon-button .b-font:before": {"color": color},
 
@@ -127,6 +128,7 @@ BI.StyleSetManager = BI.inherit(FR.OB, {
             ".bi-control-widget .bi-quarter-trigger": {"border": border},
 
             //日期控件
+            ".bi-control-widget .bi-multidate-combo .bi-combo .bi-trigger": {"border": border},
             ".bi-control-widget .bi-multidate-combo .bi-multidate-popup .bi-multidate-popup-item.active": {"background-color": color},
             ".bi-control-widget .bi-multidate-combo .bi-multidate-popup .bi-multidate-popup-item:active": {"background-color": color},
             ".bi-control-widget .bi-multidate-combo .bi-multidate-popup .bi-multidate-popup-button": {
