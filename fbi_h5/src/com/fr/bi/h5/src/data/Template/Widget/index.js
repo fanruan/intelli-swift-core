@@ -3,29 +3,18 @@ import Target from './Target'
 import {each, invariant} from 'core';
 class Widget {
     constructor(widget, id) {
-        this.widget = widget;
+        this.$$widget = widget;
         this.id = id;
-        this._dimensions = {};
-        this._targets = {};
-
     }
 
-    getDimensionById(id) {
+    get$$DimensionById(id) {
         invariant(this.isDimensionById(id), id + "不是维度id");
-        if (this._dimensions[id]) {
-            return this._dimensions[id];
-        }
-        this._dimensions[id] = new Dimension(this.widget.dimensions[id], id, this);
-        return this._dimensions[id];
+        return this.$$widget.getIn(['dimensions', id]);
     }
 
-    getTargetById(id) {
+    get$$TargetById(id) {
         invariant(this.isTargetById(id), id + "不是指标id");
-        if (this._targets[id]) {
-            return this._targets[id];
-        }
-        this._targets[id] = new Target(this.widget.dimensions[id], id, this);
-        return this._targets[id];
+        return this.$$widget.getIn(['dimensions', id])
     }
 
     getAllDimensionIds() {
@@ -33,9 +22,9 @@ class Widget {
             return this._dimensionIds;
         }
         let result = [];
-        each(this.widget.view, (dId, key)=> {
+        this.$$widget.get('view').forEach(($$id, key)=> {
             if (parseInt(key) < BICst.REGION.TARGET1) {
-                result = result.concat(dId);
+                result = result.concat($$id.toArray());
             }
         });
         this._dimensionIds = result;
@@ -47,20 +36,20 @@ class Widget {
             return this._targetIds;
         }
         let result = [];
-        each(this.widget.view, (dId, key)=> {
+        this.$$widget.get('view').forEach(($$id, key)=> {
             if (parseInt(key) >= BICst.REGION.TARGET1) {
-                result = result.concat(dId);
+                result = result.concat($$id.toArray());
             }
         });
         this._targetIds = result;
         return result;
     }
 
-    getDimensionOrTargetById(id) {
+    get$$DimensionOrTargetById(id) {
         if (this.isDimensionById(id)) {
-            return this.getDimensionById(id);
+            return this.get$$DimensionById(id);
         }
-        return this.getTargetById(id);
+        return this.get$$TargetById(id);
     }
 
     isDimensionById(id) {
@@ -81,8 +70,8 @@ class Widget {
         const ids = this.getAllDimensionAndTargetIds();
         const result = [];
         ids.forEach((id)=> {
-            const dim = this.getDimensionOrTargetById(id);
-            if (dim.isUsed()) {
+            const $$dim = this.get$$DimensionOrTargetById(id);
+            if (new Dimension($$dim).isUsed()) {
                 result.push(id);
             }
         });
@@ -93,8 +82,8 @@ class Widget {
         const ids = this.getAllDimensionIds();
         const result = [];
         ids.forEach((id)=> {
-            const dim = this.getDimensionById(id);
-            if (dim.isUsed()) {
+            const $$dim = this.get$$DimensionById(id);
+            if (new Dimension($$dim).isUsed()) {
                 result.push(id);
             }
         });
@@ -105,8 +94,8 @@ class Widget {
         const ids = this.getAllTargetIds();
         const result = [];
         ids.forEach((id)=> {
-            const dim = this.getTargetById(id);
-            if (dim.isUsed()) {
+            const $$dim = this.get$$TargetById(id);
+            if (new Target($$dim).isUsed()) {
                 result.push(id);
             }
         });
@@ -114,24 +103,24 @@ class Widget {
     }
 
     getType() {
-        return this.widget.type;
+        return this.$$widget.get('type');
     }
 
     getName() {
-        return this.widget.name;
+        return this.$$widget.get('name');
     }
 
     createJson() {
-        return this.widget;
+        return this.$$widget.toJS();
     }
 
     isFreeze() {
-        return this.widget.settings.freeze_dim;
+        return this.$$widget.getIn(['settings', 'freeze_dim']);
     }
 
 
     isControl() {
-        switch (this.widget.type) {
+        switch (this.getType()) {
             case BICst.WIDGET.STRING:
             case BICst.WIDGET.NUMBER:
             case BICst.WIDGET.TREE:

@@ -1,7 +1,8 @@
 import {each, isEmpty} from 'core';
+import {Widget, Dimension} from 'data';
 class DetailTableComponentHelper {
-    constructor(widget) {
-        this.widget = widget;
+    constructor($$widget) {
+        this.widget = new Widget($$widget);
         this.data = [];
     }
 
@@ -14,9 +15,9 @@ class DetailTableComponentHelper {
         const ids = this.widget.getAllUsedDimensionAndTargetIds();
         const result = [];
         ids.forEach((id)=> {
-            const dim = this.widget.getDimensionOrTargetById(id);
+            const $$dim = this.widget.get$$DimensionOrTargetById(id);
             result.push({
-                text: dim.getName()
+                text: new Dimension($$dim).getName()
             })
         });
         return result;

@@ -2,22 +2,17 @@ import {each, some} from 'core'
 import Widget from './Widget'
 class Template {
     constructor(template) {
-        this.template = template;
-        this._widgets = {};
+        this.$$template = template;
     }
 
-    getWidgetById(id) {
-        if (this._widgets[id]) {
-            return this._widgets[id];
-        }
-        this._widgets[id] = new Widget(this.template.widgets[id], id);
-        return this._widgets[id];
+    get$$WidgetById(id) {
+        return this.$$template.getIn(['widgets',id]);
     }
 
     getAllWidgetIds() {
         const res = [];
-        each(this.template.widgets, (widget, wId) => {
-            if (!this.getWidgetById(wId).isControl()) {
+        this.$$template.get('widgets').forEach(($$widget, wId)=>{
+            if (!new Widget($$widget).isControl()) {
                 res.push(wId);
             }
         });
@@ -26,8 +21,8 @@ class Template {
 
     getAllControlWidgetIds() {
         const res = [];
-        each(this.template.widgets, (widget, wId) => {
-            if (this.getWidgetById(wId).isControl()) {
+        this.$$template.get('widgets').forEach(($$widget, wId)=>{
+            if (new Widget($$widget).isControl()) {
                 res.push(wId);
             }
         });
@@ -35,9 +30,12 @@ class Template {
     }
 
     hasControlWidget() {
-        return some(this.template.widgets, (widget, wId) => {
-            return this.getWidgetById(wId).isControl();
-        })
+        return this.$$template.get('widgets').some(($$widget, wId)=>{
+            return new Widget($$widget).isControl();
+        });
+        //return some(this.template.widgets, (widget, wId) => {
+        //    return this.getWidgetById(wId).isControl();
+        //})
     }
 }
 

@@ -1,8 +1,8 @@
 import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
-import { findDOMNode } from 'react-dom'
+import {findDOMNode} from 'react-dom'
 
-import {cn, sc, isNil, requestAnimationFrame, emptyFunction, shallowEqual, isEqual, each} from 'core'
+import {cn, sc, math, isNil, requestAnimationFrame, emptyFunction, shallowEqual, isEqual, each} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -16,9 +16,9 @@ import React, {
     TouchableHighlight
 } from 'lib'
 
-import {Colors, Template} from 'data'
+import {Colors, Template, Widget, Dimension, Target} from 'data'
 
-import {CenterLayout, Icon, Table, AutoSizer} from 'base'
+import {CenterLayout, Icon, Table} from 'base'
 
 import {MultiSelectorWidget} from 'widgets'
 

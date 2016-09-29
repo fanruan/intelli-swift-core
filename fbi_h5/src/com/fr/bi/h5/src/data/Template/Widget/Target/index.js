@@ -1,15 +1,15 @@
 class Target {
-    constructor(target, id, widget) {
-        this.target = target;
+    constructor($$target, id, widget) {
+        this.$$target = $$target;
         this._parent = widget;
     }
 
     getName() {
-        return this.target.name;
+        return this.$$target.get('name');
     }
 
     isUsed() {
-        return this.target.used;
+        return this.$$target.get('used');
     }
 
     getWidgetBelongTo() {
