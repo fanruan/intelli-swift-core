@@ -78,7 +78,7 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
                 try {
                     tableEntityService.addDataValue(v);
                 } catch (BICubeColumnAbsentException e) {
-                    e.printStackTrace();
+                    BILogger.getLogger().error(e.getMessage(), e);
                 }
             }
         }, cubeFieldSources, new BIUserCubeManager(UserControl.getInstance().getSuperManagerID(), cube));

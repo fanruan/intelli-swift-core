@@ -11,9 +11,10 @@ import React, {
     ListView,
     View,
     Fetch
-    } from 'lib'
+} from 'lib'
 
 import {VirtualScroll, AutoSizer, Infinite} from 'base'
+import {Size} from 'data'
 
 import Item from './Item'
 import MultiSelectorWidgetHelper from './MultiSelectorWidgetHelper'
@@ -81,13 +82,13 @@ class MultiSelectorWidget extends Component {
             overscanRowCount={0}
             //noRowsRenderer={this._noRowsRenderer.bind(this)}
             rowCount={this._helper.getSortedItems().length}
-            rowHeight={44}
+            rowHeight={Size.ITEM_HEIGHT}
             rowRenderer={this._rowRenderer.bind(this)}
             //scrollToIndex={scrollToIndex}
-            />
+        />
     }
 
-    _rowRenderer({ index, isScrolling }) {
+    _rowRenderer({index, isScrolling}) {
         const rowData = this._helper.getSortedItems()[index];
         return <Item key={rowData.value} onSelected={(sel)=> {
             if (sel) {
