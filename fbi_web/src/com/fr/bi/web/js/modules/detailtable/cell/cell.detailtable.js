@@ -140,18 +140,17 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
         var text = o.text;
         var dId = this.options.dId;
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
-
+        text = BI.parseFloat(text);
         var format = styleSettings.format, numLevel = styleSettings.num_level,
             iconStyle = styleSettings.icon_style, mark = styleSettings.mark,
             num_separators = styleSettings.num_separators;
         text = BI.TargetBodyNormalCell.parseNumByLevel(text, numLevel);
-        text = this._parseFloatByDot(text, format, num_separators);
+
         if (text === Infinity) {
             text = "N/0";
         } else if(BI.Utils.getDimensionSettingsByID(dId).num_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
             text += "%";
         }
-        item.setText(text);
 
         iconCls = this._getIconByStyleAndMark(text, iconStyle, mark);
         var conditions = styleSettings.conditions;
@@ -170,6 +169,9 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
                 color = co.color;
             }
         });
+
+        text = this._parseFloatByDot(text, format, num_separators);
+        item.setText(text);
 
         if (BI.isNotEmptyString(color)) {
             item.element.css("color", color);

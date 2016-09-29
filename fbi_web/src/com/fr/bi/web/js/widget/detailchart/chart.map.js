@@ -105,7 +105,8 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                 var to = this.to;
                 if (BI.isNotEmptyArray(items) && BI.has(items[0], "settings")) {
                     var settings = items[0].settings;
-                    var legendFormat = formatToolTipAndDataLabel(settings.format, settings.num_level, settings.unit,settings.num_separators);
+                    var legendFormat = formatToolTipAndDataLabel(settings.format || c.NORMAL, settings.num_level || c.NORMAL,
+                        settings.unit || "",settings.num_separators || c.NUM_SEPARATORS);
                     to = BI.contentFormat(to, legendFormat)
                 }
                 return to
