@@ -61,20 +61,22 @@ BI.DynamicSummaryLayerTreeTable = BI.inherit(BI.Widget, {
             var c = [crossHeader[row]];
             result.push(c.concat(node || []));
         });
-        var newHeader = this._formatColumns(header);
-        var deep = this._getHDeep();
-        if (deep <= 0) {
-            newHeader.unshift({
-                cls: "layer-tree-table-title",
-                text: BI.i18nText("BI-Row_Header")
-            });
-        } else {
-            newHeader[0] = {
-                cls: "layer-tree-table-title",
-                text: BI.i18nText("BI-Row_Header")
-            };
+        if (header && header.length > 0) {
+            var newHeader = this._formatColumns(header);
+            var deep = this._getHDeep();
+            if (deep <= 0) {
+                newHeader.unshift({
+                    cls: "layer-tree-table-title",
+                    text: BI.i18nText("BI-Row_Header")
+                });
+            } else {
+                newHeader[0] = {
+                    cls: "layer-tree-table-title",
+                    text: BI.i18nText("BI-Row_Header")
+                };
+            }
+            result.push(newHeader);
         }
-        result.push(newHeader);
         return result;
     },
 
