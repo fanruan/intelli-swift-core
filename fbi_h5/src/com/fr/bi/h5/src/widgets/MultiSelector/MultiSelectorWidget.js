@@ -14,7 +14,7 @@ import React, {
     Fetch
 } from 'lib'
 
-import {VirtualScroll, AutoSizer, Infinite, TextButton, VtapeLayout} from 'base'
+import {TextButton, VirtualScroll, AutoSizer, Infinite, VtapeLayout} from 'base'
 import {Colors, Size} from 'data'
 
 import Item from './Item'
@@ -40,12 +40,12 @@ class MultiSelectorWidget extends Component {
 
     _getNextState(props, state = {}) {
         const nextState = {...props, ...state};
-        this._helper = new MultiSelectorWidgetHelper(nextState);
         return {
             value: nextState.value,
             type: nextState.type,
             items: nextState.items,
-            hasNext: nextState.hasNext
+            hasNext: nextState.hasNext,
+            times: nextState.times || 0
         }
     }
 
@@ -54,14 +54,22 @@ class MultiSelectorWidget extends Component {
     }
 
     componentDidMount() {
+        this._fetchData();
+    }
+
+    _fetchData() {
         if (this.props.itemsCreator) {
-            this.props.itemsCreator().then((data)=> {
-                this.setState(this._getNextState({
-                    ...this.props, ...{
+            this.props.itemsCreator({
+                selected_values: this.state.value,
+                times: this.state.times + 1
+            }).then((data)=> {
+                this.setState(this._getNextState(this.props, {
+                    ...this.state, ...{
+                        times: this.state.times + 1,
                         hasNext: data.hasNext,
-                        items: map(data.value, val=> {
+                        items: this.state.items.concat(map(data.value, val=> {
                             return {value: val}
-                        })
+                        }))
                     }
                 }));
             })
@@ -69,7 +77,7 @@ class MultiSelectorWidget extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState(this._getNextState({...this.props, ...this.state}, nextProps));
+        this.setState(this._getNextState(nextProps));
     }
 
     componentWillUpdate() {
@@ -77,7 +85,8 @@ class MultiSelectorWidget extends Component {
     }
 
     render() {
-        const {...props} = this.props;
+        const {...props} = this.props, {...state} = this.state;
+        this._helper = new MultiSelectorWidgetHelper(state);
         //return <Infinite
         //    elementHeight={44}
         //    containerHeight={props.height}
@@ -93,33 +102,52 @@ class MultiSelectorWidget extends Component {
                 height={props.height - Size.ITEM_HEIGHT}
                 overscanRowCount={0}
                 //noRowsRenderer={this._noRowsRenderer.bind(this)}
-                rowCount={this._helper.getSortedItems().length}
+                rowCount={this._helper.getSortedItems().length + 1}
                 rowHeight={Size.ITEM_HEIGHT}
                 rowRenderer={this._rowRenderer.bind(this)}
                 //scrollToIndex={scrollToIndex}
             />
-            <TextButton height={Size.ITEM_HEIGHT} style={styles.toolbar} text='全选'
-                        onPress={this._onSelectAll.bind(this)}/>
+            <View height={Size.ITEM_HEIGHT} style={styles.toolbar}>
+                <TextButton style={{flex: 1}} text={state.type === 1 ? '全选' : '全不选'}
+                            onPress={this._onSelectAll.bind(this)}/>
+            </View>
         </VtapeLayout>;
     }
 
     _onSelectAll() {
-        this._helper.setType(2);
+        const type = this.state.type === 2 ? 1 : 2;
+        this._helper.setType(type);
         this.setState({
-            type: 2
+            type: type
         });
     }
 
+    _moreRenderer() {
+        if (this.state.hasNext === true) {
+            return <TextButton style={{height: Size.ITEM_HEIGHT}} text={'点击加载更多数据'} onPress={()=> {
+                this._fetchData();
+            }}/>
+        } else {
+            return <TextButton style={{height: Size.ITEM_HEIGHT}} disabled={true} text={'无更多数据'}/>
+        }
+    }
+
     _rowRenderer({index, isScrolling}) {
-        const rowData = this._helper.getSortedItems()[index];
-        return <Item key={rowData.value} onSelected={(sel)=> {
-            if (sel) {
-                this._helper.selectOneValue(rowData.value);
-            } else {
-                this._helper.disSelectOneValue(rowData.value);
-            }
-            this.forceUpdate();
-        }} {...rowData}/>;
+        if (index === this._helper.getSortedItems().length) {
+            return this._moreRenderer()
+        } else {
+            const rowData = this._helper.getSortedItems()[index];
+            return <Item key={rowData.value} onSelected={(sel)=> {
+                if (sel) {
+                    this._helper.selectOneValue(rowData.value);
+                } else {
+                    this._helper.disSelectOneValue(rowData.value);
+                }
+                this.setState({
+                    value: this._helper.getValue()
+                });
+            }} {...rowData}/>;
+        }
     }
 }
 mixin.onClass(MultiSelectorWidget, PureRenderMixin);

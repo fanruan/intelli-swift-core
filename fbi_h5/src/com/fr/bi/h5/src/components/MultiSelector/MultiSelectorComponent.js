@@ -60,11 +60,11 @@ class MultiSelectorComponent extends Component {
             style={styles.wrapper}
             type={widget.getSelectType()}
             value={widget.getSelectValue()}
-            itemsCreator={()=> {
+            itemsCreator={(options)=> {
                 const wi = widget.createJson();
                 return Fetch(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
                     method: "POST",
-                    body: JSON.stringify({widget: wi, sessionID: BH.sessionID})
+                    body: JSON.stringify({widget: {...wi, text_options: options}, sessionID: BH.sessionID})
                 }).then(function (response) {
                     return response.json();
                 })

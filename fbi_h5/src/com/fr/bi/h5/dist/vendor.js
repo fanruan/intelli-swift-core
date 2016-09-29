@@ -67071,7 +67071,8 @@
 	    PRESS: '#f0f0f0',
 	    BORDER: '#ddd',
 	    SPLIT: '#f0f0f0',
-	    HIGHLIGHT: '#007aff'
+	    HIGHLIGHT: '#007aff',
+	    DISABLED: '#c4c6c6'
 	};
 
 /***/ },
@@ -68018,6 +68019,28 @@
 	            var props = _objectWithoutProperties(this.props, []);
 	            var state = _objectWithoutProperties(this.state, []);
 
+	            if (props.disabled === true) {
+	                return _lib2.default.createElement(
+	                    _lib.View,
+	                    { style: [styles.wrapper, styles.disabled, props.style] },
+	                    _lib2.default.createElement(
+	                        _lib.Text,
+	                        null,
+	                        props.text
+	                    )
+	                );
+	            }
+	            if (props.invalid === true) {
+	                return _lib2.default.createElement(
+	                    _lib.View,
+	                    { style: [styles.wrapper, props.style] },
+	                    _lib2.default.createElement(
+	                        _lib.Text,
+	                        null,
+	                        props.text
+	                    )
+	                );
+	            }
 	            return _lib2.default.createElement(
 	                _lib.TouchableOpacity,
 	                { style: [props.style], onPress: this._onPress.bind(this),
@@ -68056,6 +68079,9 @@
 	        justifyContent: 'center',
 	        alignItems: 'center',
 	        color: _data.Colors.HIGHLIGHT
+	    },
+	    disabled: {
+	        color: _data.Colors.DISABLED
 	    }
 	});
 	exports.default = TextButton;

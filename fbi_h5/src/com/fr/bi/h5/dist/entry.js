@@ -2839,6 +2839,8 @@ webpackJsonp([0],{
 	    value: true
 	});
 
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -2903,12 +2905,12 @@ webpackJsonp([0],{
 	            var state = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
 	            var nextState = _extends({}, props, state);
-	            this._helper = new _MultiSelectorWidgetHelper2.default(nextState);
 	            return {
 	                value: nextState.value,
 	                type: nextState.type,
 	                items: nextState.items,
-	                hasNext: nextState.hasNext
+	                hasNext: nextState.hasNext,
+	                times: nextState.times || 0
 	            };
 	        }
 	    }, {
@@ -2917,15 +2919,24 @@ webpackJsonp([0],{
 	    }, {
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
+	            this._fetchData();
+	        }
+	    }, {
+	        key: '_fetchData',
+	        value: function _fetchData() {
 	            var _this2 = this;
 
 	            if (this.props.itemsCreator) {
-	                this.props.itemsCreator().then(function (data) {
-	                    _this2.setState(_this2._getNextState(_extends({}, _this2.props, {
+	                this.props.itemsCreator({
+	                    selected_values: this.state.value,
+	                    times: this.state.times + 1
+	                }).then(function (data) {
+	                    _this2.setState(_this2._getNextState(_this2.props, _extends({}, _this2.state, {
+	                        times: _this2.state.times + 1,
 	                        hasNext: data.hasNext,
-	                        items: (0, _core.map)(data.value, function (val) {
+	                        items: _this2.state.items.concat((0, _core.map)(data.value, function (val) {
 	                            return { value: val };
-	                        })
+	                        }))
 	                    })));
 	                });
 	            }
@@ -2933,7 +2944,7 @@ webpackJsonp([0],{
 	    }, {
 	        key: 'componentWillReceiveProps',
 	        value: function componentWillReceiveProps(nextProps) {
-	            this.setState(this._getNextState(_extends({}, this.props, this.state), nextProps));
+	            this.setState(this._getNextState(nextProps));
 	        }
 	    }, {
 	        key: 'componentWillUpdate',
@@ -2942,6 +2953,9 @@ webpackJsonp([0],{
 	        key: 'render',
 	        value: function render() {
 	            var props = _objectWithoutProperties(this.props, []);
+	            var state = _objectWithoutProperties(this.state, []);
+
+	            this._helper = new _MultiSelectorWidgetHelper2.default(state);
 	            //return <Infinite
 	            //    elementHeight={44}
 	            //    containerHeight={props.height}
@@ -2951,8 +2965,6 @@ webpackJsonp([0],{
 	            //    isInfiniteLoading={true}
 	            //    timeScrollStateLastsForAfterUserScrolls={1000}
 	            //    ></Infinite>;
-
-
 	            return _lib2.default.createElement(
 	                _base.VtapeLayout,
 	                { style: styles.wrapper },
@@ -2961,40 +2973,70 @@ webpackJsonp([0],{
 	                    height: props.height - _data.Size.ITEM_HEIGHT,
 	                    overscanRowCount: 0
 	                    //noRowsRenderer={this._noRowsRenderer.bind(this)}
-	                    , rowCount: this._helper.getSortedItems().length,
+	                    , rowCount: this._helper.getSortedItems().length + 1,
 	                    rowHeight: _data.Size.ITEM_HEIGHT,
 	                    rowRenderer: this._rowRenderer.bind(this)
 	                    //scrollToIndex={scrollToIndex}
 	                }),
-	                _lib2.default.createElement(_base.TextButton, { height: _data.Size.ITEM_HEIGHT, style: styles.toolbar, text: '全选',
-	                    onPress: this._onSelectAll.bind(this) })
+	                _lib2.default.createElement(
+	                    _lib.View,
+	                    { height: _data.Size.ITEM_HEIGHT, style: styles.toolbar },
+	                    _lib2.default.createElement(_base.TextButton, { style: { flex: 1 }, text: state.type === 1 ? '全选' : '全不选',
+	                        onPress: this._onSelectAll.bind(this) })
+	                )
 	            );
 	        }
 	    }, {
 	        key: '_onSelectAll',
 	        value: function _onSelectAll() {
-	            this._helper.setType(2);
+	            var type = this.state.type === 2 ? 1 : 2;
+	            this._helper.setType(type);
 	            this.setState({
-	                type: 2
+	                type: type
 	            });
+	        }
+	    }, {
+	        key: '_moreRenderer',
+	        value: function _moreRenderer() {
+	            var _this3 = this;
+
+	            if (this.state.hasNext === true) {
+	                return _lib2.default.createElement(_base.TextButton, { style: { height: _data.Size.ITEM_HEIGHT }, text: '点击加载更多数据', onPress: function onPress() {
+	                        _this3._fetchData();
+	                    } });
+	            } else {
+	                return _lib2.default.createElement(_base.TextButton, { style: { height: _data.Size.ITEM_HEIGHT }, disabled: true, text: '无更多数据' });
+	            }
 	        }
 	    }, {
 	        key: '_rowRenderer',
 	        value: function _rowRenderer(_ref) {
-	            var _this3 = this;
+	            var _this4 = this;
 
 	            var index = _ref.index;
 	            var isScrolling = _ref.isScrolling;
 
-	            var rowData = this._helper.getSortedItems()[index];
-	            return _lib2.default.createElement(_Item2.default, _extends({ key: rowData.value, onSelected: function onSelected(sel) {
-	                    if (sel) {
-	                        _this3._helper.selectOneValue(rowData.value);
-	                    } else {
-	                        _this3._helper.disSelectOneValue(rowData.value);
-	                    }
-	                    _this3.forceUpdate();
-	                } }, rowData));
+	            if (index === this._helper.getSortedItems().length) {
+	                return this._moreRenderer();
+	            } else {
+	                var _ret = function () {
+	                    var rowData = _this4._helper.getSortedItems()[index];
+	                    return {
+	                        v: _lib2.default.createElement(_Item2.default, _extends({ key: rowData.value, onSelected: function onSelected(sel) {
+	                                if (sel) {
+	                                    _this4._helper.selectOneValue(rowData.value);
+	                                } else {
+	                                    _this4._helper.disSelectOneValue(rowData.value);
+	                                }
+	                                _this4.setState({
+	                                    value: _this4._helper.getValue()
+	                                });
+	                            } }, rowData))
+	                    };
+	                }();
+
+	                if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+	            }
 	        }
 	    }]);
 
@@ -3180,9 +3222,9 @@ webpackJsonp([0],{
 /***/ },
 
 /***/ 895:
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
@@ -3192,6 +3234,8 @@ webpackJsonp([0],{
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _core = __webpack_require__(329);
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var MultiSelectorWidgetHelper = function () {
@@ -3199,61 +3243,63 @@ webpackJsonp([0],{
 	        _classCallCheck(this, MultiSelectorWidgetHelper);
 
 	        this.items = props.items;
-	        this.value = Array.from(props.value || []);
+	        this.value = props.value || [];
+	        this.selected = (0, _core.clone)(this.value);
 	        this.type = props.type;
 	        this.sorted = this._sortItems();
 	    }
 
 	    _createClass(MultiSelectorWidgetHelper, [{
-	        key: "_sortItems",
+	        key: '_sortItems',
 	        value: function _sortItems() {
 	            var _this = this;
 
-	            var front = [],
+	            var front = this.value.map(function (val) {
+	                return {
+	                    value: val,
+	                    selected: _this.type !== 2
+	                };
+	            }),
 	                items = [];
 	            this.items.forEach(function (item) {
-	                if (_this.value.indexOf(item.value) > -1) {
-	                    front.push(_extends({}, item, { selected: _this.type !== 2 }));
-	                } else {
-	                    items.push(_extends({}, item, {
-	                        selected: _this.type === 2
-	                    }));
-	                }
+	                items.push(_extends({}, item, {
+	                    selected: _this.type === 2
+	                }));
 	            });
 	            return front.concat(items);
 	        }
 	    }, {
-	        key: "_selectOneValue",
+	        key: '_selectOneValue',
 	        value: function _selectOneValue(val) {
-	            if (this.value.indexOf(val) === -1) {
-	                this.value.push(val);
+	            if (this.selected.indexOf(val) === -1) {
+	                this.selected.push(val);
 	                this.sorted = this._digest();
 	            }
 	        }
 	    }, {
-	        key: "_disSelectOneValue",
+	        key: '_disSelectOneValue',
 	        value: function _disSelectOneValue(val) {
 	            var idx = void 0;
-	            if ((idx = this.value.indexOf(val)) >= -1) {
-	                this.value.splice(idx, 1);
+	            if ((idx = this.selected.indexOf(val)) >= -1) {
+	                this.selected.splice(idx, 1);
 	                this.sorted = this._digest();
 	            }
 	        }
 	    }, {
-	        key: "_digest",
+	        key: '_digest',
 	        value: function _digest() {
 	            var _this2 = this;
 
 	            var items = [];
 	            this.items.forEach(function (item) {
 	                items.push(_extends({}, item, {
-	                    selected: _this2.type === 2 ? _this2.value.indexOf(item.value) === -1 : _this2.value.indexOf(item.value) > -1
+	                    selected: _this2.type === 2 ? _this2.selected.indexOf(item.value) === -1 : _this2.selected.indexOf(item.value) > -1
 	                }));
 	            });
 	            return items;
 	        }
 	    }, {
-	        key: "selectOneValue",
+	        key: 'selectOneValue',
 	        value: function selectOneValue(val) {
 	            if (this.type === 2) {
 	                this._disSelectOneValue(val);
@@ -3262,7 +3308,7 @@ webpackJsonp([0],{
 	            }
 	        }
 	    }, {
-	        key: "disSelectOneValue",
+	        key: 'disSelectOneValue',
 	        value: function disSelectOneValue(val) {
 	            if (this.type === 2) {
 	                this._selectOneValue(val);
@@ -3271,17 +3317,22 @@ webpackJsonp([0],{
 	            }
 	        }
 	    }, {
-	        key: "getSelectedValue",
+	        key: 'getSelectedValue',
 	        value: function getSelectedValue() {
-	            return Array.from(this.value);
+	            return (0, _core.clone)(this.selected);
 	        }
 	    }, {
-	        key: "getSortedItems",
+	        key: 'getSortedItems',
 	        value: function getSortedItems() {
 	            return this.sorted;
 	        }
 	    }, {
-	        key: "setType",
+	        key: 'getValue',
+	        value: function getValue() {
+	            return (0, _core.clone)(this.selected);
+	        }
+	    }, {
+	        key: 'setType',
 	        value: function setType(type) {
 	            this.type = type;
 	            this.sorted = this.items.map(function (item) {
@@ -4181,6 +4232,8 @@ webpackJsonp([0],{
 	    value: true
 	});
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _reactAddonsPureRenderMixin = __webpack_require__(230);
@@ -4257,11 +4310,11 @@ webpackJsonp([0],{
 	                style: styles.wrapper,
 	                type: widget.getSelectType(),
 	                value: widget.getSelectValue(),
-	                itemsCreator: function itemsCreator() {
+	                itemsCreator: function itemsCreator(options) {
 	                    var wi = widget.createJson();
 	                    return (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
 	                        method: "POST",
-	                        body: JSON.stringify({ widget: wi, sessionID: BH.sessionID })
+	                        body: JSON.stringify({ widget: _extends({}, wi, { text_options: options }), sessionID: BH.sessionID })
 	                    }).then(function (response) {
 	                        return response.json();
 	                    });

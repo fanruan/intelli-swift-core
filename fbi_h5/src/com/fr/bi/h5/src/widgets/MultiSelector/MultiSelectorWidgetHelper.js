@@ -1,37 +1,40 @@
+import {clone} from 'core'
 export default class MultiSelectorWidgetHelper {
     constructor(props) {
         this.items = props.items;
-        this.value = Array.from(props.value || []);
+        this.value = props.value || [];
+        this.selected = clone(this.value);
         this.type = props.type;
         this.sorted = this._sortItems();
     }
 
     _sortItems() {
-        const front = [], items = [];
-        this.items.forEach((item)=> {
-            if (this.value.indexOf(item.value) > -1) {
-                front.push({...item, selected: this.type !== 2});
-            } else {
-                items.push({
-                    ...item,
-                    selected: this.type === 2
-                });
+        const front = this.value.map(val=> {
+            return {
+                value: val,
+                selected: this.type !== 2
             }
+        }), items = [];
+        this.items.forEach((item)=> {
+            items.push({
+                ...item,
+                selected: this.type === 2
+            });
         });
         return front.concat(items);
     }
 
     _selectOneValue(val) {
-        if (this.value.indexOf(val) === -1) {
-            this.value.push(val);
+        if (this.selected.indexOf(val) === -1) {
+            this.selected.push(val);
             this.sorted = this._digest();
         }
     }
 
     _disSelectOneValue(val) {
         let idx;
-        if ((idx = this.value.indexOf(val)) >= -1) {
-            this.value.splice(idx, 1);
+        if ((idx = this.selected.indexOf(val)) >= -1) {
+            this.selected.splice(idx, 1);
             this.sorted = this._digest();
         }
     }
@@ -41,7 +44,7 @@ export default class MultiSelectorWidgetHelper {
         this.items.forEach((item)=> {
             items.push({
                 ...item,
-                selected: this.type === 2 ? (this.value.indexOf(item.value) === -1) : (this.value.indexOf(item.value) > -1)
+                selected: this.type === 2 ? (this.selected.indexOf(item.value) === -1) : (this.selected.indexOf(item.value) > -1)
             });
         });
         return items;
@@ -64,11 +67,15 @@ export default class MultiSelectorWidgetHelper {
     }
 
     getSelectedValue() {
-        return Array.from(this.value);
+        return clone(this.selected);
     }
 
     getSortedItems() {
         return this.sorted;
+    }
+
+    getValue() {
+        return clone(this.selected);
     }
 
     setType(type) {
