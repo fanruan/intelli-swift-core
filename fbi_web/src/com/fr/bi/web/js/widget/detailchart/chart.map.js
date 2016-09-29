@@ -49,6 +49,12 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
             return BI.contentFormat(arguments[0], formatterArray[0]);
         };
         config.plotOptions.dataLabels.style = this.config.chart_font;
+
+        config.plotOptions.bubble.dataLabels = config.plotOptions.dataLabels;
+        config.plotOptions.bubble.dataLabels.formatter.identifier = "${SIZE}";
+
+        config.plotOptions.bubble.tooltip = config.plotOptions.tooltip;
+
         config.geo = this.config.geo;
         if (this.config.show_background_layer === true && BI.isNotNull(this.config.background_layer_info)) {
             if (this.config.background_layer_info.type === BICst.WMS_SERVER) {
