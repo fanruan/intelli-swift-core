@@ -11,11 +11,11 @@ import React, {
     ListView,
     View,
     Fetch
-    } from 'lib'
+} from 'lib'
 
 import {Table, AutoSizer} from 'base'
 
-import {Template} from 'data'
+import {Template, Widget} from 'data'
 
 import {MultiSelectorWidget} from 'widgets'
 
@@ -50,17 +50,28 @@ class MultiSelectorComponent extends Component {
     render() {
         const {...props} = this.props;
         const items = [];
+        const widget = new Widget(props.$$widget);
         for (let i = 0; i < 1000; i++) {
             items.push({
                 value: i
             })
         }
         return <MultiSelectorWidget
-            style = {styles.wrapper}
-            items={items}
+            style={styles.wrapper}
+            type={widget.getSelectType()}
+            value={widget.getSelectValue()}
+            itemsCreator={()=> {
+                const wi = widget.createJson();
+                return Fetch(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
+                    method: "POST",
+                    body: JSON.stringify({widget: wi, sessionID: BH.sessionID})
+                }).then(function (response) {
+                    return response.json();
+                })
+            }}
             width={props.width}
             height={props.height}
-            >
+        >
         </MultiSelectorWidget>
     }
 }

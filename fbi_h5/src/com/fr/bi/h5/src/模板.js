@@ -34,6 +34,10 @@ class TableComponent extends Component {
 
     state = {};
 
+    _getNextState(props, state = {}) {
+
+    }
+
     componentWillMount() {
 
     }

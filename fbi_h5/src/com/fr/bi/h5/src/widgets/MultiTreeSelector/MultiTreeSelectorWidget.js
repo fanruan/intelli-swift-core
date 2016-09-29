@@ -14,6 +14,7 @@ import React, {
     } from 'lib'
 
 import {VirtualScroll, AutoSizer} from 'base'
+import {Size} from 'data'
 
 import Item from './Item'
 import MultiTreeSelectorWidgetHelper from './MultiTreeSelectorWidgetHelper'
@@ -70,7 +71,7 @@ class MultiTreeSelectorWidget extends Component {
             overscanRowCount={10}
             //noRowsRenderer={this._noRowsRenderer.bind(this)}
             rowCount={this._helper.getSortedItems().length}
-            rowHeight={44}
+            rowHeight={Size.ITEM_HEIGHT}
             rowRenderer={this._rowRenderer.bind(this)}
             //scrollToIndex={scrollToIndex}
             />
@@ -98,7 +99,7 @@ class MultiTreeSelectorWidget extends Component {
     }
 
     _onSelected(rowData, sel) {
-        if (sel) {
+        if (sel.selected === true) {
             this._helper.selectOneValue(rowData.value);
         } else {
             this._helper.disSelectOneValue(rowData.value);

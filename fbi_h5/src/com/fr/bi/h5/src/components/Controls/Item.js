@@ -70,7 +70,8 @@ mixin.onClass(Item, PureRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         height: Size.ITEM_HEIGHT,
-        padding: '0 4px',
+        paddingLeft: 20,
+        paddingRight: 20,
         borderBottom: '1px solid ' + Colors.SPLIT
     }
 });

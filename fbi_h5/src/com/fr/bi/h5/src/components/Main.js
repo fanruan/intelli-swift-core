@@ -86,6 +86,7 @@ class Main extends Component {
             <route.Component
                 width={width} height={height - 50}
                 {...props}
+                {...route}
                 navigator={navigationOperations}
                 />
         );

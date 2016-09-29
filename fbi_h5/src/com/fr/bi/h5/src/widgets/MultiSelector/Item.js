@@ -74,15 +74,10 @@ class Item extends Component {
                     </Text>
                 </View>
                 <View style={[styles.icon, {width: Size.ITEM_HEIGHT}]}>
-                    <Checkbox selected={this.state.selected}/>
+                    <Checkbox selected={this.state.selected} onSelected={this._onPress.bind(this)}/>
                 </View>
             </View>
-        </TouchableHighlight>
-        //         return <View className={cn('check-box-icon', 'react-view', cn({
-        //         'active': this.state.selected
-        // }))} style={[styles.icon, {width: 30}]}>
-        // <Icon width={16} height={16}></Icon>
-        //         </View>
+        </TouchableHighlight>;
     }
 
 }
@@ -98,15 +93,13 @@ const styles = StyleSheet.create({
     text: {
         justifyContent: 'center',
         flexGrow: 1,
+        paddingLeft: 20,
+        paddingRight: 20
     },
 
     icon: {
         justifyContent: 'center',
         alignItems: 'center'
-    },
-
-    selected: {
-        backgroundColor: Colors.HIGHLIGHT
     }
 });
 export default Item

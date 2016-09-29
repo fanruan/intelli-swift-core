@@ -88,6 +88,8 @@ class Controls extends Component {
                     }
                     props.navigator.push({
                         name: widget.getName(),
+                        id,
+                        $$widget,
                         Component: Component,
                         title: widget.getName()
                     });

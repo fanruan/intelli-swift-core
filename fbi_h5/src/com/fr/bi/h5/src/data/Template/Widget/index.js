@@ -132,6 +132,14 @@ class Widget {
                 return true;
         }
     }
+
+    getSelectType(){
+        return this.$$widget.getIn(['value', 'type']);
+    }
+
+    getSelectValue(){
+        return this.$$widget.getIn(['value', 'value']).toArray();
+    }
 }
 
 export default Widget;

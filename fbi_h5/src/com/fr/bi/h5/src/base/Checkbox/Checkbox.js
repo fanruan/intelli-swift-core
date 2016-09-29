@@ -27,11 +27,14 @@ class Checkbox extends Component {
     static propTypes = {};
 
     static defaultProps = {
-        selected: true
+        selected: true,
+        half: false
     };
 
     state = {
-        selected: this.props.selected
+        selected: this.props.selected,
+        half: this.props.half,
+        onSelected: emptyFunction
     };
 
     componentWillMount() {
@@ -43,19 +46,32 @@ class Checkbox extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const {selected} = nextProps;
-        this.setState({selected});
+        const {selected, half} = nextProps;
+        this.setState({selected, half});
     }
 
     render() {
         const {...props} = this.props, {...state} = this.state;
-        return <TouchableWithoutFeedback onPress={()=> {
-            this.setState({
-                selected: !this.state.selected
-            })
+        return <TouchableWithoutFeedback onPress={(e)=> {
+            if (this.state.half === true) {
+                this.setState({
+                    selected: true,
+                    half: false
+                }, ()=> {
+                    props.onSelected(this.state);
+                });
+            } else {
+                this.setState({
+                    selected: !this.state.selected
+                }, ()=> {
+                    props.onSelected(this.state);
+                });
+            }
+            e.stopPropagation();
         }}>
             <View className={cn({
-                selected: this.state.selected
+                selected: state.selected,
+                half: state.half
             }, props.className, 'Checkbox')}{...props} style={[styles.wrapper, props.style]}>
 
             </View>

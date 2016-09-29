@@ -37,17 +37,17 @@ webpackJsonp([0],{
 
 	var _Portal2 = _interopRequireDefault(_Portal);
 
-	__webpack_require__(912);
+	__webpack_require__(913);
 
-	__webpack_require__(914);
+	__webpack_require__(915);
 
-	__webpack_require__(916);
+	__webpack_require__(917);
 
-	__webpack_require__(918);
+	__webpack_require__(919);
 
-	__webpack_require__(920);
+	__webpack_require__(921);
 
-	__webpack_require__(922);
+	__webpack_require__(923);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2380,7 +2380,7 @@ webpackJsonp([0],{
 
 	var _Toolbar2 = _interopRequireDefault(_Toolbar);
 
-	var _Layout = __webpack_require__(903);
+	var _Layout = __webpack_require__(904);
 
 	var _Layout2 = _interopRequireDefault(_Layout);
 
@@ -2466,7 +2466,7 @@ webpackJsonp([0],{
 	            }
 	            return _lib2.default.createElement(route.Component, _extends({
 	                width: width, height: height - 50
-	            }, props, {
+	            }, props, route, {
 	                navigator: navigationOperations
 	            }));
 	        }
@@ -2588,9 +2588,9 @@ webpackJsonp([0],{
 
 	var _base = __webpack_require__(774);
 
-	var _widgets = __webpack_require__(890);
+	var _widgets = __webpack_require__(891);
 
-	var _Controls = __webpack_require__(899);
+	var _Controls = __webpack_require__(900);
 
 	var _Controls2 = _interopRequireDefault(_Controls);
 
@@ -2668,7 +2668,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 890:
+/***/ 891:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2678,15 +2678,15 @@ webpackJsonp([0],{
 	});
 	exports.MultiTreeSelectorWidget = exports.MultiSelectorWidget = exports.TableWidget = undefined;
 
-	var _TableWidget2 = __webpack_require__(891);
+	var _TableWidget2 = __webpack_require__(892);
 
 	var _TableWidget3 = _interopRequireDefault(_TableWidget2);
 
-	var _MultiSelectorWidget2 = __webpack_require__(892);
+	var _MultiSelectorWidget2 = __webpack_require__(893);
 
 	var _MultiSelectorWidget3 = _interopRequireDefault(_MultiSelectorWidget2);
 
-	var _MultiTreeSelectorWidget2 = __webpack_require__(895);
+	var _MultiTreeSelectorWidget2 = __webpack_require__(896);
 
 	var _MultiTreeSelectorWidget3 = _interopRequireDefault(_MultiTreeSelectorWidget2);
 
@@ -2699,7 +2699,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 891:
+/***/ 892:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2830,7 +2830,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 892:
+/***/ 893:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2865,11 +2865,11 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(764);
 
-	var _Item = __webpack_require__(893);
+	var _Item = __webpack_require__(894);
 
 	var _Item2 = _interopRequireDefault(_Item);
 
-	var _MultiSelectorWidgetHelper = __webpack_require__(894);
+	var _MultiSelectorWidgetHelper = __webpack_require__(895);
 
 	var _MultiSelectorWidgetHelper2 = _interopRequireDefault(_MultiSelectorWidgetHelper);
 
@@ -2893,43 +2893,51 @@ webpackJsonp([0],{
 
 	        _this.state = {};
 
-	        _this._helper = new _MultiSelectorWidgetHelper2.default(props);
-	        _this.state = {
-	            value: props.value,
-	            type: props.type
-	        };
+	        _this.state = _this._getNextState(props);
 	        return _this;
 	    }
 
 	    _createClass(MultiSelectorWidget, [{
+	        key: '_getNextState',
+	        value: function _getNextState(props) {
+	            var state = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+	            var nextState = _extends({}, props, state);
+	            this._helper = new _MultiSelectorWidgetHelper2.default(nextState);
+	            return {
+	                value: nextState.value,
+	                type: nextState.type,
+	                items: nextState.items,
+	                hasNext: nextState.hasNext
+	            };
+	        }
+	    }, {
 	        key: 'componentWillMount',
 	        value: function componentWillMount() {}
 	    }, {
 	        key: 'componentDidMount',
-	        value: function componentDidMount() {}
+	        value: function componentDidMount() {
+	            var _this2 = this;
+
+	            if (this.props.itemsCreator) {
+	                this.props.itemsCreator().then(function (data) {
+	                    _this2.setState(_this2._getNextState(_extends({}, _this2.props, {
+	                        hasNext: data.hasNext,
+	                        items: (0, _core.map)(data.value, function (val) {
+	                            return { value: val };
+	                        })
+	                    })));
+	                });
+	            }
+	        }
 	    }, {
 	        key: 'componentWillReceiveProps',
 	        value: function componentWillReceiveProps(nextProps) {
-	            this._helper = new _MultiSelectorWidgetHelper2.default(nextProps);
-	            this.setState({ value: nextProps.value, type: nextProps.type });
+	            this.setState(this._getNextState(_extends({}, this.props, this.state), nextProps));
 	        }
 	    }, {
 	        key: 'componentWillUpdate',
 	        value: function componentWillUpdate() {}
-	    }, {
-	        key: 'handleInfiniteLoad',
-	        value: function handleInfiniteLoad() {
-	            var that = this;
-	        }
-	    }, {
-	        key: 'elementInfiniteLoad',
-	        value: function elementInfiniteLoad() {
-	            return _lib2.default.createElement(
-	                'div',
-	                { className: 'infinite-list-item' },
-	                'Loading...'
-	            );
-	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
@@ -2945,21 +2953,35 @@ webpackJsonp([0],{
 	            //    ></Infinite>;
 
 
-	            return _lib2.default.createElement(_base.VirtualScroll, {
-	                width: props.width,
-	                height: props.height,
-	                overscanRowCount: 0
-	                //noRowsRenderer={this._noRowsRenderer.bind(this)}
-	                , rowCount: this._helper.getSortedItems().length,
-	                rowHeight: _data.Size.ITEM_HEIGHT,
-	                rowRenderer: this._rowRenderer.bind(this)
-	                //scrollToIndex={scrollToIndex}
+	            return _lib2.default.createElement(
+	                _base.VtapeLayout,
+	                { style: styles.wrapper },
+	                _lib2.default.createElement(_base.VirtualScroll, {
+	                    width: props.width,
+	                    height: props.height - _data.Size.ITEM_HEIGHT,
+	                    overscanRowCount: 0
+	                    //noRowsRenderer={this._noRowsRenderer.bind(this)}
+	                    , rowCount: this._helper.getSortedItems().length,
+	                    rowHeight: _data.Size.ITEM_HEIGHT,
+	                    rowRenderer: this._rowRenderer.bind(this)
+	                    //scrollToIndex={scrollToIndex}
+	                }),
+	                _lib2.default.createElement(_base.TextButton, { height: _data.Size.ITEM_HEIGHT, style: styles.toolbar, text: '全选',
+	                    onPress: this._onSelectAll.bind(this) })
+	            );
+	        }
+	    }, {
+	        key: '_onSelectAll',
+	        value: function _onSelectAll() {
+	            this._helper.setType(2);
+	            this.setState({
+	                type: 2
 	            });
 	        }
 	    }, {
 	        key: '_rowRenderer',
 	        value: function _rowRenderer(_ref) {
-	            var _this2 = this;
+	            var _this3 = this;
 
 	            var index = _ref.index;
 	            var isScrolling = _ref.isScrolling;
@@ -2967,11 +2989,11 @@ webpackJsonp([0],{
 	            var rowData = this._helper.getSortedItems()[index];
 	            return _lib2.default.createElement(_Item2.default, _extends({ key: rowData.value, onSelected: function onSelected(sel) {
 	                    if (sel) {
-	                        _this2._helper.selectOneValue(rowData.value);
+	                        _this3._helper.selectOneValue(rowData.value);
 	                    } else {
-	                        _this2._helper.disSelectOneValue(rowData.value);
+	                        _this3._helper.disSelectOneValue(rowData.value);
 	                    }
-	                    _this2.forceUpdate();
+	                    _this3.forceUpdate();
 	                } }, rowData));
 	        }
 	    }]);
@@ -2981,20 +3003,27 @@ webpackJsonp([0],{
 
 	MultiSelectorWidget.propTypes = {};
 	MultiSelectorWidget.defaultProps = {
-	    items: []
+	    type: 0,
+	    value: [],
+	    items: [],
+	    hasNext: false
 	};
 
 	_reactMixin2.default.onClass(MultiSelectorWidget, _reactAddonsPureRenderMixin2.default);
 	var styles = _lib.StyleSheet.create({
-	    region: {
-	        position: 'absolute'
+	    wrapper: {
+	        flex: 1
+	    },
+	    toolbar: {
+	        borderTopWidth: 1 / _lib.PixelRatio.get(),
+	        borderTopColor: _data.Colors.BORDER
 	    }
 	});
 	exports.default = MultiSelectorWidget;
 
 /***/ },
 
-/***/ 893:
+/***/ 894:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3107,15 +3136,10 @@ webpackJsonp([0],{
 	                    _lib2.default.createElement(
 	                        _lib.View,
 	                        { style: [styles.icon, { width: _data.Size.ITEM_HEIGHT }] },
-	                        _lib2.default.createElement(_base.Checkbox, { selected: this.state.selected })
+	                        _lib2.default.createElement(_base.Checkbox, { selected: this.state.selected, onSelected: this._onPress.bind(this) })
 	                    )
 	                )
 	            );
-	            //         return <View className={cn('check-box-icon', 'react-view', cn({
-	            //         'active': this.state.selected
-	            // }))} style={[styles.icon, {width: 30}]}>
-	            // <Icon width={16} height={16}></Icon>
-	            //         </View>
 	        }
 	    }]);
 
@@ -3141,23 +3165,21 @@ webpackJsonp([0],{
 
 	    text: {
 	        justifyContent: 'center',
-	        flexGrow: 1
+	        flexGrow: 1,
+	        paddingLeft: 20,
+	        paddingRight: 20
 	    },
 
 	    icon: {
 	        justifyContent: 'center',
 	        alignItems: 'center'
-	    },
-
-	    selected: {
-	        backgroundColor: _data.Colors.HIGHLIGHT
 	    }
 	});
 	exports.default = Item;
 
 /***/ },
 
-/***/ 894:
+/***/ 895:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3177,17 +3199,35 @@ webpackJsonp([0],{
 	        _classCallCheck(this, MultiSelectorWidgetHelper);
 
 	        this.items = props.items;
-	        this.sorted = this.items;
 	        this.value = Array.from(props.value || []);
 	        this.type = props.type;
+	        this.sorted = this._sortItems();
 	    }
 
 	    _createClass(MultiSelectorWidgetHelper, [{
+	        key: "_sortItems",
+	        value: function _sortItems() {
+	            var _this = this;
+
+	            var front = [],
+	                items = [];
+	            this.items.forEach(function (item) {
+	                if (_this.value.indexOf(item.value) > -1) {
+	                    front.push(_extends({}, item, { selected: _this.type !== 2 }));
+	                } else {
+	                    items.push(_extends({}, item, {
+	                        selected: _this.type === 2
+	                    }));
+	                }
+	            });
+	            return front.concat(items);
+	        }
+	    }, {
 	        key: "_selectOneValue",
 	        value: function _selectOneValue(val) {
 	            if (this.value.indexOf(val) === -1) {
 	                this.value.push(val);
-	                this.sorted = this._sortItems();
+	                this.sorted = this._digest();
 	            }
 	        }
 	    }, {
@@ -3196,31 +3236,26 @@ webpackJsonp([0],{
 	            var idx = void 0;
 	            if ((idx = this.value.indexOf(val)) >= -1) {
 	                this.value.splice(idx, 1);
-	                this.sorted = this._sortItems();
+	                this.sorted = this._digest();
 	            }
 	        }
 	    }, {
-	        key: "_sortItems",
-	        value: function _sortItems() {
-	            var _this = this;
+	        key: "_digest",
+	        value: function _digest() {
+	            var _this2 = this;
 
-	            var front = [],
-	                items = [];
+	            var items = [];
 	            this.items.forEach(function (item) {
-	                // if (this.value.indexOf(item.value) > -1) {
-	                //     front.push({...item, selected: this.type !== 1});
-	                // } else {
 	                items.push(_extends({}, item, {
-	                    selected: _this.type === 1 ? _this.value.indexOf(item.value) === -1 : _this.value.indexOf(item.value) > -1
+	                    selected: _this2.type === 2 ? _this2.value.indexOf(item.value) === -1 : _this2.value.indexOf(item.value) > -1
 	                }));
-	                // }
 	            });
-	            return front.concat(items);
+	            return items;
 	        }
 	    }, {
 	        key: "selectOneValue",
 	        value: function selectOneValue(val) {
-	            if (this.type === 1) {
+	            if (this.type === 2) {
 	                this._disSelectOneValue(val);
 	            } else {
 	                this._selectOneValue(val);
@@ -3229,7 +3264,7 @@ webpackJsonp([0],{
 	    }, {
 	        key: "disSelectOneValue",
 	        value: function disSelectOneValue(val) {
-	            if (this.type === 1) {
+	            if (this.type === 2) {
 	                this._selectOneValue(val);
 	            } else {
 	                this._disSelectOneValue(val);
@@ -3245,6 +3280,16 @@ webpackJsonp([0],{
 	        value: function getSortedItems() {
 	            return this.sorted;
 	        }
+	    }, {
+	        key: "setType",
+	        value: function setType(type) {
+	            this.type = type;
+	            this.sorted = this.items.map(function (item) {
+	                return _extends({}, item, {
+	                    selected: type === 2
+	                });
+	            });
+	        }
 	    }]);
 
 	    return MultiSelectorWidgetHelper;
@@ -3254,7 +3299,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 895:
+/***/ 896:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3287,15 +3332,17 @@ webpackJsonp([0],{
 
 	var _base = __webpack_require__(774);
 
-	var _Item = __webpack_require__(896);
+	var _data = __webpack_require__(764);
+
+	var _Item = __webpack_require__(897);
 
 	var _Item2 = _interopRequireDefault(_Item);
 
-	var _MultiTreeSelectorWidgetHelper = __webpack_require__(897);
+	var _MultiTreeSelectorWidgetHelper = __webpack_require__(898);
 
 	var _MultiTreeSelectorWidgetHelper2 = _interopRequireDefault(_MultiTreeSelectorWidgetHelper);
 
-	var _MultiTreeSelectorWidgetAsyncHelper = __webpack_require__(898);
+	var _MultiTreeSelectorWidgetAsyncHelper = __webpack_require__(899);
 
 	var _MultiTreeSelectorWidgetAsyncHelper2 = _interopRequireDefault(_MultiTreeSelectorWidgetAsyncHelper);
 
@@ -3360,7 +3407,7 @@ webpackJsonp([0],{
 	                overscanRowCount: 10
 	                //noRowsRenderer={this._noRowsRenderer.bind(this)}
 	                , rowCount: this._helper.getSortedItems().length,
-	                rowHeight: 44,
+	                rowHeight: _data.Size.ITEM_HEIGHT,
 	                rowRenderer: this._rowRenderer.bind(this)
 	                //scrollToIndex={scrollToIndex}
 	            });
@@ -3396,7 +3443,7 @@ webpackJsonp([0],{
 	    }, {
 	        key: '_onSelected',
 	        value: function _onSelected(rowData, sel) {
-	            if (sel) {
+	            if (sel.selected === true) {
 	                this._helper.selectOneValue(rowData.value);
 	            } else {
 	                this._helper.disSelectOneValue(rowData.value);
@@ -3425,7 +3472,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 896:
+/***/ 897:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3517,22 +3564,6 @@ webpackJsonp([0],{
 	            });
 	        }
 	    }, {
-	        key: '_onSelect',
-	        value: function _onSelect(e) {
-	            var _this3 = this;
-
-	            var selected = 0;
-	            if (this.state.selected < 2) {
-	                selected = 2;
-	            }
-	            this.setState({
-	                selected: selected
-	            }, function () {
-	                _this3.props.onSelected(selected);
-	            });
-	            e.stopPropagation();
-	        }
-	    }, {
 	        key: 'render',
 	        value: function render() {
 	            var props = _objectWithoutProperties(this.props, []);
@@ -3543,12 +3574,10 @@ webpackJsonp([0],{
 	                row = _lib2.default.createElement(
 	                    _lib.View,
 	                    { className: (0, _core.cn)({
-	                            'right-font': !state.expanded,
-	                            'down-font': state.expanded,
-	                            'react-view': true
-	                        }), style: [styles.icon, {
-	                            width: 30,
-	                            marginLeft: props.layer * 23
+	                            'active': state.expanded
+	                        }, 'node-fold', 'react-view'), style: [styles.icon, {
+	                            width: 44,
+	                            marginLeft: props.layer * 44
 	                        }] },
 	                    _lib2.default.createElement(_base.Icon, { width: 16, height: 16 })
 	                );
@@ -3563,7 +3592,7 @@ webpackJsonp([0],{
 	                    _lib2.default.createElement(
 	                        _lib.View,
 	                        { style: [styles.text, {
-	                                marginLeft: (0, _core.isNil)(row) ? props.layer * 23 + 24 : 4
+	                                marginLeft: (0, _core.isNil)(row) ? (props.layer + 1) * 44 : 0
 	                            }] },
 	                        _lib2.default.createElement(
 	                            _lib.Text,
@@ -3572,18 +3601,10 @@ webpackJsonp([0],{
 	                        )
 	                    ),
 	                    _lib2.default.createElement(
-	                        _lib.TouchableWithoutFeedback,
-	                        { onPress: this._onSelect.bind(this) },
-	                        _lib2.default.createElement(
-	                            _lib.View,
-	                            { className: [(0, _core.cn)({
-	                                    'check-half-select-icon': state.selected == 1,
-	                                    'check-box-icon': state.selected !== 1,
-	                                    'active': state.selected === 2,
-	                                    'react-view': true
-	                                })], style: [styles.icon, { width: 30 }] },
-	                            _lib2.default.createElement(_base.Icon, { width: 16, height: 16 })
-	                        )
+	                        _lib.View,
+	                        { style: [styles.icon, { width: _data.Size.ITEM_HEIGHT }] },
+	                        _lib2.default.createElement(_base.Checkbox, { selected: state.selected === 2, half: state.selected === 1,
+	                            onSelected: props.onSelected })
 	                    )
 	                )
 	            );
@@ -3611,7 +3632,7 @@ webpackJsonp([0],{
 	        borderBottomColor: _data.Colors.SPLIT,
 	        borderBottomStyle: 'solid',
 	        borderBottomWidth: 1 / _lib.PixelRatio.get(),
-	        height: 44
+	        height: _data.Size.ITEM_HEIGHT
 	    },
 
 	    text: {
@@ -3632,7 +3653,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 897:
+/***/ 898:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3804,7 +3825,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 898:
+/***/ 899:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3976,7 +3997,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 899:
+/***/ 900:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4009,17 +4030,17 @@ webpackJsonp([0],{
 
 	var _base = __webpack_require__(774);
 
-	var _widgets = __webpack_require__(890);
+	var _widgets = __webpack_require__(891);
 
-	var _MultiSelectorComponent = __webpack_require__(900);
+	var _MultiSelectorComponent = __webpack_require__(901);
 
 	var _MultiSelectorComponent2 = _interopRequireDefault(_MultiSelectorComponent);
 
-	var _MultiTreeSelectorComponent = __webpack_require__(901);
+	var _MultiTreeSelectorComponent = __webpack_require__(902);
 
 	var _MultiTreeSelectorComponent2 = _interopRequireDefault(_MultiTreeSelectorComponent);
 
-	var _Item = __webpack_require__(902);
+	var _Item = __webpack_require__(903);
 
 	var _Item2 = _interopRequireDefault(_Item);
 
@@ -4097,6 +4118,8 @@ webpackJsonp([0],{
 	                            }
 	                            props.navigator.push({
 	                                name: widget.getName(),
+	                                id: id,
+	                                $$widget: $$widget,
 	                                Component: Component,
 	                                title: widget.getName()
 	                            });
@@ -4149,7 +4172,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 900:
+/***/ 901:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4182,7 +4205,7 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(764);
 
-	var _widgets = __webpack_require__(890);
+	var _widgets = __webpack_require__(891);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4224,6 +4247,7 @@ webpackJsonp([0],{
 	            var props = _objectWithoutProperties(this.props, []);
 
 	            var items = [];
+	            var widget = new _data.Widget(props.$$widget);
 	            for (var i = 0; i < 1000; i++) {
 	                items.push({
 	                    value: i
@@ -4231,7 +4255,17 @@ webpackJsonp([0],{
 	            }
 	            return _lib2.default.createElement(_widgets.MultiSelectorWidget, {
 	                style: styles.wrapper,
-	                items: items,
+	                type: widget.getSelectType(),
+	                value: widget.getSelectValue(),
+	                itemsCreator: function itemsCreator() {
+	                    var wi = widget.createJson();
+	                    return (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
+	                        method: "POST",
+	                        body: JSON.stringify({ widget: wi, sessionID: BH.sessionID })
+	                    }).then(function (response) {
+	                        return response.json();
+	                    });
+	                },
 	                width: props.width,
 	                height: props.height
 	            });
@@ -4254,7 +4288,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 901:
+/***/ 902:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4287,7 +4321,7 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(764);
 
-	var _widgets = __webpack_require__(890);
+	var _widgets = __webpack_require__(891);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4369,7 +4403,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 902:
+/***/ 903:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4402,7 +4436,7 @@ webpackJsonp([0],{
 
 	var _base = __webpack_require__(774);
 
-	var _widgets = __webpack_require__(890);
+	var _widgets = __webpack_require__(891);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4477,7 +4511,8 @@ webpackJsonp([0],{
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
 	        height: _data.Size.ITEM_HEIGHT,
-	        padding: '0 4px',
+	        paddingLeft: 20,
+	        paddingRight: 20,
 	        borderBottom: '1px solid ' + _data.Colors.SPLIT
 	    }
 	});
@@ -4485,7 +4520,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 903:
+/***/ 904:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4520,23 +4555,23 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(764);
 
-	var _ChartComponent = __webpack_require__(904);
+	var _ChartComponent = __webpack_require__(905);
 
 	var _ChartComponent2 = _interopRequireDefault(_ChartComponent);
 
-	var _TableComponent = __webpack_require__(905);
+	var _TableComponent = __webpack_require__(906);
 
 	var _TableComponent2 = _interopRequireDefault(_TableComponent);
 
-	var _DetailTableComponent = __webpack_require__(910);
+	var _DetailTableComponent = __webpack_require__(911);
 
 	var _DetailTableComponent2 = _interopRequireDefault(_DetailTableComponent);
 
-	var _MultiSelectorComponent = __webpack_require__(900);
+	var _MultiSelectorComponent = __webpack_require__(901);
 
 	var _MultiSelectorComponent2 = _interopRequireDefault(_MultiSelectorComponent);
 
-	var _MultiTreeSelectorComponent = __webpack_require__(901);
+	var _MultiTreeSelectorComponent = __webpack_require__(902);
 
 	var _MultiTreeSelectorComponent2 = _interopRequireDefault(_MultiTreeSelectorComponent);
 
@@ -4679,7 +4714,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 904:
+/***/ 905:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4777,7 +4812,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 905:
+/***/ 906:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4810,21 +4845,21 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(764);
 
-	var _widgets = __webpack_require__(890);
+	var _widgets = __webpack_require__(891);
 
-	var _TableComponentHelper = __webpack_require__(906);
+	var _TableComponentHelper = __webpack_require__(907);
 
 	var _TableComponentHelper2 = _interopRequireDefault(_TableComponentHelper);
 
-	var _TableComponentWidthHelper = __webpack_require__(907);
+	var _TableComponentWidthHelper = __webpack_require__(908);
 
 	var _TableComponentWidthHelper2 = _interopRequireDefault(_TableComponentWidthHelper);
 
-	var _TableCell = __webpack_require__(908);
+	var _TableCell = __webpack_require__(909);
 
 	var _TableCell2 = _interopRequireDefault(_TableCell);
 
-	var _TableHeader = __webpack_require__(909);
+	var _TableHeader = __webpack_require__(910);
 
 	var _TableHeader2 = _interopRequireDefault(_TableHeader);
 
@@ -4940,7 +4975,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 906:
+/***/ 907:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5059,7 +5094,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 907:
+/***/ 908:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5216,7 +5251,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 908:
+/***/ 909:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5249,7 +5284,7 @@ webpackJsonp([0],{
 
 	var _base = __webpack_require__(774);
 
-	var _widgets = __webpack_require__(890);
+	var _widgets = __webpack_require__(891);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5322,7 +5357,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 909:
+/***/ 910:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5355,7 +5390,7 @@ webpackJsonp([0],{
 
 	var _base = __webpack_require__(774);
 
-	var _widgets = __webpack_require__(890);
+	var _widgets = __webpack_require__(891);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5428,7 +5463,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 910:
+/***/ 911:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5461,21 +5496,21 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(764);
 
-	var _widgets = __webpack_require__(890);
+	var _widgets = __webpack_require__(891);
 
-	var _DetailTableComponentHelper = __webpack_require__(911);
+	var _DetailTableComponentHelper = __webpack_require__(912);
 
 	var _DetailTableComponentHelper2 = _interopRequireDefault(_DetailTableComponentHelper);
 
-	var _TableComponentWidthHelper = __webpack_require__(907);
+	var _TableComponentWidthHelper = __webpack_require__(908);
 
 	var _TableComponentWidthHelper2 = _interopRequireDefault(_TableComponentWidthHelper);
 
-	var _TableCell = __webpack_require__(908);
+	var _TableCell = __webpack_require__(909);
 
 	var _TableCell2 = _interopRequireDefault(_TableCell);
 
-	var _TableHeader = __webpack_require__(909);
+	var _TableHeader = __webpack_require__(910);
 
 	var _TableHeader2 = _interopRequireDefault(_TableHeader);
 
@@ -5582,7 +5617,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 911:
+/***/ 912:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5661,13 +5696,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 912:
+/***/ 913:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(913);
+	var content = __webpack_require__(914);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(619)(content, {});
@@ -5688,7 +5723,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 913:
+/***/ 914:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(618)();
@@ -5703,13 +5738,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 914:
+/***/ 915:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(915);
+	var content = __webpack_require__(916);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(619)(content, {});
@@ -5730,7 +5765,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 915:
+/***/ 916:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(618)();
@@ -5745,13 +5780,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 916:
+/***/ 917:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(917);
+	var content = __webpack_require__(918);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(619)(content, {});
@@ -5772,7 +5807,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 917:
+/***/ 918:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(618)();
@@ -5780,20 +5815,20 @@ webpackJsonp([0],{
 
 
 	// module
-	exports.push([module.id, "/****** common color(常用颜色,可用于普遍场景) *****/\r\n/**** custom color(自定义颜色,用于特定场景) ****/\r\n.tool-filter .b-font:before {\r\n  content: '\\E624';\r\n  color: #808080;\r\n}\r\n.tool-filter:active .b-font:before {\r\n  content: '\\E624';\r\n  color: #009de3;\r\n}\r\n.tool-filter.disabled .b-font:before {\r\n  content: '\\E624';\r\n  color: #808080;\r\n}\r\n", ""]);
+	exports.push([module.id, "/****** common color(常用颜色,可用于普遍场景) *****/\n/**** custom color(自定义颜色,用于特定场景) ****/\n.tool-filter .b-font:before {\n  content: '\\E624';\n  color: #808080;\n}\n.tool-filter:active .b-font:before {\n  content: '\\E624';\n  color: #009de3;\n}\n.tool-filter.disabled .b-font:before {\n  content: '\\E624';\n  color: #808080;\n}\n.node-fold .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.node-fold:active .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.node-fold.active .b-font:before {\n  content: '\\E611';\n  color: #808080;\n}\n.node-fold.disabled .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n", ""]);
 
 	// exports
 
 
 /***/ },
 
-/***/ 918:
+/***/ 919:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(919);
+	var content = __webpack_require__(920);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(619)(content, {});
@@ -5814,7 +5849,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 919:
+/***/ 920:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(618)();
@@ -5829,13 +5864,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 920:
+/***/ 921:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(921);
+	var content = __webpack_require__(922);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(619)(content, {});
@@ -5856,7 +5891,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 921:
+/***/ 922:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(618)();
@@ -5871,13 +5906,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 922:
+/***/ 923:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(923);
+	var content = __webpack_require__(924);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(619)(content, {});
@@ -5898,7 +5933,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 923:
+/***/ 924:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(618)();
