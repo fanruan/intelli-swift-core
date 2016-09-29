@@ -108,7 +108,9 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
     _rebuildItems: function(){
         var o = this.options;
         var tableId = BI.Utils.getTableIDByDimensionID(o.dId);
-        var fieldIds = BI.Utils.getStringFieldIDsOfTableID(tableId).concat(BI.Utils.getNumberFieldIDsOfTableID(tableId));
+        var fieldIds = BI.filter(BI.Utils.getSortedFieldIdsOfOneTableByTableId(tableId), function(idx, fId){
+            return BI.Utils.getFieldTypeByID(fId) === BICst.COLUMN.STRING || BI.Utils.getFieldTypeByID(fId) === BICst.COLUMN.NUMBER;
+        });
         var children = [];
         var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
         var dataLable = BI.Utils.getWSShowDataLabelByID(wId);

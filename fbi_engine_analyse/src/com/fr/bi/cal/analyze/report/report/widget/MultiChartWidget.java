@@ -181,10 +181,6 @@ public class MultiChartWidget extends TableWidget {
         return dimensionsIdMap.get(id);
     }
 
-    public BISummaryTarget getSummaryTargetById(String targetId){
-        return targetsIdMap.get(targetId);
-    }
-
     public BIDimension getDimensionById(String id){
         for (BIDimension dimension : this.getDimensions()){
             if(ComparatorUtils.equals(dimension.getValue(), id)){
@@ -201,6 +197,29 @@ public class MultiChartWidget extends TableWidget {
             }
         }
         return null;
+    }
+
+    public boolean isDimensionUsable(String id){
+        BIDimension dimension = getDimensionById(id);
+        if(dimension != null){
+            return dimension.isUsed();
+        }
+        BISummaryTarget target = getTargetById(id);
+        if(target != null){
+            return target.isUsed();
+        }
+        return false;
+    }
+
+    public List<BISummaryTarget> getUsedTargets(){
+        List<BISummaryTarget> targets = new ArrayList<BISummaryTarget>();
+        BISummaryTarget[] sourceTarget = this.getTargets();
+        for(int i = 0; i < sourceTarget.length; i++){
+            if(sourceTarget[i].isUsed()){
+                targets.add(sourceTarget[i]);
+            }
+        }
+        return targets;
     }
 
     public Map<Integer, List<String>> getWidgetView(){

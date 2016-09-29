@@ -17,16 +17,14 @@ public abstract class BIAbstractAccumulateChartSetting extends BIAbstractAxisCha
 
     @Override
     public JSONObject formatItems(JSONArray data, JSONArray types, JSONObject options) throws JSONException {
-        JSONArray items = new JSONArray();
         for(int i = 0; i < data.length(); i++){
             String uuid = UUID.randomUUID().toString();
             JSONArray item = data.getJSONArray(i);
-            for(int j = 0; j < items.length(); ){
+            for(int j = 0; j < item.length(); j++){
                 JSONObject it = item.getJSONObject(j);
-                item.put(it.put("stack", uuid));
+                it.put("stack", uuid);
             }
-            items.put(item);
         }
-        return super.formatItems(items, types, options);
+        return super.formatItems(data, types, options);
     }
 }

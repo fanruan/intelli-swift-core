@@ -25,7 +25,7 @@ public class ForceBubbleChartSetting extends BIAbstractChartSetting {
         plotOptions.put("shadow", options.getInt("bubble_style") != BIChartSettingConstant.NO_PROJECT);
         plotOptions.getJSONObject("dataLabels").put("enabled", true).put("align", "inside").getJSONObject("formatter").put("identifier", "${CATEGORY}${VALUE}");
 
-        this.formatChartLegend(options.optInt("chart_legend"));
+        this.formatChartLegend(this.config, options.optInt("chart_legend"));
         plotOptions.optJSONObject("dataLabels").put("enabled", options.optBoolean("show_data_label"));
         this.config.put("chartType", "bubble");
         for(int i = 0; i < data.length(); i++){
