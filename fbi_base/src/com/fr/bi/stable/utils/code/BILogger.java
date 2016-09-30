@@ -1,5 +1,6 @@
 package com.fr.bi.stable.utils.code;
 
+import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.utils.time.BIDateUtils;
 
 /**
@@ -22,21 +23,34 @@ public class BILogger {
     }
 
     public void error(String message) {
-        System.err.println(BIDateUtils.getCurrentDateTime()+": "+message);
+        System.err.println(message);
+
+        errorOut(message);
     }
 
     public void error(String message, Throwable e) {
-        System.err.println(BIDateUtils.getCurrentDateTime()+": "+message);
+        System.err.println(message);
         e.printStackTrace();
+        errorOut(message);
+        String out = BIPrintUtils.outputException(e);
+        errorOut(out);
+    }
+
+    private void errorOut(String message) {
+        if (PerformancePlugManager.getInstance().useStandardOutError()) {
+            System.out.println(message);
+        } else {
+            System.err.println(message);
+        }
     }
 
     public void info(String message) {
-        System.out.println(BIDateUtils.getCurrentDateTime()+": "+message);
+        System.out.println(BIDateUtils.getCurrentDateTime() + ": " + message);
     }
 
     public void debug(String message) {
         if (verbose) {
-            System.out.println(BIDateUtils.getCurrentDateTime()+": "+message);
+            System.out.println(BIDateUtils.getCurrentDateTime() + ": " + message);
         }
     }
 }
