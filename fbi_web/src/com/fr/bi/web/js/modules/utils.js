@@ -776,6 +776,11 @@
             return BI.isNotNull(ws.column_size) ? ws.column_size : [];
         },
 
+        getWSNullContinueByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.null_continue) ? ws.null_continue : BICst.DEFAULT_CHART_SETTING.null_continue;
+        },
+
         getWSChartColorByID: function (wid) {
             var self = this;
 

@@ -46,6 +46,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
+        config.plotOptions.connectNulls = this.config.null_continue;
         this.formatZoom(config, this.config.show_zoom);
 
         config.yAxis = this.yAxis;
@@ -222,6 +223,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
             show_zoom: options.show_zoom || false,
             text_direction: options.text_direction || 0,
             cordon: options.cordon || [],
+            null_continue: options.null_continue || false,
             line_width: BI.isNull(options.line_width) ? 1 : options.line_width,
             show_label: BI.isNull(options.show_label) ? true : options.show_label,
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,

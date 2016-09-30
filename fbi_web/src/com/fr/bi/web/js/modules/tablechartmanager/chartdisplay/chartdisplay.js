@@ -391,6 +391,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         right_num_separators: BI.Utils.getWSRightNumberSeparatorsByID(o.wId),
                         right2_num_separators: BI.Utils.getWSRight2NumberSeparatorsByID(o.wId),
                         chart_font: BI.Utils.getGSChartFont(o.wId),
+                        null_continue: BI.Utils.getWSNullContinueByID(o.wId),
                         background_layer_info: MapConst.WMS_INFO[BI.Utils.getWSBackgroundLayerInfoByID(o.wId)]
                     }, {
                         cordon: self.model.getCordon(),

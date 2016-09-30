@@ -406,7 +406,12 @@ BI.ETL = BI.inherit(BI.Widget, {
             width: this.constants.ETL_TEXT_EDITOR_WIDTH,
             height: this.constants.ETL_TEXT_EDITOR_HEIGHT,
             allowBlank: false,
-            errorText: BI.i18nText("BI-Table_Name_Not_Repeat"),
+            errorText: function(v) {
+                if (BI.isEmptyString(v)) {
+                    return BI.i18nText("BI-Table_Name_Not_Null");
+                }
+                return BI.i18nText("BI-Table_Name_Not_Repeat");
+            },
             validationChecker: function (v) {
                 return self.model.isValidTableTranName(v);
             }
@@ -967,7 +972,8 @@ BI.ETL = BI.inherit(BI.Widget, {
         BI.Popovers.remove(tId);
         var tablePreview = BI.createWidget({
             type: "bi.etl_table_preview",
-            table: this.model.getTableById(tId)
+            table: this.model.getTableById(tId),
+            name: this.model.getTranName()
         });
         BI.Popovers.create(tId, tablePreview).open(tId);
     },
