@@ -26,9 +26,10 @@ export default class MultiTreeSelectorWidgetAsnycHelper extends MultiTreeSelecto
         if (find) {
             const data = find.get('data');
             data.expanded = true;
+            this.map[node.id].expanded = true;
             if (data.isParent && find.getChildrenLength() === 0) {
-                this.itemsCreator({
-                    id: find.id,
+                return this.itemsCreator({
+                    id: node.id,
                     times: -1,
                     floors: this.floors,
                     check_state: {
@@ -38,12 +39,15 @@ export default class MultiTreeSelectorWidgetAsnycHelper extends MultiTreeSelecto
                     parent_values: this._getParentValues(find),
                     selected_values: this.value
                 }).then((data)=> {
+                    each(data.items, (item)=> {
+                        item.pId = node.id
+                    });
                     this.items = this.items.concat(data.items);
                     this._digest();
-                })
+                });
             }
         }
-        return new Promise(function (resolve, reject) {
+        return new Promise(function(resolve, reject) {
             resolve();
         });
     }

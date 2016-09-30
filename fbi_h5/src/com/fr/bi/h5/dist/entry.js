@@ -3351,6 +3351,8 @@ webpackJsonp([0],{
 	    value: true
 	});
 
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -3410,7 +3412,8 @@ webpackJsonp([0],{
 	        _this.state = {
 	            value: _this.props.value,
 	            items: _this.props.items,
-	            hasNext: false
+	            hasNext: false,
+	            times: 0
 	        };
 	        return _this;
 	    }
@@ -3423,37 +3426,41 @@ webpackJsonp([0],{
 	            var items = _props$state.items;
 	            var value = _props$state.value;
 	            var hasNext = _props$state.hasNext;
+	            var times = _props$state.times;
 
 	            return {
 	                items: items,
 	                value: value,
-	                hasNext: hasNext
+	                hasNext: hasNext,
+	                times: times
 	            };
 	        }
 	    }, {
 	        key: 'componentWillMount',
 	        value: function componentWillMount() {}
 	    }, {
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
+	        key: '_fetchData',
+	        value: function _fetchData() {
 	            var _this2 = this;
 
 	            if (this.props.itemsCreator) {
 	                this.props.itemsCreator({
 	                    floors: this.props.floors,
-	                    type: 0,
-	                    times: -1,
-	                    selected_values: this.props.value
+	                    selected_values: this.state.value,
+	                    times: this.state.times + 1
 	                }).then(function (data) {
-	                    var items = data.items;
-	                    var hasNext = data.hasNext;
-
-	                    _this2.setState({
-	                        items: items,
-	                        hasNext: hasNext
-	                    });
+	                    _this2.setState(_this2._getNextState(_this2.props, _extends({}, _this2.state, {
+	                        times: _this2.state.times + 1,
+	                        hasNext: data.hasNext,
+	                        items: _this2.state.items.concat(data.items)
+	                    })));
 	                });
 	            }
+	        }
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            this._fetchData();
 	        }
 	    }, {
 	        key: 'componentWillReceiveProps',
@@ -3477,37 +3484,60 @@ webpackJsonp([0],{
 	            return _lib2.default.createElement(_base.VirtualScroll, {
 	                width: props.width,
 	                height: props.height,
-	                overscanRowCount: 10
+	                overscanRowCount: 0
 	                //noRowsRenderer={this._noRowsRenderer.bind(this)}
-	                , rowCount: this._helper.getSortedItems().length,
+	                , rowCount: this._helper.getSortedItems().length + 1,
 	                rowHeight: _data.Size.ITEM_HEIGHT,
 	                rowRenderer: this._rowRenderer.bind(this)
 	                //scrollToIndex={scrollToIndex}
 	            });
 	        }
 	    }, {
+	        key: '_moreRenderer',
+	        value: function _moreRenderer() {
+	            var _this3 = this;
+
+	            if (this.state.hasNext === true) {
+	                return _lib2.default.createElement(_base.TextButton, { style: { height: _data.Size.ITEM_HEIGHT }, text: '点击加载更多数据', onPress: function onPress() {
+	                        _this3._fetchData();
+	                    } });
+	            } else {
+	                return _lib2.default.createElement(_base.TextButton, { style: { height: _data.Size.ITEM_HEIGHT }, disabled: true, text: '无更多数据' });
+	            }
+	        }
+	    }, {
 	        key: '_rowRenderer',
 	        value: function _rowRenderer(_ref) {
-	            var _this3 = this;
+	            var _this4 = this;
 
 	            var index = _ref.index;
 	            var isScrolling = _ref.isScrolling;
 
-	            var rowData = this._helper.getSortedItems()[index];
-	            return _lib2.default.createElement(_Item2.default, _extends({ key: rowData.value, onSelected: function onSelected(sel) {
-	                    _this3._onSelected(rowData, sel);
-	                }, onExpand: function onExpand(expanded) {
-	                    _this3._onExpand(rowData, expanded);
-	                } }, rowData));
+	            if (index === this._helper.getSortedItems().length) {
+	                return this._moreRenderer();
+	            } else {
+	                var _ret = function () {
+	                    var rowData = _this4._helper.getSortedItems()[index];
+	                    return {
+	                        v: _lib2.default.createElement(_Item2.default, _extends({ key: rowData.value, onSelected: function onSelected(sel) {
+	                                _this4._onSelected(rowData, sel);
+	                            }, onExpand: function onExpand(expanded) {
+	                                _this4._onExpand(rowData, expanded);
+	                            } }, rowData))
+	                    };
+	                }();
+
+	                if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+	            }
 	        }
 	    }, {
 	        key: '_onExpand',
 	        value: function _onExpand(rowData, expanded) {
-	            var _this4 = this;
+	            var _this5 = this;
 
 	            this._helper[expanded ? 'expandOneNode' : 'collapseOneNode'](rowData).then(function () {
-	                _this4.setState({
-	                    items: _this4._helper.getItems()
+	                _this5.setState({
+	                    items: _this5._helper.getItems()
 	                });
 	            });
 	        }
@@ -4024,9 +4054,10 @@ webpackJsonp([0],{
 	            if (find) {
 	                var data = find.get('data');
 	                data.expanded = true;
+	                this.map[node.id].expanded = true;
 	                if (data.isParent && find.getChildrenLength() === 0) {
-	                    this.itemsCreator({
-	                        id: find.id,
+	                    return this.itemsCreator({
+	                        id: node.id,
 	                        times: -1,
 	                        floors: this.floors,
 	                        check_state: {
@@ -4036,6 +4067,9 @@ webpackJsonp([0],{
 	                        parent_values: this._getParentValues(find),
 	                        selected_values: this.value
 	                    }).then(function (data) {
+	                        (0, _core.each)(data.items, function (item) {
+	                            item.pId = node.id;
+	                        });
 	                        _this2.items = _this2.items.concat(data.items);
 	                        _this2._digest();
 	                    });

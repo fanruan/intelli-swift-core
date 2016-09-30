@@ -57,9 +57,9 @@ BI.DynamicSummaryTreeTable = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var deep = this._getHDeep();
         var vDeep = this._getVDeep();
-        var header = BI.DynamicSummaryTreeTable.formatHeader(o.header, o.crossHeader, o.crossItems, deep, vDeep);
-        var items = BI.DynamicSummaryTreeTable.formatItems(o.items, deep);
-        items = BI.DynamicSummaryTreeTable.formatSummaryItems(items, o.crossItems, deep);
+        var header = BI.TableTree.formatHeader(o.header, o.crossHeader, o.crossItems, deep, vDeep);
+        var items = BI.TableTree.formatItems(o.items, deep);
+        items = BI.DynamicSummaryTreeTable.formatSummaryItems(items, header, o.crossItems, deep);
         this.table = BI.createWidget({
             type: "bi.table_view",
             element: this.element,
@@ -213,9 +213,9 @@ BI.DynamicSummaryTreeTable = BI.inherit(BI.Widget, {
         }
         var deep = this._getHDeep();
         var vDeep = this._getVDeep();
-        header = BI.DynamicSummaryTreeTable.formatHeader(o.header, o.crossHeader, o.crossItems, deep, vDeep);
-        items = BI.DynamicSummaryTreeTable.formatItems(o.items, deep);
-        items = BI.DynamicSummaryTreeTable.formatSummaryItems(items, o.crossItems, deep);
+        header = BI.TableTree.formatHeader(o.header, o.crossHeader, o.crossItems, deep, vDeep);
+        items = BI.TableTree.formatItems(o.items, deep);
+        BI.DynamicSummaryTreeTable.formatSummaryItems(items, header, o.crossItems, deep);
         this.table.populate(items, header);
     },
 
@@ -264,22 +264,6 @@ BI.extend(BI.DynamicSummaryTreeTable, {
     //     });
     //     return result;
     // },
-
-    formatHeader: function (header, crossHeader, crossItems, hDeep, vDeep) {
-        var items = BI.DynamicSummaryTreeTable.formatCrossItems(crossItems, vDeep);
-        var result = [];
-        BI.each(items, function (row, node) {
-            var c = [];
-            for (var i = 0; i < hDeep; i++) {
-                c.push(crossHeader[row]);
-            }
-            result.push(c.concat(node || []));
-        });
-        if (header && header.length > 0) {
-            result.push(header);
-        }
-        return result;
-    },
 
     // formatRotatedItems: function (nodes, header, crossItems) {
     //     var result = [];
@@ -334,91 +318,91 @@ BI.extend(BI.DynamicSummaryTreeTable, {
     //     return result;
     // },
 
-    formatItems: function (nodes, deep, isCross) {
-        var result = [];
+    // formatItems: function (nodes, deep, isCross) {
+    //     var result = [];
+    //
+    //     function track(store, node) {
+    //         var next;
+    //         if (BI.isArray(node.children)) {
+    //             BI.each(node.children, function (index, child) {
+    //                 var next;
+    //                 if (store != -1) {
+    //                     next = BI.clone(store);
+    //                     next.push(node);
+    //                 } else {
+    //                     next = [];
+    //                 }
+    //                 track(next, child);
+    //             });
+    //             if (store != -1) {
+    //                 next = BI.clone(store);
+    //                 next.push(node);
+    //             } else {
+    //                 next = [];
+    //             }
+    //             if ((store == -1 || node.children.length > 1) && BI.isNotEmptyArray(node.values)) {
+    //                 var cls = store === -1 ? " last" : "";
+    //                 var id = BI.UUID();
+    //                 for (var i = next.length; i < deep; i++) {
+    //                     next.push({text: BI.i18nText("BI-Summary_Values"), tag: id, cls: "summary-cell" + cls});
+    //                 }
+    //                 if (!isCross) {
+    //                     next = next.concat(node.values);
+    //                 }
+    //                 if (next.length > 0) {
+    //                     if (!isCross) {
+    //                         result.push(next);
+    //                     } else {
+    //                         for (var k = 0, l = node.values.length; k < l; k++) {
+    //                             result.push(next);
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //             return;
+    //         }
+    //         if (store != -1) {
+    //             next = BI.clone(store);
+    //             for (var i = next.length; i < deep; i++) {
+    //                 next.push(node);
+    //             }
+    //         } else {
+    //             next = [];
+    //         }
+    //         if (!isCross && BI.isArray(node.values)) {
+    //             next = next.concat(node.values);
+    //         }
+    //         if (isCross && BI.isArray(node.values)) {
+    //             for (var i = 0, len = node.values.length; i < len - 1; i++) {
+    //                 if (next.length > 0) {
+    //                     result.push(next);
+    //                 }
+    //             }
+    //         }
+    //         if (next.length > 0) {
+    //             result.push(next);
+    //         }
+    //     }
+    //
+    //     BI.each(nodes, function (i, node) {
+    //         track(-1, node);
+    //     });
+    //     //填充空位
+    //     BI.each(result, function (i, line) {
+    //         var last = BI.last(line);
+    //         for (var i = line.length; i < deep; i++) {
+    //             line.push(last);
+    //         }
+    //     });
+    //     return result;
+    // },
+    //
+    // formatCrossItems: function (nodes, deep) {
+    //     var items = BI.DynamicSummaryTreeTable.formatItems(nodes, deep, true);
+    //     return BI.unzip(items);
+    // },
 
-        function track(store, node) {
-            var next;
-            if (BI.isArray(node.children)) {
-                BI.each(node.children, function (index, child) {
-                    var next;
-                    if (store != -1) {
-                        next = BI.clone(store);
-                        next.push(node);
-                    } else {
-                        next = [];
-                    }
-                    track(next, child);
-                });
-                if (store != -1) {
-                    next = BI.clone(store);
-                    next.push(node);
-                } else {
-                    next = [];
-                }
-                if ((store == -1 || node.children.length > 1) && BI.isNotEmptyArray(node.values)) {
-                    var cls = store === -1 ? " last" : "";
-                    var id = BI.UUID();
-                    for (var i = next.length; i < deep; i++) {
-                        next.push({text: BI.i18nText("BI-Summary_Values"), tag: id, cls: "summary-cell" + cls});
-                    }
-                    if (!isCross) {
-                        next = next.concat(node.values);
-                    }
-                    if (next.length > 0) {
-                        if (!isCross) {
-                            result.push(next);
-                        } else {
-                            for (var k = 0, l = node.values.length; k < l; k++) {
-                                result.push(next);
-                            }
-                        }
-                    }
-                }
-                return;
-            }
-            if (store != -1) {
-                next = BI.clone(store);
-                for (var i = next.length; i < deep; i++) {
-                    next.push(node);
-                }
-            } else {
-                next = [];
-            }
-            if (!isCross && BI.isArray(node.values)) {
-                next = next.concat(node.values);
-            }
-            if (isCross && BI.isArray(node.values)) {
-                for (var i = 0, len = node.values.length; i < len - 1; i++) {
-                    if (next.length > 0) {
-                        result.push(next);
-                    }
-                }
-            }
-            if (next.length > 0) {
-                result.push(next);
-            }
-        }
-
-        BI.each(nodes, function (i, node) {
-            track(-1, node);
-        });
-        //填充空位
-        BI.each(result, function (i, line) {
-            var last = BI.last(line);
-            for (var i = line.length; i < deep; i++) {
-                line.push(last);
-            }
-        });
-        return result;
-    },
-
-    formatCrossItems: function (nodes, deep) {
-        var items = BI.DynamicSummaryTreeTable.formatItems(nodes, deep, true);
-        return BI.unzip(items);
-    },
-
-    formatSummaryItems: function (items, crossItems, deep) {
+    formatSummaryItems: function (items, header, crossItems, deep) {
         //求纵向需要去除的列
         var cols = [];
         var leaf = 0;
@@ -429,10 +413,12 @@ BI.extend(BI.DynamicSummaryTreeTable, {
                     track(child);
                 });
                 if (BI.isNotEmptyArray(node.values)) {
-                    leaf++;
                     if (node.children.length === 1) {
-                        cols.push(leaf - 1 + deep);
+                        for (var i = 0; i < node.values.length; i++) {
+                            cols.push(leaf + i + deep);
+                        }
                     }
+                    leaf += node.values.length;
                 }
                 return;
             }
@@ -448,11 +434,14 @@ BI.extend(BI.DynamicSummaryTreeTable, {
         });
 
         if (cols.length > 0) {
-            BI.each(items, function (i, node) {
+            BI.each(header, function (i, node) {
                 BI.removeAt(node, cols);
             })
+            BI.each(items, function (i, node) {
+                BI.removeAt(node, cols);
+            });
         }
-        return items;
+        return {items: items, header: header};
     }
 });
 
