@@ -69,7 +69,8 @@ class Controls extends Component {
         return <ScrollView style={styles.wrapper}>
             {map(this.template.getAllControlWidgetIds(), (id)=> {
                 const $$widget = this.template.get$$WidgetById(id);
-                return <Item key={id} id={id} widget={widget} onPress={()=> {
+                const widget = new Widget($$widget);
+                return <Item key={id} id={id} $$widget={$$widget} onPress={()=> {
                     let Component = null;
                     switch (widget.getType()) {
                         case BICst.WIDGET.STRING:
@@ -86,9 +87,9 @@ class Controls extends Component {
                         case BICst.WIDGET.YMD:
                     }
                     props.navigator.push({
-                        name: new Widget($$widget).getName(),
+                        name: widget.getName(),
                         Component: Component,
-                        title: new Widget($$widget).getName()
+                        title: widget.getName()
                     });
                 }}/>
             })}

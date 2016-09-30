@@ -411,7 +411,7 @@ public class BICoreModule extends AbstractModule {
                 new Service4BIBase(),
 
                 new Service4FineCube(),
-                new Service4BIH5(),
+                new Service4BIH5()
         };
     }
 

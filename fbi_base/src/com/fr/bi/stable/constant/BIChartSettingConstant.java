@@ -1,9 +1,5 @@
 package com.fr.bi.stable.constant;
 
-import com.fr.base.CoreDecimalFormat;
-
-import java.text.DecimalFormat;
-
 /**
  * Created by User on 2016/8/31.
  */
@@ -38,9 +34,9 @@ public class BIChartSettingConstant {
     public final static int RIGHT_AXIS_SECOND = 2;
     public final static int PERCENT_DASHBOARD = 10;
     public final static int PERCENT_SCALE_SLOT = 11;
+    public final static int INTERVAL = 100;
     public final static String GIS_MAP_PATH = "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}";
-    public final static String KNOWLEDGE_RIGHT = "<a><img src=\"http://webapi.amap.com/theme/v1.3/mapinfo_05.png\">&copy; 2016 AutoNavi</a>";
-    public final static String GIS_ICON_PATH = "FR.serverURL + FR.servletURL + \"?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/address_marker_big.png\"";
+    public final static String KNOWLEDGE_RIGHT = "<a><img src='http://webapi.amap.com/theme/v1.3/mapinfo_05.png'>&copy; 2016 AutoNavi</a>";
     public static final class FONT_STYLE {
         public static final String FONTFAMILY = "inherit";
         public static final String COLOR = "#808080";
@@ -48,9 +44,6 @@ public class BIChartSettingConstant {
     }
     public final static boolean NUM_SEPARATORS = false;
     public final static String WMS_SERVER = "wms";
-
-    public static final DecimalFormat TWOFIEXEDFORMAT = new CoreDecimalFormat(new DecimalFormat("##.##"), "");
-    public static final DecimalFormat FOURFIEXEDFORMAT = new CoreDecimalFormat(new DecimalFormat("##.####"), "");
 
     public static final class CHART_STYLE {
         public static final int STYLE_NORMAL = 1;
@@ -62,6 +55,27 @@ public class BIChartSettingConstant {
         public static final int AUTO = 1;
 
         public static final int CUSTOM = 2;
+    }
+
+    //数据标签样式的几个常量
+    public static final class DATA_LABEL_RANGE {
+        public static final int ALL = 140;
+        public static final int Classification = 141;
+        public static final int Series = 142;
+    };
+
+    public static final class DATA_LABEL_STYLE_TYPE {
+        public static final int TEXT = 143;
+        public static final int IMG = 144;
+    }
+
+    //数据标签filter类型
+    public static final class DATACOLUMN {
+        public static final int X = 96;
+        public static final int Y = 112;
+        public static final int Z = 128;
+        public static final int XANDY = 144;
+        public static final int XANDYANDSIZE = 160;
     }
 
     public static final class GIS_POSITION_TYPE {
@@ -157,9 +171,21 @@ public class BIChartSettingConstant {
         public static final int GRADIENT = 3;
     }
 
-    public static final String[] CHART_COLOR = new String[]{
-            "#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"
-    };
+    public static final class CHART_COLOR {
+        public static final String COLOR_A = "#5caae4";
+        public static final String COLOR_B = "#70cc7f";
+        public static final String COLOR_C = "#ebbb67";
+        public static final String COLOR_D = "#e97e7b";
+        public static final String COLOR_E = "#6ed3c9";
+    }
+
+    public static final class LENEGD_DEFAULT_COLOR {
+        public static final String COLOR_A = "#65B3EE";
+        public static final String COLOR_B = "#95E1AA";
+        public static final String COLOR_C = "#F8D08E";
+        public static final String COLOR_D = "#e697c8";
+        public static final String COLOR_E = "#a484b9";
+    }
 
     public static final class DEFAULT_FORMAT_FUNCTIONS {
         public static final String CONTENTFORMAT = "function(){return window.BH ? BH.contentFormat(arguments[0], '') : arguments[0]}";
@@ -168,30 +194,11 @@ public class BIChartSettingConstant {
     }
 
     public static final class CUSTOM_FORMAT {
-        public static final String VALUEFORMAT = "(window.BH ? BI.contentFormat(this, \"#.##;-#.##\") : this)";
-        public static final String PERCENTVALUEFORMAT = "(window.BH ? BI.contentFormat(arguments[0], '#0.00%;-#0.00%') : arguments[0])";
-        public static final String THISPERCENTVALUEFORMAT = "(window.BH ? BI.contentFormat(this, '#0.00%') : this)";
-        public static final String NUMSEPARATORS = "(window.BH ? BI.contentFormat(arguments[0], '#,###.##;-#,###.##') : arguments[0])";
-        public static final String PERCENTNUMSEPARATORS = "(window.BH ? BI.contentFormat(arguments[0], '#,##0%;-#,##0%') : arguments[0])";
-        public static final String THISPERCENTNUMSEPARATORS = "(window.BH ? BI.contentFormat(this, '#,##0%;-#.##0%') : this)";
+        public static final String VALUEFORMAT = "(window.BH ? BH.contentFormat(this.value, '#.##;-#.##') : this.value)";
+        public static final String PERCENTVALUEFORMAT = "(window.BH ? BH.contentFormat(this.value, '#0.00%') : this.value)";
+        public static final String THISPERCENTVALUEFORMAT = "(window.BH ? BH.contentFormat(this, '#0.00%') : this)";
+        public static final String NUMSEPARATORS = "(window.BH ? BH.contentFormat(this.value, '#,###.##') : this.value)";
+        public static final String PERCENTNUMSEPARATORS = "(window.BH ? BH.contentFormat(this.value, '#,##0%') : this.value)";
+        public static final String THISPERCENTNUMSEPARATORS = "(window.BH ? BH.contentFormat(this, '#,##0%') : this)";
     }
-    
-    public static final int[] MINIMALIST_WIDGET = new int[]{
-            BIReportConstant.WIDGET.AXIS,
-            BIReportConstant.WIDGET.ACCUMULATE_AXIS,
-            BIReportConstant.WIDGET.PERCENT_ACCUMULATE_AXIS,
-            BIReportConstant.WIDGET.COMPARE_AXIS,
-            BIReportConstant.WIDGET.FALL_AXIS,
-            BIReportConstant.WIDGET.BAR,
-            BIReportConstant.WIDGET.ACCUMULATE_BAR,
-            BIReportConstant.WIDGET.COMPARE_BAR,
-            BIReportConstant.WIDGET.LINE,
-            BIReportConstant.WIDGET.AREA,
-            BIReportConstant.WIDGET.ACCUMULATE_AREA,
-            BIReportConstant.WIDGET.PERCENT_ACCUMULATE_AREA,
-            BIReportConstant.WIDGET.COMPARE_AREA,
-            BIReportConstant.WIDGET.RANGE_AREA,
-            BIReportConstant.WIDGET.COMBINE_CHART,
-            BIReportConstant.WIDGET.MULTI_AXIS_COMBINE_CHART
-    };
 }

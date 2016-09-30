@@ -16,9 +16,9 @@ import React, {
     TouchableHighlight
 } from 'lib'
 
-import {Colors} from 'data'
+import {Colors, Size} from 'data'
 
-import {Icon, Table, AutoSizer} from 'base'
+import {Icon, Checkbox, Table, AutoSizer} from 'base'
 
 
 class Item extends Component {
@@ -73,13 +73,16 @@ class Item extends Component {
                         {state.value == null ? state.text : state.value}
                     </Text>
                 </View>
-                <View className={cn('check-box-icon', 'react-view', cn({
-                    'active': this.state.selected
-                }))} style={[styles.icon, {width: 30}]}>
-                    <Icon width={16} height={16}></Icon>
+                <View style={[styles.icon, {width: Size.ITEM_HEIGHT}]}>
+                    <Checkbox selected={this.state.selected}/>
                 </View>
             </View>
         </TouchableHighlight>
+        //         return <View className={cn('check-box-icon', 'react-view', cn({
+        //         'active': this.state.selected
+        // }))} style={[styles.icon, {width: 30}]}>
+        // <Icon width={16} height={16}></Icon>
+        //         </View>
     }
 
 }
@@ -87,7 +90,7 @@ mixin.onClass(Item, PureRenderMixin);
 const styles = StyleSheet.create({
     row: {
         flexDirection: 'row',
-        height: 44,
+        height: Size.ITEM_HEIGHT,
         borderBottomColor: Colors.SPLIT,
         borderBottomWidth: 1 / PixelRatio.get(),
     },

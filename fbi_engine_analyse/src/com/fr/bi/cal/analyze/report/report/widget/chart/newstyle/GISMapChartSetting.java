@@ -10,6 +10,8 @@ import com.fr.json.JSONObject;
  */
 public class GISMapChartSetting extends BIAbstractChartSetting {
 
+    private final static String GIS_ICON_PATH = "FR.servletURL + '?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/address_marker_big.png'";
+
     private JSONObject config;
 
     public GISMapChartSetting() {
@@ -21,16 +23,16 @@ public class GISMapChartSetting extends BIAbstractChartSetting {
         config.remove("dataSheet");
         config.remove("legend");
         config.remove("zoom");
-        JSONObject plotOptions = new JSONObject();
+        JSONObject plotOptions = config.getJSONObject("plotOptions");
         plotOptions.getJSONObject("dataLabels").put("enabled", options.getBoolean("show_data_label"))
                 .put("useHtml", true).put("formatter", "function () { " +
-                "var name = (BI.isArray(this.name) ? '' : this.name + ',') + (window.BH ? BH.contentFormat(this.value, '#.##') : this.value);" +
+                "var name = (BH.isArray(this.name) ? '' : this.name + ',') + (window.BH ? BH.contentFormat(this.value, '#.##') : this.value);" +
                 "var style = \"padding: 5px; background-color: rgba(0,0,0,0.4980392156862745);border-color: rgb(0,0,0); border-radius:2px; border-width:0px;\";" +
                 "var a = '<div style = ' + style + '>' + name + '</div>';" +
                 "return a");
         plotOptions.getJSONObject("tooltip").put("shared", true).put("formatter", "function () {" +
-                "var tip = BI.isArray(this.name) ? '' : this.name;" +
-                "for(int i = 0; i < this.points.length; i++){tip += ('<div>' + this.points[i].seriesName + ':' + (window.BH ? BH.contentFormat((this.points[i].size || this.points[i].y), '#.##') : (this.points[i].size || this.points[i].y)) + '</div>');}" +
+                "var tip = BH.isArray(this.name) ? '' : this.name;" +
+                "for(var i = 0; i < this.points.length; i++){tip += ('<div>' + this.points[i].seriesName + ':' + (window.BH ? BH.contentFormat((this.points[i].size || this.points[i].y), '#.##') : (this.points[i].size || this.points[i].y)) + '</div>');}" +
                 "return tip;}");
         config.put("geo", new JSONObject("{" +
                 "\"tileLayer\": \"http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}\"," +
@@ -38,12 +40,12 @@ public class GISMapChartSetting extends BIAbstractChartSetting {
         ));
         config.put("chartType", "pointMap");
         plotOptions.put("icon", new JSONObject("{" +
-                "iconUrl: \"" + BIChartSettingConstant.GIS_ICON_PATH + "\"," +
+                "iconUrl: \"" + GIS_ICON_PATH + "\"," +
                 "iconSize: [24, 24]" +
                 "}"));
 
         plotOptions.put("marker", new JSONObject("{" +
-                "symbol:\"" + BIChartSettingConstant.GIS_ICON_PATH + "\"," +
+                "symbol:\"" + GIS_ICON_PATH + "\"," +
                 "width: 24," +
                 "height: 24," +
                 "enable: true" +
@@ -61,11 +63,13 @@ public class GISMapChartSetting extends BIAbstractChartSetting {
         return this.formatConfig(options, items);
     }
 
-    private boolean checkLngLatValid(JSONArray lnglat) throws JSONException{
-        if (lnglat.length() < 2) {
+    private boolean checkLngLatValid(String[] lnglat) throws JSONException{
+        if (lnglat.length < 2) {
             return false;
         }
-        return lnglat.getDouble(0) <= 180 && lnglat.getDouble(0) >= -180 && lnglat.getDouble(1) <= 90 && lnglat.getDouble(1) >= -90;
+        Double lnglat0 = Double.parseDouble(lnglat[0]);
+        Double lnglat1 = Double.parseDouble(lnglat[1]);
+        return lnglat0 <= 180 && lnglat0 >= -180 && lnglat1 <= 90 && lnglat1 >= -90;
     }
 
     @Override
@@ -90,7 +94,7 @@ public class GISMapChartSetting extends BIAbstractChartSetting {
                     d.put("lnglat", lnglat);
                     d.put("value", d.getDouble("y"));
                     d.put("name", d.optString("z") != null ? d.optString("z") : d.getString("lnglat"));
-                    if (this.checkLngLatValid(d.getJSONArray("lnglat"))) {
+                    if (this.checkLngLatValid(lnglat)) {
                         res.put(d);
                     }
                 }

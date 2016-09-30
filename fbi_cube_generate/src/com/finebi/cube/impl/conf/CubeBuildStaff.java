@@ -124,7 +124,7 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable {
                 if (null != tableSourceRelation) {
                     set.add(tableSourceRelation);
                 }
-            } catch (NullPointerException e) {
+            } catch (Exception e) {
                 BILogger.getLogger().error(e.getMessage(), e);
                 continue;
             }

@@ -50,6 +50,7 @@ BI.TargetConditionStyleSetting = BI.inherit(BI.Widget, {
                         height: 26,
                         handler: function () {
                             self._addNewCondition();
+                            self._scrollToBottom();
                         }
                     }]
                 },
@@ -83,6 +84,13 @@ BI.TargetConditionStyleSetting = BI.inherit(BI.Widget, {
                 self._removeConditionById(id);
             }
         }])
+    },
+
+    _scrollToBottom: function () {
+        var self = this;
+        BI.delay(function () {
+            self.conditions.element.scrollTop(BI.MAX);
+        }, 30);
     },
 
     _removeConditionById: function (id) {
