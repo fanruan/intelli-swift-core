@@ -55,12 +55,7 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
         for (BITableSourceRelation biTableSourceRelation : this.getTableSourceRelationSet()) {
             this.cubeGenerateRelationSet.add(calculateDependTool.calRelations(biTableSourceRelation, this.getAllSingleSources()));
         }
-        for (BITableSourceRelationPath biTableSourceRelationPath : this.getBiTableSourceRelationPathSet()) {
-            BICubeGenerateRelationPath path = calculateDependTool.calRelationPath(biTableSourceRelationPath, this.biTableSourceRelationSet);
-            if (null != path && path.getDependRelationPathSet().size() != 0) {
-                cubeGenerateRelationPathSet.add(path);
-            }
-        }
+        cubeGenerateRelationPathSet = calculateDependTool.calRelationPath(this.getBiTableSourceRelationPathSet(), this.biTableSourceRelationSet);
     }
 
     protected void setResourcesAndDepends() throws BITableAbsentException {

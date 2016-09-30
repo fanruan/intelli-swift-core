@@ -15,16 +15,6 @@ BI.DateCalendarPopup = BI.inherit(BI.Widget, {
     },
 
     _createNav: function (v) {
-        var m = this._month, y = this._year;
-        m += v;
-        while (m < 0) {
-            y--;
-            m += 12;
-        }
-        while (m > 11) {
-            y++;
-            m -= 12;
-        }
         var calendar = BI.createWidget({
             type: "bi.calendar",
             logic: {
@@ -32,11 +22,10 @@ BI.DateCalendarPopup = BI.inherit(BI.Widget, {
             },
             min: this.options.min,
             max: this.options.max,
-            year: y,
-            month: m,
-            day: this._day
-        })
-        calendar.setValue(this.selectedTime);
+            year: this.selectedTime.year,
+            month: this.selectedTime.month,
+            day: this.selectedTime.day
+        });
         return calendar;
     },
 
@@ -49,10 +38,10 @@ BI.DateCalendarPopup = BI.inherit(BI.Widget, {
         this._day = this.today.getDate();
 
         this.selectedTime = o.selectedTime || {
-            year: this._year,
-            month: this._month,
-            day: this._day
-        }
+                year: this._year,
+                month: this._month,
+                day: this._day
+            };
         this.datePicker = BI.createWidget({
             type: "bi.date_picker",
             min: o.min,
@@ -78,8 +67,9 @@ BI.DateCalendarPopup = BI.inherit(BI.Widget, {
             }
         });
 
-        this.datePicker.on(BI.DatePicker.EVENT_CHANGE, function(){
-            self.calendar.setSelect(BI.Calendar.getPageByDateJSON(self.datePicker.getValue()));
+        this.datePicker.on(BI.DatePicker.EVENT_CHANGE, function () {
+            self.selectedTime = self.datePicker.getValue();
+            self.calendar.setSelect(BI.Calendar.getPageByDateJSON(self.selectedTime));
         });
 
         this.calendar.on(BI.Navigation.EVENT_CHANGE, function () {

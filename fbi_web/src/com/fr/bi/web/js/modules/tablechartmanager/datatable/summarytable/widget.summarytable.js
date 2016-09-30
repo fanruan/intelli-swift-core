@@ -51,6 +51,15 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                     el: {
                         type: "bi.page_table",
                         isNeedFreeze: null,
+                        mergeRule: function (col1, col2) {
+                            return col1 && col2
+                                && col1.text === col2.text
+                                && col1.tag === col2.tag
+                                && col1.type === col2.type
+                                && col1.isCross === col2.isCross
+                                && col1.isExpanded === col2.isExpanded
+                                && col1.needExpand === col2.needExpand;
+                        },
                         el: {
                             el: {
                                 el: {
@@ -127,6 +136,15 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                     el: {
                         type: "bi.page_table",
                         isNeedFreeze: null,
+                        mergeRule: function (col1, col2) {
+                            return col1 && col2
+                                && col1.text === col2.text
+                                && col1.tag === col2.tag
+                                && col1.type === col2.type
+                                && col1.isCross === col2.isCross
+                                && col1.isExpanded === col2.isExpanded
+                                && col1.needExpand === col2.needExpand;
+                        },
                         el: {
                             el: {
                                 el: {
@@ -530,33 +548,33 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
             }
             self.model.setDataAndPage(jsonData);
             var widgetType = BI.Utils.getWidgetTypeByID(widgetId);
-            try {
-                switch (widgetType) {
-                    case BICst.WIDGET.TABLE:
+            // try {
+            switch (widgetType) {
+                case BICst.WIDGET.TABLE:
+                    self._prepareData4GroupTable();
+                    break;
+                case BICst.WIDGET.CROSS_TABLE:
+                    //如果没有列表头，还是以分组表展示——后台传这样的数据
+                    if (BI.isNotNull(self.model.getData().t)) {
+                        self._prepareData4CrossTable();
+                    } else {
                         self._prepareData4GroupTable();
-                        break;
-                    case BICst.WIDGET.CROSS_TABLE:
-                        //如果没有列表头，还是以分组表展示——后台传这样的数据
-                        if (BI.isNotNull(self.model.getData().t)) {
-                            self._prepareData4CrossTable();
-                        } else {
-                            self._prepareData4GroupTable();
-                        }
-                        break;
-                    case BICst.WIDGET.COMPLEX_TABLE:
-                        self._populateComplexTable();
-                        break;
-                }
-                if (self.model.getTableForm() !== self.tableForm) {
-                    self._createTable();
-                }
-                self.table.setVPage(1);
-                self._populateTable();
-            } catch (e) {
-                self.errorPane.setErrorInfo("error happens during populate table: " + e);
-                console.error(e);
-                self.errorPane.setVisible(true);
+                    }
+                    break;
+                case BICst.WIDGET.COMPLEX_TABLE:
+                    self._populateComplexTable();
+                    break;
             }
+            if (self.model.getTableForm() !== self.tableForm) {
+                self._createTable();
+            }
+            self.table.setVPage(1);
+            self._populateTable();
+            // } catch (e) {
+            //     self.errorPane.setErrorInfo("error happens during populate table: " + e);
+            //     console.error(e);
+            //     self.errorPane.setVisible(true);
+            // }
         }, this.model.getExtraInfo());
     },
 
