@@ -38,15 +38,20 @@ public class BILogger {
 
     private void errorOut(String message) {
         if (PerformancePlugManager.getInstance().useStandardOutError()) {
-            System.out.println(message);
+            standardOut(message);
         } else {
-            System.err.println(message);
+            System.err.println(BIDateUtils.getCurrentDateTime() + ": " + message);
         }
     }
 
     public void info(String message) {
+        standardOut(message);
+    }
+
+    public void standardOut(String message) {
         System.out.println(BIDateUtils.getCurrentDateTime() + ": " + message);
     }
+
 
     public void debug(String message) {
         if (verbose) {
