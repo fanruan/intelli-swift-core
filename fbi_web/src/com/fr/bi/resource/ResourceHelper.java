@@ -3007,7 +3007,7 @@ public class ResourceHelper {
 
     public static String[] getH5Js(){
         return new String[] {
-                "com/fr/bi/web/js/third/zepto.min.js",
+                "com/fr/bi/web/js/third/ajax.js",
                 "com/fr/bi/web/js/third/d3.js",
                 "com/fr/bi/web/js/third/leaflet.js",
                 "com/fr/bi/web/js/third/vancharts-all.js",
