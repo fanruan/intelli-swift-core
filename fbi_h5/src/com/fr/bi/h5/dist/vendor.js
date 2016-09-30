@@ -38780,24 +38780,26 @@
 	        }
 	    }], [{
 	        key: 'transformToArrayFormat',
-	        value: function transformToArrayFormat(nodes) {
+	        value: function transformToArrayFormat(nodes, pId) {
 	            if (!nodes) return [];
 	            var r = [];
 	            if ((0, _isArray2.default)(nodes)) {
 	                for (var i = 0, l = nodes.length; i < l; i++) {
 	                    var node = (0, _clone2.default)(nodes[i]);
+	                    node.pId = pId;
 	                    delete node.children;
 	                    r.push(node);
 	                    if (nodes[i]["children"]) {
-	                        r = r.concat(Tree.transformToArrayFormat(nodes[i]["children"]));
+	                        r = r.concat(Tree.transformToArrayFormat(nodes[i]["children"], node.id));
 	                    }
 	                }
 	            } else {
 	                var newNodes = (0, _clone2.default)(nodes);
+	                newNodes.pId = pId;
 	                delete newNodes.children;
 	                r.push(newNodes);
 	                if (nodes["children"]) {
-	                    r = r.concat(Tree.transformToArrayFormat(nodes["children"]));
+	                    r = r.concat(Tree.transformToArrayFormat(nodes["children"], newNodes.id));
 	                }
 	            }
 	            return r;
@@ -66782,6 +66784,8 @@
 	    value: true
 	});
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _Dimension = __webpack_require__(767);
@@ -66793,6 +66797,8 @@
 	var _Target2 = _interopRequireDefault(_Target);
 
 	var _core = __webpack_require__(329);
+
+	var _lib = __webpack_require__(206);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -66962,6 +66968,108 @@
 	        key: 'getSelectValue',
 	        value: function getSelectValue() {
 	            return this.$$widget.getIn(['value', 'value']).toArray();
+	        }
+	    }, {
+	        key: 'getTreeFloors',
+	        value: function getTreeFloors() {
+	            return this.getAllDimensionIds().length;
+	        }
+	    }, {
+	        key: 'getSelectedTreeValue',
+	        value: function getSelectedTreeValue() {
+	            return this.$$widget.get('value').toJS();
+	        }
+	    }, {
+	        key: 'getData',
+	        value: function getData(options) {
+	            var wi = this.createJson();
+	            switch (this.getType()) {
+	                case BICst.WIDGET.TABLE:
+	                case BICst.WIDGET.CROSS_TABLE:
+	                case BICst.WIDGET.COMPLEX_TABLE:
+	                    return (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
+	                        method: "POST",
+	                        body: JSON.stringify({
+	                            widget: _extends({
+	                                expander: {
+	                                    x: {
+	                                        type: true,
+	                                        value: [[]]
+	                                    },
+	                                    y: {
+	                                        type: true,
+	                                        value: [[]]
+	                                    }
+	                                } }, wi), sessionID: BH.sessionID
+	                        })
+	                    }).then(function (response) {
+	                        return response.json();
+	                    });
+	                case BICst.WIDGET.DETAIL:
+	                    return (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
+	                        method: "POST",
+	                        body: JSON.stringify({ widget: wi, sessionID: BH.sessionID })
+	                    }).then(function (response) {
+	                        return response.json();
+	                    });
+	                case BICst.WIDGET.AXIS:
+	                case BICst.WIDGET.ACCUMULATE_AXIS:
+	                case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+	                case BICst.WIDGET.COMPARE_AXIS:
+	                case BICst.WIDGET.FALL_AXIS:
+	                case BICst.WIDGET.BAR:
+	                case BICst.WIDGET.ACCUMULATE_BAR:
+	                case BICst.WIDGET.COMPARE_BAR:
+	                case BICst.WIDGET.LINE:
+	                case BICst.WIDGET.AREA:
+	                case BICst.WIDGET.ACCUMULATE_AREA:
+	                case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+	                case BICst.WIDGET.COMPARE_AREA:
+	                case BICst.WIDGET.RANGE_AREA:
+	                case BICst.WIDGET.COMBINE_CHART:
+	                case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+	                case BICst.WIDGET.PIE:
+	                case BICst.WIDGET.DONUT:
+	                case BICst.WIDGET.MAP:
+	                case BICst.WIDGET.GIS_MAP:
+	                case BICst.WIDGET.DASHBOARD:
+	                case BICst.WIDGET.BUBBLE:
+	                case BICst.WIDGET.FORCE_BUBBLE:
+	                case BICst.WIDGET.SCATTER:
+	                case BICst.WIDGET.RADAR:
+	                case BICst.WIDGET.ACCUMULATE_RADAR:
+	                case BICst.WIDGET.FUNNEL:
+	                    return (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=chart_setting', {
+	                        method: "POST",
+
+	                        body: JSON.stringify({ widget: _extends({}, wi, { page: -1 }), sessionID: BH.sessionID })
+	                    }).then(function (response) {
+	                        return response.json(); // 转换为JSON
+	                    });
+
+	                case BICst.WIDGET.DATE:
+	                case BICst.WIDGET.YEAR:
+	                case BICst.WIDGET.QUARTER:
+	                case BICst.WIDGET.MONTH:
+	                case BICst.WIDGET.YMD:
+	                    return;
+	                case BICst.WIDGET.STRING:
+	                    return (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
+	                        method: "POST",
+	                        body: JSON.stringify({ widget: _extends({}, wi, { text_options: options }), sessionID: BH.sessionID })
+	                    }).then(function (response) {
+	                        return response.json();
+	                    });
+	                case BICst.WIDGET.TREE:
+	                    return (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
+	                        method: "POST",
+	                        body: JSON.stringify({ widget: _extends({}, wi, { tree_options: options }), sessionID: BH.sessionID })
+	                    }).then(function (response) {
+	                        return response.json();
+	                    });
+	                case BICst.WIDGET.NUMBER:
+	                case BICst.WIDGET.GENERAL_QUERY:
+	            }
 	        }
 	    }]);
 
@@ -68137,9 +68245,9 @@
 	        var _this = _possibleConstructorReturn(this, (Checkbox.__proto__ || Object.getPrototypeOf(Checkbox)).call(this, props, context));
 
 	        _this.state = {
-	            selected: _this.props.selected,
-	            half: _this.props.half,
-	            onSelected: _core.emptyFunction
+	            checked: _this.props.checked,
+	            halfCheck: _this.props.halfCheck,
+	            onChecked: _core.emptyFunction
 	        };
 	        return _this;
 	    }
@@ -68153,10 +68261,10 @@
 	    }, {
 	        key: 'componentWillReceiveProps',
 	        value: function componentWillReceiveProps(nextProps) {
-	            var selected = nextProps.selected;
-	            var half = nextProps.half;
+	            var checked = nextProps.checked;
+	            var halfCheck = nextProps.halfCheck;
 
-	            this.setState({ selected: selected, half: half });
+	            this.setState({ checked: checked, halfCheck: halfCheck });
 	        }
 	    }, {
 	        key: 'render',
@@ -68169,25 +68277,25 @@
 	            return _lib2.default.createElement(
 	                _lib.TouchableWithoutFeedback,
 	                { onPress: function onPress(e) {
-	                        if (_this2.state.half === true) {
+	                        if (_this2.state.halfCheck === true) {
 	                            _this2.setState({
-	                                selected: true,
-	                                half: false
+	                                checked: true,
+	                                halfCheck: false
 	                            }, function () {
-	                                props.onSelected(_this2.state);
+	                                props.onChecked(_this2.state);
 	                            });
 	                        } else {
 	                            _this2.setState({
-	                                selected: !_this2.state.selected
+	                                checked: !_this2.state.checked
 	                            }, function () {
-	                                props.onSelected(_this2.state);
+	                                props.onChecked(_this2.state);
 	                            });
 	                        }
 	                        e.stopPropagation();
 	                    } },
 	                _lib2.default.createElement(_lib.View, _extends({ className: (0, _core.cn)({
-	                        selected: state.selected,
-	                        half: state.half
+	                        checked: state.checked,
+	                        halfCheck: state.halfCheck
 	                    }, props.className, 'Checkbox') }, props, { style: [styles.wrapper, props.style] }))
 	            );
 	        }
@@ -68198,8 +68306,8 @@
 
 	Checkbox.propTypes = {};
 	Checkbox.defaultProps = {
-	    selected: true,
-	    half: false
+	    checked: true,
+	    halfCheck: false
 	};
 
 	_reactMixin2.default.onClass(Checkbox, _reactAddonsPureRenderMixin2.default);
@@ -68246,7 +68354,7 @@
 
 
 	// module
-	exports.push([module.id, ".Checkbox {\r\n    position: relative;\r\n}\r\n\r\n.Checkbox:before {\r\n    display: table;\r\n    width: 100%;\r\n    height: 100%;\r\n    border-width: 1px;\r\n    border-style: solid;\r\n    border-color: #387ef5;\r\n\r\n    content: ' ';\r\n    border-radius: 50%;\r\n    transition: background-color 0.1s ease-in-out;\r\n}\r\n\r\n.Checkbox.selected:before {\r\n    background: #4a87ee;\r\n}\r\n\r\n.Checkbox.selected:after {\r\n    transition: opacity 0.05s ease-in-out;\r\n    transform: rotate(-45deg);\r\n    position: absolute;\r\n    top: 30%;\r\n    left: 26%;\r\n    display: table;\r\n    width: 15px;\r\n    height: 10px;\r\n    border: 3px solid #fff;\r\n    border-top: 0;\r\n    border-right: 0;\r\n    content: ' ';\r\n}\r\n\r\n.Checkbox.half:before {\r\n    background: rgba(74, 135, 238, .5);\r\n}", ""]);
+	exports.push([module.id, ".Checkbox {\r\n    position: relative;\r\n}\r\n\r\n.Checkbox:before {\r\n    display: table;\r\n    width: 100%;\r\n    height: 100%;\r\n    border-width: 1px;\r\n    border-style: solid;\r\n    border-color: #387ef5;\r\n\r\n    content: ' ';\r\n    border-radius: 50%;\r\n    transition: background-color 0.1s ease-in-out;\r\n}\r\n\r\n.Checkbox.checked:before {\r\n    background: #4a87ee;\r\n}\r\n\r\n.Checkbox.checked:after {\r\n    transition: opacity 0.05s ease-in-out;\r\n    transform: rotate(-45deg);\r\n    position: absolute;\r\n    top: 30%;\r\n    left: 26%;\r\n    display: table;\r\n    width: 15px;\r\n    height: 10px;\r\n    border: 3px solid #fff;\r\n    border-top: 0;\r\n    border-right: 0;\r\n    content: ' ';\r\n}\r\n\r\n.Checkbox.halfCheck:before {\r\n    background: rgba(74, 135, 238, .5);\r\n}\r\n\r\n.Checkbox.halfCheck:after {\r\n    opacity: 0;\r\n}", ""]);
 
 	// exports
 

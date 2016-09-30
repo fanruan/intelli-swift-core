@@ -2252,6 +2252,22 @@ webpackJsonp([0],{
 	    }
 
 	    _createClass(App, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            setInterval(function () {
+	                (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=update_session', {
+	                    method: "POST",
+	                    body: JSON.stringify({ _t: new Date(), sessionID: BH.sessionID })
+	                });
+	            }, 30000);
+	            window.onbeforeunload = function () {
+	                (0, _lib.Fetch)(BH.servletURL + '?op=closesessionid', {
+	                    method: "POST",
+	                    body: JSON.stringify({ _t: new Date(), sessionID: BH.sessionID })
+	                });
+	            };
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
 	            return _lib2.default.createElement(_Main2.default, this.props);
@@ -3188,7 +3204,7 @@ webpackJsonp([0],{
 	                    _lib2.default.createElement(
 	                        _lib.View,
 	                        { style: [styles.icon, { width: _data.Size.ITEM_HEIGHT }] },
-	                        _lib2.default.createElement(_base.Checkbox, { selected: this.state.selected, onSelected: this._onPress.bind(this) })
+	                        _lib2.default.createElement(_base.Checkbox, { checked: this.state.selected, onChecked: this._onPress.bind(this) })
 	                    )
 	                )
 	            );
@@ -3391,34 +3407,58 @@ webpackJsonp([0],{
 
 	        var _this = _possibleConstructorReturn(this, (MultiTreeSelectorWidget.__proto__ || Object.getPrototypeOf(MultiTreeSelectorWidget)).call(this, props, context));
 
-	        _this.state = {};
-
-	        if (props.itemsCreator) {
-	            _this._helper = new _MultiTreeSelectorWidgetAsyncHelper2.default(props);
-	        } else {
-	            _this._helper = new _MultiTreeSelectorWidgetHelper2.default(props);
-	        }
 	        _this.state = {
-	            value: props.value
+	            value: _this.props.value,
+	            items: _this.props.items,
+	            hasNext: false
 	        };
 	        return _this;
 	    }
 
 	    _createClass(MultiTreeSelectorWidget, [{
+	        key: '_getNextState',
+	        value: function _getNextState(props, state) {
+	            var _props$state = _extends({}, props, state);
+
+	            var items = _props$state.items;
+	            var value = _props$state.value;
+	            var hasNext = _props$state.hasNext;
+
+	            return {
+	                items: items,
+	                value: value,
+	                hasNext: hasNext
+	            };
+	        }
+	    }, {
 	        key: 'componentWillMount',
 	        value: function componentWillMount() {}
 	    }, {
 	        key: 'componentDidMount',
-	        value: function componentDidMount() {}
+	        value: function componentDidMount() {
+	            var _this2 = this;
+
+	            if (this.props.itemsCreator) {
+	                this.props.itemsCreator({
+	                    floors: this.props.floors,
+	                    type: 0,
+	                    times: -1,
+	                    selected_values: this.props.value
+	                }).then(function (data) {
+	                    var items = data.items;
+	                    var hasNext = data.hasNext;
+
+	                    _this2.setState({
+	                        items: items,
+	                        hasNext: hasNext
+	                    });
+	                });
+	            }
+	        }
 	    }, {
 	        key: 'componentWillReceiveProps',
 	        value: function componentWillReceiveProps(nextProps) {
-	            if (nextProps.itemsCreator) {
-	                this._helper = new _MultiTreeSelectorWidgetAsyncHelper2.default(nextProps);
-	            } else {
-	                this._helper = new _MultiTreeSelectorWidgetHelper2.default(nextProps);
-	            }
-	            this.setState({ value: nextProps.value });
+	            this.setState(this._getNextState(_extends({}, this.props, this.state), nextProps));
 	        }
 	    }, {
 	        key: 'componentWillUpdate',
@@ -3427,7 +3467,13 @@ webpackJsonp([0],{
 	        key: 'render',
 	        value: function render() {
 	            var props = _objectWithoutProperties(this.props, []);
+	            var state = _objectWithoutProperties(this.state, []);
 
+	            if (props.itemsCreator) {
+	                this._helper = new _MultiTreeSelectorWidgetAsyncHelper2.default(state, props);
+	            } else {
+	                this._helper = new _MultiTreeSelectorWidgetHelper2.default(state);
+	            }
 	            return _lib2.default.createElement(_base.VirtualScroll, {
 	                width: props.width,
 	                height: props.height,
@@ -3442,41 +3488,39 @@ webpackJsonp([0],{
 	    }, {
 	        key: '_rowRenderer',
 	        value: function _rowRenderer(_ref) {
-	            var _this2 = this;
+	            var _this3 = this;
 
 	            var index = _ref.index;
 	            var isScrolling = _ref.isScrolling;
 
 	            var rowData = this._helper.getSortedItems()[index];
 	            return _lib2.default.createElement(_Item2.default, _extends({ key: rowData.value, onSelected: function onSelected(sel) {
-	                    _this2._onSelected(rowData, sel);
+	                    _this3._onSelected(rowData, sel);
 	                }, onExpand: function onExpand(expanded) {
-	                    _this2._onExpand(rowData, expanded);
+	                    _this3._onExpand(rowData, expanded);
 	                } }, rowData));
 	        }
 	    }, {
 	        key: '_onExpand',
 	        value: function _onExpand(rowData, expanded) {
-	            if (expanded) {
-	                this._helper.expandOneValue(rowData.value);
-	            } else {
-	                this._helper.collapseOneValue(rowData.value);
-	            }
-	            this.forceUpdate();
-	            // this.setState({
-	            //     value: this._helper.getSelectedValue()
-	            // });
+	            var _this4 = this;
+
+	            this._helper[expanded ? 'expandOneNode' : 'collapseOneNode'](rowData).then(function () {
+	                _this4.setState({
+	                    items: _this4._helper.getItems()
+	                });
+	            });
 	        }
 	    }, {
 	        key: '_onSelected',
 	        value: function _onSelected(rowData, sel) {
-	            if (sel.selected === true) {
-	                this._helper.selectOneValue(rowData.value);
+	            if (sel.checked === true) {
+	                this._helper.selectOneNode(rowData);
 	            } else {
-	                this._helper.disSelectOneValue(rowData.value);
+	                this._helper.disSelectOneNode(rowData);
 	            }
 	            this.setState({
-	                value: this._helper.getSelectedValue()
+	                items: this._helper.getItems()
 	            });
 	        }
 	    }]);
@@ -3486,7 +3530,8 @@ webpackJsonp([0],{
 
 	MultiTreeSelectorWidget.propTypes = {};
 	MultiTreeSelectorWidget.defaultProps = {
-	    items: []
+	    items: [],
+	    floors: 0
 	};
 
 	_reactMixin2.default.onClass(MultiTreeSelectorWidget, _reactAddonsPureRenderMixin2.default);
@@ -3553,10 +3598,11 @@ webpackJsonp([0],{
 	        _this.state = {};
 	        var text = props.text;
 	        var value = props.value;
-	        var selected = props.selected;
+	        var checked = props.checked;
+	        var halfCheck = props.halfCheck;
 	        var expanded = props.expanded;
 
-	        _this.state = { text: text, value: value, selected: selected, expanded: expanded };
+	        _this.state = { text: text, value: value, checked: checked, halfCheck: halfCheck, expanded: expanded };
 	        return _this;
 	    }
 
@@ -3571,10 +3617,11 @@ webpackJsonp([0],{
 	        value: function componentWillReceiveProps(props) {
 	            var text = props.text;
 	            var value = props.value;
-	            var selected = props.selected;
+	            var checked = props.checked;
+	            var halfCheck = props.halfCheck;
 	            var expanded = props.expanded;
 
-	            this.setState({ text: text, value: value, selected: selected, expanded: expanded });
+	            this.setState({ text: text, value: value, checked: checked, halfCheck: halfCheck, expanded: expanded });
 	        }
 	    }, {
 	        key: 'componentWillUpdate',
@@ -3630,8 +3677,8 @@ webpackJsonp([0],{
 	                    _lib2.default.createElement(
 	                        _lib.View,
 	                        { style: [styles.icon, { width: _data.Size.ITEM_HEIGHT }] },
-	                        _lib2.default.createElement(_base.Checkbox, { selected: state.selected === 2, half: state.selected === 1,
-	                            onSelected: props.onSelected })
+	                        _lib2.default.createElement(_base.Checkbox, { checked: state.checked, halfCheck: state.halfCheck,
+	                            onChecked: props.onSelected })
 	                    )
 	                )
 	            );
@@ -3644,8 +3691,9 @@ webpackJsonp([0],{
 	Item.propTypes = {};
 	Item.defaultProps = {
 	    text: '',
-	    value: '',
-	    selected: 0,
+	    value: null,
+	    checked: false,
+	    halfCheck: false,
 	    expanded: false,
 	    layer: 0,
 	    onExpand: _core.emptyFunction,
@@ -3700,21 +3748,77 @@ webpackJsonp([0],{
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var MultiTreeSelectorWidgetHelper = function () {
-	    function MultiTreeSelectorWidgetHelper(props) {
+	    function MultiTreeSelectorWidgetHelper(state) {
 	        _classCallCheck(this, MultiTreeSelectorWidgetHelper);
 
-	        this.items = props.items;
-	        var format = this._formatItems(this.items);
-	        this.tree = new _core.Tree();
-	        this.tree.initTree(format);
+	        this.items = state.items;
+	        this.value = state.value || {};
+	        var format = this._initTree(this.items, this.value);
 	        this.sorted = this._expandTreeItems(format);
-	        this.value = Array.from(props.value || []);
 	    }
 
 	    _createClass(MultiTreeSelectorWidgetHelper, [{
-	        key: '_formatItems',
-	        value: function _formatItems(items) {
-	            return _core.Tree.transformToTreeFormat(items);
+	        key: '_createMap',
+	        value: function _createMap(items) {
+	            var _this = this;
+
+	            this.map = {};
+	            (0, _core.each)(items, function (node) {
+	                _this.map[node.id] = node;
+	            });
+	        }
+	    }, {
+	        key: '_createSelectedMap',
+	        value: function _createSelectedMap(selected_values) {
+	            var _this2 = this;
+
+	            this.selMap = {};
+	            var track = function track(val, route) {
+	                (0, _core.each)(val, function (child, key) {
+	                    if ((0, _core.isEmpty)(child)) {
+	                        _this2.selMap[route + key] = 2;
+	                    } else {
+	                        _this2.selMap[route + key] = 1;
+	                    }
+	                    track(child, route + key);
+	                });
+	            };
+	            track(selected_values, '');
+	        }
+	    }, {
+	        key: '_getRouteKey',
+	        value: function _getRouteKey(route) {
+	            var _this3 = this;
+
+	            var result = '';
+	            (0, _core.each)(route, function (key) {
+	                result += _this3.map[key].value;
+	            });
+	            return result;
+	        }
+	    }, {
+	        key: '_initTree',
+	        value: function _initTree(items) {
+	            var _this4 = this;
+
+	            var selected_values = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+	            this._createMap(items);
+	            this._createSelectedMap(selected_values);
+	            var format = _core.Tree.transformToTreeFormat(items);
+	            this.tree = new _core.Tree();
+	            this.tree.initTree(format);
+	            this.tree.recursion(function (child, routes) {
+	                var key = _this4._getRouteKey(routes);
+	                if (_this4.selMap[key] === 1) {
+	                    child.get('data').checked = true;
+	                    child.get('data').halfCheck = true;
+	                } else if (_this4.selMap[key] === 2) {
+	                    child.get('data').checked = true;
+	                    child.get('data').halfCheck = false;
+	                }
+	            });
+	            return format;
 	        }
 	    }, {
 	        key: '_expandTreeItems',
@@ -3749,94 +3853,100 @@ webpackJsonp([0],{
 	                isHalSelected = false;
 	            (0, _core.each)(node.getChildren(), function (child) {
 	                var data = child.get('data');
-	                if (data.selected < 2 || (0, _core.isNil)(data.selected)) {
+	                if (!data.checked || data.halfCheck) {
 	                    isAllSelected = false;
 	                }
-	                if (data.selected > 0) {
+	                if (data.checked) {
 	                    isHalSelected = true;
 	                }
 	            });
-	            node.get('data').selected = isAllSelected ? 2 : isHalSelected ? 1 : 0;
+	            node.get('data').checked = isAllSelected || isHalSelected;
+	            node.get('data').halfCheck = !isAllSelected && isHalSelected;
 	            this._adjustUpTreeSelected(node.getParent());
 	        }
 	    }, {
 	        key: '_adjustDownTreeSelected',
 	        value: function _adjustDownTreeSelected(node) {
-	            var _this = this;
+	            var _this5 = this;
 
-	            var selected = node.get('data').selected;
+	            var checked = node.get('data').checked,
+	                halfCheck = node.get('data').halfCheck;
 	            (0, _core.each)(node.getChildren(), function (child) {
 	                var data = child.get('data');
-	                if (selected === 2 || selected === 0 || (0, _core.isNil)(selected)) {
-	                    data.selected = selected;
-	                    _this._adjustDownTreeSelected(child);
+	                if (!checked || !halfCheck) {
+	                    data.checked = checked;
+	                    data.halfCheck = false;
+	                    _this5._adjustDownTreeSelected(child);
 	                }
 	            });
 	        }
 	    }, {
-	        key: '_selectOneValue',
-	        value: function _selectOneValue(val) {
-	            var find = this.tree.search(val, 'value');
+	        key: '_selectOneNode',
+	        value: function _selectOneNode(node) {
+	            var find = this.tree.search(node.id);
 	            if (find) {
 	                var data = find.get('data');
-	                data.selected = 2;
+	                data.checked = true;
+	                data.halfCheck = false;
 	                this._adjustUpTreeSelected(find.getParent());
 	                this._adjustDownTreeSelected(find);
-	                this._digest();
 	            }
 	        }
 	    }, {
-	        key: '_disSelectOneValue',
-	        value: function _disSelectOneValue(val) {
-	            var find = this.tree.search(val, 'value');
-
+	        key: '_disSelectOneNode',
+	        value: function _disSelectOneNode(node) {
+	            var find = this.tree.search(node.id);
 	            if (find) {
 	                var data = find.get('data');
-	                data.selected = 0;
+	                data.checked = false;
+	                data.halfCheck = false;
 	                this._adjustUpTreeSelected(find.getParent());
 	                this._adjustDownTreeSelected(find);
-	                this._digest();
 	            }
 	        }
 	    }, {
-	        key: '_digest',
-	        value: function _digest() {
-	            this.sorted = this._expandTreeItems(this.tree.toJSON());
+	        key: 'selectOneNode',
+	        value: function selectOneNode(node) {
+	            this._selectOneNode(node);
 	        }
 	    }, {
-	        key: 'selectOneValue',
-	        value: function selectOneValue(val) {
-	            this._selectOneValue(val);
+	        key: 'disSelectOneNode',
+	        value: function disSelectOneNode(node) {
+	            this._disSelectOneNode(node);
 	        }
 	    }, {
-	        key: 'disSelectOneValue',
-	        value: function disSelectOneValue(val) {
-	            this._disSelectOneValue(val);
-	        }
-	    }, {
-	        key: 'expandOneValue',
-	        value: function expandOneValue(val) {
-	            var find = this.tree.search(val, 'value');
+	        key: 'expandOneNode',
+	        value: function expandOneNode(node) {
+	            var find = this.tree.search(node.id);
 	            if (find) {
 	                var data = find.get('data');
 	                data.expanded = true;
-	                this._digest();
 	            }
+	            return new _core.Promise(function (resolve, reject) {
+	                resolve();
+	            });
 	        }
 	    }, {
-	        key: 'collapseOneValue',
-	        value: function collapseOneValue(val) {
-	            var find = this.tree.search(val, 'value');
+	        key: 'collapseOneNode',
+	        value: function collapseOneNode(node) {
+	            var find = this.tree.search(node.id);
 	            if (find) {
 	                var data = find.get('data');
 	                data.expanded = false;
-	                this._digest();
 	            }
+	            return new _core.Promise(function (resolve, reject) {
+	                resolve();
+	            });
 	        }
 	    }, {
 	        key: 'getSelectedValue',
 	        value: function getSelectedValue() {
-	            return Array.from(this.value);
+	            return (0, _core.clone)(this.value);
+	        }
+	    }, {
+	        key: 'getItems',
+	        value: function getItems() {
+	            return _core.Tree.transformToArrayFormat(this.tree.toJSON());
 	        }
 	    }, {
 	        key: 'getSortedItems',
@@ -3861,166 +3971,86 @@ webpackJsonp([0],{
 	    value: true
 	});
 
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _core = __webpack_require__(329);
 
-	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+	var _MultiTreeSelectorWidgetHelper = __webpack_require__(898);
+
+	var _MultiTreeSelectorWidgetHelper2 = _interopRequireDefault(_MultiTreeSelectorWidgetHelper);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var MultiTreeSelectorAsyncWidgetHelper = function () {
-	    function MultiTreeSelectorAsyncWidgetHelper(props) {
-	        _classCallCheck(this, MultiTreeSelectorAsyncWidgetHelper);
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	        this.items = props.items;
-	        var format = this._formatItems(this.items);
-	        this.tree = new _core.Tree();
-	        this.tree.initTree(format);
-	        this.sorted = this._expandTreeItems(format);
-	        this.value = Array.from(props.value || []);
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var MultiTreeSelectorWidgetAsnycHelper = function (_MultiTreeSelectorWid) {
+	    _inherits(MultiTreeSelectorWidgetAsnycHelper, _MultiTreeSelectorWid);
+
+	    function MultiTreeSelectorWidgetAsnycHelper(state, props) {
+	        _classCallCheck(this, MultiTreeSelectorWidgetAsnycHelper);
+
+	        var _this = _possibleConstructorReturn(this, (MultiTreeSelectorWidgetAsnycHelper.__proto__ || Object.getPrototypeOf(MultiTreeSelectorWidgetAsnycHelper)).call(this, state));
+
+	        _this.floors = props.floors;
+	        _this.itemsCreator = props.itemsCreator;
+	        return _this;
 	    }
 
-	    _createClass(MultiTreeSelectorAsyncWidgetHelper, [{
-	        key: '_formatItems',
-	        value: function _formatItems(items) {
-	            return _core.Tree.transformToTreeFormat(items);
-	        }
-	    }, {
-	        key: '_expandTreeItems',
-	        value: function _expandTreeItems(items) {
-	            var result = [];
-	            var track = function track(nodes, layer) {
-	                (0, _core.each)(nodes, function (node, i) {
-	                    var children = node.children;
-
-	                    var others = _objectWithoutProperties(node, ['children']);
-
-	                    var isLeaf = (0, _core.isNil)(node.children) && !node.isParent;
-	                    result.push(_extends({
-	                        layer: layer,
-	                        isLeaf: isLeaf
-	                    }, others));
-	                    if (node.expanded === true) {
-	                        track(children, layer + 1);
-	                    }
-	                });
-	            };
-	            track(items, 0);
-	            return result;
-	        }
-	    }, {
-	        key: '_adjustUpTreeSelected',
-	        value: function _adjustUpTreeSelected(node) {
-	            if (this.tree.isRoot(node)) {
-	                return;
-	            }
-	            var isAllSelected = true,
-	                isHalSelected = false;
-	            (0, _core.each)(node.getChildren(), function (child) {
-	                var data = child.get('data');
-	                if (data.selected < 2 || (0, _core.isNil)(data.selected)) {
-	                    isAllSelected = false;
-	                }
-	                if (data.selected > 0) {
-	                    isHalSelected = true;
-	                }
-	            });
-	            node.get('data').selected = isAllSelected ? 2 : isHalSelected ? 1 : 0;
-	            this._adjustUpTreeSelected(node.getParent());
-	        }
-	    }, {
-	        key: '_adjustDownTreeSelected',
-	        value: function _adjustDownTreeSelected(node) {
-	            var _this = this;
-
-	            var selected = node.get('data').selected;
-	            (0, _core.each)(node.getChildren(), function (child) {
-	                var data = child.get('data');
-	                if (selected === 2 || selected === 0 || (0, _core.isNil)(selected)) {
-	                    data.selected = selected;
-	                    _this._adjustDownTreeSelected(child);
-	                }
-	            });
-	        }
-	    }, {
-	        key: '_selectOneValue',
-	        value: function _selectOneValue(val) {
-	            var find = this.tree.search(val, 'value');
-	            if (find) {
-	                var data = find.get('data');
-	                data.selected = 2;
-	                this._adjustUpTreeSelected(find.getParent());
-	                this._adjustDownTreeSelected(find);
-	                this._digest();
-	            }
-	        }
-	    }, {
-	        key: '_disSelectOneValue',
-	        value: function _disSelectOneValue(val) {
-	            var find = this.tree.search(val, 'value');
-
-	            if (find) {
-	                var data = find.get('data');
-	                data.selected = 0;
-	                this._adjustUpTreeSelected(find.getParent());
-	                this._adjustDownTreeSelected(find);
-	                this._digest();
-	            }
-	        }
-	    }, {
+	    _createClass(MultiTreeSelectorWidgetAsnycHelper, [{
 	        key: '_digest',
 	        value: function _digest() {
-	            this.sorted = this._expandTreeItems(this.tree.toJSON());
+	            var format = _core.Tree.transformToTreeFormat(this.items);
+	            this.tree.initTree(format);
 	        }
 	    }, {
-	        key: 'selectOneValue',
-	        value: function selectOneValue(val) {
-	            this._selectOneValue(val);
+	        key: '_getParentValues',
+	        value: function _getParentValues(node) {
+	            if (this.tree.isRoot(node)) {
+	                return [];
+	            }
+	            var ps = this._getParentValues(node.getParent());
+	            return ps.concat(node.get('data').value || node.get('data').text);
 	        }
 	    }, {
-	        key: 'disSelectOneValue',
-	        value: function disSelectOneValue(val) {
-	            this._disSelectOneValue(val);
-	        }
-	    }, {
-	        key: 'expandOneValue',
-	        value: function expandOneValue(val) {
-	            var find = this.tree.search(val, 'value');
+	        key: 'expandOneNode',
+	        value: function expandOneNode(node) {
+	            var _this2 = this;
+
+	            var find = this.tree.search(node.id);
 	            if (find) {
 	                var data = find.get('data');
 	                data.expanded = true;
-	                this._digest();
+	                if (data.isParent && find.getChildrenLength() === 0) {
+	                    this.itemsCreator({
+	                        id: find.id,
+	                        times: -1,
+	                        floors: this.floors,
+	                        check_state: {
+	                            checked: data.checked,
+	                            half: data.halfCheck
+	                        },
+	                        parent_values: this._getParentValues(find),
+	                        selected_values: this.value
+	                    }).then(function (data) {
+	                        _this2.items = _this2.items.concat(data.items);
+	                        _this2._digest();
+	                    });
+	                }
 	            }
-	        }
-	    }, {
-	        key: 'collapseOneValue',
-	        value: function collapseOneValue(val) {
-	            var find = this.tree.search(val, 'value');
-	            if (find) {
-	                var data = find.get('data');
-	                data.expanded = false;
-	                this._digest();
-	            }
-	        }
-	    }, {
-	        key: 'getSelectedValue',
-	        value: function getSelectedValue() {
-	            return Array.from(this.value);
-	        }
-	    }, {
-	        key: 'getSortedItems',
-	        value: function getSortedItems() {
-	            return this.sorted;
+	            return new Promise(function (resolve, reject) {
+	                resolve();
+	            });
 	        }
 	    }]);
 
-	    return MultiTreeSelectorAsyncWidgetHelper;
-	}();
+	    return MultiTreeSelectorWidgetAsnycHelper;
+	}(_MultiTreeSelectorWidgetHelper2.default);
 
-	exports.default = MultiTreeSelectorAsyncWidgetHelper;
+	exports.default = MultiTreeSelectorWidgetAsnycHelper;
 
 /***/ },
 
@@ -4208,8 +4238,6 @@ webpackJsonp([0],{
 	    value: true
 	});
 
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _reactAddonsPureRenderMixin = __webpack_require__(230);
@@ -4275,25 +4303,13 @@ webpackJsonp([0],{
 	        value: function render() {
 	            var props = _objectWithoutProperties(this.props, []);
 
-	            var items = [];
 	            var widget = new _data.Widget(props.$$widget);
-	            for (var i = 0; i < 1000; i++) {
-	                items.push({
-	                    value: i
-	                });
-	            }
 	            return _lib2.default.createElement(_widgets.MultiSelectorWidget, {
 	                style: styles.wrapper,
 	                type: widget.getSelectType(),
 	                value: widget.getSelectValue(),
 	                itemsCreator: function itemsCreator(options) {
-	                    var wi = widget.createJson();
-	                    return (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
-	                        method: "POST",
-	                        body: JSON.stringify({ widget: _extends({}, wi, { text_options: options }), sessionID: BH.sessionID })
-	                    }).then(function (response) {
-	                        return response.json();
-	                    });
+	                    return widget.getData(options);
 	                },
 	                width: props.width,
 	                height: props.height
@@ -4391,25 +4407,14 @@ webpackJsonp([0],{
 	        value: function render() {
 	            var props = _objectWithoutProperties(this.props, []);
 
-	            var items = [];
-	            for (var i = 0; i < 1000; i++) {
-	                for (var j = 0; j < 10; j++) {
-	                    items.push({
-	                        id: i + '_' + j,
-	                        pId: i,
-	                        value: i + '_' + j
-	                    });
-	                }
-	                items.push({
-	                    id: i,
-	                    value: i,
-	                    isParent: true,
-	                    expanded: true
-	                });
-	            }
+	            var widget = new _data.Widget(props.$$widget);
 	            return _lib2.default.createElement(_widgets.MultiTreeSelectorWidget, {
 	                style: styles.wrapper,
-	                items: items,
+	                floors: widget.getTreeFloors(),
+	                value: widget.getSelectedTreeValue(),
+	                itemsCreator: function itemsCreator(options) {
+	                    return widget.getData(options);
+	                },
 	                width: props.width,
 	                height: props.height
 	            });
@@ -4805,17 +4810,8 @@ webpackJsonp([0],{
 	            var _this2 = this;
 
 	            var $$widget = this.props.$$widget;
-	            var wi = new _data.Widget($$widget).createJson();
-	            var w = _extends({}, wi, { page: -1 });
-	            (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=chart_setting', {
-	                method: "POST",
-
-	                body: JSON.stringify({ widget: w, sessionID: BH.sessionID })
-	            }).then(function (response) {
-	                return response.json(); // 转换为JSON
-	            }).then(function (data) {
+	            new _data.Widget($$widget).getData().then(function (data) {
 	                var vanCharts = VanCharts.init(_reactDom2.default.findDOMNode(_this2.refs.chart));
-	                console.log(data);
 	                vanCharts.setOptions(data);
 	            });
 	        }
@@ -4935,24 +4931,7 @@ webpackJsonp([0],{
 	        value: function _fetchData() {
 	            var _this2 = this;
 
-	            var wi = new _data.Widget(this.props.$$widget).createJson();
-	            var w = _extends({
-	                expander: {
-	                    x: {
-	                        type: true,
-	                        value: [[]]
-	                    },
-	                    y: {
-	                        type: true,
-	                        value: [[]]
-	                    }
-	                } }, wi);
-	            (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
-	                method: "POST",
-	                body: JSON.stringify({ widget: w, sessionID: BH.sessionID })
-	            }).then(function (response) {
-	                return response.json();
-	            }).then(function (data) {
+	            new _data.Widget(this.props.$$widget).getData().then(function (data) {
 	                console.log(data);
 	                _this2._tableHelper.setData(data);
 	                _this2.forceUpdate();
@@ -5589,13 +5568,7 @@ webpackJsonp([0],{
 	        value: function _fetchData() {
 	            var _this2 = this;
 
-	            var wi = new _data.Widget(this.props.$$widget).createJson();
-	            (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
-	                method: "POST",
-	                body: JSON.stringify({ widget: wi, sessionID: BH.sessionID })
-	            }).then(function (response) {
-	                return response.json();
-	            }).then(function (data) {
+	            new _data.Widget(this.props.$$widget).getData().then(function (data) {
 	                _this2._tableHelper.setData(data);
 	                _this2.forceUpdate();
 	            });

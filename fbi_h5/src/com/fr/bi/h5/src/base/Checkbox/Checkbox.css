@@ -15,11 +15,11 @@
     transition: background-color 0.1s ease-in-out;
 }
 
-.Checkbox.selected:before {
+.Checkbox.checked:before {
     background: #4a87ee;
 }
 
-.Checkbox.selected:after {
+.Checkbox.checked:after {
     transition: opacity 0.05s ease-in-out;
     transform: rotate(-45deg);
     position: absolute;
@@ -34,6 +34,10 @@
     content: ' ';
 }
 
-.Checkbox.half:before {
+.Checkbox.halfCheck:before {
     background: rgba(74, 135, 238, .5);
+}
+
+.Checkbox.halfCheck:after {
+    opacity: 0;
 }

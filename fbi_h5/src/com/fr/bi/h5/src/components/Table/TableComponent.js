@@ -45,25 +45,7 @@ class TableComponent extends Component {
     }
 
     _fetchData() {
-        const wi = new Widget(this.props.$$widget).createJson();
-        const w = {
-            expander: {
-                x: {
-                    type: true,
-                    value: [[]]
-                },
-                y: {
-                    type: true,
-                    value: [[]]
-                }
-            }, ...wi
-        };
-        Fetch(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
-            method: "POST",
-            body: JSON.stringify({widget: w, sessionID: BH.sessionID})
-        }).then(function (response) {
-            return response.json();
-        }).then((data)=> {
+        new Widget(this.props.$$widget).getData().then((data)=> {
             console.log(data);
             this._tableHelper.setData(data);
             this.forceUpdate();

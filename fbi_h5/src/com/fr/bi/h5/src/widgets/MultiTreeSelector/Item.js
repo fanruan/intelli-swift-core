@@ -25,16 +25,17 @@ import {Icon, Checkbox, Table, AutoSizer} from 'base'
 class Item extends Component {
     constructor(props, context) {
         super(props, context);
-        const {text, value, selected, expanded} = props;
-        this.state = {text, value, selected, expanded};
+        const {text, value, checked, halfCheck, expanded} = props;
+        this.state = {text, value, checked, halfCheck, expanded};
     }
 
     static propTypes = {};
 
     static defaultProps = {
         text: '',
-        value: '',
-        selected: 0,
+        value: null,
+        checked: false,
+        halfCheck: false,
         expanded: false,
         layer: 0,
         onExpand: emptyFunction,
@@ -52,8 +53,8 @@ class Item extends Component {
     }
 
     componentWillReceiveProps(props) {
-        const {text, value, selected, expanded} = props;
-        this.setState({text, value, selected, expanded});
+        const {text, value, checked, halfCheck, expanded} = props;
+        this.setState({text, value, checked, halfCheck, expanded});
     }
 
     componentWillUpdate() {
@@ -92,8 +93,8 @@ class Item extends Component {
                     </Text>
                 </View>
                 <View style={[styles.icon, {width: Size.ITEM_HEIGHT}]}>
-                    <Checkbox selected={state.selected === 2} half={state.selected === 1}
-                              onSelected={props.onSelected}/>
+                    <Checkbox checked={state.checked} halfCheck={state.halfCheck}
+                              onChecked={props.onSelected}/>
                 </View>
             </View>
         </TouchableHighlight>

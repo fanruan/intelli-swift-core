@@ -11,7 +11,7 @@ import React, {
     ListView,
     View,
     Fetch
-    } from 'lib'
+} from 'lib'
 
 import {VirtualScroll, AutoSizer} from 'base'
 import {Size} from 'data'
@@ -24,39 +24,53 @@ import MultiTreeSelectorWidgetAsyncHelper from './MultiTreeSelectorWidgetAsyncHe
 class MultiTreeSelectorWidget extends Component {
     constructor(props, context) {
         super(props, context);
-        if (props.itemsCreator) {
-            this._helper = new MultiTreeSelectorWidgetAsyncHelper(props);
-        } else {
-            this._helper = new MultiTreeSelectorWidgetHelper(props);
-        }
-        this.state = {
-            value: props.value
-        }
     }
 
     static propTypes = {};
 
     static defaultProps = {
-        items: []
+        items: [],
+        floors: 0
     };
 
-    state = {};
+    state = {
+        value: this.props.value,
+        items: this.props.items,
+        hasNext: false
+    };
+
+    _getNextState(props, state) {
+        const {items, value, hasNext} = {...props, ...state};
+        return {
+            items,
+            value,
+            hasNext
+        }
+    }
 
     componentWillMount() {
 
     }
 
     componentDidMount() {
-
+        if (this.props.itemsCreator) {
+            this.props.itemsCreator({
+                floors: this.props.floors,
+                type: 0,
+                times: -1,
+                selected_values: this.props.value
+            }).then((data)=> {
+                const {items, hasNext} = data;
+                this.setState({
+                    items,
+                    hasNext
+                })
+            })
+        }
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.itemsCreator) {
-            this._helper = new MultiTreeSelectorWidgetAsyncHelper(nextProps);
-        } else {
-            this._helper = new MultiTreeSelectorWidgetHelper(nextProps);
-        }
-        this.setState({value: nextProps.value});
+        this.setState(this._getNextState({...this.props, ...this.state}, nextProps));
     }
 
     componentWillUpdate() {
@@ -64,7 +78,12 @@ class MultiTreeSelectorWidget extends Component {
     }
 
     render() {
-        const {...props} = this.props;
+        const {...props} = this.props, {...state} = this.state;
+        if (props.itemsCreator) {
+            this._helper = new MultiTreeSelectorWidgetAsyncHelper(state, props);
+        } else {
+            this._helper = new MultiTreeSelectorWidgetHelper(state);
+        }
         return <VirtualScroll
             width={props.width}
             height={props.height}
@@ -74,7 +93,7 @@ class MultiTreeSelectorWidget extends Component {
             rowHeight={Size.ITEM_HEIGHT}
             rowRenderer={this._rowRenderer.bind(this)}
             //scrollToIndex={scrollToIndex}
-            />
+        />
     }
 
     _rowRenderer({index, isScrolling}) {
@@ -87,25 +106,21 @@ class MultiTreeSelectorWidget extends Component {
     }
 
     _onExpand(rowData, expanded) {
-        if (expanded) {
-            this._helper.expandOneValue(rowData.value);
-        } else {
-            this._helper.collapseOneValue(rowData.value);
-        }
-        this.forceUpdate();
-        // this.setState({
-        //     value: this._helper.getSelectedValue()
-        // });
+        this._helper[expanded ? 'expandOneNode' : 'collapseOneNode'](rowData).then(()=> {
+            this.setState({
+                items: this._helper.getItems()
+            });
+        });
     }
 
     _onSelected(rowData, sel) {
-        if (sel.selected === true) {
-            this._helper.selectOneValue(rowData.value);
+        if (sel.checked === true) {
+            this._helper.selectOneNode(rowData);
         } else {
-            this._helper.disSelectOneValue(rowData.value);
+            this._helper.disSelectOneNode(rowData);
         }
         this.setState({
-            value: this._helper.getSelectedValue()
+            items: this._helper.getItems()
         });
     }
 }

@@ -15,7 +15,7 @@ import React, {
 
 import {Table, AutoSizer} from 'base'
 
-import {Template} from 'data'
+import {Template, Widget} from 'data'
 
 import {MultiTreeSelectorWidget} from 'widgets'
 
@@ -49,25 +49,14 @@ class MultiTreeSelectorComponent extends Component {
 
     render() {
         const {...props} = this.props;
-        const items = [];
-        for (let i = 0; i < 1000; i++) {
-            for (let j = 0; j < 10; j++) {
-                items.push({
-                    id: i + '_' + j,
-                    pId: i,
-                    value: i + '_' + j
-                })
-            }
-            items.push({
-                id: i,
-                value: i,
-                isParent: true,
-                expanded: true
-            })
-        }
+        const widget = new Widget(props.$$widget);
         return <MultiTreeSelectorWidget
             style={styles.wrapper}
-            items={items}
+            floors={widget.getTreeFloors()}
+            value={widget.getSelectedTreeValue()}
+            itemsCreator={(options)=> {
+                return widget.getData(options);
+            }}
             width={props.width}
             height={props.height}
         >

@@ -74,7 +74,7 @@ class Item extends Component {
                     </Text>
                 </View>
                 <View style={[styles.icon, {width: Size.ITEM_HEIGHT}]}>
-                    <Checkbox selected={this.state.selected} onSelected={this._onPress.bind(this)}/>
+                    <Checkbox checked={this.state.selected} onChecked={this._onPress.bind(this)}/>
                 </View>
             </View>
         </TouchableHighlight>;
