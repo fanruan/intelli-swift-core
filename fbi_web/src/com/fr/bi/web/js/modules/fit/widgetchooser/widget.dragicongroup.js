@@ -142,7 +142,7 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
         var config = BI.deepClone(BICst.DASHBOARD_WIDGETS);
         config.push([{
             text: BI.i18nText("BI-Reuse"),
-            title: BI.i18nText("BI-Reuse"),
+            title: BI.i18nText("BI-Reuse_Widget_Control"),
             value: -1,
             cls: "drag-reuse-icon",
             iconHeight: 24,

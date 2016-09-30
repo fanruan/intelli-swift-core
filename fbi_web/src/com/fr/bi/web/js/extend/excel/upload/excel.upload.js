@@ -185,6 +185,18 @@ BI.ExcelUpload = BI.inherit(BI.Widget, {
 
     _createSouth: function(){
         var self = this;
+        this.saveButton = BI.createWidget({
+            type: "bi.button",
+            level: "common",
+            text: BI.i18nText("BI-Next_Step"),
+            title: BI.i18nText("BI-Next_Step"),
+            warningTitle: BI.i18nText("BI-Please_Upload_Excel_Data"),
+            height: this.constants.EXCEL_UPLOAD_BUTTON_HEIGHT
+        });
+        this.saveButton.on(BI.Button.EVENT_CHANGE, function() {
+            self.fireEvent(BI.ExcelUpload.EVENT_SAVE, self.getValue());
+        });
+        this.saveButton.setEnable(false);
         return BI.createWidget({
             type: "bi.left_right_vertical_adapt",
             cls: "excel-upload-south",
@@ -198,16 +210,7 @@ BI.ExcelUpload = BI.inherit(BI.Widget, {
                         self.fireEvent(BI.ExcelUpload.EVENT_CANCEL);
                     }
                 }],
-                right: [{
-                    type: "bi.button",
-                    level: "common",
-                    text: BI.i18nText("BI-Save"),
-                    title: BI.i18nText("BI-Save"),
-                    height: this.constants.EXCEL_UPLOAD_BUTTON_HEIGHT,
-                    handler: function(){
-                        self.fireEvent(BI.ExcelUpload.EVENT_SAVE, self.getValue());
-                    }
-                }]
+                right: [this.saveButton]
             },
             lhgap: this.constants.EXCEL_UPLOAD_BUTTON_GAP,
             rhgap: this.constants.EXCEL_UPLOAD_BUTTON_GAP
@@ -220,8 +223,10 @@ BI.ExcelUpload = BI.inherit(BI.Widget, {
         this.excelFieldsWrapper.empty();
         if(BI.isEmptyArray(this.model.getFields())) {
             this.previewTab.setSelect(this.constants.PREVIEW_EMPTY);
+            this.saveButton.setEnable(false);
             return;
         }
+        this.saveButton.setEnable(true);
         this.uploadButton.setText(BI.i18nText("BI-Excel_Reupload"));
         var excelFieldSet = BI.createWidget({
             type: "bi.excel_field_set",

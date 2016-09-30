@@ -8,7 +8,6 @@ import com.fr.data.core.db.DBUtils;
 import com.fr.data.impl.DBTableData;
 import com.fr.data.impl.EmbeddedTableData;
 import com.fr.file.DatasourceManager;
-import com.fr.general.Decrypt;
 import com.fr.general.data.DataModel;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -17,7 +16,6 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 
 /**
@@ -39,11 +37,11 @@ public class BIPreviewServerLinkAction extends AbstractBIConfigureAction {
         WebUtils.printAsJSON(res, jo);
     }
 
-    public JSONObject getFlexgridPreviewJo(String query, String linkName) throws UnsupportedEncodingException {
+    public JSONObject getFlexgridPreviewJo(String query, String linkName) throws Exception {
+        JSONObject result = new JSONObject();
         if (StringUtils.isEmpty(query) || StringUtils.isEmpty(linkName)) {
-            return new JSONObject();
+            return result;
         }
-        Decrypt pt;
         //加密处理过
         if (StringUtils.isNotEmpty(query)) {
             query = DecryptBi.decrypt(query, "sh");
@@ -79,15 +77,16 @@ public class BIPreviewServerLinkAction extends AbstractBIConfigureAction {
                 dataJa.put(oneRowJa);
             }
 
-            return new JSONObject().put("field_names", fieldJa).put("data", dataJa);
+            result.put("field_names", fieldJa).put("data", dataJa);
 
         } catch (Exception ignore) {
             BILogger.getLogger().info(ignore.getMessage());
+            result.put("error", ignore.getMessage());
         } finally {
             DBUtils.closeConnection(conn);
         }
 
-        return new JSONObject();
+        return result;
     }
 
     @Override

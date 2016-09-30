@@ -31,7 +31,7 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
                 this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Target"), BICst.REGION.TARGET1);
                 break;
             case BICst.WIDGET.TREE:
-                this.regions[BICst.REGION.DIMENSION1] = this._createTreeDimensionRegion();
+                this.regions[BICst.REGION.DIMENSION1] = this._createTreeDimensionRegion(BI.i18nText("BI-Data"));
                 break;
             case BICst.WIDGET.DETAIL:
                 this.regions[BICst.REGION.DIMENSION1] = this._createDetailDimensionRegion(BI.i18nText("BI-Data"));
@@ -151,12 +151,13 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
         })
     },
 
-    _createTreeDimensionRegion: function () {
+    _createTreeDimensionRegion: function (titleName) {
         var self = this, o = this.options;
         var region = BI.createWidget({
             type: "bi.tree_region",
             dimensionCreator: o.dimensionCreator,
-            wId: o.wId
+            wId: o.wId,
+            titleName: titleName
         });
 
         region.on(BI.AbstractRegion.EVENT_CHANGE, function () {

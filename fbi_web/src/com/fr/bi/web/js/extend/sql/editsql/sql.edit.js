@@ -21,14 +21,14 @@ BI.EditSQL = BI.inherit(BI.Widget, {
         PREVIEW_PANE: 1,
         PREVIEW_ERROR: 2
     },
-    
-    _defaultConfig: function(){
+
+    _defaultConfig: function () {
         return BI.extend(BI.EditSQL.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-edit-sql"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.EditSQL.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.model = new BI.EditSQLModel({
@@ -50,12 +50,12 @@ BI.EditSQL = BI.inherit(BI.Widget, {
                 }
             }
         });
-        this.model.initData(function(){
+        this.model.initData(function () {
             self._populate();
         });
     },
 
-    _createWest: function(){
+    _createWest: function () {
         var self = this;
         this.connectionCombo = BI.createWidget({
             type: "bi.text_value_check_combo",
@@ -63,7 +63,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
             width: this.constants.SQL_EDIT_COMBO_WIDTH,
             height: this.constants.SQL_EDIT_BUTTON_HEIGHT
         });
-        this.connectionCombo.on(BI.TextValueCheckCombo.EVENT_CHANGE, function(){
+        this.connectionCombo.on(BI.TextValueCheckCombo.EVENT_CHANGE, function () {
             self.model.setDataLinkName(this.getValue()[0]);
             self.previewTab.setSelect(self.constants.PREVIEW_EMPTY);
         });
@@ -72,7 +72,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
             watermark: BI.i18nText("BI-Please_Enter_SQL"),
             cls: "sql-editor"
         });
-        this.sqlEditor.on(BI.CodeEditor.EVENT_CHANGE, function(){
+        this.sqlEditor.on(BI.CodeEditor.EVENT_CHANGE, function () {
             var sql = this.getValue();
             self.model.setSQL(sql);
             self.previewTab.setSelect(self.constants.PREVIEW_EMPTY);
@@ -140,7 +140,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
         })
     },
 
-    _createCenter: function(){
+    _createCenter: function () {
         var self = this;
         this.previewWrapper = BI.createWidget({
             type: "bi.preview_table"
@@ -183,16 +183,18 @@ BI.EditSQL = BI.inherit(BI.Widget, {
         })
     },
 
-    _previewCardCreator: function(v){
+    _previewCardCreator: function (v) {
         var self = this;
-        switch (v){
+        switch (v) {
             case self.constants.PREVIEW_EMPTY:
                 this.previewButton = BI.createWidget({
                     type: "bi.button",
                     text: BI.i18nText("BI-Preview"),
+                    title: BI.i18nText("BI-Preview"),
+                    warningTitle: BI.i18nText("BI-Please_Enter_SQL"),
                     height: self.constants.SQL_EDIT_BUTTON_HEIGHT,
                     width: self.constants.SQL_EDIT_BUTTON_WIDTH,
-                    handler: function(){
+                    handler: function () {
                         self._getPreviewResult();
                     }
                 });
@@ -211,7 +213,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
                     level: "ignore",
                     width: 90,
                     height: 28,
-                    handler: function(){
+                    handler: function () {
                         self.previewTab.setSelect(self.constants.PREVIEW_EMPTY);
                     }
                 });
@@ -221,9 +223,17 @@ BI.EditSQL = BI.inherit(BI.Widget, {
                     level: "ignore",
                     width: 90,
                     height: 28,
-                    handler: function(){
+                    handler: function () {
                         self._getPreviewResult();
                     }
+                });
+                self.errorMes = BI.createWidget({
+                    type: "bi.label",
+                    textHeight: 30,
+                    cls: "preview-fail-comment",
+                    whiteSpace: "normal",
+                    textAlign: "left",
+                    width: 400
                 });
                 return BI.createWidget({
                     type: "bi.center_adapt",
@@ -251,8 +261,8 @@ BI.EditSQL = BI.inherit(BI.Widget, {
                             }],
                             height: 30,
                             hgap: 5
-                        }],
-                        width: 500,
+                        }, self.errorMes],
+                        width: 400,
                         height: 340,
                         vgap: 10
                     }]
@@ -260,31 +270,32 @@ BI.EditSQL = BI.inherit(BI.Widget, {
         }
     },
 
-    _createSouth: function(){
+    _createSouth: function () {
         var self = this;
         this.saveButton = BI.createWidget({
             type: "bi.button",
             level: "common",
-            text: BI.i18nText("BI-Save"),
-            title: BI.i18nText("BI-Save"),
+            text: BI.i18nText("BI-Next_Step"),
+            title: BI.i18nText("BI-Next_Step"),
+            warningTitle: BI.i18nText("BI-Please_Enter_SQL"),
             height: this.constants.SQL_EDIT_BUTTON_HEIGHT
         });
         //保存前需要检查：数据连接是否正常，a:连得上时有无预览结果，b:连不上提示可能会有问题
-        this.saveButton.on(BI.Button.EVENT_CHANGE, function(){
+        this.saveButton.on(BI.Button.EVENT_CHANGE, function () {
             var mask = BI.createWidget({
                 type: "bi.loading_mask",
                 masker: self.element,
                 text: BI.i18nText("BI-Loading")
             });
-            BI.Utils.getTestConnectionByLinkName(self.model.getDataLinkName(), function(res){
-                if(BI.isNull(res) || res.success === false){
-                    BI.Msg.confirm(BI.i18nText("BI-Prompt"), BI.i18nText("BI-Can_Not_Connect_Connection") + "," + BI.i18nText("BI-Sure_Next_Step"), function(v){
+            BI.Utils.getTestConnectionByLinkName(self.model.getDataLinkName(), function (res) {
+                if (BI.isNull(res) || res.success === false) {
+                    BI.Msg.confirm(BI.i18nText("BI-Prompt"), BI.i18nText("BI-Can_Not_Connect_Connection") + "," + BI.i18nText("BI-Sure_Next_Step"), function (v) {
                         v === true && self._saveSql(true);
                     });
                 } else {
                     self._saveSql();
                 }
-            }, function() {
+            }, function () {
                 mask.destroy();
             });
         });
@@ -307,7 +318,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
         })
     },
 
-    _saveSql: function(errorConnection){
+    _saveSql: function (errorConnection) {
         var self = this;
         var mask = BI.createWidget({
             type: "bi.loading_mask",
@@ -319,21 +330,21 @@ BI.EditSQL = BI.inherit(BI.Widget, {
             dataLinkName: this.model.getDataLinkName(),
             sql: BI.encrypt(this.model.getSQL(), "sh"),
             table_name: this.model.getTableName()
-        }], function(res){
+        }], function (res) {
             var table = res[0];
-            if(!errorConnection && table.md5 === "Empty"){
-                BI.Msg.confirm(BI.i18nText("BI-Prompt"), BI.i18nText("BI-Error_SQL_Not_Next_Step") + "," + BI.i18nText("BI-Sure_Next_Step"), function(v){
+            if (!errorConnection && table.md5 === "Empty") {
+                BI.Msg.confirm(BI.i18nText("BI-Prompt"), BI.i18nText("BI-Error_SQL_Not_Next_Step") + "," + BI.i18nText("BI-Sure_Next_Step"), function (v) {
                     v === true && self.fireEvent(BI.EditSQL.EVENT_SAVE, table);
                 });
             } else {
                 self.fireEvent(BI.EditSQL.EVENT_SAVE, table);
             }
-        }, function() {
+        }, function () {
             mask.destroy();
         })
     },
 
-    _getPreviewResult: function(){
+    _getPreviewResult: function () {
         var self = this;
         var mask = BI.createWidget({
             type: "bi.loading_mask",
@@ -343,30 +354,35 @@ BI.EditSQL = BI.inherit(BI.Widget, {
         BI.Utils.getServerSetPreviewBySql({
             data_link: self.model.getDataLinkName(),
             sql: BI.encrypt(self.model.getSQL(), "sh")
-        }, function(res){
-            if(BI.isNotNull(res) && BI.isNotNull(res.field_names)){
+        }, function (res) {
+            if (BI.isNotNull(res) && BI.isNotNull(res.field_names)) {
                 self._createPreviewTable(res);
                 self.previewTab.setSelect(self.constants.PREVIEW_PANE);
             } else {
                 self.previewTab.setSelect(self.constants.PREVIEW_ERROR);
+                if (BI.isNotNull(res.error)) {
+                    self.errorMes.setText(res.error);
+                } else {
+                    self.errorMes.setText("");
+                }
             }
-        }, function() {
+        }, function () {
             mask.destroy();
         });
     },
 
-    _createPreviewTable: function(data){
+    _createPreviewTable: function (data) {
         var fieldNames = data.field_names, previewData = data.data;
         var header = [], items = [], columnSize = [];
-        BI.each(fieldNames, function(i, field){
+        BI.each(fieldNames, function (i, field) {
             header.push({
                 text: field
             });
             columnSize.push("");
         });
-        BI.each(previewData, function(i ,row){
+        BI.each(previewData, function (i, row) {
             var item = [];
-            BI.each(row, function(j, d){
+            BI.each(row, function (j, d) {
                 item.push({text: d});
             });
             items.push(item);
@@ -374,10 +390,10 @@ BI.EditSQL = BI.inherit(BI.Widget, {
         this.previewWrapper.populate(items, [header]);
     },
 
-    _populate: function(){
+    _populate: function () {
         var items = [];
         var connectionNames = this.model.getConnectionNames();
-        BI.each(connectionNames, function(i, name){
+        BI.each(connectionNames, function (i, name) {
             items.push({
                 text: name,
                 value: name
@@ -386,12 +402,12 @@ BI.EditSQL = BI.inherit(BI.Widget, {
         this.connectionCombo.populate(items);
         this.connectionCombo.setValue(this.model.getDataLinkName());
         this.sqlEditor.setValue(this.model.getSQL());
-        if(BI.isEmptyString(this.model.getSQL())){
+        if (BI.isEmptyString(this.model.getSQL())) {
             this.saveButton.setEnable(false);
         }
     },
 
-    getValue: function(){
+    getValue: function () {
         return {
             connection_name: BICst.CONNECTION.SQL_CONNECTION,
             dataLinkName: this.model.getDataLinkName(),
