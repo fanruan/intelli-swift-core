@@ -388,7 +388,7 @@
     };
 
     BI.extend(BI.Tree, {
-        transformToArrayFormat: function (nodes) {
+        transformToArrayFormat: function (nodes, pId) {
             if (!nodes) return [];
             var r = [];
             if (BI.isArray(nodes)) {
