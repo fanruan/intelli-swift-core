@@ -74,6 +74,17 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
             }, widget],
             vgap: 10
         }
+    },
+
+    getValue: function() {
+        return {
+            title: this.titleColour.getValue(),
+
+        }
+    },
+
+    setValue: function() {
+
     }
 });
 $.shortcut("bi.show_title_detailed_setting_popup", BI.ShowTitleDetailedSettingPopup);
