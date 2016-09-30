@@ -26,9 +26,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         this.table = BI.createWidget({
             type: "bi.style_table",
             isNeedFreeze: null,
-            mergeRule: function (col1, col2) {
-                return col1.text === col2.text && col1.tag === col2.tag;
-            },
+            isNeedMerge: false,
             regionColumnSize: this.getStoredRegionColumnSize(),
             el: {
                 type: "bi.page_table",
