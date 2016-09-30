@@ -955,10 +955,10 @@ BI.ETL = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Loading")
         });
         BI.Utils.checkCubeStatusByTable(table, function (status) {
-
-            mask.destroy();
             callback(status);
-        })
+        }, function() {
+            mask.destroy();
+        });
     },
 
     _previewData: function (tId) {
