@@ -21,11 +21,14 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
         this.titleColour.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
             self.fireEvent(BI.ShowTitleDetailedSettingPopup.EVENT_CHANGE);
         });
+
         var titleColourWrapper = this._createComboWrapper(BI.i18nText("BI-Title_Background"), this.titleColour);
 
         //标题文字
         this.titleWordStyle = BI.createWidget({
-            type: "bi.data_label_text_toolbar"
+            type: "bi.data_label_text_toolbar",
+            cls: "tittle-setting-text-toolbar",
+            width: 230
         });
         this.titleWordStyle.on(BI.GlobalStyleIndexTitleToolBar.EVENT_CHANGE, function () {
             self.fireEvent(BI.ShowTitleDetailedSettingPopup.EVENT_CHANGE);
@@ -67,7 +70,7 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
                 text: name + ":",
                 textAlign: "left",
                 height: 30,
-                width: 55
+                width: 60
             }, widget],
             vgap: 10
         }

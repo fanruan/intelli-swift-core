@@ -26,7 +26,7 @@ BI.ShowTitleDetailedSettingCombo = BI.inherit(BI.Widget, {
             },
             popup: {
                 el:  popup,
-                minWidth: 320,
+                minWidth: 350,
                 stopPropagation: false
             }
         })
