@@ -44,6 +44,7 @@ BI.LineChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
+        config.plotOptions.connectNulls = this.config.null_continue;
         this.formatZoom(config, this.config.show_zoom);
 
         config.yAxis = this.yAxis;
@@ -239,6 +240,7 @@ BI.LineChart = BI.inherit(BI.AbstractChart, {
             show_data_table: options.show_data_table || false,
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             show_zoom: options.show_zoom || false,
+            null_continue: options.null_continue || false,
             text_direction: options.text_direction || 0,
             cordon: options.cordon || [],
             line_width: BI.isNull(options.line_width) ? 1 : options.line_width,

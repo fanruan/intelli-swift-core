@@ -431,16 +431,16 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //空值连续nullContinue,之前去掉了，现在又要加回来
-        //this.nullContinue = BI.createWidget({
-        //    type: "bi.multi_select_item",
-        //    value: BI.i18nText("BI-Null_Continue"),
-        //    invisible: BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.COMBINE_CHART,
-        //    width: 115
-        //});
-        //
-        //this.nullContinue.on(BI.Controller.EVENT_CHANGE, function(){
-        //    self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
-        //});
+        this.nullContinue = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Null_Continue"),
+            invisible: BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.COMBINE_CHART,
+            width: 115
+        });
+
+        this.nullContinue.on(BI.Controller.EVENT_CHANGE, function(){
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
+        });
 
         this.showElement = BI.createWidget({
             type: "bi.horizontal_adapt",
@@ -475,6 +475,9 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.showZoom]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.nullContinue]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -767,6 +770,7 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showDataTable.setSelected(BI.Utils.getWSShowDataTableByID(wId));
         this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
         this.showZoom.setSelected(BI.Utils.getWSShowZoomByID(wId));
+        this.nullContinue.setSelected(BI.Utils.getWSNullContinueByID(wId));
         this.minimalistModel.setSelected(BI.Utils.getWSMinimalistByID(wId));
         this._invisible(!BI.Utils.getWSMinimalistByID(wId));
         this.showYCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
@@ -809,6 +813,7 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
             show_data_table: this.showDataTable.isSelected(),
             show_grid_line: this.gridLine.isSelected(),
             show_zoom: this.showZoom.isSelected(),
+            null_continue: this.nullContinue.isSelected(),
             minimalist_model: this.minimalistModel.isSelected(),
             show_y_custom_scale: this.showYCustomScale.isSelected(),
             custom_y_scale: this.customYScale.getValue(),
@@ -844,6 +849,7 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showDataTable.setSelected(v.show_data_table);
         this.gridLine.setSelected(v.show_grid_line);
         this.showZoom.setSelected(v.show_zoom);
+        this.nullContinue.setSelected(v.null_continue);
         this.minimalistModel.setSelected(v.minimalist_model);
         this.showYCustomScale.setSelected(v.show_y_custom_scale);
         this.customYScale.setValue(v.custom_y_scale);
