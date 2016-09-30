@@ -1545,6 +1545,7 @@ public class ResourceHelper {
                 //one package
                 "com/fr/bi/web/js/modules/onepackage/widget.onepackage.js",
                 "com/fr/bi/web/js/modules/onepackage/widget.onepackage.model.js",
+                "com/fr/bi/web/js/modules/onepackage/widget.refreshtablefields.js",
 
                 //数据连接
                 "com/fr/bi/web/js/modules/datalink/widget.testlink.loading.js",
