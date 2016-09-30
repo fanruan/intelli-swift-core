@@ -51,6 +51,9 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                     el: {
                         type: "bi.page_table",
                         isNeedFreeze: null,
+                        mergeRule: function (col1, col2) {
+                            return col1.text === col2.text && col1.tag === col2.tag;
+                        },
                         el: {
                             el: {
                                 el: {
@@ -127,6 +130,9 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                     el: {
                         type: "bi.page_table",
                         isNeedFreeze: null,
+                        mergeRule: function (col1, col2) {
+                            return col1.text === col2.text && col1.tag === col2.tag;
+                        },
                         el: {
                             el: {
                                 el: {
