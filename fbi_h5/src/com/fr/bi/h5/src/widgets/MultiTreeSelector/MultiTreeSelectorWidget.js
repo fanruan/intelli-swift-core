@@ -11,7 +11,7 @@ import React, {
     ListView,
     View,
     Fetch
-    } from 'lib'
+} from 'lib'
 
 import {VirtualScroll, AutoSizer, TextButton} from 'base'
 import {Size} from 'data'
@@ -62,104 +62,95 @@ class MultiTreeSelectorWidget extends Component {
                 times: this.state.times + 1
             }).then((data)=> {
                 this.setState(this._getNextState(this.props, {
-                    ...this.state, ...{
-                    times: this.state.times + 1,
-                    hasNext: data.hasNext,
-                    items: this.state.items.concat(data.items)
-                }
+                        ...this.state, ...{
+                            times: this.state.times + 1,
+                            hasNext: data.hasNext,
+                            items: this.state.items.concat(data.items)
+                        }
+                    })
+                );
             })
-        )
-            ;
         }
-    )
     }
-}
 
-componentDidMount()
-{
-    this._fetchData();
-}
-
-componentWillReceiveProps(nextProps)
-{
-    this.setState(this._getNextState({...this.props, ...this.state
-}
-,
-nextProps
-))
-;
-}
-
-componentWillUpdate()
-{
-
-}
-
-render()
-{
-    const {...props} = this.props, {...state} = this.state;
-    if (props.itemsCreator) {
-        this._helper = new MultiTreeSelectorWidgetAsyncHelper(state, props);
-    } else {
-        this._helper = new MultiTreeSelectorWidgetHelper(state);
+    componentDidMount() {
+        this._fetchData();
     }
-    return <VirtualScroll
-        width={props.width}
-        height={props.height}
-        overscanRowCount={0}
-        //noRowsRenderer={this._noRowsRenderer.bind(this)}
-        rowCount={this._helper.getSortedItems().length + 1}
-        rowHeight={Size.ITEM_HEIGHT}
-        rowRenderer={this._rowRenderer.bind(this)}
-        //scrollToIndex={scrollToIndex}
+
+    componentWillReceiveProps(nextProps) {
+        this.setState(this._getNextState({
+                ...this.props, ...this.state
+            }
+            ,
+            nextProps
+        ))
+        ;
+    }
+
+    componentWillUpdate() {
+
+    }
+
+    render() {
+        const {...props} = this.props, {...state} = this.state;
+        if (props.itemsCreator) {
+            this._helper = new MultiTreeSelectorWidgetAsyncHelper(state, props);
+        } else {
+            this._helper = new MultiTreeSelectorWidgetHelper(state);
+        }
+        return <VirtualScroll
+            width={props.width}
+            height={props.height}
+            overscanRowCount={0}
+            //noRowsRenderer={this._noRowsRenderer.bind(this)}
+            rowCount={this._helper.getSortedItems().length + 1}
+            rowHeight={Size.ITEM_HEIGHT}
+            rowRenderer={this._rowRenderer.bind(this)}
+            //scrollToIndex={scrollToIndex}
         />
-}
-
-_moreRenderer()
-{
-    if (this.state.hasNext === true) {
-        return <TextButton style={{height: Size.ITEM_HEIGHT}} text={'点击加载更多数据'} onPress={()=> {
-                    this._fetchData();
-                }}/>
-    } else {
-        return <TextButton style={{height: Size.ITEM_HEIGHT}} disabled={true} text={'无更多数据'}/>
     }
-}
 
-_rowRenderer({index, isScrolling})
-{
-    if (index === this._helper.getSortedItems().length) {
-        return this._moreRenderer()
-    } else {
-        const rowData = this._helper.getSortedItems()[index];
-        return <Item key={rowData.value} onSelected={(sel)=> {
+    _moreRenderer() {
+        if (this.state.hasNext === true) {
+            return <TextButton style={{height: Size.ITEM_HEIGHT}} text={'点击加载更多数据'} onPress={()=> {
+                this._fetchData();
+            }}/>
+        } else {
+            return <TextButton style={{height: Size.ITEM_HEIGHT}} disabled={true} text={'无更多数据'}/>
+        }
+    }
+
+    _rowRenderer({index, isScrolling}) {
+        if (index === this._helper.getSortedItems().length) {
+            return this._moreRenderer()
+        } else {
+            const rowData = this._helper.getSortedItems()[index];
+            return <Item key={rowData.value} onSelected={(sel)=> {
                 this._onSelected(rowData, sel);
             }} onExpand={(expanded)=> {
                 this._onExpand(rowData, expanded);
             }} {...rowData}/>;
+        }
     }
-}
 
-_onExpand(rowData, expanded)
-{
-    this._helper[expanded ? 'expandOneNode' : 'collapseOneNode'](rowData).then(()=> {
+    _onExpand(rowData, expanded) {
+        this._helper[expanded ? 'expandOneNode' : 'collapseOneNode'](rowData).then(()=> {
+            this.setState({
+                items: this._helper.getItems()
+            });
+        });
+    }
+
+    _onSelected(rowData, sel) {
+        if (sel.checked === true) {
+            this._helper.selectOneNode(rowData);
+        } else {
+            this._helper.disSelectOneNode(rowData);
+        }
         this.setState({
             items: this._helper.getItems()
         });
-    });
-}
-
-_onSelected(rowData, sel)
-{
-    if (sel.checked === true) {
-        this._helper.selectOneNode(rowData);
-    } else {
-        this._helper.disSelectOneNode(rowData);
     }
-    this.setState({
-        items: this._helper.getItems()
-    });
-}
 }
 mixin.onClass(MultiTreeSelectorWidget, PureRenderMixin);
 const styles = StyleSheet.create({
