@@ -65431,6 +65431,10 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _reactDom = __webpack_require__(34);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
 	var _objectAssign = __webpack_require__(4);
 
 	var _objectAssign2 = _interopRequireDefault(_objectAssign);
@@ -65497,7 +65501,7 @@
 	  _createClass(ViewPager, [{
 	    key: 'getInnerViewNode',
 	    value: function getInnerViewNode() {
-	      return this.refs[VIEWPAGER_REF].childNodes[0];
+	      return _reactDom2.default.findDOMNode(this.refs[VIEWPAGER_REF]).childNodes[0];
 	    }
 	  }, {
 	    key: 'componentWillMount',
@@ -65515,15 +65519,13 @@
 	      // });
 
 	      this._panResponder = _PanResponder2.default.create({
-	        onStartShouldSetResponder: function onStartShouldSetResponder() {
+	        onStartShouldSetPanResponder: function onStartShouldSetPanResponder() {
 	          return true;
 	        },
 	        onMoveShouldSetPanResponder: this._shouldSetPanResponder.bind(this),
 	        onPanResponderGrant: function onPanResponderGrant() {},
 	        onPanResponderMove: this._panResponderMove.bind(this),
-	        onPanResponderTerminationRequest: function onPanResponderTerminationRequest() {
-	          return true;
-	        },
+	        // onPanResponderTerminationRequest: () => true,
 	        onPanResponderRelease: this._panResponderRelease.bind(this),
 	        onPanResponderTerminate: function onPanResponderTerminate() {}
 	      });
@@ -65598,9 +65600,10 @@
 	    }
 	  }, {
 	    key: '_shouldSetPanResponder',
-	    value: function _shouldSetPanResponder() {
+	    value: function _shouldSetPanResponder(e) {
 	      var _this2 = this;
 
+	      // return false;
 	      if (this._scrolling) {
 	        this.state.offsetLeft.stopAnimation(function () {
 	          _this2._scrolling = false;
@@ -65614,7 +65617,11 @@
 	    key: '_panResponderMove',
 	    value: function _panResponderMove(ev, _ref2) {
 	      var dx = _ref2.dx;
+	      var dy = _ref2.dy;
 
+	      if (Math.abs(dy) > Math.abs(dx)) {
+	        return;
+	      }
 	      var val = this.state.selectedPage + dx / this.state.pageWidth * -1;
 	      this.state.offsetLeft.setValue(val);
 	    }
@@ -80525,11 +80532,15 @@
 	            onPanResponderGrant: this._handlePanResponderGrant,
 	            onPanResponderMove: this._handlePanResponderMove,
 	            onPanResponderRelease: this._handlePanResponderEnd,
-	            onPanResponderTerminate: this._handlePanResponderEnd
+	            onPanResponderTerminate: this._handlePanResponderEnd,
+	            onPanResponderTerminationRequest: function onPanResponderTerminationRequest() {
+	                return false;
+	            }
 	        });
 	    },
-	    _handleStartShouldSetPanResponder: function _handleStartShouldSetPanResponder(e) {
-	        return e.nativeEvent.target === this._table;
+	    _handleStartShouldSetPanResponder: function _handleStartShouldSetPanResponder(e, gestureState) {
+	        return true;
+	        // return e.nativeEvent.target === this._table;
 	    },
 	    _handlePanResponderGrant: function _handlePanResponderGrant(e, gestureState) {
 	        this.offset.setOffset(this.offset.__getAnimatedValue());
@@ -80543,8 +80554,8 @@
 	            }
 	        } else {
 	            if (this.state.scrollX === 0 && gestureState.vx > 0 || this.state.scrollX === this.state.maxScrollX && gestureState.vx < 0) {
-	                this._catchGestrure = false;
-	                return;
+	                // this._catchGestrure = false;
+	                // return;
 	            }
 	        }
 
@@ -80586,18 +80597,18 @@
 	        if (offsetX > maxOffsetScroll) {
 	            offsetX = maxOffsetScroll + Math.pow(offsetX - maxOffsetScroll, 0.8);
 	        }
-	        if (this._lockY || Math.abs(dy) > Math.abs(dx) && !this._lockX && !this._lockA) {
+	        if (this._lockY || Math.abs(dy) >= Math.abs(dx) && !this._lockX && !this._lockA) {
 	            this._lockY = true;
 	            this.trans.setValue({ x: 0, y: this.state.scrollY - scrollY });
-	        } else if (this._lockX || !this._lockY && !this._lockA && scrollX > 0 && scrollX <= this.state.maxScrollX) {
+	        } else if (this._lockX || !this._lockY && !this._lockA /**&& scrollX > 0 && scrollX <= this.state.maxScrollX**/) {
 	            this._lockX = true;
 	            this.trans.setValue({ x: this.state.scrollX - scrollX, y: 0 });
 	        }
 
 	        //this._onWheel(-gestureState.dx + this.dx, -gestureState.dy + this.dy);
-	        e.stopPropagation();
-	        e.preventDefault();
-	        return false;
+	        // e.stopPropagation();
+	        // e.preventDefault();
+	        // return false;
 	    },
 	    _handlePanResponderEnd: function _handlePanResponderEnd(e, gestureState) {
 	        if (!this._catchGestrure) {
@@ -80614,9 +80625,6 @@
 	            this.trans.flattenOffset();
 	            this._onWheel(this._lockX ? -dx - vx * 200 : 0, this._lockY ? -dy - vy * 200 : 0);
 	        }
-	        //this._lockX = false;
-	        //this._lockY = false;
-	        //this._lockA = false;
 	    },
 	    _shouldHandleWheelX: function _shouldHandleWheelX( /*number*/delta) /*boolean*/{
 	        if (this.props.overflowX === 'hidden') {

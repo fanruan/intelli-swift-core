@@ -15,7 +15,7 @@ import React, {
     Fetch,
     Navigator,
     TouchableOpacity
-    } from 'lib'
+} from 'lib'
 
 import {Colors, Template} from 'data'
 
@@ -23,40 +23,6 @@ import Toolbar from './Toolbar'
 import Layout from './Layout'
 
 const {width, height} = Dimensions.get('window');
-
-const NavigationBarRouteMapper = {
-
-    LeftButton (route, navigator, index, navState) {
-        if (index === 0) {
-            return null;
-        }
-
-        return (
-            <TouchableOpacity
-                onPress={() => navigator.pop()}
-                style={styles.navBarLeftButton}>
-                <Text style={[styles.navBarText, styles.navBarButtonText]}>
-                    返回
-                </Text>
-            </TouchableOpacity>
-        );
-    },
-
-    RightButton (route, navigator, index, navState) {
-        return (
-            <View/>
-        );
-    },
-
-    Title (route, navigator, index, navState) {
-        return (
-            <Text style={[styles.navBarText, styles.navBarTitleText]}>
-                {route.title}
-            </Text>
-        );
-    }
-
-};
 
 class Main extends Component {
     static propTypes = {};
@@ -68,8 +34,63 @@ class Main extends Component {
         // template={new Template(template)} actions={actions}
     }
 
+    NavigationBarRouteMapper = {
+
+        LeftButton (route, navigator, index, navState) {
+            if (index === 0) {
+                return null;
+            }
+
+            return (
+                <TouchableOpacity
+                    onPress={() => navigator.pop()}
+                    style={styles.navBarLeftButton}>
+                    <Text style={[styles.navBarText, styles.navBarButtonText]}>
+                        返回
+                    </Text>
+                </TouchableOpacity>
+            );
+        },
+
+        RightButton (route, navigator, index, navState) {
+            if (index === 0) {
+                return null;
+            }
+
+            if (route.name === 'widget') {
+                return (
+                    <TouchableOpacity
+                        onPress={() => {
+                            console.log(route);
+                            if (route.value) {
+                                navigator.pop();
+                            }
+                        }}
+                        style={styles.navBarRightButton}>
+                        <Text style={[styles.navBarText, styles.navBarButtonText]}>
+                            查询
+                        </Text>
+                    </TouchableOpacity>
+                );
+            }
+
+            return (
+                <View/>
+            );
+        },
+
+        Title (route, navigator, index, navState) {
+            return (
+                <Text style={[styles.navBarText, styles.navBarTitleText]}>
+                    {route.title}
+                </Text>
+            );
+        }
+    };
+
     renderScene(route, navigationOperations, onComponentRef) {
         const {...props} = this.props;
+        const {onValueChange, ...others} = route;
         if (route.name === 'index') {
             if (this.template.hasControlWidget()) {
                 return <View style={styles.index}>
@@ -86,9 +107,13 @@ class Main extends Component {
             <route.Component
                 width={width} height={height - 50}
                 {...props}
-                {...route}
+                {...others}
+                onValueChange={value=> {
+                    onValueChange && onValueChange(value);
+                    route.value = value;
+                }}
                 navigator={navigationOperations}
-                />
+            />
         );
     }
 
@@ -101,7 +126,7 @@ class Main extends Component {
                 renderScene={this.renderScene.bind(this)}
                 navigationBar={
                     <Navigator.NavigationBar
-                        routeMapper={NavigationBarRouteMapper}
+                        routeMapper={this.NavigationBarRouteMapper}
                         style={styles.navBar}
                     />
                 }
@@ -111,7 +136,8 @@ class Main extends Component {
                     }
                     return Navigator.SceneConfigs.FloatFromRight;
                 }}
-                />
+                sceneStyle={styles.sceneStyle}
+            />
         );
     }
 
@@ -121,10 +147,6 @@ class Main extends Component {
 
     componentDidMount() {
 
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        debugger
     }
 
     componentWillReceiveProps(nextProps) {
@@ -143,15 +165,17 @@ class Main extends Component {
 
     }
 }
-// mixin.onClass(Main, PureRenderMixin);
+mixin.onClass(Main, PureRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         flex: 1,
-        backgroundColor: '#fff',
         paddingTop: 50
     },
     index: {
         flex: 1
+    },
+    sceneStyle: {
+        backgroundColor: '#ffffff'
     },
     navBar: {
         backgroundColor: '#efeff4',
@@ -169,6 +193,10 @@ const styles = StyleSheet.create({
     navBarLeftButton: {
         color: Colors.HIGHLIGHT,
         paddingLeft: 10
+    },
+    navBarRightButton: {
+        color: Colors.HIGHLIGHT,
+        paddingRight: 10
     }
 });
 

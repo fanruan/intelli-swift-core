@@ -2417,39 +2417,6 @@ webpackJsonp([0],{
 	var width = _Dimensions$get.width;
 	var height = _Dimensions$get.height;
 
-
-	var NavigationBarRouteMapper = {
-	    LeftButton: function LeftButton(route, navigator, index, navState) {
-	        if (index === 0) {
-	            return null;
-	        }
-
-	        return _lib2.default.createElement(
-	            _lib.TouchableOpacity,
-	            {
-	                onPress: function onPress() {
-	                    return navigator.pop();
-	                },
-	                style: styles.navBarLeftButton },
-	            _lib2.default.createElement(
-	                _lib.Text,
-	                { style: [styles.navBarText, styles.navBarButtonText] },
-	                '返回'
-	            )
-	        );
-	    },
-	    RightButton: function RightButton(route, navigator, index, navState) {
-	        return _lib2.default.createElement(_lib.View, null);
-	    },
-	    Title: function Title(route, navigator, index, navState) {
-	        return _lib2.default.createElement(
-	            _lib.Text,
-	            { style: [styles.navBarText, styles.navBarTitleText] },
-	            route.title
-	        );
-	    }
-	};
-
 	var Main = function (_Component) {
 	    _inherits(Main, _Component);
 
@@ -2457,6 +2424,61 @@ webpackJsonp([0],{
 	        _classCallCheck(this, Main);
 
 	        var _this = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props, context));
+
+	        _this.NavigationBarRouteMapper = {
+	            LeftButton: function LeftButton(route, navigator, index, navState) {
+	                if (index === 0) {
+	                    return null;
+	                }
+
+	                return _lib2.default.createElement(
+	                    _lib.TouchableOpacity,
+	                    {
+	                        onPress: function onPress() {
+	                            return navigator.pop();
+	                        },
+	                        style: styles.navBarLeftButton },
+	                    _lib2.default.createElement(
+	                        _lib.Text,
+	                        { style: [styles.navBarText, styles.navBarButtonText] },
+	                        '返回'
+	                    )
+	                );
+	            },
+	            RightButton: function RightButton(route, navigator, index, navState) {
+	                if (index === 0) {
+	                    return null;
+	                }
+
+	                if (route.name === 'widget') {
+	                    return _lib2.default.createElement(
+	                        _lib.TouchableOpacity,
+	                        {
+	                            onPress: function onPress() {
+	                                console.log(route);
+	                                if (route.value) {
+	                                    navigator.pop();
+	                                }
+	                            },
+	                            style: styles.navBarRightButton },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            { style: [styles.navBarText, styles.navBarButtonText] },
+	                            '查询'
+	                        )
+	                    );
+	                }
+
+	                return _lib2.default.createElement(_lib.View, null);
+	            },
+	            Title: function Title(route, navigator, index, navState) {
+	                return _lib2.default.createElement(
+	                    _lib.Text,
+	                    { style: [styles.navBarText, styles.navBarTitleText] },
+	                    route.title
+	                );
+	            }
+	        };
 
 	        console.log(props);
 	        _this.template = new _data.Template(props.$$template);
@@ -2468,6 +2490,10 @@ webpackJsonp([0],{
 	        key: 'renderScene',
 	        value: function renderScene(route, navigationOperations, onComponentRef) {
 	            var props = _objectWithoutProperties(this.props, []);
+
+	            var _onValueChange = route.onValueChange;
+
+	            var others = _objectWithoutProperties(route, ['onValueChange']);
 
 	            if (route.name === 'index') {
 	                if (this.template.hasControlWidget()) {
@@ -2482,7 +2508,11 @@ webpackJsonp([0],{
 	            }
 	            return _lib2.default.createElement(route.Component, _extends({
 	                width: width, height: height - 50
-	            }, props, route, {
+	            }, props, others, {
+	                onValueChange: function onValueChange(value) {
+	                    _onValueChange && _onValueChange(value);
+	                    route.value = value;
+	                },
 	                navigator: navigationOperations
 	            }));
 	        }
@@ -2495,7 +2525,7 @@ webpackJsonp([0],{
 	                initialRoute: initialRoute,
 	                renderScene: this.renderScene.bind(this),
 	                navigationBar: _lib2.default.createElement(_lib.Navigator.NavigationBar, {
-	                    routeMapper: NavigationBarRouteMapper,
+	                    routeMapper: this.NavigationBarRouteMapper,
 	                    style: styles.navBar
 	                }),
 	                configureScene: function configureScene(route) {
@@ -2503,7 +2533,8 @@ webpackJsonp([0],{
 	                        return route.sceneConfig;
 	                    }
 	                    return _lib.Navigator.SceneConfigs.FloatFromRight;
-	                }
+	                },
+	                sceneStyle: styles.sceneStyle
 	            });
 	        }
 	    }, {
@@ -2512,11 +2543,6 @@ webpackJsonp([0],{
 	    }, {
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {}
-	    }, {
-	        key: 'shouldComponentUpdate',
-	        value: function shouldComponentUpdate(nextProps, nextState) {
-	            debugger;
-	        }
 	    }, {
 	        key: 'componentWillReceiveProps',
 	        value: function componentWillReceiveProps(nextProps) {
@@ -2535,18 +2561,20 @@ webpackJsonp([0],{
 
 	    return Main;
 	}(_lib.Component);
-	// mixin.onClass(Main, PureRenderMixin);
-
 
 	Main.propTypes = {};
+
+	_reactMixin2.default.onClass(Main, _reactAddonsPureRenderMixin2.default);
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
 	        flex: 1,
-	        backgroundColor: '#fff',
 	        paddingTop: 50
 	    },
 	    index: {
 	        flex: 1
+	    },
+	    sceneStyle: {
+	        backgroundColor: '#ffffff'
 	    },
 	    navBar: {
 	        backgroundColor: '#efeff4',
@@ -2564,6 +2592,10 @@ webpackJsonp([0],{
 	    navBarLeftButton: {
 	        color: _data.Colors.HIGHLIGHT,
 	        paddingLeft: 10
+	    },
+	    navBarRightButton: {
+	        color: _data.Colors.HIGHLIGHT,
+	        paddingRight: 10
 	    }
 	});
 
@@ -3015,20 +3047,31 @@ webpackJsonp([0],{
 	    }, {
 	        key: '_onSelectAll',
 	        value: function _onSelectAll() {
+	            var _this4 = this;
+
 	            var type = this.state.type === 2 ? 1 : 2;
 	            this.setState({
 	                type: type,
 	                selected_values: []
+	            }, function () {
+	                var _state = _this4.state;
+	                var value = _state.selected_values;
+	                var type = _state.type;
+
+	                _this4.props.onValueChange({
+	                    type: type,
+	                    value: value
+	                });
 	            });
 	        }
 	    }, {
 	        key: '_moreRenderer',
 	        value: function _moreRenderer() {
-	            var _this4 = this;
+	            var _this5 = this;
 
 	            if (this.state.hasNext === true) {
 	                return _lib2.default.createElement(_base.TextButton, { style: { height: _data.Size.ITEM_HEIGHT }, text: '点击加载更多数据', onPress: function onPress() {
-	                        _this4._fetchData();
+	                        _this5._fetchData();
 	                    } });
 	            } else {
 	                return _lib2.default.createElement(_base.TextButton, { style: { height: _data.Size.ITEM_HEIGHT }, disabled: true, text: '无更多数据' });
@@ -3037,7 +3080,7 @@ webpackJsonp([0],{
 	    }, {
 	        key: '_rowRenderer',
 	        value: function _rowRenderer(_ref) {
-	            var _this5 = this;
+	            var _this6 = this;
 
 	            var index = _ref.index;
 	            var isScrolling = _ref.isScrolling;
@@ -3046,16 +3089,25 @@ webpackJsonp([0],{
 	                return this._moreRenderer();
 	            } else {
 	                var _ret = function () {
-	                    var rowData = _this5._helper.getSortedItems()[index];
+	                    var rowData = _this6._helper.getSortedItems()[index];
 	                    return {
 	                        v: _lib2.default.createElement(_Item2.default, _extends({ key: rowData.value, onSelected: function onSelected(sel) {
 	                                if (sel) {
-	                                    _this5._helper.selectOneValue(rowData.value);
+	                                    _this6._helper.selectOneValue(rowData.value);
 	                                } else {
-	                                    _this5._helper.disSelectOneValue(rowData.value);
+	                                    _this6._helper.disSelectOneValue(rowData.value);
 	                                }
-	                                _this5.setState({
-	                                    selected_values: _this5._helper.getSelectedValue()
+	                                _this6.setState({
+	                                    selected_values: _this6._helper.getSelectedValue()
+	                                }, function () {
+	                                    var _state2 = _this6.state;
+	                                    var value = _state2.selected_values;
+	                                    var type = _state2.type;
+
+	                                    _this6.props.onValueChange({
+	                                        type: type,
+	                                        value: value
+	                                    });
 	                                });
 	                            } }, rowData))
 	                    };
@@ -3074,7 +3126,8 @@ webpackJsonp([0],{
 	    type: 0,
 	    value: [],
 	    items: [],
-	    hasNext: false
+	    hasNext: false,
+	    onValueChange: _core.emptyFunction
 	};
 
 	_reactMixin2.default.onClass(MultiSelectorWidget, _reactAddonsPureRenderMixin2.default);
@@ -4208,7 +4261,7 @@ webpackJsonp([0],{
 	                                case BICst.WIDGET.YMD:
 	                            }
 	                            props.navigator.push({
-	                                name: widget.getName(),
+	                                name: 'widget',
 	                                id: id,
 	                                $$widget: $$widget,
 	                                Component: Component,
@@ -4346,7 +4399,8 @@ webpackJsonp([0],{
 	                    return widget.getData(options);
 	                },
 	                width: props.width,
-	                height: props.height
+	                height: props.height,
+	                onValueChange: this.props.onValueChange.bind(this)
 	            });
 	        }
 	    }]);
@@ -4355,7 +4409,9 @@ webpackJsonp([0],{
 	}(_lib.Component);
 
 	MultiSelectorComponent.propTypes = {};
-	MultiSelectorComponent.defaultProps = {};
+	MultiSelectorComponent.defaultProps = {
+	    onValueChange: _core.emptyFunction
+	};
 
 	_reactMixin2.default.onClass(MultiSelectorComponent, _reactAddonsPureRenderMixin2.default);
 	var styles = _lib.StyleSheet.create({
@@ -4673,15 +4729,44 @@ webpackJsonp([0],{
 	    }
 
 	    _createClass(Layout, [{
+	        key: '_onPageScroll',
+	        value: function _onPageScroll() {}
+	    }, {
+	        key: '_onPageSelected',
+	        value: function _onPageSelected() {}
+	    }, {
 	        key: 'render',
 	        value: function render() {
+	            var _this2 = this;
+
 	            var props = _objectWithoutProperties(this.props, []);
 
-	            return _lib2.default.createElement(_lib.ListView, _extends({}, props, {
-	                initialListSize: Math.floor(props.height / 270) + 1,
-	                dataSource: this.state.dataSource,
-	                renderRow: this._renderRow.bind(this)
-	            }));
+	            return _lib2.default.createElement(
+	                _lib.ViewPagerAndroid,
+	                {
+	                    style: styles.viewPager,
+	                    initialPage: 0,
+	                    onPageScroll: this._onPageScroll.bind(this),
+	                    onPageSelected: this._onPageSelected.bind(this),
+	                    ref: function ref(viewPager) {
+	                        _this2.viewPager = viewPager;
+	                    } },
+	                [_lib2.default.createElement(_lib.ListView, _extends({}, props, {
+	                    initialListSize: Math.floor(props.height / 270) + 1,
+	                    dataSource: this.state.dataSource,
+	                    renderRow: this._renderRow.bind(this)
+	                })), _lib2.default.createElement(_lib.ListView, _extends({}, props, {
+	                    initialListSize: Math.floor(props.height / 270) + 1,
+	                    dataSource: this.state.dataSource,
+	                    renderRow: this._renderRow.bind(this)
+	                }))]
+	            );
+	            // return <ListView
+	            //     {...props}
+	            //     initialListSize={Math.floor(props.height / 270) + 1}
+	            //     dataSource={this.state.dataSource}
+	            //     renderRow={this._renderRow.bind(this)}
+	            // />;
 	        }
 	    }, {
 	        key: '_renderRow',
@@ -4776,6 +4861,9 @@ webpackJsonp([0],{
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
 	        margin: 20
+	    },
+	    viewPager: {
+	        flex: 1
 	    }
 	});
 	exports.default = Layout;

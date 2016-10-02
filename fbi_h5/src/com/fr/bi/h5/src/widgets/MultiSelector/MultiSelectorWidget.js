@@ -35,7 +35,8 @@ class MultiSelectorWidget extends Component {
         type: 0,
         value: [],
         items: [],
-        hasNext: false
+        hasNext: false,
+        onValueChange: emptyFunction
     };
 
     state = {};
@@ -83,7 +84,7 @@ class MultiSelectorWidget extends Component {
         this.setState(this._getNextState(nextProps, {
             times: 0,
             selected_values: clone(nextProps.value)
-        }), ()=>{
+        }), ()=> {
             this._fetchData();
         });
     }
@@ -127,6 +128,12 @@ class MultiSelectorWidget extends Component {
         this.setState({
             type: type,
             selected_values: []
+        }, ()=> {
+            const {selected_values: value, type} = this.state;
+            this.props.onValueChange({
+                type,
+                value
+            });
         });
     }
 
@@ -153,6 +160,12 @@ class MultiSelectorWidget extends Component {
                 }
                 this.setState({
                     selected_values: this._helper.getSelectedValue()
+                }, ()=> {
+                    const {selected_values: value, type} = this.state;
+                    this.props.onValueChange({
+                        type,
+                        value
+                    });
                 });
             }} {...rowData}/>;
         }

@@ -27,7 +27,9 @@ class MultiSelectorComponent extends Component {
 
     static propTypes = {};
 
-    static defaultProps = {};
+    static defaultProps = {
+        onValueChange: emptyFunction
+    };
 
     state = {};
 
@@ -59,6 +61,7 @@ class MultiSelectorComponent extends Component {
             }}
             width={props.width}
             height={props.height}
+            onValueChange={this.props.onValueChange.bind(this)}
         >
         </MultiSelectorWidget>
     }

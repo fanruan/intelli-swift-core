@@ -87,7 +87,7 @@ class Controls extends Component {
                         case BICst.WIDGET.YMD:
                     }
                     props.navigator.push({
-                        name: widget.getName(),
+                        name: 'widget',
                         id,
                         $$widget,
                         Component: Component,
