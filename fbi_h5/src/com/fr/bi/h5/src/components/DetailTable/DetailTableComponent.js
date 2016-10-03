@@ -1,7 +1,6 @@
-import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
-import {requestAnimationFrame} from 'core'
+import {ReactComponentWithImmutableRenderMixin, requestAnimationFrame} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -74,7 +73,7 @@ class DetailTableComponent extends Component {
         </TableWidget>
     }
 }
-mixin.onClass(DetailTableComponent, PureRenderMixin);
+mixin.onClass(DetailTableComponent, ReactComponentWithImmutableRenderMixin);
 
 const style = StyleSheet.create({
     wrapper: {

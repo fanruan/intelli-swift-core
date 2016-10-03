@@ -1,7 +1,6 @@
-import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
-import {requestAnimationFrame} from 'core'
+import {ReactComponentWithImmutableRenderMixin, requestAnimationFrame} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -38,7 +37,7 @@ class Main extends Component {
         return <View ref='chart' style={{height: this.props.height, ...style.wrapper}}></View>
     }
 }
-mixin.onClass(Main, PureRenderMixin);
+mixin.onClass(Main, ReactComponentWithImmutableRenderMixin);
 
 const style = StyleSheet.create({
     wrapper: {

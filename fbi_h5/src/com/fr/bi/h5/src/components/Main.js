@@ -1,10 +1,9 @@
-import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as TodoActions from '../actions/todos';
-import {requestAnimationFrame} from 'core'
+import {requestAnimationFrame, ReactComponentWithImmutableRenderMixin} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -68,15 +67,28 @@ class Main extends Component {
                         }}
                         style={styles.navBarRightButton}>
                         <Text style={[styles.navBarText, styles.navBarButtonText]}>
+                            确定
+                        </Text>
+                    </TouchableOpacity>
+                );
+            }
+
+            if (route.name === 'list') {
+                return (
+                    <TouchableOpacity
+                        onPress={() => {
+                            console.log(route);
+                            navigator.pop();
+                        }}
+                        style={styles.navBarRightButton}>
+                        <Text style={[styles.navBarText, styles.navBarButtonText]}>
                             查询
                         </Text>
                     </TouchableOpacity>
                 );
             }
 
-            return (
-                <View/>
-            );
+            return null;
         },
 
         Title (route, navigator, index, navState) {
@@ -165,7 +177,7 @@ class Main extends Component {
 
     }
 }
-mixin.onClass(Main, PureRenderMixin);
+mixin.onClass(Main, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         flex: 1,

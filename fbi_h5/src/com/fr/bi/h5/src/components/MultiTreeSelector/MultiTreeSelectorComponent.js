@@ -1,8 +1,7 @@
-import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
 
-import {requestAnimationFrame, emptyFunction} from 'core'
+import {ReactComponentWithImmutableRenderMixin, requestAnimationFrame, emptyFunction} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -63,7 +62,7 @@ class MultiTreeSelectorComponent extends Component {
         </MultiTreeSelectorWidget>
     }
 }
-mixin.onClass(MultiTreeSelectorComponent, PureRenderMixin);
+mixin.onClass(MultiTreeSelectorComponent, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         backgroundColor: '#fff'

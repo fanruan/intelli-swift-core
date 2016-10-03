@@ -1,8 +1,7 @@
-import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
 import {findDOMNode} from 'react-dom'
 
-import {cn, sc, math, isNil, requestAnimationFrame, emptyFunction, shallowEqual, isEqual, each} from 'core'
+import {ReactComponentWithPureRenderMixin, ReactComponentWithImmutableRenderMixin, cn, sc, math, isNil, requestAnimationFrame, emptyFunction, shallowEqual, isEqual, each} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -74,7 +73,7 @@ class TableComponent extends Component {
     }
 
 }
-mixin.onClass(TableComponent, PureRenderMixin);
+mixin.onClass(TableComponent, ReactComponentWithPureRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         flex: 1

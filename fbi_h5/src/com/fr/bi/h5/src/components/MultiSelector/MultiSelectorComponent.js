@@ -1,8 +1,7 @@
-import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
 
-import {requestAnimationFrame, emptyFunction} from 'core'
+import {ReactComponentWithImmutableRenderMixin, requestAnimationFrame, emptyFunction} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -66,7 +65,7 @@ class MultiSelectorComponent extends Component {
         </MultiSelectorWidget>
     }
 }
-mixin.onClass(MultiSelectorComponent, PureRenderMixin);
+mixin.onClass(MultiSelectorComponent, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         backgroundColor: '#fff'

@@ -1,7 +1,6 @@
-import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
-import {requestAnimationFrame} from 'core'
+import {requestAnimationFrame, ReactComponentWithImmutableRenderMixin} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -150,7 +149,7 @@ class Layout extends Component {
         </View>
     }
 }
-mixin.onClass(Layout, PureRenderMixin);
+mixin.onClass(Layout, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         margin: 20
