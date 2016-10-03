@@ -52,13 +52,10 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                         type: "bi.page_table",
                         isNeedFreeze: null,
                         mergeRule: function (col1, col2) {
-                            return col1 && col2
-                                && col1.text === col2.text
-                                && col1.tag === col2.tag
-                                && col1.type === col2.type
-                                && col1.isCross === col2.isCross
-                                && col1.isExpanded === col2.isExpanded
-                                && col1.needExpand === col2.needExpand;
+                            if (col1.tag && col2.tag) {
+                                return col1.tag === col2.tag;
+                            }
+                            return col1 === col2;
                         },
                         el: {
                             el: {
@@ -137,13 +134,10 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                         type: "bi.page_table",
                         isNeedFreeze: null,
                         mergeRule: function (col1, col2) {
-                            return col1 && col2
-                                && col1.text === col2.text
-                                && col1.tag === col2.tag
-                                && col1.type === col2.type
-                                && col1.isCross === col2.isCross
-                                && col1.isExpanded === col2.isExpanded
-                                && col1.needExpand === col2.needExpand;
+                            if (col1.tag && col2.tag) {
+                                return col1.tag === col2.tag;
+                            }
+                            return col1 === col2;
                         },
                         el: {
                             el: {
