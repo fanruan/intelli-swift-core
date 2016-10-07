@@ -54,7 +54,8 @@ FS.BIUSERMGR = {
             type: "POST",
             url:  FR.servletURL + '?op=' + "fr_bi" + '&cmd=' + "get_bi_limit_user" + "&_=" + Math.random(),
             async: false,
-            complete: function (userAuthJo, status) {
+            complete: function (res, status) {
+                var userAuthJo = FR.jsonDecode(res.responseText);
                 if (status === 'success') {
                     self.editUserAuthLimit = BI.parseInt( userAuthJo['edit'] ) || 0;
                     self.viewUserAuthLimit = BI.parseInt( userAuthJo['view'] ) || 0;

@@ -1,13 +1,13 @@
-import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
-import {requestAnimationFrame} from 'core'
+import {requestAnimationFrame, ReactComponentWithImmutableRenderMixin} from 'core'
 import React, {
     Component,
     StyleSheet,
     Text,
     Dimensions,
     ListView,
+    ViewPagerAndroid,
     View,
     Fetch
 } from 'lib'
@@ -34,14 +34,42 @@ class Layout extends Component {
         }
     }
 
+    _onPageScroll() {
+
+    }
+
+    _onPageSelected() {
+
+    }
+
     render() {
         const {...props} = this.props;
-        return <ListView
-            {...props}
-            initialListSize={Math.floor(props.height / 270) + 1}
-            dataSource={this.state.dataSource}
-            renderRow={this._renderRow.bind(this)}
-        />;
+        return <ViewPagerAndroid
+            style={styles.viewPager}
+            initialPage={0}
+            onPageScroll={this._onPageScroll.bind(this)}
+            onPageSelected={this._onPageSelected.bind(this)}
+            ref={viewPager => {
+                this.viewPager = viewPager;
+            }}>
+            {[<ListView
+                {...props}
+                initialListSize={Math.floor(props.height / 270) + 1}
+                dataSource={this.state.dataSource}
+                renderRow={this._renderRow.bind(this)}
+            />, <ListView
+                {...props}
+                initialListSize={Math.floor(props.height / 270) + 1}
+                dataSource={this.state.dataSource}
+                renderRow={this._renderRow.bind(this)}
+            />]}
+        </ViewPagerAndroid>;
+        // return <ListView
+        //     {...props}
+        //     initialListSize={Math.floor(props.height / 270) + 1}
+        //     dataSource={this.state.dataSource}
+        //     renderRow={this._renderRow.bind(this)}
+        // />;
     }
 
     _renderRow(rowData, sectionID, rowID) {
@@ -121,10 +149,13 @@ class Layout extends Component {
         </View>
     }
 }
-mixin.onClass(Layout, PureRenderMixin);
+mixin.onClass(Layout, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         margin: 20
+    },
+    viewPager: {
+        flex: 1
     }
 });
 export default Layout

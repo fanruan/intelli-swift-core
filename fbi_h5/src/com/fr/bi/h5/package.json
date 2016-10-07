@@ -85,6 +85,7 @@
     "rebound": "0.0.13",
     "redux": "^3.5.2",
     "redux-immutablejs": "0.0.8",
-    "reset.css": "^2.0.2"
+    "reset.css": "^2.0.2",
+    "seamless-immutable": "^6.1.3"
   }
 }

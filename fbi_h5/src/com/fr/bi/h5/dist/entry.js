@@ -33,11 +33,9 @@ webpackJsonp([0],{
 
 	var _View2 = _interopRequireDefault(_View);
 
-	var _Portal = __webpack_require__(748);
+	var _Portal = __webpack_require__(749);
 
 	var _Portal2 = _interopRequireDefault(_Portal);
-
-	__webpack_require__(912);
 
 	__webpack_require__(914);
 
@@ -48,6 +46,8 @@ webpackJsonp([0],{
 	__webpack_require__(920);
 
 	__webpack_require__(922);
+
+	__webpack_require__(924);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2176,13 +2176,13 @@ webpackJsonp([0],{
 
 	var _reactRedux = __webpack_require__(172);
 
-	var _data = __webpack_require__(764);
+	var _data = __webpack_require__(765);
 
-	var _todos = __webpack_require__(771);
+	var _todos = __webpack_require__(772);
 
 	var TodoActions = _interopRequireWildcard(_todos);
 
-	var _Main = __webpack_require__(772);
+	var _Main = __webpack_require__(773);
 
 	var _Main2 = _interopRequireDefault(_Main);
 
@@ -2252,6 +2252,22 @@ webpackJsonp([0],{
 	    }
 
 	    _createClass(App, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            setInterval(function () {
+	                (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=update_session', {
+	                    method: "POST",
+	                    body: JSON.stringify({ _t: new Date(), sessionID: BH.sessionID })
+	                });
+	            }, 30000);
+	            window.onbeforeunload = function () {
+	                (0, _lib.Fetch)(BH.servletURL + '?op=closesessionid', {
+	                    method: "POST",
+	                    body: JSON.stringify({ _t: new Date(), sessionID: BH.sessionID })
+	                });
+	            };
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
 	            return _lib2.default.createElement(_Main2.default, this.props);
@@ -2288,7 +2304,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 771:
+/***/ 772:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2335,7 +2351,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 772:
+/***/ 773:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2347,10 +2363,6 @@ webpackJsonp([0],{
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _reactAddonsPureRenderMixin = __webpack_require__(230);
-
-	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
 
 	var _reactMixin = __webpack_require__(227);
 
@@ -2364,7 +2376,7 @@ webpackJsonp([0],{
 
 	var _reactRedux = __webpack_require__(172);
 
-	var _todos = __webpack_require__(771);
+	var _todos = __webpack_require__(772);
 
 	var TodoActions = _interopRequireWildcard(_todos);
 
@@ -2374,13 +2386,13 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(764);
+	var _data = __webpack_require__(765);
 
-	var _Toolbar = __webpack_require__(773);
+	var _Toolbar = __webpack_require__(774);
 
 	var _Toolbar2 = _interopRequireDefault(_Toolbar);
 
-	var _Layout = __webpack_require__(903);
+	var _Layout = __webpack_require__(905);
 
 	var _Layout2 = _interopRequireDefault(_Layout);
 
@@ -2401,39 +2413,6 @@ webpackJsonp([0],{
 	var width = _Dimensions$get.width;
 	var height = _Dimensions$get.height;
 
-
-	var NavigationBarRouteMapper = {
-	    LeftButton: function LeftButton(route, navigator, index, navState) {
-	        if (index === 0) {
-	            return null;
-	        }
-
-	        return _lib2.default.createElement(
-	            _lib.TouchableOpacity,
-	            {
-	                onPress: function onPress() {
-	                    return navigator.pop();
-	                },
-	                style: styles.navBarLeftButton },
-	            _lib2.default.createElement(
-	                _lib.Text,
-	                { style: [styles.navBarText, styles.navBarButtonText] },
-	                '返回'
-	            )
-	        );
-	    },
-	    RightButton: function RightButton(route, navigator, index, navState) {
-	        return _lib2.default.createElement(_lib.View, null);
-	    },
-	    Title: function Title(route, navigator, index, navState) {
-	        return _lib2.default.createElement(
-	            _lib.Text,
-	            { style: [styles.navBarText, styles.navBarTitleText] },
-	            route.title
-	        );
-	    }
-	};
-
 	var Main = function (_Component) {
 	    _inherits(Main, _Component);
 
@@ -2441,6 +2420,78 @@ webpackJsonp([0],{
 	        _classCallCheck(this, Main);
 
 	        var _this = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props, context));
+
+	        _this.NavigationBarRouteMapper = {
+	            LeftButton: function LeftButton(route, navigator, index, navState) {
+	                if (index === 0) {
+	                    return null;
+	                }
+
+	                return _lib2.default.createElement(
+	                    _lib.TouchableOpacity,
+	                    {
+	                        onPress: function onPress() {
+	                            return navigator.pop();
+	                        },
+	                        style: styles.navBarLeftButton },
+	                    _lib2.default.createElement(
+	                        _lib.Text,
+	                        { style: [styles.navBarText, styles.navBarButtonText] },
+	                        '返回'
+	                    )
+	                );
+	            },
+	            RightButton: function RightButton(route, navigator, index, navState) {
+	                if (index === 0) {
+	                    return null;
+	                }
+
+	                if (route.name === 'widget') {
+	                    return _lib2.default.createElement(
+	                        _lib.TouchableOpacity,
+	                        {
+	                            onPress: function onPress() {
+	                                console.log(route);
+	                                if (route.value) {
+	                                    navigator.pop();
+	                                }
+	                            },
+	                            style: styles.navBarRightButton },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            { style: [styles.navBarText, styles.navBarButtonText] },
+	                            '确定'
+	                        )
+	                    );
+	                }
+
+	                if (route.name === 'list') {
+	                    return _lib2.default.createElement(
+	                        _lib.TouchableOpacity,
+	                        {
+	                            onPress: function onPress() {
+	                                console.log(route);
+	                                navigator.pop();
+	                            },
+	                            style: styles.navBarRightButton },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            { style: [styles.navBarText, styles.navBarButtonText] },
+	                            '查询'
+	                        )
+	                    );
+	                }
+
+	                return null;
+	            },
+	            Title: function Title(route, navigator, index, navState) {
+	                return _lib2.default.createElement(
+	                    _lib.Text,
+	                    { style: [styles.navBarText, styles.navBarTitleText] },
+	                    route.title
+	                );
+	            }
+	        };
 
 	        console.log(props);
 	        _this.template = new _data.Template(props.$$template);
@@ -2452,6 +2503,10 @@ webpackJsonp([0],{
 	        key: 'renderScene',
 	        value: function renderScene(route, navigationOperations, onComponentRef) {
 	            var props = _objectWithoutProperties(this.props, []);
+
+	            var _onValueChange = route.onValueChange;
+
+	            var others = _objectWithoutProperties(route, ['onValueChange']);
 
 	            if (route.name === 'index') {
 	                if (this.template.hasControlWidget()) {
@@ -2466,7 +2521,11 @@ webpackJsonp([0],{
 	            }
 	            return _lib2.default.createElement(route.Component, _extends({
 	                width: width, height: height - 50
-	            }, props, {
+	            }, props, others, {
+	                onValueChange: function onValueChange(value) {
+	                    _onValueChange && _onValueChange(value);
+	                    route.value = value;
+	                },
 	                navigator: navigationOperations
 	            }));
 	        }
@@ -2479,7 +2538,7 @@ webpackJsonp([0],{
 	                initialRoute: initialRoute,
 	                renderScene: this.renderScene.bind(this),
 	                navigationBar: _lib2.default.createElement(_lib.Navigator.NavigationBar, {
-	                    routeMapper: NavigationBarRouteMapper,
+	                    routeMapper: this.NavigationBarRouteMapper,
 	                    style: styles.navBar
 	                }),
 	                configureScene: function configureScene(route) {
@@ -2487,7 +2546,8 @@ webpackJsonp([0],{
 	                        return route.sceneConfig;
 	                    }
 	                    return _lib.Navigator.SceneConfigs.FloatFromRight;
-	                }
+	                },
+	                sceneStyle: styles.sceneStyle
 	            });
 	        }
 	    }, {
@@ -2496,11 +2556,6 @@ webpackJsonp([0],{
 	    }, {
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {}
-	    }, {
-	        key: 'shouldComponentUpdate',
-	        value: function shouldComponentUpdate(nextProps, nextState) {
-	            debugger;
-	        }
 	    }, {
 	        key: 'componentWillReceiveProps',
 	        value: function componentWillReceiveProps(nextProps) {
@@ -2519,18 +2574,20 @@ webpackJsonp([0],{
 
 	    return Main;
 	}(_lib.Component);
-	// mixin.onClass(Main, PureRenderMixin);
-
 
 	Main.propTypes = {};
+
+	_reactMixin2.default.onClass(Main, _core.ReactComponentWithImmutableRenderMixin);
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
 	        flex: 1,
-	        backgroundColor: '#fff',
 	        paddingTop: 50
 	    },
 	    index: {
 	        flex: 1
+	    },
+	    sceneStyle: {
+	        backgroundColor: '#ffffff'
 	    },
 	    navBar: {
 	        backgroundColor: '#efeff4',
@@ -2548,6 +2605,10 @@ webpackJsonp([0],{
 	    navBarLeftButton: {
 	        color: _data.Colors.HIGHLIGHT,
 	        paddingLeft: 10
+	    },
+	    navBarRightButton: {
+	        color: _data.Colors.HIGHLIGHT,
+	        paddingRight: 10
 	    }
 	});
 
@@ -2555,7 +2616,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 773:
+/***/ 774:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2565,10 +2626,6 @@ webpackJsonp([0],{
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _reactAddonsPureRenderMixin = __webpack_require__(230);
-
-	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
 
 	var _reactMixin = __webpack_require__(227);
 
@@ -2584,13 +2641,13 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(764);
+	var _data = __webpack_require__(765);
 
-	var _base = __webpack_require__(774);
+	var _base = __webpack_require__(775);
 
-	var _widgets = __webpack_require__(890);
+	var _widgets = __webpack_require__(892);
 
-	var _Controls = __webpack_require__(899);
+	var _Controls = __webpack_require__(901);
 
 	var _Controls2 = _interopRequireDefault(_Controls);
 
@@ -2657,7 +2714,7 @@ webpackJsonp([0],{
 	Toolbar.propTypes = {};
 	Toolbar.defaultProps = {};
 
-	_reactMixin2.default.onClass(Toolbar, _reactAddonsPureRenderMixin2.default);
+	_reactMixin2.default.onClass(Toolbar, _core.ReactComponentWithImmutableRenderMixin);
 	var styles = _lib.StyleSheet.create({
 	    filter: {
 	        borderTop: '1px solid ' + _data.Colors.BORDER,
@@ -2668,7 +2725,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 890:
+/***/ 892:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2678,15 +2735,15 @@ webpackJsonp([0],{
 	});
 	exports.MultiTreeSelectorWidget = exports.MultiSelectorWidget = exports.TableWidget = undefined;
 
-	var _TableWidget2 = __webpack_require__(891);
+	var _TableWidget2 = __webpack_require__(893);
 
 	var _TableWidget3 = _interopRequireDefault(_TableWidget2);
 
-	var _MultiSelectorWidget2 = __webpack_require__(892);
+	var _MultiSelectorWidget2 = __webpack_require__(894);
 
 	var _MultiSelectorWidget3 = _interopRequireDefault(_MultiSelectorWidget2);
 
-	var _MultiTreeSelectorWidget2 = __webpack_require__(895);
+	var _MultiTreeSelectorWidget2 = __webpack_require__(897);
 
 	var _MultiTreeSelectorWidget3 = _interopRequireDefault(_MultiTreeSelectorWidget2);
 
@@ -2699,7 +2756,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 891:
+/***/ 893:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2730,7 +2787,7 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(774);
+	var _base = __webpack_require__(775);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2830,7 +2887,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 892:
+/***/ 894:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2838,6 +2895,8 @@ webpackJsonp([0],{
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -2861,15 +2920,15 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(774);
+	var _base = __webpack_require__(775);
 
-	var _data = __webpack_require__(764);
+	var _data = __webpack_require__(765);
 
-	var _Item = __webpack_require__(893);
+	var _Item = __webpack_require__(895);
 
 	var _Item2 = _interopRequireDefault(_Item);
 
-	var _MultiSelectorWidgetHelper = __webpack_require__(894);
+	var _MultiSelectorWidgetHelper = __webpack_require__(896);
 
 	var _MultiSelectorWidgetHelper2 = _interopRequireDefault(_MultiSelectorWidgetHelper);
 
@@ -2893,47 +2952,77 @@ webpackJsonp([0],{
 
 	        _this.state = {};
 
-	        _this._helper = new _MultiSelectorWidgetHelper2.default(props);
-	        _this.state = {
-	            value: props.value,
-	            type: props.type
-	        };
+	        _this.state = _this._getNextState(props, {
+	            selected_values: (0, _core.clone)(props.value)
+	        });
 	        return _this;
 	    }
 
 	    _createClass(MultiSelectorWidget, [{
+	        key: '_getNextState',
+	        value: function _getNextState(props) {
+	            var state = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+	            var nextState = _extends({}, props, state);
+	            return {
+	                value: nextState.value,
+	                selected_values: nextState.selected_values,
+	                type: nextState.type,
+	                items: nextState.items,
+	                hasNext: nextState.hasNext,
+	                times: nextState.times || 0
+	            };
+	        }
+	    }, {
 	        key: 'componentWillMount',
 	        value: function componentWillMount() {}
 	    }, {
 	        key: 'componentDidMount',
-	        value: function componentDidMount() {}
+	        value: function componentDidMount() {
+	            this._fetchData();
+	        }
+	    }, {
+	        key: '_fetchData',
+	        value: function _fetchData() {
+	            var _this2 = this;
+
+	            if (this.props.itemsCreator) {
+	                this.props.itemsCreator({
+	                    selected_values: this.state.value,
+	                    times: this.state.times + 1
+	                }).then(function (data) {
+	                    _this2.setState(_this2._getNextState(_this2.props, _extends({}, _this2.state, {
+	                        times: _this2.state.times + 1,
+	                        hasNext: data.hasNext,
+	                        items: _this2.state.items.concat((0, _core.map)(data.value, function (val) {
+	                            return { value: val };
+	                        }))
+	                    })));
+	                });
+	            }
+	        }
 	    }, {
 	        key: 'componentWillReceiveProps',
 	        value: function componentWillReceiveProps(nextProps) {
-	            this._helper = new _MultiSelectorWidgetHelper2.default(nextProps);
-	            this.setState({ value: nextProps.value, type: nextProps.type });
+	            var _this3 = this;
+
+	            this.setState(this._getNextState(nextProps, {
+	                times: 0,
+	                selected_values: (0, _core.clone)(nextProps.value)
+	            }), function () {
+	                _this3._fetchData();
+	            });
 	        }
 	    }, {
 	        key: 'componentWillUpdate',
 	        value: function componentWillUpdate() {}
 	    }, {
-	        key: 'handleInfiniteLoad',
-	        value: function handleInfiniteLoad() {
-	            var that = this;
-	        }
-	    }, {
-	        key: 'elementInfiniteLoad',
-	        value: function elementInfiniteLoad() {
-	            return _lib2.default.createElement(
-	                'div',
-	                { className: 'infinite-list-item' },
-	                'Loading...'
-	            );
-	        }
-	    }, {
 	        key: 'render',
 	        value: function render() {
 	            var props = _objectWithoutProperties(this.props, []);
+	            var state = _objectWithoutProperties(this.state, []);
+
+	            this._helper = new _MultiSelectorWidgetHelper2.default(state);
 	            //return <Infinite
 	            //    elementHeight={44}
 	            //    containerHeight={props.height}
@@ -2943,36 +3032,98 @@ webpackJsonp([0],{
 	            //    isInfiniteLoading={true}
 	            //    timeScrollStateLastsForAfterUserScrolls={1000}
 	            //    ></Infinite>;
+	            return _lib2.default.createElement(
+	                _base.VtapeLayout,
+	                { style: styles.wrapper },
+	                _lib2.default.createElement(_base.VirtualScroll, {
+	                    width: props.width,
+	                    height: props.height - _data.Size.ITEM_HEIGHT,
+	                    overscanRowCount: 0
+	                    //noRowsRenderer={this._noRowsRenderer.bind(this)}
+	                    , rowCount: this._helper.getSortedItems().length + 1,
+	                    rowHeight: _data.Size.ITEM_HEIGHT,
+	                    rowRenderer: this._rowRenderer.bind(this)
+	                    //scrollToIndex={scrollToIndex}
+	                }),
+	                _lib2.default.createElement(
+	                    _lib.View,
+	                    { height: _data.Size.ITEM_HEIGHT, style: styles.toolbar },
+	                    _lib2.default.createElement(_base.TextButton, { style: { flex: 1 }, text: state.type === 1 ? '全选' : '全不选',
+	                        onPress: this._onSelectAll.bind(this) })
+	                )
+	            );
+	        }
+	    }, {
+	        key: '_onSelectAll',
+	        value: function _onSelectAll() {
+	            var _this4 = this;
 
+	            var type = this.state.type === 2 ? 1 : 2;
+	            this.setState({
+	                type: type,
+	                selected_values: []
+	            }, function () {
+	                var _state = _this4.state;
+	                var value = _state.selected_values;
+	                var type = _state.type;
 
-	            return _lib2.default.createElement(_base.VirtualScroll, {
-	                width: props.width,
-	                height: props.height,
-	                overscanRowCount: 0
-	                //noRowsRenderer={this._noRowsRenderer.bind(this)}
-	                , rowCount: this._helper.getSortedItems().length,
-	                rowHeight: _data.Size.ITEM_HEIGHT,
-	                rowRenderer: this._rowRenderer.bind(this)
-	                //scrollToIndex={scrollToIndex}
+	                _this4.props.onValueChange({
+	                    type: type,
+	                    value: value
+	                });
 	            });
+	        }
+	    }, {
+	        key: '_moreRenderer',
+	        value: function _moreRenderer() {
+	            var _this5 = this;
+
+	            if (this.state.hasNext === true) {
+	                return _lib2.default.createElement(_base.TextButton, { style: { height: _data.Size.ITEM_HEIGHT }, text: '点击加载更多数据', onPress: function onPress() {
+	                        _this5._fetchData();
+	                    } });
+	            } else {
+	                return _lib2.default.createElement(_base.TextButton, { style: { height: _data.Size.ITEM_HEIGHT }, disabled: true, text: '无更多数据' });
+	            }
 	        }
 	    }, {
 	        key: '_rowRenderer',
 	        value: function _rowRenderer(_ref) {
-	            var _this2 = this;
+	            var _this6 = this;
 
 	            var index = _ref.index;
 	            var isScrolling = _ref.isScrolling;
 
-	            var rowData = this._helper.getSortedItems()[index];
-	            return _lib2.default.createElement(_Item2.default, _extends({ key: rowData.value, onSelected: function onSelected(sel) {
-	                    if (sel) {
-	                        _this2._helper.selectOneValue(rowData.value);
-	                    } else {
-	                        _this2._helper.disSelectOneValue(rowData.value);
-	                    }
-	                    _this2.forceUpdate();
-	                } }, rowData));
+	            if (index === this._helper.getSortedItems().length) {
+	                return this._moreRenderer();
+	            } else {
+	                var _ret = function () {
+	                    var rowData = _this6._helper.getSortedItems()[index];
+	                    return {
+	                        v: _lib2.default.createElement(_Item2.default, _extends({ key: rowData.value, onSelected: function onSelected(sel) {
+	                                if (sel) {
+	                                    _this6._helper.selectOneValue(rowData.value);
+	                                } else {
+	                                    _this6._helper.disSelectOneValue(rowData.value);
+	                                }
+	                                _this6.setState({
+	                                    selected_values: _this6._helper.getSelectedValue()
+	                                }, function () {
+	                                    var _state2 = _this6.state;
+	                                    var value = _state2.selected_values;
+	                                    var type = _state2.type;
+
+	                                    _this6.props.onValueChange({
+	                                        type: type,
+	                                        value: value
+	                                    });
+	                                });
+	                            } }, rowData))
+	                    };
+	                }();
+
+	                if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+	            }
 	        }
 	    }]);
 
@@ -2981,20 +3132,28 @@ webpackJsonp([0],{
 
 	MultiSelectorWidget.propTypes = {};
 	MultiSelectorWidget.defaultProps = {
-	    items: []
+	    type: 0,
+	    value: [],
+	    items: [],
+	    hasNext: false,
+	    onValueChange: _core.emptyFunction
 	};
 
 	_reactMixin2.default.onClass(MultiSelectorWidget, _reactAddonsPureRenderMixin2.default);
 	var styles = _lib.StyleSheet.create({
-	    region: {
-	        position: 'absolute'
+	    wrapper: {
+	        flex: 1
+	    },
+	    toolbar: {
+	        borderTopWidth: 1 / _lib.PixelRatio.get(),
+	        borderTopColor: _data.Colors.BORDER
 	    }
 	});
 	exports.default = MultiSelectorWidget;
 
 /***/ },
 
-/***/ 893:
+/***/ 895:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3023,9 +3182,9 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(764);
+	var _data = __webpack_require__(765);
 
-	var _base = __webpack_require__(774);
+	var _base = __webpack_require__(775);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3107,15 +3266,10 @@ webpackJsonp([0],{
 	                    _lib2.default.createElement(
 	                        _lib.View,
 	                        { style: [styles.icon, { width: _data.Size.ITEM_HEIGHT }] },
-	                        _lib2.default.createElement(_base.Checkbox, { selected: this.state.selected })
+	                        _lib2.default.createElement(_base.Checkbox, { checked: this.state.selected, onChecked: this._onPress.bind(this) })
 	                    )
 	                )
 	            );
-	            //         return <View className={cn('check-box-icon', 'react-view', cn({
-	            //         'active': this.state.selected
-	            // }))} style={[styles.icon, {width: 30}]}>
-	            // <Icon width={16} height={16}></Icon>
-	            //         </View>
 	        }
 	    }]);
 
@@ -3141,26 +3295,24 @@ webpackJsonp([0],{
 
 	    text: {
 	        justifyContent: 'center',
-	        flexGrow: 1
+	        flexGrow: 1,
+	        paddingLeft: 20,
+	        paddingRight: 20
 	    },
 
 	    icon: {
 	        justifyContent: 'center',
 	        alignItems: 'center'
-	    },
-
-	    selected: {
-	        backgroundColor: _data.Colors.HIGHLIGHT
 	    }
 	});
 	exports.default = Item;
 
 /***/ },
 
-/***/ 894:
-/***/ function(module, exports) {
+/***/ 896:
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
@@ -3170,78 +3322,76 @@ webpackJsonp([0],{
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _core = __webpack_require__(329);
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var MultiSelectorWidgetHelper = function () {
-	    function MultiSelectorWidgetHelper(props) {
+	    function MultiSelectorWidgetHelper(state) {
 	        _classCallCheck(this, MultiSelectorWidgetHelper);
 
-	        this.items = props.items;
-	        this.sorted = this.items;
-	        this.value = Array.from(props.value || []);
-	        this.type = props.type;
+	        this.value = state.value || [];
+	        this.selected_values = state.selected_values;
+	        this.type = state.type;
+	        this.items = this.value.map(function (val) {
+	            return { value: val };
+	        }).concat(state.items);
+	        this.sorted = this._digest();
 	    }
 
 	    _createClass(MultiSelectorWidgetHelper, [{
-	        key: "_selectOneValue",
+	        key: '_selectOneValue',
 	        value: function _selectOneValue(val) {
-	            if (this.value.indexOf(val) === -1) {
-	                this.value.push(val);
-	                this.sorted = this._sortItems();
+	            if (this.selected_values.indexOf(val) === -1) {
+	                this.selected_values.push(val);
+	                this.sorted = this._digest();
 	            }
 	        }
 	    }, {
-	        key: "_disSelectOneValue",
+	        key: '_disSelectOneValue',
 	        value: function _disSelectOneValue(val) {
 	            var idx = void 0;
-	            if ((idx = this.value.indexOf(val)) >= -1) {
-	                this.value.splice(idx, 1);
-	                this.sorted = this._sortItems();
+	            if ((idx = this.selected_values.indexOf(val)) > -1) {
+	                this.selected_values.splice(idx, 1);
+	                this.sorted = this._digest();
 	            }
 	        }
 	    }, {
-	        key: "_sortItems",
-	        value: function _sortItems() {
+	        key: '_digest',
+	        value: function _digest() {
 	            var _this = this;
 
-	            var front = [],
-	                items = [];
-	            this.items.forEach(function (item) {
-	                // if (this.value.indexOf(item.value) > -1) {
-	                //     front.push({...item, selected: this.type !== 1});
-	                // } else {
-	                items.push(_extends({}, item, {
-	                    selected: _this.type === 1 ? _this.value.indexOf(item.value) === -1 : _this.value.indexOf(item.value) > -1
-	                }));
-	                // }
+	            return this.items.map(function (item) {
+	                return _extends({}, item, {
+	                    selected: _this.type === 2 ? _this.selected_values.indexOf(item.value) === -1 : _this.selected_values.indexOf(item.value) > -1
+	                });
 	            });
-	            return front.concat(items);
 	        }
 	    }, {
-	        key: "selectOneValue",
+	        key: 'selectOneValue',
 	        value: function selectOneValue(val) {
-	            if (this.type === 1) {
+	            if (this.type === 2) {
 	                this._disSelectOneValue(val);
 	            } else {
 	                this._selectOneValue(val);
 	            }
 	        }
 	    }, {
-	        key: "disSelectOneValue",
+	        key: 'disSelectOneValue',
 	        value: function disSelectOneValue(val) {
-	            if (this.type === 1) {
+	            if (this.type === 2) {
 	                this._selectOneValue(val);
 	            } else {
 	                this._disSelectOneValue(val);
 	            }
 	        }
 	    }, {
-	        key: "getSelectedValue",
+	        key: 'getSelectedValue',
 	        value: function getSelectedValue() {
-	            return Array.from(this.value);
+	            return (0, _core.clone)(this.selected_values);
 	        }
 	    }, {
-	        key: "getSortedItems",
+	        key: 'getSortedItems',
 	        value: function getSortedItems() {
 	            return this.sorted;
 	        }
@@ -3254,7 +3404,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 895:
+/***/ 897:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3262,6 +3412,8 @@ webpackJsonp([0],{
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -3285,17 +3437,19 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(774);
+	var _base = __webpack_require__(775);
 
-	var _Item = __webpack_require__(896);
+	var _data = __webpack_require__(765);
+
+	var _Item = __webpack_require__(898);
 
 	var _Item2 = _interopRequireDefault(_Item);
 
-	var _MultiTreeSelectorWidgetHelper = __webpack_require__(897);
+	var _MultiTreeSelectorWidgetHelper = __webpack_require__(899);
 
 	var _MultiTreeSelectorWidgetHelper2 = _interopRequireDefault(_MultiTreeSelectorWidgetHelper);
 
-	var _MultiTreeSelectorWidgetAsyncHelper = __webpack_require__(898);
+	var _MultiTreeSelectorWidgetAsyncHelper = __webpack_require__(900);
 
 	var _MultiTreeSelectorWidgetAsyncHelper2 = _interopRequireDefault(_MultiTreeSelectorWidgetAsyncHelper);
 
@@ -3317,34 +3471,63 @@ webpackJsonp([0],{
 
 	        var _this = _possibleConstructorReturn(this, (MultiTreeSelectorWidget.__proto__ || Object.getPrototypeOf(MultiTreeSelectorWidget)).call(this, props, context));
 
-	        _this.state = {};
-
-	        if (props.itemsCreator) {
-	            _this._helper = new _MultiTreeSelectorWidgetAsyncHelper2.default(props);
-	        } else {
-	            _this._helper = new _MultiTreeSelectorWidgetHelper2.default(props);
-	        }
 	        _this.state = {
-	            value: props.value
+	            value: _this.props.value,
+	            items: _this.props.items,
+	            hasNext: false,
+	            times: 0
 	        };
 	        return _this;
 	    }
 
 	    _createClass(MultiTreeSelectorWidget, [{
+	        key: '_getNextState',
+	        value: function _getNextState(props, state) {
+	            var _props$state = _extends({}, props, state);
+
+	            var items = _props$state.items;
+	            var value = _props$state.value;
+	            var hasNext = _props$state.hasNext;
+	            var times = _props$state.times;
+
+	            return {
+	                items: items,
+	                value: value,
+	                hasNext: hasNext,
+	                times: times
+	            };
+	        }
+	    }, {
 	        key: 'componentWillMount',
 	        value: function componentWillMount() {}
 	    }, {
+	        key: '_fetchData',
+	        value: function _fetchData() {
+	            var _this2 = this;
+
+	            if (this.props.itemsCreator) {
+	                this.props.itemsCreator({
+	                    floors: this.props.floors,
+	                    selected_values: this.state.value,
+	                    times: this.state.times + 1
+	                }).then(function (data) {
+	                    _this2.setState(_this2._getNextState(_this2.props, _extends({}, _this2.state, {
+	                        times: _this2.state.times + 1,
+	                        hasNext: data.hasNext,
+	                        items: _this2.state.items.concat(data.items)
+	                    })));
+	                });
+	            }
+	        }
+	    }, {
 	        key: 'componentDidMount',
-	        value: function componentDidMount() {}
+	        value: function componentDidMount() {
+	            this._fetchData();
+	        }
 	    }, {
 	        key: 'componentWillReceiveProps',
 	        value: function componentWillReceiveProps(nextProps) {
-	            if (nextProps.itemsCreator) {
-	                this._helper = new _MultiTreeSelectorWidgetAsyncHelper2.default(nextProps);
-	            } else {
-	                this._helper = new _MultiTreeSelectorWidgetHelper2.default(nextProps);
-	            }
-	            this.setState({ value: nextProps.value });
+	            this.setState(this._getNextState(_extends({}, this.props, this.state), nextProps));
 	        }
 	    }, {
 	        key: 'componentWillUpdate',
@@ -3353,56 +3536,83 @@ webpackJsonp([0],{
 	        key: 'render',
 	        value: function render() {
 	            var props = _objectWithoutProperties(this.props, []);
+	            var state = _objectWithoutProperties(this.state, []);
 
+	            if (props.itemsCreator) {
+	                this._helper = new _MultiTreeSelectorWidgetAsyncHelper2.default(state, props);
+	            } else {
+	                this._helper = new _MultiTreeSelectorWidgetHelper2.default(state);
+	            }
 	            return _lib2.default.createElement(_base.VirtualScroll, {
 	                width: props.width,
 	                height: props.height,
-	                overscanRowCount: 10
+	                overscanRowCount: 0
 	                //noRowsRenderer={this._noRowsRenderer.bind(this)}
-	                , rowCount: this._helper.getSortedItems().length,
-	                rowHeight: 44,
+	                , rowCount: this._helper.getSortedItems().length + 1,
+	                rowHeight: _data.Size.ITEM_HEIGHT,
 	                rowRenderer: this._rowRenderer.bind(this)
 	                //scrollToIndex={scrollToIndex}
 	            });
 	        }
 	    }, {
+	        key: '_moreRenderer',
+	        value: function _moreRenderer() {
+	            var _this3 = this;
+
+	            if (this.state.hasNext === true) {
+	                return _lib2.default.createElement(_base.TextButton, { style: { height: _data.Size.ITEM_HEIGHT }, text: '点击加载更多数据', onPress: function onPress() {
+	                        _this3._fetchData();
+	                    } });
+	            } else {
+	                return _lib2.default.createElement(_base.TextButton, { style: { height: _data.Size.ITEM_HEIGHT }, disabled: true, text: '无更多数据' });
+	            }
+	        }
+	    }, {
 	        key: '_rowRenderer',
 	        value: function _rowRenderer(_ref) {
-	            var _this2 = this;
+	            var _this4 = this;
 
 	            var index = _ref.index;
 	            var isScrolling = _ref.isScrolling;
 
-	            var rowData = this._helper.getSortedItems()[index];
-	            return _lib2.default.createElement(_Item2.default, _extends({ key: rowData.value, onSelected: function onSelected(sel) {
-	                    _this2._onSelected(rowData, sel);
-	                }, onExpand: function onExpand(expanded) {
-	                    _this2._onExpand(rowData, expanded);
-	                } }, rowData));
+	            if (index === this._helper.getSortedItems().length) {
+	                return this._moreRenderer();
+	            } else {
+	                var _ret = function () {
+	                    var rowData = _this4._helper.getSortedItems()[index];
+	                    return {
+	                        v: _lib2.default.createElement(_Item2.default, _extends({ key: rowData.value, onSelected: function onSelected(sel) {
+	                                _this4._onSelected(rowData, sel);
+	                            }, onExpand: function onExpand(expanded) {
+	                                _this4._onExpand(rowData, expanded);
+	                            } }, rowData))
+	                    };
+	                }();
+
+	                if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+	            }
 	        }
 	    }, {
 	        key: '_onExpand',
 	        value: function _onExpand(rowData, expanded) {
-	            if (expanded) {
-	                this._helper.expandOneValue(rowData.value);
-	            } else {
-	                this._helper.collapseOneValue(rowData.value);
-	            }
-	            this.forceUpdate();
-	            // this.setState({
-	            //     value: this._helper.getSelectedValue()
-	            // });
+	            var _this5 = this;
+
+	            this._helper[expanded ? 'expandOneNode' : 'collapseOneNode'](rowData).then(function () {
+	                _this5.setState({
+	                    items: _this5._helper.getItems()
+	                });
+	            });
 	        }
 	    }, {
 	        key: '_onSelected',
 	        value: function _onSelected(rowData, sel) {
-	            if (sel) {
-	                this._helper.selectOneValue(rowData.value);
+	            if (sel.checked === true) {
+	                this._helper.selectOneNode(rowData);
 	            } else {
-	                this._helper.disSelectOneValue(rowData.value);
+	                this._helper.disSelectOneNode(rowData);
 	            }
 	            this.setState({
-	                value: this._helper.getSelectedValue()
+	                items: this._helper.getItems()
 	            });
 	        }
 	    }]);
@@ -3412,7 +3622,8 @@ webpackJsonp([0],{
 
 	MultiTreeSelectorWidget.propTypes = {};
 	MultiTreeSelectorWidget.defaultProps = {
-	    items: []
+	    items: [],
+	    floors: 0
 	};
 
 	_reactMixin2.default.onClass(MultiTreeSelectorWidget, _reactAddonsPureRenderMixin2.default);
@@ -3425,7 +3636,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 896:
+/***/ 898:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3454,9 +3665,9 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(764);
+	var _data = __webpack_require__(765);
 
-	var _base = __webpack_require__(774);
+	var _base = __webpack_require__(775);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3479,10 +3690,11 @@ webpackJsonp([0],{
 	        _this.state = {};
 	        var text = props.text;
 	        var value = props.value;
-	        var selected = props.selected;
+	        var checked = props.checked;
+	        var halfCheck = props.halfCheck;
 	        var expanded = props.expanded;
 
-	        _this.state = { text: text, value: value, selected: selected, expanded: expanded };
+	        _this.state = { text: text, value: value, checked: checked, halfCheck: halfCheck, expanded: expanded };
 	        return _this;
 	    }
 
@@ -3497,10 +3709,11 @@ webpackJsonp([0],{
 	        value: function componentWillReceiveProps(props) {
 	            var text = props.text;
 	            var value = props.value;
-	            var selected = props.selected;
+	            var checked = props.checked;
+	            var halfCheck = props.halfCheck;
 	            var expanded = props.expanded;
 
-	            this.setState({ text: text, value: value, selected: selected, expanded: expanded });
+	            this.setState({ text: text, value: value, checked: checked, halfCheck: halfCheck, expanded: expanded });
 	        }
 	    }, {
 	        key: 'componentWillUpdate',
@@ -3517,22 +3730,6 @@ webpackJsonp([0],{
 	            });
 	        }
 	    }, {
-	        key: '_onSelect',
-	        value: function _onSelect(e) {
-	            var _this3 = this;
-
-	            var selected = 0;
-	            if (this.state.selected < 2) {
-	                selected = 2;
-	            }
-	            this.setState({
-	                selected: selected
-	            }, function () {
-	                _this3.props.onSelected(selected);
-	            });
-	            e.stopPropagation();
-	        }
-	    }, {
 	        key: 'render',
 	        value: function render() {
 	            var props = _objectWithoutProperties(this.props, []);
@@ -3543,12 +3740,10 @@ webpackJsonp([0],{
 	                row = _lib2.default.createElement(
 	                    _lib.View,
 	                    { className: (0, _core.cn)({
-	                            'right-font': !state.expanded,
-	                            'down-font': state.expanded,
-	                            'react-view': true
-	                        }), style: [styles.icon, {
-	                            width: 30,
-	                            marginLeft: props.layer * 23
+	                            'active': state.expanded
+	                        }, 'node-fold', 'react-view'), style: [styles.icon, {
+	                            width: 44,
+	                            marginLeft: props.layer * 44
 	                        }] },
 	                    _lib2.default.createElement(_base.Icon, { width: 16, height: 16 })
 	                );
@@ -3563,7 +3758,7 @@ webpackJsonp([0],{
 	                    _lib2.default.createElement(
 	                        _lib.View,
 	                        { style: [styles.text, {
-	                                marginLeft: (0, _core.isNil)(row) ? props.layer * 23 + 24 : 4
+	                                marginLeft: (0, _core.isNil)(row) ? (props.layer + 1) * 44 : 0
 	                            }] },
 	                        _lib2.default.createElement(
 	                            _lib.Text,
@@ -3572,18 +3767,10 @@ webpackJsonp([0],{
 	                        )
 	                    ),
 	                    _lib2.default.createElement(
-	                        _lib.TouchableWithoutFeedback,
-	                        { onPress: this._onSelect.bind(this) },
-	                        _lib2.default.createElement(
-	                            _lib.View,
-	                            { className: [(0, _core.cn)({
-	                                    'check-half-select-icon': state.selected == 1,
-	                                    'check-box-icon': state.selected !== 1,
-	                                    'active': state.selected === 2,
-	                                    'react-view': true
-	                                })], style: [styles.icon, { width: 30 }] },
-	                            _lib2.default.createElement(_base.Icon, { width: 16, height: 16 })
-	                        )
+	                        _lib.View,
+	                        { style: [styles.icon, { width: _data.Size.ITEM_HEIGHT }] },
+	                        _lib2.default.createElement(_base.Checkbox, { checked: state.checked, halfCheck: state.halfCheck,
+	                            onChecked: props.onSelected })
 	                    )
 	                )
 	            );
@@ -3596,8 +3783,9 @@ webpackJsonp([0],{
 	Item.propTypes = {};
 	Item.defaultProps = {
 	    text: '',
-	    value: '',
-	    selected: 0,
+	    value: null,
+	    checked: false,
+	    halfCheck: false,
 	    expanded: false,
 	    layer: 0,
 	    onExpand: _core.emptyFunction,
@@ -3611,7 +3799,7 @@ webpackJsonp([0],{
 	        borderBottomColor: _data.Colors.SPLIT,
 	        borderBottomStyle: 'solid',
 	        borderBottomWidth: 1 / _lib.PixelRatio.get(),
-	        height: 44
+	        height: _data.Size.ITEM_HEIGHT
 	    },
 
 	    text: {
@@ -3632,7 +3820,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 897:
+/***/ 899:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3652,21 +3840,77 @@ webpackJsonp([0],{
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var MultiTreeSelectorWidgetHelper = function () {
-	    function MultiTreeSelectorWidgetHelper(props) {
+	    function MultiTreeSelectorWidgetHelper(state) {
 	        _classCallCheck(this, MultiTreeSelectorWidgetHelper);
 
-	        this.items = props.items;
-	        var format = this._formatItems(this.items);
-	        this.tree = new _core.Tree();
-	        this.tree.initTree(format);
+	        this.items = state.items;
+	        this.value = state.value || {};
+	        var format = this._initTree(this.items, this.value);
 	        this.sorted = this._expandTreeItems(format);
-	        this.value = Array.from(props.value || []);
 	    }
 
 	    _createClass(MultiTreeSelectorWidgetHelper, [{
-	        key: '_formatItems',
-	        value: function _formatItems(items) {
-	            return _core.Tree.transformToTreeFormat(items);
+	        key: '_createMap',
+	        value: function _createMap(items) {
+	            var _this = this;
+
+	            this.map = {};
+	            (0, _core.each)(items, function (node) {
+	                _this.map[node.id] = node;
+	            });
+	        }
+	    }, {
+	        key: '_createSelectedMap',
+	        value: function _createSelectedMap(selected_values) {
+	            var _this2 = this;
+
+	            this.selMap = {};
+	            var track = function track(val, route) {
+	                (0, _core.each)(val, function (child, key) {
+	                    if ((0, _core.isEmpty)(child)) {
+	                        _this2.selMap[route + key] = 2;
+	                    } else {
+	                        _this2.selMap[route + key] = 1;
+	                    }
+	                    track(child, route + key);
+	                });
+	            };
+	            track(selected_values, '');
+	        }
+	    }, {
+	        key: '_getRouteKey',
+	        value: function _getRouteKey(route) {
+	            var _this3 = this;
+
+	            var result = '';
+	            (0, _core.each)(route, function (key) {
+	                result += _this3.map[key].value;
+	            });
+	            return result;
+	        }
+	    }, {
+	        key: '_initTree',
+	        value: function _initTree(items) {
+	            var _this4 = this;
+
+	            var selected_values = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+	            this._createMap(items);
+	            this._createSelectedMap(selected_values);
+	            var format = _core.Tree.transformToTreeFormat(items);
+	            this.tree = new _core.Tree();
+	            this.tree.initTree(format);
+	            this.tree.recursion(function (child, routes) {
+	                var key = _this4._getRouteKey(routes);
+	                if (_this4.selMap[key] === 1) {
+	                    child.get('data').checked = true;
+	                    child.get('data').halfCheck = true;
+	                } else if (_this4.selMap[key] === 2) {
+	                    child.get('data').checked = true;
+	                    child.get('data').halfCheck = false;
+	                }
+	            });
+	            return format;
 	        }
 	    }, {
 	        key: '_expandTreeItems',
@@ -3701,94 +3945,100 @@ webpackJsonp([0],{
 	                isHalSelected = false;
 	            (0, _core.each)(node.getChildren(), function (child) {
 	                var data = child.get('data');
-	                if (data.selected < 2 || (0, _core.isNil)(data.selected)) {
+	                if (!data.checked || data.halfCheck) {
 	                    isAllSelected = false;
 	                }
-	                if (data.selected > 0) {
+	                if (data.checked) {
 	                    isHalSelected = true;
 	                }
 	            });
-	            node.get('data').selected = isAllSelected ? 2 : isHalSelected ? 1 : 0;
+	            node.get('data').checked = isAllSelected || isHalSelected;
+	            node.get('data').halfCheck = !isAllSelected && isHalSelected;
 	            this._adjustUpTreeSelected(node.getParent());
 	        }
 	    }, {
 	        key: '_adjustDownTreeSelected',
 	        value: function _adjustDownTreeSelected(node) {
-	            var _this = this;
+	            var _this5 = this;
 
-	            var selected = node.get('data').selected;
+	            var checked = node.get('data').checked,
+	                halfCheck = node.get('data').halfCheck;
 	            (0, _core.each)(node.getChildren(), function (child) {
 	                var data = child.get('data');
-	                if (selected === 2 || selected === 0 || (0, _core.isNil)(selected)) {
-	                    data.selected = selected;
-	                    _this._adjustDownTreeSelected(child);
+	                if (!checked || !halfCheck) {
+	                    data.checked = checked;
+	                    data.halfCheck = false;
+	                    _this5._adjustDownTreeSelected(child);
 	                }
 	            });
 	        }
 	    }, {
-	        key: '_selectOneValue',
-	        value: function _selectOneValue(val) {
-	            var find = this.tree.search(val, 'value');
+	        key: '_selectOneNode',
+	        value: function _selectOneNode(node) {
+	            var find = this.tree.search(node.id);
 	            if (find) {
 	                var data = find.get('data');
-	                data.selected = 2;
+	                data.checked = true;
+	                data.halfCheck = false;
 	                this._adjustUpTreeSelected(find.getParent());
 	                this._adjustDownTreeSelected(find);
-	                this._digest();
 	            }
 	        }
 	    }, {
-	        key: '_disSelectOneValue',
-	        value: function _disSelectOneValue(val) {
-	            var find = this.tree.search(val, 'value');
-
+	        key: '_disSelectOneNode',
+	        value: function _disSelectOneNode(node) {
+	            var find = this.tree.search(node.id);
 	            if (find) {
 	                var data = find.get('data');
-	                data.selected = 0;
+	                data.checked = false;
+	                data.halfCheck = false;
 	                this._adjustUpTreeSelected(find.getParent());
 	                this._adjustDownTreeSelected(find);
-	                this._digest();
 	            }
 	        }
 	    }, {
-	        key: '_digest',
-	        value: function _digest() {
-	            this.sorted = this._expandTreeItems(this.tree.toJSON());
+	        key: 'selectOneNode',
+	        value: function selectOneNode(node) {
+	            this._selectOneNode(node);
 	        }
 	    }, {
-	        key: 'selectOneValue',
-	        value: function selectOneValue(val) {
-	            this._selectOneValue(val);
+	        key: 'disSelectOneNode',
+	        value: function disSelectOneNode(node) {
+	            this._disSelectOneNode(node);
 	        }
 	    }, {
-	        key: 'disSelectOneValue',
-	        value: function disSelectOneValue(val) {
-	            this._disSelectOneValue(val);
-	        }
-	    }, {
-	        key: 'expandOneValue',
-	        value: function expandOneValue(val) {
-	            var find = this.tree.search(val, 'value');
+	        key: 'expandOneNode',
+	        value: function expandOneNode(node) {
+	            var find = this.tree.search(node.id);
 	            if (find) {
 	                var data = find.get('data');
 	                data.expanded = true;
-	                this._digest();
 	            }
+	            return new _core.Promise(function (resolve, reject) {
+	                resolve();
+	            });
 	        }
 	    }, {
-	        key: 'collapseOneValue',
-	        value: function collapseOneValue(val) {
-	            var find = this.tree.search(val, 'value');
+	        key: 'collapseOneNode',
+	        value: function collapseOneNode(node) {
+	            var find = this.tree.search(node.id);
 	            if (find) {
 	                var data = find.get('data');
 	                data.expanded = false;
-	                this._digest();
 	            }
+	            return new _core.Promise(function (resolve, reject) {
+	                resolve();
+	            });
 	        }
 	    }, {
 	        key: 'getSelectedValue',
 	        value: function getSelectedValue() {
-	            return Array.from(this.value);
+	            return (0, _core.clone)(this.value);
+	        }
+	    }, {
+	        key: 'getItems',
+	        value: function getItems() {
+	            return _core.Tree.transformToArrayFormat(this.tree.toJSON());
 	        }
 	    }, {
 	        key: 'getSortedItems',
@@ -3804,7 +4054,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 898:
+/***/ 900:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3812,171 +4062,95 @@ webpackJsonp([0],{
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _core = __webpack_require__(329);
 
-	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+	var _MultiTreeSelectorWidgetHelper = __webpack_require__(899);
+
+	var _MultiTreeSelectorWidgetHelper2 = _interopRequireDefault(_MultiTreeSelectorWidgetHelper);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var MultiTreeSelectorAsyncWidgetHelper = function () {
-	    function MultiTreeSelectorAsyncWidgetHelper(props) {
-	        _classCallCheck(this, MultiTreeSelectorAsyncWidgetHelper);
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	        this.items = props.items;
-	        var format = this._formatItems(this.items);
-	        this.tree = new _core.Tree();
-	        this.tree.initTree(format);
-	        this.sorted = this._expandTreeItems(format);
-	        this.value = Array.from(props.value || []);
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var MultiTreeSelectorWidgetAsnycHelper = function (_MultiTreeSelectorWid) {
+	    _inherits(MultiTreeSelectorWidgetAsnycHelper, _MultiTreeSelectorWid);
+
+	    function MultiTreeSelectorWidgetAsnycHelper(state, props) {
+	        _classCallCheck(this, MultiTreeSelectorWidgetAsnycHelper);
+
+	        var _this = _possibleConstructorReturn(this, (MultiTreeSelectorWidgetAsnycHelper.__proto__ || Object.getPrototypeOf(MultiTreeSelectorWidgetAsnycHelper)).call(this, state));
+
+	        _this.floors = props.floors;
+	        _this.itemsCreator = props.itemsCreator;
+	        return _this;
 	    }
 
-	    _createClass(MultiTreeSelectorAsyncWidgetHelper, [{
-	        key: '_formatItems',
-	        value: function _formatItems(items) {
-	            return _core.Tree.transformToTreeFormat(items);
-	        }
-	    }, {
-	        key: '_expandTreeItems',
-	        value: function _expandTreeItems(items) {
-	            var result = [];
-	            var track = function track(nodes, layer) {
-	                (0, _core.each)(nodes, function (node, i) {
-	                    var children = node.children;
-
-	                    var others = _objectWithoutProperties(node, ['children']);
-
-	                    var isLeaf = (0, _core.isNil)(node.children) && !node.isParent;
-	                    result.push(_extends({
-	                        layer: layer,
-	                        isLeaf: isLeaf
-	                    }, others));
-	                    if (node.expanded === true) {
-	                        track(children, layer + 1);
-	                    }
-	                });
-	            };
-	            track(items, 0);
-	            return result;
-	        }
-	    }, {
-	        key: '_adjustUpTreeSelected',
-	        value: function _adjustUpTreeSelected(node) {
-	            if (this.tree.isRoot(node)) {
-	                return;
-	            }
-	            var isAllSelected = true,
-	                isHalSelected = false;
-	            (0, _core.each)(node.getChildren(), function (child) {
-	                var data = child.get('data');
-	                if (data.selected < 2 || (0, _core.isNil)(data.selected)) {
-	                    isAllSelected = false;
-	                }
-	                if (data.selected > 0) {
-	                    isHalSelected = true;
-	                }
-	            });
-	            node.get('data').selected = isAllSelected ? 2 : isHalSelected ? 1 : 0;
-	            this._adjustUpTreeSelected(node.getParent());
-	        }
-	    }, {
-	        key: '_adjustDownTreeSelected',
-	        value: function _adjustDownTreeSelected(node) {
-	            var _this = this;
-
-	            var selected = node.get('data').selected;
-	            (0, _core.each)(node.getChildren(), function (child) {
-	                var data = child.get('data');
-	                if (selected === 2 || selected === 0 || (0, _core.isNil)(selected)) {
-	                    data.selected = selected;
-	                    _this._adjustDownTreeSelected(child);
-	                }
-	            });
-	        }
-	    }, {
-	        key: '_selectOneValue',
-	        value: function _selectOneValue(val) {
-	            var find = this.tree.search(val, 'value');
-	            if (find) {
-	                var data = find.get('data');
-	                data.selected = 2;
-	                this._adjustUpTreeSelected(find.getParent());
-	                this._adjustDownTreeSelected(find);
-	                this._digest();
-	            }
-	        }
-	    }, {
-	        key: '_disSelectOneValue',
-	        value: function _disSelectOneValue(val) {
-	            var find = this.tree.search(val, 'value');
-
-	            if (find) {
-	                var data = find.get('data');
-	                data.selected = 0;
-	                this._adjustUpTreeSelected(find.getParent());
-	                this._adjustDownTreeSelected(find);
-	                this._digest();
-	            }
-	        }
-	    }, {
+	    _createClass(MultiTreeSelectorWidgetAsnycHelper, [{
 	        key: '_digest',
 	        value: function _digest() {
-	            this.sorted = this._expandTreeItems(this.tree.toJSON());
+	            var format = _core.Tree.transformToTreeFormat(this.items);
+	            this.tree.initTree(format);
 	        }
 	    }, {
-	        key: 'selectOneValue',
-	        value: function selectOneValue(val) {
-	            this._selectOneValue(val);
+	        key: '_getParentValues',
+	        value: function _getParentValues(node) {
+	            if (this.tree.isRoot(node)) {
+	                return [];
+	            }
+	            var ps = this._getParentValues(node.getParent());
+	            return ps.concat(node.get('data').value || node.get('data').text);
 	        }
 	    }, {
-	        key: 'disSelectOneValue',
-	        value: function disSelectOneValue(val) {
-	            this._disSelectOneValue(val);
-	        }
-	    }, {
-	        key: 'expandOneValue',
-	        value: function expandOneValue(val) {
-	            var find = this.tree.search(val, 'value');
+	        key: 'expandOneNode',
+	        value: function expandOneNode(node) {
+	            var _this2 = this;
+
+	            var find = this.tree.search(node.id);
 	            if (find) {
 	                var data = find.get('data');
 	                data.expanded = true;
-	                this._digest();
+	                this.map[node.id].expanded = true;
+	                if (data.isParent && find.getChildrenLength() === 0) {
+	                    return this.itemsCreator({
+	                        id: node.id,
+	                        times: -1,
+	                        floors: this.floors,
+	                        check_state: {
+	                            checked: data.checked,
+	                            half: data.halfCheck
+	                        },
+	                        parent_values: this._getParentValues(find),
+	                        selected_values: this.value
+	                    }).then(function (data) {
+	                        (0, _core.each)(data.items, function (item) {
+	                            item.pId = node.id;
+	                        });
+	                        _this2.items = _this2.items.concat(data.items);
+	                        _this2._digest();
+	                    });
+	                }
 	            }
-	        }
-	    }, {
-	        key: 'collapseOneValue',
-	        value: function collapseOneValue(val) {
-	            var find = this.tree.search(val, 'value');
-	            if (find) {
-	                var data = find.get('data');
-	                data.expanded = false;
-	                this._digest();
-	            }
-	        }
-	    }, {
-	        key: 'getSelectedValue',
-	        value: function getSelectedValue() {
-	            return Array.from(this.value);
-	        }
-	    }, {
-	        key: 'getSortedItems',
-	        value: function getSortedItems() {
-	            return this.sorted;
+	            return new Promise(function (resolve, reject) {
+	                resolve();
+	            });
 	        }
 	    }]);
 
-	    return MultiTreeSelectorAsyncWidgetHelper;
-	}();
+	    return MultiTreeSelectorWidgetAsnycHelper;
+	}(_MultiTreeSelectorWidgetHelper2.default);
 
-	exports.default = MultiTreeSelectorAsyncWidgetHelper;
+	exports.default = MultiTreeSelectorWidgetAsnycHelper;
 
 /***/ },
 
-/***/ 899:
+/***/ 901:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3986,10 +4160,6 @@ webpackJsonp([0],{
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _reactAddonsPureRenderMixin = __webpack_require__(230);
-
-	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
 
 	var _reactMixin = __webpack_require__(227);
 
@@ -4005,21 +4175,21 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(764);
+	var _data = __webpack_require__(765);
 
-	var _base = __webpack_require__(774);
+	var _base = __webpack_require__(775);
 
-	var _widgets = __webpack_require__(890);
+	var _widgets = __webpack_require__(892);
 
-	var _MultiSelectorComponent = __webpack_require__(900);
+	var _MultiSelectorComponent = __webpack_require__(902);
 
 	var _MultiSelectorComponent2 = _interopRequireDefault(_MultiSelectorComponent);
 
-	var _MultiTreeSelectorComponent = __webpack_require__(901);
+	var _MultiTreeSelectorComponent = __webpack_require__(903);
 
 	var _MultiTreeSelectorComponent2 = _interopRequireDefault(_MultiTreeSelectorComponent);
 
-	var _Item = __webpack_require__(902);
+	var _Item = __webpack_require__(904);
 
 	var _Item2 = _interopRequireDefault(_Item);
 
@@ -4096,7 +4266,9 @@ webpackJsonp([0],{
 	                                case BICst.WIDGET.YMD:
 	                            }
 	                            props.navigator.push({
-	                                name: widget.getName(),
+	                                name: 'widget',
+	                                id: id,
+	                                $$widget: $$widget,
 	                                Component: Component,
 	                                title: widget.getName()
 	                            });
@@ -4131,7 +4303,7 @@ webpackJsonp([0],{
 	    onReturn: _core.emptyFunction
 	};
 
-	_reactMixin2.default.onClass(Controls, _reactAddonsPureRenderMixin2.default);
+	_reactMixin2.default.onClass(Controls, _core.ReactComponentWithImmutableRenderMixin);
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
 	        flex: 1,
@@ -4149,7 +4321,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 900:
+/***/ 902:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4159,10 +4331,6 @@ webpackJsonp([0],{
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _reactAddonsPureRenderMixin = __webpack_require__(230);
-
-	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
 
 	var _reactMixin = __webpack_require__(227);
 
@@ -4178,11 +4346,11 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(774);
+	var _base = __webpack_require__(775);
 
-	var _data = __webpack_require__(764);
+	var _data = __webpack_require__(765);
 
-	var _widgets = __webpack_require__(890);
+	var _widgets = __webpack_require__(892);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4223,17 +4391,17 @@ webpackJsonp([0],{
 	        value: function render() {
 	            var props = _objectWithoutProperties(this.props, []);
 
-	            var items = [];
-	            for (var i = 0; i < 1000; i++) {
-	                items.push({
-	                    value: i
-	                });
-	            }
+	            var widget = new _data.Widget(props.$$widget);
 	            return _lib2.default.createElement(_widgets.MultiSelectorWidget, {
 	                style: styles.wrapper,
-	                items: items,
+	                type: widget.getSelectType(),
+	                value: widget.getSelectValue(),
+	                itemsCreator: function itemsCreator(options) {
+	                    return widget.getData(options);
+	                },
 	                width: props.width,
-	                height: props.height
+	                height: props.height,
+	                onValueChange: this.props.onValueChange.bind(this)
 	            });
 	        }
 	    }]);
@@ -4242,9 +4410,11 @@ webpackJsonp([0],{
 	}(_lib.Component);
 
 	MultiSelectorComponent.propTypes = {};
-	MultiSelectorComponent.defaultProps = {};
+	MultiSelectorComponent.defaultProps = {
+	    onValueChange: _core.emptyFunction
+	};
 
-	_reactMixin2.default.onClass(MultiSelectorComponent, _reactAddonsPureRenderMixin2.default);
+	_reactMixin2.default.onClass(MultiSelectorComponent, _core.ReactComponentWithImmutableRenderMixin);
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
 	        backgroundColor: '#fff'
@@ -4254,7 +4424,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 901:
+/***/ 903:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4264,10 +4434,6 @@ webpackJsonp([0],{
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _reactAddonsPureRenderMixin = __webpack_require__(230);
-
-	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
 
 	var _reactMixin = __webpack_require__(227);
 
@@ -4283,11 +4449,11 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(774);
+	var _base = __webpack_require__(775);
 
-	var _data = __webpack_require__(764);
+	var _data = __webpack_require__(765);
 
-	var _widgets = __webpack_require__(890);
+	var _widgets = __webpack_require__(892);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4328,25 +4494,14 @@ webpackJsonp([0],{
 	        value: function render() {
 	            var props = _objectWithoutProperties(this.props, []);
 
-	            var items = [];
-	            for (var i = 0; i < 1000; i++) {
-	                for (var j = 0; j < 10; j++) {
-	                    items.push({
-	                        id: i + '_' + j,
-	                        pId: i,
-	                        value: i + '_' + j
-	                    });
-	                }
-	                items.push({
-	                    id: i,
-	                    value: i,
-	                    isParent: true,
-	                    expanded: true
-	                });
-	            }
+	            var widget = new _data.Widget(props.$$widget);
 	            return _lib2.default.createElement(_widgets.MultiTreeSelectorWidget, {
 	                style: styles.wrapper,
-	                items: items,
+	                floors: widget.getTreeFloors(),
+	                value: widget.getSelectedTreeValue(),
+	                itemsCreator: function itemsCreator(options) {
+	                    return widget.getData(options);
+	                },
 	                width: props.width,
 	                height: props.height
 	            });
@@ -4359,7 +4514,7 @@ webpackJsonp([0],{
 	MultiTreeSelectorComponent.propTypes = {};
 	MultiTreeSelectorComponent.defaultProps = {};
 
-	_reactMixin2.default.onClass(MultiTreeSelectorComponent, _reactAddonsPureRenderMixin2.default);
+	_reactMixin2.default.onClass(MultiTreeSelectorComponent, _core.ReactComponentWithImmutableRenderMixin);
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
 	        backgroundColor: '#fff'
@@ -4369,7 +4524,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 902:
+/***/ 904:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4379,10 +4534,6 @@ webpackJsonp([0],{
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _reactAddonsPureRenderMixin = __webpack_require__(230);
-
-	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
 
 	var _reactMixin = __webpack_require__(227);
 
@@ -4398,11 +4549,11 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(764);
+	var _data = __webpack_require__(765);
 
-	var _base = __webpack_require__(774);
+	var _base = __webpack_require__(775);
 
-	var _widgets = __webpack_require__(890);
+	var _widgets = __webpack_require__(892);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4473,11 +4624,12 @@ webpackJsonp([0],{
 	Item.propTypes = {};
 	Item.defaultProps = {};
 
-	_reactMixin2.default.onClass(Item, _reactAddonsPureRenderMixin2.default);
+	_reactMixin2.default.onClass(Item, _core.ReactComponentWithImmutableRenderMixin);
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
 	        height: _data.Size.ITEM_HEIGHT,
-	        padding: '0 4px',
+	        paddingLeft: 20,
+	        paddingRight: 20,
 	        borderBottom: '1px solid ' + _data.Colors.SPLIT
 	    }
 	});
@@ -4485,7 +4637,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 903:
+/***/ 905:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4497,10 +4649,6 @@ webpackJsonp([0],{
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _reactAddonsPureRenderMixin = __webpack_require__(230);
-
-	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
 
 	var _reactMixin = __webpack_require__(227);
 
@@ -4516,27 +4664,27 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(774);
+	var _base = __webpack_require__(775);
 
-	var _data = __webpack_require__(764);
+	var _data = __webpack_require__(765);
 
-	var _ChartComponent = __webpack_require__(904);
+	var _ChartComponent = __webpack_require__(906);
 
 	var _ChartComponent2 = _interopRequireDefault(_ChartComponent);
 
-	var _TableComponent = __webpack_require__(905);
+	var _TableComponent = __webpack_require__(907);
 
 	var _TableComponent2 = _interopRequireDefault(_TableComponent);
 
-	var _DetailTableComponent = __webpack_require__(910);
+	var _DetailTableComponent = __webpack_require__(912);
 
 	var _DetailTableComponent2 = _interopRequireDefault(_DetailTableComponent);
 
-	var _MultiSelectorComponent = __webpack_require__(900);
+	var _MultiSelectorComponent = __webpack_require__(902);
 
 	var _MultiSelectorComponent2 = _interopRequireDefault(_MultiSelectorComponent);
 
-	var _MultiTreeSelectorComponent = __webpack_require__(901);
+	var _MultiTreeSelectorComponent = __webpack_require__(903);
 
 	var _MultiTreeSelectorComponent2 = _interopRequireDefault(_MultiTreeSelectorComponent);
 
@@ -4570,15 +4718,44 @@ webpackJsonp([0],{
 	    }
 
 	    _createClass(Layout, [{
+	        key: '_onPageScroll',
+	        value: function _onPageScroll() {}
+	    }, {
+	        key: '_onPageSelected',
+	        value: function _onPageSelected() {}
+	    }, {
 	        key: 'render',
 	        value: function render() {
+	            var _this2 = this;
+
 	            var props = _objectWithoutProperties(this.props, []);
 
-	            return _lib2.default.createElement(_lib.ListView, _extends({}, props, {
-	                initialListSize: Math.floor(props.height / 270) + 1,
-	                dataSource: this.state.dataSource,
-	                renderRow: this._renderRow.bind(this)
-	            }));
+	            return _lib2.default.createElement(
+	                _lib.ViewPagerAndroid,
+	                {
+	                    style: styles.viewPager,
+	                    initialPage: 0,
+	                    onPageScroll: this._onPageScroll.bind(this),
+	                    onPageSelected: this._onPageSelected.bind(this),
+	                    ref: function ref(viewPager) {
+	                        _this2.viewPager = viewPager;
+	                    } },
+	                [_lib2.default.createElement(_lib.ListView, _extends({}, props, {
+	                    initialListSize: Math.floor(props.height / 270) + 1,
+	                    dataSource: this.state.dataSource,
+	                    renderRow: this._renderRow.bind(this)
+	                })), _lib2.default.createElement(_lib.ListView, _extends({}, props, {
+	                    initialListSize: Math.floor(props.height / 270) + 1,
+	                    dataSource: this.state.dataSource,
+	                    renderRow: this._renderRow.bind(this)
+	                }))]
+	            );
+	            // return <ListView
+	            //     {...props}
+	            //     initialListSize={Math.floor(props.height / 270) + 1}
+	            //     dataSource={this.state.dataSource}
+	            //     renderRow={this._renderRow.bind(this)}
+	            // />;
 	        }
 	    }, {
 	        key: '_renderRow',
@@ -4669,17 +4846,20 @@ webpackJsonp([0],{
 
 	Layout.propTypes = {};
 
-	_reactMixin2.default.onClass(Layout, _reactAddonsPureRenderMixin2.default);
+	_reactMixin2.default.onClass(Layout, _core.ReactComponentWithImmutableRenderMixin);
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
 	        margin: 20
+	    },
+	    viewPager: {
+	        flex: 1
 	    }
 	});
 	exports.default = Layout;
 
 /***/ },
 
-/***/ 904:
+/***/ 906:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4691,10 +4871,6 @@ webpackJsonp([0],{
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _reactAddonsPureRenderMixin = __webpack_require__(230);
-
-	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
 
 	var _reactMixin = __webpack_require__(227);
 
@@ -4710,7 +4886,7 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(764);
+	var _data = __webpack_require__(765);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4741,17 +4917,8 @@ webpackJsonp([0],{
 	            var _this2 = this;
 
 	            var $$widget = this.props.$$widget;
-	            var wi = new _data.Widget($$widget).createJson();
-	            var w = _extends({}, wi, { page: -1 });
-	            (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=chart_setting', {
-	                method: "POST",
-
-	                body: JSON.stringify({ widget: w, sessionID: BH.sessionID })
-	            }).then(function (response) {
-	                return response.json(); // 转换为JSON
-	            }).then(function (data) {
+	            new _data.Widget($$widget).getData().then(function (data) {
 	                var vanCharts = VanCharts.init(_reactDom2.default.findDOMNode(_this2.refs.chart));
-	                console.log(data);
 	                vanCharts.setOptions(data);
 	            });
 	        }
@@ -4766,7 +4933,7 @@ webpackJsonp([0],{
 	    return Main;
 	}(_lib.Component);
 
-	_reactMixin2.default.onClass(Main, _reactAddonsPureRenderMixin2.default);
+	_reactMixin2.default.onClass(Main, _core.ReactComponentWithImmutableRenderMixin);
 
 	var style = _lib.StyleSheet.create({
 	    wrapper: {
@@ -4777,7 +4944,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 905:
+/***/ 907:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4789,10 +4956,6 @@ webpackJsonp([0],{
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _reactAddonsPureRenderMixin = __webpack_require__(230);
-
-	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
 
 	var _reactMixin = __webpack_require__(227);
 
@@ -4808,27 +4971,27 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(764);
+	var _data = __webpack_require__(765);
 
-	var _widgets = __webpack_require__(890);
+	var _widgets = __webpack_require__(892);
 
-	var _TableComponentHelper = __webpack_require__(906);
+	var _TableComponentHelper = __webpack_require__(908);
 
 	var _TableComponentHelper2 = _interopRequireDefault(_TableComponentHelper);
 
-	var _TableComponentWidthHelper = __webpack_require__(907);
+	var _TableComponentWidthHelper = __webpack_require__(909);
 
 	var _TableComponentWidthHelper2 = _interopRequireDefault(_TableComponentWidthHelper);
 
-	var _TableCell = __webpack_require__(908);
+	var _TableCell = __webpack_require__(910);
 
 	var _TableCell2 = _interopRequireDefault(_TableCell);
 
-	var _TableHeader = __webpack_require__(909);
+	var _TableHeader = __webpack_require__(911);
 
 	var _TableHeader2 = _interopRequireDefault(_TableHeader);
 
-	var _base = __webpack_require__(774);
+	var _base = __webpack_require__(775);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4871,24 +5034,7 @@ webpackJsonp([0],{
 	        value: function _fetchData() {
 	            var _this2 = this;
 
-	            var wi = new _data.Widget(this.props.$$widget).createJson();
-	            var w = _extends({
-	                expander: {
-	                    x: {
-	                        type: true,
-	                        value: [[]]
-	                    },
-	                    y: {
-	                        type: true,
-	                        value: [[]]
-	                    }
-	                } }, wi);
-	            (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
-	                method: "POST",
-	                body: JSON.stringify({ widget: w, sessionID: BH.sessionID })
-	            }).then(function (response) {
-	                return response.json();
-	            }).then(function (data) {
+	            new _data.Widget(this.props.$$widget).getData().then(function (data) {
 	                console.log(data);
 	                _this2._tableHelper.setData(data);
 	                _this2.forceUpdate();
@@ -4929,7 +5075,7 @@ webpackJsonp([0],{
 	    return TableComponent;
 	}(_lib.Component);
 
-	_reactMixin2.default.onClass(TableComponent, _reactAddonsPureRenderMixin2.default);
+	_reactMixin2.default.onClass(TableComponent, _core.ReactComponentWithImmutableRenderMixin);
 
 	var style = _lib.StyleSheet.create({
 	    wrapper: {
@@ -4940,7 +5086,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 906:
+/***/ 908:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4953,7 +5099,7 @@ webpackJsonp([0],{
 
 	var _core = __webpack_require__(329);
 
-	var _data = __webpack_require__(764);
+	var _data = __webpack_require__(765);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -5059,7 +5205,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 907:
+/***/ 909:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5111,6 +5257,9 @@ webpackJsonp([0],{
 	                });
 	            }
 	        }
+
+	        //最小二乘法
+
 	    }, {
 	        key: 'fit',
 	        value: function fit(widths) {
@@ -5203,7 +5352,8 @@ webpackJsonp([0],{
 
 	            var result = [];
 	            (0, _core.each)(this.items, function (col) {
-	                result.push(_core.math.ceil(_this4.fit(_this4.getWidthsByOneCol(col)).a * 14 * 1.2) + REMAIN_WIDTH);
+	                var fx = _this4.fit(_this4.getWidthsByOneCol(col));
+	                result.push(_core.math.ceil((fx.a + fx.b * _core.math.ceil((1 + col.length) / 2)) * 14 * 1.2) + REMAIN_WIDTH);
 	            });
 	            return this.adjustWidth(result);
 	        }
@@ -5216,7 +5366,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 908:
+/***/ 910:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5226,10 +5376,6 @@ webpackJsonp([0],{
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _reactAddonsPureRenderMixin = __webpack_require__(230);
-
-	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
 
 	var _reactMixin = __webpack_require__(227);
 
@@ -5245,11 +5391,11 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(764);
+	var _data = __webpack_require__(765);
 
-	var _base = __webpack_require__(774);
+	var _base = __webpack_require__(775);
 
-	var _widgets = __webpack_require__(890);
+	var _widgets = __webpack_require__(892);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5309,7 +5455,7 @@ webpackJsonp([0],{
 	TableCell.propTypes = {};
 	TableCell.defaultProps = {};
 
-	_reactMixin2.default.onClass(TableCell, _reactAddonsPureRenderMixin2.default);
+	_reactMixin2.default.onClass(TableCell, _core.ReactComponentWithImmutableRenderMixin);
 	var styles = _lib.StyleSheet.create({
 	    region: {
 	        padding: '0 4px 0 4px',
@@ -5322,7 +5468,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 909:
+/***/ 911:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5332,10 +5478,6 @@ webpackJsonp([0],{
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _reactAddonsPureRenderMixin = __webpack_require__(230);
-
-	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
 
 	var _reactMixin = __webpack_require__(227);
 
@@ -5351,11 +5493,11 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(764);
+	var _data = __webpack_require__(765);
 
-	var _base = __webpack_require__(774);
+	var _base = __webpack_require__(775);
 
-	var _widgets = __webpack_require__(890);
+	var _widgets = __webpack_require__(892);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5415,7 +5557,7 @@ webpackJsonp([0],{
 	TableHeader.propTypes = {};
 	TableHeader.defaultProps = {};
 
-	_reactMixin2.default.onClass(TableHeader, _reactAddonsPureRenderMixin2.default);
+	_reactMixin2.default.onClass(TableHeader, _core.ReactComponentWithImmutableRenderMixin);
 	var styles = _lib.StyleSheet.create({
 	    region: {
 	        padding: '0 4px 0 4px',
@@ -5428,7 +5570,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 910:
+/***/ 912:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5440,10 +5582,6 @@ webpackJsonp([0],{
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _reactAddonsPureRenderMixin = __webpack_require__(230);
-
-	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
 
 	var _reactMixin = __webpack_require__(227);
 
@@ -5459,27 +5597,27 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(764);
+	var _data = __webpack_require__(765);
 
-	var _widgets = __webpack_require__(890);
+	var _widgets = __webpack_require__(892);
 
-	var _DetailTableComponentHelper = __webpack_require__(911);
+	var _DetailTableComponentHelper = __webpack_require__(913);
 
 	var _DetailTableComponentHelper2 = _interopRequireDefault(_DetailTableComponentHelper);
 
-	var _TableComponentWidthHelper = __webpack_require__(907);
+	var _TableComponentWidthHelper = __webpack_require__(909);
 
 	var _TableComponentWidthHelper2 = _interopRequireDefault(_TableComponentWidthHelper);
 
-	var _TableCell = __webpack_require__(908);
+	var _TableCell = __webpack_require__(910);
 
 	var _TableCell2 = _interopRequireDefault(_TableCell);
 
-	var _TableHeader = __webpack_require__(909);
+	var _TableHeader = __webpack_require__(911);
 
 	var _TableHeader2 = _interopRequireDefault(_TableHeader);
 
-	var _base = __webpack_require__(774);
+	var _base = __webpack_require__(775);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5525,13 +5663,7 @@ webpackJsonp([0],{
 	        value: function _fetchData() {
 	            var _this2 = this;
 
-	            var wi = new _data.Widget(this.props.$$widget).createJson();
-	            (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
-	                method: "POST",
-	                body: JSON.stringify({ widget: wi, sessionID: BH.sessionID })
-	            }).then(function (response) {
-	                return response.json();
-	            }).then(function (data) {
+	            new _data.Widget(this.props.$$widget).getData().then(function (data) {
 	                _this2._tableHelper.setData(data);
 	                _this2.forceUpdate();
 	            });
@@ -5571,7 +5703,7 @@ webpackJsonp([0],{
 	    return DetailTableComponent;
 	}(_lib.Component);
 
-	_reactMixin2.default.onClass(DetailTableComponent, _reactAddonsPureRenderMixin2.default);
+	_reactMixin2.default.onClass(DetailTableComponent, _core.ReactComponentWithImmutableRenderMixin);
 
 	var style = _lib.StyleSheet.create({
 	    wrapper: {
@@ -5582,7 +5714,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 911:
+/***/ 913:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5595,7 +5727,7 @@ webpackJsonp([0],{
 
 	var _core = __webpack_require__(329);
 
-	var _data = __webpack_require__(764);
+	var _data = __webpack_require__(765);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -5661,16 +5793,16 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 912:
+/***/ 914:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(913);
+	var content = __webpack_require__(915);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(619)(content, {});
+	var update = __webpack_require__(620)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -5688,10 +5820,10 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 913:
+/***/ 915:
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(618)();
+	exports = module.exports = __webpack_require__(619)();
 	// imports
 
 
@@ -5703,16 +5835,16 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 914:
+/***/ 916:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(915);
+	var content = __webpack_require__(917);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(619)(content, {});
+	var update = __webpack_require__(620)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -5730,10 +5862,10 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 915:
+/***/ 917:
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(618)();
+	exports = module.exports = __webpack_require__(619)();
 	// imports
 
 
@@ -5745,16 +5877,16 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 916:
+/***/ 918:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(917);
+	var content = __webpack_require__(919);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(619)(content, {});
+	var update = __webpack_require__(620)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -5772,31 +5904,31 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 917:
+/***/ 919:
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(618)();
+	exports = module.exports = __webpack_require__(619)();
 	// imports
 
 
 	// module
-	exports.push([module.id, "/****** common color(常用颜色,可用于普遍场景) *****/\r\n/**** custom color(自定义颜色,用于特定场景) ****/\r\n.tool-filter .b-font:before {\r\n  content: '\\E624';\r\n  color: #808080;\r\n}\r\n.tool-filter:active .b-font:before {\r\n  content: '\\E624';\r\n  color: #009de3;\r\n}\r\n.tool-filter.disabled .b-font:before {\r\n  content: '\\E624';\r\n  color: #808080;\r\n}\r\n", ""]);
+	exports.push([module.id, "/****** common color(常用颜色,可用于普遍场景) *****/\n/**** custom color(自定义颜色,用于特定场景) ****/\n.tool-filter .b-font:before {\n  content: '\\E624';\n  color: #808080;\n}\n.tool-filter:active .b-font:before {\n  content: '\\E624';\n  color: #009de3;\n}\n.tool-filter.disabled .b-font:before {\n  content: '\\E624';\n  color: #808080;\n}\n.node-fold .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.node-fold:active .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.node-fold.active .b-font:before {\n  content: '\\E611';\n  color: #808080;\n}\n.node-fold.disabled .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n", ""]);
 
 	// exports
 
 
 /***/ },
 
-/***/ 918:
+/***/ 920:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(919);
+	var content = __webpack_require__(921);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(619)(content, {});
+	var update = __webpack_require__(620)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -5814,10 +5946,10 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 919:
+/***/ 921:
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(618)();
+	exports = module.exports = __webpack_require__(619)();
 	// imports
 
 
@@ -5829,16 +5961,16 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 920:
+/***/ 922:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(921);
+	var content = __webpack_require__(923);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(619)(content, {});
+	var update = __webpack_require__(620)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -5856,10 +5988,10 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 921:
+/***/ 923:
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(618)();
+	exports = module.exports = __webpack_require__(619)();
 	// imports
 
 
@@ -5871,16 +6003,16 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 922:
+/***/ 924:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(923);
+	var content = __webpack_require__(925);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(619)(content, {});
+	var update = __webpack_require__(620)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -5898,10 +6030,10 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 923:
+/***/ 925:
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(618)();
+	exports = module.exports = __webpack_require__(619)();
 	// imports
 
 

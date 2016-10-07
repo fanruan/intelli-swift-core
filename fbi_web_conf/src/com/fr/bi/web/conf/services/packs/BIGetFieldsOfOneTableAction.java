@@ -24,11 +24,18 @@ public class BIGetFieldsOfOneTableAction extends AbstractBIConfigureAction {
         String tableId = WebUtils.getHTTPRequestParameter(req, "id");
         JSONObject jo = new JSONObject();
         CubeTableSource source = BusinessTableHelper.getTableDataSource(new BITableID(tableId));
+        ((AbstractTableSource) source).reGetBiTable();
+        if (source.getPersistentTable() == null) {
+            JSONObject errorJson = new JSONObject();
+            errorJson.put("none_table", true);
+            WebUtils.printAsJSON(res, errorJson);
+            return;
+        }
         ((AbstractTableSource) source).getFields();
         JSONObject data = source.createJSON();
         formatTableDataFields(tableId, data);
         jo.put("table_data", data);
-
+        WebUtils.printAsJSON(res, jo);
     }
 
     /**
