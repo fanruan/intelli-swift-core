@@ -4741,11 +4741,11 @@ webpackJsonp([0],{
 	                        _this2.viewPager = viewPager;
 	                    } },
 	                [_lib2.default.createElement(_lib.ListView, _extends({}, props, {
-	                    initialListSize: Math.floor(props.height / 270) + 1,
+	                    initialListSize: Math.ceil(props.height / 270) + 1,
 	                    dataSource: this.state.dataSource,
 	                    renderRow: this._renderRow.bind(this)
 	                })), _lib2.default.createElement(_lib.ListView, _extends({}, props, {
-	                    initialListSize: Math.floor(props.height / 270) + 1,
+	                    initialListSize: Math.ceil(props.height / 270) + 1,
 	                    dataSource: this.state.dataSource,
 	                    renderRow: this._renderRow.bind(this)
 	                }))]

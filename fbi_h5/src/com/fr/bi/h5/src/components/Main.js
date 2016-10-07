@@ -19,7 +19,7 @@ import React, {
 import {Colors, Template} from 'data'
 
 import Toolbar from './Toolbar'
-import Layout from './Layout'
+import Layout from './Layout/Layout'
 
 const {width, height} = Dimensions.get('window');
 
