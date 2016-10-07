@@ -15,11 +15,11 @@ import React, {
 import {AutoSizer} from 'base'
 import {Colors, Template, Widget} from 'data'
 
-import ChartComponent from './Chart/ChartComponent.js'
-import TableComponent from './Table/TableComponent.js'
-import DetailTableComponent from './DetailTable/DetailTableComponent.js'
-import MultiSelectorComponent from './MultiSelector/MultiSelectorComponent.js'
-import MultiTreeSelectorComponent from './MultiTreeSelector/MultiTreeSelectorComponent.js'
+import ChartComponent from '../Chart/ChartComponent.js'
+import TableComponent from '../Table/TableComponent.js'
+import DetailTableComponent from '../DetailTable/DetailTableComponent.js'
+import MultiSelectorComponent from '../MultiSelector/MultiSelectorComponent.js'
+import MultiTreeSelectorComponent from '../MultiTreeSelector/MultiTreeSelectorComponent.js'
 
 class Layout extends Component {
     static propTypes = {};
