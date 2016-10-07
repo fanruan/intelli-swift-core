@@ -72,12 +72,15 @@ class Layout extends Component {
         // />;
     }
 
-    _renderRow(rowData, sectionID, rowID) {
-        const $$widget = this.template.get$$WidgetById(rowData);
+    _renderRow(wId, sectionID, rowID) {
+        const {$$template} = this.props;
+        const $$widget = this.template.get$$WidgetById(wId);
         const type = new Widget($$widget).getType();
         const props = {
-            key: rowData,
+            key: wId,
             $$widget,
+            $$template,
+            wId,
             width: this.props.width - 40,
             height: 230
         };

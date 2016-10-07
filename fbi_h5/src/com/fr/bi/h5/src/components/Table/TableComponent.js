@@ -62,11 +62,19 @@ class TableComponent extends Component {
             columnSize={this._widthHelper.getWidth()}
             header={this._tableHelper.getHeader()}
             items={items}
-            headerCellRenderer={(colIndex, cell)=> {
+            groupHeader={this._tableHelper.getGroupHeader()}
+            groupItems={this._tableHelper.getGroupItems()}
+            groupHeaderCellRenderer={({colIndex, ...cell})=> {
                 return <TableHeader {...cell}/>
             }}
-            itemsCellRenderer={({colIndex, rowIndex, items, ...props}) => {
-                return <TableCell {...items[colIndex][rowIndex]} {...props}/>
+            groupItemsCellRenderer={({...cell})=> {
+                return <TableHeader {...cell}/>
+            }}
+            headerCellRenderer={({colIndex, ...cell})=> {
+                return <TableHeader {...cell}/>
+            }}
+            itemsCellRenderer={({colIndex, rowIndex, ...cell}) => {
+                return <TableCell {...cell}/>
             }}
         >
         </TableWidget>

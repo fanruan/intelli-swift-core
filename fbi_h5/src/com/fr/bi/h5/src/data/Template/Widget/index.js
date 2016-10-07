@@ -1,6 +1,6 @@
 import Dimension from './Dimension'
 import Target from './Target'
-import {each, invariant} from 'core';
+import {each, invariant, isNil, find, findKey} from 'core';
 import {Fetch} from 'lib'
 class Widget {
     constructor(widget, id) {
@@ -91,6 +91,26 @@ class Widget {
         return result;
     }
 
+    getRowDimensionIds() {
+        let result = [];
+        this.$$widget.get('view').forEach(($$id, key)=> {
+            if (parseInt(key) === BICst.REGION.DIMENSION1) {
+                result = result.concat($$id.toArray());
+            }
+        });
+        return result;
+    }
+
+    getColDimensionIds() {
+        let result = [];
+        this.$$widget.get('view').forEach(($$id, key)=> {
+            if (parseInt(key) === BICst.REGION.DIMENSION2) {
+                result = result.concat($$id.toArray());
+            }
+        });
+        return result;
+    }
+
     getAllUsedTargetIds() {
         const ids = this.getAllTargetIds();
         const result = [];
@@ -119,6 +139,45 @@ class Widget {
         return this.$$widget.getIn(['settings', 'freeze_dim']);
     }
 
+    getWidgetBoundsByID() {
+        return this.$$widget.get('bounds').toJS() || {};
+    }
+
+    getWidgetLinkageByID() {
+        return this.$$widget.get('linkages').toJS() || [];
+    }
+
+    getWidgetViewByID() {
+        return this.$$widget.get('view').toJS() || {};
+    }
+
+    getWidgetSubTypeByID(wid) {
+        return this.$$widget.get('sub_type');
+    }
+
+
+    getWidgetValueByID(wid) {
+        return this.$$widget.get('value').toJS();
+    }
+
+    getAllLinkageFromIdsByID(wid) {
+        var self = this, fromIds = [];
+        var linkages = this.getWidgetLinkageByID(wid);
+        each(linkages, (i, link)=> {
+            fromIds.push(link.from);
+            fromIds = fromIds.concat(this.getAllLinkageFromIdsByID(link.to));
+        });
+        return fromIds;
+    }
+
+    getRegionTypeByDimensionID(dId) {
+        var view = this.getWidgetViewByID();
+        return findKey(view, function (regionType, dIds) {
+            if (dIds.indexOf(dId) > -1) {
+                return true;
+            }
+        });
+    }
 
     isControl() {
         switch (this.getType()) {
@@ -241,6 +300,129 @@ class Widget {
             case BICst.WIDGET.GENERAL_QUERY:
         }
 
+    }
+
+    getWidgetSettings() {
+        return this.$$widget.get('settings').toJS();
+    }
+
+    //settings  ---- start ----
+    getWSTableForm() {
+        var ws = this.getWidgetSettings();
+        return isNil(ws.table_form) ? ws.table_form :
+            BICst.DEFAULT_CHART_SETTING.table_form;
+    }
+
+    getWSThemeColor() {
+        var ws = this.getWidgetSettings();
+        return isNil(ws.theme_color) ? ws.theme_color :
+            BICst.DEFAULT_CHART_SETTING.theme_color;
+    }
+
+    getWSTableStyle() {
+        var ws = this.getWidgetSettings();
+        return isNil(ws.table_style) ? ws.table_style :
+            BICst.DEFAULT_CHART_SETTING.table_style;
+    }
+
+    getWSShowNumber() {
+        var ws = this.getWidgetSettings();
+        return isNil(ws.show_number) ? ws.show_number :
+            BICst.DEFAULT_CHART_SETTING.show_number;
+    }
+
+    getWSShowRowTotal() {
+        var ws = this.getWidgetSettings();
+        return isNil(ws.show_row_total) ? ws.show_row_total :
+            BICst.DEFAULT_CHART_SETTING.show_row_total;
+    }
+
+    getWSShowColTotal() {
+        var ws = this.getWidgetSettings();
+        return isNil(ws.show_col_total) ? ws.show_col_total :
+            BICst.DEFAULT_CHART_SETTING.show_col_total;
+    }
+
+    getWSOpenRowNode() {
+        var ws = this.getWidgetSettings();
+        return isNil(ws.open_row_node) ? ws.open_row_node :
+            BICst.DEFAULT_CHART_SETTING.open_row_node;
+    }
+
+    getWSOpenColNode() {
+        var ws = this.getWidgetSettings();
+        return isNil(ws.open_col_node) ? ws.open_col_node :
+            BICst.DEFAULT_CHART_SETTING.open_col_node;
+    }
+
+    getWSMaxRow() {
+        var ws = this.getWidgetSettings();
+        return isNil(ws.max_row) ? ws.max_row :
+            BICst.DEFAULT_CHART_SETTING.max_row;
+    }
+
+    getWSMaxCol() {
+        var ws = this.getWidgetSettings();
+        return isNil(ws.max_col) ? ws.max_col :
+            BICst.DEFAULT_CHART_SETTING.max_col;
+    }
+
+    getWSFreezeDim() {
+        var ws = this.getWidgetSettings();
+        return isNil(ws.freeze_dim) ? ws.freeze_dim :
+            BICst.DEFAULT_CHART_SETTING.freeze_dim;
+    }
+
+    getWSFreezeFirstColumnById() {
+        var ws = this.getWidgetSettings();
+        return isNil(ws.freeze_first_column) ? ws.freeze_first_column :
+            BICst.DEFAULT_CHART_SETTING.freeze_first_column;
+    }
+
+    isShowWidgetRealData() {
+        return this.$$widget.get('real_data');
+    }
+
+
+    isDimensionExist(did) {
+        return this.getAllDimensionIds().indexOf(did) > -1;
+    }
+
+    getWidgetInitTimeByID() {
+        return this.$$widget.get('init_time') || new Date().getTime();
+    }
+
+    getClickedByID() {
+        return this.$$widget.get('clicked') || {};
+    }
+
+    getDrillByID() {
+        var clicked = this.getClickedByID();
+        var drills = {};
+        each(clicked, (dId, value)=> {
+            if (this.isDimensionExist(dId) && this.isDimensionById(dId)) {
+                drills[dId] = value;
+            }
+        });
+        return drills;
+    }
+
+    getLinkageValuesByID(wid) {
+        var clicked = this.getClickedByID(wid);
+        var drills = {};
+        each(clicked, (dId, value)=> {
+            if (this.isDimensionExist(dId) && !this.isDimensionById(dId)) {
+                drills[dId] = value;
+            }
+        });
+        return drills;
+    }
+
+    getWidgetFilterValueByID(wid) {
+        if (this.isWidgetExistByID(wid)) {
+            return this.$$widget.get('filter_value').toJS() || {};
+        }
+        return {};
     }
 }
 

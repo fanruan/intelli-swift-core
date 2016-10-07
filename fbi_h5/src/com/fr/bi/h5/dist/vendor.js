@@ -66981,6 +66981,28 @@
 	            return result;
 	        }
 	    }, {
+	        key: 'getRowDimensionIds',
+	        value: function getRowDimensionIds() {
+	            var result = [];
+	            this.$$widget.get('view').forEach(function ($$id, key) {
+	                if (parseInt(key) === BICst.REGION.DIMENSION1) {
+	                    result = result.concat($$id.toArray());
+	                }
+	            });
+	            return result;
+	        }
+	    }, {
+	        key: 'getColDimensionIds',
+	        value: function getColDimensionIds() {
+	            var result = [];
+	            this.$$widget.get('view').forEach(function ($$id, key) {
+	                if (parseInt(key) === BICst.REGION.DIMENSION2) {
+	                    result = result.concat($$id.toArray());
+	                }
+	            });
+	            return result;
+	        }
+	    }, {
 	        key: 'getAllUsedTargetIds',
 	        value: function getAllUsedTargetIds() {
 	            var _this3 = this;
@@ -67014,6 +67036,55 @@
 	        key: 'isFreeze',
 	        value: function isFreeze() {
 	            return this.$$widget.getIn(['settings', 'freeze_dim']);
+	        }
+	    }, {
+	        key: 'getWidgetBoundsByID',
+	        value: function getWidgetBoundsByID() {
+	            return this.$$widget.get('bounds').toJS() || {};
+	        }
+	    }, {
+	        key: 'getWidgetLinkageByID',
+	        value: function getWidgetLinkageByID() {
+	            return this.$$widget.get('linkages').toJS() || [];
+	        }
+	    }, {
+	        key: 'getWidgetViewByID',
+	        value: function getWidgetViewByID() {
+	            return this.$$widget.get('view').toJS() || {};
+	        }
+	    }, {
+	        key: 'getWidgetSubTypeByID',
+	        value: function getWidgetSubTypeByID(wid) {
+	            return this.$$widget.get('sub_type');
+	        }
+	    }, {
+	        key: 'getWidgetValueByID',
+	        value: function getWidgetValueByID(wid) {
+	            return this.$$widget.get('value').toJS();
+	        }
+	    }, {
+	        key: 'getAllLinkageFromIdsByID',
+	        value: function getAllLinkageFromIdsByID(wid) {
+	            var _this4 = this;
+
+	            var self = this,
+	                fromIds = [];
+	            var linkages = this.getWidgetLinkageByID(wid);
+	            (0, _core.each)(linkages, function (i, link) {
+	                fromIds.push(link.from);
+	                fromIds = fromIds.concat(_this4.getAllLinkageFromIdsByID(link.to));
+	            });
+	            return fromIds;
+	        }
+	    }, {
+	        key: 'getRegionTypeByDimensionID',
+	        value: function getRegionTypeByDimensionID(dId) {
+	            var view = this.getWidgetViewByID();
+	            return (0, _core.findKey)(view, function (regionType, dIds) {
+	                if (dIds.indexOf(dId) > -1) {
+	                    return true;
+	                }
+	            });
 	        }
 	    }, {
 	        key: 'isControl',
@@ -67141,6 +67212,602 @@
 	                case BICst.WIDGET.NUMBER:
 	                case BICst.WIDGET.GENERAL_QUERY:
 	            }
+	        }
+	    }, {
+	        key: 'getWidgetSettings',
+	        value: function getWidgetSettings() {
+	            return this.$$widget.get('settings').toJS();
+	        }
+
+	        //settings  ---- start ----
+
+	    }, {
+	        key: 'getWSTableForm',
+	        value: function getWSTableForm() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.table_form) ? ws.table_form : BICst.DEFAULT_CHART_SETTING.table_form;
+	        }
+	    }, {
+	        key: 'getWSThemeColor',
+	        value: function getWSThemeColor() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.theme_color) ? ws.theme_color : BICst.DEFAULT_CHART_SETTING.theme_color;
+	        }
+	    }, {
+	        key: 'getWSTableStyle',
+	        value: function getWSTableStyle() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.table_style) ? ws.table_style : BICst.DEFAULT_CHART_SETTING.table_style;
+	        }
+	    }, {
+	        key: 'getWSShowNumber',
+	        value: function getWSShowNumber() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.show_number) ? ws.show_number : BICst.DEFAULT_CHART_SETTING.show_number;
+	        }
+	    }, {
+	        key: 'getWSShowRowTotal',
+	        value: function getWSShowRowTotal() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.show_row_total) ? ws.show_row_total : BICst.DEFAULT_CHART_SETTING.show_row_total;
+	        }
+	    }, {
+	        key: 'getWSShowColTotal',
+	        value: function getWSShowColTotal() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.show_col_total) ? ws.show_col_total : BICst.DEFAULT_CHART_SETTING.show_col_total;
+	        }
+	    }, {
+	        key: 'getWSOpenRowNode',
+	        value: function getWSOpenRowNode() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.open_row_node) ? ws.open_row_node : BICst.DEFAULT_CHART_SETTING.open_row_node;
+	        }
+	    }, {
+	        key: 'getWSOpenColNode',
+	        value: function getWSOpenColNode() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.open_col_node) ? ws.open_col_node : BICst.DEFAULT_CHART_SETTING.open_col_node;
+	        }
+	    }, {
+	        key: 'getWSMaxRow',
+	        value: function getWSMaxRow() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.max_row) ? ws.max_row : BICst.DEFAULT_CHART_SETTING.max_row;
+	        }
+	    }, {
+	        key: 'getWSMaxCol',
+	        value: function getWSMaxCol() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.max_col) ? ws.max_col : BICst.DEFAULT_CHART_SETTING.max_col;
+	        }
+	    }, {
+	        key: 'getWSFreezeDim',
+	        value: function getWSFreezeDim() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.freeze_dim) ? ws.freeze_dim : BICst.DEFAULT_CHART_SETTING.freeze_dim;
+	        }
+	    }, {
+	        key: 'getWSFreezeFirstColumnById',
+	        value: function getWSFreezeFirstColumnById() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.freeze_first_column) ? ws.freeze_first_column : BICst.DEFAULT_CHART_SETTING.freeze_first_column;
+	        }
+	    }, {
+	        key: 'getWSShowRules',
+	        value: function getWSShowRules() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.rules_display) ? ws.rules_display : BICst.DEFAULT_CHART_SETTING.bubble_display;
+	        }
+	    }, {
+	        key: 'getWSBubbleFixedColors',
+	        value: function getWSBubbleFixedColors() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.fixed_colors) ? ws.fixed_colors : BICst.DASHBOARD_STYLE_CONDITIONS;
+	        }
+	    }, {
+	        key: 'getWSBubbleGradients',
+	        value: function getWSBubbleGradients() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.gradient_colors) ? ws.gradient_colors : BICst.BUBBLE_GRADIENT_COLOR;
+	        }
+	    }, {
+	        key: 'getWSBubbleStyle',
+	        value: function getWSBubbleStyle() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.bubble_style) ? ws.bubble_style : BICst.DEFAULT_CHART_SETTING.bubble_style;
+	        }
+	    }, {
+	        key: 'getWSTransferFilter',
+	        value: function getWSTransferFilter() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.transfer_filter) ? ws.transfer_filter : BICst.DEFAULT_CHART_SETTING.transfer_filter;
+	        }
+	    }, {
+	        key: 'getWSShowName',
+	        value: function getWSShowName() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.show_name) ? ws.show_name : BICst.DEFAULT_CHART_SETTING.show_name;
+	        }
+	    }, {
+	        key: 'getWSNamePos',
+	        value: function getWSNamePos() {
+	            var ws = this.getWidgetSettings();
+	            var gsNamePos = this.getGSNamePos();
+	            return ws.name_pos || gsNamePos || BICst.DEFAULT_CHART_SETTING.name_pos;
+	        }
+	    }, {
+	        key: 'getWSColumnSize',
+	        value: function getWSColumnSize() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.column_size) ? ws.column_size : [];
+	        }
+	    }, {
+	        key: 'getWSNullContinue',
+	        value: function getWSNullContinue() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.null_continue) ? ws.null_continue : BICst.DEFAULT_CHART_SETTING.null_continue;
+	        }
+	    }, {
+	        key: 'getWSChartColor',
+	        value: function getWSChartColor() {
+	            var self = this;
+
+	            function getDefaultColor() {
+	                var defaultChartConfig = self.getDefaultChartConfig();
+	                var type = defaultChartConfig.defaultColor;
+	                if (BI.isKey(type)) {
+	                    var finded = (0, _core.find)(defaultChartConfig.styleList, function (style) {
+	                        return style.value === type;
+	                    });
+	                    if (finded) {
+	                        return finded.colors;
+	                    }
+	                }
+	                if (defaultChartConfig.styleList.length > 0) {
+	                    return defaultChartConfig.styleList[0].colors;
+	                }
+	            }
+
+	            var gs = this.getGlobalStyle();
+	            var ws = this.getWidgetSettings();
+	            return ws.chart_color || gs.chartColor
+	            // || getDefaultColor()
+	            || BICst.DEFAULT_CHART_SETTING.chart_color;
+	        }
+	    }, {
+	        key: 'getWSChartStyle',
+	        value: function getWSChartStyle() {
+	            var self = this;
+
+	            function getChartStyle() {
+	                var defaultChartConfig = self.getDefaultChartConfig();
+	                return defaultChartConfig.chartStyle;
+	            }
+
+	            var ws = this.getWidgetSettings();
+	            var chartStyle;
+	            if ((0, _core.isNil)(ws.chart_style)) {
+	                return ws.chart_style;
+	            }
+	            var gs = this.getGlobalStyle();
+	            if ((0, _core.isNil)(gs.chartStyle)) {
+	                return gs.chartStyle;
+	            }
+	            // if (isNil(chartStyle = getChartStyle())) {
+	            //     return chartStyle;
+	            // }
+	            return BICst.DEFAULT_CHART_SETTING.chart_style;
+	        }
+	    }, {
+	        key: 'getWSChartLineType',
+	        value: function getWSChartLineType() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.chart_line_type) ? ws.chart_line_type : BICst.DEFAULT_CHART_SETTING.chart_line_type;
+	        }
+	    }, {
+	        key: 'getWSChartPieType',
+	        value: function getWSChartPieType() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.chart_pie_type) ? ws.chart_pie_type : BICst.DEFAULT_CHART_SETTING.chart_pie_type;
+	        }
+	    }, {
+	        key: 'getWSChartRadarType',
+	        value: function getWSChartRadarType() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.chart_radar_type) ? ws.chart_radar_type : BICst.DEFAULT_CHART_SETTING.chart_radar_type;
+	        }
+	    }, {
+	        key: 'getWSChartDashboardType',
+	        value: function getWSChartDashboardType() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.chart_dashboard_type) ? ws.chart_dashboard_type : BICst.DEFAULT_CHART_SETTING.chart_dashboard_type;
+	        }
+	    }, {
+	        key: 'getWSChartTotalAngle',
+	        value: function getWSChartTotalAngle() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.chart_total_angle) ? ws.chart_total_angle : BICst.DEFAULT_CHART_SETTING.chart_total_angle;
+	        }
+	    }, {
+	        key: 'getWSChartInnerRadius',
+	        value: function getWSChartInnerRadius() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.chart_inner_radius) ? ws.chart_inner_radius : BICst.DEFAULT_CHART_SETTING.chart_inner_radius;
+	        }
+	    }, {
+	        key: 'getWSLeftYAxisStyle',
+	        value: function getWSLeftYAxisStyle() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.left_y_axis_style) ? ws.left_y_axis_style : BICst.DEFAULT_CHART_SETTING.left_y_axis_style;
+	        }
+	    }, {
+	        key: 'getWSXAxisStyle',
+	        value: function getWSXAxisStyle() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.x_axis_style) ? ws.x_axis_style : BICst.DEFAULT_CHART_SETTING.x_axis_style;
+	        }
+	    }, {
+	        key: 'getWSRightYAxisStyle',
+	        value: function getWSRightYAxisStyle() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.right_y_axis_style) ? ws.right_y_axis_style : BICst.DEFAULT_CHART_SETTING.right_y_axis_style;
+	        }
+	    }, {
+	        key: 'getWSRightYAxis2Style',
+	        value: function getWSRightYAxis2Style() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.right_y_axis_second_style) ? ws.right_y_axis_second_style : BICst.DEFAULT_CHART_SETTING.right_y_axis_second_style;
+	        }
+	    }, {
+	        key: 'getWSRightYAxisNumLevel',
+	        value: function getWSRightYAxisNumLevel() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.right_y_axis_number_level) ? ws.right_y_axis_number_level : BICst.DEFAULT_CHART_SETTING.right_y_axis_number_level;
+	        }
+	    }, {
+	        key: 'getWSRightYAxis2NumLevel',
+	        value: function getWSRightYAxis2NumLevel() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.right_y_axis_second_number_level) ? ws.right_y_axis_second_number_level : BICst.DEFAULT_CHART_SETTING.right_y_axis_second_number_level;
+	        }
+	    }, {
+	        key: 'getWSLeftYAxisNumLevel',
+	        value: function getWSLeftYAxisNumLevel() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.left_y_axis_number_level) ? ws.left_y_axis_number_level : BICst.DEFAULT_CHART_SETTING.left_y_axis_number_level;
+	        }
+	    }, {
+	        key: 'getWSNumberOfPointer',
+	        value: function getWSNumberOfPointer() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.number_of_pointer) ? ws.number_of_pointer : BICst.POINTER.ONE;
+	        }
+	    }, {
+	        key: 'getWSScale',
+	        value: function getWSScale() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.auto_custom) ? ws.auto_custom : BICst.SCALE_SETTING.AUTO;
+	        }
+	    }, {
+	        key: 'getWSDashboardStyles',
+	        value: function getWSDashboardStyles() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.style_conditions) ? ws.style_conditions : BICst.DASHBOARD_STYLE_CONDITIONS;
+	        }
+	    }, {
+	        key: 'getWSMapStyles',
+	        value: function getWSMapStyles() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.map_styles) ? ws.map_styles : BICst.MAP_STYLE_CONDITIONS;
+	        }
+	    }, {
+	        key: 'getWSDashboardNumLevel',
+	        value: function getWSDashboardNumLevel() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.dashboard_number_level) ? ws.dashboard_number_level : BICst.DEFAULT_CHART_SETTING.dashboard_number_level;
+	        }
+	    }, {
+	        key: 'getWSXAxisNumLevel',
+	        value: function getWSXAxisNumLevel() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.x_axis_number_level) ? ws.x_axis_number_level : BICst.DEFAULT_CHART_SETTING.x_axis_number_level;
+	        }
+	    }, {
+	        key: 'getWSLeftYAxisUnit',
+	        value: function getWSLeftYAxisUnit() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.left_y_axis_unit) ? ws.left_y_axis_unit : BICst.DEFAULT_CHART_SETTING.left_y_axis_unit;
+	        }
+	    }, {
+	        key: 'getWSDashboardUnit',
+	        value: function getWSDashboardUnit() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.dashboard_unit) ? ws.dashboard_unit : BICst.DEFAULT_CHART_SETTING.dashboard_unit;
+	        }
+	    }, {
+	        key: 'getWSMinScale',
+	        value: function getWSMinScale() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.min_scale) ? ws.min_scale : BICst.DEFAULT_CHART_SETTING.min_scale;
+	        }
+	    }, {
+	        key: 'getWSMaxScale',
+	        value: function getWSMaxScale() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.max_scale) ? ws.max_scale : BICst.DEFAULT_CHART_SETTING.max_scale;
+	        }
+	    }, {
+	        key: 'getWSShowPercentage',
+	        value: function getWSShowPercentage() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.show_percentage) ? ws.show_percentage : BICst.DEFAULT_CHART_SETTING.percentage_not_show;
+	        }
+	    }, {
+	        key: 'getWSXAxisUnit',
+	        value: function getWSXAxisUnit() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.x_axis_unit) ? ws.x_axis_unit : BICst.DEFAULT_CHART_SETTING.x_axis_unit;
+	        }
+	    }, {
+	        key: 'getWSRightYAxisUnit',
+	        value: function getWSRightYAxisUnit() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.right_y_axis_unit) ? ws.right_y_axis_unit : BICst.DEFAULT_CHART_SETTING.right_y_axis_unit;
+	        }
+	    }, {
+	        key: 'getWSRightYAxis2Unit',
+	        value: function getWSRightYAxis2Unit() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.right_y_axis_second_unit) ? ws.right_y_axis_second_unit : BICst.DEFAULT_CHART_SETTING.right_y_axis_second_unit;
+	        }
+	    }, {
+	        key: 'getWSShowLeftYAxisTitle',
+	        value: function getWSShowLeftYAxisTitle() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.show_left_y_axis_title) ? ws.show_left_y_axis_title : BICst.DEFAULT_CHART_SETTING.show_left_y_axis_title;
+	        }
+	    }, {
+	        key: 'getWSShowRightYAxisTitle',
+	        value: function getWSShowRightYAxisTitle() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.show_right_y_axis_title) ? ws.show_right_y_axis_title : BICst.DEFAULT_CHART_SETTING.show_right_y_axis_title;
+	        }
+	    }, {
+	        key: 'getWSShowRightYAxis2Title',
+	        value: function getWSShowRightYAxis2Title() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.show_right_y_axis_second_title) ? ws.show_right_y_axis_second_title : BICst.DEFAULT_CHART_SETTING.show_right_y_axis_second_title;
+	        }
+	    }, {
+	        key: 'getWSLeftYAxisTitle',
+	        value: function getWSLeftYAxisTitle() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.left_y_axis_title) ? ws.left_y_axis_title : BICst.DEFAULT_CHART_SETTING.left_y_axis_title;
+	        }
+	    }, {
+	        key: 'getWSRightYAxisTitle',
+	        value: function getWSRightYAxisTitle() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.right_y_axis_title) ? ws.right_y_axis_title : BICst.DEFAULT_CHART_SETTING.right_y_axis_title;
+	        }
+	    }, {
+	        key: 'getWSRightYAxis2Title',
+	        value: function getWSRightYAxis2Title() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.right_y_axis_second_title) ? ws.right_y_axis_second_title : BICst.DEFAULT_CHART_SETTING.right_y_axis_second_title;
+	        }
+	    }, {
+	        key: 'getWSShowXAxisTitle',
+	        value: function getWSShowXAxisTitle() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.show_x_axis_title) ? ws.show_x_axis_title : BICst.DEFAULT_CHART_SETTING.show_x_axis_title;
+	        }
+	    }, {
+	        key: 'getWSXAxisTitle',
+	        value: function getWSXAxisTitle() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.x_axis_title) ? ws.x_axis_title : BICst.DEFAULT_CHART_SETTING.x_axis_title;
+	        }
+	    }, {
+	        key: 'getWSLeftYAxisReversed',
+	        value: function getWSLeftYAxisReversed() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.left_y_axis_reversed) ? ws.left_y_axis_reversed : BICst.DEFAULT_CHART_SETTING.left_y_axis_reversed;
+	        }
+	    }, {
+	        key: 'getWSRightYAxisReversed',
+	        value: function getWSRightYAxisReversed() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.right_y_axis_reversed) ? ws.right_y_axis_reversed : BICst.DEFAULT_CHART_SETTING.right_y_axis_reversed;
+	        }
+	    }, {
+	        key: 'getWSRightYAxis2Reversed',
+	        value: function getWSRightYAxis2Reversed() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.right_y_axis_second_reversed) ? ws.right_y_axis_second_reversed : BICst.DEFAULT_CHART_SETTING.right_y_axis_second_reversed;
+	        }
+	    }, {
+	        key: 'getWSChartLegend',
+	        value: function getWSChartLegend() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.chart_legend) ? ws.chart_legend : BICst.DEFAULT_CHART_SETTING.chart_legend;
+	        }
+	    }, {
+	        key: 'getWSShowDataLabel',
+	        value: function getWSShowDataLabel() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.show_data_label) ? ws.show_data_label : BICst.DEFAULT_CHART_SETTING.show_data_label;
+	        }
+	    }, {
+	        key: 'getWSShowDataTable',
+	        value: function getWSShowDataTable() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.show_data_table) ? ws.show_data_table : BICst.DEFAULT_CHART_SETTING.show_data_table;
+	        }
+	    }, {
+	        key: 'getWSShowGridLine',
+	        value: function getWSShowGridLine() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.show_grid_line) ? ws.show_grid_line : BICst.DEFAULT_CHART_SETTING.show_grid_line;
+	        }
+	    }, {
+	        key: 'getWSMinBubbleSize',
+	        value: function getWSMinBubbleSize() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.bubble_min_size) ? ws.bubble_min_size : BICst.DEFAULT_CHART_SETTING.bubble_min_size;
+	        }
+	    }, {
+	        key: 'getWSMaxBubbleSize',
+	        value: function getWSMaxBubbleSize() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.bubble_max_size) ? ws.bubble_max_size : BICst.DEFAULT_CHART_SETTING.bubble_max_size;
+	        }
+	    }, {
+	        key: 'getWSNumberSeparators',
+	        value: function getWSNumberSeparators() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.num_separators) ? ws.num_separators : BICst.DEFAULT_CHART_SETTING.num_separators;
+	        }
+	    }, {
+	        key: 'getWSRightNumberSeparators',
+	        value: function getWSRightNumberSeparators() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.right_num_separators) ? ws.right_num_separators : BICst.DEFAULT_CHART_SETTING.right_num_separators;
+	        }
+	    }, {
+	        key: 'getWSRight2NumberSeparators',
+	        value: function getWSRight2NumberSeparators() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.right2_num_separators) ? ws.right2_num_separators : BICst.DEFAULT_CHART_SETTING.right_num_separators;
+	        }
+	    }, {
+	        key: 'getWSMinimalist',
+	        value: function getWSMinimalist() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.minimalist_model) ? ws.minimalist_model : BICst.DEFAULT_CHART_SETTING.minimalist_model;
+	        }
+	    }, {
+	        key: 'getWSBigDataModel',
+	        value: function getWSBigDataModel() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.big_data_mode) ? ws.big_data_mode : BICst.DEFAULT_CHART_SETTING.big_data_mode;
+	        }
+	    }, {
+	        key: 'getWSShowYCustomScale',
+	        value: function getWSShowYCustomScale() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.show_y_custom_scale) ? ws.show_y_custom_scale : BICst.DEFAULT_CHART_SETTING.show_y_custom_scale;
+	        }
+	    }, {
+	        key: 'getWSCustomYScale',
+	        value: function getWSCustomYScale() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.custom_y_scale) ? ws.custom_y_scale : BICst.DEFAULT_CHART_SETTING.custom_scale;
+	        }
+	    }, {
+	        key: 'getWSShowXCustomScale',
+	        value: function getWSShowXCustomScale() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.show_x_custom_scale) ? ws.show_x_custom_scale : BICst.DEFAULT_CHART_SETTING.show_x_custom_scale;
+	        }
+	    }, {
+	        key: 'getWSCustomXScale',
+	        value: function getWSCustomXScale() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.custom_x_scale) ? ws.custom_x_scale : BICst.DEFAULT_CHART_SETTING.custom_scale;
+	        }
+	    }, {
+	        key: 'getWSShowZCustomScale',
+	        value: function getWSShowZCustomScale() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.show_z_custom_scale) ? ws.show_z_custom_scale : BICst.DEFAULT_CHART_SETTING.show_z_custom_scale;
+	        }
+	    }, {
+	        key: 'getWSCustomZScale',
+	        value: function getWSCustomZScale() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.custom_z_scale) ? ws.custom_z_scale : BICst.DEFAULT_CHART_SETTING.custom_scale;
+	        }
+	    }, {
+	        key: 'getWSShowZoom',
+	        value: function getWSShowZoom() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.show_zoom) ? ws.show_zoom : BICst.DEFAULT_CHART_SETTING.show_zoom;
+	        }
+	    }, {
+	        key: 'getWSTextDirection',
+	        value: function getWSTextDirection() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.text_direction) ? ws.text_direction : BICst.DEFAULT_CHART_SETTING.text_direction;
+	        }
+	    }, {
+	        key: 'getWSShowBackground',
+	        value: function getWSShowBackground() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.show_background_layer) ? ws.show_background_layer : BICst.DEFAULT_CHART_SETTING.show_background_layer;
+	        }
+	    }, {
+	        key: 'getWSBackgroundLayerInfo',
+	        value: function getWSBackgroundLayerInfo() {
+	            var ws = this.getWidgetSettings();
+	            return (0, _core.isNil)(ws.background_layer_info) ? ws.background_layer_info : BICst.DEFAULT_CHART_SETTING.background_layer_info;
+	        }
+	    }, {
+	        key: 'isShowWidgetRealData',
+	        value: function isShowWidgetRealData() {
+	            return this.$$widget.get('real_data');
+	        }
+	    }, {
+	        key: 'isDimensionExist',
+	        value: function isDimensionExist(did) {
+	            return this.getAllDimensionIds().indexOf(did) > -1;
+	        }
+	    }, {
+	        key: 'getWidgetInitTimeByID',
+	        value: function getWidgetInitTimeByID() {
+	            return this.$$widget.get('init_time') || new Date().getTime();
+	        }
+	    }, {
+	        key: 'getClickedByID',
+	        value: function getClickedByID() {
+	            return this.$$widget.get('clicked') || {};
+	        }
+	    }, {
+	        key: 'getDrillByID',
+	        value: function getDrillByID() {
+	            var _this5 = this;
+
+	            var clicked = this.getClickedByID();
+	            var drills = {};
+	            (0, _core.each)(clicked, function (dId, value) {
+	                if (_this5.isDimensionExist(dId) && _this5.isDimensionById(dId)) {
+	                    drills[dId] = value;
+	                }
+	            });
+	            return drills;
+	        }
+	    }, {
+	        key: 'getLinkageValuesByID',
+	        value: function getLinkageValuesByID(wid) {
+	            var _this6 = this;
+
+	            var clicked = this.getClickedByID(wid);
+	            var drills = {};
+	            (0, _core.each)(clicked, function (dId, value) {
+	                if (_this6.isDimensionExist(dId) && !_this6.isDimensionById(dId)) {
+	                    drills[dId] = value;
+	                }
+	            });
+	            return drills;
+	        }
+	    }, {
+	        key: 'getWidgetFilterValueByID',
+	        value: function getWidgetFilterValueByID(wid) {
+	            if (this.isWidgetExistByID(wid)) {
+	                return this.$$widget.get('filter_value').toJS() || {};
+	            }
+	            return {};
 	        }
 	    }]);
 

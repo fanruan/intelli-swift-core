@@ -82,7 +82,23 @@ class TableComponentHelper {
         return result;
     }
 
-    isFreeze(){
+    getGroupHeader() {
+        const result = [];
+        const ids = this.widget.getRowDimensionIds();
+        each(ids, (id)=> {
+            const dimension = new Dimension(this.widget.get$$DimensionById(id));
+            result.push({
+                text: dimension.getName()
+            });
+        });
+        return result;
+    }
+
+    getGroupItems() {
+        return [];
+    }
+
+    isFreeze() {
         return this.widget.isFreeze();
     }
 }
