@@ -76,7 +76,6 @@ BI.ChartCombineFormatItemFactory = {
                 "borderRadius": 0,
                 "endAngle": 360,
                 "innerRadius": "0.0%",
-
                 "layout": "horizontal",
                 "hinge": "rgb(101,107,109)",
                 "dataLabels": {
@@ -187,7 +186,6 @@ BI.ChartCombineFormatItemFactory = {
                 "gap": "22.0%",
                 "animation": true,
                 "lineWidth": 2,
-
                 "bubble": {
                     "large": false,
                     "connectNulls": false,

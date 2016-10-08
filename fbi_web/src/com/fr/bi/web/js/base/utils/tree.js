@@ -388,24 +388,26 @@
     };
 
     BI.extend(BI.Tree, {
-        transformToArrayFormat: function (nodes) {
+        transformToArrayFormat: function (nodes, pId) {
             if (!nodes) return [];
             var r = [];
             if (BI.isArray(nodes)) {
                 for (var i = 0, l = nodes.length; i < l; i++) {
                     var node = BI.clone(nodes[i]);
+                    node.pId = pId;
                     delete node.children;
                     r.push(node);
                     if (nodes[i]["children"]) {
-                        r = r.concat(BI.Tree.transformToArrayFormat(nodes[i]["children"]));
+                        r = r.concat(BI.Tree.transformToArrayFormat(nodes[i]["children"], node.id));
                     }
                 }
             } else {
                 var newNodes = BI.clone(nodes);
+                newNodes.pId = pId;
                 delete newNodes.children;
                 r.push(newNodes);
                 if (nodes["children"]) {
-                    r = r.concat(BI.Tree.transformToArrayFormat(nodes["children"]));
+                    r = r.concat(BI.Tree.transformToArrayFormat(nodes["children"], newNodes.id));
                 }
             }
             return r;

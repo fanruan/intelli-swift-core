@@ -87,7 +87,11 @@ BI.SelectDataCombo = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
-        return this.combo.getValue();
+        var val = this.combo.getValue();
+        return {
+            type: val.type,
+            value: val.value
+        };
     },
 
     populate: function () {
