@@ -14,6 +14,7 @@ import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.factory.BIMateFactory;
 import com.fr.bi.common.factory.IModuleFactory;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
+import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
@@ -29,7 +30,7 @@ public class BISubscribe implements ISubscribe {
     private ISubscribeID subscribeID;
     private IRouter router;
     private ITrigger trigger;
-    private boolean verbose = true;
+    private boolean verbose = PerformancePlugManager.getInstance().verboseLog();
 
     public BISubscribe(ISubscribeID subscribeID, IProcessor processor) {
         BINonValueUtils.checkNull(subscribeID);
@@ -56,8 +57,8 @@ public class BISubscribe implements ISubscribe {
         try {
             if (verbose) {
                 try {
-                    System.out.println("Sub:" + subscribeID.getIdentityValue() + "\nSub receive:" + message);
-                    System.out.println("Left condition:\n" + trigger.leftCondition());
+                    BILogger.getLogger().info("Sub:" + subscribeID.getIdentityValue() + "\nSub receive:" + message);
+                    BILogger.getLogger().info("Left condition:\n" + trigger.leftCondition());
                 }catch (Exception e){
                     BILogger.getLogger().error(e.getMessage(),e);
                 }
