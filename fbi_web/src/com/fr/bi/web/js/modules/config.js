@@ -1371,6 +1371,8 @@ BICst.DEFAULT_CHART_SETTING = {
     table_form: BICst.TABLE_FORM.OPEN_ROW,
     theme_color: "#65bce7",
     table_style: BICst.TABLE_STYLE.STYLE1,
+    title: "",
+    show_title: true,
     show_number: false,
     show_row_total: true,
     show_col_total: true,

@@ -525,9 +525,9 @@
                         }
                     }
                     //维度公式过滤所用到的指标ID也要替换掉
-                    if(BI.has(oldFilter, "formula_ids")){
+                    if (BI.has(oldFilter, "formula_ids")) {
                         var ids = oldFilter.formula_ids || [];
-                        if(BI.isNotEmptyArray(ids) && BI.isNull(BI.Utils.getFieldTypeByID(ids[0]))){
+                        if (BI.isNotEmptyArray(ids) && BI.isNull(BI.Utils.getFieldTypeByID(ids[0]))) {
                             BI.each(ids, function (id, tId) {
                                 var result = createDimensionsAndTargets(tId);
                                 filter.filter_value = filter.filter_value.replaceAll(tId, result.id);
@@ -655,6 +655,24 @@
         },
 
         //settings  ---- start ----
+        getWSShowTitleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_title) ? ws.show_title :
+                BICst.DEFAULT_CHART_SETTING.show_title;
+        },
+
+        getWSTitleNameByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.title) ? ws.title :
+                BICst.DEFAULT_CHART_SETTING.title
+        },
+
+        getWSDetailSettingByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.title_detail) ? ws.title_detail :
+            {};
+        },
+
         getWSTableFormByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.table_form) ? ws.table_form :

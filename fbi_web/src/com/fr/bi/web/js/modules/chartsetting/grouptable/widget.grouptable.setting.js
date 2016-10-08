@@ -26,7 +26,7 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
     _init: function () {
         BI.GroupTableSetting.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        //组件标题
+        //显示组件标题
         this.showTitle = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Chart_Title"),
@@ -39,6 +39,18 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
 
+        //组件标题
+        this.title = BI.createWidget({
+            type: "bi.sign_editor",
+            width: this.constant.EDITOR_WIDTH,
+            height: this.constant.EDITOR_HEIGHT,
+        });
+
+        this.title.on(BI.SignEditor.EVENT_CHANGE, function() {
+            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+        });
+
+        //详细设置
         this.titleDetailSettting = BI.createWidget({
             type: "bi.show_title_detailed_setting_combo"
         });
@@ -54,8 +66,16 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
                 type: "bi.label",
                 text: BI.i18nText("BI-Widget_Title"),
                 cls: "line-title",
-                height: this.constant.SINGLE_LINE_HEIGHT
-            }, this.showTitle, this.titleDetailSettting], {
+            }, {
+                type: "bi.vertical_adapt",
+                items: [this.showTitle]
+            }, {
+                type: "bi.vertical_adapt",
+                items: [this.title]
+            },{
+                type: "bi.vertical_adapt",
+                items: [this.titleDetailSettting]
+            }], {
                 height: this.constant.SINGLE_LINE_HEIGHT
             }),
             hgap: this.constant.SIMPLE_H_GAP
@@ -276,6 +296,9 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
 
     getValue: function () {
         return {
+            show_title: this.showTitle.isSelected(),
+            title: this.title.getValue(),
+            title_detail: this.titleDetailSettting.getValue(),
             table_form: this.tableFormGroup.getValue()[0],
             theme_color: this.colorSelector.getValue(),
             table_style: this.tableSyleGroup.getValue()[0],
@@ -290,6 +313,9 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
 
     populate: function () {
         var wId = this.options.wId;
+        this.showTitle.setSelected(BI.Utils.getWSShowTitleByID(wId));
+        this.title.setValue(BI.Utils.getWSTitleNameByID(wId));
+        this.titleDetailSettting.setValue(BI.Utils.getWSDetailSettingByID(wId));
         this.tableFormGroup.setValue(BI.Utils.getWSTableFormByID(wId));
         this.colorSelector.setValue(BI.Utils.getWSThemeColorByID(wId));
         this.tableSyleGroup.setValue(BI.Utils.getWSTableStyleByID(wId));
@@ -302,6 +328,9 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
     },
 
     setValue: function (v) {
+        this.showTitle.setSelected(v.show_title);
+        this.title.setValue(v.title);
+        this.titleDetailSettting.setValue(v.title_detail);
         this.tableFormGroup.setValue(v.table_form);
         this.colorSelector.setValue(v.theme_color);
         this.tableSyleGroup.setValue(v.table_style);

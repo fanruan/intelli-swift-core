@@ -7248,6 +7248,12 @@
         },
 
         updateWithData:function(){
+
+            if(this._data.series){
+                var geo = this._data.series.vanchart.components.geo;
+                this._latlng = geo.getDataPointLatLng(this._data);
+            }
+
             this.onRemove();
 
             this.onAdd();
@@ -8032,6 +8038,37 @@
             var radius = options && options.radius || this._radius;
             L.Path.prototype.setStyle.call(this, options);
             this.setRadius(radius);
+            return this;
+        },
+
+        setBubbleStyle:function(options){
+            var radius = options && options.radius || this._radius;
+            L.Path.prototype.setStyle.call(this, options);
+
+            this.options.radius = this._radius = radius;
+            
+            if(this._data && this._data.series && this._data.series.animation){
+
+                this._project();
+
+                var layer = this, p = layer._point, r = layer._radius,
+                    r2 = layer._radiusY || r,
+                    arc = 'a' + r + ',' + r2 + ' 0 1,0 ';
+
+                // drawing a circle with two half-arcs
+                var d = layer._empty() ? 'M0 0' :
+                'M' + (p.x - r) + ',' + p.y +
+                arc + (r * 2) + ',0 ' +
+                arc + (-r * 2) + ',0 ';
+
+                d3.select(layer._path)
+                    .transition().duration(500).ease('back-out')
+                    .attr('d', d);
+
+            }else if (this._map) {
+                this._renderer._updatePath(this);
+            }
+
             return this;
         },
 
@@ -9763,7 +9800,7 @@
             if(vanchart && vanchart.components.rangeLegend){
                 var rangeLegend = vanchart.components.rangeLegend;
                 if(rangeLegend.options.visible){
-                    if(VanUtils.containsPoint(rangeLegend.bounds, [first.layerX || first.clientX, first.layerY || first.clientY])){
+                    if(VanUtils.containsPoint(rangeLegend.bounds, VanUtils.getMousePos(e, vanchart.dom))){
                         return;
                     }
                 }
