@@ -148,9 +148,10 @@ class MultiTreeSelectorWidget extends Component {
             this._helper.disSelectOneNode(rowData);
         }
         this.setState({
-            items: this._helper.getItems()
+            items: this._helper.getItems(),
+            value: this._helper.getSelectedValue()
         }, ()=>{
-            this.props.onValueChange(this._helper.getSelectedValue());
+            this.props.onValueChange(this.state.value);
         });
     }
 }

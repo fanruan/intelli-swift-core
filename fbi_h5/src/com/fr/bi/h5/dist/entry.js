@@ -2422,9 +2422,12 @@ webpackJsonp([0],{
 	        value: function renderScene(route, navigationOperations, onComponentRef) {
 	            var props = _objectWithoutProperties(this.props, []);
 
+	            var name = route.name;
+	            var Component = route.Component;
+	            var title = route.title;
 	            var _onValueChange = route.onValueChange;
 
-	            var others = _objectWithoutProperties(route, ['onValueChange']);
+	            var others = _objectWithoutProperties(route, ['name', 'Component', 'title', 'onValueChange']);
 
 	            if (route.name === 'index') {
 	                if (this.template.hasControlWidget()) {
@@ -2437,9 +2440,9 @@ webpackJsonp([0],{
 	                }
 	                return _lib2.default.createElement(_Layout2.default, _extends({ width: width, height: height }, props));
 	            }
-	            return _lib2.default.createElement(route.Component, _extends({
+	            return _lib2.default.createElement(Component, _extends({
 	                width: width, height: height - 50
-	            }, props, others, {
+	            }, others, {
 	                onValueChange: function onValueChange($template) {
 	                    _onValueChange && _onValueChange($template);
 	                    route.$template = $template;
@@ -2541,6 +2544,8 @@ webpackJsonp([0],{
 	    value: true
 	});
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _reactMixin = __webpack_require__(206);
@@ -2607,11 +2612,11 @@ webpackJsonp([0],{
 	    }, {
 	        key: '_onPress',
 	        value: function _onPress() {
-	            this.props.navigator.push({
+	            this.props.navigator.push(_extends({}, this.props, {
 	                name: 'list',
 	                Component: _Controls2.default,
 	                title: '参数查询'
-	            });
+	            }));
 	        }
 	    }, {
 	        key: 'render',
@@ -3902,13 +3907,18 @@ webpackJsonp([0],{
 	    }, {
 	        key: '_onSelected',
 	        value: function _onSelected(rowData, sel) {
+	            var _this6 = this;
+
 	            if (sel.checked === true) {
 	                this._helper.selectOneNode(rowData);
 	            } else {
 	                this._helper.disSelectOneNode(rowData);
 	            }
 	            this.setState({
-	                items: this._helper.getItems()
+	                items: this._helper.getItems(),
+	                value: this._helper.getSelectedValue()
+	            }, function () {
+	                _this6.props.onValueChange(_this6.state.value);
 	            });
 	        }
 	    }]);
@@ -4174,15 +4184,112 @@ webpackJsonp([0],{
 	            track(selected_values, '');
 	        }
 	    }, {
+	        key: '_getKey',
+	        value: function _getKey(values) {
+	            return values.join('');
+	        }
+	    }, {
 	        key: '_getRouteKey',
 	        value: function _getRouteKey(route) {
+	            return this._getKey(this._getRouteValues(route));
+	        }
+	    }, {
+	        key: '_getRouteValues',
+	        value: function _getRouteValues(route) {
 	            var _this3 = this;
 
-	            var result = '';
+	            var result = [];
 	            (0, _core.each)(route, function (key) {
-	                result += _this3.map[key].value;
+	                result.push(_this3.map[key].value || _this3.map[key].text);
 	            });
 	            return result;
+	        }
+	    }, {
+	        key: '_getTreeList',
+	        value: function _getTreeList(map) {
+	            var result = [];
+	            var track = function track(node, parent) {
+	                (0, _core.each)(node, function (value, key) {
+	                    if ((0, _core.isPlainObject)(value) && (0, _core.isEmpty)(value)) {
+	                        result.push(parent.concat(key));
+	                    } else {
+	                        track(value, parent.concat(key));
+	                    }
+	                });
+	            };
+	            track(map, []);
+	            return result;
+	        }
+	    }, {
+	        key: '_getTree',
+	        value: function _getTree(map, values) {
+	            var cur = map;
+	            (0, _core.some)(values, function (value) {
+	                if (cur[value] == null) {
+	                    return true;
+	                }
+	                cur = cur[value];
+	            });
+	            return cur;
+	        }
+	    }, {
+	        key: '_addTreeNode',
+	        value: function _addTreeNode(map, values, key, value) {
+	            var cur = map;
+	            (0, _core.each)(values, function (value) {
+	                if (cur[value] == null) {
+	                    cur[value] = {};
+	                }
+	                cur = cur[value];
+	            });
+	            cur[key] = value;
+	        }
+
+	        //构造树节点
+
+	    }, {
+	        key: '_buildTree',
+	        value: function _buildTree(map, values) {
+	            var cur = map;
+	            (0, _core.each)(values, function (value) {
+	                if (cur[value] == null) {
+	                    cur[value] = {};
+	                }
+	                cur = cur[value];
+	            });
+	        }
+
+	        //获取半选框值
+
+	    }, {
+	        key: '_buildHalfSelectedValues',
+	        value: function _buildHalfSelectedValues(map, node, parentValues) {
+	            var _node$get = node.get('data');
+
+	            var halfCheck = _node$get.halfCheck;
+	            var checked = _node$get.checked;
+	            var isParent = _node$get.isParent;
+	            var value = _node$get.value;
+	            var text = _node$get.text;
+	            //将未选的去掉
+
+	            if (checked === false && halfCheck === false) {
+	                return;
+	            }
+	            var path = parentValues.concat(value || text);
+	            //如果节点已展开,并且是半选
+	            if (isParent === true && node.getChildrenLength() > 0 && halfCheck === true) {
+	                // each(node.getChildren(), (ch)=> {
+	                //     this._buildHalfSelectedValues(map, ch, path);
+	                // });
+	                return;
+	            }
+	            if (node.getChildrenLength() > 0 || halfCheck === false) {
+	                this._buildTree(map, path);
+	                return;
+	            }
+	            var treeNode = this._getTree(this.value, path);
+	            this._addTreeNode(map, parent, value || text, treeNode);
 	        }
 	    }, {
 	        key: '_initTree',
@@ -4269,6 +4376,38 @@ webpackJsonp([0],{
 	            });
 	        }
 	    }, {
+	        key: '_digestSelected',
+	        value: function _digestSelected() {
+	            var _this6 = this;
+
+	            var map = {};
+	            var mustDeleted = new Set();
+	            this.tree.recursion(function (child, routes) {
+	                var _child$get = child.get('data');
+
+	                var checked = _child$get.checked;
+	                var halfCheck = _child$get.halfCheck;
+	                var isParent = _child$get.isParent;
+
+	                mustDeleted.add(_this6._getRouteKey(routes));
+	                if (checked === true && halfCheck === true) {
+	                    if (isParent && child.getChildrenLength() === 0) {
+	                        _this6._buildHalfSelectedValues(map, child, _this6._getRouteValues(routes).slice(0, routes.length - 1));
+	                        return true;
+	                    }
+	                } else if (checked === true) {
+	                    _this6._buildTree(map, _this6._getRouteValues(routes));
+	                    return true;
+	                }
+	            });
+	            (0, _core.each)(this.value, function (value, key) {
+	                if (!map[key] && !mustDeleted.has(key)) {
+	                    map[key] = value;
+	                }
+	            });
+	            this.value = map;
+	        }
+	    }, {
 	        key: '_selectOneNode',
 	        value: function _selectOneNode(node) {
 	            var find = this.tree.search(node.id);
@@ -4278,6 +4417,7 @@ webpackJsonp([0],{
 	                data.halfCheck = false;
 	                this._adjustUpTreeSelected(find.getParent());
 	                this._adjustDownTreeSelected(find);
+	                this._digestSelected();
 	            }
 	        }
 	    }, {
@@ -4290,6 +4430,7 @@ webpackJsonp([0],{
 	                data.halfCheck = false;
 	                this._adjustUpTreeSelected(find.getParent());
 	                this._adjustDownTreeSelected(find);
+	                this._digestSelected();
 	            }
 	        }
 	    }, {
@@ -4329,7 +4470,7 @@ webpackJsonp([0],{
 	    }, {
 	        key: 'getSelectedValue',
 	        value: function getSelectedValue() {
-	            return (0, _core.clone)(this.value);
+	            return this.value;
 	        }
 	    }, {
 	        key: 'getItems',
@@ -4455,6 +4596,8 @@ webpackJsonp([0],{
 	    value: true
 	});
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _reactMixin = __webpack_require__(206);
@@ -4561,15 +4704,12 @@ webpackJsonp([0],{
 	                                case BICst.WIDGET.MONTH:
 	                                case BICst.WIDGET.YMD:
 	                            }
-	                            props.navigator.push({
+	                            props.navigator.push(_extends({}, props, {
 	                                name: 'widget',
 	                                wId: wId,
 	                                Component: Component,
-	                                title: widget.getName(),
-	                                onValueChange: function onValueChange($template) {
-	                                    _this2.props.onValueChange($template);
-	                                }
-	                            });
+	                                title: widget.getName()
+	                            }));
 	                        } });
 	                })
 	            );
@@ -4798,6 +4938,8 @@ webpackJsonp([0],{
 	    }, {
 	        key: 'render',
 	        value: function render() {
+	            var _this2 = this;
+
 	            var props = _objectWithoutProperties(this.props, []);
 
 	            var template = new _data.Template(props.$template);
@@ -4809,6 +4951,11 @@ webpackJsonp([0],{
 	                value: widget.getSelectedTreeValue(),
 	                itemsCreator: function itemsCreator(options) {
 	                    return widget.getData(options);
+	                },
+	                onValueChange: function onValueChange(value) {
+	                    widget.setValue(value);
+	                    template.setWidget(wId, widget);
+	                    _this2.props.onValueChange(template.$get());
 	                },
 	                width: props.width,
 	                height: props.height

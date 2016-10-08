@@ -109,6 +109,7 @@ export now from 'lodash/now'
 export extend from 'lodash/extend'
 export clone from 'lodash/clone'
 export cloneDeep from 'lodash/cloneDeep'
+export deepClone from 'lodash/cloneDeep'
 
 
 export math from 'lodash/math'

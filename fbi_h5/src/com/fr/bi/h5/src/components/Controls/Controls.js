@@ -97,13 +97,11 @@ class Controls extends Component {
                         case BICst.WIDGET.YMD:
                     }
                     props.navigator.push({
+                        ...props,
                         name: 'widget',
                         wId,
                         Component: Component,
-                        title: widget.getName(),
-                        onValueChange: ($template)=> {
-                            this.props.onValueChange($template);
-                        }
+                        title: widget.getName()
                     });
                 }}/>
             })}

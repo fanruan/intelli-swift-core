@@ -58,8 +58,10 @@ class MultiTreeSelectorComponent extends Component {
             itemsCreator={(options)=> {
                 return widget.getData(options);
             }}
-            onValueChange={()=> {
-
+            onValueChange={(value)=> {
+                widget.setValue(value);
+                template.setWidget(wId, widget);
+                this.props.onValueChange(template.$get());
             }}
             width={props.width}
             height={props.height}

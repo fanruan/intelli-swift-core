@@ -112,7 +112,7 @@ class Main extends Component {
 
     renderScene(route, navigationOperations, onComponentRef) {
         const {...props} = this.props;
-        const {onValueChange, ...others} = route;
+        const {name, Component, title, onValueChange, ...others} = route;
         if (route.name === 'index') {
             if (this.template.hasControlWidget()) {
                 return <View style={styles.index}>
@@ -126,9 +126,8 @@ class Main extends Component {
             return <Layout width={width} height={height} {...props}/>;
         }
         return (
-            <route.Component
+            <Component
                 width={width} height={height - 50}
-                {...props}
                 {...others}
                 onValueChange={$template=> {
                     onValueChange && onValueChange($template);
