@@ -10,7 +10,7 @@ import com.fr.report.poly.AbstractPolyReport;
 import com.fr.report.poly.ResultChartBlock;
 import com.fr.report.report.ResultReport;
 import com.fr.stable.ExportConstants;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import com.fr.third.v2.org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import java.awt.*;
 import java.util.List;
