@@ -104,7 +104,7 @@ BI.ListLabel = BI.inherit(BI.Widget, {
     },
 
     getSelectedButtons: function () {
-        return this.container.getSelectedButtons();
+        return this.container.isVisible() ? this.container.getSelectedButtons() : [];
     },
 
     getAllButtons: function () {
