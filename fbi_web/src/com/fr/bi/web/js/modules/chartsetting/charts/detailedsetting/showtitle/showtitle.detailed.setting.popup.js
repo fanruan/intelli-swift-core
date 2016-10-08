@@ -88,4 +88,5 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
     }
 
 });
+BI.ShowTitleDetailedSettingPopup.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.show_title_detailed_setting_popup", BI.ShowTitleDetailedSettingPopup);

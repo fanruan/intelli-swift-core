@@ -29,7 +29,7 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
         //组件标题
         this.showTitle = BI.createWidget({
             type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Display_Sequence_Number"),
+            value: BI.i18nText("BI-Show_Chart_Title"),
             cls: "attr-names",
             logic: {
                 dynamic: true
@@ -38,6 +38,12 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
         this.showTitle.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
+
+        this.titleDetailSettting = BI.createWidget({
+            type: "bi.show_title_detailed_setting_combo"
+        });
+
+        this.titleDetailSettting.on(BI.)
 
         //类型——横向、纵向展开
         this.tableFormGroup = BI.createWidget({

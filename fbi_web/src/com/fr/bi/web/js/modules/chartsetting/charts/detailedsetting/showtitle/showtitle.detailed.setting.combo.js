@@ -16,6 +16,9 @@ BI.ShowTitleDetailedSettingCombo = BI.inherit(BI.Widget, {
         this.popup = BI.createWidget({
             type: "bi.show_title_detailed_setting_popup"
         });
+        this.popup.on(BI.ShowTitleDetailedSettingPopup.EVENT_CHANGE, function() {
+            self.fireEvent(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE)
+        });
 
         BI.createWidget({
             type: "bi.combo",
@@ -39,4 +42,5 @@ BI.ShowTitleDetailedSettingCombo = BI.inherit(BI.Widget, {
         this.popup.getValue()
     }
 });
+BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE = 'EVENT_CHANGE';
 $.shortcut("bi.show_title_detailed_setting_combo", BI.ShowTitleDetailedSettingCombo);
