@@ -62,10 +62,7 @@ public class BIPlate extends AbstractFSPlate {
 
     @Override
     public void initData() {
-        try{
-            ((LocalEnv) FRContext.getCurrentEnv()).setBuildFilePath("bibuild.txt");
-        } catch(Throwable e){
-        }
+        FRContext.getCurrentEnv().setBuildFilePath("bibuild.txt");
         System.out.println("FINE BI :" + GeneralUtils.readBuildNO());
         initModules();
         super.initData();
@@ -245,8 +242,8 @@ public class BIPlate extends AbstractFSPlate {
 
     private void initPlugin() {
         try {
-            ExtraClassManager.getInstance().addMutable(DialectCreatorImpl.XML_TAG, new DialectCreatorImpl(), PluginSimplify.create("bi", "bi.db.ads"));
-            ExtraClassManager.getInstance().addHackActionCMD("fs_load", "fs_signin", "com.fr.bi.web.base.services.BISignInAction");
+            ExtraClassManager.getInstance().addMutable(DialectCreatorImpl.XML_TAG, new DialectCreatorImpl(), PluginSimplify.create("bi", "com.fr.bi.plugin.db.ads"));
+            ExtraClassManager.getInstance().addHackActionCMD("fs_load", "fs_signin", "com.fr.bi.plugin.login", "com.fr.bi.web.base.services.BISignInAction");
         } catch (Exception e) {
             FRLogger.getLogger().error(e.getMessage(), e);
         }
