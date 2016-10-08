@@ -42,7 +42,8 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
         //组件标题
         this.title = BI.createWidget({
             type: "bi.sign_editor",
-            width: this.constant.EDITOR_WIDTH,
+            cls: "title-input",
+            width: 120,
             height: this.constant.EDITOR_HEIGHT,
         });
 
