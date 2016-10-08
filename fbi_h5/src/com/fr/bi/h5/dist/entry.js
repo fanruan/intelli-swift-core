@@ -2425,7 +2425,7 @@ webpackJsonp([0],{
 	            var name = route.name;
 	            var Component = route.Component;
 	            var title = route.title;
-	            var _onValueChange = route.onValueChange;
+	            var onValueChange = route.onValueChange;
 
 	            var others = _objectWithoutProperties(route, ['name', 'Component', 'title', 'onValueChange']);
 
@@ -2444,7 +2444,6 @@ webpackJsonp([0],{
 	                width: width, height: height - 50
 	            }, others, {
 	                onValueChange: function onValueChange($template) {
-	                    _onValueChange && _onValueChange($template);
 	                    route.$template = $template;
 	                },
 	                navigator: navigationOperations

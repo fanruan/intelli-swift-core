@@ -130,7 +130,6 @@ class Main extends Component {
                 width={width} height={height - 50}
                 {...others}
                 onValueChange={$template=> {
-                    onValueChange && onValueChange($template);
                     route.$template = $template;
                 }}
                 navigator={navigationOperations}
