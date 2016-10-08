@@ -51,7 +51,6 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
             type: "bi.left",
             items: [{
                 type: "bi.label",
-                cls: "global-style-item-label",
                 text: name + ":",
                 textAlign: "left",
                 height: 30,
@@ -66,7 +65,6 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
             type: "bi.left",
             items: [{
                 type: "bi.label",
-                cls: "global-style-item-label",
                 text: name + ":",
                 textAlign: "left",
                 height: 30,
@@ -78,13 +76,16 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
 
     getValue: function() {
         return {
-            title: this.titleColour.getValue(),
-
+            detail_background: this.titleColour.getValue(),
+            detail_style: this.titleWordStyle.getValue()
         }
     },
 
-    setValue: function() {
-
+    setValue: function(v) {
+        v || (v = {});
+        this.titleColour.setValue(v.detail_background);
+        this.titleWordStyle.setValue(v.detail_style)
     }
+
 });
 $.shortcut("bi.show_title_detailed_setting_popup", BI.ShowTitleDetailedSettingPopup);

@@ -26,6 +26,19 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
     _init: function () {
         BI.GroupTableSetting.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
+        //组件标题
+        this.showTitle = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Display_Sequence_Number"),
+            cls: "attr-names",
+            logic: {
+                dynamic: true
+            }
+        });
+        this.showTitle.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+        });
+
         //类型——横向、纵向展开
         this.tableFormGroup = BI.createWidget({
             type: "bi.button_group",

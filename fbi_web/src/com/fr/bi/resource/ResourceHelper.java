@@ -807,6 +807,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/chartsetting/charts/customscale/formula/customscale.formula.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/customscale/combo.customscale.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/customscale/trigger.customscale.css",
+                "com/fr/bi/web/css/modules/chartsetting/charts/detailedsetting/showtitle/showtitle.detailed.setting.popup.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/selectcolorcombo/item.selectcolor.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/selectcolorcombo/trigger.selectcolor.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/charts.setting.css",

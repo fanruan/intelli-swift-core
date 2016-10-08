@@ -12,9 +12,8 @@ BI.ShowTitleDetailedSettingCombo = BI.inherit(BI.Widget, {
 
     _init: function() {
         BI.ShowTitleDetailedSettingCombo.superclass._init.apply(this, arguments);
-        var self = this;
 
-        var popup = BI.createWidget({
+        this.popup = BI.createWidget({
             type: "bi.show_title_detailed_setting_popup"
         });
 
@@ -25,11 +24,19 @@ BI.ShowTitleDetailedSettingCombo = BI.inherit(BI.Widget, {
                 type: "bi.detailed_setting_trigger"
             },
             popup: {
-                el:  popup,
+                el:  this.popup,
                 minWidth: 350,
                 stopPropagation: false
             }
         })
+    },
+
+    setValue: function(v) {
+        this.popup.setValue(v)
+    },
+
+    getValue: function() {
+        this.popup.getValue()
     }
 });
 $.shortcut("bi.show_title_detailed_setting_combo", BI.ShowTitleDetailedSettingCombo);
