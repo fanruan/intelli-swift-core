@@ -23,14 +23,10 @@ public class BILogger {
     }
 
     public void error(String message) {
-        System.err.println(message);
-
         errorOut(message);
     }
 
     public void error(String message, Throwable e) {
-        System.err.println(message);
-        e.printStackTrace();
         errorOut(message);
         String out = BIPrintUtils.outputException(e);
         errorOut(out);
