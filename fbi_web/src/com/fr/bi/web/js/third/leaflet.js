@@ -9800,7 +9800,11 @@
             if(vanchart && vanchart.components.rangeLegend){
                 var rangeLegend = vanchart.components.rangeLegend;
                 if(rangeLegend.options.visible){
+<<<<<<< HEAD
                     if(VanUtils.containsPoint(rangeLegend.bounds, VanUtils.getMousePos(e, vanchart.dom))){
+=======
+                    if(VanUtils.containsPoint(rangeLegend.bounds, [first.clientX || first.layerX, first.clientY || first.layerY])){
+>>>>>>> 5218df416459a655ce592180654e4905dbe096f7
                         return;
                     }
                 }

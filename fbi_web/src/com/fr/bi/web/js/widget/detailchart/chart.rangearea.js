@@ -50,6 +50,7 @@ BI.RangeAreaChart = BI.inherit(BI.AbstractChart, {
         config.colors = this.config.chart_color;
         config.style = formatChartStyle();
         formatCordon();
+        config.plotOptions.connectNulls = this.config.null_continue;
         this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
 
@@ -247,13 +248,14 @@ BI.RangeAreaChart = BI.inherit(BI.AbstractChart, {
             show_data_label: options.show_data_label || false,
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             text_direction: options.text_direction || 0,
+            null_continue: options.null_continue || false,
             cordon: options.cordon || [],
             line_width: BI.isNull(options.line_width) ? 1 : options.line_width,
             show_label: BI.isNull(options.show_label) ? true : options.show_label,
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
             custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
-	     num_separators: options.num_separators || false,
+            num_separators: options.num_separators || false,
             chart_font: options.chart_font || c.FONT_STYLE
         };
         this.options.items = items;

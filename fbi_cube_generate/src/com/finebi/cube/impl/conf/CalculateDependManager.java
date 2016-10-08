@@ -30,25 +30,39 @@ public class CalculateDependManager implements CalculateDependTool {
     }
 
     @Override
-    public BICubeGenerateRelationPath calRelationPath(BITableSourceRelationPath biTableSourceRelationPath, Set<BITableSourceRelation> tableRelationSet) {
-        if (biTableSourceRelationPath.getAllRelations().size() < 2) {
-            return null;
-        }
-        Set<BITableSourceRelationPath> dependRelationPathSet = new HashSet<BITableSourceRelationPath>();
-        try {
-            if (tableRelationSet.contains(biTableSourceRelationPath.getLastRelation())) {
-                dependRelationPathSet.add(new BITableSourceRelationPath(biTableSourceRelationPath.getLastRelation()));
+    public Set<BICubeGenerateRelationPath> calRelationPath(Set<BITableSourceRelationPath> biTableSourceRelationPathSet, Set<BITableSourceRelation> tableRelationSet) {
+        Set<BICubeGenerateRelationPath> cubeGenerateRelationPathSet = new HashSet<BICubeGenerateRelationPath>();
+        for (BITableSourceRelationPath biTableSourceRelationPath : biTableSourceRelationPathSet) {
+            if (biTableSourceRelationPath.getAllRelations().size() < 2) {
+                continue;
             }
-            BITableSourceRelationPath copyPath = new BITableSourceRelationPath();
-            copyPath.copyFrom(biTableSourceRelationPath);
-            copyPath.removeLastRelation();
-            if (copyPath.getAllRelations().size() >=2 || tableRelationSet.contains(copyPath.getFirstRelation())) {
-                dependRelationPathSet.add(copyPath);
+            Set<BITableSourceRelationPath> dependRelationPathSet = new HashSet<BITableSourceRelationPath>();
+            try {
+                if (tableRelationSet.contains(biTableSourceRelationPath.getLastRelation())) {
+                    dependRelationPathSet.add(new BITableSourceRelationPath(biTableSourceRelationPath.getLastRelation()));
+                }
+                BITableSourceRelationPath copyPath = new BITableSourceRelationPath();
+                copyPath.copyFrom(biTableSourceRelationPath);
+                copyPath.removeLastRelation();
+                if (copyPath.getAllRelations().size() == 1) {
+                    if (tableRelationSet.contains(copyPath.getFirstRelation())) {
+                        dependRelationPathSet.add(copyPath);
+                    }
+                }
+                if (copyPath.getAllRelations().size() >= 2) {
+                    for (BITableSourceRelationPath path : biTableSourceRelationPathSet) {
+                        if (copyPath.getSourceID().equals(path.getSourceID())){
+                            dependRelationPathSet.add(copyPath);
+                            break;
+                        }
+                    }
+                }
+            } catch (BITablePathEmptyException e) {
+                BILogger.getLogger().error(e.getMessage());
             }
-        } catch (BITablePathEmptyException e) {
-            BILogger.getLogger().error(e.getMessage());
+            BICubeGenerateRelationPath biCubeGenerateRelationPath = new BICubeGenerateRelationPath(biTableSourceRelationPath, dependRelationPathSet);
+            cubeGenerateRelationPathSet.add(biCubeGenerateRelationPath);
         }
-        BICubeGenerateRelationPath biCubeGenerateRelationPath = new BICubeGenerateRelationPath(biTableSourceRelationPath, dependRelationPathSet);
-        return biCubeGenerateRelationPath;
+        return cubeGenerateRelationPathSet;
     }
 }

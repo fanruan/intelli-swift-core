@@ -1,7 +1,6 @@
-import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
-import {requestAnimationFrame} from 'core'
+import {ReactComponentWithImmutableRenderMixin, requestAnimationFrame} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -10,7 +9,7 @@ import React, {
     ListView,
     View,
     Fetch
-    } from 'lib'
+} from 'lib'
 
 import {Widget} from 'data'
 
@@ -47,16 +46,10 @@ class DetailTableComponent extends Component {
     }
 
     _fetchData() {
-        const wi = new Widget(this.props.$$widget).createJson();
-        Fetch(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
-            method: "POST",
-            body: JSON.stringify({widget: wi, sessionID: BH.sessionID})
-        }).then(function (response) {
-            return response.json();
-        }).then((data)=> {
+        new Widget(this.props.$$widget).getData().then((data)=> {
             this._tableHelper.setData(data);
             this.forceUpdate();
-        });
+        })
     }
 
     render() {
@@ -76,11 +69,11 @@ class DetailTableComponent extends Component {
             itemsCellRenderer={({colIndex, rowIndex, items, ...props}) => {
                 return <TableCell {...items[colIndex][rowIndex]} {...props}/>
             }}
-            >
+        >
         </TableWidget>
     }
 }
-mixin.onClass(DetailTableComponent, PureRenderMixin);
+mixin.onClass(DetailTableComponent, ReactComponentWithImmutableRenderMixin);
 
 const style = StyleSheet.create({
     wrapper: {

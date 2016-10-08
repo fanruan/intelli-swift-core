@@ -72,19 +72,17 @@ public class DateUtils {
         return cal.getTime();
     }
 
-    public static String getLastDayOfMonth(String year, String month) {
+    public static int getLastDayOfMonth(int year, int month) {
         Calendar cal = Calendar.getInstance();
         // 年
-        cal.set(Calendar.YEAR, Integer.parseInt(year));
-        // 月，因为Calendar里的月是从0开始，所以要-1
-        // cal.set(Calendar.MONTH, Integer.parseInt(month) - 1);
+        cal.set(Calendar.YEAR, year);
+        // 月份加一，得到下个月的一号(超过11会自动年份加1的，比如2011设置month=12会变成2012年1月)
+        cal.set(Calendar.MONTH, month + 1);
         // 日，设为一号
-        cal.set(Calendar.DATE, 1);
-        // 月份加一，得到下个月的一号
-        cal.add(Calendar.MONTH, 1);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
         // 下一个月减一为本月最后一天
-        cal.add(Calendar.DATE, -1);
-        return String.valueOf(cal.get(Calendar.DAY_OF_MONTH));// 获得月末是几号
+        cal.add(Calendar.DAY_OF_MONTH, -1);
+        return cal.get(Calendar.DAY_OF_MONTH);// 获得月末是几号
     }
 
     public static Date getDate(String year, String month, String day)

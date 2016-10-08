@@ -1,8 +1,7 @@
-import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
 
-import {cn, sc, isNil, requestAnimationFrame, emptyFunction, shallowEqual, isEqual, each, map} from 'core'
+import {ReactComponentWithImmutableRenderMixin, cn, sc, isNil, requestAnimationFrame, emptyFunction, shallowEqual, isEqual, each, map} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -69,7 +68,8 @@ class Controls extends Component {
         return <ScrollView style={styles.wrapper}>
             {map(this.template.getAllControlWidgetIds(), (id)=> {
                 const $$widget = this.template.get$$WidgetById(id);
-                return <Item key={id} id={id} widget={widget} onPress={()=> {
+                const widget = new Widget($$widget);
+                return <Item key={id} id={id} $$widget={$$widget} onPress={()=> {
                     let Component = null;
                     switch (widget.getType()) {
                         case BICst.WIDGET.STRING:
@@ -86,9 +86,11 @@ class Controls extends Component {
                         case BICst.WIDGET.YMD:
                     }
                     props.navigator.push({
-                        name: new Widget($$widget).getName(),
+                        name: 'widget',
+                        id,
+                        $$widget,
                         Component: Component,
-                        title: new Widget($$widget).getName()
+                        title: widget.getName()
                     });
                 }}/>
             })}
@@ -111,7 +113,7 @@ class Controls extends Component {
     //     </VtapeLayout>
     // }
 }
-mixin.onClass(Controls, PureRenderMixin);
+mixin.onClass(Controls, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         flex: 1,

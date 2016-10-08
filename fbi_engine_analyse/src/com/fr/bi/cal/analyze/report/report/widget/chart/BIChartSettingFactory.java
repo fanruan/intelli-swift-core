@@ -18,6 +18,33 @@ import java.util.Iterator;
  */
 public class BIChartSettingFactory {
 
+    private static final String[] DEFAULT_CHART_COLOR = new String[]{
+            BIChartSettingConstant.CHART_COLOR.COLOR_A,
+            BIChartSettingConstant.CHART_COLOR.COLOR_B,
+            BIChartSettingConstant.CHART_COLOR.COLOR_C,
+            BIChartSettingConstant.CHART_COLOR.COLOR_D,
+            BIChartSettingConstant.CHART_COLOR.COLOR_E
+    };
+
+    private static final int[] MINIMALIST_WIDGET = new int[]{
+            BIReportConstant.WIDGET.AXIS,
+            BIReportConstant.WIDGET.ACCUMULATE_AXIS,
+            BIReportConstant.WIDGET.PERCENT_ACCUMULATE_AXIS,
+            BIReportConstant.WIDGET.COMPARE_AXIS,
+            BIReportConstant.WIDGET.FALL_AXIS,
+            BIReportConstant.WIDGET.BAR,
+            BIReportConstant.WIDGET.ACCUMULATE_BAR,
+            BIReportConstant.WIDGET.COMPARE_BAR,
+            BIReportConstant.WIDGET.LINE,
+            BIReportConstant.WIDGET.AREA,
+            BIReportConstant.WIDGET.ACCUMULATE_AREA,
+            BIReportConstant.WIDGET.PERCENT_ACCUMULATE_AREA,
+            BIReportConstant.WIDGET.COMPARE_AREA,
+            BIReportConstant.WIDGET.RANGE_AREA,
+            BIReportConstant.WIDGET.COMBINE_CHART,
+            BIReportConstant.WIDGET.MULTI_AXIS_COMBINE_CHART
+    };
+
     public static JSONObject parseChartSetting(MultiChartWidget widget, JSONArray data, JSONObject options, JSONArray types){
         int type = widget.getType();
         BIChartSetting chartSetting = null;
@@ -26,8 +53,8 @@ public class BIChartSettingFactory {
             JSONObject settings = widget.getChatSetting().getDetailChartSetting();
             boolean isMinimalistModel = false;
             if(settings.optBoolean("minimalist_model", false)){
-                for(int i = 0; i < BIChartSettingConstant.MINIMALIST_WIDGET.length; i++){
-                    if(BIChartSettingConstant.MINIMALIST_WIDGET[i] == type){
+                for(int i = 0; i < MINIMALIST_WIDGET.length; i++){
+                    if(MINIMALIST_WIDGET[i] == type){
                         isMinimalistModel = true;
                         break;
                     }
@@ -36,9 +63,8 @@ public class BIChartSettingFactory {
             JSONObject op;
             JSONArray chartColor = settings.optJSONArray("chart_color");
             if(chartColor == null){
-                chartColor = new JSONArray();
-                for(int i = 0; i < BIChartSettingConstant.CHART_COLOR.length; i++){
-                    chartColor.put(BIChartSettingConstant.CHART_COLOR[i]);
+                for(int i = 0; i < DEFAULT_CHART_COLOR.length; i++){
+                    chartColor = new JSONArray().put(DEFAULT_CHART_COLOR[i]);
                 }
             }
             if(isMinimalistModel){
@@ -104,7 +130,7 @@ public class BIChartSettingFactory {
                         "enable_minor_tick:\"" + settings.optBoolean("enable_minor_tick", true) + "\"," +
                         "show_grid_line:\"" + settings.optBoolean("show_grid_line", true) + "\"," +
                         "show_zoom:\"" + settings.optBoolean("show_zoom", false) + "\"," +
-                        "style_conditions:" + settings.optJSONArray("style_conditions") + "," +
+                        "bands_styles:" + settings.optJSONArray("style_conditions") + "," +
                         "auto_custom:\"" + settings.optInt("auto_custom", BIChartSettingConstant.SCALE_SETTING.AUTO) + "\"," +
                         "theme_color:\"" + settings.optString("theme_color", "#65bce7") + "\"," +
                         "transfer_filter:\"" + settings.optBoolean("transfer_filter", true) + "\"," +
@@ -112,7 +138,7 @@ public class BIChartSettingFactory {
                         "bubble_style:\"" + settings.optInt("bubble_style", BIChartSettingConstant.CHART_SHAPE.NO_PROJECTOR) + "\"," +
                         "max_scale:\"" + settings.optString("max_scale", "") + "\"," +
                         "min_scale:\"" + settings.optString("min_scale", "") + "\"," +
-                        "show_percentage:\"" + settings.optBoolean("show_percentage", false) + "\"," +
+                        "show_percentage:\"" + settings.optInt("show_percentage", BIChartSettingConstant.PERCENTAGE.NOT_SHOW) + "\"," +
                         "show_background_layer:\"" + settings.optBoolean("show_background_layer", true) + "\"," +
                         "background_layer_info:\"" + settings.optString("background_layer_info", Inter.getLocText("BI-GAO_DE_MAP")) + "\"," +
                         "num_separators:\"" + settings.optBoolean("num_separators", false) + "\"," +

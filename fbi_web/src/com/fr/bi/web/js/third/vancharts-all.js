@@ -1755,8 +1755,12 @@ define("almond", function(){});
             var direction = input.offsetDirection;
 
             //移动端不执行prevent，浏览器上pressed始终为true
+<<<<<<< HEAD
             var hammerHandler = this.manager.options._handler;
             if(!hammerHandler.pressed && !hammerHandler._inZoomBar(input)){
+=======
+            if(!this.manager.options._handler.pressed){
+>>>>>>> 5218df416459a655ce592180654e4905dbe096f7
                 return;
             }
 
@@ -2290,7 +2294,11 @@ define("almond", function(){});
             var y = input.deltaY;
 
             //点击以后响应拖拽
+<<<<<<< HEAD
             var _pressed = this.manager.options._handler.pressed || this.manager.options._handler._inZoomBar(input);
+=======
+            var _pressed = this.manager.options._handler.pressed;
+>>>>>>> 5218df416459a655ce592180654e4905dbe096f7
 
             // lock to axis?
             if (!(direction & options.direction)) {
@@ -7872,10 +7880,14 @@ define('vector/VmlRenderer',['require','./Renderer','../utils/PathUtils','../uti
             var top = attrs.y || 0, left = attrs.x || 0, right = left + attrs.width, bottom = top + attrs.height;
 
             if(elementWrapper.type != 'div'){
+<<<<<<< HEAD
                 var node = elementWrapper.isLineChart ? elementWrapper.node().parentNode.firstChild : elementWrapper.node();
                 
                 top -= node.offsetTop;
                 bottom -= node.offsetTop;
+=======
+                top -= elementWrapper.node().offsetTop;
+>>>>>>> 5218df416459a655ce592180654e4905dbe096f7
             }
 
             return 'rect(' + top + 'px '+ right +'px '+ bottom +'px ' + left + 'px)';
@@ -11448,7 +11460,11 @@ define('VanChartMap',['require','./VanChart','./utils/BaseUtils','./utils/PathUt
                     layer.on(renderer._bubbleMapHandler(layer))
                 },
                 updateStyle:function(layer){
+<<<<<<< HEAD
                     layer.setBubbleStyle(styleFun(layer._data));
+=======
+                    layer.setStyle(styleFun(layer._data));
+>>>>>>> 5218df416459a655ce592180654e4905dbe096f7
                 }
             };
             this._bubbleLayer = this._bubbleLayer || L.layerGroup().addTo(leaflet);
@@ -11984,6 +12000,11 @@ define('VanChartForceBubble',['require','./VanChart','./utils/BaseUtils','./Comp
 
                 originalPoint.textGraphic && originalPoint.textGraphic.remove();
                 originalPoint.textGraphic = null;
+
+                if(!animation){
+                    vanchart._calculateLabelPos(node);
+                    vanchart._updatePointTextGraphic(originalPoint);
+                }
 
                 originalPoint.graphic && renderer.registerInteractiveTarget(originalPoint, originalPoint.graphic);
             }
@@ -15691,10 +15712,15 @@ define('chart/Bar',['require','../utils/BaseUtils','../utils/ColorUtils','../Con
             var point = this, series = point.series, animation = series.animation, style = series.getHighLightStyle(point);
             if(animation){
 
+<<<<<<< HEAD
                 if (Browser.gecko && /url/i.test(style.fill)) {
                     point.graphic.style({'stroke': point.mouseOverColor || point.color, 'fill':style.fill});
                     delete style.fill;
                 }
+=======
+                point.graphic.style({'stroke': point.mouseOverColor || point.color, 'fill':style.fill});
+                delete style.fill;
+>>>>>>> 5218df416459a655ce592180654e4905dbe096f7
 
                 d3.select(point.graphic.rawElement)
                     .interrupt(Constants.SELECT_ANIMATION)
@@ -15710,10 +15736,15 @@ define('chart/Bar',['require','../utils/BaseUtils','../utils/ColorUtils','../Con
             if(animation){
 
                 //firefox下面会闪
+<<<<<<< HEAD
                 if (Browser.gecko && /url/i.test(style.fill)) {
                     point.graphic.style({'fill':style.fill});
                     delete style.fill;
                 }
+=======
+                point.graphic.style({'fill':style.fill});
+                delete style.fill;
+>>>>>>> 5218df416459a655ce592180654e4905dbe096f7
 
                 d3.select(point.graphic.rawElement)
                     .interrupt(Constants.SELECT_ANIMATION)
@@ -16576,7 +16607,10 @@ define('chart/Line',['require','../Constants','../utils/BaseUtils','../utils/Que
         _calculateLabelPos:function(manager){
 
             var series = this, isInverted = this.vanchart.isInverted(), count = series.points.length;
+<<<<<<< HEAD
             var plotBounds = this.vanchart.getPlotBounds();
+=======
+>>>>>>> 5218df416459a655ce592180654e4905dbe096f7
 
             series.points.forEach(function(point, i){
                 var dataLabels = point.dataLabels;
@@ -16593,9 +16627,16 @@ define('chart/Line',['require','../Constants','../utils/BaseUtils','../utils/Que
                         x = alignTop ? (point.posX + gap) : (point.posX - gap - labelDim.width);
                         y = point.posY - labelDim.height/2;
 
+<<<<<<< HEAD
                         if(y <= 0){
                             y = point.posY;
                         }else if(y + labelDim.height >= plotBounds.height){
+=======
+                        //todo 简单处理下标签
+                        if(i == 0){
+                            y = point.posY;
+                        }else if(i == count - 1){
+>>>>>>> 5218df416459a655ce592180654e4905dbe096f7
                             y = point.posY - labelDim.height;
                         }
 
@@ -16603,9 +16644,16 @@ define('chart/Line',['require','../Constants','../utils/BaseUtils','../utils/Que
                         x = point.posX - labelDim.width/2;
                         y = alignTop ? (point.posY - gap - labelDim.height) : (point.posY + gap);
 
+<<<<<<< HEAD
                         if(x <= 0){
                             x = point.posX;
                         }else if(x + labelDim.width >= plotBounds.width){
+=======
+                        //todo 简单处理下标签
+                        if(i == 0){
+                            x  = point.posX;
+                        }else if(i == count - 1){
+>>>>>>> 5218df416459a655ce592180654e4905dbe096f7
                             x = point.posX - labelDim.width;
                         }
                     }
@@ -17726,8 +17774,13 @@ define('chart/Bubble',['require','./Series','../utils/BaseUtils','../Constants',
                 var min = this.seriesMinValue;
                 if(!this._sizeByCurrentSeries()){
                     var minMax = this.vanchart.isMap() ? this.vanchart.getMinMaxFromSeries() : this._calculateBubbleChartMinMax();
+<<<<<<< HEAD
                     max = BaseUtils.pick(minMax.max, minMax[1]);
                     min = BaseUtils.pick(minMax.min, minMax[0]);
+=======
+                    max = minMax.max || minMax[1];
+                    min = minMax.min || minMax[0];
+>>>>>>> 5218df416459a655ce592180654e4905dbe096f7
                 }
 
                 var unit = 0;
@@ -18393,6 +18446,7 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./TreeSe
 
                 var orderType = this.orderType;
                 var oldGOrder;
+<<<<<<< HEAD
                 oldGOrder = c.map(function (p) {
                     return p.graphic;
                 });
@@ -18402,11 +18456,31 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./TreeSe
                         return -1;
                     }
                     if (orderType) {
+=======
+                if (this.ordered !== this.orderType) {
+                    oldGOrder = c.map(function (p) {
+                        return p.graphic;
+                    });
+
+                    c.sort(function(a, b){
+                        if (!a.value) {
+                            return -1;
+                        }
+>>>>>>> 5218df416459a655ce592180654e4905dbe096f7
                         return orderType * (Math.abs(a.value) - Math.abs(b.value));
-                    } else {
+                    });
+
+                    c.map(function (p, i) {
+                        p.graphic = oldGOrder[i];
+                    });
+                } else {
+                    c.sort(function (a, b) {
+                        if (!a.value) {
+                            return -1;
+                        }
                         return a.index - b.index;
-                    }
-                });
+                    });
+                }
 
                 c.map(function (p, i) {
                     p.graphic = oldGOrder[i];
@@ -28159,7 +28233,10 @@ define('component/IntervalRangeLegend',['require','./Base','../utils/BaseUtils',
         _renderItemLabel: function (item, g, innerX, innerY, labelDim, i) {
             var legend = this, vanchart = legend.vanchart, renderer = vanchart.renderer, options = legend.options;
             var labelContent = item.label, labelStyle = options.style, useHtml = this.useHtmlLabel();
+<<<<<<< HEAD
             var textColor = item.visible ? labelStyle.color : item.hiddenColor;
+=======
+>>>>>>> 5218df416459a655ce592180654e4905dbe096f7
             if(useHtml) {
                 var labelKey = '_range_legend_label_' + i;
                 if(g.text){
@@ -28206,7 +28283,11 @@ define('component/IntervalRangeLegend',['require','./Base','../utils/BaseUtils',
             var text = item.graphic && item.graphic.text;
 
             if(legend.useHtmlLabel()){
+<<<<<<< HEAD
                 text.style.color = ColorUtils.colorToHex(item.hoverColor);
+=======
+                text.style.color = item.hoverColor;
+>>>>>>> 5218df416459a655ce592180654e4905dbe096f7
             }else{
                 text.style({'fill': item.hoverColor});
             }
@@ -28223,7 +28304,11 @@ define('component/IntervalRangeLegend',['require','./Base','../utils/BaseUtils',
             var textColor = item.visible ? labelColor : item.hiddenColor;
 
             if(legend.useHtmlLabel()){
+<<<<<<< HEAD
                 text.style.color = ColorUtils.colorToHex(textColor);
+=======
+                text.style.color = textColor;
+>>>>>>> 5218df416459a655ce592180654e4905dbe096f7
             }else{
                 text.style({'fill':textColor});
             }
@@ -28240,7 +28325,11 @@ define('component/IntervalRangeLegend',['require','./Base','../utils/BaseUtils',
             var textColor = item.visible ? labelColor : item.hiddenColor;
             rect.style({'fill':iconColor});
             if(legend.useHtmlLabel()){
+<<<<<<< HEAD
                 text.style.color = ColorUtils.colorToHex(textColor);
+=======
+                text.style.color = textColor;
+>>>>>>> 5218df416459a655ce592180654e4905dbe096f7
             }else{
                 text.style({'fill':textColor});
             }

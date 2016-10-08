@@ -40,12 +40,16 @@
             this.textEditor = BI.createWidget({
                 type: 'bi.text_editor',
                 value: this.constants.defaultEditorValue,
+                title:this.constants.defaultEditorValue,
                 cls: 'bi-multidate-editor',
                 width: this.constants.textWidth,
                 height: this.constants.itemHeight
             });
             this.textEditor.on(BI.Controller.EVENT_CHANGE, function (v) {
                 self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
+            });
+            this.textEditor.on(BI.TextEditor.EVENT_CONFIRM, function () {
+                this.setTitle(this.getValue());
             });
             this.text = BI.createWidget({
                 type: "bi.label",
