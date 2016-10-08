@@ -1,8 +1,7 @@
-import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
 import {findDOMNode} from 'react-dom'
 
-import {cn, sc, math, isNil, requestAnimationFrame, emptyFunction, shallowEqual, isEqual, each} from 'core'
+import {ReactComponentWithPureRenderMixin, ReactComponentWithImmutableRenderMixin, cn, sc, math, isNil, requestAnimationFrame, emptyFunction, shallowEqual, isEqual, each} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -16,7 +15,7 @@ import React, {
     TouchableHighlight
 } from 'lib'
 
-import {Colors, Template, Widget, Dimension, Target} from 'data'
+import {Colors, Size, Template, Widget, Dimension, Target} from 'data'
 
 import {CenterLayout, Icon, Table} from 'base'
 
@@ -34,6 +33,10 @@ class TableComponent extends Component {
 
     state = {};
 
+    _getNextState(props, state = {}) {
+
+    }
+
     componentWillMount() {
 
     }
@@ -44,7 +47,9 @@ class TableComponent extends Component {
 
     render() {
         const {...props} = this.props, {...state} = this.state;
-        return <View style={styles.wrapper}></View>
+        return <View style={styles.wrapper}>
+
+        </View>
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -68,7 +73,7 @@ class TableComponent extends Component {
     }
 
 }
-mixin.onClass(TableComponent, PureRenderMixin);
+mixin.onClass(TableComponent, ReactComponentWithPureRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         flex: 1

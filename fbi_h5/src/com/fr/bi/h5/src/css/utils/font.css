@@ -12,3 +12,19 @@
   content: '\e624';
   color: #808080;
 }
+.node-fold .b-font:before {
+  content: '\e610';
+  color: #808080;
+}
+.node-fold:active .b-font:before {
+  content: '\e610';
+  color: #808080;
+}
+.node-fold.active .b-font:before {
+  content: '\e611';
+  color: #808080;
+}
+.node-fold.disabled .b-font:before {
+  content: '\e610';
+  color: #808080;
+}

@@ -13,8 +13,9 @@ import React, {
     View,
     PixelRatio,
     Fetch,
-    TouchableHighlight
-    } from 'lib'
+    TouchableHighlight,
+    TouchableOpacity
+} from 'lib'
 
 import {Colors} from 'data'
 
@@ -31,9 +32,13 @@ class TextButton extends Component {
     static propTypes = {};
 
     static defaultProps = {
-        height: 30,
         selected: null,
-        onSelected: emptyFunction
+        disabled: false,
+        invalid: false,
+        stopPropagation: false,
+        text: '',
+        onSelected: emptyFunction,
+        onPress: emptyFunction
     };
 
     state = {};
@@ -55,24 +60,38 @@ class TextButton extends Component {
 
     }
 
-    _onPress() {
-        this.setState({
-            selected: !this.state.selected
-        }, ()=> {
-            this.props.onSelected(this.state.selected);
-        })
+    _onPress(e) {
+        if (this.props.disabled === false && this.props.invalid === false && (this.state.selected === false || this.state.selected === true)) {
+            this.setState({
+                selected: !this.state.selected
+            }, ()=> {
+                this.props.onSelected(this.state.selected);
+            });
+        }
+        this.props.onPress(e);
+        if (this.props.stopPropagation) {
+            e.stopPropagation();
+        }
     }
 
     render() {
         const {...props} = this.props, {...state} = this.state;
-        return <TouchableHighlight style={[props.style]} onPress={this._onPress.bind(this)}
-                                   underlayColor={props.underlayColor || Colors.PRESS}>
-            <View className={cn(props.className, 'react-view', cn({
-                'active': this.state.selected
-            }))} style={[styles.wrapper]}>
-                <Icon width={props.iconWidth} height={props.iconHeight}></Icon>
+        if (props.disabled === true) {
+            return <View style={[styles.wrapper, styles.disabled, props.style]}>
+                <Text>{props.text}</Text>
             </View>
-        </TouchableHighlight>
+        }
+        if (props.invalid === true) {
+            return <View style={[styles.wrapper, props.style]}>
+                <Text>{props.text}</Text>
+            </View>
+        }
+        return <TouchableOpacity style={[props.style]} onPress={this._onPress.bind(this)}
+                                 underlayColor={props.underlayColor || Colors.PRESS}>
+            <View style={[styles.wrapper]}>
+                <Text>{props.text}</Text>
+            </View>
+        </TouchableOpacity>
     }
 
 }
@@ -81,11 +100,11 @@ const styles = StyleSheet.create({
     wrapper: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        color: Colors.HIGHLIGHT
     },
-
-    selected: {
-        backgroundColor: Colors.SELECTED
+    disabled: {
+        color: Colors.DISABLED
     }
 });
 export default TextButton

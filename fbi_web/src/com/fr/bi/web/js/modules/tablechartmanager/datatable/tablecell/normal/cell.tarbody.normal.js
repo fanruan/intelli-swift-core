@@ -17,7 +17,6 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         var iconCls = "", color = "";
         var format = styleSettings.format, numLevel = styleSettings.num_level, num_separators = styleSettings.num_separators;
         text = BI.TargetBodyNormalCell.parseNumByLevel(text, numLevel);
-        text = this._parseFloatByDot(text, format, num_separators);
         var iconStyle = styleSettings.icon_style, mark = styleSettings.mark;
         iconCls = this._getIconByStyleAndMark(text, iconStyle, mark);
         var conditions = styleSettings.conditions;
@@ -36,6 +35,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 color = co.color;
             }
         });
+        text = this._parseFloatByDot(text, format, num_separators);
         var textLabel = this._createTargetText(text);
         if (BI.isNotEmptyString(color)) {
             textLabel.element.css("color", color);
@@ -77,7 +77,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         var num = BI.parseFloat(text);
         switch (dot) {
             case BICst.TARGET_STYLE.FORMAT.NORMAL:
-                if(separators){
+                if (separators) {
                     num = BI.contentFormat(num, '#,###.##;-#,###.##')
                 } else {
                     num = BI.contentFormat(num, '#.##;-#.##')
@@ -85,7 +85,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 return num;
                 break;
             case BICst.TARGET_STYLE.FORMAT.ZERO2POINT:
-                if(separators){
+                if (separators) {
                     num = BI.contentFormat(num, '#,###;-#,###')
                 } else {
                     num = BI.parseInt(num)
@@ -93,14 +93,14 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 return num;
                 break;
             case BICst.TARGET_STYLE.FORMAT.ONE2POINT:
-                if(separators){
+                if (separators) {
                     num = BI.contentFormat(num, '#,###.0;-#,###.0')
                 } else {
                     num = BI.contentFormat(num, '#.0;-#.0')
                 }
                 return num;
             case BICst.TARGET_STYLE.FORMAT.TWO2POINT:
-                if(separators){
+                if (separators) {
                     num = BI.contentFormat(num, '#,###.00;-#,###.00')
                 } else {
                     num = BI.contentFormat(num, '#.00;-#.00')

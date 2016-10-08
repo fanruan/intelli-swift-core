@@ -1,40 +1,41 @@
+import {clone} from 'core'
 export default class MultiSelectorWidgetHelper {
-    constructor(props) {
-        this.items = props.items;
-        this.sorted = this.items;
-        this.value = Array.from(props.value || []);
-        this.type = props.type;
+    constructor(state) {
+        this.value = state.value || [];
+        this.selected_values = state.selected_values;
+        this.type = state.type;
+        this.items = this.value.map(val=> {
+            return {value: val}
+        }).concat(state.items);
+        this.sorted = this._digest();
     }
 
     _selectOneValue(val) {
-        if (this.value.indexOf(val) === -1) {
-            this.value.push(val);
-            this.sorted = this._sortItems();
+        if (this.selected_values.indexOf(val) === -1) {
+            this.selected_values.push(val);
+            this.sorted = this._digest();
         }
     }
 
     _disSelectOneValue(val) {
         let idx;
-        if ((idx = this.value.indexOf(val)) >= -1) {
-            this.value.splice(idx, 1);
-            this.sorted = this._sortItems();
+        if ((idx = this.selected_values.indexOf(val)) > -1) {
+            this.selected_values.splice(idx, 1);
+            this.sorted = this._digest();
         }
     }
 
-    _sortItems() {
-        const front = [], items = [];
-        this.items.forEach((item)=> {
-            if (this.value.indexOf(item.value) > -1) {
-                front.push({...item, selected: this.type !== 1});
-            } else {
-                items.push({...item, selected: this.type === 1})
-            }
+    _digest() {
+        return this.items.map((item)=> {
+            return {
+                ...item,
+                selected: this.type === 2 ? (this.selected_values.indexOf(item.value) === -1) : (this.selected_values.indexOf(item.value) > -1)
+            };
         });
-        return front.concat(items);
     }
 
     selectOneValue(val) {
-        if (this.type === 1) {
+        if (this.type === 2) {
             this._disSelectOneValue(val);
         } else {
             this._selectOneValue(val);
@@ -42,7 +43,7 @@ export default class MultiSelectorWidgetHelper {
     }
 
     disSelectOneValue(val) {
-        if (this.type === 1) {
+        if (this.type === 2) {
             this._selectOneValue(val);
         } else {
             this._disSelectOneValue(val);
@@ -50,11 +51,10 @@ export default class MultiSelectorWidgetHelper {
     }
 
     getSelectedValue() {
-        return Array.from(this.value);
+        return clone(this.selected_values);
     }
 
     getSortedItems() {
         return this.sorted;
     }
-
 }

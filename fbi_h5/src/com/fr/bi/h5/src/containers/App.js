@@ -11,11 +11,12 @@ import React, {
     Text,
     View,
     ListView,
+    Fetch,
     TouchableBounce,
     TouchableHighlight,
     TouchableOpacity,
     TouchableWithoutFeedback
-    } from 'lib';
+} from 'lib';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Template} from 'data';
@@ -64,6 +65,21 @@ import Main from '../components/Main.js'
 
 /* Populated by react-webpack-redux:reducer */
 class App extends Component {
+    componentDidMount() {
+        setInterval(() => {
+            Fetch(BH.servletURL + '?op=fr_bi_dezi&cmd=update_session', {
+                method: "POST",
+                body: JSON.stringify({_t: new Date(), sessionID: BH.sessionID})
+            });
+        }, 30000);
+        window.onbeforeunload = ()=> {
+            Fetch(BH.servletURL + '?op=closesessionid', {
+                method: "POST",
+                body: JSON.stringify({_t: new Date(), sessionID: BH.sessionID})
+            });
+        };
+    }
+
     render() {
         return (
             <Main {...this.props}/>

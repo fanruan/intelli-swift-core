@@ -1,0 +1,43 @@
+.Checkbox {
+    position: relative;
+}
+
+.Checkbox:before {
+    display: table;
+    width: 100%;
+    height: 100%;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #387ef5;
+
+    content: ' ';
+    border-radius: 50%;
+    transition: background-color 0.1s ease-in-out;
+}
+
+.Checkbox.checked:before {
+    background: #4a87ee;
+}
+
+.Checkbox.checked:after {
+    transition: opacity 0.05s ease-in-out;
+    transform: rotate(-45deg);
+    position: absolute;
+    top: 30%;
+    left: 26%;
+    display: table;
+    width: 15px;
+    height: 10px;
+    border: 3px solid #fff;
+    border-top: 0;
+    border-right: 0;
+    content: ' ';
+}
+
+.Checkbox.halfCheck:before {
+    background: rgba(74, 135, 238, .5);
+}
+
+.Checkbox.halfCheck:after {
+    opacity: 0;
+}

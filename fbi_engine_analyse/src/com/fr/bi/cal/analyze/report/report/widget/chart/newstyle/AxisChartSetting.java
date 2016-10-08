@@ -34,7 +34,7 @@ public class AxisChartSetting extends BIAbstractAxisChartSetting {
         for(int i = 0; i < lineItem.length(); i++){
             otherItem.put(lineItem.getJSONObject(i));
         }
-        config.put("series", lineItem);
+        config.put("series", otherItem);
         return config;
     }
 }

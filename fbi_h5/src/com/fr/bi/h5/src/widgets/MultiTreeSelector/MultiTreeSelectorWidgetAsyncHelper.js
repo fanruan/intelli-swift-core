@@ -1,126 +1,54 @@
-import {Tree, each, some, isNil, find} from 'core'
-export default class MultiTreeSelectorAsyncWidgetHelper {
-    constructor(props) {
-        this.items = props.items;
-        const format = this._formatItems(this.items);
-        this.tree = new Tree();
-        this.tree.initTree(format);
-        this.sorted = this._expandTreeItems(format);
-        this.value = Array.from(props.value || []);
-    }
+import {Tree, each, some, isNil, isEmpty, find, clone} from 'core'
+import MultiTreeSelectorWidgetHelper from './MultiTreeSelectorWidgetHelper'
 
-    _formatItems(items) {
-        return Tree.transformToTreeFormat(items);
-    }
-
-    _expandTreeItems(items) {
-        const result = [];
-        const track = (nodes, layer)=> {
-            each(nodes, (node, i)=> {
-                const {children, ...others} = node;
-                const isLeaf = isNil(node.children) && !node.isParent;
-                result.push({
-                    layer: layer,
-                    isLeaf,
-                    ...others
-                });
-                if (node.expanded === true) {
-                    track(children, layer + 1);
-                }
-            })
-        };
-        track(items, 0);
-        return result;
-    }
-
-    _adjustUpTreeSelected(node) {
-        if (this.tree.isRoot(node)) {
-            return;
-        }
-        let isAllSelected = true, isHalSelected = false;
-        each(node.getChildren(), (child)=> {
-            const data = child.get('data');
-            if (data.selected < 2 || isNil(data.selected)) {
-                isAllSelected = false;
-            }
-            if (data.selected > 0) {
-                isHalSelected = true;
-            }
-        });
-        node.get('data').selected = (isAllSelected ? 2 : (isHalSelected ? 1 : 0));
-        this._adjustUpTreeSelected(node.getParent());
-    }
-
-    _adjustDownTreeSelected(node) {
-        const selected = node.get('data').selected;
-        each(node.getChildren(), (child)=> {
-            const data = child.get('data');
-            if (selected === 2 || selected === 0 || isNil(selected)) {
-                data.selected = selected;
-                this._adjustDownTreeSelected(child);
-            }
-        });
-    }
-
-    _selectOneValue(val) {
-        const find = this.tree.search(val, 'value');
-        if (find) {
-            const data = find.get('data');
-            data.selected = 2;
-            this._adjustUpTreeSelected(find.getParent());
-            this._adjustDownTreeSelected(find);
-            this._digest();
-        }
-    }
-
-    _disSelectOneValue(val) {
-        const find = this.tree.search(val, 'value');
-
-        if (find) {
-            const data = find.get('data');
-            data.selected = 0;
-            this._adjustUpTreeSelected(find.getParent());
-            this._adjustDownTreeSelected(find);
-            this._digest();
-        }
+export default class MultiTreeSelectorWidgetAsnycHelper extends MultiTreeSelectorWidgetHelper {
+    constructor(state, props) {
+        super(state);
+        this.floors = props.floors;
+        this.itemsCreator = props.itemsCreator;
     }
 
     _digest() {
-        this.sorted = this._expandTreeItems(this.tree.toJSON());
+        const format = Tree.transformToTreeFormat(this.items);
+        this.tree.initTree(format);
     }
 
-    selectOneValue(val) {
-        this._selectOneValue(val);
+    _getParentValues(node) {
+        if (this.tree.isRoot(node)) {
+            return [];
+        }
+        var ps = this._getParentValues(node.getParent());
+        return ps.concat(node.get('data').value || node.get('data').text);
     }
 
-    disSelectOneValue(val) {
-        this._disSelectOneValue(val);
-    }
-
-    expandOneValue(val) {
-        const find = this.tree.search(val, 'value');
+    expandOneNode(node) {
+        const find = this.tree.search(node.id);
         if (find) {
             const data = find.get('data');
             data.expanded = true;
-            this._digest();
+            this.map[node.id].expanded = true;
+            if (data.isParent && find.getChildrenLength() === 0) {
+                return this.itemsCreator({
+                    id: node.id,
+                    times: -1,
+                    floors: this.floors,
+                    check_state: {
+                        checked: data.checked,
+                        half: data.halfCheck
+                    },
+                    parent_values: this._getParentValues(find),
+                    selected_values: this.value
+                }).then((data)=> {
+                    each(data.items, (item)=> {
+                        item.pId = node.id
+                    });
+                    this.items = this.items.concat(data.items);
+                    this._digest();
+                });
+            }
         }
+        return new Promise(function(resolve, reject) {
+            resolve();
+        });
     }
-
-    collapseOneValue(val) {
-        const find = this.tree.search(val, 'value');
-        if (find) {
-            const data = find.get('data');
-            data.expanded = false;
-            this._digest();
-        }
-    }
-
-    getSelectedValue() {
-        return Array.from(this.value);
-    }
-
-    getSortedItems() {
-        return this.sorted;
-    }
-
 }

@@ -38,6 +38,7 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
             stop: function (e, ui) {
                 var percent = (ui.position.left) * 100 / (self.track.getLength() - 30);
                 self._setSliderPosition(percent);
+                self.fireEvent(BI.SingleSlider.EVENT_CHANGE);
             }
         });
 
@@ -56,6 +57,7 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
                 var percent = offset * 100 / self.track.getLength();
                 self._setAllPosition(percent);
                 self.label.setValue(self._getValueByPercent(percent));
+                self.fireEvent(BI.SingleSlider.EVENT_CHANGE);
             }
         });
 
@@ -75,6 +77,7 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
         this.label.on(BI.SignEditor.EVENT_CONFIRM, function () {
             var percent = self._getPercentByValue(this.getValue());
             self._setAllPosition(percent);
+            self.fireEvent(BI.SingleSlider.EVENT_CHANGE);
         });
         this._setVisible(false);
         BI.createWidget({
@@ -175,4 +178,5 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
         }
     }
 });
+BI.SingleSlider.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.single_slider", BI.SingleSlider);

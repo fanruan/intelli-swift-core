@@ -1,6 +1,5 @@
 //export Wheeler from './Wheeler/Wheeler'
 //export ScrollableWheeler from './Wheeler/ScrollableWheeler'
-//export Swiper from './Swiper'
 
 export HtapeLayout from './Layout/HtapeLayout'
 export VtapeLayout from './Layout/VtapeLayout'
@@ -15,6 +14,8 @@ export HorizontalCenterLayout from './Layout/HorizontalCenterLayout'
 
 export Icon from './Icon'
 export IconButton from './IconButton/IconButton'
+export TextButton from './TextButton/TextButton'
+export Checkbox from './Checkbox/Checkbox'
 export ART from './Art/ReactART'
 export Circle from './Art/Circle.art'
 export Rectangle from './Art/Rectangle.art'
