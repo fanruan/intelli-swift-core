@@ -43,7 +43,23 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
             type: "bi.show_title_detailed_setting_combo"
         });
 
-        this.titleDetailSettting.on(BI.)
+        this.titleDetailSettting.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+        });
+
+        var widgetTitle = BI.createWidget({
+            type: "bi.left",
+            cls: "single-line-settings",
+            items: BI.createItems([{
+                type: "bi.label",
+                text: BI.i18nText("BI-Widget_Title"),
+                cls: "line-title",
+                height: this.constant.SINGLE_LINE_HEIGHT
+            }, this.showTitle, this.titleDetailSettting], {
+                height: this.constant.SINGLE_LINE_HEIGHT
+            }),
+            hgap: this.constant.SIMPLE_H_GAP
+        });
 
         //类型——横向、纵向展开
         this.tableFormGroup = BI.createWidget({
@@ -253,7 +269,7 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [tableStyle, show, otherAttr],
+            items: [widgetTitle, tableStyle, show, otherAttr],
             hgap: 10
         })
     },
