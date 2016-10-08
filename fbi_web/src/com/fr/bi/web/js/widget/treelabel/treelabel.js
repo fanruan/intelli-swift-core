@@ -279,10 +279,10 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
             selectedValues.push(temp);
         });
 
-        for(var i = selectedValues.length-2; i >= 0; i--) {
+        for (var i = selectedValues.length - 2; i >= 0; i--) {
             BI.each(selectedValues[i], function (idx, value) {
                 temp = [];
-                BI.each(selectedValues[i+1], function (index, node) {
+                BI.each(selectedValues[i + 1], function (index, node) {
                     temp.push(node);
                 });
                 value.children = temp;
@@ -291,12 +291,12 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         return convertToObject(selectedValues[0], result);
 
         function convertToObject(children, map) {
-            if(BI.isEmptyArray(children)) {
+            if (BI.isEmptyArray(children)) {
                 return {};
             }
             BI.each(children, function (idx, child) {
                 var temp = {};
-                if(BI.isNotEmptyArray(child.children)) {
+                if (BI.isNotEmptyArray(child.children)) {
                     convertToObject(child.children, temp);
                 }
                 map[child.value] = BI.extend(map[child.value] || {}, temp);
