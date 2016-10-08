@@ -253,155 +253,6 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         callback(this.items, floor);
     },
 
-    // _getSelectedValues: function () {
-    //     var values = this._getValue().reverse(),
-    //         temp = [];
-    //
-    //     for(var i = values.length-2; i >= 0; i--) {
-    //         BI.each(values[i], function (idx, value) {
-    //             if (value.value === "*" || values[i+1][0].value === "*") {
-    //                 value.children = values[i+1];
-    //             } else {
-    //                 temp = [];
-    //                 BI.each(values[i+1], function (index, node) {
-    //                     if(values[i+1][index].pId === value.id) {
-    //                         temp.push(node);
-    //                     }
-    //                 });
-    //                 value.children = temp;
-    //             }
-    //         })
-    //     }
-    //     return convertToObject(values[0],{});
-    //
-    //     function convertToObject(children, map) {
-    //         if(BI.isEmptyArray(children)) {
-    //             return {};
-    //         }
-    //         BI.each(children, function (idx, child) {
-    //             var temp = {};
-    //             if(BI.isNotEmptyArray(child.children)) {
-    //                 convertToObject(child.children, temp);
-    //             }
-    //             map[child.value] = temp;
-    //         });
-    //         return map;
-    //     }
-    // },
-
-    // _getValue: function () {
-    //     var selectedButtons = this.view.getSelectedButtons(),
-    //         allButtons = this.view.getAllButtons(),
-    //         result = [],
-    //         selectedValues = [],
-    //         temp = [];
-    //     BI.each(selectedButtons, function (idx, buttons) {
-    //         temp = [];
-    //         for(var i =0;i<buttons.length;i++) {
-    //             temp.push({
-    //                 id: buttons[i].options.id,
-    //                 pId: buttons[i].options.pId,
-    //                 value: buttons[i].options.value
-    //             })
-    //         }
-    //         selectedValues.push(temp);
-    //     });
-    //
-    //     BI.each(selectedValues, function (idx, values) {
-    //         temp = [];
-    //         for(var i =0;i<values.length;i++) {
-    //             if(BI.isArray(values[i].id)) {
-    //                 temp = BI.concat(temp, convertToItems(values[i]));
-    //                 values.splice(i, 1);
-    //                 i--;
-    //             }
-    //         }
-    //         selectedValues[idx] = BI.concat(selectedValues[idx], temp);
-    //     });
-    //
-    //     var preValues, preIds=[], preValueTemp=[];
-    //     temp = [];
-    //     BI.each(selectedValues[selectedValues.length-1], function (idx, value) {
-    //         temp.push(value);
-    //     });
-    //     result.push(temp);
-    //     for (var i = selectedValues.length - 2; i >= 0; i--) {
-    //         temp = [];
-    //         preValues = selectedValues[i + 1];
-    //         if(BI.isEmptyArray(preValues)) {
-    //             result.push([{value: "*"}]);
-    //             continue;
-    //         }
-    //         if(preValues[0].value === "*") {
-    //             preValues = [];
-    //             if(BI.isEmptyArray(allButtons[i+1])){
-    //                 result.push(selectedValues[i]);
-    //                 continue;
-    //             }
-    //             BI.each(allButtons[i+1], function (idx, button) {
-    //                 var valueTemp = [];
-    //                 if(BI.isArray(button.options.id)){
-    //                     BI.each(button.options.id, function (index, bId) {
-    //                         valueTemp.push({
-    //                             id: bId,
-    //                             pId: button.options.pId[index],
-    //                             value: button.options.value
-    //                         })
-    //                     })
-    //                 } else {
-    //                     valueTemp.push({
-    //                         id: button.options.id,
-    //                         pId: button.options.pId,
-    //                         value: button.options.value
-    //                     })
-    //                 }
-    //                 BI.each(valueTemp, function (j, v) {
-    //                     if(containsValue(preValueTemp, v) || i === selectedValues.length - 2) {
-    //                         preValues.push(v)
-    //                     }
-    //                 })
-    //             })
-    //         }
-    //         BI.each(preValues, function (idx, value) {
-    //             preIds = BI.concat(preIds, value.pId);
-    //         });
-    //         for (var j = 0; j < selectedValues[i].length; j++) {
-    //             if (BI.contains(preIds, selectedValues[i][j].id) || selectedValues[i][j].value === "*") {
-    //                 temp.push(selectedValues[i][j])
-    //             } else {
-    //                 selectedValues[i].splice(j, 1);
-    //                 j--;
-    //             }
-    //         }
-    //         preValueTemp = preValues;
-    //         result.push(temp);
-    //         function containsValue(array, v) {
-    //             for(var i=0;i<array.length;i++){
-    //                 if(array[i].pId === v.id) {
-    //                     return true;
-    //                 }
-    //             }
-    //             return false;
-    //         }
-    //     }
-    //     return result;
-    //
-    //     function convertToItems(item) {
-    //         var result = [];
-    //         if (BI.isArray(item.id)) {
-    //             BI.each(item.id, function (index, id) {
-    //                 result.push(BI.extend(BI.clone(item), {
-    //                     id: id,
-    //                     pId: item.pId[index]
-    //                 }));
-    //             })
-    //         } else {
-    //             result.push(item);
-    //         }
-    //         return result;
-    //     }
-    // },
-
     setValue: function (v) {
         var self = this, op = {
             selected_values: v
@@ -416,78 +267,28 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
     getValue: function () {
         var selectedButtons = this.view.getSelectedButtons();
         var selectedValues = [];
-        var self = this;
         var result = {};
         var temp = [];
-        var floors = [];
         BI.each(selectedButtons, function (idx, buttons) {
             temp = [];
             BI.each(buttons, function (index, button) {
-                temp = BI.concat(temp, convertToItems({
-                    id: button.options.id,
-                    pId: button.options.pId,
+                temp = BI.concat(temp, {
                     value: button.options.value
-                }))
+                })
             });
             selectedValues.push(temp);
         });
 
-        BI.each(selectedValues[0], function (idx, select) {
-            var temp = 0;
-            var ids = [select.id];
-            while(hasChildren(ids)) {
-                temp ++;
-                var idTemp = [];
-                BI.each(ids, function (idx ,id) {
-                    BI.each(self.map[id], function (index, item) {
-                        idTemp = BI.concat(idTemp, item.id);
-                    });
-                });
-                ids = idTemp;
-            }
-            floors.push(temp);
-        });
-
         for(var i = selectedValues.length-2; i >= 0; i--) {
             BI.each(selectedValues[i], function (idx, value) {
-                if(selectedValues[i+1][0].value === "*" && value.value !== "*"){
-                    if(!BI.isEmptyArray(self.map[value.id])) {
-                        value.children = selectedValues[i+1];
-                    }
-                } else if(selectedValues[i+1][0].value === "*" && value.value === "*") {
-                    value.children = selectedValues[i+1];
-                }
-                else if(value.value === "*"){
-                    value.children = selectedValues[i+1];
-                } else {
-                    temp = [];
-                    BI.each(selectedValues[i+1], function (index, node) {
-                        if(selectedValues[i+1][index].pId === value.id) {
-                            temp.push(node);
-                        }
-                    });
-                    value.children = temp;
-                }
+                temp = [];
+                BI.each(selectedValues[i+1], function (index, node) {
+                    temp.push(node);
+                });
+                value.children = temp;
             })
         }
-
-
-        convertToObject(selectedValues[0], result);
-        
-        function convertToItems(item) {
-            var result = [];
-            if (BI.isArray(item.id)) {
-                BI.each(item.id, function (index, id) {
-                    result.push(BI.extend(BI.clone(item), {
-                        id: id,
-                        pId: item.pId[index]
-                    }));
-                })
-            } else {
-                result.push(item);
-            }
-            return result;
-        }
+        return convertToObject(selectedValues[0], result);
 
         function convertToObject(children, map) {
             if(BI.isEmptyArray(children)) {
@@ -498,24 +299,9 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
                 if(BI.isNotEmptyArray(child.children)) {
                     convertToObject(child.children, temp);
                 }
-                map[child.value] = temp;
+                map[child.value] = BI.extend(map[child.value] || {}, temp);
             });
             return map;
-        }
-
-        function hasChildren(ids) {
-            for (var i=0;i<ids.length;i++) {
-                if(BI.isNotEmptyArray(self.map[ids[i]])) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        function getChildren(origin, floor) {
-            var keys = Object.keys(origin);
-            for(var i = 0;i<=keys.length;i++){
-
-            }
         }
     }
 });
