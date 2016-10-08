@@ -27,6 +27,11 @@ class FinishObserverProcessor extends BIProcessor<String> {
     }
 
     @Override
+    protected boolean disposeStopMessage() {
+        return true;
+    }
+
+    @Override
     public void release() {
 
     }
