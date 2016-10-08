@@ -287,24 +287,26 @@ class Tree {
         }
     }
 
-    static transformToArrayFormat(nodes) {
+    static transformToArrayFormat(nodes, pId) {
         if (!nodes) return [];
         var r = [];
         if (isArray(nodes)) {
             for (var i = 0, l = nodes.length; i < l; i++) {
                 var node = clone(nodes[i]);
+                node.pId = pId;
                 delete node.children;
                 r.push(node);
                 if (nodes[i]["children"]) {
-                    r = r.concat(Tree.transformToArrayFormat(nodes[i]["children"]));
+                    r = r.concat(Tree.transformToArrayFormat(nodes[i]["children"], node.id));
                 }
             }
         } else {
             var newNodes = clone(nodes);
+            newNodes.pId = pId;
             delete newNodes.children;
             r.push(newNodes);
             if (nodes["children"]) {
-                r = r.concat(Tree.transformToArrayFormat(nodes["children"]));
+                r = r.concat(Tree.transformToArrayFormat(nodes["children"], newNodes.id));
             }
         }
         return r;

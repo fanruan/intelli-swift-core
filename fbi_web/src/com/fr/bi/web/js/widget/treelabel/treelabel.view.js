@@ -72,7 +72,7 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
     },
 
     _changeView: function (floor, value, id) {
-        if(floor === this.items.length - 1) {
+        if (floor === this.items.length - 1) {
             return;
         }
         var options = {};
@@ -126,6 +126,14 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
         var result = [];
         BI.each(this.items, function (idx, item) {
             result.push(item.getSelectedButtons());
+        });
+        return result;
+    },
+
+    getAllButtons: function () {
+        var result = [];
+        BI.each(this.items, function (idx, item) {
+            result.push(item.getAllButtons().slice(1))
         });
         return result;
     },

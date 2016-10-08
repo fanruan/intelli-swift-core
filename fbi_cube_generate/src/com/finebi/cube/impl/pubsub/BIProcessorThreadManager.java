@@ -1,5 +1,7 @@
 package com.finebi.cube.impl.pubsub;
 
+import com.fr.bi.manager.PerformancePlugManager;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -27,7 +29,7 @@ public class BIProcessorThreadManager {
     }
 
     private BIProcessorThreadManager() {
-        executorService = Executors.newFixedThreadPool(4);
+        executorService = Executors.newFixedThreadPool(PerformancePlugManager.getInstance().getBiThreadPoolSize());
     }
 
     public ExecutorService getExecutorService() {

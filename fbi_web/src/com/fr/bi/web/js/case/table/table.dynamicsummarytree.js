@@ -57,9 +57,9 @@ BI.DynamicSummaryTreeTable = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var deep = this._getHDeep();
         var vDeep = this._getVDeep();
-        var header = BI.DynamicSummaryTreeTable.formatHeader(o.header, o.crossHeader, o.crossItems, deep, vDeep);
-        var items = BI.DynamicSummaryTreeTable.formatItems(o.items, deep);
-        items = BI.DynamicSummaryTreeTable.formatSummaryItems(items, o.crossItems, deep);
+        var header = BI.TableTree.formatHeader(o.header, o.crossHeader, o.crossItems, deep, vDeep);
+        var items = BI.DynamicSummaryTreeTable.formatHorizontalItems(o.items, deep);
+        items = BI.DynamicSummaryTreeTable.formatSummaryItems(items, header, o.crossItems, deep);
         this.table = BI.createWidget({
             type: "bi.table_view",
             element: this.element,
@@ -213,9 +213,9 @@ BI.DynamicSummaryTreeTable = BI.inherit(BI.Widget, {
         }
         var deep = this._getHDeep();
         var vDeep = this._getVDeep();
-        header = BI.DynamicSummaryTreeTable.formatHeader(o.header, o.crossHeader, o.crossItems, deep, vDeep);
-        items = BI.DynamicSummaryTreeTable.formatItems(o.items, deep);
-        items = BI.DynamicSummaryTreeTable.formatSummaryItems(items, o.crossItems, deep);
+        header = BI.TableTree.formatHeader(o.header, o.crossHeader, o.crossItems, deep, vDeep);
+        items = BI.DynamicSummaryTreeTable.formatHorizontalItems(o.items, deep);
+        BI.DynamicSummaryTreeTable.formatSummaryItems(items, header, o.crossItems, deep);
         this.table.populate(items, header);
     },
 
@@ -264,20 +264,6 @@ BI.extend(BI.DynamicSummaryTreeTable, {
     //     });
     //     return result;
     // },
-
-    formatHeader: function (header, crossHeader, crossItems, hDeep, vDeep) {
-        var items = BI.DynamicSummaryTreeTable.formatCrossItems(crossItems, vDeep);
-        var result = [];
-        BI.each(items, function (row, node) {
-            var c = [];
-            for (var i = 0; i < hDeep; i++) {
-                c.push(crossHeader[row]);
-            }
-            result.push(c.concat(node || []));
-        });
-        result.push(header);
-        return result;
-    },
 
     // formatRotatedItems: function (nodes, header, crossItems) {
     //     var result = [];
@@ -332,7 +318,7 @@ BI.extend(BI.DynamicSummaryTreeTable, {
     //     return result;
     // },
 
-    formatItems: function (nodes, deep, isCross) {
+    formatHorizontalItems: function (nodes, deep, isCross) {
         var result = [];
 
         function track(store, node) {
@@ -410,13 +396,13 @@ BI.extend(BI.DynamicSummaryTreeTable, {
         });
         return result;
     },
+    //
+    // formatCrossItems: function (nodes, deep) {
+    //     var items = BI.DynamicSummaryTreeTable.formatItems(nodes, deep, true);
+    //     return BI.unzip(items);
+    // },
 
-    formatCrossItems: function (nodes, deep) {
-        var items = BI.DynamicSummaryTreeTable.formatItems(nodes, deep, true);
-        return BI.unzip(items);
-    },
-
-    formatSummaryItems: function (items, crossItems, deep) {
+    formatSummaryItems: function (items, header, crossItems, deep) {
         //求纵向需要去除的列
         var cols = [];
         var leaf = 0;
@@ -427,10 +413,12 @@ BI.extend(BI.DynamicSummaryTreeTable, {
                     track(child);
                 });
                 if (BI.isNotEmptyArray(node.values)) {
-                    leaf++;
                     if (node.children.length === 1) {
-                        cols.push(leaf - 1 + deep);
+                        for (var i = 0; i < node.values.length; i++) {
+                            cols.push(leaf + i + deep);
+                        }
                     }
+                    leaf += node.values.length;
                 }
                 return;
             }
@@ -446,11 +434,14 @@ BI.extend(BI.DynamicSummaryTreeTable, {
         });
 
         if (cols.length > 0) {
-            BI.each(items, function (i, node) {
+            BI.each(header, function (i, node) {
                 BI.removeAt(node, cols);
             })
+            BI.each(items, function (i, node) {
+                BI.removeAt(node, cols);
+            });
         }
-        return items;
+        return {items: items, header: header};
     }
 });
 

@@ -55,30 +55,32 @@ BI.DynamicSummaryLayerTreeTable = BI.inherit(BI.Widget, {
     _createHeader: function (vDeep) {
         var self = this, o = this.options;
         var header = o.header || [], crossHeader = o.crossHeader || [];
-        var items = BI.DynamicSummaryTreeTable.formatCrossItems(o.crossItems, vDeep);
+        var items = BI.TableTree.formatCrossItems(o.crossItems, vDeep);
         var result = [];
         BI.each(items, function (row, node) {
             var c = [crossHeader[row]];
             result.push(c.concat(node || []));
         });
-        var newHeader = this._formatColumns(header);
-        var deep = this._getHDeep();
-        if (deep <= 0) {
-            newHeader.unshift({
-                cls: "layer-tree-table-title",
-                text: BI.i18nText("BI-Row_Header")
-            });
-        } else {
-            newHeader[0] = {
-                cls: "layer-tree-table-title",
-                text: BI.i18nText("BI-Row_Header")
-            };
+        if (header && header.length > 0) {
+            var newHeader = this._formatColumns(header);
+            var deep = this._getHDeep();
+            if (deep <= 0) {
+                newHeader.unshift({
+                    cls: "layer-tree-table-title",
+                    text: BI.i18nText("BI-Row_Header")
+                });
+            } else {
+                newHeader[0] = {
+                    cls: "layer-tree-table-title",
+                    text: BI.i18nText("BI-Row_Header")
+                };
+            }
+            result.push(newHeader);
         }
-        result.push(newHeader);
         return result;
     },
 
-    _formatItems: function (nodes, deep) {
+    _formatItems: function (nodes, header, deep) {
         var self = this, o = this.options;
         var result = [];
 
@@ -106,7 +108,7 @@ BI.DynamicSummaryLayerTreeTable = BI.inherit(BI.Widget, {
                 result.push(next)
             }
         });
-        return BI.DynamicSummaryTreeTable.formatSummaryItems(result, o.crossItems, deep);
+        return BI.DynamicSummaryTreeTable.formatSummaryItems(result, header, o.crossItems, 1);
     },
 
     _formatCols: function (cols, deep) {
@@ -131,7 +133,7 @@ BI.DynamicSummaryLayerTreeTable = BI.inherit(BI.Widget, {
         var deep = this._getHDeep();
         var vDeep = this._getVDeep();
         var header = this._createHeader(vDeep);
-        var items = this._formatItems(o.items, deep);
+        var info = this._formatItems(o.items, header, deep);
         this.table = BI.createWidget({
             type: "bi.table_view",
             element: this.element,
@@ -148,9 +150,9 @@ BI.DynamicSummaryLayerTreeTable = BI.inherit(BI.Widget, {
             footerRowSize: o.footerRowSize,
             rowSize: o.rowSize,
             regionColumnSize: o.regionColumnSize,
-            header: header,
+            header: info.header,
             footer: this._formatColumns(o.footer, deep),
-            items: items
+            items: info.items
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT, arguments);
@@ -314,8 +316,8 @@ BI.DynamicSummaryLayerTreeTable = BI.inherit(BI.Widget, {
         var deep = this._getHDeep();
         var vDeep = this._getVDeep();
         header = this._createHeader(vDeep);
-        items = this._formatItems(o.items, deep);
-        this.table.populate(items, header);
+        var info = this._formatItems(o.items, header, deep);
+        this.table.populate(info.items, info.header);
     },
 
     destroy: function () {

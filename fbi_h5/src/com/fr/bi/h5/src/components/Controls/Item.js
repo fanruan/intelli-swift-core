@@ -1,8 +1,7 @@
-import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
 
-import {cn, sc, isNil, requestAnimationFrame, emptyFunction, shallowEqual, isEqual, each} from 'core'
+import {ReactComponentWithImmutableRenderMixin, cn, sc, isNil, requestAnimationFrame, emptyFunction, shallowEqual, isEqual, each} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -66,11 +65,12 @@ class Item extends Component {
     }
 
 }
-mixin.onClass(Item, PureRenderMixin);
+mixin.onClass(Item, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         height: Size.ITEM_HEIGHT,
-        padding: '0 4px',
+        paddingLeft: 20,
+        paddingRight: 20,
         borderBottom: '1px solid ' + Colors.SPLIT
     }
 });

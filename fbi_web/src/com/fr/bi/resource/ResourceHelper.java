@@ -1599,6 +1599,7 @@ public class ResourceHelper {
                 //one package
                 "com/fr/bi/web/js/modules/onepackage/widget.onepackage.js",
                 "com/fr/bi/web/js/modules/onepackage/widget.onepackage.model.js",
+                "com/fr/bi/web/js/modules/onepackage/widget.refreshtablefields.js",
 
                 //数据连接
                 "com/fr/bi/web/js/modules/datalink/widget.testlink.loading.js",
@@ -3007,10 +3008,11 @@ public class ResourceHelper {
 
     public static String[] getH5Js(){
         return new String[] {
-                "com/fr/bi/web/js/third/ajax.js",
+                "com/fr/bi/web/js/third/zepto.js",
                 "com/fr/bi/web/js/third/d3.js",
                 "com/fr/bi/web/js/third/leaflet.js",
                 "com/fr/bi/web/js/third/vancharts-all.js",
+                "com/fr/bi/web/mobile/mobile.data.js",
                 "com/fr/bi/web/js/core/foundation.js",
                 "com/fr/bi/web/js/data/data.js",
                 "com/fr/bi/web/js/data/constant/biconst.js",
@@ -3018,8 +3020,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/data/constant/strings.js",
                 "com/fr/bi/web/js/data/constant/enums.js",
                 "com/fr/bi/web/js/data/constant/colors.js",
-                "com/fr/bi/web/js/data/constant/attrs.js",
-                "com/fr/bi/web/mobile/mobile.data.js"
+                "com/fr/bi/web/js/data/constant/attrs.js"
         };
     }
 }
