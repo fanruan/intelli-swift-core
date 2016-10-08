@@ -1826,11 +1826,6 @@ webpackJsonp([0],{
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 	exports.default = todos;
 
 	var _immutable = __webpack_require__(200);
@@ -1847,61 +1842,13 @@ webpackJsonp([0],{
 	  var state = arguments.length <= 0 || arguments[0] === undefined ? initialState : arguments[0];
 	  var action = arguments[1];
 
-	  var _ret = function () {
-	    switch (action.type) {
-	      case _ActionTypes.ADD_TODO:
-	        return {
-	          v: _extends({}, state)
-	        };
+	  switch (action.type) {
+	    case _ActionTypes.UPDATE_TEMPLATE:
+	      return action.$template;
 
-	      case _ActionTypes.DELETE_TODO:
-	        return {
-	          v: state.filter(function (todo) {
-	            return todo.id !== action.id;
-	          })
-	        };
-
-	      case _ActionTypes.EDIT_TODO:
-	        return {
-	          v: state.map(function (todo) {
-	            return todo.id === action.id ? Object.assign({}, todo, { text: action.text }) : todo;
-	          })
-	        };
-
-	      case _ActionTypes.COMPLETE_TODO:
-	        return {
-	          v: state.map(function (todo) {
-	            return todo.id === action.id ? Object.assign({}, todo, { completed: !todo.completed }) : todo;
-	          })
-	        };
-
-	      case _ActionTypes.COMPLETE_ALL:
-	        var areAllMarked = state.every(function (todo) {
-	          return todo.completed;
-	        });
-	        return {
-	          v: state.map(function (todo) {
-	            return Object.assign({}, todo, {
-	              completed: !areAllMarked
-	            });
-	          })
-	        };
-
-	      case _ActionTypes.CLEAR_COMPLETED:
-	        return {
-	          v: state.filter(function (todo) {
-	            return todo.completed === false;
-	          })
-	        };
-
-	      default:
-	        return {
-	          v: state
-	        };
-	    }
-	  }();
-
-	  if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+	    default:
+	      return state;
+	  }
 	}
 
 /***/ },
@@ -1914,12 +1861,7 @@ webpackJsonp([0],{
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var ADD_TODO = exports.ADD_TODO = 'ADD_TODO';
-	var DELETE_TODO = exports.DELETE_TODO = 'DELETE_TODO';
-	var EDIT_TODO = exports.EDIT_TODO = 'EDIT_TODO';
-	var COMPLETE_TODO = exports.COMPLETE_TODO = 'COMPLETE_TODO';
-	var COMPLETE_ALL = exports.COMPLETE_ALL = 'COMPLETE_ALL';
-	var CLEAR_COMPLETED = exports.CLEAR_COMPLETED = 'CLEAR_COMPLETED';
+	var UPDATE_TEMPLATE = exports.UPDATE_TEMPLATE = 'UPDATE_TEMPLATE';
 
 /***/ },
 
@@ -2184,9 +2126,9 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(769);
 
-	var _todos = __webpack_require__(776);
+	var _template = __webpack_require__(776);
 
-	var TodoActions = _interopRequireWildcard(_todos);
+	var TodoActions = _interopRequireWildcard(_template);
 
 	var _Main = __webpack_require__(777);
 
@@ -2278,13 +2220,13 @@ webpackJsonp([0],{
 
 	App.propTypes = {
 	    actions: _lib.PropTypes.object.isRequired,
-	    $$template: _lib.PropTypes.object.isRequired
+	    $template: _lib.PropTypes.object.isRequired
 	};
 	_reactMixin2.default.onClass(App, _core.ReactComponentWithImmutableRenderMixin);
 
 	function mapStateToProps(state) {
 	    var props = {
-	        $$template: state.get('template')
+	        $template: state.get('template')
 	    };
 	    return props;
 	}
@@ -2302,14 +2244,9 @@ webpackJsonp([0],{
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
-	exports.addTodo = addTodo;
-	exports.deleteTodo = deleteTodo;
-	exports.editTodo = editTodo;
-	exports.completeTodo = completeTodo;
-	exports.completeAll = completeAll;
-	exports.clearCompleted = clearCompleted;
+	exports.updateTemplate = updateTemplate;
 
 	var _ActionTypes = __webpack_require__(203);
 
@@ -2317,28 +2254,8 @@ webpackJsonp([0],{
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-	function addTodo(text) {
-	  return { type: types.ADD_TODO, text: text };
-	}
-
-	function deleteTodo(id) {
-	  return { type: types.DELETE_TODO, id: id };
-	}
-
-	function editTodo(id, text) {
-	  return { type: types.EDIT_TODO, id: id, text: text };
-	}
-
-	function completeTodo(id) {
-	  return { type: types.COMPLETE_TODO, id: id };
-	}
-
-	function completeAll() {
-	  return { type: types.COMPLETE_ALL };
-	}
-
-	function clearCompleted() {
-	  return { type: types.CLEAR_COMPLETED };
+	function updateTemplate($template) {
+	    return { type: types.UPDATE_TEMPLATE, $template: $template };
 	}
 
 /***/ },
@@ -2364,9 +2281,9 @@ webpackJsonp([0],{
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _todos = __webpack_require__(776);
+	var _template = __webpack_require__(776);
 
-	var TodoActions = _interopRequireWildcard(_todos);
+	var TodoActions = _interopRequireWildcard(_template);
 
 	var _core = __webpack_require__(329);
 
@@ -2409,85 +2326,98 @@ webpackJsonp([0],{
 
 	        var _this = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props, context));
 
-	        _this.NavigationBarRouteMapper = {
-	            LeftButton: function LeftButton(route, navigator, index, navState) {
-	                if (index === 0) {
-	                    return null;
-	                }
-
-	                return _lib2.default.createElement(
-	                    _lib.TouchableOpacity,
-	                    {
-	                        onPress: function onPress() {
-	                            return navigator.pop();
-	                        },
-	                        style: styles.navBarLeftButton },
-	                    _lib2.default.createElement(
-	                        _lib.Text,
-	                        { style: [styles.navBarText, styles.navBarButtonText] },
-	                        '返回'
-	                    )
-	                );
-	            },
-	            RightButton: function RightButton(route, navigator, index, navState) {
-	                if (index === 0) {
-	                    return null;
-	                }
-
-	                if (route.name === 'widget') {
-	                    return _lib2.default.createElement(
-	                        _lib.TouchableOpacity,
-	                        {
-	                            onPress: function onPress() {
-	                                console.log(route);
-	                                if (route.value) {
-	                                    navigator.pop();
-	                                }
-	                            },
-	                            style: styles.navBarRightButton },
-	                        _lib2.default.createElement(
-	                            _lib.Text,
-	                            { style: [styles.navBarText, styles.navBarButtonText] },
-	                            '确定'
-	                        )
-	                    );
-	                }
-
-	                if (route.name === 'list') {
-	                    return _lib2.default.createElement(
-	                        _lib.TouchableOpacity,
-	                        {
-	                            onPress: function onPress() {
-	                                console.log(route);
-	                                navigator.pop();
-	                            },
-	                            style: styles.navBarRightButton },
-	                        _lib2.default.createElement(
-	                            _lib.Text,
-	                            { style: [styles.navBarText, styles.navBarButtonText] },
-	                            '查询'
-	                        )
-	                    );
-	                }
-
-	                return null;
-	            },
-	            Title: function Title(route, navigator, index, navState) {
-	                return _lib2.default.createElement(
-	                    _lib.Text,
-	                    { style: [styles.navBarText, styles.navBarTitleText] },
-	                    route.title
-	                );
-	            }
-	        };
-
 	        console.log(props);
-	        _this.template = new _data.Template(props.$$template);
+	        _this.template = new _data.Template(props.$template);
 	        // template={new Template(template)} actions={actions}
 	        return _this;
 	    }
 
 	    _createClass(Main, [{
+	        key: 'navigationBarRouteMapper',
+	        value: function navigationBarRouteMapper() {
+	            var self = this;
+	            return {
+	                LeftButton: function LeftButton(route, navigator, index, navState) {
+	                    if (index === 0) {
+	                        return null;
+	                    }
+
+	                    return _lib2.default.createElement(
+	                        _lib.TouchableOpacity,
+	                        {
+	                            onPress: function onPress() {
+	                                return navigator.pop();
+	                            },
+	                            style: styles.navBarLeftButton },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            { style: [styles.navBarText, styles.navBarButtonText] },
+	                            '返回'
+	                        )
+	                    );
+	                },
+	                RightButton: function RightButton(route, navigator, index, navState) {
+	                    if (index === 0) {
+	                        return null;
+	                    }
+
+	                    if (route.name === 'widget') {
+	                        return _lib2.default.createElement(
+	                            _lib.TouchableOpacity,
+	                            {
+	                                onPress: function onPress() {
+	                                    var prevRoute = navState.routeStack[navState.presentedIndex - 1];
+	                                    if (route.$template) {
+	                                        prevRoute.$template = route.$template;
+	                                        navigator.replacePreviousAndPop(prevRoute);
+	                                    } else {
+	                                        navigator.pop();
+	                                    }
+	                                },
+	                                style: styles.navBarRightButton },
+	                            _lib2.default.createElement(
+	                                _lib.Text,
+	                                { style: [styles.navBarText, styles.navBarButtonText] },
+	                                '确定'
+	                            )
+	                        );
+	                    }
+
+	                    if (route.name === 'list') {
+	                        return _lib2.default.createElement(
+	                            _lib.TouchableOpacity,
+	                            {
+	                                onPress: function onPress() {
+	                                    var prevRoute = navState.routeStack[navState.presentedIndex - 1];
+	                                    if (route.$template) {
+	                                        prevRoute.$template = route.$template;
+	                                        self.props.actions.updateTemplate(route.$template);
+	                                        navigator.replacePreviousAndPop(prevRoute);
+	                                    } else {
+	                                        navigator.pop();
+	                                    }
+	                                },
+	                                style: styles.navBarRightButton },
+	                            _lib2.default.createElement(
+	                                _lib.Text,
+	                                { style: [styles.navBarText, styles.navBarButtonText] },
+	                                '查询'
+	                            )
+	                        );
+	                    }
+
+	                    return null;
+	                },
+	                Title: function Title(route, navigator, index, navState) {
+	                    return _lib2.default.createElement(
+	                        _lib.Text,
+	                        { style: [styles.navBarText, styles.navBarTitleText] },
+	                        route.title
+	                    );
+	                }
+	            };
+	        }
+	    }, {
 	        key: 'renderScene',
 	        value: function renderScene(route, navigationOperations, onComponentRef) {
 	            var props = _objectWithoutProperties(this.props, []);
@@ -2510,9 +2440,9 @@ webpackJsonp([0],{
 	            return _lib2.default.createElement(route.Component, _extends({
 	                width: width, height: height - 50
 	            }, props, others, {
-	                onValueChange: function onValueChange(value) {
-	                    _onValueChange && _onValueChange(value);
-	                    route.value = value;
+	                onValueChange: function onValueChange($template) {
+	                    _onValueChange && _onValueChange($template);
+	                    route.$template = $template;
 	                },
 	                navigator: navigationOperations
 	            }));
@@ -2526,7 +2456,7 @@ webpackJsonp([0],{
 	                initialRoute: initialRoute,
 	                renderScene: this.renderScene.bind(this),
 	                navigationBar: _lib2.default.createElement(_lib.Navigator.NavigationBar, {
-	                    routeMapper: this.NavigationBarRouteMapper,
+	                    routeMapper: this.navigationBarRouteMapper(),
 	                    style: styles.navBar
 	                }),
 	                configureScene: function configureScene(route) {
@@ -2546,9 +2476,7 @@ webpackJsonp([0],{
 	        value: function componentDidMount() {}
 	    }, {
 	        key: 'componentWillReceiveProps',
-	        value: function componentWillReceiveProps(nextProps) {
-	            debugger;
-	        }
+	        value: function componentWillReceiveProps(nextProps) {}
 	    }, {
 	        key: 'componentWillUpdate',
 	        value: function componentWillUpdate(nextProps, nextState) {}
@@ -4584,7 +4512,7 @@ webpackJsonp([0],{
 	        var ds = new _lib.ListView.DataSource({ rowHasChanged: function rowHasChanged(r1, r2) {
 	                return r1 !== r2;
 	            } });
-	        _this.template = new _data.Template(props.$$template);
+	        _this.template = new _data.Template(props.$template);
 	        var rows = _this.template.getAllControlWidgetIds();
 	        _this.state = {
 	            dataSource: ds.cloneWithRows(rows)
@@ -4614,10 +4542,10 @@ webpackJsonp([0],{
 	            return _lib2.default.createElement(
 	                _lib.ScrollView,
 	                { style: styles.wrapper },
-	                (0, _core.map)(this.template.getAllControlWidgetIds(), function (id) {
-	                    var $$widget = _this2.template.get$$WidgetById(id);
-	                    var widget = new _data.Widget($$widget);
-	                    return _lib2.default.createElement(_Item2.default, { key: id, id: id, $$widget: $$widget, onPress: function onPress() {
+	                (0, _core.map)(this.template.getAllControlWidgetIds(), function (wId) {
+	                    var $widget = _this2.template.get$$WidgetById(wId);
+	                    var widget = new _data.Widget($widget);
+	                    return _lib2.default.createElement(_Item2.default, { key: wId, id: wId, $widget: $widget, onPress: function onPress() {
 	                            var Component = null;
 	                            switch (widget.getType()) {
 	                                case BICst.WIDGET.STRING:
@@ -4635,10 +4563,12 @@ webpackJsonp([0],{
 	                            }
 	                            props.navigator.push({
 	                                name: 'widget',
-	                                id: id,
-	                                $$widget: $$widget,
+	                                wId: wId,
 	                                Component: Component,
-	                                title: widget.getName()
+	                                title: widget.getName(),
+	                                onValueChange: function onValueChange($template) {
+	                                    _this2.props.onValueChange($template);
+	                                }
 	                            });
 	                        } });
 	                })
@@ -4757,9 +4687,13 @@ webpackJsonp([0],{
 	    }, {
 	        key: 'render',
 	        value: function render() {
+	            var _this2 = this;
+
 	            var props = _objectWithoutProperties(this.props, []);
 
-	            var widget = new _data.Widget(props.$$widget);
+	            var template = new _data.Template(props.$template);
+	            var wId = props.wId;
+	            var widget = template.getWidgetById(wId);
 	            return _lib2.default.createElement(_widgets.MultiSelectorWidget, {
 	                style: styles.wrapper,
 	                type: widget.getSelectType(),
@@ -4769,7 +4703,11 @@ webpackJsonp([0],{
 	                },
 	                width: props.width,
 	                height: props.height,
-	                onValueChange: this.props.onValueChange.bind(this)
+	                onValueChange: function onValueChange(value) {
+	                    widget.setValue(value);
+	                    template.setWidget(wId, widget);
+	                    _this2.props.onValueChange(template.$get());
+	                }
 	            });
 	        }
 	    }]);
@@ -4862,7 +4800,9 @@ webpackJsonp([0],{
 	        value: function render() {
 	            var props = _objectWithoutProperties(this.props, []);
 
-	            var widget = new _data.Widget(props.$$widget);
+	            var template = new _data.Template(props.$template);
+	            var wId = props.wId;
+	            var widget = template.getWidgetById(wId);
 	            return _lib2.default.createElement(_widgets.MultiTreeSelectorWidget, {
 	                style: styles.wrapper,
 	                floors: widget.getTreeFloors(),
@@ -4978,7 +4918,7 @@ webpackJsonp([0],{
 	                        _lib2.default.createElement(
 	                            _lib.Text,
 	                            null,
-	                            new _data.Widget(props.$$widget).getName()
+	                            new _data.Widget(props.$widget).getName()
 	                        )
 	                    )
 	                )
@@ -5077,7 +5017,7 @@ webpackJsonp([0],{
 	        var ds = new _lib.ListView.DataSource({ rowHasChanged: function rowHasChanged(r1, r2) {
 	                return r1 !== r2;
 	            } });
-	        _this.template = new _data.Template(props.$$template);
+	        _this.template = new _data.Template(props.$template);
 	        var rows = _this.template.getAllWidgetIds();
 	        _this.state = {
 	            dataSource: ds.cloneWithRows(rows)
@@ -5128,14 +5068,13 @@ webpackJsonp([0],{
 	    }, {
 	        key: '_renderRow',
 	        value: function _renderRow(wId, sectionID, rowID) {
-	            var $$template = this.props.$$template;
+	            var $template = this.props.$template;
 
-	            var $$widget = this.template.get$$WidgetById(wId);
-	            var type = new _data.Widget($$widget).getType();
+	            var $widget = this.template.get$$WidgetById(wId);
+	            var type = new _data.Widget($widget).getType();
 	            var props = {
 	                key: wId,
-	                $$widget: $$widget,
-	                $$template: $$template,
+	                $template: $template,
 	                wId: wId,
 	                width: this.props.width - 40,
 	                height: 230
@@ -5268,8 +5207,8 @@ webpackJsonp([0],{
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var Main = function (_Component) {
-	    _inherits(Main, _Component);
+	var ChartComponent = function (_Component) {
+	    _inherits(ChartComponent, _Component);
 
 	    //static propTypes = {
 	    //    height: React.PropTypes.number.required,
@@ -5277,19 +5216,21 @@ webpackJsonp([0],{
 	    //    template: React.PropTypes.object.required
 	    //};
 
-	    function Main(props, context) {
-	        _classCallCheck(this, Main);
+	    function ChartComponent(props, context) {
+	        _classCallCheck(this, ChartComponent);
 
-	        return _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props, context));
+	        return _possibleConstructorReturn(this, (ChartComponent.__proto__ || Object.getPrototypeOf(ChartComponent)).call(this, props, context));
 	    }
 
-	    _createClass(Main, [{
+	    _createClass(ChartComponent, [{
 	        key: 'componentWillMount',
 	        value: function componentWillMount() {
 	            var _this2 = this;
 
-	            var $$widget = this.props.$$widget;
-	            new _data.Widget($$widget).getData().then(function (data) {
+	            var template = new _data.Template(this.props.$template);
+	            var wId = this.props.wId;
+	            var widget = template.getWidgetById(wId);
+	            widget.getData().then(function (data) {
 	                var vanCharts = VanCharts.init(_reactDom2.default.findDOMNode(_this2.refs.chart));
 	                vanCharts.setOptions(data);
 	            });
@@ -5302,17 +5243,17 @@ webpackJsonp([0],{
 	        }
 	    }]);
 
-	    return Main;
+	    return ChartComponent;
 	}(_lib.Component);
 
-	_reactMixin2.default.onClass(Main, _core.ReactComponentWithImmutableRenderMixin);
+	_reactMixin2.default.onClass(ChartComponent, _core.ReactComponentWithImmutableRenderMixin);
 
 	var style = _lib.StyleSheet.create({
 	    wrapper: {
 	        position: 'relative'
 	    }
 	});
-	exports.default = Main;
+	exports.default = ChartComponent;
 
 /***/ },
 
@@ -5385,7 +5326,7 @@ webpackJsonp([0],{
 	            data: []
 	        };
 
-	        _this._tableHelper = new _TableComponentHelper2.default(props.$$widget);
+	        _this._tableHelper = new _TableComponentHelper2.default(props);
 	        _this._widthHelper = new _TableComponentWidthHelper2.default(_this._tableHelper, props.width);
 
 	        return _this;
@@ -5404,7 +5345,10 @@ webpackJsonp([0],{
 	        value: function _fetchData() {
 	            var _this2 = this;
 
-	            new _data.Widget(this.props.$$widget).getData().then(function (data) {
+	            var template = new _data.Template(this.props.$template);
+	            var wId = this.props.wId;
+	            var widget = template.getWidgetById(wId);
+	            widget.getData().then(function (data) {
 	                console.log(data);
 	                _this2._tableHelper.setData(data);
 	                _this2.forceUpdate();
@@ -5491,10 +5435,12 @@ webpackJsonp([0],{
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var TableComponentHelper = function () {
-	    function TableComponentHelper($$widget) {
+	    function TableComponentHelper(props) {
 	        _classCallCheck(this, TableComponentHelper);
 
-	        this.widget = new _data.Widget($$widget);
+	        var template = new _data.Template(props.$template);
+	        var wId = props.wId;
+	        this.widget = template.getWidgetById(wId);
 	        this.data = [];
 	    }
 
@@ -6050,7 +5996,7 @@ webpackJsonp([0],{
 	            data: []
 	        };
 
-	        _this._tableHelper = new _DetailTableComponentHelper2.default(props.$$widget);
+	        _this._tableHelper = new _DetailTableComponentHelper2.default(props);
 	        _this._widthHelper = new _TableComponentWidthHelper2.default(_this._tableHelper, props.width);
 	        return _this;
 	    }
@@ -6068,7 +6014,10 @@ webpackJsonp([0],{
 	        value: function _fetchData() {
 	            var _this2 = this;
 
-	            new _data.Widget(this.props.$$widget).getData().then(function (data) {
+	            var template = new _data.Template(this.props.$template);
+	            var wId = this.props.wId;
+	            var widget = template.getWidgetById(wId);
+	            widget.getData().then(function (data) {
 	                _this2._tableHelper.setData(data);
 	                _this2.forceUpdate();
 	            });
@@ -6140,10 +6089,12 @@ webpackJsonp([0],{
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var DetailTableComponentHelper = function () {
-	    function DetailTableComponentHelper($$widget) {
+	    function DetailTableComponentHelper(props) {
 	        _classCallCheck(this, DetailTableComponentHelper);
 
-	        this.widget = new _data.Widget($$widget);
+	        var template = new _data.Template(props.$template);
+	        var wId = props.wId;
+	        this.widget = template.getWidgetById(wId);
 	        this.data = [];
 	    }
 

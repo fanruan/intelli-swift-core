@@ -48,13 +48,18 @@ class MultiTreeSelectorComponent extends Component {
 
     render() {
         const {...props} = this.props;
-        const widget = new Widget(props.$$widget);
+        const template = new Template(props.$template);
+        const wId = props.wId;
+        const widget = template.getWidgetById(wId);
         return <MultiTreeSelectorWidget
             style={styles.wrapper}
             floors={widget.getTreeFloors()}
             value={widget.getSelectedTreeValue()}
             itemsCreator={(options)=> {
                 return widget.getData(options);
+            }}
+            onValueChange={()=> {
+
             }}
             width={props.width}
             height={props.height}

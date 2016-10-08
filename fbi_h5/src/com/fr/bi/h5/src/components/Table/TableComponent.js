@@ -11,7 +11,7 @@ import React, {
     Fetch
 } from 'lib'
 
-import {Widget} from 'data'
+import {Template, Widget} from 'data'
 import {TableWidget} from 'widgets';
 
 import TableComponentHelper from './TableComponentHelper';
@@ -26,7 +26,7 @@ class TableComponent extends Component {
 
     constructor(props, context) {
         super(props, context);
-        this._tableHelper = new TableComponentHelper(props.$$widget);
+        this._tableHelper = new TableComponentHelper(props);
         this._widthHelper = new TableComponentWidthHelper(this._tableHelper, props.width);
 
     }
@@ -44,7 +44,10 @@ class TableComponent extends Component {
     }
 
     _fetchData() {
-        new Widget(this.props.$$widget).getData().then((data)=> {
+        const template = new Template(this.props.$template);
+        const wId = this.props.wId;
+        const widget = template.getWidgetById(wId);
+        widget.getData().then((data)=> {
             console.log(data);
             this._tableHelper.setData(data);
             this.forceUpdate();

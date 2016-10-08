@@ -1,8 +1,10 @@
 import {each} from 'core';
-import {Widget, Dimension} from 'data'
+import {Template, Widget, Dimension} from 'data'
 class TableComponentHelper {
-    constructor($$widget) {
-        this.widget = new Widget($$widget);
+    constructor(props) {
+        const template = new Template(props.$template);
+        const wId = props.wId;
+        this.widget = template.getWidgetById(wId);
         this.data = [];
     }
 

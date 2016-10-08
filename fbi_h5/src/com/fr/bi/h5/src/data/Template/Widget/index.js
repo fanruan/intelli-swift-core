@@ -1,25 +1,26 @@
+import Immutable from 'immutable'
 import Dimension from './Dimension'
 import Target from './Target'
 import {each, invariant, isNil, find, findKey} from 'core';
 import {Fetch} from 'lib'
 class Widget {
     constructor(widget, id) {
-        this.$$widget = widget;
+        this.$widget = widget;
         this.id = id;
     }
 
     $get() {
-        return this.$$widget;
+        return this.$widget;
     }
 
     get$$DimensionById(id) {
         invariant(this.isDimensionById(id), id + "不是维度id");
-        return this.$$widget.getIn(['dimensions', id]);
+        return this.$widget.getIn(['dimensions', id]);
     }
 
     get$$TargetById(id) {
         invariant(this.isTargetById(id), id + "不是指标id");
-        return this.$$widget.getIn(['dimensions', id])
+        return this.$widget.getIn(['dimensions', id])
     }
 
     get$$DimensionOrTargetById(id) {
@@ -50,7 +51,7 @@ class Widget {
             return this._dimensionIds;
         }
         let result = [];
-        this.$$widget.get('view').forEach(($$id, key)=> {
+        this.$widget.get('view').forEach(($$id, key)=> {
             if (parseInt(key) < BICst.REGION.TARGET1) {
                 result = result.concat($$id.toArray());
             }
@@ -64,7 +65,7 @@ class Widget {
             return this._targetIds;
         }
         let result = [];
-        this.$$widget.get('view').forEach(($$id, key)=> {
+        this.$widget.get('view').forEach(($$id, key)=> {
             if (parseInt(key) >= BICst.REGION.TARGET1) {
                 result = result.concat($$id.toArray());
             }
@@ -125,7 +126,7 @@ class Widget {
 
     getRowDimensionIds() {
         let result = [];
-        this.$$widget.get('view').forEach(($$id, key)=> {
+        this.$widget.get('view').forEach(($$id, key)=> {
             if (parseInt(key) === BICst.REGION.DIMENSION1) {
                 result = result.concat($$id.toArray());
             }
@@ -135,7 +136,7 @@ class Widget {
 
     getColDimensionIds() {
         let result = [];
-        this.$$widget.get('view').forEach(($$id, key)=> {
+        this.$widget.get('view').forEach(($$id, key)=> {
             if (parseInt(key) === BICst.REGION.DIMENSION2) {
                 result = result.concat($$id.toArray());
             }
@@ -144,40 +145,40 @@ class Widget {
     }
 
     getType() {
-        return this.$$widget.get('type');
+        return this.$widget.get('type');
     }
 
     getName() {
-        return this.$$widget.get('name');
+        return this.$widget.get('name');
     }
 
     createJson() {
-        return this.$$widget.toJS();
+        return this.$widget.toJS();
     }
 
     isFreeze() {
-        return this.$$widget.getIn(['settings', 'freeze_dim']);
+        return this.$widget.getIn(['settings', 'freeze_dim']);
     }
 
     getWidgetBounds() {
-        return this.$$widget.get('bounds').toJS() || {};
+        return this.$widget.get('bounds').toJS() || {};
     }
 
     getWidgetLinkage() {
-        return this.$$widget.get('linkages').toJS() || [];
+        return this.$widget.get('linkages').toJS() || [];
     }
 
     getWidgetView() {
-        return this.$$widget.get('view').toJS() || {};
+        return this.$widget.get('view').toJS() || {};
     }
 
     getWidgetSubType() {
-        return this.$$widget.get('sub_type');
+        return this.$widget.get('sub_type');
     }
 
 
     getWidgetValue() {
-        return this.$$widget.get('value').toJS();
+        return this.$widget.get('value').toJS();
     }
 
     getRegionTypeByDimensionID(dId) {
@@ -204,11 +205,11 @@ class Widget {
     }
 
     getSelectType() {
-        return this.$$widget.getIn(['value', 'type']);
+        return this.$widget.getIn(['value', 'type']);
     }
 
     getSelectValue() {
-        return this.$$widget.getIn(['value', 'value']).toArray();
+        return this.$widget.getIn(['value', 'value']).toArray();
     }
 
     getTreeFloors() {
@@ -216,7 +217,7 @@ class Widget {
     }
 
     getSelectedTreeValue() {
-        return this.$$widget.get('value').toJS();
+        return this.$widget.get('value').toJS();
     }
 
     getData(options) {
@@ -313,7 +314,7 @@ class Widget {
     }
 
     getWidgetSettings() {
-        return this.$$widget.get('settings').toJS();
+        return this.$widget.get('settings').toJS();
     }
 
     //settings  ---- start ----
@@ -390,7 +391,7 @@ class Widget {
     }
 
     isShowWidgetRealData() {
-        return this.$$widget.get('real_data');
+        return this.$widget.get('real_data');
     }
 
 
@@ -399,11 +400,11 @@ class Widget {
     }
 
     getWidgetInitTime() {
-        return this.$$widget.get('init_time') || new Date().getTime();
+        return this.$widget.get('init_time') || new Date().getTime();
     }
 
     getClicked() {
-        return this.$$widget.get('clicked') || {};
+        return this.$widget.get('clicked') || {};
     }
 
     getDrill() {
@@ -430,15 +431,15 @@ class Widget {
 
     getWidgetFilterValue(wid) {
         if (this.isWidgetExistByID(wid)) {
-            return this.$$widget.get('filter_value').toJS() || {};
+            return this.$widget.get('filter_value').toJS() || {};
         }
         return {};
     }
 
 
     setValue(value) {
-        this.$$widget = this.$$widget.set('value', value);
-        return this.$$widget;
+        this.$widget = this.$widget.set('value', Immutable.fromJS(value));
+        return this;
     }
 }
 

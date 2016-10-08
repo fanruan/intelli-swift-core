@@ -51135,6 +51135,10 @@
 
 	var _immutable2 = _interopRequireDefault(_immutable);
 
+	var _isFunction = __webpack_require__(349);
+
+	var _isFunction2 = _interopRequireDefault(_isFunction);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function compare(instance, nextProps, nextState) {
@@ -51167,6 +51171,9 @@
 
 	    // Test for A's keys different from B.
 	    for (var i = 0; i < keysA.length; i++) {
+	        if ((0, _isFunction2.default)(objA[keysA[i]] && (0, _isFunction2.default)(objB[keysA[i]]))) {
+	            continue;
+	        }
 	        if (!hasOwnProperty.call(objB, keysA[i]) || !_immutable2.default.is(objA[keysA[i]], objB[keysA[i]])) {
 	            return false;
 	        }
@@ -66978,18 +66985,18 @@
 	    function Template(template) {
 	        _classCallCheck(this, Template);
 
-	        this.$$template = template;
+	        this.$template = template;
 	    }
 
 	    _createClass(Template, [{
 	        key: '$get',
 	        value: function $get() {
-	            return this.$$template;
+	            return this.$template;
 	        }
 	    }, {
 	        key: 'get$$WidgetById',
 	        value: function get$$WidgetById(id) {
-	            return this.$$template.getIn(['widgets', id]);
+	            return this.$template.getIn(['widgets', id]);
 	        }
 	    }, {
 	        key: 'getWidgetById',
@@ -67000,8 +67007,8 @@
 	        key: 'getAllWidgetIds',
 	        value: function getAllWidgetIds() {
 	            var res = [];
-	            this.$$template.get('widgets').forEach(function ($$widget, wId) {
-	                if (!new _Widget2.default($$widget).isControl()) {
+	            this.$template.get('widgets').forEach(function ($widget, wId) {
+	                if (!new _Widget2.default($widget).isControl()) {
 	                    res.push(wId);
 	                }
 	            });
@@ -67011,8 +67018,8 @@
 	        key: 'getAllControlWidgetIds',
 	        value: function getAllControlWidgetIds() {
 	            var res = [];
-	            this.$$template.get('widgets').forEach(function ($$widget, wId) {
-	                if (new _Widget2.default($$widget).isControl()) {
+	            this.$template.get('widgets').forEach(function ($widget, wId) {
+	                if (new _Widget2.default($widget).isControl()) {
 	                    res.push(wId);
 	                }
 	            });
@@ -67021,15 +67028,15 @@
 	    }, {
 	        key: 'hasControlWidget',
 	        value: function hasControlWidget() {
-	            return this.$$template.get('widgets').some(function ($$widget, wId) {
-	                return new _Widget2.default($$widget).isControl();
+	            return this.$template.get('widgets').some(function ($widget, wId) {
+	                return new _Widget2.default($widget).isControl();
 	            });
 	        }
 	    }, {
-	        key: 'set$$Widget',
-	        value: function set$$Widget(id, $$widget) {
-	            this.$$template = this.$$template.setIn(['widgets', id], $$widget);
-	            return this.$$template;
+	        key: 'setWidget',
+	        value: function setWidget(id, widget) {
+	            this.$template = this.$template.setIn(['widgets', id], widget.$get());
+	            return this;
 	        }
 	    }]);
 
@@ -67052,6 +67059,10 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _immutable = __webpack_require__(200);
+
+	var _immutable2 = _interopRequireDefault(_immutable);
+
 	var _Dimension = __webpack_require__(772);
 
 	var _Dimension2 = _interopRequireDefault(_Dimension);
@@ -67072,26 +67083,26 @@
 	    function Widget(widget, id) {
 	        _classCallCheck(this, Widget);
 
-	        this.$$widget = widget;
+	        this.$widget = widget;
 	        this.id = id;
 	    }
 
 	    _createClass(Widget, [{
 	        key: '$get',
 	        value: function $get() {
-	            return this.$$widget;
+	            return this.$widget;
 	        }
 	    }, {
 	        key: 'get$$DimensionById',
 	        value: function get$$DimensionById(id) {
 	            (0, _core.invariant)(this.isDimensionById(id), id + "不是维度id");
-	            return this.$$widget.getIn(['dimensions', id]);
+	            return this.$widget.getIn(['dimensions', id]);
 	        }
 	    }, {
 	        key: 'get$$TargetById',
 	        value: function get$$TargetById(id) {
 	            (0, _core.invariant)(this.isTargetById(id), id + "不是指标id");
-	            return this.$$widget.getIn(['dimensions', id]);
+	            return this.$widget.getIn(['dimensions', id]);
 	        }
 	    }, {
 	        key: 'get$$DimensionOrTargetById',
@@ -67126,7 +67137,7 @@
 	                return this._dimensionIds;
 	            }
 	            var result = [];
-	            this.$$widget.get('view').forEach(function ($$id, key) {
+	            this.$widget.get('view').forEach(function ($$id, key) {
 	                if (parseInt(key) < BICst.REGION.TARGET1) {
 	                    result = result.concat($$id.toArray());
 	                }
@@ -67141,7 +67152,7 @@
 	                return this._targetIds;
 	            }
 	            var result = [];
-	            this.$$widget.get('view').forEach(function ($$id, key) {
+	            this.$widget.get('view').forEach(function ($$id, key) {
 	                if (parseInt(key) >= BICst.REGION.TARGET1) {
 	                    result = result.concat($$id.toArray());
 	                }
@@ -67215,7 +67226,7 @@
 	        key: 'getRowDimensionIds',
 	        value: function getRowDimensionIds() {
 	            var result = [];
-	            this.$$widget.get('view').forEach(function ($$id, key) {
+	            this.$widget.get('view').forEach(function ($$id, key) {
 	                if (parseInt(key) === BICst.REGION.DIMENSION1) {
 	                    result = result.concat($$id.toArray());
 	                }
@@ -67226,7 +67237,7 @@
 	        key: 'getColDimensionIds',
 	        value: function getColDimensionIds() {
 	            var result = [];
-	            this.$$widget.get('view').forEach(function ($$id, key) {
+	            this.$widget.get('view').forEach(function ($$id, key) {
 	                if (parseInt(key) === BICst.REGION.DIMENSION2) {
 	                    result = result.concat($$id.toArray());
 	                }
@@ -67236,47 +67247,47 @@
 	    }, {
 	        key: 'getType',
 	        value: function getType() {
-	            return this.$$widget.get('type');
+	            return this.$widget.get('type');
 	        }
 	    }, {
 	        key: 'getName',
 	        value: function getName() {
-	            return this.$$widget.get('name');
+	            return this.$widget.get('name');
 	        }
 	    }, {
 	        key: 'createJson',
 	        value: function createJson() {
-	            return this.$$widget.toJS();
+	            return this.$widget.toJS();
 	        }
 	    }, {
 	        key: 'isFreeze',
 	        value: function isFreeze() {
-	            return this.$$widget.getIn(['settings', 'freeze_dim']);
+	            return this.$widget.getIn(['settings', 'freeze_dim']);
 	        }
 	    }, {
 	        key: 'getWidgetBounds',
 	        value: function getWidgetBounds() {
-	            return this.$$widget.get('bounds').toJS() || {};
+	            return this.$widget.get('bounds').toJS() || {};
 	        }
 	    }, {
 	        key: 'getWidgetLinkage',
 	        value: function getWidgetLinkage() {
-	            return this.$$widget.get('linkages').toJS() || [];
+	            return this.$widget.get('linkages').toJS() || [];
 	        }
 	    }, {
 	        key: 'getWidgetView',
 	        value: function getWidgetView() {
-	            return this.$$widget.get('view').toJS() || {};
+	            return this.$widget.get('view').toJS() || {};
 	        }
 	    }, {
 	        key: 'getWidgetSubType',
 	        value: function getWidgetSubType() {
-	            return this.$$widget.get('sub_type');
+	            return this.$widget.get('sub_type');
 	        }
 	    }, {
 	        key: 'getWidgetValue',
 	        value: function getWidgetValue() {
-	            return this.$$widget.get('value').toJS();
+	            return this.$widget.get('value').toJS();
 	        }
 	    }, {
 	        key: 'getRegionTypeByDimensionID',
@@ -67306,12 +67317,12 @@
 	    }, {
 	        key: 'getSelectType',
 	        value: function getSelectType() {
-	            return this.$$widget.getIn(['value', 'type']);
+	            return this.$widget.getIn(['value', 'type']);
 	        }
 	    }, {
 	        key: 'getSelectValue',
 	        value: function getSelectValue() {
-	            return this.$$widget.getIn(['value', 'value']).toArray();
+	            return this.$widget.getIn(['value', 'value']).toArray();
 	        }
 	    }, {
 	        key: 'getTreeFloors',
@@ -67321,7 +67332,7 @@
 	    }, {
 	        key: 'getSelectedTreeValue',
 	        value: function getSelectedTreeValue() {
-	            return this.$$widget.get('value').toJS();
+	            return this.$widget.get('value').toJS();
 	        }
 	    }, {
 	        key: 'getData',
@@ -67418,7 +67429,7 @@
 	    }, {
 	        key: 'getWidgetSettings',
 	        value: function getWidgetSettings() {
-	            return this.$$widget.get('settings').toJS();
+	            return this.$widget.get('settings').toJS();
 	        }
 
 	        //settings  ---- start ----
@@ -67498,7 +67509,7 @@
 	    }, {
 	        key: 'isShowWidgetRealData',
 	        value: function isShowWidgetRealData() {
-	            return this.$$widget.get('real_data');
+	            return this.$widget.get('real_data');
 	        }
 	    }, {
 	        key: 'isDimensionExist',
@@ -67508,12 +67519,12 @@
 	    }, {
 	        key: 'getWidgetInitTime',
 	        value: function getWidgetInitTime() {
-	            return this.$$widget.get('init_time') || new Date().getTime();
+	            return this.$widget.get('init_time') || new Date().getTime();
 	        }
 	    }, {
 	        key: 'getClicked',
 	        value: function getClicked() {
-	            return this.$$widget.get('clicked') || {};
+	            return this.$widget.get('clicked') || {};
 	        }
 	    }, {
 	        key: 'getDrill',
@@ -67547,15 +67558,15 @@
 	        key: 'getWidgetFilterValue',
 	        value: function getWidgetFilterValue(wid) {
 	            if (this.isWidgetExistByID(wid)) {
-	                return this.$$widget.get('filter_value').toJS() || {};
+	                return this.$widget.get('filter_value').toJS() || {};
 	            }
 	            return {};
 	        }
 	    }, {
 	        key: 'setValue',
 	        value: function setValue(value) {
-	            this.$$widget = this.$$widget.set('value', value);
-	            return this.$$widget;
+	            this.$widget = this.$widget.set('value', _immutable2.default.fromJS(value));
+	            return this;
 	        }
 	    }]);
 

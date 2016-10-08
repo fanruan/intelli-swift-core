@@ -58,7 +58,7 @@ class Item extends Component {
         return <TouchableHighlight underlayColor={Colors.PRESS} onPress={this.props.onPress}>
             <View>
                 <VerticalCenterLayout style={styles.wrapper}>
-                    <Text>{new Widget(props.$$widget).getName()}</Text>
+                    <Text>{new Widget(props.$widget).getName()}</Text>
                 </VerticalCenterLayout>
             </View>
         </TouchableHighlight>

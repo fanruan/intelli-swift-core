@@ -16,7 +16,7 @@ import React, {
 
 import {ReactComponentWithImmutableRenderMixin} from 'core';
 import {Template} from 'data';
-import * as TodoActions from '../actions/todos';
+import * as TodoActions from '../actions/template';
 
 import Main from '../components/Main.js'
 
@@ -84,13 +84,13 @@ class App extends Component {
 
 App.propTypes = {
     actions: PropTypes.object.isRequired,
-    $$template: PropTypes.object.isRequired
+    $template: PropTypes.object.isRequired
 };
 mixin.onClass(App, ReactComponentWithImmutableRenderMixin);
 
 function mapStateToProps(state) {
     const props = {
-        $$template: state.get('template')
+        $template: state.get('template')
     };
     return props;
 }

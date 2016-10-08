@@ -37,11 +37,22 @@ export default class MultiTreeSelectorWidgetHelper {
         return result;
     }
 
+    _insertSelectedValue(route) {
+        let selected_values = this.selected_values;
+        each(route, (value)=> {
+            if (!selected_values[value]) {
+                selected_values[value] = {};
+            }
+            selected_values = selected_values[value];
+        })
+    }
+
     _initTree(items, selected_values = {}) {
         this._createMap(items);
         this._createSelectedMap(selected_values);
         const format = Tree.transformToTreeFormat(items);
         this.tree = new Tree();
+        this.selected_values = {};
         this.tree.initTree(format);
         this.tree.recursion((child, routes)=> {
             const key = this._getRouteKey(routes);
@@ -143,7 +154,7 @@ export default class MultiTreeSelectorWidgetHelper {
             const data = find.get('data');
             data.expanded = true;
         }
-        return new Promise(function(resolve, reject) {
+        return new Promise(function (resolve, reject) {
             resolve();
         });
     }
@@ -154,13 +165,13 @@ export default class MultiTreeSelectorWidgetHelper {
             const data = find.get('data');
             data.expanded = false;
         }
-        return new Promise(function(resolve, reject) {
+        return new Promise(function (resolve, reject) {
             resolve();
         });
     }
 
     getSelectedValue() {
-        return clone(this.value);
+
     }
 
     getItems() {
