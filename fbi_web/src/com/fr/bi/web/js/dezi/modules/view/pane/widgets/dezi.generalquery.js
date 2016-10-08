@@ -148,6 +148,31 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
         this.refresh();
     },
 
+    _format2SimpleConditions: function (conditions) {
+        var self = this;
+        BI.each(conditions, function (i, item) {
+            if (item.filter_type === BICst.FILTER_TYPE.AND ||
+                item.filter_type === BICst.FILTER_TYPE.OR) {
+                self._format2SimpleConditions(item.filter_value);
+                //只剩一个的时候合并到上一层
+                if (item.filter_value.length === 1) {
+                    conditions[i] = item.filter_value[0];
+                }
+            }
+        });
+        BI.remove(conditions, function (i, item) {
+            return item.filter_type === BICst.FILTER_TYPE.EMPTY_CONDITION ||
+                item.filter_type === BICst.FILTER_TYPE.EMPTY_FORMULA ||
+                item.filter_value.length === 0;
+        });
+    },
+
+    _isConditionChanged: function (curr, pre) {
+        this._format2SimpleConditions(curr);
+        this._format2SimpleConditions(pre);
+        return BI.deepDiff(curr, pre).length > 0;
+    },
+
     local: function () {
         if (this.model.has("expand")) {
             this.model.get("expand");
@@ -157,7 +182,8 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
     },
 
     change: function (changed, prev, context, options) {
-        if (BI.has(changed, "value")) {
+        if (BI.has(changed, "value") &&
+            this._isConditionChanged(BI.deepClone(changed.value), BI.deepClone(prev.value))) {
             BI.Utils.broadcastAllWidgets2Refresh();
         }
     },

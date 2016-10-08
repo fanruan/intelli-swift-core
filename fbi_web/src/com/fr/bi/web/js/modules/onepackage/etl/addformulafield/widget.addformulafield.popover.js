@@ -142,11 +142,11 @@ BI.AddFormulaFieldPopover = BI.inherit(BI.BarPopoverSection, {
         var fieldName = this.fieldNameEditor.getValue();
         var formulaValidation = this.formulaEditor.checkValidation();
         var formulaValue = this.formulaEditor.getValue();
-        if (BI.isEmptyString(fieldName)) {
-            this.sure.setWarningTitle(BI.i18nText("BI-Field_Name_Cannot_Be_Null"));
-            this.sure.setEnable(false);
-        } else if (formulaValidation === false) {
+        if (formulaValidation === false) {
             this.sure.setWarningTitle(BI.i18nText("BI-Formula_Valid"));
+            this.sure.setEnable(false);
+        } else if (BI.isEmptyString(fieldName)) {
+            this.sure.setWarningTitle(BI.i18nText("BI-Field_Name_Cannot_Be_Null"));
             this.sure.setEnable(false);
         } else if (BI.isEmptyString(formulaValue)) {
             this.sure.setWarningTitle(BI.i18nText("BI-Added_Formula_Column_Cannot_Be_Null"));

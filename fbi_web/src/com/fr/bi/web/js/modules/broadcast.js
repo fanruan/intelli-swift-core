@@ -13,6 +13,7 @@ BICst.BROADCAST = {
     GLOBAL_STYLE_PREFIX: "global_style_",//样式改变事件 + wId
 
     SRC_PREFIX: "src_", //数据源(字段)增删事件 + srcId
+    FIELD_DROP_PREFIX: "field_drop_",   //字段的drop事件，只要drop了，所有的字段都取消选中
 
     PACKAGE_PREFIX: "package_", //业务包增删事件 + wId || ""
 
