@@ -2,6 +2,168 @@ if (!window.BH) {
     window.BH = {};
 }
 
+if(!window.FR){
+    window.FR = {
+        servletURL: "${servletURL}",
+        ajax: function (options) {
+            if (options) {
+                options.data = BH.cjkEncodeDO(options.data);
+            }
+            $.ajax(options);
+        }
+    };
+}
+
+BH.cjkEncode = function (text) {
+    // alex:如果非字符串,返回其本身(cjkEncode(234) 返回 ""是不对的)
+    if (typeof text !== 'string') {
+        return text;
+    }
+
+    var newText = "";
+    for (var i = 0; i < text.length; i++) {
+        var code = text.charCodeAt(i);
+        if (code >= 128 || code === 91 || code === 93) {//91 is "[", 93 is "]".
+            newText += "[" + code.toString(16) + "]";
+        } else {
+            newText += text.charAt(i);
+        }
+    }
+
+    return newText
+};
+
+BH.cjkEncodeDO = function (o) {
+    if (BH.isPlainObject(o)) {
+        var result = {};
+        $.each(o, function (k, v) {
+            if (!(typeof v == "string")) {
+                v = BH.jsonEncode(v);
+            }
+            //wei:bug 43338，如果key是中文，cjkencode后o的长度就加了1，ie9以下版本死循环，所以新建对象result。
+            k = BH.cjkEncode(k);
+            result[k] = BH.cjkEncode(v);
+        });
+        return result;
+    }
+    return o;
+};
+
+BH.jsonEncode = function (o) {
+    //james:这个Encode是抄的EXT的
+    var useHasOwn = {}.hasOwnProperty ? true : false;
+
+    // crashes Safari in some instances
+    //var validRE = /^("(\\.|[^"\\\n\r])*?"|[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t])+?$/;
+
+    var m = {
+        "\b": '\\b',
+        "\t": '\\t',
+        "\n": '\\n',
+        "\f": '\\f',
+        "\r": '\\r',
+        '"': '\\"',
+        "\\": '\\\\'
+    };
+
+    var encodeString = function (s) {
+        if (/["\\\x00-\x1f]/.test(s)) {
+            return '"' + s.replace(/([\x00-\x1f\\"])/g, function (a, b) {
+                    var c = m[b];
+                    if (c) {
+                        return c;
+                    }
+                    c = b.charCodeAt();
+                    return "\\u00" +
+                        Math.floor(c / 16).toString(16) +
+                        (c % 16).toString(16);
+                }) + '"';
+        }
+        return '"' + s + '"';
+    };
+
+    var encodeArray = function (o) {
+        var a = ["["], b, i, l = o.length, v;
+        for (i = 0; i < l; i += 1) {
+            v = o[i];
+            switch (typeof v) {
+                case "undefined":
+                case "function":
+                case "unknown":
+                    break;
+                default:
+                    if (b) {
+                        a.push(',');
+                    }
+                    a.push(v === null ? "null" : BH.jsonEncode(v));
+                    b = true;
+            }
+        }
+        a.push("]");
+        return a.join("");
+    };
+
+    if (typeof o == "undefined" || o === null) {
+        return "null";
+    } else if (BH.isArray(o)) {
+        return encodeArray(o);
+    } else if (o instanceof Date) {
+        /*
+         * alex:原来只是把年月日时分秒简单地拼成一个String,无法decode
+         * 现在这么处理就可以decode了,但是JS.jsonDecode和Java.JSONObject也要跟着改一下
+         */
+        return BH.jsonEncode({
+            __time__: o.getTime()
+        })
+    } else if (typeof o == "string") {
+        return encodeString(o);
+    } else if (typeof o == "number") {
+        return isFinite(o) ? String(o) : "null";
+    } else if (typeof o == "boolean") {
+        return String(o);
+    } else if (BH.isFunction(o)) {
+        return String(o);
+    } else {
+        var a = ["{"], b, i, v;
+        for (i in o) {
+            if (!useHasOwn || o.hasOwnProperty(i)) {
+                v = o[i];
+                switch (typeof v) {
+                    case "undefined":
+                    case "unknown":
+                        break;
+                    default:
+                        if (b) {
+                            a.push(',');
+                        }
+                        a.push(BH.jsonEncode(i), ":",
+                            v === null ? "null" : BH.jsonEncode(v));
+                        b = true;
+                }
+            }
+        }
+        a.push("}");
+        return a.join("");
+    }
+};
+
+BH.isObject = function(obj) {
+    var type = typeof obj;
+    return type === 'function' || type === 'object' && !!obj;
+};
+
+BH.isWindow = function(obj){
+    return obj != null && obj == obj.window;
+};
+
+BH.isPlainObject = function(obj) {
+    return BH.isObject(obj) && !BH.isWindow(obj) && Object.getPrototypeOf(obj) == Object.prototype
+};
+
+BH.isFunction = function(obj) {
+    return typeof obj == 'function' || false;
+};
+
 BH.isEmpty = function (value) {
     // 判断是否为空值
     var result = value === "" || value === null || value === undefined;
