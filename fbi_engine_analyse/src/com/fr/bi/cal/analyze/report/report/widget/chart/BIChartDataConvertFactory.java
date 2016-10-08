@@ -645,10 +645,10 @@ public class BIChartDataConvertFactory {
         List<BISummaryTarget> usedTargets = widget.getUsedTargets();
         for(int i = 0; i < usedTargets.size(); i++){
             BISummaryTarget target = usedTargets.get(i);
-            Iterator it = target.getChartSetting().getDataLabels().keys();
-            while (it.hasNext()){
-                String tId = it.next().toString();
-                JSONObject dataLabel = target.getChartSetting().getDataLabels().getJSONObject(tId);
+            JSONArray dataLabels = target.getChartSetting().getDataLabels();
+
+            for(int n = 0; n < dataLabels.length(); n++){
+                JSONObject dataLabel = dataLabels.getJSONObject(n);
                 IFilter filter = FilterFactory.parseFilter(dataLabel);
                 for(int j = 0; j < data.length(); j++){
                     JSONObject series = data.getJSONObject(j);
