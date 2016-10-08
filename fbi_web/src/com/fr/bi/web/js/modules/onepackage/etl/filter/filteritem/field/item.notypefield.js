@@ -114,7 +114,6 @@ BI.ConfTargetNoTypeFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         o.node.set("data", BI.extend(o.node.get("data"), {
             value: filterItem.filter_type,
             filter_type: filterItem.filter_type,
-            filter_value: {value: []},
             field_name: v.field.field_name,
             table: v.table
         }));
