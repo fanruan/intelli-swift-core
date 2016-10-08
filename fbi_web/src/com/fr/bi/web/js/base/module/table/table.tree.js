@@ -43,22 +43,6 @@ BI.TableTree = BI.inherit(BI.Widget, {
         })
     },
 
-    _createHeader: function (deep, vDeep) {
-        var self = this, o = this.options;
-        var header = o.header || [], crossHeader = o.crossHeader || [];
-        var items = BI.TableTree.formatCrossItems(o.crossItems, vDeep);
-        var result = [];
-        BI.each(items, function (row, node) {
-            var c = [];
-            for (var i = 0; i < deep; i++) {
-                c.push(crossHeader[row]);
-            }
-            result.push(c.concat(node || []));
-        });
-        result.push(header);
-        return result;
-    },
-
     _getVDeep: function () {
         return this.options.crossHeader.length;//纵向深度
     },
@@ -73,7 +57,7 @@ BI.TableTree = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var deep = this._getHDeep();
         var vDeep = this._getVDeep();
-        var header = this._createHeader(deep, vDeep);
+        var header = BI.TableTree.formatHeader(o.header, o.crossHeader, o.crossItems, deep, vDeep);
         var items = BI.TableTree.formatItems(o.items, deep);
         this.table = BI.createWidget({
             type: "bi.table_view",
@@ -228,7 +212,7 @@ BI.TableTree = BI.inherit(BI.Widget, {
         }
         var deep = this._getHDeep();
         var vDeep = this._getVDeep();
-        header = this._createHeader(deep, vDeep);
+        header = BI.TableTree.formatHeader(o.header, o.crossHeader, o.crossItems, deep, vDeep);
         items = BI.TableTree.formatItems(o.items, deep);
         this.table.populate(items, header);
     },
@@ -240,6 +224,22 @@ BI.TableTree = BI.inherit(BI.Widget, {
 });
 
 BI.extend(BI.TableTree, {
+    formatHeader: function (header, crossHeader, crossItems, hDeep, vDeep) {
+        var items = BI.TableTree.formatCrossItems(crossItems, vDeep);
+        var result = [];
+        BI.each(items, function (row, node) {
+            var c = [];
+            for (var i = 0; i < hDeep; i++) {
+                c.push(crossHeader[row]);
+            }
+            result.push(c.concat(node || []));
+        });
+        if (header && header.length > 0) {
+            result.push(header);
+        }
+        return result;
+    },
+
     formatItems: function (nodes, deep, isCross) {
         var self = this;
         var result = [];

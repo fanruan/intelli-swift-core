@@ -110,3 +110,7 @@ export cloneDeep from 'lodash/cloneDeep'
 
 
 export math from 'lodash/math'
+
+
+export ReactComponentWithImmutableRenderMixin from './mixin/ReactComponentWithImmutableRenderMixin'
+export ReactComponentWithPureRenderMixin from 'react-addons-pure-render-mixin'

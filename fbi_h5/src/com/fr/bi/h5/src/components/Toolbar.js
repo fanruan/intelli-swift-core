@@ -1,8 +1,7 @@
-import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
 
-import {cn, sc, isNil, requestAnimationFrame, emptyFunction, shallowEqual, isEqual, each} from 'core'
+import {ReactComponentWithImmutableRenderMixin, cn, sc, isNil, requestAnimationFrame, emptyFunction, shallowEqual, isEqual, each} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -74,7 +73,7 @@ class Toolbar extends Component {
     }
 
 }
-mixin.onClass(Toolbar, PureRenderMixin);
+mixin.onClass(Toolbar, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     filter: {
         borderTop: '1px solid ' + Colors.BORDER,

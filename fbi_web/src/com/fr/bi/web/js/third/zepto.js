@@ -8,27 +8,63 @@
     var Zepto = (function() {
         var undefined, key, $, classList, emptyArray = [], concat = emptyArray.concat, filter = emptyArray.filter, slice = emptyArray.slice,
             document = window.document,
+            elementDisplay = {}, classCache = {},
+            cssNumber = { 'column-count': 1, 'columns': 1, 'font-weight': 1, 'line-height': 1,'opacity': 1, 'z-index': 1, 'zoom': 1 },
             fragmentRE = /^\s*<(\w+|!)[^>]*>/,
-            simpleSelectorRE = /^[\w-]*$/,
             singleTagRE = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
             tagExpanderRE = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/ig,
-            class2type = {},
-            toString = class2type.toString,
-            zepto = {},
-            camelize, uniq,
-            tempParent = document.createElement('div'),
-            table = document.createElement('table'),
-            tableRow = document.createElement('tr'),
+            rootNodeRE = /^(?:body|html)$/i,
+            capitalRE = /([A-Z])/g,
+
         // special attributes that should be get/set via method calls
             methodAttributes = ['val', 'css', 'html', 'text', 'data', 'width', 'height', 'offset'],
+
+            adjacencyOperators = [ 'after', 'prepend', 'before', 'append' ],
+            table = document.createElement('table'),
+            tableRow = document.createElement('tr'),
             containers = {
                 'tr': document.createElement('tbody'),
                 'tbody': table, 'thead': table, 'tfoot': table,
                 'td': tableRow, 'th': tableRow,
                 '*': document.createElement('div')
             },
+            readyRE = /complete|loaded|interactive/,
+            simpleSelectorRE = /^[\w-]*$/,
+            class2type = {},
+            toString = class2type.toString,
+            zepto = {},
+            camelize, uniq,
+            tempParent = document.createElement('div'),
+            propMap = {
+                'tabindex': 'tabIndex',
+                'readonly': 'readOnly',
+                'for': 'htmlFor',
+                'class': 'className',
+                'maxlength': 'maxLength',
+                'cellspacing': 'cellSpacing',
+                'cellpadding': 'cellPadding',
+                'rowspan': 'rowSpan',
+                'colspan': 'colSpan',
+                'usemap': 'useMap',
+                'frameborder': 'frameBorder',
+                'contenteditable': 'contentEditable'
+            },
             isArray = Array.isArray ||
                 function(object){ return object instanceof Array }
+
+        zepto.matches = function(element, selector) {
+            if (!selector || !element || element.nodeType !== 1) return false
+            var matchesSelector = element.matches || element.webkitMatchesSelector ||
+                element.mozMatchesSelector || element.oMatchesSelector ||
+                element.matchesSelector
+            if (matchesSelector) return matchesSelector.call(element, selector)
+            // fall back to performing a selector:
+            var match, parent = element.parentNode, temp = !parent
+            if (temp) (parent = tempParent).appendChild(element)
+            match = ~zepto.qsa(parent, selector).indexOf(element)
+            temp && tempParent.removeChild(element)
+            return match
+        }
 
         function type(obj) {
             return obj == null ? String(obj) :
@@ -56,7 +92,36 @@
         function compact(array) { return filter.call(array, function(item){ return item != null }) }
         function flatten(array) { return array.length > 0 ? $.fn.concat.apply([], array) : array }
         camelize = function(str){ return str.replace(/-+(.)?/g, function(match, chr){ return chr ? chr.toUpperCase() : '' }) }
+        function dasherize(str) {
+            return str.replace(/::/g, '/')
+                .replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2')
+                .replace(/([a-z\d])([A-Z])/g, '$1_$2')
+                .replace(/_/g, '-')
+                .toLowerCase()
+        }
         uniq = function(array){ return filter.call(array, function(item, idx){ return array.indexOf(item) == idx }) }
+
+        function classRE(name) {
+            return name in classCache ?
+                classCache[name] : (classCache[name] = new RegExp('(^|\\s)' + name + '(\\s|$)'))
+        }
+
+        function maybeAddPx(name, value) {
+            return (typeof value == "number" && !cssNumber[dasherize(name)]) ? value + "px" : value
+        }
+
+        function defaultDisplay(nodeName) {
+            var element, display
+            if (!elementDisplay[nodeName]) {
+                element = document.createElement(nodeName)
+                document.body.appendChild(element)
+                display = getComputedStyle(element, '').getPropertyValue("display")
+                element.parentNode.removeChild(element)
+                display == "none" && (display = "block")
+                elementDisplay[nodeName] = display
+            }
+            return elementDisplay[nodeName]
+        }
 
         function children(element) {
             return 'children' in element ?
@@ -237,6 +302,15 @@
             value == null ? node.removeAttribute(name) : node.setAttribute(name, value)
         }
 
+        // access className property while respecting SVGAnimatedString
+        function className(node, value){
+            var klass = node.className || '',
+                svg   = klass && klass.baseVal !== undefined
+
+            if (value === undefined) return svg ? klass.baseVal : klass
+            svg ? (klass.baseVal = value) : (node.className = value)
+        }
+
         // "true"  => true
         // "false" => false
         // "null"  => null
@@ -333,6 +407,8 @@
             class2type[ "[object " + name + "]" ] = name.toLowerCase()
         })
 
+        // Define methods that will be available on all
+        // Zepto collections
         $.fn = {
             constructor: zepto.Z,
             length: 0,
@@ -766,15 +842,91 @@
         }
 
         // for now
-        //$.fn.detach = $.fn.remove
+        $.fn.detach = $.fn.remove
 
-        // Generate the `width` and `height` functions
+            // Generate the `width` and `height` functions
+        ;['width', 'height'].forEach(function(dimension){
+            var dimensionProperty =
+                dimension.replace(/./, function(m){ return m[0].toUpperCase() })
+
+            $.fn[dimension] = function(value){
+                var offset, el = this[0]
+                if (value === undefined) return isWindow(el) ? el['inner' + dimensionProperty] :
+                    isDocument(el) ? el.documentElement['scroll' + dimensionProperty] :
+                    (offset = this.offset()) && offset[dimension]
+                else return this.each(function(idx){
+                    el = $(this)
+                    el.css(dimension, funcArg(this, value, idx, el[dimension]()))
+                })
+            }
+        })
 
         function traverseNode(node, fun) {
             fun(node)
             for (var i = 0, len = node.childNodes.length; i < len; i++)
                 traverseNode(node.childNodes[i], fun)
         }
+
+        // Generate the `after`, `prepend`, `before`, `append`,
+        // `insertAfter`, `insertBefore`, `appendTo`, and `prependTo` methods.
+        adjacencyOperators.forEach(function(operator, operatorIndex) {
+            var inside = operatorIndex % 2 //=> prepend, append
+
+            $.fn[operator] = function(){
+                // arguments can be nodes, arrays of nodes, Zepto objects and HTML strings
+                var argType, nodes = $.map(arguments, function(arg) {
+                        var arr = []
+                        argType = type(arg)
+                        if (argType == "array") {
+                            arg.forEach(function(el) {
+                                if (el.nodeType !== undefined) return arr.push(el)
+                                else if ($.zepto.isZ(el)) return arr = arr.concat(el.get())
+                                arr = arr.concat(zepto.fragment(el))
+                            })
+                            return arr
+                        }
+                        return argType == "object" || arg == null ?
+                            arg : zepto.fragment(arg)
+                    }),
+                    parent, copyByClone = this.length > 1
+                if (nodes.length < 1) return this
+
+                return this.each(function(_, target){
+                    parent = inside ? target : target.parentNode
+
+                    // convert all methods to a "before" operation
+                    target = operatorIndex == 0 ? target.nextSibling :
+                        operatorIndex == 1 ? target.firstChild :
+                            operatorIndex == 2 ? target :
+                                null
+
+                    var parentInDocument = $.contains(document.documentElement, parent)
+
+                    nodes.forEach(function(node){
+                        if (copyByClone) node = node.cloneNode(true)
+                        else if (!parent) return $(node).remove()
+
+                        parent.insertBefore(node, target)
+                        if (parentInDocument) traverseNode(node, function(el){
+                            if (el.nodeName != null && el.nodeName.toUpperCase() === 'SCRIPT' &&
+                                (!el.type || el.type === 'text/javascript') && !el.src){
+                                var target = el.ownerDocument ? el.ownerDocument.defaultView : window
+                                target['eval'].call(target, el.innerHTML)
+                            }
+                        })
+                    })
+                })
+            }
+
+            // after    => insertAfter
+            // prepend  => prependTo
+            // before   => insertBefore
+            // append   => appendTo
+            $.fn[inside ? operator+'To' : 'insert'+(operatorIndex ? 'Before' : 'After')] = function(html){
+                $(html)[operator](this)
+                return this
+            }
+        })
 
         zepto.Z.prototype = Z.prototype = $.fn
 
@@ -1040,16 +1192,16 @@
             return result
         }
 
-        // shortcut methods for `.bind(event, fn)` for each event type
+            // shortcut methods for `.bind(event, fn)` for each event type
         ;('focusin focusout focus blur load resize scroll unload click dblclick '+
         'mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave '+
         'change select keydown keypress keyup error').split(' ').forEach(function(event) {
-            $.fn[event] = function(callback) {
-                return (0 in arguments) ?
-                    this.bind(event, callback) :
-                    this.trigger(event)
-            }
-        })
+                $.fn[event] = function(callback) {
+                    return (0 in arguments) ?
+                        this.bind(event, callback) :
+                        this.trigger(event)
+                }
+            })
 
         $.Event = function(type, props) {
             if (!isString(type)) props = type, type = props.type

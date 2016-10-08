@@ -1,8 +1,7 @@
-import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
 
-import {cn, sc, isNil, requestAnimationFrame, emptyFunction, shallowEqual, isEqual, each, map} from 'core'
+import {ReactComponentWithImmutableRenderMixin, cn, sc, isNil, requestAnimationFrame, emptyFunction, shallowEqual, isEqual, each, map} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -87,7 +86,9 @@ class Controls extends Component {
                         case BICst.WIDGET.YMD:
                     }
                     props.navigator.push({
-                        name: widget.getName(),
+                        name: 'widget',
+                        id,
+                        $$widget,
                         Component: Component,
                         title: widget.getName()
                     });
@@ -112,7 +113,7 @@ class Controls extends Component {
     //     </VtapeLayout>
     // }
 }
-mixin.onClass(Controls, PureRenderMixin);
+mixin.onClass(Controls, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         flex: 1,

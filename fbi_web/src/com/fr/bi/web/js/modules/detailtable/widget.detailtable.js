@@ -26,6 +26,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         this.table = BI.createWidget({
             type: "bi.style_table",
             isNeedFreeze: null,
+            isNeedMerge: false,
             regionColumnSize: this.getStoredRegionColumnSize(),
             el: {
                 type: "bi.page_table",

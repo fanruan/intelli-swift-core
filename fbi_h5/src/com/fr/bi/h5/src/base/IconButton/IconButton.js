@@ -34,7 +34,6 @@ class IconButton extends Component {
         className: '',
         iconWidth: 16,
         iconHeight: 16,
-        height: 30,
         selected: null,
         disabled: false,
         invalid: false,

@@ -1,7 +1,8 @@
-.Checkbox{
+.Checkbox {
     position: relative;
 }
-.Checkbox:before{
+
+.Checkbox:before {
     display: table;
     width: 100%;
     height: 100%;
@@ -13,10 +14,12 @@
     border-radius: 50%;
     transition: background-color 0.1s ease-in-out;
 }
-.Checkbox.selected:before{
+
+.Checkbox.checked:before {
     background: #4a87ee;
 }
-.Checkbox.selected:after{
+
+.Checkbox.checked:after {
     transition: opacity 0.05s ease-in-out;
     transform: rotate(-45deg);
     position: absolute;
@@ -29,4 +32,12 @@
     border-top: 0;
     border-right: 0;
     content: ' ';
+}
+
+.Checkbox.halfCheck:before {
+    background: rgba(74, 135, 238, .5);
+}
+
+.Checkbox.halfCheck:after {
+    opacity: 0;
 }

@@ -1,16 +1,59 @@
-import {Tree, each, some, isNil, find} from 'core'
+import {Tree, each, some, isNil, isEmpty, find, clone, Promise} from 'core'
 export default class MultiTreeSelectorWidgetHelper {
-    constructor(props) {
-        this.items = props.items;
-        const format = this._formatItems(this.items);
-        this.tree = new Tree();
-        this.tree.initTree(format);
+    constructor(state) {
+        this.items = state.items;
+        this.value = state.value || {};
+        const format = this._initTree(this.items, this.value);
         this.sorted = this._expandTreeItems(format);
-        this.value = Array.from(props.value || []);
     }
 
-    _formatItems(items) {
-        return Tree.transformToTreeFormat(items);
+    _createMap(items) {
+        this.map = {};
+        each(items, (node)=> {
+            this.map[node.id] = node;
+        });
+    }
+
+    _createSelectedMap(selected_values) {
+        this.selMap = {};
+        const track = (val, route)=> {
+            each(val, (child, key)=> {
+                if (isEmpty(child)) {
+                    this.selMap[route + key] = 2;
+                } else {
+                    this.selMap[route + key] = 1;
+                }
+                track(child, route + key);
+            })
+        };
+        track(selected_values, '')
+    }
+
+    _getRouteKey(route) {
+        let result = '';
+        each(route, (key)=> {
+            result += this.map[key].value;
+        });
+        return result;
+    }
+
+    _initTree(items, selected_values = {}) {
+        this._createMap(items);
+        this._createSelectedMap(selected_values);
+        const format = Tree.transformToTreeFormat(items);
+        this.tree = new Tree();
+        this.tree.initTree(format);
+        this.tree.recursion((child, routes)=> {
+            const key = this._getRouteKey(routes);
+            if (this.selMap[key] === 1) {
+                child.get('data').checked = true;
+                child.get('data').halfCheck = true;
+            } else if (this.selMap[key] === 2) {
+                child.get('data').checked = true;
+                child.get('data').halfCheck = false;
+            }
+        });
+        return format;
     }
 
     _expandTreeItems(items) {
@@ -40,83 +83,88 @@ export default class MultiTreeSelectorWidgetHelper {
         let isAllSelected = true, isHalSelected = false;
         each(node.getChildren(), (child)=> {
             const data = child.get('data');
-            if (data.selected < 2 || isNil(data.selected)) {
+            if (!data.checked || data.halfCheck) {
                 isAllSelected = false;
             }
-            if (data.selected > 0) {
+            if (data.checked) {
                 isHalSelected = true;
             }
         });
-        node.get('data').selected = (isAllSelected ? 2 : (isHalSelected ? 1 : 0));
+        node.get('data').checked = (isAllSelected || isHalSelected);
+        node.get('data').halfCheck = !isAllSelected && isHalSelected;
         this._adjustUpTreeSelected(node.getParent());
     }
 
     _adjustDownTreeSelected(node) {
-        const selected = node.get('data').selected;
+        const checked = node.get('data').checked, halfCheck = node.get('data').halfCheck;
         each(node.getChildren(), (child)=> {
             const data = child.get('data');
-            if (selected === 2 || selected === 0 || isNil(selected)) {
-                data.selected = selected;
+            if (!checked || !halfCheck) {
+                data.checked = checked;
+                data.halfCheck = false;
                 this._adjustDownTreeSelected(child);
             }
         });
     }
 
-    _selectOneValue(val) {
-        const find = this.tree.search(val, 'value');
+    _selectOneNode(node) {
+        const find = this.tree.search(node.id);
         if (find) {
             const data = find.get('data');
-            data.selected = 2;
+            data.checked = true;
+            data.halfCheck = false;
             this._adjustUpTreeSelected(find.getParent());
             this._adjustDownTreeSelected(find);
-            this._digest();
         }
     }
 
-    _disSelectOneValue(val) {
-        const find = this.tree.search(val, 'value');
-
+    _disSelectOneNode(node) {
+        const find = this.tree.search(node.id);
         if (find) {
             const data = find.get('data');
-            data.selected = 0;
+            data.checked = false;
+            data.halfCheck = false;
             this._adjustUpTreeSelected(find.getParent());
             this._adjustDownTreeSelected(find);
-            this._digest();
         }
     }
 
-    _digest() {
-        this.sorted = this._expandTreeItems(this.tree.toJSON());
+    selectOneNode(node) {
+        this._selectOneNode(node);
     }
 
-    selectOneValue(val) {
-        this._selectOneValue(val);
+    disSelectOneNode(node) {
+        this._disSelectOneNode(node);
     }
 
-    disSelectOneValue(val) {
-        this._disSelectOneValue(val);
-    }
-
-    expandOneValue(val) {
-        const find = this.tree.search(val, 'value');
+    expandOneNode(node) {
+        const find = this.tree.search(node.id);
         if (find) {
             const data = find.get('data');
             data.expanded = true;
-            this._digest();
         }
+        return new Promise(function(resolve, reject) {
+            resolve();
+        });
     }
 
-    collapseOneValue(val) {
-        const find = this.tree.search(val, 'value');
+    collapseOneNode(node) {
+        const find = this.tree.search(node.id);
         if (find) {
             const data = find.get('data');
             data.expanded = false;
-            this._digest();
         }
+        return new Promise(function(resolve, reject) {
+            resolve();
+        });
     }
 
     getSelectedValue() {
-        return Array.from(this.value);
+        return clone(this.value);
+    }
+
+    getItems() {
+        return Tree.transformToArrayFormat(this.tree.toJSON());
     }
 
     getSortedItems() {
