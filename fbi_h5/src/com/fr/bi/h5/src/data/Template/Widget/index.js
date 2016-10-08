@@ -8,6 +8,10 @@ class Widget {
         this.id = id;
     }
 
+    $get() {
+        return this.$$widget;
+    }
+
     get$$DimensionById(id) {
         invariant(this.isDimensionById(id), id + "不是维度id");
         return this.$$widget.getIn(['dimensions', id]);
@@ -17,6 +21,29 @@ class Widget {
         invariant(this.isTargetById(id), id + "不是指标id");
         return this.$$widget.getIn(['dimensions', id])
     }
+
+    get$$DimensionOrTargetById(id) {
+        if (this.isDimensionById(id)) {
+            return this.get$$DimensionById(id);
+        }
+        return this.get$$TargetById(id);
+    }
+
+    getDimensionById(id) {
+        return new Dimension(this.get$$DimensionById(id));
+    }
+
+    getTargetById(id) {
+        return new Target(this.get$$TargetById(id));
+    }
+
+    getDimensionOrTargetById(id) {
+        if (this.isDimensionById(id)) {
+            return new Dimension(this.get$$DimensionById(id));
+        }
+        return new Target(this.get$$TargetById(id));
+    }
+
 
     getAllDimensionIds() {
         if (this._dimensionIds) {
@@ -44,13 +71,6 @@ class Widget {
         });
         this._targetIds = result;
         return result;
-    }
-
-    get$$DimensionOrTargetById(id) {
-        if (this.isDimensionById(id)) {
-            return this.get$$DimensionById(id);
-        }
-        return this.get$$TargetById(id);
     }
 
     isDimensionById(id) {
@@ -91,6 +111,18 @@ class Widget {
         return result;
     }
 
+    getAllUsedTargetIds() {
+        const ids = this.getAllTargetIds();
+        const result = [];
+        ids.forEach((id)=> {
+            const $$dim = this.get$$TargetById(id);
+            if (new Target($$dim).isUsed()) {
+                result.push(id);
+            }
+        });
+        return result;
+    }
+
     getRowDimensionIds() {
         let result = [];
         this.$$widget.get('view').forEach(($$id, key)=> {
@@ -106,18 +138,6 @@ class Widget {
         this.$$widget.get('view').forEach(($$id, key)=> {
             if (parseInt(key) === BICst.REGION.DIMENSION2) {
                 result = result.concat($$id.toArray());
-            }
-        });
-        return result;
-    }
-
-    getAllUsedTargetIds() {
-        const ids = this.getAllTargetIds();
-        const result = [];
-        ids.forEach((id)=> {
-            const $$dim = this.get$$TargetById(id);
-            if (new Target($$dim).isUsed()) {
-                result.push(id);
             }
         });
         return result;
@@ -139,39 +159,29 @@ class Widget {
         return this.$$widget.getIn(['settings', 'freeze_dim']);
     }
 
-    getWidgetBoundsByID() {
+    getWidgetBounds() {
         return this.$$widget.get('bounds').toJS() || {};
     }
 
-    getWidgetLinkageByID() {
+    getWidgetLinkage() {
         return this.$$widget.get('linkages').toJS() || [];
     }
 
-    getWidgetViewByID() {
+    getWidgetView() {
         return this.$$widget.get('view').toJS() || {};
     }
 
-    getWidgetSubTypeByID(wid) {
+    getWidgetSubType() {
         return this.$$widget.get('sub_type');
     }
 
 
-    getWidgetValueByID(wid) {
+    getWidgetValue() {
         return this.$$widget.get('value').toJS();
     }
 
-    getAllLinkageFromIdsByID(wid) {
-        var self = this, fromIds = [];
-        var linkages = this.getWidgetLinkageByID(wid);
-        each(linkages, (i, link)=> {
-            fromIds.push(link.from);
-            fromIds = fromIds.concat(this.getAllLinkageFromIdsByID(link.to));
-        });
-        return fromIds;
-    }
-
     getRegionTypeByDimensionID(dId) {
-        var view = this.getWidgetViewByID();
+        var view = this.getWidgetView();
         return findKey(view, function (regionType, dIds) {
             if (dIds.indexOf(dId) > -1) {
                 return true;
@@ -388,15 +398,15 @@ class Widget {
         return this.getAllDimensionIds().indexOf(did) > -1;
     }
 
-    getWidgetInitTimeByID() {
+    getWidgetInitTime() {
         return this.$$widget.get('init_time') || new Date().getTime();
     }
 
-    getClickedByID() {
+    getClicked() {
         return this.$$widget.get('clicked') || {};
     }
 
-    getDrillByID() {
+    getDrill() {
         var clicked = this.getClickedByID();
         var drills = {};
         each(clicked, (dId, value)=> {
@@ -407,7 +417,7 @@ class Widget {
         return drills;
     }
 
-    getLinkageValuesByID(wid) {
+    getLinkageValues(wid) {
         var clicked = this.getClickedByID(wid);
         var drills = {};
         each(clicked, (dId, value)=> {
@@ -418,11 +428,17 @@ class Widget {
         return drills;
     }
 
-    getWidgetFilterValueByID(wid) {
+    getWidgetFilterValue(wid) {
         if (this.isWidgetExistByID(wid)) {
             return this.$$widget.get('filter_value').toJS() || {};
         }
         return {};
+    }
+
+
+    setValue(value) {
+        this.$$widget = this.$$widget.set('value', value);
+        return this.$$widget;
     }
 }
 

@@ -1,7 +1,5 @@
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
 import * as TodoActions from '../actions/todos';
 import {requestAnimationFrame, ReactComponentWithImmutableRenderMixin} from 'core'
 import React, {
