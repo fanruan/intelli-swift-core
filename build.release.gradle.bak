@@ -62,7 +62,7 @@ sourceSets{
 
 FileTree jarfiles=fileTree(dir:"${BI_HOME}/lib/",include:'**/*.jar')
 jarfiles.each{File file->
-	print "-----------------------file.path"
+	println "-----------------------file.path"
 	
 }
 //声明外部依赖
