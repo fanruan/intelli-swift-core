@@ -297,8 +297,8 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
 
     getValue: function () {
         return {
-            show_title: this.showTitle.isSelected(),
-            title: this.title.getValue(),
+            show_name: this.showTitle.isSelected(),
+            widget_title: this.title.getValue(),
             title_detail: this.titleDetailSettting.getValue(),
             table_form: this.tableFormGroup.getValue()[0],
             theme_color: this.colorSelector.getValue(),
@@ -314,8 +314,8 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
 
     populate: function () {
         var wId = this.options.wId;
-        this.showTitle.setSelected(BI.Utils.getWSShowTitleByID(wId));
-        this.title.setValue(BI.Utils.getWSTitleNameByID(wId));
+        this.showTitle.setSelected(BI.Utils.getWSShowNameByID(wId));
+        this.title.setValue(BI.Utils.getWidgetNameByID(wId));
         this.titleDetailSettting.setValue(BI.Utils.getWSDetailSettingByID(wId));
         this.tableFormGroup.setValue(BI.Utils.getWSTableFormByID(wId));
         this.colorSelector.setValue(BI.Utils.getWSThemeColorByID(wId));
@@ -329,8 +329,8 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
     },
 
     setValue: function (v) {
-        this.showTitle.setSelected(v.show_title);
-        this.title.setValue(v.title);
+        this.showTitle.setSelected(v.show_name);
+        this.title.setValue(v.widget_title);
         this.titleDetailSettting.setValue(v.title_detail);
         this.tableFormGroup.setValue(v.table_form);
         this.colorSelector.setValue(v.theme_color);

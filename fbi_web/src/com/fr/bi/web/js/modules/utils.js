@@ -655,18 +655,6 @@
         },
 
         //settings  ---- start ----
-        getWSShowTitleByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_title) ? ws.show_title :
-                BICst.DEFAULT_CHART_SETTING.show_title;
-        },
-
-        getWSTitleNameByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.title) ? ws.title :
-                BICst.DEFAULT_CHART_SETTING.title
-        },
-
         getWSDetailSettingByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.title_detail) ? ws.title_detail :

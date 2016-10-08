@@ -31,7 +31,7 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
             width: 230
         });
         this.titleWordStyle.on(BI.GlobalStyleIndexTitleToolBar.EVENT_CHANGE, function () {
-            self.fireEvent(BI.ShowTitleDetailedSettingPopup.EVENT_CHANGE);
+            self.fireEvent(BI.ShowTitleDetailedSettingPopup.EVENT_CHANGE)
         });
         var titleWordStyleWrapper = this._createWrapper(BI.i18nText("BI-Set_Font"), this.titleWordStyle);
 
