@@ -39,7 +39,7 @@ BI.ListLabel = BI.inherit(BI.Widget, {
                 type: "bi.text_button"
             }),
             layouts: [{
-                type: "bi.vertical_adapt",
+                type: "bi.inline_vertical_adapt",
                 rgap: this._constant.DEFAULT_LABEL_GAP,
                 height: this._constant.LABEL_HEIGHT
             }]
@@ -72,7 +72,7 @@ BI.ListLabel = BI.inherit(BI.Widget, {
         }] : [this.right];
 
         BI.createWidget({
-            type: "bi.inline",
+            type: "bi.horizontal",
             items: allItems,
             element: this.element
         });
