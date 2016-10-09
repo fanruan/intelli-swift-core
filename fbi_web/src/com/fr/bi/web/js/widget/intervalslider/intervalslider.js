@@ -8,7 +8,7 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
     },
     _defaultConfig: function () {
         return BI.extend(BI.IntervalSlider.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-single-slider"
+            baseCls: "bi-single-slider bi-slider-track"
         })
     },
     _init: function () {
@@ -18,9 +18,22 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
         var c = this._constant;
         this.enable = false;
 
-        this.track = BI.createWidget({
-            type: "bi.single_slider_track"
+        this.backgroundTrack = BI.createWidget({
+            type: "bi.layout",
+            cls: "background-track",
+            height: 24
         });
+        this.grayTrack = BI.createWidget({
+            type: "bi.layout",
+            cls: "gray-track",
+            height: 8
+        });
+        this.blueTrack = BI.createWidget({
+            type: "bi.layout",
+            cls: "blue-track",
+            height: 8
+        });
+        this.track = this._createTrackWrapper();
 
         this.labelOne = BI.createWidget({
             type: "bi.sign_editor",
@@ -69,15 +82,16 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
         });
         this.sliderOne.element.draggable({
             axis: "x",
-            containment: this.track.element,
+            containment: this.grayTrack.element,
+            scroll: false,
             drag: function (e, ui) {
-                var percent = (ui.position.left) * 100 / (self.track.getLength() - 30);
+                var percent = (ui.position.left) * 100 / (self._getGrayTrackLength());
                 self._setLabelOnePosition(percent);
                 self.labelOne.setValue(self._getValueByPercent(percent));
                 self._setBlueTrack();
             },
             stop: function (e, ui) {
-                var percent = (ui.position.left) * 100 / (self.track.getLength() - 30);
+                var percent = (ui.position.left) * 100 / (self._getGrayTrackLength());
                 self._setSliderOnePosition(percent);
                 self.fireEvent(BI.IntervalSlider.EVENT_CHANGE);
             }
@@ -88,20 +102,22 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
         });
         this.sliderTwo.element.draggable({
             axis: "x",
-            containment: this.track.element,
+            containment: this.grayTrack.element,
+            scroll: false,
             drag: function (e, ui) {
-                var percent = (ui.position.left) * 100 / (self.track.getLength() - 30);
+                var percent = (ui.position.left) * 100 / (self._getGrayTrackLength());
                 self._setLabelTwoPosition(percent);
                 self.labelTwo.setValue(self._getValueByPercent(percent));
                 self._setBlueTrack();
             },
             stop: function (e, ui) {
-                var percent = (ui.position.left) * 100 / (self.track.getLength() - 30);
+                var percent = (ui.position.left) * 100 / (self._getGrayTrackLength());
                 self._setSliderTwoPosition(percent);
                 self.fireEvent(BI.IntervalSlider.EVENT_CHANGE);
             }
         });
         this._setVisible(false);
+
         BI.createWidget({
             type: "bi.absolute",
             element: this.element,
@@ -112,37 +128,97 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
                 width: "100%",
                 height: 23
             },
-                this._createLayout(this.labelOne, this.labelTwo, 0, 90),
-                this._createLayout(this.sliderOne, this.sliderTwo, 30, 30)
+                this._createLabelWrapper(),
+                this._createSliderWrapper()
             ]
         })
     },
-    _createLayout: function (widgetOne, widgetTwo, top, height) {
+    _createLabelWrapper: function () {
         return {
             el: {
                 type: "bi.vertical",
                 items: [{
                     type: "bi.absolute",
                     items: [{
-                        el: widgetOne,
+                        el: this.labelOne,
                         top: 0,
                         left: "0%"
                     }]
                 }, {
                     type: "bi.absolute",
                     items: [{
-                        el: widgetTwo,
+                        el: this.labelTwo,
                         top: 0,
                         left: "100%"
                     }]
                 }],
-                rgap: 30,
-                height: height
+                rgap: 90,
+                height: 90
             },
-            top: top,
+            top: 0,
             left: 0,
             width: "100%"
         }
+    },
+    _createSliderWrapper: function () {
+        return {
+            el: {
+                type: "bi.vertical",
+                items: [{
+                    type: "bi.absolute",
+                    items: [{
+                        el: this.sliderOne,
+                        top: 0,
+                        left: "0%"
+                    }]
+                }, {
+                    type: "bi.absolute",
+                    items: [{
+                        el: this.sliderTwo,
+                        top: 0,
+                        left: "100%"
+                    }]
+                }],
+                //rgap: 90,
+                hgap: 8,
+                height: 30
+            },
+            top: 30,
+            left: 0,
+            width: "100%"
+        }
+    },
+    _createTrackWrapper: function () {
+        return BI.createWidget({
+            type: "bi.absolute",
+            items: [{
+                el: this.backgroundTrack,
+                width: "100%"
+            }, {
+                el: {
+                    type: "bi.vertical",
+                    items: [{
+                        type: "bi.absolute",
+                        items: [{
+                            el: this.grayTrack,
+                            top: 0,
+                            left: 0,
+                            width: "100%"
+                        }, {
+                            el: this.blueTrack,
+                            top: 0,
+                            left: 0,
+                            width: "0%"
+                        }]
+                    }],
+                    hgap: 8,
+                    height: 8
+                },
+                top: 8,
+                left: 0,
+                width: "100%"
+            }]
+        })
     },
     _checkValidation: function (v) {
         return !(BI.isNull(v) || v < this.min || v > this.max)
@@ -178,15 +254,21 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
     _setSliderTwoPosition: function (percent) {
         this.sliderTwo.element.css({"left": percent + "%"});
     },
+    _setBlueTrackLeft: function (percent) {
+        this.blueTrack.element.css({"left": percent + "%"});
+    },
+    _setBlueTrackWidth: function (percent) {
+        this.blueTrack.element.css({"width": percent + "%"});
+    },
     _setBlueTrack: function () {
         var percentOne = this._getPercentByValue(this.labelOne.getValue());
         var percentTwo = this._getPercentByValue(this.labelTwo.getValue());
         if (percentOne <= percentTwo) {
-            this.track.setBlueTrackLeft(percentOne);
-            this.track.setBlueTrackWidth(percentTwo - percentOne);
+            this._setBlueTrackLeft(percentOne);
+            this._setBlueTrackWidth(percentTwo - percentOne);
         } else {
-            this.track.setBlueTrackLeft(percentTwo);
-            this.track.setBlueTrackWidth(percentOne - percentTwo);
+            this._setBlueTrackLeft(percentTwo);
+            this._setBlueTrackWidth(percentOne - percentTwo);
         }
     },
     _setAllPosition: function (one, two) {
@@ -206,6 +288,9 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
         var errorText = BI.i18nText("BI-Please_Enter") + this.min + "-" + this.max + BI.i18nText("BI-De") + BI.i18nText("BI-Number");
         this.labelOne.setErrorText(errorText);
         this.labelTwo.setErrorText(errorText);
+    },
+    _getGrayTrackLength: function () {
+        return this.grayTrack.element[0].scrollWidth
     },
     _getValueByPercent: function (percent) {
         return (((this.max - this.min) * percent) / 100 + this.min);
@@ -227,7 +312,7 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
     setValue: function (v) {
         var valueOne = BI.parseFloat(v[0]);
         var valueTwo = BI.parseFloat(v[1]);
-        if ((!isNaN(valueOne)) && (!isNaN(valueTwo)) && this._checkValidation(valueOne) && this._checkValidation(valueTwo) && this.enable) {
+        if (this.enable && (!isNaN(valueOne)) && (!isNaN(valueTwo)) && this._checkValidation(valueOne) && this._checkValidation(valueTwo)) {
             this.labelOne.setValue(valueOne);
             this.labelTwo.setValue(valueTwo);
             this._setAllPosition(this._getPercentByValue(valueOne), this._getPercentByValue(valueTwo));
@@ -237,7 +322,7 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
     reset: function () {
         this._setVisible(false);
         this.enable = false;
-        this.track.reset();
+        this._setBlueTrackWidth(0);
     },
 
     populate: function (min, max, value) {

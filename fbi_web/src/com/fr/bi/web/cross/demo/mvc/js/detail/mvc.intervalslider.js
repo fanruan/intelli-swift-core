@@ -47,8 +47,8 @@ IntervalSliderView = BI.inherit(BI.View, {
             width: 30
         });
         reset.on(BI.Button.EVENT_CHANGE, function () {
-            // self.slider.reset()
-            self.slider._checkOverlap();
+             self.slider.reset();
+            //self.slider._checkOverlap();
         });
         var editorOne = BI.createWidget({
             type: "bi.sign_editor",
