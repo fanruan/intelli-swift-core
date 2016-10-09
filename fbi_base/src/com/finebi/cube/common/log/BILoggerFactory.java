@@ -1,22 +1,23 @@
-package com.fr.bi.stable.utils.code;
+package com.finebi.cube.common.log;
 
 import com.fr.bi.manager.PerformancePlugManager;
+import com.fr.bi.stable.utils.code.BIPrintUtils;
 import com.fr.bi.stable.utils.time.BIDateUtils;
 
 /**
  * BI日志输出
  */
-public class BILogger {
+public class BILoggerFactory {
     boolean verbose = true;
-    public static BILogger logger = null;
+    public static BILoggerFactory logger = null;
 
-    public static BILogger getLogger() {
+    public static BILoggerFactory getLogger() {
         if (logger != null) {
             return logger;
         }
-        synchronized (BILogger.class) {
+        synchronized (BILoggerFactory.class) {
             if (logger == null) {
-                logger = new BILogger();
+                logger = new BILoggerFactory();
             }
         }
         return logger;
