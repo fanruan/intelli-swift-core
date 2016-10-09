@@ -254,14 +254,29 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
     },
 
     setValue: function (v) {
-        var self = this, op = {
+
+        var self = this, o = this.options, op = {
             selected_values: v
         };
+        var result = [];
+        convertToArray(v,result,0);
         o.itemsCreator(op, function (value) {
             self._updateData(value.items);
             self._updateItems();
-            this.view.setValue(v);
+            self.view.setValue(result);
         });
+
+        function convertToArray(obj, result, i) {
+            if(BI.isEmptyObject(obj)) {
+                return ;
+            }
+            var keys = Object.keys(obj);
+            result[i] = BI.uniq(BI.concat(result[i]||[],keys));
+            BI.each(keys, function (idx, key) {
+                convertToArray(obj[key], result, i+1)
+            })
+
+        }
     },
 
     getValue: function () {
