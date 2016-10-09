@@ -33,32 +33,27 @@ BI.TableChartManagerAspect = function () {
         var cls = true;
         var dim1Size = 0, dim2Size = 0, tar1Size = 0, tar2Size = 0, tar3Size = 0;
         BI.each(view, function (vId, v) {
-            switch (vId) {
-                case BICst.REGION.DIMENSION1:
-                    BI.each(v, function (i, dId) {
-                        BI.Utils.isDimensionUsable(dId) && dim1Size++;
-                    });
-                    break;
-                case BICst.REGION.DIMENSION2:
-                    BI.each(v, function (i, dId) {
-                        BI.Utils.isDimensionUsable(dId) && dim2Size++;
-                    });
-                    break;
-                case BICst.REGION.TARGET1:
-                    BI.each(v, function (i, dId) {
-                        BI.Utils.isDimensionUsable(dId) && tar1Size++;
-                    });
-                    break;
-                case BICst.REGION.TARGET2:
-                    BI.each(v, function (i, dId) {
-                        BI.Utils.isDimensionUsable(dId) && tar2Size++;
-                    });
-                    break;
-                case BICst.REGION.TARGET3:
-                    BI.each(v, function (i, dId) {
-                        BI.Utils.isDimensionUsable(dId) && tar3Size++;
-                    });
-                    break;
+            if (BI.parseInt(vId) < BI.parseInt(BICst.REGION.DIMENSION2)) {
+                BI.each(v, function (i, dId) {
+                    BI.Utils.isDimensionUsable(dId) && dim1Size++;
+                });
+            } else if (BI.parseInt(BICst.REGION.DIMENSION2) <= BI.parseInt(vId) &&
+                BI.parseInt(vId) < BI.parseInt(BICst.REGION.TARGET1)) {
+                BI.each(v, function (i, dId) {
+                    BI.Utils.isDimensionUsable(dId) && dim2Size++;
+                });
+            } else if (vId === BICst.REGION.TARGET1) {
+                BI.each(v, function (i, dId) {
+                    BI.Utils.isDimensionUsable(dId) && tar1Size++;
+                });
+            } else if (vId === BICst.REGION.TARGET2) {
+                BI.each(v, function (i, dId) {
+                    BI.Utils.isDimensionUsable(dId) && tar2Size++;
+                });
+            } else if (vId === BICst.REGION.TARGET3) {
+                BI.each(v, function (i, dId) {
+                    BI.Utils.isDimensionUsable(dId) && tar3Size++;
+                });
             }
         });
         switch (BI.Utils.getWidgetTypeByID(wId)) {

@@ -169,7 +169,7 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
                 BI.each(view[sRegion], function (j, dId) {
                     BI.Utils.isDimensionUsable(dId) && (self.dimIds.push(dId));
                 });
-                return true;
+                return self.dimIds.length > 0;
             }
         });
         BI.some(sortedRegions, function (i, sRegion) {
@@ -179,7 +179,7 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
                 BI.each(view[sRegion], function (j, dId) {
                     BI.Utils.isDimensionUsable(dId) && (self.crossDimIds.push(dId));
                 });
-                return true;
+                return self.crossDimIds.length > 0;
             }
         });
         //使用中的指标
@@ -196,7 +196,14 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         BI.each(view, function (regionId, dIds) {
             if (BI.parseInt(regionId) < BI.parseInt(BICst.REGION.DIMENSION2) &&
                 dIds.length > 0) {
-                rowRegions[regionId] = dIds;
+                BI.each(dIds, function (i, dId) {
+                    if (BI.Utils.isDimensionUsable(dId)) {
+                        if (BI.isNull(rowRegions[regionId])) {
+                            rowRegions[regionId] = [];
+                        }
+                        rowRegions[regionId].push(dId);
+                    }
+                });
             }
         });
         return rowRegions;
@@ -211,6 +218,12 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
                 BI.parseInt(regionId) < BI.parseInt(BICst.REGION.TARGET1) &&
                 dIds.length > 0) {
                 colRegions[regionId] = dIds;
+                if (BI.Utils.isDimensionUsable(dId)) {
+                    if (BI.isNull(colRegions[regionId])) {
+                        colRegions[regionId] = [];
+                    }
+                    colRegions[regionId].push(dId);
+                }
             }
         });
         return colRegions;
