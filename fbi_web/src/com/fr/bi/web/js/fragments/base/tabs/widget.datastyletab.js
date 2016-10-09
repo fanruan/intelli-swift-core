@@ -40,11 +40,16 @@ BI.DataStyleTab = BI.inherit(BI.Widget, {
             },
             cardCreator: o.cardCreator
         });
-        this.tab.setSelect(BICst.DETAIL_TAB_TYPE_DATA);
+
+        this.setSelect(BICst.DETAIL_TAB_TYPE_DATA);
 
         this.tab.on(BI.Tab.EVENT_CHANGE, function(){
            self.fireEvent(BI.DataStyleTab.EVENT_CHANGE);
         });
+    },
+
+    setSelect: function(v) {
+        this.tab.setSelect(v);
     },
 
     getSelect: function(){
