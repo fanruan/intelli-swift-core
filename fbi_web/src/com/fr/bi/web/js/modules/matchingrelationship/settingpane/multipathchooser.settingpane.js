@@ -27,6 +27,7 @@ BI.MultiPathChooser = BI.inherit(BI.Widget, {
         });
         this.pathChooser.on(BI.PathChooser.EVENT_CHANGE, function () {
             self.path = self._packageValueByValue(this.getValue());
+            self.fireEvent(BI.MultiPathChooser.EVENT_PATH_CHANGE, true);
         });
         this.path = [];
         this.pathValueMap = {};
@@ -167,6 +168,7 @@ BI.MultiPathChooser = BI.inherit(BI.Widget, {
         if(BI.size(this.pathValueMap) > 1){
             this.pathChooser.setValue();
         }
+        this.fireEvent(BI.MultiPathChooser.EVENT_PATH_CHANGE, BI.size(this.pathValueMap) === 1);
         //this.tipTab.setSelect(items.length > 1 ? this.constants.MorePath : (items.length === 1 ? this.constants.OnePath : this.constants.NoPath));
     },
 
@@ -179,4 +181,5 @@ BI.MultiPathChooser = BI.inherit(BI.Widget, {
         return [this.path];
     }
 });
+BI.MultiPathChooser.EVENT_PATH_CHANGE = "EVENT_PATH_CHANGE";
 $.shortcut('bi.multi_path_chooser', BI.MultiPathChooser);

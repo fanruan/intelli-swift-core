@@ -18,6 +18,15 @@ BI.MatchingRelationPopup = BI.inherit(BI.BarPopoverSection, {
         BI.MatchingRelationPopup.superclass._init.apply(this, arguments);
     },
 
+    _setCompleteButtonState: function(v){
+        this.complete.setEnable(v);
+        if(v === true){
+            this.complete.setWarningTitle("");
+        }else{
+            this.complete.setWarningTitle(BI.i18nText("BI-Please_Select_Multi_Path"));
+        }
+    },
+
     rebuildNorth: function (north) {
         var o = this.options;
         var name = BI.Utils.getDimensionNameByID(o.dId);
@@ -39,8 +48,12 @@ BI.MatchingRelationPopup = BI.inherit(BI.BarPopoverSection, {
             dId: this.options.dId,
             element: center
         });
-        this.matchTab.on(BI.MatchingRelationShipTab.EVENT_CHANGE, function () {
+        this.matchTab.on(BI.MatchingRelationShipTab.EVENT_CHANGE, function (v) {
+            self._setCompleteButtonState(!BI.isEmptyObject(v));
             self._showPreConfig();
+        });
+        this.matchTab.on(BI.MatchingRelationShipTab.EVENT_COMPLETE_VISIABLE_CHANGE, function(v){
+            self._setCompleteButtonState(!!v);
         });
         return true;
     },
