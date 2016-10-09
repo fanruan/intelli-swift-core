@@ -5,7 +5,6 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.CubeGenerationManager;
-import com.finebi.cube.fun.CubeConditionProvider;
 import com.finebi.cube.impl.conf.CubeBuildByPart;
 import com.finebi.cube.impl.conf.CubeBuildStaff;
 import com.finebi.cube.utils.CubeUpdateUtils;
@@ -22,11 +21,9 @@ import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
-import com.fr.plugin.ExtraClassManager;
 
 import java.io.File;
 import java.util.Iterator;
-import java.util.Set;
 
 /**
  * Created by GUY on 2015/3/16.
@@ -62,10 +59,6 @@ public class CubeRunner {
             public void actionPerformed(CubeTask cubeTask) {
                 long start = System.currentTimeMillis();
                 setStatue(Status.LOADING);
-                Set<CubeConditionProvider> set = ExtraClassManager.getInstance().getArray(CubeConditionProvider.MARK_STRING);
-                for (CubeConditionProvider provider : set) {
-                    provider.prepare(cubeTask);
-                }
                 start();
                 try {
                     cubeTask.start();
