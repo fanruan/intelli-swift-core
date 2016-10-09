@@ -12371,6 +12371,10 @@ define('VanCharts',['require','./utils/BaseUtils','./Constants','./VanChart','./
             this.setOptions(options);
         },
 
+        refreshRestore:function(){
+            this.setOptions(this.options);
+        },
+
         resize:function(){
             this.charts.forEach(function(chart){
                 chart.resize();
@@ -24186,6 +24190,9 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
 
         renderSpecial: function () {
             if(this.series.length == 0 || !this.options.lineWidth){
+                this.axisLine && this.axisLine.remove();
+                this.arrowGroup && this.arrowGroup.remove();
+                this.axisLine = this.arrowGroup = null;
                 return;
             }
 
