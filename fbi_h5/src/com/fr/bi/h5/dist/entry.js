@@ -5521,12 +5521,17 @@ webpackJsonp([0],{
 
 	    _createClass(TableComponent, [{
 	        key: 'componentWillMount',
-	        value: function componentWillMount() {
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
 	            this._fetchData();
 	        }
 	    }, {
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {}
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate() {
+	            this._fetchData();
+	        }
 	    }, {
 	        key: '_fetchData',
 	        value: function _fetchData() {
@@ -6207,12 +6212,17 @@ webpackJsonp([0],{
 
 	    _createClass(DetailTableComponent, [{
 	        key: 'componentWillMount',
-	        value: function componentWillMount() {
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
 	            this._fetchData();
 	        }
 	    }, {
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {}
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate() {
+	            this._fetchData();
+	        }
 	    }, {
 	        key: '_fetchData',
 	        value: function _fetchData() {

@@ -40,11 +40,15 @@ class TableComponent extends Component {
     };
 
     componentWillMount() {
-        this._fetchData();
+
     }
 
     componentDidMount() {
+        this._fetchData();
+    }
 
+    componentWillUpdate() {
+        this._fetchData();
     }
 
     _fetchData() {
