@@ -64,7 +64,7 @@ public class CubeRunner {
                 setStatue(Status.LOADING);
                 Set<CubeConditionProvider> set = ExtraClassManager.getInstance().getArray(CubeConditionProvider.MARK_STRING);
                 for (CubeConditionProvider provider : set) {
-                    provider.prepare();
+                    provider.prepare(cubeTask);
                 }
                 start();
                 try {
@@ -74,9 +74,6 @@ public class CubeRunner {
                 } catch (Exception e) {
                     BILogger.getLogger().error(e.getMessage(), e);
                 } finally {
-                    for (CubeConditionProvider provider : set) {
-                        provider.end();
-                    }
                     finish();
                     setStatue(Status.LOADED);
                     BILogger.getLogger().info(BIDateUtils.getCurrentDateTime() + " Build OLAP database Cost:" + DateUtils.timeCostFrom(start));
