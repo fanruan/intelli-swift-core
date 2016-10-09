@@ -14,7 +14,7 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.Inter;
 
 import java.util.HashSet;
@@ -82,7 +82,7 @@ public class RelationsGetter {
                         Inter.getLocText("BI-A_And_B_All_Distinct"),
                         new String[]{"one", "other"},
                         new String[]{primaryKey.toString(), foreignKey.toString()});
-                BILogger.getLogger().info(text);
+                BILoggerFactory.getLogger().info(text);
             }
         }
         return relations;

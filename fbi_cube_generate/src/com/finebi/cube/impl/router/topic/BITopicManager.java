@@ -16,7 +16,7 @@ import com.fr.bi.common.factory.BIMateFactory;
 import com.fr.bi.common.factory.IModuleFactory;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.manager.PerformancePlugManager;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 /**
  * This class created on 2016/3/21.
@@ -58,8 +58,8 @@ public class BITopicManager implements ITopicRouterService {
     public IFragment subscribe(ISubscribe subscribe, ITopicTag topicTag, IFragmentTag fragmentTag) throws BITopicAbsentException
             , BIFragmentAbsentException, BISubscribeDuplicateException {
         if (verbose) {
-            BILogger.getLogger().info("Sub:" + subscribe.getSubscribeID().getIdentityValue() + "\nsubscribe mess: " + "T:" + topicTag + ",F:" + fragmentTag);
-            BILogger.getLogger().info("");
+            BILoggerFactory.getLogger().info("Sub:" + subscribe.getSubscribeID().getIdentityValue() + "\nsubscribe mess: " + "T:" + topicTag + ",F:" + fragmentTag);
+            BILoggerFactory.getLogger().info("");
         }
         IFragment fragment = getSpecificTopic(topicTag).getSpecificFragment(fragmentTag);
         fragment.addSubscribe(subscribe);
@@ -70,8 +70,8 @@ public class BITopicManager implements ITopicRouterService {
     public IStatus subscribe(ISubscribe subscribe, ITopicTag topicTag, IFragmentTag fragmentTag, IStatusTag statusTag) throws BITopicAbsentException
             , BIFragmentAbsentException, BIStatusAbsentException, BISubscribeDuplicateException {
         if (verbose) {
-            BILogger.getLogger().info("Sub:" + subscribe.getSubscribeID().getIdentityValue() + "\nsubscribe mess: " + "T:" + topicTag + ",F:" + fragmentTag + ",S:" + statusTag);
-            BILogger.getLogger().info("");
+            BILoggerFactory.getLogger().info("Sub:" + subscribe.getSubscribeID().getIdentityValue() + "\nsubscribe mess: " + "T:" + topicTag + ",F:" + fragmentTag + ",S:" + statusTag);
+            BILoggerFactory.getLogger().info("");
         }
         IStatus status = getSpecificTopic(topicTag).getSpecificFragment(fragmentTag).getSpecificStatus(statusTag);
         status.addStatusSubscribe(subscribe);
@@ -81,8 +81,8 @@ public class BITopicManager implements ITopicRouterService {
     @Override
     public ITopic subscribe(ISubscribe subscribe, ITopicTag topicTag) throws BITopicAbsentException, BISubscribeDuplicateException {
         if (verbose) {
-            BILogger.getLogger().info("Sub:" + subscribe.getSubscribeID().getIdentityValue() + "\nsubscribe mess: " + "T:" + topicTag);
-            BILogger.getLogger().info("");
+            BILoggerFactory.getLogger().info("Sub:" + subscribe.getSubscribeID().getIdentityValue() + "\nsubscribe mess: " + "T:" + topicTag);
+            BILoggerFactory.getLogger().info("");
         }
         ITopic topic = getSpecificTopic(topicTag);
         topic.addTopicSubscribe(subscribe);
@@ -124,7 +124,7 @@ public class BITopicManager implements ITopicRouterService {
                 ITopic topic = getSpecificTopic(fragmentTag.getSuperTopicTag());
                 return topic.isRegistered(fragmentTag);
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
         return false;
@@ -143,7 +143,7 @@ public class BITopicManager implements ITopicRouterService {
             IFragment fragment = topic.getSpecificFragment(fragmentTag);
             return fragment.isRegistered(statusTag);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return false;
     }

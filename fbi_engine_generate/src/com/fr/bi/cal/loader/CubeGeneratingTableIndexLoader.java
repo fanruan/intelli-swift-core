@@ -15,7 +15,7 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.data.source.SourceFile;
 import com.fr.bi.stable.io.newio.NIOUtils;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
 import com.fr.general.GeneralContext;
@@ -119,7 +119,7 @@ public class CubeGeneratingTableIndexLoader extends CubeAbstractLoader {
                         ti = new BITableIndex(path, getNIOReaderManager());
                     }
                 } catch (Exception e) {
-                    BILogger.getLogger().error("Can`t Find Cube Of Table : " + core.toString() + ", Please Check Your Database Connection");
+                    BILoggerFactory.getLogger().error("Can`t Find Cube Of Table : " + core.toString() + ", Please Check Your Database Connection");
                 }
                 return ti;
             }

@@ -21,7 +21,7 @@ import com.fr.bi.fs.entry.EntryConstants;
 import com.fr.bi.module.BICoreModule;
 import com.fr.bi.module.BIModule;
 import com.fr.bi.resource.ResourceHelper;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BIClassUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.data.core.db.DBUtils;
@@ -147,7 +147,7 @@ public class BIPlate extends AbstractFSPlate {
                 try {
                     cn.rollback();
                 } catch (SQLException e1) {
-                    BILogger.getLogger().error(e1.getMessage(), e1);
+                    BILoggerFactory.getLogger().error(e1.getMessage(), e1);
                 }
             }
         } finally {
@@ -189,16 +189,16 @@ public class BIPlate extends AbstractFSPlate {
 
     private void initOOMKillerForLinux() {
         String os = System.getProperty("os.name");
-        BILogger.getLogger().info("OS:" + os);
+        BILoggerFactory.getLogger().info("OS:" + os);
         if (os.toUpperCase().contains("LINUX")) {
             String name = ManagementFactory.getRuntimeMXBean().getName();
             String pid = name.split("@")[0];
             try {
                 String cmd = "echo -17 > /proc/" + pid + "/oom_adj";
-                BILogger.getLogger().info("execute command:" + cmd);
+                BILoggerFactory.getLogger().info("execute command:" + cmd);
                 Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", cmd});
             } catch (IOException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
 
         }
@@ -220,7 +220,7 @@ public class BIPlate extends AbstractFSPlate {
                     BIModule module = (BIModule) c.newInstance();
                     BIModuleManager.registModule(module);
                 } catch (Exception e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
             }
         }

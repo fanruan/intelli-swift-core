@@ -7,7 +7,7 @@ import com.fr.bi.conf.data.source.operator.add.selfrelation.OneFieldUnionRelatio
 import com.fr.bi.conf.data.source.operator.add.selfrelation.TwoFieldUnionRelationOperator;
 import com.fr.bi.conf.data.source.operator.create.*;
 import com.fr.bi.stable.constant.BIJSONConstant;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -94,7 +94,7 @@ public class OperatorFactory {
                 }
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return operators;
     }
@@ -169,7 +169,7 @@ public class OperatorFactory {
                 jo.put(BIJSONConstant.JSON_KEYS.ETL_VALUE, new JSONObject().put("new_groups", ja));
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 }

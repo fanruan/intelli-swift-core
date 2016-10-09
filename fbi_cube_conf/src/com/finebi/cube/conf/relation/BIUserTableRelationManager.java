@@ -14,7 +14,7 @@ import com.fr.bi.common.factory.IFactoryService;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.exception.*;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 
@@ -150,7 +150,7 @@ public class BIUserTableRelationManager implements Release {
                     oldAnalyserHandler.addRelation(relation);
 
                 } catch (BIRelationDuplicateException e) {
-                    BILogger.getLogger().error(e.getMessage());
+                    BILoggerFactory.getLogger().error(e.getMessage());
                 }
             }
             analysisTableRelationShipService = new BITableRelationshipManager(oldAnalyserHandler);

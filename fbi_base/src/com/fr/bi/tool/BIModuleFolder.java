@@ -45,7 +45,7 @@ public class BIModuleFolder {
                 "import com.fr.bi.common.factory.BIFactory;\n" +
                 "import com.fr.bi.common.factory.BIMateFactory;\n" +
                 "import com.fr.bi.common.factory.BIRepeatKeyException;\n" +
-                "import com.fr.bi.stable.utils.code.BILogger;");
+                "import com.finebi.cube.common.log.BILogger;");
         generateBasicJavaFile.addStaticMethod(MODLUE_FACTORY_METHOD_NAME, generateModuleBean());
         generateBasicJavaFile.writeJavaFile();
     }

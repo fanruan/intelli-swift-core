@@ -17,7 +17,7 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.structure.collection.list.IntList;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 
 import java.util.*;
@@ -60,9 +60,9 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
             }
         } else {
             if (null == hostTable) {
-                BILogger.getLogger().error("hostTable null");
+                BILoggerFactory.getLogger().error("hostTable null");
             } else {
-                BILogger.getLogger().error("hostTable sourceId" + hostTable.tableKey.getSourceID());
+                BILoggerFactory.getLogger().error("hostTable sourceId" + hostTable.tableKey.getSourceID());
             }
             throw new BICubeTableAbsentException("Please generate Cube firstly");
         }

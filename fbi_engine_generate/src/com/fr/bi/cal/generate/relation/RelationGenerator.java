@@ -10,7 +10,7 @@ import com.fr.bi.cal.generate.relation.basiclinkindex.LinkBasicIndexEntry;
 import com.fr.bi.cal.generate.relation.firstlinkindex.LinkFirstIndexEntry;
 import com.fr.bi.cal.generate.relation.inuserelation.LinkInUseIndexEntry;
 import com.fr.bi.stable.index.CubeGenerator;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.DateUtils;
 
 import java.util.Set;
@@ -30,7 +30,7 @@ public class RelationGenerator implements CubeGenerator {
 
     @Override
     public void generateCube() {
-        BILogger.getLogger().info("Relation Build Start");
+        BILoggerFactory.getLogger().info("Relation Build Start");
         long start = System.currentTimeMillis();
         try {
             Set<BITableSourceRelation> relations = new RelationsGetter(biUser.getUserId()).getGenerateRelations();
@@ -47,9 +47,9 @@ public class RelationGenerator implements CubeGenerator {
             //使用中关联
             linkInUseIndexEntry.generateCube();
 
-            BILogger.getLogger().info("Relation Build Complete! Cost :" + DateUtils.timeCostFrom(start));
+            BILoggerFactory.getLogger().info("Relation Build Complete! Cost :" + DateUtils.timeCostFrom(start));
         } catch (Throwable e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 

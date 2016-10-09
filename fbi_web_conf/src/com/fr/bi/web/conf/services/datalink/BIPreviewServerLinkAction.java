@@ -2,7 +2,7 @@ package com.fr.bi.web.conf.services.datalink;
 
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.utils.DecryptBi;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.impl.DBTableData;
@@ -47,7 +47,7 @@ public class BIPreviewServerLinkAction extends AbstractBIConfigureAction {
         //加密处理过
         if (StringUtils.isNotEmpty(query)) {
             query = DecryptBi.decrypt(query, "sh");
-            BILogger.getLogger().info("preview sql:"+query);
+            BILoggerFactory.getLogger().info("preview sql:"+query);
         }
 //        query = java.net.URLDecoder.decode(query , "utf-8");
         Connection conn = null;
@@ -82,7 +82,7 @@ public class BIPreviewServerLinkAction extends AbstractBIConfigureAction {
             return new JSONObject().put("field_names", fieldJa).put("data", dataJa);
 
         } catch (Exception ignore) {
-            BILogger.getLogger().info(ignore.getMessage());
+            BILoggerFactory.getLogger().info(ignore.getMessage());
         } finally {
             DBUtils.closeConnection(conn);
         }

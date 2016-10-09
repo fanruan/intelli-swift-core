@@ -19,7 +19,7 @@ import com.fr.bi.conf.manager.excelview.source.ExcelViewSource;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
@@ -59,7 +59,7 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
             BICubeConfigureCenter.getDataSourceManager().persistData(userId);
             BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
     }
 
@@ -102,7 +102,7 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
                 for (BusinessField businessField : table.getFields()) {
                 }
             } else {
-                BILogger.getLogger().error("table : id = " + tableId + " in pack: " + packageName + " save failed");
+                BILoggerFactory.getLogger().error("table : id = " + tableId + " in pack: " + packageName + " save failed");
             }
         }
 
@@ -170,7 +170,7 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
                 BITableRelation tableRelation = BITableRelationHelper.getRelation(reConstructedRelationJo);
                 relationsSet.add(tableRelation);
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
         BICubeConfigureCenter.getTableRelationManager().registerTableRelationSet(userId, relationsSet);

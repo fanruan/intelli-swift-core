@@ -61,7 +61,7 @@ public class BIFactoryAutoRegisterCode {
 
     private void generateSysFactory() {
         systemRegisterCenter.setImportPackage("" +
-                "import com.fr.bi.stable.utils.code.BILogger;");
+                "import com.finebi.cube.common.log.BILogger;");
         systemRegisterCenter.addStaticMethod("systemRegister", generateSysFactoryMethodContent());
         systemRegisterCenter.writeJavaFile();
     }

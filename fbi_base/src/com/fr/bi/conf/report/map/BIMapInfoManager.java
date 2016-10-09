@@ -1,6 +1,6 @@
 package com.fr.bi.conf.report.map;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.GeneralContext;
 import com.fr.json.JSONException;
 import com.fr.stable.CodeUtils;
@@ -57,7 +57,7 @@ public class BIMapInfoManager {
             editFileNames(innerMapPath, "map", "map", "MAP_", 0, true);
             editFileNames(customMapPath, "image", "image", "MAP_", 0, false);
         } catch (JSONException e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
     }
 

@@ -6,7 +6,7 @@ import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.manager.userInfo.manager.LoginUserInfoManager;
 import com.fr.bi.conf.provider.BIUserLoginInformationProvider;
 import com.fr.bi.exception.BIKeyAbsentException;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 /**
  * Created by Connery on 2016/1/13.
@@ -25,7 +25,7 @@ public class BISystemUserLoginInformationManager extends BIStableMapContainer<Lo
             XMLConfigureGenerator writer = new XMLConfigureGenerator("BILoginUserInfo.xml", manager, "LoginUserInfo");
             writer.readXMLFile();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 

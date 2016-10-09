@@ -1,7 +1,7 @@
 package com.fr.bi.conf.fs;
 
 import com.fr.base.FRContext;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -166,7 +166,7 @@ public class BIUserAuthorAttr implements XMLable {
                     writer.end();
                 }
             } catch (JSONException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
             writer.end();
         }

@@ -5,7 +5,7 @@ import com.finebi.cube.message.IMessage;
 import com.finebi.cube.message.IMessageBody;
 import com.finebi.cube.pubsub.IProcessor;
 import com.finebi.cube.pubsub.IPublish;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.concurrent.*;
@@ -28,7 +28,7 @@ public abstract class BIProcessor<T> implements IProcessor<Future<T>> {
     }
 
     private void showProcess(final IMessage lastReceiveMessage) {
-        BILogger.getLogger().debug("Process:" + messagePublish + "\n" + "        Get message:" + lastReceiveMessage + "\n");
+        BILoggerFactory.getLogger().debug("Process:" + messagePublish + "\n" + "        Get message:" + lastReceiveMessage + "\n");
     }
 
     protected boolean disposeStopMessage() {
@@ -62,7 +62,7 @@ public abstract class BIProcessor<T> implements IProcessor<Future<T>> {
                             return result;
                         } catch (Exception e) {
                             messagePublish.publicStopMessage(getStopMess());
-                            BILogger.getLogger().error(e.getMessage(), e);
+                            BILoggerFactory.getLogger().error(e.getMessage(), e);
                             release();
                         }
                         return null;

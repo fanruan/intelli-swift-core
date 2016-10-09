@@ -2,7 +2,7 @@ package com.fr.bi.fs.entry;
 
 import com.fr.bi.fs.BIDAOUtils;
 import com.fr.bi.fs.BIReportNode;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.data.core.db.dml.Table;
 import com.fr.data.core.db.tableObject.AbstractTableObject;
 import com.fr.data.core.db.tableObject.ColumnSize;
@@ -131,7 +131,7 @@ public class BIReportEntry extends BaseEntry {
                 }
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         jo.put("reportName", reportName);
         return jo;

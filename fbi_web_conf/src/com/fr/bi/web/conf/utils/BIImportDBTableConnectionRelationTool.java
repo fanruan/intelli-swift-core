@@ -10,7 +10,7 @@ import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.BIDBTableField;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BIDBUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.file.DatasourceManager;
 
 import java.sql.Connection;
@@ -56,7 +56,7 @@ public class BIImportDBTableConnectionRelationTool {
             try {
                 connMap.put(connectionName, dbc.createConnection());
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().error(e.getMessage());
                 return false;
             }
         }

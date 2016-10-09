@@ -8,7 +8,7 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.utils.BIFormularUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.json.JSONObject;
 import com.fr.script.Calculator;
@@ -83,9 +83,9 @@ public class FieldFormulaOperator extends AbstractAddColumnOperator {
                 Object value = BIFormularUtils.getCalculatorValue(cal, formula, ti, columnIndexMap, row);
                 travel.actionPerformed(new BIDataValue(row, startCol, getValueByColumnType(value)));
             } catch (Exception e) {
-                BILogger.getLogger().error("incorrect formula");
-                BILogger.getLogger().error(BIStringUtils.append(e.getMessage(), e.getClass().toString()));
-                BILogger.getLogger().error(BIStringUtils.append("The formula:", formula));
+                BILoggerFactory.getLogger().error("incorrect formula");
+                BILoggerFactory.getLogger().error(BIStringUtils.append(e.getMessage(), e.getClass().toString()));
+                BILoggerFactory.getLogger().error(BIStringUtils.append("The formula:", formula));
                 travel.actionPerformed(new BIDataValue(row, startCol, null));
             }
         }

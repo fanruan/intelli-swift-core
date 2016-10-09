@@ -1,7 +1,7 @@
 package com.fr.bi.cluster.zookeeper;
 
 import com.fr.bi.cluster.wrapper.ZooKeeperWrapper;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
@@ -56,11 +56,11 @@ public abstract class BIWatcher implements Watcher {
         try {
             zk.exists(getFocusedEventPath(), this);
         } catch (KeeperException e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
         } catch (InterruptedException e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
         } catch (Exception ex) {
-             BILogger.getLogger().error(ex.getMessage(), ex);
+             BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         }
     }
 

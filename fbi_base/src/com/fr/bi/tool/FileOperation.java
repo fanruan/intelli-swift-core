@@ -1,6 +1,6 @@
 package com.fr.bi.tool;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.io.*;
 
@@ -29,7 +29,7 @@ public class FileOperation {
             writer.write(javaContent);
             writer.close();
         } catch (IOException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 }

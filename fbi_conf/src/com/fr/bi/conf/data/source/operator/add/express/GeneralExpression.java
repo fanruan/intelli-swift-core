@@ -9,7 +9,7 @@ import com.fr.bi.base.BICore;
 import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
@@ -67,7 +67,7 @@ public class GeneralExpression implements Expression {
         try {
             return new BICoreGenerator(this).fetchObjectCore();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return BIBasicCore.EMPTY_CORE;
     }

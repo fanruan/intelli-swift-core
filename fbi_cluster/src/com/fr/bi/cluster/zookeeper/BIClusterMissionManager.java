@@ -4,7 +4,7 @@ import com.fr.base.FRContext;
 import com.fr.bi.cluster.BIMissionManager;
 import com.fr.bi.cluster.zookeeper.watcher.BIMaster;
 import com.fr.bi.cluster.zookeeper.watcher.BIWorker;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.FRLogger;
 import com.fr.json.JSONCreator;
 import org.apache.zookeeper.KeeperException;
@@ -47,12 +47,12 @@ public class BIClusterMissionManager implements BIMissionManager {
                 ArrayList<BIWorkerNodeValue> missions = generateNodeValue(taskName, ingredient, size);
                 controller.addMission(missions);
             } catch (KeeperException ex) {
-                 BILogger.getLogger().error(ex.getMessage(), ex);
+                 BILoggerFactory.getLogger().error(ex.getMessage(), ex);
 
             } catch (InterruptedException ex) {
-                 BILogger.getLogger().error(ex.getMessage(), ex);
+                 BILoggerFactory.getLogger().error(ex.getMessage(), ex);
             } catch (Exception ex) {
-                 BILogger.getLogger().error(ex.getMessage(), ex);
+                 BILoggerFactory.getLogger().error(ex.getMessage(), ex);
             }
         }
     }

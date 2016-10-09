@@ -8,7 +8,7 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.bi.web.conf.services.utils.BICubeGenerateUtils;
 import com.fr.fs.web.service.ServiceUtils;
@@ -41,7 +41,7 @@ public class BICheckGenerateCubeAction extends AbstractBIConfigureAction {
             }
         }catch (Exception e) {
             jo.put("isGenerated", false);
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
         WebUtils.printAsJSON(res, jo);
     }
