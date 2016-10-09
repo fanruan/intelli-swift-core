@@ -349,6 +349,24 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             .removeClass("dashboard-title-center").addClass(cls);
     },
 
+    _refreshWidgetTitle: function () {
+        var titleSetting = this.model.get("settings").title_detail;
+        this.titleWrapper.element.css({background: titleSetting.detail_background});
+
+        function _getBackgroundValue (bg) {
+            if (!bg) {
+                return "";
+            }
+            switch (bg.type) {
+                case BICst.BACKGROUND_TYPE.COLOR:
+                    return bg.value;
+                case BICst.BACKGROUND_TYPE.IMAGE:
+                    return "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + bg["value"] + ")";
+            }
+            return "";
+        }
+    },
+
     _refreshGlobalStyle: function () {
         this._refreshTitlePosition();
     },
@@ -419,6 +437,11 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         if (BI.has(changed, "name")) {
             this.title.setValue(this.model.get("name"))
         }
+        if (BI.has(changed, "settings") && (changed.settings.title_detail !== prev.settings.title_detail)) {
+            this._refreshWidgetTitle()
+        }
+
+
     },
 
     local: function () {

@@ -42,7 +42,7 @@ BI.ShowTitleDetailedSettingCombo = BI.inherit(BI.Widget, {
     },
 
     getValue: function() {
-        this.popup.getValue()
+        return this.popup.getValue()
     }
 });
 BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE = 'EVENT_CHANGE';
