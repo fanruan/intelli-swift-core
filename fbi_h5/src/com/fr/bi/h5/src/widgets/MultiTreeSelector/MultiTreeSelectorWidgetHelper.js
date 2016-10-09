@@ -1,4 +1,4 @@
-import {Tree, each, some, isNil, isEmpty, find, clone, Promise} from 'core'
+import {Tree, each, some, isNil, isEmpty, find, clone, cloneDeep, isPlainObject, Promise} from 'core'
 export default class MultiTreeSelectorWidgetHelper {
     constructor(state) {
         this.items = state.items;
@@ -29,12 +29,91 @@ export default class MultiTreeSelectorWidgetHelper {
         track(selected_values, '')
     }
 
+    _getKey(values) {
+        return values.join('');
+    }
+
     _getRouteKey(route) {
-        let result = '';
+        return this._getKey(this._getRouteValues(route));
+    }
+
+    _getRouteValues(route) {
+        const result = [];
         each(route, (key)=> {
-            result += this.map[key].value;
+            result.push(this.map[key].value || this.map[key].text);
         });
         return result;
+    }
+
+    _getTreeList(map) {
+        const result = [];
+        const track = (node, parent)=> {
+            each(node, (value, key)=> {
+                if (isPlainObject(value) && isEmpty(value)) {
+                    result.push(parent.concat(key));
+                } else {
+                    track(value, parent.concat(key));
+                }
+            })
+        };
+        track(map, []);
+        return result;
+    }
+
+    _getTree(map, values) {
+        let cur = map;
+        some(values, function (value) {
+            if (cur[value] == null) {
+                return true;
+            }
+            cur = cur[value];
+        });
+        return cur;
+    }
+
+    _addTreeNode(map, values, key, value) {
+        let cur = map;
+        each(values, function (value) {
+            if (cur[value] == null) {
+                cur[value] = {};
+            }
+            cur = cur[value];
+        });
+        cur[key] = value;
+    }
+
+    //构造树节点
+    _buildTree(map, values) {
+        let cur = map;
+        each(values, function (value) {
+            if (cur[value] == null) {
+                cur[value] = {};
+            }
+            cur = cur[value];
+        })
+    }
+
+    //获取半选框值
+    _buildHalfSelectedValues(map, node, parentValues) {
+        const {halfCheck, checked, isParent, value, text} = node.get('data');
+        //将未选的去掉
+        if (checked === false && halfCheck === false) {
+            return;
+        }
+        const path = parentValues.concat(value || text);
+        //如果节点已展开,并且是半选
+        if (isParent === true && node.getChildrenLength() > 0 && halfCheck === true) {
+            // each(node.getChildren(), (ch)=> {
+            //     this._buildHalfSelectedValues(map, ch, path);
+            // });
+            return;
+        }
+        if (node.getChildrenLength() > 0 || halfCheck === false) {
+            this._buildTree(map, path);
+            return;
+        }
+        const treeNode = this._getTree(this.value, path);
+        this._addTreeNode(map, parent, value || text, treeNode);
     }
 
     _initTree(items, selected_values = {}) {
@@ -107,6 +186,30 @@ export default class MultiTreeSelectorWidgetHelper {
         });
     }
 
+    _digestSelected() {
+        const map = {};
+        const mustDeleted = new Set();
+        this.tree.recursion((child, routes)=> {
+            const {checked, halfCheck, isParent} = child.get('data');
+            mustDeleted.add(this._getRouteKey(routes));
+            if (checked === true && halfCheck === true) {
+                if (isParent && child.getChildrenLength() === 0) {
+                    this._buildHalfSelectedValues(map, child, this._getRouteValues(routes).slice(0, routes.length - 1));
+                    return true;
+                }
+            } else if (checked === true) {
+                this._buildTree(map, this._getRouteValues(routes));
+                return true;
+            }
+        });
+        each(this.value, (value, key)=> {
+            if (!map[key] && !mustDeleted.has(key)) {
+                map[key] = value;
+            }
+        });
+        this.value = map;
+    }
+
     _selectOneNode(node) {
         const find = this.tree.search(node.id);
         if (find) {
@@ -115,6 +218,7 @@ export default class MultiTreeSelectorWidgetHelper {
             data.halfCheck = false;
             this._adjustUpTreeSelected(find.getParent());
             this._adjustDownTreeSelected(find);
+            this._digestSelected();
         }
     }
 
@@ -126,6 +230,7 @@ export default class MultiTreeSelectorWidgetHelper {
             data.halfCheck = false;
             this._adjustUpTreeSelected(find.getParent());
             this._adjustDownTreeSelected(find);
+            this._digestSelected();
         }
     }
 
@@ -143,7 +248,7 @@ export default class MultiTreeSelectorWidgetHelper {
             const data = find.get('data');
             data.expanded = true;
         }
-        return new Promise(function(resolve, reject) {
+        return new Promise(function (resolve, reject) {
             resolve();
         });
     }
@@ -154,13 +259,13 @@ export default class MultiTreeSelectorWidgetHelper {
             const data = find.get('data');
             data.expanded = false;
         }
-        return new Promise(function(resolve, reject) {
+        return new Promise(function (resolve, reject) {
             resolve();
         });
     }
 
     getSelectedValue() {
-        return clone(this.value);
+        return this.value;
     }
 
     getItems() {

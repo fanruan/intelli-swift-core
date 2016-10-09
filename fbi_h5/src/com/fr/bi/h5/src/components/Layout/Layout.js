@@ -15,11 +15,11 @@ import React, {
 import {AutoSizer} from 'base'
 import {Colors, Template, Widget} from 'data'
 
-import ChartComponent from './Chart/ChartComponent.js'
-import TableComponent from './Table/TableComponent.js'
-import DetailTableComponent from './DetailTable/DetailTableComponent.js'
-import MultiSelectorComponent from './MultiSelector/MultiSelectorComponent.js'
-import MultiTreeSelectorComponent from './MultiTreeSelector/MultiTreeSelectorComponent.js'
+import ChartComponent from '../Chart/ChartComponent.js'
+import TableComponent from '../Table/TableComponent.js'
+import DetailTableComponent from '../DetailTable/DetailTableComponent.js'
+import MultiSelectorComponent from '../MultiSelector/MultiSelectorComponent.js'
+import MultiTreeSelectorComponent from '../MultiTreeSelector/MultiTreeSelectorComponent.js'
 
 class Layout extends Component {
     static propTypes = {};
@@ -27,7 +27,7 @@ class Layout extends Component {
     constructor(props, context) {
         super(props, context);
         const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        this.template = new Template(props.$$template);
+        this.template = new Template(props.$template);
         const rows = this.template.getAllWidgetIds();
         this.state = {
             dataSource: ds.cloneWithRows(rows)
@@ -54,12 +54,12 @@ class Layout extends Component {
             }}>
             {[<ListView
                 {...props}
-                initialListSize={Math.floor(props.height / 270) + 1}
+                initialListSize={Math.ceil(props.height / 270) + 1}
                 dataSource={this.state.dataSource}
                 renderRow={this._renderRow.bind(this)}
             />, <ListView
                 {...props}
-                initialListSize={Math.floor(props.height / 270) + 1}
+                initialListSize={Math.ceil(props.height / 270) + 1}
                 dataSource={this.state.dataSource}
                 renderRow={this._renderRow.bind(this)}
             />]}
@@ -72,12 +72,14 @@ class Layout extends Component {
         // />;
     }
 
-    _renderRow(rowData, sectionID, rowID) {
-        const $$widget = this.template.get$$WidgetById(rowData);
-        const type = new Widget($$widget).getType();
+    _renderRow(wId, sectionID, rowID) {
+        const {$template} = this.props;
+        const $widget = this.template.get$$WidgetById(wId);
+        const type = new Widget($widget).getType();
         const props = {
-            key: rowData,
-            $$widget,
+            key: wId,
+            $template,
+            wId,
             width: this.props.width - 40,
             height: 230
         };

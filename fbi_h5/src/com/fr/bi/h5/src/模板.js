@@ -1,7 +1,11 @@
 import mixin from 'react-mixin'
 import {findDOMNode} from 'react-dom'
 
-import {ReactComponentWithPureRenderMixin, ReactComponentWithImmutableRenderMixin, cn, sc, math, isNil, requestAnimationFrame, emptyFunction, shallowEqual, isEqual, each} from 'core'
+import {
+    ReactComponentWithPureRenderMixin, ReactComponentWithImmutableRenderMixin,
+    cn, sc, math, isNil, emptyFunction, shallowEqual, isEqual, isEmpty, each,
+    translateDOMPositionXY, requestAnimationFrame
+} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -50,10 +54,6 @@ class TableComponent extends Component {
         return <View style={styles.wrapper}>
 
         </View>
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-
     }
 
     componentWillReceiveProps(nextProps) {

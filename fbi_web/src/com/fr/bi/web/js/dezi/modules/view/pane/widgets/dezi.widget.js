@@ -416,6 +416,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         if (BI.has(changed, "type")) {
             this._refreshMagnifyButton();
         }
+        if (BI.has(changed, "name")) {
+            this.title.setValue(this.model.get("name"))
+        }
     },
 
     local: function () {

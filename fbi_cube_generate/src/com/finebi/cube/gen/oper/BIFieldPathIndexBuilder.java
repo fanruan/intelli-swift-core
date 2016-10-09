@@ -73,7 +73,7 @@ public class BIFieldPathIndexBuilder extends BITablePathIndexBuilder {
                 tablePathReader.clear();
             }
             if (targetPathEntity != null) {
-                tablePathReader.clear();
+                targetPathEntity.forceReleaseWriter();
             }
         }
     }

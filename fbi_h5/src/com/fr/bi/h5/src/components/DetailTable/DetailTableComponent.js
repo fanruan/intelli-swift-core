@@ -11,7 +11,7 @@ import React, {
     Fetch
 } from 'lib'
 
-import {Widget} from 'data'
+import {Template, Widget} from 'data'
 
 import {TableWidget} from 'widgets';
 
@@ -29,7 +29,7 @@ class DetailTableComponent extends Component {
 
     constructor(props, context) {
         super(props, context);
-        this._tableHelper = new DetailTableComponentHelper(props.$$widget);
+        this._tableHelper = new DetailTableComponentHelper(props);
         this._widthHelper = new TableComponentWidthHelper(this._tableHelper, props.width);
     }
 
@@ -46,7 +46,10 @@ class DetailTableComponent extends Component {
     }
 
     _fetchData() {
-        new Widget(this.props.$$widget).getData().then((data)=> {
+        const template = new Template(this.props.$template);
+        const wId = this.props.wId;
+        const widget = template.getWidgetById(wId);
+        widget.getData().then((data)=> {
             this._tableHelper.setData(data);
             this.forceUpdate();
         })
@@ -63,11 +66,11 @@ class DetailTableComponent extends Component {
             columnSize={this._widthHelper.getWidth()}
             header={this._tableHelper.getHeader()}
             items={items}
-            headerCellRenderer={(colIndex, cell)=> {
+            headerCellRenderer={({colIndex, ...cell})=> {
                 return <TableHeader {...cell}/>
             }}
-            itemsCellRenderer={({colIndex, rowIndex, items, ...props}) => {
-                return <TableCell {...items[colIndex][rowIndex]} {...props}/>
+            itemsCellRenderer={({colIndex, rowIndex, ...cell}) => {
+                return <TableCell {...cell}/>
             }}
         >
         </TableWidget>

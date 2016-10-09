@@ -1,7 +1,17 @@
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
 
-import {ReactComponentWithImmutableRenderMixin, cn, sc, isNil, requestAnimationFrame, emptyFunction, shallowEqual, isEqual, each} from 'core'
+import {
+    ReactComponentWithImmutableRenderMixin,
+    cn,
+    sc,
+    isNil,
+    requestAnimationFrame,
+    emptyFunction,
+    shallowEqual,
+    isEqual,
+    each
+} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -14,7 +24,7 @@ import React, {
     Promise,
     Modal,
     Navigator
-    } from 'lib'
+} from 'lib'
 
 import {Colors, Size, Template} from 'data'
 
@@ -34,8 +44,7 @@ class Toolbar extends Component {
 
     static defaultProps = {};
 
-    state = {
-    };
+    state = {};
 
     componentWillMount() {
 
@@ -59,6 +68,7 @@ class Toolbar extends Component {
 
     _onPress() {
         this.props.navigator.push({
+            ...this.props,
             name: 'list',
             Component: Controls,
             title: '参数查询',

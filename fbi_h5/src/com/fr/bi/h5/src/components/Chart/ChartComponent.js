@@ -10,10 +10,10 @@ import React, {
     View,
     Fetch
 } from 'lib'
-import {Widget} from 'data'
+import {Template, Widget} from 'data'
 
 
-class Main extends Component {
+class ChartComponent extends Component {
     //static propTypes = {
     //    height: React.PropTypes.number.required,
     //    id: React.PropTypes.string.required,
@@ -25,8 +25,10 @@ class Main extends Component {
     }
 
     componentWillMount() {
-        const $$widget = this.props.$$widget;
-        new Widget($$widget).getData().then((data)=> {
+        const template = new Template(this.props.$template);
+        const wId = this.props.wId;
+        const widget = template.getWidgetById(wId);
+        widget.getData().then((data)=> {
             let vanCharts = VanCharts.init(ReactDOM.findDOMNode(this.refs.chart));
             vanCharts.setOptions(data);
         });
@@ -37,11 +39,11 @@ class Main extends Component {
         return <View ref='chart' style={{height: this.props.height, ...style.wrapper}}></View>
     }
 }
-mixin.onClass(Main, ReactComponentWithImmutableRenderMixin);
+mixin.onClass(ChartComponent, ReactComponentWithImmutableRenderMixin);
 
 const style = StyleSheet.create({
     wrapper: {
         position: 'relative'
     }
 });
-export default Main
+export default ChartComponent

@@ -1,7 +1,18 @@
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
 
-import {ReactComponentWithImmutableRenderMixin, cn, sc, isNil, requestAnimationFrame, emptyFunction, shallowEqual, isEqual, each, map} from 'core'
+import {
+    ReactComponentWithImmutableRenderMixin,
+    cn,
+    sc,
+    isNil,
+    requestAnimationFrame,
+    emptyFunction,
+    shallowEqual,
+    isEqual,
+    each,
+    map
+} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -32,7 +43,7 @@ class Controls extends Component {
     constructor(props, context) {
         super(props, context);
         const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        this.template = new Template(props.$$template);
+        this.template = new Template(props.$template);
         const rows = this.template.getAllControlWidgetIds();
         this.state = {
             dataSource: ds.cloneWithRows(rows)
@@ -66,10 +77,10 @@ class Controls extends Component {
     render() {
         const {...props} = this.props;
         return <ScrollView style={styles.wrapper}>
-            {map(this.template.getAllControlWidgetIds(), (id)=> {
-                const $$widget = this.template.get$$WidgetById(id);
-                const widget = new Widget($$widget);
-                return <Item key={id} id={id} $$widget={$$widget} onPress={()=> {
+            {map(this.template.getAllControlWidgetIds(), (wId)=> {
+                const $widget = this.template.get$$WidgetById(wId);
+                const widget = new Widget($widget);
+                return <Item key={wId} id={wId} $widget={$widget} onPress={()=> {
                     let Component = null;
                     switch (widget.getType()) {
                         case BICst.WIDGET.STRING:
@@ -86,9 +97,9 @@ class Controls extends Component {
                         case BICst.WIDGET.YMD:
                     }
                     props.navigator.push({
+                        ...props,
                         name: 'widget',
-                        id,
-                        $$widget,
+                        wId,
                         Component: Component,
                         title: widget.getName()
                     });

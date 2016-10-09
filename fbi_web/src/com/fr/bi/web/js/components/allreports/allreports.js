@@ -51,6 +51,7 @@ BI.AllReports = BI.inherit(BI.Widget, {
         this.filterPane.on(BI.AllReportsFilter.EVENT_CHANGE, function (isReset) {
             self._getReportFilterResult(isReset);
         });
+        this.filterPane.setVisible(false);
 
         this.wrapper = BI.createWidget({
             type: "bi.vtape",
@@ -76,7 +77,7 @@ BI.AllReports = BI.inherit(BI.Widget, {
                 height: 40
             }, {
                 el: this.filterPane,
-                height: 82
+                height: 0
             }, {
                 el: BI.createWidget(),
                 height: 20
@@ -102,7 +103,7 @@ BI.AllReports = BI.inherit(BI.Widget, {
             width: 16,
             height: 16
         });
-        pushButton.setIcon("report-filter-close-font");
+        pushButton.setIcon("report-filter-open-font");
         pushButton.on(BI.IconChangeButton.EVENT_CHANGE, function () {
             var filterShow = self.filterPane.isVisible();
             this.setIcon(filterShow ? "report-filter-open-font" : "report-filter-close-font");
