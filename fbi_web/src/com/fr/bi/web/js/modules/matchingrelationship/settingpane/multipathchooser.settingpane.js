@@ -167,8 +167,8 @@ BI.MultiPathChooser = BI.inherit(BI.Widget, {
         this.pathChooser.populate(items);
         if(BI.size(this.pathValueMap) > 1){
             this.pathChooser.setValue();
-            this.fireEvent(BI.MultiPathChooser.EVENT_PATH_CHANGE, false);
         }
+        this.fireEvent(BI.MultiPathChooser.EVENT_PATH_CHANGE, BI.size(this.pathValueMap) === 1);
         //this.tipTab.setSelect(items.length > 1 ? this.constants.MorePath : (items.length === 1 ? this.constants.OnePath : this.constants.NoPath));
     },
 

@@ -50,7 +50,6 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
                 dimensionFieldId: fieldId,
                 targetIds: o.targetIds
             });
-            self.fireEvent(BI.SetRelationPane.EVENT_PATH_PANE_CHANGE, false);
         });
 
         this.tab = BI.createWidget({
