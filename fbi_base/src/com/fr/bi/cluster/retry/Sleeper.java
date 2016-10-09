@@ -1,6 +1,6 @@
 package com.fr.bi.cluster.retry;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
@@ -12,7 +12,7 @@ public class Sleeper {
         try {
             timeUnit.sleep(timeOut);
         } catch (InterruptedException ex) {
-             BILogger.getLogger().error(ex.getMessage(), ex);
+             BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         }
     }
 }

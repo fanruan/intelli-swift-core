@@ -12,7 +12,7 @@ import com.finebi.cube.exception.BIBuildWriterException;
 import com.finebi.cube.exception.IllegalCubeResourceLocationException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.fr.bi.common.factory.BIFactoryHelper;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.ArrayList;
@@ -151,7 +151,7 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
                 readerCache.forceRelease();
                 writerCache.forceRelease();
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             } finally {
 
             }
@@ -165,7 +165,7 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
                 locations = readerCache.getUnReleasedLocation();
                 locations.addAll(writerCache.getUnReleasedLocation());
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
             return locations;
         }

@@ -19,7 +19,7 @@ import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.data.impl.Connection;
@@ -53,7 +53,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         try {
             allRelationPathSet = BICubeConfigureCenter.getTableRelationManager().getAllTablePath(userId);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -146,26 +146,26 @@ public abstract class AbstractCubeBuild implements CubeBuild {
             if (new File(advancedPath).exists() &&! new File(tempFolderPath).exists()) {
                 boolean renameFolder = BIFileUtils.renameFolder(new File(advancedPath), new File(tempFolderPath));
                 if (!renameFolder) {
-                    BILogger.getLogger().error("rename Advanced to tempFolder failed");
+                    BILoggerFactory.getLogger().error("rename Advanced to tempFolder failed");
                     return false;
                 }
             }
             if (new File(tCubePath).exists()) {
                 boolean renameFolder = BIFileUtils.renameFolder(new File(tCubePath), new File(advancedPath));
                 if (!renameFolder) {
-                    BILogger.getLogger().error("rename tCube to Advanced failed");
+                    BILoggerFactory.getLogger().error("rename tCube to Advanced failed");
                     return false;
                 }
             }
             if (new File(tempFolderPath).exists()) {
                 boolean deleteTempFolder = BIFileUtils.delete(new File(tempFolderPath));
                 if (!deleteTempFolder) {
-                    BILogger.getLogger().error("delete tempFolder failed ");
+                    BILoggerFactory.getLogger().error("delete tempFolder failed ");
                 }
             }
             return true;
         } catch (IOException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             return false;
         }
     }
@@ -232,7 +232,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         ICubeFieldSource primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
         ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
         if (!isTableRelationValid(relation)) {
-            BILogger.getLogger().error("tableSourceRelation invalid:" + relation.toString());
+            BILoggerFactory.getLogger().error("tableSourceRelation invalid:" + relation.toString());
             return null;
         }
         BITableSourceRelation biTableSourceRelation = new BITableSourceRelation(
@@ -275,7 +275,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
                     sourceIdMap.put(relation.toString(), relation);
                 }
             } catch (NullPointerException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
                 continue;
             }
         }
@@ -293,7 +293,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
                     sourceIdMap.put(path.getSourceID(), path);
                 }
             } catch (NullPointerException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
                 continue;
             }
         }

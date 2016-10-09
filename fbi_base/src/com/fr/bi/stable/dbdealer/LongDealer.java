@@ -1,6 +1,6 @@
 package com.fr.bi.stable.dbdealer;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,7 +16,7 @@ public class LongDealer extends AbstractDealer<Long> {
         try {
             return rs.getLong(rsColumn);
         } catch (SQLException e1) {
-            BILogger.getLogger().error(e1.getMessage(), e1);
+            BILoggerFactory.getLogger().error(e1.getMessage(), e1);
         }
         return null;
     }

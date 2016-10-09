@@ -5,7 +5,7 @@ import com.finebi.cube.conf.pack.data.BIBasicBusinessPackage;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 
 import java.util.HashSet;
@@ -39,7 +39,7 @@ public class BIPackUtils {
                 try {
                     keys.add(table);
                 } catch (Exception e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
             }
         }

@@ -38,7 +38,7 @@ import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
@@ -100,9 +100,9 @@ public class BuildCubeTask implements CubeTask {
     public void start() {
         BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
         Long t = System.currentTimeMillis();
-        BILogger.getLogger().info("start copy some files");
+        BILoggerFactory.getLogger().info("start copy some files");
         cubeBuild.copyFileFromOldCubes();
-        BILogger.getLogger().info("copy files cost time: " + DateUtils.timeCostFrom(t));
+        BILoggerFactory.getLogger().info("copy files cost time: " + DateUtils.timeCostFrom(t));
     }
 
     @Override
@@ -110,7 +110,7 @@ public class BuildCubeTask implements CubeTask {
         Future<String> result = finishObserver.getOperationResult();
         try {
             String message = result.get();
-            BILogger.getLogger().info(message);
+            BILoggerFactory.getLogger().info(message);
             boolean cubeBuildSucceed = finishObserver.success();
             if (!cubeBuildSucceed) {
                 checkTaskFinish();
@@ -123,18 +123,18 @@ public class BuildCubeTask implements CubeTask {
                 if (replaceSuccess) {
                     BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId());
                     BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
-                    BILogger.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
+                    BILoggerFactory.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
                 } else {
                     message = "Cube replace failed ,the Cube files will not be replaced ";
-                    BILogger.getLogger().error(message);
+                    BILoggerFactory.getLogger().error(message);
                 }
             } else {
                 message = "Cube build failed ,the Cube files will not be replaced ";
                 BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), message, biUser.getUserId());
-                BILogger.getLogger().error(message);
+                BILoggerFactory.getLogger().error(message);
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         } finally {
 
         }
@@ -150,9 +150,9 @@ public class BuildCubeTask implements CubeTask {
             } else {
                 try {
                     Thread.sleep(5000);
-                    BILogger.getLogger().info("Cube thread is busy currently.Monitor will check it again after 5s ");
+                    BILoggerFactory.getLogger().info("Cube thread is busy currently.Monitor will check it again after 5s ");
                 } catch (InterruptedException e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
             }
 
@@ -169,7 +169,7 @@ public class BuildCubeTask implements CubeTask {
                 }
                 BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
                 for (ICubeResourceLocation location : BICubeDiskPrimitiveDiscovery.getInstance().getUnReleasedLocation()) {
-                    BILogger.getLogger().error("error: the filePath is : " + location.getBaseLocation() + location.getChildLocation());
+                    BILoggerFactory.getLogger().error("error: the filePath is : " + location.getBaseLocation() + location.getChildLocation());
                 }
                 replaceSuccess = cubeBuild.replaceOldCubes();
                 BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();

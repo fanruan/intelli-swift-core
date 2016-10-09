@@ -11,7 +11,7 @@ import com.fr.bi.cal.analyze.cal.result.operator.Operator;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.report.result.LightNode;
 import com.fr.bi.stable.report.result.TargetCalculator;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 
 import java.util.List;
@@ -122,7 +122,7 @@ public class GroupUtils {
         try {
             gc = getNextGC(iters);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         if (gc == null) {
             return new NodeAndPageInfo(node, false, false, 0);
@@ -150,7 +150,7 @@ public class GroupUtils {
         try {
             PageEnd(iters);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
 
         NodeUtils.setSiblingBetweenFirstAndLastChild(node);

@@ -1,7 +1,7 @@
 package com.fr.bi.stable.utils.algorithem;
 
 import com.fr.bi.stable.utils.code.BILogDelegate;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.net.URLDecoder;
 import java.util.Random;
@@ -39,7 +39,7 @@ public class BIRandomUitils {
         try {
             Thread.sleep(1);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         Random random = new Random(System.currentTimeMillis());
         byte[] bytes = new byte[size];
@@ -62,7 +62,7 @@ public class BIRandomUitils {
         try {
             Thread.sleep(10);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         Random random = new Random(System.currentTimeMillis());
         return random.nextInt();
@@ -72,7 +72,7 @@ public class BIRandomUitils {
         try {
             Thread.sleep(10);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         Random random = new Random(System.currentTimeMillis());
         return random.nextLong();
@@ -86,7 +86,7 @@ public class BIRandomUitils {
         try {
             Thread.sleep(10);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         Random random = new Random(System.currentTimeMillis());
         return random.nextDouble();
@@ -96,7 +96,7 @@ public class BIRandomUitils {
         try {
             Thread.sleep(10);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         Random random = new Random(System.currentTimeMillis());
         return random.nextFloat();

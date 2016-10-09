@@ -4,8 +4,7 @@ import com.finebi.cube.conf.relation.BITableRelationAnalysisService;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.stable.exception.*;
-import com.fr.bi.stable.utils.code.BILogger;
-import com.fr.general.Inter;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -34,7 +33,7 @@ public class BITablePathAnalyser {
         try {
             currentNode.buildPathNodeRelation(childPathAnalyser.currentNode);
         } catch (BIPathNodeDuplicateException ignore) {
-            BILogger.getLogger().error(ignore.getMessage(), ignore);
+            BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
         }
     }
 
@@ -42,7 +41,7 @@ public class BITablePathAnalyser {
         try {
             currentNode.removePathNode(childPathAnalyser.currentNode);
         } catch (BIPathNodeAbsentException ignore) {
-            BILogger.getLogger().error(ignore.getMessage(), ignore);
+            BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
         }
     }
 

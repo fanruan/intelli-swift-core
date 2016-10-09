@@ -4,7 +4,7 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.BICoreService;
 import com.fr.bi.common.persistent.BIBeanWrapper;
 import com.fr.bi.exception.BIAmountLimitUnmetException;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BITypeUtils;
 
 import javax.activation.UnsupportedDataTypeException;
@@ -46,7 +46,7 @@ public class BICoreGenerator implements BICoreService {
             try {
                 targetCore.registerAttribute(attribute);
             } catch (Exception ignore) {
-                BILogger.getLogger().error(ignore.getMessage(), ignore);
+                BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
                 continue;
             }
         }
@@ -62,7 +62,7 @@ public class BICoreGenerator implements BICoreService {
                 Object value = wrapper.getOriginalValue(field);
                 addValue(value, result);
             } catch (Exception ignore) {
-                BILogger.getLogger().error(ignore.getMessage(), ignore);
+                BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
                 continue;
             }
         }

@@ -2,7 +2,6 @@ package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.relation.BITableRelationHelper;
-import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -21,7 +20,7 @@ import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.utils.BITravalUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.NameObject;
 import com.fr.json.JSONArray;
@@ -115,7 +114,7 @@ public class TreeWidget extends BIAbstractWidget {
                 try {
                     resultJo = getSearchDataJSON((BISession) session);
                 } catch (Exception e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
                 break;
             case BIReportConstant.TREE.TREE_REQ_TYPE.SELECTED_DATA:

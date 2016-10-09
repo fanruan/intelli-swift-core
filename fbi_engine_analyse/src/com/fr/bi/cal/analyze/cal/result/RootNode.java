@@ -1,7 +1,7 @@
 package com.fr.bi.cal.analyze.cal.result;
 
 import com.fr.bi.cal.analyze.cal.utils.CubeReadingUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 
@@ -74,7 +74,7 @@ public class RootNode extends Node {
                     try {
                         this.wait();
                     } catch (InterruptedException e) {
-                        BILogger.getLogger().error(e.getMessage(), e);
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
                     }
                 }
             }
@@ -118,7 +118,7 @@ public class RootNode extends Node {
                     try {
                         this.wait();
                     } catch (InterruptedException e) {
-                        BILogger.getLogger().error(e.getMessage(), e);
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
                     }
                 }
             }
@@ -139,7 +139,7 @@ public class RootNode extends Node {
                         try {
                             this.wait();
                         } catch (InterruptedException e) {
-                            BILogger.getLogger().error(e.getMessage(), e);
+                            BILoggerFactory.getLogger().error(e.getMessage(), e);
                         }
                     }
                 }
@@ -209,7 +209,7 @@ public class RootNode extends Node {
                     try {
                         this.wait();
                     } catch (InterruptedException e) {
-                        BILogger.getLogger().error(e.getMessage(), e);
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
                     }
                 }
             }

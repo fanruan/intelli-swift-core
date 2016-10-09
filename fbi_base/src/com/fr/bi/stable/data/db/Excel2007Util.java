@@ -1,7 +1,7 @@
 package com.fr.bi.stable.data.db;
 
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIPictureUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
@@ -149,7 +149,7 @@ public class Excel2007Util {
                 }
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
 
     }
@@ -494,7 +494,7 @@ public class Excel2007Util {
                 XSSFRichTextString rtss = new XSSFRichTextString(sharedStringsTable.getEntryAt(idx));
                 cellValue = rtss.toString();
             } catch (NumberFormatException ex) {
-                BILogger.getLogger().error(ex.getMessage(), ex);
+                BILoggerFactory.getLogger().error(ex.getMessage(), ex);
             }
         }
 

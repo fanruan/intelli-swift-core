@@ -12,7 +12,7 @@ import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.DateUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.GeneralUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -83,7 +83,7 @@ public class ValueConverOperator extends AbstractAddColumnOperator {
             try {
                 travel.actionPerformed(new BIDataValue(row, startCol, value));
             } catch (Exception e) {
-                BILogger.getLogger().error("incorrect formular");
+                BILoggerFactory.getLogger().error("incorrect formular");
                 travel.actionPerformed(new BIDataValue(row, startCol, null));
             }
         }

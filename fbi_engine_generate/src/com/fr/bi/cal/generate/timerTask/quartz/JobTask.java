@@ -4,7 +4,7 @@ import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.BuildCubeTask;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.third.org.quartz.Job;
 import com.fr.third.org.quartz.JobDataMap;
 import com.fr.third.org.quartz.JobExecutionContext;
@@ -35,7 +35,7 @@ public class JobTask implements Job {
 //        }
         CubeBuild cubeBuild = (CubeBuild) data.get("CubeBuild");
         String message = "timerTask started!Current time is:" + new Date() + "\n Current task：" + jobName + "\nCurrent User：" + userId + "\n";
-        BILogger.getLogger().info(message);
+        BILoggerFactory.getLogger().info(message);
         CubeGenerationManager.getCubeManager().addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId);
     }
 }

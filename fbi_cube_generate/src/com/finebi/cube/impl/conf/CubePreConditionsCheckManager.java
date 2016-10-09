@@ -4,7 +4,7 @@ import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.conf.CubePreConditionsCheck;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class CubePreConditionsCheckManager implements CubePreConditionsCheck {
                     source.createPreviewJSON(new ArrayList<String>(), BICubeManager.getInstance().fetchCubeLoader(userId), userId);
                 } catch (Exception e) {
                     isSqlValid = false;
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
             }
         return isSqlValid;

@@ -1,6 +1,6 @@
 package com.fr.bi.stable.utils.mem;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.utils.BIUserUtils;
 import com.fr.fs.control.UserControl;
@@ -35,7 +35,7 @@ public class BIReleaseUtils {
                         cleaner.clear();
                     }
                 } catch (Exception e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
                 return null;
             }

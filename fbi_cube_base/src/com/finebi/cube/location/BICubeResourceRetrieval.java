@@ -9,7 +9,7 @@ import com.finebi.cube.structure.column.BIColumnKey;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.utils.algorithem.BIMD5Utils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -52,11 +52,11 @@ public class BICubeResourceRetrieval implements ICubeResourceRetrievalService {
                     registerResource(sourceID, rootLocation);
                     return rootLocation;
                 } catch (URISyntaxException changeSyntax) {
-                    BILogger.getLogger().error(changeSyntax.getMessage(), changeSyntax);
+                    BILoggerFactory.getLogger().error(changeSyntax.getMessage(), changeSyntax);
 
                 } catch (BICubeResourceDuplicateException ignoreDuplicate) {
-                    BILogger.getLogger().error("ignore below error");
-                    BILogger.getLogger().error(ignoreDuplicate.getMessage(), ignoreDuplicate);
+                    BILoggerFactory.getLogger().error("ignore below error");
+                    BILoggerFactory.getLogger().error(ignoreDuplicate.getMessage(), ignoreDuplicate);
                 }
                 throw new BICubeResourceAbsentException("Please check Table Source:" + sourceID);
             }
@@ -79,11 +79,11 @@ public class BICubeResourceRetrieval implements ICubeResourceRetrievalService {
                     registerResource(tableSourceID, tableLocation);
                     return tableLocation;
                 } catch (URISyntaxException changeSyntax) {
-                    BILogger.getLogger().error(changeSyntax.getMessage(), changeSyntax);
+                    BILoggerFactory.getLogger().error(changeSyntax.getMessage(), changeSyntax);
 
                 } catch (BICubeResourceDuplicateException ignoreDuplicate) {
-                    BILogger.getLogger().error("ignore below error");
-                    BILogger.getLogger().error(ignoreDuplicate.getMessage(), ignoreDuplicate);
+                    BILoggerFactory.getLogger().error("ignore below error");
+                    BILoggerFactory.getLogger().error(ignoreDuplicate.getMessage(), ignoreDuplicate);
                 }
                 throw new BICubeResourceAbsentException("Please check Table Source:" + table.toString());
             }
@@ -115,7 +115,7 @@ public class BICubeResourceRetrieval implements ICubeResourceRetrievalService {
             try {
                 retrieveResource(table, field);
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }
@@ -126,7 +126,7 @@ public class BICubeResourceRetrieval implements ICubeResourceRetrievalService {
             try {
                 retrieveResource(table);
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }
@@ -152,11 +152,11 @@ public class BICubeResourceRetrieval implements ICubeResourceRetrievalService {
                     registerResource(sourceID, resourceLocation);
                     return resourceLocation;
                 } catch (URISyntaxException changeSyntax) {
-                    BILogger.getLogger().error(changeSyntax.getMessage(), changeSyntax);
+                    BILoggerFactory.getLogger().error(changeSyntax.getMessage(), changeSyntax);
 
                 } catch (BICubeResourceDuplicateException ignoreDuplicate) {
-                    BILogger.getLogger().error("Please check below error");
-                    BILogger.getLogger().error(ignoreDuplicate.getMessage(), ignoreDuplicate);
+                    BILoggerFactory.getLogger().error("Please check below error");
+                    BILoggerFactory.getLogger().error(ignoreDuplicate.getMessage(), ignoreDuplicate);
                 }
                 throw new BICubeResourceAbsentException("Please check Table Source:" + table.toString());
             }
@@ -180,13 +180,13 @@ public class BICubeResourceRetrieval implements ICubeResourceRetrievalService {
                     registerResource(sourceID, resourceLocation);
                     return resourceLocation;
                 } catch (URISyntaxException changeSyntax) {
-                    BILogger.getLogger().error(changeSyntax.getMessage(), changeSyntax);
+                    BILoggerFactory.getLogger().error(changeSyntax.getMessage(), changeSyntax);
                 } catch (BICubeResourceDuplicateException ignoreDuplicate) {
-                    BILogger.getLogger().error("Please check below error");
-                    BILogger.getLogger().error(ignoreDuplicate.getMessage(), ignoreDuplicate);
+                    BILoggerFactory.getLogger().error("Please check below error");
+                    BILoggerFactory.getLogger().error(ignoreDuplicate.getMessage(), ignoreDuplicate);
                 } catch (BICubeResourceAbsentException e) {
-                    BILogger.getLogger().error("Please check below error");
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error("Please check below error");
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
                 throw new BICubeResourceAbsentException("Please check Table Source:" + table.toString());
             }
@@ -212,14 +212,14 @@ public class BICubeResourceRetrieval implements ICubeResourceRetrievalService {
                     registerResource(sourceID, resourceLocation);
                     return resourceLocation;
                 } catch (URISyntaxException changeSyntax) {
-                    BILogger.getLogger().error(changeSyntax.getMessage(), changeSyntax);
+                    BILoggerFactory.getLogger().error(changeSyntax.getMessage(), changeSyntax);
 
                 } catch (BICubeResourceDuplicateException ignoreDuplicate) {
-                    BILogger.getLogger().error("Please check below error");
-                    BILogger.getLogger().error(ignoreDuplicate.getMessage(), ignoreDuplicate);
+                    BILoggerFactory.getLogger().error("Please check below error");
+                    BILoggerFactory.getLogger().error(ignoreDuplicate.getMessage(), ignoreDuplicate);
                 } catch (BICubeResourceAbsentException ignoreAbsent) {
-                    BILogger.getLogger().error("Please check below error");
-                    BILogger.getLogger().error(ignoreAbsent.getMessage(), ignoreAbsent);
+                    BILoggerFactory.getLogger().error("Please check below error");
+                    BILoggerFactory.getLogger().error(ignoreAbsent.getMessage(), ignoreAbsent);
                 }
                 throw new BICubeResourceAbsentException("Please check Table Source:" + tableRelationPath.toString());
             }

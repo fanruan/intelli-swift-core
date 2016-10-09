@@ -15,7 +15,7 @@ import com.fr.bi.common.factory.BIMateFactory;
 import com.fr.bi.common.factory.IModuleFactory;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.manager.PerformancePlugManager;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 /**
@@ -57,15 +57,15 @@ public class BISubscribe implements ISubscribe {
         try {
             if (verbose) {
                 try {
-                    BILogger.getLogger().info("Sub:" + subscribeID.getIdentityValue() + "\nSub receive:" + message);
-                    BILogger.getLogger().info("Left condition:\n" + trigger.leftCondition());
+                    BILoggerFactory.getLogger().info("Sub:" + subscribeID.getIdentityValue() + "\nSub receive:" + message);
+                    BILoggerFactory.getLogger().info("Left condition:\n" + trigger.leftCondition());
                 }catch (Exception e){
-                    BILogger.getLogger().error(e.getMessage(),e);
+                    BILoggerFactory.getLogger().error(e.getMessage(),e);
                 }
             }
             trigger.handleMessage(message);
         } catch (BIThresholdIsOffException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl();
         }
     }
@@ -81,13 +81,13 @@ public class BISubscribe implements ISubscribe {
         try {
             trigger.addAndFragment(fragmentTag);
         } catch (BIFragmentDuplicateException ignore) {
-            BILogger.getLogger().error("ignore", ignore);
+            BILoggerFactory.getLogger().error("ignore", ignore);
         }
         if (!router.isSubscribed(this, superTopicTag, fragmentTag)) {
             try {
                 router.subscribe(this, superTopicTag, fragmentTag);
             } catch (BISubscribeDuplicateException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
 
@@ -101,13 +101,13 @@ public class BISubscribe implements ISubscribe {
         try {
             trigger.addAndStatus(statusTag);
         } catch (BIStatusDuplicateException ignore) {
-            BILogger.getLogger().error("ignore", ignore);
+            BILoggerFactory.getLogger().error("ignore", ignore);
         }
         if (!router.isSubscribed(this, superTopicTag, superFragmentTag, statusTag)) {
             try {
                 router.subscribe(this, superTopicTag, superFragmentTag, statusTag);
             } catch (BISubscribeDuplicateException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }
@@ -117,13 +117,13 @@ public class BISubscribe implements ISubscribe {
         try {
             trigger.addAndTopic(topicTag);
         } catch (BITopicDuplicateException ignore) {
-            BILogger.getLogger().error("ignore", ignore);
+            BILoggerFactory.getLogger().error("ignore", ignore);
         }
         if (!router.isSubscribed(this, topicTag)) {
             try {
                 router.subscribe(this, topicTag);
             } catch (BISubscribeDuplicateException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }
@@ -134,13 +134,13 @@ public class BISubscribe implements ISubscribe {
         try {
             trigger.addOrFragment(fragmentTag);
         } catch (BIFragmentDuplicateException ignore) {
-            BILogger.getLogger().error("ignore", ignore);
+            BILoggerFactory.getLogger().error("ignore", ignore);
         }
         if (!router.isSubscribed(this, superTopicTag, fragmentTag)) {
             try {
                 router.subscribe(this, superTopicTag, fragmentTag);
             } catch (BISubscribeDuplicateException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
 
@@ -154,13 +154,13 @@ public class BISubscribe implements ISubscribe {
         try {
             trigger.addOrStatus(statusTag);
         } catch (BIStatusDuplicateException ignore) {
-            BILogger.getLogger().error("ignore", ignore);
+            BILoggerFactory.getLogger().error("ignore", ignore);
         }
         if (!router.isSubscribed(this, superTopicTag, superFragmentTag, statusTag)) {
             try {
                 router.subscribe(this, superTopicTag, superFragmentTag, statusTag);
             } catch (BISubscribeDuplicateException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }
@@ -170,13 +170,13 @@ public class BISubscribe implements ISubscribe {
         try {
             trigger.addOrTopic(topicTag);
         } catch (BITopicDuplicateException ignore) {
-            BILogger.getLogger().error("ignore", ignore);
+            BILoggerFactory.getLogger().error("ignore", ignore);
         }
         if (!router.isSubscribed(this, topicTag)) {
             try {
                 router.subscribe(this, topicTag);
             } catch (BISubscribeDuplicateException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }

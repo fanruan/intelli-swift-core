@@ -8,7 +8,7 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.index.CubeGenerator;
 import com.fr.bi.stable.utils.CubeBaseUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.DateUtils;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class LinkBasicIndexEntry implements CubeGenerator {
 
     @Override
     public void generateCube() {
-        BILogger.getLogger().info("Prepare Basic Relations");
+        BILoggerFactory.getLogger().info("Prepare Basic Relations");
         long start = System.currentTimeMillis();
         List<LinkBasicIndexManagerAndLoader> threadList = new ArrayList<LinkBasicIndexManagerAndLoader>();
         Set<CubeTableSource> tableSet = CubeGenerationManager.getCubeManager().getGeneratingObject(biUser.getUserId()).getPrimaryKeyMap().keySet();
@@ -43,7 +43,7 @@ public class LinkBasicIndexEntry implements CubeGenerator {
                 loader.setLog(log);
                 threadList.add(loader);
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
         try {
@@ -51,6 +51,6 @@ public class LinkBasicIndexEntry implements CubeGenerator {
         } catch (InterruptedException e) {
             FRContext.getLogger().error(e.getMessage(), e);
         }
-        BILogger.getLogger().info("Basic Relations Completed! Cost:" + DateUtils.timeCostFrom(start));
+        BILoggerFactory.getLogger().info("Basic Relations Completed! Cost:" + DateUtils.timeCostFrom(start));
     }
 }

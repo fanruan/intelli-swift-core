@@ -1,7 +1,7 @@
 package com.fr.bi.cluster.utils;
 
 import com.fr.bi.cluster.ClusterConstant;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -35,11 +35,11 @@ public class BIClusterUtils {
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e1) {
-                BILogger.getLogger().error(e1.getMessage());
+                BILoggerFactory.getLogger().error(e1.getMessage());
             }
             return getValueFromHttpMaster(++count, ex);
         } catch (Exception e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }
@@ -65,7 +65,7 @@ public class BIClusterUtils {
             oos.writeObject(object);
             oos.flush();
         } catch (IOException e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
