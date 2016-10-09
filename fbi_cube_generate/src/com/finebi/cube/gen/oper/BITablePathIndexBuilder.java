@@ -53,9 +53,9 @@ public class BITablePathIndexBuilder extends BIProcessor {
 
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
-        logger.info(BIStringUtils.append("\n    ", logPath(), "start building path index"));
+        logger.info(BIStringUtils.append("\n    ", logPath(), "start building path index main task"));
         buildRelationPathIndex();
-        logger.info(BIStringUtils.append("\n    ", logPath(), "finish building path index"));
+        logger.info(BIStringUtils.append("\n    ", logPath(), "finish building path index main task"));
         return null;
     }
 
@@ -78,7 +78,6 @@ public class BITablePathIndexBuilder extends BIProcessor {
                         "\n       Foreign field:", relation.getForeignField().getColumnName(),
                         "\n"
                 ));
-
 
             }
             return sb.toString();

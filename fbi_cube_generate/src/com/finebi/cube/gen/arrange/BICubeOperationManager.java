@@ -452,6 +452,8 @@ public class BICubeOperationManager {
         return tableSource;
     }
 
+
+
     protected BIRelationIndexGenerator getRelationBuilder(Cube cube, BITableSourceRelation relation) {
         return new BIRelationIndexGenerator(cube, BICubeRelationUtils.convert(relation));
     }

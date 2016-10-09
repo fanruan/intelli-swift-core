@@ -23,6 +23,11 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.router.IRouter;
 import com.finebi.cube.structure.BICube;
+import com.finebi.cube.structure.BICubeRelation;
+import com.finebi.cube.structure.BICubeTablePath;
+import com.finebi.cube.structure.ITableKey;
+import com.finebi.cube.utils.BICubePathUtils;
+import com.finebi.cube.utils.BICubeRelationUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
 import com.fr.bi.common.factory.BIFactoryHelper;
@@ -31,6 +36,8 @@ import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
+import com.fr.bi.stable.exception.BITablePathConfusionException;
+import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
@@ -242,6 +249,7 @@ public class BuildCubeTask implements CubeTask {
         if (relationSet != null) {
             for (BITableSourceRelation relation : relationSet) {
                 logger.info("\nRelation " + (countRelation++) + relationLog("", relation));
+                logger.info("\nRelation {}, ID:" + calculateRelationID(relation), countRelation);
             }
         }
         logger.info("***************Relation end*****************\n");
@@ -262,9 +270,40 @@ public class BuildCubeTask implements CubeTask {
                             "\nRelation " + (countRelation++),
                             relationLog("     ", relation)));
                 }
+                logger.info("\nPath:{} ID:" + calculatePathID(path), countPath);
+
             }
         }
         logger.info("***************Path end*****************\n");
+    }
+
+    private String calculateRelationID(BITableSourceRelation relation) {
+        BICubeRelation cubeRelation = BICubeRelationUtils.convert(relation);
+        ITableKey tableKey = cubeRelation.getPrimaryTable();
+        BICubeTablePath relationPath = new BICubeTablePath();
+        try {
+            relationPath.addRelationAtHead(cubeRelation);
+        } catch (BITablePathConfusionException e) {
+            throw BINonValueUtils.illegalArgument(relation.toString() + " the relation is so terrible");
+        }
+        return calculatePathID(tableKey, relationPath);
+    }
+
+    private String calculatePathID(BITableSourceRelationPath path) {
+
+        BICubeTablePath cubeTablePath = BICubePathUtils.convert(path);
+
+        ITableKey tableKey = null;
+        try {
+            tableKey = cubeTablePath.getFirstRelation().getPrimaryTable();
+        } catch (BITablePathEmptyException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return calculatePathID(tableKey, cubeTablePath);
+    }
+
+    private String calculatePathID(ITableKey tableKey, BICubeTablePath relationPath) {
+        return BICubeResourceRetrieval.calculateTableRelationSourceID(tableKey, relationPath);
     }
 
     private String relationLog(String prefix, BITableSourceRelation relation) {

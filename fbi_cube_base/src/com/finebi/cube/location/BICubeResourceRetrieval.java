@@ -193,7 +193,7 @@ public class BICubeResourceRetrieval implements ICubeResourceRetrievalService {
         }
     }
 
-    String calculateTableRelationSourceID(ITableKey table, BICubeTablePath tableRelationPath) {
+    public static String calculateTableRelationSourceID(ITableKey table, BICubeTablePath tableRelationPath) {
         return calculateSourceID(table.getSourceID(), tableRelationPath.getSourceID());
     }
 
@@ -227,7 +227,7 @@ public class BICubeResourceRetrieval implements ICubeResourceRetrievalService {
     }
 
 
-    private String calculateSourceID(String... values) {
+    private static String calculateSourceID(String... values) {
         return BIMD5Utils.getMD5String(values);
     }
 
