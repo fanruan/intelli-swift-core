@@ -10,7 +10,7 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.map.BIMapInfoManager;
 import com.fr.bi.conf.report.map.BIWMSManager;
 import com.fr.bi.conf.utils.BIModuleUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
@@ -96,7 +96,7 @@ public class ResourceHelper {
                     buffer.append(TemplateUtils.renderTemplate(file, map));
                 }
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().error(e.getMessage());
             }
             return buffer.toString();
         }
@@ -257,7 +257,7 @@ public class ResourceHelper {
             connections.put("connectionSet", connectionJA);
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
 
         Map<String, JSONObject> map = new HashMap<String, JSONObject>();
@@ -276,7 +276,7 @@ public class ResourceHelper {
                 buffer.append(TemplateUtils.renderTemplate(file, map));
             }
         } catch (IOException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return buffer.toString();
     }
@@ -293,7 +293,7 @@ public class ResourceHelper {
                 array.put(name.toLowerCase());
                 array.put(name.toUpperCase());
             } catch (JSONException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
 
@@ -305,7 +305,7 @@ public class ResourceHelper {
                 buffer.append(TemplateUtils.renderTemplate(file, map));
             }
         } catch (IOException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return buffer.toString();
     }

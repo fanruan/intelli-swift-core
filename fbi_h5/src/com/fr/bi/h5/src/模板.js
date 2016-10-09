@@ -1,5 +1,6 @@
 import mixin from 'react-mixin'
 import {findDOMNode} from 'react-dom'
+import Immutable from 'immutable'
 
 import {
     ReactComponentWithPureRenderMixin, ReactComponentWithImmutableRenderMixin,

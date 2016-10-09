@@ -2186,10 +2186,24 @@ webpackJsonp([0],{
 	var App = function (_Component) {
 	    _inherits(App, _Component);
 
-	    function App() {
+	    _createClass(App, [{
+	        key: 'getChildContext',
+	        value: function getChildContext() {
+	            var _props = this.props;
+	            var actions = _props.actions;
+	            var $template = _props.$template;
+
+	            return {
+	                actions: actions,
+	                $template: $template
+	            };
+	        }
+	    }]);
+
+	    function App(props, context) {
 	        _classCallCheck(this, App);
 
-	        return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).apply(this, arguments));
+	        return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props, context));
 	    }
 
 	    _createClass(App, [{
@@ -2211,12 +2225,18 @@ webpackJsonp([0],{
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            return _lib2.default.createElement(_Main2.default, this.props);
+	            return _lib2.default.createElement(_Main2.default, { $template: this.props.$template });
 	        }
 	    }]);
 
 	    return App;
 	}(_lib.Component);
+
+	App.childContextTypes = {
+	    actions: _lib.PropTypes.object,
+	    $template: _lib.PropTypes.object
+	};
+
 
 	App.propTypes = {
 	    actions: _lib.PropTypes.object.isRequired,
@@ -2328,7 +2348,6 @@ webpackJsonp([0],{
 
 	        console.log(props);
 	        _this.template = new _data.Template(props.$template);
-	        // template={new Template(template)} actions={actions}
 	        return _this;
 	    }
 
@@ -2391,7 +2410,7 @@ webpackJsonp([0],{
 	                                    var prevRoute = navState.routeStack[navState.presentedIndex - 1];
 	                                    if (route.$template) {
 	                                        prevRoute.$template = route.$template;
-	                                        self.props.actions.updateTemplate(route.$template);
+	                                        self.context.actions.updateTemplate(route.$template);
 	                                        navigator.replacePreviousAndPop(prevRoute);
 	                                    } else {
 	                                        navigator.pop();
@@ -2429,12 +2448,13 @@ webpackJsonp([0],{
 
 	            var others = _objectWithoutProperties(route, ['name', 'Component', 'title', 'onValueChange']);
 
-	            if (route.name === 'index') {
+	            if (name === 'index') {
 	                if (this.template.hasControlWidget()) {
 	                    return _lib2.default.createElement(
 	                        _lib.View,
 	                        { style: styles.index },
-	                        _lib2.default.createElement(_Layout2.default, _extends({ width: width, height: height - 94 }, props, { navigator: navigationOperations })),
+	                        _lib2.default.createElement(_Layout2.default, _extends({ width: width, height: height - 50 - _data.Size.ITEM_HEIGHT }, props, {
+	                            navigator: navigationOperations })),
 	                        _lib2.default.createElement(_Toolbar2.default, _extends({}, props, { navigator: navigationOperations }))
 	                    );
 	                }
@@ -2493,6 +2513,10 @@ webpackJsonp([0],{
 	    return Main;
 	}(_lib.Component);
 
+	Main.contextTypes = {
+	    actions: _lib2.default.PropTypes.object,
+	    $template: _lib2.default.PropTypes.object
+	};
 	Main.propTypes = {};
 
 	_reactMixin2.default.onClass(Main, _core.ReactComponentWithImmutableRenderMixin);
@@ -2638,7 +2662,7 @@ webpackJsonp([0],{
 	var styles = _lib.StyleSheet.create({
 	    filter: {
 	        borderTop: '1px solid ' + _data.Colors.BORDER,
-	        height: 44
+	        height: _data.Size.ITEM_HEIGHT
 	    }
 	});
 	exports.default = Toolbar;
@@ -4736,9 +4760,6 @@ webpackJsonp([0],{
 	}(_lib.Component);
 
 	Controls.propTypes = {};
-	Controls.defaultProps = {
-	    onReturn: _core.emptyFunction
-	};
 
 	_reactMixin2.default.onClass(Controls, _core.ReactComponentWithImmutableRenderMixin);
 	var styles = _lib.StyleSheet.create({
@@ -4830,8 +4851,8 @@ webpackJsonp([0],{
 
 	            var props = _objectWithoutProperties(this.props, []);
 
-	            var template = new _data.Template(props.$template);
 	            var wId = props.wId;
+	            var template = new _data.Template(props.$template);
 	            var widget = template.getWidgetById(wId);
 	            return _lib2.default.createElement(_widgets.MultiSelectorWidget, {
 	                style: styles.wrapper,
@@ -4941,8 +4962,8 @@ webpackJsonp([0],{
 
 	            var props = _objectWithoutProperties(this.props, []);
 
-	            var template = new _data.Template(props.$template);
 	            var wId = props.wId;
+	            var template = new _data.Template(props.$template);
 	            var widget = template.getWidgetById(wId);
 	            return _lib2.default.createElement(_widgets.MultiTreeSelectorWidget, {
 	                style: styles.wrapper,
@@ -5214,13 +5235,11 @@ webpackJsonp([0],{
 	    }, {
 	        key: '_renderRow',
 	        value: function _renderRow(wId, sectionID, rowID) {
-	            var $template = this.props.$template;
-
 	            var $widget = this.template.get$$WidgetById(wId);
 	            var type = new _data.Widget($widget).getType();
 	            var props = {
 	                key: wId,
-	                $template: $template,
+	                $widget: $widget,
 	                wId: wId,
 	                width: this.props.width - 40,
 	                height: 230
@@ -5356,29 +5375,48 @@ webpackJsonp([0],{
 	var ChartComponent = function (_Component) {
 	    _inherits(ChartComponent, _Component);
 
+	    function ChartComponent(props, context) {
+	        _classCallCheck(this, ChartComponent);
+
+	        return _possibleConstructorReturn(this, (ChartComponent.__proto__ || Object.getPrototypeOf(ChartComponent)).call(this, props, context));
+	    }
 	    //static propTypes = {
 	    //    height: React.PropTypes.number.required,
 	    //    id: React.PropTypes.string.required,
 	    //    template: React.PropTypes.object.required
 	    //};
 
-	    function ChartComponent(props, context) {
-	        _classCallCheck(this, ChartComponent);
-
-	        return _possibleConstructorReturn(this, (ChartComponent.__proto__ || Object.getPrototypeOf(ChartComponent)).call(this, props, context));
-	    }
 
 	    _createClass(ChartComponent, [{
 	        key: 'componentWillMount',
-	        value: function componentWillMount() {
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
 	            var _this2 = this;
 
-	            var template = new _data.Template(this.props.$template);
-	            var wId = this.props.wId;
-	            var widget = template.getWidgetById(wId);
+	            this.chart = VanCharts.init(_reactDom2.default.findDOMNode(this.refs.chart));
+	            var _props = this.props;
+	            var $widget = _props.$widget;
+	            var wId = _props.wId;
+
+	            var widget = new _data.Widget($widget, this.context.$template, wId);
 	            widget.getData().then(function (data) {
-	                var vanCharts = VanCharts.init(_reactDom2.default.findDOMNode(_this2.refs.chart));
-	                vanCharts.setOptions(data);
+	                _this2.chart.setOptions(data);
+	            });
+	        }
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate() {
+	            var _this3 = this;
+
+	            var _props2 = this.props;
+	            var $widget = _props2.$widget;
+	            var wId = _props2.wId;
+
+	            var widget = new _data.Widget($widget, this.context.$template, wId);
+	            widget.getData().then(function (data) {
+	                _this3.chart.setData(data);
 	            });
 	        }
 	    }, {
@@ -5391,6 +5429,10 @@ webpackJsonp([0],{
 
 	    return ChartComponent;
 	}(_lib.Component);
+
+	ChartComponent.contextTypes = {
+	    $template: _lib2.default.PropTypes.object
+	};
 
 	_reactMixin2.default.onClass(ChartComponent, _core.ReactComponentWithImmutableRenderMixin);
 
@@ -5421,6 +5463,10 @@ webpackJsonp([0],{
 	var _reactDom = __webpack_require__(34);
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _immutable = __webpack_require__(200);
+
+	var _immutable2 = _interopRequireDefault(_immutable);
 
 	var _core = __webpack_require__(329);
 
@@ -5472,7 +5518,7 @@ webpackJsonp([0],{
 	            data: []
 	        };
 
-	        _this._tableHelper = new _TableComponentHelper2.default(props);
+	        _this._tableHelper = new _TableComponentHelper2.default(props, context);
 	        _this._widthHelper = new _TableComponentWidthHelper2.default(_this._tableHelper, props.width);
 
 	        return _this;
@@ -5480,32 +5526,41 @@ webpackJsonp([0],{
 
 	    _createClass(TableComponent, [{
 	        key: 'componentWillMount',
-	        value: function componentWillMount() {
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
 	            this._fetchData();
 	        }
 	    }, {
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {}
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate() {
+	            this._fetchData();
+	        }
 	    }, {
 	        key: '_fetchData',
 	        value: function _fetchData() {
 	            var _this2 = this;
 
-	            var template = new _data.Template(this.props.$template);
-	            var wId = this.props.wId;
-	            var widget = template.getWidgetById(wId);
+	            var _props = this.props;
+	            var $widget = _props.$widget;
+	            var wId = _props.wId;
+
+	            var widget = new _data.Widget($widget, this.context.$template, wId);
 	            widget.getData().then(function (data) {
 	                console.log(data);
 	                _this2._tableHelper.setData(data);
-	                _this2.forceUpdate();
+	                _this2.setState({
+	                    data: _immutable2.default.fromJS(data)
+	                });
 	            });
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _props = this.props;
-	            var width = _props.width;
-	            var height = _props.height;
+	            var _props2 = this.props;
+	            var width = _props2.width;
+	            var height = _props2.height;
 
 	            var items = this._tableHelper.getItems();
 	            this._widthHelper.setItems(items);
@@ -5517,8 +5572,10 @@ webpackJsonp([0],{
 	                header: this._tableHelper.getHeader(),
 	                items: items,
 	                groupHeader: this._tableHelper.getGroupHeader(),
-	                groupItems: this._tableHelper.getGroupItems(),
-	                groupHeaderCellRenderer: function groupHeaderCellRenderer(_ref) {
+	                groupItems: this._tableHelper.getGroupItems()
+	                /**groupHeader={[{text: 1}, {text: 2}]}
+	                 groupItems={[{children:[{text: 'A', children: [{text: 'A1'}, {text: 'A2'}]}, {text: 'B'}]}]}**/
+	                , groupHeaderCellRenderer: function groupHeaderCellRenderer(_ref) {
 	                    var colIndex = _ref.colIndex;
 
 	                    var cell = _objectWithoutProperties(_ref, ['colIndex']);
@@ -5552,6 +5609,10 @@ webpackJsonp([0],{
 	    return TableComponent;
 	}(_lib.Component);
 
+	TableComponent.contextTypes = {
+	    $template: _lib2.default.PropTypes.object
+	};
+
 	_reactMixin2.default.onClass(TableComponent, _core.ReactComponentWithImmutableRenderMixin);
 
 	var style = _lib.StyleSheet.create({
@@ -5581,12 +5642,13 @@ webpackJsonp([0],{
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var TableComponentHelper = function () {
-	    function TableComponentHelper(props) {
+	    function TableComponentHelper(props, context) {
 	        _classCallCheck(this, TableComponentHelper);
 
-	        var template = new _data.Template(props.$template);
+	        var $widget = props.$widget;
 	        var wId = props.wId;
-	        this.widget = template.getWidgetById(wId);
+
+	        this.widget = new _data.Widget($widget, context.$template, wId);
 	        this.data = [];
 	    }
 
@@ -5628,6 +5690,7 @@ webpackJsonp([0],{
 	                    }
 	                    result[0].push({
 	                        dId: dimensionIds[layer],
+	                        layer: layer,
 	                        text: node.n
 	                    });
 	                    if (node.s) {
@@ -5647,25 +5710,25 @@ webpackJsonp([0],{
 	                        track(child, layer + 1);
 	                    });
 	                }
-	                if (!node.n) {
-	                    if (!result[0]) {
-	                        result[0] = [];
-	                    }
-	                    result[0].push({
-	                        text: '汇总'
-	                    });
-	                    if (node.s) {
-	                        node.s.forEach(function (v, idx) {
-	                            if (!result[idx + 1]) {
-	                                result[idx + 1] = [];
-	                            }
-	                            result[idx + 1].push({
-	                                dId: targetIds[idx],
-	                                text: v
-	                            });
-	                        });
-	                    }
-	                }
+	                // if (!node.n) {
+	                //     if (!result[0]) {
+	                //         result[0] = [];
+	                //     }
+	                //     // result[0].push({
+	                //     //     text: '汇总'
+	                //     // });
+	                //     if (node.s) {
+	                //         node.s.forEach((v, idx)=> {
+	                //             if (!result[idx + 1]) {
+	                //                 result[idx + 1] = [];
+	                //             }
+	                //             result[idx + 1].push({
+	                //                 dId: targetIds[idx],
+	                //                 text: v
+	                //             })
+	                //         })
+	                //     }
+	                // }
 	            };
 	            track(this.data.data, -1);
 	            return result;
@@ -5685,6 +5748,9 @@ webpackJsonp([0],{
 	            });
 	            return result;
 	        }
+
+	        //交叉表表头
+
 	    }, {
 	        key: 'getGroupItems',
 	        value: function getGroupItems() {
@@ -5938,7 +6004,9 @@ webpackJsonp([0],{
 
 	            return _lib2.default.createElement(
 	                _lib.View,
-	                { style: styles.region },
+	                { style: [styles.region, {
+	                        paddingLeft: props.layer * 30 + 4
+	                    }] },
 	                _lib2.default.createElement(
 	                    _lib.Text,
 	                    { numberOfLines: 2 },
@@ -5952,7 +6020,9 @@ webpackJsonp([0],{
 	}(_lib.Component);
 
 	TableCell.propTypes = {};
-	TableCell.defaultProps = {};
+	TableCell.defaultProps = {
+	    layer: 0
+	};
 
 	_reactMixin2.default.onClass(TableCell, _core.ReactComponentWithImmutableRenderMixin);
 	var styles = _lib.StyleSheet.create({
@@ -6088,6 +6158,10 @@ webpackJsonp([0],{
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
+	var _immutable = __webpack_require__(200);
+
+	var _immutable2 = _interopRequireDefault(_immutable);
+
 	var _core = __webpack_require__(329);
 
 	var _lib = __webpack_require__(208);
@@ -6142,38 +6216,47 @@ webpackJsonp([0],{
 	            data: []
 	        };
 
-	        _this._tableHelper = new _DetailTableComponentHelper2.default(props);
+	        _this._tableHelper = new _DetailTableComponentHelper2.default(props, context);
 	        _this._widthHelper = new _TableComponentWidthHelper2.default(_this._tableHelper, props.width);
 	        return _this;
 	    }
 
 	    _createClass(DetailTableComponent, [{
 	        key: 'componentWillMount',
-	        value: function componentWillMount() {
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
 	            this._fetchData();
 	        }
 	    }, {
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {}
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate() {
+	            this._fetchData();
+	        }
 	    }, {
 	        key: '_fetchData',
 	        value: function _fetchData() {
 	            var _this2 = this;
 
-	            var template = new _data.Template(this.props.$template);
-	            var wId = this.props.wId;
-	            var widget = template.getWidgetById(wId);
+	            var _props = this.props;
+	            var $widget = _props.$widget;
+	            var wId = _props.wId;
+
+	            var widget = new _data.Widget($widget, this.context.$template, wId);
 	            widget.getData().then(function (data) {
 	                _this2._tableHelper.setData(data);
-	                _this2.forceUpdate();
+	                _this2.setState({
+	                    data: _immutable2.default.fromJS(data)
+	                });
 	            });
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _props = this.props;
-	            var width = _props.width;
-	            var height = _props.height;
+	            var _props2 = this.props;
+	            var width = _props2.width;
+	            var height = _props2.height;
 
 	            var items = this._tableHelper.getItems();
 	            this._widthHelper.setItems(items);
@@ -6206,6 +6289,10 @@ webpackJsonp([0],{
 	    return DetailTableComponent;
 	}(_lib.Component);
 
+	DetailTableComponent.contextTypes = {
+	    $template: _lib2.default.PropTypes.object
+	};
+
 	_reactMixin2.default.onClass(DetailTableComponent, _core.ReactComponentWithImmutableRenderMixin);
 
 	var style = _lib.StyleSheet.create({
@@ -6235,12 +6322,13 @@ webpackJsonp([0],{
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var DetailTableComponentHelper = function () {
-	    function DetailTableComponentHelper(props) {
+	    function DetailTableComponentHelper(props, context) {
 	        _classCallCheck(this, DetailTableComponentHelper);
 
-	        var template = new _data.Template(props.$template);
+	        var $widget = props.$widget;
 	        var wId = props.wId;
-	        this.widget = template.getWidgetById(wId);
+
+	        this.widget = new _data.Widget($widget, context.$template, wId);
 	        this.data = [];
 	    }
 

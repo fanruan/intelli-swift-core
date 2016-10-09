@@ -5,7 +5,7 @@ package com.fr.bi.conf;
 
 import com.fr.base.FRContext;
 import com.fr.base.chart.ChartRegisterForBI;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.fs.FSRegisterForBI;
 import com.fr.general.FUNC;
 import com.fr.general.VT4FR;
@@ -169,7 +169,7 @@ public final class VT4FBI {
             jo.put("supportMultiStatisticsWidget", supportMultiStatisticsWidget());
             jo.put("supportBigData", supportBigData());
         } catch (JSONException e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
         return jo;
     }

@@ -12,7 +12,7 @@ import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BICollectionUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.general.Inter;
@@ -173,7 +173,7 @@ public class BIBusinessTable implements BusinessTable {
         try {
             return ((AbstractTableSource) getTableSource()).getFields();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             throw new RuntimeException("Please check connection");
         }
 

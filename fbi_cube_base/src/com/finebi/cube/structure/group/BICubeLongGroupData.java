@@ -6,7 +6,7 @@ import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.util.Comparator;
 
@@ -42,7 +42,7 @@ public class BICubeLongGroupData extends BICubeGroupData<Long> {
             return ((ICubeLongReaderWrapper)getGroupReader()).getSpecificValue(position);
 
         } catch (BIResourceInvalidException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             return NIOConstant.LONG.NULL_VALUE;
         }
     }

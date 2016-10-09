@@ -1,8 +1,8 @@
 package com.fr.bi.stable.utils.program;
 
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.common.persistent.BIBeanReaderWrapper;
-import com.fr.bi.stable.utils.code.BILogger;
 import junit.framework.TestCase;
 
 import java.lang.reflect.Field;
@@ -25,7 +25,7 @@ public class BIBeanTest extends TestCase {
             methods = BIBeanUtils.filterMethodByParaAmount(BIBeanUtils.fetchPrefixMethod(BIAuthor.class, "get"), 0);
             assertEquals(methods.size(), 4);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
 
         }
     }
@@ -42,7 +42,7 @@ public class BIBeanTest extends TestCase {
             assertEquals(methods.size(), 1);
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
 
         }
     }
@@ -55,7 +55,7 @@ public class BIBeanTest extends TestCase {
             assertEquals(fields.size(), 5);
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
 
         }
     }
@@ -66,7 +66,7 @@ public class BIBeanTest extends TestCase {
             BIBeanReaderWrapper wrapper = new BIBeanReaderWrapper(test, test.getClass());
             wrapper.setOriginalValue("name", "hell");
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
 
         }
     }

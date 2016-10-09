@@ -4,6 +4,7 @@ import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.adapter.BICubeTableAdapter;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.data.ICubeResourceDiscovery;
@@ -24,7 +25,6 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.structure.collection.map.TimeDeleteHashMap;
 import com.fr.bi.stable.utils.BIUserUtils;
-import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
@@ -164,7 +164,7 @@ public class CubeTempModelReadingTableIndexLoader extends CubeAbstractLoader {
                 try {
                     tableIndex.clear();
                 } catch (Exception e) {
-                    BILogger.getLogger().error("TableIndex Release Failed!", e);
+                    BILoggerFactory.getLogger().error("TableIndex Release Failed!", e);
                 }
                 storedIndexes.remove(version);
                 if (storedNIOManager.get(version) != null) {

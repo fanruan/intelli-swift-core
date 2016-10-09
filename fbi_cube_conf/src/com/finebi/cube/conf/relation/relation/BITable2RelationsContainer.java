@@ -8,7 +8,7 @@ import com.fr.bi.stable.exception.BIRelationAbsentException;
 import com.fr.bi.stable.exception.BIRelationDuplicateException;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.finebi.cube.relation.BITableRelation;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -37,14 +37,14 @@ public class BITable2RelationsContainer extends BIHashMapContainer<BusinessTable
                     manager.addRelation(tableRelation);
                     putKeyValue(table, manager);
                 } catch (BIKeyDuplicateException ignore) {
-                    BILogger.getLogger().error(ignore.getMessage(), ignore);
+                    BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
                 }
             } else {
                 try {
                     BIRelationContainerService manager = getTableRelationContainerService(table);
                     manager.addRelation(tableRelation);
                 } catch (BITableAbsentException ignore) {
-                    BILogger.getLogger().error(ignore.getMessage(), ignore);
+                    BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
                 }
             }
         }

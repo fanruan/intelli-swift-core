@@ -1,7 +1,17 @@
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
 
-import {ReactComponentWithImmutableRenderMixin, cn, sc, isNil, requestAnimationFrame, emptyFunction, shallowEqual, isEqual, each} from 'core'
+import {
+    ReactComponentWithImmutableRenderMixin,
+    cn,
+    sc,
+    isNil,
+    requestAnimationFrame,
+    emptyFunction,
+    shallowEqual,
+    isEqual,
+    each
+} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -28,7 +38,9 @@ class TableCell extends Component {
 
     static propTypes = {};
 
-    static defaultProps = {};
+    static defaultProps = {
+        layer: 0
+    };
 
     state = {};
 
@@ -50,7 +62,9 @@ class TableCell extends Component {
 
     render() {
         const {...props} = this.props, {...state} = this.state;
-        return <View style={styles.region}>
+        return <View style={[styles.region, {
+            paddingLeft: props.layer * 30 + 4
+        }]}>
             <Text numberOfLines={2}>{props.text}</Text>
         </View>
     }

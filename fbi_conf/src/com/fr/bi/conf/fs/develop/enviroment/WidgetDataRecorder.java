@@ -1,7 +1,7 @@
 package com.fr.bi.conf.fs.develop.enviroment;
 
 import com.fr.bi.conf.fs.develop.DeveloperConfig;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.stable.StableUtils;
 
 import java.io.*;
@@ -63,7 +63,7 @@ public class WidgetDataRecorder implements Recorder {
             }
         } catch (Exception ex) {
 //            System.out.println("读取文件内容出错");
-             BILogger.getLogger().error(ex.getMessage(), ex);
+             BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         }
         return "";
     }

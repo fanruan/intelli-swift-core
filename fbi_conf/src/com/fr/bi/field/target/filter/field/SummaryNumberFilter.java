@@ -19,7 +19,7 @@ import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.structure.collection.map.lru.LRUWithKHashMap;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
@@ -194,7 +194,7 @@ public class SummaryNumberFilter extends ColumnFieldFilter {
                 List<BITableRelation> relation = BICubeConfigureCenter.getTableRelationManager().getFirstPath(userID, dataColumn.getTableBelongTo(), target).getAllRelations();
                 return getSummaryNumberFilterGVI(BIConfUtils.convert2TableSourceRelation(relation), target, loader, userID);
             } catch (Exception e) {
-                BILogger.getLogger().info("sum filter failed");
+                BILoggerFactory.getLogger().info("sum filter failed");
                 return null;
             }
         }

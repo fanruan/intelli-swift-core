@@ -14,7 +14,7 @@ import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.exception.BIKeyDuplicateException;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BICollectionUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
@@ -241,7 +241,7 @@ public class BIGroupTagContainer extends BITreeMapContainer<BIGroupTagName, BIBu
                     return true;
                 }
             } catch (BIGroupAbsentException ignore) {
-                BILogger.getLogger().error(ignore.getMessage(), ignore);
+                BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
                 continue;
             }
         }

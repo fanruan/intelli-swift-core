@@ -18,7 +18,7 @@ import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.index.CubeGenerator;
 import com.fr.bi.stable.io.newio.NIOWriter;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.code.BIPrintUtils;
 import com.fr.general.DateUtils;
 
@@ -57,11 +57,11 @@ public class LinkColumnUseIndexLoader implements LinkIndexLoader, CubeGenerator,
             ICubeFieldSource startKey = relations.get(0).getPrimaryKey();
             CubeTableSource endTable = relations.get(relations.size() - 1).getForeignKey().getTableBelongTo();
             String message = "generate inuse relation from table :" + startKey.toString() + "to table : " + endTable.toString();
-            BILogger.getLogger().info(message + " start ");
+            BILoggerFactory.getLogger().info(message + " start ");
             final ICubeTableIndexReader reader = cube.getBasicGroupValueIndexArrayReader(relations, manager);
             final ICubeTableIndexReader indexes = cube.getGroupValueIndexArrayReader(key, manager);
             if (indexes == null) {
-                BILogger.getLogger().info("Error : inuse Relation from table :" + relations.get(0).getPrimaryKey().toString() + "to table : " + endTable.toString() + " generate failed");
+                BILoggerFactory.getLogger().info("Error : inuse Relation from table :" + relations.get(0).getPrimaryKey().toString() + "to table : " + endTable.toString() + " generate failed");
                 return;
             }
             IndexFile ifile = cube.getLinkIndexFile(key, relations);
@@ -93,7 +93,7 @@ public class LinkColumnUseIndexLoader implements LinkIndexLoader, CubeGenerator,
             nullWriter.add(0, nullIndex.NOT((int) cube.getLinkIndexFile(relations).getGroupCount(BIKey.DEFAULT)).getBytes());
             ifile.releaseGroupValueIndexCreator();
             ifile.writeVersion(cube.getLinkIndexFile(relations).getVersion());
-            BILogger.getLogger().info("inuse relation from table : " + startKey.toString() + "to table : " + endTable.toString() + "sucess generated  ! cost :" + DateUtils.timeCostFrom(start));
+            BILoggerFactory.getLogger().info("inuse relation from table : " + startKey.toString() + "to table : " + endTable.toString() + "sucess generated  ! cost :" + DateUtils.timeCostFrom(start));
             if (log != null) {
                 log.infoRelation(rck, System.currentTimeMillis() - start);
             }

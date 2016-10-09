@@ -14,7 +14,7 @@ import React, {
     TouchableOpacity
 } from 'lib'
 
-import {Colors, Template} from 'data'
+import {Colors, Size, Template} from 'data'
 
 import Toolbar from './Toolbar'
 import Layout from './Layout/Layout'
@@ -22,13 +22,17 @@ import Layout from './Layout/Layout'
 const {width, height} = Dimensions.get('window');
 
 class Main extends Component {
+    static contextTypes = {
+        actions: React.PropTypes.object,
+        $template: React.PropTypes.object
+    };
+
     static propTypes = {};
 
     constructor(props, context) {
         super(props, context);
         console.log(props);
         this.template = new Template(props.$template);
-        // template={new Template(template)} actions={actions}
     }
 
     navigationBarRouteMapper() {
@@ -83,7 +87,7 @@ class Main extends Component {
                                 const prevRoute = navState.routeStack[navState.presentedIndex - 1];
                                 if (route.$template) {
                                     prevRoute.$template = route.$template;
-                                    self.props.actions.updateTemplate(route.$template);
+                                    self.context.actions.updateTemplate(route.$template);
                                     navigator.replacePreviousAndPop(prevRoute);
                                 } else {
                                     navigator.pop();
@@ -113,10 +117,11 @@ class Main extends Component {
     renderScene(route, navigationOperations, onComponentRef) {
         const {...props} = this.props;
         const {name, Component, title, onValueChange, ...others} = route;
-        if (route.name === 'index') {
+        if (name === 'index') {
             if (this.template.hasControlWidget()) {
                 return <View style={styles.index}>
-                    <Layout width={width} height={height - 94} {...props} navigator={navigationOperations}/>
+                    <Layout width={width} height={height - 50 - Size.ITEM_HEIGHT} {...props}
+                            navigator={navigationOperations}/>
 
                     <Toolbar {...props} navigator={navigationOperations}>
 

@@ -25,7 +25,7 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.structure.collection.list.IntList;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.Inter;
@@ -314,7 +314,7 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
                 list = (IntList) deepList.clone();
                 list.add(i);
             } catch (CloneNotSupportedException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
             dealWithNode(tempNode, expander.getChildExpander(name), cbcells, row + rowSpan, tempCol, colColumn, sumColumn, keys, currentIndex, total - 1, isCross, list, isTargetSort, sortDimension, widget, rowData);
             tempCol += colSpan;

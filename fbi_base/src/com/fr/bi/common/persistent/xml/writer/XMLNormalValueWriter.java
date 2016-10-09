@@ -2,7 +2,7 @@ package com.fr.bi.common.persistent.xml.writer;
 
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.common.persistent.xml.BIXMLTag;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.stable.xml.XMLPrintWriter;
 
 import java.beans.IntrospectionException;
@@ -75,7 +75,7 @@ public class XMLNormalValueWriter extends XMLValueWriter {
                     }
                 }
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
                 fieldTagEnd(writer);
                 continue;
             }

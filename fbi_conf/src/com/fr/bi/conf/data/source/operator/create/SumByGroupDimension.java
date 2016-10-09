@@ -11,7 +11,7 @@ import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.operation.group.BIGroupFactory;
 import com.fr.bi.stable.operation.group.IGroup;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
@@ -146,7 +146,7 @@ public class SumByGroupDimension implements JSONTransform, BICoreService {
         try {
             gJson = group.createJSON();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
         sb.append(", group=").append(gJson);
         sb.append(", nameText='").append(nameText).append('\'');
@@ -160,7 +160,7 @@ public class SumByGroupDimension implements JSONTransform, BICoreService {
         try {
             return new BICoreGenerator(this).fetchObjectCore();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return BIBasicCore.EMPTY_CORE;
     }

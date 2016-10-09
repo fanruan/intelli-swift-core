@@ -11,7 +11,7 @@ import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.exception.BITableAbsentException;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 
 import java.util.Iterator;
@@ -46,7 +46,7 @@ public class BIPackageContainer extends BISetContainer<BIBusinessPackage> implem
                 packageContainer.container.add((BIBasicBusinessPackage) t.clone());
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return packageContainer;
     }
@@ -104,7 +104,7 @@ public class BIPackageContainer extends BISetContainer<BIBusinessPackage> implem
             try {
                 addPackage(newPackage);
             } catch (BIPackageDuplicateException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }
@@ -176,7 +176,7 @@ public class BIPackageContainer extends BISetContainer<BIBusinessPackage> implem
                     copyBusinessPackage.parseTableContainer(businessPackage);
                     addPackage(copyBusinessPackage);
                 }catch (Exception e){
-                    BILogger.getLogger().error(e.getMessage(),e);
+                    BILoggerFactory.getLogger().error(e.getMessage(),e);
                     continue;
                 }
             }

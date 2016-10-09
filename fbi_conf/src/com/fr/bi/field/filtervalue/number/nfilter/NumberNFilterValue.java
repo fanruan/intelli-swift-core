@@ -10,7 +10,7 @@ import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -111,7 +111,7 @@ public abstract class NumberNFilterValue extends AbstractFilterValue<Number> imp
                 JSONObject jo = new JSONObject(reader.getAttrAsString("filter_value", StringUtils.EMPTY));
                 this.parseJSON(jo, UserControl.getInstance().getSuperManagerID());
             } catch (Exception e) {
-                        BILogger.getLogger().error(e.getMessage(), e);
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }
@@ -126,7 +126,7 @@ public abstract class NumberNFilterValue extends AbstractFilterValue<Number> imp
         try {
             writer.attr("filter_value", createJSON().toString());
         } catch (Exception e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         writer.end();
     }

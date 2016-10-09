@@ -1,5 +1,6 @@
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
+import Immutable from 'immutable'
 import {ReactComponentWithImmutableRenderMixin, requestAnimationFrame} from 'core'
 import React, {
     Component,
@@ -24,9 +25,13 @@ import {Table} from 'base'
 
 class TableComponent extends Component {
 
+    static contextTypes = {
+        $template: React.PropTypes.object
+    };
+
     constructor(props, context) {
         super(props, context);
-        this._tableHelper = new TableComponentHelper(props);
+        this._tableHelper = new TableComponentHelper(props, context);
         this._widthHelper = new TableComponentWidthHelper(this._tableHelper, props.width);
 
     }
@@ -36,21 +41,26 @@ class TableComponent extends Component {
     };
 
     componentWillMount() {
-        this._fetchData();
+
     }
 
     componentDidMount() {
+        this._fetchData();
+    }
 
+    componentWillUpdate() {
+        this._fetchData();
     }
 
     _fetchData() {
-        const template = new Template(this.props.$template);
-        const wId = this.props.wId;
-        const widget = template.getWidgetById(wId);
+        const {$widget, wId} = this.props;
+        const widget = new Widget($widget, this.context.$template, wId);
         widget.getData().then((data)=> {
             console.log(data);
             this._tableHelper.setData(data);
-            this.forceUpdate();
+            this.setState({
+                data: Immutable.fromJS(data)
+            })
         });
     }
 
@@ -67,6 +77,8 @@ class TableComponent extends Component {
             items={items}
             groupHeader={this._tableHelper.getGroupHeader()}
             groupItems={this._tableHelper.getGroupItems()}
+            /**groupHeader={[{text: 1}, {text: 2}]}
+             groupItems={[{children:[{text: 'A', children: [{text: 'A1'}, {text: 'A2'}]}, {text: 'B'}]}]}**/
             groupHeaderCellRenderer={({colIndex, ...cell})=> {
                 return <TableHeader {...cell}/>
             }}

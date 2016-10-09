@@ -20,7 +20,7 @@ import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -82,7 +82,7 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
             return new BIDimensionCore().fetchObjectCore();
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return BIBasicCore.EMPTY_CORE;
     }

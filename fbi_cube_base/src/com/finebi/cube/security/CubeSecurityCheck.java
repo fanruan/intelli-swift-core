@@ -1,6 +1,6 @@
 package com.finebi.cube.security;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONArray;
@@ -67,7 +67,7 @@ public class CubeSecurityCheck {
         for (Map.Entry<String, Long> entry : sumCheck.entrySet()) {
             if (currentResult.containsKey(entry.getKey())) {
                 if (currentResult.get(entry.getKey()).longValue() != entry.getValue().longValue() && (entry.getKey().indexOf("version") < 0 && entry.getKey().indexOf("timestamp") < 0)) {
-                    BILogger.getLogger().info(entry.getKey());
+                    BILoggerFactory.getLogger().info(entry.getKey());
                     result = false;
                 }
             }

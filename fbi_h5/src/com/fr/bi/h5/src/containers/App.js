@@ -60,6 +60,23 @@ import Main from '../components/Main.js'
 
 
 class App extends Component {
+    static childContextTypes = {
+        actions: PropTypes.object,
+        $template: PropTypes.object
+    };
+
+    getChildContext() {
+        const {actions, $template} = this.props;
+        return {
+            actions,
+            $template
+        };
+    }
+
+    constructor(props, context) {
+        super(props, context);
+    }
+
     componentDidMount() {
         setInterval(() => {
             Fetch(BH.servletURL + '?op=fr_bi_dezi&cmd=update_session', {
@@ -77,7 +94,7 @@ class App extends Component {
 
     render() {
         return (
-            <Main {...this.props}/>
+            <Main $template={this.props.$template}/>
         )
     }
 }

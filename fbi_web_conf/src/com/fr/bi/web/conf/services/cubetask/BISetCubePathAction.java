@@ -1,7 +1,7 @@
 package com.fr.bi.web.conf.services.cubetask;
 
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.util.BIConfigurePathUtils;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
@@ -38,7 +38,7 @@ public class BISetCubePathAction extends AbstractBIConfigureAction {
             try {
                 BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }

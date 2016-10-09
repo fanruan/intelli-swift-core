@@ -9,7 +9,7 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
@@ -77,7 +77,7 @@ public class BIGetTablesOfOnePackageAction extends AbstractBIConfigureAction {
 //                    field.put("isCircle", ((BIBusinessField)BusinessTableHelper.getSpecificField(table, field.getString("field_name"))).isCircle());
                     nFields.put(field);
                 }catch (BIFieldAbsentException exception){
-                    BILogger.getLogger().error(exception.getMessage(),exception);
+                    BILoggerFactory.getLogger().error(exception.getMessage(),exception);
                 }
 
             }

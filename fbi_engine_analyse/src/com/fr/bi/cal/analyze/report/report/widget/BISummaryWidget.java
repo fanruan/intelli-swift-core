@@ -27,7 +27,7 @@ import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.structure.collection.map.ConcurrentCacheHashMap;
 import com.fr.bi.stable.utils.BITravalUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.NameObject;
@@ -254,7 +254,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                         gvi = GVIUtils.AND(gvi, n.NOT(loader.getTableIndex(targetKey.getTableSource()).getRowCount()));
                     }
                 } catch (Exception e) {
-                    BILogger.getLogger().error("relation " + r.getRelationList().toString() + " nullindex missed " + "direct relation is " + r.getDirectToDimensionRelationList(), e);
+                    BILoggerFactory.getLogger().error("relation " + r.getRelationList().toString() + " nullindex missed " + "direct relation is " + r.getDirectToDimensionRelationList(), e);
                 }
             }
         }
@@ -379,7 +379,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                             dimensionRelationMap.put(targetId, dimensionRelationList);
                         }
                     } else {
-                        BILogger.getLogger().error("error missing field:" + targetRelationJo.toString() + this.getClass().getName());
+                        BILoggerFactory.getLogger().error("error missing field:" + targetRelationJo.toString() + this.getClass().getName());
                     }
                 }
             }

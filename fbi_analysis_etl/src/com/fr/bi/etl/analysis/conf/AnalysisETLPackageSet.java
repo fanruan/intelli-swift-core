@@ -9,7 +9,7 @@ import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.exception.BITableAbsentException;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.Inter;
 import com.fr.json.JSONObject;
 
@@ -40,7 +40,7 @@ public class AnalysisETLPackageSet extends BIPackageContainer {
             try {
                 pack = (AnalysisETLBusiPack) getPackage(new BIPackageID(Constants.PACK_ID));
             } catch (BIPackageAbsentException ignore_) {
-                BILogger.getLogger().error(ignore_.getMessage());
+                BILoggerFactory.getLogger().error(ignore_.getMessage());
             }
             if (pack == null) {
                 try {

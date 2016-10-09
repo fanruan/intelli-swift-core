@@ -87,7 +87,7 @@ mixin.onClass(Toolbar, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     filter: {
         borderTop: '1px solid ' + Colors.BORDER,
-        height: 44
+        height: Size.ITEM_HEIGHT
     }
 });
 export default Toolbar
