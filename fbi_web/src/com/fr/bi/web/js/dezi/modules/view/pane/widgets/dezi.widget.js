@@ -350,10 +350,14 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     },
 
     _refreshWidgetTitle: function () {
-        var titleSetting = this.model.get("settings").title_detail;
-        this.titleWrapper.element.css({background: titleSetting.detail_background});
+        var id = this.model.get("id");
+        var titleSetting = this.model.get("settings").title_detail || {};
+        var $title = this.title.element.find(".shelter-editor-text .bi-text");
+        $title.css(titleSetting.detail_style || {});
 
-        function _getBackgroundValue (bg) {
+        this.titleWrapper.element.css({"background": getBackgroundValue(titleSetting.detail_background)});
+
+        function getBackgroundValue (bg) {
             if (!bg) {
                 return "";
             }
@@ -440,8 +444,6 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         if (BI.has(changed, "settings") && (changed.settings.title_detail !== prev.settings.title_detail)) {
             this._refreshWidgetTitle()
         }
-
-
     },
 
     local: function () {
@@ -455,6 +457,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
 
     refresh: function () {
         this._buildWidgetTitle();
+        this._refreshWidgetTitle();
         this._refreshMagnifyButton();
         this._refreshTableAndFilter();
         this._refreshLayout();

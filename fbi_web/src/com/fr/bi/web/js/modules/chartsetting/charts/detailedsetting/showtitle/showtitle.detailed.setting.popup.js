@@ -30,7 +30,7 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
             cls: "tittle-setting-text-toolbar",
             width: 230
         });
-        this.titleWordStyle.on(BI.GlobalStyleIndexTitleToolBar.EVENT_CHANGE, function () {
+        this.titleWordStyle.on(BI.DataLabelTextToolBar.EVENT_CHANGE, function () {
             self.fireEvent(BI.ShowTitleDetailedSettingPopup.EVENT_CHANGE)
         });
         var titleWordStyleWrapper = this._createWrapper(BI.i18nText("BI-Set_Font"), this.titleWordStyle);
