@@ -37,7 +37,9 @@ BI.TextArea = BI.inherit(BI.Widget, {
         });
 
         this.toolbar.on(BI.TextToolbar.EVENT_CHANGE, function () {
-            self.textarea.setStyle(this.getValue());
+            var style = this.getValue();
+            self.textarea.setStyle(style);
+            self.element.css(style);
             self.fireEvent(BI.TextArea.EVENT_VALUE_CHANGE, arguments);
         });
 
@@ -112,6 +114,7 @@ BI.TextArea = BI.inherit(BI.Widget, {
         this.textarea.setValue(v.content);
         this.toolbar.setValue(v.style);
         this.textarea.setStyle(v.style);
+        this.element.css(v.style);
     },
 
     getValue: function () {
