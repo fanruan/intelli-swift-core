@@ -2,7 +2,7 @@ package com.fr.bi.common.container;
 
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.exception.BIKeyDuplicateException;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BIMapUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
@@ -142,7 +142,7 @@ public abstract class BIMapContainer<K, V> implements Serializable {
                     try {
                         container.putKeyValue(entry.getKey(), entry.getValue());
                     } catch (BIKeyDuplicateException e) {
-                        BILogger.getLogger().error(e.getMessage(), e);
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
                         continue;
                     }
                 }

@@ -3,7 +3,6 @@ package com.fr.bi.cal.analyze.report.report.widget;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.cal.detail.PolyCubeDetailECBlock;
@@ -25,7 +24,7 @@ import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.utils.BITravalUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -166,7 +165,7 @@ public class BIDetailWidget extends BIAbstractWidget {
             try {
                 parseDimensions(jo, userId);
             } catch (Exception e) {
-                BILogger.getLogger().info(e.getMessage());
+                BILoggerFactory.getLogger().info(e.getMessage());
             }
         }
         if (jo.has("filter_value")) {

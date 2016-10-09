@@ -1,6 +1,7 @@
 package com.fr.bi.cal.generate;
 
 import com.finebi.cube.api.BICubeManager;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.CubeGenerationManager;
@@ -16,7 +17,6 @@ import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.structure.queue.QueueThread;
-import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.time.BIDateUtils;
@@ -64,7 +64,7 @@ public class CubeRunner {
                 setStatue(Status.LOADING);
                 Set<CubeConditionProvider> set = ExtraClassManager.getInstance().getArray(CubeConditionProvider.MARK_STRING);
                 for (CubeConditionProvider provider : set) {
-                    provider.prepare();
+                    provider.prepare(cubeTask);
                 }
                 start();
                 try {
@@ -72,14 +72,11 @@ public class CubeRunner {
                     cubeTask.run();
                     cubeTask.end();
                 } catch (Exception e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 } finally {
-                    for (CubeConditionProvider provider : set) {
-                        provider.end();
-                    }
                     finish();
                     setStatue(Status.LOADED);
-                    BILogger.getLogger().info(BIDateUtils.getCurrentDateTime() + " Build OLAP database Cost:" + DateUtils.timeCostFrom(start));
+                    BILoggerFactory.getLogger().info(BIDateUtils.getCurrentDateTime() + " Build OLAP database Cost:" + DateUtils.timeCostFrom(start));
                 }
             }
         });
@@ -176,13 +173,13 @@ public class CubeRunner {
     }
 
     private void finish() {
-        BILogger.getLogger().info("start persist data!");
+        BILoggerFactory.getLogger().info("start persist data!");
         long t = System.currentTimeMillis();
         try {
             BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
-            BILogger.getLogger().info("persist data finished! time cost: " + DateUtils.timeCostFrom(t));
+            BILoggerFactory.getLogger().info("persist data finished! time cost: " + DateUtils.timeCostFrom(t));
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
         /* 前台进度条完成进度最多到90%，当cube文件替换完成后传入调用logEnd，进度条直接到100%*/

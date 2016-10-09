@@ -8,7 +8,7 @@ import com.fr.bi.conf.data.source.operator.add.selfrelation.OneFieldUnionRelatio
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.data.impl.RecursionDataModel;
 import com.fr.fs.web.service.ServiceUtils;
@@ -50,7 +50,7 @@ public class BICreateFieldsUnionAction extends AbstractBIConfigureAction {
             }
             WebUtils.printAsJSON(res, output);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 

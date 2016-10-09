@@ -1,7 +1,7 @@
 package com.fr.bi.cal.stable.index.file.field;
 
 import com.fr.bi.cal.stable.index.file.AbstractCubeFile;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.io.newio.NIOWriter;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 
@@ -29,7 +29,7 @@ public abstract class AbstractNIOCubeFile<K> extends AbstractCubeFile implements
                 try {
                     list = clazz.getConstructor(String.class).newInstance(getPath());
                 } catch (Exception e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
             }
             return list;

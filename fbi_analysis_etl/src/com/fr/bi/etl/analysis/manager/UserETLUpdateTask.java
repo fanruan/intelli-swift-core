@@ -28,7 +28,7 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.engine.index.key.IndexKey;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONObject;
@@ -129,7 +129,7 @@ public class UserETLUpdateTask implements CubeTask {
 	@Override
 	public void start() {
 		start = new Date();
-		BILogger.getLogger().info("started in file path:" + path);
+		BILoggerFactory.getLogger().info("started in file path:" + path);
 	}
 	
 

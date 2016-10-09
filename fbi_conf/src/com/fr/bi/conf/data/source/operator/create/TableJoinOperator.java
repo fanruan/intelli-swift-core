@@ -15,7 +15,7 @@ import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.structure.collection.list.IntList;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -340,7 +340,7 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
             }
         }
         String message = "can`t find column : " + name;
-        BILogger.getLogger().info(message);
+        BILoggerFactory.getLogger().info(message);
         throw new RuntimeException(message);
     }
 
@@ -351,7 +351,7 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
             }
         }
         String message = "can`t find column : " + name;
-        BILogger.getLogger().info(message);
+        BILoggerFactory.getLogger().info(message);
         throw new RuntimeException(message);
     }
 

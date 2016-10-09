@@ -2,7 +2,7 @@ package com.fr.bi.common.factory;
 
 import com.fr.bi.common.factory.annotation.BISingletonObject;
 import com.fr.bi.exception.BIKeyDuplicateException;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
@@ -128,7 +128,7 @@ public class BIBeanFactory implements IFactoryService {
                     classContainer.putKeyValue(name, clazz);
                     objectContainer.putKeyValue(name, object);
                 } catch (BIKeyDuplicateException e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
 
             }

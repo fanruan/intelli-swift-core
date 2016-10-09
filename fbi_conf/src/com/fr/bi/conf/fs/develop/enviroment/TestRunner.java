@@ -2,7 +2,7 @@ package com.fr.bi.conf.fs.develop.enviroment;
 
 
 import com.fr.bi.conf.fs.develop.DeveloperConfig;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 /**
  * Created by Connery on 2015/1/4.
@@ -24,7 +24,7 @@ public class TestRunner implements Runnable {
         try {
             biReportTestManager.generateExcels(DeveloperConfig.getTestBasicPath());
         } catch (Exception ex) {
-            BILogger.getLogger().error(ex.getMessage(), ex);
+            BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         }
     }
 }

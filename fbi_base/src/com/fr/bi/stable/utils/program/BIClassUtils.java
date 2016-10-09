@@ -1,7 +1,7 @@
 package com.fr.bi.stable.utils.program;
 
 import com.fr.bi.stable.utils.code.BILogDelegate;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -57,7 +57,7 @@ public class BIClassUtils {
     private static String scanJars(Set<Class<?>> classes, boolean recursive, String packageName, String packageDirName, URL url) {
         // 如果是jar包文件
         // 定义一个JarFile
-        BILogger.getLogger().info("jar type");
+        BILoggerFactory.getLogger().info("jar type");
         JarFile jar;
         try {
             // 获取jar
@@ -106,7 +106,7 @@ public class BIClassUtils {
     }
 
     private static void scanFiles(Set<Class<?>> classes, boolean recursive, String packageName, URL url) throws UnsupportedEncodingException {
-        BILogger.getLogger().info("file type");
+        BILoggerFactory.getLogger().info("file type");
         // 获取包的物理路径
         String filePath = URLDecoder.decode(url.getFile(), "UTF-8");
         // 以文件的方式扫描整个包下的文件 并添加到集合中

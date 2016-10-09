@@ -22,7 +22,7 @@ import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.utils.BIRelationUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
@@ -140,7 +140,7 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
                 this.biTableSourceRelationPathSet.add(convertPath(path));
                 this.cubeGenerateRelationPathSet.add(new BICubeGenerateRelationPath(convertPath(path)));
             } catch (BITablePathConfusionException e) {
-                BILogger.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().error(e.getMessage());
             }
         }
 
@@ -175,9 +175,9 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
                     generatedRelations.add(relation);
                 }
             } catch (BITableAbsentException e) {
-                BILogger.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().error(e.getMessage());
             } catch (BIRelationAbsentException e) {
-                BILogger.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().error(e.getMessage());
             }
         }
         return generatedRelations;
@@ -315,7 +315,7 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
                 copyFilesFromOldCubes(tempResourceRetrieval, advancedResourceRetrieval, source);
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
         return true;
     }
@@ -335,7 +335,7 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
         try {
              BIFileUtils.moveFile(tempConf.getRootURI().getPath().toString(), advancedConf.getRootURI().getPath().toString());
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
         return true;
     }

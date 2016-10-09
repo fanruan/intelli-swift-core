@@ -13,7 +13,7 @@ import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.engine.index.key.IndexKey;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.js.NameJavaScriptGroup;
 import com.fr.js.WebHyperlink;
@@ -62,7 +62,7 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
         try {
             link = link.replace("${" + Calculator.relatedParameters(hyperLinkExpression)[0] + "}", URLEncoder.encode(v.toString()));
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return link;
     }

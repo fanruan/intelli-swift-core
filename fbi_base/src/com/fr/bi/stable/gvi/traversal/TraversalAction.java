@@ -1,7 +1,7 @@
 package com.fr.bi.stable.gvi.traversal;
 
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 public interface TraversalAction extends Traversal<int[]> {
 
@@ -9,7 +9,7 @@ public interface TraversalAction extends Traversal<int[]> {
 
         @Override
         public void actionPerformed(int[] rowIndices) {
-            BILogger.getLogger().info(rowIndices.toString());
+            BILoggerFactory.getLogger().info(rowIndices.toString());
         }
     };
 }

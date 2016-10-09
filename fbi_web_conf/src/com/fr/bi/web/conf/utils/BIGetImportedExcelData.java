@@ -4,7 +4,7 @@ import com.fr.base.FRContext;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIExcelDataModel;
 import com.fr.bi.stable.data.db.BIExcelTableData;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
@@ -73,7 +73,7 @@ public class BIGetImportedExcelData {
                 dataJa.put( oneJa );
             }
         }catch (Exception e){
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
             return jo;
         }
 

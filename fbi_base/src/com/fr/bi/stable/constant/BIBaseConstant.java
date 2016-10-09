@@ -2,7 +2,7 @@ package com.fr.bi.stable.constant;
 
 import com.fr.base.CoreDecimalFormat;
 import com.fr.base.FRContext;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.operation.sort.comp.ChinesePinyinComparator;
 import com.fr.cache.Status;
 import com.fr.general.ComparatorUtils;
@@ -354,7 +354,7 @@ public class BIBaseConstant {
                                     try {
                                         this.wait();
                                     } catch (InterruptedException e) {
-                                        BILogger.getLogger().error(e.getMessage(), e);
+                                        BILoggerFactory.getLogger().error(e.getMessage(), e);
                                     }
                                 }
                                 if (getTempCacheDirectory().isDirectory()) {
@@ -427,7 +427,7 @@ public class BIBaseConstant {
                     // we do not need to worry about leaving references to
                     // CacheManagers lying
                     // around and the call is ok to fail.
-                    BILogger.getLogger().error(
+                    BILoggerFactory.getLogger().error(
                             "IllegalStateException due to attempt to remove a shutdown" + "hook while the VM is actually shutting down.", e);
                 }
                 shutdownHook = null;

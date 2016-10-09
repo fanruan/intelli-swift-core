@@ -1,7 +1,7 @@
 package com.finebi.cube.map;
 
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.io.newio.NIOReader;
 import com.fr.bi.stable.io.newio.NIOWriter;
 import com.fr.bi.stable.io.newio.read.AbstractNIOReader;
@@ -61,7 +61,7 @@ public abstract class ExternalMapIOBIList<K, T> implements ExternalMapIO<K, BILi
                     file.createNewFile();
                 }
             } catch (Exception ex) {
-                BILogger.getLogger().error(ex.getMessage(), ex);
+                BILoggerFactory.getLogger().error(ex.getMessage(), ex);
             }
         }
         return file;
@@ -164,12 +164,12 @@ public abstract class ExternalMapIOBIList<K, T> implements ExternalMapIO<K, BILi
         try {
             getValueReader().clear();
         } catch (FileNotFoundException ex) {
-            BILogger.getLogger().error(ex.getMessage(), ex);
+            BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         }
         try {
             getKeyReader().clear();
         } catch (FileNotFoundException ex) {
-            BILogger.getLogger().error(ex.getMessage(), ex);
+            BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         }
         getKeyWriter().clear();
     }

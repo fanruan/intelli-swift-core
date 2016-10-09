@@ -2,7 +2,7 @@ package com.fr.bi.cal.generate.timerTask;
 
 import com.fr.bi.cal.generate.timerTask.quartz.JobTask;
 import com.fr.bi.cal.generate.timerTask.quartz.QuartzManager;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.third.org.quartz.SchedulerException;
 
@@ -22,7 +22,7 @@ public class BICubeTimeTaskCreatorManager implements BICubeTimeTaskCreatorProvid
             try {
                 QuartzManager.addJob(jobTask, schedule);
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }

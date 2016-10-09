@@ -1,7 +1,7 @@
 package com.fr.bi.stable.utils.algorithem;
 
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.stable.EncodeConstants;
 
 import java.io.UnsupportedEncodingException;
@@ -20,7 +20,7 @@ public class BIMD5Utils {
         try {
             digest = MessageDigest.getInstance("MD5");
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return digest;
     }
@@ -43,7 +43,7 @@ public class BIMD5Utils {
             try {
                 digest.update(strings[i].getBytes(EncodeConstants.ENCODING_UTF_8));
             } catch (UnsupportedEncodingException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
         return getMD5String(digest.digest());
@@ -56,7 +56,7 @@ public class BIMD5Utils {
             try {
                 digest.update(it.next().getBytes(EncodeConstants.ENCODING_UTF_8));
             } catch (UnsupportedEncodingException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
         return getMD5String(digest.digest());
