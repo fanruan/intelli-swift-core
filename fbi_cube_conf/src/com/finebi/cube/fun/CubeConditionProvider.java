@@ -13,6 +13,4 @@ public interface CubeConditionProvider extends Mutable {
     int CURRENT_LEVEL = 1;
 
     void prepare(CubeTask task);
-
-    void end();
 }
