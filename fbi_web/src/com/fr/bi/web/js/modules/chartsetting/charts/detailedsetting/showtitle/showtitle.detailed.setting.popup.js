@@ -21,14 +21,17 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
         this.titleColour.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
             self.fireEvent(BI.ShowTitleDetailedSettingPopup.EVENT_CHANGE);
         });
+
         var titleColourWrapper = this._createComboWrapper(BI.i18nText("BI-Title_Background"), this.titleColour);
 
         //标题文字
         this.titleWordStyle = BI.createWidget({
-            type: "bi.data_label_text_toolbar"
+            type: "bi.data_label_text_toolbar",
+            cls: "tittle-setting-text-toolbar",
+            width: 230
         });
         this.titleWordStyle.on(BI.GlobalStyleIndexTitleToolBar.EVENT_CHANGE, function () {
-            self.fireEvent(BI.ShowTitleDetailedSettingPopup.EVENT_CHANGE);
+            self.fireEvent(BI.ShowTitleDetailedSettingPopup.EVENT_CHANGE)
         });
         var titleWordStyleWrapper = this._createWrapper(BI.i18nText("BI-Set_Font"), this.titleWordStyle);
 
@@ -39,7 +42,7 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
                 titleColourWrapper,
                 titleWordStyleWrapper
             ],
-            hgap: 10
+            hgap: 5
         });
     },
 
@@ -48,7 +51,6 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
             type: "bi.left",
             items: [{
                 type: "bi.label",
-                cls: "global-style-item-label",
                 text: name + ":",
                 textAlign: "left",
                 height: 30,
@@ -63,14 +65,28 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
             type: "bi.left",
             items: [{
                 type: "bi.label",
-                cls: "global-style-item-label",
                 text: name + ":",
                 textAlign: "left",
                 height: 30,
-                width: 55
+                width: 60
             }, widget],
             vgap: 10
         }
+    },
+
+    getValue: function() {
+        return {
+            detail_background: this.titleColour.getValue(),
+            detail_style: this.titleWordStyle.getValue()
+        }
+    },
+
+    setValue: function(v) {
+        v || (v = {});
+        this.titleColour.setValue(v.detail_background);
+        this.titleWordStyle.setValue(v.detail_style)
     }
+
 });
+BI.ShowTitleDetailedSettingPopup.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.show_title_detailed_setting_popup", BI.ShowTitleDetailedSettingPopup);
