@@ -1,7 +1,7 @@
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
 import Immutable from 'immutable'
-import {ReactComponentWithImmutableRenderMixin, requestAnimationFrame} from 'core'
+import {immutableShallowEqual, ReactComponentWithImmutableRenderMixin, requestAnimationFrame} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -48,15 +48,16 @@ class TableComponent extends Component {
         this._fetchData();
     }
 
-    componentWillUpdate() {
-        this._fetchData();
+    componentWillReceiveProps(nexProps) {
+        if (!immutableShallowEqual(nexProps, this.props)) {
+            this._fetchData();
+        }
     }
 
     _fetchData() {
         const {$widget, wId} = this.props;
         const widget = new Widget($widget, this.context.$template, wId);
         widget.getData().then((data)=> {
-            console.log(data);
             this._tableHelper.setData(data);
             this.setState({
                 data: Immutable.fromJS(data)

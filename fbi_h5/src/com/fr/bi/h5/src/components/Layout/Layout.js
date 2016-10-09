@@ -57,11 +57,6 @@ class Layout extends Component {
                 initialListSize={Math.ceil(props.height / 270) + 1}
                 dataSource={this.state.dataSource}
                 renderRow={this._renderRow.bind(this)}
-            />, <ListView
-                {...props}
-                initialListSize={Math.ceil(props.height / 270) + 1}
-                dataSource={this.state.dataSource}
-                renderRow={this._renderRow.bind(this)}
             />]}
         </ViewPagerAndroid>;
         // return <ListView

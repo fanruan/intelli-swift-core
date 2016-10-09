@@ -1,7 +1,7 @@
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
 import Immutable from 'immutable'
-import {ReactComponentWithImmutableRenderMixin, requestAnimationFrame} from 'core'
+import {immutableShallowEqual, ReactComponentWithImmutableRenderMixin, requestAnimationFrame} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -49,8 +49,10 @@ class DetailTableComponent extends Component {
         this._fetchData();
     }
 
-    componentWillUpdate() {
-        this._fetchData();
+    componentWillReceiveProps(nexProps) {
+        if (!immutableShallowEqual(nexProps, this.props)) {
+            this._fetchData();
+        }
     }
 
     _fetchData() {
