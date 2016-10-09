@@ -89,6 +89,10 @@ public class BuildCubeTask implements CubeTask {
         return CubeTaskType.ALL;
     }
 
+    public CubeBuild getCubeBuild() {
+        return cubeBuild;
+    }
+
     @Override
     public void start() {
         BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
