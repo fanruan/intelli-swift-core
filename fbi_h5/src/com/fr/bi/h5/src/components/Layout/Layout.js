@@ -1,13 +1,13 @@
-import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
-import {requestAnimationFrame} from 'core'
+import {requestAnimationFrame, ReactComponentWithImmutableRenderMixin} from 'core'
 import React, {
     Component,
     StyleSheet,
     Text,
     Dimensions,
     ListView,
+    ViewPagerAndroid,
     View,
     Fetch
 } from 'lib'
@@ -15,11 +15,11 @@ import React, {
 import {AutoSizer} from 'base'
 import {Colors, Template, Widget} from 'data'
 
-import ChartComponent from './Chart/ChartComponent.js'
-import TableComponent from './Table/TableComponent.js'
-import DetailTableComponent from './DetailTable/DetailTableComponent.js'
-import MultiSelectorComponent from './MultiSelector/MultiSelectorComponent.js'
-import MultiTreeSelectorComponent from './MultiTreeSelector/MultiTreeSelectorComponent.js'
+import ChartComponent from '../Chart/ChartComponent.js'
+import TableComponent from '../Table/TableComponent.js'
+import DetailTableComponent from '../DetailTable/DetailTableComponent.js'
+import MultiSelectorComponent from '../MultiSelector/MultiSelectorComponent.js'
+import MultiTreeSelectorComponent from '../MultiTreeSelector/MultiTreeSelectorComponent.js'
 
 class Layout extends Component {
     static propTypes = {};
@@ -27,29 +27,59 @@ class Layout extends Component {
     constructor(props, context) {
         super(props, context);
         const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        this.template = new Template(props.$$template);
+        this.template = new Template(props.$template);
         const rows = this.template.getAllWidgetIds();
         this.state = {
             dataSource: ds.cloneWithRows(rows)
         }
     }
 
-    render() {
-        const {...props} = this.props;
-        return <ListView
-            {...props}
-            initialListSize={Math.floor(props.height / 270) + 1}
-            dataSource={this.state.dataSource}
-            renderRow={this._renderRow.bind(this)}
-        />;
+    _onPageScroll() {
+
     }
 
-    _renderRow(rowData, sectionID, rowID) {
-        const $$widget = this.template.get$$WidgetById(rowData);
-        const type = new Widget($$widget).getType();
+    _onPageSelected() {
+
+    }
+
+    render() {
+        const {...props} = this.props;
+        return <ViewPagerAndroid
+            style={styles.viewPager}
+            initialPage={0}
+            onPageScroll={this._onPageScroll.bind(this)}
+            onPageSelected={this._onPageSelected.bind(this)}
+            ref={viewPager => {
+                this.viewPager = viewPager;
+            }}>
+            {[<ListView
+                {...props}
+                initialListSize={Math.ceil(props.height / 270) + 1}
+                dataSource={this.state.dataSource}
+                renderRow={this._renderRow.bind(this)}
+            />, <ListView
+                {...props}
+                initialListSize={Math.ceil(props.height / 270) + 1}
+                dataSource={this.state.dataSource}
+                renderRow={this._renderRow.bind(this)}
+            />]}
+        </ViewPagerAndroid>;
+        // return <ListView
+        //     {...props}
+        //     initialListSize={Math.floor(props.height / 270) + 1}
+        //     dataSource={this.state.dataSource}
+        //     renderRow={this._renderRow.bind(this)}
+        // />;
+    }
+
+    _renderRow(wId, sectionID, rowID) {
+        const {$template} = this.props;
+        const $widget = this.template.get$$WidgetById(wId);
+        const type = new Widget($widget).getType();
         const props = {
-            key: rowData,
-            $$widget,
+            key: wId,
+            $template,
+            wId,
             width: this.props.width - 40,
             height: 230
         };
@@ -121,10 +151,13 @@ class Layout extends Component {
         </View>
     }
 }
-mixin.onClass(Layout, PureRenderMixin);
+mixin.onClass(Layout, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         margin: 20
+    },
+    viewPager: {
+        flex: 1
     }
 });
 export default Layout

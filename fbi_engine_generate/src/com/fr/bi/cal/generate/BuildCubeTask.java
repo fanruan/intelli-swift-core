@@ -19,6 +19,7 @@ import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.message.IMessageTopic;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.router.IRouter;
 import com.finebi.cube.structure.BICube;
@@ -27,13 +28,17 @@ import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.db.PersistentTable;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -46,11 +51,11 @@ import java.util.concurrent.Future;
  *
  * @author Connery
  * @since 4.0
- * <p>
+ * <p/>
  * edit by kary
  */
 public class BuildCubeTask implements CubeTask {
-
+    private static final Logger logger = LoggerFactory.getLogger(BuildCubeTask.class);
     private CubeBuild cubeBuild;
     private BIUser biUser;
     protected ICubeResourceRetrievalService retrievalService;
@@ -149,7 +154,7 @@ public class BuildCubeTask implements CubeTask {
 
     private boolean replaceOldCubes() {
         try {
-            BILogger.getLogger().info("Start Replacing Old Cubes, Stop All Analysis");
+            logger.info("Start Replacing Old Cubes, Stop All Analysis");
             boolean replaceSuccess = false;
             for (int i = 0; i < retryNTimes; i++) {
                 if (Thread.currentThread().isInterrupted()) {
@@ -157,13 +162,13 @@ public class BuildCubeTask implements CubeTask {
                 }
                 BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
                 for (ICubeResourceLocation location : BICubeDiskPrimitiveDiscovery.getInstance().getUnReleasedLocation()) {
-                    BILogger.getLogger().error("error: the filePath is : "+location.getBaseLocation()+location.getChildLocation());
+                    BILogger.getLogger().error("error: the filePath is : " + location.getBaseLocation() + location.getChildLocation());
                 }
                 replaceSuccess = cubeBuild.replaceOldCubes();
                 BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
                 CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).clear();
                 if (!replaceSuccess) {
-                    BILogger.getLogger().error("cube replace failed after " + i + " times try!It will try again in 5s");
+                    logger.error("cube replace failed after " + i + " times try!It will try again in 5s");
                     Thread.sleep(5000);
                 } else {
                     break;
@@ -172,14 +177,14 @@ public class BuildCubeTask implements CubeTask {
             return replaceSuccess;
         } catch (Exception e) {
             String message = " cube build failed ! caused by \n" + e.getMessage();
-            BILogger.getLogger().error(message, e);
-            try{
+            logger.error(message, e);
+            try {
                 BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), message, biUser.getUserId());
             } catch (Exception e1) {
-                BILogger.getLogger().error(e1.getMessage(), e1);
+                logger.error(e1.getMessage(), e1);
             }
             return false;
-        }finally {
+        } finally {
             BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
             CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).clear();
         }
@@ -194,9 +199,12 @@ public class BuildCubeTask implements CubeTask {
         operationManager.setUpdateSettingSourceMap(cubeBuild.getUpdateSettingSources());
         operationManager.setConnectionMap(cubeBuild.getConnections());
         manager.registerDataSource(cubeBuild.getAllSingleSources());
+        logTable(cubeBuild.getAllSingleSources());
         manager.registerRelation(cubeBuild.getTableSourceRelationSet());
+        logRelation(cubeBuild.getTableSourceRelationSet());
         Set<BITableSourceRelationPath> relationPathSet = filterPath(cubeBuild.getBiTableSourceRelationPathSet());
         manager.registerTableRelationPath(relationPathSet);
+        logPath(relationPathSet);
         finishObserver = new BICubeFinishObserver<Future<String>>(new BIOperationID("FINEBI_E"));
         operationManager.setVersionMap(cubeBuild.getVersions());
         operationManager.generateDataSource(cubeBuild.getDependTableResource());
@@ -211,6 +219,60 @@ public class BuildCubeTask implements CubeTask {
         } catch (BIDeliverFailureException e) {
             throw BINonValueUtils.beyondControl(e);
         }
+    }
+
+    private void logTable(Set<CubeTableSource> tableSourceSet) {
+        logger.info("***************Table*****************");
+        Integer tableCount = 0;
+        if (tableSourceSet != null) {
+            for (CubeTableSource tableSource : tableSourceSet) {
+                logger.info(BIStringUtils.append(
+                        "\n" + "       table: " + (tableCount++),
+                        "\n" + "       Table Name:", tableSource.getTableName(),
+                        "\n" + "       Table ID:", tableSource.getSourceID()));
+            }
+        }
+        logger.info("***************Table end*****************\n");
+
+    }
+
+    private void logRelation(Set<BITableSourceRelation> relationSet) {
+        logger.info("***************Relation*****************");
+        Integer countRelation = 0;
+        if (relationSet != null) {
+            for (BITableSourceRelation relation : relationSet) {
+                logger.info("\nRelation " + (countRelation++) + relationLog("", relation));
+            }
+        }
+        logger.info("***************Relation end*****************\n");
+
+    }
+
+    private void logPath(Set<BITableSourceRelationPath> relationPathSet) {
+        logger.info("***************Path*****************");
+
+        if (relationPathSet != null) {
+            Integer countPath = 0;
+            for (BITableSourceRelationPath path : relationPathSet) {
+                String pathTitle = "\nPath:" + countPath++;
+                Integer countRelation = 0;
+                for (BITableSourceRelation relation : path.getAllRelations()) {
+                    logger.info(BIStringUtils.append(
+                            pathTitle,
+                            "\nRelation " + (countRelation++),
+                            relationLog("     ", relation)));
+                }
+            }
+        }
+        logger.info("***************Path end*****************\n");
+    }
+
+    private String relationLog(String prefix, BITableSourceRelation relation) {
+        return BIStringUtils.append("\n",
+                prefix + "       primaryTable:", relation.getPrimaryTable().getTableName() + "," + relation.getPrimaryTable().getSourceID(),
+                "\n" + prefix + "       foreignTable:", relation.getForeignTable().getTableName() + "," + relation.getForeignTable().getSourceID(),
+                "\n" + prefix + "       primaryField:", relation.getPrimaryField().getFieldName(),
+                "\n" + prefix + "       foreignField:", relation.getForeignField().getFieldName());
     }
 
     private Set<BITableSourceRelationPath> filterPath(Set<BITableSourceRelationPath> paths) {

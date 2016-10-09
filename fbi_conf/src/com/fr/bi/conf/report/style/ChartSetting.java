@@ -14,7 +14,7 @@ public class ChartSetting implements JSONParser {
     private JSONObject settings = new JSONObject();
     private JSONObject styleOfChart = new JSONObject();
     private JSONObject position = new JSONObject();
-    private JSONObject dataLabels = new JSONObject();
+    private JSONArray dataLabels = new JSONArray();
     private JSONObject dataImage = new JSONObject();
 
     @Override
@@ -32,7 +32,7 @@ public class ChartSetting implements JSONParser {
             position = jo.getJSONObject("position");
         }
         if(jo.has("data_label")){
-            dataLabels = jo.getJSONObject("data_label");
+            dataLabels = jo.getJSONArray("data_label");
         }
     }
 
@@ -52,7 +52,7 @@ public class ChartSetting implements JSONParser {
         return position;
     }
 
-    public JSONObject getDataLabels() {
+    public JSONArray getDataLabels() {
         return dataLabels;
     }
 

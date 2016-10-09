@@ -103,6 +103,7 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
                 if (data.length > 0) {
                     self.fireEvent(BI.AbstractRegion.EVENT_CHANGE);
                 }
+                BI.Broadcasts.send(BICst.BROADCAST.FIELD_DROP_PREFIX);
             },
             over: function (event, ui) {
                 if (BI.isNull(self.forbiddenMask) || !self.forbiddenMask.isVisible()) {

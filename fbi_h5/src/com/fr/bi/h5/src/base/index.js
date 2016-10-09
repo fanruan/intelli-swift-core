@@ -14,6 +14,7 @@ export HorizontalCenterLayout from './Layout/HorizontalCenterLayout'
 
 export Icon from './Icon'
 export IconButton from './IconButton/IconButton'
+export TextButton from './TextButton/TextButton'
 export Checkbox from './Checkbox/Checkbox'
 export ART from './Art/ReactART'
 export Circle from './Art/Circle.art'

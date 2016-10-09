@@ -41,7 +41,7 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
                 self.itemsMap[node.id] = node;
                 var has = contains(temp, node);
                 if (has) {
-                    if(!containsId(has.id, node.id)) {
+                    if (!containsId(has.id, node.id)) {
                         BI.isArray(has.id) ? has.id.push(node.id) : has.id = [has.id, node.id];
                         BI.isArray(has.pId) ? has.pId.push(node.pId) : has.pId = [has.pId, node.pId];
                     }
@@ -60,8 +60,9 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
             }
             return false;
         }
+
         function containsId(ids, id) {
-            if(BI.isArray(ids)) {
+            if (BI.isArray(ids)) {
                 return BI.contains(ids, id);
             } else {
                 return ids === id;
@@ -83,7 +84,7 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
 
             if (BI.isNotNull(item.pId)) {
                 if (!containsId(self.map[item.pId], item)) {
-                    self.map[item.pId] = BI.concat(self.map[item.pId] || [], item)
+                    self.map[item.pId] = BI.concat(self.map[item.pId] || [], item);
                 }
             }
         });
@@ -142,7 +143,7 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
                     var node = BI.clone(data);
                     var has = contains(temp, node);
                     if (has) {
-                        if(!containsId(has.id, node.id)) {
+                        if (!containsId(has.id, node.id)) {
                             BI.isArray(has.id) ? has.id.push(node.id) : has.id = [has.id, node.id];
                             BI.isArray(has.pId) ? has.pId.push(node.pId) : has.pId = [has.pId, node.pId];
                         }
@@ -154,13 +155,13 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
             result.push(temp);
         }
         this.items = BI.concat(this.items.slice(0, floor + 1), result);
-        BI.each(this.items, function (idx, items) {
-            items.sort(function (a, b) {
-                var flagA = BI.contains(values[idx], a.value);
-                var flagB = BI.contains(values[idx], b.value);
-                return flagB - flagA;
-            })
-        });
+        // BI.each(this.items, function (idx, items) {
+        //     items.sort(function (a, b) {
+        //         var flagA = BI.contains(values[idx], a.value);
+        //         var flagB = BI.contains(values[idx], b.value);
+        //         return flagB - flagA;
+        //     })
+        // });
         return result;
 
         function contains(array, item) {
@@ -173,7 +174,7 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         }
 
         function containsId(ids, id) {
-            if(BI.isArray(ids)) {
+            if (BI.isArray(ids)) {
                 return BI.contains(ids, id);
             } else {
                 return ids === id;
@@ -252,98 +253,71 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         callback(this.items, floor);
     },
 
-    _getSelectedValues: function () {
-        this.storeValue = {};
-        var self = this;
-        var preValues = [];
-        var values = this._getValue();
-        for (var i = 0; i < values.length; i++) {
-            if (BI.isEmptyObject(this.storeValue)) {
-                BI.each(values[i], function (idx, value) {
-                    var temp = {};
-                    preValues.push(temp);
-                    self.storeValue[value] = temp;
-                })
-            } else {
-                var tempArray = [];
-                BI.each(values[i], function (idx, value) {
-                    BI.each(preValues, function (index, preTemp) {
-                        var temp = {};
-                        tempArray.push(temp);
-                        preTemp[value] = temp;
-                    });
-                });
-                preValues = tempArray;
-            }
-        }
-        return this.storeValue;
-    },
-
-    _getValue: function () {
-        var selectedButtons = this.view.getSelectedButtons(),
-            result = [],
-            selectedValues = [],
-            temp = [];
-        BI.each(selectedButtons, function (idx, buttons) {
-            temp = [];
-            for(var i =0;i<buttons.length;i++) {
-                temp.push({
-                    id: buttons[i].options.id,
-                    pId: buttons[i].options.pId,
-                    value: buttons[i].options.value
-                })
-            }
-            selectedValues.push(temp);
-        });
-
-        BI.each(selectedValues, function (idx, values) {
-            temp = [];
-            for(var i =0;i<values.length;i++) {
-                if(BI.isArray(values[i].id)) {
-                    temp = BI.concat(temp, convertToItems(values[i]));
-                    values.splice(i, 1);
-                    i--;
-                }
-            }
-            selectedValues[idx] = BI.concat(selectedValues[idx], temp);
-        });
-        BI.each(selectedValues, function (idx, values) {
-            BI.each(values, function (i, value) {
-                result.push(value);
-            })
-        });
-
-        return result;
-
-        function convertToItems(item) {
-            var result = [];
-            if (BI.isArray(item.id)) {
-                BI.each(item.id, function (index, id) {
-                    result.push(BI.extend(BI.clone(item), {
-                        id: id,
-                        pId: item.pId[index]
-                    }));
-                })
-            } else {
-                result.push(item);
-            }
-            return result;
-        }
-    },
-
     setValue: function (v) {
-        var self = this, op = {
+
+        var self = this, o = this.options, op = {
             selected_values: v
         };
+        var result = [];
+        convertToArray(v,result,0);
         o.itemsCreator(op, function (value) {
             self._updateData(value.items);
             self._updateItems();
-            this.view.setValue(v);
+            self.view.setValue(result);
         });
+
+        function convertToArray(obj, result, i) {
+            if(BI.isEmptyObject(obj)) {
+                return ;
+            }
+            var keys = Object.keys(obj);
+            result[i] = BI.uniq(BI.concat(result[i]||[],keys));
+            BI.each(keys, function (idx, key) {
+                convertToArray(obj[key], result, i+1)
+            })
+
+        }
     },
 
     getValue: function () {
-        return this._getSelectedValues();
+        var selectedButtons = this.view.getSelectedButtons();
+        var selectedValues = [];
+        var result = {};
+        var temp = [];
+        BI.each(selectedButtons, function (idx, buttons) {
+            temp = [];
+            BI.each(buttons, function (index, button) {
+                temp = BI.concat(temp, {
+                    value: button.options.value
+                })
+            });
+            selectedValues.push(temp);
+        });
+
+        for (var i = selectedValues.length - 2; i >= 0; i--) {
+            BI.each(selectedValues[i], function (idx, value) {
+                temp = [];
+                BI.each(selectedValues[i + 1], function (index, node) {
+                    temp.push(node);
+                });
+                value.children = temp;
+            })
+        }
+        return convertToObject(selectedValues[0], result);
+
+        function convertToObject(children, map) {
+            if (BI.isEmptyArray(children)) {
+                return {};
+            }
+            BI.each(children, function (idx, child) {
+                var temp = {};
+                if (BI.isNotEmptyArray(child.children)) {
+                    convertToObject(child.children, temp);
+                }
+                map[child.value] = BI.extend(map[child.value] || {}, temp);
+            });
+            return map;
+        }
     }
 });
 

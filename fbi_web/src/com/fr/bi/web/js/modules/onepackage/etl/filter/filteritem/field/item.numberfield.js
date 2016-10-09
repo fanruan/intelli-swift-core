@@ -164,14 +164,7 @@ BI.ConfTargetNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             o.afterValueChange.apply(self, arguments);
         });
         BI.isNotNull(initData) && this.filterWidget.setValue(initData);
-        return BI.createWidget({
-            type: "bi.inline",
-            items: [{
-                type: "bi.label",
-                height: this._constant.BUTTON_HEIGHT,
-                text: "N = "
-            }, this.filterWidget]
-        });
+        return this.filterWidget;
     },
 
     _setNodeData: function(v){

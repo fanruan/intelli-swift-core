@@ -246,7 +246,8 @@ public class CubeTempModelReadingTableIndexLoader extends CubeAbstractLoader {
         } catch (URISyntaxException e) {
             throw BINonValueUtils.beyondControl(e);
         }
-        final String path = cubeLocation.getAbsolutePath();
+        File file = new File(cubeLocation.getAbsolutePath());
+        final String path = file.toURI().getRawPath();
         ICubeConfiguration cubeConfiguration = new ICubeConfiguration() {
             @Override
             public URI getRootURI() {

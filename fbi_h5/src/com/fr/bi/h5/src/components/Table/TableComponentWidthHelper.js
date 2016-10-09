@@ -30,6 +30,7 @@ class TableComponentWidthHelper {
         }
     }
 
+    //最小二乘法
     fit(widths) {
         if (widths.length < 2) {
             return {a: widths[0], b: 0};
@@ -53,7 +54,7 @@ class TableComponentWidthHelper {
     getGBWidth(str) {
         str = str + '';
         str = str.replace(/[^\x00-\xff]/g, 'xx');
-        return Math.ceil(str.length/2);
+        return Math.ceil(str.length / 2);
     }
 
     getWidthsByOneCol(col) {
@@ -112,7 +113,8 @@ class TableComponentWidthHelper {
     getWidth() {
         const result = [];
         each(this.items, (col)=> {
-            result.push(math.ceil(this.fit(this.getWidthsByOneCol(col)).a * 14 * 1.2) + REMAIN_WIDTH);
+            const fx = this.fit(this.getWidthsByOneCol(col));
+            result.push(math.ceil((fx.a + fx.b * math.ceil((1 + col.length) / 2)) * 14 * 1.2) + REMAIN_WIDTH);
         });
         return this.adjustWidth(result);
     }

@@ -1,10 +1,7 @@
-import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
-import * as TodoActions from '../actions/todos';
-import {requestAnimationFrame} from 'core'
+import * as TodoActions from '../actions/template';
+import {requestAnimationFrame, ReactComponentWithImmutableRenderMixin} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -15,48 +12,14 @@ import React, {
     Fetch,
     Navigator,
     TouchableOpacity
-    } from 'lib'
+} from 'lib'
 
 import {Colors, Template} from 'data'
 
 import Toolbar from './Toolbar'
-import Layout from './Layout'
+import Layout from './Layout/Layout'
 
 const {width, height} = Dimensions.get('window');
-
-const NavigationBarRouteMapper = {
-
-    LeftButton (route, navigator, index, navState) {
-        if (index === 0) {
-            return null;
-        }
-
-        return (
-            <TouchableOpacity
-                onPress={() => navigator.pop()}
-                style={styles.navBarLeftButton}>
-                <Text style={[styles.navBarText, styles.navBarButtonText]}>
-                    返回
-                </Text>
-            </TouchableOpacity>
-        );
-    },
-
-    RightButton (route, navigator, index, navState) {
-        return (
-            <View/>
-        );
-    },
-
-    Title (route, navigator, index, navState) {
-        return (
-            <Text style={[styles.navBarText, styles.navBarTitleText]}>
-                {route.title}
-            </Text>
-        );
-    }
-
-};
 
 class Main extends Component {
     static propTypes = {};
@@ -64,12 +27,92 @@ class Main extends Component {
     constructor(props, context) {
         super(props, context);
         console.log(props);
-        this.template = new Template(props.$$template);
+        this.template = new Template(props.$template);
         // template={new Template(template)} actions={actions}
     }
 
+    navigationBarRouteMapper() {
+        const self = this;
+        return {
+
+            LeftButton (route, navigator, index, navState) {
+                if (index === 0) {
+                    return null;
+                }
+
+                return (
+                    <TouchableOpacity
+                        onPress={() => navigator.pop()}
+                        style={styles.navBarLeftButton}>
+                        <Text style={[styles.navBarText, styles.navBarButtonText]}>
+                            返回
+                        </Text>
+                    </TouchableOpacity>
+                );
+            },
+
+            RightButton (route, navigator, index, navState) {
+                if (index === 0) {
+                    return null;
+                }
+
+                if (route.name === 'widget') {
+                    return (
+                        <TouchableOpacity
+                            onPress={() => {
+                                const prevRoute = navState.routeStack[navState.presentedIndex - 1];
+                                if (route.$template) {
+                                    prevRoute.$template = route.$template;
+                                    navigator.replacePreviousAndPop(prevRoute);
+                                } else {
+                                    navigator.pop();
+                                }
+                            }}
+                            style={styles.navBarRightButton}>
+                            <Text style={[styles.navBarText, styles.navBarButtonText]}>
+                                确定
+                            </Text>
+                        </TouchableOpacity>
+                    );
+                }
+
+                if (route.name === 'list') {
+                    return (
+                        <TouchableOpacity
+                            onPress={() => {
+                                const prevRoute = navState.routeStack[navState.presentedIndex - 1];
+                                if (route.$template) {
+                                    prevRoute.$template = route.$template;
+                                    self.props.actions.updateTemplate(route.$template);
+                                    navigator.replacePreviousAndPop(prevRoute);
+                                } else {
+                                    navigator.pop();
+                                }
+                            }}
+                            style={styles.navBarRightButton}>
+                            <Text style={[styles.navBarText, styles.navBarButtonText]}>
+                                查询
+                            </Text>
+                        </TouchableOpacity>
+                    );
+                }
+
+                return null;
+            },
+
+            Title (route, navigator, index, navState) {
+                return (
+                    <Text style={[styles.navBarText, styles.navBarTitleText]}>
+                        {route.title}
+                    </Text>
+                );
+            }
+        }
+    };
+
     renderScene(route, navigationOperations, onComponentRef) {
         const {...props} = this.props;
+        const {name, Component, title, onValueChange, ...others} = route;
         if (route.name === 'index') {
             if (this.template.hasControlWidget()) {
                 return <View style={styles.index}>
@@ -83,11 +126,14 @@ class Main extends Component {
             return <Layout width={width} height={height} {...props}/>;
         }
         return (
-            <route.Component
+            <Component
                 width={width} height={height - 50}
-                {...props}
+                {...others}
+                onValueChange={$template=> {
+                    route.$template = $template;
+                }}
                 navigator={navigationOperations}
-                />
+            />
         );
     }
 
@@ -100,7 +146,7 @@ class Main extends Component {
                 renderScene={this.renderScene.bind(this)}
                 navigationBar={
                     <Navigator.NavigationBar
-                        routeMapper={NavigationBarRouteMapper}
+                        routeMapper={this.navigationBarRouteMapper()}
                         style={styles.navBar}
                     />
                 }
@@ -110,7 +156,8 @@ class Main extends Component {
                     }
                     return Navigator.SceneConfigs.FloatFromRight;
                 }}
-                />
+                sceneStyle={styles.sceneStyle}
+            />
         );
     }
 
@@ -122,12 +169,8 @@ class Main extends Component {
 
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        debugger
-    }
-
     componentWillReceiveProps(nextProps) {
-        debugger
+
     }
 
     componentWillUpdate(nextProps, nextState) {
@@ -142,15 +185,17 @@ class Main extends Component {
 
     }
 }
-// mixin.onClass(Main, PureRenderMixin);
+mixin.onClass(Main, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         flex: 1,
-        backgroundColor: '#fff',
         paddingTop: 50
     },
     index: {
         flex: 1
+    },
+    sceneStyle: {
+        backgroundColor: '#ffffff'
     },
     navBar: {
         backgroundColor: '#efeff4',
@@ -168,6 +213,10 @@ const styles = StyleSheet.create({
     navBarLeftButton: {
         color: Colors.HIGHLIGHT,
         paddingLeft: 10
+    },
+    navBarRightButton: {
+        color: Colors.HIGHLIGHT,
+        paddingRight: 10
     }
 });
 

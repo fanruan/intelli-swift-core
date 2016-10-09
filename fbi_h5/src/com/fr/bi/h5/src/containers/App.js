@@ -1,34 +1,30 @@
-/* CAUTION: When using the generators, this file is modified in some places.
- *          This is done via AST traversal - Some of your formatting may be lost
- *          in the process - no functionality should be broken though.
- *          This modifications only run once when the generator is invoked - if
- *          you edit them, they are not updated again.
- */
-
+import mixin from 'react-mixin'
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
 import React, {
     Component,
     PropTypes,
     Text,
     View,
     ListView,
+    Fetch,
     TouchableBounce,
     TouchableHighlight,
     TouchableOpacity,
     TouchableWithoutFeedback
-    } from 'lib';
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
+} from 'lib';
+
+import {ReactComponentWithImmutableRenderMixin} from 'core';
 import {Template} from 'data';
-import * as TodoActions from '../actions/todos';
+import * as TodoActions from '../actions/template';
 
 import Main from '../components/Main.js'
-//import Test from '../components/Test.js'
 
 //import PanResponderDemo from '../examples/base/2/PanResponder/PanResponder'
 //import ViewDemo from '../examples/base/2/View/View'
 //import ScrollViewDemo from '../examples/base/2/ScrollView/ScrollView'
 //import ListViewDemo from '../examples/base/2/ListView/ListView';
-// import PickerDemo from '../examples/base/2/Picker/Picker'
+//import PickerDemo from '../examples/base/2/Picker/Picker'
 //import DatePickerIOSDemo from '../examples/base/2/DatePickerIOS/DatePickerIOS'
 //import ViewPagerDemo from '../examples/base/2/ViewPager/ViewPager'
 //import NavigatorDemo from '../examples/base/2/Navigator/Navigator'
@@ -62,8 +58,23 @@ import Main from '../components/Main.js'
 
 //import UIExplorerApp from '../examples/UIExplorer/UIExplorerApp.web'
 
-/* Populated by react-webpack-redux:reducer */
+
 class App extends Component {
+    componentDidMount() {
+        setInterval(() => {
+            Fetch(BH.servletURL + '?op=fr_bi_dezi&cmd=update_session', {
+                method: "POST",
+                body: JSON.stringify({_t: new Date(), sessionID: BH.sessionID})
+            });
+        }, 30000);
+        window.onbeforeunload = ()=> {
+            Fetch(BH.servletURL + '?op=closesessionid', {
+                method: "POST",
+                body: JSON.stringify({_t: new Date(), sessionID: BH.sessionID})
+            });
+        };
+    }
+
     render() {
         return (
             <Main {...this.props}/>
@@ -71,24 +82,19 @@ class App extends Component {
     }
 }
 
-/* Populated by react-webpack-redux:reducer
- *
- * HINT: if you adjust the initial type of your reducer, you will also have to
- *       adjust it here.
- */
 App.propTypes = {
     actions: PropTypes.object.isRequired,
-    $$template: PropTypes.object.isRequired
+    $template: PropTypes.object.isRequired
 };
+mixin.onClass(App, ReactComponentWithImmutableRenderMixin);
+
 function mapStateToProps(state) {
-    /* Populated by react-webpack-redux:reducer */
     const props = {
-        $$template: state.get('template')
+        $template: state.get('template')
     };
     return props;
 }
 function mapDispatchToProps(dispatch) {
-    /* Populated by react-webpack-redux:action */
     const actionMap = {actions: bindActionCreators(TodoActions, dispatch)};
     return actionMap;
 }

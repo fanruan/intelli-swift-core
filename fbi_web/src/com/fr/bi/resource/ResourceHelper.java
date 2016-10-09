@@ -807,6 +807,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/chartsetting/charts/customscale/formula/customscale.formula.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/customscale/combo.customscale.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/customscale/trigger.customscale.css",
+                "com/fr/bi/web/css/modules/chartsetting/charts/detailedsetting/showtitle/showtitle.detailed.setting.popup.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/selectcolorcombo/item.selectcolor.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/selectcolorcombo/trigger.selectcolor.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/charts.setting.css",
@@ -1532,8 +1533,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/complextable/widget.complextable.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/detailtable/widget.detailtable.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/detailed.setting.trigger.js",
-                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/showtittle/showtittle.detailed.setting.combo.js",
-                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/showtittle/showtittle.detailed.setting.popup.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/showtitle/showtitle.detailed.setting.combo.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/showtitle/showtitle.detailed.setting.popup.js",
 
                 //展示表格
                 "com/fr/bi/web/js/modules/tablechartmanager/chartdisplay/chartdisplay.js",
@@ -1599,6 +1600,7 @@ public class ResourceHelper {
                 //one package
                 "com/fr/bi/web/js/modules/onepackage/widget.onepackage.js",
                 "com/fr/bi/web/js/modules/onepackage/widget.onepackage.model.js",
+                "com/fr/bi/web/js/modules/onepackage/widget.refreshtablefields.js",
 
                 //数据连接
                 "com/fr/bi/web/js/modules/datalink/widget.testlink.loading.js",
@@ -3007,10 +3009,11 @@ public class ResourceHelper {
 
     public static String[] getH5Js(){
         return new String[] {
-                "com/fr/bi/web/js/third/ajax.js",
+                "com/fr/bi/web/js/third/zepto.js",
                 "com/fr/bi/web/js/third/d3.js",
                 "com/fr/bi/web/js/third/leaflet.js",
                 "com/fr/bi/web/js/third/vancharts-all.js",
+                "com/fr/bi/web/mobile/mobile.data.js",
                 "com/fr/bi/web/js/core/foundation.js",
                 "com/fr/bi/web/js/data/data.js",
                 "com/fr/bi/web/js/data/constant/biconst.js",
@@ -3018,8 +3021,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/data/constant/strings.js",
                 "com/fr/bi/web/js/data/constant/enums.js",
                 "com/fr/bi/web/js/data/constant/colors.js",
-                "com/fr/bi/web/js/data/constant/attrs.js",
-                "com/fr/bi/web/mobile/mobile.data.js"
+                "com/fr/bi/web/js/data/constant/attrs.js"
         };
     }
 }

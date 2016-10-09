@@ -52,6 +52,7 @@ BI.Editor = BI.inherit(BI.Single, {
                 text: this.options.watermark,
                 height: this.options.height,
                 forceCenter: true,
+                height: o.height - 2 * (o.vgap + o.tgap),
                 whiteSpace: "nowrap",
                 textAlign: "left"
             });
