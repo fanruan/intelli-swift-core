@@ -655,7 +655,7 @@
         },
 
         //settings  ---- start ----
-        getWSDetailSettingByID: function (wid) {
+        getWSTitleDetailSettingByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.title_detail) ? ws.title_detail :
             {};
