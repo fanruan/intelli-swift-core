@@ -26,6 +26,62 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
     _init: function () {
         BI.GroupTableSetting.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
+        //显示组件标题
+        this.showTitle = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Chart_Title"),
+            cls: "attr-names",
+            logic: {
+                dynamic: true
+            }
+        });
+        this.showTitle.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+        });
+
+        //组件标题
+        this.title = BI.createWidget({
+            type: "bi.sign_editor",
+            cls: "title-input",
+            width: 120,
+            height: this.constant.EDITOR_HEIGHT,
+        });
+
+        this.title.on(BI.SignEditor.EVENT_CHANGE, function() {
+            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+        });
+
+        //详细设置
+        this.titleDetailSettting = BI.createWidget({
+            type: "bi.show_title_detailed_setting_combo"
+        });
+
+        this.titleDetailSettting.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+        });
+
+        var widgetTitle = BI.createWidget({
+            type: "bi.left",
+            cls: "single-line-settings",
+            items: BI.createItems([{
+                type: "bi.label",
+                text: BI.i18nText("BI-Widget_Title"),
+                cls: "line-title",
+            }, {
+                type: "bi.vertical_adapt",
+                items: [this.showTitle]
+            }, {
+                type: "bi.vertical_adapt",
+                items: [this.title]
+            },{
+                type: "bi.vertical_adapt",
+                items: [this.titleDetailSettting]
+            }], {
+                height: this.constant.SINGLE_LINE_HEIGHT
+            }),
+            hgap: this.constant.SIMPLE_H_GAP
+        });
+
         //类型——横向、纵向展开
         this.tableFormGroup = BI.createWidget({
             type: "bi.button_group",
@@ -234,13 +290,16 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [tableStyle, show, otherAttr],
+            items: [widgetTitle, tableStyle, show, otherAttr],
             hgap: 10
         })
     },
 
     getValue: function () {
         return {
+            show_name: this.showTitle.isSelected(),
+            widget_title: this.title.getValue(),
+            title_detail: this.titleDetailSettting.getValue(),
             table_form: this.tableFormGroup.getValue()[0],
             theme_color: this.colorSelector.getValue(),
             table_style: this.tableSyleGroup.getValue()[0],
@@ -255,6 +314,9 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
 
     populate: function () {
         var wId = this.options.wId;
+        this.showTitle.setSelected(BI.Utils.getWSShowNameByID(wId));
+        this.title.setValue(BI.Utils.getWidgetNameByID(wId));
+        this.titleDetailSettting.setValue(BI.Utils.getWSDetailSettingByID(wId));
         this.tableFormGroup.setValue(BI.Utils.getWSTableFormByID(wId));
         this.colorSelector.setValue(BI.Utils.getWSThemeColorByID(wId));
         this.tableSyleGroup.setValue(BI.Utils.getWSTableStyleByID(wId));
@@ -267,6 +329,9 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
     },
 
     setValue: function (v) {
+        this.showTitle.setSelected(v.show_name);
+        this.title.setValue(v.widget_title);
+        this.titleDetailSettting.setValue(v.title_detail);
         this.tableFormGroup.setValue(v.table_form);
         this.colorSelector.setValue(v.theme_color);
         this.tableSyleGroup.setValue(v.table_style);

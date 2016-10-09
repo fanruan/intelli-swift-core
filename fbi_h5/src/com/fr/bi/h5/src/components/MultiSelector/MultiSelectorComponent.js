@@ -50,7 +50,9 @@ class MultiSelectorComponent extends Component {
 
     render() {
         const {...props} = this.props;
-        const widget = new Widget(props.$$widget);
+        const template = new Template(props.$template);
+        const wId = props.wId;
+        const widget = template.getWidgetById(wId);
         return <MultiSelectorWidget
             style={styles.wrapper}
             type={widget.getSelectType()}
@@ -60,7 +62,11 @@ class MultiSelectorComponent extends Component {
             }}
             width={props.width}
             height={props.height}
-            onValueChange={this.props.onValueChange.bind(this)}
+            onValueChange={(value)=> {
+                widget.setValue(value);
+                template.setWidget(wId, widget);
+                this.props.onValueChange(template.$get());
+            }}
         >
         </MultiSelectorWidget>
     }
