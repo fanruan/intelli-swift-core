@@ -12,15 +12,15 @@ import React, {
     Fetch
 } from 'lib'
 
-import {Template, Widget} from 'data'
+import {Size, Template, Widget} from 'data'
+
+import {Table, IconButton, HtapeLayout, VtapeLayout} from 'base'
 import {TableWidget} from 'widgets';
 
 import TableComponentHelper from './TableComponentHelper';
 import TableComponentWidthHelper from './TableComponentWidthHelper'
 import TableCell from './TableCell'
 import TableHeader from './TableHeader'
-
-import {Table} from 'base'
 
 
 class TableComponent extends Component {
@@ -65,42 +65,60 @@ class TableComponent extends Component {
         });
     }
 
+    _renderHeader() {
+        const {$widget} = this.props;
+        const widget = new Widget($widget);
+        return <HtapeLayout height={Size.HEADER_HEIGHT} style={styles.header}>
+            <Text style={styles.name}>{widget.getName()}</Text>
+            <IconButton width={Size.HEADER_HEIGHT} className='delete'/>
+        </HtapeLayout>
+    }
+
     render() {
         const {width, height} = this.props;
         const items = this._tableHelper.getItems();
         this._widthHelper.setItems(items);
-        return <TableWidget
-            width={width}
-            height={height}
-            freezeCols={this._tableHelper.isFreeze() ? [0] : []}
-            columnSize={this._widthHelper.getWidth()}
-            header={this._tableHelper.getHeader()}
-            items={items}
-            groupHeader={this._tableHelper.getGroupHeader()}
-            groupItems={this._tableHelper.getGroupItems()}
-            /**groupHeader={[{text: 1}, {text: 2}]}
-             groupItems={[{children:[{text: 'A', children: [{text: 'A1'}, {text: 'A2'}]}, {text: 'B'}]}]}**/
-            groupHeaderCellRenderer={({colIndex, ...cell})=> {
-                return <TableHeader {...cell}/>
-            }}
-            groupItemsCellRenderer={({...cell})=> {
-                return <TableHeader {...cell}/>
-            }}
-            headerCellRenderer={({colIndex, ...cell})=> {
-                return <TableHeader {...cell}/>
-            }}
-            itemsCellRenderer={({colIndex, rowIndex, ...cell}) => {
-                return <TableCell {...cell}/>
-            }}
-        >
-        </TableWidget>
+        return <VtapeLayout>
+            {this._renderHeader()}
+            <TableWidget
+                width={width}
+                height={height - Size.HEADER_HEIGHT}
+                freezeCols={this._tableHelper.isFreeze() ? [0] : []}
+                columnSize={this._widthHelper.getWidth()}
+                header={this._tableHelper.getHeader()}
+                items={items}
+                groupHeader={this._tableHelper.getGroupHeader()}
+                groupItems={this._tableHelper.getGroupItems()}
+                /**groupHeader={[{text: 1}, {text: 2}]}
+                 groupItems={[{children:[{text: 'A', children: [{text: 'A1'}, {text: 'A2'}]}, {text: 'B'}]}]}**/
+                groupHeaderCellRenderer={({colIndex, ...cell})=> {
+                    return <TableHeader {...cell}/>
+                }}
+                groupItemsCellRenderer={({...cell})=> {
+                    return <TableHeader {...cell}/>
+                }}
+                headerCellRenderer={({colIndex, ...cell})=> {
+                    return <TableHeader {...cell}/>
+                }}
+                itemsCellRenderer={({colIndex, rowIndex, ...cell}) => {
+                    return <TableCell {...cell}/>
+                }}
+            >
+            </TableWidget>
+        </VtapeLayout>
     }
 }
 mixin.onClass(TableComponent, ReactComponentWithImmutableRenderMixin);
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
     wrapper: {
         position: 'relative'
+    },
+    name: {
+        lineHeight: Size.HEADER_HEIGHT,
+        paddingLeft: 4,
+        paddingRight: 4,
+        justifyContent: 'center'
     }
 });
 export default TableComponent

@@ -4764,8 +4764,7 @@ webpackJsonp([0],{
 	_reactMixin2.default.onClass(Controls, _core.ReactComponentWithImmutableRenderMixin);
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
-	        flex: 1,
-	        backgroundColor: '#fff'
+	        flex: 1
 	    },
 	    title: {
 	        justifyContent: 'space-between',
@@ -5216,7 +5215,7 @@ webpackJsonp([0],{
 	                        _this2.viewPager = viewPager;
 	                    } },
 	                [_lib2.default.createElement(_lib.ListView, _extends({}, props, {
-	                    initialListSize: Math.ceil(props.height / 270) + 1,
+	                    initialListSize: Math.ceil(props.height / 310) + 1,
 	                    dataSource: this.state.dataSource,
 	                    renderRow: this._renderRow.bind(this)
 	                }))]
@@ -5238,7 +5237,7 @@ webpackJsonp([0],{
 	                $widget: $widget,
 	                wId: wId,
 	                width: this.props.width - 40,
-	                height: 230
+	                height: 270
 	            };
 	            var component = null;
 	            switch (type) {
@@ -5358,6 +5357,8 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
+	var _base = __webpack_require__(780);
+
 	var _data = __webpack_require__(770);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -5416,10 +5417,32 @@ webpackJsonp([0],{
 	            });
 	        }
 	    }, {
+	        key: '_renderHeader',
+	        value: function _renderHeader() {
+	            var $widget = this.props.$widget;
+
+	            var widget = new _data.Widget($widget);
+	            return _lib2.default.createElement(
+	                _base.HtapeLayout,
+	                { height: _data.Size.HEADER_HEIGHT, style: styles.header },
+	                _lib2.default.createElement(
+	                    _lib.Text,
+	                    { style: styles.name },
+	                    widget.getName()
+	                ),
+	                _lib2.default.createElement(_base.IconButton, { width: _data.Size.HEADER_HEIGHT, className: 'delete' })
+	            );
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
 
-	            return _lib2.default.createElement(_lib.View, { ref: 'chart', style: _extends({ height: this.props.height }, style.wrapper) });
+	            return _lib2.default.createElement(
+	                _base.VtapeLayout,
+	                null,
+	                this._renderHeader(),
+	                _lib2.default.createElement(_lib.View, { ref: 'chart', style: _extends({ height: this.props.height }, styles.wrapper) })
+	            );
 	        }
 	    }]);
 
@@ -5432,9 +5455,15 @@ webpackJsonp([0],{
 
 	_reactMixin2.default.onClass(ChartComponent, _core.ReactComponentWithImmutableRenderMixin);
 
-	var style = _lib.StyleSheet.create({
+	var styles = _lib.StyleSheet.create({
 	    wrapper: {
 	        position: 'relative'
+	    },
+	    name: {
+	        lineHeight: _data.Size.HEADER_HEIGHT,
+	        paddingLeft: 4,
+	        paddingRight: 4,
+	        justifyContent: 'center'
 	    }
 	});
 	exports.default = ChartComponent;
@@ -5472,6 +5501,8 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(770);
 
+	var _base = __webpack_require__(780);
+
 	var _widgets = __webpack_require__(897);
 
 	var _TableComponentHelper = __webpack_require__(915);
@@ -5489,8 +5520,6 @@ webpackJsonp([0],{
 	var _TableHeader = __webpack_require__(918);
 
 	var _TableHeader2 = _interopRequireDefault(_TableHeader);
-
-	var _base = __webpack_require__(780);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5553,6 +5582,23 @@ webpackJsonp([0],{
 	            });
 	        }
 	    }, {
+	        key: '_renderHeader',
+	        value: function _renderHeader() {
+	            var $widget = this.props.$widget;
+
+	            var widget = new _data.Widget($widget);
+	            return _lib2.default.createElement(
+	                _base.HtapeLayout,
+	                { height: _data.Size.HEADER_HEIGHT, style: styles.header },
+	                _lib2.default.createElement(
+	                    _lib.Text,
+	                    { style: styles.name },
+	                    widget.getName()
+	                ),
+	                _lib2.default.createElement(_base.IconButton, { width: _data.Size.HEADER_HEIGHT, className: 'delete' })
+	            );
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
 	            var _props2 = this.props;
@@ -5561,45 +5607,50 @@ webpackJsonp([0],{
 
 	            var items = this._tableHelper.getItems();
 	            this._widthHelper.setItems(items);
-	            return _lib2.default.createElement(_widgets.TableWidget, {
-	                width: width,
-	                height: height,
-	                freezeCols: this._tableHelper.isFreeze() ? [0] : [],
-	                columnSize: this._widthHelper.getWidth(),
-	                header: this._tableHelper.getHeader(),
-	                items: items,
-	                groupHeader: this._tableHelper.getGroupHeader(),
-	                groupItems: this._tableHelper.getGroupItems()
-	                /**groupHeader={[{text: 1}, {text: 2}]}
-	                 groupItems={[{children:[{text: 'A', children: [{text: 'A1'}, {text: 'A2'}]}, {text: 'B'}]}]}**/
-	                , groupHeaderCellRenderer: function groupHeaderCellRenderer(_ref) {
-	                    var colIndex = _ref.colIndex;
+	            return _lib2.default.createElement(
+	                _base.VtapeLayout,
+	                null,
+	                this._renderHeader(),
+	                _lib2.default.createElement(_widgets.TableWidget, {
+	                    width: width,
+	                    height: height - _data.Size.HEADER_HEIGHT,
+	                    freezeCols: this._tableHelper.isFreeze() ? [0] : [],
+	                    columnSize: this._widthHelper.getWidth(),
+	                    header: this._tableHelper.getHeader(),
+	                    items: items,
+	                    groupHeader: this._tableHelper.getGroupHeader(),
+	                    groupItems: this._tableHelper.getGroupItems()
+	                    /**groupHeader={[{text: 1}, {text: 2}]}
+	                     groupItems={[{children:[{text: 'A', children: [{text: 'A1'}, {text: 'A2'}]}, {text: 'B'}]}]}**/
+	                    , groupHeaderCellRenderer: function groupHeaderCellRenderer(_ref) {
+	                        var colIndex = _ref.colIndex;
 
-	                    var cell = _objectWithoutProperties(_ref, ['colIndex']);
+	                        var cell = _objectWithoutProperties(_ref, ['colIndex']);
 
-	                    return _lib2.default.createElement(_TableHeader2.default, cell);
-	                },
-	                groupItemsCellRenderer: function groupItemsCellRenderer(_ref2) {
-	                    var cell = _objectWithoutProperties(_ref2, []);
+	                        return _lib2.default.createElement(_TableHeader2.default, cell);
+	                    },
+	                    groupItemsCellRenderer: function groupItemsCellRenderer(_ref2) {
+	                        var cell = _objectWithoutProperties(_ref2, []);
 
-	                    return _lib2.default.createElement(_TableHeader2.default, cell);
-	                },
-	                headerCellRenderer: function headerCellRenderer(_ref3) {
-	                    var colIndex = _ref3.colIndex;
+	                        return _lib2.default.createElement(_TableHeader2.default, cell);
+	                    },
+	                    headerCellRenderer: function headerCellRenderer(_ref3) {
+	                        var colIndex = _ref3.colIndex;
 
-	                    var cell = _objectWithoutProperties(_ref3, ['colIndex']);
+	                        var cell = _objectWithoutProperties(_ref3, ['colIndex']);
 
-	                    return _lib2.default.createElement(_TableHeader2.default, cell);
-	                },
-	                itemsCellRenderer: function itemsCellRenderer(_ref4) {
-	                    var colIndex = _ref4.colIndex;
-	                    var rowIndex = _ref4.rowIndex;
+	                        return _lib2.default.createElement(_TableHeader2.default, cell);
+	                    },
+	                    itemsCellRenderer: function itemsCellRenderer(_ref4) {
+	                        var colIndex = _ref4.colIndex;
+	                        var rowIndex = _ref4.rowIndex;
 
-	                    var cell = _objectWithoutProperties(_ref4, ['colIndex', 'rowIndex']);
+	                        var cell = _objectWithoutProperties(_ref4, ['colIndex', 'rowIndex']);
 
-	                    return _lib2.default.createElement(_TableCell2.default, cell);
-	                }
-	            });
+	                        return _lib2.default.createElement(_TableCell2.default, cell);
+	                    }
+	                })
+	            );
 	        }
 	    }]);
 
@@ -5612,9 +5663,15 @@ webpackJsonp([0],{
 
 	_reactMixin2.default.onClass(TableComponent, _core.ReactComponentWithImmutableRenderMixin);
 
-	var style = _lib.StyleSheet.create({
+	var styles = _lib.StyleSheet.create({
 	    wrapper: {
 	        position: 'relative'
+	    },
+	    name: {
+	        lineHeight: _data.Size.HEADER_HEIGHT,
+	        paddingLeft: 4,
+	        paddingRight: 4,
+	        justifyContent: 'center'
 	    }
 	});
 	exports.default = TableComponent;
@@ -6162,6 +6219,8 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(770);
 
+	var _base = __webpack_require__(780);
+
 	var _widgets = __webpack_require__(897);
 
 	var _DetailTableComponentHelper = __webpack_require__(920);
@@ -6179,8 +6238,6 @@ webpackJsonp([0],{
 	var _TableHeader = __webpack_require__(918);
 
 	var _TableHeader2 = _interopRequireDefault(_TableHeader);
-
-	var _base = __webpack_require__(780);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6246,6 +6303,23 @@ webpackJsonp([0],{
 	            });
 	        }
 	    }, {
+	        key: '_renderHeader',
+	        value: function _renderHeader() {
+	            var $widget = this.props.$widget;
+
+	            var widget = new _data.Widget($widget);
+	            return _lib2.default.createElement(
+	                _base.HtapeLayout,
+	                { height: _data.Size.HEADER_HEIGHT, style: styles.header },
+	                _lib2.default.createElement(
+	                    _lib.Text,
+	                    { style: styles.name },
+	                    widget.getName()
+	                ),
+	                _lib2.default.createElement(_base.IconButton, { width: _data.Size.HEADER_HEIGHT, className: 'delete' })
+	            );
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
 	            var _props2 = this.props;
@@ -6254,29 +6328,35 @@ webpackJsonp([0],{
 
 	            var items = this._tableHelper.getItems();
 	            this._widthHelper.setItems(items);
-	            return _lib2.default.createElement(_widgets.TableWidget, {
-	                width: width,
-	                height: height,
-	                freezeCols: this._tableHelper.isFreeze() ? [0] : [],
-	                columnSize: this._widthHelper.getWidth(),
-	                header: this._tableHelper.getHeader(),
-	                items: items,
-	                headerCellRenderer: function headerCellRenderer(_ref) {
-	                    var colIndex = _ref.colIndex;
 
-	                    var cell = _objectWithoutProperties(_ref, ['colIndex']);
+	            return _lib2.default.createElement(
+	                _base.VtapeLayout,
+	                null,
+	                this._renderHeader(),
+	                _lib2.default.createElement(_widgets.TableWidget, {
+	                    width: width,
+	                    height: height - _data.Size.HEADER_HEIGHT,
+	                    freezeCols: this._tableHelper.isFreeze() ? [0] : [],
+	                    columnSize: this._widthHelper.getWidth(),
+	                    header: this._tableHelper.getHeader(),
+	                    items: items,
+	                    headerCellRenderer: function headerCellRenderer(_ref) {
+	                        var colIndex = _ref.colIndex;
 
-	                    return _lib2.default.createElement(_TableHeader2.default, cell);
-	                },
-	                itemsCellRenderer: function itemsCellRenderer(_ref2) {
-	                    var colIndex = _ref2.colIndex;
-	                    var rowIndex = _ref2.rowIndex;
+	                        var cell = _objectWithoutProperties(_ref, ['colIndex']);
 
-	                    var cell = _objectWithoutProperties(_ref2, ['colIndex', 'rowIndex']);
+	                        return _lib2.default.createElement(_TableHeader2.default, cell);
+	                    },
+	                    itemsCellRenderer: function itemsCellRenderer(_ref2) {
+	                        var colIndex = _ref2.colIndex;
+	                        var rowIndex = _ref2.rowIndex;
 
-	                    return _lib2.default.createElement(_TableCell2.default, cell);
-	                }
-	            });
+	                        var cell = _objectWithoutProperties(_ref2, ['colIndex', 'rowIndex']);
+
+	                        return _lib2.default.createElement(_TableCell2.default, cell);
+	                    }
+	                })
+	            );
 	        }
 	    }]);
 
@@ -6289,9 +6369,15 @@ webpackJsonp([0],{
 
 	_reactMixin2.default.onClass(DetailTableComponent, _core.ReactComponentWithImmutableRenderMixin);
 
-	var style = _lib.StyleSheet.create({
+	var styles = _lib.StyleSheet.create({
 	    wrapper: {
 	        position: 'relative'
+	    },
+	    name: {
+	        lineHeight: _data.Size.HEADER_HEIGHT,
+	        paddingLeft: 4,
+	        paddingRight: 4,
+	        justifyContent: 'center'
 	    }
 	});
 	exports.default = DetailTableComponent;
@@ -6499,7 +6585,7 @@ webpackJsonp([0],{
 
 
 	// module
-	exports.push([module.id, "/****** common color(常用颜色,可用于普遍场景) *****/\n/**** custom color(自定义颜色,用于特定场景) ****/\n.tool-filter .b-font:before {\n  content: '\\E624';\n  color: #808080;\n}\n.tool-filter:active .b-font:before {\n  content: '\\E624';\n  color: #009de3;\n}\n.tool-filter.disabled .b-font:before {\n  content: '\\E624';\n  color: #808080;\n}\n.node-fold .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.node-fold:active .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.node-fold.active .b-font:before {\n  content: '\\E611';\n  color: #808080;\n}\n.node-fold.disabled .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n", ""]);
+	exports.push([module.id, "/****** common color(常用颜色,可用于普遍场景) *****/\n/**** custom color(自定义颜色,用于特定场景) ****/\n.tool-filter .b-font:before {\n  content: '\\E624';\n  color: #808080;\n}\n.tool-filter:active .b-font:before {\n  content: '\\E624';\n  color: #009de3;\n}\n.tool-filter.disabled .b-font:before {\n  content: '\\E624';\n  color: #808080;\n}\n.node-fold .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.node-fold:active .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.node-fold.active .b-font:before {\n  content: '\\E611';\n  color: #808080;\n}\n.node-fold.disabled .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.delete .b-font:before {\n  content: '\\E606';\n  color: #808080;\n}\n.delete.disabled .b-font:before {\n  content: '\\E606';\n  color: #808080;\n}\n", ""]);
 
 	// exports
 

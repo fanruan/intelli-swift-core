@@ -54,7 +54,7 @@ class Layout extends Component {
             }}>
             {[<ListView
                 {...props}
-                initialListSize={Math.ceil(props.height / 270) + 1}
+                initialListSize={Math.ceil(props.height / 310) + 1}
                 dataSource={this.state.dataSource}
                 renderRow={this._renderRow.bind(this)}
             />]}
@@ -75,7 +75,7 @@ class Layout extends Component {
             $widget,
             wId,
             width: this.props.width - 40,
-            height: 230
+            height: 270
         };
         let component = null;
         switch (type) {

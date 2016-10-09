@@ -123,8 +123,7 @@ class Controls extends Component {
 mixin.onClass(Controls, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
-        flex: 1,
-        backgroundColor: '#fff'
+        flex: 1
     },
     title: {
         justifyContent: 'space-between',

@@ -10,7 +10,8 @@ import React, {
     View,
     Fetch
 } from 'lib'
-import {Template, Widget} from 'data'
+import {IconButton, HtapeLayout, VtapeLayout} from 'base'
+import {Size, Template, Widget} from 'data'
 
 
 class ChartComponent extends Component {
@@ -48,16 +49,34 @@ class ChartComponent extends Component {
         });
     }
 
+    _renderHeader() {
+        const {$widget} = this.props;
+        const widget = new Widget($widget);
+        return <HtapeLayout height={Size.HEADER_HEIGHT} style={styles.header}>
+            <Text style={styles.name}>{widget.getName()}</Text>
+            <IconButton width={Size.HEADER_HEIGHT} className='delete'/>
+        </HtapeLayout>
+    }
+
     render() {
 
-        return <View ref='chart' style={{height: this.props.height, ...style.wrapper}}></View>
+        return <VtapeLayout>
+            {this._renderHeader()}
+            <View ref='chart' style={{height: this.props.height, ...styles.wrapper}}/>
+        </VtapeLayout>
     }
 }
 mixin.onClass(ChartComponent, ReactComponentWithImmutableRenderMixin);
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
     wrapper: {
         position: 'relative'
+    },
+    name: {
+        lineHeight: Size.HEADER_HEIGHT,
+        paddingLeft: 4,
+        paddingRight: 4,
+        justifyContent: 'center'
     }
 });
 export default ChartComponent

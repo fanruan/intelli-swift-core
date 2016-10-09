@@ -28,3 +28,11 @@
   content: '\e610';
   color: #808080;
 }
+.delete .b-font:before {
+  content: '\e606';
+  color: #808080;
+}
+.delete.disabled .b-font:before {
+  content: '\e606';
+  color: #808080;
+}
