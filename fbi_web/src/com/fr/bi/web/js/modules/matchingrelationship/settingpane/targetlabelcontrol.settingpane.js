@@ -60,7 +60,7 @@ BI.TargetLabelControl = BI.inherit(BI.Widget, {
                 height: 30,
                 cls: "target-name-label"
             },
-            width: BI.DOM.getTextSizeWidth(text, this.constants.font_size)
+            width: BI.DOM.getTextSizeWidth(text, this.constants.font_size) + 1
         }, {
             type: "bi.label",
             title: text + "("+ tableName + ")",

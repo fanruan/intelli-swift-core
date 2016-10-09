@@ -40,13 +40,16 @@ BI.MatchingRelationShipTab = BI.inherit(BI.Widget,{
                     self.setSelect(BI.MatchingRelationShipTab.SETTING_PANE);
                     self.populate(BI.keys(v));
                     self.setValue(BI.values(v)[0]);
-                    self.fireEvent(BI.MatchingRelationShipTab.EVENT_CHANGE);
+                    self.fireEvent(BI.MatchingRelationShipTab.EVENT_CHANGE, BI.values(v)[0]);
                 });
                 return this.infoPane;
             case BI.MatchingRelationShipTab.SETTING_PANE:
                 this.setPane = BI.createWidget({
                     type: "bi.set_relation_pane",
                     dimensionId: o.dId
+                });
+                this.setPane.on(BI.SetRelationPane.EVENT_PATH_PANE_CHANGE, function(v){
+                    self.fireEvent(BI.MatchingRelationShipTab.EVENT_COMPLETE_VISIABLE_CHANGE, v);
                 });
                 return this.setPane;
         }
@@ -79,4 +82,5 @@ BI.extend(BI.MatchingRelationShipTab, {
 });
 
 BI.MatchingRelationShipTab.EVENT_CHANGE = "EVENT_CHANGE";
+BI.MatchingRelationShipTab.EVENT_COMPLETE_VISIABLE_CHANGE = "EVENT_COMPLETE_VISIABLE_CHANGE";
 $.shortcut("bi.matching_relationship_tab",BI.MatchingRelationShipTab);

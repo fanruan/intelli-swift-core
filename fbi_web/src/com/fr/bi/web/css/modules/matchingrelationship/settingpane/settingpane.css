@@ -9,3 +9,6 @@
   border: 1px solid #d4dadd;
   min-height: 240px;
 }
+.bi-set-relation-pane .setting-dimension-tip {
+  color: #e85050;
+}
