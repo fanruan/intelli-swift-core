@@ -490,8 +490,12 @@ BI.OnePackage = BI.inherit(BI.Widget, {
             tableId: id
         });
         mask.on(BI.RefreshTableLoadingMask.EVENT_REFRESH_SUCCESS, function (data) {
-            var tableData = data;
-            if (tableData.none_table != true) {
+            var refreshTableData = data;
+            if (refreshTableData.none_table != true) {
+                var tableData = data.table_data;
+                if(refreshTableData.new_table ===true){
+                    tableData = self.model.getTablesData()[id];
+                }
                 var connName = tableData.connection_name;
                 if (connName === BICst.CONNECTION.EXCEL_CONNECTION) {
                     type = "bi.etl_excel"
@@ -502,7 +506,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                     type: type,
                     element: BI.Layers.create(self._constant.ETL_LAYER),
                     id: id,
-                    table_data: tableData.table_data,
+                    table_data: tableData,
                     relations: self.model.getRelations(),
                     translations: self.model.getTranslations(),
                     all_fields: self.model.getAllFields(),
