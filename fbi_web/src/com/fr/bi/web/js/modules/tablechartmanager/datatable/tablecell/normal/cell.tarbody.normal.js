@@ -35,7 +35,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 color = co.color;
             }
         });
-        text = this._parseFloatByDot(text, format, num_separators);
+        text = BI.TargetBodyNormalCell.parseFloatByDot(text, format, num_separators);
         var textLabel = this._createTargetText(text);
         if (BI.isNotEmptyString(color)) {
             textLabel.element.css("color", color);
@@ -65,49 +65,6 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 items: [textLabel]
             })
         }
-    },
-
-    _parseFloatByDot: function (text, dot, separators) {
-        if (text === Infinity || text !== text) {
-            return text;
-        }
-        if (!BI.isNumeric(text)) {
-            return text;
-        }
-        var num = BI.parseFloat(text);
-        switch (dot) {
-            case BICst.TARGET_STYLE.FORMAT.NORMAL:
-                if (separators) {
-                    num = BI.contentFormat(num, '#,###.##;-#,###.##')
-                } else {
-                    num = BI.contentFormat(num, '#.##;-#.##')
-                }
-                return num;
-                break;
-            case BICst.TARGET_STYLE.FORMAT.ZERO2POINT:
-                if (separators) {
-                    num = BI.contentFormat(num, '#,###;-#,###')
-                } else {
-                    num = BI.parseInt(num)
-                }
-                return num;
-                break;
-            case BICst.TARGET_STYLE.FORMAT.ONE2POINT:
-                if (separators) {
-                    num = BI.contentFormat(num, '#,###.0;-#,###.0')
-                } else {
-                    num = BI.contentFormat(num, '#.0;-#.0')
-                }
-                return num;
-            case BICst.TARGET_STYLE.FORMAT.TWO2POINT:
-                if (separators) {
-                    num = BI.contentFormat(num, '#,###.00;-#,###.00')
-                } else {
-                    num = BI.contentFormat(num, '#.00;-#.00')
-                }
-                return num;
-        }
-        return text;
     },
 
     _getIconByStyleAndMark: function (text, style, mark) {
@@ -199,6 +156,48 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
 });
 $.shortcut("bi.target_body_normal_cell", BI.TargetBodyNormalCell);
 BI.extend(BI.TargetBodyNormalCell, {
+    parseFloatByDot: function (text, dot, separators) {
+        if (text === Infinity || text !== text) {
+            return text;
+        }
+        if (!BI.isNumeric(text)) {
+            return text;
+        }
+        var num = BI.parseFloat(text);
+        switch (dot) {
+            case BICst.TARGET_STYLE.FORMAT.NORMAL:
+                if (separators) {
+                    num = BI.contentFormat(num, '#,###.##;-#,###.##')
+                } else {
+                    num = BI.contentFormat(num, '#.##;-#.##')
+                }
+                return num;
+                break;
+            case BICst.TARGET_STYLE.FORMAT.ZERO2POINT:
+                if (separators) {
+                    num = BI.contentFormat(num, '#,###;-#,###')
+                } else {
+                    num = BI.parseInt(num)
+                }
+                return num;
+                break;
+            case BICst.TARGET_STYLE.FORMAT.ONE2POINT:
+                if (separators) {
+                    num = BI.contentFormat(num, '#,###.0;-#,###.0')
+                } else {
+                    num = BI.contentFormat(num, '#.0;-#.0')
+                }
+                return num;
+            case BICst.TARGET_STYLE.FORMAT.TWO2POINT:
+                if (separators) {
+                    num = BI.contentFormat(num, '#,###.00;-#,###.00')
+                } else {
+                    num = BI.contentFormat(num, '#.00;-#.00')
+                }
+                return num;
+        }
+        return text;
+    },
     parseNumByLevel: function (text, numLevel) {
         if (text === Infinity || text !== text || !BI.isNumber(text)) {
             return text;
@@ -213,7 +212,7 @@ BI.extend(BI.TargetBodyNormalCell, {
             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
                 return BI.contentFormat(text * 100, "#.##;-#.##");
             default:
-                return BI.parseFloat(BI.contentFormat(text.toFixed(2), "#.##;-#.##"));
+                return text;
         }
     }
 });

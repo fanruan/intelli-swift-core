@@ -1,7 +1,7 @@
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
 import Immutable from 'immutable'
-import {ReactComponentWithImmutableRenderMixin, requestAnimationFrame} from 'core'
+import {immutableShallowEqual, ReactComponentWithImmutableRenderMixin, requestAnimationFrame} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -12,8 +12,8 @@ import React, {
     Fetch
 } from 'lib'
 
-import {Template, Widget} from 'data'
-
+import {Size, Template, Widget} from 'data'
+import {IconButton, HtapeLayout, VtapeLayout} from 'base'
 import {TableWidget} from 'widgets';
 
 import DetailTableComponentHelper from './DetailTableComponentHelper';
@@ -49,8 +49,10 @@ class DetailTableComponent extends Component {
         this._fetchData();
     }
 
-    componentWillUpdate() {
-        this._fetchData();
+    componentWillReceiveProps(nexProps) {
+        if (!immutableShallowEqual(nexProps, this.props)) {
+            this._fetchData();
+        }
     }
 
     _fetchData() {
@@ -64,32 +66,51 @@ class DetailTableComponent extends Component {
         })
     }
 
+    _renderHeader() {
+        const {$widget} = this.props;
+        const widget = new Widget($widget);
+        return <HtapeLayout height={Size.HEADER_HEIGHT} style={styles.header}>
+            <Text style={styles.name}>{widget.getName()}</Text>
+            <IconButton width={Size.HEADER_HEIGHT} className='delete'/>
+        </HtapeLayout>
+    }
+
     render() {
         const {width, height} = this.props;
         const items = this._tableHelper.getItems();
         this._widthHelper.setItems(items);
-        return <TableWidget
-            width={width}
-            height={height}
-            freezeCols={this._tableHelper.isFreeze() ? [0] : []}
-            columnSize={this._widthHelper.getWidth()}
-            header={this._tableHelper.getHeader()}
-            items={items}
-            headerCellRenderer={({colIndex, ...cell})=> {
-                return <TableHeader {...cell}/>
-            }}
-            itemsCellRenderer={({colIndex, rowIndex, ...cell}) => {
-                return <TableCell {...cell}/>
-            }}
-        >
-        </TableWidget>
+
+        return <VtapeLayout>
+            {this._renderHeader()}
+            <TableWidget
+                width={width}
+                height={height - Size.HEADER_HEIGHT}
+                freezeCols={this._tableHelper.isFreeze() ? [0] : []}
+                columnSize={this._widthHelper.getWidth()}
+                header={this._tableHelper.getHeader()}
+                items={items}
+                headerCellRenderer={({colIndex, ...cell})=> {
+                    return <TableHeader {...cell}/>
+                }}
+                itemsCellRenderer={({colIndex, rowIndex, ...cell}) => {
+                    return <TableCell {...cell}/>
+                }}
+            >
+            </TableWidget>
+        </VtapeLayout>
     }
 }
 mixin.onClass(DetailTableComponent, ReactComponentWithImmutableRenderMixin);
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
     wrapper: {
         position: 'relative'
+    },
+    name: {
+        lineHeight: Size.HEADER_HEIGHT,
+        paddingLeft: 4,
+        paddingRight: 4,
+        justifyContent: 'center'
     }
 });
 export default DetailTableComponent
