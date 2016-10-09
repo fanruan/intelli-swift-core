@@ -6,7 +6,7 @@ import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -58,7 +58,7 @@ public class BIGetFieldsOfOneTableAction extends AbstractBIConfigureAction {
                     field.put("is_usable", BusinessTableHelper.getSpecificField(table, field.getString("field_name")).isUsable());
                     nFields.put(field);
                 } catch (BIFieldAbsentException exception) {
-                    BILogger.getLogger().error(exception.getMessage(), exception);
+                    BILoggerFactory.getLogger().error(exception.getMessage(), exception);
                 }
 
             }

@@ -12,7 +12,7 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.Status;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.conf.BISystemEnvUtils;
 import com.fr.bi.web.base.operation.BIOperationRecord;
 import com.fr.fs.base.entity.User;
@@ -284,7 +284,7 @@ public class BIWebUtils {
             }
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return true;
     }

@@ -6,7 +6,7 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.filtervalue.FilterValue;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.field.filtervalue.FilterValueFactory;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -56,7 +56,7 @@ public abstract class ColumnFilter implements TargetFilter {
                 JSONObject jo = new JSONObject(reader.getAttrAsString("value", StringUtils.EMPTY));
                 this.parseJSON(jo, UserControl.getInstance().getSuperManagerID());
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }
@@ -71,7 +71,7 @@ public abstract class ColumnFilter implements TargetFilter {
         try {
             writer.attr("value", createJSON().toString());
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         writer.end();
     }

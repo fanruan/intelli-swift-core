@@ -11,7 +11,7 @@ import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.structure.collection.list.IntList;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.stable.core.UUID;
 
 import java.util.Date;
@@ -88,7 +88,7 @@ public abstract class AbstractTableIndex implements ICubeTableService {
                 this.columns.put(new IndexKey(column.getFieldName()), column);
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -96,13 +96,13 @@ public abstract class AbstractTableIndex implements ICubeTableService {
         try {
             this.lastTime = cube.getCubeLastTime();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
 
         try {
             removedList = cube.getRemoveList(manager);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         this.allShowIndex = (removedList == null || removedList.size() == 0 )? GVIFactory.createAllShowIndexGVI(rowCount)
                 : GVIFactory.createGroupValueIndexBySimpleIndex(removedList).NOT(rowCount);
@@ -125,7 +125,7 @@ public abstract class AbstractTableIndex implements ICubeTableService {
         try {
             groupCount.put(key, cube.getGroupCount(key));
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return groupCount.get(key);
     }

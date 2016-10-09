@@ -3,7 +3,7 @@ package com.finebi.cube.data.disk.writer.primitive;
 import com.finebi.cube.data.ICubeSourceReleaseManager;
 import com.finebi.cube.data.output.primitive.ICubePrimitiveWriter;
 import com.fr.bi.stable.io.newio.NIOConstant;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.mem.BIMemoryUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
@@ -37,7 +37,7 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
                 baseFile.getParentFile().mkdirs();
                 baseFile.createNewFile();
             } catch (IOException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }
@@ -171,7 +171,7 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
                     initChild();
                     currentIndex = index;
                 } catch (IOException e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
             } finally {
                 readWriteLock.writeLock().unlock();
@@ -244,9 +244,9 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
 //                    cacheFile.createNewFile();
                     fc = new RandomAccessFile(cacheFile, "rw").getChannel();
                 } catch (FileNotFoundException e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 } catch (IOException e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
                 file_index = fileIndex;
             } finally {

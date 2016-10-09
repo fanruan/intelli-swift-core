@@ -1,7 +1,7 @@
 package com.fr.bi.stable.utils.file;
 
 import com.fr.base.FRContext;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.page.PagePainterProvider;
 import com.fr.page.ReportPageProvider;
 import com.fr.stable.Constants;
@@ -71,7 +71,7 @@ public class BIPictureUtils {
                     try {
                         ImageIO.write(result, "jpg", new File(filePath));
                     } catch (IOException e) {
-                        BILogger.getLogger().error(e.getMessage(), e);
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
                     }
                 }
             }

@@ -25,7 +25,7 @@ import com.fr.bi.stable.io.newio.NIOUtils;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.utils.BIRelationUtils;
 import com.fr.bi.stable.utils.CubeBaseUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
@@ -45,7 +45,7 @@ public class LinkInUseIndexEntry implements CubeGenerator {
 
     @Override
     public void generateCube() {
-        BILogger.getLogger().info("Prepare InUse Relations");
+        BILoggerFactory.getLogger().info("Prepare InUse Relations");
         long start = System.currentTimeMillis();
         List<LinkColumnUseIndexLoader> threadList = new ArrayList<LinkColumnUseIndexLoader>();
         Set<BusinessField> fields = new UseFieldGetter(user).getUsedField();
@@ -85,7 +85,7 @@ public class LinkInUseIndexEntry implements CubeGenerator {
         } catch (InterruptedException e) {
             FRContext.getLogger().error(e.getMessage(), e);
         }
-        BILogger.getLogger().info("Inuse Relations Completed! Cost:" + DateUtils.timeCostFrom(start));
+        BILoggerFactory.getLogger().info("Inuse Relations Completed! Cost:" + DateUtils.timeCostFrom(start));
     }
 
     private void creatLoader(List<LinkColumnUseIndexLoader> threadList, TableCubeFile cube, Set<String> fieldNames, CubeTableSource md5Table, ArrayList<BITableSourceRelation> parRelation) {

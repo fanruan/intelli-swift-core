@@ -1,6 +1,6 @@
 package com.fr.bi.stable.dbdealer;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import java.sql.ResultSet;
 import java.util.Date;
 
@@ -17,7 +17,7 @@ public class TimeDealer extends AbstractDealer<Long> {
         try {
             date = rs.getTime(rsColumn);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         if (date != null) {
             return date.getTime();

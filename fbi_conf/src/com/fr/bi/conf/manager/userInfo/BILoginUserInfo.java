@@ -10,7 +10,7 @@ import com.fr.bi.common.BICoreService;
 import com.fr.bi.common.BICoreWrapper;
 import com.fr.bi.exception.BIAmountLimitUnmetException;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
@@ -37,7 +37,7 @@ public class BILoginUserInfo implements XMLable, JSONTransform, BICoreService {
         try {
             return new BILoginUserInfoCore().fetchObjectCore();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return BIBasicCore.EMPTY_CORE;
     }

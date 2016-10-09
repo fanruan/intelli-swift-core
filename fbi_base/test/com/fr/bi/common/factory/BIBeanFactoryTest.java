@@ -1,7 +1,7 @@
 package com.fr.bi.common.factory;
 
-import com.fr.bi.stable.utils.code.BILogger;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import junit.framework.TestCase;
 
 /**
@@ -19,7 +19,7 @@ public class BIBeanFactoryTest extends TestCase {
             assertEquals(bean2.name, "1");
             assertEquals(bean2, bean1);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -40,7 +40,7 @@ public class BIBeanFactoryTest extends TestCase {
 
             assertEquals(bean2, bean1);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -57,7 +57,7 @@ public class BIBeanFactoryTest extends TestCase {
             assertNotSame(bean1, bean2);
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -77,7 +77,7 @@ public class BIBeanFactoryTest extends TestCase {
             assertNotSame(bean1, bean2);
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -93,7 +93,7 @@ public class BIBeanFactoryTest extends TestCase {
             assertNotSame(bean1, bean2);
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -110,7 +110,7 @@ public class BIBeanFactoryTest extends TestCase {
             assertNotSame(bean1, bean2);
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 

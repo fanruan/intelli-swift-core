@@ -2,7 +2,7 @@ package com.finebi.cube.impl.router;
 
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.router.topic.ITopicRouterService;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.util.concurrent.*;
 
@@ -47,14 +47,14 @@ public class BIMessageDispatcher implements Runnable {
                             topicRouterService.deliverMessage(message);
                             return new Object();
                         } catch (Exception e) {
-                            BILogger.getLogger().error(e.getMessage(), e);
+                            BILoggerFactory.getLogger().error(e.getMessage(), e);
                         }
                         return null;
                     }
                 });
 
             } catch (InterruptedException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
                 break;
             }
         }

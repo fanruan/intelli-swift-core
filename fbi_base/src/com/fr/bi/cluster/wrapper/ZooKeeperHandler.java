@@ -1,6 +1,6 @@
 package com.fr.bi.cluster.wrapper;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
@@ -57,7 +57,7 @@ public class ZooKeeperHandler {
             zkHandler = new ZooKeeper(config.getConnectString(), config.getTickTime(), watcher);
             this.config = config;
         } catch (Exception ex) {
-             BILogger.getLogger().error(ex.getMessage(), ex);
+             BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         }
     }
 

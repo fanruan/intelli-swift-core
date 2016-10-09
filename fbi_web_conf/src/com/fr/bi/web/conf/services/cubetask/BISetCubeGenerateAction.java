@@ -4,7 +4,7 @@ import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
@@ -33,7 +33,7 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
         try {
             CubeUpdateUtils.recordTableAndRelationInfo(userId);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         boolean cubeBuild;
         if (StringUtils.isEmpty(baseTableSourceId)) {

@@ -7,7 +7,7 @@ import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.io.newio.NIOReadWriter;
 import com.fr.bi.stable.io.newio.NIOWriter;
@@ -30,7 +30,7 @@ public abstract class AbstractNIOWriter<T> extends NIOReadWriter implements NIOW
                 baseFile.getParentFile().mkdirs();
                 baseFile.createNewFile();
             } catch (IOException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }
@@ -84,7 +84,7 @@ public abstract class AbstractNIOWriter<T> extends NIOReadWriter implements NIOW
                 initChild();
                 currentIndex = index;
             } catch (IOException e) {
-            	BILogger.getLogger().error(e.getMessage(), e);
+            	BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }
@@ -151,9 +151,9 @@ public abstract class AbstractNIOWriter<T> extends NIOReadWriter implements NIOW
                 cacheFile.createNewFile();
                 fc = new RandomAccessFile(cacheFile, "rw").getChannel();
             } catch (FileNotFoundException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             } catch (IOException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
             file_index = fileIndex;
         }

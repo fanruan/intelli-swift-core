@@ -3,7 +3,7 @@
  */
 package com.fr.bi.cal.analyze.cal.result;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.io.write.ParseBytes;
 import com.fr.bi.stable.report.result.DimensionCalculator;
@@ -51,7 +51,7 @@ public class DiskBaseRootNodeChild extends RootNodeChild implements ParseBytes {
             oos.close();
             bytes = baos.toByteArray();
         } catch (IOException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         } finally {
         }
         return bytes;

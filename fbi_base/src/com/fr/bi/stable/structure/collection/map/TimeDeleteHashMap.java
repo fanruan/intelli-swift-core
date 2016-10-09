@@ -3,7 +3,7 @@ package com.fr.bi.stable.structure.collection.map;
 
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.structure.object.TimeAccessObject;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,7 +36,7 @@ public class TimeDeleteHashMap<K, V> {
                         try {
                             release.actionPerformed(entry.getKey());
                         } catch (Exception e) {
-                                    BILogger.getLogger().error(e.getMessage(), e);
+                                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                         }
                         map.remove(entry.getKey());
                     }

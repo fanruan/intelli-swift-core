@@ -1,6 +1,6 @@
 package com.fr.bi.conf.fs.develop.utility;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -53,7 +53,7 @@ public class HttpUtility {
             }
         } catch (Exception e) {
 //            System.out.println("发送GET请求出现异常！" + e);
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         // 使用finally块来关闭输入流
         finally {
@@ -99,7 +99,7 @@ public class HttpUtility {
             }
         } catch (Exception e) {
 //            System.out.println("发送 POST 请求出现异常！" + e);
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         //使用finally块来关闭输出流、输入流
         finally {
@@ -111,7 +111,7 @@ public class HttpUtility {
                     in.close();
                 }
             } catch (IOException ex) {
-                BILogger.getLogger().error(ex.getMessage(), ex);
+                BILoggerFactory.getLogger().error(ex.getMessage(), ex);
             }
         }
         return result;

@@ -6,7 +6,7 @@ import com.fr.bi.conf.log.BIRecord;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONException;
 
@@ -34,7 +34,7 @@ public class BeforeIndexGenerator extends AbstractIndexGenerator {
      */
     @Override
     public void generateCube() {
-        BILogger.getLogger().info("table: " + dataSource.toString() + " loading fields info : ");
+        BILoggerFactory.getLogger().info("table: " + dataSource.toString() + " loading fields info : ");
         long start = System.currentTimeMillis();
 
         try {
@@ -69,7 +69,7 @@ public class BeforeIndexGenerator extends AbstractIndexGenerator {
             }
             cube.mkDir();
             cube.writeMain(columnList);
-            BILogger.getLogger().info("table: " + dataSource.toString() + " loading fields info , Costs : " + DateUtils.timeCostFrom(start));
+            BILoggerFactory.getLogger().info("table: " + dataSource.toString() + " loading fields info , Costs : " + DateUtils.timeCostFrom(start));
         } catch (Throwable e) {
             FRContext.getLogger().error(e.getMessage(), e);
             throw new RuntimeException(e);

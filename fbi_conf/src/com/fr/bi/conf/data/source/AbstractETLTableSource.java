@@ -15,7 +15,7 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.data.source.SourceFile;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.utils.BICollectionUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 
 import java.util.*;
@@ -283,7 +283,7 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
                 BICore core = new SingleOperatorETLTableSource((List<CubeTableSource>) getParents(), operator).fetchObjectCore();
                 sourceFile.addChild(new SourceFile(core.getIDValue()));
             } catch (Exception ignore) {
-                BILogger.getLogger().error(ignore.getMessage(), ignore);
+                BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
             }
         }
         return sourceFile;
@@ -329,7 +329,7 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
             try {
                 biCore.registerAttribute(source.fetchObjectCore());
             } catch (Exception ignore) {
-                BILogger.getLogger().error(ignore.getMessage(), ignore);
+                BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
             }
         }
         return biCore;

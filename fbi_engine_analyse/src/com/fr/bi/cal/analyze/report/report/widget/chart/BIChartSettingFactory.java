@@ -5,7 +5,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.newstyle.*;
 import com.fr.bi.cal.analyze.report.report.widget.chart.newstyle.BIChartSetting;
 import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
@@ -157,7 +157,7 @@ public class BIChartSettingFactory {
             }
             return chartSetting.getConvertedDataAndSettings(data, types, op);
         }catch (Exception e){
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
         return new JSONObject();
     }

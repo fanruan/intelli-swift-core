@@ -1,6 +1,7 @@
 package com.fr.bi.web.dezi.services;
 
 import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.impl.conf.CubeBuildTableSource;
 import com.finebi.cube.location.BICubeLocation;
 import com.fr.bi.base.BIUser;
@@ -15,7 +16,6 @@ import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.web.dezi.AbstractBIDeziAction;
 import com.fr.json.JSONObject;
@@ -68,7 +68,7 @@ public class BIStartGenerateTempCubeAction extends AbstractBIDeziAction {
                     File file = new File(new BICubeLocation(cubeBasePath, cubePath).getAbsolutePath());
                     uri = URI.create(file.toURI().getRawPath());
                 } catch (URISyntaxException e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
                 return uri;
             }

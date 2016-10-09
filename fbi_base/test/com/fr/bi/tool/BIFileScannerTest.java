@@ -1,6 +1,6 @@
 package com.fr.bi.tool;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import junit.framework.TestCase;
 
 import java.util.List;
@@ -28,6 +28,6 @@ public class BIFileScannerTest extends TestCase {
         BIFileScanner scanner = new BIFileScanner(root);
         List<String> paths = scanner.findAllJavaFile();
 
-        BILogger.getLogger().info("");
+        BILoggerFactory.getLogger().info("");
     }
 }
