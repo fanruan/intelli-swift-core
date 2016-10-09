@@ -1,5 +1,6 @@
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
+import Immutable from 'immutable'
 import {ReactComponentWithImmutableRenderMixin, requestAnimationFrame} from 'core'
 import React, {
     Component,
@@ -57,7 +58,9 @@ class TableComponent extends Component {
         widget.getData().then((data)=> {
             console.log(data);
             this._tableHelper.setData(data);
-            this.forceUpdate();
+            this.setState({
+                data: Immutable.fromJS(data)
+            })
         });
     }
 

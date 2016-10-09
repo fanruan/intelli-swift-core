@@ -210,7 +210,8 @@ class Widget {
     }
 
     getSelectValue() {
-        return this.$widget.getIn(['value', 'value']).toArray();
+        const value = this.$widget.getIn(['value', 'value']);
+        return value ? value.toArray() : [];
     }
 
     getTreeFloors() {

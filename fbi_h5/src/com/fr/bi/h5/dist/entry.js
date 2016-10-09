@@ -2453,7 +2453,8 @@ webpackJsonp([0],{
 	                    return _lib2.default.createElement(
 	                        _lib.View,
 	                        { style: styles.index },
-	                        _lib2.default.createElement(_Layout2.default, _extends({ width: width, height: height - 94 }, props, { navigator: navigationOperations })),
+	                        _lib2.default.createElement(_Layout2.default, _extends({ width: width, height: height - 50 - _data.Size.ITEM_HEIGHT }, props, {
+	                            navigator: navigationOperations })),
 	                        _lib2.default.createElement(_Toolbar2.default, _extends({}, props, { navigator: navigationOperations }))
 	                    );
 	                }
@@ -2661,7 +2662,7 @@ webpackJsonp([0],{
 	var styles = _lib.StyleSheet.create({
 	    filter: {
 	        borderTop: '1px solid ' + _data.Colors.BORDER,
-	        height: 44
+	        height: _data.Size.ITEM_HEIGHT
 	    }
 	});
 	exports.default = Toolbar;
@@ -5463,6 +5464,10 @@ webpackJsonp([0],{
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
+	var _immutable = __webpack_require__(200);
+
+	var _immutable2 = _interopRequireDefault(_immutable);
+
 	var _core = __webpack_require__(329);
 
 	var _lib = __webpack_require__(208);
@@ -5545,7 +5550,9 @@ webpackJsonp([0],{
 	            widget.getData().then(function (data) {
 	                console.log(data);
 	                _this2._tableHelper.setData(data);
-	                _this2.forceUpdate();
+	                _this2.setState({
+	                    data: _immutable2.default.fromJS(data)
+	                });
 	            });
 	        }
 	    }, {
@@ -6151,6 +6158,10 @@ webpackJsonp([0],{
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
+	var _immutable = __webpack_require__(200);
+
+	var _immutable2 = _interopRequireDefault(_immutable);
+
 	var _core = __webpack_require__(329);
 
 	var _lib = __webpack_require__(208);
@@ -6235,7 +6246,9 @@ webpackJsonp([0],{
 	            var widget = new _data.Widget($widget, this.context.$template, wId);
 	            widget.getData().then(function (data) {
 	                _this2._tableHelper.setData(data);
-	                _this2.forceUpdate();
+	                _this2.setState({
+	                    data: _immutable2.default.fromJS(data)
+	                });
 	            });
 	        }
 	    }, {

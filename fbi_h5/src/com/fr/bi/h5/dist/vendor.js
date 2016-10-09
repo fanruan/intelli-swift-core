@@ -67324,7 +67324,8 @@
 	    }, {
 	        key: 'getSelectValue',
 	        value: function getSelectValue() {
-	            return this.$widget.getIn(['value', 'value']).toArray();
+	            var value = this.$widget.getIn(['value', 'value']);
+	            return value ? value.toArray() : [];
 	        }
 	    }, {
 	        key: 'getTreeFloors',

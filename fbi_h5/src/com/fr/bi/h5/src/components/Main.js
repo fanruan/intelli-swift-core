@@ -14,7 +14,7 @@ import React, {
     TouchableOpacity
 } from 'lib'
 
-import {Colors, Template} from 'data'
+import {Colors, Size, Template} from 'data'
 
 import Toolbar from './Toolbar'
 import Layout from './Layout/Layout'
@@ -120,7 +120,8 @@ class Main extends Component {
         if (name === 'index') {
             if (this.template.hasControlWidget()) {
                 return <View style={styles.index}>
-                    <Layout width={width} height={height - 94} {...props} navigator={navigationOperations}/>
+                    <Layout width={width} height={height - 50 - Size.ITEM_HEIGHT} {...props}
+                            navigator={navigationOperations}/>
 
                     <Toolbar {...props} navigator={navigationOperations}>
 
