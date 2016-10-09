@@ -4,9 +4,10 @@ import Target from './Target'
 import {each, invariant, isNil, find, findKey} from 'core';
 import {Fetch} from 'lib'
 class Widget {
-    constructor(widget, id) {
-        this.$widget = widget;
-        this.id = id;
+    constructor($widget, $template, wId) {
+        this.$widget = $widget;
+        this.$template = $template;
+        this.wId = wId;
     }
 
     $get() {

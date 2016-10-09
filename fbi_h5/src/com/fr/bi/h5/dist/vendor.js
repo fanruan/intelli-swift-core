@@ -67081,11 +67081,12 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var Widget = function () {
-	    function Widget(widget, id) {
+	    function Widget($widget, $template, wId) {
 	        _classCallCheck(this, Widget);
 
-	        this.$widget = widget;
-	        this.id = id;
+	        this.$widget = $widget;
+	        this.$template = $template;
+	        this.wId = wId;
 	    }
 
 	    _createClass(Widget, [{

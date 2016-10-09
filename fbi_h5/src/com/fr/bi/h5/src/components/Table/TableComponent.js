@@ -24,9 +24,13 @@ import {Table} from 'base'
 
 class TableComponent extends Component {
 
+    static contextTypes = {
+        $template: React.PropTypes.object
+    };
+
     constructor(props, context) {
         super(props, context);
-        this._tableHelper = new TableComponentHelper(props);
+        this._tableHelper = new TableComponentHelper(props, context);
         this._widthHelper = new TableComponentWidthHelper(this._tableHelper, props.width);
 
     }
@@ -44,9 +48,8 @@ class TableComponent extends Component {
     }
 
     _fetchData() {
-        const template = new Template(this.props.$template);
-        const wId = this.props.wId;
-        const widget = template.getWidgetById(wId);
+        const {$widget, wId} = this.props;
+        const widget = new Widget($widget, this.context.$template, wId);
         widget.getData().then((data)=> {
             console.log(data);
             this._tableHelper.setData(data);

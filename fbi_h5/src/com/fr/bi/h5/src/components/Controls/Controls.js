@@ -52,10 +52,6 @@ class Controls extends Component {
 
     static propTypes = {};
 
-    static defaultProps = {
-        onReturn: emptyFunction
-    };
-
     state = {};
 
     componentWillMount() {

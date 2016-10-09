@@ -19,18 +19,32 @@ class ChartComponent extends Component {
     //    id: React.PropTypes.string.required,
     //    template: React.PropTypes.object.required
     //};
+    static contextTypes = {
+        $template: React.PropTypes.object
+    };
 
     constructor(props, context) {
         super(props, context);
     }
 
     componentWillMount() {
-        const template = new Template(this.props.$template);
-        const wId = this.props.wId;
-        const widget = template.getWidgetById(wId);
+
+    }
+
+    componentDidMount() {
+        this.chart = VanCharts.init(ReactDOM.findDOMNode(this.refs.chart));
+        const {$widget, wId} = this.props;
+        const widget = new Widget($widget, this.context.$template, wId);
         widget.getData().then((data)=> {
-            let vanCharts = VanCharts.init(ReactDOM.findDOMNode(this.refs.chart));
-            vanCharts.setOptions(data);
+            this.chart.setOptions(data);
+        });
+    }
+
+    componentWillUpdate() {
+        const {$widget, wId} = this.props;
+        const widget = new Widget($widget, this.context.$template, wId);
+        widget.getData().then((data)=> {
+            this.chart.setData(data);
         });
     }
 

@@ -22,13 +22,17 @@ import Layout from './Layout/Layout'
 const {width, height} = Dimensions.get('window');
 
 class Main extends Component {
+    static contextTypes = {
+        actions: React.PropTypes.object,
+        $template: React.PropTypes.object
+    };
+
     static propTypes = {};
 
     constructor(props, context) {
         super(props, context);
         console.log(props);
         this.template = new Template(props.$template);
-        // template={new Template(template)} actions={actions}
     }
 
     navigationBarRouteMapper() {
@@ -83,7 +87,7 @@ class Main extends Component {
                                 const prevRoute = navState.routeStack[navState.presentedIndex - 1];
                                 if (route.$template) {
                                     prevRoute.$template = route.$template;
-                                    self.props.actions.updateTemplate(route.$template);
+                                    self.context.actions.updateTemplate(route.$template);
                                     navigator.replacePreviousAndPop(prevRoute);
                                 } else {
                                     navigator.pop();
