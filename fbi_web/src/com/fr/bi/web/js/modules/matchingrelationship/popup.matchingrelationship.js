@@ -39,8 +39,12 @@ BI.MatchingRelationPopup = BI.inherit(BI.BarPopoverSection, {
             dId: this.options.dId,
             element: center
         });
-        this.matchTab.on(BI.MatchingRelationShipTab.EVENT_CHANGE, function () {
+        this.matchTab.on(BI.MatchingRelationShipTab.EVENT_CHANGE, function (v) {
+            self.complete.setEnable(!BI.isEmptyObject(v));
             self._showPreConfig();
+        });
+        this.matchTab.on(BI.MatchingRelationShipTab.EVENT_COMPLETE_VISIABLE_CHANGE, function(v){
+            self.complete.setEnable(!!v);
         });
         return true;
     },

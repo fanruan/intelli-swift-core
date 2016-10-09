@@ -17,7 +17,8 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
         gap: 30,
         combineComboPosition: 2,
         Multi_Path: 1,
-        Multi_Match_Multi: 2
+        Multi_Match_Multi: 2,
+        No_Select_Dimension: 3
     },
 
     _defaultConfig: function () {
@@ -49,6 +50,7 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
                 dimensionFieldId: fieldId,
                 targetIds: o.targetIds
             });
+            self.fireEvent(BI.SetRelationPane.EVENT_PATH_PANE_CHANGE, false);
         });
 
         this.tab = BI.createWidget({
@@ -117,15 +119,31 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
     },
 
     _createTabs: function (v) {
+        var self = this;
         switch (v) {
             case this.constants.Multi_Path:
-                return BI.createWidget({
+                var multiPathChooser = BI.createWidget({
                     type: "bi.multi_path_chooser",
                     height: 200
                 });
+                multiPathChooser.on(BI.MultiPathChooser.EVENT_PATH_CHANGE, function(v){
+                    self.fireEvent(BI.SetRelationPane.EVENT_PATH_PANE_CHANGE, v);
+                });
+                return multiPathChooser;
             case this.constants.Multi_Match_Multi:
                 return BI.createWidget({
                     type: "bi.multi_match_multi_path_chooser",
+                    height: 200
+                });
+            case this.constants.No_Select_Dimension:
+                return BI.createWidget({
+                    type: "bi.vertical",
+                    items: [{
+                        type: "bi.label",
+                        textAlign: "left",
+                        cls: "setting-dimension-tip",
+                        text: BI.i18nText("BI-Please_Select_Dimension_Field")
+                    }],
                     height: 200
                 });
         }
@@ -134,6 +152,10 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
     _checkDimensionAndTargetRelation: function (tId) {
         var o = this.options;
         var self = this;
+        if(BI.isNull(tId)){
+            this.tab.setSelect(this.constants.No_Select_Dimension);
+            return;
+        }
         var commonPrimaryTableIds = BI.Utils.getCommonPrimaryTablesByTableIDs([BI.Utils.getTableIDByDimensionID(o.targetIds[0]), tId]);
         var combineCombo = this.layout.attr("items")[this.constants.combineComboPosition];
         if(commonPrimaryTableIds.length !== 0 && BI.Utils.getPathsFromTableAToTableB(tId, BI.Utils.getTableIDByDimensionID(o.targetIds[0])).length === 0
@@ -225,6 +247,7 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
         }
     }
 });
+BI.SetRelationPane.EVENT_PATH_PANE_CHANGE = "SetRelationPane.EVENT_PATH_PANE_CHANGE";
 BI.SetRelationPane.EVENT_DESTROY = "SetRelationPane.EVENT_DESTROY";
 BI.SetRelationPane.EVENT_SET_RELATION = "SetRelationPane.EVENT_SET_RELATION";
 $.shortcut('bi.set_relation_pane', BI.SetRelationPane);
