@@ -1,8 +1,8 @@
 import Immutable from 'immutable'
+import isFunction from 'lodash/isFunction'
 
 function compare(instance, nextProps, nextState) {
-    return !shallowEqual(instance.props, nextProps) ||
-        !shallowEqual(instance.state, nextState);
+    return !shallowEqual(instance.props, nextProps) || !shallowEqual(instance.state, nextState);
 }
 
 var ReactComponentWithImmutableRenderMixin = {
@@ -31,6 +31,9 @@ function shallowEqual(objA, objB) {
 
     // Test for A's keys different from B.
     for (var i = 0; i < keysA.length; i++) {
+        if (isFunction(objA[keysA[i]] && isFunction(objB[keysA[i]]))) {
+            continue;
+        }
         if (!hasOwnProperty.call(objB, keysA[i]) || !Immutable.is(objA[keysA[i]], objB[keysA[i]])) {
             return false;
         }

@@ -6,6 +6,7 @@ import com.fr.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Map;
 
 
@@ -44,7 +45,8 @@ public class BITableReportSetting extends BIAbstractTableSetting {
         }
         if (groups_of_dimensions.size() > 0) {
             ArrayList<String> dimensionList = new ArrayList<String>();
-            for (Map.Entry<String, String[]> entry : groups_of_dimensions.entrySet()) {
+
+            for (Map.Entry<String, String[]> entry : getSortedList()) {
                 int regionValue = Integer.parseInt(entry.getKey());
                 if (regionValue >= Integer.parseInt(BIReportConstant.REGION.DIMENSION1) && regionValue < Integer.parseInt(BIReportConstant.REGION.DIMENSION2)) {
                     Collections.addAll(dimensionList, entry.getValue());
@@ -54,7 +56,7 @@ public class BITableReportSetting extends BIAbstractTableSetting {
         }
         if (groups_of_dimensions.size() > 1) {
             ArrayList<String> dimensionList = new ArrayList<String>();
-            for (Map.Entry<String, String[]> entry : groups_of_dimensions.entrySet()) {
+            for (Map.Entry<String, String[]> entry : getSortedList()) {
                 int regionValue = Integer.parseInt(entry.getKey());
                 if (regionValue >= Integer.parseInt(BIReportConstant.REGION.DIMENSION2) && regionValue < Integer.parseInt(BIReportConstant.REGION.TARGET1)) {
                     Collections.addAll(dimensionList, entry.getValue());
@@ -132,7 +134,7 @@ public class BITableReportSetting extends BIAbstractTableSetting {
      */
     public ArrayList<ArrayList<String>> getComplex_x_dimension() {
         ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
-        for (Map.Entry<String, String[]> entry : groups_of_dimensions.entrySet()) {
+        for (Map.Entry<String, String[]> entry : getSortedList()) {
             int regionType = Integer.parseInt(entry.getKey());
             if (regionType >= Integer.parseInt(BIReportConstant.REGION.DIMENSION1) && regionType < Integer.parseInt(BIReportConstant.REGION.DIMENSION2)) {
                 if (entry.getValue().length > 0) {
@@ -150,7 +152,7 @@ public class BITableReportSetting extends BIAbstractTableSetting {
      */
     public ArrayList<ArrayList<String>> getComplex_y_dimension() {
         ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
-        for (Map.Entry<String, String[]> entry : groups_of_dimensions.entrySet()) {
+        for (Map.Entry<String, String[]> entry : getSortedList()) {
             int regionType = Integer.parseInt(entry.getKey());
             if (regionType >= Integer.parseInt(BIReportConstant.REGION.DIMENSION2) && regionType < Integer.parseInt(BIReportConstant.REGION.TARGET1)) {
                 if (entry.getValue().length > 0) {
@@ -161,5 +163,16 @@ public class BITableReportSetting extends BIAbstractTableSetting {
             }
         }
         return list;
+    }
+
+    private ArrayList<Map.Entry<String, String[]>> getSortedList() {
+        ArrayList<Map.Entry<String, String[]>> groups_of_dimension_list = new ArrayList<Map.Entry<String, String[]>>(groups_of_dimensions.entrySet());
+        Collections.sort(groups_of_dimension_list, new Comparator<Map.Entry<String, String[]>>() {
+            @Override
+            public int compare(Map.Entry<String, String[]> o1, Map.Entry<String, String[]> o2) {
+                return o1.getKey().compareTo(o2.getKey());
+            }
+        });
+        return groups_of_dimension_list;
     }
 }
