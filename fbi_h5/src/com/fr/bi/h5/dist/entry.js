@@ -2429,7 +2429,7 @@ webpackJsonp([0],{
 
 	            var others = _objectWithoutProperties(route, ['name', 'Component', 'title', 'onValueChange']);
 
-	            if (route.name === 'index') {
+	            if (name === 'index') {
 	                if (this.template.hasControlWidget()) {
 	                    return _lib2.default.createElement(
 	                        _lib.View,
@@ -5517,8 +5517,10 @@ webpackJsonp([0],{
 	                header: this._tableHelper.getHeader(),
 	                items: items,
 	                groupHeader: this._tableHelper.getGroupHeader(),
-	                groupItems: this._tableHelper.getGroupItems(),
-	                groupHeaderCellRenderer: function groupHeaderCellRenderer(_ref) {
+	                groupItems: this._tableHelper.getGroupItems()
+	                /**groupHeader={[{text: 1}, {text: 2}]}
+	                 groupItems={[{children:[{text: 'A', children: [{text: 'A1'}, {text: 'A2'}]}, {text: 'B'}]}]}**/
+	                , groupHeaderCellRenderer: function groupHeaderCellRenderer(_ref) {
 	                    var colIndex = _ref.colIndex;
 
 	                    var cell = _objectWithoutProperties(_ref, ['colIndex']);
@@ -5628,6 +5630,7 @@ webpackJsonp([0],{
 	                    }
 	                    result[0].push({
 	                        dId: dimensionIds[layer],
+	                        layer: layer,
 	                        text: node.n
 	                    });
 	                    if (node.s) {
@@ -5647,25 +5650,25 @@ webpackJsonp([0],{
 	                        track(child, layer + 1);
 	                    });
 	                }
-	                if (!node.n) {
-	                    if (!result[0]) {
-	                        result[0] = [];
-	                    }
-	                    result[0].push({
-	                        text: '汇总'
-	                    });
-	                    if (node.s) {
-	                        node.s.forEach(function (v, idx) {
-	                            if (!result[idx + 1]) {
-	                                result[idx + 1] = [];
-	                            }
-	                            result[idx + 1].push({
-	                                dId: targetIds[idx],
-	                                text: v
-	                            });
-	                        });
-	                    }
-	                }
+	                // if (!node.n) {
+	                //     if (!result[0]) {
+	                //         result[0] = [];
+	                //     }
+	                //     // result[0].push({
+	                //     //     text: '汇总'
+	                //     // });
+	                //     if (node.s) {
+	                //         node.s.forEach((v, idx)=> {
+	                //             if (!result[idx + 1]) {
+	                //                 result[idx + 1] = [];
+	                //             }
+	                //             result[idx + 1].push({
+	                //                 dId: targetIds[idx],
+	                //                 text: v
+	                //             })
+	                //         })
+	                //     }
+	                // }
 	            };
 	            track(this.data.data, -1);
 	            return result;
@@ -5685,6 +5688,9 @@ webpackJsonp([0],{
 	            });
 	            return result;
 	        }
+
+	        //交叉表表头
+
 	    }, {
 	        key: 'getGroupItems',
 	        value: function getGroupItems() {
@@ -5938,7 +5944,9 @@ webpackJsonp([0],{
 
 	            return _lib2.default.createElement(
 	                _lib.View,
-	                { style: styles.region },
+	                { style: [styles.region, {
+	                        paddingLeft: props.layer * 30 + 4
+	                    }] },
 	                _lib2.default.createElement(
 	                    _lib.Text,
 	                    { numberOfLines: 2 },
@@ -5952,7 +5960,9 @@ webpackJsonp([0],{
 	}(_lib.Component);
 
 	TableCell.propTypes = {};
-	TableCell.defaultProps = {};
+	TableCell.defaultProps = {
+	    layer: 0
+	};
 
 	_reactMixin2.default.onClass(TableCell, _core.ReactComponentWithImmutableRenderMixin);
 	var styles = _lib.StyleSheet.create({

@@ -41,6 +41,7 @@ class TableComponentHelper {
                 }
                 result[0].push({
                     dId: dimensionIds[layer],
+                    layer: layer,
                     text: node.n
                 });
                 if (node.s) {
@@ -60,25 +61,25 @@ class TableComponentHelper {
                     track(child, layer + 1);
                 })
             }
-            if (!node.n) {
-                if (!result[0]) {
-                    result[0] = [];
-                }
-                result[0].push({
-                    text: '汇总'
-                });
-                if (node.s) {
-                    node.s.forEach((v, idx)=> {
-                        if (!result[idx + 1]) {
-                            result[idx + 1] = [];
-                        }
-                        result[idx + 1].push({
-                            dId: targetIds[idx],
-                            text: v
-                        })
-                    })
-                }
-            }
+            // if (!node.n) {
+            //     if (!result[0]) {
+            //         result[0] = [];
+            //     }
+            //     // result[0].push({
+            //     //     text: '汇总'
+            //     // });
+            //     if (node.s) {
+            //         node.s.forEach((v, idx)=> {
+            //             if (!result[idx + 1]) {
+            //                 result[idx + 1] = [];
+            //             }
+            //             result[idx + 1].push({
+            //                 dId: targetIds[idx],
+            //                 text: v
+            //             })
+            //         })
+            //     }
+            // }
         };
         track(this.data.data, -1);
         return result;
@@ -96,6 +97,7 @@ class TableComponentHelper {
         return result;
     }
 
+    //交叉表表头
     getGroupItems() {
         return [];
     }

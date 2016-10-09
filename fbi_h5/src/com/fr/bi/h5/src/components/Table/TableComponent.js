@@ -67,6 +67,8 @@ class TableComponent extends Component {
             items={items}
             groupHeader={this._tableHelper.getGroupHeader()}
             groupItems={this._tableHelper.getGroupItems()}
+            /**groupHeader={[{text: 1}, {text: 2}]}
+             groupItems={[{children:[{text: 'A', children: [{text: 'A1'}, {text: 'A2'}]}, {text: 'B'}]}]}**/
             groupHeaderCellRenderer={({colIndex, ...cell})=> {
                 return <TableHeader {...cell}/>
             }}

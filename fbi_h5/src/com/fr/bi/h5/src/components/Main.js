@@ -113,7 +113,7 @@ class Main extends Component {
     renderScene(route, navigationOperations, onComponentRef) {
         const {...props} = this.props;
         const {name, Component, title, onValueChange, ...others} = route;
-        if (route.name === 'index') {
+        if (name === 'index') {
             if (this.template.hasControlWidget()) {
                 return <View style={styles.index}>
                     <Layout width={width} height={height - 94} {...props} navigator={navigationOperations}/>
