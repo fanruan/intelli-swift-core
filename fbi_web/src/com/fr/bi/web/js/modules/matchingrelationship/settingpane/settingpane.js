@@ -140,6 +140,7 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
                     items: [{
                         type: "bi.label",
                         textAlign: "left",
+                        lgap:5,
                         cls: "setting-dimension-tip",
                         text: BI.i18nText("BI-Please_Select_Dimension_Field")
                     }],
