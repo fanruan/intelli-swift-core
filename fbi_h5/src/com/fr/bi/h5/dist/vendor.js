@@ -67734,7 +67734,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.Dialog = exports.Table = exports.Collection = exports.VirtualScroll = exports.Grid = exports.InfiniteLoader = exports.AutoSizer = exports.Infinite = exports.Animatable = exports.Accordion = exports.SideMenu = exports.GiftedListView = exports.Sortable = exports.Wedge = exports.Rectangle = exports.Circle = exports.ART = exports.Checkbox = exports.TextButton = exports.IconButton = exports.Icon = exports.HorizontalCenterLayout = exports.VerticalCenterLayout = exports.CenterLayout = exports.GridLayout = exports.VtapeLayout = exports.HtapeLayout = undefined;
+	exports.Dialog = exports.Overlay = exports.Table = exports.Collection = exports.VirtualScroll = exports.Grid = exports.InfiniteLoader = exports.AutoSizer = exports.Infinite = exports.Animatable = exports.Accordion = exports.SideMenu = exports.GiftedListView = exports.Sortable = exports.Wedge = exports.Rectangle = exports.Circle = exports.ART = exports.Checkbox = exports.TextButton = exports.IconButton = exports.Icon = exports.HorizontalCenterLayout = exports.VerticalCenterLayout = exports.CenterLayout = exports.GridLayout = exports.VtapeLayout = exports.HtapeLayout = undefined;
 
 	var _HtapeLayout2 = __webpack_require__(781);
 
@@ -67840,7 +67840,11 @@
 
 	var _Table3 = _interopRequireDefault(_Table2);
 
-	var _Dialog2 = __webpack_require__(895);
+	var _Overlay2 = __webpack_require__(895);
+
+	var _Overlay3 = _interopRequireDefault(_Overlay2);
+
+	var _Dialog2 = __webpack_require__(896);
 
 	var _Dialog3 = _interopRequireDefault(_Dialog2);
 
@@ -67879,6 +67883,7 @@
 	exports.VirtualScroll = _VirtualScroll3.default;
 	exports.Collection = _Collection3.default;
 	exports.Table = _Table3.default;
+	exports.Overlay = _Overlay3.default;
 	exports.Dialog = _Dialog3.default;
 	exports.default = module.exports;
 
@@ -67929,6 +67934,9 @@
 	            var props = _objectWithoutProperties(_props, ['children', 'style']);
 
 	            var cs = _lib2.default.Children.map(children, function (child) {
+	                if (!child) {
+	                    return null;
+	                }
 	                var style = void 0;
 	                if (child.props.width) {
 	                    style = _extends({ width: child.props.width }, child.props.style);
@@ -68006,6 +68014,9 @@
 	            var props = _objectWithoutProperties(_props, ['children', 'style']);
 
 	            var cs = _lib2.default.Children.map(children, function (child) {
+	                if (!child) {
+	                    return null;
+	                }
 	                var style = void 0;
 	                if (child.props.height) {
 	                    style = _extends({ height: child.props.height }, child.props.style);
@@ -68086,6 +68097,9 @@
 	            var props = _objectWithoutProperties(_props, ['children']);
 
 	            var cs = _lib2.default.Children.map(children, function (child) {
+	                if (!child) {
+	                    return null;
+	                }
 	                var style = void 0;
 	                if (child.props.height) {
 	                    style = _extends({ height: child.props.height }, child.props.style);
@@ -68093,6 +68107,9 @@
 	                    style = _extends({}, child.props.style, styles.row);
 	                }
 	                var children = _lib2.default.Children.map(child.props.children, function (ch) {
+	                    if (!ch) {
+	                        return null;
+	                    }
 	                    var style = void 0;
 	                    if (ch.props.width) {
 	                        style = _extends({ width: ch.props.width }, ch.props.style);
@@ -83450,11 +83467,139 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactAddonsPureRenderMixin = __webpack_require__(230);
+
+	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
+
+	var _reactTimerMixin = __webpack_require__(635);
+
+	var _reactTimerMixin2 = _interopRequireDefault(_reactTimerMixin);
+
+	var _reactMixin = __webpack_require__(206);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _lib = __webpack_require__(208);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Overlay = function (_Component) {
+	    _inherits(Overlay, _Component);
+
+	    function Overlay(props) {
+	        _classCallCheck(this, Overlay);
+
+	        var _this = _possibleConstructorReturn(this, (Overlay.__proto__ || Object.getPrototypeOf(Overlay)).call(this, props));
+
+	        _this.state = {
+	            opacity: new _lib.Animated.Value(0)
+	        };
+	        return _this;
+	    }
+
+	    _createClass(Overlay, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            this.in();
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            return _lib2.default.createElement(
+	                _lib.View,
+	                { style: styles.container },
+	                _lib2.default.createElement(
+	                    _lib.Modal,
+	                    {
+	                        transparent: true
+	                    },
+	                    _lib2.default.createElement(
+	                        _lib.Animated.View,
+	                        { style: [styles.mask, {
+	                                opacity: this.state.opacity
+	                            }] },
+	                        this.props.children
+	                    )
+	                )
+	            );
+	        }
+
+	        //显示动画
+
+	    }, {
+	        key: 'in',
+	        value: function _in() {
+	            _lib.Animated.parallel([_lib.Animated.timing(this.state.opacity, {
+	                easing: _lib.Easing.linear,
+	                duration: 500,
+	                toValue: 1
+	            })]).start();
+	        }
+
+	        //隐藏动画
+
+	    }, {
+	        key: 'out',
+	        value: function out() {
+	            var _this2 = this;
+
+	            _lib.Animated.parallel([_lib.Animated.timing(this.state.opacity, {
+	                easing: _lib.Easing.linear,
+	                duration: 500,
+	                toValue: 0
+	            })]).start(function (endState) {
+	                _this2.setState({ visible: false });
+	            });
+	        }
+	    }]);
+
+	    return Overlay;
+	}(_lib.Component);
+
+	var styles = _lib.StyleSheet.create({
+	    container: {},
+	    mask: {
+	        flex: 1,
+	        padding: 20,
+	        justifyContent: "flex-end",
+	        alignItems: 'center',
+	        backgroundColor: "rgba(56,56,56,0.6)"
+	    }
+	});
+
+	_reactMixin2.default.onClass(Overlay, _reactTimerMixin2.default);
+
+	exports.default = Overlay;
+
+/***/ },
+/* 896 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	exports.default = exports.Dialog = undefined;
 
-	var _Dialog2 = __webpack_require__(896);
+	var _Dialog2 = __webpack_require__(897);
 
 	var _Dialog3 = _interopRequireDefault(_Dialog2);
 
@@ -83464,7 +83609,7 @@
 	exports.default = _Dialog3.default;
 
 /***/ },
-/* 896 */
+/* 897 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -83524,15 +83669,12 @@
 
 	        var _this = _possibleConstructorReturn(this, (Dialog.__proto__ || Object.getPrototypeOf(Dialog)).call(this, props));
 
-	        _this.parent = {};
-
 	        _this.state = {
 	            offset: new _lib.Animated.Value(0),
 	            opacity: new _lib.Animated.Value(0),
 	            title: "",
 	            choose1: "",
-	            choose2: "",
-	            visible: false
+	            choose2: ""
 	        };
 	        return _this;
 	    }
@@ -83545,9 +83687,6 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            if (!this.props.visible) {
-	                return null;
-	            }
 	            return _lib2.default.createElement(
 	                _lib.View,
 	                { style: styles.container },

@@ -21,7 +21,7 @@ const [aWidth, aHeight] = [300, 214];
 const [left, top] = [0, 0];
 const [middleLeft, middleTop] = [(width - aWidth) / 2, (height - aHeight) / 2 - navigatorH];
 
-class Dialog extends Component {
+class ActionSheet extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -187,6 +187,6 @@ const styles = StyleSheet.create({
     }
 });
 
-mixin.onClass(Dialog, TimerMixin);
+mixin.onClass(ActionSheet, TimerMixin);
 
-export default Dialog
+export default ActionSheet

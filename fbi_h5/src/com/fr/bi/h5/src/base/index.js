@@ -36,6 +36,7 @@ export VirtualScroll from './VirtualScroll'
 export Collection from './Collection'
 export Table from './Table'
 
+export Overlay from './Overlay/Overlay'
 export Dialog from './Dialog'
 
 export default module.exports;

@@ -14,13 +14,15 @@ import React, {
 
 import {Size, Template, Widget} from 'data'
 
-import {Table, IconButton, HtapeLayout, VtapeLayout} from 'base'
+import {Table, Dialog, IconButton, HtapeLayout, VtapeLayout} from 'base'
 import {TableWidget} from 'widgets';
 
 import TableComponentHelper from './TableComponentHelper';
 import TableComponentWidthHelper from './TableComponentWidthHelper'
 import TableCell from './TableCell'
 import TableHeader from './TableHeader'
+
+import SettingsComponent from '../Settings/SettingsComponent'
 
 
 class TableComponent extends Component {
@@ -37,7 +39,8 @@ class TableComponent extends Component {
     }
 
     state = {
-        data: []
+        data: [],
+        open: false
     };
 
     componentWillMount() {
@@ -70,8 +73,24 @@ class TableComponent extends Component {
         const widget = new Widget($widget);
         return <HtapeLayout height={Size.HEADER_HEIGHT} style={styles.header}>
             <Text style={styles.name}>{widget.getName()}</Text>
-            <IconButton width={Size.HEADER_HEIGHT} className='delete'/>
+            <IconButton width={Size.HEADER_HEIGHT} className='delete' onPress={()=> {
+                this.setState({
+                    open: true
+                })
+            }}/>
         </HtapeLayout>
+    }
+
+    _renderDialog() {
+        const {$widget, wId} = this.props;
+        if (this.state.open) {
+            return <SettingsComponent
+                $widget={$widget}
+                wId={wId}
+                height={0}
+            />
+        }
+        return null;
     }
 
     render() {
@@ -79,6 +98,7 @@ class TableComponent extends Component {
         const items = this._tableHelper.getItems();
         this._widthHelper.setItems(items);
         return <VtapeLayout>
+            {this._renderDialog()}
             {this._renderHeader()}
             <TableWidget
                 width={width}
