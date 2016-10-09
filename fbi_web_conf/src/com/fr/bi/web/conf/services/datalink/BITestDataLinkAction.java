@@ -2,7 +2,7 @@ package com.fr.bi.web.conf.services.datalink;
 
 import com.fr.bi.stable.data.db.DataLinkInformation;
 import com.fr.bi.stable.utils.BIDBUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.bi.web.conf.services.datalink.data.BIConnectionTestUtils;
 import com.fr.data.core.DataCoreUtils;
@@ -39,7 +39,7 @@ public class BITestDataLinkAction extends AbstractBIConfigureAction {
                 }
                 jo.put("schemas", ja);
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
         WebUtils.printAsJSON(res, jo);

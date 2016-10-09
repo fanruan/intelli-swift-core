@@ -1,6 +1,6 @@
 package com.fr.bi.cluster.zookeeper;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -86,7 +86,7 @@ public class BIWorkerNodeValue {
                 this.basePath = jsonContent.getString("basePath");
                 this.tmpPath = jsonContent.getString("tmpPath");
             } catch (JSONException ex) {
-                 BILogger.getLogger().error(ex.getMessage(), ex);
+                 BILoggerFactory.getLogger().error(ex.getMessage(), ex);
             }
         }
     }
@@ -103,7 +103,7 @@ public class BIWorkerNodeValue {
             jsonContent.put("basePath", basePath);
             jsonContent.put("tmpPath", tmpPath);
         } catch (JSONException ex) {
-             BILogger.getLogger().error(ex.getMessage(), ex);
+             BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         }
 
         return jsonContent.toString();

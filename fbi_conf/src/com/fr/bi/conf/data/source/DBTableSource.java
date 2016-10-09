@@ -25,7 +25,7 @@ import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.SQLRegUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.core.db.dialect.SybaseDialect;
@@ -169,7 +169,7 @@ public class DBTableSource extends AbstractTableSource {
                     try {
                         dealWithOneData(travel, fields, v);
                     } catch (Exception e) {
-                        BILogger.getLogger().error(e.getMessage(), e);
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
                     }
                 }
             });
@@ -177,7 +177,7 @@ public class DBTableSource extends AbstractTableSource {
                 biLogManager.infoTableReading(fields[0].getTableBelongTo().getPersistentTable(), System.currentTimeMillis() - t, UserControl.getInstance().getSuperManagerID());
             }
         } catch (Throwable e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             throw new RuntimeException(e);
         } finally {
         }
@@ -196,7 +196,7 @@ public class DBTableSource extends AbstractTableSource {
         try {
             SQLRegUtils regUtils = new SQLRegUtils(SQL);
             if (!regUtils.isSql()) {
-                BILogger.getLogger().error("SQL syntax error");
+                BILoggerFactory.getLogger().error("SQL syntax error");
                 return 0;
             }
             SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
@@ -207,7 +207,7 @@ public class DBTableSource extends AbstractTableSource {
                     try {
                         dealWithOneData(traversal, fields, v);
                     } catch (Exception e) {
-                        BILogger.getLogger().error(e.getMessage(), e);
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
                     }
                 }
             }, (int) rowCount);
@@ -215,7 +215,7 @@ public class DBTableSource extends AbstractTableSource {
                 biLogManager.infoTableReading(fields[0].getTableBelongTo().getPersistentTable(), System.currentTimeMillis() - t, UserControl.getInstance().getSuperManagerID());
             }
         } catch (Throwable e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             throw new RuntimeException(e);
         } finally {
         }

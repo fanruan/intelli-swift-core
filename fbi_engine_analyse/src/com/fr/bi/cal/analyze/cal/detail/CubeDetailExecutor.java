@@ -10,7 +10,7 @@ import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.report.poly.BIPolyAnalyECBlock;
 import com.fr.bi.conf.session.BISessionProvider;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.general.DateUtils;
 import com.fr.report.block.ResultBlock;
@@ -83,7 +83,7 @@ public class CubeDetailExecutor extends SheetExecutor {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return startTime;
     }
@@ -124,7 +124,7 @@ public class CubeDetailExecutor extends SheetExecutor {
     protected ResultECReport execute4ECReport(com.fr.report.stable.fun.Actor actor, long startTime) {
         long s = System.currentTimeMillis();
         ResultECReport result = getResultReport((WorkSheet) this.report);
-        BILogger.getLogger().info(DateUtils.timeCostFrom(s) + " p2");
+        BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(s) + " p2");
 
         release();
         return result;

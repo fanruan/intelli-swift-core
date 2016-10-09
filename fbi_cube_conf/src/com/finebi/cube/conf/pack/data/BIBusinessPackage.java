@@ -9,7 +9,7 @@ import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.exception.BITableAbsentException;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -235,7 +235,7 @@ public abstract class BIBusinessPackage<T extends BusinessTable> extends BISetCo
                     fields.add(field);
                 }
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
                 continue;
             }
         }

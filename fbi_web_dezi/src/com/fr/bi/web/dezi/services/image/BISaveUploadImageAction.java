@@ -2,7 +2,7 @@ package com.fr.bi.web.dezi.services.image;
 
 import com.fr.base.FRContext;
 import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.dezi.AbstractBIDeziAction;
 import com.fr.cache.Attachment;
 import com.fr.cache.AttachmentSource;
@@ -46,7 +46,7 @@ public class BISaveUploadImageAction extends AbstractBIDeziAction {
                 fs.close();
                 status.put("success", true);
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
             WebUtils.printAsJSON(res, status);
         }

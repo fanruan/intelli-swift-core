@@ -17,7 +17,7 @@ import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.io.newio.NIOWriter;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.api.ICubeColumnIndexReader;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.code.BIPrintUtils;
 import com.fr.general.DateUtils;
 
@@ -55,7 +55,7 @@ public class LinkFirstIndexLoader implements LinkIndexLoader, java.util.concurre
         try {
             generateCube();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             if (log != null) {
                 List<BITableSourceRelation> relations = new ArrayList<BITableSourceRelation>();
                 relations.add(relation);
@@ -86,7 +86,7 @@ public class LinkFirstIndexLoader implements LinkIndexLoader, java.util.concurre
         final ICubeTableService sti = loader.getTableIndex(relation.getPrimaryKey().getTableBelongTo());
         final ICubeTableService eti = loader.getTableIndex(relation.getForeignKey().getTableBelongTo());
         final String message = "generate first relation from table :" + relation.getPrimaryKey().toString().toString() + "to table:" + relation.getForeignKey().toString();
-        BILogger.getLogger().info(message + " start ");
+        BILoggerFactory.getLogger().info(message + " start ");
         final BIKey si = sti.getColumnIndex(relation.getPrimaryKey().getFieldName());
         final BIKey ei = eti.getColumnIndex(relation.getForeignKey().getFieldName());
         final ICubeColumnIndexReader targetGroupMap = eti.loadGroup(ei);
@@ -124,7 +124,7 @@ public class LinkFirstIndexLoader implements LinkIndexLoader, java.util.concurre
         indexFile.writeGroupCount(finalRowLength);
         indexFile.releaseGroupValueIndexCreator();
         indexFile.writeVersion(BIVersionUtils.createRelationVersionValue(loader, ck.getRelations()));
-        BILogger.getLogger().info("first relation from table:" + relation.getPrimaryKey().toString() + "to table : " + relation.getForeignKey().toString()
+        BILoggerFactory.getLogger().info("first relation from table:" + relation.getPrimaryKey().toString() + "to table : " + relation.getForeignKey().toString()
                 + " generated successfully! cost:" + DateUtils.timeCostFrom(t));
         if (log != null) {
             log.infoRelation(ck, System.currentTimeMillis() - t);

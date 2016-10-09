@@ -4,7 +4,7 @@ import com.fr.base.FRContext;
 import com.fr.bi.cluster.wrapper.ZooKeeperWrapper;
 import com.fr.bi.cluster.zookeeper.exception.NotInitializeException;
 import com.fr.bi.cluster.zookeeper.watcher.BIWorker;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.FRLogger;
 import org.apache.zookeeper.KeeperException;
 
@@ -65,7 +65,7 @@ public class BIMissionDispatcher {
                 try {
                     children = getWorkerPath();
                 } catch (Exception ex) {
-                     BILogger.getLogger().error(ex.getMessage(), ex);
+                     BILoggerFactory.getLogger().error(ex.getMessage(), ex);
                 }
                 if (!children.isEmpty()) {
                     ArrayList<BIWorkerNodeValue> currentMission = getMission();
@@ -74,7 +74,7 @@ public class BIMissionDispatcher {
                             try {
                                 zk.setData(BIWorker.PARENT_PATH + "/" + children.get(i), currentMission.get(i).toByte(), -1);
                             } catch (Exception ex) {
-                                 BILogger.getLogger().error(ex.getMessage(), ex);
+                                 BILoggerFactory.getLogger().error(ex.getMessage(), ex);
                             }
                         }
                     }

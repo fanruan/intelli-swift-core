@@ -17,7 +17,7 @@ import com.fr.bi.field.target.filter.AbstractTargetFilter;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
@@ -160,7 +160,7 @@ public class TreeColumnFieldsFilter extends AbstractTargetFilter {
                 JSONObject jo = new JSONObject(reader.getAttrAsString("value", StringUtils.EMPTY));
                 this.parseJSON(jo, UserControl.getInstance().getSuperManagerID());
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }
@@ -175,7 +175,7 @@ public class TreeColumnFieldsFilter extends AbstractTargetFilter {
         try {
             writer.attr("value", createJSON().toString());
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         writer.end();
     }
@@ -198,7 +198,7 @@ public class TreeColumnFieldsFilter extends AbstractTargetFilter {
         try {
             allPath = BICubeConfigureCenter.getTableRelationManager().getAllPath(userId, target, foreignTable);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
 //        allPath.addAll(BIConfigureManagerCenter.getConnectionManager().getAllPath(userId, target, foreignTable));
         if (allPath != null || ComparatorUtils.equals(target, foreignTable)) {

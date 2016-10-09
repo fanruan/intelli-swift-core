@@ -20,7 +20,7 @@ import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.utils.algorithem.BIMD5Utils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
@@ -89,7 +89,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
-        logger.info(BIStringUtils.append(logFileInfo(), " start building filed index"));
+        logger.info(BIStringUtils.append(logFileInfo(), " start building field index main task"));
         Stopwatch stopwatch = Stopwatch.createStarted();
         biLogManager.logIndexStart(UserControl.getInstance().getSuperManagerID());
         try {
@@ -99,21 +99,21 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
             } else {
                 buildTableIndex();
             }
-            logger.info(BIStringUtils.append(logFileInfo(), " finish building filed index,elapse:", String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)), " second"));
+            logger.info(BIStringUtils.append(logFileInfo(), " finish building field index main task,elapse:", String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)), " second"));
 
             try {
                 biLogManager.infoColumn(tableSource.getPersistentTable(), hostBICubeFieldSource.getFieldName(), stopwatch.elapsed(TimeUnit.SECONDS), Long.valueOf(UserControl.getInstance().getSuperManagerID()));
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
             return null;
         } catch (Exception e) {
             try {
                 biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
             } catch (Exception e1) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
@@ -150,7 +150,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
 
     private int[] doBuildTableIndex(Iterator<Map.Entry<T, IntArray>> group2rowNumberIt) {
         int groupPosition = 0;
-        logger.info(BIStringUtils.append(logFileInfo(), " start building filed index"));
+        logger.info(BIStringUtils.append(logFileInfo(), " start building field index"));
         int[] positionOfGroup = new int[(int) rowCount];
         Stopwatch stopwatch = Stopwatch.createStarted();
         while (group2rowNumberIt.hasNext()) {
@@ -164,7 +164,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
             groupPosition++;
         }
         columnEntityService.recordSizeOfGroup(groupPosition);
-        logger.info(BIStringUtils.append(logFileInfo(), " finish building filed index,elapse:", String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS))));
+        logger.info(BIStringUtils.append(logFileInfo(), " finish building field index,elapse:", String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS))));
         return positionOfGroup;
     }
 

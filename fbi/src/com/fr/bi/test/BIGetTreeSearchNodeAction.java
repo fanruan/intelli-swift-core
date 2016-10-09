@@ -1,7 +1,7 @@
 package com.fr.bi.test;
 
 import com.fr.bi.stable.utils.program.BIPhoneticismUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -92,7 +92,7 @@ public class BIGetTreeSearchNodeAction extends ActionNoSessionCMD {
         try {
             CubeBaseUtils.invokeCalculatorThreads(threadList);
         } catch (InterruptedException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
 
         for (int len = vl.size(); i < len; i++) {

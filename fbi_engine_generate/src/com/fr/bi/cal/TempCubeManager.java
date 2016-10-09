@@ -9,7 +9,7 @@ import com.fr.bi.cal.stable.engine.TempCubeTask;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.utils.BIUserUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.fs.control.UserControl;
 
 import java.util.Map;
@@ -134,7 +134,7 @@ public class TempCubeManager implements Release {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
-                        BILogger.getLogger().error(e.getMessage());
+                        BILoggerFactory.getLogger().error(e.getMessage());
                     }
                 }
                 if (release != null) {

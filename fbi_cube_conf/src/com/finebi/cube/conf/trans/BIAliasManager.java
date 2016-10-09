@@ -3,7 +3,7 @@ package com.finebi.cube.conf.trans;
 import com.finebi.cube.conf.BIAliasManagerProvider;
 import com.finebi.cube.conf.BISystemDataManager;
 import com.fr.bi.exception.BIKeyAbsentException;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
@@ -34,7 +34,7 @@ public class BIAliasManager extends BISystemDataManager<UserAliasManager> implem
         try {
             return getValue(userId);
         } catch (BIKeyAbsentException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl(e);
         }
     }
@@ -57,7 +57,7 @@ public class BIAliasManager extends BISystemDataManager<UserAliasManager> implem
             }
             return jo;
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl(e);
         }
     }

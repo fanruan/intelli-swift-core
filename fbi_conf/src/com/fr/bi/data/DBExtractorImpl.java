@@ -9,7 +9,7 @@ import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.SQLStatement;
 import com.fr.bi.stable.dbdealer.*;
 import com.fr.bi.stable.utils.BIDBUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
@@ -154,7 +154,7 @@ public abstract class DBExtractorImpl implements DBExtractor {
             String sqlString = BIDBUtils.createSqlString(dialect, columns);
             sql.setSelect(sqlString);
             String query = dealWithSqlCharSet(sql.toString(), connection);
-            BILogger.getLogger().info("Start Query sql:" + query);
+            BILoggerFactory.getLogger().info("Start Query sql:" + query);
             stmt = createStatement(conn, dialect);
             try {
                 rs = stmt.executeQuery(query);
