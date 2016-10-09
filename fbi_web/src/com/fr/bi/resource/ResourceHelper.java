@@ -372,10 +372,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailstring.combo.show.js",
 
 
-                "com/fr/bi/web/js/modules4show/config.js",
                 "com/fr/bi/web/js/modules4show/constant.js",
-                "com/fr/bi/web/js/modules4show/broadcast.js",
                 "com/fr/bi/web/js/modules4show/cache.js",
+                "com/fr/bi/web/js/modules4show/broadcast.js",
+                "com/fr/bi/web/js/modules4show/config.js",
                 "com/fr/bi/web/js/modules4show/utils.js",
 
 
@@ -956,12 +956,12 @@ public class ResourceHelper {
 
     public static String[] getCommonJs() {
         return new String[]{
-                "com/fr/bi/web/js/modules/utils.js",
-                "com/fr/bi/web/js/modules/utils4conf.js",
-                "com/fr/bi/web/js/modules/config.js",
                 "com/fr/bi/web/js/modules/constant.js",
                 "com/fr/bi/web/js/modules/cache.js",
                 "com/fr/bi/web/js/modules/broadcast.js",
+                "com/fr/bi/web/js/modules/config.js",
+                "com/fr/bi/web/js/modules/utils.js",
+                "com/fr/bi/web/js/modules/utils4conf.js",
 
                 //下面是各个功能模块
                 "com/fr/bi/web/js/fragments/cube/button.hoursetting.js",
@@ -1755,8 +1755,8 @@ public class ResourceHelper {
                 //实时报表日期选择字段
                 "com/fr/bi/web/js/modules4realtime/selectdate/widget.selectdate.js",
 
-                "com/fr/bi/web/js/modules4realtime/config.js",
                 "com/fr/bi/web/js/modules4realtime/constant.js",
+                "com/fr/bi/web/js/modules4realtime/config.js",
                 "com/fr/bi/web/js/modules4realtime/broadcast.js",
                 "com/fr/bi/web/js/modules4realtime/cache.js",
                 "com/fr/bi/web/js/modules4realtime/utils.js",
