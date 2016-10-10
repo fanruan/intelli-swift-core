@@ -9,7 +9,8 @@ import React, {
     Dimensions,
     ListView,
     View,
-    Fetch
+    Fetch,
+    Portal
 } from 'lib'
 
 import {Size, Template, Widget} from 'data'
@@ -23,14 +24,14 @@ import SettingsComponent from '../Settings/SettingsComponent'
 
 
 class TablePaneComponent extends Component {
+    static contextTypes = {
+        $template: React.PropTypes.object,
+        actions: React.PropTypes.object
+    };
 
     constructor(props, context) {
         super(props, context);
     }
-
-    state = {
-        open: false
-    };
 
     componentWillMount() {
 
@@ -45,39 +46,28 @@ class TablePaneComponent extends Component {
     }
 
     _renderHeader() {
-        const {$widget} = this.props;
+        const {$widget, wId} = this.props;
         const widget = new Widget($widget);
         return <View height={Size.HEADER_HEIGHT} style={styles.header}>
             <Text>{widget.getName()}</Text>
             <IconLink className='setting-font' onPress={()=> {
-                this.setState({
-                    open: true
-                })
+                Portal.showModal('TableComponent', <SettingsComponent
+                    $widget={$widget}
+                    $template={this.context.$template}
+                    actions={this.context.actions}
+                    wId={wId}
+                    height={0}
+                    onReturn={()=> {
+                        Portal.closeModal('TableComponent');
+                    }}
+                />);
             }}/>
         </View>
-    }
-
-    _renderDialog() {
-        const {$widget, wId} = this.props;
-        if (this.state.open) {
-            return <SettingsComponent
-                $widget={$widget}
-                wId={wId}
-                height={0}
-                onReturn={()=> {
-                    this.setState({
-                        open: false
-                    })
-                }}
-            />
-        }
-        return null;
     }
 
     render() {
         const {width, height, $widget, wId} = this.props;
         return <VtapeLayout>
-            {this._renderDialog()}
             {this._renderHeader()}
             <TableComponent
                 width={width}

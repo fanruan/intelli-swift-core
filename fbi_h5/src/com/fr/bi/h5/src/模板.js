@@ -9,6 +9,7 @@ import {
 } from 'core'
 import React, {
     Component,
+    PropTypes,
     StyleSheet,
     Text,
     Dimensions,
