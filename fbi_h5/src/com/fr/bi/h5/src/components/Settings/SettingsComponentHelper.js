@@ -1,4 +1,4 @@
-import {each} from 'core'
+import {each, first, arrayMove, values, keys} from 'core'
 import {Widget, Template, Dimension} from 'data'
 export default class SettingsComponentHelper {
     constructor(props, context) {
@@ -8,8 +8,7 @@ export default class SettingsComponentHelper {
 
     getDimensionsItems() {
         const result = [];
-        const dimensions = this.widget.getAllDimensionAndTargetIds();
-        each(dimensions, (dId)=> {
+        each(this._getDimensionIds(), (dId)=> {
             const dim = this.widget.getDimensionOrTargetById(dId);
             result.push({
                 text: dim.getName(),
@@ -17,5 +16,19 @@ export default class SettingsComponentHelper {
             })
         });
         return result;
+    }
+
+    _getDimensionIds() {
+        const view = this.widget.getWidgetView();
+        return values(view)[0];
+    }
+
+    doMove(oldIndex, newIndex) {
+        const view = this.widget.getWidgetView();
+        const items = this._getDimensionIds();
+        arrayMove(items, oldIndex, newIndex);
+        view[keys(view)[0]] = items;
+        this.widget.setWidgetView(view);
+        return this.widget.$get();
     }
 }

@@ -54,6 +54,10 @@ const SortableList = SortableContainer(({items}) => {
 });
 
 class SettingsComponent extends Component {
+    static contextTypes = {
+        actions: React.PropTypes.object
+    };
+
     constructor(props, context) {
         super(props, context);
     }
@@ -65,7 +69,9 @@ class SettingsComponent extends Component {
         onComplete: emptyFunction
     };
 
-    state = {};
+    state = {
+        $widget: this.props.$widget
+    };
 
     _getNextState(props, state = {}) {
 
@@ -79,6 +85,12 @@ class SettingsComponent extends Component {
 
     }
 
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            $widget: nextProps.$widget
+        })
+    }
+
     _renderHeader() {
         const {$widget} = this.props;
         const widget = new Widget($widget);
@@ -87,14 +99,18 @@ class SettingsComponent extends Component {
                 this.refs['overlay'].close();
             }} style={styles.back}>{'返回'}</TextLink>
             <Text style={styles.name}>{widget.getName()}</Text>
-            <TextLink style={styles.complete}>{'完成'}</TextLink>
+            <TextLink onPress={()=> {
+                this.context.actions.updateWidget(this.state.$widget, this.props.wId);
+                this.refs['overlay'].close();
+            }} style={styles.complete}>{'完成'}</TextLink>
         </View>
     }
 
     _onSortEnd = ({oldIndex, newIndex}) => {
-        // this.setState({
-        //     items: arrayMove(this.state.items, oldIndex, newIndex)
-        // });
+        const $widget = this._helper.doMove(oldIndex, newIndex);
+        this.setState({
+            $widget: $widget
+        });
     };
 
     _renderDialog() {
@@ -108,7 +124,7 @@ class SettingsComponent extends Component {
 
     render() {
         const {...props} = this.props, {...state} = this.state;
-        this._helper = new SettingsComponentHelper(props, this.context);
+        this._helper = new SettingsComponentHelper(state, this.context);
         return <Overlay ref='overlay' onClose={()=> {
             this.props.onReturn();
         }}>
@@ -117,10 +133,6 @@ class SettingsComponent extends Component {
                 {this._renderDialog()}
             </VtapeLayout>
         </Overlay>
-    }
-
-    componentWillReceiveProps(nextProps) {
-
     }
 
     componentWillUpdate(nextProps, nextState) {
