@@ -1,6 +1,6 @@
 package com.finebi.cube.location;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import junit.framework.TestCase;
 
 /**
@@ -15,7 +15,7 @@ public class BIURILocationTest extends TestCase {
             BICubeLocation location = new BICubeLocation("/te st", "child");
             assertEquals("/te st/child", location.getAbsolutePath());
         } catch (Exception ignore) {
-            BILogger.getLogger().error(ignore.getMessage(), ignore);
+            BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
         }
     }
 
@@ -24,7 +24,7 @@ public class BIURILocationTest extends TestCase {
             BICubeLocation location = new BICubeLocation("/test", "////child");
             assertEquals("/test/child", location.getAbsolutePath());
         } catch (Exception ignore) {
-            BILogger.getLogger().error(ignore.getMessage(), ignore);
+            BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
         }
     }
     public void testNoStartSlash() {
@@ -32,7 +32,7 @@ public class BIURILocationTest extends TestCase {
             BICubeLocation location = new BICubeLocation("test/test2", "////child");
             assertEquals("/test/test2/child", location.getAbsolutePath());
         } catch (Exception ignore) {
-            BILogger.getLogger().error(ignore.getMessage(), ignore);
+            BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
         }
     }
 }

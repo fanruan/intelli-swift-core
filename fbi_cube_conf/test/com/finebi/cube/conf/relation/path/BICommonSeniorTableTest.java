@@ -1,12 +1,12 @@
 package com.finebi.cube.conf.relation.path;
 
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.relation.BITableRelationTestTool;
 import com.finebi.cube.conf.relation.BITableTestTool;
 import com.finebi.cube.conf.relation.BIUserTableRelationManager;
 import com.finebi.cube.conf.relation.BIUserTableRelationManagerTestTool;
 import com.finebi.cube.relation.BITablePair;
-import com.fr.bi.stable.utils.code.BILogger;
 import junit.framework.TestCase;
 
 /**
@@ -31,7 +31,7 @@ public class BICommonSeniorTableTest extends TestCase {
             assertFalse(tableContainer.contain(BITableTestTool.getC()));
 
         } catch (Exception e) {
-            BILogger.getLogger().error("", e);
+            BILoggerFactory.getLogger().error("", e);
             assertTrue(false);
         }
     }
@@ -49,7 +49,7 @@ public class BICommonSeniorTableTest extends TestCase {
 
 
         } catch (Exception e) {
-            BILogger.getLogger().error("", e);
+            BILoggerFactory.getLogger().error("", e);
             assertTrue(false);
         }
     }
