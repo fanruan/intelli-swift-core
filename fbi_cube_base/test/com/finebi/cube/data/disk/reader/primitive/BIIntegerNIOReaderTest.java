@@ -1,7 +1,8 @@
 package com.finebi.cube.data.disk.reader.primitive;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.disk.writer.primitive.BIIntegerNIOWriter;
-import com.fr.bi.stable.utils.code.BILogger;
+
 import junit.framework.TestCase;
 
 import java.io.File;
@@ -28,7 +29,7 @@ public class BIIntegerNIOReaderTest extends TestCase {
             System.out.println("time:" + (System.currentTimeMillis() - start));
             assertEquals(sum, count);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
         }
     }
@@ -46,7 +47,7 @@ public class BIIntegerNIOReaderTest extends TestCase {
             assertEquals(reader.getSpecificValue(3l), 1);
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
         }
     }
@@ -63,7 +64,7 @@ public class BIIntegerNIOReaderTest extends TestCase {
             assertEquals(reader.getSpecificValue(2000000000), 1);
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
         }
     }

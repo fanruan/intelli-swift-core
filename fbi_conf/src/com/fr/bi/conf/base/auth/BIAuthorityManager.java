@@ -8,6 +8,9 @@ import com.fr.fs.base.entity.CompanyRole;
 import com.fr.fs.base.entity.CustomRole;
 import com.fr.fs.control.CompanyRoleControl;
 import com.fr.fs.control.CustomRoleControl;
+import com.fr.fs.control.DepartmentControl;
+import com.fr.fs.control.PostControl;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
@@ -31,30 +34,60 @@ public class BIAuthorityManager {
     public List<BIPackageAuthority> getPackageAuthByID(BIPackageID packageID, long userId) throws Exception {
         List<BIPackageAuthority> packAuths = this.packagesAuth.get(packageID);
         List<BIPackageAuthority> result = new ArrayList<BIPackageAuthority>();
-        for(int i = 0; i < packAuths.size(); i++) {
+        Set<CompanyRole> comRoles = CompanyRoleControl.getInstance().getCompanyRoleSet(userId);
+        Set<CustomRole> cusRoles = CustomRoleControl.getInstance().getCustomRoleSet(userId);
+        for (int i = 0; i < packAuths.size(); i++) {
             BIPackageAuthority auth = packAuths.get(i);
-            long roleId = auth.getRoleId();
-            List<Long> comRoleIds = getCompanyRolesByUserId(userId);
-            List<Long> cusRoleIds = getCustomRolesByUserId(userId);
-            if ((comRoleIds.contains(roleId) && auth.getRoleType() == BIBaseConstant.ROLE_TYPE.COMPANY) ||
-                    (cusRoleIds.contains(roleId) && auth.getRoleType() == BIBaseConstant.ROLE_TYPE.CUSTOM)) {
-                result.add(auth);
+            String roleName = auth.getRoleName();
+            int roleType = auth.getRoleType();
+            switch (roleType) {
+                case BIBaseConstant.ROLE_TYPE.COMPANY:
+                    for (CompanyRole companyRole : comRoles) {
+                        String dName = DepartmentControl.getInstance().getDepartmentShowName(companyRole.getDepartmentId());
+                        String pName = PostControl.getInstance().getPostName(companyRole.getPostId());
+                        if (ComparatorUtils.equals(dName + "," + pName, roleName)) {
+                            result.add(auth);
+                        }
+                    }
+                    break;
+                case BIBaseConstant.ROLE_TYPE.CUSTOM:
+                    for (CustomRole customRole : cusRoles) {
+                        if (ComparatorUtils.equals(customRole.getRolename(), roleName)) {
+                            result.add(auth);
+                        }
+                    }
+                    break;
             }
         }
         return result;
     }
 
-    public List<BIPackageAuthority> getPackageAuthBySession(BIPackageID packageID,  BISessionProvider session) throws Exception {
+    public List<BIPackageAuthority> getPackageAuthBySession(BIPackageID packageID, BISessionProvider session) throws Exception {
         List<BIPackageAuthority> packAuths = this.packagesAuth.get(packageID);
         List<BIPackageAuthority> result = new ArrayList<BIPackageAuthority>();
-        for(int i = 0; i < packAuths.size(); i++) {
+        for (int i = 0; i < packAuths.size(); i++) {
             BIPackageAuthority auth = packAuths.get(i);
-            long roleId = auth.getRoleId();
-            List<Long> comRoleIds = session.getCompanyRoles();
-            List<Long> cusRoleIds = session.getCustomRoles();
-            if ((comRoleIds.contains(roleId) && auth.getRoleType() == BIBaseConstant.ROLE_TYPE.COMPANY) ||
-                    (cusRoleIds.contains(roleId) && auth.getRoleType() == BIBaseConstant.ROLE_TYPE.CUSTOM)) {
-                result.add(auth);
+            List<CompanyRole> comRoles = session.getCompanyRoles();
+            List<CustomRole> cusRoles = session.getCustomRoles();
+            String roleName = auth.getRoleName();
+            int roleType = auth.getRoleType();
+            switch (roleType) {
+                case BIBaseConstant.ROLE_TYPE.COMPANY:
+                    for (CompanyRole companyRole : comRoles) {
+                        String dName = DepartmentControl.getInstance().getDepartmentShowName(companyRole.getDepartmentId());
+                        String pName = PostControl.getInstance().getPostName(companyRole.getPostId());
+                        if (ComparatorUtils.equals(dName + "," + pName, roleName)) {
+                            result.add(auth);
+                        }
+                    }
+                    break;
+                case BIBaseConstant.ROLE_TYPE.CUSTOM:
+                    for (CustomRole customRole : cusRoles) {
+                        if (ComparatorUtils.equals(customRole.getRolename(), roleName)) {
+                            result.add(auth);
+                        }
+                    }
+                    break;
             }
         }
         return result;
@@ -62,8 +95,8 @@ public class BIAuthorityManager {
 
     public List<BIPackageID> getAuthPackagesByUser(long userId) throws Exception {
         List<BIPackageID> packageIDs = new ArrayList<BIPackageID>();
-        List<Long> comRoleIds = getCompanyRolesByUserId(userId);
-        List<Long> cusRoleIds = getCustomRolesByUserId(userId);
+        Set<CompanyRole> comRoles = CompanyRoleControl.getInstance().getCompanyRoleSet(userId);
+        Set<CustomRole> cusRoles = CustomRoleControl.getInstance().getCustomRoleSet(userId);
         Iterator<Map.Entry<BIPackageID, List<BIPackageAuthority>>> iterator = this.packagesAuth.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<BIPackageID, List<BIPackageAuthority>> packAuth = iterator.next();
@@ -71,10 +104,25 @@ public class BIAuthorityManager {
             BIPackageID pId = packAuth.getKey();
             for (int i = 0; i < authorities.size(); i++) {
                 BIPackageAuthority auth = authorities.get(i);
-                long roleId = auth.getRoleId();
-                if ((comRoleIds.contains(roleId) && auth.getRoleType() == BIBaseConstant.ROLE_TYPE.COMPANY) ||
-                        (cusRoleIds.contains(roleId) && auth.getRoleType() == BIBaseConstant.ROLE_TYPE.CUSTOM)) {
-                    packageIDs.add(pId);
+                String roleName = auth.getRoleName();
+                int roleType = auth.getRoleType();
+                switch (roleType) {
+                    case BIBaseConstant.ROLE_TYPE.COMPANY:
+                        for (CompanyRole companyRole : comRoles) {
+                            String dName = DepartmentControl.getInstance().getDepartmentShowName(companyRole.getDepartmentId());
+                            String pName = PostControl.getInstance().getPostName(companyRole.getPostId());
+                            if (ComparatorUtils.equals(dName + "," + pName, roleName)) {
+                                packageIDs.add(pId);
+                            }
+                        }
+                        break;
+                    case BIBaseConstant.ROLE_TYPE.CUSTOM:
+                        for (CustomRole customRole : cusRoles) {
+                            if (ComparatorUtils.equals(customRole.getRolename(), roleName)) {
+                                packageIDs.add(pId);
+                            }
+                        }
+                        break;
                 }
             }
         }
@@ -83,8 +131,6 @@ public class BIAuthorityManager {
 
     public List<BIPackageID> getAuthPackagesBySession(BISessionProvider session) throws Exception {
         List<BIPackageID> packageIDs = new ArrayList<BIPackageID>();
-        List<Long> comRoleIds = session.getCompanyRoles();
-        List<Long> cusRoleIds = session.getCustomRoles();
         Iterator<Map.Entry<BIPackageID, List<BIPackageAuthority>>> iterator = this.packagesAuth.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<BIPackageID, List<BIPackageAuthority>> packAuth = iterator.next();
@@ -92,32 +138,31 @@ public class BIAuthorityManager {
             BIPackageID pId = packAuth.getKey();
             for (int i = 0; i < authorities.size(); i++) {
                 BIPackageAuthority auth = authorities.get(i);
-                long roleId = auth.getRoleId();
-                if ((comRoleIds.contains(roleId) && auth.getRoleType() == BIBaseConstant.ROLE_TYPE.COMPANY) ||
-                        (cusRoleIds.contains(roleId) && auth.getRoleType() == BIBaseConstant.ROLE_TYPE.CUSTOM)) {
-                    packageIDs.add(pId);
+                List<CompanyRole> comRoles = session.getCompanyRoles();
+                List<CustomRole> cusRoles = session.getCustomRoles();
+                String roleName = auth.getRoleName();
+                int roleType = auth.getRoleType();
+                switch (roleType) {
+                    case BIBaseConstant.ROLE_TYPE.COMPANY:
+                        for (CompanyRole companyRole : comRoles) {
+                            String dName = DepartmentControl.getInstance().getDepartmentShowName(companyRole.getDepartmentId());
+                            String pName = PostControl.getInstance().getPostName(companyRole.getPostId());
+                            if (ComparatorUtils.equals(dName + "," + pName, roleName)) {
+                                packageIDs.add(pId);
+                            }
+                        }
+                        break;
+                    case BIBaseConstant.ROLE_TYPE.CUSTOM:
+                        for (CustomRole customRole : cusRoles) {
+                            if (ComparatorUtils.equals(customRole.getRolename(), roleName)) {
+                                packageIDs.add(pId);
+                            }
+                        }
+                        break;
                 }
             }
         }
         return packageIDs;
-    }
-
-    private List<Long> getCustomRolesByUserId(long userId) throws Exception{
-        Set<CustomRole> cusRoles = CustomRoleControl.getInstance().getCustomRoleSet(userId);
-        List<Long> cusRoleIds = new ArrayList<Long>();
-        for (CustomRole role : cusRoles) {
-            cusRoleIds.add(role.getId());
-        }
-        return  cusRoleIds;
-    }
-
-    private List<Long> getCompanyRolesByUserId(long userId) throws Exception {
-        Set<CompanyRole> comRoles = CompanyRoleControl.getInstance().getCompanyRoleSet(userId);
-        List<Long> comRoleIds = new ArrayList<Long>();
-        for (CompanyRole role : comRoles) {
-            comRoleIds.add(role.getId());
-        }
-        return comRoleIds;
     }
 
     public JSONObject createJSON(long userId) throws Exception {

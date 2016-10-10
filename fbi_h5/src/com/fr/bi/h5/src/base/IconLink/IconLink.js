@@ -13,15 +13,16 @@ import React, {
     View,
     PixelRatio,
     Fetch,
-    TouchableHighlight
+    TouchableWithoutFeedback
 } from 'lib'
 
 import {Colors} from 'data'
 
 import Icon from '../Icon'
+import './IconLink.css'
 
 
-class IconButton extends Component {
+class IconLink extends Component {
     constructor(props, context) {
         super(props, context);
         const {selected} = props;
@@ -88,21 +89,19 @@ class IconButton extends Component {
                 <Icon width={props.iconWidth} height={props.iconHeight}/>
             </View>
         }
-        return <TouchableHighlight style={[props.style]} onPress={this._onPress.bind(this)}
-                                   underlayColor={props.underlayColor || Colors.PRESS}>
-            <View className={cn(props.className, 'react-view', cn({
+        return <TouchableWithoutFeedback style={[props.style]} onPress={this._onPress.bind(this)}>
+            <View className={cn(props.className, 'react-view', 'IconLink', cn({
                 'active': this.state.selected
-            }))} style={[styles.wrapper]}>
+            }))} style={[styles.style, styles.wrapper]}>
                 <Icon width={props.iconWidth} height={props.iconHeight}/>
             </View>
-        </TouchableHighlight>
+        </TouchableWithoutFeedback>
     }
 
 }
-mixin.onClass(IconButton, PureRenderMixin);
+mixin.onClass(IconLink, PureRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
-        flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
     },
@@ -115,4 +114,4 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.SELECTED
     }
 });
-export default IconButton
+export default IconLink

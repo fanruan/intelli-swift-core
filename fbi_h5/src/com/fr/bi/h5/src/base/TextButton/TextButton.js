@@ -19,9 +19,6 @@ import React, {
 
 import {Colors} from 'data'
 
-import Icon from '../Icon'
-
-
 class TextButton extends Component {
     constructor(props, context) {
         super(props, context);
@@ -36,7 +33,6 @@ class TextButton extends Component {
         disabled: false,
         invalid: false,
         stopPropagation: false,
-        text: '',
         onSelected: emptyFunction,
         onPress: emptyFunction
     };
@@ -78,18 +74,18 @@ class TextButton extends Component {
         const {...props} = this.props, {...state} = this.state;
         if (props.disabled === true) {
             return <View style={[styles.wrapper, styles.disabled, props.style]}>
-                <Text>{props.text}</Text>
+                <Text>{props.children}</Text>
             </View>
         }
         if (props.invalid === true) {
             return <View style={[styles.wrapper, props.style]}>
-                <Text>{props.text}</Text>
+                <Text>{props.children}</Text>
             </View>
         }
         return <TouchableOpacity style={[props.style]} onPress={this._onPress.bind(this)}
                                  underlayColor={props.underlayColor || Colors.PRESS}>
             <View style={[styles.wrapper]}>
-                <Text>{props.text}</Text>
+                <Text>{props.children}</Text>
             </View>
         </TouchableOpacity>
     }

@@ -18,11 +18,9 @@ import React, {
 } from 'lib'
 
 import {Colors} from 'data'
+import './TextLink.css'
 
-import Icon from '../Icon'
-
-
-class TextButton extends Component {
+class TextLink extends Component {
     constructor(props, context) {
         super(props, context);
         const {selected} = props;
@@ -36,7 +34,6 @@ class TextButton extends Component {
         disabled: false,
         invalid: false,
         stopPropagation: false,
-        text: '',
         onSelected: emptyFunction,
         onPress: emptyFunction
     };
@@ -77,34 +74,19 @@ class TextButton extends Component {
     render() {
         const {...props} = this.props, {...state} = this.state;
         if (props.disabled === true) {
-            return <View style={[styles.wrapper, styles.disabled, props.style]}>
-                <Text>{props.text}</Text>
-            </View>
+            return <Text style={[styles.disabled, props.style]}>{props.children}</Text>
         }
         if (props.invalid === true) {
-            return <View style={[styles.wrapper, props.style]}>
-                <Text>{props.text}</Text>
-            </View>
+            return <Text style={[props.style]}>{props.children}</Text>
         }
-        return <TouchableOpacity style={[props.style]} onPress={this._onPress.bind(this)}
-                                 underlayColor={props.underlayColor || Colors.PRESS}>
-            <View style={[styles.wrapper]}>
-                <Text>{props.text}</Text>
-            </View>
-        </TouchableOpacity>
+        return <Text className="TextLink" style={[props.style]} onPress={this._onPress.bind(this)}>{props.children}</Text>
     }
 
 }
-mixin.onClass(TextButton, PureRenderMixin);
+mixin.onClass(TextLink, PureRenderMixin);
 const styles = StyleSheet.create({
-    wrapper: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        color: Colors.HIGHLIGHT
-    },
     disabled: {
         color: Colors.DISABLED
     }
 });
-export default TextButton
+export default TextLink

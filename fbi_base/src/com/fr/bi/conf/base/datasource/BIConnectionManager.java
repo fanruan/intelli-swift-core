@@ -176,7 +176,7 @@ public class BIConnectionManager extends XMLFileManager {
 
     private boolean testConnection(Connection c) {
         try {
-            c.testConnection();
+//            c.testConnection();
             return true;
         } catch (Exception e) {
             return false;

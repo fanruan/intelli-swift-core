@@ -117,8 +117,8 @@ class MultiSelectorWidget extends Component {
                 //scrollToIndex={scrollToIndex}
             />
             <View height={Size.ITEM_HEIGHT} style={styles.toolbar}>
-                <TextButton style={{flex: 1}} text={state.type === 1 ? '全选' : '全不选'}
-                            onPress={this._onSelectAll.bind(this)}/>
+                <TextButton style={{flex: 1}}
+                            onPress={this._onSelectAll.bind(this)}>{state.type === 1 ? '全选' : '全不选'}</TextButton>
             </View>
         </VtapeLayout>;
     }

@@ -14,7 +14,7 @@ import React, {
 
 import {Size, Template, Widget} from 'data'
 
-import {Table, Dialog, IconButton, HtapeLayout, VtapeLayout} from 'base'
+import {Table, Dialog, IconLink, HtapeLayout, VtapeLayout} from 'base'
 import {TableWidget} from 'widgets';
 
 import TableComponentHelper from './TableComponentHelper';
@@ -71,14 +71,14 @@ class TableComponent extends Component {
     _renderHeader() {
         const {$widget} = this.props;
         const widget = new Widget($widget);
-        return <HtapeLayout height={Size.HEADER_HEIGHT} style={styles.header}>
-            <Text style={styles.name}>{widget.getName()}</Text>
-            <IconButton width={Size.HEADER_HEIGHT} className='delete' onPress={()=> {
+        return <View height={Size.HEADER_HEIGHT} style={styles.header}>
+            <Text>{widget.getName()}</Text>
+            <IconLink className='setting-font' onPress={()=> {
                 this.setState({
                     open: true
                 })
             }}/>
-        </HtapeLayout>
+        </View>
     }
 
     _renderDialog() {
@@ -88,6 +88,11 @@ class TableComponent extends Component {
                 $widget={$widget}
                 wId={wId}
                 height={0}
+                onReturn={()=> {
+                    this.setState({
+                        open: false
+                    })
+                }}
             />
         }
         return null;
@@ -134,11 +139,12 @@ const styles = StyleSheet.create({
     wrapper: {
         position: 'relative'
     },
-    name: {
-        lineHeight: Size.HEADER_HEIGHT,
+    header: {
         paddingLeft: 4,
         paddingRight: 4,
-        justifyContent: 'center'
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
     }
 });
 export default TableComponent

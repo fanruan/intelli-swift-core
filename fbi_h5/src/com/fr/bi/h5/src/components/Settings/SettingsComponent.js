@@ -22,7 +22,7 @@ import React, {
 
 import {Colors, Size, Template, Widget, Dimension, Target} from 'data'
 
-import {CenterLayout, Icon, Table, Overlay} from 'base'
+import {CenterLayout, VtapeLayout, HtapeLayout, Icon, TextLink, Table, Overlay} from 'base'
 
 import {MultiSelectorWidget} from 'widgets'
 
@@ -34,7 +34,10 @@ class SettingsComponent extends Component {
 
     static propTypes = {};
 
-    static defaultProps = {};
+    static defaultProps = {
+        onReturn: emptyFunction,
+        onComplete: emptyFunction
+    };
 
     state = {};
 
@@ -50,12 +53,31 @@ class SettingsComponent extends Component {
 
     }
 
+    _renderHeader() {
+        const {$widget} = this.props;
+        const widget = new Widget($widget);
+        return <View height={Size.HEADER_HEIGHT} style={styles.header}>
+            <TextLink onPress={()=> {
+                this.props.onReturn();
+            }} style={styles.back}>{'返回'}</TextLink>
+            <Text style={styles.name}>{widget.getName()}</Text>
+            <TextLink style={styles.complete}>{'完成'}</TextLink>
+        </View>
+    }
+
+    _renderDialog() {
+        return <View>
+
+        </View>;
+    }
+
     render() {
         const {...props} = this.props, {...state} = this.state;
         return <Overlay>
-            <View style={styles.wrapper}>
-
-            </View>
+            <VtapeLayout style={styles.wrapper}>
+                {this._renderHeader()}
+                {this._renderDialog()}
+            </VtapeLayout>
         </Overlay>
     }
 
@@ -81,10 +103,19 @@ const styles = StyleSheet.create({
     wrapper: {
         position: 'absolute',
         backgroundColor: '#ffffff',
-        left: 20,
-        right: 20,
-        top: 20,
-        bottom: 20
+        left: 10,
+        right: 10,
+        top: 30,
+        bottom: 10
+    },
+    header: {
+        flexDirection: 'row',
+        paddingLeft: 20,
+        paddingRight: 20,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        color: Colors.TEXT,
+        backgroundColor: Colors.HIGHLIGHT
     }
 });
 export default SettingsComponent

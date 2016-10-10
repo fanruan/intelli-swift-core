@@ -14,7 +14,7 @@ import React, {
     PixelRatio,
     Fetch,
     TouchableHighlight
-    } from 'lib'
+} from 'lib'
 
 import {Colors} from 'data'
 
@@ -77,12 +77,23 @@ class IconButton extends Component {
 
     render() {
         const {...props} = this.props, {...state} = this.state;
+        if (props.disabled === true) {
+            return <View className={cn(props.className, 'react-view')}
+                         style={[styles.wrapper, styles.disabled, props.style]}>
+                <Icon width={props.iconWidth} height={props.iconHeight}/>
+            </View>
+        }
+        if (props.invalid === true) {
+            return <View className={cn(props.className, 'react-view')} style={[styles.wrapper, props.style]}>
+                <Icon width={props.iconWidth} height={props.iconHeight}/>
+            </View>
+        }
         return <TouchableHighlight style={[props.style]} onPress={this._onPress.bind(this)}
                                    underlayColor={props.underlayColor || Colors.PRESS}>
             <View className={cn(props.className, 'react-view', cn({
                 'active': this.state.selected
             }))} style={[styles.wrapper]}>
-                <Icon width={props.iconWidth} height={props.iconHeight}></Icon>
+                <Icon width={props.iconWidth} height={props.iconHeight}/>
             </View>
         </TouchableHighlight>
     }
@@ -94,6 +105,10 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
+    },
+
+    disabled: {
+        color: Colors.DISABLED
     },
 
     selected: {
