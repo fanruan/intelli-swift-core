@@ -839,6 +839,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/fit/fit.widget.css",
                 "com/fr/bi/web/css/modules/fit/fit.css",
 
+                //复用面板
+                "com/fr/bi/web/css/modules/fit/widgetchooser/reuse/pane.reuse.css",
+
                 //全局样式
                 "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.css",
                 "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.setting.css",
