@@ -13,7 +13,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _init: function () {
         BI.MultiAxisChartSetting.superclass._init.apply(this, arguments);
-        var self = this, constant = BI.AbstractChartSetting;
+        var self = this, o = this.options, constant = BI.AbstractChartSetting;
 
         this.colorSelect = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",
