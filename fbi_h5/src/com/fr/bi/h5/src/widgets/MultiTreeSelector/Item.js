@@ -75,7 +75,7 @@ class Item extends Component {
         if (!props.isLeaf) {
             row = <View className={cn({
                 'active': state.expanded,
-            }, 'node-fold', 'react-view')} style={[styles.icon, {
+            }, 'node-fold-font', 'react-view')} style={[styles.icon, {
                 width: 44,
                 marginLeft: props.layer * 44
             }]}>

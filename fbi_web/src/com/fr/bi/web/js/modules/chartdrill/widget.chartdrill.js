@@ -99,6 +99,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             this.pushButton.setPushDown();
             return;
         }
+
         this.pushButton.setPushUp();
 
         if (BI.isNull(obj) && !this._checkUPDrillEmpty()) {
@@ -237,6 +238,10 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
 
     _checkUPDrillEmpty: function () {
         var wId = this.options.wId;
+        var wType = BI.Utils.getWidgetTypeByID(wId);
+        if(wType < 5 || wType === BICst.WIDGET.MAP) {
+            return false
+        }
         var drillMap = BI.Utils.getDrillByID(wId);
         var upDrillID = null, dId = null;
         BI.each(drillMap, function (drId, ds) {

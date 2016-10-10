@@ -1,38 +1,38 @@
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
-.tool-filter .b-font:before {
+.tool-filter-font .b-font:before {
   content: '\e624';
   color: #808080;
 }
-.tool-filter:active .b-font:before {
+.tool-filter-font:active .b-font:before {
   content: '\e624';
   color: #009de3;
 }
-.tool-filter.disabled .b-font:before {
+.tool-filter-font.disabled .b-font:before {
   content: '\e624';
   color: #808080;
 }
-.node-fold .b-font:before {
+.node-fold-font .b-font:before {
   content: '\e610';
   color: #808080;
 }
-.node-fold:active .b-font:before {
+.node-fold-font:active .b-font:before {
   content: '\e610';
   color: #808080;
 }
-.node-fold.active .b-font:before {
+.node-fold-font.active .b-font:before {
   content: '\e611';
   color: #808080;
 }
-.node-fold.disabled .b-font:before {
+.node-fold-font.disabled .b-font:before {
   content: '\e610';
   color: #808080;
 }
-.delete .b-font:before {
-  content: '\e606';
+.setting-font .b-font:before {
+  content: '\e62a';
   color: #808080;
 }
-.delete.disabled .b-font:before {
-  content: '\e606';
+.setting-font.disabled .b-font:before {
+  content: '\e62a';
   color: #808080;
 }

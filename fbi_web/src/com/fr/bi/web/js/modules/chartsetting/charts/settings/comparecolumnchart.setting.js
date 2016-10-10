@@ -139,7 +139,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             watermark: BI.i18nText("BI-Custom_Input")
         });
 
-        this.LYUnit.on(BI.SignEditor.EVENT_CONFIRM, function(){
+        this.LYUnit.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
         });
 
@@ -151,7 +151,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             watermark: BI.i18nText("BI-Custom_Input")
         });
 
-        this.RYUnit.on(BI.SignEditor.EVENT_CONFIRM, function(){
+        this.RYUnit.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
         });
 
@@ -162,7 +162,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 90
         });
 
-        this.isShowTitleLY.on(BI.Controller.EVENT_CHANGE, function(){
+        this.isShowTitleLY.on(BI.Controller.EVENT_CHANGE, function () {
             this.isSelected() ? self.editTitleLY.setVisible(true) : self.editTitleLY.setVisible(false);
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
         });
@@ -173,7 +173,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             height: constant.EDITOR_HEIGHT,
             cls: "unit-input"
         });
-        this.editTitleLY.on(BI.SignEditor.EVENT_CONFIRM, function(){
+        this.editTitleLY.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
         });
 
@@ -183,7 +183,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 90
         });
 
-        this.isShowTitleRY.on(BI.Controller.EVENT_CHANGE, function(){
+        this.isShowTitleRY.on(BI.Controller.EVENT_CHANGE, function () {
             this.isSelected() ? self.editTitleRY.setVisible(true) : self.editTitleRY.setVisible(false);
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
         });
@@ -195,7 +195,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "unit-input"
         });
 
-        this.editTitleRY.on(BI.SignEditor.EVENT_CONFIRM, function(){
+        this.editTitleRY.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
         });
 
@@ -206,7 +206,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 80
         });
 
-        this.reversedLY.on(BI.Controller.EVENT_CHANGE, function(){
+        this.reversedLY.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
         });
 
@@ -216,7 +216,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 80
         });
 
-        this.reversedRY.on(BI.Controller.EVENT_CHANGE, function(){
+        this.reversedRY.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
         });
 
@@ -229,11 +229,11 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             allowBlank: false,
             value: "0",
             errorText: BI.i18nText("BI-Please_Enter_Number_From_To_To", -90, 90),
-            validationChecker: function(v){
+            validationChecker: function (v) {
                 return BI.isInteger(v) && v >= -90 && v <= 90;
             }
         });
-        this.text_direction.on(BI.SignEditor.EVENT_CONFIRM, function(){
+        this.text_direction.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
         });
 
@@ -243,7 +243,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 90
         });
 
-        this.isShowTitleX.on(BI.Controller.EVENT_CHANGE, function(){
+        this.isShowTitleX.on(BI.Controller.EVENT_CHANGE, function () {
             this.isSelected() ? self.editTitleX.setVisible(true) : self.editTitleX.setVisible(false);
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
         });
@@ -255,7 +255,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "unit-input"
         });
 
-        this.editTitleX.on(BI.SignEditor.EVENT_CONFIRM, function(){
+        this.editTitleX.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
         });
 
@@ -267,7 +267,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BICst.CHART_LEGEND
         });
 
-        this.legend.on(BI.Segment.EVENT_CHANGE, function(){
+        this.legend.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
         });
 
@@ -278,7 +278,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 115
         });
 
-        this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function(){
+        this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
         });
 
@@ -289,8 +289,8 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 115
         });
 
-        this.showDataTable.on(BI.Controller.EVENT_CHANGE, function(){
-            if(this.isSelected()){
+        this.showDataTable.on(BI.Controller.EVENT_CHANGE, function () {
+            if (this.isSelected()) {
                 self.showZoom.setSelected(false);
             }
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
@@ -303,7 +303,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 115
         });
 
-        this.gridLine.on(BI.Controller.EVENT_CHANGE, function(){
+        this.gridLine.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
         });
 
@@ -314,8 +314,8 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 140
         });
 
-        this.showZoom.on(BI.Controller.EVENT_CHANGE, function(){
-            if(this.isSelected()){
+        this.showZoom.on(BI.Controller.EVENT_CHANGE, function () {
+            if (this.isSelected()) {
                 self.showDataTable.setSelected(false);
             }
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE);
@@ -650,34 +650,34 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.otherAttr.setVisible(v);
     },
 
-    populate: function(){
+    populate: function () {
         var wId = this.options.wId;
 
         var view = BI.Utils.getWidgetViewByID(wId);
         var titleLY = BI.Utils.getWSLeftYAxisTitleByID(wId);
         var titleX = BI.Utils.getWSXAxisTitleByID(wId);
         var titleRY = BI.Utils.getWSRightYAxisTitleByID(wId);
-        if(titleLY === ""){
-            BI.any(view[BICst.REGION.TARGET1], function(idx, dId){
-                if(BI.Utils.isDimensionUsable(dId)){
+        if (titleLY === "") {
+            BI.any(view[BICst.REGION.TARGET1], function (idx, dId) {
+                if (BI.Utils.isDimensionUsable(dId)) {
                     titleLY = BI.Utils.getDimensionNameByID(dId);
                     return true;
                 }
                 return false;
             });
         }
-        if(titleX === ""){
-            BI.any(view[BICst.REGION.DIMENSION1], function(idx, dId){
-                if(BI.Utils.isDimensionUsable(dId)){
+        if (titleX === "") {
+            BI.any(view[BICst.REGION.DIMENSION1], function (idx, dId) {
+                if (BI.Utils.isDimensionUsable(dId)) {
                     titleX = BI.Utils.getDimensionNameByID(dId);
                     return true;
                 }
                 return false;
             });
         }
-        if(titleRY === ""){
-            BI.any(view[BICst.REGION.TARGET2], function(idx, dId){
-                if(BI.Utils.isDimensionUsable(dId)){
+        if (titleRY === "") {
+            BI.any(view[BICst.REGION.TARGET2], function (idx, dId) {
+                if (BI.Utils.isDimensionUsable(dId)) {
                     titleRY = BI.Utils.getDimensionNameByID(dId);
                     return true;
                 }
@@ -722,7 +722,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false);
     },
 
-    getValue: function(){
+    getValue: function () {
         return {
             transfer_filter: this.transferFilter.isSelected(),
             chart_color: this.colorSelect.getValue()[0],
@@ -755,7 +755,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         }
     },
 
-    setValue: function(v){
+    setValue: function (v) {
         this.transferFilter.setSelected(v.transfer_filter);
         this.colorSelect.setValue(v.chart_color);
         this.chartStyleGroup.setValue(v.chart_style);

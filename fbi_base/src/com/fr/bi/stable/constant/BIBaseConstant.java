@@ -23,7 +23,6 @@ import java.util.Comparator;
  */
 public class BIBaseConstant {
 
-    public final static String VERSION = "4.0";
     public final static String VERSIONTEXT = "version";
     public final static int SIZE500 = 500;
     public final static int SIZE1000 = 1000;

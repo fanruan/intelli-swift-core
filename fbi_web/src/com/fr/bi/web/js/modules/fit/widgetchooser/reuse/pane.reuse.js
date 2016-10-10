@@ -203,10 +203,38 @@ BI.ReusePane = BI.inherit(BI.Widget, {
                 self.items = BI.filter(items, function(idx, item){
                    return item.id != currentTemplateId;
                 });
-                callback(self._findChildItemsFromItems(-1, 0));
+                var its = self._findChildItemsFromItems(-1, 0);
+                callback(its);
+                self.setTipVisible(BI.isEmptyArray(its));
             });
         } else {
             callback(self._findChildItemsFromItems(-1, 0));
+        }
+    },
+
+    _assertTip: function () {
+        var o = this.options;
+        if (!BI.Maskers.has(this.getName())) {
+            BI.createWidget({
+                type: 'bi.vertical',
+                cls: "reuse-tip",
+                items: [{
+                    type: "bi.label",
+                    tgap: 5,
+                    cls: "tip-info",
+                    text: BI.i18nText("BI-No_Reuse_Element")
+                }],
+                element: BI.Maskers.make(this.getName(), this)
+            });
+        }
+        BI.Maskers.show(this.getName());
+    },
+
+    setTipVisible: function (b) {
+        if (b === true) {
+            this._assertTip();
+        } else {
+            BI.Maskers.hide(this.getName());
         }
     },
 

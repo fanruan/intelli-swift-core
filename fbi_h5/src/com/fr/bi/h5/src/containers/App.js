@@ -57,6 +57,7 @@ import Main from '../components/Main.js'
 // import DialogDemo from '../examples/base/3/Dialog/Dialog'
 
 //import UIExplorerApp from '../examples/UIExplorer/UIExplorerApp.web'
+// import Game2048 from '../examples/2048/Game2048'
 
 
 class App extends Component {

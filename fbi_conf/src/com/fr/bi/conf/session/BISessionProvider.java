@@ -3,6 +3,8 @@ package com.fr.bi.conf.session;
 import com.fr.bi.conf.report.BIReport;
 import com.fr.bi.base.provider.UserProvider;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.fs.base.entity.CompanyRole;
+import com.fr.fs.base.entity.CustomRole;
 
 import java.util.List;
 
@@ -31,7 +33,7 @@ public interface BISessionProvider extends UserProvider {
      */
     ICubeDataLoader getLoader();
 
-    List<Long> getCustomRoles();
+    List<CustomRole> getCustomRoles();
 
-    List<Long> getCompanyRoles();
+    List<CompanyRole> getCompanyRoles();
 }
