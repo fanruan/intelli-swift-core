@@ -111,9 +111,9 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                         items: [this.chartTypeGroup]
                     },
                     lgap: constant.SIMPLE_H_GAP
-                }], {
+                }, {
                     height: constant.SINGLE_LINE_HEIGHT
-                })
+                }])
             }]
         });
 

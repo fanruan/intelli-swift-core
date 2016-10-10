@@ -215,6 +215,30 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE);
         });
 
+        //左轴刻度自定义
+        this.showYCustomScale = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Scale_Customize"),
+            width: 115
+        });
+
+        this.showYCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
+            self.customYScale.setVisible(this.isSelected());
+            if (!this.isSelected()) {
+                self.customYScale.setValue({})
+            }
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
+        });
+
+        this.customYScale = BI.createWidget({
+            type: "bi.custom_scale",
+            wId: o.wId
+        });
+
+        this.customYScale.on(BI.CustomScale.EVENT_CHANGE, function () {
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
+        });
+
         this.showElement = BI.createWidget({
             type: "bi.horizontal_adapt",
             columnSize: [80],
@@ -320,6 +344,12 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.isShowTitleLY, this.editTitleLY]
                 }, {
                     type: "bi.vertical_adapt",
+                    items: [this.showYCustomScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.customYScale]
+                }, {
+                    type: "bi.vertical_adapt",
                     items: [this.separators]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
@@ -335,7 +365,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 170
         });
         this.transferFilter.on(BI.Controller.EVENT_CHANGE, function(){
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE);
         });
 
         this.otherAttr = BI.createWidget({
