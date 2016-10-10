@@ -1,14 +1,16 @@
 'use strict';
 
-var React = require('lib');
+var React = require('react');
 var {
-  StyleSheet,
-  Text,
-  View,
-  Platform,
-  Animated,
-  TouchableBounce
-} = React;
+    StyleSheet,
+    Text,
+    View,
+    Platform,
+    Animated,
+    TouchableBounce,
+    Component
+}  = require('lib');
+
 
 function getPageXY(event) {
   if (Platform.OS == 'web') {
