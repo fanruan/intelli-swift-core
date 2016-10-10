@@ -99,6 +99,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             this.pushButton.setPushDown();
             return;
         }
+
         this.pushButton.setPushUp();
 
         if (BI.isNull(obj) && !this._checkUPDrillEmpty()) {

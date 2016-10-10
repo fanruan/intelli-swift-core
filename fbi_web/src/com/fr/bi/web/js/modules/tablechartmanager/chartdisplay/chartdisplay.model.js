@@ -796,7 +796,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 });
             }
         });
-        
     },
 
     //clicked 中的值，如果是分组名使用分组对应的id
