@@ -2,7 +2,7 @@ package com.fr.bi.cluster.socket;
 
 import com.fr.bi.aconfig.BIBusiPack;
 import com.fr.bi.cluster.socket.manager.BIClusterBusiPackManager;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import junit.framework.TestCase;
 
 
