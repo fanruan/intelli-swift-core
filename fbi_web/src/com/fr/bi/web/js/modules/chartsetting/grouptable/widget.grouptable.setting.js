@@ -36,6 +36,7 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
             }
         });
         this.showTitle.on(BI.Controller.EVENT_CHANGE, function () {
+            self.widgetTitle.setVisible(this.isSelected());
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
 
@@ -43,20 +44,11 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
         this.title = BI.createWidget({
             type: "bi.sign_editor",
             cls: "title-input",
-            width: 120,
-            height: this.constant.EDITOR_HEIGHT,
+            width: 120
         });
 
         this.title.on(BI.SignEditor.EVENT_CHANGE, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
-        });
-
-        //组件背景
-        this.widgetBackground = BI.createWidget({
-            type: "bi.global_style_index_background"
-        });
-        this.widgetBackground.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
 
         //详细设置
@@ -66,6 +58,20 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
 
         this.titleDetailSettting.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+        });
+
+        this.widgetTitle = BI.createWidget({
+             type: "bi.left",
+             items: [this.title, this.titleDetailSettting],
+             hgap: this.constant.SIMPLE_H_GAP
+        });
+
+        //组件背景
+        this.widgetBackground = BI.createWidget({
+            type: "bi.global_style_index_background"
+        });
+        this.widgetBackground.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
+            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
 
         var widgetTitle = BI.createWidget({
@@ -85,10 +91,7 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
                 items: [this.showTitle]
             }, {
                 type: "bi.vertical_adapt",
-                items: [this.title]
-            }, {
-                type: "bi.vertical_adapt",
-                items: [this.titleDetailSettting]
+                items: [this.widgetTitle]
             }, {
                 type: "bi.label",
                 text: BI.i18nText("BI-Background"),
@@ -334,6 +337,7 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
     populate: function () {
         var wId = this.options.wId;
         this.showTitle.setSelected(BI.Utils.getWSShowNameByID(wId));
+        this.widgetTitle.setVisible(BI.Utils.getWSShowNameByID(wId));
         this.title.setValue(BI.Utils.getWidgetNameByID(wId));
         this.titleDetailSettting.setValue(BI.Utils.getWSTitleDetailSettingByID(wId));
         this.widgetBackground.setValue(BI.Utils.getWSWidgetBGByID(wId));
