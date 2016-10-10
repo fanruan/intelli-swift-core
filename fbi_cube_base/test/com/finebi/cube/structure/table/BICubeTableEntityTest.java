@@ -10,7 +10,7 @@ import com.finebi.cube.structure.column.date.BIDateColumnTool;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -63,7 +63,7 @@ public class BICubeTableEntityTest extends TestCase {
 
             assertTrue(tableEntity.tableDataAvailable());
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
         }
     }
@@ -98,7 +98,7 @@ public class BICubeTableEntityTest extends TestCase {
 
             assertTrue(tableEntity.tableDataAvailable());
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
         }
     }

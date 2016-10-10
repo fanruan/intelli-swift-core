@@ -7,7 +7,7 @@ BI.ShowTitleDetailedSettingCombo = BI.inherit(BI.Widget, {
     _defaultConfig: function() {
         return BI.extend(BI.ShowTitleDetailedSettingCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-show-title-detailed-setting",
-            width: 100
+            width: 50
         })
     },
 

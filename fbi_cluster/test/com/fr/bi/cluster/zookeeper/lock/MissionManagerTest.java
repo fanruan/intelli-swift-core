@@ -4,7 +4,7 @@ import com.fr.bi.cluster.wrapper.ZooKeeperWrapper;
 import com.fr.bi.cluster.zookeeper.BIClusterMissionManager;
 import com.fr.bi.cluster.zookeeper.watcher.BIMaster;
 import com.fr.bi.cluster.zookeeper.watcher.BIWorker;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import junit.framework.TestCase;
 
 /**

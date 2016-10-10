@@ -1,5 +1,6 @@
 package com.finebi.cube.conf.pack;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.data.BIBusinessPackageTestTool;
 import com.finebi.cube.conf.pack.data.BIGroupTagName;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
@@ -10,7 +11,6 @@ import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIGroupDuplicateException;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
-import com.fr.bi.stable.utils.code.BILogger;
 import junit.framework.TestCase;
 
 import java.util.Set;
@@ -52,7 +52,7 @@ public class SystemPackageTest extends TestCase {
             }
             assertTrue(isDuplicate);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -70,7 +70,7 @@ public class SystemPackageTest extends TestCase {
             }
             assertTrue(isMismatch);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -98,7 +98,7 @@ public class SystemPackageTest extends TestCase {
             }
             assertTrue(isDuplicate);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -146,7 +146,7 @@ public class SystemPackageTest extends TestCase {
             }
             assertTrue(isMismatch);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -170,7 +170,7 @@ public class SystemPackageTest extends TestCase {
             }
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -195,7 +195,7 @@ public class SystemPackageTest extends TestCase {
                 assertTrue(false);
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -232,7 +232,7 @@ public class SystemPackageTest extends TestCase {
             }
             assertTrue(isDup);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -254,7 +254,7 @@ public class SystemPackageTest extends TestCase {
             manager.addPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("abcd"));
             assertTrue(manager.getAllPackages(user.getUserId()).contains(BIBusinessPackageTestTool.generatePackage("abcd")));
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -270,7 +270,7 @@ public class SystemPackageTest extends TestCase {
             assertFalse(group.containPackage(BIBusinessPackageTestTool.generatePackage("ab")));
             assertFalse(group.containPackage(BIBusinessPackageTestTool.generatePackage("abc")));
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -292,7 +292,7 @@ public class SystemPackageTest extends TestCase {
             assertTrue(group.containPackage(BIBusinessPackageTestTool.generatePackage("ab")));
             assertTrue(group.containPackage(BIBusinessPackageTestTool.generatePackage("abc")));
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -315,7 +315,7 @@ public class SystemPackageTest extends TestCase {
             }
             assertTrue(isAbs);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -331,7 +331,7 @@ public class SystemPackageTest extends TestCase {
             manager.getGroup(user.getUserId(), new BIGroupTagName("a")).setPosition(4);
             assertTrue(manager.getGroup(user.getUserId(), new BIGroupTagName("a")).getPosition() == 4);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 /*

@@ -496,6 +496,10 @@ BICst.DEFAULT_CHART_SETTING = {
     right_num_separators: false,
     mini_show_grid_line: false,
     minimalist_model: false,
+    big_data_mode: false,
+    show_x_custom_scale: false,
+    show_y_custom_scale: false,
+    show_z_custom_scale: false,
     line_width: BICst.LINE_WIDTH.ONE,
     mini_line_width: BICst.LINE_WIDTH.ZERO,
     show_label: true,
@@ -513,7 +517,12 @@ BICst.DEFAULT_CHART_SETTING = {
     bubble_display: BICst.DISPLAY_RULES.DIMENSION,
     bubble_style: BICst.CHART_SHAPE.NO_PROJECTOR,
     show_background_layer: true,
-    background_layer_info: '高德地图'
+    background_layer_info: '高德地图',
+    custom_scale: {
+        minScale: {},
+        maxScale: {},
+        interval: {}
+    }
 };
 
 BICst.DASHBOARD_STYLE_CONDITIONS = [{

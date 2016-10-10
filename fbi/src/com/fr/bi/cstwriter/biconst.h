@@ -238,8 +238,8 @@
 # define BI_BI_REPORT_NULL 0
 # define BI_BI_REPORT_SUBMITED 1
 # define BI_BI_REPORT_PUBLISHED 2
+# define BI_VERSION @"4.0"
 # define BI_SYSTEM_TIME @"__system_time-3e1d05defe78__"
-# define BI_SPECIAL_FIELD_VALUE @"__BI_GUY_SPECIAL_FIELD_VALUE__"
 
 # define BI_ETL_ADD_COLUMN_TYPE_FORMULA @"formula"
 # define BI_ETL_ADD_COLUMN_TYPE_DATE_DIFF @"date_diff"

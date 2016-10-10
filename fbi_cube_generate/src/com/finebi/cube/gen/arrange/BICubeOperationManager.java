@@ -1,5 +1,6 @@
 package com.finebi.cube.gen.arrange;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.data.ICubeResourceDiscovery;
@@ -38,7 +39,6 @@ import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.data.impl.Connection;
 import com.fr.fs.control.UserControl;
@@ -146,13 +146,31 @@ public class BICubeOperationManager {
         }
     }
 
+    /**
+     * 设置一个表队列
+     *
+     * @param tableSourceSet 一条有先后关系的表层级。
+     *                       例如：
+     *                       a
+     *                       b,c
+     *                       d
+     *                       e
+     *                       由5张表组成的层级关系。b,c设成前，a表必须生成好。
+     *                       d表生成前，bc表需要生成好。
+     */
     private void generateSingleTransport(List<Set<CubeTableSource>> tableSourceSet) {
         Iterator<Set<CubeTableSource>> it = tableSourceSet.iterator();
         Set<CubeTableSource> parentTables = null;
         while (it.hasNext()) {
             Set<CubeTableSource> sameLevelTable = it.next();
             Iterator<CubeTableSource> sameLevelTableIt = sameLevelTable.iterator();
+            /**
+             * 遍历当期层级的表
+             */
             while (sameLevelTableIt.hasNext()) {
+                /**
+                 * 当期层级的表
+                 */
                 CubeTableSource tableSource = sameLevelTableIt.next();
                 if (!isGenerated(tableSource)) {
                     BIOperation<Object> operation = new BIOperation<Object>(
@@ -181,7 +199,10 @@ public class BICubeOperationManager {
                     }
                 }
             }
-            parentTables = sameLevelTable;
+            if (parentTables == null) {
+                parentTables = new HashSet<CubeTableSource>();
+            }
+            parentTables.addAll(sameLevelTable);
         }
     }
 
@@ -451,7 +472,6 @@ public class BICubeOperationManager {
         }
         return tableSource;
     }
-
 
 
     protected BIRelationIndexGenerator getRelationBuilder(Cube cube, BITableSourceRelation relation) {

@@ -5,7 +5,7 @@ BI.DataLabelTextToolBar = BI.inherit(BI.Widget, {
     _constant: {
         TRIGGER_HEIGHT: 24,
         TRIGGER_WIDTH: 80,
-        CHOOSER_WIDTH: 40,
+        CHOOSER_WIDTH: 50,
         BUTTON_HEIGHT: 20,
         BUTTON_WIDTH: 20
     },

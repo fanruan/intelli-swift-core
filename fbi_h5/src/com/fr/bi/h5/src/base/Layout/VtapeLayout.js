@@ -1,4 +1,3 @@
-
 import React, {
     Component,
     StyleSheet,
@@ -13,6 +12,9 @@ class VtapeLayout extends Component {
     render() {
         const {children, style, ...props} = this.props;
         const cs = React.Children.map(children, (child)=> {
+            if (!child) {
+                return null;
+            }
             let style;
             if (child.props.height) {
                 style = {height: child.props.height, ...child.props.style}

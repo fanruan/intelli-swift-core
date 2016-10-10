@@ -14,6 +14,9 @@ class GridLayout extends Component {
     render() {
         const {children, ...props} = this.props;
         const cs = React.Children.map(children, (child)=> {
+            if (!child) {
+                return null;
+            }
             let style;
             if (child.props.height) {
                 style = {height: child.props.height, ...child.props.style}
@@ -21,6 +24,9 @@ class GridLayout extends Component {
                 style = {...child.props.style, ...styles.row};
             }
             const children = React.Children.map(child.props.children, (ch)=> {
+                if (!ch) {
+                    return null;
+                }
                 let style;
                 if (ch.props.width) {
                     style = {width: ch.props.width, ...ch.props.style};

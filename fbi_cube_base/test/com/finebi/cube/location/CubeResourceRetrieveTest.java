@@ -11,7 +11,7 @@ import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.stable.utils.algorithem.BIMD5Utils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.stable.StableUtils;
 import junit.framework.TestCase;
 
@@ -39,7 +39,7 @@ public class CubeResourceRetrieveTest extends TestCase {
                     , location.getAbsolutePath());
         } catch (Exception allIgnore) {
             assertTrue(false);
-            BILogger.getLogger().error(allIgnore.getMessage(), allIgnore);
+            BILoggerFactory.getLogger().error(allIgnore.getMessage(), allIgnore);
         }
     }
 
@@ -53,11 +53,11 @@ public class CubeResourceRetrieveTest extends TestCase {
                     BIMD5Utils.getMD5String(new String[]{BITableKeyUtils.convert(BITableSourceTestTool.getDBTableSourceA()).getSourceID(), BICubePathUtils.convert(path).getSourceID()}))
                     , location.getAbsolutePath());
         } catch (BICubeResourceAbsentException allIgnore) {
-            BILogger.getLogger().error(allIgnore.getMessage(), allIgnore);
+            BILoggerFactory.getLogger().error(allIgnore.getMessage(), allIgnore);
             assertTrue(false);
 
         } catch (Exception allIgnore) {
-            BILogger.getLogger().error(allIgnore.getMessage(), allIgnore);
+            BILoggerFactory.getLogger().error(allIgnore.getMessage(), allIgnore);
             assertTrue(false);
 
         }
@@ -77,7 +77,7 @@ public class CubeResourceRetrieveTest extends TestCase {
             assertTrue(false);
         } catch (Exception allIgnore) {
             assertTrue(false);
-            BILogger.getLogger().error(allIgnore.getMessage(), allIgnore);
+            BILoggerFactory.getLogger().error(allIgnore.getMessage(), allIgnore);
         }
 
     }
@@ -94,10 +94,10 @@ public class CubeResourceRetrieveTest extends TestCase {
                     , BIMD5Utils.getMD5String(new String[]{BITableSourceTestTool.getDBTableSourceB().fetchObjectCore().getIDValue(), key.getKey(), BICubePathUtils.convert(path).getSourceID()}))
                     , location.getAbsolutePath());
         } catch (BICubeResourceAbsentException allIgnore) {
-            BILogger.getLogger().error(allIgnore.getMessage(), allIgnore);
+            BILoggerFactory.getLogger().error(allIgnore.getMessage(), allIgnore);
             assertFalse(true);
         } catch (Exception allIgnore) {
-            BILogger.getLogger().error(allIgnore.getMessage(), allIgnore);
+            BILoggerFactory.getLogger().error(allIgnore.getMessage(), allIgnore);
             assertFalse(true);
         }
     }
@@ -111,10 +111,10 @@ public class CubeResourceRetrieveTest extends TestCase {
                     , BIMD5Utils.getMD5String(new String[]{BITableSourceTestTool.getDBTableSourceA().getSourceID(), key.getKey()}))
                     , location.getAbsolutePath());
         } catch (BICubeResourceAbsentException allIgnore) {
-            BILogger.getLogger().error(allIgnore.getMessage(), allIgnore);
+            BILoggerFactory.getLogger().error(allIgnore.getMessage(), allIgnore);
             assertFalse(true);
         } catch (Exception allIgnore) {
-            BILogger.getLogger().error(allIgnore.getMessage(), allIgnore);
+            BILoggerFactory.getLogger().error(allIgnore.getMessage(), allIgnore);
             assertFalse(true);
         }
     }

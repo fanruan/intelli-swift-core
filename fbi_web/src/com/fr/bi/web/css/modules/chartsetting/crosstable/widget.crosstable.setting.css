@@ -4,6 +4,12 @@
 .bi-cross-table-setting .single-line-settings {
   border-top: 1px solid #eaeaea;
 }
+.bi-cross-table-setting .single-line-settings .title-input {
+  border: 1px solid #d4dadd;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
 .bi-cross-table-setting .single-line-settings .table-form-font {
   font-size: 20px;
 }
