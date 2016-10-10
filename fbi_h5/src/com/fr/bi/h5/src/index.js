@@ -10,11 +10,11 @@ import View from './lib/View/View.web';
 import Portal from './lib/Portal/Portal';
 
 import 'reset.css';
-import 'css/utils/common.css';
-import 'css/utils/font.css';
-import 'css/utils/icon.css';
-import 'css/utils/background.css';
-import 'css/utils/base.css';
+import 'styles/css/utils/common.css';
+import 'styles/css/utils/font.css';
+import 'styles/css/utils/icon.css';
+import 'styles/css/utils/background.css';
+import 'styles/css/utils/base.css';
 
 class AppContainer extends Component {
 

@@ -67916,6 +67916,10 @@
 
 	var _lib2 = _interopRequireDefault(_lib);
 
+	var _classnames = __webpack_require__(513);
+
+	var _classnames2 = _interopRequireDefault(_classnames);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
@@ -67958,7 +67962,8 @@
 	            });
 	            return _lib2.default.createElement(
 	                _lib.View,
-	                _extends({}, props, { style: [styles.wrapper, style] }),
+	                _extends({}, props, { className: (0, _classnames2.default)('react-view', props.className),
+	                    style: [styles.wrapper, style] }),
 	                cs
 	            );
 	        }
@@ -67995,6 +68000,10 @@
 	var _lib = __webpack_require__(208);
 
 	var _lib2 = _interopRequireDefault(_lib);
+
+	var _classnames = __webpack_require__(513);
+
+	var _classnames2 = _interopRequireDefault(_classnames);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -68038,7 +68047,8 @@
 	            });
 	            return _lib2.default.createElement(
 	                _lib.View,
-	                _extends({}, props, { style: [styles.wrapper, style] }),
+	                _extends({}, props, { className: (0, _classnames2.default)('react-view', props.className),
+	                    style: [styles.wrapper, style] }),
 	                cs
 	            );
 	        }
@@ -68072,9 +68082,9 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _reactDom = __webpack_require__(34);
+	var _classnames = __webpack_require__(513);
 
-	var _reactDom2 = _interopRequireDefault(_reactDom);
+	var _classnames2 = _interopRequireDefault(_classnames);
 
 	var _lib = __webpack_require__(208);
 
@@ -68133,7 +68143,7 @@
 	            });
 	            return _lib2.default.createElement(
 	                _lib.View,
-	                props,
+	                _extends({}, props, { className: (0, _classnames2.default)('react-view', props.className) }),
 	                cs
 	            );
 	        }
@@ -68171,6 +68181,10 @@
 
 	var _lib2 = _interopRequireDefault(_lib);
 
+	var _classnames = __webpack_require__(513);
+
+	var _classnames2 = _interopRequireDefault(_classnames);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
@@ -68201,7 +68215,8 @@
 
 	            return _lib2.default.createElement(
 	                _lib.View,
-	                _extends({}, props, { style: [styles.wrapper, style] }),
+	                _extends({}, props, { className: (0, _classnames2.default)('react-view', props.className),
+	                    style: [styles.wrapper, style] }),
 	                children
 	            );
 	        }
@@ -68237,6 +68252,10 @@
 
 	var _lib2 = _interopRequireDefault(_lib);
 
+	var _classnames = __webpack_require__(513);
+
+	var _classnames2 = _interopRequireDefault(_classnames);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
@@ -68267,7 +68286,8 @@
 
 	            return _lib2.default.createElement(
 	                _lib.View,
-	                _extends({}, props, { style: [styles.wrapper, style] }),
+	                _extends({}, props, { className: (0, _classnames2.default)('react-view', props.className),
+	                    style: [styles.wrapper, style] }),
 	                children
 	            );
 	        }
@@ -68302,6 +68322,10 @@
 
 	var _lib2 = _interopRequireDefault(_lib);
 
+	var _classnames = __webpack_require__(513);
+
+	var _classnames2 = _interopRequireDefault(_classnames);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
@@ -68332,7 +68356,8 @@
 
 	            return _lib2.default.createElement(
 	                _lib.View,
-	                _extends({}, props, { style: [styles.wrapper, style] }),
+	                _extends({}, props, { className: (0, _classnames2.default)('react-view', props.className),
+	                    style: [styles.wrapper, style] }),
 	                children
 	            );
 	        }
@@ -68533,7 +68558,7 @@
 	            if (props.disabled === true) {
 	                return _lib2.default.createElement(
 	                    _lib.View,
-	                    { className: (0, _core.cn)(props.className, 'react-view'),
+	                    { className: (0, _core.cn)(props.className, 'react-view', 'base-disabled'),
 	                        style: [styles.wrapper, styles.disabled, props.style] },
 	                    _lib2.default.createElement(_Icon2.default, { width: props.iconWidth, height: props.iconHeight })
 	                );
@@ -68541,19 +68566,33 @@
 	            if (props.invalid === true) {
 	                return _lib2.default.createElement(
 	                    _lib.View,
-	                    { className: (0, _core.cn)(props.className, 'react-view'), style: [styles.wrapper, props.style] },
+	                    { className: (0, _core.cn)(props.className, 'react-view', 'base-invalid'),
+	                        style: [styles.wrapper, props.style] },
 	                    _lib2.default.createElement(_Icon2.default, { width: props.iconWidth, height: props.iconHeight })
 	                );
 	            }
+	            if (props.effect === true) {
+	                return _lib2.default.createElement(
+	                    _lib.TouchableHighlight,
+	                    { style: [props.style], onPress: this._onPress.bind(this),
+	                        underlayColor: props.underlayColor || _data.Colors.PRESS },
+	                    _lib2.default.createElement(
+	                        _lib.View,
+	                        { className: (0, _core.cn)(props.className, 'react-view', (0, _core.cn)({
+	                                'active': this.state.selected
+	                            })), style: [styles.wrapper] },
+	                        _lib2.default.createElement(_Icon2.default, { width: props.iconWidth, height: props.iconHeight })
+	                    )
+	                );
+	            }
 	            return _lib2.default.createElement(
-	                _lib.TouchableHighlight,
-	                { style: [props.style], onPress: this._onPress.bind(this),
-	                    underlayColor: props.underlayColor || _data.Colors.PRESS },
+	                _lib.TouchableWithoutFeedback,
+	                { onPress: this._onPress.bind(this) },
 	                _lib2.default.createElement(
 	                    _lib.View,
 	                    { className: (0, _core.cn)(props.className, 'react-view', (0, _core.cn)({
 	                            'active': this.state.selected
-	                        })), style: [styles.wrapper] },
+	                        })), style: [styles.wrapper, props.style] },
 	                    _lib2.default.createElement(_Icon2.default, { width: props.iconWidth, height: props.iconHeight })
 	                )
 	            );
@@ -68572,6 +68611,7 @@
 	    disabled: false,
 	    invalid: false,
 	    stopPropagation: false,
+	    effect: true,
 	    onSelected: _core.emptyFunction,
 	    onPress: _core.emptyFunction
 	};
@@ -68701,7 +68741,7 @@
 	            if (props.disabled === true) {
 	                return _lib2.default.createElement(
 	                    _lib.View,
-	                    { className: (0, _core.cn)(props.className, 'react-view'),
+	                    { className: (0, _core.cn)(props.className, 'react-view', 'base-disabled'),
 	                        style: [styles.wrapper, styles.disabled, props.style] },
 	                    _lib2.default.createElement(_Icon2.default, { width: props.iconWidth, height: props.iconHeight })
 	                );
@@ -68709,7 +68749,7 @@
 	            if (props.invalid === true) {
 	                return _lib2.default.createElement(
 	                    _lib.View,
-	                    { className: (0, _core.cn)(props.className, 'react-view'), style: [styles.wrapper, props.style] },
+	                    { className: (0, _core.cn)(props.className, 'react-view', 'base-invalid'), style: [styles.wrapper, props.style] },
 	                    _lib2.default.createElement(_Icon2.default, { width: props.iconWidth, height: props.iconHeight })
 	                );
 	            }
@@ -68901,7 +68941,8 @@
 	            if (props.disabled === true) {
 	                return _lib2.default.createElement(
 	                    _lib.View,
-	                    { style: [styles.wrapper, styles.disabled, props.style] },
+	                    { className: (0, _core.cn)(props.className, 'react-view', 'base-disabled'),
+	                        style: [styles.wrapper, styles.disabled, props.style] },
 	                    _lib2.default.createElement(
 	                        _lib.Text,
 	                        null,
@@ -68912,7 +68953,8 @@
 	            if (props.invalid === true) {
 	                return _lib2.default.createElement(
 	                    _lib.View,
-	                    { style: [styles.wrapper, props.style] },
+	                    { className: (0, _core.cn)(props.className, 'react-view', 'base-invalid'),
+	                        style: [styles.wrapper, props.style] },
 	                    _lib2.default.createElement(
 	                        _lib.Text,
 	                        null,
@@ -68920,13 +68962,28 @@
 	                    )
 	                );
 	            }
+	            if (props.effect === true) {
+	                return _lib2.default.createElement(
+	                    _lib.TouchableOpacity,
+	                    { style: [props.style], onPress: this._onPress.bind(this),
+	                        underlayColor: props.underlayColor || _data.Colors.PRESS },
+	                    _lib2.default.createElement(
+	                        _lib.View,
+	                        { style: [styles.wrapper] },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            null,
+	                            props.children
+	                        )
+	                    )
+	                );
+	            }
 	            return _lib2.default.createElement(
-	                _lib.TouchableOpacity,
-	                { style: [props.style], onPress: this._onPress.bind(this),
-	                    underlayColor: props.underlayColor || _data.Colors.PRESS },
+	                _lib.TouchableWithoutFeedback,
+	                { onPress: this._onPress.bind(this) },
 	                _lib2.default.createElement(
 	                    _lib.View,
-	                    { style: [styles.wrapper] },
+	                    { style: [styles.wrapper, props.style] },
 	                    _lib2.default.createElement(
 	                        _lib.Text,
 	                        null,
@@ -68946,6 +69003,7 @@
 	    disabled: false,
 	    invalid: false,
 	    stopPropagation: false,
+	    effect: true,
 	    onSelected: _core.emptyFunction,
 	    onPress: _core.emptyFunction
 	};
@@ -69067,20 +69125,22 @@
 	            if (props.disabled === true) {
 	                return _lib2.default.createElement(
 	                    _lib.Text,
-	                    { style: [styles.disabled, props.style] },
+	                    { className: (0, _core.cn)(props.className, 'base-disabled'),
+	                        style: [styles.disabled, props.style] },
 	                    props.children
 	                );
 	            }
 	            if (props.invalid === true) {
 	                return _lib2.default.createElement(
 	                    _lib.Text,
-	                    { style: [props.style] },
+	                    { className: (0, _core.cn)(props.className, 'base-disabled'), style: [props.style] },
 	                    props.children
 	                );
 	            }
 	            return _lib2.default.createElement(
 	                _lib.Text,
-	                { className: 'TextLink', style: [props.style], onPress: this._onPress.bind(this) },
+	                { className: 'TextLink', style: [props.style],
+	                    onPress: this._onPress.bind(this) },
 	                props.children
 	            );
 	        }

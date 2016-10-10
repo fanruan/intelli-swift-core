@@ -23,22 +23,23 @@ import React, {
 
 import {Colors, Size, Template, Widget, Dimension, Target} from 'data'
 
-import {CenterLayout, VtapeLayout, HtapeLayout, Icon, TextLink, Table, Overlay, Sortable} from 'base'
+import {CenterLayout, VtapeLayout, HtapeLayout, IconButton, Icon, TextLink, Table, Overlay, Sortable} from 'base'
 
 import {MultiSelectorWidget} from 'widgets'
 
 import SettingsComponentHelper from './SettingsComponentHelper'
-import 'css/Component/SettingsComponent/SettingsComponent.css'
 
 
 const {SortableContainer, SortableElement, SortableHandle, arrayMove} = Sortable;
 
-const DragHandle = SortableHandle(() => <span>::</span>);
+const DragHandle = SortableHandle(() => {
+    return <IconButton style={styles.dragHandler} className={'drag-handler-icon'} iconWidth={18} iconHeight={18}/>
+});
 
 const SortableItem = SortableElement(({value}) => {
     return <View style={styles.sortableItems}>
-        <DragHandle/>
         <Text>{value.text}</Text>
+        <DragHandle/>
     </View>
 });
 
@@ -101,7 +102,7 @@ class SettingsComponent extends Component {
                              onSortEnd={this._onSortEnd}
                              useDragHandle={true}
                              lockAxis='y'
-                             helperClass='SettingsComponent-Helper'
+                             helperClass='sortable-helper'
         />;
     }
 
@@ -111,7 +112,7 @@ class SettingsComponent extends Component {
         return <Overlay ref='overlay' onClose={()=> {
             this.props.onReturn();
         }}>
-            <VtapeLayout className={'SettingsComponent'} style={styles.wrapper}>
+            <VtapeLayout style={styles.wrapper}>
                 {this._renderHeader()}
                 {this._renderDialog()}
             </VtapeLayout>
@@ -155,7 +156,17 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.HIGHLIGHT
     },
     sortableItems: {
-        height: Size.ITEM_HEIGHT
+        flexDirection: 'row',
+        paddingLeft: 20,
+        paddingRight: 20,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        height: Size.ITEM_HEIGHT,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: Colors.BORDER
+    },
+    dragHandler: {
+        opacity: 0.25
     }
 });
 export default SettingsComponent

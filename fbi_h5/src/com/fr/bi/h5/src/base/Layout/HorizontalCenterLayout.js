@@ -3,6 +3,7 @@ import React, {
     StyleSheet,
     View
 } from 'lib'
+import cn from 'classnames'
 
 
 class HorizontalCenterLayout extends Component {
@@ -12,7 +13,8 @@ class HorizontalCenterLayout extends Component {
 
     render() {
         const {children, style, ...props} = this.props;
-        return <View {...props} style={[styles.wrapper, style]}>{children}</View>
+        return <View {...props} className={cn('react-view', props.className)}
+                     style={[styles.wrapper, style]}>{children}</View>
     }
 }
 const styles = StyleSheet.create({

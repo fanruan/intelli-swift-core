@@ -3,6 +3,7 @@ import React, {
     StyleSheet,
     View
 } from 'lib'
+import cn from 'classnames'
 
 class VtapeLayout extends Component {
     constructor(props, context) {
@@ -23,7 +24,8 @@ class VtapeLayout extends Component {
             }
             return React.cloneElement(child, {...child.props, style});
         });
-        return <View {...props} style={[styles.wrapper, style]}>{cs}</View>
+        return <View {...props} className={cn('react-view', props.className)}
+                     style={[styles.wrapper, style]}>{cs}</View>
     }
 }
 const styles = StyleSheet.create({
