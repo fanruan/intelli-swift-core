@@ -17,6 +17,7 @@ BI.DetailRegion = BI.inherit(BI.AbstractRegion, {
         this.relationButton = BI.createWidget({
             type: "bi.text_button",
             height: 25,
+            disabled: true,
             value: BI.i18nText("BI-Field_Relation_Setting")
         });
 
@@ -173,6 +174,32 @@ BI.DetailRegion = BI.inherit(BI.AbstractRegion, {
         return calItem;
     },
 
+    populate: function(){
+        BI.DetailRegion.superclass.populate.apply(this, arguments);
+        var o = this.options;
+        if(!checkValid()){
+            this.relationButton.setEnable(false);
+            this.relationButton.setTitle(BI.i18nText("BI-Fields_Relation_Only"));
+        }else{
+            this.relationButton.setEnable(true);
+            this.relationButton.setTitle("");
+        }
+
+        function checkValid(){
+            var tableIds = BI.map(BI.Utils.getAllDimDimensionIDs(o.wId), function(idx, dId){
+                return BI.Utils.getTableIDByDimensionID(dId);
+            });
+            var commonTableIds = BI.Utils.getCommonForeignTablesByTableIDs(tableIds);
+            if(commonTableIds.length < 2){
+                return BI.isNotNull(BI.find(tableIds, function(idx, primaryTid){
+                    return BI.find(commonTableIds, function(idx, foreignTid){
+                        return BI.Utils.getPathsFromTableAToTableB(primaryTid, foreignTid).length > 1;
+                    })
+                }));
+            }
+            return true;
+        }
+    },
 
     getValue: function () {
         var result = [];
