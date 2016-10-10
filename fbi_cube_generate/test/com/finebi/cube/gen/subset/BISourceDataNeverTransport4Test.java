@@ -9,7 +9,7 @@ import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.Cube;
 import com.finebi.cube.tools.BILocationBuildTestTool;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 
 import java.io.File;
@@ -54,9 +54,9 @@ public class BISourceDataNeverTransport4Test extends BISourceDataNeverTransport 
             BICubeLocation to = new BICubeLocation(tempConf.getRootURI().getPath().toString(), tableSource.getSourceID());
             BIFileUtils.copyFolder(new File(from.getAbsolutePath()),new File(to.getAbsolutePath()));
         } catch (IOException e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         } catch (URISyntaxException e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
 
     }

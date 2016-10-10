@@ -4,7 +4,7 @@ import com.finebi.cube.impl.message.BIMessageTestTool;
 import com.finebi.cube.impl.router.fragment.BIFragmentTagTestTool;
 import com.finebi.cube.impl.router.status.BIStatusTestTool;
 import com.finebi.cube.impl.router.topic.BITopicTagTestTool;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import junit.framework.TestCase;
 
 /**
@@ -47,7 +47,7 @@ public class TriggerThresholdTest extends TestCase {
             threshold.handleMessage(BIMessageTestTool.generateMessageStatusFinish());
             assertTrue(threshold.isMeetThreshold());
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
         }
     }
