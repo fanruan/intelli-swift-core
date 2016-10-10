@@ -1,5 +1,6 @@
 package com.finebi.cube.conf.relation.path;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.relation.BITableRelationAnalysisService;
 import com.finebi.cube.conf.relation.BITableRelationTestTool;
 import com.finebi.cube.conf.relation.BITableTestTool;
@@ -8,7 +9,6 @@ import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.exception.BIRelationDuplicateException;
-import com.fr.bi.stable.utils.code.BILogger;
 import junit.framework.TestCase;
 
 import java.util.Set;
@@ -55,7 +55,7 @@ public class BIRelationPathTest extends TestCase {
             assertTrue(relationSet.contains(D_C_B));
 
         } catch (Exception ignore) {
-            BILogger.getLogger().error(ignore.getMessage(), ignore);
+            BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
             assertTrue(false);
         }
     }
@@ -70,7 +70,7 @@ public class BIRelationPathTest extends TestCase {
             );
             assertEquals(relationSet.size(), 0);
         } catch (Exception ignore) {
-            BILogger.getLogger().error(ignore.getMessage(), ignore);
+            BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
             assertTrue(false);
         }
     }
@@ -92,7 +92,7 @@ public class BIRelationPathTest extends TestCase {
             B_C_A_B.addRelationAtHead(BITableRelationTestTool.getBcCc());
             assertTrue(relationSet.contains(B_C_A_B));
         } catch (Exception ignore) {
-            BILogger.getLogger().error(ignore.getMessage(), ignore);
+            BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
             assertTrue(false);
         }
     }
@@ -125,7 +125,7 @@ public class BIRelationPathTest extends TestCase {
             assertTrue(relationSet.contains(D_C_E_B));
 
         } catch (Exception ignore) {
-            BILogger.getLogger().error(ignore.getMessage(), ignore);
+            BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
             assertTrue(false);
         }
     }
@@ -162,7 +162,7 @@ public class BIRelationPathTest extends TestCase {
             D_C_E_A_B.addRelationAtHead(BITableRelationTestTool.getDaCa());
             assertTrue(relationSet.contains(D_C_E_B));
         } catch (Exception ignore) {
-            BILogger.getLogger().error(ignore.getMessage(), ignore);
+            BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
             assertTrue(false);
         }
     }

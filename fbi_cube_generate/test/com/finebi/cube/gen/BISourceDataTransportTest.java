@@ -28,7 +28,7 @@ import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.io.File;
 import java.net.URI;
@@ -83,7 +83,7 @@ public class BISourceDataTransportTest extends BICubeTestBase {
             }
             assertEquals(cube.getCubeTable(BITableKeyUtils.convert(tableSource)).getRowCount(), tableSource.getRowNumber());
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
         }
     }
@@ -198,7 +198,7 @@ public class BISourceDataTransportTest extends BICubeTestBase {
             }
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
         }
     }

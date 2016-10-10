@@ -6,7 +6,7 @@ import com.finebi.cube.impl.router.topic.BITopicTagTestTool;
 import com.finebi.cube.operate.IOperationID;
 import com.finebi.cube.router.fragment.IFragmentID;
 import com.finebi.cube.router.topic.ITopicTag;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 /**
  * This class created on 2016/3/25.
@@ -20,7 +20,7 @@ public class BIOperationFirstStep extends BIOperationBase {
         try {
             operation.subscribe(new BITopicTag(new BITopicID("Start")));
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -36,7 +36,7 @@ public class BIOperationFirstStep extends BIOperationBase {
             }
             System.out.println("Start First Step," + operation.getOperationFragmentTag());
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return 0;
     }

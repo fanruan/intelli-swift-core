@@ -57,7 +57,7 @@ public class BIByteNIOReader extends BIBasicNIOReader implements ICubeByteReader
             }
             byteBufferArray = new ByteBuffer[1];
 //        } catch (Exception e) {
-//            BILogger.getLogger().error(e.getMessage(), e);
+//            BILoggerFactory.getLogger().error(e.getMessage(), e);
 //        }
         } finally {
             readWriteLock.writeLock().unlock();
