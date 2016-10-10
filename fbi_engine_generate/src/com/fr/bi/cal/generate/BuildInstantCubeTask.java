@@ -13,8 +13,8 @@ import java.util.concurrent.Future;
 /**
  * Created by roy on 16/10/10.
  */
-public class BuildTempCubeTask extends BuildCubeTask {
-    public BuildTempCubeTask(BIUser biUser, CubeBuild cubeBuild) {
+public class BuildInstantCubeTask extends BuildCubeTask {
+    public BuildInstantCubeTask(BIUser biUser, CubeBuild cubeBuild) {
         super(biUser, cubeBuild);
     }
 

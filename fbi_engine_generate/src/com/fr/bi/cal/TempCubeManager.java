@@ -5,7 +5,7 @@ import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.impl.conf.CubeBuildTableSource;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.cal.generate.BuildTempCubeTask;
+import com.fr.bi.cal.generate.BuildInstantCubeTask;
 import com.fr.bi.cal.stable.engine.TempCubeTask;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.engine.CubeTask;
@@ -127,7 +127,7 @@ public class TempCubeManager implements Release {
                 }
                 cubeBuildToolGenerating = generater.poll();
                 BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
-                CubeTask cubeGenerateTask = new BuildTempCubeTask(new BIUser(task.getUserId()), cubeBuildToolGenerating);
+                CubeTask cubeGenerateTask = new BuildInstantCubeTask(new BIUser(task.getUserId()), cubeBuildToolGenerating);
                 cubeManager.addTask(cubeGenerateTask, task.getUserId());
                 cubeBuildTool = cubeBuildToolGenerating;
                 while (cubeManager.hasTask(cubeGenerateTask, task.getUserId())) {
