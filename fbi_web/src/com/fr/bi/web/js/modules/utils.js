@@ -661,6 +661,12 @@
             {};
         },
 
+        getWSWidgetBGByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.widget_bg) ? ws.widget_bg :
+            {}
+        },
+
         getWSTableFormByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.table_form) ? ws.table_form :

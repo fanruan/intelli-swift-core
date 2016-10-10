@@ -78,8 +78,8 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
             }, {
                 type: "bi.label",
                 text: BI.i18nText("BI-Title"),
-                cls: "attr-names",
-                lgap: 30
+                cls: "line-title",
+                lgap: 38
             }, {
                 type: "bi.vertical_adapt",
                 items: [this.showTitle]
@@ -92,7 +92,7 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
             }, {
                 type: "bi.label",
                 text: BI.i18nText("BI-Background"),
-                cls: "attr-names"
+                cls: "line-title",
             },{
                 type: "bi.vertical_adapt",
                 items: [this.widgetBackground]
@@ -318,6 +318,7 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
             show_name: this.showTitle.isSelected(),
             widget_title: this.title.getValue(),
             title_detail: this.titleDetailSettting.getValue(),
+            widget_bg: this.widgetBackground.getValue(),
             table_form: this.tableFormGroup.getValue()[0],
             theme_color: this.colorSelector.getValue(),
             table_style: this.tableSyleGroup.getValue()[0],
@@ -335,6 +336,7 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
         this.showTitle.setSelected(BI.Utils.getWSShowNameByID(wId));
         this.title.setValue(BI.Utils.getWidgetNameByID(wId));
         this.titleDetailSettting.setValue(BI.Utils.getWSTitleDetailSettingByID(wId));
+        this.widgetBackground.setValue(BI.Utils.getWSWidgetBGByID(wId));
         this.tableFormGroup.setValue(BI.Utils.getWSTableFormByID(wId));
         this.colorSelector.setValue(BI.Utils.getWSThemeColorByID(wId));
         this.tableSyleGroup.setValue(BI.Utils.getWSTableStyleByID(wId));
@@ -350,6 +352,7 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
         this.showTitle.setSelected(v.show_name);
         this.title.setValue(v.widget_title);
         this.titleDetailSettting.setValue(v.title_detail);
+        this.widgetBackground.setValue(v.widget_bg);
         this.tableFormGroup.setValue(v.table_form);
         this.colorSelector.setValue(v.theme_color);
         this.tableSyleGroup.setValue(v.table_style);
