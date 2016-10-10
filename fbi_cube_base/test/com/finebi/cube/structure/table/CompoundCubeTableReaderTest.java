@@ -5,7 +5,7 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.tools.*;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.util.HashSet;
 import java.util.Set;

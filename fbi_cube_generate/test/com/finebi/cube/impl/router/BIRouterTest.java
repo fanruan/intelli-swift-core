@@ -27,7 +27,7 @@ import com.finebi.cube.router.topic.ITopic;
 import com.finebi.cube.router.topic.ITopicTag;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.utils.algorithem.BIRandomUitils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import junit.framework.TestCase;
 
 import java.util.Collection;
@@ -59,7 +59,7 @@ public class BIRouterTest extends TestCase {
             ITopic topic = BIFactoryHelper.getObject(ITopic.class, topicTag);
             router.registerTopic(topic);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertFalse(true);
         }
     }
@@ -77,7 +77,7 @@ public class BIRouterTest extends TestCase {
             Thread.sleep(10);
             assertTrue(subscribe.receiveMessage);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertFalse(true);
         }
     }
@@ -94,7 +94,7 @@ public class BIRouterTest extends TestCase {
             router.registerFragment(BITopicTagTestTool.getTopicTagA(), fragment);
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertFalse(true);
         }
     }
@@ -199,7 +199,7 @@ public class BIRouterTest extends TestCase {
 
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertFalse(true);
         }
     }
@@ -251,7 +251,7 @@ public class BIRouterTest extends TestCase {
 //            assertFalse(true);
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertFalse(true);
         }
     }

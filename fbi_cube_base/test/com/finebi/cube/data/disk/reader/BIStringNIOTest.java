@@ -16,7 +16,7 @@ import com.finebi.cube.data.output.primitive.ICubeByteWriter;
 import com.finebi.cube.data.output.primitive.ICubeIntegerWriter;
 import com.finebi.cube.data.output.primitive.ICubeLongWriter;
 import com.fr.bi.stable.utils.algorithem.BIRandomUitils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import junit.framework.TestCase;
 
@@ -65,7 +65,7 @@ public class BIStringNIOTest extends TestCase {
             assertTrue(ComparatorUtils.equals(reader.getSpecificValue(3), three));
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
         }
     }

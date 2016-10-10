@@ -10,7 +10,7 @@ import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.tools.BITableSourceTestTool;
 import com.fr.bi.common.factory.BIFactoryHelper;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import junit.framework.TestCase;
 
@@ -62,7 +62,7 @@ public class BICubeIntegerDetailDataTest extends TestCase {
             assertTrue(detailData.isCubeWriterAvailable());
             assertTrue(detailData.isCubeReaderAvailable());
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
         }
     }
@@ -77,7 +77,7 @@ public class BICubeIntegerDetailDataTest extends TestCase {
             assertFalse(detailData.isCubeWriterAvailable());
             assertFalse(detailData.isCubeReaderAvailable());
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
         }
     }
@@ -94,7 +94,7 @@ public class BICubeIntegerDetailDataTest extends TestCase {
             assertTrue(detailData.isCubeReaderAvailable());
             assertTrue(detailData.isCubeWriterAvailable());
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
         }
     }
