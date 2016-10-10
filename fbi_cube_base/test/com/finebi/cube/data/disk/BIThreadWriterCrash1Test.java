@@ -6,7 +6,7 @@ import com.finebi.cube.exception.BIBuildWriterException;
 import com.finebi.cube.exception.IllegalCubeResourceLocationException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.tools.BILocationBuildTestTool;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 
 import java.io.File;
@@ -85,7 +85,7 @@ public class BIThreadWriterCrash1Test extends Thread {
             writer.recordSpecificPositionValue(4l, Byte.valueOf("35"));
             writer.recordSpecificPositionValue(5l, Byte.valueOf("35"));
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 }

@@ -15,6 +15,7 @@ BI.DragIconGroup = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.DragIconGroup.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-drag-icon-group",
+            width: 100,
             drag: BI.emptyFn
         })
     },

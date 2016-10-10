@@ -1,6 +1,5 @@
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
-import * as TodoActions from '../actions/template';
 import {requestAnimationFrame, ReactComponentWithImmutableRenderMixin} from 'core'
 import React, {
     Component,
@@ -200,7 +199,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     sceneStyle: {
-        backgroundColor: '#ffffff'
+        backgroundColor: Colors.TEXT
     },
     navBar: {
         backgroundColor: '#efeff4',

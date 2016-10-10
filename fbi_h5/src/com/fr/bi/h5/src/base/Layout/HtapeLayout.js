@@ -13,6 +13,9 @@ class HtapeLayout extends Component {
     render() {
         const {children, style, ...props} = this.props;
         const cs = React.Children.map(children, (child)=> {
+            if (!child) {
+                return null;
+            }
             let style;
             if (child.props.width) {
                 style = {width: child.props.width, ...child.props.style}

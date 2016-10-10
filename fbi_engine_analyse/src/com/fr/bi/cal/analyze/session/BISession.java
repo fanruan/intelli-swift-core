@@ -75,8 +75,8 @@ public class BISession extends BIAbstractSession {
     private Map<String, ConcurrentHashMap<Object, PageIteratorGroup>> partpageGroup = new ConcurrentHashMap<String, ConcurrentHashMap<Object, PageIteratorGroup>>();
 
     //young 当前用户（普通）的角色信息
-    private List<Long> customRoles = new ArrayList<Long>();
-    private List<Long> companyRoles = new ArrayList<Long>();
+    private List<CustomRole> customRoles = new ArrayList<CustomRole>();
+    private List<CompanyRole> companyRoles = new ArrayList<CompanyRole>();
 
     public BISession(String remoteAddress, BIWeblet let, long userId) {
         super(remoteAddress, let, userId);
@@ -179,11 +179,11 @@ public class BISession extends BIAbstractSession {
             if (this.getUserId() != UserControl.getInstance().getSuperManagerID()) {
                 Set<CustomRole> cusRoles = CustomRoleControl.getInstance().getCustomRoleSet(this.getUserId());
                 for (CustomRole role : cusRoles) {
-                    customRoles.add(role.getId());
+                    customRoles.add(role);
                 }
                 Set<CompanyRole> comRoles = CompanyRoleControl.getInstance().getCompanyRoleSet(this.getUserId());
                 for (CompanyRole role : comRoles) {
-                    companyRoles.add(role.getId());
+                    companyRoles.add(role);
                 }
             }
         } catch (Exception e) {
@@ -413,12 +413,12 @@ public class BISession extends BIAbstractSession {
     }
 
     @Override
-    public List<Long> getCustomRoles() {
+    public List<CustomRole> getCustomRoles() {
         return customRoles;
     }
 
     @Override
-    public List<Long> getCompanyRoles() {
+    public List<CompanyRole> getCompanyRoles() {
         return companyRoles;
     }
 

@@ -5050,6 +5050,24 @@ Data.Utils = {
                 }
             }
 
+            function formatChartLineStyle(){
+                switch (config.chart_line_type) {
+                    case BICst.CHART_SHAPE.RIGHT_ANGLE:
+                        configs.plotOptions.curve = false;
+                        configs.plotOptions.step = true;
+                        break;
+                    case BICst.CHART_SHAPE.CURVE:
+                        configs.plotOptions.curve = true;
+                        configs.plotOptions.step = false;
+                        break;
+                    case BICst.CHART_SHAPE.NORMAL:
+                    default:
+                        configs.plotOptions.curve = false;
+                        configs.plotOptions.step = false;
+                        break;
+                }
+            }
+
             function calcMagnify(type) {
                 var magnify = 1;
                 switch (type) {

@@ -80,18 +80,6 @@ BI.AuthoritySingleAddRolePane = BI.inherit(BI.Widget, {
         }
     },
 
-    _getRoleNameByRoleIdType: function(id, type){
-        var roles = Data.SharingPool.get("authority_settings", "all_roles");
-        var name = "";
-        BI.some(roles, function(i, role){
-            if(role.id === id && role.role_type === type) {
-                name = role.text || (role.department_name + ", " + role.post_name);
-                return true;
-            }
-        });
-        return name;
-    },
-    
     populate: function(v){
         var self = this;
         if(BI.isNotNull(v)) {
@@ -99,7 +87,7 @@ BI.AuthoritySingleAddRolePane = BI.inherit(BI.Widget, {
             var roles = BI.Utils.getPackageAuthorityByID(v);
             var items = [];
             BI.each(roles, function(i, role) {
-                var roleName = self._getRoleNameByRoleIdType(role.role_id, role.role_type);
+                var roleName = role.role_id;
                 if(BI.isNull(roleName) || roleName === "") {
                     return;
                 }
@@ -157,7 +145,7 @@ BI.AuthoritySingleAddRolePane = BI.inherit(BI.Widget, {
                 BI.Popovers.remove(this._constants.AUTHORITY_FILTER);
                 var popup = BI.createWidget({
                     type: "bi.authority_filter_popup",
-                    name: this._getRoleNameByRoleIdType(role.role_id, role.role_type)
+                    name: role.role_id
                 });
                 popup.on(BI.AuthorityFilterPopup.EVENT_CHANGE, function (v) {
                     role.filter = v;

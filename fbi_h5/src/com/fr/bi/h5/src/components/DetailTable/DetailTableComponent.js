@@ -13,7 +13,7 @@ import React, {
 } from 'lib'
 
 import {Size, Template, Widget} from 'data'
-import {IconButton, HtapeLayout, VtapeLayout} from 'base'
+import {IconLink, HtapeLayout, VtapeLayout} from 'base'
 import {TableWidget} from 'widgets';
 
 import DetailTableComponentHelper from './DetailTableComponentHelper';
@@ -69,10 +69,10 @@ class DetailTableComponent extends Component {
     _renderHeader() {
         const {$widget} = this.props;
         const widget = new Widget($widget);
-        return <HtapeLayout height={Size.HEADER_HEIGHT} style={styles.header}>
-            <Text style={styles.name}>{widget.getName()}</Text>
-            <IconButton width={Size.HEADER_HEIGHT} className='delete'/>
-        </HtapeLayout>
+        return <View height={Size.HEADER_HEIGHT} style={styles.header}>
+            <Text>{widget.getName()}</Text>
+            <IconLink className='setting-font'/>
+        </View>
     }
 
     render() {
@@ -106,11 +106,12 @@ const styles = StyleSheet.create({
     wrapper: {
         position: 'relative'
     },
-    name: {
-        lineHeight: Size.HEADER_HEIGHT,
+    header: {
         paddingLeft: 4,
         paddingRight: 4,
-        justifyContent: 'center'
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
     }
 });
 export default DetailTableComponent

@@ -32,12 +32,20 @@ BI.Fit = BI.inherit(BI.Widget, {
         var nav = this._createNav();
 
         BI.createWidget({
-            type: "bi.border",
+            type: "bi.absolute",
             element: this.element,
-            items: {
-                "west": {el: nav, width: 120, right: 1},
-                "center": {el: this.arrangement}
-            }
+            items: [{
+                el: this.arrangement,
+                left: 140,
+                right: 0,
+                bottom: 0,
+                top: 0
+            }, {
+                el: nav,
+                left: 20,
+                top: 10,
+                bottom: 10
+            }]
         });
 
         this.layoutCombo = BI.createWidget({
@@ -293,16 +301,7 @@ BI.Fit = BI.inherit(BI.Widget, {
                 return helper.element;
             }
         });
-        return BI.createWidget({
-            type: "bi.absolute",
-            items: [{
-                el: dragGroup,
-                top: 5,
-                left: 10,
-                right: 10,
-                bottom: 5
-            }]
-        });
+        return dragGroup;
     },
 
     setLayoutType: function (type) {
