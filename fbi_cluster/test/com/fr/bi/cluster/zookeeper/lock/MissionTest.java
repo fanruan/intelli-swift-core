@@ -2,7 +2,7 @@ package com.fr.bi.cluster.zookeeper.lock;
 
 import com.fr.base.FRContext;
 import com.fr.bi.cluster.wrapper.ZooKeeperWrapper;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import junit.framework.TestCase;
 
 /**

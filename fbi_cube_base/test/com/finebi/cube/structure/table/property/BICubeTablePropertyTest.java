@@ -15,7 +15,7 @@ import com.finebi.cube.tools.DBFieldTestTool;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONObject;
@@ -82,10 +82,10 @@ public class BICubeTablePropertyTest extends TestCase {
             tableFields.add(field2);
             tableFields.add(field3);
         } catch (BIResourceInvalidException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             BINonValueUtils.beyondControl(e.getMessage(), e);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             BINonValueUtils.beyondControl(e.getMessage(), e);
         }
 
@@ -182,7 +182,7 @@ public class BICubeTablePropertyTest extends TestCase {
 
             rowCountReadAvailable();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
         }
     }
@@ -364,7 +364,7 @@ public class BICubeTablePropertyTest extends TestCase {
             }
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
         } finally {
             property.forceRelease();

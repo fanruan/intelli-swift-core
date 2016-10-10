@@ -22,8 +22,6 @@ const [left, top] = [0, 0];
 const [middleLeft, middleTop] = [(width - aWidth) / 2, (height - aHeight) / 2 - navigatorH];
 
 class Dialog extends Component {
-    parent = {};
-
     constructor(props) {
         super(props);
         this.state = {
@@ -31,8 +29,7 @@ class Dialog extends Component {
             opacity: new Animated.Value(0),
             title: "",
             choose1: "",
-            choose2: "",
-            visible: false,
+            choose2: ""
         };
     }
 
@@ -41,9 +38,6 @@ class Dialog extends Component {
     }
 
     render() {
-        if (!this.props.visible) {
-            return null;
-        }
         return (
             <View style={styles.container}>
                 <Modal
