@@ -661,6 +661,12 @@
             {};
         },
 
+        getWSWidgetBGByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.widget_bg) ? ws.widget_bg :
+            {}
+        },
+
         getWSTableFormByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.table_form) ? ws.table_form :
@@ -1133,18 +1139,6 @@
                 BICst.DEFAULT_CHART_SETTING.big_data_mode
         },
 
-        getWSShowYCustomScale: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_y_custom_scale) ? ws.show_y_custom_scale :
-                BICst.DEFAULT_CHART_SETTING.show_y_custom_scale;
-        },
-
-        getWSCustomYScale: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.custom_y_scale) ? ws.custom_y_scale :
-                BICst.DEFAULT_CHART_SETTING.custom_scale
-        },
-
         getWSShowXCustomScale: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_x_custom_scale) ? ws.show_x_custom_scale :
@@ -1154,6 +1148,18 @@
         getWSCustomXScale: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.custom_x_scale) ? ws.custom_x_scale :
+                BICst.DEFAULT_CHART_SETTING.custom_scale
+        },
+
+        getWSShowYCustomScale: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_y_custom_scale) ? ws.show_y_custom_scale :
+                BICst.DEFAULT_CHART_SETTING.show_y_custom_scale;
+        },
+
+        getWSCustomYScale: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.custom_y_scale) ? ws.custom_y_scale :
                 BICst.DEFAULT_CHART_SETTING.custom_scale
         },
 
