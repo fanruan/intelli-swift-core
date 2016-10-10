@@ -71,7 +71,6 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
             try {
                 if (!isReleased) {
                     clearBuffer();
-                    BILogger.getLogger().info("...............writer release buffer .............");
                     currentIndex = -1L;
                     file_index = -1L;
                 }

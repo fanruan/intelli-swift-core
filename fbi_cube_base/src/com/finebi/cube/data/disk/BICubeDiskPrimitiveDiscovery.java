@@ -118,7 +118,7 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
             try {
 //                locations = readerCache.getUnReleasedLocation();
 //                locations.addAll(writerCache.getUnReleasedLocation());
-                BILogger.getLogger().error("getUnReleasedLocation is not impl");
+                BILogger.getLogger().info("getUnReleasedLocation is not implement");
             } catch (Exception e) {
                 BILogger.getLogger().error(e.getMessage(), e);
             }
