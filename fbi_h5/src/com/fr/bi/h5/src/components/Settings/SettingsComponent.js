@@ -9,7 +9,6 @@ import {
 } from 'core'
 import React, {
     Component,
-    PropTypes,
     StyleSheet,
     Text,
     Dimensions,
@@ -55,19 +54,9 @@ const SortableList = SortableContainer(({items}) => {
 });
 
 class SettingsComponent extends Component {
-
-    static childContextTypes = {
-        actions: PropTypes.object,
-        $template: PropTypes.object
+    static contextTypes = {
+        actions: React.PropTypes.object
     };
-
-    getChildContext() {
-        const {actions, $template} = this.props;
-        return {
-            actions,
-            $template
-        };
-    }
 
     constructor(props, context) {
         super(props, context);
@@ -111,7 +100,7 @@ class SettingsComponent extends Component {
             }} style={styles.back}>{'返回'}</TextLink>
             <Text style={styles.name}>{widget.getName()}</Text>
             <TextLink onPress={()=> {
-                this.props.actions.updateWidget(this.state.$widget, this.props.wId);
+                this.context.actions.updateWidget(this.state.$widget, this.props.wId);
                 this.refs['overlay'].close();
             }} style={styles.complete}>{'完成'}</TextLink>
         </View>

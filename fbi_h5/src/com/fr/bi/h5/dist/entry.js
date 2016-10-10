@@ -5558,8 +5558,6 @@ webpackJsonp([0],{
 	    }, {
 	        key: '_renderHeader',
 	        value: function _renderHeader() {
-	            var _this2 = this;
-
 	            var _props = this.props;
 	            var $widget = _props.$widget;
 	            var wId = _props.wId;
@@ -5576,8 +5574,6 @@ webpackJsonp([0],{
 	                _lib2.default.createElement(_base.IconLink, { className: 'setting-font', onPress: function onPress() {
 	                        _lib.Portal.showModal('TableComponent', _lib2.default.createElement(_SettingsComponent2.default, {
 	                            $widget: $widget,
-	                            $template: _this2.context.$template,
-	                            actions: _this2.context.actions,
 	                            wId: wId,
 	                            height: 0,
 	                            onReturn: function onReturn() {
@@ -6429,20 +6425,6 @@ webpackJsonp([0],{
 	var SettingsComponent = function (_Component) {
 	    _inherits(SettingsComponent, _Component);
 
-	    _createClass(SettingsComponent, [{
-	        key: 'getChildContext',
-	        value: function getChildContext() {
-	            var _props = this.props;
-	            var actions = _props.actions;
-	            var $template = _props.$template;
-
-	            return {
-	                actions: actions,
-	                $template: $template
-	            };
-	        }
-	    }]);
-
 	    function SettingsComponent(props, context) {
 	        _classCallCheck(this, SettingsComponent);
 
@@ -6509,7 +6491,7 @@ webpackJsonp([0],{
 	                _lib2.default.createElement(
 	                    _base.TextLink,
 	                    { onPress: function onPress() {
-	                            _this2.props.actions.updateWidget(_this2.state.$widget, _this2.props.wId);
+	                            _this2.context.actions.updateWidget(_this2.state.$widget, _this2.props.wId);
 	                            _this2.refs['overlay'].close();
 	                        }, style: styles.complete },
 	                    '完成'
@@ -6562,9 +6544,8 @@ webpackJsonp([0],{
 	    return SettingsComponent;
 	}(_lib.Component);
 
-	SettingsComponent.childContextTypes = {
-	    actions: _lib.PropTypes.object,
-	    $template: _lib.PropTypes.object
+	SettingsComponent.contextTypes = {
+	    actions: _lib2.default.PropTypes.object
 	};
 	SettingsComponent.propTypes = {};
 	SettingsComponent.defaultProps = {
