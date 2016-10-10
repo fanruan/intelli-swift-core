@@ -18,7 +18,7 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.io.newio.NIOUtils;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
 import com.fr.general.GeneralContext;
 import com.fr.stable.EnvChangedListener;
@@ -42,13 +42,13 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
         user = new BIUser(userId);
         for (BIModule module : BIModuleManager.getModules()) {
             ICubeDataLoaderCreator provider = module.getCubeDataLoaderCreator();
-            if(provider == null) {
+            if (provider == null) {
                 continue;
             }
             try {
                 childLoaderMap.put(module.getModuleName(), provider.fetchCubeLoader(user));
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }
@@ -82,10 +82,10 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
 
     @Override
     public ICubeTableService getTableIndex(CubeTableSource tableSource) {
-        if (lastSource.get() == tableSource){
+        if (lastSource.get() == tableSource) {
             return lastService.get();
         }
-        ICubeTableService service =  BIModuleUtils.getTableIndex(tableSource, childLoaderMap);
+        ICubeTableService service = BIModuleUtils.getTableIndex(tableSource, childLoaderMap);
         lastSource.set(tableSource);
         lastService.set(service);
         return service;
@@ -108,7 +108,6 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
 
     @Override
     public boolean needReadCurrentValue() {
-
         return true;
     }
 
@@ -138,7 +137,7 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
             for (BIKey key : ti.getColumns().keySet()) {
                 ICubeColumnDetailGetter getter = ti.getColumnDetailReader(key);
                 for (int i = 0; i < count; i++) {
-                    cube.addDataValue(new BIDataValue(i, col,getter.getValue(i + count)));
+                    cube.addDataValue(new BIDataValue(i, col, getter.getValue(i + count)));
                 }
                 col++;
             }
@@ -153,6 +152,7 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
     @Override
     public void clear() {
         synchronized (CubeReadingTableIndexLoader.class) {
+            BILoggerFactory.getLogger().info("start clear childLoaderMap");
             for (Map.Entry<String, ICubeDataLoader> entry : childLoaderMap.entrySet()) {
                 ICubeDataLoader loader = entry.getValue();
                 if (loader != null) {
@@ -164,8 +164,35 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
         }
     }
 
+    public String clearUserMapCache() {
+        synchronized (CubeReadingTableIndexLoader.class) {
+//            for (Long userId : userMap.keySet()) {
+//                BILogger.getLogger().info(userId + userMap.get(userId).toString());
+//            }
+//            for (Map.Entry<Long, ICubeDataLoader> entry : userMap.entrySet()) {
+//                ICubeDataLoader loader = entry.getValue();
+//                if (loader != null) {
+//                    loader.clear();
+//                }
+//            }
+//            lastSource = new ThreadLocal<CubeTableSource>();
+//            lastService = new ThreadLocal<ICubeTableService>();
+//            userMap.remove(UserControl.getInstance().getSuperManagerID());
+            for (String s : childLoaderMap.keySet()) {
+                if (s.equals("com.fr.bi.module.BICoreModule")&&null!=childLoaderMap.get(s)) {
+                    childLoaderMap.get(s).clear();
+                }
+            }
+            lastSource = new ThreadLocal<CubeTableSource>();
+            lastService = new ThreadLocal<ICubeTableService>();
+
+        }
+        return userMap.toString();
+    }
+
     @Override
     public long getVersion() {
         return 0;
     }
+
 }

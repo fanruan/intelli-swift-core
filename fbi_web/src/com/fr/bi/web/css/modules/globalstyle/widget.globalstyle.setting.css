@@ -9,6 +9,13 @@
 }
 .bi-global-style-setting .global-style-title {
   font-size: 14px;
+  cursor: move;
+}
+.bi-global-style-setting .global-style-wrapper-bottom {
+  border-bottom: 1px solid #eaeaea;
+}
+.bi-global-style-setting .global-style-item-label {
+  font-size: 12px;
   color: #1a1a1a;
   cursor: move;
 }
@@ -35,6 +42,25 @@
   border: 1px solid #d4dadd;
 }
 .bi-global-style-setting .item-save {
+  font-size: 14px;
+  color: #009de3;
+}
+.bi-global-style-setting .global-style-chart-style-font {
+  border: 1px solid #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.bi-global-style-setting .global-style-chart-style-font:hover {
+  background: #f4f4f4;
+}
+.bi-global-style-setting .global-style-chart-style-font.active {
+  border: 1px solid #178cdf;
+}
+.bi-global-style-setting .global-style-border {
+  border: 1px solid #d4dadd;
+}
+.bi-global-style-setting .global-style-item-save {
   font-size: 14px;
   color: #009de3;
 }

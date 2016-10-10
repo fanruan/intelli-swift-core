@@ -11,7 +11,7 @@ import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.stable.utils.BIDBUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIExcelUtils;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONArray;
@@ -182,7 +182,7 @@ public class ExcelTableSource extends AbstractTableSource {
                 }
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         } finally {
             if (tableData != null) {
                 tableData.release();
@@ -205,7 +205,7 @@ public class ExcelTableSource extends AbstractTableSource {
             }
             td = BIDBUtils.createTableData(fields, dataModel);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         } finally {
             if (dataModel != null) {
                 dataModel.release();

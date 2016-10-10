@@ -50,6 +50,7 @@ BI.RangeAreaChart = BI.inherit(BI.AbstractChart, {
         config.colors = this.config.chart_color;
         config.style = formatChartStyle();
         formatCordon();
+        config.plotOptions.connectNulls = this.config.null_continue;
         this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
 
@@ -84,21 +85,10 @@ BI.RangeAreaChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${VALUE}";
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        if (config.plotOptions.dataLabels.enabled === true) {
-            BI.each(items, function (idx, item) {
-                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.num_separators) {
-                    item.dataLabels = {
-                        "style": self.constants.FONT_STYLE,
-                        "align": "outside",
-                        enabled: true,
-                        formatter: {
-                            identifier: "${VALUE}",
-                            valueFormat: config.yAxis[0].formatter
-                        }
-                    };
-                }
-            });
-        }
+        this.formatDataLabelForAxis(config.plotOptions.dataLabels.enabled, items, config.yAxis[0].formatter, this.config.chart_font);
+
+        //全局样式的图表文字
+        this.setFontStyle(this.config.chart_font, config);
 
         return [items, config];
 
@@ -121,7 +111,7 @@ BI.RangeAreaChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.constants.FONT_STYLE,
+                                "style" : self.config.chart_font,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -146,7 +136,7 @@ BI.RangeAreaChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.constants.FONT_STYLE,
+                                "style" : self.config.chart_font,
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -258,13 +248,15 @@ BI.RangeAreaChart = BI.inherit(BI.AbstractChart, {
             show_data_label: options.show_data_label || false,
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             text_direction: options.text_direction || 0,
+            null_continue: options.null_continue || false,
             cordon: options.cordon || [],
             line_width: BI.isNull(options.line_width) ? 1 : options.line_width,
             show_label: BI.isNull(options.show_label) ? true : options.show_label,
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
             custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
-            num_separators: options.num_separators || false
+            num_separators: options.num_separators || false,
+            chart_font: options.chart_font || c.FONT_STYLE
         };
         this.options.items = items;
 

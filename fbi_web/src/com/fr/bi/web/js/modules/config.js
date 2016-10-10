@@ -85,6 +85,11 @@ BICst.DASHBOARD_WIDGETS = [[{
         title: BI.i18nText("BI-Cross_Table"),
         value: BICst.WIDGET.CROSS_TABLE,
         cls: "drag-cross-icon"
+    }, {
+        text: BI.i18nText("BI-Complex_Table"),
+        title: BI.i18nText("BI-Complex_Table"),
+        value: BICst.WIDGET.COMPLEX_TABLE,
+        cls: "drag-complex-icon"
     }]
 }, {
     text: BI.i18nText("BI-Column_Chart"),
@@ -1172,11 +1177,11 @@ BICst.CHART_SCALE_SETTING = [{
 }];
 
 BICst.BUBBLE_CHART_STYLE_GROUP = [{
-    title: BI.i18nText("BI-Bubble_Without_Shadow"),
+    text: BI.i18nText("BI-Bubble_Without_Shadow"),
     cls: "bubble-no-projector",
     value: BICst.CHART_SHAPE.NO_PROJECTOR
 }, {
-    title: BI.i18nText("BI-Bubble_With_Shadow"),
+    text: BI.i18nText("BI-Bubble_With_Shadow"),
     cls: "bubble-with-projector",
     value: BICst.CHART_SHAPE.PROJECTOR
 }];
@@ -1269,275 +1274,6 @@ BICst.DATA_LABEL_FILTER_RANGE_COMBO = [[{
     cls: "dot-e-font"
 }]];
 
-BICst.Font_Family_COMBO = [];
-//全局样式start
-BICst.BACKGROUND_TYPE = {
-    COLOR: 1,
-    IMAGE: 2
-};
-
-BICst.GLOBALPREDICTIONSTYLE = {
-
-    DEFAULT: {
-        "mainBackground": {"type": 1, "value": "#f3f3f3"},
-        "widgetBackground": {"type": 1, "value": "#ffffff"},
-        "titleBackground": {"type": 1, "value": "#ffffff"},
-        "titleFont": {"font-weight": "normal", "font-style": "normal", "text-align": "left", "color": "#ffffff"},
-        "chartStyle": 1,
-        "chartColor": ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
-        "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#b2b2b2"},
-        "controlTheme": "#f3f3f3"
-    },
-
-    ONE: {
-        "mainBackground": {"type": 1, "value": "#212338"},
-        "widgetBackground": {"type": 1, "value": "#2b2d4a"},
-        "titleBackground": {"type": 1, "value": "#2b2d3a"},
-        "titleFont": {"font-weight": "bold", "font-style": "normal", "text-align": "left", "color": "#ffffff"},
-        "chartStyle": 1,
-        "chartColor": ["#79d2f4", "#55b5e5", "#25cdea", "#1ba8ed", "#537af4"],
-        "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#b2b2b2"},
-        "controlTheme": "#25cdea"
-    },
-
-    TWO: {
-        "mainBackground": {"type": 1, "value": "#dae0e0"},
-        "widgetBackground": {"type": 1, "value": "#f7f7f7"},
-        "titleBackground": {"type": 1, "value": "#5e6472"},
-        "titleFont": {"font-weight": "bold", "font-style": "italic", "text-align": "left", "color": "#ffffff"},
-        "chartStyle": 1,
-        "chartColor": ["#f4ab98", "#f1c15f", "#e18169", "#af7e7e", "#6f6870"],
-        "chartFont": {"font-weight": "normal", "font-style": "normal", "color": "#5e6472"},
-        "controlTheme": "#af7e7e"
-    }
-};
-//全局样式stop
-BICst.FONT_FAMILY_COMBO = [{
-    text: "微软雅黑",
-    value: "Microsoft YaHei"
-}, {
-    text: "黑体",
-    value: "SimHei"
-}, {
-    text: "幼圆",
-    value: "YouYuan"
-}, {
-    text: "宋体",
-    value: "SimSun"
-}, {
-    text: "楷体",
-    value: "KaiTi"
-}, {
-    text: "华文细黑",
-    value: "STXihei"
-}, {
-    text: "华文黑体",
-    value: "STHeiti"
-}, {
-    text: "华文楷体",
-    value: "STKaiti"
-}, {
-    text: "华文宋体",
-    value: "STSong"
-}, {
-    text: "冬青黑体简体中文",
-    value: "Hiragino Sans GB W3"
-}, {
-    text: "Arial",
-    value: "Arial"
-}, {
-    text: "Microsoft Tai Le",
-    value: "Microsoft Tai Le"
-}, {
-    text: "Tahoma",
-    value: "Tahoma"
-}, {
-    text: "Helvetica",
-    value: "Helvetica"
-}, {
-    text: "Verdana",
-    value: "Verdana"
-}, {
-    text: "Times New Roman",
-    value: "Times New Roman"
-}];
-//表设置所有默认属性（应该是包含分组表、交叉表、复杂表和其他所有图表）
-BICst.DEFAULT_CHART_SETTING = {
-    table_form: BICst.TABLE_FORM.OPEN_ROW,
-    theme_color: "#65bce7",
-    table_style: BICst.TABLE_STYLE.STYLE1,
-    show_number: false,
-    show_row_total: true,
-    show_col_total: true,
-    open_row_node: false,
-    open_col_node: false,
-    max_row: BICst.TABLE_MAX_ROW,
-    max_col: BICst.TABLE_MAX_COL,
-    freeze_dim: true,
-    freeze_first_column: false,
-    transfer_filter: true,
-    show_name: true,
-    name_pos: BICst.DASHBOARD_WIDGET_NAME_POS_LEFT,
-
-    //图
-    chart_color: ["#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
-    chart_style: BICst.CHART_STYLE.STYLE_NORMAL,
-    chart_line_type: BICst.CHART_SHAPE.NORMAL,
-    chart_pie_type: BICst.CHART_SHAPE.NORMAL,
-    chart_radar_type: BICst.CHART_SHAPE.POLYGON,
-    chart_dashboard_type: BICst.CHART_SHAPE.NORMAL,
-    chart_inner_radius: 0,
-    chart_total_angle: BICst.PIE_ANGLES.TOTAL,
-    left_y_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
-    x_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
-    right_y_axis_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
-    right_y_axis_second_style: BICst.TARGET_STYLE.FORMAT.NORMAL,
-    left_y_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
-    number_of_pointer: BICst.POINTER.ONE,
-    dashboard_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
-    x_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
-    right_y_axis_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
-    right_y_axis_second_number_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
-    left_y_axis_unit: "",
-    dashboard_unit: "",
-    x_axis_unit: "",
-    right_y_axis_unit: "",
-    right_y_axis_second_unit: "",
-    show_left_y_axis_title: false,
-    show_right_y_axis_title: false,
-    show_right_y_axis_second_title: false,
-    left_y_axis_title: "",
-    right_y_axis_title: "",
-    right_y_axis_second_title: "",
-    left_y_axis_reversed: false,
-    right_y_axis_reversed: false,
-    right_y_axis_second_reversed: false,
-    show_x_axis_title: false,
-    x_axis_title: "",
-    text_direction: "0",
-    chart_legend: BICst.CHART_LEGENDS.BOTTOM,
-    mini_chart_legend: BICst.CHART_LEGENDS.NOT_SHOW,
-    show_data_label: false,
-    mini_show_data_label: true,
-    show_data_table: false,
-    show_grid_line: true,
-    num_separators: false,
-    right_num_separators: false,
-    mini_show_grid_line: false,
-    minimalist_model: false,
-    line_width: BICst.LINE_WIDTH.ONE,
-    mini_line_width: BICst.LINE_WIDTH.ZERO,
-    show_label: true,
-    mini_show_label: false,
-    enable_tick: true,
-    mini_enable_tick: false,
-    enable_minor_tick: true,
-    mini_enable_minor_tick: false,
-    show_y_custom_scale: false,
-    show_x_custom_scale: false,
-    show_z_custom_scale: false,
-    show_zoom: false,
-    null_continue: true,
-    min_scale: "",
-    max_scale: "",
-    percentage_not_show: BICst.PERCENTAGE.NOT_SHOW,
-    bubble_display: BICst.DISPLAY_RULES.DIMENSION,
-    bubble_style: BICst.CHART_SHAPE.NO_PROJECTOR,
-    custom_scale: {
-        maxScale: {
-            scale: null
-        },
-        minScale: {
-            scale: null
-        },
-        interval: {
-            scale: null
-        }
-    },
-    show_background_layer: true,
-    background_layer_info: BI.i18nText("BI-GAO_DE_MAP")
-};
-
-BICst.DASHBOARD_STYLE_CONDITIONS = [{
-    range: {
-        min: 0,
-        max: 100,
-        closemin: true,
-        closemax: false
-    },
-    color: "#65B3EE"
-}, {
-    range: {
-        min: 100,
-        max: 200,
-        closemin: true,
-        closemax: false
-    },
-    color: "#95E1AA"
-}, {
-    range: {
-        min: 200,
-        max: 300,
-        closemin: true,
-        closemax: true
-    },
-    color: "#F8D08E"
-}];
-
-BICst.MAP_STYLE_CONDITIONS = [{
-    range: {
-        min: 0,
-        max: 100,
-        closemin: true,
-        closemax: false
-    },
-    color: "#65B3EE"
-}, {
-    range: {
-        min: 100,
-        max: 200,
-        closemin: true,
-        closemax: false
-    },
-    color: "#95E1AA"
-}, {
-    range: {
-        min: 200,
-        max: 300,
-        closemin: false,
-        closemax: true
-    },
-    color: "#F8D08E"
-}, {
-    range: {
-        min: 300,
-        max: 400,
-        closemin: false,
-        closemax: true
-    },
-    color: "#e697c8"
-}, {
-    range: {
-        min: 400,
-        max: 500,
-        closemin: true,
-        closemax: true
-    },
-    color: "#a484b9"
-}];
-
-BICst.BUBBLE_GRADIENT_COLOR = [{
-    range: {
-        min: 0,
-        max: 100,
-        closemin: true,
-        closemax: true
-    },
-    color_range: {
-        from_color: "#65B3EE",
-        to_color: "#95E1AA"
-    }
-}];
 
 BICst.CAL_TARGET_TYPE = [{
     text: BI.i18nText("BI-Formula"),

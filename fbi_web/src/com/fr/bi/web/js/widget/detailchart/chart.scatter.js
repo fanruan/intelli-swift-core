@@ -49,12 +49,10 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         config.colors = this.config.chart_color;
         config.style = formatChartStyle();
         config.plotOptions.marker = {"symbol": "circle", "radius": 4.5, "enabled": true};
-        config.plotOptions.tooltip.formatter = this.config.tooltip;
         formatCordon();
         this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.dataLabels.formatter.identifier = "${X}${Y}";
-        config.plotOptions.lineWidth = this.config.line_width;
 
         config.yAxis = this.yAxis;
         config.xAxis = this.xAxis;
@@ -88,40 +86,42 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         config.xAxis[0].enableMinorTick = this.config.enable_minor_tick;
         config.chartType = "scatter";
 
+        if (BI.isNotEmptyArray(this.config.tooltip)) {
+            config.plotOptions.tooltip.formatter = function () {
+                var y = self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level, self.config.num_separators)(this.y);
+                var x = self.formatTickInXYaxis(self.config.x_axis_style, self.config.x_axis_number_level, self.config.right_num_separators)(this.x);
+                return this.seriesName + '<div>(X)' + self.config.tooltip[0]
+                    + ':' + x + '</div><div>(Y)' + self.config.tooltip[1] + ':' + y + '</div>'
+            };
+        }
+
         if (config.plotOptions.dataLabels.enabled === true) {
             BI.each(items, function (idx, item) {
-                var isNeedFormatDataLabelX = false;
-                var isNeedFormatDataLabelY = false;
-                if (self.config.x_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.right_num_separators) {
-                    isNeedFormatDataLabelX = true;
-                }
-                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.num_separators) {
-                    isNeedFormatDataLabelY = true;
-                }
-                if (isNeedFormatDataLabelX === true || isNeedFormatDataLabelY === true) {
-                    item.dataLabels = {
-                        "style": self.constants.FONT_STYLE,
-                        "align": "outside",
-                        enabled: true,
-                        formatter: {
-                            identifier: "${X}${Y}",
-                            "XFormat": function () {
-                                return BI.contentFormat(arguments[0], '#.##')
-                            },
-                            "YFormat": function () {
-                                return BI.contentFormat(arguments[0], '#.##')
-                            }
+                item.dataLabels = {
+                    "style": self.config.chart_font,
+                    "align": "outside",
+                    "autoAdjust": true,
+                    enabled: true,
+                    formatter: {
+                        identifier: "${X}${Y}",
+                        "XFormat": function () {
+                            return BI.contentFormat(arguments[0], '#.##;-#.##')
+                        },
+                        "YFormat": function () {
+                            return BI.contentFormat(arguments[0], '#.##;-#.##')
                         }
-                    };
-                    if (isNeedFormatDataLabelX === true) {
-                        item.dataLabels.formatter.XFormat = config.xAxis[0].formatter;
                     }
-                    if (isNeedFormatDataLabelY === true) {
-                        item.dataLabels.formatter.YFormat = config.yAxis[0].formatter;
-                    }
-                }
+                };
+                item.dataLabels.formatter.XFormat = config.xAxis[0].formatter;
+                item.dataLabels.formatter.YFormat = config.yAxis[0].formatter;
             });
         }
+
+        //全局样式图表文字
+        config.legend.style = this.config.chart_font;
+        config.yAxis[0].title.style = config.yAxis[0].labelStyle = this.config.chart_font;
+        config.xAxis[0].title.style = config.xAxis[0].labelStyle = this.config.chart_font;
+
         return [items, config];
 
         function formatChartStyle() {
@@ -143,7 +143,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.constants.FONT_STYLE,
+                                "style": self.config.chart_font,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -168,7 +168,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.constants.FONT_STYLE,
+                                "style": self.config.chart_font,
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -198,7 +198,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
             });
             if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                 config.plotOptions.tooltip.formatter.valueFormat = function () {
-                    return BI.contentFormat(arguments[0], '#0%')
+                    return BI.contentFormat(arguments[0], '#0%;-#0%')
                 };
             }
         }
@@ -251,8 +251,8 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
             show_data_label: options.show_data_label || false,
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             cordon: options.cordon || [],
-            tooltip: options.tooltip || "",
-            custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
+            tooltip: options.tooltip || [],
+	     custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
             custom_x_scale: options.custom_x_scale || c.CUSTOM_SCALE,
             show_label: BI.isNull(options.show_label) ? true : options.show_label,
             big_data_mode: options.big_data_mode || false,
@@ -260,7 +260,8 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
             num_separators: options.num_separators || false,
-            right_num_separators: options.right_num_separators || false
+            right_num_separators: options.right_num_separators || false,
+            chart_font: options.chart_font || c.FONT_STYLE
         };
         this.options.items = items;
         var types = [];

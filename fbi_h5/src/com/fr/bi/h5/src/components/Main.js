@@ -1,7 +1,7 @@
-import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
-import {requestAnimationFrame} from 'core'
+import * as TodoActions from '../actions/template';
+import {requestAnimationFrame, ReactComponentWithImmutableRenderMixin} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -9,104 +9,220 @@ import React, {
     Dimensions,
     ListView,
     View,
-    Fetch
+    Fetch,
+    Navigator,
+    TouchableOpacity
 } from 'lib'
 
-import ChartComponent from './Chart/ChartComponent.js'
-import TableComponent from './Table/TableComponent.js'
-import DetailTableComponent from './DetailTable/DetailTableComponent.js'
-import MultiSelectorComponent from './MultiSelector/MultiSelectorComponent.js'
-import MultiTreeSelectorComponent from './MultiTreeSelector/MultiTreeSelectorComponent.js'
+import {Colors, Size, Template} from 'data'
+
+import Toolbar from './Toolbar'
+import Layout from './Layout/Layout'
 
 const {width, height} = Dimensions.get('window');
 
 class Main extends Component {
+    static contextTypes = {
+        actions: React.PropTypes.object,
+        $template: React.PropTypes.object
+    };
+
     static propTypes = {};
 
     constructor(props, context) {
         super(props, context);
         console.log(props);
-        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        const rows = props.template.getAllWidgetIds();
-        this.state = {
-            dataSource: ds.cloneWithRows(rows)
+        this.template = new Template(props.$template);
+    }
+
+    navigationBarRouteMapper() {
+        const self = this;
+        return {
+
+            LeftButton (route, navigator, index, navState) {
+                if (index === 0) {
+                    return null;
+                }
+
+                return (
+                    <TouchableOpacity
+                        onPress={() => navigator.pop()}
+                        style={styles.navBarLeftButton}>
+                        <Text style={[styles.navBarText, styles.navBarButtonText]}>
+                            返回
+                        </Text>
+                    </TouchableOpacity>
+                );
+            },
+
+            RightButton (route, navigator, index, navState) {
+                if (index === 0) {
+                    return null;
+                }
+
+                if (route.name === 'widget') {
+                    return (
+                        <TouchableOpacity
+                            onPress={() => {
+                                const prevRoute = navState.routeStack[navState.presentedIndex - 1];
+                                if (route.$template) {
+                                    prevRoute.$template = route.$template;
+                                    navigator.replacePreviousAndPop(prevRoute);
+                                } else {
+                                    navigator.pop();
+                                }
+                            }}
+                            style={styles.navBarRightButton}>
+                            <Text style={[styles.navBarText, styles.navBarButtonText]}>
+                                确定
+                            </Text>
+                        </TouchableOpacity>
+                    );
+                }
+
+                if (route.name === 'list') {
+                    return (
+                        <TouchableOpacity
+                            onPress={() => {
+                                const prevRoute = navState.routeStack[navState.presentedIndex - 1];
+                                if (route.$template) {
+                                    prevRoute.$template = route.$template;
+                                    self.context.actions.updateTemplate(route.$template);
+                                    navigator.replacePreviousAndPop(prevRoute);
+                                } else {
+                                    navigator.pop();
+                                }
+                            }}
+                            style={styles.navBarRightButton}>
+                            <Text style={[styles.navBarText, styles.navBarButtonText]}>
+                                查询
+                            </Text>
+                        </TouchableOpacity>
+                    );
+                }
+
+                return null;
+            },
+
+            Title (route, navigator, index, navState) {
+                return (
+                    <Text style={[styles.navBarText, styles.navBarTitleText]}>
+                        {route.title}
+                    </Text>
+                );
+            }
         }
+    };
+
+    renderScene(route, navigationOperations, onComponentRef) {
+        const {...props} = this.props;
+        const {name, Component, title, onValueChange, ...others} = route;
+        if (name === 'index') {
+            if (this.template.hasControlWidget()) {
+                return <View style={styles.index}>
+                    <Layout width={width} height={height - 50 - Size.ITEM_HEIGHT} {...props}
+                            navigator={navigationOperations}/>
+
+                    <Toolbar {...props} navigator={navigationOperations}>
+
+                    </Toolbar>
+                </View>
+            }
+            return <Layout width={width} height={height} {...props}/>;
+        }
+        return (
+            <Component
+                width={width} height={height - 50}
+                {...others}
+                onValueChange={$template=> {
+                    route.$template = $template;
+                }}
+                navigator={navigationOperations}
+            />
+        );
     }
 
     render() {
-        return <ListView
-            initialListSize={2}
-            dataSource={this.state.dataSource}
-            renderRow={this._renderRow.bind(this)}
-        />
+        const initialRoute = {name: 'index', title: '首页'};
+        return (
+            <Navigator
+                style={styles.wrapper}
+                initialRoute={initialRoute}
+                renderScene={this.renderScene.bind(this)}
+                navigationBar={
+                    <Navigator.NavigationBar
+                        routeMapper={this.navigationBarRouteMapper()}
+                        style={styles.navBar}
+                    />
+                }
+                configureScene={(route) => {
+                    if (route.sceneConfig) {
+                        return route.sceneConfig;
+                    }
+                    return Navigator.SceneConfigs.FloatFromRight;
+                }}
+                sceneStyle={styles.sceneStyle}
+            />
+        );
     }
 
-    _renderRow(rowData, sectionID, rowID) {
-        const {template} = this.props;
-        const widgetObj = template.getWidgetById(rowData);
-        const type = widgetObj.getType();
-        const props = {
-            key: rowData,
-            widget: widgetObj,
-            width: width,
-            height: height / 3 * 2
-        };
-        switch (type) {
-            case BICst.WIDGET.TABLE:
-                return <TableComponent {...props} />;
-            //case BICst.WIDGET.CROSS_TABLE:
-            //case BICst.WIDGET.COMPLEX_TABLE:
-            //
-            case BICst.WIDGET.DETAIL:
-                return <DetailTableComponent {...props} />;
+    componentWillMount() {
 
-            case BICst.WIDGET.AXIS:
-            case BICst.WIDGET.ACCUMULATE_AXIS:
-            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
-            case BICst.WIDGET.COMPARE_AXIS:
-            case BICst.WIDGET.FALL_AXIS:
-            case BICst.WIDGET.BAR:
-            case BICst.WIDGET.ACCUMULATE_BAR:
-            case BICst.WIDGET.COMPARE_BAR:
-            case BICst.WIDGET.LINE:
-            case BICst.WIDGET.AREA:
-            case BICst.WIDGET.ACCUMULATE_AREA:
-            case BICst.WIDGET.COMPARE_AREA:
-            case BICst.WIDGET.RANGE_AREA:
-            case BICst.WIDGET.COMBINE_CHART:
-            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
-            case BICst.WIDGET.PIE :
-            case BICst.WIDGET.DONUT :
-            case BICst.WIDGET.MAP:
-            case BICst.WIDGET.GIS_MAP:
-            case BICst.WIDGET.DASHBOARD:
-            case BICst.WIDGET.BUBBLE:
-            case BICst.WIDGET.FORCE_BUBBLE:
-            case BICst.WIDGET.SCATTER:
-            case BICst.WIDGET.RADAR:
-            case BICst.WIDGET.ACCUMULATE_RADAR:
-            case BICst.WIDGET.FUNNEL:
-                //case BICst.WIDGET.STRING:
-                //case BICst.WIDGET.NUMBER:
-                //case BICst.WIDGET.DATE:
-                //case BICst.WIDGET.YEAR:
-                //case BICst.WIDGET.QUARTER:
-                //case BICst.WIDGET.MONTH:
-                //case BICst.WIDGET.YMD:
-                //case BICst.WIDGET.QUERY:
-                //case BICst.WIDGET.RESET:
-                //case BICst.WIDGET.CONTENT:
-                //case BICst.WIDGET.IMAGE:
-                //case BICst.WIDGET.WEB:
-                return <ChartComponent {...props} />;
-            case BICst.WIDGET.STRING:
-                return <MultiSelectorComponent {...props} />;
-            case BICst.WIDGET.TREE:
-                return <MultiTreeSelectorComponent {...props} />;
-            default:
-                return null;
-        }
+    }
+
+    componentDidMount() {
+
+    }
+
+    componentWillReceiveProps(nextProps) {
+
+    }
+
+    componentWillUpdate(nextProps, nextState) {
+
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+
+    }
+
+    componentWillUnmount() {
+
     }
 }
-mixin.onClass(Main, PureRenderMixin);
+mixin.onClass(Main, ReactComponentWithImmutableRenderMixin);
+const styles = StyleSheet.create({
+    wrapper: {
+        flex: 1,
+        paddingTop: 50
+    },
+    index: {
+        flex: 1
+    },
+    sceneStyle: {
+        backgroundColor: '#ffffff'
+    },
+    navBar: {
+        backgroundColor: '#efeff4',
+        height: 50,
+        borderBottomWidth: 1,
+        borderBottomColor: Colors.BORDER
+    },
+    navBarText: {
+        fontSize: 16
+    },
+    navBarTitleText: {
+        color: '#000',
+        fontWeight: 700
+    },
+    navBarLeftButton: {
+        color: Colors.HIGHLIGHT,
+        paddingLeft: 10
+    },
+    navBarRightButton: {
+        color: Colors.HIGHLIGHT,
+        paddingRight: 10
+    }
+});
+
 export default Main

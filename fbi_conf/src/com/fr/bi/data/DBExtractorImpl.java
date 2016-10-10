@@ -8,13 +8,16 @@ import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.SQLStatement;
 import com.fr.bi.stable.dbdealer.*;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.stable.utils.BIDBUtils;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.general.DateUtils;
 import com.fr.stable.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
@@ -31,6 +34,7 @@ import java.util.List;
  * @since Advanced FineBI Analysis 1.0
  */
 public abstract class DBExtractorImpl implements DBExtractor {
+    private static final Logger logger = LoggerFactory.getLogger(DBExtractorImpl.class);
 
     private int dealWithResultSet(ResultSet rs,
                                   ICubeFieldSource[] columns,
@@ -48,12 +52,25 @@ public abstract class DBExtractorImpl implements DBExtractor {
             }
             row++;
             if (CubeConstant.LOG_SEPERATOR_ROW != 0 && row % CubeConstant.LOG_SEPERATOR_ROW == 0) {
-                BILogger.getLogger().info(BIDateUtils.getCurrentDateTime()+" sql: " + sql + "is executing…… "+" transported rows：" + row);
+                logger.info(BIDateUtils.getCurrentDateTime() + " sql: " + trimSQL(sql) + "is executing…… " + " transported rows：" + row);
             }
 
         }
         return row;
     }
+
+    private static String trimSQL(String sql) {
+        StringBuffer sb = new StringBuffer();
+        if (sql.length() > 110) {
+            sb.append(sql.substring(0, 50));
+            sb.append("...");
+            sb.append(sql.substring(sql.length() - 50, sql.length()));
+            return sb.toString();
+        } else {
+            return sql;
+        }
+    }
+
 
     @SuppressWarnings("rawtypes")
     private DBDealer[] createDBDealer(boolean needCharSetConvert, String originalCharSetName,
@@ -134,10 +151,10 @@ public abstract class DBExtractorImpl implements DBExtractor {
             boolean needCharSetConvert = StringUtils.isNotBlank(originalCharSetName)
                     && StringUtils.isNotBlank(newCharSetName);
             Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
-            String sqlString = createSqlString(dialect, columns);
+            String sqlString = BIDBUtils.createSqlString(dialect, columns);
             sql.setSelect(sqlString);
             String query = dealWithSqlCharSet(sql.toString(), connection);
-            BILogger.getLogger().info("Start Query sql:" + query);
+            BILoggerFactory.getLogger().info("Start Query sql:" + query);
             stmt = createStatement(conn, dialect);
             try {
                 rs = stmt.executeQuery(query);
@@ -149,9 +166,9 @@ public abstract class DBExtractorImpl implements DBExtractor {
                 rs = stmt.executeQuery(query);
             }
             row = dealWithResultSet(rs, columns, traversal, needCharSetConvert, originalCharSetName, newCharSetName, row, sql.toString());
-            BILogger.getLogger().info("sql: " + sql.toString() + " execute cost:" + DateUtils.timeCostFrom(t));
+            logger.info("sql: " + sql.toString() + " execute cost:" + DateUtils.timeCostFrom(t));
         } catch (Throwable e) {
-            BILogger.getLogger().error("sql: " + sql.toString() + " execute failed!");
+            logger.error("sql: " + sql.toString() + " execute failed!");
             throw new RuntimeException(e);
         } finally {
             DBUtils.closeResultSet(rs);
@@ -161,22 +178,6 @@ public abstract class DBExtractorImpl implements DBExtractor {
         return row;
     }
 
-    private String createSqlString(Dialect dialect, ICubeFieldSource[] columns) {
-        StringBuffer sb = new StringBuffer();
-        ArrayList<String> list = new ArrayList<String>();
-        for (int i = 0; i < columns.length; i++) {
-            if (columns[i].isUsable()) {
-                list.add(dialect.column2SQL(columns[i].getFieldName()));
-            }
-        }
-        for (int i = 0; i < list.size(); i++) {
-            if (i != 0) {
-                sb.append(",");
-            }
-            sb.append(list.get(i));
-        }
-        return sb.toString();
-    }
 
     private String dealWithSqlCharSet(String sql, com.fr.data.impl.Connection database) {
         if (StringUtils.isNotBlank(database.getOriginalCharsetName()) && StringUtils.isNotBlank(database.getNewCharsetName())) {

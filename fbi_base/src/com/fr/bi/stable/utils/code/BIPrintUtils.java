@@ -1,5 +1,6 @@
 package com.fr.bi.stable.utils.code;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.general.DateUtils;
 
@@ -19,13 +20,13 @@ public class BIPrintUtils {
      * @param start start值
      */
     public static void writeIndexLog(String title, long index, long start) {
-        BILogger.getLogger().info(title + ":" + index + " Cost:" + DateUtils.timeCostFrom(start));
+        BILoggerFactory.getLogger().info(title + ":" + index + " Cost:" + DateUtils.timeCostFrom(start));
     }
 
     public static void writeIndexLog(String title, long index, long rowCount, long start) {
         long time = System.currentTimeMillis() - start;
         time = (long) (((float) time / index) * rowCount) - time;
-        BILogger.getLogger().info(title + ":" + (float) Math.round((float) index / rowCount * CubeConstant.PERCENT_ROW) / CubeConstant.PERCENT_ROW_D + "%! about " + DateUtils.miliisecondCostAsString(time) + "time left");
+        BILoggerFactory.getLogger().info(title + ":" + (float) Math.round((float) index / rowCount * CubeConstant.PERCENT_ROW) / CubeConstant.PERCENT_ROW_D + "%! about " + DateUtils.miliisecondCostAsString(time) + "time left");
     }
 
     public static String outputException(Throwable exception) {

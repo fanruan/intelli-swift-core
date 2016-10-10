@@ -7,6 +7,7 @@ import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
+import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBBoxElement;
@@ -24,7 +25,7 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.structure.collection.list.IntList;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.Inter;
@@ -56,7 +57,7 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
         if (index == 0) {
             for (int i = 0, len = keys.length; i < len; i++) {
                 Object v = node.getSummaryValue(keys[i]);
-                cell = new CBCell(v == null ? NONEVALUE : v);
+                cell = new CBCell(ExecutorUtils.formatExtremeSumValue(v));
                 cell.setRow(maxColumnLen + i);
                 cell.setColumn(tempCol);
                 cell.setRowSpan(1);
@@ -143,7 +144,7 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
         CBCell cell = null;
         for (int i = 0, len = keys.length; i < len; i++) {
             Object v = node.getSummaryValue(keys[i]);
-            cell = new CBCell(v == null ? NONEVALUE : v);
+            cell = new CBCell(ExecutorUtils.formatExtremeSumValue(v));
             cell.setRow(rowData.getMaxArrayLength() + i);
             cell.setColumn(tempCol);
             cell.setRowSpan(1);
@@ -313,7 +314,7 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
                 list = (IntList) deepList.clone();
                 list.add(i);
             } catch (CloneNotSupportedException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
             dealWithNode(tempNode, expander.getChildExpander(name), cbcells, row + rowSpan, tempCol, colColumn, sumColumn, keys, currentIndex, total - 1, isCross, list, isTargetSort, sortDimension, widget, rowData);
             tempCol += colSpan;
@@ -365,7 +366,7 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
             cbcells[cell.getColumn()][cell.getRow()] = cell;
             for (int i = 0, len = keys.length; i < len; i++) {
                 Object v = node.getSummaryValue(keys[i]);
-                cell = new CBCell(v == null ? NONEVALUE : v);
+                cell = new CBCell(ExecutorUtils.formatExtremeSumValue(v));
                 cell.setRow(columnData.getMaxArrayLength() + i);
                 cell.setColumn(tempCol + p);
                 cell.setRowSpan(1);
@@ -441,7 +442,7 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
         cbcells[cell.getColumn()][cell.getRow()] = cell;
         for (int i = 0, len = keys.length; i < len; i++) {
             Object v = node.getSummaryValue(keys[i]);
-            cell = new CBCell(v == null ? NONEVALUE : v);
+            cell = new CBCell(ExecutorUtils.formatExtremeSumValue(v));
             cell.setRow(columnData.getMaxArrayLength() + i);
             cell.setColumn(tempCol);
             cell.setRowSpan(1);
@@ -551,7 +552,7 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
         if (index == 0) {
             for (int i = 0, len = keys.length; i < len; i++) {
                 Object v = node.getSummaryValue(keys[i]);
-                cell = new CBCell(v == null ? NONEVALUE : v);
+                cell = new CBCell(ExecutorUtils.formatExtremeSumValue(v));
                 cell.setRow(maxColumnLen + i);
                 cell.setColumn(tempCol);
                 cell.setRowSpan(1);
@@ -673,7 +674,7 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
         cbcells[cell.getColumn()][cell.getRow()] = cell;
         for (int i = 0, len = keys.length; i < len; i++) {
             Object v = node.getSummaryValue(keys[i]);
-            cell = new CBCell(v == null ? NONEVALUE : v);
+            cell = new CBCell(ExecutorUtils.formatExtremeSumValue(v));
             cell.setRow(rowData.getMaxArrayLength() + i);
             cell.setColumn(tempCol);
             cell.setRowSpan(1);

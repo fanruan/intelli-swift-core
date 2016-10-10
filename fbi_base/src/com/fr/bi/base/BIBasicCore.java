@@ -2,8 +2,11 @@ package com.fr.bi.base;
 
 import com.fr.bi.exception.BIAmountLimitUnmetException;
 import com.fr.bi.stable.utils.algorithem.BIMD5Utils;
+import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.stable.EncodeConstants;
 
 import javax.activation.UnsupportedDataTypeException;
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.util.Iterator;
 
@@ -40,7 +43,12 @@ public class BIBasicCore extends BICore {
         Iterator<Object> it = coreAttributes.iterator();
         while (it.hasNext()) {
             String str = getObjectStringValue(it.next());
-            digest.update(str.getBytes());
+            //pony MD5要指定编码
+            try {
+                digest.update(str.getBytes(EncodeConstants.ENCODING_UTF_8));
+            } catch (UnsupportedEncodingException e) {
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
+            }
         }
         return generateValue(BIMD5Utils.getMD5String(digest.digest()));
     }

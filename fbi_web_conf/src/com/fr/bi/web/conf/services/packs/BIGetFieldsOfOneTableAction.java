@@ -1,12 +1,14 @@
 package com.fr.bi.web.conf.services.packs;
 
+import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.fr.bi.exception.BIFieldAbsentException;
+import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -23,11 +25,27 @@ public class BIGetFieldsOfOneTableAction extends AbstractBIConfigureAction {
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         String tableId = WebUtils.getHTTPRequestParameter(req, "id");
         JSONObject jo = new JSONObject();
-        CubeTableSource source = BusinessTableHelper.getTableDataSource(new BITableID(tableId));
-        ((AbstractTableSource) source).getFields();
-        JSONObject data = source.createJSON();
-        formatTableDataFields(tableId, data);
-        jo.put("table_data", data);
+        try{
+            BusinessTable table = BICubeConfigureCenter.getDataSourceManager().getBusinessTable(new BITableID(tableId));
+            CubeTableSource source = table.getTableSource();
+            ((AbstractTableSource) source).reGetBiTable();
+            if (source.getPersistentTable() == null) {
+                JSONObject errorJson = new JSONObject();
+                errorJson.put("none_table", true);
+                WebUtils.printAsJSON(res, errorJson);
+                return;
+            }
+            ((AbstractTableSource) source).getFields();
+            JSONObject data = source.createJSON();
+            formatTableDataFields(tableId, data);
+            jo.put("table_data", data);
+            WebUtils.printAsJSON(res, jo);
+        }catch (BIKeyAbsentException e){
+            JSONObject errorJson = new JSONObject();
+            errorJson.put("new_table", true);
+            WebUtils.printAsJSON(res, errorJson);
+        }
+
 
     }
 
@@ -51,7 +69,7 @@ public class BIGetFieldsOfOneTableAction extends AbstractBIConfigureAction {
                     field.put("is_usable", BusinessTableHelper.getSpecificField(table, field.getString("field_name")).isUsable());
                     nFields.put(field);
                 } catch (BIFieldAbsentException exception) {
-                    BILogger.getLogger().error(exception.getMessage(), exception);
+                    BILoggerFactory.getLogger().error(exception.getMessage(), exception);
                 }
 
             }

@@ -109,6 +109,9 @@ BIShow.PaneView = BI.inherit(BI.View, {
             var createBy = Data.SharingPool.get("createBy");
             window.location.href = FR.servletURL + "?op=fr_bi&cmd=bi_init&id=" + reportId + "&createBy=" + createBy + "&edit=_bi_edit_";
         });
+        this.globalStyle = BI.createWidget({
+            type: "bi.global_style"
+        });
         return BI.createWidget({
             type: "bi.absolute",
             cls: "dashboard-toolbar",
@@ -159,5 +162,6 @@ BIShow.PaneView = BI.inherit(BI.View, {
         var self = this;
         this.dashboard.populate();
         this._refreshWidgets();
+        this.globalStyle.populate();
     }
 });

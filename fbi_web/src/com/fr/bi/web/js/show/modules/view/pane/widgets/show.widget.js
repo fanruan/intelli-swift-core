@@ -74,10 +74,10 @@ BIShow.WidgetView = BI.inherit(BI.View, {
                 top: 0,
                 right: 10
             }, {
-                el: this.title,
-                left: 10,
-                top: 10,
-                right: 50
+                el: this.titleWrapper,
+                left: 0,
+                top: 0,
+                right: 0
             }, {
                 el: this.tableChart,
                 left: 10,
@@ -124,6 +124,17 @@ BIShow.WidgetView = BI.inherit(BI.View, {
                 validationChecker: function (v) {
                     return BI.Utils.checkWidgetNameByID(v, id);
                 }
+            });
+            this.titleWrapper = BI.createWidget({
+                type: "bi.absolute",
+                height: 35,
+                cls: "dashboard-widget-title",
+                items: [{
+                    el: this.title,
+                    left: 10,
+                    top: 10,
+                    right: 10
+                }]
             });
             this.title.on(BI.ShelterEditor.EVENT_CHANGE, function () {
                 self.model.set("name", this.getValue());
@@ -254,6 +265,28 @@ BIShow.WidgetView = BI.inherit(BI.View, {
             .removeClass("dashboard-title-center").addClass(cls);
     },
 
+    _refreshWidgetTitle: function () {
+        var id = this.model.get("id");
+        var titleSetting = this.model.get("settings").title_detail || {};
+        var $title = this.title.element.find(".shelter-editor-text .bi-text");
+        $title.css(titleSetting.detail_style || {});
+
+        this.titleWrapper.element.css({"background": getBackgroundValue(titleSetting.detail_background)});
+
+        function getBackgroundValue (bg) {
+            if (!bg) {
+                return "";
+            }
+            switch (bg.type) {
+                case BICst.BACKGROUND_TYPE.COLOR:
+                    return bg.value;
+                case BICst.BACKGROUND_TYPE.IMAGE:
+                    return "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + bg["value"] + ")";
+            }
+            return "";
+        }
+    },
+
     _expandWidget: function () {
         var wId = this.model.get("id");
         BIShow.FloatBoxes.open("detail", "detail", {}, this, {
@@ -314,6 +347,9 @@ BIShow.WidgetView = BI.inherit(BI.View, {
             this.tableChart.resize();
             this._refreshMagnifyButton();
         }
+        if (BI.has(changed, "settings") && (changed.settings.title_detail !== prev.settings.title_detail)) {
+            this._refreshWidgetTitle()
+        }
     },
 
     local: function () {
@@ -322,6 +358,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
 
     refresh: function () {
         this._buildWidgetTitle();
+        this._refreshWidgetTitle();
         this._refreshMagnifyButton();
         this._refreshTableAndFilter();
         this._refreshLayout();

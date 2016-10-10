@@ -15,7 +15,7 @@ package com.fr.bi.stable.utils;
  Last Modified:10,Mar,2001
  *************************************************/
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 
@@ -50,11 +50,11 @@ public class DecryptBi {
         }
         pwd = escape(pwd);
         if (StringUtils.isEmpty(originalPassword) || originalPassword.length() < 8) {
-            BILogger.getLogger().error("A salt value could not be extracted from the encrypted message because it's length is too short. The message cannot be decrypted.");
+            BILoggerFactory.getLogger().error("A salt value could not be extracted from the encrypted message because it's length is too short. The message cannot be decrypted.");
             return "";
         }
         if (StringUtils.isEmpty(pwd) || pwd.length() <= 0) {
-            BILogger.getLogger().error("Please enter a password with which to decrypt the message.");
+            BILoggerFactory.getLogger().error("Please enter a password with which to decrypt the message.");
             return "";
         }
         String prand = "";
@@ -100,7 +100,7 @@ public class DecryptBi {
         }
         pwd = escape(pwd);
         if (StringUtils.isEmpty(pwd)) {
-            BILogger.getLogger().error("A salt value could not be extracted from the encrypted message because it's length is too short. The message cannot be decrypted.");
+            BILoggerFactory.getLogger().error("A salt value could not be extracted from the encrypted message because it's length is too short. The message cannot be decrypted.");
             return "";
         }
         String prand = "";
@@ -112,7 +112,7 @@ public class DecryptBi {
         int incr = (int) Math.ceil(pwd.length() / 2.0);
         BigInteger modu = new BigInteger((long) (Math.pow(2, 31) - 1) + "");
         if (mult < 2) {
-            BILogger.getLogger().error("Please enter a password with which to decrypt the message.");
+            BILoggerFactory.getLogger().error("Please enter a password with which to decrypt the message.");
             return "";
         }
         int salt = (int) Math.round(Math.random() * 1000000000) % 100000000;

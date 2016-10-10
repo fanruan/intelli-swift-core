@@ -12,7 +12,6 @@ import Animated from '../Animated/Animated.web';
 import React, { Component } from 'react';
 import { Mixin as TouchableMixin } from './Touchable';
 import mixin from 'react-mixin';
-import autobind from 'autobind-decorator';
 
 /**
  * When the scroll view is disabled, this defines how far your touch may move

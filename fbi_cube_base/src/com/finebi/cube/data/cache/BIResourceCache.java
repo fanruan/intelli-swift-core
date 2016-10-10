@@ -6,6 +6,7 @@ import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -51,5 +52,10 @@ public class BIResourceCache<R> extends BIMapContainer<ICubeResourceLocation, IR
     @Override
     public void forceRelease() {
 
+    }
+
+    @Override
+    public List getUnReleasedLocation() {
+        return null;
     }
 }

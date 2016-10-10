@@ -3167,6 +3167,8 @@
         },
 
         _onResize: function () {
+            this._sizeChanged = true;
+            
             L.Util.cancelAnimFrame(this._resizeRequest);
             this._resizeRequest = L.Util.requestAnimFrame(
                 function () { this.invalidateSize({debounceMoveend: true}); }, this);
@@ -7246,6 +7248,12 @@
         },
 
         updateWithData:function(){
+
+            if(this._data.series){
+                var geo = this._data.series.vanchart.components.geo;
+                this._latlng = geo.getDataPointLatLng(this._data);
+            }
+
             this.onRemove();
 
             this.onAdd();
@@ -7356,8 +7364,8 @@
     });
 
 
-    L.scatterMarker = function (latlng, options, data, renderer) {
-        return new L.ScatterMarker(latlng, options, data, renderer);
+    L.scatterMarker = function (latlng, options, data, vanchartMap) {
+        return new L.ScatterMarker(latlng, options, data, vanchartMap);
     };
 
     //固定pixel大小的标记点
@@ -7368,11 +7376,11 @@
             radius:'4.5'
         },
 
-        initialize: function (latlng, options, data, renderer) {
+        initialize: function (latlng, options, data, vanchartMap) {
             L.setOptions(this, options);
             this._latlng = L.latLng(latlng);
             this._data = data;
-            this.renderer = renderer;
+            this.vanchartMap = vanchartMap;
         },
 
         // @method getLatLng(): LatLng
@@ -7405,7 +7413,7 @@
             }else{
                 this._container.style.left = p.x + 'px';
                 this._container.style.top = p.y + 'px';
-                this._path.v = this.renderer.path2vml(this._getMarkerPath());
+                this._path.v = this.vanchartMap.path2vml(this._getMarkerPath());
             }
         },
 
@@ -8033,6 +8041,37 @@
             return this;
         },
 
+        setBubbleStyle:function(options){
+            var radius = options && options.radius || this._radius;
+            L.Path.prototype.setStyle.call(this, options);
+
+            this.options.radius = this._radius = radius;
+            
+            if(this._data && this._data.series && this._data.series.animation){
+
+                this._project();
+
+                var layer = this, p = layer._point, r = layer._radius,
+                    r2 = layer._radiusY || r,
+                    arc = 'a' + r + ',' + r2 + ' 0 1,0 ';
+
+                // drawing a circle with two half-arcs
+                var d = layer._empty() ? 'M0 0' :
+                'M' + (p.x - r) + ',' + p.y +
+                arc + (r * 2) + ',0 ' +
+                arc + (-r * 2) + ',0 ';
+
+                d3.select(layer._path)
+                    .transition().duration(500).ease('back-out')
+                    .attr('d', d);
+
+            }else if (this._map) {
+                this._renderer._updatePath(this);
+            }
+
+            return this;
+        },
+
         _project: function () {
             this._point = this._map.latLngToLayerPoint(this._latlng);
             this._updateBounds();
@@ -8287,6 +8326,7 @@
 
         _initText:function(layer){
             layer._text = L.SVG.create('text');
+            layer._text.style['pointer-events'] = 'none';
         },
 
         _addText:function(layer){
@@ -9760,7 +9800,7 @@
             if(vanchart && vanchart.components.rangeLegend){
                 var rangeLegend = vanchart.components.rangeLegend;
                 if(rangeLegend.options.visible){
-                    if(VanUtils.containsPoint(rangeLegend.bounds, [first.clientX, first.clientY])){
+                    if(VanUtils.containsPoint(rangeLegend.bounds, VanUtils.getMousePos(e, vanchart.dom))){
                         return;
                     }
                 }

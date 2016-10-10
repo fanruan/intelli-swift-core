@@ -479,22 +479,22 @@
                 obj.settings = widget.settings;
                 obj.value = widget.value;
                 //组件表头上指标的排序和过滤
-                if(BI.has(widget, "sort") && BI.isNotNull(widget.sort)){
+                if (BI.has(widget, "sort") && BI.isNotNull(widget.sort)) {
                     obj.sort = BI.extend({}, widget.sort, {
                         sort_target: createDimensionsAndTargets(widget.sort.sort_target).id
                     })
                 }
 
-                if(BI.has(widget, "sort_sequence") && BI.isNotNull(widget.sort_sequence)){
+                if (BI.has(widget, "sort_sequence") && BI.isNotNull(widget.sort_sequence)) {
                     obj.sort_sequence = [];
-                    BI.each(widget.sort_sequence, function(idx, dId){
+                    BI.each(widget.sort_sequence, function (idx, dId) {
                         obj.sort_sequence.push(createDimensionsAndTargets(dId).id);
                     })
                 }
 
-                if(BI.has(widget, "filter_value") && BI.isNotNull(widget.filter_value)){
+                if (BI.has(widget, "filter_value") && BI.isNotNull(widget.filter_value)) {
                     var filterValue = {};
-                    BI.each(widget.filter_value, function(target_id, filter_value){
+                    BI.each(widget.filter_value, function (target_id, filter_value) {
                         var newId = createDimensionsAndTargets(target_id).id;
                         filterValue[newId] = checkFilter(filter_value, target_id, newId);
                     });
@@ -517,11 +517,22 @@
                     BI.extend(filter, oldFilter);
                     //防止死循环
                     if (BI.has(oldFilter, "target_id")) {
-                        if(oldFilter.target_id !== dId){
+                        if (oldFilter.target_id !== dId) {
                             var result = createDimensionsAndTargets(oldFilter.target_id);
                             filter.target_id = result.id;
-                        }else{
+                        } else {
                             filter.target_id = newId;
+                        }
+                    }
+                    //维度公式过滤所用到的指标ID也要替换掉
+                    if (BI.has(oldFilter, "formula_ids")) {
+                        var ids = oldFilter.formula_ids || [];
+                        if (BI.isNotEmptyArray(ids) && BI.isNull(BI.Utils.getFieldTypeByID(ids[0]))) {
+                            BI.each(ids, function (id, tId) {
+                                var result = createDimensionsAndTargets(tId);
+                                filter.filter_value = filter.filter_value.replaceAll(tId, result.id);
+                                filter.formula_ids[id] = result.id;
+                            });
                         }
                     }
                 }
@@ -606,6 +617,14 @@
             return gs.widgetBackground;
         },
 
+        getGSChartFont: function () {
+            var gs = this.getGlobalStyle();
+            return BI.extend(gs.chartFont, {
+                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                "fontSize": "12px"
+            });
+        },
+
         getGSTitleBackground: function () {
             var gs = this.getGlobalStyle();
             return gs.titleBackground;
@@ -617,15 +636,16 @@
         },
 
         getGSNamePos: function () {
-            var gs = this.getGlobalStyle();
-            if (BI.isNotNull(gs) && (gs === {})) {
-                if (gs["titleFont"]["text-align"] === "left") {
+            var titleFont = this.getGSTitleFont();
+            if (BI.isNotNull(titleFont)) {
+                if (titleFont["text-align"] === "left") {
                     return BICst.DASHBOARD_WIDGET_NAME_POS_LEFT
                 }
-                if (gs["titleFont"]["text-align"] === "center") {
+                if (titleFont["text-align"] === "center") {
                     return BICst.DASHBOARD_WIDGET_NAME_POS_CENTER
                 }
             }
+            return BICst.DASHBOARD_WIDGET_NAME_POS_LEFT
         },
 
         //global style ---- end ----
@@ -635,6 +655,12 @@
         },
 
         //settings  ---- start ----
+        getWSTitleDetailSettingByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.title_detail) ? ws.title_detail :
+            {};
+        },
+
         getWSTableFormByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.table_form) ? ws.table_form :
@@ -713,6 +739,18 @@
                 BICst.DEFAULT_CHART_SETTING.bubble_display;
         },
 
+        getWSBubbleFixedColorsByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.fixed_colors) ? ws.fixed_colors :
+                BICst.DASHBOARD_STYLE_CONDITIONS
+        },
+
+        getWSBubbleGradientsByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.gradient_colors) ? ws.gradient_colors :
+                BICst.BUBBLE_GRADIENT_COLOR
+        },
+
         getWSBubbleStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.bubble_style) ? ws.bubble_style :
@@ -742,6 +780,11 @@
         getWSColumnSizeByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.column_size) ? ws.column_size : [];
+        },
+
+        getWSNullContinueByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.null_continue) ? ws.null_continue : BICst.DEFAULT_CHART_SETTING.null_continue;
         },
 
         getWSChartColorByID: function (wid) {
@@ -1045,6 +1088,19 @@
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_grid_line) ? ws.show_grid_line :
                 BICst.DEFAULT_CHART_SETTING.show_grid_line;
+        },
+
+
+        getWSMinBubbleSizeByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.bubble_min_size) ? ws.bubble_min_size :
+                BICst.DEFAULT_CHART_SETTING.bubble_min_size
+        },
+
+        getWSMaxBubbleSizeByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.bubble_max_size) ? ws.bubble_max_size :
+                BICst.DEFAULT_CHART_SETTING.bubble_max_size
         },
 
         getWSNumberSeparatorsByID: function (wid) {
@@ -1780,27 +1836,27 @@
             if (BI.isNull(relations[from])) {
                 return [];
             }
-            if(BI.isNull(relations[from][to])){
+            if (BI.isNull(relations[from][to])) {
                 return [];
             }
             return removeCircleInPath();
 
-            function removeCircleInPath(){
+            function removeCircleInPath() {
                 var relationOrder = [];
-                return BI.filter(relations[from][to], function(idx, path){
+                return BI.filter(relations[from][to], function (idx, path) {
                     var orders = [];
-                    var hasCircle = BI.any(path, function(id, relation){
+                    var hasCircle = BI.any(path, function (id, relation) {
                         var prev = BI.Utils.getTableIdByFieldID(BI.Utils.getPrimaryIdFromRelation(relation));
                         var last = BI.Utils.getTableIdByFieldID(BI.Utils.getForeignIdFromRelation(relation));
-                        var result = BI.find(relationOrder, function(i, order){
-                            if(order[0] === last && order[1] === prev){
+                        var result = BI.find(relationOrder, function (i, order) {
+                            if (order[0] === last && order[1] === prev) {
                                 return true;
                             }
                         });
                         orders.push([prev, last]);
                         return BI.isNotNull(result);
                     });
-                    if(hasCircle === false){
+                    if (hasCircle === false) {
                         relationOrder = BI.concat(relationOrder, orders);
                     }
                     return hasCircle === false;
@@ -2809,9 +2865,9 @@
             }
             if (BI.isNotNull(end)) {
                 var endTime = parseComplexDate(end);
-                if(BI.isNotNull(endTime)){
+                if (BI.isNotNull(endTime)) {
                     filterValue.end = new Date(endTime).getOffsetDate(1).getTime() - 1
-                }else{
+                } else {
                     delete filterValue.end;
                 }
             }
@@ -2829,9 +2885,9 @@
                     }
                     if (BI.isNotNull(wValue.end)) {
                         var endTime = parseComplexDate(wValue.end);
-                        if(BI.isNotNull(endTime)){
+                        if (BI.isNotNull(endTime)) {
                             filterValue.end = new Date(endTime).getOffsetDate(1).getTime() - 1;
-                        }else{
+                        } else {
                             delete filterValue.end;
                         }
                     }
@@ -2840,14 +2896,14 @@
                     if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.end)) {
                         var s = parseComplexDate(wValue.start);
                         var e = parseComplexDate(wValue.end);
-                        if(BI.isNotNull(s) && BI.isNotNull(e)){
+                        if (BI.isNotNull(s) && BI.isNotNull(e)) {
                             filterValue.start = new Date(2 * s - e).getOffsetDate(-1).getTime();
-                        }else{
+                        } else {
                             delete filterValue.start
                         }
-                        if(BI.isNotNull(s)){
+                        if (BI.isNotNull(s)) {
                             filterValue.end = new Date(s).getTime() - 1;
-                        }else{
+                        } else {
                             delete filterValue.end;
                         }
                     } else if (BI.isNotNull(wValue.start) && BI.isNotNull(wValue.start.year)) {
@@ -2867,7 +2923,7 @@
                     if (BI.isNotNull(date)) {
                         var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
                         filterValue.start = value.start;
-                        if(BI.isNotNull(value.end)){
+                        if (BI.isNotNull(value.end)) {
                             filterValue.end = new Date(value.end).getOffsetDate(1).getTime() - 1;
                         }
                     }
@@ -2878,7 +2934,7 @@
             var date = getDateControlValue(filterValue.wId);
             if (BI.isNotNull(date)) {
                 var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
-                if(BI.isNotNull(value.start)){
+                if (BI.isNotNull(value.start)) {
                     filterValue.end = new Date(value.start).getTime() - 1;
                 }
             }
@@ -2887,7 +2943,7 @@
             var date = getDateControlValue(filterValue.wId);
             if (BI.isNotNull(date)) {
                 var value = getOffSetDateByDateAndValue(date, filterValue.filter_value);
-                if(BI.isNotNull(value.start)){
+                if (BI.isNotNull(value.start)) {
                     filterValue.start = new Date(value.start).getTime();
                 }
             }

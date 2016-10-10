@@ -33,32 +33,27 @@ BI.TableChartManagerAspect = function () {
         var cls = true;
         var dim1Size = 0, dim2Size = 0, tar1Size = 0, tar2Size = 0, tar3Size = 0;
         BI.each(view, function (vId, v) {
-            switch (vId) {
-                case BICst.REGION.DIMENSION1:
-                    BI.each(v, function (i, dId) {
-                        BI.Utils.isDimensionUsable(dId) && dim1Size++;
-                    });
-                    break;
-                case BICst.REGION.DIMENSION2:
-                    BI.each(v, function (i, dId) {
-                        BI.Utils.isDimensionUsable(dId) && dim2Size++;
-                    });
-                    break;
-                case BICst.REGION.TARGET1:
-                    BI.each(v, function (i, dId) {
-                        BI.Utils.isDimensionUsable(dId) && tar1Size++;
-                    });
-                    break;
-                case BICst.REGION.TARGET2:
-                    BI.each(v, function (i, dId) {
-                        BI.Utils.isDimensionUsable(dId) && tar2Size++;
-                    });
-                    break;
-                case BICst.REGION.TARGET3:
-                    BI.each(v, function (i, dId) {
-                        BI.Utils.isDimensionUsable(dId) && tar3Size++;
-                    });
-                    break;
+            if (BI.parseInt(vId) < BI.parseInt(BICst.REGION.DIMENSION2)) {
+                BI.each(v, function (i, dId) {
+                    BI.Utils.isDimensionUsable(dId) && dim1Size++;
+                });
+            } else if (BI.parseInt(BICst.REGION.DIMENSION2) <= BI.parseInt(vId) &&
+                BI.parseInt(vId) < BI.parseInt(BICst.REGION.TARGET1)) {
+                BI.each(v, function (i, dId) {
+                    BI.Utils.isDimensionUsable(dId) && dim2Size++;
+                });
+            } else if (vId === BICst.REGION.TARGET1) {
+                BI.each(v, function (i, dId) {
+                    BI.Utils.isDimensionUsable(dId) && tar1Size++;
+                });
+            } else if (vId === BICst.REGION.TARGET2) {
+                BI.each(v, function (i, dId) {
+                    BI.Utils.isDimensionUsable(dId) && tar2Size++;
+                });
+            } else if (vId === BICst.REGION.TARGET3) {
+                BI.each(v, function (i, dId) {
+                    BI.Utils.isDimensionUsable(dId) && tar3Size++;
+                });
             }
         });
         switch (BI.Utils.getWidgetTypeByID(wId)) {
@@ -81,10 +76,10 @@ BI.TableChartManagerAspect = function () {
                 !((tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-text-tip-background" : "axis-tip-background");
                 break;
             case BICst.WIDGET.LINE:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "line-tip-text-background" : "line-tip-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "line-text-tip-background" : "line-tip-background");
                 break;
             case BICst.WIDGET.AREA:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "area-tip-text-background" : "area-tip-background");
+                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "area-text-tip-background" : "area-tip-background");
                 break;
             case BICst.WIDGET.ACCUMULATE_AXIS:
                 !((tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "axis-accu-text-tip-background" : "axis-accu-tip-background");

@@ -1,8 +1,6 @@
 //cursor路径
 BICst.cursorUrl = "url('" + FR.servletURL + "?op=resource&resource=/com/fr/bi/web/images/cursor/cursor_drag_hand.cur" + "'),auto";
 //connection
-BICst.CONNECTION = {};
-BICst.CONNECTION.ETL_CONNECTION = "__FR_BI_ETL__";
 BICst.TABLE_TYPE_SQL = "__FR_BI_SQL__";
 BICst.TABLE_TYPE_EXCEL = "__FR_BI_EXCEL__";
 BICst.TABLE_TYPE_CONNECTION = "__FR_BI_CONNECTION__";

@@ -12,8 +12,25 @@ BI.Helper = BI.inherit(BI.Tip, {
     },
 
     _init: function () {
-        var o = this.options;
         BI.Helper.superclass._init.apply(this, arguments);
+        this.populate();
+    },
+
+    modifyContent: function(widget) {
+        this.empty();
+        BI.createWidget({
+            type: "bi.left",
+            element: this.element,
+            cls: "dragging-modify",
+            items: [widget],
+            lgap: 15
+        });
+    },
+
+    populate: function () {
+        var o = this.options;
+        this.element.data({helperWidget: this});
+        this.empty();
         BI.createWidget({
             element: this.element,
             type: "bi.label",
@@ -22,7 +39,8 @@ BI.Helper = BI.inherit(BI.Tip, {
             hgap: 5,
             text: o.text,
             value: o.value
-        })
+        });
+        this.element.removeClass("dragging-modify");
     }
-})
+});
 $.shortcut("bi.helper", BI.Helper);

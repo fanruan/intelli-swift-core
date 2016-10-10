@@ -4,7 +4,7 @@ import com.fr.bi.stable.structure.Node;
 import com.fr.bi.stable.structure.Root;
 import com.fr.bi.common.inter.BrokenTraversal;
 import com.fr.bi.common.inter.Release;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 
 import java.util.Iterator;
@@ -126,7 +126,7 @@ public class Tree implements Release {
     public <K extends Node<?>> void showNode(K node) {
         if (null != node) {
             //循环遍历node的节点
-            BILogger.getLogger().info(node.getValue().toString());
+            BILoggerFactory.getLogger().info(node.getValue().toString());
             Iterator it = node.getChildIterator();
             while (it.hasNext()) {
                 showNode((Node) it.next());

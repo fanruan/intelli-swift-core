@@ -55,11 +55,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
         if(config.dataSheet.enabled === true){
             config.xAxis[0].showLabel = false;
         }
-        config.zoom.zoomTool.enabled = this.config.show_zoom;
-        if(this.config.show_zoom === true){
-            delete config.dataSheet;
-            delete config.zoom.zoomType;
-        }
+        this.formatZoom(config, this.config.show_zoom);
 
         config.yAxis = this.yAxis;
         BI.extend(config.yAxis[0], {
@@ -97,8 +93,9 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
                     return;
                 }
                 item.dataLabels = {
-                    "style": self.constants.FONT_STYLE,
+                    "style": self.config.chart_font,
                     "align": "outside",
+                    "autoAdjust": true,
                     enabled: true,
                     formatter: {
                         identifier: "${VALUE}",
@@ -107,6 +104,9 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
                 };
             });
         }
+
+        //全局样式的图表文字
+        this.setFontStyle(this.config.chart_font, config);
 
         return [items, config];
 
@@ -129,7 +129,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.constants.FONT_STYLE,
+                                "style": self.config.chart_font,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -154,7 +154,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.constants.FONT_STYLE,
+                                "style": self.config.chart_font,
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -254,7 +254,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
                     return axis;
                 }),
                 stack: "stackedFall",
-                name: ""
+                name: BI.UUID()
             };
         })];
     },
@@ -286,6 +286,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
             custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
             num_separators: options.num_separators || false,
+            chart_font: options.chart_font || c.FONT_STYLE
         };
         this.options.items = items;
         var types = [];

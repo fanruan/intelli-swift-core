@@ -10,7 +10,7 @@ import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.BIServerUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.code.BIPrintUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
@@ -54,7 +54,7 @@ public class ServerTableSource extends DBTableSource {
                 Dialect dialect = DialectFactory.generateDialect(settedStatement.getSqlConn(), settedStatement.getConn().getDriver());
                 fieldName = dialect.column2SQL(fieldName);
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
             settedStatement.setSql("SELECT distinct " + fieldName + " FROM " + "(" + ((DBTableData) tableData).getQuery() + ") " + "t");
             DBQueryExecutor.getInstance().runSQL(settedStatement, new ICubeFieldSource[]{field}, new Traversal<BIDataValue>() {
@@ -130,7 +130,7 @@ public class ServerTableSource extends DBTableSource {
             }
             tableData = BIDBUtils.createTableData(fields, dataModel);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         } finally {
             dataModel.release();
         }
@@ -195,16 +195,16 @@ public class ServerTableSource extends DBTableSource {
         return oldCount;
     }
 
-    private long writeDBSimpleIndex(final Traversal<BIDataValue> travel, final com.fr.data.impl.Connection connect, String query, ICubeFieldSource[] fields) {
+    private long writeDBSimpleIndex(final Traversal<BIDataValue> travel, final com.fr.data.impl.Connection connect, String query, final ICubeFieldSource[] fields) {
         SQLStatement sql = new SQLStatement(connect);
         sql.setFrom("(\n" + query + "\n) " + "t");
         return DBQueryExecutor.getInstance().runSQL(sql, fields, new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue v) {
                 try {
-                    dealWithOneData(travel, v);
+                    dealWithOneData(travel, fields, v);
                 } catch (Exception e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
             }
         });

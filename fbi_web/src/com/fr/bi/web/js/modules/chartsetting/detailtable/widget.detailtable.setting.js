@@ -77,44 +77,42 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
 
         //显示序号
         this.showNumber = BI.createWidget({
-            type: "bi.checkbox"
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Display_Sequence_Number"),
+            cls: "attr-names",
+            logic: {
+                dynamic: true
+            }
         });
-        this.showNumber.on(BI.Checkbox.EVENT_CHANGE, function () {
+        this.showNumber.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.DetailTableSetting.EVENT_CHANGE);
         });
         var show = BI.createWidget({
-            type: "bi.left_right_vertical_adapt",
+            type: "bi.left",
             cls: "single-line-settings",
-            items: {
-                left: [{
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Element_Show"),
-                    cls: "line-title"
-                }, {
-                    type: "bi.left",
-                    items: [{
-                        type: "bi.center_adapt",
-                        items: [this.showNumber],
-                        width: this.constant.CHECKBOX_WIDTH,
-                        height: this.constant.SINGLE_LINE_HEIGHT
-                    }, {
-                        type: "bi.label",
-                        text: BI.i18nText("BI-Display_Sequence_Number"),
-                        cls: "attr-names",
-                        height: this.constant.SINGLE_LINE_HEIGHT
-                    }],
-                    lgap: this.constant.SIMPLE_L_GAP
-                }]
-            },
-            height: this.constant.SINGLE_LINE_HEIGHT,
-            lhgap: this.constant.SIMPLE_H_GAP
+            items: [{
+                type: "bi.label",
+                text: BI.i18nText("BI-Element_Show"),
+                cls: "line-title",
+                height: this.constant.SINGLE_LINE_HEIGHT
+            }, {
+                type: "bi.vertical_adapt",
+                items: [this.showNumber],
+                height: this.constant.SINGLE_LINE_HEIGHT
+            }],
+            hgap: this.constant.SIMPLE_H_GAP
         });
 
         //冻结维度
         this.freezeFirstColumn = BI.createWidget({
-            type: "bi.checkbox"
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Freeze_FIRST_COLUMN"),
+            cls: "attr-names",
+            logic: {
+                dynamic: true
+            }
         });
-        this.freezeFirstColumn.on(BI.Checkbox.EVENT_CHANGE, function () {
+        this.freezeFirstColumn.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.DetailTableSetting.EVENT_CHANGE);
         });
 
@@ -128,18 +126,8 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
                 height: this.constant.SINGLE_LINE_HEIGHT
             }, {
                 type: "bi.vertical_adapt",
-                items: [{
-                    type: "bi.center_adapt",
-                    items: [this.freezeFirstColumn],
-                    width: this.constant.CHECKBOX_WIDTH,
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Freeze_FIRST_COLUMN"),
-                    cls: "attr-names",
-                    height: this.constant.SINGLE_LINE_HEIGHT
-                }],
-                lgap: this.constant.SIMPLE_L_GAP
+                items: [this.freezeFirstColumn],
+                height: this.constant.SINGLE_LINE_HEIGHT
             }],
             hgap: this.constant.SIMPLE_H_GAP
         });

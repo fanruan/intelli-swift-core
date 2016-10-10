@@ -46,7 +46,7 @@ BI.UploadImagePreview = BI.inherit(BI.Widget, {
                                     cls: "support-files",
                                     height: 25
                                 },
-                                top: 15,
+                                top: 10,
                                 left: 40
                             }],
                             width: 30,

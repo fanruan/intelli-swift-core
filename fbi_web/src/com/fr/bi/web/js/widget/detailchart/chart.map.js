@@ -48,6 +48,12 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.dataLabels.formatter.valueFormat = function () {
             return BI.contentFormat(arguments[0], formatterArray[0]);
         };
+        config.plotOptions.dataLabels.style = this.config.chart_font;
+
+        config.plotOptions.bubble.dataLabels = config.plotOptions.dataLabels;
+        config.plotOptions.bubble.dataLabels.formatter.identifier = "${SIZE}";
+
+        config.plotOptions.bubble.tooltip = config.plotOptions.tooltip;
 
         config.geo = this.config.geo;
         if (this.config.show_background_layer === true && BI.isNotNull(this.config.background_layer_info)) {
@@ -81,6 +87,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                 data: []
             })
         }
+
         return [items, config];
 
         function formatRangeLegend() {
@@ -103,28 +110,10 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
             config.rangeLegend.formatter = function () {
                 var to = this.to;
                 if (BI.isNotEmptyArray(items) && BI.has(items[0], "settings")) {
-
-                    if(items[0].settings.num_separators){
-                        to = BI.contentFormat(to, "#,##0")
-                    }
-
-                    switch (items[0].settings.num_level || c.NORMAL) {
-                        case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                            to += '';
-                            break;
-                        case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                            to += BI.i18nText("BI-Wan");
-                            break;
-                        case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                            to += BI.i18nText("BI-Million");
-                            break;
-                        case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                            to += BI.i18nText("BI-Yi");
-                            break;
-                        case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                            to = BI.contentFormat(BI.parseFloat(to), "#0%");
-                            break;
-                    }
+                    var settings = items[0].settings;
+                    var legendFormat = formatToolTipAndDataLabel(settings.format || c.NORMAL, settings.num_level || c.NORMAL,
+                        settings.unit || "",settings.num_separators || c.NUM_SEPARATORS);
+                    to = BI.contentFormat(to, legendFormat)
                 }
                 return to
             };
@@ -135,20 +124,20 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
             switch (format) {
                 case self.constants.NORMAL:
                     formatter = '#.##';
+                    if (num_separators) formatter = '#,###.##';
                     break;
                 case self.constants.ZERO2POINT:
                     formatter = '#0';
+                    if (num_separators) formatter = '#,###';
                     break;
                 case self.constants.ONE2POINT:
                     formatter = '#0.0';
+                    if (num_separators) formatter = '#,###.0';
                     break;
                 case self.constants.TWO2POINT:
                     formatter = '#0.00';
+                    if (num_separators) formatter = '#,###.00';
                     break;
-            }
-
-            if (num_separators) {
-                formatter = '#,##0'
             }
 
             switch (numberLevel) {
@@ -165,11 +154,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                     formatter += BI.i18nText("BI-Yi");
                     break;
                 case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                    if (format === self.constants.NORMAL) {
-                        formatter = '#0%'
-                    } else {
-                        formatter += '%';
-                    }
+                    formatter += '%';
                     break;
             }
 
@@ -334,7 +319,8 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
             map_styles: options.map_styles || [],
             auto_custom: options.auto_custom || c.AUTO_CUSTOM,
             show_background_layer: options.show_background_layer || false,
-            background_layer_info: options.background_layer_info
+            background_layer_info: options.background_layer_info,
+            chart_font: options.chart_font || c.FONT_STYLE
         };
         this.options.items = items;
 

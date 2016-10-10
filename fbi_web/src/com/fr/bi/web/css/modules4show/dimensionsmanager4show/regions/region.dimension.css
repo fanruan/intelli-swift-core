@@ -10,10 +10,17 @@
 }
 .bi-dimension-region .region-north .region-north-title {
   font-size: 14px;
+  color: #808080;
 }
 .bi-dimension-region .dimension-container {
   background: #d8f2fd;
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   border-radius: 2px;
+}
+.bi-dimension-region .dimension-container .virtual-drop-area {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  border: 1px dashed #178cdf;
 }

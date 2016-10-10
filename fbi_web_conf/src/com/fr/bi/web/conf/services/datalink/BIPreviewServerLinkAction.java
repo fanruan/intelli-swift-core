@@ -2,13 +2,12 @@ package com.fr.bi.web.conf.services.datalink;
 
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.utils.DecryptBi;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.impl.DBTableData;
 import com.fr.data.impl.EmbeddedTableData;
 import com.fr.file.DatasourceManager;
-import com.fr.general.Decrypt;
 import com.fr.general.data.DataModel;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -17,7 +16,6 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 
 /**
@@ -39,15 +37,15 @@ public class BIPreviewServerLinkAction extends AbstractBIConfigureAction {
         WebUtils.printAsJSON(res, jo);
     }
 
-    public JSONObject getFlexgridPreviewJo(String query, String linkName) throws UnsupportedEncodingException {
+    public JSONObject getFlexgridPreviewJo(String query, String linkName) throws Exception {
+        JSONObject result = new JSONObject();
         if (StringUtils.isEmpty(query) || StringUtils.isEmpty(linkName)) {
-            return new JSONObject();
+            return result;
         }
-        Decrypt pt;
         //加密处理过
         if (StringUtils.isNotEmpty(query)) {
             query = DecryptBi.decrypt(query, "sh");
-            BILogger.getLogger().info("preview sql:"+query);
+            BILoggerFactory.getLogger().info("preview sql:"+query);
         }
 //        query = java.net.URLDecoder.decode(query , "utf-8");
         Connection conn = null;
@@ -79,15 +77,16 @@ public class BIPreviewServerLinkAction extends AbstractBIConfigureAction {
                 dataJa.put(oneRowJa);
             }
 
-            return new JSONObject().put("field_names", fieldJa).put("data", dataJa);
+            result.put("field_names", fieldJa).put("data", dataJa);
 
         } catch (Exception ignore) {
-            BILogger.getLogger().info(ignore.getMessage());
+            BILoggerFactory.getLogger().info(ignore.getMessage());
+            result.put("error", ignore.getMessage());
         } finally {
             DBUtils.closeConnection(conn);
         }
 
-        return new JSONObject();
+        return result;
     }
 
     @Override

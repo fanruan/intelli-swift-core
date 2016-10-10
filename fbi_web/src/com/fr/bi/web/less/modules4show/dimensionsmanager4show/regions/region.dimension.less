@@ -7,10 +7,15 @@
     border-bottom: 1px solid @color-dimension-region-border;
     & .region-north-title{
       font-size: @font-size-14;
+      color: @color-bi-text-gray;
     }
   }
   & .dimension-container{
     background: @color-dimension-background;
     .border-radius(2px);
+    & .virtual-drop-area{
+      .border-radius(2px);
+      border: 1px dashed @color-bi-border-highlight;
+    }
   }
 }

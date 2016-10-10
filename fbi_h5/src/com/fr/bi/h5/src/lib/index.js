@@ -24,6 +24,7 @@ export ListView from './ListView/ListView.web';
 export Modal from './Modal/Modal.web';
 export Navigator from './Navigator/Navigator.web';
 export Picker from './Picker/Picker.web';
+export PickerIOS from './PickerIOS/PickerIOS.web';
 export ProgressViewIOS from './ProgressView/ProgressView.web';
 export ScrollView from './ScrollView/ScrollView.web';
 export SegmentedControlIOS from './SegmentedControl/SegmentedControl.web';

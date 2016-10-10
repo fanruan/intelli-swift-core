@@ -6,7 +6,7 @@ import mixin from 'react-mixin'
 import ReactPureRenderMixin from 'react-addons-pure-render-mixin';
 import View from '../View/View.web';
 import StyleSheet from '../StyleSheet/StyleSheet.web';
-import Picker from '../Picker/Picker.web'
+import Picker from '../PickerIOS/PickerIOS.web'
 
 const PICKER_ITEM_HEIGHT = 36;
 const DAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];

@@ -35,9 +35,10 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
     _formatConfig: function (config, items) {
         var self = this, o = this.options;
         formatChartDashboardStyle();
-        config.chartType = "dashboard";
+        config.chartType = "gauge";
         delete config.xAxis;
         delete config.yAxis;
+        config.gaugeAxis[0].labelStyle = this.config.chart_font;
         return [items, config];
 
         function formatChartDashboardStyle() {
@@ -51,11 +52,11 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                 formatter: function () {
                     var value = this.value;
                     if (self.config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && self.config.num_separators) {
-                        value = BI.contentFormat(this.value, "#,##0%")
+                        value = BI.contentFormat(this.value, "#,##0%;-#,##0%")
                     } else if (self.config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && !self.config.num_separators) {
                         value = BI.contentFormat(this.value, "#0.00%");
                     } else if (!(self.config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) && self.config.num_separators) {
-                        value = BI.contentFormat(this.value, "#,###.##")
+                        value = BI.contentFormat(this.value, "#,###.##;-#,###.##")
                     } else {
                         value = BI.contentFormat(this.value, "#.##;-#.##");
                     }
@@ -66,7 +67,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                             getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS) + '</div>';
                     }
                 },
-                style: config.plotOptions.valueLabel.style,
+                style: self.config.chart_font,
                 useHtml: true
             };
             switch (self.config.chart_dashboard_type) {
@@ -108,7 +109,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                 config.gaugeAxis[0].formatter = function () {
                     var scaleValue = this;
                     if (self.config.num_separators) {
-                        scaleValue = BI.contentFormat(scaleValue, '#,##0%')
+                        scaleValue = BI.contentFormat(scaleValue, '#,##0%;-#,##0%')
                     } else {
                         scaleValue = BI.contentFormat(scaleValue, '#0.00%')
                     }
@@ -118,7 +119,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                 config.gaugeAxis[0].formatter = function () {
                     var value = this;
                     if (self.config.num_separators) {
-                        value = BI.contentFormat(value, "#,###")
+                        value = BI.contentFormat(value, "#,###;-#,###")
                     }
                     return value + getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
                 };
@@ -149,26 +150,26 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                 })
             });
 
-            // config.plotOptions.tooltip.formatter.valueFormat = function () {
-            //     return BI.contentFormat(this, '#.##;-#.##') + getXYAxisUnit(type, position)
-            // };
-            //
-            // if (self.config.num_separators) {
-            //     config.plotOptions.tooltip.formatter.valueFormat = function () {
-            //         return BI.contentFormat(arguments[0], '#,###.##')
-            //     };
-            // }
-            //
-            // if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-            //     config.plotOptions.tooltip.formatter.valueFormat = function () {
-            //         return BI.contentFormat(arguments[0], '#0.00%')
-            //     };
-            //     if (self.config.num_separators) {
-            //         config.plotOptions.tooltip.formatter.valueFormat = function () {
-            //             return BI.contentFormat(arguments[0], '#,##0%')
-            //         };
-            //     }
-            // }
+            config.plotOptions.tooltip.formatter.valueFormat = function () {
+                return BI.contentFormat(this, '#.##;-#.##') + getXYAxisUnit(type, position)
+            };
+
+            if (self.config.num_separators) {
+                config.plotOptions.tooltip.formatter.valueFormat = function () {
+                    return BI.contentFormat(arguments[0], '#,###.##;-#,###.##')
+                };
+            }
+
+            if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+                config.plotOptions.tooltip.formatter.valueFormat = function () {
+                    return BI.contentFormat(arguments[0], '#0.00%')
+                };
+                if (self.config.num_separators) {
+                    config.plotOptions.tooltip.formatter.valueFormat = function () {
+                        return BI.contentFormat(arguments[0], '#,##0%;-#,##0%')
+                    };
+                }
+            }
         }
 
         function getXYAxisUnit(numberLevelType, position) {
@@ -327,7 +328,8 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             min_scale: options.min_scale,
             max_scale: options.max_scale,
             show_percentage: options.show_percentage || c.NOT_SHOW,
-            num_separators: options.num_separators || false
+            num_separators: options.num_separators || false,
+            chart_font: options.chart_font || c.FONT_STYLE
         };
         o.items = this._formatItems(items);
         var types = [];

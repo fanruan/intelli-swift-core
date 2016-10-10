@@ -1,19 +1,15 @@
 package com.fr.bi.h5.services;
 
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.cal.analyze.session.BISessionUtils;
 import com.fr.bi.cal.analyze.session.BIWeblet;
-import com.fr.bi.cal.stable.utils.BIReportUtils;
 import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.fs.BIDAOUtils;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.web.base.operation.BIOperationRecord;
+import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.bi.web.base.utils.BIServiceUtil;
 import com.fr.fs.web.service.ServiceUtils;
-import com.fr.general.ComparatorUtils;
-import com.fr.general.Inter;
 import com.fr.general.web.ParameterConsts;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -50,7 +46,7 @@ public class H5InitAction extends ActionNoSessionCMD {
         if (id != null) {
             node = BIDAOUtils.findByID(Long.parseLong(id), templateCreateUserId);
         }
-        JSONObject reportSetting = BIReportUtils.getBIReportNodeJSON(node);
+        JSONObject reportSetting = BIReadReportUtils.getBIReportNodeJSON(node);
         dealWithPane(req, res, new BIWeblet(node), reportSetting, node);
     }
 

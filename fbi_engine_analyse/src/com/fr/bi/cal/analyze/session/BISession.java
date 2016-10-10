@@ -28,7 +28,7 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.log.CubeGenerateStatusProvider;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.data.TableDataSource;
 import com.fr.fs.base.entity.CompanyRole;
 import com.fr.fs.base.entity.CustomRole;
@@ -114,6 +114,10 @@ public class BISession extends BIAbstractSession {
      */
     public void forceEdit() {
         BIReportNodeLockDAO lockDAO = StableFactory.getMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.class);
+        if(lockDAO == null){
+            this.isEdit = true;
+            return;
+        }
         lockDAO.forceLock(sessionID, node.getUserId(), node.getId());
         this.isEdit = true;
     }
@@ -126,6 +130,10 @@ public class BISession extends BIAbstractSession {
      */
     public boolean setEdit(boolean isEdit) {
         BIReportNodeLockDAO lockDAO = StableFactory.getMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.class);
+        if(lockDAO == null){
+            this.isEdit = isEdit;
+            return isEdit;
+        }
         if (isEdit) {
             isEdit = lockDAO.lock(sessionID, node.getUserId(), node.getId());
             if (!isEdit) {
@@ -157,6 +165,9 @@ public class BISession extends BIAbstractSession {
 
     private void releaseLock() {
         BIReportNodeLockDAO lockDAO = StableFactory.getMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.class);
+        if(lockDAO == null){
+            return;
+        }
         BIReportNodeLock lock = lockDAO.getLock(this.sessionID, node.getUserId(), node.getId());
         if (lock != null) {
             lockDAO.release(lock);
@@ -176,7 +187,7 @@ public class BISession extends BIAbstractSession {
                 }
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
     }
 
@@ -274,7 +285,7 @@ public class BISession extends BIAbstractSession {
             connections.put("connectionSet", connectionJA);
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
 
         JSONObject jo = new JSONObject();

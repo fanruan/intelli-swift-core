@@ -22,7 +22,7 @@ import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.utils.BIRelationUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
@@ -140,7 +140,7 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
                 this.biTableSourceRelationPathSet.add(convertPath(path));
                 this.cubeGenerateRelationPathSet.add(new BICubeGenerateRelationPath(convertPath(path)));
             } catch (BITablePathConfusionException e) {
-                BILogger.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().error(e.getMessage());
             }
         }
 
@@ -175,9 +175,9 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
                     generatedRelations.add(relation);
                 }
             } catch (BITableAbsentException e) {
-                BILogger.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().error(e.getMessage());
             } catch (BIRelationAbsentException e) {
-                BILogger.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().error(e.getMessage());
             }
         }
         return generatedRelations;
@@ -315,7 +315,7 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
                 copyFilesFromOldCubes(tempResourceRetrieval, advancedResourceRetrieval, source);
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
         return true;
     }
@@ -323,7 +323,9 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
     private void copyFilesFromOldCubes(ICubeResourceRetrievalService tempResourceRetrieval, ICubeResourceRetrievalService advancedResourceRetrieval, CubeTableSource source) throws BICubeResourceAbsentException, BITablePathEmptyException, IOException {
         ICubeResourceLocation from = advancedResourceRetrieval.retrieveResource(new BITableKey(source));
         ICubeResourceLocation to = tempResourceRetrieval.retrieveResource(new BITableKey(source));
-        BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
+        if (new File(from.getAbsolutePath()).exists()) {
+            BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
+        }
     }
 
     @Override
@@ -331,9 +333,9 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
         ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(biUser.getUserId()));
         ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(biUser.getUserId()));
         try {
-            BIFileUtils.moveFile(tempConf.getRootURI().getPath().toString(), advancedConf.getRootURI().getPath().toString());
+             BIFileUtils.moveFile(tempConf.getRootURI().getPath().toString(), advancedConf.getRootURI().getPath().toString());
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
         return true;
     }

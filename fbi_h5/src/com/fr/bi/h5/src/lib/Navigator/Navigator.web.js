@@ -915,7 +915,7 @@ let Navigator = React.createClass({
       routeStack: nextStack,
       sceneConfigStack: nextAnimationConfigStack
     }, () => {
-      history.push({index: destIndex}, '/scene_' + getRouteID(route));
+      // history.push({index: destIndex}, '/scene_' + getRouteID(route));
       this._enableScene(destIndex);
       this._transitionTo(destIndex);
     });
@@ -937,7 +937,7 @@ let Navigator = React.createClass({
       null, // default velocity
       null, // no spring jumping
       () => {
-        history.go(-n);
+        // history.go(-n);
         this._cleanScenesPastIndex(popIndex);
       }
     );

@@ -7,6 +7,9 @@
  * @extend BI.Widget
  */
 BI.PackageSelectDataService = BI.inherit(BI.Widget, {
+    _const: {
+        FIELD_GAP: 25
+    },
     _defaultConfig: function () {
         return BI.extend(BI.PackageSelectDataService.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-package-select-data-service",
@@ -392,7 +395,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
      */
     _getFieldStructureOfOneTable: function (tableId, isRelation) {
         var fieldStructure = [];
-        var self = this, o = this.options;
+        var self = this, o = this.options, c = this._const;
 
         var viewFields = [];
         if (o.showExcelView === true) {
@@ -425,6 +428,21 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         }
 
         var fields = o.fieldsCreator(tableId, isRelation);
+        if((fields.length === 1 && BI.Utils.getFieldTypeByID(fields[0].id)) === BICst.COLUMN.COUNTER
+            || fields.length === 0){
+            fieldStructure.push({
+                type: "bi.label",
+                value: BI.UUID(),
+                text: BI.i18nText("BI-(Empty)"),
+                pId: tableId,
+                id: BI.UUID(),
+                wId: o.wId,
+                textAlign: "left",
+                lgap: isRelation ? c.FIELD_GAP * 2 : c.FIELD_GAP,
+                disabled: true
+            });
+            return fieldStructure;
+        }
         var map = {};
         var newFields = BI.PackageSelectDataService.getAllRelativeFields(tableId, fields, map);
 
@@ -622,6 +640,13 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     }]
                 });
                 return help.element;
+            },
+            start: function (event, ui) {
+                //通知region
+                BI.Broadcasts.send(BICst.BROADCAST.FIELD_DRAG_START, self.searcher.getValue());
+            },
+            stop: function (event, ui) {
+                BI.Broadcasts.send(BICst.BROADCAST.FIELD_DRAG_STOP);
             }
         }
     },
@@ -762,6 +787,11 @@ BI.PackageSelectDataService.EVENT_CLICK_ITEM = "EVENT_CLICK_ITEM";
 BI.extend(BI.PackageSelectDataService, {
     RELATION_TABLE: "__relation_table__",
 
+    //TODO 判断咨询环列关联
+    _hasSelfRelation: function (fields) {
+
+    },
+
     getAllRelativeFields: function (tableId, fields, map) {
         map = map || {};
         var newFields = [];
@@ -778,7 +808,10 @@ BI.extend(BI.PackageSelectDataService, {
                 }
             }
         });
-        if (store.length > 0) {
+        if (store.length > 0 &&
+            BI.every(store, function (i, name) {
+                return map2Id[name] != null;
+            })) {
             BI.each(fields, function (i, field) {
                 var fieldName = BI.Utils.getOriginalFieldNameByID(field.id);
                 var name = fieldName.split("-")[0];

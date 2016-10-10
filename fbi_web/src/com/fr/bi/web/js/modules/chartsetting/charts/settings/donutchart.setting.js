@@ -60,11 +60,11 @@ BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 cls: "detail-style",
                 items: BI.createItems([{
                     type: "bi.label",
-                    text: BI.i18nText("BI-Chart_Color"),
+                    text: BI.i18nText("BI-Color_Setting"),
                     cls: "attr-names"
                 }, {
                     el: {
-                        type: "bi.center_adapt",
+                        type: "bi.vertical_adapt",
                         items: [this.colorSelect]
                     },
                     lgap: constant.SIMPLE_H_GAP
@@ -75,7 +75,7 @@ BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP
                 }, {
                     el: {
-                        type: "bi.center_adapt",
+                        type: "bi.vertical_adapt",
                         items: [this.chartStyleGroup]
                     },
                     lgap: constant.SIMPLE_H_GAP
@@ -137,10 +137,10 @@ BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Legend_Normal"),
                     cls: "attr-names"
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.legend]
                 }, {
-                    type: "bi.center_adapt",
+                    type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT

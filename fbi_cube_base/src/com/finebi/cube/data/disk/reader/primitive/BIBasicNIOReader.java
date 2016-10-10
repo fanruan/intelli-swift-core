@@ -4,7 +4,7 @@ import com.finebi.cube.data.ICubeSourceReleaseManager;
 import com.finebi.cube.data.input.primitive.ICubePrimitiveReader;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.fr.bi.stable.io.newio.NIOConstant;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.mem.BIReleaseUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
@@ -30,7 +30,7 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
     boolean[] initIndex = new boolean[INIT_INDEX_LENGTH];
     protected volatile boolean isValid = true;
     private ICubeSourceReleaseManager releaseManager;
-    private File baseFile;
+    protected File baseFile;
     private String readerHandler;
 
     public BIBasicNIOReader(File cacheFile) {
@@ -103,7 +103,7 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
                  * 添加读锁
                  */
             } catch (IOException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             } finally {
                 /**
                  * 释放写锁，保持读锁
@@ -145,14 +145,14 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
             //daniel:改成1ms，最垃圾的磁盘也读完了
             Thread.currentThread().sleep(1);
         } catch (InterruptedException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         try {
             releaseChild();
             releaseBuffer();
             releaseChannel();
         } catch (IOException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         } finally {
             readWriteLock.writeLock().unlock();
         }
@@ -209,7 +209,7 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
         try {
             return new RandomAccessFile(cacheFile, "r").getChannel();
         } catch (FileNotFoundException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }

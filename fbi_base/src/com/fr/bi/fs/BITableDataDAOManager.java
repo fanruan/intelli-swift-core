@@ -1,13 +1,12 @@
 package com.fr.bi.fs;
 
 import com.fr.base.FRContext;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
 import com.fr.data.impl.EmbeddedTableData;
 import com.fr.file.XMLFileManager;
 import com.fr.fs.base.entity.User;
 import com.fr.fs.cache.tabledata.TableDataSyncDB;
-import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.GeneralContext;
 import com.fr.stable.ArrayUtils;
@@ -178,26 +177,25 @@ public class BITableDataDAOManager extends XMLFileManager {
      */
     public void resetSharedByReportIdAndUsers(long reportId, long createBy, long[] userIds, boolean isReset) throws Exception {
         synchronized (BITableDataDAOManager.class) {
-            long[] userIdsNeedToAddIntoMapLeft = userIds;
-            User tdUser = TableDataSyncDB.getInstance().findUserByUserId(createBy);
-            Iterator iter = getTdBISharedReport_idEntrySet().iterator();
-            while (iter.hasNext()) {
-                Map.Entry entry = (Map.Entry) iter.next();
+            User createUser = TableDataSyncDB.getInstance().findUserByUserId(createBy);
+            Iterator iterator = getTdBISharedReport_idEntrySet().iterator();
+            //找到模板 新分享的：看下原来有没有，有的话忽略，没有添加 编辑分享：全部删除后添加
+            while (iterator.hasNext()) {
+                Map.Entry entry = (Map.Entry) iterator.next();
                 BISharedReportNode node = (BISharedReportNode) entry.getValue();
-                if (node.getReportId() == reportId && ComparatorUtils.equals(tdUser.getUsername(), node.getShareToName())) {
-                    long userId = tdUser.getId();
-                    int existIndex = ArrayUtils.indexOf(userIdsNeedToAddIntoMapLeft, userId);
-                    if (existIndex >= 0) {
-                        userIdsNeedToAddIntoMapLeft = ArrayUtils.remove(userIdsNeedToAddIntoMapLeft, existIndex);
-                    } else if (isReset) {
-                        iter.remove();
+                long shareToId = TableDataSyncDB.getInstance().findUserByUserName(node.getShareToName()).getId();
+                if (node.getReportId() == reportId && ComparatorUtils.equals(createUser.getUsername(), node.getCreateByName())) {
+                    if (isReset) {
+                        iterator.remove();
+                    } else if (ArrayUtils.contains(userIds, shareToId)) {
+                        userIds = ArrayUtils.remove(userIds, ArrayUtils.indexOf(userIds, shareToId));
                     }
                 }
             }
-            for (long userId : userIdsNeedToAddIntoMapLeft) {
+            for (long userId : userIds) {
                 BISharedReportNode newNode = new BISharedReportNode(BIDAOUtils.generateID(tdBISharedReport_idMap));
                 newNode.setReportId(reportId);
-                newNode.setCreateByName(tdUser.getUsername());
+                newNode.setCreateByName(createUser.getUsername());
                 newNode.setShareToName(TableDataSyncDB.getInstance().findUserByUserId(userId).getUsername());
                 tdBISharedReport_idMap.put(newNode.getId(), newNode);
             }
@@ -234,14 +232,14 @@ public class BITableDataDAOManager extends XMLFileManager {
             List<User> users = new ArrayList<User>();
             for (Map.Entry<Long, BISharedReportNode> entry : getTdBISharedReport_idEntrySet()) {
                 BISharedReportNode node = entry.getValue();
-                if (tdUser != null && node.getReportId() == reportId && ComparatorUtils.equals(node.getCreateBy(), tdUser.getUsername())) {
+                if (tdUser != null && node.getReportId() == reportId && ComparatorUtils.equals(node.getCreateByName(), tdUser.getUsername())) {
                     try {
-                        User user = UserControl.getInstance().getByUserName(tdUser.getUsername());
-                        if(user != null) {
+                        User user = TableDataSyncDB.getInstance().findUserByUserName(node.getShareToName());
+                        if (user != null) {
                             users.add(user);
                         }
                     } catch (Exception e) {
-                        BILogger.getLogger().error(e.getMessage(), e);
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
                     }
                 }
             }
@@ -274,7 +272,7 @@ public class BITableDataDAOManager extends XMLFileManager {
                 writeTableDataBISharedReportMap(getTdBISharedReport_idEntrySet());
                 FRContext.getCurrentEnv().writeResource(BITableDataDAOManager.getInstance());
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }

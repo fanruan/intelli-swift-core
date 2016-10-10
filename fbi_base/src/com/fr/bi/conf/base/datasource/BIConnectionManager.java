@@ -3,7 +3,7 @@ package com.fr.bi.conf.base.datasource;
 import com.fr.base.FRContext;
 import com.fr.bi.stable.data.db.DataLinkInformation;
 import com.fr.bi.stable.utils.BIDBUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.data.core.DataCoreUtils;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
@@ -147,7 +147,7 @@ public class BIConnectionManager extends XMLFileManager {
             FRContext.getCurrentEnv().writeResource(datasourceManager);
             FRContext.getCurrentEnv().writeResource(this);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -170,7 +170,7 @@ public class BIConnectionManager extends XMLFileManager {
             FRContext.getCurrentEnv().writeResource(datasourceManager);
             FRContext.getCurrentEnv().writeResource(this);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -254,7 +254,7 @@ public class BIConnectionManager extends XMLFileManager {
                 Dialect dialcet = DialectFactory.generateDialect(conn, c.getDriver());
                 return dialcet instanceof OracleDialect || dialcet instanceof MSSQLDialect;
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             } finally {
                 DBUtils.closeConnection(conn);
             }

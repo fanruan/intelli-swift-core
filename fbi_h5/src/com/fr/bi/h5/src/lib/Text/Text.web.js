@@ -216,7 +216,7 @@ let Text = React.createClass({
     }
 
     // Default lineHeight is 1.2 x fontSize
-    let lineHeight = style.lineHeight || (style.fontSize || 16) * 1.2; // FIXME:  not sure 16px is the default line height
+    let lineHeight = style.lineHeight || (style.fontSize || 14) * 1.2; // FIXME:  not sure 16px is the default line height
     if (typeof lineHeight === 'number') {
       lineHeight += 'px';
     }

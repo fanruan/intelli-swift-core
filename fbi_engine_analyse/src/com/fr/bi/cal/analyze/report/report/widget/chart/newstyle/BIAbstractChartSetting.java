@@ -1,19 +1,30 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.newstyle;
 
+import com.fr.base.CoreDecimalFormat;
 import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
+import java.text.DecimalFormat;
+
 /**
  * Created by windy on 2016/8/31.
  * 所有图的抽象基类，提供数据格式化方法，样式格式化方法
  */
 public abstract class BIAbstractChartSetting implements BIChartSetting {
+
+    private DecimalFormat TWOFIEXEDFORMAT = new CoreDecimalFormat(new DecimalFormat("##.##;-##.##"), "");
+    private DecimalFormat FOURFIEXEDFORMAT = new CoreDecimalFormat(new DecimalFormat("##.####;-##.####"), "");
+
+    public BIAbstractChartSetting() {
+        TWOFIEXEDFORMAT.setGroupingUsed(false);
+        FOURFIEXEDFORMAT.setGroupingUsed(false);
+    }
 
     @Override
     public JSONObject formatItems(JSONArray data, JSONArray types, JSONObject options) throws JSONException{
@@ -32,6 +43,11 @@ public abstract class BIAbstractChartSetting implements BIChartSetting {
         }
         JSONObject config = combineConfig();
         return new JSONObject().put("result", result).put("config", config);
+    }
+
+    @Override
+    public JSONArray formatTypes(JSONArray data, JSONArray types) throws JSONException {
+        return types;
     }
 
     private JSONArray combineChildItems(JSONArray types, JSONArray items) throws JSONException{
@@ -101,7 +117,7 @@ public abstract class BIAbstractChartSetting implements BIChartSetting {
     }
 
     private JSONObject combineConfig() throws JSONException{
-        return new JSONObject("{\"plotOptions\":{\"rotatable\":false,\"startAngle\":0,\"borderRadius\":0,\"endAngle\":360,\"innerRadius\":\"0.0%\",\"layout\":\"horizontal\",\"hinge\":\"rgb(101,107,109)\",\"dataLabels\":{\"style\":{\"fontFamily\":\"inherit\",\"color\":\"#808080\",\"fontSize\":\"12px\"},\"formatter\":{\"identifier\":\"${VALUE}\",\"valueFormat\": \""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT2DECIMAL +"\",\"seriesFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT +"\",\"percentFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMATPERCENTAGE +"\",\"categoryFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT + "\",\"XFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT2DECIMAL +"\",\"YFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT2DECIMAL +"\",\"sizeFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT2DECIMAL +"\"},\"align\":\"outside\",\"enabled\":false},\"percentageLabel\":{\"formatter\":{\"identifier\":\"${PERCENT}\",\"valueFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT2DECIMAL +"\",\"seriesFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT +"\",\"percentFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMATPERCENTAGE +"\",\"categoryFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT +"\"},\"style\":{\"fontFamily\":\"Microsoft YaHei, Hiragino Sans GB W3\",\"color\":\"#808080\",\"fontSize\":\"12px\"},\"align\":\"bottom\",\"enabled\":true},\"valueLabel\":{\"formatter\":{\"identifier\":\"${SERIES}${VALUE}\",\"valueFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT2DECIMAL +"\",\"seriesFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT +"\",\"percentFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMATPERCENTAGE +"\",\"categoryFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT +"\"},\"backgroundColor\":\"rgb(255,255,0)\",\"style\":{\"fontFamily\":\"Microsoft YaHei, Hiragino Sans GB W3\",\"color\":\"#808080\",\"fontSize\":\"12px\"},\"align\":\"inside\",\"enabled\":true},\"hingeBackgroundColor\":\"rgb(220,242,249)\",\"seriesLabel\":{\"formatter\":{\"identifier\":\"${CATEGORY}\",\"valueFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT2DECIMAL +"\",\"seriesFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT +"\",\"percentFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMATPERCENTAGE +"\",\"categoryFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT +"\"},\"style\":{\"fontFamily\":\"Microsoft YaHei, Hiragino Sans GB W3\",\"color\":\"#808080\",\"fontSize\":\"12px\"},\"align\":\"bottom\",\"enabled\":true},\"style\":\"pointer\",\"paneBackgroundColor\":\"rgb(252,252,252)\",\"needle\":\"rgb(229,113,90)\",\"large\":false,\"connectNulls\":false,\"shadow\":true,\"curve\":false,\"sizeBy\":\"area\",\"tooltip\":{\"formatter\":{\"identifier\":\"${SERIES}${X}${Y}${SIZE}{CATEGORY}${SERIES}${VALUE}\",\"valueFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT +"\",\"seriesFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT +"\",\"percentFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMATPERCENTAGE +"\",\"categoryFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT +"\",\"XFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT2DECIMAL +"\",\"sizeFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT2DECIMAL +"\",\"YFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT2DECIMAL +"\"},\"shared\":false,\"padding\":5,\"backgroundColor\":\"rgba(0,0,0,0.4980392156862745)\",\"borderColor\":\"rgb(0,0,0)\",\"shadow\":false,\"borderRadius\":2,\"borderWidth\":0,\"follow\":false,\"enabled\":true,\"animation\":true,\"style\":{\"fontFamily\":\"Microsoft YaHei, Hiragino Sans GB W3\",\"color\":\"#c4c6c6\",\"fontSize\":\"12px\",\"fontWeight\":\"\"}},\"maxSize\":80,\"fillColorOpacity\":1,\"step\":false,\"force\":false,\"minSize\":15,\"displayNegative\":true,\"categoryGap\":\"16.0%\",\"borderColor\":\"rgb(255,255,255)\",\"borderWidth\":1,\"gap\":\"22.0%\",\"animation\":true,\"lineWidth\":2,\"bubble\":{\"large\":false,\"connectNulls\":false,\"shadow\":true,\"curve\":false,\"sizeBy\":\"area\",\"maxSize\":80,\"minSize\":15,\"lineWidth\":0,\"animation\":true,\"fillColorOpacity\":0.699999988079071,\"marker\":{\"symbol\":\"circle\",\"radius\":28.39695010101295,\"enabled\":true}}},\"dTools\":{\"enabled\":false,\"style\":{\"fontFamily\":\"Microsoft YaHei, Hiragino Sans GB W3\",\"color\":\"#1a1a1a\",\"fontSize\":\"12px\"},\"backgroundColor\":\"white\"},\"dataSheet\":{\"enabled\":false,\"borderColor\":\"rgb(0,0,0)\",\"borderWidth\":1,\"formatter\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT2DECIMAL +"\",\"style\":{\"fontFamily\":\"Microsoft YaHei, Hiragino Sans GB W3\",\"color\":\"#808080\",\"fontSize\":\"12px\"}},\"borderColor\":\"rgb(238,238,238)\",\"shadow\":false,\"legend\":{\"borderColor\":\"rgb(204,204,204)\",\"borderRadius\":0,\"shadow\":false,\"borderWidth\":0,\"visible\":true,\"style\":{\"fontFamily\":\"Microsoft YaHei, Hiragino Sans GB W3\",\"color\":\"#1a1a1a\",\"fontSize\":\"12px\"},\"position\":\"right\",\"enabled\":false},\"rangeLegend\":{\"range\":{\"min\":0,\"color\":[[0,\"rgb(182,226,255)\"],[0.5,\"rgb(109,196,255)\"],[1,\"rgb(36,167,255)\"]],\"max\":266393},\"enabled\":false},\"zoom\":{\"zoomType\":\"xy\",\"zoomTool\":{\"visible\":false,\"resize\":true,\"from\":\"\",\"to\":\"\"}},\"plotBorderColor\":\"rgba(255,255,255,0)\",\"tools\":{\"hidden\":true,\"toImage\":{\"enabled\":true},\"sort\":{\"enabled\":true},\"enabled\":false,\"fullScreen\":{\"enabled\":true}},\"plotBorderWidth\":0,\"colors\":[\"rgb(99,178,238)\",\"rgb(118,218,145)\"],\"borderRadius\":0,\"borderWidth\":0,\"style\":\"normal\",\"plotShadow\":false,\"plotBorderRadius\":0}");
+        return new JSONObject("{\"title\":'',\"plotOptions\":{\"rotatable\":false,\"startAngle\":0,\"borderRadius\":0,\"endAngle\":360,\"innerRadius\":\"0.0%\",\"layout\":\"horizontal\",\"hinge\":\"rgb(101,107,109)\",\"dataLabels\":{\"style\":{\"fontFamily\":\"inherit\",\"color\":\"#808080\",\"fontSize\":\"12px\"},\"formatter\":{\"identifier\":\"${VALUE}\",\"valueFormat\": \""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT2DECIMAL +"\",\"seriesFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT +"\",\"percentFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMATPERCENTAGE +"\",\"categoryFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT + "\",\"XFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT2DECIMAL +"\",\"YFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT2DECIMAL +"\",\"sizeFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT2DECIMAL +"\"},\"align\":\"outside\",\"enabled\":false},\"percentageLabel\":{\"formatter\":{\"identifier\":\"${PERCENT}\",\"valueFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT2DECIMAL +"\",\"seriesFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT +"\",\"percentFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMATPERCENTAGE +"\",\"categoryFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT +"\"},\"style\":{\"fontFamily\":\"Microsoft YaHei, Hiragino Sans GB W3\",\"color\":\"#808080\",\"fontSize\":\"12px\"},\"align\":\"bottom\",\"enabled\":true},\"valueLabel\":{\"formatter\":{\"identifier\":\"${SERIES}${VALUE}\",\"valueFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT2DECIMAL +"\",\"seriesFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT +"\",\"percentFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMATPERCENTAGE +"\",\"categoryFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT +"\"},\"backgroundColor\":\"rgb(255,255,0)\",\"style\":{\"fontFamily\":\"Microsoft YaHei, Hiragino Sans GB W3\",\"color\":\"#808080\",\"fontSize\":\"12px\"},\"align\":\"inside\",\"enabled\":true},\"hingeBackgroundColor\":\"rgb(220,242,249)\",\"seriesLabel\":{\"formatter\":{\"identifier\":\"${CATEGORY}\",\"valueFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT2DECIMAL +"\",\"seriesFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT +"\",\"percentFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMATPERCENTAGE +"\",\"categoryFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT +"\"},\"style\":{\"fontFamily\":\"Microsoft YaHei, Hiragino Sans GB W3\",\"color\":\"#808080\",\"fontSize\":\"12px\"},\"align\":\"bottom\",\"enabled\":true},\"style\":\"pointer\",\"paneBackgroundColor\":\"rgb(252,252,252)\",\"needle\":\"rgb(229,113,90)\",\"large\":false,\"connectNulls\":false,\"shadow\":true,\"curve\":false,\"sizeBy\":\"area\",\"tooltip\":{\"formatter\":{\"identifier\":\"${SERIES}${X}${Y}${SIZE}{CATEGORY}${VALUE}\",\"valueFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT +"\",\"seriesFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT +"\",\"percentFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMATPERCENTAGE +"\",\"categoryFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT +"\",\"XFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT2DECIMAL +"\",\"sizeFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT2DECIMAL +"\",\"YFormat\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT2DECIMAL +"\"},\"shared\":false,\"padding\":5,\"backgroundColor\":\"rgba(0,0,0,0.4980392156862745)\",\"borderColor\":\"rgb(0,0,0)\",\"shadow\":false,\"borderRadius\":2,\"borderWidth\":0,\"follow\":false,\"enabled\":true,\"animation\":true,\"style\":{\"fontFamily\":\"Microsoft YaHei, Hiragino Sans GB W3\",\"color\":\"#c4c6c6\",\"fontSize\":\"12px\",\"fontWeight\":\"\"}},\"maxSize\":80,\"fillColorOpacity\":1,\"step\":false,\"force\":false,\"minSize\":15,\"displayNegative\":true,\"categoryGap\":\"16.0%\",\"borderColor\":\"rgb(255,255,255)\",\"borderWidth\":1,\"gap\":\"22.0%\",\"animation\":true,\"lineWidth\":2,\"bubble\":{\"large\":false,\"connectNulls\":false,\"shadow\":true,\"curve\":false,\"sizeBy\":\"area\",\"maxSize\":80,\"minSize\":15,\"lineWidth\":0,\"animation\":true,\"fillColorOpacity\":0.699999988079071,\"marker\":{\"symbol\":\"circle\",\"radius\":28.39695010101295,\"enabled\":true}}},\"dTools\":{\"enabled\":false,\"style\":{\"fontFamily\":\"Microsoft YaHei, Hiragino Sans GB W3\",\"color\":\"#1a1a1a\",\"fontSize\":\"12px\"},\"backgroundColor\":\"white\"},\"dataSheet\":{\"enabled\":false,\"borderColor\":\"rgb(0,0,0)\",\"borderWidth\":1,\"formatter\":\""+ BIChartSettingConstant.DEFAULT_FORMAT_FUNCTIONS.CONTENTFORMAT2DECIMAL +"\",\"style\":{\"fontFamily\":\"Microsoft YaHei, Hiragino Sans GB W3\",\"color\":\"#808080\",\"fontSize\":\"12px\"}},\"borderColor\":\"rgb(238,238,238)\",\"shadow\":false,\"legend\":{\"borderColor\":\"rgb(204,204,204)\",\"borderRadius\":0,\"shadow\":false,\"borderWidth\":0,\"visible\":true,\"style\":{\"fontFamily\":\"Microsoft YaHei, Hiragino Sans GB W3\",\"color\":\"#1a1a1a\",\"fontSize\":\"12px\"},\"position\":\"right\",\"enabled\":false},\"rangeLegend\":{\"range\":{\"min\":0,\"color\":[[0,\"rgb(182,226,255)\"],[0.5,\"rgb(109,196,255)\"],[1,\"rgb(36,167,255)\"]],\"max\":266393},\"enabled\":false},\"zoom\":{\"zoomType\":\"xy\",\"zoomTool\":{\"visible\":false,\"resize\":true,\"from\":\"\",\"to\":\"\"}},\"plotBorderColor\":\"rgba(255,255,255,0)\",\"tools\":{\"hidden\":true,\"toImage\":{\"enabled\":true},\"sort\":{\"enabled\":true},\"enabled\":false,\"fullScreen\":{\"enabled\":true}},\"plotBorderWidth\":0,\"colors\":[\"rgb(99,178,238)\",\"rgb(118,218,145)\"],\"borderRadius\":0,\"borderWidth\":0,\"style\":\"normal\",\"plotShadow\":false,\"plotBorderRadius\":0}");
     }
 
     public JSONObject getFontStyle() throws JSONException{
@@ -121,13 +137,15 @@ public abstract class BIAbstractChartSetting implements BIChartSetting {
                 JSONObject da = data.getJSONObject(j);
                 if(position == item.optInt("yAxis")){
                     double y = da.optDouble("y", 0);
-                    da.put("y", BIChartSettingConstant.FOURFIEXEDFORMAT.format(y / magnify));
+                    da.put("y", this.FOURFIEXEDFORMAT.format(y / magnify));
                 }
             }
             if(position == item.optInt("yAxis")){
-                JSONObject tooltip = config.getJSONObject("plotOptions").getJSONObject("tooltip");
-                tooltip.getJSONObject("formatter").put("valueFormat", formatter);
-                item.put("tooltip", tooltip);
+                JSONObject tooltip = new JSONObject(config.getJSONObject("plotOptions").getJSONObject("tooltip").toString());
+                if(tooltip.optJSONObject("formatter") != null) {
+                    tooltip.getJSONObject("formatter").put("valueFormat", formatter);
+                    item.put("tooltip", tooltip);
+                }
             }
         }
     }
@@ -140,17 +158,17 @@ public abstract class BIAbstractChartSetting implements BIChartSetting {
             for(int j = 0; j < data.length(); j++){
                 JSONObject da = data.getJSONObject(j);
                     double x = da.optDouble("x", 0);
-                    da.put("x", BIChartSettingConstant.FOURFIEXEDFORMAT.format(x / magnify));
+                    da.put("x", this.FOURFIEXEDFORMAT.format(x / magnify));
             }
         }
     }
 
     public String formatXYDataWithMagnify(double number, int magnify){
-        return BIChartSettingConstant.FOURFIEXEDFORMAT.format(number / magnify);
+        return this.FOURFIEXEDFORMAT.format(number / magnify);
     }
 
-    public void formatChartLegend (int chart_legend) throws JSONException{
-        JSONObject legend = new JSONObject(); //config.getJSONObject();
+    public void formatChartLegend (JSONObject config, int chart_legend) throws JSONException{
+        JSONObject legend = config.getJSONObject("legend");
         switch (chart_legend) {
             case BIChartSettingConstant.CHART_LEGENDS.BOTTOM:
                 legend.put("enabled", true)
@@ -198,7 +216,7 @@ public abstract class BIAbstractChartSetting implements BIChartSetting {
             }
         }
         formatter += ";-" + formatter;
-        return "function () { return window.BH ? BH.contentFormat(arguments[0], \"" + formatter + "\") : arguments[0]}";
+        return "function () { return window.BH ? BH.contentFormat(arguments[0], '" + formatter + "') : arguments[0]}";
     }
 
     public int calcMagnify(int type){
@@ -343,7 +361,7 @@ public abstract class BIAbstractChartSetting implements BIChartSetting {
                     axis.getJSONObject("title").put("text", this.getXYAxisTitle(options.optInt("left_y_axis_number_level"), BIChartSettingConstant.LEFT_AXIS, options.optBoolean("show_left_y_axis_title"), options.optString("left_y_axis_unit"), options.optString("left_y_axis_title")));
                     axis.getJSONObject("title").put("rotation", BIChartSettingConstant.ROTATION);
                     axis.put("lineWidth", options.optInt("line_width"))
-                            .put("showLabel", options.optBoolean("showLabel"))
+                            .put("showLabel", options.optBoolean("show_label"))
                             .put("enableTick", options.optBoolean("enable_tick"))
                             .put("reversed", options.optBoolean("left_y_axis_reversed"))
                             .put("enableMinorTick", options.optBoolean("enable_minor_tick"))
@@ -355,7 +373,7 @@ public abstract class BIAbstractChartSetting implements BIChartSetting {
                     axis.getJSONObject("title").put("text", this.getXYAxisTitle(options.optInt("right_y_axis_number_level"), BIChartSettingConstant.RIGHT_AXIS, options.optBoolean("show_right_y_axis_title"), options.optString("right_y_axis_unit"), options.optString("right_y_axis_title")));
                     axis.getJSONObject("title").put("rotation", BIChartSettingConstant.ROTATION);
                     axis.put("lineWidth", options.optInt("line_width"))
-                            .put("showLabel", options.optBoolean("showLabel"))
+                            .put("showLabel", options.optBoolean("show_label"))
                             .put("enableTick", options.optBoolean("enable_tick"))
                             .put("reversed", options.optBoolean("right_y_axis_reversed"))
                             .put("enableMinorTick", options.optBoolean("enable_minor_tick"))
@@ -464,20 +482,28 @@ public abstract class BIAbstractChartSetting implements BIChartSetting {
 
     private double accMul(double arg1, double arg2){
         int m = 0;
-        String s1 = String.valueOf(arg1);
-        String s2 = String.valueOf(arg2);
+        String s1 = this.getTwoFiexedFormat().format(arg1);
+        String s2 = this.getTwoFiexedFormat().format(arg2);
         try{
             m += s1.split(".")[1].length();
         }
         catch(Exception e){
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
         try{
             m += s2.split(".")[1].length();
         }
         catch(Exception e){
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
         return Double.parseDouble(s1.replace(".","")) * Double.parseDouble(s2.replace(".","")) / Math.pow(10,m);
+    }
+
+    public DecimalFormat getFourFiexedFormat(){
+        return this.FOURFIEXEDFORMAT;
+    }
+
+    public DecimalFormat getTwoFiexedFormat(){
+        return this.TWOFIEXEDFORMAT;
     }
 }

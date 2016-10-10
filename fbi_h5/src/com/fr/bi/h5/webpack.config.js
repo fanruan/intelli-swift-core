@@ -65,7 +65,8 @@ module.exports = {
         ]
     },
     plugins: [
-        new webpack.optimize.CommonsChunkPlugin('vendor',  'vendor.js')
+        new webpack.optimize.CommonsChunkPlugin('vendor',  'vendor.js'),
+        // new webpack.HotModuleReplacementPlugin()
         //new webpack.DefinePlugin({
         //    'process.env.NODE_ENV': '"production"'
         //}),

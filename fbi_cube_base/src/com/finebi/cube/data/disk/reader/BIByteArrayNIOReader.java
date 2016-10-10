@@ -7,7 +7,7 @@ import com.finebi.cube.data.input.primitive.ICubeLongReader;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.constant.CubeConstant;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
 
@@ -60,12 +60,12 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
         try {
             start = positionReader.getSpecificValue(row - 1);
         } catch (BIResourceInvalidException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         try {
             size = lengthReader.getSpecificValue(row - 1);
         } catch (BIResourceInvalidException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
 
         }
         return start + size;

@@ -1,6 +1,6 @@
 package com.fr.bi.stable.dbdealer;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,7 +16,7 @@ public class StringDealer extends AbstractDealer<String> {
         try {
             return rs.getString(rsColumn);
         } catch (SQLException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }

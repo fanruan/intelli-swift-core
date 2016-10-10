@@ -1,10 +1,10 @@
 package com.fr.bi.web.report.services;
 
 import com.fr.bi.cal.analyze.session.BIWeblet;
-import com.fr.bi.cal.stable.utils.BIReportUtils;
 import com.fr.bi.fs.BIDAOUtils;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.bi.web.base.utils.BIServiceUtil;
 import com.fr.bi.web.base.utils.BIWebUtils;
 import com.fr.fs.web.service.ServiceUtils;
@@ -29,7 +29,7 @@ public class BIInitDeziPaneAction extends ActionNoSessionCMD {
     public static void dealWithWebPage(HttpServletRequest req, HttpServletResponse res) throws Exception {
         String reportId = WebUtils.getHTTPRequestParameter(req, BIBaseConstant.REPORT_ID);
         BIReportNode node = BIDAOUtils.findByID(Long.parseLong(reportId), ServiceUtils.getCurrentUserID(req));
-        JSONObject reportSetting = BIReportUtils.getBIReportNodeJSON(node);
+        JSONObject reportSetting = BIReadReportUtils.getBIReportNodeJSON(node);
         BIWebUtils.dealWithWebPage(req, res, new BIWeblet(node), reportSetting, node);
     }
 

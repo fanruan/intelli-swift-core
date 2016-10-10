@@ -19,7 +19,7 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -127,7 +127,7 @@ public abstract class StringRangeFilterValue extends AbstractFilterValue<String>
                 JSONObject jo = new JSONObject(reader.getAttrAsString("value", StringUtils.EMPTY));
                 this.parseJSON(jo, UserControl.getInstance().getSuperManagerID());
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }
@@ -142,7 +142,7 @@ public abstract class StringRangeFilterValue extends AbstractFilterValue<String>
         try {
             writer.attr("value", createJSON().toString());
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         writer.end();
     }

@@ -133,7 +133,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
     },
 
     _rebuildItems: function(){
-        var o = this.options;
+        var self = this, o = this.options;
         var item = this.defaultItems();
         var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
         var regionType = BI.Utils.getRegionTypeByDimensionID(o.dId);
@@ -329,7 +329,22 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         text = BI.i18nText("BI-Vertical");
                         break;
                     case BICst.REGION.TARGET3:
-                        BI.removeAt(item, this.constants.CordonPos);
+                        item[this.constants.CordonPos][0] = {
+                            el: {
+                                text: BI.i18nText("BI-Style_Setting"),
+                                warningTitle: BI.i18nText("BI-Unmodified_in_Current_Mode"),
+                                value: BICst.TARGET_COMBO.STYLE_SETTING,
+                                cls: ""
+                            },
+                            children: [{
+                                text: BI.i18nText("BI-Data_Label"),
+                                value: BICst.TARGET_COMBO.DATA_LABEL_OTHER,
+                                warningTitle: BI.i18nText("BI-Data_Label_Donnot_Show")
+                            }]
+                        };
+                        if(!dataLable){
+                            item[this.constants.CordonPos][0].children.disabled = true
+                        }
                         BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
                         return item;
                 }
@@ -365,6 +380,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.ACCUMULATE_RADAR:
                 BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
                 BI.removeAt(item, 1);
@@ -373,7 +389,35 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
                 break;
         }
-        return item;
+        return addSummaryType();
+
+        function addSummaryType() {
+            var summaryItem = {};
+            BI.find(item, function(idx, ite){
+                summaryItem = BI.find(ite, function(id, it){
+                    var itE = BI.stripEL(it);
+                    return itE.value === BICst.TARGET_COMBO.SUMMERY_TYPE;
+                });
+                return BI.isNotNull(summaryItem);
+            });
+            var selectedValue = BI.i18nText("BI-Qiu_Sum");
+            switch (self._assertGroup(BI.Utils.getDimensionGroupByID(o.dId)).type) {
+                case BICst.SUMMARY_TYPE.SUM:
+                    selectedValue = BI.i18nText("BI-Qiu_Sum");
+                    break;
+                case BICst.SUMMARY_TYPE.AVG:
+                    selectedValue = BI.i18nText("BI-Qiu_Avg");
+                    break;
+                case BICst.SUMMARY_TYPE.MAX:
+                    selectedValue = BI.i18nText("BI-Qiu_Max");
+                    break;
+                case BICst.SUMMARY_TYPE.MIN:
+                    selectedValue = BI.i18nText("BI-Qiu_Min");
+                    break;
+            }
+            summaryItem.el.text = BI.i18nText("BI-Summary_Style") + "(" + selectedValue + ")";
+            return item;
+        }
     },
 
     _createValue: function () {

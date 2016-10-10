@@ -1,6 +1,7 @@
 package com.fr.bi.web.dezi.services;
 
 import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.impl.conf.CubeBuildTableSource;
 import com.finebi.cube.location.BICubeLocation;
 import com.fr.bi.base.BIUser;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * Created by Root on 2016/5/10.
@@ -43,8 +45,9 @@ public class BIStartGenerateTempCubeAction extends AbstractBIDeziAction {
         long userId = session.getUserId();
         final String fileName = TempPathGenerator.createTempPath();
         final CubeTableSource source = BIModuleUtils.getSourceByID(new BITableID(tableId), new BIUser(userId));
-        BICubeLocation cubeLocation = new BICubeLocation(BIBaseConstant.CACHE.getCacheDirectory() + BIPathUtils.tablePath(source.fetchObjectCore().getID().getIdentityValue()),File.separator + fileName);
-        final String cubePath = cubeLocation.getAbsolutePath();
+        BICubeLocation cubeLocation = new BICubeLocation(BIBaseConstant.CACHE.getCacheDirectory() + BIPathUtils.tablePath(source.fetchObjectCore().getID().getIdentityValue()), File.separator + fileName);
+        final String cubeBasePath = cubeLocation.getBaseLocation().getPath();
+        final String cubePath = cubeLocation.getChildLocation().getPath();
         final TempCubeTask task = new TempCubeTask(source.getSourceID(), tableId, userId);
         final CubeTempModelReadingTableIndexLoader loader = (CubeTempModelReadingTableIndexLoader) CubeTempModelReadingTableIndexLoader.getInstance(task);
 
@@ -60,7 +63,14 @@ public class BIStartGenerateTempCubeAction extends AbstractBIDeziAction {
         CubeBuildTableSource cubeBuildStuff = new CubeBuildTableSource(source, new ICubeConfiguration() {
             @Override
             public URI getRootURI() {
-                return URI.create(cubePath);
+                URI uri = null;
+                try {
+                    File file = new File(new BICubeLocation(cubeBasePath, cubePath).getAbsolutePath());
+                    uri = URI.create(file.toURI().getRawPath());
+                } catch (URISyntaxException e) {
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
+                }
+                return uri;
             }
         }, userId);
         TempCubeManager manager = TempCubeManager.getInstance(task);

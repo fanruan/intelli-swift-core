@@ -15,7 +15,7 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
@@ -76,19 +76,21 @@ public class StringINUserFilterValue extends StringRangeFilterValue {
             try {
                 Object[] values = BIConfigureManagerCenter.getCubeConfManager().getLoginFieldValue(field, user.getUserId());
                 if (values != null) {
-                    for(int i = 0; i < values.length; i++) {
-                        valueSet.getValues().add(values[i].toString());
+                    for (int i = 0; i < values.length; i++) {
+                        if (values[i] != null) {
+                            valueSet.getValues().add(values[i].toString());
+                        }
                     }
                 }
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
-        if(ComparatorUtils.equals(fieldId, DBConstant.SYSTEM_USER_NAME)) {
+        if (ComparatorUtils.equals(fieldId, DBConstant.SYSTEM_USER_NAME)) {
             try {
                 valueSet.getValues().add(UserControl.getInstance().getUser(user.getUserId()).getUsername());
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }

@@ -108,7 +108,9 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
     _rebuildItems: function(){
         var o = this.options;
         var tableId = BI.Utils.getTableIDByDimensionID(o.dId);
-        var fieldIds = BI.Utils.getStringFieldIDsOfTableID(tableId).concat(BI.Utils.getNumberFieldIDsOfTableID(tableId));
+        var fieldIds = BI.filter(BI.Utils.getSortedFieldIdsOfOneTableByTableId(tableId), function(idx, fId){
+            return BI.Utils.getFieldTypeByID(fId) === BICst.COLUMN.STRING || BI.Utils.getFieldTypeByID(fId) === BICst.COLUMN.NUMBER;
+        });
         var children = [];
         var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
         var dataLable = BI.Utils.getWSShowDataLabelByID(wId);
@@ -255,7 +257,18 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         text = BI.i18nText("BI-Vertical");
                         break;
                     case BICst.REGION.TARGET3:
-                        BI.removeAt(items, this.constants.CordonPos);
+                        items[this.constants.CordonPos][0].cls = "";
+                        items[this.constants.CordonPos][0] = {
+                            el: items[this.constants.CordonPos][0],
+                            children: [{
+                                text: BI.i18nText("BI-Data_Label"),
+                                value: BICst.TARGET_COMBO.DATA_LABEL_OTHER,
+                                warningTitle: BI.i18nText("BI-Data_Label_Donnot_Show")
+                            }]
+                        };
+                        if(!dataLable){
+                            item[this.constants.CordonPos][0].children.disabled = true
+                        }
                         BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                         return addDependency();
                 }
@@ -284,6 +297,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.ACCUMULATE_RADAR:
                 BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                 BI.removeAt(items, 1);

@@ -15,8 +15,10 @@ BI.ChartCombineFormatItemFactory = {
                 item = BI.extend({"type": "bar"}, items);
                 break;
             case BICst.WIDGET.BUBBLE:
-            case BICst.WIDGET.FORCE_BUBBLE:
                 item = BI.extend({"type": "bubble"}, items);
+                break;
+            case BICst.WIDGET.FORCE_BUBBLE:
+                item = BI.extend({"type": "forceBubble"}, items);
                 break;
             case BICst.WIDGET.SCATTER:
                 item = BI.extend({"type": "scatter"}, items);
@@ -74,12 +76,11 @@ BI.ChartCombineFormatItemFactory = {
                 "borderRadius": 0,
                 "endAngle": 360,
                 "innerRadius": "0.0%",
-
                 "layout": "horizontal",
                 "hinge": "rgb(101,107,109)",
                 "dataLabels": {
                     "autoAdjust": true,
-                    "style": {fontFamily: "inherit", color: "#808080", fontSize: "12px"},
+                    "style": {"fontFamily": "inherit", "color": "inherit", "fontSize": "12px"},
                     "formatter": {
                         "identifier": "${VALUE}",
                         "valueFormat": this._contentFormat2Decimal,
@@ -102,7 +103,7 @@ BI.ChartCombineFormatItemFactory = {
                         "categoryFormat": this._contentFormat
                     },
                     "style": {
-                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
+                        "fontFamily": "inherit", "color": "inherit", "fontSize": "12px"
                     },
                     "align": "bottom",
                     "enabled": true
@@ -117,7 +118,7 @@ BI.ChartCombineFormatItemFactory = {
                     },
                     "backgroundColor": "rgb(255,255,0)",
                     "style": {
-                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
+                        "fontFamily": "inherit", "color": "inherit", "fontSize": "12px"
                     },
                     "align": "inside",
                     "enabled": true
@@ -132,7 +133,7 @@ BI.ChartCombineFormatItemFactory = {
                         "categoryFormat": this._contentFormat
                     },
                     "style": {
-                        "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
+                        "fontFamily": "inherit", "color": "inherit", "fontSize": "12px"
                     },
                     "align": "bottom",
                     "enabled": true
@@ -140,8 +141,6 @@ BI.ChartCombineFormatItemFactory = {
                 "style": "pointer",
                 "paneBackgroundColor": "rgb(252,252,252)",
                 "needle": "rgb(229,113,90)",
-
-
                 "large": false,
                 "connectNulls": false,
                 "shadow": true,
@@ -168,7 +167,7 @@ BI.ChartCombineFormatItemFactory = {
                     "follow": false,
                     "enabled": true,
                     "animation": true,
-                    style: {
+                    "style": {
                         "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
                         "color": "#c4c6c6",
                         "fontSize": "12px",
@@ -187,8 +186,7 @@ BI.ChartCombineFormatItemFactory = {
                 "gap": "22.0%",
                 "animation": true,
                 "lineWidth": 2,
-
-                bubble: {
+                "bubble": {
                     "large": false,
                     "connectNulls": false,
                     "shadow": true,
@@ -206,22 +204,22 @@ BI.ChartCombineFormatItemFactory = {
                     }
                 }
             },
-            dTools: {
-                enabled: false,
-                style: {
-                    fontFamily: "Microsoft YaHei, Hiragino Sans GB W3",
-                    color: "#1a1a1a",
-                    fontSize: "12px"
+            "dTools": {
+                "enabled": false,
+                "style": {
+                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                    "color": "#1a1a1a",
+                    "fontSize": "12px"
                 },
-                backgroundColor: 'white'
+                "backgroundColor": 'white'
             },
-            dataSheet: {
-                enabled: false,
+            "dataSheet": {
+                "enabled": false,
                 "borderColor": "rgb(0,0,0)",
                 "borderWidth": 1,
                 "formatter": this._contentFormat2Decimal,
-                style: {
-                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
+                "style": {
+                    "fontFamily": "inherit", "color": "inherit", "fontSize": "12px"
                 }
             },
             "borderColor": "rgb(238,238,238)",
@@ -233,7 +231,7 @@ BI.ChartCombineFormatItemFactory = {
                 "borderWidth": 0,
                 "visible": true,
                 "style": {
-                    "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#1a1a1a", "fontSize": "12px"
+                    "fontFamily": "inherit", "color": "inherit", "fontSize": "12px"
                 },
                 "position": "right",
                 "enabled": false
@@ -283,10 +281,10 @@ BI.ChartCombineFormatItemFactory = {
     },
 
     _contentFormat2Decimal: function () {
-        return BI.contentFormat(arguments[0], '#.##')
+        return BI.contentFormat(arguments[0], '#.##;-#.##')
     },
 
     _contentFormatPercentage: function () {
-        return BI.contentFormat(arguments[0], '#.##%')
+        return BI.contentFormat(arguments[0], '#.##%;-#.##%')
     }
 };

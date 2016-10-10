@@ -6,7 +6,7 @@ import com.fr.bi.conf.data.source.operator.add.AbstractAddColumnOperator;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.finebi.cube.api.ICubeTableService;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.json.JSONObject;
 
 /**
@@ -67,7 +67,7 @@ public class ExpressionValueOperator extends AbstractAddColumnOperator {
             	Object value = expression == null ? null : expression.get(ti, row, columnType);
                 travel.actionPerformed(new BIDataValue(row, startCol, value));
             } catch (Exception e) {
-                BILogger.getLogger().error("incorrect formular");
+                BILoggerFactory.getLogger().error("incorrect formular");
                 travel.actionPerformed(new BIDataValue(row, startCol, null));
             }
         }

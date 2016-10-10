@@ -7,7 +7,7 @@ BI.GISMapChart = BI.inherit(BI.AbstractChart, {
 
     _defaultConfig: function () {
         return BI.extend(BI.GISMapChart.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-map-chart"
+            baseCls: "bi-gis-map-chart"
         })
     },
 
@@ -30,8 +30,9 @@ BI.GISMapChart = BI.inherit(BI.AbstractChart, {
         delete config.zoom;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.dataLabels.useHtml = true;
+        config.plotOptions.dataLabels.style = this.config.chart_font;
         config.plotOptions.dataLabels.formatter = function () {
-            var name = (BI.isArray(this.name) ? '' : this.name + ',') + BI.contentFormat(this.value, '#.##') ;
+            var name = (BI.isArray(this.name) ? '' : this.name + ',') + BI.contentFormat(this.value, '#.##;-#.##') ;
             var style = "padding: 5px; background-color: rgba(0,0,0,0.4980392156862745);border-color: rgb(0,0,0); border-radius:2px; border-width:0px;";
             var a = '<div style = ' + style + '>' + name + '</div>';
             return a;
@@ -40,7 +41,7 @@ BI.GISMapChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.tooltip.formatter = function () {
             var tip = BI.isArray(this.name) ? '' : this.name;
             BI.each(this.points, function (idx, point) {
-                tip += ('<div>' + point.seriesName + ':' + BI.contentFormat((point.size || point.y), '#.##') + '</div>');
+                tip += ('<div>' + point.seriesName + ':' + BI.contentFormat((point.size || point.y), '#.##;-#.##') + '</div>');
             });
             return tip;
         };
@@ -114,7 +115,8 @@ BI.GISMapChart = BI.inherit(BI.AbstractChart, {
         this.config = {
             chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
             show_data_label: options.show_data_label || false,
-            lnglat: options.lnglat || c.LNG_FIRST
+            lnglat: options.lnglat || c.LNG_FIRST,
+            chart_font: options.chart_font || c.FONT_STYLE
         };
         this.options.items = items;
 

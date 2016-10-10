@@ -22,6 +22,9 @@ public class BICubeConfiguration implements ICubeConfiguration {
     private static String CUBE_FOLDER_NAME_DEFAULT = "Advanced";
     private static String CUBE_TEMP_FOLDER_NAME = "tCube";
     private static String RANGE_DEFAULT = "default";
+    /*替换cube时先重命名Advanced*/
+    private static String CUBE_FOLDER_ADVANCED_TEMP = "AdvancedTemp";
+
     public BICubeConfiguration(String range, String cubeFolderName) {
 
         this.range = range;
@@ -32,6 +35,10 @@ public class BICubeConfiguration implements ICubeConfiguration {
 
     public static BICubeConfiguration getTempConf(String range) {
         return new BICubeConfiguration(range, CUBE_TEMP_FOLDER_NAME);
+    }
+
+    public static BICubeConfiguration getAdvancedTempConf(String range) {
+        return new BICubeConfiguration(range, CUBE_FOLDER_ADVANCED_TEMP);
     }
 
     public static BICubeConfiguration getConf(String range) {

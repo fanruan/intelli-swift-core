@@ -18,6 +18,7 @@ import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.data.source.DBTableSource;
+import com.fr.bi.conf.data.source.SQLTableSource;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BILogManagerProvider;
@@ -30,8 +31,9 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.structure.collection.list.IntList;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.bi.util.BICubeDBUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.core.db.dml.Table;
@@ -48,7 +50,6 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.fr.bi.util.BICubeDBUtils.getColumnName;
 
 /**
  * Created by kary on 16/7/13.
@@ -83,16 +84,16 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             try {
                 biLogManager.infoTable(tableSource.getPersistentTable(), tableCostTime, UserControl.getInstance().getSuperManagerID());
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
             return null;
         } catch (Exception e) {
             try {
                 biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
             } catch (Exception e1) {
-                BILogger.getLogger().error(e1.getMessage(), e1);
+                BILoggerFactory.getLogger().error(e1.getMessage(), e1);
             }
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
@@ -128,18 +129,14 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             sortRemovedList = dealWithRemove(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartModifySQL()), sortRemovedList, loader);
             try {
                 String modifySql;
-                if (tableSource.getType() == BIBaseConstant.TABLETYPE.DB) {
-                    modifySql = getModifySql(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartModifySQL()));
+                modifySql = getModifySql(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartModifySQL()));
+                if (StringUtils.isEmpty(modifySql)) {
+                    BILoggerFactory.getLogger().error("current table: " + tableSource.getTableName() + " modifySql error: " + tableUpdateSetting.getPartModifySQL());
                 } else {
-                    modifySql = addDateCondition(tableUpdateSetting.getPartModifySQL());
-                }
-                if (null == modifySql) {
-                    BILogger.getLogger().error("current table: " + tableSource.getTableName() + " modifySql error: " + tableUpdateSetting.getPartModifySQL());
-                }else {
-                    rowCount = dealWidthAdd(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartModifySQL()), rowCount);
+                    rowCount = dealWidthAdd(cubeFieldSources, modifySql, rowCount);
                 }
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
         if (null != sortRemovedList && sortRemovedList.size() != 0) {
@@ -156,7 +153,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 try {
                     tableEntityService.addDataValue(v);
                 } catch (BICubeColumnAbsentException e) {
-                    BILogger.getLogger().error(e.getMessage());
+                    BILoggerFactory.getLogger().error(e.getMessage());
                 }
             }
         };
@@ -170,7 +167,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         com.fr.data.impl.Connection connection = ((DBTableSource) tableSource).getConnection();
         SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
         sqlStatement.setSql(partDeleteSQL);
-        String columnName = getColumnName(connection, sqlStatement, partDeleteSQL);
+        String columnName = BICubeDBUtils.getColumnName(connection, sqlStatement, partDeleteSQL);
         ICubeFieldSource f = null;
         for (ICubeFieldSource field : fields) {
             if (ComparatorUtils.equals(field.getFieldName(), columnName)) {
@@ -179,7 +176,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             }
         }
         if (f == null) {
-            BILogger.getLogger().error("can not find field " + columnName);
+            BILoggerFactory.getLogger().error("can not find field " + columnName);
             return sortRemovedList;
         }
         BIKey key = new IndexKey(columnName);
@@ -216,13 +213,51 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         return sql;
     }
 
+    /**
+     * 以前SQL数据集和数据表的SQL语句使用两套逻辑处理
+     * 统一逻辑，select id和 select a1,a2,a3都是合理的
+     *
+     * @param fields
+     * @param sql
+     * @return
+     * @throws Exception
+     */
     private String getModifySql(ICubeFieldSource[] fields, String sql) throws Exception {
-        com.fr.data.impl.Connection connection = ((DBTableSource) tableSource).getConnection();
+        sql = addDateCondition(sql);
+        com.fr.data.impl.Connection connection = null;
+        if (tableSource.getType() == BIBaseConstant.TABLETYPE.DB) {
+            connection = ((DBTableSource) tableSource).getConnection();
+        }
+        if (tableSource.getType() == BIBaseConstant.TABLETYPE.SQL) {
+            connection = ((SQLTableSource) tableSource).getConnection();
+        }
         SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
-        sqlStatement.setSql(addDateCondition(sql));
+        sqlStatement.setSql(sql);
         Dialect dialect = DialectFactory.generateDialect(sqlStatement.getSqlConn(), connection.getDriver());
-        Table table = new Table(BIConnectionManager.getInstance().getSchema(((DBTableSource) tableSource).getDbName()), tableSource.getTableName());
-        String columnName = getColumnName(connection, sqlStatement, sql);
+        String finalSql = null;
+        int columnNum = BICubeDBUtils.getColumnNum(connection, sqlStatement, sql);
+        if (columnNum == fields.length) {
+            finalSql = sql;
+        }
+        if (columnNum == 1) {
+            String columnName = BICubeDBUtils.getColumnName(connection, sqlStatement, sql);
+            ICubeFieldSource f = getiCubeFieldSource(fields, columnName);
+            if (f == null) return null;
+            if (tableSource.getType() == BIBaseConstant.TABLETYPE.DB) {
+                String dbName = ((DBTableSource) tableSource).getDbName();
+                Table table = new Table(BIConnectionManager.getInstance().getSchema(dbName), tableSource.getTableName());
+                finalSql = "SELECT *" + " FROM " + dialect.table2SQL(table) + " t" + " WHERE " + "t." + columnName + " IN " + "(" + sql + ")";
+            }
+            if (tableSource.getType() == BIBaseConstant.TABLETYPE.SQL) {
+                finalSql = ((SQLTableSource) tableSource).getQuery() + " t" + " WHERE " + "t." + columnName + " IN " + "(" + sql + ")";
+            }
+        } else {
+            BILoggerFactory.getLogger().error("SQL syntax error: " + tableSource.getTableName() + " columns length incorrect " + sql);
+        }
+        return finalSql;
+    }
+
+    private ICubeFieldSource getiCubeFieldSource(ICubeFieldSource[] fields, String columnName) {
         ICubeFieldSource f = null;
         for (ICubeFieldSource field : fields) {
             if (ComparatorUtils.equals(field.getFieldName(), columnName)) {
@@ -231,9 +266,10 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             }
         }
         if (f == null) {
-            BILogger.getLogger().error("can not find field " + columnName);
+            BILoggerFactory.getLogger().error("can not find field " + columnName);
             return null;
         }
-        return "SELECT *" + " FROM " + dialect.table2SQL(table) + " t" + " WHERE " + "t." + columnName + " IN " + "(" + sql + ")";
+        return f;
     }
+
 }

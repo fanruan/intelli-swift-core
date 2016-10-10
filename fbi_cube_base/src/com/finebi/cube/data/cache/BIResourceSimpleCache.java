@@ -3,8 +3,7 @@ package com.finebi.cube.data.cache;
 import com.finebi.cube.CubeResourceRelease;
 import com.finebi.cube.location.ICubeResourceLocation;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class created on 2016/5/5.
@@ -37,4 +36,16 @@ public class BIResourceSimpleCache<R extends CubeResourceRelease> implements IRe
         }
         contents.clear();
     }
+
+    @Override
+    public List<ICubeResourceLocation> getUnReleasedLocation(){
+        List list=new ArrayList<ICubeResourceLocation >();
+        if (contents.size()!=0){
+            for (ICubeResourceLocation location : contents.keySet()) {
+               list.add(location);
+            }
+        }
+        return list;
+    }
+
 }

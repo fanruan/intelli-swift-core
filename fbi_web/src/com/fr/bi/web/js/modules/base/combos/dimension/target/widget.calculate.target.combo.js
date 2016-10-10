@@ -213,8 +213,19 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         text = BI.i18nText("BI-Vertical");
                         break;
                     case BICst.REGION.TARGET3:
+                        item[this.constants.CordonPos][0].cls = "";
+                        item[this.constants.CordonPos][0] = {
+                            el: item[this.constants.CordonPos][0],
+                            children: [{
+                                text: BI.i18nText("BI-Data_Label"),
+                                value: BICst.TARGET_COMBO.DATA_LABEL_OTHER,
+                                warningTitle: BI.i18nText("BI-Data_Label_Donnot_Show")
+                            }]
+                        };
+                        if(!dataLable){
+                            item[this.constants.CordonPos][0].children.disabled = true
+                        }
                         BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
-                        BI.removeAt(item, this.constants.CordonPos);
                         return item;
                 }
                 item[this.constants.CordonPos][0].cls = "";
@@ -242,6 +253,7 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.RADAR:
+            case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.ACCUMULATE_RADAR:
                 BI.removeAt(item, this.constants.CHART_TYPE_POSITION);
                 BI.removeAt(item, 1);

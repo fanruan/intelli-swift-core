@@ -1,24 +1,24 @@
 package com.fr.bi.stable.data.db;
 
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIPictureUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.Inter;
 import com.fr.stable.ColumnRow;
 import com.fr.stable.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
-import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.openxml4j.opc.PackageAccess;
-import org.apache.poi.ss.usermodel.BuiltinFormats;
-import org.apache.poi.ss.usermodel.DataFormatter;
-import org.apache.poi.xssf.eventusermodel.ReadOnlySharedStringsTable;
-import org.apache.poi.xssf.eventusermodel.XSSFReader;
-import org.apache.poi.xssf.model.StylesTable;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFRichTextString;
+import com.fr.third.v2.org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import com.fr.third.v2.org.apache.poi.openxml4j.exceptions.OpenXML4JException;
+import com.fr.third.v2.org.apache.poi.openxml4j.opc.OPCPackage;
+import com.fr.third.v2.org.apache.poi.openxml4j.opc.PackageAccess;
+import com.fr.third.v2.org.apache.poi.ss.usermodel.BuiltinFormats;
+import com.fr.third.v2.org.apache.poi.ss.usermodel.DataFormatter;
+import com.fr.third.v2.org.apache.poi.xssf.eventusermodel.ReadOnlySharedStringsTable;
+import com.fr.third.v2.org.apache.poi.xssf.eventusermodel.XSSFReader;
+import com.fr.third.v2.org.apache.poi.xssf.model.StylesTable;
+import com.fr.third.v2.org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import com.fr.third.v2.org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -149,7 +149,7 @@ public class Excel2007Util {
                 }
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
 
     }
@@ -494,7 +494,7 @@ public class Excel2007Util {
                 XSSFRichTextString rtss = new XSSFRichTextString(sharedStringsTable.getEntryAt(idx));
                 cellValue = rtss.toString();
             } catch (NumberFormatException ex) {
-                BILogger.getLogger().error(ex.getMessage(), ex);
+                BILoggerFactory.getLogger().error(ex.getMessage(), ex);
             }
         }
 

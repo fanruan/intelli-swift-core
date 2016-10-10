@@ -15,26 +15,27 @@ import React, {
     Fetch,
     TouchableHighlight,
     TouchableWithoutFeedback
-    } from 'lib'
+} from 'lib'
 
-import {Colors} from 'data'
+import {Colors, Size} from 'data'
 
-import {Icon, Table, AutoSizer} from 'base'
+import {Icon, Checkbox, Table, AutoSizer} from 'base'
 
 
 class Item extends Component {
     constructor(props, context) {
         super(props, context);
-        const {text, value, selected, expanded} = props;
-        this.state = {text, value, selected, expanded};
+        const {text, value, checked, halfCheck, expanded} = props;
+        this.state = {text, value, checked, halfCheck, expanded};
     }
 
     static propTypes = {};
 
     static defaultProps = {
         text: '',
-        value: '',
-        selected: 0,
+        value: null,
+        checked: false,
+        halfCheck: false,
         expanded: false,
         layer: 0,
         onExpand: emptyFunction,
@@ -52,8 +53,8 @@ class Item extends Component {
     }
 
     componentWillReceiveProps(props) {
-        const {text, value, selected, expanded} = props;
-        this.setState({text, value, selected, expanded});
+        const {text, value, checked, halfCheck, expanded} = props;
+        this.setState({text, value, checked, halfCheck, expanded});
     }
 
     componentWillUpdate() {
@@ -68,31 +69,16 @@ class Item extends Component {
         })
     }
 
-    _onSelect(e) {
-        let selected = 0;
-        if (this.state.selected < 2) {
-            selected = 2;
-        }
-        this.setState({
-            selected: selected
-        }, ()=> {
-            this.props.onSelected(selected);
-        });
-        e.stopPropagation();
-    }
-
     render() {
         const {...props} = this.props, {...state} = this.state;
         let row;
         if (!props.isLeaf) {
             row = <View className={cn({
-                    'right-font': !state.expanded,
-                    'down-font': state.expanded,
-                    'react-view': true
-                    })} style={[styles.icon, {
-                            width: 30,
-                            marginLeft: props.layer * 23
-                    }]}>
+                'active': state.expanded,
+            }, 'node-fold', 'react-view')} style={[styles.icon, {
+                width: 44,
+                marginLeft: props.layer * 44
+            }]}>
                 <Icon width={16} height={16}/>
             </View>
         }
@@ -100,40 +86,33 @@ class Item extends Component {
             <View style={[styles.row]}>
                 {row}
                 <View style={[styles.text, {
-                    marginLeft: isNil(row)?(props.layer*23+24):4
+                    marginLeft: isNil(row) ? ((props.layer + 1) * 44) : 0
                 }]}>
                     <Text>
                         {isNil(state.value) ? state.text : state.value}
                     </Text>
                 </View>
-                <TouchableWithoutFeedback onPress={this._onSelect.bind(this)}>
-                    <View className={[cn({
-                        'check-half-select-icon': state.selected == 1,
-                        'check-box-icon': state.selected !== 1,
-                        'active': state.selected === 2,
-                        'react-view': true
-                    })]} style={[styles.icon, {width: 30}]}>
-                        <Icon width={16} height={16}/>
-                    </View>
-                </TouchableWithoutFeedback>
+                <View style={[styles.icon, {width: Size.ITEM_HEIGHT}]}>
+                    <Checkbox checked={state.checked} halfCheck={state.halfCheck}
+                              onChecked={props.onSelected}/>
+                </View>
             </View>
         </TouchableHighlight>
     }
-
 }
 mixin.onClass(Item, PureRenderMixin);
 const styles = StyleSheet.create({
     row: {
         flexDirection: 'row',
-        borderBottomColor: Colors.BORDER,
+        borderBottomColor: Colors.SPLIT,
         borderBottomStyle: 'solid',
         borderBottomWidth: 1 / PixelRatio.get(),
-        height: 35
+        height: Size.ITEM_HEIGHT
     },
 
     text: {
         justifyContent: 'center',
-        flexGrow: 1,
+        flexGrow: 1
     },
 
     icon: {
@@ -142,7 +121,7 @@ const styles = StyleSheet.create({
     },
 
     selected: {
-        backgroundColor: Colors.SELECTED
+        backgroundColor: Colors.HIGHLIGHT
     }
 });
 export default Item

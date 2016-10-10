@@ -57,12 +57,6 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
 
-        config.zoom.zoomTool.enabled = this.config.show_zoom;
-        if (this.config.show_zoom === true) {
-            delete config.dataSheet;
-            delete config.zoom.zoomType;
-        }
-
         config.yAxis = this.yAxis;
         config.yAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + yTitle : yTitle;
         config.yAxis[0].title.rotation = this.constants.ROTATION;
@@ -91,22 +85,12 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
 
         config.chartType = "bar";
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        if (config.plotOptions.dataLabels.enabled === true) {
-            BI.each(items, function (idx, item) {
-                if (self.config.left_y_axis_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT || self.config.num_separators) {
-                    item.dataLabels = {
-                        "style": self.constants.FONT_STYLE,
-                        "align": "outside",
-                        enabled: true,
-                        formatter: {
-                            identifier: "${VALUE}",
-                            valueFormat: config.xAxis[0].formatter
-                        }
-                    };
-                }
-            });
-        }
+        this.formatDataLabelForAxis(config.plotOptions.dataLabels.enabled, items, config.xAxis[0].formatter, this.config.chart_font);
+
         config.plotOptions.tooltip.formatter.valueFormat = config.xAxis[0].formatter;
+
+        //全局样式的图表文字
+        this.setFontStyle(this.config.chart_font, config);
 
         return [items, config];
 
@@ -129,7 +113,7 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.constants.FONT_STYLE,
+                                "style" : self.config.chart_font,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -154,7 +138,7 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.constants.FONT_STYLE,
+                                "style" : self.config.chart_font,
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -243,19 +227,20 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
             show_label: BI.isNull(options.show_label) ? true : options.show_label,
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
-            custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
-            num_separators: options.num_separators || false
+	     custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,            
+	     num_separators: options.num_separators || false,
+            chart_font: options.chart_font || c.FONT_STYLE
         };
-        this.options.items = items;
+        this.options.items = this._formatItems(items);
         var types = [];
-        BI.each(items, function (idx, axisItems) {
+        BI.each(this.options.items, function (idx, axisItems) {
             var type = [];
             BI.each(axisItems, function (id, item) {
                 type.push(BICst.WIDGET.BAR);
             });
             types.push(type);
         });
-        this.combineChart.populate(this._formatItems(items), types);
+        this.combineChart.populate(this.options.items, types);
     },
 
     resize: function () {

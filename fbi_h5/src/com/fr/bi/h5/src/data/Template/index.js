@@ -1,20 +1,51 @@
+import {each, some} from 'core'
 import Widget from './Widget'
 class Template {
     constructor(template) {
-        this.template = template;
-        this._widgets = {};
+        this.$template = template;
+    }
+
+    $get() {
+        return this.$template;
+    }
+
+    get$$WidgetById(id) {
+        return this.$template.getIn(['widgets', id]);
     }
 
     getWidgetById(id) {
-        if(this._widgets[id]){
-            return this._widgets[id];
-        }
-        this._widgets[id] = new Widget(this.template.popConfig.widgets[id], id);
-        return this._widgets[id];
+        return new Widget(this.get$$WidgetById(id));
     }
 
-    getAllWidgetIds(){
-        return Object.keys(this.template.popConfig.widgets);
+    getAllWidgetIds() {
+        const res = [];
+        this.$template.get('widgets').forEach(($widget, wId)=> {
+            if (!new Widget($widget).isControl()) {
+                res.push(wId);
+            }
+        });
+        return res;
+    }
+
+    getAllControlWidgetIds() {
+        const res = [];
+        this.$template.get('widgets').forEach(($widget, wId)=> {
+            if (new Widget($widget).isControl()) {
+                res.push(wId);
+            }
+        });
+        return res;
+    }
+
+    hasControlWidget() {
+        return this.$template.get('widgets').some(($widget, wId)=> {
+            return new Widget($widget).isControl();
+        });
+    }
+
+    setWidget(id, widget) {
+        this.$template = this.$template.setIn(['widgets', id], widget.$get());
+        return this;
     }
 }
 

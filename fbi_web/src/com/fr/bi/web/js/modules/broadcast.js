@@ -13,14 +13,18 @@ BICst.BROADCAST = {
     GLOBAL_STYLE_PREFIX: "global_style_",//样式改变事件 + wId
 
     SRC_PREFIX: "src_", //数据源(字段)增删事件 + srcId
+    FIELD_DROP_PREFIX: "field_drop_",   //字段的drop事件，只要drop了，所有的字段都取消选中
 
     PACKAGE_PREFIX: "package_", //业务包增删事件 + wId || ""
 
     WIDGET_SELECTED_PREFIX: "widget_selected_", //组件选中广播事件
 
     DETAIL_EDIT_PREFIX: "detail_edit_", //进入编辑界面 + wId
-
+    
+    FIELD_DRAG_START: "__filed_drag_start__",   //字段拖动开始，用于通知region状态改变
+    FIELD_DRAG_STOP: "__field_drag_stop__",     //字段拖动结束，用于通知region状态改变
+    
     DATA_LABEL_PREFIX: "data_label_", //数据标签(气泡图/散点图) + wId
-
-    IMAGE_CHANGE_PREFIX: "image_change_", //数据标签和图片填充 + wId
+    
+    IMAGE_CHANGE_PREFIX: "image_change_" //数据标签和图片填充 + wId
 };

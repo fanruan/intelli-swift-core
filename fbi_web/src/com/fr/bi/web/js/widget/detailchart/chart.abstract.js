@@ -45,7 +45,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         NUM_SEPARATORS: false,
         FONT_STYLE: {
             "fontFamily": "inherit",
-            "color": "#808080",
+            "color": "inherit",
             "fontSize": "12px"
         },
         CUSTOM_SCALE: {
@@ -71,6 +71,14 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         BI.AbstractChart.superclass._init.apply(this, arguments);
     },
 
+    formatZoom: function(config, show_zoom){
+        config.zoom.zoomTool.enabled = this.config.show_zoom;
+        if (show_zoom === true) {
+            delete config.dataSheet;
+            config.zoom.zoomType = "";
+        }
+    },
+
     /**
      * 格式化坐标轴数量级及其所影响的系列的各项属性
      * @param config  配置信息
@@ -84,11 +92,12 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         BI.each(items, function (idx, item) {
             BI.each(item.data, function (id, da) {
                 if (position === item.yAxis) {
-                    if (!BI.isNumber(da.y)) {
+                    if (BI.isNotNull(da.y) && !BI.isNumber(da.y)) {
                         da.y = BI.parseFloat(da.y);
                     }
-                    da.y = da.y || 0;
-                    da.y = BI.contentFormat(BI.parseFloat(da.y.div(magnify).toFixed(4)), "#.####;-#.####");
+                    if(BI.isNotNull(da.y)){
+                        da.y = BI.contentFormat(BI.parseFloat(da.y.div(magnify).toFixed(4)), "#.####;-#.####");
+                    }
                 }
             });
             if (position === item.yAxis) {
@@ -102,11 +111,13 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         var magnify = this.calcMagnify(type);
         BI.each(items, function (idx, item) {
             BI.each(item.data, function (id, da) {
-                if (!BI.isNumber(da.x)) {
+                if (BI.isNotNull(da.x) && !BI.isNumber(da.x)) {
                     da.x = BI.parseFloat(da.x);
                 }
-                da.x = da.x || 0;
-                da.x = BI.contentFormat(BI.parseFloat(da.x.div(magnify).toFixed(4)), "#.####;-#.####");
+                if(BI.isNotNull(da.x)){
+                    da.x = BI.contentFormat(BI.parseFloat(da.x.div(magnify).toFixed(4)), "#.####;-#.####");
+                }
+
             });
         })
     },
@@ -115,8 +126,9 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         if (!BI.isNumber(number)) {
             number = BI.parseFloat(number);
         }
-        number = number || 0;
-        return BI.contentFormat(BI.parseFloat(number.div(magnify).toFixed(4)), "#.####;-#.####");
+        if(BI.isNotNull(number)){
+            return BI.contentFormat(BI.parseFloat(number.div(magnify).toFixed(4)), "#.####;-#.####");
+        }
     },
 
     calcMagnify: function (type) {
@@ -182,25 +194,25 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         switch (type) {
             case this.constants.NORMAL:
                 formatter = '#.##';
-                if(separators){
+                if (separators) {
                     formatter = '#,###.##'
                 }
                 break;
             case this.constants.ZERO2POINT:
                 formatter = '#0';
-                if(separators){
+                if (separators) {
                     formatter = '#,###';
                 }
                 break;
             case this.constants.ONE2POINT:
                 formatter = '#0.0';
-                if(separators){
+                if (separators) {
                     formatter = '#,###.0';
                 }
                 break;
             case this.constants.TWO2POINT:
                 formatter = '#0.00';
-                if(separators){
+                if (separators) {
                     formatter = '#,###.00';
                 }
                 break;
@@ -212,6 +224,55 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         return function () {
             return BI.contentFormat(arguments[0], formatter)
         }
+    },
+
+    formatDataLabel: function (state, items, config, style) {
+        var self = this;
+        if (state === true) {
+            BI.each(items, function (idx, item) {
+                item.dataLabels = {
+                    "align": "outside",
+                    "autoAdjust": true,
+                    style: style,
+                    enabled: true,
+                    formatter: {
+                        identifier: "${VALUE}",
+                        valueFormat: config.yAxis[item.yAxis].formatter
+                    }
+                };
+            });
+        }
+    },
+
+    formatDataLabelForAxis: function (state, items, format, style) {
+        var self = this;
+        if (state === true) {
+            BI.each(items, function (idx, item) {
+                item.dataLabels = {
+                    "align": "outside",
+                    "autoAdjust": true,
+                    style: style,
+                    enabled: true,
+                    formatter: {
+                        identifier: "${VALUE}",
+                        valueFormat: format
+                    }
+                };
+            });
+        }
+    },
+
+    setFontStyle: function (fontStyle, config) {
+        if (config.dataSheet) {
+            config.dataSheet.style = fontStyle;
+        }
+        config.xAxis[0].title.style = fontStyle;
+        config.xAxis[0].labelStyle = fontStyle;
+        config.legend.style = fontStyle;
+        BI.each(config.yAxis, function (idx, axis) {
+            axis.labelStyle = fontStyle;
+            axis.title.style = fontStyle;
+        })
     },
 
     _formatItems: function (items) {

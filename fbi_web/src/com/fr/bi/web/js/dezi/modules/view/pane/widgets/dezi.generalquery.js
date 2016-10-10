@@ -4,7 +4,7 @@
 BIDezi.GeneralQueryView = BI.inherit(BI.View, {
     _defaultConfig: function () {
         return BI.extend(BIDezi.GeneralQueryView.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-dashboard-widget"
+            baseCls: "bi-dashboard-widget bi-control-widget"
         })
     },
 
@@ -32,9 +32,10 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
             type: "bi.absolute",
             element: vessel,
             items: [{
-                el: this.tools,
+                el: this.titleWrapper,
                 top: 0,
-                right: 10
+                left: 0,
+                right: 0
             }, {
                 el: this.filter,
                 top: 10,
@@ -42,10 +43,9 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
                 right: 10,
                 bottom: 10
             }, {
-                el: this.title,
-                top: 10,
-                left: 10,
-                right: 110
+                el: this.tools,
+                top: 0,
+                right: 10
             }]
         });
         this.widget.element.hover(function () {
@@ -77,6 +77,17 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
                 validationChecker: function (v) {
                     return BI.Utils.checkWidgetNameByID(v, id);
                 }
+            });
+            this.titleWrapper = BI.createWidget({
+                type: "bi.absolute",
+                height: 35,
+                cls: "dashboard-widget-title",
+                items: [{
+                    el: this.title,
+                    left: 10,
+                    top: 10,
+                    right: 10
+                }]
             });
             this.title.on(BI.ShelterEditor.EVENT_CHANGE, function () {
                 self.model.set("name", this.getValue());
@@ -137,6 +148,31 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
         this.refresh();
     },
 
+    _format2SimpleConditions: function (conditions) {
+        var self = this;
+        BI.each(conditions, function (i, item) {
+            if (item.filter_type === BICst.FILTER_TYPE.AND ||
+                item.filter_type === BICst.FILTER_TYPE.OR) {
+                self._format2SimpleConditions(item.filter_value);
+                //只剩一个的时候合并到上一层
+                if (item.filter_value.length === 1) {
+                    conditions[i] = item.filter_value[0];
+                }
+            }
+        });
+        BI.remove(conditions, function (i, item) {
+            return item.filter_type === BICst.FILTER_TYPE.EMPTY_CONDITION ||
+                item.filter_type === BICst.FILTER_TYPE.EMPTY_FORMULA ||
+                item.filter_value.length === 0;
+        });
+    },
+
+    _isConditionChanged: function (curr, pre) {
+        this._format2SimpleConditions(curr);
+        this._format2SimpleConditions(pre);
+        return BI.deepDiff(curr, pre).length > 0;
+    },
+
     local: function () {
         if (this.model.has("expand")) {
             this.model.get("expand");
@@ -145,8 +181,11 @@ BIDezi.GeneralQueryView = BI.inherit(BI.View, {
         return false;
     },
 
-    change: function () {
-        BI.Utils.broadcastAllWidgets2Refresh();
+    change: function (changed, prev, context, options) {
+        if (BI.has(changed, "value") &&
+            this._isConditionChanged(BI.deepClone(changed.value), BI.deepClone(prev.value))) {
+            BI.Utils.broadcastAllWidgets2Refresh();
+        }
     },
 
     refresh: function () {

@@ -1,7 +1,7 @@
 package com.fr.bi.resource;
 
 import com.fr.base.FRContext;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -46,7 +46,7 @@ public class FormulaCollections {
             try {
                 formulaClass = Class.forName(className);
             } catch (ClassNotFoundException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
             try {
                 if (!BIConstructorUtils.isAbstract(formulaClass)) {
@@ -57,7 +57,7 @@ public class FormulaCollections {
                 }
 
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
                 continue;
             }
             JSONObject formulaJo = new JSONObject();
@@ -66,7 +66,7 @@ public class FormulaCollections {
                 formulaJo.put("type", getFunctionType(formula.getType()));
                 formulaJo.put("name", formulaName);
             } catch (JSONException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
             formulaJSONs.put(formulaJo);
         }
@@ -106,7 +106,7 @@ public class FormulaCollections {
         try {
             classFilePath = URLDecoder.decode(classFilePath, EncodeConstants.ENCODING_UTF_8);
         } catch (UnsupportedEncodingException e1) {
-            BILogger.getLogger().error(e1.getMessage(), e1);
+            BILoggerFactory.getLogger().error(e1.getMessage(), e1);
         }
         for (String fileName : findClassNamesUnderFilePath(classFilePath)) {
             try {

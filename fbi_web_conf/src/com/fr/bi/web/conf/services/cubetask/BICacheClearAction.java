@@ -1,7 +1,7 @@
 package com.fr.bi.web.conf.services.cubetask;
 
 import com.finebi.cube.data.disk.BICubeDiskPrimitiveDiscovery;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.json.JSONObject;
 import com.fr.web.utils.WebUtils;
@@ -25,9 +25,9 @@ public class BICacheClearAction extends AbstractBIConfigureAction {
     }
 
     private void clearCache() {
-        BILogger.getLogger().info("start clear caches");
+        BILoggerFactory.getLogger().info("start clear readers");
         BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
         BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
-        BILogger.getLogger().info("caches clear finished");
+        BILoggerFactory.getLogger().info("readers clear finished");
     }
 }

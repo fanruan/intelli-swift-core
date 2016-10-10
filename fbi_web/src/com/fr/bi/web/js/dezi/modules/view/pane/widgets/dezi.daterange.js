@@ -11,7 +11,7 @@ BIDezi.DateRangeView = BI.inherit(BI.View, {
     
     _defaultConfig: function () {
         return BI.extend(BIDezi.DateRangeView.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-dashboard-widget"
+            baseCls: "bi-dashboard-widget bi-control-widget"
         })
     },
 
@@ -20,6 +20,10 @@ BIDezi.DateRangeView = BI.inherit(BI.View, {
         var self = this;
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function () {
             self._resetValue();
+        });
+        //全局样式
+        BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
+            self._refreshGlobalStyle(globalStyle);
         });
     },
 
@@ -43,9 +47,10 @@ BIDezi.DateRangeView = BI.inherit(BI.View, {
                 top: 0,
                 right: 10
             }, {
-                el: this.title,
-                top: 10,
-                left: 10
+                el: this.titleWrapper,
+                top: 0,
+                left: 0,
+                right: 0
             }, {
                 el: this.combo,
                 top: 10,
@@ -83,6 +88,17 @@ BIDezi.DateRangeView = BI.inherit(BI.View, {
                     return BI.Utils.checkWidgetNameByID(v, id);
                 }
             });
+            this.titleWrapper = BI.createWidget({
+                type: "bi.absolute",
+                height: 35,
+                cls: "dashboard-widget-title",
+                items: [{
+                    el: this.title,
+                    left: 10,
+                    top: 10,
+                    right: 10
+                }]
+            });
             this.title.on(BI.ShelterEditor.EVENT_CHANGE, function () {
                 self.model.set("name", this.getValue());
             });
@@ -91,6 +107,17 @@ BIDezi.DateRangeView = BI.inherit(BI.View, {
         }
     },
 
+    _refreshGlobalStyle: function () {
+        this._refreshTitlePosition();
+    },
+
+    _refreshTitlePosition: function () {
+        var pos = BI.Utils.getGSNamePos();
+        var cls = pos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER ?
+            "dashboard-title-center" : "dashboard-title-left";
+        this.title.element.removeClass("dashboard-title-left")
+            .removeClass("dashboard-title-center").addClass(cls);
+    },
     _createTools: function () {
         var self = this;
         var expand = BI.createWidget({
@@ -153,21 +180,21 @@ BIDezi.DateRangeView = BI.inherit(BI.View, {
             this.widget.attr("items")[2].top = 10;
             if (width < minComboWidth + minNameWidth + 48) {
                 this.combo.setVisible(false);
-                this.widget.attr("items")[1].right = 10;
+                this.widget.attr("items")[1].right = 0;
             } else if (width < nameWidth + minComboWidth + 48) {
                 this.combo.setVisible(true);
-                this.widget.attr("items")[1].right = minComboWidth + 25;
+                this.widget.attr("items")[1].right = minComboWidth + 15;
                 this.widget.attr("items")[2].left = width - 15 - minComboWidth;
             } else {
                 this.combo.setVisible(true);
-                this.widget.attr("items")[1].right = width - 33 - nameWidth;
+                this.widget.attr("items")[1].right = width - 43 - nameWidth;
                 this.widget.attr("items")[2].left = 33 + nameWidth;
             }
         } else {
             // this.widget.attr("items")[0].left = "";
             // this.widget.attr("items")[0].right = 10;
             this.combo.setVisible(true);
-            this.widget.attr("items")[1].right = 10;
+            this.widget.attr("items")[1].right = 0;
             this.widget.attr("items")[2].top = 35;
             this.widget.attr("items")[2].left = 10;
         }
@@ -224,6 +251,8 @@ BIDezi.DateRangeView = BI.inherit(BI.View, {
     refresh: function () {
         this._refreshLayout();
         this._buildWidgetTitle();
+        this._refreshTitlePosition();
+        this._refreshGlobalStyle();
         this.combo.setValue(this.model.get("value"));
     }
 });

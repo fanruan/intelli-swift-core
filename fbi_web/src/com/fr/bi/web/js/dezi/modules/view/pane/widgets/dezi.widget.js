@@ -80,9 +80,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                 top: 0,
                 right: 10
             }, {
-                el: this.title,
-                left: 0,
+                el: this.titleWrapper,
                 top: 0,
+                left: 0,
                 right: 0
             }, {
                 el: this.tableChart,
@@ -127,8 +127,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     "dashboard-title-left" : "dashboard-title-center",
                 value: BI.Utils.getWidgetNameByID(id),
                 textAlign: "left",
-                height: 40,
-                lgap: 10,
+                height: 25,
                 allowBlank: false,
                 errorText: function (v) {
                     if (BI.isNotNull(v) && BI.trim(v) !== "") {
@@ -139,6 +138,17 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                 validationChecker: function (v) {
                     return BI.Utils.checkWidgetNameByID(v, id);
                 }
+            });
+            this.titleWrapper = BI.createWidget({
+                type: "bi.absolute",
+                height: 35,
+                cls: "dashboard-widget-title",
+                items: [{
+                    el: this.title,
+                    left: 10,
+                    top: 10,
+                    right: 10
+                }]
             });
             this.title.on(BI.ShelterEditor.EVENT_CHANGE, function () {
                 self.model.set("name", this.getValue());
@@ -236,7 +246,6 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     settings.show_name = !BI.Utils.getWSShowNameByID(self.model.get("id"));
                     self.model.set("settings", settings);
                     self._refreshLayout();
-                    self.tableChartResize();
                     break;
                 case BICst.DASHBOARD_WIDGET_RENAME:
                     self.title.focus();
@@ -320,16 +329,16 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     _refreshLayout: function () {
         var showTitle = BI.Utils.getWSShowNameByID(this.model.get("id"));
         if (showTitle === false) {
-            this.title.setVisible(false);
+            this.titleWrapper.setVisible(false);
             this.widget.attr("items")[0].top = 0;
             this.widget.attr("items")[2].top = 20;
         } else {
-            this.title.setVisible(true);
+            this.titleWrapper.setVisible(true);
             this.widget.attr("items")[0].top = 10;
             this.widget.attr("items")[2].top = 35;
         }
         this.widget.resize();
-
+        this.tableChartResize();
     },
 
     _refreshTitlePosition: function () {
@@ -340,39 +349,30 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             .removeClass("dashboard-title-center").addClass(cls);
     },
 
-    _refreshGlobalStyle: function (globalStyle) {
-        var widgetBackground = BI.isNotNull(globalStyle) ?
-            globalStyle.widgetBackground : BI.Utils.getGSWidgetBackground();
-        var titleBackground = BI.isNotNull(globalStyle) ?
-            globalStyle.titleBackground : BI.Utils.getGSTitleBackground();
-        var titleFont = BI.isNotNull(globalStyle) ?
-            globalStyle.titleFont : BI.Utils.getGSTitleFont();
-        if (BI.isNotNull(widgetBackground) && BI.isNotNull(widgetBackground.type)) {
-            if (widgetBackground.type == 1) {
-                this.element.css("background", widgetBackground.value);
+    _refreshWidgetTitle: function () {
+        var id = this.model.get("id");
+        var titleSetting = this.model.get("settings").title_detail || {};
+        var $title = this.title.element.find(".shelter-editor-text .bi-text");
+        $title.css(titleSetting.detail_style || {});
+
+        this.titleWrapper.element.css({"background": getBackgroundValue(titleSetting.detail_background)});
+
+        function getBackgroundValue (bg) {
+            if (!bg) {
+                return "";
             }
-            if (widgetBackground.type == 2) {
-                this.element.css({
-                    background: "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + widgetBackground.value + ")"
-                    //backgroundSize: "100%"
-                })
+            switch (bg.type) {
+                case BICst.BACKGROUND_TYPE.COLOR:
+                    return bg.value;
+                case BICst.BACKGROUND_TYPE.IMAGE:
+                    return "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + bg["value"] + ")";
             }
+            return "";
         }
-        if (BI.isNotNull(titleBackground) && BI.isNotNull(titleBackground.type)) {
-            if (titleBackground.type == 1) {
-                this.title.element.css("background", titleBackground.value);
-            }
-            if (titleBackground.type == 2) {
-                this.title.element.css({
-                    background: "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + titleBackground.value + ")"
-                    // backgroundSize: "100%"
-                })
-            }
-        }
-        if (BI.isNotNull(titleFont)) {
-            this.title.element.find(".shelter-editor-text .bi-text").css(titleFont);
-            this._refreshTitlePosition();
-        }
+    },
+
+    _refreshGlobalStyle: function () {
+        this._refreshTitlePosition();
     },
 
     _expandWidget: function () {
@@ -438,6 +438,12 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         if (BI.has(changed, "type")) {
             this._refreshMagnifyButton();
         }
+        if (BI.has(changed, "name")) {
+            this.title.setValue(this.model.get("name"))
+        }
+        if (BI.has(changed, "settings") && (changed.settings.title_detail !== prev.settings.title_detail)) {
+            this._refreshWidgetTitle()
+        }
     },
 
     local: function () {
@@ -451,9 +457,10 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
 
     refresh: function () {
         this._buildWidgetTitle();
+        this._refreshWidgetTitle();
         this._refreshMagnifyButton();
-        this._refreshLayout();
         this._refreshTableAndFilter();
+        this._refreshLayout();
         this._refreshTitlePosition();
 
         this._refreshGlobalStyle();

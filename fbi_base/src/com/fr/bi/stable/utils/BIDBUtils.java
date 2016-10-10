@@ -6,7 +6,7 @@ import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.dbdealer.*;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.data.core.db.ColumnInformation;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
@@ -269,7 +269,7 @@ public class BIDBUtils {
             ServerLinkInformation serverLinkInformation = new ServerLinkInformation(sqlConnection, sql);
             return serverLinkInformation.createDBTableData();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }
@@ -411,7 +411,7 @@ public class BIDBUtils {
             DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
             TableData tableData = datasourceManager.getTableData(tableName);
             if (tableData == null) {
-                BILogger.getLogger().error("can not find server db :" + tableName);
+                BILoggerFactory.getLogger().error("can not find server db :" + tableName);
             }
             if (tableData instanceof DBTableData) {
                 return getServerBITable((DBTableData) tableData, persistentTable);
@@ -494,7 +494,7 @@ public class BIDBUtils {
         return sql;
     }
 
-    private static String createSqlString(Dialect dialect, ICubeFieldSource[] columns) {
+    public static String createSqlString(Dialect dialect, ICubeFieldSource[] columns) {
         StringBuffer sb = new StringBuffer();
         ArrayList<String> list = new ArrayList<String>();
         for (int i = 0; i < columns.length; i++) {
@@ -565,6 +565,9 @@ public class BIDBUtils {
 
 
     public static void dealWithJDBCConnection(JDBCDatabaseConnection jdbcDatabaseConnection) {
+        if (jdbcDatabaseConnection == null) {
+            return;
+        }
         DBCPConnectionPoolAttr attr = jdbcDatabaseConnection.getDbcpAttr();
         if (attr == null) {
             attr = new DBCPConnectionPoolAttr();

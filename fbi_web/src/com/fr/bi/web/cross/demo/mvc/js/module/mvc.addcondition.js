@@ -65,35 +65,33 @@ AddConditionView = BI.inherit(BI.View, {
             }]
         });
 
-        var formulaTrigger = BI.createWidget({
-            type: "bi.custom_scale_trigger",
-            height: 30,
-            width: 120
-        });
+        // var formulaTrigger = BI.createWidget({
+        //     type: "bi.custom_scale_trigger",
+        //     height: 30,
+        //     width: 120
+        // });
+        //
+        // var formula = BI.createWidget({
+        //     type: "bi.combo_custom_scale",
+        //     height: 30,
+        //     width: 200
+        // });
+        //
+        // var customScale = BI.createWidget({
+        //     type: "bi.custom_scale",
+        //     width: 600
+        // });
 
-        var formula = BI.createWidget({
-            type: "bi.combo_custom_scale",
-            height: 30,
+        var textTrigger = BI.createWidget({
+            type: "bi.show_title_detailed_setting_combo",
+            height: 50,
             width: 200
-        });
-
-        var customScale = BI.createWidget({
-            type: "bi.custom_scale",
-            width: 600
-        });
-
-        var items = BI.deepClone(TREE);
-
-        var singleTree = BI.createWidget({
-            type: "bi.custom_scale_formula_pane",
-
         });
 
         BI.createWidget({
             type: "bi.vertical",
             element: vessel,
-            height: 100,
-            items: [interval, formulaTrigger, formula, customScale/*, singleTree*/],
+            items: [interval, textTrigger],
             hgap: 10,
             vgap: 10
         });

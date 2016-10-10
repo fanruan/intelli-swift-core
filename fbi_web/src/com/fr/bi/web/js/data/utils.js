@@ -1047,14 +1047,6 @@ Data.Utils = {
                 var opts = formatItems(data, t);
                 return formatConfigForAccumulateBar(opts[1], opts[0]);
             case BICst.WIDGET.COMPARE_BAR:
-                var t = [];
-                BI.each(data, function (idx, axisItems) {
-                    var type = [];
-                    BI.each(axisItems, function (id, item) {
-                        type.push(BICst.WIDGET.BAR);
-                    });
-                    t.push(type);
-                });
                 var result = [];
                 var i = BI.UUID();
                 BI.each(data, function (idx, item) {
@@ -1072,6 +1064,14 @@ Data.Utils = {
                 });
                 BI.each(data, function (idx, item) {
                     result = BI.concat(result, item);
+                });
+                var t = [];
+                BI.each([result], function (idx, axisItems) {
+                    var type = [];
+                    BI.each(axisItems, function (id, item) {
+                        type.push(BICst.WIDGET.BAR);
+                    });
+                    t.push(type);
                 });
                 var opts = formatItems([result], t);
                 return formatConfigForCompareBar(opts[1], opts[0]);
@@ -1410,7 +1410,7 @@ Data.Utils = {
                                 to += BI.i18nText("BI-Yi");
                                 break;
                             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                                to = BI.contentFormat(BI.parseFloat(to), "#0%");
+                                to = BI.contentFormat(BI.parseFloat(to), "#0%;-#0%");
                                 break;
                         }
                     }
@@ -1547,9 +1547,9 @@ Data.Utils = {
             delete configs.zoom;
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.plotOptions.dataLabels.useHtml = true;
-            configs.plotOptions.dataLabels.formatter = "function() { var a = '<div style = " + '"padding: 5px; background-color: rgba(0,0,0,0.4980392156862745);border-color: rgb(0,0,0); border-radius:2px; border-width:0px;">' + "' + (BI.isArray(this.name) ? '' : this.name + ',')" + "+ BI.contentFormat(this.value, '#.##') +'</div>'; return a;}";
+            configs.plotOptions.dataLabels.formatter = "function() { var a = '<div style = " + '"padding: 5px; background-color: rgba(0,0,0,0.4980392156862745);border-color: rgb(0,0,0); border-radius:2px; border-width:0px;">' + "' + (BI.isArray(this.name) ? '' : this.name + ',')" + "+ BI.contentFormat(this.value, '#.##;-#.##') +'</div>'; return a;}";
             configs.plotOptions.tooltip.shared = true;
-            configs.plotOptions.tooltip.formatter = "function(){var tip = BI.isArray(this.name) ? '' : this.name; BI.each(this.points, function(idx, point){tip += ('<div>' + point.seriesName + ':' + BI.contentFormat((point.size || point.y), '#.##') + '</div>');});return tip; }";
+            configs.plotOptions.tooltip.formatter = "function(){var tip = BI.isArray(this.name) ? '' : this.name; BI.each(this.points, function(idx, point){tip += ('<div>' + point.seriesName + ':' + BI.contentFormat((point.size || point.y), '#.##;-#.##') + '</div>');});return tip; }";
             configs.geo = {
                 "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
                 "attribution": "<a><img src='http://webapi.amap.com/theme/v1.3/mapinfo_05.png'>&copy; 2016 AutoNavi</a>"
@@ -1664,10 +1664,10 @@ Data.Utils = {
                             formatter: {
                                 identifier: "${X}${Y}",
                                 "XFormat": function () {
-                                    return BI.contentFormat(arguments[0], '#.##')
+                                    return BI.contentFormat(arguments[0], '#.##;-#.##')
                                 },
                                 "YFormat": function () {
-                                    return BI.contentFormat(arguments[0], '#.##')
+                                    return BI.contentFormat(arguments[0], '#.##;-#.##')
                                 }
                             }
                         };
@@ -1787,7 +1787,7 @@ Data.Utils = {
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0%')
+                        return BI.contentFormat(arguments[0], '#0%;-#0%')
                     };
                 }
             }
@@ -2409,6 +2409,7 @@ Data.Utils = {
 
         function formatConfigForForceBubble(configs, items) {
             configs.colors = config.chart_color;
+            configs.chartType = 'forceBubble';
             switch (config.chart_legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
@@ -2677,7 +2678,7 @@ Data.Utils = {
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0%')
+                        return BI.contentFormat(arguments[0], '#0%;-#0%')
                     };
                 }
             }
@@ -3211,9 +3212,9 @@ Data.Utils = {
             }
             configs.plotOptions.tooltip.formatter.valueFormat = function () {
                 if (this > 0) {
-                    return BI.contentFormat(arguments[0], '#.##')
+                    return BI.contentFormat(arguments[0], '#.##;-#.##')
                 } else {
-                    return (-1) * BI.contentFormat(arguments[0], '#.##')
+                    return (-1) * BI.contentFormat(arguments[0], '#.##;-#.##')
                 }
             };
 
@@ -3836,7 +3837,7 @@ Data.Utils = {
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0%')
+                        return BI.contentFormat(arguments[0], '#0%;-#0%')
                     }
                 }
             }
@@ -4082,7 +4083,7 @@ Data.Utils = {
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0%')
+                        return BI.contentFormat(arguments[0], '#0%;-#0%')
                     };
                 }
             }
@@ -4467,7 +4468,7 @@ Data.Utils = {
                 });
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0%')
+                        return BI.contentFormat(arguments[0], '#0%;-#0%')
                     };
                 }
             }
@@ -4738,7 +4739,7 @@ Data.Utils = {
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0%')
+                        return BI.contentFormat(arguments[0], '#0%;-#0%')
                     };
                 }
             }
@@ -5044,7 +5045,7 @@ Data.Utils = {
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0%')
+                        return BI.contentFormat(arguments[0], '#0%;-#0%')
                     };
                 }
             }
@@ -5367,7 +5368,7 @@ Data.Utils = {
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0%')
+                        return BI.contentFormat(arguments[0], '#0%;-#0%')
                     };
                 }
             }
@@ -5557,7 +5558,7 @@ Data.Utils = {
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0%')
+                        return BI.contentFormat(arguments[0], '#0%;-#0%')
                     };
                 }
             }
@@ -5746,7 +5747,7 @@ Data.Utils = {
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0%')
+                        return BI.contentFormat(arguments[0], '#0%;-#0%')
                     };
                 }
             }
@@ -6020,7 +6021,7 @@ Data.Utils = {
                 }
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0%')
+                        return BI.contentFormat(arguments[0], '#0%;-#0%')
                     };
                 }
             }
@@ -6245,7 +6246,6 @@ Data.Utils = {
                 var title = '';
                 switch (axis.axisIndex) {
                     case constants.LEFT_AXIS:
-                        formatNumberLevelInYaxis(config.left_y_axis_number_level, idx);
                         title = getXYAxisUnit(config.left_y_axis_number_level, constants.LEFT_AXIS);
                         axis.title.text = config.show_left_y_axis_title === true ? config.left_y_axis_title + title : title;
                         axis.title.rotation = constants.ROTATION;
@@ -6258,9 +6258,9 @@ Data.Utils = {
                             gridLineWidth: config.show_grid_line === true ? 1 : 0,
                             formatter: formatTickInXYaxis(config.left_y_axis_style, constants.LEFT_AXIS)
                         });
+                        formatNumberLevelInYaxis(configs, items, config.left_y_axis_number_level, idx, axis.formatter);
                         break;
                     case constants.RIGHT_AXIS:
-                        formatNumberLevelInYaxis(config.right_y_axis_number_level, idx);
                         title = getXYAxisUnit(config.right_y_axis_number_level, constants.RIGHT_AXIS);
                         axis.title.text = config.show_right_y_axis_title === true ? config.right_y_axis_title + title : title;
                         axis.title.rotation = constants.ROTATION;
@@ -6273,6 +6273,7 @@ Data.Utils = {
                             gridLineWidth: config.show_grid_line === true ? 1 : 0,
                             formatter: formatTickInXYaxis(config.right_y_axis_style, constants.RIGHT_AXIS)
                         });
+                        formatNumberLevelInYaxis(configs, items, config.right_y_axis_number_level, idx, axis.formatter);
                         break;
                 }
             });
@@ -6286,8 +6287,18 @@ Data.Utils = {
                 gridLineWidth: config.show_grid_line === true ? 1 : 0
             });
 
+            var lineItem = [];
+            var otherItem = [];
+            BI.each(items, function (idx, item) {
+                if (item.type === "line") {
+                    lineItem.push(item);
+                } else {
+                    otherItem.push(item);
+                }
+            });
+
             return BI.extend(configs, {
-                series: items
+                series: BI.concat(otherItem, lineItem)
             });
 
             function formatChartStyle() {
@@ -6351,30 +6362,23 @@ Data.Utils = {
                 })
             }
 
-            function formatNumberLevelInYaxis(type, position) {
+            function formatNumberLevelInYaxis (configs, items, type, position, formatter) {
                 var magnify = calcMagnify(type);
-                if (magnify > 1) {
-                    BI.each(items, function (idx, item) {
-                        BI.each(item.data, function (id, da) {
-                            if (position === item.yAxis) {
-                                if (!BI.isNumber(da.y)) {
-                                    da.y = BI.parseFloat(da.y);
-                                }
-                                da.y = da.y || 0;
-                                da.y = da.y.div(magnify);
-                                da.y = da.y.toFixed(constants.FIX_COUNT);
-                                if (constants.MINLIMIT.sub(da.y) > 0) {
-                                    da.y = 0;
-                                }
+                BI.each(items, function (idx, item) {
+                    BI.each(item.data, function (id, da) {
+                        if (position === item.yAxis) {
+                            if (!BI.isNumber(da.y)) {
+                                da.y = BI.parseFloat(da.y);
                             }
-                        })
-                    })
-                }
-                if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                    configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0%')
-                    };
-                }
+                            da.y = da.y || 0;
+                            da.y = BI.contentFormat(BI.parseFloat(da.y.div(magnify).toFixed(4)), "#.####;-#.####");
+                        }
+                    });
+                    if (position === item.yAxis) {
+                        item.tooltip = BI.deepClone(configs.plotOptions.tooltip);
+                        item.tooltip.formatter.valueFormat = formatter;
+                    }
+                })
             }
 
             function calcMagnify(type) {
@@ -6536,8 +6540,10 @@ Data.Utils = {
                         item = BI.extend({"type": "bar"}, items);
                         break;
                     case BICst.WIDGET.BUBBLE:
-                    case BICst.WIDGET.FORCE_BUBBLE:
                         item = BI.extend({"type": "bubble"}, items);
+                        break;
+                    case BICst.WIDGET.FORCE_BUBBLE:
+                        item = BI.extend({"type": "forceBubble"}, items);
                         break;
                     case BICst.WIDGET.SCATTER:
                         item = BI.extend({"type": "scatter"}, items);
@@ -6590,11 +6596,11 @@ Data.Utils = {
             }
 
             function contentFormat2Decimal() {
-                return BI.contentFormat(arguments[0], '#.##')
+                return BI.contentFormat(arguments[0], '#.##;-#.##')
             }
 
             function contentFormatPercentage() {
-                return BI.contentFormat(arguments[0], '#.##%')
+                return BI.contentFormat(arguments[0], '#.##%;-#.##%')
             }
 
             function combineConfig() {
@@ -6612,7 +6618,7 @@ Data.Utils = {
                         "hinge": "rgb(101,107,109)",
                         "dataLabels": {
                             "autoAdjust": true,
-                            "style": "{fontFamily:'inherit', color: #808080, fontSize: 12pt}",
+                            "style": "{fontFamily:'inherit', color: 'inherit', fontSize: 12pt}",
                             "formatter": {
                                 "identifier": "${VALUE}",
                                 "valueFormat": contentFormat2Decimal,
@@ -6635,8 +6641,8 @@ Data.Utils = {
                                 "categoryFormat": contentFormat
                             },
                             "style": {
-                                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
-                                "color": "#808080",
+                                "fontFamily": "inherit",
+                                "color": "inherit",
                                 "fontSize": "12px"
                             },
                             "align": "bottom",
@@ -6652,8 +6658,8 @@ Data.Utils = {
                             },
                             "backgroundColor": "rgb(255,255,0)",
                             "style": {
-                                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
-                                "color": "#808080",
+                                "fontFamily": "inherit",
+                                "color": "inherit",
                                 "fontSize": "12px"
                             },
                             "align": "inside",
@@ -6669,8 +6675,8 @@ Data.Utils = {
                                 "categoryFormat": contentFormat
                             },
                             "style": {
-                                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
-                                "color": "#808080",
+                                "fontFamily": "inherit",
+                                "color": "inherit",
                                 "fontSize": "12px"
                             },
                             "align": "bottom",
@@ -6707,15 +6713,15 @@ Data.Utils = {
                             "follow": false,
                             "enabled": true,
                             "animation": true,
-                            style: {
+                            "style": {
                                 "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
                                 "color": "#c4c6c6",
                                 "fontSize": "12px",
                                 "fontWeight": ""
                             }
                         },
-                        "maxSize": 70,
-                        "fillColorOpacity": 0.5,
+                        "maxSize": 80,
+                        "fillColorOpacity": 1.0,
                         "step": false,
                         "force": false,
                         "minSize": 15,
@@ -6727,7 +6733,7 @@ Data.Utils = {
                         "animation": true,
                         "lineWidth": 2,
 
-                        bubble: {
+                        "bubble": {
                             "large": false,
                             "connectNulls": false,
                             "shadow": true,
@@ -6745,22 +6751,22 @@ Data.Utils = {
                             }
                         }
                     },
-                    dTools: {
-                        enabled: 'true',
-                        style: {
-                            fontFamily: "Microsoft YaHei, Hiragino Sans GB W3",
-                            color: "#1a1a1a",
-                            fontSize: "12px"
+                    "dTools": {
+                        "enabled": 'true',
+                        "style": {
+                            "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                            "color": "#1a1a1a",
+                            "fontSize": "12px"
                         },
-                        backgroundColor: 'white'
+                        "backgroundColor": 'white'
                     },
-                    dataSheet: {
-                        enabled: false,
+                    "dataSheet": {
+                        "enabled": false,
                         "borderColor": "rgb(0,0,0)",
                         "borderWidth": 1,
                         "formatter": contentFormat2Decimal,
-                        style: {
-                            "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
+                        "style": {
+                            "fontFamily": "inherit", "color": "inherit", "fontSize": "12px"
                         }
                     },
                     "borderColor": "rgb(238,238,238)",
@@ -6772,7 +6778,7 @@ Data.Utils = {
                         "borderWidth": 0,
                         "visible": true,
                         "style": {
-                            "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#1a1a1a", "fontSize": "12px"
+                            "fontFamily": "inherit", "color": "inherit", "fontSize": "12px"
                         },
                         "position": "right",
                         "enabled": true

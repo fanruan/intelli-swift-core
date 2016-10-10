@@ -4,7 +4,7 @@
 package com.fr.bi.stable.structure.collection.map.lru;
 
 import com.fr.bi.common.inter.ValueCreator;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -46,7 +46,7 @@ public class LRUWithKConcurrentHashMap<K, V> extends LRUWithKHashMap<K, V> {
                 try {
                     v = creater.createNewObject();
                 } catch (Exception e) {
-                            BILogger.getLogger().error(e.getMessage(), e);
+                            BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
                 if (v != null) {
                     put(k, v);

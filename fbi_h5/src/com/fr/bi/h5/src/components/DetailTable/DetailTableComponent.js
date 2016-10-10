@@ -1,7 +1,7 @@
-import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
-import {requestAnimationFrame} from 'core'
+import Immutable from 'immutable'
+import {immutableShallowEqual, ReactComponentWithImmutableRenderMixin, requestAnimationFrame} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -12,10 +12,14 @@ import React, {
     Fetch
 } from 'lib'
 
+import {Size, Template, Widget} from 'data'
+import {IconButton, HtapeLayout, VtapeLayout} from 'base'
 import {TableWidget} from 'widgets';
 
 import DetailTableComponentHelper from './DetailTableComponentHelper';
 import TableComponentWidthHelper from '../Table/TableComponentWidthHelper'
+import TableCell from '../Table/TableCell'
+import TableHeader from '../Table/TableHeader'
 
 import {Table} from 'base'
 
@@ -23,11 +27,14 @@ const {ColumnGroup, Column, Cell} = Table;
 
 
 class DetailTableComponent extends Component {
+    static contextTypes = {
+        $template: React.PropTypes.object
+    };
 
     constructor(props, context) {
         super(props, context);
-        this._tableHelper = new DetailTableComponentHelper(props.widget);
-        this._widthHelper = new TableComponentWidthHelper(this._tableHelper, props.width-20);
+        this._tableHelper = new DetailTableComponentHelper(props, context);
+        this._widthHelper = new TableComponentWidthHelper(this._tableHelper, props.width);
     }
 
     state = {
@@ -35,62 +42,75 @@ class DetailTableComponent extends Component {
     };
 
     componentWillMount() {
-        this._fetchData();
+
     }
 
     componentDidMount() {
+        this._fetchData();
+    }
 
+    componentWillReceiveProps(nexProps) {
+        if (!immutableShallowEqual(nexProps, this.props)) {
+            this._fetchData();
+        }
     }
 
     _fetchData() {
-        const wi = this.props.widget.createJson();
-        Fetch(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
-            method: "POST",
-            body: JSON.stringify({widget: wi, sessionID: BH.sessionID})
-        }).then(function (response) {
-            return response.json();
-        }).then((data)=> {
+        const {$widget, wId} = this.props;
+        const widget = new Widget($widget, this.context.$template, wId);
+        widget.getData().then((data)=> {
             this._tableHelper.setData(data);
-            this.forceUpdate();
-        });
+            this.setState({
+                data: Immutable.fromJS(data)
+            })
+        })
+    }
+
+    _renderHeader() {
+        const {$widget} = this.props;
+        const widget = new Widget($widget);
+        return <HtapeLayout height={Size.HEADER_HEIGHT} style={styles.header}>
+            <Text style={styles.name}>{widget.getName()}</Text>
+            <IconButton width={Size.HEADER_HEIGHT} className='delete'/>
+        </HtapeLayout>
     }
 
     render() {
         const {width, height} = this.props;
         const items = this._tableHelper.getItems();
         this._widthHelper.setItems(items);
-        return <View
-            style={{width: width, height: height}}
-        >
-            <View
-                style={{position: 'absolute', left: 10, right: 10, top: 10, bottom: 10}}
+
+        return <VtapeLayout>
+            {this._renderHeader()}
+            <TableWidget
+                width={width}
+                height={height - Size.HEADER_HEIGHT}
+                freezeCols={this._tableHelper.isFreeze() ? [0] : []}
+                columnSize={this._widthHelper.getWidth()}
+                header={this._tableHelper.getHeader()}
+                items={items}
+                headerCellRenderer={({colIndex, ...cell})=> {
+                    return <TableHeader {...cell}/>
+                }}
+                itemsCellRenderer={({colIndex, rowIndex, ...cell}) => {
+                    return <TableCell {...cell}/>
+                }}
             >
-                <TableWidget
-                    width={width - 20}
-                    height={height - 20}
-                    freezeCols={this._tableHelper.isFreeze()?[0]:[]}
-                    columnSize={this._widthHelper.getWidth()}
-                    header={this._tableHelper.getHeader()}
-                    items={items}
-                    headerCellRenderer={(colIndex, cell)=> {
-                        return <Cell>{cell.text}</Cell>
-                    }}
-                    itemsCellRenderer={({colIndex, rowIndex, items, ...props}) => {
-                        return <Cell {...props}>
-                            {items[colIndex][rowIndex].text}
-                        </Cell>
-                    }}
-                >
-                </TableWidget>
-            </View>
-        </View>
+            </TableWidget>
+        </VtapeLayout>
     }
 }
-mixin.onClass(DetailTableComponent, PureRenderMixin);
+mixin.onClass(DetailTableComponent, ReactComponentWithImmutableRenderMixin);
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
     wrapper: {
         position: 'relative'
+    },
+    name: {
+        lineHeight: Size.HEADER_HEIGHT,
+        paddingLeft: 4,
+        paddingRight: 4,
+        justifyContent: 'center'
     }
 });
 export default DetailTableComponent

@@ -38,6 +38,7 @@ BI.DonutChart = BI.inherit(BI.AbstractChart, {
         config.chartType = "pie";
         config.plotOptions.dataLabels.align = "outside";
         config.plotOptions.dataLabels.connectorWidth = "outside";
+        config.plotOptions.dataLabels.style = this.config.chart_font;
         config.plotOptions.dataLabels.formatter.identifier = "${VALUE}${PERCENT}";
         delete config.xAxis;
         delete config.yAxis;
@@ -46,6 +47,8 @@ BI.DonutChart = BI.inherit(BI.AbstractChart, {
                 da.y = self.formatXYDataWithMagnify(da.y, 1);
             })
         });
+
+        config.legend.style = this.config.chart_font;
         return [items, config];
 
         function formatChartStyle(){
@@ -67,7 +70,8 @@ BI.DonutChart = BI.inherit(BI.AbstractChart, {
             chart_color: options.chart_color || [],
             chart_style: options.chart_style || c.NORMAL,
             chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
-            show_data_label: options.show_data_label || false
+            show_data_label: options.show_data_label || false,
+            chart_font: options.chart_font || c.FONT_STYLE
         };
         this.options.items = items;
 

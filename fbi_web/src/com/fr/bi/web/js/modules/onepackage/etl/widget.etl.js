@@ -241,11 +241,29 @@ BI.ETL = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Shift_Out_Package"),
             cls: "etl-remove-table",
             handler: function () {
-                //TODO 判断该表是否被使用
-                BI.Msg.confirm(BI.i18nText("BI-Is_Delete_Table"), BI.i18nText("BI-Is_Delete_Table"), function (flag) {
-                    if (flag === true) {
-                        self.fireEvent(BI.ETL.EVENT_REMOVE);
+                var mask = BI.createWidget({
+                    type: "bi.loading_mask",
+                    masker: BICst.BODY_ELEMENT,
+                    text: BI.i18nText("BI-Loading")
+                });
+                BI.Utils.checkTableInUse({
+                    id: self.model.getId()
+                }, function (res) {
+                    if (BI.isNotNull(res) && res.is_use === true) {
+                        BI.Msg.confirm(BI.i18nText("BI-Is_Delete_Table"), BI.i18nText("BI-Table_In_Use_Tip"), function (flag) {
+                            if (flag === true) {
+                                self.fireEvent(BI.ETL.EVENT_REMOVE);
+                            }
+                        });
+                    } else {
+                        BI.Msg.confirm(BI.i18nText("BI-Is_Delete_Table"), BI.i18nText("BI-Is_Delete_Table"), function (flag) {
+                            if (flag === true) {
+                                self.fireEvent(BI.ETL.EVENT_REMOVE);
+                            }
+                        });
                     }
+                }, function() {
+                    mask.destroy();
                 });
             }
         });
@@ -271,8 +289,10 @@ BI.ETL = BI.inherit(BI.Widget, {
                     this.saveButton
                 ]
             },
-            lhgap: this.constants.ETL_PANE_BUTTON_GAP,
-            rhgap: this.constants.ETL_PANE_BUTTON_GAP
+            llgap: this.constants.ETL_PANE_BUTTON_GAP,
+            lrgap: this.constants.ETL_DATA_SET_PANE_GAP,
+            rrgap: this.constants.ETL_PANE_BUTTON_GAP,
+            rlgap: this.constants.ETL_DATA_SET_PANE_GAP
         })
     },
 
@@ -386,7 +406,12 @@ BI.ETL = BI.inherit(BI.Widget, {
             width: this.constants.ETL_TEXT_EDITOR_WIDTH,
             height: this.constants.ETL_TEXT_EDITOR_HEIGHT,
             allowBlank: false,
-            errorText: BI.i18nText("BI-Table_Name_Not_Repeat"),
+            errorText: function(v) {
+                if (BI.isEmptyString(v)) {
+                    return BI.i18nText("BI-Table_Name_Not_Null");
+                }
+                return BI.i18nText("BI-Table_Name_Not_Repeat");
+            },
             validationChecker: function (v) {
                 return self.model.isValidTableTranName(v);
             }
@@ -680,7 +705,8 @@ BI.ETL = BI.inherit(BI.Widget, {
                 info: {
                     reopen: true,
                     isGenerated: status.isGenerated,
-                    tableInfo: table
+                    tableInfo: table,
+                    relationfieldNames: self.model.constructFieldNamesWhichHasRelation()
                 }
             });
             BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);
@@ -762,7 +788,8 @@ BI.ETL = BI.inherit(BI.Widget, {
                 info: {
                     reopen: true,
                     isGenerated: status.isGenerated,
-                    tableInfo: table
+                    tableInfo: table,
+                    relationfieldNames: self.model.constructFieldNamesWhichHasRelation()
                 }
             });
             BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);
@@ -935,17 +962,18 @@ BI.ETL = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Loading")
         });
         BI.Utils.checkCubeStatusByTable(table, function (status) {
-
-            mask.destroy();
             callback(status);
-        })
+        }, function() {
+            mask.destroy();
+        });
     },
 
     _previewData: function (tId) {
         BI.Popovers.remove(tId);
         var tablePreview = BI.createWidget({
             type: "bi.etl_table_preview",
-            table: this.model.getTableById(tId)
+            table: this.model.getTableById(tId),
+            name: this.model.getTranName()
         });
         BI.Popovers.create(tId, tablePreview).open(tId);
     },
@@ -1092,7 +1120,8 @@ BI.ETL = BI.inherit(BI.Widget, {
             info: {
                 reopen: false,
                 isGenerated: false,
-                tableInfo: self.model.getTableById(tId)
+                tableInfo: self.model.getTableById(tId),
+                relationFieldNames: self.model.constructFieldNamesWhichHasRelation()
             }
         });
         BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);
@@ -1116,7 +1145,8 @@ BI.ETL = BI.inherit(BI.Widget, {
                 reopen: false,
                 isGenerated: false,
                 tableInfo: self.model.getTableById(tId),
-                relations: self.model.getRelations()
+                relations: self.model.getRelations(),
+                relationFieldNames: self.model.constructFieldNamesWhichHasRelation()
             }
         });
         BI.Layers.show(self.constants.ETL_OPERATOR_LAYER);

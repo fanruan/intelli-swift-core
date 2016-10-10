@@ -4,7 +4,7 @@ import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TreeWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -64,7 +64,7 @@ public class GetTreeTreeNodeExecutor extends AbstractTreeNodeExecutor {
 //        if (values.length > 0) {
 //            vl = createData(values, -1);
 //        } else {
-            vl = createData(values, times);
+        vl = createData(values, times);
 //        }
 
 
@@ -165,7 +165,7 @@ public class GetTreeTreeNodeExecutor extends AbstractTreeNodeExecutor {
             for (int i = 0; i < len; i++) {
                 JSONObject nodeJa = new JSONObject();
                 try {
-                    nodeJa.put("isParent", hasChild);
+                    nodeJa.put("isParent", hasChild && hasChild(list.get(i), parentValues));
                     if (id == null) {
                         nodeJa.put("id", times + "_" + (i + 1));
                     } else {
@@ -181,7 +181,7 @@ public class GetTreeTreeNodeExecutor extends AbstractTreeNodeExecutor {
                     nodeJa.put("halfCheck", state.isHalf());
 
                 } catch (JSONException e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
 
                 ja.put(nodeJa);
@@ -206,6 +206,24 @@ public class GetTreeTreeNodeExecutor extends AbstractTreeNodeExecutor {
         public boolean isHalf() {
             return half;
         }
+    }
+
+    private boolean hasChild(String value, JSONArray parentValues) throws JSONException {
+        String[] values;
+        if (parentValues == null) {
+            values = new String[1];
+            values[0] = value;
+        } else {
+            values = new String[parentValues.length() + 1];
+            for (int k = 0; k < parentValues.length(); k++) {
+                values[k] = parentValues.getString(k);
+            }
+            values[parentValues.length()] = value;
+        }
+        if (getChildCount(values) > 0) {
+            return true;
+        }
+        return false;
     }
 
 

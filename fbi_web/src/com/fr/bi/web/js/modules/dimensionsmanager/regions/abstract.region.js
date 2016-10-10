@@ -25,8 +25,16 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.AbstractRegion.superclass._init.apply(this, arguments);
+        var self = this;
         this._createRegion();
         this.store = {};
+        this._toggleTip();
+        BI.Broadcasts.on(BICst.BROADCAST.FIELD_DRAG_START, function (fields) {
+            self._fieldDragStart(fields);
+        });
+        BI.Broadcasts.on(BICst.BROADCAST.FIELD_DRAG_STOP, function () {
+            self._fieldDragStop();
+        });
     },
 
     _createRegion: function () {
@@ -64,6 +72,9 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
             accept: ".select-data-level0-item-button, .select-date-level1-item-button",
             tolerance: "pointer",
             drop: function (event, ui) {
+                BI.isNotNull(self.dropArea) && self.dropArea.destroy();
+                BI.size(self.store) === 0 && BI.isNotNull(self.tip) && self.tip.setVisible(true);
+
                 var helper = ui.helper;
                 var data = helper.data("data");
                 if (self.options.regionType >= BICst.REGION.TARGET1) {
@@ -92,12 +103,29 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
                 if (data.length > 0) {
                     self.fireEvent(BI.AbstractRegion.EVENT_CHANGE);
                 }
+                BI.Broadcasts.send(BICst.BROADCAST.FIELD_DROP_PREFIX);
             },
             over: function (event, ui) {
-
+                if (BI.isNull(self.forbiddenMask) || !self.forbiddenMask.isVisible()) {
+                    self.dropArea = BI.createWidget({
+                        type: "bi.layout",
+                        height: 25,
+                        cls: "virtual-drop-area"
+                    });
+                    self.center.addItem(self.dropArea);
+                    BI.size(self.store) === 0 && BI.isNotNull(self.tip) && self.tip.setVisible(false);
+                }
+                var helperWidget = ui.helper.data().helperWidget;
+                var helper = self._getFieldDropOverHepler();
+                if (BI.isNotNull(helper)) {
+                    helperWidget.modifyContent(helper);
+                }
             },
             out: function (event, ui) {
-
+                BI.isNotNull(self.dropArea) && self.dropArea.destroy();
+                BI.size(self.store) === 0 && BI.isNotNull(self.tip) && self.tip.setVisible(true);
+                var helperWidget = ui.helper.data().helperWidget;
+                helperWidget.populate();
             }
         });
 
@@ -130,9 +158,73 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
 
     },
 
+    _getDragTipContent: function () {
+
+    },
+
+    _fieldDragStart: function (fields) {
+
+    },
+
+    _fieldDragStop: function () {
+
+    },
+
+    _allowDrop: function () {
+
+    },
+
+    _getFieldDropOverHepler: function () {
+
+    },
+
+    _showForbiddenMask: function () {
+        if (BI.isNotNull(this.forbiddenMask)) {
+            this.forbiddenMask.setVisible(true);
+        } else {
+            this.forbiddenMask = BI.createWidget({
+                type: "bi.layout",
+                cls: "forbidden-mask"
+            });
+            BI.createWidget({
+                type: "bi.absolute",
+                element: this.element,
+                items: [{
+                    el: this.forbiddenMask,
+                    top: 25,
+                    left: 0,
+                    bottom: 0,
+                    right: 0
+                }]
+            });
+        }
+    },
+
+    _hideForbiddenMask: function () {
+        BI.isNotNull(this.forbiddenMask) && this.forbiddenMask.setVisible(false);
+    },
+
     addDimension: function (dId, options) {
         this.store[dId] = this._createDimension(dId, options);
         this.center.addItem(this.store[dId]);
+    },
+
+    _toggleTip: function (dimensions) {
+        if (BI.isNull(dimensions) || dimensions.length === 0) {
+            if (BI.isNotNull(this.tip)) {
+                this.tip.setVisible(true);
+            } else {
+                this.tip = BI.createWidget({
+                    type: "bi.label",
+                    text: this._getDragTipContent(),
+                    height: 25,
+                    cls: "region-empty-tip"
+                });
+                this.center.addItem(this.tip);
+            }
+        } else {
+            BI.isNotNull(this.tip) && this.tip.setVisible(false);
+        }
     },
 
     getValue: function () {
@@ -147,7 +239,8 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
         BI.each(dimensions, function (i, did) {
             self.store[did] = self._createDimension(did);
             self.center.addItem(self.store[did]);
-        })
+        });
+        this._toggleTip(dimensions);
     }
 });
 BI.AbstractRegion.EVENT_CHANGE = "AbstractRegion.EVENT_CHANGE";

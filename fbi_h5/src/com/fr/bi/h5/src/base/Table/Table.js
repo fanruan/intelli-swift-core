@@ -134,16 +134,20 @@ var Table = React.createClass({
 
         this._panResponder = PanResponder.create({
             onStartShouldSetPanResponder: this._handleStartShouldSetPanResponder,
-            onMoveShouldSetPanResponder: ()=>true,
+            onMoveShouldSetPanResponder: ()=> {
+                return true;
+            },
             onPanResponderGrant: this._handlePanResponderGrant,
             onPanResponderMove: this._handlePanResponderMove,
             onPanResponderRelease: this._handlePanResponderEnd,
-            onPanResponderTerminate: this._handlePanResponderEnd
+            onPanResponderTerminate: this._handlePanResponderEnd,
+            onPanResponderTerminationRequest: ()=>false
         });
     },
 
-    _handleStartShouldSetPanResponder(e) {
-        return e.nativeEvent.target === this._table;
+    _handleStartShouldSetPanResponder(e, gestureState) {
+        return true;
+        // return e.nativeEvent.target === this._table;
     },
 
     _handlePanResponderGrant(e, gestureState) {
@@ -155,15 +159,15 @@ var Table = React.createClass({
             if (this.state.scrollY === 0 && gestureState.vy > 0
                 || this.state.scrollY === this.state.maxScrollY && gestureState.vy < 0
             ) {
-                this._catchGestrure = false;
-                return;
+                // this._catchGestrure = false;
+                // return;
             }
         } else {
             if (this.state.scrollX === 0 && gestureState.vx > 0
                 || this.state.scrollX === this.state.maxScrollX && gestureState.vx < 0
             ) {
-                this._catchGestrure = false;
-                return;
+                // this._catchGestrure = false;
+                // return;
             }
         }
 
@@ -201,32 +205,18 @@ var Table = React.createClass({
         if (offsetX > maxOffsetScroll) {
             offsetX = maxOffsetScroll + Math.pow(offsetX - maxOffsetScroll, 0.8);
         }
-        if (Math.abs(dy) > Math.abs(dx)) {
-            if (!this._lockX && !this._lockA) {
-                this._lockY = true;
-                this.trans.setValue({x: 0, y: this.state.scrollY - scrollY});
-            }
-        } else {
-            if (!this._lockY) {
-                var x = this.state.scrollX;
-                x += Math.round(-dx);
-
-                if ((!this._lockA && x > 0 && x <= this.state.maxScrollX) || this._lockX) {
-                    this._lockX = true;
-                    this.trans.setValue({x: this.state.scrollX - scrollX, y: 0});
-                } else {
-                    // if (!this._lockX) {
-                    //     this._lockA = true;
-                    //     this.offset.setValue(this.state.offsetX - offsetX);
-                    // }
-                }
-            }
+        if (this._lockY || (Math.abs(dy) >= Math.abs(dx) && !this._lockX && !this._lockA)) {
+            this._lockY = true;
+            this.trans.setValue({x: 0, y: this.state.scrollY - scrollY});
+        } else if (this._lockX || (!this._lockY && !this._lockA /**&& scrollX > 0 && scrollX <= this.state.maxScrollX**/)) {
+            this._lockX = true;
+            this.trans.setValue({x: this.state.scrollX - scrollX, y: 0});
         }
 
         //this._onWheel(-gestureState.dx + this.dx, -gestureState.dy + this.dy);
-        e.stopPropagation();
-        e.preventDefault();
-        return false;
+        // e.stopPropagation();
+        // e.preventDefault();
+        // return false;
     },
 
     _handlePanResponderEnd(e, gestureState) {
@@ -241,9 +231,6 @@ var Table = React.createClass({
             this.trans.flattenOffset();
             this._onWheel(this._lockX ? (-dx - vx * 200) : 0, this._lockY ? (-dy - vy * 200) : 0);
         }
-        //this._lockX = false;
-        //this._lockY = false;
-        //this._lockA = false;
     },
 
     _shouldHandleWheelX(/*number*/ delta) /*boolean*/ {
@@ -371,7 +358,7 @@ var Table = React.createClass({
                     scrollableColumns={state.groupHeaderScrollableColumns}
                     onColumnResize={this._onColumnResize}
                     trans={this.trans}
-                    />
+                />
             );
         }
 
@@ -411,7 +398,7 @@ var Table = React.createClass({
                 initialEvent={state.columnResizingData.initialEvent}
                 onColumnResizeEnd={props.onColumnResizeEndCallback}
                 columnKey={state.columnResizingData.key}
-                />;
+            />;
 
         var footer = null;
         if (state.footerHeight) {
@@ -432,7 +419,7 @@ var Table = React.createClass({
                     scrollableColumns={state.footScrollableColumns}
                     scrollLeft={state.scrollX}
                     trans={this.trans}
-                    />;
+                />;
         }
 
         var rows = this._renderRows(bodyOffsetTop);
@@ -455,7 +442,7 @@ var Table = React.createClass({
                 scrollableColumns={state.headScrollableColumns}
                 onColumnResize={this._onColumnResize}
                 trans={this.trans}
-                />;
+            />;
 
         var topShadow;
         var bottomShadow;
@@ -467,7 +454,7 @@ var Table = React.createClass({
                         'public-fixedDataTable-topShadow'
                     )}
                     style={{top: bodyOffsetTop}}
-                    />;
+                />;
         }
 
         if (
@@ -483,12 +470,12 @@ var Table = React.createClass({
                         'public-fixedDataTable-bottomShadow'
                     )}
                     style={{top: footOffsetTop}}
-                    />;
+                />;
         }
 
         return (
             <View
-                ref={(obj)=>{
+                ref={(obj)=> {
                     this._table = ReactDOM.findDOMNode(obj)
                 }}
                 className={cn(
@@ -551,7 +538,7 @@ var Table = React.createClass({
                 width={state.offsetWidth}
                 trans={this.trans}
                 rowPositionGetter={this._scrollHelper.getRowPosition}
-                />
+            />
         );
     },
 
@@ -560,13 +547,13 @@ var Table = React.createClass({
      * resizer knob clicked on. It displays the resizer and puts in the correct
      * location on the table.
      */
-        _onColumnResize(/*number*/ combinedWidth,
-                        /*number*/ leftOffset,
-                        /*number*/ cellWidth,
-                        /*?number*/ cellMinWidth,
-                        /*?number*/ cellMaxWidth,
-                        /*number|string*/ columnKey,
-                        /*object*/ event) {
+    _onColumnResize(/*number*/ combinedWidth,
+                    /*number*/ leftOffset,
+                    /*number*/ cellWidth,
+                    /*?number*/ cellMinWidth,
+                    /*?number*/ cellMaxWidth,
+                    /*number|string*/ columnKey,
+                    /*object*/ event) {
         this.setState({
             isColumnResizing: true,
             columnResizingData: {

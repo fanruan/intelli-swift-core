@@ -2,25 +2,17 @@
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
 @font-face {
-  font-family: 'bi';
+  font-family: 'h5';
   src: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.woff') format('woff'), /* chrome、firefox */ url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/ url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.svg#svgFontName') format('svg');
   
   /*  iOS 4.1- */
 }
 .b-font {
-  font-family: "bi";
+  font-family: "h5";
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -webkit-text-stroke-width: 0.2px;
   -moz-osx-font-smoothing: grayscale;
-}
-html,
-button,
-input,
-select,
-textarea,
-* {
-  font-family: "Microsoft YaHei", "Hiragino Sans GB W3";
 }
 html {
   height: 100%;
@@ -42,7 +34,6 @@ body {
   -o-user-select: none;
   user-select: none;
   color: #1a1a1a;
-  font: normal 12px "Microsoft YaHei", "Hiragino Sans GB W3";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-decoration: none;
@@ -50,6 +41,11 @@ body {
   -moz-user-focus: normal;
   -moz-outline: 0 none;
   outline: 0 none;
+}
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
 }
 #wrapper {
   position: absolute;

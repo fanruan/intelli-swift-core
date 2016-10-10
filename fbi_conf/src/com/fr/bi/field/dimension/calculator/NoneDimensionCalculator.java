@@ -6,6 +6,8 @@ import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.key.BIKey;
+import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.report.result.DimensionCalculator;
@@ -67,7 +69,7 @@ public class NoneDimensionCalculator implements DimensionCalculator {
 
     @Override
     public Comparator getComparator() {
-        return null;
+        return getField().getFieldType() == DBConstant.COLUMN.NUMBER ? BIBaseConstant.COMPARATOR.COMPARABLE.ASC : BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC;
     }
 
 

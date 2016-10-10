@@ -1,15 +1,15 @@
 class Dimension {
-    constructor(dimension, id, widget) {
-        this.dimension = dimension;
+    constructor($$dimension, id, widget) {
+        this.$$dimension = $$dimension;
         this._parent = widget;
     }
 
     getName() {
-        return this.dimension.name;
+        return this.$$dimension.get('name');
     }
 
     isUsed() {
-        return this.dimension.used;
+        return this.$$dimension.get('used');
     }
 
     getWidgetBelongTo() {

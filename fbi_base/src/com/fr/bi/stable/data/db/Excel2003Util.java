@@ -2,20 +2,20 @@ package com.fr.bi.stable.data.db;
 
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIPictureUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.Inter;
 import com.fr.stable.ColumnRow;
 import com.fr.stable.StringUtils;
-import org.apache.poi.hssf.eventusermodel.*;
-import org.apache.poi.hssf.eventusermodel.dummyrecord.LastCellOfRowDummyRecord;
-import org.apache.poi.hssf.eventusermodel.dummyrecord.MissingCellDummyRecord;
-import org.apache.poi.hssf.model.HSSFFormulaParser;
-import org.apache.poi.hssf.record.*;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import com.fr.third.v2.org.apache.poi.hssf.eventusermodel.*;
+import com.fr.third.v2.org.apache.poi.hssf.eventusermodel.dummyrecord.LastCellOfRowDummyRecord;
+import com.fr.third.v2.org.apache.poi.hssf.eventusermodel.dummyrecord.MissingCellDummyRecord;
+import com.fr.third.v2.org.apache.poi.hssf.model.HSSFFormulaParser;
+import com.fr.third.v2.org.apache.poi.hssf.record.*;
+import com.fr.third.v2.org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import com.fr.third.v2.org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -292,7 +292,7 @@ public class Excel2003Util implements HSSFListener {
             ColumnRow start = ColumnRow.valueOf(s), end = ColumnRow.valueOf(e);
             mergeCells.put(start, end);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
     }
 

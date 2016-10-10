@@ -14,7 +14,7 @@ import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.data.impl.DBTableData;
 import com.fr.data.impl.EmbeddedTableData;
@@ -44,7 +44,7 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
 
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
-        BILogger.getLogger().info("preview SQL start");
+        BILoggerFactory.getLogger().info("preview SQL start");
         String stringSql = WebUtils.getHTTPRequestParameter(req, "sql");
         String tableString = WebUtils.getHTTPRequestParameter(req, "table");
         JSONObject table = new JSONObject(tableString);
@@ -71,7 +71,7 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
         JSONObject jo = new JSONObject();
         jo.put("sql", sql);
         jo.put("last_update_time", lastUpdateDate);
-        BILogger.getLogger().info("preview SQL："+sql);
+        BILoggerFactory.getLogger().info("preview SQL："+sql);
         if (StringUtils.isNotEmpty(sql)) {
             //预览时不一定已经生成table，所以无法使用table类型来判断
             String connectionName=null;
@@ -105,7 +105,7 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
                 jo.put("field_names", fieldNameArray);
                 jo.put("data", dataArray);
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().error(e.getMessage());
                 jo.put("error", e.getMessage());
             }
         }

@@ -73,10 +73,10 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                 top: 0,
                 right: 10
             }, {
-                el: this.title,
-                left: 10,
-                top: 10,
-                right: 10
+                el: this.titleWrapper,
+                top: 0,
+                left: 0,
+                right: 0
             }, {
                 el: this.table,
                 left: 10,
@@ -120,6 +120,17 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                 validationChecker: function (v) {
                     return BI.Utils.checkWidgetNameByID(v, id);
                 }
+            });
+            this.titleWrapper = BI.createWidget({
+                type: "bi.absolute",
+                height: 35,
+                cls: "dashboard-widget-title",
+                items: [{
+                    el: this.title,
+                    left: 10,
+                    right: 10,
+                    top: 10
+                }]
             });
             this.title.on(BI.ShelterEditor.EVENT_CHANGE, function () {
                 self.model.set("name", this.getValue());
@@ -238,38 +249,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
     },
 
     _refreshGlobalStyle: function (globalStyle) {
-        var widgetBackground = BI.isNotNull(globalStyle) ?
-            globalStyle.widgetBackground : BI.Utils.getGSWidgetBackground();
-        var titleBackground = BI.isNotNull(globalStyle) ?
-            globalStyle.titleBackground : BI.Utils.getGSTitleBackground();
-        var titleFont = BI.isNotNull(globalStyle) ?
-            globalStyle.titleFont : BI.Utils.getGSTitleFont();
-        if (BI.isNotNull(widgetBackground) && BI.isNotNull(widgetBackground.type)) {
-            if (widgetBackground.type == 1) {
-                this.element.css("background", widgetBackground.value);
-            }
-            if (widgetBackground.type == 2) {
-                this.element.css({
-                    background: "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + widgetBackground.value + ")"
-                    //backgroundSize: "100%"
-                })
-            }
-        }
-        if (BI.isNotNull(titleBackground) && BI.isNotNull(titleBackground.type)) {
-            if (titleBackground.type == 1) {
-                this.title.element.css("background", titleBackground.value);
-            }
-            if (titleBackground.type == 2) {
-                this.title.element.css({
-                    background: "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + titleBackground.value + ")"
-                    // backgroundSize: "100%"
-                })
-            }
-        }
-        if (BI.isNotNull(titleFont)) {
-            this.title.element.find(".shelter-editor-text .bi-text").css(titleFont);
-            this._refreshTitlePosition();
-        }
+        this._refreshTitlePosition();
     },
 
     _refreshTableAndFilter: function () {

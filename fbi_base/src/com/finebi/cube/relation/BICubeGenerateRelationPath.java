@@ -1,7 +1,7 @@
 package com.finebi.cube.relation;
 
 import com.fr.bi.stable.exception.BITablePathEmptyException;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -36,7 +36,7 @@ public class BICubeGenerateRelationPath {
             copyPath.removeLastRelation();
             dependRelationPathSet.add(copyPath);
         } catch (BITablePathEmptyException e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
 
     }

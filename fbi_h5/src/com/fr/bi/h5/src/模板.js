@@ -1,8 +1,12 @@
-import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
-import ReactDOM from 'react-dom'
+import {findDOMNode} from 'react-dom'
+import Immutable from 'immutable'
 
-import {cn, sc, isNil, requestAnimationFrame, emptyFunction, shallowEqual, isEqual, each} from 'core'
+import {
+    ReactComponentWithPureRenderMixin, ReactComponentWithImmutableRenderMixin,
+    cn, sc, math, isNil, emptyFunction, shallowEqual, immutableShallowEqual, isEqual, isEmpty, each,
+    translateDOMPositionXY, requestAnimationFrame
+} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -12,17 +16,18 @@ import React, {
     ListView,
     View,
     Fetch,
-    Promise
+    Promise,
+    TouchableHighlight
 } from 'lib'
 
-import {Colors, Template} from 'data'
+import {Colors, Size, Template, Widget, Dimension, Target} from 'data'
 
-import {Icon, Table, AutoSizer} from 'base'
+import {CenterLayout, Icon, Table} from 'base'
 
 import {MultiSelectorWidget} from 'widgets'
 
 
-class TableWidget extends Component {
+class TableComponent extends Component {
     constructor(props, context) {
         super(props, context);
     }
@@ -33,6 +38,10 @@ class TableWidget extends Component {
 
     state = {};
 
+    _getNextState(props, state = {}) {
+
+    }
+
     componentWillMount() {
 
     }
@@ -41,24 +50,34 @@ class TableWidget extends Component {
 
     }
 
-    componentWillReceiveProps() {
-
-    }
-
-    componentWillUpdate() {
-
-    }
-
     render() {
         const {...props} = this.props, {...state} = this.state;
-        return <View></View>
+        return <View style={styles.wrapper}>
+
+        </View>
+    }
+
+    componentWillReceiveProps(nextProps) {
+
+    }
+
+    componentWillUpdate(nextProps, nextState) {
+
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+
+    }
+
+    componentWillUnmount() {
+
     }
 
 }
-mixin.onClass(TableWidget, PureRenderMixin);
+mixin.onClass(TableComponent, ReactComponentWithPureRenderMixin);
 const styles = StyleSheet.create({
-    region: {
-        position: 'absolute'
+    wrapper: {
+        flex: 1
     }
 });
-export default TableWidget
+export default TableComponent

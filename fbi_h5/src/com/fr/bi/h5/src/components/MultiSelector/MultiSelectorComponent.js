@@ -1,8 +1,7 @@
-import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
 
-import {requestAnimationFrame, emptyFunction} from 'core'
+import {ReactComponentWithImmutableRenderMixin, requestAnimationFrame, emptyFunction} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -11,11 +10,11 @@ import React, {
     ListView,
     View,
     Fetch
-    } from 'lib'
+} from 'lib'
 
 import {Table, AutoSizer} from 'base'
 
-import {Template} from 'data'
+import {Template, Widget} from 'data'
 
 import {MultiSelectorWidget} from 'widgets'
 
@@ -27,7 +26,9 @@ class MultiSelectorComponent extends Component {
 
     static propTypes = {};
 
-    static defaultProps = {};
+    static defaultProps = {
+        onValueChange: emptyFunction
+    };
 
     state = {};
 
@@ -49,24 +50,31 @@ class MultiSelectorComponent extends Component {
 
     render() {
         const {...props} = this.props;
-        const items = [];
-        for (let i = 0; i < 1000; i++) {
-            items.push({
-                value: i
-            })
-        }
+        const wId = props.wId;
+        const template = new Template(props.$template);
+        const widget = template.getWidgetById(wId);
         return <MultiSelectorWidget
-            items={items}
+            style={styles.wrapper}
+            type={widget.getSelectType()}
+            value={widget.getSelectValue()}
+            itemsCreator={(options)=> {
+                return widget.getData(options);
+            }}
             width={props.width}
             height={props.height}
-            >
+            onValueChange={(value)=> {
+                widget.setValue(value);
+                template.setWidget(wId, widget);
+                this.props.onValueChange(template.$get());
+            }}
+        >
         </MultiSelectorWidget>
     }
 }
-mixin.onClass(MultiSelectorComponent, PureRenderMixin);
+mixin.onClass(MultiSelectorComponent, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
-    region: {
-        position: 'absolute'
+    wrapper: {
+        backgroundColor: '#fff'
     }
 });
 export default MultiSelectorComponent

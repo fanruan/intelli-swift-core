@@ -5,7 +5,7 @@
  * @class FS.StyleSetting
  * @extends BI.Widget
  */
-FS.StyleSetting = BI.inherit(BI.Widget, {
+FS.StyleSetting = BI.inherit(FR.Widget, {
 
     _defaultConfig: function () {
         return BI.extend(FS.StyleSetting.superclass._defaultConfig.apply(this, arguments), {
@@ -22,7 +22,7 @@ FS.StyleSetting = BI.inherit(BI.Widget, {
 
         BI.createWidget({
             type: "bi.vertical",
-            element: this.element,
+            element: this.options.renderEl,
             items: [style, color, preview]
         });
     },

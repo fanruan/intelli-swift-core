@@ -8,7 +8,7 @@ import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.relation.*;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITableAbsentException;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 
 import java.io.File;
@@ -27,9 +27,8 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
     private Set<CubeTableSource> allSingleSources = new HashSet<CubeTableSource>();
     private Set<BIBusinessTable> newTables;
     protected Set<CubeTableSource> newTableSources = new HashSet<CubeTableSource>();
-    private Set<BITableRelation> newRelations;
+    private Set<BITableRelation> relationSet = new HashSet<BITableRelation>();
     private Set<List<Set<CubeTableSource>>> dependTableResource;
-    private Set<BITableRelation> tableRelationSet = new HashSet<BITableRelation>();
     private Set<BITableSourceRelation> biTableSourceRelationSet = new HashSet<BITableSourceRelation>();
     private Set<BICubeGenerateRelation> cubeGenerateRelationSet = new HashSet<BICubeGenerateRelation>();
     private Set<BITableSourceRelationPath> biTableSourceRelationPathSet = new HashSet<BITableSourceRelationPath>();
@@ -39,7 +38,7 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
     public CubeBuildByPart(long userId, Set<BIBusinessTable> newTables, Set<BITableRelation> newRelations) {
         super(userId);
         this.userId = userId;
-        this.newRelations = newRelations;
+        this.relationSet = newRelations;
         this.newTables = newTables;
         try {
             setRelations();
@@ -47,7 +46,7 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
             setRelationPath();
             calculateRelationDepends();
         } catch (BITableAbsentException e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
     }
 
@@ -56,12 +55,7 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
         for (BITableSourceRelation biTableSourceRelation : this.getTableSourceRelationSet()) {
             this.cubeGenerateRelationSet.add(calculateDependTool.calRelations(biTableSourceRelation, this.getAllSingleSources()));
         }
-        for (BITableSourceRelationPath biTableSourceRelationPath : this.getBiTableSourceRelationPathSet()) {
-            BICubeGenerateRelationPath path = calculateDependTool.calRelationPath(biTableSourceRelationPath, this.biTableSourceRelationSet);
-            if (null != path) {
-                cubeGenerateRelationPathSet.add(path);
-            }
-        }
+        cubeGenerateRelationPathSet = calculateDependTool.calRelationPath(this.getBiTableSourceRelationPathSet(), this.biTableSourceRelationSet);
     }
 
     protected void setResourcesAndDepends() throws BITableAbsentException {
@@ -75,12 +69,11 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
     }
 
     private void setRelations() {
-
-        Iterator<BITableRelation> iterator = newRelations.iterator();
+        Iterator<BITableRelation> iterator = relationSet.iterator();
         while (iterator.hasNext()) {
             BITableRelation relation = iterator.next();
             BITableSourceRelation sourceRelation = convertRelation(relation);
-            if (null!=sourceRelation) {
+            if (null != sourceRelation) {
                 biTableSourceRelationSet.add(sourceRelation);
                 newTableSources.add(sourceRelation.getForeignTable());
                 newTableSources.add(sourceRelation.getPrimaryTable());
@@ -92,9 +85,17 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
     private void setRelationPath() {
         for (BITableRelationPath path : allRelationPathSet) {
             try {
-                BITableSourceRelationPath relationPath = convertPath(path);
-                if (null != relationPath) {
-                    biTableSourceRelationPathSet.add(relationPath);
+                boolean containsRelation = false;
+                for (BITableRelation relation : relationSet) {
+                    if (path.containsRelation(relation)) {
+                        containsRelation = true;
+                    }
+                }
+                if (containsRelation) {
+                    BITableSourceRelationPath relationPath = convertPath(path);
+                    if (null != relationPath) {
+                        biTableSourceRelationPathSet.add(relationPath);
+                    }
                 }
             } catch (Exception e) {
                 continue;
@@ -115,7 +116,7 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
                 BIFileUtils.copyFolder(new File(advancedConf.getRootURI().getPath()), new File(tempConf.getRootURI().getPath()));
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
         return true;
     }
@@ -142,7 +143,7 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
 
     @Override
     public Set<BITableRelation> getTableRelationSet() {
-        return this.tableRelationSet;
+        return this.relationSet;
     }
 
     public Set<BICubeGenerateRelationPath> getCubeGenerateRelationPathSet() {

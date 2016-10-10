@@ -16,7 +16,7 @@ import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BIRelationAbsentException;
 import com.fr.bi.stable.exception.BITableAbsentException;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -50,9 +50,9 @@ public class BICubeGenerateUtils {
                     }
                 }
             } catch (BITableAbsentException e) {
-                BILogger.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().error(e.getMessage());
             } catch (BIRelationAbsentException e) {
-                BILogger.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().error(e.getMessage());
             }
         }
         return newRelationSet;

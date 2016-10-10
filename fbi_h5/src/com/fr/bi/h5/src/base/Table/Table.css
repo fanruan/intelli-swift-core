@@ -192,14 +192,14 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout-main {
 }
 
 .public-fixedDataTable-header .public-fixedDataTableCell-main {
-    font-weight: bold;
+
 }
 
 .public-fixedDataTable-header,
 .public-fixedDataTable-header .public-fixedDataTableCell-main {
-    background-color: #f6f7f8;
-    background-image: -webkit-linear-gradient(#fff, #efefef);
-    background-image: linear-gradient(#fff, #efefef);
+    /*background-color: #f6f7f8;*/
+    /*background-image: -webkit-linear-gradient(#fff, #efefef);*/
+    /*background-image: linear-gradient(#fff, #efefef);*/
 }
 
 .public-fixedDataTable-footer .public-fixedDataTableCell-main {

@@ -212,46 +212,15 @@ BIDezi.PaneView = BI.inherit(BI.View, {
             window.location.href = FR.servletURL + "?op=fr_bi&cmd=bi_init&id=" + reportId + "&createBy=" + createBy;
         });
 
-        var globalStyleButton = BI.createWidget({
-            type: "bi.icon_text_item",
-            cls: "toolbar-global-style-font",
-            height: 30,
-            text: BI.i18nText("BI-Global_Style"),
-            width: 90
+        this.globalStyle = BI.createWidget({
+            type: "bi.global_style"
         });
-        globalStyleButton.setVisible(false);
-
-        globalStyleButton.on(BI.Button.EVENT_CHANGE, function () {
-            var cacheGS = {};
-            if (BI.isNull(self.globalStyle)) {
-                self.globalStyle = BI.createWidget({
-                    type: "bi.global_style"
-                });
-                var v = BI.Utils.getGlobalStyle();
-                if (BI.isNull(v.predictionValue)) {
-                    self._initGlobalStyle();
-                }
-                cacheGS = self.model.get("globalStyle");
-                self.globalStyle.on(BI.GlobalStyle.EVENT_PREVIEW, function () {
-                    var gs = this.getValue();
-                    self.model.set("globalStyle", gs);
-                    self._refreshGlobalStyle(gs);
-                    BI.Broadcasts.send(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, gs);
-                });
-                self.globalStyle.on(BI.GlobalStyle.EVENT_SAVE, function () {
-                    var gs = this.getValue();
-                    cacheGS = gs;
-                    self.model.set("globalStyle", gs);
-                    self._refreshGlobalStyle(gs);
-                });
-                self.globalStyle.on(BI.GlobalStyle.EVENT_CANCEL, function () {
-                    self.model.set("globalStyle", cacheGS);
-                    self._refreshGlobalStyle(cacheGS);
-                    BI.Broadcasts.send(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, cacheGS);
-                });
-            } else {
-                self.globalStyle.populate();
-            }
+        this.globalStyle.on(BI.GlobalStyle.EVENT_SET, function (v) {
+            self.model.set("globalStyle", v);
+            BI.Broadcasts.send(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, v);
+        });
+        this.globalStyle.on(BI.GlobalStyle.EVENT_CHART_CHANGE, function () {
+            self._refreshWidgets(true);
         });
         return BI.createWidget({
             type: "bi.absolute",
@@ -270,16 +239,16 @@ BIDezi.PaneView = BI.inherit(BI.View, {
                 top: 0,
                 left: 270
             }, {
-                el: globalStyleButton,
-                top: 3,
-                left: 360
+                el: this.globalStyle,
+                top: 0,
+                left: 370
             }]
         })
     },
 
     _refreshButtons: function () {
         var operatorIndex = this.model.get("getOperatorIndex");
-        var records = Data.SharingPool.cat("records") || new BI.Queue(30);
+        var records = Data.SharingPool.cat("records") || new BI.Queue(10);
         //模拟一下change的时候发生的事（坑爹的回调里做的事，没办法这边实时拿到）
         //避免改对象
         var imitationRecords = BI.makeArray(records.size(), "");
@@ -302,27 +271,6 @@ BIDezi.PaneView = BI.inherit(BI.View, {
         }
     },
 
-    _initGlobalStyle: function () {
-        this.model.set("globalStyle", BICst.GLOBALPREDICTIONSTYLE.DEFAULT);
-    },
-
-    _refreshGlobalStyle: function (gs) {
-        var globalStyle = gs || this.model.get("globalStyle");
-
-        if (BI.isNotNull(globalStyle.mainBackground)) {
-            if (globalStyle.mainBackground.type == 1) {
-                this.dashboard.element.find(".fit-dashboard").css("background", globalStyle.mainBackground.value);
-            }
-            if (globalStyle.mainBackground.type == 2) {
-                this.dashboard.element.find(".fit-dashboard").css({
-                    background: "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + globalStyle.mainBackground.value + ")"
-                    //backgroundSize: "100%"
-                });
-            }
-        }
-
-        this._refreshWidgets(true);
-    },
 
     _createDashBoard: function () {
         var self = this;
@@ -354,10 +302,9 @@ BIDezi.PaneView = BI.inherit(BI.View, {
     },
 
     refresh: function () {
+        this.globalStyle.populate();
         this._refreshButtons();
         this.dashboard.populate();
         this._refreshWidgets();
-
-        this._refreshGlobalStyle();
     }
 });

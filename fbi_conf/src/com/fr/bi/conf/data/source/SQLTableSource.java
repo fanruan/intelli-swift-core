@@ -8,7 +8,7 @@ import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.db.ServerLinkInformation;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.DecryptBi;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.json.JSONObject;
 
 /**
@@ -82,7 +82,7 @@ public class SQLTableSource extends ServerTableSource {
             ServerLinkInformation serverLinkInformation = new ServerLinkInformation(getSqlConnection(), getQuery());
             return serverLinkInformation.createDBTableData();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }

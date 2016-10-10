@@ -62,19 +62,10 @@ public class Service4BIConfigure extends NoSessionIDService {
             new BIModifyDataLinkAction(),
 
 
-            new BIRemoveTableSettedExcelAction(),
             new BIGetPreviewTableDataConfAction(),
             new BIImportDBTableConnectionAction(),
 
-            new BIImportExcel4SetField(),
-            new BISetTableFieldAction(),
-            new BIGetTableExcelFieldAction(),
-            new BISaveExcelViewAction(),
-
             new BIGetTransFromDBAction(),
-
-            new BIGetFieldsInNewTableAction(),
-
 
             new BIModifyGlobalUpdateSettingAction(),
             new BIGetCubeGenerateStatusAction(),
@@ -117,62 +108,65 @@ public class Service4BIConfigure extends NoSessionIDService {
             new BIGetFieldValueByFieldIdAction(),
             new BISaveLoginFieldAction(),
             new BIPersistTableInfoAction(),
-            new BICacheClearAction()
+            new BICacheClearAction(),
+            new BIUserMapCacheClearAction(),
+            new BIChildMapClearAction(),
+            new BIRemoveTableInUseCheckAction()
 
-    };
+};
 
-    /**
-     * 返回
-     *
-     * @return 名称
-     */
-    @Override
-    public String actionOP() {
-        return "fr_bi_configure";
-    }
+/**
+ * 返回
+ *
+ * @return 名称
+ */
+@Override
+public String actionOP(){
+        return"fr_bi_configure";
+        }
 
-    /**
-     * 处理HTTP请求
-     *
-     * @param req HTTP请求
-     * @param res HTTP响应
-     * @param op  op参数值
-     * @throws Exception
-     */
-    @Override
-    public void process(HttpServletRequest req, HttpServletResponse res,
-                        String op) throws Exception {
+/**
+ * 处理HTTP请求
+ *
+ * @param req HTTP请求
+ * @param res HTTP响应
+ * @param op  op参数值
+ * @throws Exception
+ */
+@Override
+public void process(HttpServletRequest req,HttpServletResponse res,
+        String op)throws Exception{
         FSContext.initData();
-        res.setHeader("Pragma", "No-cache");
-        res.setHeader("Cache-Control", "no-cache, no-store");
-        res.setDateHeader("Expires", -10);
+        res.setHeader("Pragma","No-cache");
+        res.setHeader("Cache-Control","no-cache, no-store");
+        res.setDateHeader("Expires",-10);
         dealServletPriviousUrl(req);
-        PrivilegeVote vote = getFSVote(req, res);
-        FSAuthentication authentication = FSAuthenticationManager.exAuth4FineServer(req);
-        if (!vote.isPermitted() && (authentication == null || !authentication.isRoot())) {
-            vote.action(req, res);
-            return;
+        PrivilegeVote vote=getFSVote(req,res);
+        FSAuthentication authentication=FSAuthenticationManager.exAuth4FineServer(req);
+        if(!vote.isPermitted()&&(authentication==null||!authentication.isRoot())){
+        vote.action(req,res);
+        return;
         }
-        long userId = ServiceUtils.getCurrentUserID(req);
-        if (UserControl.getInstance().hasModulePrivilege(userId, FSConstants.MODULEID.BI)) {
-            WebActionsDispatcher.dealForActionNoSessionIDCMD(req, res, actions);
+        long userId=ServiceUtils.getCurrentUserID(req);
+        if(UserControl.getInstance().hasModulePrivilege(userId,FSConstants.MODULEID.BI)){
+        WebActionsDispatcher.dealForActionNoSessionIDCMD(req,res,actions);
         }
-    }
+        }
 
-    private void dealServletPriviousUrl(HttpServletRequest req) {
-        String cmd = WebUtils.getHTTPRequestParameter(req, "cmd");
-        if (ComparatorUtils.equals(cmd, BIInitConfigurePaneAction.CMD)) {
-            BIServiceUtil.setPreviousUrl(req);
+private void dealServletPriviousUrl(HttpServletRequest req){
+        String cmd=WebUtils.getHTTPRequestParameter(req,"cmd");
+        if(ComparatorUtils.equals(cmd,BIInitConfigurePaneAction.CMD)){
+        BIServiceUtil.setPreviousUrl(req);
         }
-    }
+        }
 
-    private PrivilegeVote getFSVote(HttpServletRequest req, HttpServletResponse res) throws Exception {
-        FSAuthentication authen = FSAuthenticationManager.exAuth4FineServer(req);
-        if (authen == null) {
-            //b:to improve
-            AbstractFSAuthService.dealCookie(req, res);
-            authen = FSAuthenticationManager.exAuth4FineServer(req);
+private PrivilegeVote getFSVote(HttpServletRequest req,HttpServletResponse res)throws Exception{
+        FSAuthentication authen=FSAuthenticationManager.exAuth4FineServer(req);
+        if(authen==null){
+        //b:to improve
+        AbstractFSAuthService.dealCookie(req,res);
+        authen=FSAuthenticationManager.exAuth4FineServer(req);
         }
         return FSManager.getFSKeeper().access(authen);
-    }
-}
+        }
+        }

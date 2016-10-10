@@ -11,7 +11,7 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.utils.CubeBaseUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONObject;
 
@@ -62,7 +62,7 @@ public abstract class AbstractCubeTask implements CubeTask {
     public void end() {
         end = new Date();
         BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
-        BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), cubeBuild.getTableRelationSet());
+        BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId());
         BIConfigureManagerCenter.getLogManager().logEnd(getUserId());
     }
 
@@ -87,7 +87,7 @@ public abstract class AbstractCubeTask implements CubeTask {
         }
 
         //多线程取数
-        BILogger.getLogger().info("start sync data from database");
+        BILoggerFactory.getLogger().info("start sync data from database");
         long start = System.currentTimeMillis();
             List<IndexGenerator> threadList = new ArrayList<IndexGenerator>();
         for (Map.Entry<Integer, Set<CubeTableSource>> entry : tables.entrySet()) {
@@ -102,11 +102,11 @@ public abstract class AbstractCubeTask implements CubeTask {
             try {
                 CubeBaseUtils.invokeCubeThreads(ilist);
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
 
-        BILogger.getLogger().info("data sync complete! cost :" + DateUtils.timeCostFrom(start));
+        BILoggerFactory.getLogger().info("data sync complete! cost :" + DateUtils.timeCostFrom(start));
 
         BIConfigureManagerCenter.getLogManager().logIndexStart(biUser.getUserId());
         //生成索引

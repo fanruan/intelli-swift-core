@@ -187,7 +187,7 @@ class TouchableHighlight extends Component {
             accessibilityComponentType={this.props.accessibilityComponentType}
             accessibilityTraits={this.props.accessibilityTraits}
             ref={UNDERLAY_REF}
-            style={this.state.underlayStyle}
+            style={[this.props.style, this.state.underlayStyle]}
             onLayout={this.props.onLayout}
             onStartShouldSetResponder={this.touchableHandleStartShouldSetResponder.bind(this)}
             onResponderTerminationRequest={this.touchableHandleResponderTerminationRequest.bind(this)}

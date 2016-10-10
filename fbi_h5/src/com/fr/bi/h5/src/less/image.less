@@ -82,7 +82,7 @@
   }
 }
 
-.font-active(@class,@content,@color-native: @color-bi-font-native, @color-active: @color-bi-font-active) {
+.font-press(@class,@content,@color-native: @color-bi-font-native, @color-press: @color-bi-font-active) {
   .@{class} {
     & .b-font:before {
       content: @content;
@@ -91,7 +91,48 @@
 
     &.active .b-font:before {
       content: @content;
+      color: @color-press;
+    }
+    &.disabled .b-font:before {
+      content: @content;
+      color: @color-native;
+    }
+  }
+}
+
+.font-active(@class,@content,@color-native: @color-bi-font-native, @color-active: @color-bi-font-active) {
+  .@{class} {
+    & .b-font:before {
+      content: @content;
+      color: @color-native;
+    }
+
+    &:active .b-font:before {
+      content: @content;
       color: @color-active;
+    }
+    &.disabled .b-font:before {
+      content: @content;
+      color: @color-native;
+    }
+  }
+}
+
+.font-custom(@class,@content,@content-active,@content-press, @color-native: @color-bi-font-native, @color-active: @color-bi-font-native, @color-press: @color-bi-font-active) {
+  .@{class} {
+    & .b-font:before {
+      content: @content;
+      color: @color-native;
+    }
+
+    &:active .b-font:before {
+      content: @content-active;
+      color: @color-active;
+    }
+
+    &.active .b-font:before {
+      content: @content-press;
+      color: @color-press;
     }
     &.disabled .b-font:before {
       content: @content;

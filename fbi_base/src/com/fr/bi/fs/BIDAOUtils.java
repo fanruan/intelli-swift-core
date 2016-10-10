@@ -1,6 +1,6 @@
 package com.fr.bi.fs;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.data.impl.EmbeddedTableData;
 import com.fr.fs.base.entity.User;
 import com.fr.fs.control.UserControl;
@@ -112,7 +112,7 @@ public class BIDAOUtils {
         try {
             users = UserControl.getInstance().getOpenDAO(BISharedReportDAO.class).findUsersByReport(reportId, createBy);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return users;
     }

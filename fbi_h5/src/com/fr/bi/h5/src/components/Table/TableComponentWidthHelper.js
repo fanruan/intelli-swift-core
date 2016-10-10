@@ -1,4 +1,4 @@
-import {each, sum} from 'core';
+import {each, math} from 'core';
 
 const REMAIN_WIDTH = 8;
 
@@ -8,6 +8,34 @@ function sumBy(array, it) {
         res += it(width, i);
     });
     return res;
+}
+
+//最小二乘法  fx=bx+a
+function fit(widths) {
+    if (widths.length < 2) {
+        return {a: widths[0], b: 0};
+    }
+    const $11 = widths.length;
+    const $12 = (1 + widths.length) * widths.length / 2;
+    const $21 = $12;
+    const $22 = sumBy(widths, (width, i)=> {
+        return (i + 1) * (i + 1);
+    });
+    const f1 = math.sum(widths);
+    const f2 = sumBy(widths, (width, i)=> {
+        return (i + 1) * width;
+    });
+    return {
+        a: (f2 * $12 - f1 * $22) / ($12 * $21 - $11 * $22),
+        b: (f2 * $11 - f1 * $21) / ($11 * $22 - $21 * $12)
+    }
+}
+
+//获取字符宽度
+function getGBWidth(str) {
+    str = str + '';
+    str = str.replace(/[^\x00-\xff]/g, 'xx');
+    return Math.ceil(str.length / 2);
 }
 
 class TableComponentWidthHelper {
@@ -30,36 +58,10 @@ class TableComponentWidthHelper {
         }
     }
 
-    fit(widths) {
-        if (widths.length < 2) {
-            return {a: widths[0], b: 0};
-        }
-        const $11 = widths.length;
-        const $12 = (1 + widths.length) * widths.length / 2;
-        const $21 = $12;
-        const $22 = sumBy(widths, (width, i)=> {
-            return (i + 1) * (i + 1);
-        });
-        const f1 = sum(widths);
-        const f2 = sumBy(widths, (width, i)=> {
-            return (i + 1) * width;
-        });
-        return {
-            a: (f2 * $12 - f1 * $22) / ($12 * $21 - $11 * $22),
-            b: (f2 * $11 - f1 * $21) / ($11 * $22 - $21 * $12)
-        }
-    }
-
-    getGBWidth(str) {
-        str = str + '';
-        str = str.replace(/[^\x00-\xff]/g, 'xx');
-        return str.length;
-    }
-
     getWidthsByOneCol(col) {
         const widths = [];
         each(col, (item)=> {
-            widths.push(this.getGBWidth(item.text));
+            widths.push(getGBWidth(item.text));
         });
         return widths;
     }
@@ -71,9 +73,9 @@ class TableComponentWidthHelper {
         if (widths.length === 1) {
             return [this.width];
         }
-        const allWidth = sum(widths);
+        const allWidth = math.sum(widths);
         if (this.helper.isFreeze()) {
-            const halfWidth = Math.floor(this.width / 2);
+            const halfWidth = math.floor(this.width / 2);
             if (widths[0] > halfWidth) {
                 if (allWidth + halfWidth - widths[0] < this.width) {
                     const shared = Math.floor((halfWidth - (allWidth - widths[0] / (widths.length - 1))));
@@ -86,7 +88,7 @@ class TableComponentWidthHelper {
                 widths[0] = halfWidth;
             } else {
                 if (allWidth < this.width) {
-                    const shared = Math.floor((this.width - allWidth) / widths.length);
+                    const shared = math.floor((this.width - allWidth) / widths.length);
                     for (let i = 0; i < widths.length; i++) {
                         widths[i] += shared;
                     }
@@ -99,7 +101,7 @@ class TableComponentWidthHelper {
             }
         } else {
             if (allWidth < this.width) {
-                const shared = Math.floor((this.width - allWidth) / widths.length);
+                const shared = math.floor((this.width - allWidth) / widths.length);
                 for (let i = 0; i < widths.length; i++) {
                     widths[i] += shared;
                 }
@@ -112,7 +114,8 @@ class TableComponentWidthHelper {
     getWidth() {
         const result = [];
         each(this.items, (col)=> {
-            result.push(Math.ceil(this.fit(this.getWidthsByOneCol(col)).a * 14 * 1.2) + REMAIN_WIDTH);
+            const fx = fit(this.getWidthsByOneCol(col));
+            result.push(math.ceil((fx.a + fx.b * math.ceil((1 + col.length) / 2)) * 14 * 1.2) + REMAIN_WIDTH);
         });
         return this.adjustWidth(result);
     }

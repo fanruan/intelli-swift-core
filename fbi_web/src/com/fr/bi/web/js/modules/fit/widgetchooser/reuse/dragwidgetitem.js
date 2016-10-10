@@ -138,7 +138,7 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                 o.drag.apply(self, [widget.bounds, ui.position, result]);
             },
             stop: function (e, ui) {
-                var dimensionsAndView = self._createDimensionsAndView(widget);
+                var dimensionsAndView = self._createDimensionsAndView(BI.deepClone(widget));
                 result.dimensions = dimensionsAndView.dimensions;
                 result.view = dimensionsAndView.view;
                 //组件表头上指标的排序和过滤
@@ -211,6 +211,17 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                     filter.target_id = result.id;
                 }else{
                     filter.target_id = newId;
+                }
+            }
+            //维度公式过滤所用到的指标ID也要替换掉
+            if(BI.has(oldFilter, "formula_ids")){
+                var ids = oldFilter.formula_ids || [];
+                if(BI.isNotEmptyArray(ids) && BI.isNull(BI.Utils.getFieldTypeByID(ids[0]))){
+                    BI.each(ids, function (id, tId) {
+                        var result = self._createDimensionsAndTargets(tId);
+                        filter.filter_value = filter.filter_value.replaceAll(tId, result.id);
+                        filter.formula_ids[id] = result.id;
+                    });
                 }
             }
         }

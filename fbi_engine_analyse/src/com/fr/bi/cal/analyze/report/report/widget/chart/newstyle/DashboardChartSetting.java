@@ -12,11 +12,16 @@ public class DashboardChartSetting extends BIAbstractChartSetting {
 
     private JSONObject config;
     private JSONArray gaugeAxis;
+    private final String[] DASHBOARD_DEFAULT_COLOR = new String[]{
+            BIChartSettingConstant.LENEGD_DEFAULT_COLOR.COLOR_A,
+            BIChartSettingConstant.LENEGD_DEFAULT_COLOR.COLOR_B,
+            BIChartSettingConstant.LENEGD_DEFAULT_COLOR.COLOR_C,
+    };
 
-    public DashboardChartSetting() throws JSONException{
+    public DashboardChartSetting() throws JSONException {
         this.gaugeAxis = new JSONArray().put(new JSONObject().put("minorTickColor", "rgb(226,226,226)")
-        .put("tickColor", "rgb(186,186,186)").put("labelStyle", this.getFontStyle())
-        .put("step", 0).put("showLabel", true));
+                .put("tickColor", "rgb(186,186,186)").put("labelStyle", this.getFontStyle())
+                .put("step", 0).put("showLabel", true));
     }
 
     @Override
@@ -36,15 +41,15 @@ public class DashboardChartSetting extends BIAbstractChartSetting {
         return this.formatConfig(options, items);
     }
 
-    private JSONArray getBandsStyles(JSONArray items, JSONArray styles, int change) throws JSONException{
+    private JSONArray getBandsStyles(JSONArray items, JSONArray styles, int change) throws JSONException {
         double min = 0;
         String color = "";
         double max = Double.NaN;
         double conditionMax = Double.NaN;
         JSONArray bands = new JSONArray();
-        for(int i = 0; i < items.length(); i++){
+        for (int i = 0; i < items.length(); i++) {
             JSONObject data = items.getJSONObject(i).getJSONArray("data").getJSONObject(0);
-            if(max == Double.NaN || data.getDouble("y") > max){
+            if (max == Double.NaN || data.getDouble("y") > max) {
                 max = data.getDouble("y");
             }
         }
@@ -55,7 +60,7 @@ public class DashboardChartSetting extends BIAbstractChartSetting {
                 if (styles.length() == 0) {
                     return bands;
                 } else {
-                    for(int i = 0; i < styles.length(); i++){
+                    for (int i = 0; i < styles.length(); i++) {
                         JSONObject style = styles.getJSONObject(i);
                         bands.put(new JSONObject().put("color", style.getString("color"))
                                 .put("from", style.getJSONObject("range").getDouble("min"))
@@ -77,7 +82,7 @@ public class DashboardChartSetting extends BIAbstractChartSetting {
 
     }
 
-    private void setPlotOptions(String style, JSONArray bands, JSONObject valueLabel, JSONObject percentageLabel, String thermometerLayout, String layout) throws JSONException{
+    private void setPlotOptions(String style, JSONArray bands, JSONObject valueLabel, JSONObject percentageLabel, String thermometerLayout, String layout) throws JSONException {
         JSONObject plotOptions = config.getJSONObject("plotOptions");
         plotOptions.put("style", style);
         plotOptions.put("bands", bands);
@@ -87,67 +92,75 @@ public class DashboardChartSetting extends BIAbstractChartSetting {
         plotOptions.put("layout", layout);
     }
 
-    private void changeMaxMinScale(JSONObject options) throws JSONException{
-        this.gaugeAxis.getJSONObject(0).put("min", options.optDouble("min_scale"));
-        this.gaugeAxis.getJSONObject(0).put("max", options.optDouble("max_scale"));
+    private void changeMaxMinScale(JSONObject options) throws JSONException {
+        if (!Double.isNaN(options.optDouble("min_scale"))) {
+            this.gaugeAxis.getJSONObject(0).put("min", options.optDouble("min_scale"));
+        }
+        if (!Double.isNaN(options.optDouble("max_scale"))) {
+            this.gaugeAxis.getJSONObject(0).put("max", options.optDouble("max_scale"));
+        }
     }
 
     public void formatNumberLevelInDashboardAxis(JSONObject config, JSONObject options, JSONArray items, int position, String formatter) throws JSONException {
         super.formatNumberLevelInYaxis(config, items, options.getInt("dashboard_number_level"), position, formatter);
         JSONObject plotOptions = config.getJSONObject("plotOptions");
         plotOptions.getJSONObject("tooltip").getJSONObject("formatter")
-        .put("valueFormat", "function () {" +
-            "return " + BIChartSettingConstant.CUSTOM_FORMAT.VALUEFORMAT + getXYAxisTitle(options.getInt("dashboard_number_level"), position, true, options.getString("dashboard_unit"), "") +
-        ";}");
+                .put("valueFormat", "function () {" +
+                        "return " + BIChartSettingConstant.CUSTOM_FORMAT.VALUEFORMAT + getXYAxisTitle(options.getInt("dashboard_number_level"), position, true, options.getString("dashboard_unit"), "") +
+                        ";}");
         if (options.getBoolean("num_separators")) {
             plotOptions.getJSONObject("tooltip").getJSONObject("formatter")
-            .put("valueFormat", "function () {" +
-                "return " + BIChartSettingConstant.CUSTOM_FORMAT.NUMSEPARATORS +
-            ";}");
+                    .put("valueFormat", "function () {" +
+                            "return " + BIChartSettingConstant.CUSTOM_FORMAT.NUMSEPARATORS +
+                            ";}");
         }
         if (options.getInt("dashboard_number_level") == BIChartSettingConstant.CHART_TARGET_STYLE.NUM_LEVEL.PERCENT) {
             plotOptions.getJSONObject("tooltip").getJSONObject("formatter")
                     .put("valueFormat", "function () {" +
-                            "return "+ BIChartSettingConstant.CUSTOM_FORMAT.PERCENTVALUEFORMAT +";" +
+                            "return " + BIChartSettingConstant.CUSTOM_FORMAT.PERCENTVALUEFORMAT + ";" +
                             "}");
             if (options.getBoolean("num_separators")) {
                 plotOptions.getJSONObject("tooltip").getJSONObject("formatter")
                         .put("valueFormat", "function () {" +
-                                "return "+ BIChartSettingConstant.CUSTOM_FORMAT.PERCENTNUMSEPARATORS +";" +
+                                "return " + BIChartSettingConstant.CUSTOM_FORMAT.PERCENTNUMSEPARATORS + ";" +
                                 "}");
             }
         }
     }
 
-    private void formatChartDashboardStyle(JSONObject options, JSONArray items) throws JSONException{
+    private void formatChartDashboardStyle(JSONObject options, JSONArray items) throws JSONException {
         JSONObject plotOptions = this.config.getJSONObject("plotOptions");
-        JSONArray bands = getBandsStyles(items, options.getJSONArray("bands_styles"), plotOptions.getInt("auto_custom_style"));
+        JSONArray bands_styles = options.optJSONArray("bands_styles");
+        if (bands_styles == null) {
+            bands_styles = initDefaultConfig();
+        }
+        JSONArray bands = getBandsStyles(items, bands_styles, options.optInt("auto_custom", BIChartSettingConstant.SCALE_SETTING.AUTO));
         JSONObject percentageLabel = plotOptions.getJSONObject("percentageLabel").put("enabled", options.getInt("show_percentage") == BIChartSettingConstant.PERCENTAGE.SHOW);
         JSONObject slotValueLAbel = new JSONObject();
         int numberLevel = options.getInt("dashboard_number_level");
         String value;
         String formatter;
-        if(BIChartSettingConstant.CHART_TARGET_STYLE.NUM_LEVEL.PERCENT == numberLevel){
-            if(options.getBoolean("num_separators")){
+        if (BIChartSettingConstant.CHART_TARGET_STYLE.NUM_LEVEL.PERCENT == numberLevel) {
+            if (options.getBoolean("num_separators")) {
                 value = BIChartSettingConstant.CUSTOM_FORMAT.PERCENTNUMSEPARATORS;
-            }else{
+            } else {
                 value = BIChartSettingConstant.CUSTOM_FORMAT.PERCENTVALUEFORMAT;
             }
-        }else{
-            if(options.getBoolean("num_separators")){
+        } else {
+            if (options.getBoolean("num_separators")) {
                 value = BIChartSettingConstant.CUSTOM_FORMAT.NUMSEPARATORS;
-            }else{
+            } else {
                 value = BIChartSettingConstant.CUSTOM_FORMAT.VALUEFORMAT;
             }
         }
-        if(options.getInt("chart_dashboard_type") == BIChartSettingConstant.CHART_SHAPE.VERTICAL_TUBE){
-            formatter = "'<div style=\"text-align: center\">' + this.category + '</div>' + '<div style=\"text-align: center\">' + this.seriesName + '</div>' + '<div style=\"text-align: center\">'" + value + "'</div>'";
-        }else{
-            formatter = "'<div style=\"text-align: center\">' + this.category + '</div>' + '<div style=\"text-align: center\">' + this.seriesName + '</div>' + '<div style=\"text-align: center\">'" + value +
+        if (options.getInt("chart_dashboard_type") == BIChartSettingConstant.CHART_SHAPE.VERTICAL_TUBE) {
+            formatter = "'<div style=\"text-align: center\">' + this.category + '</div>' + '<div style=\"text-align: center\">' + this.seriesName + '</div>' + '<div style=\"text-align: center\">'+" + value + "+'</div>'";
+        } else {
+            formatter = "'<div style=\"text-align: center\">' + this.category + '</div>' + '<div style=\"text-align: center\">' + this.seriesName + '</div>' + '<div style=\"text-align: center\">'+" + value + "+" +
                     getXYAxisTitle(options.getInt("dashboard_number_level"), BIChartSettingConstant.DASHBOARD_AXIS, true, options.getString("dashboard_unit"), "") + "'</div>'";
         }
-        slotValueLAbel.put("formatter", "function () { return "+ formatter +" }")
-                .put("style", options.getJSONObject("valueLabel").getString("style"))
+        slotValueLAbel.put("formatter", "function () { return " + formatter + " }")
+                .put("style", plotOptions.getJSONObject("valueLabel").getString("style"))
                 .put("useHtml", true);
 
         switch (options.getInt("chart_dashboard_type")) {
@@ -181,24 +194,24 @@ public class DashboardChartSetting extends BIAbstractChartSetting {
         if (options.getInt("dashboard_number_level") == BIChartSettingConstant.CHART_TARGET_STYLE.NUM_LEVEL.PERCENT) {
             plotOptions.getJSONObject("valueLabel").getJSONObject("formatter")
                     .put("valueFormat", "function () {" +
-                            "return "+ BIChartSettingConstant.CUSTOM_FORMAT.THISPERCENTVALUEFORMAT +
+                            "return " + BIChartSettingConstant.CUSTOM_FORMAT.THISPERCENTVALUEFORMAT +
                             ";}");
             String scaleString;
-            if(options.optBoolean("num_separators")){
+            if (options.optBoolean("num_separators")) {
                 scaleString = BIChartSettingConstant.CUSTOM_FORMAT.THISPERCENTNUMSEPARATORS;
-            }else{
+            } else {
                 scaleString = BIChartSettingConstant.CUSTOM_FORMAT.THISPERCENTVALUEFORMAT;
             }
             gaugeAxis.getJSONObject(0).put("formatter", "function () {" +
-                "return" + scaleString + getXYAxisTitle(options.getInt("dashboard_number_level"), BIChartSettingConstant.DASHBOARD_AXIS, true, options.getString("dashboard_unit"), "") +
-            ";}");
+                    "return " + scaleString + getXYAxisTitle(options.getInt("dashboard_number_level"), BIChartSettingConstant.DASHBOARD_AXIS, true, options.getString("dashboard_unit"), "") +
+                    ";}");
         } else {
             String v = "this";
-            if(options.getBoolean("num_separators")){
-                v = "BI.contentFormat(this, \"#,###\")";
+            if (options.getBoolean("num_separators")) {
+                v = "BH.contentFormat(this, \"#,###\")";
             }
             gaugeAxis.getJSONObject(0).put("formatter", "function () {" +
-                    "return" + v + getXYAxisTitle(options.getInt("dashboard_number_level"), BIChartSettingConstant.DASHBOARD_AXIS, true, options.getString("dashboard_unit"), "") +
+                    "return " + v + getXYAxisTitle(options.getInt("dashboard_number_level"), BIChartSettingConstant.DASHBOARD_AXIS, true, options.getString("dashboard_unit"), "") +
                     "}");
         }
     }
@@ -213,16 +226,16 @@ public class DashboardChartSetting extends BIAbstractChartSetting {
             JSONArray result = new JSONArray();
             if (options.getInt("number_of_pointer") == BIChartSettingConstant.ONE_POINTER && data.getJSONArray(0).length() == 1) {//单个系列
                 JSONObject series = data.getJSONArray(0).getJSONObject(0);
-                for(int i = 0; i < series.getJSONArray("data").length(); i++){
+                for (int i = 0; i < series.getJSONArray("data").length(); i++) {
                     JSONObject da = series.getJSONArray("data").getJSONObject(i);
                     result.put(new JSONObject().put("name", da.getString("x")).put("data", new JSONArray().put(da.put("x", series.getString("name")))));
                 }
                 return super.formatItems(new JSONArray().put(result), types, options);
             }
             if (options.getInt("number_of_pointer") == BIChartSettingConstant.MULTI_POINTER && data.getJSONArray(0).length() > 1) {//多个系列
-                for(int i = 0; i < data.length(); i++){
+                for (int i = 0; i < data.length(); i++) {
                     JSONArray item = data.getJSONArray(i);
-                    for(int j = 0; j < item.length(); j++){
+                    for (int j = 0; j < item.length(); j++) {
                         JSONObject it = item.getJSONObject(j);
                         JSONObject da = it.getJSONArray("data").getJSONObject(0);
                         da.put("x", it.getString("name"));
@@ -233,9 +246,9 @@ public class DashboardChartSetting extends BIAbstractChartSetting {
             }
         } else {
             JSONArray others = new JSONArray();
-            for(int i = 0; i < data.getJSONArray(0).length(); i++){
+            for (int i = 0; i < data.getJSONArray(0).length(); i++) {
                 JSONObject item = data.getJSONArray(0).getJSONObject(i);
-                for(int j = 0; j < item.getJSONArray("data").length(); j++){
+                for (int j = 0; j < item.getJSONArray("data").length(); j++) {
                     JSONObject da = item.getJSONArray("data").getJSONObject(j);
                     others.put(new JSONObject().put("name", da.getString("x"))
                             .put("data", new JSONArray().put(da.put("x", item.getString("name")).put("y", da.getDouble("y")))));
@@ -246,5 +259,16 @@ public class DashboardChartSetting extends BIAbstractChartSetting {
         return super.formatItems(data, types, options);
     }
 
-
+    private JSONArray initDefaultConfig() throws JSONException {
+        JSONArray config = new JSONArray();
+        for (int i = 0; i < 3; i++) {
+            JSONObject range = new JSONObject()
+                    .put("min", i * BIChartSettingConstant.INTERVAL)
+                    .put("max", i * BIChartSettingConstant.INTERVAL + BIChartSettingConstant.INTERVAL)
+                    .put("closemin", true)
+                    .put("closemax", i == 2);
+            config.put(new JSONObject().put("range", range).put("color", DASHBOARD_DEFAULT_COLOR[i]));
+        }
+        return config;
+    }
 }

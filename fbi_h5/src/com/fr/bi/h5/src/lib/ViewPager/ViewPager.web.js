@@ -8,6 +8,7 @@
 'use strict';
 
 import React, { PropTypes, cloneElement } from 'react';
+import ReactDOM from 'react-dom';
 import assign from 'object-assign';
 import View from '../View/View.web';
 import Animated from '../Animated/Animated.web';
@@ -16,7 +17,6 @@ import PanResponder from '../PanResponder/PanResponder.web';
 import dismissKeyboard from '../Utilties/dismissKeyboard.web';
 import { Mixin as NativeMethodsMixin } from '../Utilties/NativeMethodsMixin.web';
 import mixin from 'react-mixin';
-import autobind from 'autobind-decorator';
 
 const deviceSize = Dimensions.get('window');
 const VIEWPAGER_REF = 'viewpager';
@@ -72,7 +72,7 @@ class ViewPager extends React.Component {
   }
 
   getInnerViewNode() {
-    return this.refs[VIEWPAGER_REF].childNodes[0];
+    return ReactDOM.findDOMNode(this.refs[VIEWPAGER_REF]).childNodes[0];
   }
 
   componentWillMount() {
@@ -89,11 +89,11 @@ class ViewPager extends React.Component {
     // });
 
     this._panResponder = PanResponder.create({
-      onStartShouldSetResponder: () => true,
+      onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: this._shouldSetPanResponder.bind(this),
       onPanResponderGrant: () => { },
       onPanResponderMove: this._panResponderMove.bind(this),
-      onPanResponderTerminationRequest: () => true,
+      // onPanResponderTerminationRequest: () => true,
       onPanResponderRelease: this._panResponderRelease.bind(this),
       onPanResponderTerminate: () => { }
     });
@@ -156,7 +156,8 @@ class ViewPager extends React.Component {
     }
   }
 
-  _shouldSetPanResponder() {
+  _shouldSetPanResponder(e) {
+      // return false;
     if (this._scrolling) {
       this.state.offsetLeft.stopAnimation(()=> {
         this._scrolling = false;
@@ -167,7 +168,10 @@ class ViewPager extends React.Component {
     return true;
   }
 
-  _panResponderMove(ev, {dx}) {
+  _panResponderMove(ev, {dx, dy}) {
+      if(Math.abs(dy) > Math.abs(dx)){
+          return;
+      }
     let val = this.state.selectedPage + dx / this.state.pageWidth * -1;
     this.state.offsetLeft.setValue(val);
   }

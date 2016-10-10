@@ -169,13 +169,13 @@ BIDezi.DetailView = BI.inherit(BI.View, {
         });
         checkbox.setSelected(this.model.get("real_data") || false);
 
-        var tab = BI.createWidget({
+        this.tab = BI.createWidget({
             type: "bi.data_style_tab",
             wId: this.model.get("id"),
             cardCreator: BI.bind(this._createTabs, this)
         });
 
-        tab.on(BI.DataStyleTab.EVENT_CHANGE, function () {
+        this.tab.on(BI.DataStyleTab.EVENT_CHANGE, function () {
             if (this.getSelect() === BICst.DETAIL_TAB_STYLE) {
                 self.chartSetting.populate();
             }
@@ -184,7 +184,7 @@ BIDezi.DetailView = BI.inherit(BI.View, {
         var top = BI.createWidget({
             type: "bi.vtape",
             cls: "widget-top-wrapper",
-            items: [tab, {
+            items: [this.tab, {
                 el: checkbox,
                 height: this.constants.DETAIL_NORTH_HEIGHT
             }]
@@ -235,7 +235,8 @@ BIDezi.DetailView = BI.inherit(BI.View, {
         });
         this.chartSetting.populate();
         this.chartSetting.on(BI.ChartSetting.EVENT_CHANGE, function (v) {
-            self.model.set("settings", BI.extend(self.model.get("settings"), v));
+            var name = v.widget_title;
+            self.model.set({"settings": BI.extend(self.model.get("settings"), v), "name": name});
         });
         return this.chartSetting;
     },
@@ -298,5 +299,6 @@ BIDezi.DetailView = BI.inherit(BI.View, {
         this.dimensionsManager.populate();
         this._refreshDimensions();
         this.tableChartPopupulate();
+        this.tab.setSelect(BICst.DETAIL_TAB_TYPE_DATA)
     }
 });

@@ -11,7 +11,7 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
@@ -75,7 +75,7 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable {
                     set.add(relation);
                 }
             } catch (BIKeyAbsentException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
                 continue;
             }
         }
@@ -124,8 +124,8 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable {
                 if (null != tableSourceRelation) {
                     set.add(tableSourceRelation);
                 }
-            } catch (NullPointerException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+            } catch (Exception e) {
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
                 continue;
             }
         }
@@ -142,7 +142,7 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable {
                     set.add(relationPath);
                 }
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().error(e.getMessage());
             }
         }
         set = removeDuplicateRelationPaths(set);
@@ -161,7 +161,10 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable {
         if (new File(tempConf.getRootURI().getPath()).exists()) {
             BIFileUtils.delete(new File(tempConf.getRootURI().getPath()));
         }
-        new File(tempConf.getRootURI().getPath()).mkdirs();
+        BICubeConfiguration advancedTempConf = BICubeConfiguration.getAdvancedTempConf(String.valueOf(biUser.getUserId()));
+        if (new File(advancedTempConf.getRootURI().getPath()).exists()) {
+            BIFileUtils.delete(new File(tempConf.getRootURI().getPath()));
+        }
         return true;
     }
 
@@ -239,12 +242,7 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable {
             this.cubeGenerateRelationSet.add(cal.calRelations(biTableSourceRelation, this.getSources()));
         }
         cubeGenerateRelationPathSet = new HashSet<BICubeGenerateRelationPath>();
-        for (BITableSourceRelationPath biTableSourceRelationPath : this.getBiTableSourceRelationPathSet()) {
-            BICubeGenerateRelationPath biCubeGenerateRelationPath = cal.calRelationPath(biTableSourceRelationPath, this.tableSourceRelationSet);
-            if (null != biCubeGenerateRelationPath) {
-                cubeGenerateRelationPathSet.add(biCubeGenerateRelationPath);
-            }
-        }
+        cubeGenerateRelationPathSet= cal.calRelationPath(this.getBiTableSourceRelationPathSet(), this.tableSourceRelationSet);
     }
 
 }

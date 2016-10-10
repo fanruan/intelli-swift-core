@@ -1,7 +1,7 @@
 package com.fr.bi.htmlwriter;
 
 import com.fr.bi.resource.ResourceHelper;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 
 import java.io.*;
@@ -71,7 +71,7 @@ public class DeziDebugWriter {
             writer.flush();
             writer.close();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
 
     }

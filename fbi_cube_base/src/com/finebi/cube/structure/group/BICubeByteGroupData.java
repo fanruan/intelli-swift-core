@@ -4,7 +4,7 @@ import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.data.input.ICubeByteReaderWrapper;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.location.ICubeResourceLocation;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.util.Comparator;
 
@@ -30,7 +30,7 @@ public class BICubeByteGroupData extends BICubeGroupData<Byte> {
             return ((ICubeByteReaderWrapper)getGroupReader()).getSpecificValue(position);
 
         } catch (BIResourceInvalidException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             throw new RuntimeException("read byte failed", e);
         }
     }

@@ -2258,3 +2258,32 @@
   _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/login/password.png');
   _background: none;
 }
+.widget-slider-icon .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/slider-normal.png') no-repeat 0 0;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/slider-normal.png');
+  _background: none;
+}
+.widget-slider-icon:hover .x-icon,
+.widget-slider-icon:focus .x-icon,
+.widget-slider-icon.hover .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/slider-active.png') no-repeat 0 0;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/slider-active.png');
+  _background: none;
+}
+.widget-slider-icon:active .x-icon,
+.widget-slider-icon.active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/slider-active.png') no-repeat 0 0;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/slider-active.png');
+  _background: none;
+}
+.widget-slider-icon.native .x-icon,
+.widget-slider-icon.disabled .x-icon {
+  display: block;
+}
+.widget-slider-icon.native .x-icon,
+.widget-slider-icon.disabled.active .x-icon {
+  display: block;
+}

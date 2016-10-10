@@ -7,6 +7,7 @@ import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
+import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBBoxElement;
@@ -22,7 +23,7 @@ import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.Inter;
@@ -56,7 +57,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
         if (index == 0) {
             for (int i = 0, len = keys.length; i < len; i++) {
                 Object v = node.getSummaryValue(keys[i]);
-                cell = new CBCell(v == null ? NONEVALUE : v);
+                cell = new CBCell(ExecutorUtils.formatExtremeSumValue(v));
                 cell.setRow(tempRow);
                 cell.setColumn(column == 0 ? i : (cbcells.length - len + i));
                 cell.setRowSpan(1);
@@ -100,7 +101,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
         CBCell cell = null;
         for (int i = 0, len = keys.length; i < len; i++) {
             Object v = node.getSummaryValue(keys[i]);
-            cell = new CBCell(v == null ? NONEVALUE : v);
+            cell = new CBCell(ExecutorUtils.formatExtremeSumValue(v));
             cell.setRow(tempRow);
             cell.setColumn(cbcells.length - len + i);
             cell.setRowSpan(1);
@@ -262,7 +263,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
             cbcells[cell.getColumn()][cell.getRow()] = cell;
             for (int i = 0, len = keys.length; i < len; i++) {
                 Object v = node.getSummaryValue(keys[i]);
-                cell = new CBCell(v == null ? NONEVALUE : v);
+                cell = new CBCell(ExecutorUtils.formatExtremeSumValue(v));
                 cell.setRow(tempRow);
                 cell.setColumn(cbcells.length - len + i);
                 cell.setRowSpan(1);
@@ -369,7 +370,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
         if (index == 0) {
             for (int i = 0, len = keys.length; i < len; i++) {
                 Object v = node.getSummaryValue(keys[i]);
-                cell = new CBCell(v == null ? NONEVALUE : v);
+                cell = new CBCell(ExecutorUtils.formatExtremeSumValue(v));
                 cell.setRow(tempRow);
                 cell.setColumn(cbcells.length - len + i);
                 cell.setRowSpan(1);
@@ -530,7 +531,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
         cbcells[cell.getColumn()][cell.getRow()] = cell;
         for (int i = 0, len = keys.length; i < len; i++) {
             Object v = node.getSummaryValue(keys[i]);
-            cell = new CBCell(v == null ? NONEVALUE : v);
+            cell = new CBCell(ExecutorUtils.formatExtremeSumValue(v));
             cell.setRow(tempRow);
             cell.setColumn(cbcells.length - len + i);
             cell.setRowSpan(1);
@@ -809,7 +810,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
         if (tree == null) {
             tree = new Node(null, null);
         }
-        BILogger.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
+        BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
         return tree;
     }
 

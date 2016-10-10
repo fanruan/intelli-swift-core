@@ -7,7 +7,7 @@ import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.BICoreService;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLPrintWriter;
@@ -87,7 +87,7 @@ public abstract class AbstractGroup implements IGroup, BICoreService {
         try {
             return new BICoreGenerator(this).fetchObjectCore();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return BIBasicCore.EMPTY_CORE;
     }

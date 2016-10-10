@@ -33,7 +33,8 @@ BI.RelationTablesButton = BI.inherit(BI.BasicButton, {
                     type: "bi.label",
                     height: 25,
                     whiteSpace: "normal",
-                    textAlign: "left"
+                    textAlign: "left",
+                    hgap: 2
                 })
             }]
         });

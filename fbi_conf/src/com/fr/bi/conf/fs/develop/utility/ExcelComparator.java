@@ -1,12 +1,12 @@
 package com.fr.bi.conf.fs.develop.utility;
 
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import com.fr.third.v2.org.apache.poi.hssf.usermodel.HSSFCell;
+import com.fr.third.v2.org.apache.poi.hssf.usermodel.HSSFRow;
+import com.fr.third.v2.org.apache.poi.hssf.usermodel.HSSFSheet;
+import com.fr.third.v2.org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,13 +33,13 @@ public class ExcelComparator {
             BigInteger bi = new BigInteger(1, md5.digest());
             value = bi.toString(16);
         } catch (Exception e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
         } finally {
             if (null != in) {
                 try {
                     in.close();
                 } catch (IOException e) {
-                            BILogger.getLogger().error(e.getMessage(), e);
+                            BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
             }
         }

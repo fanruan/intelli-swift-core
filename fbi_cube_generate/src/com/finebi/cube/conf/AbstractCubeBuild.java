@@ -9,6 +9,7 @@ import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
+import com.finebi.cube.utils.relation.BITableRelationUtils;
 import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.data.source.SQLTableSource;
 import com.fr.bi.conf.data.source.ServerTableSource;
@@ -18,7 +19,7 @@ import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.data.impl.Connection;
@@ -52,7 +53,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         try {
             allRelationPathSet = BICubeConfigureCenter.getTableRelationManager().getAllTablePath(userId);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -132,23 +133,39 @@ public abstract class AbstractCubeBuild implements CubeBuild {
 
     @Override
     public boolean replaceOldCubes() {
-        List<String> copyFailedFiles = new ArrayList<String>();
         ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(userId));
         ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(userId));
-        if (new File(advancedConf.getRootURI().getPath()).exists()) {
-            copyFailedFiles = BIFileUtils.deleteFiles(new File(advancedConf.getRootURI().getPath()));
-        }
-        if (copyFailedFiles.size() > 0) {
-            BILogger.getLogger().error("error: delete old cube failed");
-            for (String fileName : copyFailedFiles) {
-                BILogger.getLogger().error("failed file:" + fileName);
-            }
-            return false;
-        }
+        ICubeConfiguration advancedTempConf = BICubeConfiguration.getAdvancedTempConf(Long.toString(userId));
+        String advancedPath = advancedConf.getRootURI().getPath();
+        String tCubePath = tempConf.getRootURI().getPath();
+        String tempFolderPath = advancedTempConf.getRootURI().getPath();
         try {
-            return BIFileUtils.renameFolder(new File(tempConf.getRootURI().getPath()), new File(advancedConf.getRootURI().getPath()));
+            if (new File(tempFolderPath).exists()){
+                BIFileUtils.delete(new File(tempFolderPath));
+            }
+            if (new File(advancedPath).exists() &&! new File(tempFolderPath).exists()) {
+                boolean renameFolder = BIFileUtils.renameFolder(new File(advancedPath), new File(tempFolderPath));
+                if (!renameFolder) {
+                    BILoggerFactory.getLogger().error("rename Advanced to tempFolder failed");
+                    return false;
+                }
+            }
+            if (new File(tCubePath).exists()) {
+                boolean renameFolder = BIFileUtils.renameFolder(new File(tCubePath), new File(advancedPath));
+                if (!renameFolder) {
+                    BILoggerFactory.getLogger().error("rename tCube to Advanced failed");
+                    return false;
+                }
+            }
+            if (new File(tempFolderPath).exists()) {
+                boolean deleteTempFolder = BIFileUtils.delete(new File(tempFolderPath));
+                if (!deleteTempFolder) {
+                    BILoggerFactory.getLogger().error("delete tempFolder failed ");
+                }
+            }
+            return true;
         } catch (IOException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             return false;
         }
     }
@@ -199,7 +216,6 @@ public abstract class AbstractCubeBuild implements CubeBuild {
                 ICubeFieldSource field = it.next();
                 name2Field.put(field.getFieldName(), field);
             }
-
             tableDBFieldMaps.put(tableSource, name2Field);
         }
     }
@@ -215,9 +231,8 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         }
         ICubeFieldSource primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
         ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
-        boolean isSourceRelationValid = null != primaryField && null != foreignField && null != primaryTable && null != foreignTable;
-        if (!isTableRelationValid(relation) || !isSourceRelationValid) {
-            BILogger.getLogger().error("tableSourceRelation invalid:" + relation.toString());
+        if (!isTableRelationValid(relation)) {
+            BILoggerFactory.getLogger().error("tableSourceRelation invalid:" + relation.toString());
             return null;
         }
         BITableSourceRelation biTableSourceRelation = new BITableSourceRelation(
@@ -233,7 +248,9 @@ public abstract class AbstractCubeBuild implements CubeBuild {
 
 
     protected boolean isTableRelationValid(BITableRelation relation) {
-        return allBusinessTable.contains(relation.getPrimaryTable()) && allBusinessTable.contains(relation.getForeignTable());
+        boolean relationValid = BITableRelationUtils.isRelationValid(relation);
+        return allBusinessTable.contains(relation.getPrimaryTable()) && allBusinessTable.contains(relation.getForeignTable()) && relationValid;
+
     }
 
     protected BITableSourceRelationPath convertPath(BITableRelationPath path) throws BITablePathConfusionException {
@@ -258,7 +275,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
                     sourceIdMap.put(relation.toString(), relation);
                 }
             } catch (NullPointerException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
                 continue;
             }
         }
@@ -276,7 +293,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
                     sourceIdMap.put(path.getSourceID(), path);
                 }
             } catch (NullPointerException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
                 continue;
             }
         }
