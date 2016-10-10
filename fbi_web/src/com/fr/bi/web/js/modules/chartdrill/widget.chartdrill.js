@@ -224,25 +224,24 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         this.outerWrapper.resize();
     },
 
-    hideDrill: function () {
-        if(this._checkUPDrillEmpty()){
+    hideDrill: function (wid) {
+        if(this._checkUPDrillEmpty(wid)){
             this._onClickPush(false)
         }
     },
 
-    setDrillVisible: function () {
-        if(this._checkUPDrillEmpty()){
+    setDrillVisible: function (wid) {
+        if(this._checkUPDrillEmpty(wid)){
             this.outerWrapper.setVisible(false)
         }
     },
 
-    _checkUPDrillEmpty: function () {
-        var wId = this.options.wId;
-        var wType = BI.Utils.getWidgetTypeByID(wId);
+    _checkUPDrillEmpty: function (wid) {
+        var wType = BI.Utils.getWidgetTypeByID(wid);
         if(wType < 5 || wType === BICst.WIDGET.MAP) {
             return false
         }
-        var drillMap = BI.Utils.getDrillByID(wId);
+        var drillMap = BI.Utils.getDrillByID(wid);
         var upDrillID = null, dId = null;
         BI.each(drillMap, function (drId, ds) {
             var rType = BI.Utils.getRegionTypeByDimensionID(drId);
