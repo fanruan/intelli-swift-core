@@ -13,7 +13,7 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.engine.index.key.IndexKey;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -64,7 +64,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
                     try {
                         core = new BICoreGenerator(this).fetchObjectCore();
                     } catch (Exception e) {
-                        BILogger.getLogger().error(e.getMessage(), e);
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
                         core = BIBasicCore.EMPTY_CORE;
                     }
                 }
@@ -233,7 +233,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
         try {
             this.fields = getFieldFromPersistentTable();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return this.fields;
     }
@@ -312,7 +312,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
         try {
             return super.clone();
         } catch (CloneNotSupportedException e) {
-            BILogger.getLogger().info(e.getMessage());
+            BILoggerFactory.getLogger().info(e.getMessage());
         }
         return null;
     }

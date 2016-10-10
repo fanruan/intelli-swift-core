@@ -13475,6 +13475,7 @@ define('chart/Series',['require','../utils/BaseUtils','../utils/QueryUtils','../
                 //往上
                 if(!testPos){
                     endY = 0;
+                    startY = Math.min(pos.y, plotBounds.height - labelDim.height);
                     testPos = verticalPosFix(startY, endY, -step, labelDim);
                 }
 
@@ -13489,6 +13490,7 @@ define('chart/Series',['require','../utils/BaseUtils','../utils/QueryUtils','../
                 //往左
                 if(!testPos){
                     endX = 0;
+                    startX = Math.min(pos.x, plotBounds.width - labelDim.width);
                     testPos = horizontalFix(startX, endX, -step, labelDim);
                 }
             }
@@ -18396,10 +18398,6 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./TreeSe
                 }
 
                 var orderType = this.orderType;
-                var oldGOrder;
-                oldGOrder = c.map(function (p) {
-                    return p.graphic;
-                });
 
                 c.sort(function(a, b){
                     if (!a.value) {
@@ -18410,10 +18408,6 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./TreeSe
                     } else {
                         return a.index - b.index;
                     }
-                });
-
-                c.map(function (p, i) {
-                    p.graphic = oldGOrder[i];
                 });
 
                 node.chSum = Math.max(chSum, Math.abs(_value || 0));
@@ -18483,6 +18477,14 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./TreeSe
         _initData: function (series) {
 
             series.nodes = series._bfsTraverseData(series.root);
+
+            var oldGraphics = series.graphics;
+            if (oldGraphics &&
+                oldGraphics.length === series.nodes.length) {
+                series.nodes.map(function (node, i) {
+                    node.graphic = oldGraphics[i];
+                });
+            }
 
             if (series.radius) {
                 series._calcData(series.root);
@@ -19071,6 +19073,12 @@ define('chart/MultiPie',['require','../Constants','../utils/BaseUtils','./TreeSe
             this.ordered = this.orderType;
             this._showLabels();
             this.ringPath.style('display', target && target.depth ? '' : 'none');
+
+            var renderer = this.vanchart.renderer;
+            this.graphics = this.nodes.map(function (node) {
+                node.graphic && renderer.registerInteractiveTarget(node, node.graphic);
+                return node.graphic;
+            });
         },
 
         // animation

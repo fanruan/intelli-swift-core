@@ -15,7 +15,7 @@ import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.json.JSONException;
 import com.fr.stable.StringUtils;
 
@@ -134,7 +134,7 @@ public class UserWidget {
                 n = n.getSibling();
             }
         } catch (JSONException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return values;
     }

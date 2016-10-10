@@ -11,7 +11,7 @@ import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BIDBUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -58,11 +58,11 @@ public class AnalysisBusiTable extends BIBusinessTable {
             try {
                 source = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSource(this);
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
         if (source == null) {
-            BILogger.getLogger().info("UserEtl source missed");
+            BILoggerFactory.getLogger().info("UserEtl source missed");
         }
         return source;
     }

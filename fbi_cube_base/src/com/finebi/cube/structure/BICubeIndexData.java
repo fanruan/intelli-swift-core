@@ -7,7 +7,7 @@ import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.net.URISyntaxException;
@@ -37,7 +37,7 @@ public class BICubeIndexData implements ICubeIndexDataService {
             nullIndexLocation = currentLocation.buildChildLocation("fbi_null");
         } catch (URISyntaxException e) {
             BINonValueUtils.beyondControl(e);
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
     }
 

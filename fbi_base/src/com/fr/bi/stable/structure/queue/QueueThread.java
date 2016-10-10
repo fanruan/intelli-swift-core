@@ -3,7 +3,7 @@ package com.fr.bi.stable.structure.queue;
 import com.fr.bi.common.inter.BrokenTraversal;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.structure.thread.BIThread;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.util.Iterator;
 import java.util.Queue;
@@ -163,7 +163,7 @@ public class QueueThread<T> implements BIQueue<T>, BIThread {
                     try {
                         back.actionPerformed(generating);
                     } catch (Exception e) {
-                        BILogger.getLogger().error(e.getMessage(), e);
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
                     }
                 }
 

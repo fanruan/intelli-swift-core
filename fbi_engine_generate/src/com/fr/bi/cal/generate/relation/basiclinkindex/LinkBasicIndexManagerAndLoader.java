@@ -22,7 +22,7 @@ import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.io.newio.NIOWriter;
 import com.fr.bi.stable.structure.array.ArrayKey;
 import com.fr.bi.stable.utils.BIRelationUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.code.BIPrintUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.general.ComparatorUtils;
@@ -65,7 +65,7 @@ public class LinkBasicIndexManagerAndLoader implements LinkIndexLoader, java.uti
         try {
             generateCube();
         } catch (Throwable e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }
@@ -216,7 +216,7 @@ public class LinkBasicIndexManagerAndLoader implements LinkIndexLoader, java.uti
         final NIOWriter<byte[]> indexWriter = indexFile.createIndexWriter();
         final NIOWriter<byte[]> nullWriter = indexFile.createNullWriter();
         CubeTableSource end = relations.get(relations.size() - 1).getForeignKey().getTableBelongTo();
-        BILogger.getLogger().info("generate basic relation from table :" + start.toString() + "to table :" + end.toString());
+        BILoggerFactory.getLogger().info("generate basic relation from table :" + start.toString() + "to table :" + end.toString());
         List<BITableSourceRelation> pRelation = new ArrayList<BITableSourceRelation>();
         for (int i = 0; i < relations.size() - 1; i++) {
             pRelation.add(relations.get(i));
@@ -281,7 +281,7 @@ public class LinkBasicIndexManagerAndLoader implements LinkIndexLoader, java.uti
         nullWriter.add(0, nullIndex.NOT(endRowCount).getBytes());
         indexFile.releaseGroupValueIndexCreator();
         indexFile.writeVersion(BIVersionUtils.createRelationVersionValue(getLoader(), relations));
-        BILogger.getLogger().info("basic relation from table :" + start.toString() + "to table : " + end.toString() + "generated sucessfully, cost :" + DateUtils.timeCostFrom(t));
+        BILoggerFactory.getLogger().info("basic relation from table :" + start.toString() + "to table : " + end.toString() + "generated sucessfully, cost :" + DateUtils.timeCostFrom(t));
         if (log != null) {
             log.infoRelation(ck, System.currentTimeMillis() - t);
         }

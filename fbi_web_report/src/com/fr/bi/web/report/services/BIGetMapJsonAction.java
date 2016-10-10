@@ -2,7 +2,7 @@ package com.fr.bi.web.report.services;
 
 import com.fr.base.FRContext;
 import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.stable.CodeUtils;
 import com.fr.web.core.ActionNoSessionCMD;
 import com.fr.web.utils.WebUtils;
@@ -44,7 +44,7 @@ public class BIGetMapJsonAction  extends ActionNoSessionCMD {
             os.flush();
             os.close();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 }

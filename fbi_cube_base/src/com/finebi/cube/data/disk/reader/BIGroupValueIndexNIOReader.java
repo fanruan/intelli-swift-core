@@ -6,7 +6,7 @@ import com.finebi.cube.exception.BIResourceInvalidException;
 import com.fr.bi.manager.PlugManager;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.GroupValueIndexCreator;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -44,7 +44,7 @@ public class BIGroupValueIndexNIOReader implements ICubeGroupValueIndexReader {
                         try {
                             b = byteArray.getSpecificValue(rowNumber);
                         } catch (BIResourceInvalidException e) {
-                            BILogger.getLogger().error(e.getMessage(), e);
+                            BILoggerFactory.getLogger().error(e.getMessage(), e);
                         }
                         return GroupValueIndexCreator.createGroupValueIndex(b);
                     }

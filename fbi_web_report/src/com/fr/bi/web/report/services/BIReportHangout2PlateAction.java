@@ -4,7 +4,7 @@ import com.fr.bi.fs.BIDAOUtils;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.fs.entry.BIReportEntry;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.fs.control.EntryControl;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
@@ -34,7 +34,7 @@ public class BIReportHangout2PlateAction extends ActionNoSessionCMD {
             reportNode.setStatus(BIReportConstant.REPORT_STATUS.HANGOUT);
             BIDAOUtils.saveOrUpDate(reportNode, createBy);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         WebUtils.printAsJSON(res, jo);
     }

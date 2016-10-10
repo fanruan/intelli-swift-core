@@ -1,6 +1,6 @@
 package com.fr.bi.common.persistent.xml.writer;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.stable.xml.XMLPrintWriter;
 
 import java.beans.IntrospectionException;
@@ -49,7 +49,7 @@ public class XMLCollectionValueWriter extends XMLValueWriter {
             try {
                 Iteration(writer, array);
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
 //            if (!beanWrapper.getProperty()) {
 //                writer.end();
@@ -80,7 +80,7 @@ public class XMLCollectionValueWriter extends XMLValueWriter {
                 writer.end();
 
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
                 writer.end();
                 continue;
             }

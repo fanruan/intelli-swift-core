@@ -4,7 +4,7 @@ import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TreeWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.stable.utils.CubeBaseUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BIPhoneticismUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -82,7 +82,7 @@ public class GetSearchTreeNodeExecutor extends AbstractTreeNodeExecutor {
         try {
             CubeBaseUtils.invokeCalculatorThreads(threadList);
         } catch (InterruptedException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
 
         for (int len = vl.size(); i < len; i++) {

@@ -1,7 +1,7 @@
 package com.fr.bi.web.conf.services.cubeconf;
 
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.web.utils.WebUtils;
@@ -21,7 +21,7 @@ public class BISaveLoginFieldAction extends AbstractBIConfigureAction {
         try {
             BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 

@@ -14,7 +14,7 @@ import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.exception.BITableAbsentException;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONException;
@@ -247,7 +247,7 @@ public class BISystemPackageConfigurationManager extends BISystemDataManager<BIU
                 try {
                     packageSet.add((BIBusinessPackage) biBusinessPackage.clone());
                 } catch (CloneNotSupportedException e) {
-                    BILogger.getLogger().error(e.getMessage());
+                    BILoggerFactory.getLogger().error(e.getMessage());
                 }
             }
         }

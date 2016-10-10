@@ -8,7 +8,7 @@ import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.relation.*;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITableAbsentException;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 
 import java.io.File;
@@ -46,7 +46,7 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
             setRelationPath();
             calculateRelationDepends();
         } catch (BITableAbsentException e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
     }
 
@@ -116,7 +116,7 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
                 BIFileUtils.copyFolder(new File(advancedConf.getRootURI().getPath()), new File(tempConf.getRootURI().getPath()));
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
         return true;
     }

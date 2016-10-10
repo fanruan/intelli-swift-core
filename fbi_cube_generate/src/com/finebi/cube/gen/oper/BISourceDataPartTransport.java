@@ -31,7 +31,7 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.structure.collection.list.IntList;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.util.BICubeDBUtils;
 import com.fr.data.core.db.dialect.Dialect;
@@ -84,16 +84,16 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             try {
                 biLogManager.infoTable(tableSource.getPersistentTable(), tableCostTime, UserControl.getInstance().getSuperManagerID());
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
             return null;
         } catch (Exception e) {
             try {
                 biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
             } catch (Exception e1) {
-                BILogger.getLogger().error(e1.getMessage(), e1);
+                BILoggerFactory.getLogger().error(e1.getMessage(), e1);
             }
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
@@ -131,12 +131,12 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 String modifySql;
                 modifySql = getModifySql(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartModifySQL()));
                 if (StringUtils.isEmpty(modifySql)) {
-                    BILogger.getLogger().error("current table: " + tableSource.getTableName() + " modifySql error: " + tableUpdateSetting.getPartModifySQL());
+                    BILoggerFactory.getLogger().error("current table: " + tableSource.getTableName() + " modifySql error: " + tableUpdateSetting.getPartModifySQL());
                 } else {
                     rowCount = dealWidthAdd(cubeFieldSources, modifySql, rowCount);
                 }
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
         if (null != sortRemovedList && sortRemovedList.size() != 0) {
@@ -153,7 +153,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 try {
                     tableEntityService.addDataValue(v);
                 } catch (BICubeColumnAbsentException e) {
-                    BILogger.getLogger().error(e.getMessage());
+                    BILoggerFactory.getLogger().error(e.getMessage());
                 }
             }
         };
@@ -176,7 +176,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             }
         }
         if (f == null) {
-            BILogger.getLogger().error("can not find field " + columnName);
+            BILoggerFactory.getLogger().error("can not find field " + columnName);
             return sortRemovedList;
         }
         BIKey key = new IndexKey(columnName);
@@ -252,7 +252,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 finalSql = ((SQLTableSource) tableSource).getQuery() + " t" + " WHERE " + "t." + columnName + " IN " + "(" + sql + ")";
             }
         } else {
-            BILogger.getLogger().error("SQL syntax error: " + tableSource.getTableName() + " columns length incorrect " + sql);
+            BILoggerFactory.getLogger().error("SQL syntax error: " + tableSource.getTableName() + " columns length incorrect " + sql);
         }
         return finalSql;
     }
@@ -266,7 +266,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             }
         }
         if (f == null) {
-            BILogger.getLogger().error("can not find field " + columnName);
+            BILoggerFactory.getLogger().error("can not find field " + columnName);
             return null;
         }
         return f;

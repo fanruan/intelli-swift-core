@@ -18,7 +18,7 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
@@ -58,7 +58,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
         try {
             relationColumnKeyInfo = getRelationColumnKeyInfo();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         try {
             buildRelationIndex();
@@ -71,9 +71,9 @@ public class BIRelationIndexGenerator extends BIProcessor {
             try {
                 biLogManager.errorRelation(relationColumnKeyInfo, e.getMessage(), UserControl.getInstance().getSuperManagerID());
             } catch (Exception e1) {
-                BILogger.getLogger().error(e1.getMessage(), e1);
+                BILoggerFactory.getLogger().error(e1.getMessage(), e1);
             }
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
@@ -227,7 +227,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
             try {
                 logger.error("error relation :" + relation.toString() + " the exception is:" + "relation information used as listed:" + relation.getPrimaryTable().getSourceID() + "." + relation.getPrimaryField().getColumnName() + " to " + relation.getForeignTable().getSourceID() + "." + relation.getForeignField().getColumnName());
             } catch (Exception e1) {
-                BILogger.getLogger().error(e1.getMessage(), e1);
+                BILoggerFactory.getLogger().error(e1.getMessage(), e1);
             }
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         } finally {

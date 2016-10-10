@@ -8,7 +8,12 @@ import com.finebi.cube.exception.BIBuildReaderException;
 import com.finebi.cube.exception.BIBuildWriterException;
 import com.finebi.cube.exception.IllegalCubeResourceLocationException;
 import com.finebi.cube.location.ICubeResourceLocation;
+<<<<<<< HEAD
 import com.fr.bi.stable.utils.code.BILogger;
+=======
+import com.fr.bi.common.factory.BIFactoryHelper;
+import com.finebi.cube.common.log.BILoggerFactory;
+>>>>>>> 130332cfbf32c97957d64e17b6c040b49db7432e
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.ArrayList;
@@ -144,10 +149,26 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
                     nioManager.forceRelease();
                 }
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             } finally {
 
             }
         }
     }
+<<<<<<< HEAD
+=======
+
+    public List<ICubeResourceLocation> getUnReleasedLocation(){
+        synchronized (this){
+            List<ICubeResourceLocation> locations=new ArrayList<ICubeResourceLocation>();
+            try {
+                locations = readerCache.getUnReleasedLocation();
+                locations.addAll(writerCache.getUnReleasedLocation());
+            } catch (Exception e) {
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
+            }
+            return locations;
+        }
+    }
+>>>>>>> 130332cfbf32c97957d64e17b6c040b49db7432e
 }

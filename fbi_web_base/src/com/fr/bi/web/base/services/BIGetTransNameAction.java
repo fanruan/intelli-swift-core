@@ -1,7 +1,7 @@
 package com.fr.bi.web.base.services;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.base.AbstractBIBaseAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
@@ -36,7 +36,7 @@ public class BIGetTransNameAction extends AbstractBIBaseAction {
                 result.put(BICubeConfigureCenter.getAliasManager().getAliasName(ja.optString(i), userId));
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
 
         WebUtils.printAsJSON(res, result);
