@@ -8,7 +8,7 @@ import com.fr.bi.conf.log.BIRecord;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.relation.BITableSourceRelation;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ public class LinkFirstIndexLoaderManager {
             }
             return null;
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             return null;
         }
     }

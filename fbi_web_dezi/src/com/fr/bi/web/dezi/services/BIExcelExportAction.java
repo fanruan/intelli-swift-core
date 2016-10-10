@@ -1,10 +1,9 @@
 package com.fr.bi.web.dezi.services;
 
-import com.fr.base.ExcelUtils;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.io.BIExcel2007Exporter;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.dezi.AbstractBIDeziAction;
 import com.fr.data.NetworkHelper;
 import com.fr.general.DateUtils;
@@ -85,6 +84,6 @@ public class BIExcelExportAction extends AbstractBIDeziAction {
             // alex:有些Exporter在export里面可能会已经做了out.close操作,为了不打印IOException,这里catch到之后不输出
         }
         long t1 = System.currentTimeMillis();
-        BILogger.getLogger().info("Export Excel: cost: " + DateUtils.miliisecondCostAsString(t1 - t) );
+        BILoggerFactory.getLogger().info("Export Excel: cost: " + DateUtils.miliisecondCostAsString(t1 - t) );
     }
 }

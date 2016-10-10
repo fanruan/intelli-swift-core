@@ -54,12 +54,7 @@ class Layout extends Component {
             }}>
             {[<ListView
                 {...props}
-                initialListSize={Math.ceil(props.height / 270) + 1}
-                dataSource={this.state.dataSource}
-                renderRow={this._renderRow.bind(this)}
-            />, <ListView
-                {...props}
-                initialListSize={Math.ceil(props.height / 270) + 1}
+                initialListSize={Math.ceil(props.height / 310) + 1}
                 dataSource={this.state.dataSource}
                 renderRow={this._renderRow.bind(this)}
             />]}
@@ -73,15 +68,14 @@ class Layout extends Component {
     }
 
     _renderRow(wId, sectionID, rowID) {
-        const {$template} = this.props;
         const $widget = this.template.get$$WidgetById(wId);
         const type = new Widget($widget).getType();
         const props = {
             key: wId,
-            $template,
+            $widget,
             wId,
             width: this.props.width - 40,
-            height: 230
+            height: 270
         };
         let component = null;
         switch (type) {

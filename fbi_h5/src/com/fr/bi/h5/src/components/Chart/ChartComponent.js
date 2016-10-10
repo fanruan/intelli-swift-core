@@ -10,7 +10,8 @@ import React, {
     View,
     Fetch
 } from 'lib'
-import {Template, Widget} from 'data'
+import {IconButton, HtapeLayout, VtapeLayout} from 'base'
+import {Size, Template, Widget} from 'data'
 
 
 class ChartComponent extends Component {
@@ -19,31 +20,63 @@ class ChartComponent extends Component {
     //    id: React.PropTypes.string.required,
     //    template: React.PropTypes.object.required
     //};
+    static contextTypes = {
+        $template: React.PropTypes.object
+    };
 
     constructor(props, context) {
         super(props, context);
     }
 
     componentWillMount() {
-        const template = new Template(this.props.$template);
-        const wId = this.props.wId;
-        const widget = template.getWidgetById(wId);
+
+    }
+
+    componentDidMount() {
+        this.chart = VanCharts.init(ReactDOM.findDOMNode(this.refs.chart));
+        const {$widget, wId} = this.props;
+        const widget = new Widget($widget, this.context.$template, wId);
         widget.getData().then((data)=> {
-            let vanCharts = VanCharts.init(ReactDOM.findDOMNode(this.refs.chart));
-            vanCharts.setOptions(data);
+            this.chart.setOptions(data);
         });
+    }
+
+    componentWillUpdate() {
+        const {$widget, wId} = this.props;
+        const widget = new Widget($widget, this.context.$template, wId);
+        widget.getData().then((data)=> {
+            this.chart.setData(data);
+        });
+    }
+
+    _renderHeader() {
+        const {$widget} = this.props;
+        const widget = new Widget($widget);
+        return <HtapeLayout height={Size.HEADER_HEIGHT} style={styles.header}>
+            <Text style={styles.name}>{widget.getName()}</Text>
+            <IconButton width={Size.HEADER_HEIGHT} className='delete'/>
+        </HtapeLayout>
     }
 
     render() {
 
-        return <View ref='chart' style={{height: this.props.height, ...style.wrapper}}></View>
+        return <VtapeLayout>
+            {this._renderHeader()}
+            <View ref='chart' style={{height: this.props.height, ...styles.wrapper}}/>
+        </VtapeLayout>
     }
 }
 mixin.onClass(ChartComponent, ReactComponentWithImmutableRenderMixin);
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
     wrapper: {
         position: 'relative'
+    },
+    name: {
+        lineHeight: Size.HEADER_HEIGHT,
+        paddingLeft: 4,
+        paddingRight: 4,
+        justifyContent: 'center'
     }
 });
 export default ChartComponent

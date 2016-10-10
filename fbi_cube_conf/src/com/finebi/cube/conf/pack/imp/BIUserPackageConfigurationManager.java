@@ -8,7 +8,7 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.factory.IFactoryService;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -80,7 +80,7 @@ public class BIUserPackageConfigurationManager {
             try {
                 clone.add((BIBasicBusinessPackage) pack.clone());
             } catch (CloneNotSupportedException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
         return clone;

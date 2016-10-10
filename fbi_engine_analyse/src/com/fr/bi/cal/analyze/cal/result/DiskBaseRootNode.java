@@ -9,7 +9,7 @@ import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.structure.collection.map.lru.LRUWithKHashMap;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.common.inter.ValueCreator;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 
 public class DiskBaseRootNode extends Node implements Release {
@@ -100,7 +100,7 @@ public class DiskBaseRootNode extends Node implements Release {
                     try {
                         this.wait();
                     } catch (InterruptedException e) {
-                                BILogger.getLogger().error(e.getMessage(), e);
+                                BILoggerFactory.getLogger().error(e.getMessage(), e);
                     }
                 }
             }
@@ -143,7 +143,7 @@ public class DiskBaseRootNode extends Node implements Release {
                     try {
                         this.wait();
                     } catch (InterruptedException e) {
-                                BILogger.getLogger().error(e.getMessage(), e);
+                                BILoggerFactory.getLogger().error(e.getMessage(), e);
                     }
                 }
             }

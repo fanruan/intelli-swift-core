@@ -29,7 +29,7 @@ import com.fr.bi.stable.io.newio.NIOReader;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.structure.array.ArrayKey;
 import com.fr.bi.stable.structure.collection.list.IntList;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.json.JSONObject;
@@ -166,7 +166,7 @@ public class TableCubeFile extends AbstractCubeFile {
                 field.parseJSON(jo);
                 fields[i] = field;
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
         return fields;

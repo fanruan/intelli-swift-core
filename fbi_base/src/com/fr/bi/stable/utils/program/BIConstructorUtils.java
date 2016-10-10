@@ -1,7 +1,7 @@
 package com.fr.bi.stable.utils.program;
 
 import com.fr.bi.stable.utils.BIUserUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import sun.misc.Unsafe;
@@ -40,7 +40,7 @@ public class BIConstructorUtils {
                     constructor.setAccessible(true);
                     manager = constructor.newInstance();
                 } catch (Exception e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
             }
             return manager;
@@ -65,7 +65,7 @@ public class BIConstructorUtils {
                     constructor.setAccessible(true);
                     manager = constructor.newInstance(key);
                 } catch (Exception e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
                 userMap.put(key, manager);
             }
@@ -229,7 +229,7 @@ public class BIConstructorUtils {
                 try {
                     return unsafeConstructObject(clazz);
                 } catch (NoSuchFieldException ignore) {
-                    BILogger.getLogger().error(ignore.getMessage(), ignore);
+                    BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
                 }
 
             }

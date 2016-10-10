@@ -5,7 +5,7 @@ import com.fr.bi.cluster.wrapper.ZooKeeperWrapper;
 import com.fr.bi.cluster.zookeeper.exception.MissionNotStopException;
 import com.fr.bi.cluster.zookeeper.exception.NotInitializeException;
 import com.fr.bi.cluster.zookeeper.watcher.BIWorker;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.FRLogger;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
@@ -54,7 +54,7 @@ public class BIMasterController implements BIMissionListener, Watcher {
         try {
             children = zk.getChildren(BIWorker.PARENT_PATH, false);
         } catch (Exception ex) {
-             BILogger.getLogger().error(ex.getMessage(), ex);
+             BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         }
         if (children != null && !children.isEmpty()) {
             init();
@@ -62,7 +62,7 @@ public class BIMasterController implements BIMissionListener, Watcher {
             try {
                 zk.exists(BIWorker.PARENT_PATH, this);
             } catch (Exception ex) {
-                 BILogger.getLogger().error(ex.getMessage(), ex);
+                 BILoggerFactory.getLogger().error(ex.getMessage(), ex);
             }
         }
     }
@@ -102,12 +102,12 @@ public class BIMasterController implements BIMissionListener, Watcher {
             try {
                 mission = dispatcher.dispatcherMission();
             } catch (KeeperException ex) {
-                 BILogger.getLogger().error(ex.getMessage(), ex);
+                 BILoggerFactory.getLogger().error(ex.getMessage(), ex);
             } catch (NotInitializeException ex) {
-                 BILogger.getLogger().error(ex.getMessage(), ex);
+                 BILoggerFactory.getLogger().error(ex.getMessage(), ex);
 
             } catch (InterruptedException ex) {
-                 BILogger.getLogger().error(ex.getMessage(), ex);
+                 BILoggerFactory.getLogger().error(ex.getMessage(), ex);
 
             }
             if (mission != null && !mission.isEmpty()) {

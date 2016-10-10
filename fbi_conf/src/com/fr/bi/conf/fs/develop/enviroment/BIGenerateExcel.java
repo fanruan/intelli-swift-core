@@ -1,7 +1,7 @@
 package com.fr.bi.conf.fs.develop.enviroment;
 
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.io.File;
 
@@ -20,7 +20,7 @@ public class BIGenerateExcel {
         try {
             biReportTestManager.generateExcels(path);
         } catch (Exception ex) {
-            BILogger.getLogger().error(ex.getMessage(), ex);
+            BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         }
     }
 }

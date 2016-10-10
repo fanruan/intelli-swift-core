@@ -12,11 +12,21 @@ BI.Slider = BI.inherit(BI.Widget, {
         this.slider = BI.createWidget({
             type: "bi.icon_button",
             cls: "widget-slider-icon",
-            element: this.element,
             iconWidth: 30,
             iconHeight: 30,
             height: 30,
             width: 30
+        });
+        BI.createWidget({
+            type: "bi.absolute",
+            element: this.element,
+            items: [{
+                el: this.slider,
+                top: 0,
+                left: -15
+            }],
+            width: 0,
+            height: 30
         });
     }
 });

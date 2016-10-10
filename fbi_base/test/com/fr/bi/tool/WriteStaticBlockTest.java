@@ -1,6 +1,6 @@
 package com.fr.bi.tool;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import junit.framework.TestCase;
 
 /**
@@ -13,7 +13,7 @@ public class WriteStaticBlockTest extends TestCase {
             String result = codeBlock4Test.generateCode();
             assertEquals("{\r\n\tstatic{}}", result);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 

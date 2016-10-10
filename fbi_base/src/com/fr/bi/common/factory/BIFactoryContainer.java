@@ -3,7 +3,7 @@ package com.fr.bi.common.factory;
 import com.fr.bi.common.container.BIMapContainer;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.exception.BIKeyDuplicateException;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +28,7 @@ class BIFactoryContainer<V> extends BIMapContainer<String, V> {
         try {
             return super.getValue(key);
         } catch (BIKeyAbsentException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }

@@ -1,10 +1,9 @@
 import {each, isEmpty} from 'core';
 import {Template, Widget, Dimension} from 'data';
 class DetailTableComponentHelper {
-    constructor(props) {
-        const template = new Template(props.$template);
-        const wId = props.wId;
-        this.widget = template.getWidgetById(wId);
+    constructor(props, context) {
+        const {$widget, wId} = props;
+        this.widget = new Widget($widget, context.$template, wId);
         this.data = [];
     }
 

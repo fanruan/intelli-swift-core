@@ -10,7 +10,7 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.index.CubeGenerator;
 import com.fr.bi.stable.log.CubeGenerateStatusProvider;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.general.DateUtils;
 import com.fr.stable.StringUtils;
@@ -57,15 +57,15 @@ public class IndexGenerator implements CubeGenerator, java.util.concurrent.Calla
     @Override
     public Object call() throws Exception {
         try {
-            BILogger.getLogger().info("now start" + source.toString() + "loading data");
+            BILoggerFactory.getLogger().info("now start" + source.toString() + "loading data");
             long start = System.currentTimeMillis();
             generateSimpleCube();
             BIConfigureManagerCenter.getLogManager().infoTableReading(source.getPersistentTable(),
                     System.currentTimeMillis() - start, biUser.getUserId());
-            BILogger.getLogger().info("loading table data:" + source.toString() + "cost:" + DateUtils.timeCostFrom(start));
+            BILoggerFactory.getLogger().info("loading table data:" + source.toString() + "cost:" + DateUtils.timeCostFrom(start));
         } catch (Throwable e) {
             wrong(e);
-            BILogger.getLogger().info("generate:" + source.toString() + " failed");
+            BILoggerFactory.getLogger().info("generate:" + source.toString() + " failed");
         }
         return null;
     }
@@ -85,7 +85,7 @@ public class IndexGenerator implements CubeGenerator, java.util.concurrent.Calla
     }
 
     protected void wrong(Throwable e) {
-        BILogger.getLogger().error(e.getMessage(), e);
+        BILoggerFactory.getLogger().error(e.getMessage(), e);
         BIConfigureManagerCenter.getLogManager().errorTable(source.getPersistentTable(), e.getClass().getName() + ":" + e.getMessage() + ":" + Arrays.toString(e.getStackTrace()), biUser.getUserId());
         release();
         cube.delete();
@@ -104,7 +104,7 @@ public class IndexGenerator implements CubeGenerator, java.util.concurrent.Calla
             new FinishIndexGenerator(cube, log).generateCube();
         } catch (Throwable e) {
             wrong(e);
-            BILogger.getLogger().info("generate:" + source.toString() + " failed");
+            BILoggerFactory.getLogger().info("generate:" + source.toString() + " failed");
         } finally {
             this.release();
         }
@@ -116,15 +116,15 @@ public class IndexGenerator implements CubeGenerator, java.util.concurrent.Calla
 
     public void generateIndex() {
         try {
-            BILogger.getLogger().info("now start" + source.toString() + "indexing");
+            BILoggerFactory.getLogger().info("now start" + source.toString() + "indexing");
             BIRecord log = BIConfigureManagerCenter.getLogManager().getBILog(biUser.getUserId());
             long start = System.currentTimeMillis();
             CubeGenerator generator = new GroupIndexGenerator(cube, source, CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()), log);
             generator.generateCube();
-            BILogger.getLogger().info("indexing completed, cost:" + DateUtils.timeCostFrom(start));
+            BILoggerFactory.getLogger().info("indexing completed, cost:" + DateUtils.timeCostFrom(start));
         } catch (Throwable e) {
             wrong(e);
-            BILogger.getLogger().info("generate:" + source.toString() + " failed");
+            BILoggerFactory.getLogger().info("generate:" + source.toString() + " failed");
         } finally {
             this.release();
         }
@@ -133,14 +133,14 @@ public class IndexGenerator implements CubeGenerator, java.util.concurrent.Calla
     @Override
     public void generateCube() {
         long start = System.currentTimeMillis();
-        BILogger.getLogger().info("now generating:" + source.toString() + " Cube:");
+        BILoggerFactory.getLogger().info("now generating:" + source.toString() + " Cube:");
         setPercent(0);
         cube.delete();
         generateSimpleCube();
         setPercent(50);
         generateIndex();
         setPercent(100);
-        BILogger.getLogger().info("generating:" + source.toString() + "cost：" + DateUtils.timeCostFrom(start));
+        BILoggerFactory.getLogger().info("generating:" + source.toString() + "cost：" + DateUtils.timeCostFrom(start));
     }
 
     @Override

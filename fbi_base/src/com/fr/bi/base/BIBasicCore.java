@@ -2,7 +2,7 @@ package com.fr.bi.base;
 
 import com.fr.bi.exception.BIAmountLimitUnmetException;
 import com.fr.bi.stable.utils.algorithem.BIMD5Utils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.stable.EncodeConstants;
 
 import javax.activation.UnsupportedDataTypeException;
@@ -47,7 +47,7 @@ public class BIBasicCore extends BICore {
             try {
                 digest.update(str.getBytes(EncodeConstants.ENCODING_UTF_8));
             } catch (UnsupportedEncodingException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
         return generateValue(BIMD5Utils.getMD5String(digest.digest()));

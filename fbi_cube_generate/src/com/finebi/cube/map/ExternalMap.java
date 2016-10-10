@@ -2,7 +2,7 @@ package com.finebi.cube.map;
 
 
 import com.finebi.cube.map.mem.MemoryHelper;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 
 import java.io.*;
@@ -68,7 +68,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
             file.mkdirs();
         }
         if (DEBUG) {
-            BILogger.getLogger().info(this.diskContainerPath);
+            BILoggerFactory.getLogger().info(this.diskContainerPath);
         }
         writeFile = new WriteFile();
         readFile = new ReadFile();
@@ -102,7 +102,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
 
     private void writeLog(String content) {
         if (DEBUG) {
-            BILogger.getLogger().info(diskContainerPath + "--" + content);
+            BILoggerFactory.getLogger().info(diskContainerPath + "--" + content);
         }
     }
 
@@ -178,7 +178,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
             FileInputStream fileIn = new FileInputStream(file);
             return new DataInputStream(fileIn);
         } catch (Exception ex) {
-            BILogger.getLogger().error(ex.getMessage(), ex);
+            BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         }
         return null;
     }
@@ -191,7 +191,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
                 size = readFile.getSize();
             }
         } catch (Exception ex) {
-            BILogger.getLogger().error(ex.getMessage(), ex);
+            BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         }
         return size;
     }
@@ -236,7 +236,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
 
     private void dump() {
         if (DEBUG) {
-            BILogger.getLogger().debug("Dump:" + currentContainer.size());
+            BILoggerFactory.getLogger().debug("Dump:" + currentContainer.size());
         }
 
         if (!currentContainer.isEmpty()) {
@@ -309,12 +309,12 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
             Iterator<K> it = content.keySet().iterator();
             while (it.hasNext()) {
                 K name = it.next();
-               BILogger.getLogger().info(name + "  :");
+               BILoggerFactory.getLogger().info(name + "  :");
                 V list = content.get(name);
-                BILogger.getLogger().info(list.toString() + " ");
+                BILoggerFactory.getLogger().info(list.toString() + " ");
 
             }
-            BILogger.getLogger().info("\n");
+            BILoggerFactory.getLogger().info("\n");
         }
     }
 
@@ -323,9 +323,9 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
             PrivateEntryIterator it = getIterator();
             while (it.hasNext()) {
                 Entry<K, V> entry = it.next();
-               BILogger.getLogger().info(entry.key + "  :");
+               BILoggerFactory.getLogger().info(entry.key + "  :");
                 V list = entry.value;
-               BILogger.getLogger().info(list.toString() + " ");
+               BILoggerFactory.getLogger().info(list.toString() + " ");
 
             }
         }
@@ -437,7 +437,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
                     }
                 }
             } catch (Exception ex) {
-                BILogger.getLogger().error(ex.getMessage(), ex);
+                BILoggerFactory.getLogger().error(ex.getMessage(), ex);
             } finally {
 
             }
@@ -516,7 +516,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
                 }
                 need2Read.addAll(nameIdMap.get(firstKey));
                 if (DEBUG && VERBOSE) {
-                   BILogger.getLogger().info("first name:" + firstKey + ", source:" + nameIdMap.get(firstKey) + " -- ");
+                   BILoggerFactory.getLogger().info("first name:" + firstKey + ", source:" + nameIdMap.get(firstKey) + " -- ");
                 }
                 nameIdMap.remove(firstKey);
                 container.remove(firstKey);
@@ -538,7 +538,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
             while (it.hasNext()) {
                 Integer id = it.next();
                 if (DEBUG && VERBOSE) {
-                    BILogger.getLogger().info("read file id is:" + id);
+                    BILoggerFactory.getLogger().info("read file id is:" + id);
                 }
                 /**
                  * 读取id对应文件中的1行数据。
@@ -547,8 +547,8 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
                 try {
                     oneRound = fileHandles.get(id).read();
                 } catch (FileNotFoundException ex) {
-                   BILogger.getLogger().info("Can't find the External sort file ");
-                    BILogger.getLogger().error(ex.getMessage(), ex);
+                   BILoggerFactory.getLogger().info("Can't find the External sort file ");
+                    BILoggerFactory.getLogger().error(ex.getMessage(), ex);
                     release();
                     return true;
                 }
@@ -635,10 +635,10 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
         public void stop() {
             while (buffer.size() != 0) {
                 try {
-                   BILogger.getLogger().info("waiting for finishing the mission");
+                   BILoggerFactory.getLogger().info("waiting for finishing the mission");
                     Thread.sleep(100);
                 } catch (Exception ex) {
-                    BILogger.getLogger().error(ex.getMessage(), ex);
+                    BILoggerFactory.getLogger().error(ex.getMessage(), ex);
                 }
             }
             writeThread.interrupt();
@@ -650,7 +650,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
                 dumpState = DumpState.running;
                 buffer.put(container);
             } catch (Exception ex) {
-                BILogger.getLogger().error(ex.getMessage(), ex);
+                BILoggerFactory.getLogger().error(ex.getMessage(), ex);
             }
 
         }
@@ -683,7 +683,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
                     long start = System.currentTimeMillis();
                     if (!writeFileContainer.isEmpty()) {
                         if (DEBUG) {
-                            BILogger.getLogger().info("write");
+                            BILoggerFactory.getLogger().info("write");
                         }
                         fileContentSize.put(fileCount, writeFileContainer.size());
                         dumpDate(writeFileContainer, fileCount);
@@ -701,7 +701,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
                 isFinished = true;
                 dumpState = DumpState.free;
             } catch (Exception ex) {
-                BILogger.getLogger().error(ex.getMessage(), ex);
+                BILoggerFactory.getLogger().error(ex.getMessage(), ex);
             }
 
         }
@@ -721,14 +721,14 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
                 writer.writeInt(fileCount);
                 writer.close();
             } catch (Exception ex) {
-                BILogger.getLogger().error(ex.getMessage(), ex);
+                BILoggerFactory.getLogger().error(ex.getMessage(), ex);
             } finally {
                 try {
                     writer.close();
                     bos.close();
                     fos.close();
                 } catch (Exception ex) {
-                    BILogger.getLogger().error(ex.getMessage(), ex);
+                    BILoggerFactory.getLogger().error(ex.getMessage(), ex);
                 }
 
             }
@@ -742,7 +742,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
                 BufferedOutputStream bos = new BufferedOutputStream(fos);
                 writer = new DataOutputStream(bos);
             } catch (Exception ex) {
-                BILogger.getLogger().error(ex.getMessage(), ex);
+                BILoggerFactory.getLogger().error(ex.getMessage(), ex);
             }
             return writer;
         }
@@ -757,7 +757,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
                     io.write(entry.getKey(), entry.getValue());
                 }
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             } finally {
                 io.close();
             }
@@ -772,13 +772,13 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
             }
             try {
                 if (DEBUG) {
-                    BILogger.getLogger().info("wirte object is free:" + writeFile.isFree());
+                    BILoggerFactory.getLogger().info("wirte object is free:" + writeFile.isFree());
                 }
                 while (!writeFile.isFree()) {
                     Thread.sleep(10);
                 }
             } catch (Exception ex) {
-                BILogger.getLogger().error(ex.getMessage(), ex);
+                BILoggerFactory.getLogger().error(ex.getMessage(), ex);
 
             }
             readFile.prepare();
@@ -791,7 +791,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
                 result = readFile.hasNext();
             } catch (Exception ex) {
                 release();
-                BILogger.getLogger().error(ex.getMessage(), ex);
+                BILoggerFactory.getLogger().error(ex.getMessage(), ex);
             }
             return result;
         }

@@ -2,7 +2,7 @@ package com.fr.bi.common.persistent.xml.reader;
 
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.common.persistent.xml.BIXMLTag;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BITypeUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.xml.XMLableReader;
@@ -53,7 +53,7 @@ public class XMLNormalValueReader extends XMLValueReader {
                 }
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
 
     }

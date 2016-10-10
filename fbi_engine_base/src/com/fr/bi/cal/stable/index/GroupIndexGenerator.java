@@ -4,7 +4,7 @@ package com.fr.bi.cal.stable.index;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
 import com.fr.bi.conf.log.BIRecord;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.utils.CubeBaseUtils;
@@ -34,7 +34,7 @@ public class GroupIndexGenerator extends AbstractSourceGenerator {
         if (!dataSource.needGenerateIndex()) {
             return;
         }
-        BILogger.getLogger().info("table: " + dataSource.toString() + "start generate index:");
+        BILoggerFactory.getLogger().info("table: " + dataSource.toString() + "start generate index:");
         final long rowCount = cube.getRowCount();
         int threadCount = Math.min(MUITI_THREAD_LIMIT_ROW * CubeBaseUtils.AVAILABLEPROCESSORS / (int) (rowCount + 1) + 1, CubeBaseUtils.AVAILABLEPROCESSORS);
         GroupIndexCreator[] gics = cube.createGroupValueIndexCreator();
@@ -44,11 +44,11 @@ public class GroupIndexGenerator extends AbstractSourceGenerator {
             for (int i = 0, len = gics.length; i < len; i++) {
 //                gics[i].setLog(log, dataSource.getDbTable());
                 gics[i].generateCube();
-                BILogger.getLogger().info("table: " + dataSource.toString() + "finish:" + Math.round(i / len * 100) + "%");
+                BILoggerFactory.getLogger().info("table: " + dataSource.toString() + "finish:" + Math.round(i / len * 100) + "%");
             }
         }
         cube.releaseGroupValueIndexCreator();
-        BILogger.getLogger().info("table: " + dataSource.toString() + "indexing completed");
+        BILoggerFactory.getLogger().info("table: " + dataSource.toString() + "indexing completed");
     }
 
     private void multiThreadGenerate(int threadCount, final GroupIndexCreator[] gics) {
@@ -68,11 +68,11 @@ public class GroupIndexGenerator extends AbstractSourceGenerator {
         try {
             es.invokeAll(threadList);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         } finally {
             es.shutdown();
         }
-        BILogger.getLogger().info("table: " + dataSource.toString() + "finish:" + CubeConstant.PERCENT_ROW_D + "%");
+        BILoggerFactory.getLogger().info("table: " + dataSource.toString() + "finish:" + CubeConstant.PERCENT_ROW_D + "%");
     }
 
 

@@ -1,5 +1,6 @@
 package com.finebi.cube.fun;
 
+import com.fr.bi.stable.engine.CubeTask;
 import com.fr.stable.fun.mark.Mutable;
 
 /**
@@ -11,7 +12,5 @@ public interface CubeConditionProvider extends Mutable {
 
     int CURRENT_LEVEL = 1;
 
-    void prepare();
-
-    void end();
+    void prepare(CubeTask task);
 }

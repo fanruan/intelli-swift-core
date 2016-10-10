@@ -349,6 +349,28 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             .removeClass("dashboard-title-center").addClass(cls);
     },
 
+    _refreshWidgetTitle: function () {
+        var id = this.model.get("id");
+        var titleSetting = this.model.get("settings").title_detail || {};
+        var $title = this.title.element.find(".shelter-editor-text .bi-text");
+        $title.css(titleSetting.detail_style || {});
+
+        this.titleWrapper.element.css({"background": getBackgroundValue(titleSetting.detail_background)});
+
+        function getBackgroundValue (bg) {
+            if (!bg) {
+                return "";
+            }
+            switch (bg.type) {
+                case BICst.BACKGROUND_TYPE.COLOR:
+                    return bg.value;
+                case BICst.BACKGROUND_TYPE.IMAGE:
+                    return "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + bg["value"] + ")";
+            }
+            return "";
+        }
+    },
+
     _refreshGlobalStyle: function () {
         this._refreshTitlePosition();
     },
@@ -419,6 +441,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         if (BI.has(changed, "name")) {
             this.title.setValue(this.model.get("name"))
         }
+        if (BI.has(changed, "settings") && (changed.settings.title_detail !== prev.settings.title_detail)) {
+            this._refreshWidgetTitle()
+        }
     },
 
     local: function () {
@@ -432,6 +457,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
 
     refresh: function () {
         this._buildWidgetTitle();
+        this._refreshWidgetTitle();
         this._refreshMagnifyButton();
         this._refreshTableAndFilter();
         this._refreshLayout();

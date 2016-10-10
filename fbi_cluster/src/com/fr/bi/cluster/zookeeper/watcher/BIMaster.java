@@ -7,7 +7,7 @@ import com.fr.bi.cluster.zookeeper.operation.BIMasterBasicIndexOperation;
 import com.fr.bi.cluster.zookeeper.operation.BIMasterDBOperation;
 import com.fr.bi.cluster.zookeeper.operation.BIMasterFirstIndexOperation;
 import com.fr.bi.cluster.zookeeper.operation.BIMasterOperation;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.FRLogger;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
@@ -73,7 +73,7 @@ public class BIMaster extends BIWatcher implements BIMissionListener {
             try {
                 zk.create(PARENT_PATH, new byte[0], ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
             } catch (Exception ex) {
-                 BILogger.getLogger().error(ex.getMessage(), ex);
+                 BILoggerFactory.getLogger().error(ex.getMessage(), ex);
 //                LOG.error("Zookeeper已经存在" + PARENT_PATH + "路径，报错信息：" + ex.toString());
             }
         }
@@ -95,11 +95,11 @@ public class BIMaster extends BIWatcher implements BIMissionListener {
                 competed.notify();
                 competed = true;
             } catch (InterruptedException ex) {
-                 BILogger.getLogger().error(ex.getMessage(), ex);
+                 BILoggerFactory.getLogger().error(ex.getMessage(), ex);
             } catch (KeeperException ex) {
-                 BILogger.getLogger().error(ex.getMessage(), ex);
+                 BILoggerFactory.getLogger().error(ex.getMessage(), ex);
             } catch (Exception ex) {
-                 BILogger.getLogger().error(ex.getMessage(), ex);
+                 BILoggerFactory.getLogger().error(ex.getMessage(), ex);
             }
 
             if (isLocked) {
@@ -110,7 +110,7 @@ public class BIMaster extends BIWatcher implements BIMissionListener {
                 try {
                     zk.delete(id, -1);
                 } catch (Exception ex) {
-                     BILogger.getLogger().error(ex.getMessage(), ex);
+                     BILoggerFactory.getLogger().error(ex.getMessage(), ex);
                 }
             }
 
@@ -137,7 +137,7 @@ public class BIMaster extends BIWatcher implements BIMissionListener {
                 controller.startWork();
                 controller.registerMissionListener(this);
             } catch (Exception ex) {
-                 BILogger.getLogger().error(ex.getMessage(), ex);
+                 BILoggerFactory.getLogger().error(ex.getMessage(), ex);
             }
         }
     }

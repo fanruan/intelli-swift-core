@@ -2,7 +2,7 @@ package com.fr.bi.stable.utils.algorithem;
 
 
 import com.fr.bi.common.persistent.xml.writer.BIBeanXMLWriterWrapper;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BIFieldUtils;
 import com.fr.general.ComparatorUtils;
 
@@ -99,7 +99,7 @@ public class BIComparatorUtils {
             }
             return true;
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             return false;
         }
     }
