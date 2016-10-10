@@ -37,17 +37,17 @@ webpackJsonp([0],{
 
 	var _Portal2 = _interopRequireDefault(_Portal);
 
-	__webpack_require__(929);
+	__webpack_require__(930);
 
-	__webpack_require__(931);
+	__webpack_require__(932);
 
-	__webpack_require__(933);
+	__webpack_require__(934);
 
-	__webpack_require__(935);
+	__webpack_require__(936);
 
-	__webpack_require__(937);
+	__webpack_require__(938);
 
-	__webpack_require__(939);
+	__webpack_require__(940);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5157,7 +5157,7 @@ webpackJsonp([0],{
 
 	var _TableComponent2 = _interopRequireDefault(_TableComponent);
 
-	var _DetailTableComponent = __webpack_require__(927);
+	var _DetailTableComponent = __webpack_require__(928);
 
 	var _DetailTableComponent2 = _interopRequireDefault(_DetailTableComponent);
 
@@ -6265,6 +6265,12 @@ webpackJsonp([0],{
 
 	var _widgets = __webpack_require__(904);
 
+	var _SettingsComponentHelper = __webpack_require__(927);
+
+	var _SettingsComponentHelper2 = _interopRequireDefault(_SettingsComponentHelper);
+
+	__webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"css\\Component\\SettingsComponent\\SettingsComponent.css\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
@@ -6275,6 +6281,47 @@ webpackJsonp([0],{
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	var SortableContainer = _base.Sortable.SortableContainer;
+	var SortableElement = _base.Sortable.SortableElement;
+	var SortableHandle = _base.Sortable.SortableHandle;
+	var arrayMove = _base.Sortable.arrayMove;
+
+
+	var DragHandle = SortableHandle(function () {
+	    return _lib2.default.createElement(
+	        'span',
+	        null,
+	        '::'
+	    );
+	});
+
+	var SortableItem = SortableElement(function (_ref) {
+	    var value = _ref.value;
+
+	    return _lib2.default.createElement(
+	        _lib.View,
+	        { style: styles.sortableItems },
+	        _lib2.default.createElement(DragHandle, null),
+	        _lib2.default.createElement(
+	            _lib.Text,
+	            null,
+	            value.text
+	        )
+	    );
+	});
+
+	var SortableList = SortableContainer(function (_ref2) {
+	    var items = _ref2.items;
+
+	    return _lib2.default.createElement(
+	        _lib.ScrollView,
+	        null,
+	        items.map(function (value, index) {
+	            return _lib2.default.createElement(SortableItem, { key: 'item-' + value.dId, index: index, value: value });
+	        })
+	    );
+	});
+
 	var SettingsComponent = function (_Component) {
 	    _inherits(SettingsComponent, _Component);
 
@@ -6284,6 +6331,16 @@ webpackJsonp([0],{
 	        var _this = _possibleConstructorReturn(this, (SettingsComponent.__proto__ || Object.getPrototypeOf(SettingsComponent)).call(this, props, context));
 
 	        _this.state = {};
+
+	        _this._onSortEnd = function (_ref3) {
+	            // this.setState({
+	            //     items: arrayMove(this.state.items, oldIndex, newIndex)
+	            // });
+
+	            var oldIndex = _ref3.oldIndex;
+	            var newIndex = _ref3.newIndex;
+	        };
+
 	        return _this;
 	    }
 
@@ -6312,7 +6369,7 @@ webpackJsonp([0],{
 	                _lib2.default.createElement(
 	                    _base.TextLink,
 	                    { onPress: function onPress() {
-	                            _this2.props.onReturn();
+	                            _this2.refs['overlay'].close();
 	                        }, style: styles.back },
 	                    '返回'
 	                ),
@@ -6331,20 +6388,30 @@ webpackJsonp([0],{
 	    }, {
 	        key: '_renderDialog',
 	        value: function _renderDialog() {
-	            return _lib2.default.createElement(_lib.View, null);
+	            return _lib2.default.createElement(SortableList, { items: this._helper.getDimensionsItems(),
+	                onSortEnd: this._onSortEnd,
+	                useDragHandle: true,
+	                lockAxis: 'y',
+	                helperClass: 'SettingsComponent-Helper'
+	            });
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
+	            var _this3 = this;
+
 	            var props = _objectWithoutProperties(this.props, []);
 	            var state = _objectWithoutProperties(this.state, []);
 
+	            this._helper = new _SettingsComponentHelper2.default(props, this.context);
 	            return _lib2.default.createElement(
 	                _base.Overlay,
-	                null,
+	                { ref: 'overlay', onClose: function onClose() {
+	                        _this3.props.onReturn();
+	                    } },
 	                _lib2.default.createElement(
 	                    _base.VtapeLayout,
-	                    { style: styles.wrapper },
+	                    { className: 'SettingsComponent', style: styles.wrapper },
 	                    this._renderHeader(),
 	                    this._renderDialog()
 	                )
@@ -6391,6 +6458,9 @@ webpackJsonp([0],{
 	        justifyContent: 'space-between',
 	        color: _data.Colors.TEXT,
 	        backgroundColor: _data.Colors.HIGHLIGHT
+	    },
+	    sortableItems: {
+	        height: _data.Size.ITEM_HEIGHT
 	    }
 	});
 	exports.default = SettingsComponent;
@@ -6398,6 +6468,55 @@ webpackJsonp([0],{
 /***/ },
 
 /***/ 927:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _core = __webpack_require__(329);
+
+	var _data = __webpack_require__(770);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var SettingsComponentHelper = function () {
+	    function SettingsComponentHelper(props, context) {
+	        _classCallCheck(this, SettingsComponentHelper);
+
+	        this.widget = new _data.Widget(props.$widget);
+	    }
+
+	    _createClass(SettingsComponentHelper, [{
+	        key: 'getDimensionsItems',
+	        value: function getDimensionsItems() {
+	            var _this = this;
+
+	            var result = [];
+	            var dimensions = this.widget.getAllDimensionAndTargetIds();
+	            (0, _core.each)(dimensions, function (dId) {
+	                var dim = _this.widget.getDimensionOrTargetById(dId);
+	                result.push({
+	                    text: dim.getName(),
+	                    dId: dId
+	                });
+	            });
+	            return result;
+	        }
+	    }]);
+
+	    return SettingsComponentHelper;
+	}();
+
+	exports.default = SettingsComponentHelper;
+
+/***/ },
+
+/***/ 928:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6432,7 +6551,7 @@ webpackJsonp([0],{
 
 	var _widgets = __webpack_require__(904);
 
-	var _DetailTableComponentHelper = __webpack_require__(928);
+	var _DetailTableComponentHelper = __webpack_require__(929);
 
 	var _DetailTableComponentHelper2 = _interopRequireDefault(_DetailTableComponentHelper);
 
@@ -6594,7 +6713,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 928:
+/***/ 929:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6676,13 +6795,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 929:
+/***/ 930:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(930);
+	var content = __webpack_require__(931);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(625)(content, {});
@@ -6703,7 +6822,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 930:
+/***/ 931:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(624)();
@@ -6718,13 +6837,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 931:
+/***/ 932:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(932);
+	var content = __webpack_require__(933);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(625)(content, {});
@@ -6745,7 +6864,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 932:
+/***/ 933:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(624)();
@@ -6760,13 +6879,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 933:
+/***/ 934:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(934);
+	var content = __webpack_require__(935);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(625)(content, {});
@@ -6787,7 +6906,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 934:
+/***/ 935:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(624)();
@@ -6802,13 +6921,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 935:
+/***/ 936:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(936);
+	var content = __webpack_require__(937);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(625)(content, {});
@@ -6829,7 +6948,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 936:
+/***/ 937:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(624)();
@@ -6844,13 +6963,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 937:
+/***/ 938:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(938);
+	var content = __webpack_require__(939);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(625)(content, {});
@@ -6871,7 +6990,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 938:
+/***/ 939:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(624)();
@@ -6886,13 +7005,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 939:
+/***/ 940:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(940);
+	var content = __webpack_require__(941);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(625)(content, {});
@@ -6913,7 +7032,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 940:
+/***/ 941:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(624)();

@@ -83931,7 +83931,7 @@
 	    _createClass(Overlay, [{
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
-	            this.in();
+	            this.open();
 	        }
 	    }, {
 	        key: 'render',
@@ -83954,24 +83954,18 @@
 	                )
 	            );
 	        }
-
-	        //显示动画
-
 	    }, {
-	        key: 'in',
-	        value: function _in() {
+	        key: 'open',
+	        value: function open() {
 	            _lib.Animated.parallel([_lib.Animated.timing(this.state.opacity, {
 	                easing: _lib.Easing.linear,
 	                duration: 500,
 	                toValue: 1
 	            })]).start();
 	        }
-
-	        //隐藏动画
-
 	    }, {
-	        key: 'out',
-	        value: function out() {
+	        key: 'close',
+	        value: function close() {
 	            var _this2 = this;
 
 	            _lib.Animated.parallel([_lib.Animated.timing(this.state.opacity, {
@@ -83979,7 +83973,9 @@
 	                duration: 500,
 	                toValue: 0
 	            })]).start(function (endState) {
-	                _this2.setState({ visible: false });
+	                _this2.setState({ visible: false }, function () {
+	                    _this2.props.onClose && _this2.props.onClose();
+	                });
 	            });
 	        }
 	    }]);
@@ -84034,10 +84030,6 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _reactAddonsPureRenderMixin = __webpack_require__(230);
-
-	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
-
 	var _reactTimerMixin = __webpack_require__(635);
 
 	var _reactTimerMixin2 = _interopRequireDefault(_reactTimerMixin);
@@ -84062,18 +84054,8 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var _Dimensions$get = _lib.Dimensions.get('window');
-
-	var width = _Dimensions$get.width;
-	var height = _Dimensions$get.height;
-
-	var navigatorH = 64; // navigator height
 	var aWidth = 300;
 	var aHeight = 214;
-	var left = 0;
-	var top = 0;
-	var middleLeft = (width - aWidth) / 2;
-	var middleTop = (height - aHeight) / 2 - navigatorH;
 
 	var Dialog = function (_Component) {
 	    _inherits(Dialog, _Component);
@@ -84096,7 +84078,7 @@
 	    _createClass(Dialog, [{
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
-	            this.in();
+	            this.open();
 	        }
 	    }, {
 	        key: 'render',
@@ -84178,12 +84160,9 @@
 	                )
 	            );
 	        }
-
-	        //显示动画
-
 	    }, {
-	        key: 'in',
-	        value: function _in() {
+	        key: 'open',
+	        value: function open() {
 	            _lib.Animated.parallel([_lib.Animated.timing(this.state.opacity, {
 	                easing: _lib.Easing.linear,
 	                duration: 500,
@@ -84194,12 +84173,9 @@
 	                toValue: 1
 	            })]).start();
 	        }
-
-	        //隐藏动画
-
 	    }, {
-	        key: 'out',
-	        value: function out() {
+	        key: 'close',
+	        value: function close() {
 	            var _this2 = this;
 
 	            _lib.Animated.parallel([_lib.Animated.timing(this.state.opacity, {
@@ -84211,7 +84187,9 @@
 	                duration: 500,
 	                toValue: 0
 	            })]).start(function (endState) {
-	                _this2.setState({ visible: false });
+	                _this2.setState({ visible: false }, function () {
+	                    _this2.props.onClose && _this2.props.onClose();
+	                });
 	            });
 	        }
 	    }]);
