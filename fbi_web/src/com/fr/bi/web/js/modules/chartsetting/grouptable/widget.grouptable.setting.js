@@ -36,6 +36,7 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
             }
         });
         this.showTitle.on(BI.Controller.EVENT_CHANGE, function () {
+            self.widgetTitle.setVisible(this.isSelected());
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
 
@@ -43,11 +44,10 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
         this.title = BI.createWidget({
             type: "bi.sign_editor",
             cls: "title-input",
-            width: 120,
-            height: this.constant.EDITOR_HEIGHT,
+            width: 120
         });
 
-        this.title.on(BI.SignEditor.EVENT_CHANGE, function() {
+        this.title.on(BI.SignEditor.EVENT_CHANGE, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
         });
 
@@ -60,22 +60,45 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
         });
 
+        this.widgetTitle = BI.createWidget({
+             type: "bi.left",
+             items: [this.title, this.titleDetailSettting],
+             hgap: this.constant.SIMPLE_H_GAP
+        });
+
+        //组件背景
+        this.widgetBackground = BI.createWidget({
+            type: "bi.global_style_index_background"
+        });
+        this.widgetBackground.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
+            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+        });
+
         var widgetTitle = BI.createWidget({
             type: "bi.left",
             cls: "single-line-settings",
             items: BI.createItems([{
                 type: "bi.label",
-                text: BI.i18nText("BI-Widget_Title"),
+                text: BI.i18nText("BI-Component_Widget"),
                 cls: "line-title",
+            }, {
+                type: "bi.label",
+                text: BI.i18nText("BI-Title"),
+                cls: "line-title",
+                lgap: 38
             }, {
                 type: "bi.vertical_adapt",
                 items: [this.showTitle]
             }, {
                 type: "bi.vertical_adapt",
-                items: [this.title]
+                items: [this.widgetTitle]
+            }, {
+                type: "bi.label",
+                text: BI.i18nText("BI-Background"),
+                cls: "line-title",
             },{
                 type: "bi.vertical_adapt",
-                items: [this.titleDetailSettting]
+                items: [this.widgetBackground]
             }], {
                 height: this.constant.SINGLE_LINE_HEIGHT
             }),
@@ -132,31 +155,29 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
         var tableStyle = BI.createWidget({
             type: "bi.left",
             cls: "single-line-settings",
-            items: [{
+            items: BI.createItems([{
                 type: "bi.label",
                 text: BI.i18nText("BI-Table_Sheet_Style"),
-                cls: "line-title",
-                height: this.constant.SINGLE_LINE_HEIGHT
+                cls: "line-title"
             }, {
                 type: "bi.label",
                 text: BI.i18nText("BI-Type"),
                 cls: "attr-names",
-                height: this.constant.SINGLE_LINE_HEIGHT
+                lgap: 10
             }, this.tableFormGroup, {
                 type: "bi.label",
                 text: BI.i18nText("BI-Theme_Color"),
-                cls: "attr-names",
-                height: this.constant.SINGLE_LINE_HEIGHT
+                cls: "attr-names"
             }, {
                 type: "bi.vertical_adapt",
-                items: [this.colorSelector],
-                height: this.constant.SINGLE_LINE_HEIGHT
+                items: [this.colorSelector]
             }, {
                 type: "bi.label",
                 text: BI.i18nText("BI-Table_Style"),
-                cls: "attr-names",
+                cls: "attr-names"
+            }, this.tableSyleGroup], {
                 height: this.constant.SINGLE_LINE_HEIGHT
-            }, this.tableSyleGroup],
+            }),
             hgap: this.constant.SIMPLE_H_GAP
         });
 
@@ -300,6 +321,7 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
             show_name: this.showTitle.isSelected(),
             widget_title: this.title.getValue(),
             title_detail: this.titleDetailSettting.getValue(),
+            widget_bg: this.widgetBackground.getValue(),
             table_form: this.tableFormGroup.getValue()[0],
             theme_color: this.colorSelector.getValue(),
             table_style: this.tableSyleGroup.getValue()[0],
@@ -315,8 +337,10 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
     populate: function () {
         var wId = this.options.wId;
         this.showTitle.setSelected(BI.Utils.getWSShowNameByID(wId));
+        this.widgetTitle.setVisible(BI.Utils.getWSShowNameByID(wId));
         this.title.setValue(BI.Utils.getWidgetNameByID(wId));
         this.titleDetailSettting.setValue(BI.Utils.getWSTitleDetailSettingByID(wId));
+        this.widgetBackground.setValue(BI.Utils.getWSWidgetBGByID(wId));
         this.tableFormGroup.setValue(BI.Utils.getWSTableFormByID(wId));
         this.colorSelector.setValue(BI.Utils.getWSThemeColorByID(wId));
         this.tableSyleGroup.setValue(BI.Utils.getWSTableStyleByID(wId));
@@ -332,6 +356,7 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
         this.showTitle.setSelected(v.show_name);
         this.title.setValue(v.widget_title);
         this.titleDetailSettting.setValue(v.title_detail);
+        this.widgetBackground.setValue(v.widget_bg);
         this.tableFormGroup.setValue(v.table_form);
         this.colorSelector.setValue(v.theme_color);
         this.tableSyleGroup.setValue(v.table_style);

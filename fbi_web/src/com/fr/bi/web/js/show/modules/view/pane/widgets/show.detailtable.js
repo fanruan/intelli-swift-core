@@ -223,6 +223,33 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
             .removeClass("dashboard-title-center").addClass(cls);
     },
 
+    _refreshWidgetTitle: function () {
+        var id = this.model.get("id");
+        var titleSetting = this.model.get("settings").title_detail || {};
+        var $title = this.title.element.find(".shelter-editor-text .bi-text");
+        $title.css(titleSetting.detail_style || {});
+
+        this.titleWrapper.element.css({"background": this._getBackgroundValue(titleSetting.detail_background)});
+    },
+
+    _refreshWidgetBG: function () {
+        var widgetBG = this.model.get("settings").widget_bg || {};
+        this.element.css({"background": this._getBackgroundValue(widgetBG)})
+    },
+
+    _getBackgroundValue: function (bg) {
+        if (!bg) {
+            return "";
+        }
+        switch (bg.type) {
+            case BICst.BACKGROUND_TYPE.COLOR:
+                return bg.value;
+            case BICst.BACKGROUND_TYPE.IMAGE:
+                return "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + bg["value"] + ")";
+        }
+        return "";
+    },
+
     _expandWidget: function () {
         var wId = this.model.get("id");
         BIShow.FloatBoxes.open("detail", "detail", {}, this, {
@@ -246,6 +273,12 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
             BI.has(changed, "sort_sequence")) {
             this.tablePopulate();
         }
+        if (BI.has(changed, "settings") && (changed.settings.title_detail !== prev.settings.title_detail)) {
+            this._refreshWidgetTitle()
+        }
+        if (BI.has(changed, "settings") && (changed.settings.widget_bg !== prev.settings.widget_bg)) {
+            this._refreshWidgetBG()
+        }
     },
 
     local: function () {
@@ -254,6 +287,8 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
 
     refresh: function () {
         this._buildWidgetTitle();
+        this._refreshWidgetTitle();
+        this._refreshWidgetBG();
         this.tablePopulate();
         this._refreshLayout();
         this._refreshTitlePosition();
