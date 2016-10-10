@@ -1,6 +1,7 @@
 package com.finebi.cube.data.disk.reader.primitive;
 
 import com.finebi.cube.data.ICubeSourceReleaseManager;
+import com.finebi.cube.data.disk.NIOHandlerManager;
 import com.finebi.cube.data.input.primitive.ICubePrimitiveReader;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.fr.bi.stable.io.newio.NIOConstant;
@@ -30,6 +31,8 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
     boolean[] initIndex = new boolean[INIT_INDEX_LENGTH];
     protected volatile boolean isValid = true;
     private ICubeSourceReleaseManager releaseManager;
+    private NIOHandlerManager nioHandlerManager;
+
     protected File baseFile;
     private String readerHandler;
 
@@ -114,8 +117,8 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
     }
     @Override
     public void releaseHandler() {
-        if (useReleaseManager()) {
-            releaseManager.release(this);
+        if (useNioHandlerManager()) {
+            nioHandlerManager.releaseHandler();
         } else {
             releaseSource();
         }
@@ -123,7 +126,12 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
 
     @Override
     public void forceRelease() {
-        releaseSource();
+        if (useNioHandlerManager()) {
+            nioHandlerManager.forceReleaseHandler();
+        } else {
+            releaseSource();
+        }
+        isValid = false;
     }
 
     @Override
@@ -132,13 +140,13 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
     }
 
     public void releaseSource() {
-
+        try {
         readWriteLock.writeLock().lock();
         if (!isValid) {
             return;
         }
-        //先改变isValid状态再判断canClear
-        isValid = false;
+//        //先改变isValid状态再判断canClear
+//        isValid = false;
         try {
             //但愿10ms能 执行完get方法否则可能导致jvm崩溃
             //锁太浪费资源了，10ms目前并没有遇到问题
@@ -147,7 +155,6 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
         } catch (InterruptedException e) {
             BILogger.getLogger().error(e.getMessage(), e);
         }
-        try {
             releaseChild();
             releaseBuffer();
             releaseChannel();
@@ -161,6 +168,10 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
 
     private boolean useReleaseManager() {
         return releaseManager != null;
+    }
+
+    private boolean useNioHandlerManager(){
+        return nioHandlerManager != null;
     }
 
     private void releaseBuffer() {
@@ -196,6 +207,10 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
         this.releaseManager = releaseHelper;
     }
 
+    @Override
+    public  void setHandlerReleaseHelper(NIOHandlerManager releaseHelper){
+        this.nioHandlerManager = releaseHelper;
+    }
     protected abstract void initChild(int index, MappedByteBuffer buffer);
 
     private FileChannel initFile(long fileIndex) {
