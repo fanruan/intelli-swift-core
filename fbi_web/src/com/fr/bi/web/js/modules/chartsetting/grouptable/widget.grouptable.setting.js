@@ -152,6 +152,27 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
         this.tableSyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
+
+        //自定义表格样式
+        this.customTableStyle = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Custom_Table_Style"),
+            width: 120
+        });
+
+        this.customTableStyle.on(BI.Controller.EVENT_CHANGE, function() {
+            self.tableStyleSetting.setVisible(this.isSelected());
+            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+        });
+
+        this.tableStyleSetting = BI.createWidget({
+            type: "bi.table_detailed_setting_combo"
+        });
+
+        this.tableStyleSetting.on(BI.TableDetailedSettingCombo.EVENT_CHANGE, function() {
+            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+        });
+
         var tableStyle = BI.createWidget({
             type: "bi.left",
             cls: "single-line-settings",
@@ -175,7 +196,11 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
                 type: "bi.label",
                 text: BI.i18nText("BI-Table_Style"),
                 cls: "attr-names"
-            }, this.tableSyleGroup], {
+            }, this.tableSyleGroup, {
+                type: "bi.vertical_adapt",
+                items: [this.customTableStyle],
+                cls: "attr-names"
+            }, this.tableStyleSetting], {
                 height: this.constant.SINGLE_LINE_HEIGHT
             }),
             hgap: this.constant.SIMPLE_H_GAP

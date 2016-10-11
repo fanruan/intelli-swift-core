@@ -93,16 +93,16 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
     populate: function (obj) {
         var self = this, wId = this.options.wId;
         this._initShowChartDrill();
-        this.outerWrapper.setVisible(this.showDrill && (!this._checkUPDrillEmpty() || BI.isNotNull(obj)));
+        this.outerWrapper.setVisible(this.showDrill && (!this._checkUPDrillEmpty(wId) || BI.isNotNull(obj)));
 
-        if (this.showDrill === false || (BI.isNull(obj) && this._checkUPDrillEmpty())) {
+        if (this.showDrill === false || (BI.isNull(obj) && this._checkUPDrillEmpty(wId))) {
             this.pushButton.setPushDown();
             return;
         }
 
         this.pushButton.setPushUp();
 
-        if (BI.isNull(obj) && !this._checkUPDrillEmpty()) {
+        if (BI.isNull(obj) && !this._checkUPDrillEmpty(wId)) {
             this.wrapper.empty();
             var drillDownMap = BI.Utils.getDrillByID(wId);
             var drillUpID;
@@ -224,7 +224,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         this.outerWrapper.resize();
     },
 
-    hideDrill: function (wid) {
+     hideDrill: function (wid) {
         if(this._checkUPDrillEmpty(wid)){
             this._onClickPush(false)
         }
@@ -267,7 +267,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         this.outerWrapper.attr("items")[1].top = isVisible ? this.buttonTop : 0;
         this.outerWrapper.resize();
         isVisible ? this.pushButton.setPushUp() : this.pushButton.setPushDown();
-        this.hideDrillButtons()
+        this.hideDrillButtons(this.options.wId)
     },
 
     _onClickDrill: function (dId, value, drillId) {
