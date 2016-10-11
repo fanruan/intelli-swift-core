@@ -40,6 +40,7 @@ BI.DetailRegion = BI.inherit(BI.AbstractRegion, {
         this.calculateAddButton = BI.createWidget({
             type: "bi.text_button",
             height: 25,
+            disabled: true,
             value: BI.i18nText("BI-Add_Cal_Target")
         });
 
@@ -177,7 +178,7 @@ BI.DetailRegion = BI.inherit(BI.AbstractRegion, {
     populate: function(){
         BI.DetailRegion.superclass.populate.apply(this, arguments);
         var o = this.options;
-        if(!checkValid()){
+        if(!checkRelationValid()){
             this.relationButton.setEnable(false);
             this.relationButton.setTitle(BI.i18nText("BI-Fields_Relation_Only"));
         }else{
@@ -185,7 +186,15 @@ BI.DetailRegion = BI.inherit(BI.AbstractRegion, {
             this.relationButton.setTitle("");
         }
 
-        function checkValid(){
+        if(!checkAddCalcTargetValid()){
+            this.calculateAddButton.setEnable(false);
+            this.calculateAddButton.setTitle(BI.i18nText("BI-There_Is_No_Target_for_Contruct_Calculate_Target"));
+        }else{
+            this.calculateAddButton.setEnable(true);
+            this.calculateAddButton.setTitle("");
+        }
+
+        function checkRelationValid(){
             var tableIds = BI.map(BI.Utils.getAllDimDimensionIDs(o.wId), function(idx, dId){
                 return BI.Utils.getTableIDByDimensionID(dId);
             });
@@ -198,6 +207,14 @@ BI.DetailRegion = BI.inherit(BI.AbstractRegion, {
                 }));
             }
             return true;
+        }
+
+        function checkAddCalcTargetValid(){
+            var dimsAndTars = BI.Utils.getAllDimensionIDs(o.wId);
+            return BI.isNotNull(BI.find(dimsAndTars, function(idx, dId){
+                var targetType = BI.Utils.getDimensionTypeByID(dId);
+                return targetType === BICst.TARGET_TYPE.NUMBER || targetType === BICst.TARGET_TYPE.FORMULA
+            }));
         }
     },
 
