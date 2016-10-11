@@ -5,7 +5,11 @@ BI.WidgetFilter = BI.inherit(BI.Widget, {
 
     _constants: {
         SHOW_FILTER: 1,
-        SHOW_NONE_FILTER: 2
+        SHOW_NONE_FILTER: 2,
+        NORMAL_COLOR: "#d8f2fd",
+        TRIANGLE_WIDTH: 16,
+        TRIANGLE_HEIGHT: 10,
+        TRIANGLE_RIGHT_LAP: 60
     },
 
     _defaultConfig: function () {
@@ -18,6 +22,16 @@ BI.WidgetFilter = BI.inherit(BI.Widget, {
         BI.WidgetFilter.superclass._init.apply(this, arguments);
         var self = this;
         this.model = new BI.WidgetFilterModel();
+        this.triangle = BI.createWidget({
+            type: "bi.svg",
+            width: this._constants.TRIANGLE_WIDTH,
+            height: this._constants.TRIANGLE_HEIGHT
+        });
+
+        this.triangle.path("M6,0L0,10L12,10").attr({
+            "stroke": this._constants.NORMAL_COLOR,
+            "fill": this._constants.NORMAL_COLOR
+        });
         this.tab = BI.createWidget({
             type: "bi.tab",
             cls: "main-filter-pane",
@@ -73,6 +87,16 @@ BI.WidgetFilter = BI.inherit(BI.Widget, {
                 },
                 right: 10,
                 bottom: 10
+            }]
+        });
+        BI.createWidget({
+            type: "bi.absolute",
+            cls: "cursor-pointer",
+            element: this.element,
+            items: [{
+                el:this.triangle,
+                right: this._constants.TRIANGLE_RIGHT_LAP,
+                top: -8
             }]
         })
     },
