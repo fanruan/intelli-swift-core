@@ -4,7 +4,7 @@ import Immutable from 'immutable'
 
 import {
     ReactComponentWithPureRenderMixin, ReactComponentWithImmutableRenderMixin,
-    cn, sc, math, isNil, emptyFunction, shallowEqual, immutableShallowEqual, isEqual, isEmpty, each,
+    cn, sc, math, isNil, emptyFunction, shallowEqual, immutableShallowEqual, isEqual, isEmpty, each, clone,
     translateDOMPositionXY, requestAnimationFrame
 } from 'core'
 import React, {
@@ -18,12 +18,25 @@ import React, {
     Fetch,
     Promise,
     ScrollView,
-    TouchableHighlight
+    TouchableHighlight,
+    TouchableWithoutFeedback
 } from 'lib'
 
 import {Colors, Size, Template, Widget, Dimension, Target} from 'data'
 
-import {CenterLayout, VtapeLayout, HtapeLayout, IconButton, Icon, TextLink, Table, Overlay, Sortable} from 'base'
+import {
+    CenterLayout,
+    VtapeLayout,
+    HtapeLayout,
+    IconButton,
+    TextButton,
+    Icon,
+    TextLink,
+    Table,
+    Overlay,
+    Sortable,
+    Collapsible
+} from 'base'
 
 import {MultiSelectorWidget} from 'widgets'
 
@@ -33,19 +46,22 @@ import SettingsComponentHelper from './SettingsComponentHelper'
 const {SortableContainer, SortableElement, SortableHandle, arrayMove} = Sortable;
 
 const DragHandle = SortableHandle(() => {
-    return <IconButton style={styles.dragHandler} className={'drag-handler-icon'} iconWidth={18} iconHeight={18}/>
+    return <IconButton effect={false} style={styles.dragHandler} className={'drag-handler-icon'} iconWidth={18}
+                       iconHeight={18}/>
 });
 
 const SortableItem = SortableElement(({value}) => {
-    return <View style={styles.sortableItems}>
-        <Text>{value.text}</Text>
-        <DragHandle/>
-    </View>
+    return <TouchableHighlight underlayColor={Colors.PRESS}>
+        <View style={styles.sortableItems}>
+            <Text>{value.text}</Text>
+            <DragHandle/>
+        </View>
+    </TouchableHighlight>
 });
 
 const SortableList = SortableContainer(({items}) => {
     return (
-        <ScrollView>
+        <ScrollView style={{height: Size.ITEM_HEIGHT * items.length}}>
             {items.map((value, index) =>
                 <SortableItem key={`item-${value.dId}`} index={index} value={value}/>
             )}
@@ -70,7 +86,8 @@ class SettingsComponent extends Component {
     };
 
     state = {
-        $widget: this.props.$widget
+        $widget: this.props.$widget,
+        collapsed: {}
     };
 
     _getNextState(props, state = {}) {
@@ -105,20 +122,41 @@ class SettingsComponent extends Component {
         </View>
     }
 
-    _onSortEnd = ({oldIndex, newIndex}) => {
-        const $widget = this._helper.doMove(oldIndex, newIndex);
+    _onSortEnd = ({oldIndex, newIndex, viewId}) => {
+        const $widget = this._helper.doMove(viewId, oldIndex, newIndex);
         this.setState({
             $widget: $widget
         });
     };
 
     _renderDialog() {
-        return <SortableList items={this._helper.getDimensionsItems()}
-                             onSortEnd={this._onSortEnd}
-                             useDragHandle={true}
-                             lockAxis='y'
-                             helperClass='sortable-helper'
-        />;
+        const array = [];
+        each(this._helper.getViewItems(), (viewItem)=> {
+            array.push(<TextButton style={styles.collapseHeader} onPress={()=> {
+                const collapsed = clone(this.state.collapsed);
+                collapsed[viewItem.viewId] = !collapsed[viewItem.viewId];
+                this.setState({
+                    collapsed
+                })
+            }}>{viewItem.text}</TextButton>);
+            const items = this._helper.getDimensionsItems(viewItem.viewId);
+            array.push(<Collapsible collapsed={this.state.collapsed[viewItem.viewId] || false}>
+                <SortableList items={items}
+                              onSortEnd={({oldIndex, newIndex})=> {
+                                  this._onSortEnd({
+                                      oldIndex, newIndex, viewId: viewItem.viewId
+                                  });
+                              }}
+                              useDragHandle={true}
+                              lockAxis='y'
+                              helperClass='sortable-helper'
+                />
+            </Collapsible>)
+        });
+
+        return <ScrollView>
+            {array}
+        </ScrollView>;
     }
 
     render() {
@@ -183,6 +221,12 @@ const styles = StyleSheet.create({
     },
     dragHandler: {
         opacity: 0.25
+    },
+    collapseHeader: {
+        alignItems: 'left',
+        paddingLeft: 20,
+        backgroundColor: '#d8f2fd',
+        height: Size.ITEM_HEIGHT
     }
 });
 export default SettingsComponent

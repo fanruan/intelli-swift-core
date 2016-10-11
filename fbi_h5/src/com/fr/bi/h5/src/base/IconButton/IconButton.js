@@ -1,32 +1,17 @@
 import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mixin from 'react-mixin'
-import ReactDOM from 'react-dom'
-
 import {cn, sc, requestAnimationFrame, emptyFunction} from 'core'
 import React, {
     Component,
-    StyleSheet,
-    Text,
-    Image,
-    Dimensions,
-    ListView,
-    View,
-    PixelRatio,
-    Fetch,
-    TouchableHighlight,
-    TouchableWithoutFeedback
+    StyleSheet
 } from 'lib'
 
-import {Colors} from 'data'
-
-import Icon from '../Icon'
-
+import Button from '../Button/Button'
+import Icon from '../Icon/Icon'
 
 class IconButton extends Component {
     constructor(props, context) {
         super(props, context);
-        const {selected} = props;
-        this.state = {selected};
     }
 
     static propTypes = {};
@@ -54,77 +39,17 @@ class IconButton extends Component {
 
     }
 
-    componentWillReceiveProps(props) {
-        const {text, value, selected} = props;
-        this.state = {text, value, selected};
-    }
-
     componentWillUpdate() {
 
     }
 
-    _onPress(e) {
-        if (this.props.disabled === false && this.props.invalid === false && (this.state.selected === false || this.state.selected === true)) {
-            this.setState({
-                selected: !this.state.selected
-            }, ()=> {
-                this.props.onSelected(this.state.selected);
-            });
-        }
-        this.props.onPress(e);
-        if (this.props.stopPropagation) {
-            e.stopPropagation();
-        }
-    }
-
     render() {
-        const {...props} = this.props, {...state} = this.state;
-        if (props.disabled === true) {
-            return <View className={cn(props.className, 'react-view', 'base-disabled')}
-                         style={[styles.wrapper, styles.disabled, props.style]}>
-                <Icon width={props.iconWidth} height={props.iconHeight}/>
-            </View>
-        }
-        if (props.invalid === true) {
-            return <View className={cn(props.className, 'react-view', 'base-invalid')}
-                         style={[styles.wrapper, props.style]}>
-                <Icon width={props.iconWidth} height={props.iconHeight}/>
-            </View>
-        }
-        if (props.effect === true) {
-            return <TouchableHighlight style={[props.style]} onPress={this._onPress.bind(this)}
-                                       underlayColor={props.underlayColor || Colors.PRESS}>
-                <View className={cn(props.className, 'react-view', cn({
-                    'active': this.state.selected
-                }))} style={[styles.wrapper]}>
-                    <Icon width={props.iconWidth} height={props.iconHeight}/>
-                </View>
-            </TouchableHighlight>
-        }
-        return <TouchableWithoutFeedback onPress={this._onPress.bind(this)}>
-            <View className={cn(props.className, 'react-view', cn({
-                'active': this.state.selected
-            }))} style={[styles.wrapper, props.style]}>
-                <Icon width={props.iconWidth} height={props.iconHeight}/>
-            </View>
-        </TouchableWithoutFeedback>
+        const {iconWidth, iconHeight, ...props}=this.props;
+        return <Button {...props}>
+            <Icon iconWidth={iconWidth} iconHeight={iconHeight}/>
+        </Button>
     }
 
 }
 mixin.onClass(IconButton, PureRenderMixin);
-const styles = StyleSheet.create({
-    wrapper: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-
-    disabled: {
-        color: Colors.DISABLED
-    },
-
-    selected: {
-        backgroundColor: Colors.SELECTED
-    }
-});
 export default IconButton

@@ -42,12 +42,6 @@ class Controls extends Component {
 
     constructor(props, context) {
         super(props, context);
-        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        this.template = new Template(props.$template);
-        const rows = this.template.getAllControlWidgetIds();
-        this.state = {
-            dataSource: ds.cloneWithRows(rows)
-        }
     }
 
     static propTypes = {};
@@ -72,6 +66,7 @@ class Controls extends Component {
 
     render() {
         const {...props} = this.props;
+        this.template = new Template(props.$template);
         return <ScrollView style={styles.wrapper}>
             {map(this.template.getAllControlWidgetIds(), (wId)=> {
                 const $widget = this.template.get$$WidgetById(wId);

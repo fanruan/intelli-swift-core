@@ -10,7 +10,8 @@ import React, {
     View,
     Fetch,
     Navigator,
-    TouchableOpacity
+    TouchableOpacity,
+    TouchableHighlight
 } from 'lib'
 
 import {Colors, Size, Template} from 'data'
@@ -44,13 +45,14 @@ class Main extends Component {
                 }
 
                 return (
-                    <TouchableOpacity
+                    <TouchableHighlight
                         onPress={() => navigator.pop()}
+                        underlayColor={Colors.PRESS}
                         style={styles.navBarLeftButton}>
                         <Text style={[styles.navBarText, styles.navBarButtonText]}>
                             返回
                         </Text>
-                    </TouchableOpacity>
+                    </TouchableHighlight>
                 );
             },
 
@@ -61,7 +63,7 @@ class Main extends Component {
 
                 if (route.name === 'widget') {
                     return (
-                        <TouchableOpacity
+                        <TouchableHighlight
                             onPress={() => {
                                 const prevRoute = navState.routeStack[navState.presentedIndex - 1];
                                 if (route.$template) {
@@ -71,17 +73,18 @@ class Main extends Component {
                                     navigator.pop();
                                 }
                             }}
+                            underlayColor={Colors.PRESS}
                             style={styles.navBarRightButton}>
                             <Text style={[styles.navBarText, styles.navBarButtonText]}>
                                 确定
                             </Text>
-                        </TouchableOpacity>
+                        </TouchableHighlight>
                     );
                 }
 
                 if (route.name === 'list') {
                     return (
-                        <TouchableOpacity
+                        <TouchableHighlight
                             onPress={() => {
                                 const prevRoute = navState.routeStack[navState.presentedIndex - 1];
                                 if (route.$template) {
@@ -92,11 +95,12 @@ class Main extends Component {
                                     navigator.pop();
                                 }
                             }}
+                            underlayColor={Colors.PRESS}
                             style={styles.navBarRightButton}>
                             <Text style={[styles.navBarText, styles.navBarButtonText]}>
                                 查询
                             </Text>
-                        </TouchableOpacity>
+                        </TouchableHighlight>
                     );
                 }
 

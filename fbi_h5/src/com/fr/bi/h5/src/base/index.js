@@ -13,6 +13,7 @@ export HorizontalCenterLayout from './Layout/HorizontalCenterLayout'
 //export Col from './FlexBoxGrid/Col'
 
 export Icon from './Icon'
+export Button from './Button/Button'
 export IconButton from './IconButton/IconButton'
 export IconLink from './IconLink/IconLink'
 export TextButton from './TextButton/TextButton'
@@ -27,6 +28,7 @@ export Sortable from './Sortable'
 
 export GiftedListView from './GiftedListView'
 export SideMenu from './SideMenu'
+export Collapsible from './Accordion/Collapsible'
 export Accordion from './Accordion/Accordion'
 export Animatable from './Animatable/Animatable'
 
