@@ -24,7 +24,7 @@ class Overlay extends Component {
     }
 
     componentDidMount() {
-        this.in();
+        this.open();
     }
 
     render() {
@@ -43,8 +43,7 @@ class Overlay extends Component {
         );
     }
 
-    //显示动画
-    in() {
+    open() {
         Animated.parallel([
             Animated.timing(
                 this.state.opacity,
@@ -57,8 +56,7 @@ class Overlay extends Component {
         ]).start();
     }
 
-    //隐藏动画
-    out() {
+    close() {
         Animated.parallel([
             Animated.timing(
                 this.state.opacity,
@@ -69,7 +67,9 @@ class Overlay extends Component {
                 }
             )
         ]).start((endState)=> {
-            this.setState({visible: false})
+            this.setState({visible: false}, ()=> {
+                this.props.onClose && this.props.onClose();
+            })
         });
     }
 }

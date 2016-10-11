@@ -14,7 +14,8 @@ import React, {
     PixelRatio,
     Fetch,
     TouchableHighlight,
-    TouchableOpacity
+    TouchableOpacity,
+    TouchableWithoutFeedback
 } from 'lib'
 
 import {Colors} from 'data'
@@ -33,6 +34,7 @@ class TextButton extends Component {
         disabled: false,
         invalid: false,
         stopPropagation: false,
+        effect: true,
         onSelected: emptyFunction,
         onPress: emptyFunction
     };
@@ -73,21 +75,30 @@ class TextButton extends Component {
     render() {
         const {...props} = this.props, {...state} = this.state;
         if (props.disabled === true) {
-            return <View style={[styles.wrapper, styles.disabled, props.style]}>
+            return <View className={cn(props.className, 'react-view', 'base-disabled')}
+                         style={[styles.wrapper, styles.disabled, props.style]}>
                 <Text>{props.children}</Text>
             </View>
         }
         if (props.invalid === true) {
-            return <View style={[styles.wrapper, props.style]}>
+            return <View className={cn(props.className, 'react-view', 'base-invalid')}
+                         style={[styles.wrapper, props.style]}>
                 <Text>{props.children}</Text>
             </View>
         }
-        return <TouchableOpacity style={[props.style]} onPress={this._onPress.bind(this)}
-                                 underlayColor={props.underlayColor || Colors.PRESS}>
-            <View style={[styles.wrapper]}>
+        if (props.effect === true) {
+            return <TouchableOpacity style={[props.style]} onPress={this._onPress.bind(this)}
+                                     underlayColor={props.underlayColor || Colors.PRESS}>
+                <View style={[styles.wrapper]}>
+                    <Text>{props.children}</Text>
+                </View>
+            </TouchableOpacity>
+        }
+        return <TouchableWithoutFeedback onPress={this._onPress.bind(this)}>
+            <View style={[styles.wrapper, props.style]}>
                 <Text>{props.children}</Text>
             </View>
-        </TouchableOpacity>
+        </TouchableWithoutFeedback>
     }
 
 }

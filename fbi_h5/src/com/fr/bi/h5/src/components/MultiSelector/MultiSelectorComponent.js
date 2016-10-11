@@ -63,7 +63,7 @@ class MultiSelectorComponent extends Component {
             width={props.width}
             height={props.height}
             onValueChange={(value)=> {
-                widget.setValue(value);
+                widget.setWidgetValue(value);
                 template.setWidget(wId, widget);
                 this.props.onValueChange(template.$get());
             }}

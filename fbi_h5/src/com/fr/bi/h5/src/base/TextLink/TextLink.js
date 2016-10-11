@@ -74,14 +74,15 @@ class TextLink extends Component {
     render() {
         const {...props} = this.props, {...state} = this.state;
         if (props.disabled === true) {
-            return <Text style={[styles.disabled, props.style]}>{props.children}</Text>
+            return <Text className={cn(props.className, 'base-disabled')}
+                         style={[styles.disabled, props.style]}>{props.children}</Text>
         }
         if (props.invalid === true) {
-            return <Text style={[props.style]}>{props.children}</Text>
+            return <Text className={cn(props.className, 'base-disabled')} style={[props.style]}>{props.children}</Text>
         }
-        return <Text className="TextLink" style={[props.style]} onPress={this._onPress.bind(this)}>{props.children}</Text>
+        return <Text className="TextLink" style={[props.style]}
+                     onPress={this._onPress.bind(this)}>{props.children}</Text>
     }
-
 }
 mixin.onClass(TextLink, PureRenderMixin);
 const styles = StyleSheet.create({

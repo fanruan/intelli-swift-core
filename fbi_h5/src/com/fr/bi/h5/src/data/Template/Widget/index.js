@@ -439,8 +439,13 @@ class Widget {
     }
 
 
-    setValue(value) {
+    setWidgetValue(value) {
         this.$widget = this.$widget.set('value', Immutable.fromJS(value));
+        return this;
+    }
+
+    setWidgetView(view) {
+        this.$widget = this.$widget.set('view', Immutable.fromJS(view));
         return this;
     }
 }

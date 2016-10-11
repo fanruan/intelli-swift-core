@@ -13,7 +13,8 @@ import React, {
     View,
     PixelRatio,
     Fetch,
-    TouchableHighlight
+    TouchableHighlight,
+    TouchableWithoutFeedback
 } from 'lib'
 
 import {Colors} from 'data'
@@ -38,6 +39,7 @@ class IconButton extends Component {
         disabled: false,
         invalid: false,
         stopPropagation: false,
+        effect: true,
         onSelected: emptyFunction,
         onPress: emptyFunction
     };
@@ -78,24 +80,34 @@ class IconButton extends Component {
     render() {
         const {...props} = this.props, {...state} = this.state;
         if (props.disabled === true) {
-            return <View className={cn(props.className, 'react-view')}
+            return <View className={cn(props.className, 'react-view', 'base-disabled')}
                          style={[styles.wrapper, styles.disabled, props.style]}>
                 <Icon width={props.iconWidth} height={props.iconHeight}/>
             </View>
         }
         if (props.invalid === true) {
-            return <View className={cn(props.className, 'react-view')} style={[styles.wrapper, props.style]}>
+            return <View className={cn(props.className, 'react-view', 'base-invalid')}
+                         style={[styles.wrapper, props.style]}>
                 <Icon width={props.iconWidth} height={props.iconHeight}/>
             </View>
         }
-        return <TouchableHighlight style={[props.style]} onPress={this._onPress.bind(this)}
-                                   underlayColor={props.underlayColor || Colors.PRESS}>
+        if (props.effect === true) {
+            return <TouchableHighlight style={[props.style]} onPress={this._onPress.bind(this)}
+                                       underlayColor={props.underlayColor || Colors.PRESS}>
+                <View className={cn(props.className, 'react-view', cn({
+                    'active': this.state.selected
+                }))} style={[styles.wrapper]}>
+                    <Icon width={props.iconWidth} height={props.iconHeight}/>
+                </View>
+            </TouchableHighlight>
+        }
+        return <TouchableWithoutFeedback onPress={this._onPress.bind(this)}>
             <View className={cn(props.className, 'react-view', cn({
                 'active': this.state.selected
-            }))} style={[styles.wrapper]}>
+            }))} style={[styles.wrapper, props.style]}>
                 <Icon width={props.iconWidth} height={props.iconHeight}/>
             </View>
-        </TouchableHighlight>
+        </TouchableWithoutFeedback>
     }
 
 }

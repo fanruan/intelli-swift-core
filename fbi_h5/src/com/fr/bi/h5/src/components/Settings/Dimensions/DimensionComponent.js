@@ -9,7 +9,6 @@ import {
 } from 'core'
 import React, {
     Component,
-    PropTypes,
     StyleSheet,
     Text,
     Dimensions,
@@ -28,7 +27,7 @@ import {CenterLayout, Icon, Table} from 'base'
 import {MultiSelectorWidget} from 'widgets'
 
 
-class TableComponent extends Component {
+class DimensionComponent extends Component {
     constructor(props, context) {
         super(props, context);
     }
@@ -75,10 +74,10 @@ class TableComponent extends Component {
     }
 
 }
-mixin.onClass(TableComponent, ReactComponentWithImmutableRenderMixin);
+mixin.onClass(DimensionComponent, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         flex: 1
     }
 });
-export default TableComponent
+export default DimensionComponent
