@@ -8,7 +8,6 @@ import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
 /**
-
  * fs的设置属性
  *
  * @author Daniel
@@ -20,6 +19,7 @@ public class FBIConfig extends XMLFileManager {
     private BIChartStyleAttr chartStyleAttr = new BIChartStyleAttr();
     //用户权限
     private BIUserAuthorAttr userAuthorAttr = new BIUserAuthorAttr();
+
     static {
         GeneralContext.addEnvChangedListener(new EnvChangedListener() {
             @Override
@@ -64,6 +64,10 @@ public class FBIConfig extends XMLFileManager {
         if (ComparatorUtils.equals(BIUserAuthorAttr.XML_TAG, tagName)) {
             userAuthorAttr = new BIUserAuthorAttr();
             userAuthorAttr.readXML(reader);
+        } else if (ComparatorUtils.equals(BIUserAuthorAttr.EDIT_AUTH_TAG, tagName) ||
+                ComparatorUtils.equals(BIUserAuthorAttr.EDIT_AUTH_TAG, tagName) ||
+                ComparatorUtils.equals(BIUserAuthorAttr.EDIT_AUTH_TAG, tagName)) {
+            userAuthorAttr.readXML(reader);
         } else if (ComparatorUtils.equals(tagName, BIChartStyleAttr.XML_TAG)) {
             chartStyleAttr = new BIChartStyleAttr();
             chartStyleAttr.readXML(reader);
@@ -105,11 +109,11 @@ public class FBIConfig extends XMLFileManager {
         writer.end();
     }
 
-    private void writeChartAttr(XMLPrintWriter writer){
+    private void writeChartAttr(XMLPrintWriter writer) {
         chartStyleAttr.writeXML(writer);
     }
 
-    private void writeUserAuthorAttr(XMLPrintWriter writer){
+    private void writeUserAuthorAttr(XMLPrintWriter writer) {
         userAuthorAttr.writeXML(writer);
     }
 
