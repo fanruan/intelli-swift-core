@@ -281,7 +281,18 @@ BICst.DASHBOARD_WIDGETS = [[{
     text: BI.i18nText("BI-Text_Control"),
     title: BI.i18nText("BI-Text_Control"),
     value: BICst.WIDGET.STRING,
-    cls: "drag-string-icon"
+    cls: "drag-string-icon",
+    children: [{
+        text: BI.i18nText("BI-Text_Control"),
+        title: BI.i18nText("BI-Text_Control"),
+        value: BICst.WIDGET.STRING,
+        cls: "drag-string-icon",
+    }, {
+        text: BI.i18nText("BI-List_Label_Con"),
+        title: BI.i18nText("BI-List_Label_Con"),
+        value: BICst.WIDGET.LIST_LABEL,
+        cls: "drag-string-icon"
+    }]
 }, {
     text: BI.i18nText("BI-Numeric_Control"),
     title: BI.i18nText("BI-Numeric_Control"),
@@ -291,7 +302,19 @@ BICst.DASHBOARD_WIDGETS = [[{
     text: BI.i18nText("BI-Tree_Control"),
     title: BI.i18nText("BI-Tree_Control"),
     value: BICst.WIDGET.TREE,
-    cls: "drag-tree-icon"
+    cls: "drag-tree-icon",
+    // children: [{
+    //     text: BI.i18nText("BI-Tree_Control"),
+    //     title: BI.i18nText("BI-Tree_Control"),
+    //     value: BICst.WIDGET.TREE,
+    //     cls: "drag-tree-icon",
+    // }, {
+    //     text: BI.i18nText("BI-Tree_Label_Con"),
+    //     title: BI.i18nText("BI-Tree_Label_Con"),
+    //     value: BICst.WIDGET.TREE_LABEL,
+    //     cls: "drag-tree-icon"
+    //
+    // }]
 }, {
     text: BI.i18nText("BI-Date_Control"),
     title: BI.i18nText("BI-Date_Control"),

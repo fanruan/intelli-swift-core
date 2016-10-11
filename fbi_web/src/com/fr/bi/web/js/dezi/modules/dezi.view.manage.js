@@ -78,6 +78,12 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.TREE:
                 view = "BIDezi.TreeDetailView";
                 break;
+            case BICst.WIDGET.LIST_LABEL:
+                view = "BIDezi.ListLabelDetailView";
+                break;
+            case BICst.WIDGET.TREE_LABEL:
+                view = "BIDezi.TreeLabelDetailView";
+                break;
             default:
                 view = "BIDezi.DetailView";
                 break;
@@ -156,6 +162,12 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.TREE:
                 view = "BIDezi.TreeWidgetView";
                 break;
+            case BICst.WIDGET.LIST_LABEL:
+                view = "BIDezi.ListLabelView";
+                break;
+            case BICst.WIDGET.TREE_LABEL:
+                view = "BIDezi.TreeLabelView";
+                break;
             case BICst.WIDGET.GENERAL_QUERY:
                 view = "BIDezi.GeneralQueryView";
                 break;
@@ -232,6 +244,12 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
                 break;
             case BICst.WIDGET.TREE:
                 view = "BIDezi.TreeDimensionView";
+                break;
+            case BICst.WIDGET.LIST_LABEL:
+                view = "BIDezi.ListLabelDimensionView";
+                break;
+            case BICst.WIDGET.TREE_LABEL:
+                view = "BIDezi.TreeLabelDimensionView";
                 break;
             case BICst.WIDGET.QUERY:
                 view = "";
