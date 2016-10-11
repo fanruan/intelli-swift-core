@@ -69,7 +69,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         });
         this.tableChart.on(BI.TableChartManager.EVENT_CLICK_CHART, function (obj) {
             self._onClickChart(obj);
-            self.hideDrill()
+            self.hideDrill(self.model.get('id'))
         });
 
         this.widget = BI.createWidget({
@@ -112,7 +112,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
             if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
                 self.tools.setVisible(false);
-                self.chartDrill.setDrillVisible()
+                self.chartDrill.setDrillVisible(self.model.get("id"))
             }
         });
     },
