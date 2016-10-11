@@ -10652,6 +10652,10 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
             this.width = this._getDomWidth(dom);
             this.height = this._getDomHeight(dom);
 
+            if(isNaN(+this.width) || isNaN(+this.height)){
+                return;
+            }
+
             //resize的时候工具栏要删掉
             var toolbar = this.getComponent(ComponentLibrary.TOOLBAR_COMPONENT);
             toolbar && toolbar.remove();
@@ -31194,10 +31198,10 @@ define('component/DrillTools',['require','./Base','../utils/BaseUtils','../utils
         },
 
         addIconData:function(data){
-            this.initIconData(data);
-            if(!this.drillItems){
+            if(!this.dToolsGroup){
                 this.render();
             }
+            this.initIconData(data);
             this.drillItems.push(this._createItem(data));
         },
 
@@ -31318,7 +31322,7 @@ define('component/DrillTools',['require','./Base','../utils/BaseUtils','../utils
         remove:function(){
             this.dToolsGroup && this.dToolsGroup.remove();
             this.dToolsGroup = null;
-            this.iconData = [];
+            this.iconData = this.drillItems = [];
         }
     });
 
