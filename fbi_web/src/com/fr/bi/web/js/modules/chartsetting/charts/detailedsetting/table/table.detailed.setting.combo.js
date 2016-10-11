@@ -7,6 +7,7 @@ BI.TableDetailedSettingCombo = BI.inherit(BI.Widget, {
     _defaultConfig: function() {
         return BI.extend(BI.TableDetailedSettingCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-table-detailed-setting",
+            width: 50
         })
     },
 
@@ -24,6 +25,7 @@ BI.TableDetailedSettingCombo = BI.inherit(BI.Widget, {
         BI.createWidget({
             type: "bi.combo",
             element: this.element,
+            width: this.options.width,
             el: {
                 type: "bi.detailed_setting_trigger"
             },
