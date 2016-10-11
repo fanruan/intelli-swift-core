@@ -20,6 +20,7 @@ import TablePaneComponent from '../Table/TablePaneComponent.js'
 import DetailTableComponent from '../DetailTable/DetailTableComponent.js'
 import MultiSelectorComponent from '../MultiSelector/MultiSelectorComponent.js'
 import MultiTreeSelectorComponent from '../MultiTreeSelector/MultiTreeSelectorComponent.js'
+import ContentComponent from '../Content/ContentComponent'
 
 class Layout extends Component {
     static propTypes = {};
@@ -112,19 +113,22 @@ class Layout extends Component {
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.FUNNEL:
-                //case BICst.WIDGET.STRING:
-                //case BICst.WIDGET.NUMBER:
-                //case BICst.WIDGET.DATE:
-                //case BICst.WIDGET.YEAR:
-                //case BICst.WIDGET.QUARTER:
-                //case BICst.WIDGET.MONTH:
-                //case BICst.WIDGET.YMD:
-                //case BICst.WIDGET.QUERY:
-                //case BICst.WIDGET.RESET:
-                //case BICst.WIDGET.CONTENT:
-                //case BICst.WIDGET.IMAGE:
-                //case BICst.WIDGET.WEB:
                 component = <ChartComponent {...props} />;
+                break;
+            case BICst.WIDGET.NUMBER:
+            case BICst.WIDGET.DATE:
+            case BICst.WIDGET.YEAR:
+            case BICst.WIDGET.QUARTER:
+            case BICst.WIDGET.MONTH:
+            case BICst.WIDGET.YMD:
+            case BICst.WIDGET.QUERY:
+            case BICst.WIDGET.RESET:
+                break;
+            case BICst.WIDGET.CONTENT:
+                component = <ContentComponent {...props} />;
+                break;
+            case BICst.WIDGET.IMAGE:
+            case BICst.WIDGET.WEB:
                 break;
             case BICst.WIDGET.STRING:
                 component = <MultiSelectorComponent {...props} />;
