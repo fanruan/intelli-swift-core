@@ -45,60 +45,59 @@ class TableComponent extends Component {
     }
 
     componentDidMount() {
-        this.init = false;
-        this._fetchData().then((data)=> {
-            this.setState({data}, ()=> {
-                this.init = true;
-            });
-        });
+        this._fetchData(this.props);
     }
 
-    componentWillUpdate() {
-        if (this.init) {
-            this._fetchData().then((data)=> {
-                this.setState({data});
-            });
+    componentWillReceiveProps(nextProps) {
+        if (!immutableShallowEqual(nextProps, this.props)) {
+            this._tableHelper = new TableComponentHelper(nextProps, this.context);
+            this._widthHelper = new TableComponentWidthHelper(this._tableHelper, nextProps.width);
+            this._fetchData(nextProps);
         }
     }
 
-    _fetchData() {
-        const {$widget, wId} = this.props;
+    componentWillUpdate(nextProps) {
+
+    }
+
+    _fetchData(props) {
+        const {$widget, wId} = props;
         const widget = new Widget($widget, this.context.$template, wId);
         return widget.getData().then((data)=> {
-            this._tableHelper.setData(data);
-            return Immutable.fromJS(data);
+            this.setState({data: data});
         });
     }
 
     render() {
-        const {width, height} = this.props;
+        const {width, height} = this.props, {data} = this.state;
+        this._tableHelper.setData(data);
         const items = this._tableHelper.getItems();
         this._widthHelper.setItems(items);
         return <TableWidget
-                width={width}
-                height={height}
-                freezeCols={this._tableHelper.isFreeze() ? [0] : []}
-                columnSize={this._widthHelper.getWidth()}
-                header={this._tableHelper.getHeader()}
-                items={items}
-                groupHeader={this._tableHelper.getGroupHeader()}
-                groupItems={this._tableHelper.getGroupItems()}
-                /**groupHeader={[{text: 1}, {text: 2}]}
-                 groupItems={[{children:[{text: 'A', children: [{text: 'A1'}, {text: 'A2'}]}, {text: 'B'}]}]}**/
-                groupHeaderCellRenderer={({colIndex, ...cell})=> {
-                    return <TableHeader {...cell}/>
-                }}
-                groupItemsCellRenderer={({...cell})=> {
-                    return <TableHeader {...cell}/>
-                }}
-                headerCellRenderer={({colIndex, ...cell})=> {
-                    return <TableHeader {...cell}/>
-                }}
-                itemsCellRenderer={({colIndex, rowIndex, ...cell}) => {
-                    return <TableCell {...cell}/>
-                }}
-            >
-            </TableWidget>
+            width={width}
+            height={height}
+            freezeCols={this._tableHelper.isFreeze() ? [0] : []}
+            columnSize={this._widthHelper.getWidth()}
+            header={this._tableHelper.getHeader()}
+            items={items}
+            groupHeader={this._tableHelper.getGroupHeader()}
+            groupItems={this._tableHelper.getGroupItems()}
+            /**groupHeader={[{text: 1}, {text: 2}]}
+             groupItems={[{children:[{text: 'A', children: [{text: 'A1'}, {text: 'A2'}]}, {text: 'B'}]}]}**/
+            groupHeaderCellRenderer={({colIndex, ...cell})=> {
+                return <TableHeader {...cell}/>
+            }}
+            groupItemsCellRenderer={({...cell})=> {
+                return <TableHeader {...cell}/>
+            }}
+            headerCellRenderer={({colIndex, ...cell})=> {
+                return <TableHeader {...cell}/>
+            }}
+            itemsCellRenderer={({colIndex, rowIndex, ...cell}) => {
+                return <TableCell {...cell}/>
+            }}
+        >
+        </TableWidget>
     }
 }
 mixin.onClass(TableComponent, ReactComponentWithImmutableRenderMixin);

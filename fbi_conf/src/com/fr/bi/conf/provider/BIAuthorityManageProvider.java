@@ -33,6 +33,8 @@ public interface BIAuthorityManageProvider {
 
     void removeAuthPackage(BIPackageID packageID);
 
+    long getAuthVersion();
+
     @Deprecated
     void persistData(long userId);
 }

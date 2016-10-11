@@ -49,7 +49,7 @@ BI.Chart = BI.inherit(BI.Pane, {
     },
 
     magnify: function () {
-        this.vanCharts.charts[0] && this.vanCharts.charts[0].refreshRestore();
+        this.vanCharts.refreshRestore()
     },
 
     populate: function (items, options) {

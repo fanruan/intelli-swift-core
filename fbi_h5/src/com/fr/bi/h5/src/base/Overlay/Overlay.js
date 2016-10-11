@@ -56,7 +56,7 @@ class Overlay extends Component {
         ]).start();
     }
 
-    close() {
+    close(op) {
         Animated.parallel([
             Animated.timing(
                 this.state.opacity,
@@ -68,7 +68,7 @@ class Overlay extends Component {
             )
         ]).start((endState)=> {
             this.setState({visible: false}, ()=> {
-                this.props.onClose && this.props.onClose();
+                this.props.onClose && this.props.onClose(op);
             })
         });
     }

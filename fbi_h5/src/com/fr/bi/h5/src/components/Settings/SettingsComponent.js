@@ -100,8 +100,7 @@ class SettingsComponent extends Component {
             }} style={styles.back}>{'返回'}</TextLink>
             <Text style={styles.name}>{widget.getName()}</Text>
             <TextLink onPress={()=> {
-                this.context.actions.updateWidget(this.state.$widget, this.props.wId);
-                this.refs['overlay'].close();
+                this.refs['overlay'].close(true);
             }} style={styles.complete}>{'完成'}</TextLink>
         </View>
     }
@@ -125,8 +124,13 @@ class SettingsComponent extends Component {
     render() {
         const {...props} = this.props, {...state} = this.state;
         this._helper = new SettingsComponentHelper(state, this.context);
-        return <Overlay ref='overlay' onClose={()=> {
-            this.props.onReturn();
+        return <Overlay ref='overlay' onClose={(tag)=> {
+            if (tag === true) {
+                const {$widget} = this.state, {wId} = this.props;
+                this.props.onComplete({$widget, wId});
+            } else {
+                this.props.onReturn();
+            }
         }}>
             <VtapeLayout style={styles.wrapper}>
                 {this._renderHeader()}

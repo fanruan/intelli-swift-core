@@ -18,12 +18,12 @@ import {Size, Template, Widget} from 'data'
 import {Table, Dialog, IconLink, HtapeLayout, VtapeLayout} from 'base'
 import {TableWidget} from 'widgets';
 
-import TableComponent from './TableComponent';
+import ChartComponent from './ChartComponent';
 
 import SettingsComponent from '../Settings/SettingsComponent'
 
 
-class TablePaneComponent extends Component {
+class ChartPaneComponent extends Component {
     static contextTypes = {
         $template: React.PropTypes.object,
         actions: React.PropTypes.object
@@ -51,16 +51,16 @@ class TablePaneComponent extends Component {
         return <View height={Size.HEADER_HEIGHT} style={styles.header}>
             <Text>{widget.getName()}</Text>
             <IconLink className='setting-font' onPress={()=> {
-                Portal.showModal('TableComponent', <SettingsComponent
+                Portal.showModal('ChartComponent', <SettingsComponent
                     $widget={this.props.$widget}
                     wId={this.props.wId}
                     height={0}
                     onComplete={(opt)=> {
-                        Portal.closeModal('TableComponent');
+                        Portal.closeModal('ChartComponent');
                         this.context.actions.updateWidget(opt.$widget, opt.wId);
                     }}
                     onReturn={()=> {
-                        Portal.closeModal('TableComponent');
+                        Portal.closeModal('ChartComponent');
                     }}
                 />);
             }}/>
@@ -71,17 +71,17 @@ class TablePaneComponent extends Component {
         const {width, height, $widget, wId} = this.props;
         return <VtapeLayout>
             {this._renderHeader()}
-            <TableComponent
+            <ChartComponent
                 width={width}
                 height={height - Size.HEADER_HEIGHT}
                 $widget={$widget}
                 wId={wId}
             >
-            </TableComponent>
+            </ChartComponent>
         </VtapeLayout>
     }
 }
-mixin.onClass(TablePaneComponent, ReactComponentWithImmutableRenderMixin);
+mixin.onClass(ChartPaneComponent, ReactComponentWithImmutableRenderMixin);
 
 const styles = StyleSheet.create({
     wrapper: {
@@ -95,4 +95,4 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     }
 });
-export default TablePaneComponent
+export default ChartPaneComponent
