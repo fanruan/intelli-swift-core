@@ -271,15 +271,11 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
         }
         for (CubeTableSource source : this.getAllSingleSources()) {
             UpdateSettingSource updateSettingSource = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(source.getSourceID(), biUser.getUserId());
-            if (null != updateSettingSource) {
-                if (ComparatorUtils.equals(source.getSourceID(), this.childTableSource.getSourceID())) {
+            if (null != updateSettingSource&&ComparatorUtils.equals(source.getSourceID(), this.childTableSource.getSourceID())) {
                     updateSettingSource.setUpdateType(updateType);
-                } else {
-                    updateSettingSource.setUpdateType(DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER);
-                }
-            } else {
-                updateSettingSource = new UpdateSettingSource();
-                updateSettingSource.setUpdateType(DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER);
+            }else {
+                updateSettingSource=new UpdateSettingSource();
+                updateSettingSource.setUpdateType(DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
             }
             map.put(source, updateSettingSource);
         }
@@ -333,7 +329,7 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
         ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(biUser.getUserId()));
         ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(biUser.getUserId()));
         try {
-             BIFileUtils.moveFile(tempConf.getRootURI().getPath().toString(), advancedConf.getRootURI().getPath().toString());
+            BIFileUtils.moveFile(tempConf.getRootURI().getPath().toString(), advancedConf.getRootURI().getPath().toString());
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage());
         }
