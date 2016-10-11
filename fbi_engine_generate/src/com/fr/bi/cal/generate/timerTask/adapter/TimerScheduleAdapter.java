@@ -47,7 +47,7 @@ public class TimerScheduleAdapter {
     }
 
     private static TimerTaskSchedule setBaseTableUpdateSettings(long userId, TimeFrequency frequency, String scheduleTime, BusinessTable table) {
-        CubeBuild cubeBuild = new CubeBuildSingleTable(table, null, userId, frequency.getUpdateType());
+        CubeBuild cubeBuild = new CubeBuildSingleTable(table, table.getTableSource().getSourceID(), userId, frequency.getUpdateType());
         return new TimerTaskSchedule(scheduleTime, cubeBuild, table.getTableSource().getTableName(), userId, frequency.getUpdateType());
     }
 

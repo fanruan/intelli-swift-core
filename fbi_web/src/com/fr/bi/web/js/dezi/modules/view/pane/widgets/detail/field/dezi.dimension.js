@@ -141,12 +141,14 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
     },
 
     _checkUsedEnable: function () {
+        var self = this;
         var isUsed = this.model.get("used");
         var wId = BI.Utils.getWidgetIDByDimensionID(this.model.get("id"));
         this.usedCheck.setEnable(true);
         this.usedCheck.setSelected(isUsed);
         this.usedRadio.setEnable(true);
         this.usedRadio.setSelected(isUsed);
+        formatDisabledTitle("");
         var wType = BI.Utils.getWidgetTypeByID(wId);
         if ((wType !== BICst.WIDGET.TABLE &&
             wType !== BICst.WIDGET.CROSS_TABLE &&
@@ -156,12 +158,20 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
             && BI.Utils.getAllUsableTargetDimensionIDs(wId).length > 1) {
             this.usedCheck.setEnable(false);
             this.usedRadio.setEnable(false);
+            formatDisabledTitle(BI.i18nText("BI-For_Chart_Multi_Targets_Then_Forbid_Select_Dimension"));
         }
         if ((wType === BICst.WIDGET.DASHBOARD || wType === BICst.WIDGET.PIE)
             && BI.Utils.getRegionTypeByDimensionID(this.model.get("id")) === BICst.REGION.DIMENSION1
             && BI.Utils.getAllUsableTargetDimensionIDs(wId).length > 1) {
             this.usedCheck.setEnable(false);
             this.usedRadio.setEnable(false);
+            formatDisabledTitle(BI.i18nText("BI-For_Chart_Multi_Targets_Then_Forbid_Select_Dimension"));
+        }
+
+        function formatDisabledTitle(v){
+            self.usedCheck.setTitle(v);
+            self.usedRadio.setTitle(v);
+            self.editor.setTitle(v);
         }
     },
 

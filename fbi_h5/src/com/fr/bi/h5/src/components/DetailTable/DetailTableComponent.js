@@ -46,24 +46,29 @@ class DetailTableComponent extends Component {
     }
 
     componentDidMount() {
-        this._fetchData();
+        this.init = false;
+        this._fetchData().then((data)=> {
+            this.setState({data}, ()=> {
+                this.init = true;
+            });
+        });
     }
 
-    componentWillReceiveProps(nexProps) {
-        if (!immutableShallowEqual(nexProps, this.props)) {
-            this._fetchData();
+    componentWillUpdate() {
+        if (this.init) {
+            this._fetchData().then((data)=> {
+                this.setState({data});
+            });
         }
     }
 
     _fetchData() {
         const {$widget, wId} = this.props;
         const widget = new Widget($widget, this.context.$template, wId);
-        widget.getData().then((data)=> {
+        return widget.getData().then((data)=> {
             this._tableHelper.setData(data);
-            this.setState({
-                data: Immutable.fromJS(data)
-            })
-        })
+            return Immutable.fromJS(data);
+        });
     }
 
     _renderHeader() {

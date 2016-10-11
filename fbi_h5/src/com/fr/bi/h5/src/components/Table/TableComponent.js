@@ -22,8 +22,6 @@ import TableComponentWidthHelper from './TableComponentWidthHelper'
 import TableCell from './TableCell'
 import TableHeader from './TableHeader'
 
-import SettingsComponent from '../Settings/SettingsComponent'
-
 
 class TableComponent extends Component {
 
@@ -39,8 +37,7 @@ class TableComponent extends Component {
     }
 
     state = {
-        data: [],
-        open: false
+        data: []
     };
 
     componentWillMount() {
@@ -48,66 +45,38 @@ class TableComponent extends Component {
     }
 
     componentDidMount() {
-        this._fetchData();
+        this.init = false;
+        this._fetchData().then((data)=> {
+            this.setState({data}, ()=> {
+                this.init = true;
+            });
+        });
     }
 
-    componentWillReceiveProps(nexProps) {
-        if (!immutableShallowEqual(nexProps, this.props)) {
-            this._fetchData();
+    componentWillUpdate() {
+        if (this.init) {
+            this._fetchData().then((data)=> {
+                this.setState({data});
+            });
         }
     }
 
     _fetchData() {
         const {$widget, wId} = this.props;
         const widget = new Widget($widget, this.context.$template, wId);
-        widget.getData().then((data)=> {
+        return widget.getData().then((data)=> {
             this._tableHelper.setData(data);
-            this.setState({
-                data: Immutable.fromJS(data)
-            })
+            return Immutable.fromJS(data);
         });
-    }
-
-    _renderHeader() {
-        const {$widget} = this.props;
-        const widget = new Widget($widget);
-        return <View height={Size.HEADER_HEIGHT} style={styles.header}>
-            <Text>{widget.getName()}</Text>
-            <IconLink className='setting-font' onPress={()=> {
-                this.setState({
-                    open: true
-                })
-            }}/>
-        </View>
-    }
-
-    _renderDialog() {
-        const {$widget, wId} = this.props;
-        if (this.state.open) {
-            return <SettingsComponent
-                $widget={$widget}
-                wId={wId}
-                height={0}
-                onReturn={()=> {
-                    this.setState({
-                        open: false
-                    })
-                }}
-            />
-        }
-        return null;
     }
 
     render() {
         const {width, height} = this.props;
         const items = this._tableHelper.getItems();
         this._widthHelper.setItems(items);
-        return <VtapeLayout>
-            {this._renderDialog()}
-            {this._renderHeader()}
-            <TableWidget
+        return <TableWidget
                 width={width}
-                height={height - Size.HEADER_HEIGHT}
+                height={height}
                 freezeCols={this._tableHelper.isFreeze() ? [0] : []}
                 columnSize={this._widthHelper.getWidth()}
                 header={this._tableHelper.getHeader()}
@@ -130,7 +99,6 @@ class TableComponent extends Component {
                 }}
             >
             </TableWidget>
-        </VtapeLayout>
     }
 }
 mixin.onClass(TableComponent, ReactComponentWithImmutableRenderMixin);
