@@ -145,10 +145,12 @@ BI.DetailTablePathSettingTab = BI.inherit(BI.Widget, {
         var self = this, o = this.options, c = this.constant;
         switch (v) {
             case c.CHANGE_VALUE:
+                var items = self._createPathChooserItem();
                 this.pathChooser = BI.createWidget({
                     type: "bi.path_chooser",
-                    items: self._createPathChooserItem()
+                    items: items
                 });
+                this.tab.setEnable(items.length > 1);
                 this.pathChooser.setValue(self._getPathValue(o.choosePath));
                 return BI.createWidget({
                     type: "bi.vertical",
