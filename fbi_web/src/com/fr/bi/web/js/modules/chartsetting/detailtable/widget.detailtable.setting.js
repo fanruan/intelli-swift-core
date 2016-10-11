@@ -132,6 +132,30 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
         this.tableSyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
             self.fireEvent(BI.DetailTableSetting.EVENT_CHANGE);
         });
+
+        //自定义表格样式
+        this.customTableStyle = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Custom_Table_Style"),
+            width: 135
+        });
+
+        this.customTableStyle.on(BI.Controller.EVENT_CHANGE, function() {
+            self.tableStyleSetting.setVisible(this.isSelected());
+            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+        });
+
+        //表格样式设置
+        this.tableStyleSetting = BI.createWidget({
+            type: "bi.table_detailed_setting_combo"
+        });
+
+        this.tableStyleSetting.on(BI.TableDetailedSettingCombo.EVENT_CHANGE, function() {
+            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+        });
+
+        this.tableStyleSetting.setVisible(false);
+
         var tableStyle = BI.createWidget({
             type: "bi.left_right_vertical_adapt",
             cls: "single-line-settings",
@@ -148,7 +172,16 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Table_Style"),
                     cls: "attr-names"
-                }, this.tableSyleGroup]
+                }, this.tableSyleGroup, {
+                    type: "bi.vertical_adapt",
+                    items: [this.customTableStyle],
+                    cls: "attr-names",
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.tableStyleSetting],
+                    height: this.constant.SINGLE_LINE_HEIGHT
+                }]
             },
             height: this.constant.SINGLE_LINE_HEIGHT,
             lhgap: this.constant.SIMPLE_H_GAP
@@ -166,6 +199,23 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
         this.showNumber.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.DetailTableSetting.EVENT_CHANGE);
         });
+
+        //表格行高
+        this.rowHeight = BI.createWidget({
+            type: "bi.sign_editor",
+            width: this.constant.EDITOR_WIDTH,
+            height: this.constant.EDITOR_HEIGHT,
+            cls: "max-row-input",
+            errorText: BI.i18nText("BI-Please_Enter_Number_1_To_100"),
+            allowBlank: false,
+            validationChecker: function (v) {
+                return BI.isInteger(v) && v > 0 && v <= 100;
+            }
+        });
+        this.rowHeight.on(BI.SignEditor.EVENT_CHANGE, function () {
+            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+        });
+
         var show = BI.createWidget({
             type: "bi.left",
             cls: "single-line-settings",
@@ -178,6 +228,19 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
                 type: "bi.vertical_adapt",
                 items: [this.showNumber],
                 height: this.constant.SINGLE_LINE_HEIGHT
+            }, {
+                type: "bi.vertical_adapt",
+                items: [{
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Row_Height"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.rowHeight],
+                    width: this.constant.EDITOR_WIDTH
+                }],
+                height: this.constant.SINGLE_LINE_HEIGHT,
+                lgap: 5
             }],
             hgap: this.constant.SIMPLE_H_GAP
         });
