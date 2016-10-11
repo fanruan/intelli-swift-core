@@ -165,6 +165,7 @@ public abstract class DBExtractorImpl implements DBExtractor {
                 stmt = createStatement(conn, dialect);
                 rs = stmt.executeQuery(query);
             }
+            logger.info("sql: " + sql.toString() + " query cost:" + DateUtils.timeCostFrom(t));
             row = dealWithResultSet(rs, columns, traversal, needCharSetConvert, originalCharSetName, newCharSetName, row, sql.toString());
             logger.info("sql: " + sql.toString() + " execute cost:" + DateUtils.timeCostFrom(t));
         } catch (Throwable e) {
