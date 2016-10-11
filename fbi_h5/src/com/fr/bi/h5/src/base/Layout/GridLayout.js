@@ -1,4 +1,4 @@
-import ReactDOM from 'react-dom'
+import cn from 'classnames'
 import React, {
     Component,
     StyleSheet,
@@ -37,7 +37,7 @@ class GridLayout extends Component {
             });
             return React.cloneElement(child, {...child.props, style, children});
         });
-        return <View {...props}>{cs}</View>;
+        return <View {...props} className={cn('react-view', props.className)}>{cs}</View>;
     }
 }
 const styles = StyleSheet.create({

@@ -1,9 +1,9 @@
-
 import React, {
     Component,
     StyleSheet,
     View
 } from 'lib'
+import cn from 'classnames'
 
 class HtapeLayout extends Component {
     constructor(props, context) {
@@ -24,7 +24,8 @@ class HtapeLayout extends Component {
             }
             return React.cloneElement(child, {...child.props, style});
         });
-        return <View {...props} style={[styles.wrapper, style]}>{cs}</View>
+        return <View {...props} className={cn('react-view', props.className)}
+                     style={[styles.wrapper, style]}>{cs}</View>
     }
 
 }

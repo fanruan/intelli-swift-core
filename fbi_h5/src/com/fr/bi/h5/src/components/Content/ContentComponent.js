@@ -1,3 +1,7 @@
+/**
+ * 文本组件
+ * Created by Young's on 2016/10/10.
+ */
 import mixin from 'react-mixin'
 import {findDOMNode} from 'react-dom'
 import Immutable from 'immutable'
@@ -9,9 +13,9 @@ import {
 } from 'core'
 import React, {
     Component,
-    PropTypes,
     StyleSheet,
     Text,
+    TextInput,
     Dimensions,
     PixelRatio,
     ListView,
@@ -28,16 +32,11 @@ import {CenterLayout, Icon, Table} from 'base'
 import {MultiSelectorWidget} from 'widgets'
 
 
-class TableComponent extends Component {
+class ContentComponent extends Component {
     constructor(props, context) {
         super(props, context);
+        this.state = {content: ''}
     }
-
-    static propTypes = {};
-
-    static defaultProps = {};
-
-    state = {};
 
     _getNextState(props, state = {}) {
 
@@ -52,10 +51,17 @@ class TableComponent extends Component {
     }
 
     render() {
-        const {...props} = this.props, {...state} = this.state;
-        return <View style={styles.wrapper}>
-
-        </View>
+        const {$widget, wId} = this.props;
+        const widget = new Widget($widget, this.context.$template, wId);
+        const style = widget.getStyle();
+        return <TextInput
+            style={{height: this.props.height, ...styles.wrapper, ...style}}
+            ref="content"
+            autoCapitalize="none"
+            multiline="true"
+            value={widget.getContent()}
+            editable="true"
+        />
     }
 
     componentWillReceiveProps(nextProps) {
@@ -75,10 +81,10 @@ class TableComponent extends Component {
     }
 
 }
-mixin.onClass(TableComponent, ReactComponentWithImmutableRenderMixin);
+mixin.onClass(ContentComponent, ReactComponentWithPureRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         flex: 1
     }
 });
-export default TableComponent
+export default ContentComponent

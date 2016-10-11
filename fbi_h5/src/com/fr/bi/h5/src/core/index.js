@@ -104,6 +104,10 @@ export last from 'lodash/last'
 export nth from 'lodash/nth'
 
 export remove from 'lodash/remove'
+export arrayMove from './utils/arrayMove'
+
+export keys from 'lodash/keys'
+export values from 'lodash/values'
 
 export now from 'lodash/now'
 

@@ -79,13 +79,13 @@ class IconLink extends Component {
     render() {
         const {...props} = this.props, {...state} = this.state;
         if (props.disabled === true) {
-            return <View className={cn(props.className, 'react-view')}
+            return <View className={cn(props.className, 'react-view', 'base-disabled')}
                          style={[styles.wrapper, styles.disabled, props.style]}>
                 <Icon width={props.iconWidth} height={props.iconHeight}/>
             </View>
         }
         if (props.invalid === true) {
-            return <View className={cn(props.className, 'react-view')} style={[styles.wrapper, props.style]}>
+            return <View className={cn(props.className, 'react-view', 'base-invalid')} style={[styles.wrapper, props.style]}>
                 <Icon width={props.iconWidth} height={props.iconHeight}/>
             </View>
         }
