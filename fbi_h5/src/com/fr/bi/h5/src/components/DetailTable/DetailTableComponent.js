@@ -54,6 +54,11 @@ class DetailTableComponent extends Component {
         });
     }
 
+    componentWillReceiveProps(nextProps) {
+        this._tableHelper = new DetailTableComponentHelper(nextProps, this.context);
+        this._widthHelper = new TableComponentWidthHelper(this._tableHelper, nextProps.width);
+    }
+
     componentWillUpdate() {
         if (this.init) {
             this._fetchData().then((data)=> {
