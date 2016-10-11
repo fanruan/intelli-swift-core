@@ -1,9 +1,8 @@
 package com.fr.bi.cal.generate.timerTask;
 
-import com.fr.bi.cal.generate.BuildCubeTask;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.generate.timerTask.quartz.JobTask;
 import com.fr.bi.cal.generate.timerTask.quartz.QuartzManager;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.third.org.quartz.SchedulerException;
 import org.slf4j.Logger;
@@ -15,7 +14,7 @@ import java.util.List;
  * Created by Kary on 2016/6/28.
  */
 public class BICubeTimeTaskCreatorManager implements BICubeTimeTaskCreatorProvider {
-    private static final Logger logger = LoggerFactory.getLogger(BuildCubeTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(BICubeTimeTaskCreatorManager.class);
     public BICubeTimeTaskCreatorManager() {
     }
 
