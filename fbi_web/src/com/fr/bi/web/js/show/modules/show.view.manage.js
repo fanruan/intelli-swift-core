@@ -60,6 +60,12 @@ BIShow.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.STRING:
                 view = "BIShow.StringWidgetView";
                 break;
+            case BICst.WIDGET.LIST_LABEL:
+                view = "BIShow.ListLabelView";
+                break;
+            case BICst.WIDGET.TREE_LABEL:
+                view = "BIShow.TreeLabelView";
+                break;
             case BICst.WIDGET.NUMBER:
                 view = "BIShow.NumberWidgetView";
                 break;

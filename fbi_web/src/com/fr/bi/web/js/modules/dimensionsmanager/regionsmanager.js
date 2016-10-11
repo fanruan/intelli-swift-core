@@ -31,7 +31,11 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
                 this.regions[BICst.REGION.TARGET1] = this._createTargetRegion(BI.i18nText("BI-Target"), BICst.REGION.TARGET1);
                 break;
             case BICst.WIDGET.TREE:
+            case BICst.WIDGET.TREE_LABEL:
                 this.regions[BICst.REGION.DIMENSION1] = this._createTreeDimensionRegion(BI.i18nText("BI-Data"));
+                break;
+            case BICst.WIDGET.LIST_LABEL:
+                this.regions[BICst.REGION.DIMENSION1] = this._createDimensionRegion(BI.i18nText("BI-Data"), BICst.REGION.DIMENSION1);
                 break;
             case BICst.WIDGET.DETAIL:
                 this.regions[BICst.REGION.DIMENSION1] = this._createDetailDimensionRegion(BI.i18nText("BI-Data"));

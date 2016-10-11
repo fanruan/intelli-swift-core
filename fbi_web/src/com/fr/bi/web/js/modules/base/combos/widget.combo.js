@@ -44,7 +44,7 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
     _rebuildItems: function () {
         var wId = this.options.wId;
         var isEdit = Data.SharingPool.get("edit");
-        if(!isEdit) {
+        if (!isEdit) {
             return this._createShowComboItems();
         }
         switch (BI.Utils.getWidgetTypeByID(wId)) {
@@ -91,8 +91,11 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
 
             case BICst.WIDGET.STRING:
                 return this._createStringTreeComboItems();
-            case BICst.WIDGET.TREE :
+            case BICst.WIDGET.TREE:
                 return this._createStringTreeComboItems();
+            case BICst.WIDGET.LIST_LABEL:
+            case BICst.WIDGET.TREE_LABEL:
+                return this._createLabelComboItems();
             case BICst.WIDGET.NUMBER :
                 return BICst.NUMBER_CONTROL_SETCOMBO_ITEMS;
 
@@ -259,6 +262,36 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Descend"),
                 selected: sort.type === BICst.SORT.DESC,
                 cls: "dot-e-font"
+            }],
+            [{
+                value: BICst.DASHBOARD_CONTROL_CLEAR,
+                text: BI.i18nText("BI-Clear_Selected_Value"),
+                cls: "widget-combo-clear-font"
+            }],
+            [{
+                value: BICst.DASHBOARD_WIDGET_RENAME,
+                text: BI.i18nText("BI-Rename"),
+                cls: "widget-combo-rename-edit-font"
+            }],
+            [{
+                value: BICst.DASHBOARD_WIDGET_COPY,
+                text: BI.i18nText("BI-Copy"),
+                cls: "widget-combo-copy"
+            }],
+            [{
+                value: BICst.DASHBOARD_WIDGET_DELETE,
+                text: BI.i18nText("BI-Delete_Control"),
+                cls: "widget-combo-delete"
+            }]
+        ]
+    },
+
+    _createLabelComboItems: function () {
+        return [
+            [{
+                value: BICst.DASHBOARD_WIDGET_EXPAND,
+                text: BI.i18nText("BI-Detailed_Setting"),
+                cls: "widget-combo-expand-font"
             }],
             [{
                 value: BICst.DASHBOARD_CONTROL_CLEAR,

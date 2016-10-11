@@ -403,6 +403,8 @@
                 widgetType === BICst.WIDGET.MONTH ||
                 widgetType === BICst.WIDGET.QUARTER ||
                 widgetType === BICst.WIDGET.TREE ||
+                widgetType === BICst.WIDGET.LIST_LABEL ||
+                widgetType === BICst.WIDGET.TREE_LABEL ||
                 widgetType === BICst.WIDGET.YEAR ||
                 widgetType === BICst.WIDGET.YMD ||
                 widgetType === BICst.WIDGET.GENERAL_QUERY;
@@ -415,9 +417,26 @@
                 widgetType === BICst.WIDGET.MONTH ||
                 widgetType === BICst.WIDGET.QUARTER ||
                 widgetType === BICst.WIDGET.TREE ||
+                widgetType === BICst.WIDGET.LIST_LABEL ||
+                widgetType === BICst.WIDGET.TREE_LABEL ||
                 widgetType === BICst.WIDGET.YEAR ||
                 widgetType === BICst.WIDGET.YMD ||
                 widgetType === BICst.WIDGET.GENERAL_QUERY;
+        },
+
+        isRealTimeControlWidgetByWidgetId: function (wid) {
+            var widgetType = this.getWidgetTypeByID(wid);
+            return widgetType === BICst.WIDGET.LIST_LABEL ||
+                   widgetType === BICst.WIDGET.TREE_LABEL ||
+                    widgetType === BICst.WIDGET.SINGLE_SLIDER ||
+                    widgetType === BICst.WIDGET.INTERVAL_SLIDER;
+        },
+
+        isRealTimeControlWidgetByWidgetType: function (widgetType) {
+            return widgetType === BICst.WIDGET.LIST_LABEL ||
+                widgetType === BICst.WIDGET.TREE_LABEL ||
+                widgetType === BICst.WIDGET.SINGLE_SLIDER ||
+                widgetType === BICst.WIDGET.INTERVAL_SLIDER;
         },
 
         isQueryControlExist: function () {
@@ -2239,6 +2258,7 @@
                         var filter = null;
                         switch (self.getWidgetTypeByID(id)) {
                             case BICst.WIDGET.STRING:
+                            case BICst.WIDGET.LIST_LABEL:
                                 fType = BICst.TARGET_FILTER_STRING.BELONG_VALUE;
                                 filter = {
                                     filter_type: fType,
@@ -2734,7 +2754,7 @@
             var allWidgetIds = this.getAllWidgetIDs();
             if (force === true || this.isQueryControlExist() === false) {
                 BI.each(allWidgetIds, function (i, wId) {
-                    if (!self.isControlWidgetByWidgetId(wId)) {
+                    if (!self.isControlWidgetByWidgetId(wId) || self.isRealTimeControlWidgetByWidgetId(wId)) {
                         BI.Broadcasts.send(BICst.BROADCAST.REFRESH_PREFIX + wId);
                     }
                 });
