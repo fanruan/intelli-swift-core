@@ -24,9 +24,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         BI.Broadcasts.on(BICst.BROADCAST.LINKAGE_PREFIX + wId, function (dId, v) {
             var clicked = self.model.get("clicked") || {};
             var allFromIds = BI.Utils.getAllLinkageFromIdsByID(BI.Utils.getWidgetIDByDimensionID(dId));
-            //这条链上所有的其他clicked都应当被清掉
+            //这条链上所有的其他clicked都应当被清掉 钻取的东西也清掉
             BI.each(clicked, function (cid, click) {
-                if (allFromIds.contains(cid)) {
+                if (allFromIds.contains(cid) || BI.Utils.isDimensionByDimensionID(cid)) {
                     delete clicked[cid];
                 }
             });
