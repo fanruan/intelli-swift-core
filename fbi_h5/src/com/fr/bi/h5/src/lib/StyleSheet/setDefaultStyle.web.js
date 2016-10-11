@@ -48,7 +48,7 @@ function appendSytle({
   .${rootClassName} > .${viewClassName} {
     height: 100%;
   }
-  .${rootClassName} .${viewClassName} {
+  .${viewClassName} {
     position: relative;
     ${boxStyle}
   }

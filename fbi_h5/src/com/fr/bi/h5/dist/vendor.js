@@ -27796,7 +27796,7 @@
 
 	  var boxStyle = '\n  box-sizing: border-box;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n  -webkit-flex-direction: column;\n  -ms-flex-direction: column;\n  flex-direction: column;\n  ';
 
-	  styleEl.innerHTML = '\n  html {\n    font-size: ' + rem + 'px!important;\n  }\n  body {\n    font-size: 14px;\n    margin: 0;\n  }\n  .' + rootClassName + ' {\n    position: absolute;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    overflow: hidden;\n  }\n  .' + rootClassName + ' > .' + viewClassName + ' {\n    height: 100%;\n  }\n  .' + rootClassName + ' .' + viewClassName + ' {\n    position: relative;\n    ' + boxStyle + '\n  }\n  ';
+	  styleEl.innerHTML = '\n  html {\n    font-size: ' + rem + 'px!important;\n  }\n  body {\n    font-size: 14px;\n    margin: 0;\n  }\n  .' + rootClassName + ' {\n    position: absolute;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    overflow: hidden;\n  }\n  .' + rootClassName + ' > .' + viewClassName + ' {\n    height: 100%;\n  }\n  .' + viewClassName + ' {\n    position: relative;\n    ' + boxStyle + '\n  }\n  ';
 	}
 
 	function setDefaultStyle(options) {
@@ -68602,6 +68602,8 @@
 	    value: true
 	});
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _reactAddonsPureRenderMixin = __webpack_require__(230);
@@ -68707,9 +68709,22 @@
 	                );
 	            }
 	            if (props.effect === true) {
+	                var _ref = props.style || {};
+
+	                var paddingLeft = _ref.paddingLeft;
+	                var paddingRight = _ref.paddingRight;
+	                var paddingTop = _ref.paddingTop;
+	                var paddingBottom = _ref.paddingBottom;
+	                var marginTop = _ref.marginTop;
+	                var marginBottom = _ref.marginBottom;
+	                var marginLeft = _ref.marginLeft;
+	                var marginRight = _ref.marginRight;
+
+	                var other = _objectWithoutProperties(_ref, ['paddingLeft', 'paddingRight', 'paddingTop', 'paddingBottom', 'marginTop', 'marginBottom', 'marginLeft', 'marginRight']);
+
 	                return _lib2.default.createElement(
 	                    _lib.TouchableHighlight,
-	                    { style: [], onPress: this._onPress.bind(this),
+	                    { style: [_extends({}, other)], onPress: this._onPress.bind(this),
 	                        underlayColor: props.underlayColor || _data.Colors.PRESS },
 	                    _lib2.default.createElement(
 	                        _lib.View,
@@ -68747,8 +68762,6 @@
 	_reactMixin2.default.onClass(Button, _reactAddonsPureRenderMixin2.default);
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
-	        justifyContent: 'center',
-	        alignItems: 'center',
 	        color: _data.Colors.HIGHLIGHT
 	    },
 	    disabled: {
@@ -68767,6 +68780,8 @@
 	    value: true
 	});
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _reactAddonsPureRenderMixin = __webpack_require__(230);
@@ -68777,19 +68792,21 @@
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
+	var _reactDom = __webpack_require__(34);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
 	var _core = __webpack_require__(329);
 
 	var _lib = __webpack_require__(208);
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _Button = __webpack_require__(792);
-
-	var _Button2 = _interopRequireDefault(_Button);
-
 	var _Icon = __webpack_require__(791);
 
 	var _Icon2 = _interopRequireDefault(_Icon);
+
+	var _data = __webpack_require__(773);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -68810,6 +68827,9 @@
 	        var _this = _possibleConstructorReturn(this, (IconButton.__proto__ || Object.getPrototypeOf(IconButton)).call(this, props, context));
 
 	        _this.state = {};
+	        var selected = props.selected;
+
+	        _this.state = { selected: selected };
 	        return _this;
 	    }
 
@@ -68820,21 +68840,89 @@
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {}
 	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(props) {
+	            var text = props.text;
+	            var value = props.value;
+	            var selected = props.selected;
+
+	            this.state = { text: text, value: value, selected: selected };
+	        }
+	    }, {
 	        key: 'componentWillUpdate',
 	        value: function componentWillUpdate() {}
 	    }, {
+	        key: '_onPress',
+	        value: function _onPress(e) {
+	            var _this2 = this;
+
+	            if (this.props.disabled === false && this.props.invalid === false && (this.state.selected === false || this.state.selected === true)) {
+	                this.setState({
+	                    selected: !this.state.selected
+	                }, function () {
+	                    _this2.props.onSelected(_this2.state.selected);
+	                });
+	            }
+	            this.props.onPress(e);
+	            if (this.props.stopPropagation) {
+	                e.stopPropagation();
+	            }
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _props = this.props;
-	            var iconWidth = _props.iconWidth;
-	            var iconHeight = _props.iconHeight;
+	            var props = _objectWithoutProperties(this.props, []);
+	            var state = _objectWithoutProperties(this.state, []);
 
-	            var props = _objectWithoutProperties(_props, ['iconWidth', 'iconHeight']);
+	            if (props.disabled === true) {
+	                return _lib2.default.createElement(
+	                    _lib.View,
+	                    { className: (0, _core.cn)(props.className, 'react-view', 'base-disabled'),
+	                        style: [styles.wrapper, styles.disabled, props.style] },
+	                    _lib2.default.createElement(_Icon2.default, { width: props.iconWidth, height: props.iconHeight })
+	                );
+	            }
+	            if (props.invalid === true) {
+	                return _lib2.default.createElement(
+	                    _lib.View,
+	                    { className: (0, _core.cn)(props.className, 'react-view', 'base-invalid'),
+	                        style: [styles.wrapper, props.style] },
+	                    _lib2.default.createElement(_Icon2.default, { width: props.iconWidth, height: props.iconHeight })
+	                );
+	            }
+	            if (props.effect === true) {
+	                var _ref = props.style || {};
 
+	                var paddingLeft = _ref.paddingLeft;
+	                var paddingRight = _ref.paddingRight;
+	                var paddingTop = _ref.paddingTop;
+	                var paddingBottom = _ref.paddingBottom;
+	                var marginTop = _ref.marginTop;
+	                var marginBottom = _ref.marginBottom;
+	                var marginLeft = _ref.marginLeft;
+	                var marginRight = _ref.marginRight;
+
+	                var other = _objectWithoutProperties(_ref, ['paddingLeft', 'paddingRight', 'paddingTop', 'paddingBottom', 'marginTop', 'marginBottom', 'marginLeft', 'marginRight']);
+
+	                return _lib2.default.createElement(
+	                    _lib.TouchableHighlight,
+	                    { style: [_extends({}, other)], onPress: this._onPress.bind(this),
+	                        underlayColor: props.underlayColor || _data.Colors.PRESS },
+	                    _lib2.default.createElement(
+	                        _lib.View,
+	                        { className: (0, _core.cn)(props.className, 'react-view'), style: [styles.wrapper, { flex: 1 }, props.style] },
+	                        _lib2.default.createElement(_Icon2.default, { width: props.iconWidth, height: props.iconHeight })
+	                    )
+	                );
+	            }
 	            return _lib2.default.createElement(
-	                _Button2.default,
-	                props,
-	                _lib2.default.createElement(_Icon2.default, { iconWidth: iconWidth, iconHeight: iconHeight })
+	                _lib.TouchableWithoutFeedback,
+	                { onPress: this._onPress.bind(this) },
+	                _lib2.default.createElement(
+	                    _lib.View,
+	                    { className: (0, _core.cn)(props.className, 'react-view'), style: [styles.wrapper, props.style] },
+	                    _lib2.default.createElement(_Icon2.default, { width: props.iconWidth, height: props.iconHeight })
+	                )
 	            );
 	        }
 	    }]);
@@ -68844,9 +68932,6 @@
 
 	IconButton.propTypes = {};
 	IconButton.defaultProps = {
-	    className: '',
-	    iconWidth: 16,
-	    iconHeight: 16,
 	    selected: null,
 	    disabled: false,
 	    invalid: false,
@@ -68857,6 +68942,16 @@
 	};
 
 	_reactMixin2.default.onClass(IconButton, _reactAddonsPureRenderMixin2.default);
+	var styles = _lib.StyleSheet.create({
+	    wrapper: {
+	        justifyContent: 'center',
+	        alignItems: 'center',
+	        color: _data.Colors.HIGHLIGHT
+	    },
+	    disabled: {
+	        color: _data.Colors.DISABLED
+	    }
+	});
 	exports.default = IconButton;
 
 /***/ },
@@ -69075,6 +69170,8 @@
 	    value: true
 	});
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _reactAddonsPureRenderMixin = __webpack_require__(230);
@@ -69085,15 +69182,17 @@
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
 
+	var _reactDom = __webpack_require__(34);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
 	var _core = __webpack_require__(329);
 
 	var _lib = __webpack_require__(208);
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _Button = __webpack_require__(792);
-
-	var _Button2 = _interopRequireDefault(_Button);
+	var _data = __webpack_require__(773);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -69114,6 +69213,9 @@
 	        var _this = _possibleConstructorReturn(this, (TextButton.__proto__ || Object.getPrototypeOf(TextButton)).call(this, props, context));
 
 	        _this.state = {};
+	        var selected = props.selected;
+
+	        _this.state = { selected: selected };
 	        return _this;
 	    }
 
@@ -69124,23 +69226,104 @@
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {}
 	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(props) {
+	            var text = props.text;
+	            var value = props.value;
+	            var selected = props.selected;
+
+	            this.state = { text: text, value: value, selected: selected };
+	        }
+	    }, {
 	        key: 'componentWillUpdate',
 	        value: function componentWillUpdate() {}
 	    }, {
+	        key: '_onPress',
+	        value: function _onPress(e) {
+	            var _this2 = this;
+
+	            if (this.props.disabled === false && this.props.invalid === false && (this.state.selected === false || this.state.selected === true)) {
+	                this.setState({
+	                    selected: !this.state.selected
+	                }, function () {
+	                    _this2.props.onSelected(_this2.state.selected);
+	                });
+	            }
+	            this.props.onPress(e);
+	            if (this.props.stopPropagation) {
+	                e.stopPropagation();
+	            }
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _props = this.props;
-	            var text = _props.text;
+	            var props = _objectWithoutProperties(this.props, []);
+	            var state = _objectWithoutProperties(this.state, []);
 
-	            var props = _objectWithoutProperties(_props, ['text']);
+	            if (props.disabled === true) {
+	                return _lib2.default.createElement(
+	                    _lib.View,
+	                    { className: (0, _core.cn)(props.className, 'react-view', 'base-disabled'),
+	                        style: [styles.wrapper, styles.disabled, props.style] },
+	                    _lib2.default.createElement(
+	                        _lib.Text,
+	                        null,
+	                        props.children
+	                    )
+	                );
+	            }
+	            if (props.invalid === true) {
+	                return _lib2.default.createElement(
+	                    _lib.View,
+	                    { className: (0, _core.cn)(props.className, 'react-view', 'base-invalid'),
+	                        style: [styles.wrapper, props.style] },
+	                    _lib2.default.createElement(
+	                        _lib.Text,
+	                        null,
+	                        props.children
+	                    )
+	                );
+	            }
+	            if (props.effect === true) {
+	                var _ref = props.style || {};
 
+	                var paddingLeft = _ref.paddingLeft;
+	                var paddingRight = _ref.paddingRight;
+	                var paddingTop = _ref.paddingTop;
+	                var paddingBottom = _ref.paddingBottom;
+	                var marginTop = _ref.marginTop;
+	                var marginBottom = _ref.marginBottom;
+	                var marginLeft = _ref.marginLeft;
+	                var marginRight = _ref.marginRight;
+
+	                var other = _objectWithoutProperties(_ref, ['paddingLeft', 'paddingRight', 'paddingTop', 'paddingBottom', 'marginTop', 'marginBottom', 'marginLeft', 'marginRight']);
+
+	                return _lib2.default.createElement(
+	                    _lib.TouchableHighlight,
+	                    { style: [_extends({}, other)], onPress: this._onPress.bind(this),
+	                        underlayColor: props.underlayColor || _data.Colors.PRESS },
+	                    _lib2.default.createElement(
+	                        _lib.View,
+	                        { className: (0, _core.cn)(props.className, 'react-view'), style: [styles.wrapper, { flex: 1 }, props.style] },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            null,
+	                            props.children
+	                        )
+	                    )
+	                );
+	            }
 	            return _lib2.default.createElement(
-	                _Button2.default,
-	                props,
+	                _lib.TouchableWithoutFeedback,
+	                { onPress: this._onPress.bind(this) },
 	                _lib2.default.createElement(
-	                    Text,
-	                    null,
-	                    text
+	                    _lib.View,
+	                    { className: (0, _core.cn)(props.className, 'react-view'), style: [styles.wrapper, props.style] },
+	                    _lib2.default.createElement(
+	                        _lib.Text,
+	                        null,
+	                        props.children
+	                    )
 	                )
 	            );
 	        }
@@ -69161,6 +69344,16 @@
 	};
 
 	_reactMixin2.default.onClass(TextButton, _reactAddonsPureRenderMixin2.default);
+	var styles = _lib.StyleSheet.create({
+	    wrapper: {
+	        justifyContent: 'center',
+	        alignItems: 'center',
+	        color: _data.Colors.HIGHLIGHT
+	    },
+	    disabled: {
+	        color: _data.Colors.DISABLED
+	    }
+	});
 	exports.default = TextButton;
 
 /***/ },

@@ -87,7 +87,8 @@ class Button extends Component {
             </View>
         }
         if (props.effect === true) {
-            return <TouchableHighlight style={[]} onPress={this._onPress.bind(this)}
+            const {paddingLeft, paddingRight, paddingTop, paddingBottom, marginTop, marginBottom, marginLeft, marginRight, ...other} = props.style || {};
+            return <TouchableHighlight style={[{...other}]} onPress={this._onPress.bind(this)}
                                        underlayColor={props.underlayColor || Colors.PRESS}>
                 <View className={cn(props.className, 'react-view')} style={[styles.wrapper, {flex: 1}, props.style]}>
                     {props.children}
@@ -100,13 +101,10 @@ class Button extends Component {
             </View>
         </TouchableWithoutFeedback>
     }
-
 }
 mixin.onClass(Button, PureRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
-        justifyContent: 'center',
-        alignItems: 'center',
         color: Colors.HIGHLIGHT
     },
     disabled: {

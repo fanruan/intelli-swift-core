@@ -139,11 +139,11 @@ class MultiSelectorWidget extends Component {
 
     _moreRenderer() {
         if (this.state.hasNext === true) {
-            return <TextButton style={{height: Size.ITEM_HEIGHT}} text={'点击加载更多数据'} onPress={()=> {
+            return <TextButton style={{height: Size.ITEM_HEIGHT}} onPress={()=> {
                 this._fetchData();
-            }}/>
+            }}>点击加载更多数据</TextButton>
         } else {
-            return <TextButton style={{height: Size.ITEM_HEIGHT}} disabled={true} text={'无更多数据'}/>
+            return <TextButton style={{height: Size.ITEM_HEIGHT}} disabled={true}>无更多数据</TextButton>
         }
     }
 

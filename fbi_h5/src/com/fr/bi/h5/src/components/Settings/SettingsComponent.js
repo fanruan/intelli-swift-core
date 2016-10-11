@@ -28,6 +28,7 @@ import {
     CenterLayout,
     VtapeLayout,
     HtapeLayout,
+    Button,
     IconButton,
     TextButton,
     Icon,
@@ -51,12 +52,12 @@ const DragHandle = SortableHandle(() => {
 });
 
 const SortableItem = SortableElement(({value}) => {
-    return <TouchableHighlight underlayColor={Colors.PRESS}>
+    return <Button>
         <View style={styles.sortableItems}>
             <Text>{value.text}</Text>
             <DragHandle/>
         </View>
-    </TouchableHighlight>
+    </Button>
 });
 
 const SortableList = SortableContainer(({items}) => {
@@ -210,6 +211,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.HIGHLIGHT
     },
     sortableItems: {
+        flex: 1,
         flexDirection: 'row',
         paddingLeft: 20,
         paddingRight: 20,
