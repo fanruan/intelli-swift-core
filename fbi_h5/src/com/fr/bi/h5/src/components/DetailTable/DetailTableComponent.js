@@ -46,33 +46,26 @@ class DetailTableComponent extends Component {
     }
 
     componentDidMount() {
-        this.init = false;
-        this._fetchData().then((data)=> {
-            this.setState({data}, ()=> {
-                this.init = true;
-            });
-        });
+        this._fetchData(this.props);
     }
 
     componentWillReceiveProps(nextProps) {
-        this._tableHelper = new DetailTableComponentHelper(nextProps, this.context);
-        this._widthHelper = new TableComponentWidthHelper(this._tableHelper, nextProps.width);
-    }
-
-    componentWillUpdate() {
-        if (this.init) {
-            this._fetchData().then((data)=> {
-                this.setState({data});
-            });
+        if (!immutableShallowEqual(nextProps, this.props)) {
+            this._tableHelper = new DetailTableComponentHelper(nextProps, this.context);
+            this._widthHelper = new TableComponentWidthHelper(this._tableHelper, nextProps.width);
+            this._fetchData(nextProps);
         }
     }
 
-    _fetchData() {
-        const {$widget, wId} = this.props;
+    componentWillUpdate(nextProps) {
+
+    }
+
+    _fetchData(props) {
+        const {$widget, wId} = props;
         const widget = new Widget($widget, this.context.$template, wId);
         return widget.getData().then((data)=> {
-            this._tableHelper.setData(data);
-            return Immutable.fromJS(data);
+            this.setState({data: data});
         });
     }
 
@@ -86,7 +79,8 @@ class DetailTableComponent extends Component {
     }
 
     render() {
-        const {width, height} = this.props;
+        const {width, height} = this.props, {data} = this.state;
+        this._tableHelper.setData(data);
         const items = this._tableHelper.getItems();
         this._widthHelper.setItems(items);
 

@@ -84154,7 +84154,7 @@
 	        }
 	    }, {
 	        key: 'close',
-	        value: function close() {
+	        value: function close(op) {
 	            var _this2 = this;
 
 	            _lib.Animated.parallel([_lib.Animated.timing(this.state.opacity, {
@@ -84163,7 +84163,7 @@
 	                toValue: 0
 	            })]).start(function (endState) {
 	                _this2.setState({ visible: false }, function () {
-	                    _this2.props.onClose && _this2.props.onClose();
+	                    _this2.props.onClose && _this2.props.onClose(op);
 	                });
 	            });
 	        }

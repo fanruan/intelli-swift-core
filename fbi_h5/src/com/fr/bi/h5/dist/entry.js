@@ -5599,6 +5599,10 @@ webpackJsonp([0],{
 	                            $widget: _this2.props.$widget,
 	                            wId: _this2.props.wId,
 	                            height: 0,
+	                            onComplete: function onComplete(opt) {
+	                                _lib.Portal.closeModal('TableComponent');
+	                                _this2.context.actions.updateWidget(opt.$widget, opt.wId);
+	                            },
 	                            onReturn: function onReturn() {
 	                                _lib.Portal.closeModal('TableComponent');
 	                            }
@@ -5725,7 +5729,7 @@ webpackJsonp([0],{
 	        var _this = _possibleConstructorReturn(this, (TableComponent.__proto__ || Object.getPrototypeOf(TableComponent)).call(this, props, context));
 
 	        _this.state = {
-	            data: new _immutable2.default.Map({})
+	            data: []
 	        };
 
 	        _this._tableHelper = new _TableComponentHelper2.default(props, context);
@@ -5740,7 +5744,6 @@ webpackJsonp([0],{
 	    }, {
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
-	            this.init = false;
 	            this._fetchData(this.props);
 	        }
 	    }, {
@@ -5765,7 +5768,7 @@ webpackJsonp([0],{
 
 	            var widget = new _data.Widget($widget, this.context.$template, wId);
 	            return widget.getData().then(function (data) {
-	                _this2.setState({ data: _immutable2.default.fromJS(data) });
+	                _this2.setState({ data: data });
 	            });
 	        }
 	    }, {
@@ -5775,7 +5778,7 @@ webpackJsonp([0],{
 	            var width = _props.width;
 	            var height = _props.height;var data = this.state.data;
 
-	            this._tableHelper.setData(data.toJS());
+	            this._tableHelper.setData(data);
 	            var items = this._tableHelper.getItems();
 	            this._widthHelper.setItems(items);
 	            return _lib2.default.createElement(_widgets.TableWidget, {
@@ -6508,8 +6511,7 @@ webpackJsonp([0],{
 	                _lib2.default.createElement(
 	                    _base.TextLink,
 	                    { onPress: function onPress() {
-	                            _this2.context.actions.updateWidget(_this2.state.$widget, _this2.props.wId);
-	                            _this2.refs['overlay'].close();
+	                            _this2.refs['overlay'].close(true);
 	                        }, style: styles.complete },
 	                    '完成'
 	                )
@@ -6536,8 +6538,14 @@ webpackJsonp([0],{
 	            this._helper = new _SettingsComponentHelper2.default(state, this.context);
 	            return _lib2.default.createElement(
 	                _base.Overlay,
-	                { ref: 'overlay', onClose: function onClose() {
-	                        _this3.props.onReturn();
+	                { ref: 'overlay', onClose: function onClose(tag) {
+	                        if (tag === true) {
+	                            var $widget = _this3.state.$widget;var wId = _this3.props.wId;
+
+	                            _this3.props.onComplete({ $widget: $widget, wId: wId });
+	                        } else {
+	                            _this3.props.onReturn();
+	                        }
 	                    } },
 	                _lib2.default.createElement(
 	                    _base.VtapeLayout,
@@ -6759,45 +6767,31 @@ webpackJsonp([0],{
 	    }, {
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
-	            var _this2 = this;
-
-	            this.init = false;
-	            this._fetchData().then(function (data) {
-	                _this2.setState({ data: data }, function () {
-	                    _this2.init = true;
-	                });
-	            });
+	            this._fetchData(this.props);
 	        }
 	    }, {
 	        key: 'componentWillReceiveProps',
 	        value: function componentWillReceiveProps(nextProps) {
-	            this._tableHelper = new _DetailTableComponentHelper2.default(nextProps, this.context);
-	            this._widthHelper = new _TableComponentWidthHelper2.default(this._tableHelper, nextProps.width);
-	        }
-	    }, {
-	        key: 'componentWillUpdate',
-	        value: function componentWillUpdate() {
-	            var _this3 = this;
-
-	            if (this.init) {
-	                this._fetchData().then(function (data) {
-	                    _this3.setState({ data: data });
-	                });
+	            if (!(0, _core.immutableShallowEqual)(nextProps, this.props)) {
+	                this._tableHelper = new _DetailTableComponentHelper2.default(nextProps, this.context);
+	                this._widthHelper = new _TableComponentWidthHelper2.default(this._tableHelper, nextProps.width);
+	                this._fetchData(nextProps);
 	            }
 	        }
 	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate(nextProps) {}
+	    }, {
 	        key: '_fetchData',
-	        value: function _fetchData() {
-	            var _this4 = this;
+	        value: function _fetchData(props) {
+	            var _this2 = this;
 
-	            var _props = this.props;
-	            var $widget = _props.$widget;
-	            var wId = _props.wId;
+	            var $widget = props.$widget;
+	            var wId = props.wId;
 
 	            var widget = new _data.Widget($widget, this.context.$template, wId);
 	            return widget.getData().then(function (data) {
-	                _this4._tableHelper.setData(data);
-	                return _immutable2.default.fromJS(data);
+	                _this2.setState({ data: data });
 	            });
 	        }
 	    }, {
@@ -6820,10 +6814,11 @@ webpackJsonp([0],{
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _props2 = this.props;
-	            var width = _props2.width;
-	            var height = _props2.height;
+	            var _props = this.props;
+	            var width = _props.width;
+	            var height = _props.height;var data = this.state.data;
 
+	            this._tableHelper.setData(data);
 	            var items = this._tableHelper.getItems();
 	            this._widthHelper.setItems(items);
 

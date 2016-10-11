@@ -55,6 +55,10 @@ class TablePaneComponent extends Component {
                     $widget={this.props.$widget}
                     wId={this.props.wId}
                     height={0}
+                    onComplete={(opt)=> {
+                        Portal.closeModal('TableComponent');
+                        this.context.actions.updateWidget(opt.$widget, opt.wId);
+                    }}
                     onReturn={()=> {
                         Portal.closeModal('TableComponent');
                     }}

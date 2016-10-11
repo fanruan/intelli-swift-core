@@ -37,7 +37,7 @@ class TableComponent extends Component {
     }
 
     state = {
-        data: new Immutable.Map({})
+        data: []
     };
 
     componentWillMount() {
@@ -45,7 +45,6 @@ class TableComponent extends Component {
     }
 
     componentDidMount() {
-        this.init = false;
         this._fetchData(this.props);
     }
 
@@ -65,13 +64,13 @@ class TableComponent extends Component {
         const {$widget, wId} = props;
         const widget = new Widget($widget, this.context.$template, wId);
         return widget.getData().then((data)=> {
-            this.setState({data: Immutable.fromJS(data)});
+            this.setState({data: data});
         });
     }
 
     render() {
         const {width, height} = this.props, {data} = this.state;
-        this._tableHelper.setData(data.toJS());
+        this._tableHelper.setData(data);
         const items = this._tableHelper.getItems();
         this._widthHelper.setItems(items);
         return <TableWidget
