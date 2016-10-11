@@ -69,39 +69,27 @@ class DetailTableComponent extends Component {
         });
     }
 
-    _renderHeader() {
-        const {$widget} = this.props;
-        const widget = new Widget($widget);
-        return <View height={Size.HEADER_HEIGHT} style={styles.header}>
-            <Text>{widget.getName()}</Text>
-            <IconLink className='setting-font'/>
-        </View>
-    }
-
     render() {
         const {width, height} = this.props, {data} = this.state;
         this._tableHelper.setData(data);
         const items = this._tableHelper.getItems();
         this._widthHelper.setItems(items);
 
-        return <VtapeLayout>
-            {this._renderHeader()}
-            <TableWidget
-                width={width}
-                height={height - Size.HEADER_HEIGHT}
-                freezeCols={this._tableHelper.isFreeze() ? [0] : []}
-                columnSize={this._widthHelper.getWidth()}
-                header={this._tableHelper.getHeader()}
-                items={items}
-                headerCellRenderer={({colIndex, ...cell})=> {
-                    return <TableHeader {...cell}/>
-                }}
-                itemsCellRenderer={({colIndex, rowIndex, ...cell}) => {
-                    return <TableCell {...cell}/>
-                }}
-            >
-            </TableWidget>
-        </VtapeLayout>
+        return <TableWidget
+            width={width}
+            height={height - Size.HEADER_HEIGHT}
+            freezeCols={this._tableHelper.isFreeze() ? [0] : []}
+            columnSize={this._widthHelper.getWidth()}
+            header={this._tableHelper.getHeader()}
+            items={items}
+            headerCellRenderer={({colIndex, ...cell})=> {
+                return <TableHeader {...cell}/>
+            }}
+            itemsCellRenderer={({colIndex, rowIndex, ...cell}) => {
+                return <TableCell {...cell}/>
+            }}
+        >
+        </TableWidget>
     }
 }
 mixin.onClass(DetailTableComponent, ReactComponentWithImmutableRenderMixin);

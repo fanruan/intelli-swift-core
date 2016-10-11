@@ -37,8 +37,6 @@ webpackJsonp([0],{
 
 	var _Portal2 = _interopRequireDefault(_Portal);
 
-	__webpack_require__(935);
-
 	__webpack_require__(937);
 
 	__webpack_require__(939);
@@ -48,6 +46,8 @@ webpackJsonp([0],{
 	__webpack_require__(943);
 
 	__webpack_require__(945);
+
+	__webpack_require__(947);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5176,17 +5176,17 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _ChartComponent = __webpack_require__(923);
+	var _ChartPaneComponent = __webpack_require__(923);
 
-	var _ChartComponent2 = _interopRequireDefault(_ChartComponent);
+	var _ChartPaneComponent2 = _interopRequireDefault(_ChartPaneComponent);
 
-	var _TablePaneComponent = __webpack_require__(924);
+	var _TablePaneComponent = __webpack_require__(927);
 
 	var _TablePaneComponent2 = _interopRequireDefault(_TablePaneComponent);
 
-	var _DetailTableComponent = __webpack_require__(932);
+	var _DetailTablePaneComponent = __webpack_require__(933);
 
-	var _DetailTableComponent2 = _interopRequireDefault(_DetailTableComponent);
+	var _DetailTablePaneComponent2 = _interopRequireDefault(_DetailTablePaneComponent);
 
 	var _MultiSelectorComponent = __webpack_require__(919);
 
@@ -5196,7 +5196,7 @@ webpackJsonp([0],{
 
 	var _MultiTreeSelectorComponent2 = _interopRequireDefault(_MultiTreeSelectorComponent);
 
-	var _ContentComponent = __webpack_require__(934);
+	var _ContentComponent = __webpack_require__(936);
 
 	var _ContentComponent2 = _interopRequireDefault(_ContentComponent);
 
@@ -5281,7 +5281,7 @@ webpackJsonp([0],{
 	                //case BICst.WIDGET.COMPLEX_TABLE:
 	                //
 	                case BICst.WIDGET.DETAIL:
-	                    component = _lib2.default.createElement(_DetailTableComponent2.default, props);
+	                    component = _lib2.default.createElement(_DetailTablePaneComponent2.default, props);
 	                    break;
 
 	                case BICst.WIDGET.AXIS:
@@ -5310,7 +5310,7 @@ webpackJsonp([0],{
 	                case BICst.WIDGET.RADAR:
 	                case BICst.WIDGET.ACCUMULATE_RADAR:
 	                case BICst.WIDGET.FUNNEL:
-	                    component = _lib2.default.createElement(_ChartComponent2.default, props);
+	                    component = _lib2.default.createElement(_ChartPaneComponent2.default, props);
 	                    break;
 	                case BICst.WIDGET.NUMBER:
 	                case BICst.WIDGET.DATE:
@@ -5367,6 +5367,158 @@ webpackJsonp([0],{
 /***/ },
 
 /***/ 923:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactMixin = __webpack_require__(206);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _immutable = __webpack_require__(200);
+
+	var _immutable2 = _interopRequireDefault(_immutable);
+
+	var _core = __webpack_require__(329);
+
+	var _lib = __webpack_require__(208);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _data = __webpack_require__(773);
+
+	var _base = __webpack_require__(783);
+
+	var _widgets = __webpack_require__(907);
+
+	var _ChartComponent = __webpack_require__(924);
+
+	var _ChartComponent2 = _interopRequireDefault(_ChartComponent);
+
+	var _SettingsComponent = __webpack_require__(925);
+
+	var _SettingsComponent2 = _interopRequireDefault(_SettingsComponent);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ChartPaneComponent = function (_Component) {
+	    _inherits(ChartPaneComponent, _Component);
+
+	    function ChartPaneComponent(props, context) {
+	        _classCallCheck(this, ChartPaneComponent);
+
+	        return _possibleConstructorReturn(this, (ChartPaneComponent.__proto__ || Object.getPrototypeOf(ChartPaneComponent)).call(this, props, context));
+	    }
+
+	    _createClass(ChartPaneComponent, [{
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {}
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate() {}
+	    }, {
+	        key: '_renderHeader',
+	        value: function _renderHeader() {
+	            var _this2 = this;
+
+	            var _props = this.props;
+	            var $widget = _props.$widget;
+	            var wId = _props.wId;
+
+	            var widget = new _data.Widget($widget);
+	            return _lib2.default.createElement(
+	                _lib.View,
+	                { height: _data.Size.HEADER_HEIGHT, style: styles.header },
+	                _lib2.default.createElement(
+	                    _lib.Text,
+	                    null,
+	                    widget.getName()
+	                ),
+	                _lib2.default.createElement(_base.IconLink, { className: 'setting-font', onPress: function onPress() {
+	                        _lib.Portal.showModal('ChartComponent', _lib2.default.createElement(_SettingsComponent2.default, {
+	                            $widget: _this2.props.$widget,
+	                            wId: _this2.props.wId,
+	                            height: 0,
+	                            onComplete: function onComplete(opt) {
+	                                _lib.Portal.closeModal('ChartComponent');
+	                                _this2.context.actions.updateWidget(opt.$widget, opt.wId);
+	                            },
+	                            onReturn: function onReturn() {
+	                                _lib.Portal.closeModal('ChartComponent');
+	                            }
+	                        }));
+	                    } })
+	            );
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _props2 = this.props;
+	            var width = _props2.width;
+	            var height = _props2.height;
+	            var $widget = _props2.$widget;
+	            var wId = _props2.wId;
+
+	            return _lib2.default.createElement(
+	                _base.VtapeLayout,
+	                null,
+	                this._renderHeader(),
+	                _lib2.default.createElement(_ChartComponent2.default, {
+	                    width: width,
+	                    height: height - _data.Size.HEADER_HEIGHT,
+	                    $widget: $widget,
+	                    wId: wId
+	                })
+	            );
+	        }
+	    }]);
+
+	    return ChartPaneComponent;
+	}(_lib.Component);
+
+	ChartPaneComponent.contextTypes = {
+	    $template: _lib2.default.PropTypes.object,
+	    actions: _lib2.default.PropTypes.object
+	};
+
+	_reactMixin2.default.onClass(ChartPaneComponent, _core.ReactComponentWithImmutableRenderMixin);
+
+	var styles = _lib.StyleSheet.create({
+	    wrapper: {
+	        position: 'relative'
+	    },
+	    header: {
+	        paddingLeft: 4,
+	        paddingRight: 4,
+	        flexDirection: 'row',
+	        alignItems: 'center',
+	        justifyContent: 'space-between'
+	    }
+	});
+	exports.default = ChartPaneComponent;
+
+/***/ },
+
+/***/ 924:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5453,32 +5605,10 @@ webpackJsonp([0],{
 	            });
 	        }
 	    }, {
-	        key: '_renderHeader',
-	        value: function _renderHeader() {
-	            var $widget = this.props.$widget;
-
-	            var widget = new _data.Widget($widget);
-	            return _lib2.default.createElement(
-	                _lib.View,
-	                { height: _data.Size.HEADER_HEIGHT, style: styles.header },
-	                _lib2.default.createElement(
-	                    _lib.Text,
-	                    null,
-	                    widget.getName()
-	                ),
-	                _lib2.default.createElement(_base.IconLink, { className: 'setting-font' })
-	            );
-	        }
-	    }, {
 	        key: 'render',
 	        value: function render() {
 
-	            return _lib2.default.createElement(
-	                _base.VtapeLayout,
-	                null,
-	                this._renderHeader(),
-	                _lib2.default.createElement(_lib.View, { ref: 'chart', style: _extends({ height: this.props.height }, styles.wrapper) })
-	            );
+	            return _lib2.default.createElement(_lib.View, { ref: 'chart', style: _extends({ height: this.props.height }, styles.wrapper) });
 	        }
 	    }]);
 
@@ -5507,158 +5637,6 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 924:
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _reactMixin = __webpack_require__(206);
-
-	var _reactMixin2 = _interopRequireDefault(_reactMixin);
-
-	var _reactDom = __webpack_require__(34);
-
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-
-	var _immutable = __webpack_require__(200);
-
-	var _immutable2 = _interopRequireDefault(_immutable);
-
-	var _core = __webpack_require__(329);
-
-	var _lib = __webpack_require__(208);
-
-	var _lib2 = _interopRequireDefault(_lib);
-
-	var _data = __webpack_require__(773);
-
-	var _base = __webpack_require__(783);
-
-	var _widgets = __webpack_require__(907);
-
-	var _TableComponent = __webpack_require__(925);
-
-	var _TableComponent2 = _interopRequireDefault(_TableComponent);
-
-	var _SettingsComponent = __webpack_require__(930);
-
-	var _SettingsComponent2 = _interopRequireDefault(_SettingsComponent);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var TablePaneComponent = function (_Component) {
-	    _inherits(TablePaneComponent, _Component);
-
-	    function TablePaneComponent(props, context) {
-	        _classCallCheck(this, TablePaneComponent);
-
-	        return _possibleConstructorReturn(this, (TablePaneComponent.__proto__ || Object.getPrototypeOf(TablePaneComponent)).call(this, props, context));
-	    }
-
-	    _createClass(TablePaneComponent, [{
-	        key: 'componentWillMount',
-	        value: function componentWillMount() {}
-	    }, {
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {}
-	    }, {
-	        key: 'componentWillUpdate',
-	        value: function componentWillUpdate() {}
-	    }, {
-	        key: '_renderHeader',
-	        value: function _renderHeader() {
-	            var _this2 = this;
-
-	            var _props = this.props;
-	            var $widget = _props.$widget;
-	            var wId = _props.wId;
-
-	            var widget = new _data.Widget($widget);
-	            return _lib2.default.createElement(
-	                _lib.View,
-	                { height: _data.Size.HEADER_HEIGHT, style: styles.header },
-	                _lib2.default.createElement(
-	                    _lib.Text,
-	                    null,
-	                    widget.getName()
-	                ),
-	                _lib2.default.createElement(_base.IconLink, { className: 'setting-font', onPress: function onPress() {
-	                        _lib.Portal.showModal('TableComponent', _lib2.default.createElement(_SettingsComponent2.default, {
-	                            $widget: _this2.props.$widget,
-	                            wId: _this2.props.wId,
-	                            height: 0,
-	                            onComplete: function onComplete(opt) {
-	                                _lib.Portal.closeModal('TableComponent');
-	                                _this2.context.actions.updateWidget(opt.$widget, opt.wId);
-	                            },
-	                            onReturn: function onReturn() {
-	                                _lib.Portal.closeModal('TableComponent');
-	                            }
-	                        }));
-	                    } })
-	            );
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var _props2 = this.props;
-	            var width = _props2.width;
-	            var height = _props2.height;
-	            var $widget = _props2.$widget;
-	            var wId = _props2.wId;
-
-	            return _lib2.default.createElement(
-	                _base.VtapeLayout,
-	                null,
-	                this._renderHeader(),
-	                _lib2.default.createElement(_TableComponent2.default, {
-	                    width: width,
-	                    height: height - _data.Size.HEADER_HEIGHT,
-	                    $widget: $widget,
-	                    wId: wId
-	                })
-	            );
-	        }
-	    }]);
-
-	    return TablePaneComponent;
-	}(_lib.Component);
-
-	TablePaneComponent.contextTypes = {
-	    $template: _lib2.default.PropTypes.object,
-	    actions: _lib2.default.PropTypes.object
-	};
-
-	_reactMixin2.default.onClass(TablePaneComponent, _core.ReactComponentWithImmutableRenderMixin);
-
-	var styles = _lib.StyleSheet.create({
-	    wrapper: {
-	        position: 'relative'
-	    },
-	    header: {
-	        paddingLeft: 4,
-	        paddingRight: 4,
-	        flexDirection: 'row',
-	        alignItems: 'center',
-	        justifyContent: 'space-between'
-	    }
-	});
-	exports.default = TablePaneComponent;
-
-/***/ },
-
 /***/ 925:
 /***/ function(module, exports, __webpack_require__) {
 
@@ -5676,8 +5654,6 @@ webpackJsonp([0],{
 
 	var _reactDom = __webpack_require__(34);
 
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-
 	var _immutable = __webpack_require__(200);
 
 	var _immutable2 = _interopRequireDefault(_immutable);
@@ -5694,704 +5670,7 @@ webpackJsonp([0],{
 
 	var _widgets = __webpack_require__(907);
 
-	var _TableComponentHelper = __webpack_require__(926);
-
-	var _TableComponentHelper2 = _interopRequireDefault(_TableComponentHelper);
-
-	var _TableComponentWidthHelper = __webpack_require__(927);
-
-	var _TableComponentWidthHelper2 = _interopRequireDefault(_TableComponentWidthHelper);
-
-	var _TableCell = __webpack_require__(928);
-
-	var _TableCell2 = _interopRequireDefault(_TableCell);
-
-	var _TableHeader = __webpack_require__(929);
-
-	var _TableHeader2 = _interopRequireDefault(_TableHeader);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var TableComponent = function (_Component) {
-	    _inherits(TableComponent, _Component);
-
-	    function TableComponent(props, context) {
-	        _classCallCheck(this, TableComponent);
-
-	        var _this = _possibleConstructorReturn(this, (TableComponent.__proto__ || Object.getPrototypeOf(TableComponent)).call(this, props, context));
-
-	        _this.state = {
-	            data: []
-	        };
-
-	        _this._tableHelper = new _TableComponentHelper2.default(props, context);
-	        _this._widthHelper = new _TableComponentWidthHelper2.default(_this._tableHelper, props.width);
-
-	        return _this;
-	    }
-
-	    _createClass(TableComponent, [{
-	        key: 'componentWillMount',
-	        value: function componentWillMount() {}
-	    }, {
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
-	            this._fetchData(this.props);
-	        }
-	    }, {
-	        key: 'componentWillReceiveProps',
-	        value: function componentWillReceiveProps(nextProps) {
-	            if (!(0, _core.immutableShallowEqual)(nextProps, this.props)) {
-	                this._tableHelper = new _TableComponentHelper2.default(nextProps, this.context);
-	                this._widthHelper = new _TableComponentWidthHelper2.default(this._tableHelper, nextProps.width);
-	                this._fetchData(nextProps);
-	            }
-	        }
-	    }, {
-	        key: 'componentWillUpdate',
-	        value: function componentWillUpdate(nextProps) {}
-	    }, {
-	        key: '_fetchData',
-	        value: function _fetchData(props) {
-	            var _this2 = this;
-
-	            var $widget = props.$widget;
-	            var wId = props.wId;
-
-	            var widget = new _data.Widget($widget, this.context.$template, wId);
-	            return widget.getData().then(function (data) {
-	                _this2.setState({ data: data });
-	            });
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var _props = this.props;
-	            var width = _props.width;
-	            var height = _props.height;var data = this.state.data;
-
-	            this._tableHelper.setData(data);
-	            var items = this._tableHelper.getItems();
-	            this._widthHelper.setItems(items);
-	            return _lib2.default.createElement(_widgets.TableWidget, {
-	                width: width,
-	                height: height,
-	                freezeCols: this._tableHelper.isFreeze() ? [0] : [],
-	                columnSize: this._widthHelper.getWidth(),
-	                header: this._tableHelper.getHeader(),
-	                items: items,
-	                groupHeader: this._tableHelper.getGroupHeader(),
-	                groupItems: this._tableHelper.getGroupItems()
-	                /**groupHeader={[{text: 1}, {text: 2}]}
-	                 groupItems={[{children:[{text: 'A', children: [{text: 'A1'}, {text: 'A2'}]}, {text: 'B'}]}]}**/
-	                , groupHeaderCellRenderer: function groupHeaderCellRenderer(_ref) {
-	                    var colIndex = _ref.colIndex;
-
-	                    var cell = _objectWithoutProperties(_ref, ['colIndex']);
-
-	                    return _lib2.default.createElement(_TableHeader2.default, cell);
-	                },
-	                groupItemsCellRenderer: function groupItemsCellRenderer(_ref2) {
-	                    var cell = _objectWithoutProperties(_ref2, []);
-
-	                    return _lib2.default.createElement(_TableHeader2.default, cell);
-	                },
-	                headerCellRenderer: function headerCellRenderer(_ref3) {
-	                    var colIndex = _ref3.colIndex;
-
-	                    var cell = _objectWithoutProperties(_ref3, ['colIndex']);
-
-	                    return _lib2.default.createElement(_TableHeader2.default, cell);
-	                },
-	                itemsCellRenderer: function itemsCellRenderer(_ref4) {
-	                    var colIndex = _ref4.colIndex;
-	                    var rowIndex = _ref4.rowIndex;
-
-	                    var cell = _objectWithoutProperties(_ref4, ['colIndex', 'rowIndex']);
-
-	                    return _lib2.default.createElement(_TableCell2.default, cell);
-	                }
-	            });
-	        }
-	    }]);
-
-	    return TableComponent;
-	}(_lib.Component);
-
-	TableComponent.contextTypes = {
-	    $template: _lib2.default.PropTypes.object
-	};
-
-	_reactMixin2.default.onClass(TableComponent, _core.ReactComponentWithImmutableRenderMixin);
-
-	var styles = _lib.StyleSheet.create({
-	    wrapper: {
-	        position: 'relative'
-	    },
-	    header: {
-	        paddingLeft: 4,
-	        paddingRight: 4,
-	        flexDirection: 'row',
-	        alignItems: 'center',
-	        justifyContent: 'space-between'
-	    }
-	});
-	exports.default = TableComponent;
-
-/***/ },
-
-/***/ 926:
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _core = __webpack_require__(329);
-
-	var _data = __webpack_require__(773);
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var TableComponentHelper = function () {
-	    function TableComponentHelper(props, context) {
-	        _classCallCheck(this, TableComponentHelper);
-
-	        var $widget = props.$widget;
-	        var wId = props.wId;
-
-	        this.widget = new _data.Widget($widget, context.$template, wId);
-	        this.data = [];
-	    }
-
-	    _createClass(TableComponentHelper, [{
-	        key: 'setData',
-	        value: function setData(data) {
-	            this.data = data;
-	        }
-	    }, {
-	        key: 'getHeader',
-	        value: function getHeader() {
-	            var _this = this;
-
-	            var ids = this.widget.getAllUsedTargetIds();
-	            var result = [{
-	                text: '行表头'
-	            }];
-	            ids.forEach(function (id) {
-	                var $$dim = _this.widget.get$$DimensionOrTargetById(id);
-	                result.push({
-	                    text: new _data.Dimension($$dim).getName()
-	                });
-	            });
-	            return result;
-	        }
-	    }, {
-	        key: 'getItems',
-	        value: function getItems() {
-	            var dimensionIds = this.widget.getAllUsedDimensionIds();
-	            var targetIds = this.widget.getAllUsedTargetIds();
-	            var result = [];
-	            var track = function track(node, layer) {
-	                if (!node) {
-	                    return;
-	                }
-	                if (node.n) {
-	                    if (!result[0]) {
-	                        result[0] = [];
-	                    }
-	                    result[0].push({
-	                        dId: dimensionIds[layer],
-	                        layer: layer,
-	                        text: node.n
-	                    });
-	                    if (node.s) {
-	                        node.s.forEach(function (v, idx) {
-	                            if (!result[idx + 1]) {
-	                                result[idx + 1] = [];
-	                            }
-	                            result[idx + 1].push({
-	                                dId: targetIds[idx],
-	                                text: v
-	                            });
-	                        });
-	                    }
-	                }
-	                if (node.c) {
-	                    node.c.forEach(function (child) {
-	                        track(child, layer + 1);
-	                    });
-	                }
-	                // if (!node.n) {
-	                //     if (!result[0]) {
-	                //         result[0] = [];
-	                //     }
-	                //     // result[0].push({
-	                //     //     text: '汇总'
-	                //     // });
-	                //     if (node.s) {
-	                //         node.s.forEach((v, idx)=> {
-	                //             if (!result[idx + 1]) {
-	                //                 result[idx + 1] = [];
-	                //             }
-	                //             result[idx + 1].push({
-	                //                 dId: targetIds[idx],
-	                //                 text: v
-	                //             })
-	                //         })
-	                //     }
-	                // }
-	            };
-	            track(this.data.data, -1);
-	            return result;
-	        }
-	    }, {
-	        key: 'getGroupHeader',
-	        value: function getGroupHeader() {
-	            var _this2 = this;
-
-	            var result = [];
-	            var ids = this.widget.getRowDimensionIds();
-	            (0, _core.each)(ids, function (id) {
-	                var dimension = new _data.Dimension(_this2.widget.get$$DimensionById(id));
-	                result.push({
-	                    text: dimension.getName()
-	                });
-	            });
-	            return result;
-	        }
-
-	        //交叉表表头
-
-	    }, {
-	        key: 'getGroupItems',
-	        value: function getGroupItems() {
-	            return [];
-	        }
-	    }, {
-	        key: 'isFreeze',
-	        value: function isFreeze() {
-	            return this.widget.isFreeze();
-	        }
-	    }]);
-
-	    return TableComponentHelper;
-	}();
-
-	exports.default = TableComponentHelper;
-
-/***/ },
-
-/***/ 927:
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _core = __webpack_require__(329);
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var REMAIN_WIDTH = 8;
-
-	function sumBy(array, it) {
-	    var res = 0;
-	    (0, _core.each)(array, function (width, i) {
-	        res += it(width, i);
-	    });
-	    return res;
-	}
-
-	//最小二乘法  fx=bx+a
-	function fit(widths) {
-	    if (widths.length < 2) {
-	        return { a: widths[0], b: 0 };
-	    }
-	    var $11 = widths.length;
-	    var $12 = (1 + widths.length) * widths.length / 2;
-	    var $21 = $12;
-	    var $22 = sumBy(widths, function (width, i) {
-	        return (i + 1) * (i + 1);
-	    });
-	    var f1 = _core.math.sum(widths);
-	    var f2 = sumBy(widths, function (width, i) {
-	        return (i + 1) * width;
-	    });
-	    return {
-	        a: (f2 * $12 - f1 * $22) / ($12 * $21 - $11 * $22),
-	        b: (f2 * $11 - f1 * $21) / ($11 * $22 - $21 * $12)
-	    };
-	}
-
-	//获取字符宽度
-	function getGBWidth(str) {
-	    str = str + '';
-	    str = str.replace(/[^\x00-\xff]/g, 'xx');
-	    return Math.ceil(str.length / 2);
-	}
-
-	var TableComponentWidthHelper = function () {
-	    function TableComponentWidthHelper(helper, width) {
-	        var _this = this;
-
-	        _classCallCheck(this, TableComponentWidthHelper);
-
-	        this.width = width;
-	        this.helper = helper;
-	        this.header = helper.getHeader();
-	        this.items = [];
-	        (0, _core.each)(this.header, function (item, i) {
-	            _this.items[i] = [item];
-	        });
-	    }
-
-	    _createClass(TableComponentWidthHelper, [{
-	        key: 'setItems',
-	        value: function setItems(items) {
-	            var _this2 = this;
-
-	            if (items.length > 0) {
-	                this.items = [];
-	                (0, _core.each)(this.header, function (item, i) {
-	                    _this2.items[i] = [_this2.header[i]].concat(items[i]);
-	                });
-	            }
-	        }
-	    }, {
-	        key: 'getWidthsByOneCol',
-	        value: function getWidthsByOneCol(col) {
-	            var widths = [];
-	            (0, _core.each)(col, function (item) {
-	                widths.push(getGBWidth(item.text));
-	            });
-	            return widths;
-	        }
-	    }, {
-	        key: 'adjustWidth',
-	        value: function adjustWidth(widths) {
-	            if (widths.length < 1) {
-	                return [];
-	            }
-	            if (widths.length === 1) {
-	                return [this.width];
-	            }
-	            var allWidth = _core.math.sum(widths);
-	            if (this.helper.isFreeze()) {
-	                var halfWidth = _core.math.floor(this.width / 2);
-	                if (widths[0] > halfWidth) {
-	                    if (allWidth + halfWidth - widths[0] < this.width) {
-	                        var shared = Math.floor(halfWidth - (allWidth - widths[0] / (widths.length - 1)));
-	                        for (var i = 1; i < widths.length; i++) {
-	                            widths[i] += shared;
-	                        }
-	                        //把偏差加到最后一列
-	                        widths[widths.length - 1] += halfWidth - (allWidth - widths[0]) - (shared * widths.length - 1);
-	                    }
-	                    widths[0] = halfWidth;
-	                } else {
-	                    if (allWidth < this.width) {
-	                        var _shared = _core.math.floor((this.width - allWidth) / widths.length);
-	                        for (var _i = 0; _i < widths.length; _i++) {
-	                            widths[_i] += _shared;
-	                        }
-	                        if (widths[0] > halfWidth) {
-	                            widths[widths.length - 1] += widths[0] - halfWidth;
-	                            widths[0] = halfWidth;
-	                        }
-	                        widths[widths.length - 1] += this.width - allWidth - _shared * widths.length;
-	                    }
-	                }
-	            } else {
-	                if (allWidth < this.width) {
-	                    var _shared2 = _core.math.floor((this.width - allWidth) / widths.length);
-	                    for (var _i2 = 0; _i2 < widths.length; _i2++) {
-	                        widths[_i2] += _shared2;
-	                    }
-	                    widths[widths.length - 1] += this.width - allWidth - _shared2 * widths.length;
-	                }
-	            }
-	            return widths;
-	        }
-	    }, {
-	        key: 'getWidth',
-	        value: function getWidth() {
-	            var _this3 = this;
-
-	            var result = [];
-	            (0, _core.each)(this.items, function (col) {
-	                var fx = fit(_this3.getWidthsByOneCol(col));
-	                result.push(_core.math.ceil((fx.a + fx.b * _core.math.ceil((1 + col.length) / 2)) * 14 * 1.2) + REMAIN_WIDTH);
-	            });
-	            return this.adjustWidth(result);
-	        }
-	    }]);
-
-	    return TableComponentWidthHelper;
-	}();
-
-	exports.default = TableComponentWidthHelper;
-
-/***/ },
-
-/***/ 928:
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _reactMixin = __webpack_require__(206);
-
-	var _reactMixin2 = _interopRequireDefault(_reactMixin);
-
-	var _reactDom = __webpack_require__(34);
-
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-
-	var _core = __webpack_require__(329);
-
-	var _lib = __webpack_require__(208);
-
-	var _lib2 = _interopRequireDefault(_lib);
-
-	var _data = __webpack_require__(773);
-
-	var _base = __webpack_require__(783);
-
-	var _widgets = __webpack_require__(907);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var TableCell = function (_Component) {
-	    _inherits(TableCell, _Component);
-
-	    function TableCell(props, context) {
-	        _classCallCheck(this, TableCell);
-
-	        var _this = _possibleConstructorReturn(this, (TableCell.__proto__ || Object.getPrototypeOf(TableCell)).call(this, props, context));
-
-	        _this.state = {};
-	        return _this;
-	    }
-
-	    _createClass(TableCell, [{
-	        key: 'componentWillMount',
-	        value: function componentWillMount() {}
-	    }, {
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {}
-	    }, {
-	        key: 'componentWillReceiveProps',
-	        value: function componentWillReceiveProps() {}
-	    }, {
-	        key: 'componentWillUpdate',
-	        value: function componentWillUpdate() {}
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var props = _objectWithoutProperties(this.props, []);
-	            var state = _objectWithoutProperties(this.state, []);
-
-	            return _lib2.default.createElement(
-	                _lib.View,
-	                { style: [styles.region, {
-	                        paddingLeft: props.layer * 30 + 4
-	                    }] },
-	                _lib2.default.createElement(
-	                    _lib.Text,
-	                    { numberOfLines: 2 },
-	                    props.text
-	                )
-	            );
-	        }
-	    }]);
-
-	    return TableCell;
-	}(_lib.Component);
-
-	TableCell.propTypes = {};
-	TableCell.defaultProps = {
-	    layer: 0
-	};
-
-	_reactMixin2.default.onClass(TableCell, _core.ReactComponentWithImmutableRenderMixin);
-	var styles = _lib.StyleSheet.create({
-	    region: {
-	        padding: '0 4px 0 4px',
-	        width: '100%',
-	        height: '100%',
-	        justifyContent: 'center'
-	    }
-	});
-	exports.default = TableCell;
-
-/***/ },
-
-/***/ 929:
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _reactMixin = __webpack_require__(206);
-
-	var _reactMixin2 = _interopRequireDefault(_reactMixin);
-
-	var _reactDom = __webpack_require__(34);
-
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-
-	var _core = __webpack_require__(329);
-
-	var _lib = __webpack_require__(208);
-
-	var _lib2 = _interopRequireDefault(_lib);
-
-	var _data = __webpack_require__(773);
-
-	var _base = __webpack_require__(783);
-
-	var _widgets = __webpack_require__(907);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var TableHeader = function (_Component) {
-	    _inherits(TableHeader, _Component);
-
-	    function TableHeader(props, context) {
-	        _classCallCheck(this, TableHeader);
-
-	        var _this = _possibleConstructorReturn(this, (TableHeader.__proto__ || Object.getPrototypeOf(TableHeader)).call(this, props, context));
-
-	        _this.state = {};
-	        return _this;
-	    }
-
-	    _createClass(TableHeader, [{
-	        key: 'componentWillMount',
-	        value: function componentWillMount() {}
-	    }, {
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {}
-	    }, {
-	        key: 'componentWillReceiveProps',
-	        value: function componentWillReceiveProps() {}
-	    }, {
-	        key: 'componentWillUpdate',
-	        value: function componentWillUpdate() {}
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var props = _objectWithoutProperties(this.props, []);
-	            var state = _objectWithoutProperties(this.state, []);
-
-	            return _lib2.default.createElement(
-	                _lib.View,
-	                { style: styles.region },
-	                _lib2.default.createElement(
-	                    _lib.Text,
-	                    { numberOfLines: 2 },
-	                    props.text
-	                )
-	            );
-	        }
-	    }]);
-
-	    return TableHeader;
-	}(_lib.Component);
-
-	TableHeader.propTypes = {};
-	TableHeader.defaultProps = {};
-
-	_reactMixin2.default.onClass(TableHeader, _core.ReactComponentWithImmutableRenderMixin);
-	var styles = _lib.StyleSheet.create({
-	    region: {
-	        padding: '0 4px 0 4px',
-	        width: '100%',
-	        height: '100%',
-	        justifyContent: 'center'
-	    }
-	});
-	exports.default = TableHeader;
-
-/***/ },
-
-/***/ 930:
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _reactMixin = __webpack_require__(206);
-
-	var _reactMixin2 = _interopRequireDefault(_reactMixin);
-
-	var _reactDom = __webpack_require__(34);
-
-	var _immutable = __webpack_require__(200);
-
-	var _immutable2 = _interopRequireDefault(_immutable);
-
-	var _core = __webpack_require__(329);
-
-	var _lib = __webpack_require__(208);
-
-	var _lib2 = _interopRequireDefault(_lib);
-
-	var _data = __webpack_require__(773);
-
-	var _base = __webpack_require__(783);
-
-	var _widgets = __webpack_require__(907);
-
-	var _SettingsComponentHelper = __webpack_require__(931);
+	var _SettingsComponentHelper = __webpack_require__(926);
 
 	var _SettingsComponentHelper2 = _interopRequireDefault(_SettingsComponentHelper);
 
@@ -6615,7 +5894,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 931:
+/***/ 926:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6679,7 +5958,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 932:
+/***/ 927:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6714,19 +5993,1022 @@ webpackJsonp([0],{
 
 	var _widgets = __webpack_require__(907);
 
-	var _DetailTableComponentHelper = __webpack_require__(933);
+	var _TableComponent = __webpack_require__(928);
 
-	var _DetailTableComponentHelper2 = _interopRequireDefault(_DetailTableComponentHelper);
+	var _TableComponent2 = _interopRequireDefault(_TableComponent);
 
-	var _TableComponentWidthHelper = __webpack_require__(927);
+	var _SettingsComponent = __webpack_require__(925);
+
+	var _SettingsComponent2 = _interopRequireDefault(_SettingsComponent);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var TablePaneComponent = function (_Component) {
+	    _inherits(TablePaneComponent, _Component);
+
+	    function TablePaneComponent(props, context) {
+	        _classCallCheck(this, TablePaneComponent);
+
+	        return _possibleConstructorReturn(this, (TablePaneComponent.__proto__ || Object.getPrototypeOf(TablePaneComponent)).call(this, props, context));
+	    }
+
+	    _createClass(TablePaneComponent, [{
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {}
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate() {}
+	    }, {
+	        key: '_renderHeader',
+	        value: function _renderHeader() {
+	            var _this2 = this;
+
+	            var _props = this.props;
+	            var $widget = _props.$widget;
+	            var wId = _props.wId;
+
+	            var widget = new _data.Widget($widget);
+	            return _lib2.default.createElement(
+	                _lib.View,
+	                { height: _data.Size.HEADER_HEIGHT, style: styles.header },
+	                _lib2.default.createElement(
+	                    _lib.Text,
+	                    null,
+	                    widget.getName()
+	                ),
+	                _lib2.default.createElement(_base.IconLink, { className: 'setting-font', onPress: function onPress() {
+	                        _lib.Portal.showModal('TableComponent', _lib2.default.createElement(_SettingsComponent2.default, {
+	                            $widget: _this2.props.$widget,
+	                            wId: _this2.props.wId,
+	                            height: 0,
+	                            onComplete: function onComplete(opt) {
+	                                _lib.Portal.closeModal('TableComponent');
+	                                _this2.context.actions.updateWidget(opt.$widget, opt.wId);
+	                            },
+	                            onReturn: function onReturn() {
+	                                _lib.Portal.closeModal('TableComponent');
+	                            }
+	                        }));
+	                    } })
+	            );
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _props2 = this.props;
+	            var width = _props2.width;
+	            var height = _props2.height;
+	            var $widget = _props2.$widget;
+	            var wId = _props2.wId;
+
+	            return _lib2.default.createElement(
+	                _base.VtapeLayout,
+	                null,
+	                this._renderHeader(),
+	                _lib2.default.createElement(_TableComponent2.default, {
+	                    width: width,
+	                    height: height - _data.Size.HEADER_HEIGHT,
+	                    $widget: $widget,
+	                    wId: wId
+	                })
+	            );
+	        }
+	    }]);
+
+	    return TablePaneComponent;
+	}(_lib.Component);
+
+	TablePaneComponent.contextTypes = {
+	    $template: _lib2.default.PropTypes.object,
+	    actions: _lib2.default.PropTypes.object
+	};
+
+	_reactMixin2.default.onClass(TablePaneComponent, _core.ReactComponentWithImmutableRenderMixin);
+
+	var styles = _lib.StyleSheet.create({
+	    wrapper: {
+	        position: 'relative'
+	    },
+	    header: {
+	        paddingLeft: 4,
+	        paddingRight: 4,
+	        flexDirection: 'row',
+	        alignItems: 'center',
+	        justifyContent: 'space-between'
+	    }
+	});
+	exports.default = TablePaneComponent;
+
+/***/ },
+
+/***/ 928:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactMixin = __webpack_require__(206);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _immutable = __webpack_require__(200);
+
+	var _immutable2 = _interopRequireDefault(_immutable);
+
+	var _core = __webpack_require__(329);
+
+	var _lib = __webpack_require__(208);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _data = __webpack_require__(773);
+
+	var _base = __webpack_require__(783);
+
+	var _widgets = __webpack_require__(907);
+
+	var _TableComponentHelper = __webpack_require__(929);
+
+	var _TableComponentHelper2 = _interopRequireDefault(_TableComponentHelper);
+
+	var _TableComponentWidthHelper = __webpack_require__(930);
 
 	var _TableComponentWidthHelper2 = _interopRequireDefault(_TableComponentWidthHelper);
 
-	var _TableCell = __webpack_require__(928);
+	var _TableCell = __webpack_require__(931);
 
 	var _TableCell2 = _interopRequireDefault(_TableCell);
 
-	var _TableHeader = __webpack_require__(929);
+	var _TableHeader = __webpack_require__(932);
+
+	var _TableHeader2 = _interopRequireDefault(_TableHeader);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var TableComponent = function (_Component) {
+	    _inherits(TableComponent, _Component);
+
+	    function TableComponent(props, context) {
+	        _classCallCheck(this, TableComponent);
+
+	        var _this = _possibleConstructorReturn(this, (TableComponent.__proto__ || Object.getPrototypeOf(TableComponent)).call(this, props, context));
+
+	        _this.state = {
+	            data: []
+	        };
+
+	        _this._tableHelper = new _TableComponentHelper2.default(props, context);
+	        _this._widthHelper = new _TableComponentWidthHelper2.default(_this._tableHelper, props.width);
+
+	        return _this;
+	    }
+
+	    _createClass(TableComponent, [{
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            this._fetchData(this.props);
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {
+	            if (!(0, _core.immutableShallowEqual)(nextProps, this.props)) {
+	                this._tableHelper = new _TableComponentHelper2.default(nextProps, this.context);
+	                this._widthHelper = new _TableComponentWidthHelper2.default(this._tableHelper, nextProps.width);
+	                this._fetchData(nextProps);
+	            }
+	        }
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate(nextProps) {}
+	    }, {
+	        key: '_fetchData',
+	        value: function _fetchData(props) {
+	            var _this2 = this;
+
+	            var $widget = props.$widget;
+	            var wId = props.wId;
+
+	            var widget = new _data.Widget($widget, this.context.$template, wId);
+	            return widget.getData().then(function (data) {
+	                _this2.setState({ data: data });
+	            });
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _props = this.props;
+	            var width = _props.width;
+	            var height = _props.height;var data = this.state.data;
+
+	            this._tableHelper.setData(data);
+	            var items = this._tableHelper.getItems();
+	            this._widthHelper.setItems(items);
+	            return _lib2.default.createElement(_widgets.TableWidget, {
+	                width: width,
+	                height: height,
+	                freezeCols: this._tableHelper.isFreeze() ? [0] : [],
+	                columnSize: this._widthHelper.getWidth(),
+	                header: this._tableHelper.getHeader(),
+	                items: items,
+	                groupHeader: this._tableHelper.getGroupHeader(),
+	                groupItems: this._tableHelper.getGroupItems()
+	                /**groupHeader={[{text: 1}, {text: 2}]}
+	                 groupItems={[{children:[{text: 'A', children: [{text: 'A1'}, {text: 'A2'}]}, {text: 'B'}]}]}**/
+	                , groupHeaderCellRenderer: function groupHeaderCellRenderer(_ref) {
+	                    var colIndex = _ref.colIndex;
+
+	                    var cell = _objectWithoutProperties(_ref, ['colIndex']);
+
+	                    return _lib2.default.createElement(_TableHeader2.default, cell);
+	                },
+	                groupItemsCellRenderer: function groupItemsCellRenderer(_ref2) {
+	                    var cell = _objectWithoutProperties(_ref2, []);
+
+	                    return _lib2.default.createElement(_TableHeader2.default, cell);
+	                },
+	                headerCellRenderer: function headerCellRenderer(_ref3) {
+	                    var colIndex = _ref3.colIndex;
+
+	                    var cell = _objectWithoutProperties(_ref3, ['colIndex']);
+
+	                    return _lib2.default.createElement(_TableHeader2.default, cell);
+	                },
+	                itemsCellRenderer: function itemsCellRenderer(_ref4) {
+	                    var colIndex = _ref4.colIndex;
+	                    var rowIndex = _ref4.rowIndex;
+
+	                    var cell = _objectWithoutProperties(_ref4, ['colIndex', 'rowIndex']);
+
+	                    return _lib2.default.createElement(_TableCell2.default, cell);
+	                }
+	            });
+	        }
+	    }]);
+
+	    return TableComponent;
+	}(_lib.Component);
+
+	TableComponent.contextTypes = {
+	    $template: _lib2.default.PropTypes.object
+	};
+
+	_reactMixin2.default.onClass(TableComponent, _core.ReactComponentWithImmutableRenderMixin);
+
+	var styles = _lib.StyleSheet.create({
+	    wrapper: {
+	        position: 'relative'
+	    },
+	    header: {
+	        paddingLeft: 4,
+	        paddingRight: 4,
+	        flexDirection: 'row',
+	        alignItems: 'center',
+	        justifyContent: 'space-between'
+	    }
+	});
+	exports.default = TableComponent;
+
+/***/ },
+
+/***/ 929:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _core = __webpack_require__(329);
+
+	var _data = __webpack_require__(773);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var TableComponentHelper = function () {
+	    function TableComponentHelper(props, context) {
+	        _classCallCheck(this, TableComponentHelper);
+
+	        var $widget = props.$widget;
+	        var wId = props.wId;
+
+	        this.widget = new _data.Widget($widget, context.$template, wId);
+	        this.data = [];
+	    }
+
+	    _createClass(TableComponentHelper, [{
+	        key: 'setData',
+	        value: function setData(data) {
+	            this.data = data;
+	        }
+	    }, {
+	        key: 'getHeader',
+	        value: function getHeader() {
+	            var _this = this;
+
+	            var ids = this.widget.getAllUsedTargetIds();
+	            var result = [{
+	                text: '行表头'
+	            }];
+	            ids.forEach(function (id) {
+	                var $$dim = _this.widget.get$$DimensionOrTargetById(id);
+	                result.push({
+	                    text: new _data.Dimension($$dim).getName()
+	                });
+	            });
+	            return result;
+	        }
+	    }, {
+	        key: 'getItems',
+	        value: function getItems() {
+	            var dimensionIds = this.widget.getAllUsedDimensionIds();
+	            var targetIds = this.widget.getAllUsedTargetIds();
+	            var result = [];
+	            var track = function track(node, layer) {
+	                if (!node) {
+	                    return;
+	                }
+	                if (node.n) {
+	                    if (!result[0]) {
+	                        result[0] = [];
+	                    }
+	                    result[0].push({
+	                        dId: dimensionIds[layer],
+	                        layer: layer,
+	                        text: node.n
+	                    });
+	                    if (node.s) {
+	                        node.s.forEach(function (v, idx) {
+	                            if (!result[idx + 1]) {
+	                                result[idx + 1] = [];
+	                            }
+	                            result[idx + 1].push({
+	                                dId: targetIds[idx],
+	                                text: v
+	                            });
+	                        });
+	                    }
+	                }
+	                if (node.c) {
+	                    node.c.forEach(function (child) {
+	                        track(child, layer + 1);
+	                    });
+	                }
+	                // if (!node.n) {
+	                //     if (!result[0]) {
+	                //         result[0] = [];
+	                //     }
+	                //     // result[0].push({
+	                //     //     text: '汇总'
+	                //     // });
+	                //     if (node.s) {
+	                //         node.s.forEach((v, idx)=> {
+	                //             if (!result[idx + 1]) {
+	                //                 result[idx + 1] = [];
+	                //             }
+	                //             result[idx + 1].push({
+	                //                 dId: targetIds[idx],
+	                //                 text: v
+	                //             })
+	                //         })
+	                //     }
+	                // }
+	            };
+	            track(this.data.data, -1);
+	            return result;
+	        }
+	    }, {
+	        key: 'getGroupHeader',
+	        value: function getGroupHeader() {
+	            var _this2 = this;
+
+	            var result = [];
+	            var ids = this.widget.getRowDimensionIds();
+	            (0, _core.each)(ids, function (id) {
+	                var dimension = new _data.Dimension(_this2.widget.get$$DimensionById(id));
+	                result.push({
+	                    text: dimension.getName()
+	                });
+	            });
+	            return result;
+	        }
+
+	        //交叉表表头
+
+	    }, {
+	        key: 'getGroupItems',
+	        value: function getGroupItems() {
+	            return [];
+	        }
+	    }, {
+	        key: 'isFreeze',
+	        value: function isFreeze() {
+	            return this.widget.isFreeze();
+	        }
+	    }]);
+
+	    return TableComponentHelper;
+	}();
+
+	exports.default = TableComponentHelper;
+
+/***/ },
+
+/***/ 930:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _core = __webpack_require__(329);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var REMAIN_WIDTH = 8;
+
+	function sumBy(array, it) {
+	    var res = 0;
+	    (0, _core.each)(array, function (width, i) {
+	        res += it(width, i);
+	    });
+	    return res;
+	}
+
+	//最小二乘法  fx=bx+a
+	function fit(widths) {
+	    if (widths.length < 2) {
+	        return { a: widths[0], b: 0 };
+	    }
+	    var $11 = widths.length;
+	    var $12 = (1 + widths.length) * widths.length / 2;
+	    var $21 = $12;
+	    var $22 = sumBy(widths, function (width, i) {
+	        return (i + 1) * (i + 1);
+	    });
+	    var f1 = _core.math.sum(widths);
+	    var f2 = sumBy(widths, function (width, i) {
+	        return (i + 1) * width;
+	    });
+	    return {
+	        a: (f2 * $12 - f1 * $22) / ($12 * $21 - $11 * $22),
+	        b: (f2 * $11 - f1 * $21) / ($11 * $22 - $21 * $12)
+	    };
+	}
+
+	//获取字符宽度
+	function getGBWidth(str) {
+	    str = str + '';
+	    str = str.replace(/[^\x00-\xff]/g, 'xx');
+	    return Math.ceil(str.length / 2);
+	}
+
+	var TableComponentWidthHelper = function () {
+	    function TableComponentWidthHelper(helper, width) {
+	        var _this = this;
+
+	        _classCallCheck(this, TableComponentWidthHelper);
+
+	        this.width = width;
+	        this.helper = helper;
+	        this.header = helper.getHeader();
+	        this.items = [];
+	        (0, _core.each)(this.header, function (item, i) {
+	            _this.items[i] = [item];
+	        });
+	    }
+
+	    _createClass(TableComponentWidthHelper, [{
+	        key: 'setItems',
+	        value: function setItems(items) {
+	            var _this2 = this;
+
+	            if (items.length > 0) {
+	                this.items = [];
+	                (0, _core.each)(this.header, function (item, i) {
+	                    _this2.items[i] = [_this2.header[i]].concat(items[i]);
+	                });
+	            }
+	        }
+	    }, {
+	        key: 'getWidthsByOneCol',
+	        value: function getWidthsByOneCol(col) {
+	            var widths = [];
+	            (0, _core.each)(col, function (item) {
+	                widths.push(getGBWidth(item.text));
+	            });
+	            return widths;
+	        }
+	    }, {
+	        key: 'adjustWidth',
+	        value: function adjustWidth(widths) {
+	            if (widths.length < 1) {
+	                return [];
+	            }
+	            if (widths.length === 1) {
+	                return [this.width];
+	            }
+	            var allWidth = _core.math.sum(widths);
+	            if (this.helper.isFreeze()) {
+	                var halfWidth = _core.math.floor(this.width / 2);
+	                if (widths[0] > halfWidth) {
+	                    if (allWidth + halfWidth - widths[0] < this.width) {
+	                        var shared = Math.floor(halfWidth - (allWidth - widths[0] / (widths.length - 1)));
+	                        for (var i = 1; i < widths.length; i++) {
+	                            widths[i] += shared;
+	                        }
+	                        //把偏差加到最后一列
+	                        widths[widths.length - 1] += halfWidth - (allWidth - widths[0]) - (shared * widths.length - 1);
+	                    }
+	                    widths[0] = halfWidth;
+	                } else {
+	                    if (allWidth < this.width) {
+	                        var _shared = _core.math.floor((this.width - allWidth) / widths.length);
+	                        for (var _i = 0; _i < widths.length; _i++) {
+	                            widths[_i] += _shared;
+	                        }
+	                        if (widths[0] > halfWidth) {
+	                            widths[widths.length - 1] += widths[0] - halfWidth;
+	                            widths[0] = halfWidth;
+	                        }
+	                        widths[widths.length - 1] += this.width - allWidth - _shared * widths.length;
+	                    }
+	                }
+	            } else {
+	                if (allWidth < this.width) {
+	                    var _shared2 = _core.math.floor((this.width - allWidth) / widths.length);
+	                    for (var _i2 = 0; _i2 < widths.length; _i2++) {
+	                        widths[_i2] += _shared2;
+	                    }
+	                    widths[widths.length - 1] += this.width - allWidth - _shared2 * widths.length;
+	                }
+	            }
+	            return widths;
+	        }
+	    }, {
+	        key: 'getWidth',
+	        value: function getWidth() {
+	            var _this3 = this;
+
+	            var result = [];
+	            (0, _core.each)(this.items, function (col) {
+	                var fx = fit(_this3.getWidthsByOneCol(col));
+	                result.push(_core.math.ceil((fx.a + fx.b * _core.math.ceil((1 + col.length) / 2)) * 14 * 1.2) + REMAIN_WIDTH);
+	            });
+	            return this.adjustWidth(result);
+	        }
+	    }]);
+
+	    return TableComponentWidthHelper;
+	}();
+
+	exports.default = TableComponentWidthHelper;
+
+/***/ },
+
+/***/ 931:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactMixin = __webpack_require__(206);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _core = __webpack_require__(329);
+
+	var _lib = __webpack_require__(208);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _data = __webpack_require__(773);
+
+	var _base = __webpack_require__(783);
+
+	var _widgets = __webpack_require__(907);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var TableCell = function (_Component) {
+	    _inherits(TableCell, _Component);
+
+	    function TableCell(props, context) {
+	        _classCallCheck(this, TableCell);
+
+	        var _this = _possibleConstructorReturn(this, (TableCell.__proto__ || Object.getPrototypeOf(TableCell)).call(this, props, context));
+
+	        _this.state = {};
+	        return _this;
+	    }
+
+	    _createClass(TableCell, [{
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {}
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps() {}
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate() {}
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var props = _objectWithoutProperties(this.props, []);
+	            var state = _objectWithoutProperties(this.state, []);
+
+	            return _lib2.default.createElement(
+	                _lib.View,
+	                { style: [styles.region, {
+	                        paddingLeft: props.layer * 30 + 4
+	                    }] },
+	                _lib2.default.createElement(
+	                    _lib.Text,
+	                    { numberOfLines: 2 },
+	                    props.text
+	                )
+	            );
+	        }
+	    }]);
+
+	    return TableCell;
+	}(_lib.Component);
+
+	TableCell.propTypes = {};
+	TableCell.defaultProps = {
+	    layer: 0
+	};
+
+	_reactMixin2.default.onClass(TableCell, _core.ReactComponentWithImmutableRenderMixin);
+	var styles = _lib.StyleSheet.create({
+	    region: {
+	        padding: '0 4px 0 4px',
+	        width: '100%',
+	        height: '100%',
+	        justifyContent: 'center'
+	    }
+	});
+	exports.default = TableCell;
+
+/***/ },
+
+/***/ 932:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactMixin = __webpack_require__(206);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _core = __webpack_require__(329);
+
+	var _lib = __webpack_require__(208);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _data = __webpack_require__(773);
+
+	var _base = __webpack_require__(783);
+
+	var _widgets = __webpack_require__(907);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var TableHeader = function (_Component) {
+	    _inherits(TableHeader, _Component);
+
+	    function TableHeader(props, context) {
+	        _classCallCheck(this, TableHeader);
+
+	        var _this = _possibleConstructorReturn(this, (TableHeader.__proto__ || Object.getPrototypeOf(TableHeader)).call(this, props, context));
+
+	        _this.state = {};
+	        return _this;
+	    }
+
+	    _createClass(TableHeader, [{
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {}
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps() {}
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate() {}
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var props = _objectWithoutProperties(this.props, []);
+	            var state = _objectWithoutProperties(this.state, []);
+
+	            return _lib2.default.createElement(
+	                _lib.View,
+	                { style: styles.region },
+	                _lib2.default.createElement(
+	                    _lib.Text,
+	                    { numberOfLines: 2 },
+	                    props.text
+	                )
+	            );
+	        }
+	    }]);
+
+	    return TableHeader;
+	}(_lib.Component);
+
+	TableHeader.propTypes = {};
+	TableHeader.defaultProps = {};
+
+	_reactMixin2.default.onClass(TableHeader, _core.ReactComponentWithImmutableRenderMixin);
+	var styles = _lib.StyleSheet.create({
+	    region: {
+	        padding: '0 4px 0 4px',
+	        width: '100%',
+	        height: '100%',
+	        justifyContent: 'center'
+	    }
+	});
+	exports.default = TableHeader;
+
+/***/ },
+
+/***/ 933:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactMixin = __webpack_require__(206);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _immutable = __webpack_require__(200);
+
+	var _immutable2 = _interopRequireDefault(_immutable);
+
+	var _core = __webpack_require__(329);
+
+	var _lib = __webpack_require__(208);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _data = __webpack_require__(773);
+
+	var _base = __webpack_require__(783);
+
+	var _widgets = __webpack_require__(907);
+
+	var _DetailTableComponent = __webpack_require__(934);
+
+	var _DetailTableComponent2 = _interopRequireDefault(_DetailTableComponent);
+
+	var _SettingsComponent = __webpack_require__(925);
+
+	var _SettingsComponent2 = _interopRequireDefault(_SettingsComponent);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var DetailTablePaneComponent = function (_Component) {
+	    _inherits(DetailTablePaneComponent, _Component);
+
+	    function DetailTablePaneComponent(props, context) {
+	        _classCallCheck(this, DetailTablePaneComponent);
+
+	        return _possibleConstructorReturn(this, (DetailTablePaneComponent.__proto__ || Object.getPrototypeOf(DetailTablePaneComponent)).call(this, props, context));
+	    }
+
+	    _createClass(DetailTablePaneComponent, [{
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {}
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate() {}
+	    }, {
+	        key: '_renderHeader',
+	        value: function _renderHeader() {
+	            var _this2 = this;
+
+	            var _props = this.props;
+	            var $widget = _props.$widget;
+	            var wId = _props.wId;
+
+	            var widget = new _data.Widget($widget);
+	            return _lib2.default.createElement(
+	                _lib.View,
+	                { height: _data.Size.HEADER_HEIGHT, style: styles.header },
+	                _lib2.default.createElement(
+	                    _lib.Text,
+	                    null,
+	                    widget.getName()
+	                ),
+	                _lib2.default.createElement(_base.IconLink, { className: 'setting-font', onPress: function onPress() {
+	                        _lib.Portal.showModal('DetailTableComponent', _lib2.default.createElement(_SettingsComponent2.default, {
+	                            $widget: _this2.props.$widget,
+	                            wId: _this2.props.wId,
+	                            height: 0,
+	                            onComplete: function onComplete(opt) {
+	                                _lib.Portal.closeModal('DetailTableComponent');
+	                                _this2.context.actions.updateWidget(opt.$widget, opt.wId);
+	                            },
+	                            onReturn: function onReturn() {
+	                                _lib.Portal.closeModal('DetailTableComponent');
+	                            }
+	                        }));
+	                    } })
+	            );
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _props2 = this.props;
+	            var width = _props2.width;
+	            var height = _props2.height;
+	            var $widget = _props2.$widget;
+	            var wId = _props2.wId;
+
+	            return _lib2.default.createElement(
+	                _base.VtapeLayout,
+	                null,
+	                this._renderHeader(),
+	                _lib2.default.createElement(_DetailTableComponent2.default, {
+	                    width: width,
+	                    height: height - _data.Size.HEADER_HEIGHT,
+	                    $widget: $widget,
+	                    wId: wId
+	                })
+	            );
+	        }
+	    }]);
+
+	    return DetailTablePaneComponent;
+	}(_lib.Component);
+
+	DetailTablePaneComponent.contextTypes = {
+	    $template: _lib2.default.PropTypes.object,
+	    actions: _lib2.default.PropTypes.object
+	};
+
+	_reactMixin2.default.onClass(DetailTablePaneComponent, _core.ReactComponentWithImmutableRenderMixin);
+
+	var styles = _lib.StyleSheet.create({
+	    wrapper: {
+	        position: 'relative'
+	    },
+	    header: {
+	        paddingLeft: 4,
+	        paddingRight: 4,
+	        flexDirection: 'row',
+	        alignItems: 'center',
+	        justifyContent: 'space-between'
+	    }
+	});
+	exports.default = DetailTablePaneComponent;
+
+/***/ },
+
+/***/ 934:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactMixin = __webpack_require__(206);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _immutable = __webpack_require__(200);
+
+	var _immutable2 = _interopRequireDefault(_immutable);
+
+	var _core = __webpack_require__(329);
+
+	var _lib = __webpack_require__(208);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _data = __webpack_require__(773);
+
+	var _base = __webpack_require__(783);
+
+	var _widgets = __webpack_require__(907);
+
+	var _DetailTableComponentHelper = __webpack_require__(935);
+
+	var _DetailTableComponentHelper2 = _interopRequireDefault(_DetailTableComponentHelper);
+
+	var _TableComponentWidthHelper = __webpack_require__(930);
+
+	var _TableComponentWidthHelper2 = _interopRequireDefault(_TableComponentWidthHelper);
+
+	var _TableCell = __webpack_require__(931);
+
+	var _TableCell2 = _interopRequireDefault(_TableCell);
+
+	var _TableHeader = __webpack_require__(932);
 
 	var _TableHeader2 = _interopRequireDefault(_TableHeader);
 
@@ -6795,23 +7077,6 @@ webpackJsonp([0],{
 	            });
 	        }
 	    }, {
-	        key: '_renderHeader',
-	        value: function _renderHeader() {
-	            var $widget = this.props.$widget;
-
-	            var widget = new _data.Widget($widget);
-	            return _lib2.default.createElement(
-	                _lib.View,
-	                { height: _data.Size.HEADER_HEIGHT, style: styles.header },
-	                _lib2.default.createElement(
-	                    _lib.Text,
-	                    null,
-	                    widget.getName()
-	                ),
-	                _lib2.default.createElement(_base.IconLink, { className: 'setting-font' })
-	            );
-	        }
-	    }, {
 	        key: 'render',
 	        value: function render() {
 	            var _props = this.props;
@@ -6822,34 +7087,29 @@ webpackJsonp([0],{
 	            var items = this._tableHelper.getItems();
 	            this._widthHelper.setItems(items);
 
-	            return _lib2.default.createElement(
-	                _base.VtapeLayout,
-	                null,
-	                this._renderHeader(),
-	                _lib2.default.createElement(_widgets.TableWidget, {
-	                    width: width,
-	                    height: height - _data.Size.HEADER_HEIGHT,
-	                    freezeCols: this._tableHelper.isFreeze() ? [0] : [],
-	                    columnSize: this._widthHelper.getWidth(),
-	                    header: this._tableHelper.getHeader(),
-	                    items: items,
-	                    headerCellRenderer: function headerCellRenderer(_ref) {
-	                        var colIndex = _ref.colIndex;
+	            return _lib2.default.createElement(_widgets.TableWidget, {
+	                width: width,
+	                height: height - _data.Size.HEADER_HEIGHT,
+	                freezeCols: this._tableHelper.isFreeze() ? [0] : [],
+	                columnSize: this._widthHelper.getWidth(),
+	                header: this._tableHelper.getHeader(),
+	                items: items,
+	                headerCellRenderer: function headerCellRenderer(_ref) {
+	                    var colIndex = _ref.colIndex;
 
-	                        var cell = _objectWithoutProperties(_ref, ['colIndex']);
+	                    var cell = _objectWithoutProperties(_ref, ['colIndex']);
 
-	                        return _lib2.default.createElement(_TableHeader2.default, cell);
-	                    },
-	                    itemsCellRenderer: function itemsCellRenderer(_ref2) {
-	                        var colIndex = _ref2.colIndex;
-	                        var rowIndex = _ref2.rowIndex;
+	                    return _lib2.default.createElement(_TableHeader2.default, cell);
+	                },
+	                itemsCellRenderer: function itemsCellRenderer(_ref2) {
+	                    var colIndex = _ref2.colIndex;
+	                    var rowIndex = _ref2.rowIndex;
 
-	                        var cell = _objectWithoutProperties(_ref2, ['colIndex', 'rowIndex']);
+	                    var cell = _objectWithoutProperties(_ref2, ['colIndex', 'rowIndex']);
 
-	                        return _lib2.default.createElement(_TableCell2.default, cell);
-	                    }
-	                })
-	            );
+	                    return _lib2.default.createElement(_TableCell2.default, cell);
+	                }
+	            });
 	        }
 	    }]);
 
@@ -6878,7 +7138,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 933:
+/***/ 935:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6960,7 +7220,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 934:
+/***/ 936:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7075,13 +7335,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 935:
+/***/ 937:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(936);
+	var content = __webpack_require__(938);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -7102,48 +7362,6 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 936:
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(627)();
-	// imports
-
-
-	// module
-	exports.push([module.id, "/* http://meyerweb.com/eric/tools/css/reset/ \n   v2.0 | 20110126\n   License: none (public domain)\n*/\n\nhtml, body, div, span, applet, object, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, acronym, address, big, cite, code,\ndel, dfn, em, img, ins, kbd, q, s, samp,\nsmall, strike, strong, sub, sup, tt, var,\nb, u, i, center,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details, embed, \nfigure, figcaption, footer, header, hgroup, \nmenu, nav, output, ruby, section, summary,\ntime, mark, audio, video {\n\tmargin: 0;\n\tpadding: 0;\n\tborder: 0;\n\tfont-size: 100%;\n\tfont: inherit;\n\tvertical-align: baseline;\n}\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure, \nfooter, header, hgroup, menu, nav, section {\n\tdisplay: block;\n}\nbody {\n\tline-height: 1;\n}\nol, ul {\n\tlist-style: none;\n}\nblockquote, q {\n\tquotes: none;\n}\nblockquote:before, blockquote:after,\nq:before, q:after {\n\tcontent: '';\n\tcontent: none;\n}\ntable {\n\tborder-collapse: collapse;\n\tborder-spacing: 0;\n}", ""]);
-
-	// exports
-
-
-/***/ },
-
-/***/ 937:
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(938);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(628)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/autoprefixer-loader/index.js?browsers=last 2 version!./common.css", function() {
-				var newContent = require("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/autoprefixer-loader/index.js?browsers=last 2 version!./common.css");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-
 /***/ 938:
 /***/ function(module, exports, __webpack_require__) {
 
@@ -7152,7 +7370,7 @@ webpackJsonp([0],{
 
 
 	// module
-	exports.push([module.id, "/****添加计算宽度的--运算符直接需要space****/\n/****** common color(常用颜色,可用于普遍场景) *****/\n/**** custom color(自定义颜色,用于特定场景) ****/\n.base-disabled {\n  cursor: default !important;\n  color: #c4c6c6 !important;\n}\n.base-disabled .b-font:before {\n  color: #c4c6c6 !important;\n}\n.base-invalid {\n  cursor: default !important;\n}\n.clearfix {\n  *zoom: 1;\n}\n.clearfix:before,\n.clearfix:after {\n  content: \" \";\n  display: table;\n  line-height: 0;\n}\n.clearfix:after {\n  clear: both;\n}\n.sortable-helper {\n  z-index: 999999;\n  display: -ms-flexbox;\n  display: flex;\n}\n", ""]);
+	exports.push([module.id, "/* http://meyerweb.com/eric/tools/css/reset/ \n   v2.0 | 20110126\n   License: none (public domain)\n*/\n\nhtml, body, div, span, applet, object, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, acronym, address, big, cite, code,\ndel, dfn, em, img, ins, kbd, q, s, samp,\nsmall, strike, strong, sub, sup, tt, var,\nb, u, i, center,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details, embed, \nfigure, figcaption, footer, header, hgroup, \nmenu, nav, output, ruby, section, summary,\ntime, mark, audio, video {\n\tmargin: 0;\n\tpadding: 0;\n\tborder: 0;\n\tfont-size: 100%;\n\tfont: inherit;\n\tvertical-align: baseline;\n}\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure, \nfooter, header, hgroup, menu, nav, section {\n\tdisplay: block;\n}\nbody {\n\tline-height: 1;\n}\nol, ul {\n\tlist-style: none;\n}\nblockquote, q {\n\tquotes: none;\n}\nblockquote:before, blockquote:after,\nq:before, q:after {\n\tcontent: '';\n\tcontent: none;\n}\ntable {\n\tborder-collapse: collapse;\n\tborder-spacing: 0;\n}", ""]);
 
 	// exports
 
@@ -7174,8 +7392,8 @@ webpackJsonp([0],{
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/autoprefixer-loader/index.js?browsers=last 2 version!./font.css", function() {
-				var newContent = require("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/autoprefixer-loader/index.js?browsers=last 2 version!./font.css");
+			module.hot.accept("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/autoprefixer-loader/index.js?browsers=last 2 version!./common.css", function() {
+				var newContent = require("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/autoprefixer-loader/index.js?browsers=last 2 version!./common.css");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -7194,7 +7412,7 @@ webpackJsonp([0],{
 
 
 	// module
-	exports.push([module.id, "/****** common color(常用颜色,可用于普遍场景) *****/\n/**** custom color(自定义颜色,用于特定场景) ****/\n.tool-filter-font .b-font:before {\n  content: '\\E624';\n  color: #808080;\n}\n.tool-filter-font:active .b-font:before {\n  content: '\\E624';\n  color: #009de3;\n}\n.tool-filter-font.disabled .b-font:before {\n  content: '\\E624';\n  color: #808080;\n}\n.node-fold-font .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.node-fold-font:active .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.node-fold-font.active .b-font:before {\n  content: '\\E611';\n  color: #808080;\n}\n.node-fold-font.disabled .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.setting-font .b-font:before {\n  content: '\\E62A';\n  color: #808080;\n}\n.setting-font.disabled .b-font:before {\n  content: '\\E62A';\n  color: #808080;\n}\n", ""]);
+	exports.push([module.id, "/****添加计算宽度的--运算符直接需要space****/\n/****** common color(常用颜色,可用于普遍场景) *****/\n/**** custom color(自定义颜色,用于特定场景) ****/\n.base-disabled {\n  cursor: default !important;\n  color: #c4c6c6 !important;\n}\n.base-disabled .b-font:before {\n  color: #c4c6c6 !important;\n}\n.base-invalid {\n  cursor: default !important;\n}\n.clearfix {\n  *zoom: 1;\n}\n.clearfix:before,\n.clearfix:after {\n  content: \" \";\n  display: table;\n  line-height: 0;\n}\n.clearfix:after {\n  clear: both;\n}\n.sortable-helper {\n  z-index: 999999;\n  display: -ms-flexbox;\n  display: flex;\n}\n", ""]);
 
 	// exports
 
@@ -7216,8 +7434,8 @@ webpackJsonp([0],{
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/autoprefixer-loader/index.js?browsers=last 2 version!./icon.css", function() {
-				var newContent = require("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/autoprefixer-loader/index.js?browsers=last 2 version!./icon.css");
+			module.hot.accept("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/autoprefixer-loader/index.js?browsers=last 2 version!./font.css", function() {
+				var newContent = require("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/autoprefixer-loader/index.js?browsers=last 2 version!./font.css");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -7236,7 +7454,7 @@ webpackJsonp([0],{
 
 
 	// module
-	exports.push([module.id, ".drag-handler-icon .x-icon {\n  background-image: url('data:image/svg+xml;charset=utf-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"50\" height=\"50\" viewBox=\"0 0 50 50\"><path d=\"M0 7.5v5h50v-5H0zm0 15v5h50v-5H0zm0 15v5h50v-5H0z\" color=\"#000\"/></svg>');\n  background-size: contain;\n  background-repeat: no-repeat;\n}\n", ""]);
+	exports.push([module.id, "/****** common color(常用颜色,可用于普遍场景) *****/\n/**** custom color(自定义颜色,用于特定场景) ****/\n.tool-filter-font .b-font:before {\n  content: '\\E624';\n  color: #808080;\n}\n.tool-filter-font:active .b-font:before {\n  content: '\\E624';\n  color: #009de3;\n}\n.tool-filter-font.disabled .b-font:before {\n  content: '\\E624';\n  color: #808080;\n}\n.node-fold-font .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.node-fold-font:active .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.node-fold-font.active .b-font:before {\n  content: '\\E611';\n  color: #808080;\n}\n.node-fold-font.disabled .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.setting-font .b-font:before {\n  content: '\\E62A';\n  color: #808080;\n}\n.setting-font.disabled .b-font:before {\n  content: '\\E62A';\n  color: #808080;\n}\n", ""]);
 
 	// exports
 
@@ -7258,8 +7476,8 @@ webpackJsonp([0],{
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/autoprefixer-loader/index.js?browsers=last 2 version!./background.css", function() {
-				var newContent = require("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/autoprefixer-loader/index.js?browsers=last 2 version!./background.css");
+			module.hot.accept("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/autoprefixer-loader/index.js?browsers=last 2 version!./icon.css", function() {
+				var newContent = require("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/autoprefixer-loader/index.js?browsers=last 2 version!./icon.css");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -7278,7 +7496,7 @@ webpackJsonp([0],{
 
 
 	// module
-	exports.push([module.id, ".base-line-conn-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-1.png') repeat-y 0 0;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-1.png');\n  _background: none;\n}\n.first-line-conn-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-2.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-2.png');\n  _background: none;\n}\n.last-line-conn-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-4.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-4.png');\n  _background: none;\n}\n.mid-line-conn-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-3.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-3.png');\n  _background: none;\n}\n.loading-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/loading.gif') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/loading.gif');\n  _background: none;\n}\n.loading-background-f25 {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/F.25.gif') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/F.25.gif');\n  _background: none;\n}\n.loading-background-e50 {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/E.50.gif') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/E.50.gif');\n  _background: none;\n}\n.loading-background-d100 {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/D.100.gif') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/D.100.gif');\n  _background: none;\n}\n.axis-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-accu-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_accu.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_accu.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-percent-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_percent.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_percent.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-compare-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_compare.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_compare.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-fall-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_fall.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_fall.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bubble-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bubble.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bubble.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bubble-force-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bubble_force.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bubble_force.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.dashboard-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/dashboard.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/dashboard.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.donut-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/donut.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/donut.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.funnel-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/funnel.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/funnel.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-gis-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_gis.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_gis.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-svg-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_svg.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_svg.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-svg-c-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_svg_c.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_svg_c.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-svg-g-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_svg_g.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_svg_g.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.pie-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/pie.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/pie.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.radar-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/radar.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/radar.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.radar-accu-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/radar_accu.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/radar_accu.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-accu-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_accu.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_accu.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-compare-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_compare.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_compare.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-percent-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_percent.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_percent.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-range-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_range.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_range.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bar-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bar.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bar.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bar-accu-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bar_accu.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bar_accu.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bar-compare-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bar_compare.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bar_compare.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.combine-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/combine.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/combine.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.combine-m-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/combine_m.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/combine_m.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.line-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/line.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/line.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.scatter-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/scatter.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/scatter.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.table-complex-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_complex.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_complex.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.table-cross-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_cross.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_cross.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.table-group-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_group.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_group.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.table-detail-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_detail.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_detail.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-accu-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_accu_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_accu_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-percent-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_percent_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_percent_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-compare-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_compare_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_compare_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-fall-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_fall_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_fall_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bubble-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bubble_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bubble_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bubble-force-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bubble_force_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bubble_force_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.dashboard-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/dashboard_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/dashboard_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.donut-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/donut_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/donut_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.funnel-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/funnel_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/funnel_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-gis-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_gis_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_gis_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-svg-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_svg_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_svg_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-svg-c-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_svg_c_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_svg_c_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-svg-g-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_svg_g_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_svg_g_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.pie-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/pie_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/pie_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.radar-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/radar_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/radar_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.radar-accu-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/radar_accu_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/radar_accu_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-accu-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_accu_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_accu_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-compare-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_compare_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_compare_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-percent-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_percent_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_percent_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-range-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_range_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_range_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bar-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bar_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bar_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bar-accu-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bar_accu_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bar_accu_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bar-compare-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bar_compare_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bar_compare_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.combine-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/combine_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/combine_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.combine-m-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/combine_m_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/combine_m_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.line-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/line_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/line_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.scatter-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/text/scatter_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/text/scatter_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.table-complex-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_complex_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_complex_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.table-cross-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_cross_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_cross_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.table-group-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_group_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_group_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.table-detail-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_detail_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_detail_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.data-miss-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/data_miss.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/data_miss.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n", ""]);
+	exports.push([module.id, ".drag-handler-icon .x-icon {\n  background-image: url('data:image/svg+xml;charset=utf-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"50\" height=\"50\" viewBox=\"0 0 50 50\"><path d=\"M0 7.5v5h50v-5H0zm0 15v5h50v-5H0zm0 15v5h50v-5H0z\" color=\"#000\"/></svg>');\n  background-size: contain;\n  background-repeat: no-repeat;\n}\n", ""]);
 
 	// exports
 
@@ -7300,6 +7518,48 @@ webpackJsonp([0],{
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
+			module.hot.accept("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/autoprefixer-loader/index.js?browsers=last 2 version!./background.css", function() {
+				var newContent = require("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/autoprefixer-loader/index.js?browsers=last 2 version!./background.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+
+/***/ 946:
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(627)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".base-line-conn-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-1.png') repeat-y 0 0;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-1.png');\n  _background: none;\n}\n.first-line-conn-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-2.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-2.png');\n  _background: none;\n}\n.last-line-conn-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-4.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-4.png');\n  _background: none;\n}\n.mid-line-conn-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-3.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-3.png');\n  _background: none;\n}\n.loading-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/loading.gif') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/loading.gif');\n  _background: none;\n}\n.loading-background-f25 {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/F.25.gif') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/F.25.gif');\n  _background: none;\n}\n.loading-background-e50 {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/E.50.gif') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/E.50.gif');\n  _background: none;\n}\n.loading-background-d100 {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/D.100.gif') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/D.100.gif');\n  _background: none;\n}\n.axis-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-accu-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_accu.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_accu.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-percent-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_percent.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_percent.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-compare-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_compare.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_compare.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-fall-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_fall.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_fall.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bubble-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bubble.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bubble.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bubble-force-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bubble_force.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bubble_force.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.dashboard-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/dashboard.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/dashboard.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.donut-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/donut.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/donut.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.funnel-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/funnel.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/funnel.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-gis-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_gis.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_gis.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-svg-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_svg.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_svg.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-svg-c-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_svg_c.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_svg_c.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-svg-g-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_svg_g.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_svg_g.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.pie-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/pie.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/pie.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.radar-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/radar.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/radar.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.radar-accu-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/radar_accu.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/radar_accu.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-accu-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_accu.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_accu.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-compare-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_compare.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_compare.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-percent-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_percent.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_percent.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-range-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_range.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_range.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bar-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bar.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bar.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bar-accu-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bar_accu.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bar_accu.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bar-compare-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bar_compare.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bar_compare.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.combine-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/combine.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/combine.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.combine-m-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/combine_m.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/combine_m.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.line-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/line.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/line.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.scatter-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/scatter.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/scatter.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.table-complex-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_complex.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_complex.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.table-cross-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_cross.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_cross.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.table-group-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_group.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_group.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.table-detail-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_detail.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_detail.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-accu-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_accu_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_accu_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-percent-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_percent_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_percent_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-compare-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_compare_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_compare_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-fall-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_fall_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_fall_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bubble-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bubble_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bubble_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bubble-force-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bubble_force_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bubble_force_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.dashboard-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/dashboard_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/dashboard_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.donut-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/donut_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/donut_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.funnel-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/funnel_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/funnel_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-gis-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_gis_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_gis_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-svg-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_svg_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_svg_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-svg-c-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_svg_c_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_svg_c_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-svg-g-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_svg_g_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_svg_g_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.pie-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/pie_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/pie_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.radar-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/radar_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/radar_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.radar-accu-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/radar_accu_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/radar_accu_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-accu-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_accu_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_accu_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-compare-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_compare_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_compare_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-percent-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_percent_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_percent_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-range-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_range_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_range_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bar-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bar_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bar_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bar-accu-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bar_accu_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bar_accu_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bar-compare-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bar_compare_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bar_compare_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.combine-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/combine_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/combine_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.combine-m-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/combine_m_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/combine_m_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.line-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/line_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/line_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.scatter-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/text/scatter_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/text/scatter_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.table-complex-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_complex_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_complex_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.table-cross-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_cross_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_cross_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.table-group-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_group_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_group_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.table-detail-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_detail_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_detail_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.data-miss-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/data_miss.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/data_miss.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n", ""]);
+
+	// exports
+
+
+/***/ },
+
+/***/ 947:
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(948);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(628)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
 			module.hot.accept("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/autoprefixer-loader/index.js?browsers=last 2 version!./base.css", function() {
 				var newContent = require("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/autoprefixer-loader/index.js?browsers=last 2 version!./base.css");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
@@ -7312,7 +7572,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 946:
+/***/ 948:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
