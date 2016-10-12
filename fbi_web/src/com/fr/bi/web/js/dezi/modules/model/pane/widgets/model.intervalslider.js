@@ -6,7 +6,7 @@ BIDezi.IntervalSliderWidgetModel = BI.inherit(BI.Model, {
         return BI.extend(BIDezi.IntervalSliderWidgetModel.superclass._defaultConfig.apply(this), {
             name: "",
             bounds: {},
-            type: BICst.WIDGET.INTERVALSLIDER,
+            type: BICst.WIDGET.INTERVAL_SLIDER,
             dimensions: {},
             view: {},
             value: {}

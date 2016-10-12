@@ -199,8 +199,8 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
                     text = BI.i18nText("BI-Not_In") + " " + widgetValue.value;
                 }
                 return text;
-            case BICst.WIDGET.SINGLESLIDER:
-            case BICst.WIDGET.INTERVALSLIDER:
+            case BICst.WIDGET.SINGLE_SLIDER:
+            case BICst.WIDGET.INTERVAL_SLIDER:
             case BICst.WIDGET.NUMBER:
                 return this.getNumberRangeText(widgetValue);
             case BICst.WIDGET.DATE:

@@ -307,12 +307,12 @@ BICst.DASHBOARD_WIDGETS = [[{
         }, {
             text: BI.i18nText("BI-Single_Value_Slider"),
             title: BI.i18nText("BI-Single_Value_Slider"),
-            value: BICst.WIDGET.SINGLESLIDER,
+            value: BICst.WIDGET.SINGLE_SLIDER,
             cls: "drag-single-slider-icon"
         }, {
             text: BI.i18nText("BI-Double_Value_Slider"),
             title: BI.i18nText("BI-Double_Value_Slider"),
-            value: BICst.WIDGET.INTERVALSLIDER,
+            value: BICst.WIDGET.INTERVAL_SLIDER,
             cls: "drag-interval-slider-icon"
         }
     ]

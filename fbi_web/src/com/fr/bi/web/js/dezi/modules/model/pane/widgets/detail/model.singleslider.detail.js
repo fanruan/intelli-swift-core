@@ -6,7 +6,7 @@ BIDezi.SingleSliderDetailModel = BI.inherit(BI.Model, {
         return BI.extend(BIDezi.SingleSliderDetailModel.superclass._defaultConfig.apply(this, arguments), {
             dimensions: {},
             view: {},
-            type: BICst.WIDGET.SINGLESLIDER,
+            type: BICst.WIDGET.SINGLE_SLIDER,
             value: {}
         });
     },

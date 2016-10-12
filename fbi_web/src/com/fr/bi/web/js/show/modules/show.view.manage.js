@@ -69,10 +69,10 @@ BIShow.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.NUMBER:
                 view = "BIShow.NumberWidgetView";
                 break;
-            case BICst.WIDGET.SINGLESLIDER:
+            case BICst.WIDGET.SINGLE_SLIDER:
                 view = "BIShow.SingleSliderWidgetView";
                 break;
-            case BICst.WIDGET.INTERVALSLIDER:
+            case BICst.WIDGET.INTERVAL_SLIDER:
                 view = "BIShow.IntervalSliderWidgetView";
                 break;
             case BICst.WIDGET.DATE:
@@ -156,8 +156,8 @@ BIShow.Views = new (BI.inherit(BI.WRouter, {
                 view = "BIShow.StringDimensionView";
                 break;
             case BICst.WIDGET.NUMBER:
-            case BICst.WIDGET.SINGLESLIDER:
-            case BICst.WIDGET.INTERVALSLIDER:
+            case BICst.WIDGET.SINGLE_SLIDER:
+            case BICst.WIDGET.INTERVAL_SLIDER:
                 view = "BIShow.NumberDimensionView";
                 break;
             case BICst.WIDGET.DATE:

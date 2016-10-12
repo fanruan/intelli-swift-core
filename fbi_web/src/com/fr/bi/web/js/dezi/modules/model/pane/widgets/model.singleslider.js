@@ -6,7 +6,7 @@ BIDezi.SingleSliderWidgetModel = BI.inherit(BI.Model, {
         return BI.extend(BIDezi.SingleSliderWidgetModel.superclass._defaultConfig.apply(this), {
             name: "",
             bounds: {},
-            type: BICst.WIDGET.SINGLESLIDER,
+            type: BICst.WIDGET.SINGLE_SLIDER,
             dimensions: {},
             view: {},
             value: {}

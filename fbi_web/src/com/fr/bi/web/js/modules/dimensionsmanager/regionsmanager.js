@@ -54,8 +54,8 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
             case BICst.WIDGET.DATE:
             case BICst.WIDGET.YMD:
             case BICst.WIDGET.NUMBER:
-            case BICst.WIDGET.SINGLESLIDER:
-            case BICst.WIDGET.INTERVALSLIDER:
+            case BICst.WIDGET.SINGLE_SLIDER:
+            case BICst.WIDGET.INTERVAL_SLIDER:
             case BICst.WIDGET.YEAR:
             case BICst.WIDGET.MONTH:
             case BICst.WIDGET.QUARTER:

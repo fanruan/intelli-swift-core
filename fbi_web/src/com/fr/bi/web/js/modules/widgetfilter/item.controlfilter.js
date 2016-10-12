@@ -21,10 +21,10 @@ BI.ControlFilterItem = BI.inherit(BI.Widget, {
             case BICst.WIDGET.NUMBER:
                 widgetIcon = "chart-number-font";
                 break;
-            case BICst.WIDGET.SINGLESLIDER:
+            case BICst.WIDGET.SINGLE_SLIDER:
                 widgetIcon = "chart-single-slider-font";
                 break;
-            case BICst.WIDGET.INTERVALSLIDER:
+            case BICst.WIDGET.INTERVAL_SLIDER:
                 widgetIcon = "chart-interval-slider-font";
                 break;
             case BICst.WIDGET.DATE:
