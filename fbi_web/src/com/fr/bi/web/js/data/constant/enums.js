@@ -434,6 +434,10 @@ BICst.GLOBAL_PREDICTION_STYLE = {
 
 //表设置所有默认属性（应该是包含分组表、交叉表、复杂表和其他所有图表）
 BICst.DEFAULT_CHART_SETTING = {
+    widget_setting: {
+        title_detail: {},
+        widget_bg: {},
+    },
     table_form: BICst.TABLE_FORM.OPEN_ROW,
     theme_color: "#65bce7",
     table_style: BICst.TABLE_STYLE.STYLE1,

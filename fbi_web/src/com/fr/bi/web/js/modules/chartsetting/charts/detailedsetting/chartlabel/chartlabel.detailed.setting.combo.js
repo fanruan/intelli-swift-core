@@ -31,7 +31,7 @@ BI.ChartLabelDetailedSettingCombo = BI.inherit(BI.Widget, {
             },
             popup: {
                 el:  this.popup,
-                minWidth: 350,
+                minWidth: 320,
                 stopPropagation: false
             }
         })
