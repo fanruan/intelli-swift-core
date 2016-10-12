@@ -106,6 +106,10 @@ BI.ListLabelItemGroup = BI.inherit(BI.ButtonGroup, {
         this.removeItemAt(indexes);
     },
 
+    changeValue: function (v) {
+        BI.ListLabelItemGroup.superclass.setValue.apply(this, arguments);
+    },
+
     setValue: function (v) {
         BI.ListLabelItemGroup.superclass.setValue.apply(this, arguments);
         this._checkBtnState();

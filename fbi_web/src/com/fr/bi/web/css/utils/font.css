@@ -1716,6 +1716,46 @@
   content: "\e61f";
   color: #808080;
 }
+.chart-single-slider-font .b-font:before {
+  content: "\e6d1";
+  color: #808080;
+}
+.chart-single-slider-font:hover .b-font:before,
+.chart-single-slider-font:focus .b-font:before,
+.chart-single-slider-font.hover .b-font:before {
+  content: "\e6d1";
+  color: #808080;
+}
+.chart-single-slider-font:active .b-font:before,
+.chart-single-slider-font.active .b-font:before {
+  content: "\e6d1";
+  color: #009de3;
+}
+.chart-single-slider-font.native .b-font:before,
+.chart-single-slider-font.disabled .b-font:before {
+  content: "\e6d1";
+  color: #808080;
+}
+.chart-interval-slider-font .b-font:before {
+  content: "\e6d3";
+  color: #808080;
+}
+.chart-interval-slider-font:hover .b-font:before,
+.chart-interval-slider-font:focus .b-font:before,
+.chart-interval-slider-font.hover .b-font:before {
+  content: "\e6d3";
+  color: #808080;
+}
+.chart-interval-slider-font:active .b-font:before,
+.chart-interval-slider-font.active .b-font:before {
+  content: "\e6d3";
+  color: #009de3;
+}
+.chart-interval-slider-font.native .b-font:before,
+.chart-interval-slider-font.disabled .b-font:before {
+  content: "\e6d3";
+  color: #808080;
+}
 .chart-tree-font .b-font:before {
   content: "\e61e";
   color: #808080;
