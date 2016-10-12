@@ -4113,14 +4113,10 @@ webpackJsonp([0],{
 
 	            var row = void 0;
 	            if (!props.isLeaf) {
-	                row = _lib2.default.createElement(
-	                    _base.IconButton,
-	                    { className: 'node-fold-font', selected: state.expanded, style: [styles.icon, {
-	                            width: 44,
-	                            marginLeft: props.layer * 44
-	                        }] },
-	                    _lib2.default.createElement(_base.Icon, { width: 16, height: 16 })
-	                );
+	                row = _lib2.default.createElement(_base.IconButton, { className: 'node-fold-font', invalid: true, selected: state.expanded, style: [styles.icon, {
+	                        width: 44,
+	                        marginLeft: props.layer * 44
+	                    }] });
 	            }
 	            return _lib2.default.createElement(
 	                _base.Button,

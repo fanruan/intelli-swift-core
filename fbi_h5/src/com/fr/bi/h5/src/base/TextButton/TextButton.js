@@ -98,8 +98,9 @@ class TextButton extends Component {
             </TouchableHighlight>
         }
         return <TouchableWithoutFeedback onPress={this._onPress.bind(this)}>
-            <View className={cn(props.className, 'react-view')}
-                  style={[styles.wrapper, {alignItems: props.textAlign}, props.style]}>
+            <View className={cn(props.className, 'react-view', cn({
+                active: state.selected
+            }))} style={[styles.wrapper, {alignItems: props.textAlign}, props.style]}>
                 <Text>{props.children}</Text>
             </View>
         </TouchableWithoutFeedback>

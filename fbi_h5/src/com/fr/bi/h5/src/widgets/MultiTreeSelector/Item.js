@@ -74,12 +74,11 @@ class Item extends Component {
         const {...props} = this.props, {...state} = this.state;
         let row;
         if (!props.isLeaf) {
-            row = <IconButton className={'node-fold-font'} selected={state.expanded} style={[styles.icon, {
-                width: 44,
-                marginLeft: props.layer * 44
-            }]}>
-                <Icon width={16} height={16}/>
-            </IconButton>
+            row =
+                <IconButton className={'node-fold-font'} invalid={true} selected={state.expanded} style={[styles.icon, {
+                    width: 44,
+                    marginLeft: props.layer * 44
+                }]}/>
         }
         return <Button onPress={this._onExpand.bind(this)}>
             <Layout box='justify' style={[styles.row]}>

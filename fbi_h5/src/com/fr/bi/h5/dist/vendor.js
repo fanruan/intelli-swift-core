@@ -68707,7 +68707,9 @@
 	            if (props.disabled === true) {
 	                return _lib2.default.createElement(
 	                    _lib.View,
-	                    { className: (0, _core.cn)(props.className, 'react-view', 'base-disabled'),
+	                    { className: (0, _core.cn)(props.className, 'react-view', 'base-disabled', (0, _core.cn)({
+	                            active: state.selected
+	                        })),
 	                        style: [styles.wrapper, styles.disabled, props.style] },
 	                    _lib2.default.createElement(_Icon2.default, { width: props.iconWidth, height: props.iconHeight })
 	                );
@@ -68715,7 +68717,9 @@
 	            if (props.invalid === true) {
 	                return _lib2.default.createElement(
 	                    _lib.View,
-	                    { className: (0, _core.cn)(props.className, 'react-view', 'base-invalid'),
+	                    { className: (0, _core.cn)(props.className, 'react-view', 'base-invalid', (0, _core.cn)({
+	                            active: state.selected
+	                        })),
 	                        style: [styles.wrapper, props.style] },
 	                    _lib2.default.createElement(_Icon2.default, { width: props.iconWidth, height: props.iconHeight })
 	                );
@@ -68740,7 +68744,9 @@
 	                        underlayColor: props.underlayColor || _data.Colors.PRESS },
 	                    _lib2.default.createElement(
 	                        _lib.View,
-	                        { className: (0, _core.cn)(props.className, 'react-view'), style: [styles.wrapper, { flex: 1 }, props.style] },
+	                        { className: (0, _core.cn)(props.className, 'react-view', (0, _core.cn)({
+	                                active: state.selected
+	                            })), style: [styles.wrapper, { flex: 1 }, props.style] },
 	                        _lib2.default.createElement(_Icon2.default, { width: props.iconWidth, height: props.iconHeight })
 	                    )
 	                );
@@ -68750,7 +68756,9 @@
 	                { onPress: this._onPress.bind(this) },
 	                _lib2.default.createElement(
 	                    _lib.View,
-	                    { className: (0, _core.cn)(props.className, 'react-view'), style: [styles.wrapper, props.style] },
+	                    { className: (0, _core.cn)(props.className, 'react-view', (0, _core.cn)({
+	                            active: state.selected
+	                        })), style: [styles.wrapper, props.style] },
 	                    _lib2.default.createElement(_Icon2.default, { width: props.iconWidth, height: props.iconHeight })
 	                )
 	            );
@@ -69149,8 +69157,9 @@
 	                { onPress: this._onPress.bind(this) },
 	                _lib2.default.createElement(
 	                    _lib.View,
-	                    { className: (0, _core.cn)(props.className, 'react-view'),
-	                        style: [styles.wrapper, { alignItems: props.textAlign }, props.style] },
+	                    { className: (0, _core.cn)(props.className, 'react-view', (0, _core.cn)({
+	                            active: state.selected
+	                        })), style: [styles.wrapper, { alignItems: props.textAlign }, props.style] },
 	                    _lib2.default.createElement(
 	                        _lib.Text,
 	                        null,
