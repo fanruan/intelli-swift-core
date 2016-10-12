@@ -18,7 +18,7 @@ BI.ChartLabelDetailedSettingCombo = BI.inherit(BI.Widget, {
         this.popup = BI.createWidget({
             type: "bi.chart_label_detailed_setting_popup"
         });
-        this.popup.on(BI.ShowTitleDetailedSettingPopup.EVENT_CHANGE, function() {
+        this.popup.on(BI.ChartLabelDetailedSettingPopup.EVENT_CHANGE, function() {
             self.fireEvent(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE)
         });
 

@@ -2,24 +2,24 @@
  * 图例详细设置
  * Created by AstronautOO7 on 2016/10/12.
  */
-BI.ChartLabelDetailedSettingCombo = BI.inherit(BI.Widget, {
+BI.LegendDetailedSettingCombo = BI.inherit(BI.Widget, {
 
     _defaultConfig: function() {
-        return BI.extend(BI.ChartLabelDetailedSettingCombo.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-chart-label-detailed-setting",
+        return BI.extend(BI.LegendDetailedSettingCombo.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-legend-detailed-setting",
             width: 50
         })
     },
 
     _init: function() {
-        BI.ChartLabelDetailedSettingCombo.superclass._init.apply(this, arguments);
+        BI.LegendDetailedSettingCombo.superclass._init.apply(this, arguments);
         var self = this;
 
         this.popup = BI.createWidget({
-            type: "bi.chart_label_detailed_setting_popup"
+            type: "bi.legend_detailed_setting_popup"
         });
-        this.popup.on(BI.ShowTitleDetailedSettingPopup.EVENT_CHANGE, function() {
-            self.fireEvent(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE)
+        this.popup.on(BI.LegendDetailedSettingPopup.EVENT_CHANGE, function() {
+            self.fireEvent(BI.LegendDetailedSettingCombo.EVENT_CHANGE)
         });
 
         BI.createWidget({
@@ -45,5 +45,5 @@ BI.ChartLabelDetailedSettingCombo = BI.inherit(BI.Widget, {
         return this.popup.getValue()
     }
 });
-BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE = 'EVENT_CHANGE';
-$.shortcut("bi.chart_label_detailed_setting_combo", BI.ChartLabelDetailedSettingCombo);
+BI.LegendDetailedSettingCombo.EVENT_CHANGE = 'EVENT_CHANGE';
+$.shortcut("bi.legend_detailed_setting_combo", BI.LegendDetailedSettingCombo);
