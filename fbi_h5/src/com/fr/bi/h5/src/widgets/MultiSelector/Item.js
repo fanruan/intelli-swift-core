@@ -18,7 +18,7 @@ import React, {
 
 import {Colors, Size} from 'data'
 import {Layout, CenterLayout, VerticalCenterLayout} from 'layout'
-import {Icon, Checkbox, Table, AutoSizer} from 'base'
+import {Icon, Button, Checkbox, Table, AutoSizer} from 'base'
 
 
 class Item extends Component {
@@ -66,7 +66,7 @@ class Item extends Component {
 
     render() {
         const {...props} = this.props, {...state} = this.state;
-        return <TouchableHighlight onPress={this._onPress.bind(this)} underlayColor={Colors.PRESS}>
+        return <Button onPress={this._onPress.bind(this)}>
             <Layout box='last' style={[styles.row]}>
                 <VerticalCenterLayout style={styles.text}>
                     <Text>
@@ -77,7 +77,7 @@ class Item extends Component {
                     <Checkbox checked={this.state.selected} onChecked={this._onPress.bind(this)}/>
                 </CenterLayout>
             </Layout>
-        </TouchableHighlight>;
+        </Button>;
     }
 
 }

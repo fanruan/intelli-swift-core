@@ -12,7 +12,7 @@ class VerticalCenterLayout extends Component {
 
     render() {
         const {children, ...props} = this.props;
-        return <View data-flex='main:center'  {...props}
+        return <View data-flex='cross:center'  {...props}
                      className={cn('', props.className)}>{children}</View>
     }
 }

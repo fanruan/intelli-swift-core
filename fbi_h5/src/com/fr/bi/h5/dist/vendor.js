@@ -68116,7 +68116,7 @@
 
 	            return _lib2.default.createElement(
 	                _lib.View,
-	                _extends({ 'data-flex': 'main:center' }, props, {
+	                _extends({ 'data-flex': 'cross:center' }, props, {
 	                    className: (0, _classnames2.default)('', props.className) }),
 	                children
 	            );
@@ -68179,7 +68179,7 @@
 
 	            return _lib2.default.createElement(
 	                _lib.View,
-	                _extends({ 'data-flex': 'cross:center' }, props, {
+	                _extends({ 'data-flex': 'main:center' }, props, {
 	                    className: (0, _classnames2.default)('', props.className) }),
 	                children
 	            );

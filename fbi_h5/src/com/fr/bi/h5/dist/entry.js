@@ -3618,8 +3618,8 @@ webpackJsonp([0],{
 	            var state = _objectWithoutProperties(this.state, []);
 
 	            return _lib2.default.createElement(
-	                _lib.TouchableHighlight,
-	                { onPress: this._onPress.bind(this), underlayColor: _data.Colors.PRESS },
+	                _base.Button,
+	                { onPress: this._onPress.bind(this) },
 	                _lib2.default.createElement(
 	                    _layout.Layout,
 	                    { box: 'last', style: [styles.row] },
@@ -4128,7 +4128,7 @@ webpackJsonp([0],{
 	                _lib2.default.createElement(
 	                    _layout.Layout,
 	                    { box: 'justify', style: [styles.row] },
-	                    row,
+	                    row ? row : _lib2.default.createElement(_lib.View, null),
 	                    _lib2.default.createElement(
 	                        _layout.VerticalCenterLayout,
 	                        { style: [{
@@ -5104,19 +5104,15 @@ webpackJsonp([0],{
 	            var state = _objectWithoutProperties(this.state, []);
 
 	            return _lib2.default.createElement(
-	                _lib.TouchableHighlight,
-	                { underlayColor: _data.Colors.PRESS, onPress: this.props.onPress },
+	                _base.Button,
+	                { onPress: this.props.onPress },
 	                _lib2.default.createElement(
-	                    _lib.View,
-	                    null,
+	                    _layout.VerticalCenterLayout,
+	                    { style: styles.wrapper },
 	                    _lib2.default.createElement(
-	                        _layout.VerticalCenterLayout,
-	                        { style: styles.wrapper },
-	                        _lib2.default.createElement(
-	                            _lib.Text,
-	                            null,
-	                            new _data.Widget(props.$widget).getName()
-	                        )
+	                        _lib.Text,
+	                        null,
+	                        new _data.Widget(props.$widget).getName()
 	                    )
 	                )
 	            );

@@ -74,7 +74,7 @@ class Item extends Component {
         const {...props} = this.props, {...state} = this.state;
         let row;
         if (!props.isLeaf) {
-            row = <IconButton className={'node-fold-font'} selected = {state.expanded} style={[styles.icon, {
+            row = <IconButton className={'node-fold-font'} selected={state.expanded} style={[styles.icon, {
                 width: 44,
                 marginLeft: props.layer * 44
             }]}>
@@ -83,7 +83,7 @@ class Item extends Component {
         }
         return <Button onPress={this._onExpand.bind(this)}>
             <Layout box='justify' style={[styles.row]}>
-                {row}
+                {row ? row : <View/>}
                 <VerticalCenterLayout style={[{
                     paddingLeft: isNil(row) ? ((props.layer + 1) * 44) : 0
                 }]}>

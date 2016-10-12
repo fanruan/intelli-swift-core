@@ -13,7 +13,7 @@ class HorizontalCenterLayout extends Component {
 
     render() {
         const {children, ...props} = this.props;
-        return <View data-flex='cross:center'  {...props}
+        return <View data-flex='main:center'  {...props}
                      className={cn('', props.className)}>{children}</View>
     }
 }
