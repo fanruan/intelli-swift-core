@@ -127,9 +127,6 @@ TreeLabelView = BI.inherit(BI.View, {
                 }
             }
         });
-
-        treeLabel.setValue({"南京":{"玄武区":{"40":{"70-89":{}}}},"无锡":{"南长区":{"40":{"70-89":{}}}}});
-
         var button = BI.createWidget({
             type: 'bi.button',
             text: '取值',

@@ -25,7 +25,6 @@ class AppContainer extends Component {
                 className={StyleSheet.rootClassName}
                 style={styles.appContainer}>
                 <App />
-                <Portal />
             </View>
         );
     }

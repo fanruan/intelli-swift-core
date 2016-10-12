@@ -15,9 +15,9 @@ import React, {
 import {AutoSizer} from 'base'
 import {Colors, Template, Widget} from 'data'
 
-import ChartComponent from '../Chart/ChartComponent.js'
+import ChartPaneComponent from '../Chart/ChartPaneComponent.js'
 import TablePaneComponent from '../Table/TablePaneComponent.js'
-import DetailTableComponent from '../DetailTable/DetailTableComponent.js'
+import DetailTablePaneComponent from '../DetailTable/DetailTablePaneComponent.js'
 import MultiSelectorComponent from '../MultiSelector/MultiSelectorComponent.js'
 import MultiTreeSelectorComponent from '../MultiTreeSelector/MultiTreeSelectorComponent.js'
 import ContentComponent from '../Content/ContentComponent'
@@ -85,7 +85,7 @@ class Layout extends Component {
             //case BICst.WIDGET.COMPLEX_TABLE:
             //
             case BICst.WIDGET.DETAIL:
-                component = <DetailTableComponent {...props} />;
+                component = <DetailTablePaneComponent {...props} />;
                 break;
 
             case BICst.WIDGET.AXIS:
@@ -114,7 +114,7 @@ class Layout extends Component {
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.FUNNEL:
-                component = <ChartComponent {...props} />;
+                component = <ChartPaneComponent {...props} />;
                 break;
             case BICst.WIDGET.NUMBER:
             case BICst.WIDGET.DATE:

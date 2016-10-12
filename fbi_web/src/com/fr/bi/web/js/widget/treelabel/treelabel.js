@@ -27,6 +27,9 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
             element: this.element,
             itemsCreator: BI.bind(this._itemsCreator, this),
             titles: titles
+        });
+        this.view.on(BI.TreeLabelView.EVENT_CHANGE, function () {
+            self.fireEvent(BI.TreeLabel.EVENT_CHANGE);
         })
     },
 
@@ -254,14 +257,18 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
     },
 
     setValue: function (v) {
-
+        v = v || {};
         var self = this, o = this.options, op = {
             selected_values: v
         };
         var result = [];
         convertToArray(v,result,0);
+
         o.itemsCreator(op, function (value) {
-            self._updateData(value.items);
+            if(!self.items) {
+                self._initData(value);
+            }
+            self._updateData(value);
             self._updateItems();
             self.view.setValue(result);
         });
@@ -320,5 +327,5 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         }
     }
 });
-
+BI.TreeLabel.EVENT_CHANGE = "BI.TreeLabel.EVENT_CHANGE";
 $.shortcut('bi.tree_label', BI.TreeLabel);

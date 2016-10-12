@@ -31,7 +31,7 @@ public class TimerScheduleAdapterTest extends TestCase {
          List<TimerTaskSchedule> scheduleList = TimerTaskScheduleTool.getAllTasks();
         manager.reGenerateTimeTasks(-999, scheduleList);
         assertTrue(QuartzManager.getSf().getScheduler().getJobNames("group").length == scheduleList.size());
-        manager.removeAllTimeTasks(-999, scheduleList);
+        manager.removeAllTimeTasks(-999);
         assertTrue(QuartzManager.getSf().getScheduler().getJobNames("group").length == 0);
     }
 }

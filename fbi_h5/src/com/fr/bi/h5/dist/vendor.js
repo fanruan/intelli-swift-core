@@ -54487,7 +54487,8 @@
 	    left: 0,
 	    top: 0,
 	    right: 0,
-	    bottom: 0
+	    bottom: 0,
+	    zIndex: 999999
 	  }
 	});
 
@@ -67464,6 +67465,22 @@
 	        key: 'getSelectedTreeValue',
 	        value: function getSelectedTreeValue() {
 	            return this.$widget.get('value').toJS();
+	        }
+
+	        //文本组件 内容
+
+	    }, {
+	        key: 'getContent',
+	        value: function getContent() {
+	            return this.$widget.get('content');
+	        }
+
+	        //文本组件 样式
+
+	    }, {
+	        key: 'getStyle',
+	        value: function getStyle() {
+	            return this.$widget.get('style').toJS();
 	        }
 	    }, {
 	        key: 'getData',
@@ -84137,7 +84154,7 @@
 	        }
 	    }, {
 	        key: 'close',
-	        value: function close() {
+	        value: function close(op) {
 	            var _this2 = this;
 
 	            _lib.Animated.parallel([_lib.Animated.timing(this.state.opacity, {
@@ -84146,7 +84163,7 @@
 	                toValue: 0
 	            })]).start(function (endState) {
 	                _this2.setState({ visible: false }, function () {
-	                    _this2.props.onClose && _this2.props.onClose();
+	                    _this2.props.onClose && _this2.props.onClose(op);
 	                });
 	            });
 	        }
