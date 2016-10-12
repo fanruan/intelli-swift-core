@@ -10,7 +10,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
         TEMPLATE: 1,
         FOLDER: 2,
         CREATE_BY_ME_ID: "-1",
-        CONTROL_TYPE: [BICst.WIDGET.STRING, BICst.WIDGET.NUMBER, BICst.WIDGET.DATE, BICst.WIDGET.MONTH,
+        CONTROL_TYPE: [BICst.WIDGET.STRING, BICst.WIDGET.NUMBER, BICst.WIDGET.SINGLESLIDER, BICst.WIDGET.INTERVALSLIDER, BICst.WIDGET.DATE, BICst.WIDGET.MONTH,
             BICst.WIDGET.QUARTER, BICst.WIDGET.TREE, BICst.WIDGET.YEAR, BICst.WIDGET.YMD, BICst.WIDGET.GENERAL_QUERY,
             BICst.WIDGET.QUERY, BICst.WIDGET.RESET]
     },
@@ -414,9 +414,9 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                     }
                 }
                 //维度公式过滤所用到的指标的话要删掉
-                if(BI.has(oldFilter, "formula_ids")){
+                if (BI.has(oldFilter, "formula_ids")) {
                     var ids = oldFilter.formula_ids || [];
-                    if(BI.isNotEmptyArray(ids) && BI.isNull(BI.Utils.getFieldTypeByID(ids[0]))){
+                    if (BI.isNotEmptyArray(ids) && BI.isNull(BI.Utils.getFieldTypeByID(ids[0]))) {
                         filter.filter_type = BICst.FILTER_TYPE.EMPTY_FORMULA;
                         delete filter.filter_value;
                         delete filter.formula_ids;

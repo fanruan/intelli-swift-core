@@ -62,6 +62,12 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.NUMBER:
                 view = "BIDezi.NumberDetailView";
                 break;
+            case BICst.WIDGET.SINGLESLIDER:
+                view = "BIDezi.SingleSliderDetailView";
+                break;
+            case BICst.WIDGET.INTERVALSLIDER:
+                view = "BIDezi.IntervalSliderDetailView";
+                break;
             case BICst.WIDGET.QUERY:
             case BICst.WIDGET.YEAR:
                 view = "BIDezi.YearDetailView";
@@ -137,6 +143,12 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
                 break;
             case BICst.WIDGET.NUMBER:
                 view = "BIDezi.NumberWidgetView";
+                break;
+            case BICst.WIDGET.SINGLESLIDER:
+                view = "BIDezi.SingleSliderWidgetView";
+                break;
+            case BICst.WIDGET.INTERVALSLIDER:
+                view = "BIDezi.IntervalSliderWidgetView";
                 break;
             case BICst.WIDGET.DATE:
                 view = "BIDezi.DateRangeView";
@@ -219,6 +231,8 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
                 view = "BIDezi.StringDimensionView";
                 break;
             case BICst.WIDGET.NUMBER:
+            case BICst.WIDGET.SINGLESLIDER:
+            case BICst.WIDGET.INTERVALSLIDER:
                 view = "BIDezi.NumberDimensionView";
                 break;
             case BICst.WIDGET.DATE:

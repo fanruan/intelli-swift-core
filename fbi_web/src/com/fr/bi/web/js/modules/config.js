@@ -286,7 +286,25 @@ BICst.DASHBOARD_WIDGETS = [[{
     text: BI.i18nText("BI-Numeric_Control"),
     title: BI.i18nText("BI-Numeric_Control"),
     value: BICst.WIDGET.NUMBER,
-    cls: "drag-number-icon"
+    cls: "drag-number-icon",
+    children: [
+        {
+            text: BI.i18nText("BI-Numeric_Control"),
+            title: BI.i18nText("BI-Numeric_Control"),
+            value: BICst.WIDGET.NUMBER,
+            cls: "drag-number-icon"
+        }, {
+            text: BI.i18nText("BI-Single_Value_Slider"),
+            title: BI.i18nText("BI-Single_Value_Slider"),
+            value: BICst.WIDGET.SINGLESLIDER,
+            cls: "drag-single-slider-icon"
+        }, {
+            text: BI.i18nText("BI-Double_Value_Slider"),
+            title: BI.i18nText("BI-Double_Value_Slider"),
+            value: BICst.WIDGET.INTERVALSLIDER,
+            cls: "drag-interval-slider-icon"
+        }
+    ]
 }, {
     text: BI.i18nText("BI-Tree_Control"),
     title: BI.i18nText("BI-Tree_Control"),
@@ -424,6 +442,35 @@ BICst.NUMBER_CONTROL_SETCOMBO_ITEMS = [
         text: BI.i18nText("BI-Clear_Selected_Value"),
         cls: "widget-combo-clear-font"
     }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_RENAME,
+        text: BI.i18nText("BI-Rename"),
+        cls: "widget-combo-rename-edit-font"
+    }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_COPY,
+        text: BI.i18nText("BI-Copy"),
+        cls: "widget-combo-copy"
+    }],
+    [{
+        value: BICst.DASHBOARD_WIDGET_DELETE,
+        text: BI.i18nText("BI-Delete_Control"),
+        cls: "widget-combo-delete"
+    }]
+];
+
+//单值滑块的下拉选项
+BICst.SINGLE_SLIDER_CONTROL_SETCOMBO_ITEMS = [
+    [{
+        value: BICst.DASHBOARD_WIDGET_EXPAND,
+        text: BI.i18nText("BI-Detailed_Setting"),
+        cls: "widget-combo-expand-font"
+    }],
+    // [{
+    //     value: BICst.DASHBOARD_CONTROL_CLEAR,
+    //     text: BI.i18nText("BI-Clear_Selected_Value"),
+    //     cls: "widget-combo-clear-font"
+    // }],
     [{
         value: BICst.DASHBOARD_WIDGET_RENAME,
         text: BI.i18nText("BI-Rename"),

@@ -44,7 +44,7 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
     _rebuildItems: function () {
         var wId = this.options.wId;
         var isEdit = Data.SharingPool.get("edit");
-        if(!isEdit) {
+        if (!isEdit) {
             return this._createShowComboItems();
         }
         switch (BI.Utils.getWidgetTypeByID(wId)) {
@@ -94,8 +94,10 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
             case BICst.WIDGET.TREE :
                 return this._createStringTreeComboItems();
             case BICst.WIDGET.NUMBER :
+            case BICst.WIDGET.INTERVALSLIDER:
                 return BICst.NUMBER_CONTROL_SETCOMBO_ITEMS;
-
+            case BICst.WIDGET.SINGLESLIDER:
+                return BICst.SINGLE_SLIDER_CONTROL_SETCOMBO_ITEMS;
             case BICst.WIDGET.GENERAL_QUERY:
                 return BICst.GENERNAL_QUERY_CONTROL_SETCOMBO_ITEMS;
         }
