@@ -17,6 +17,7 @@ BI.TooltipDetailedSettingPopup = BI.inherit(BI.Widget, {
         //显示所有指标
         this.showTargets = BI.createWidget({
             type: "bi.multi_select_item",
+            height: 40,
             width: 200,
             value: BI.i18nText("BI-Show_All_Targets_In_Same_Category")
         });
