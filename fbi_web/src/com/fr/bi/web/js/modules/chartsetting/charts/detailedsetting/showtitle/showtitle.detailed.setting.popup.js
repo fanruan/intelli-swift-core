@@ -56,7 +56,7 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
                 height: 30,
                 width: 55
             }, widget],
-            vgap: 10
+            vgap: 5
         }
     },
 
@@ -70,7 +70,7 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
                 height: 30,
                 width: 60
             }, widget],
-            vgap: 10
+            vgap: 5
         }
     },
 
