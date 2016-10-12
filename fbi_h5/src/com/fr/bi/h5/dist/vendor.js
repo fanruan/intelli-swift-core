@@ -69096,7 +69096,7 @@
 	                return _lib2.default.createElement(
 	                    _lib.View,
 	                    { className: (0, _core.cn)(props.className, 'react-view', 'base-disabled'),
-	                        style: [styles.wrapper, styles.disabled, props.style] },
+	                        style: [styles.wrapper, styles.disabled, { alignItems: props.textAlign }, props.style] },
 	                    _lib2.default.createElement(
 	                        _lib.Text,
 	                        null,
@@ -69108,7 +69108,7 @@
 	                return _lib2.default.createElement(
 	                    _lib.View,
 	                    { className: (0, _core.cn)(props.className, 'react-view', 'base-invalid'),
-	                        style: [styles.wrapper, props.style] },
+	                        style: [styles.wrapper, { alignItems: props.textAlign }, props.style] },
 	                    _lib2.default.createElement(
 	                        _lib.Text,
 	                        null,
@@ -69136,7 +69136,8 @@
 	                        underlayColor: props.underlayColor || _data.Colors.PRESS },
 	                    _lib2.default.createElement(
 	                        _lib.View,
-	                        { className: (0, _core.cn)(props.className, 'react-view'), style: [styles.wrapper, { flex: 1 }, props.style] },
+	                        { className: (0, _core.cn)(props.className, 'react-view'),
+	                            style: [styles.wrapper, { flex: 1, alignItems: props.textAlign }, props.style] },
 	                        _lib2.default.createElement(
 	                            _lib.Text,
 	                            null,
@@ -69150,7 +69151,8 @@
 	                { onPress: this._onPress.bind(this) },
 	                _lib2.default.createElement(
 	                    _lib.View,
-	                    { className: (0, _core.cn)(props.className, 'react-view'), style: [styles.wrapper, props.style] },
+	                    { className: (0, _core.cn)(props.className, 'react-view'),
+	                        style: [styles.wrapper, { alignItems: props.textAlign }, props.style] },
 	                    _lib2.default.createElement(
 	                        _lib.Text,
 	                        null,
@@ -69166,6 +69168,7 @@
 
 	TextButton.propTypes = {};
 	TextButton.defaultProps = {
+	    textAlign: 'center',
 	    selected: null,
 	    disabled: false,
 	    invalid: false,

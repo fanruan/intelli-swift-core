@@ -51,7 +51,7 @@ const DragHandle = SortableHandle(() => {
 
 const SortableItem = SortableElement(({value}) => {
     return <Button>
-        <Layout main='justify' style={styles.sortableItems}>
+        <Layout main='justify' cross='center' style={styles.sortableItems}>
             <Text>{value.text}</Text>
             <DragHandle/>
         </Layout>
@@ -110,7 +110,7 @@ class SettingsComponent extends Component {
     _renderHeader() {
         const {$widget} = this.props;
         const widget = new Widget($widget);
-        return <Layout main='justify' style={styles.header}>
+        return <Layout main='justify' cross='center' style={styles.header}>
             <TextLink onPress={()=> {
                 this.refs['overlay'].close();
             }} style={styles.back}>{'返回'}</TextLink>
@@ -131,7 +131,7 @@ class SettingsComponent extends Component {
     _renderDialog() {
         const array = [];
         each(this._helper.getViewItems(), (viewItem)=> {
-            array.push(<TextButton style={styles.collapseHeader} onPress={()=> {
+            array.push(<TextButton textAlign='left' style={styles.collapseHeader} onPress={()=> {
                 const collapsed = clone(this.state.collapsed);
                 collapsed[viewItem.viewId] = !collapsed[viewItem.viewId];
                 this.setState({

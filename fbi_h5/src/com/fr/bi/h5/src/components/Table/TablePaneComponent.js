@@ -48,7 +48,7 @@ class TablePaneComponent extends Component {
     _renderHeader() {
         const {$widget, wId} = this.props;
         const widget = new Widget($widget);
-        return <Layout main='justify' style={styles.header}>
+        return <Layout main='justify' cross='center' style={styles.header}>
             <Text>{widget.getName()}</Text>
             <IconLink className='setting-font' onPress={()=> {
                 Portal.showModal('TableComponent', <SettingsComponent

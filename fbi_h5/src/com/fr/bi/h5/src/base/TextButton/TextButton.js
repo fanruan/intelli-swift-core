@@ -30,6 +30,7 @@ class TextButton extends Component {
     static propTypes = {};
 
     static defaultProps = {
+        textAlign: 'center',
         selected: null,
         disabled: false,
         invalid: false,
@@ -76,13 +77,13 @@ class TextButton extends Component {
         const {...props} = this.props, {...state} = this.state;
         if (props.disabled === true) {
             return <View className={cn(props.className, 'react-view', 'base-disabled')}
-                         style={[styles.wrapper, styles.disabled, props.style]}>
+                         style={[styles.wrapper, styles.disabled, {alignItems: props.textAlign}, props.style]}>
                 <Text>{props.children}</Text>
             </View>
         }
         if (props.invalid === true) {
             return <View className={cn(props.className, 'react-view', 'base-invalid')}
-                         style={[styles.wrapper, props.style]}>
+                         style={[styles.wrapper, {alignItems: props.textAlign}, props.style]}>
                 <Text>{props.children}</Text>
             </View>
         }
@@ -90,13 +91,15 @@ class TextButton extends Component {
             const {paddingLeft, paddingRight, paddingTop, paddingBottom, marginTop, marginBottom, marginLeft, marginRight, ...other} = props.style || {};
             return <TouchableHighlight style={[{...other}]} onPress={this._onPress.bind(this)}
                                        underlayColor={props.underlayColor || Colors.PRESS}>
-                <View className={cn(props.className, 'react-view')} style={[styles.wrapper, {flex: 1}, props.style]}>
+                <View className={cn(props.className, 'react-view')}
+                      style={[styles.wrapper, {flex: 1, alignItems: props.textAlign}, props.style]}>
                     <Text>{props.children}</Text>
                 </View>
             </TouchableHighlight>
         }
         return <TouchableWithoutFeedback onPress={this._onPress.bind(this)}>
-            <View className={cn(props.className, 'react-view')} style={[styles.wrapper, props.style]}>
+            <View className={cn(props.className, 'react-view')}
+                  style={[styles.wrapper, {alignItems: props.textAlign}, props.style]}>
                 <Text>{props.children}</Text>
             </View>
         </TouchableWithoutFeedback>

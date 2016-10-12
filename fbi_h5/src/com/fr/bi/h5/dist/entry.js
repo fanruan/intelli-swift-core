@@ -5440,7 +5440,7 @@ webpackJsonp([0],{
 	            var widget = new _data.Widget($widget);
 	            return _lib2.default.createElement(
 	                _layout.Layout,
-	                { style: styles.header },
+	                { main: 'justify', cross: 'center', style: styles.header },
 	                _lib2.default.createElement(
 	                    _lib.Text,
 	                    null,
@@ -5696,7 +5696,7 @@ webpackJsonp([0],{
 	        null,
 	        _lib2.default.createElement(
 	            _layout.Layout,
-	            { main: 'justify', style: styles.sortableItems },
+	            { main: 'justify', cross: 'center', style: styles.sortableItems },
 	            _lib2.default.createElement(
 	                _lib.Text,
 	                null,
@@ -5774,7 +5774,7 @@ webpackJsonp([0],{
 	            var widget = new _data.Widget($widget);
 	            return _lib2.default.createElement(
 	                _layout.Layout,
-	                { main: 'justify', style: styles.header },
+	                { main: 'justify', cross: 'center', style: styles.header },
 	                _lib2.default.createElement(
 	                    _base.TextLink,
 	                    { onPress: function onPress() {
@@ -5805,7 +5805,7 @@ webpackJsonp([0],{
 	            (0, _core.each)(this._helper.getViewItems(), function (viewItem) {
 	                array.push(_lib2.default.createElement(
 	                    _base.TextButton,
-	                    { style: styles.collapseHeader, onPress: function onPress() {
+	                    { textAlign: 'left', style: styles.collapseHeader, onPress: function onPress() {
 	                            var collapsed = (0, _core.clone)(_this3.state.collapsed);
 	                            collapsed[viewItem.viewId] = !collapsed[viewItem.viewId];
 	                            _this3.setState({
@@ -6094,7 +6094,7 @@ webpackJsonp([0],{
 	            var widget = new _data.Widget($widget);
 	            return _lib2.default.createElement(
 	                _layout.Layout,
-	                { main: 'justify', style: styles.header },
+	                { main: 'justify', cross: 'center', style: styles.header },
 	                _lib2.default.createElement(
 	                    _lib.Text,
 	                    null,
@@ -6945,7 +6945,7 @@ webpackJsonp([0],{
 	            var widget = new _data.Widget($widget);
 	            return _lib2.default.createElement(
 	                _layout.Layout,
-	                { height: _data.Size.HEADER_HEIGHT, style: styles.header },
+	                { main: 'justify', cross: 'center', height: _data.Size.HEADER_HEIGHT, style: styles.header },
 	                _lib2.default.createElement(
 	                    _lib.Text,
 	                    null,

@@ -48,7 +48,7 @@ class DetailTablePaneComponent extends Component {
     _renderHeader() {
         const {$widget, wId} = this.props;
         const widget = new Widget($widget);
-        return <Layout height={Size.HEADER_HEIGHT} style={styles.header}>
+        return <Layout main='justify' cross='center' height={Size.HEADER_HEIGHT} style={styles.header}>
             <Text>{widget.getName()}</Text>
             <IconLink className='setting-font' onPress={()=> {
                 Portal.showModal('DetailTableComponent', <SettingsComponent
