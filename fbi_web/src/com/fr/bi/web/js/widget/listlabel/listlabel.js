@@ -8,15 +8,16 @@ BI.ListLabel = BI.inherit(BI.Widget, {
     _constant: {
         MAX_COLUMN_SIZE: 40,
         DEFAULT_LABEL_GAP: 25,
-        DEFAULT_LEFT_GAP: 20,
-        LABEL_HEIGHT: 40,
+        DEFAULT_LEFT_GAP: 20
     },
 
     _defaultConfig: function () {
         return BI.extend(BI.ListLabel.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-list-label",
-            title: "",
-            showTitle: true
+            title: BI.i18nText("BI-List_Label_Con"),
+            showTitle: true,
+            items: [],
+            height: 40
         })
     },
 
@@ -28,10 +29,10 @@ BI.ListLabel = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Nolimited"),
             value: "*"
         });
-        var title = BI.createWidget({
+        this.title = BI.createWidget({
             type: "bi.label",
             text: o.title + ":",
-            height: this._constant.LABEL_HEIGHT
+            height: o.height
         });
         this.container = BI.createWidget({
             type: "bi.list_label_item_group",
@@ -41,7 +42,7 @@ BI.ListLabel = BI.inherit(BI.Widget, {
             layouts: [{
                 type: "bi.inline_vertical_adapt",
                 rgap: this._constant.DEFAULT_LABEL_GAP,
-                height: this._constant.LABEL_HEIGHT
+                height: o.height
             }]
         });
         this.container.on(BI.ButtonGroup.EVENT_CHANGE, function (value, obj) {
@@ -51,29 +52,42 @@ BI.ListLabel = BI.inherit(BI.Widget, {
             type: "bi.label",
             text: BI.i18nText("BI-No_Selected_Value"),
             disabled: true,
-            height: this._constant.LABEL_HEIGHT
+            height: o.height
         });
         this.maxTip = BI.createWidget({
             type: "bi.label",
             text: BI.i18nText("BI-Max_Show_40_Labels"),
             disabled: true,
-            height: this._constant.LABEL_HEIGHT
+            height: o.height
         });
 
         this.checkTipsState(o.items);
         this.right = BI.createWidget({
             type: "bi.horizontal",
             items: [this.container, this.minTip, this.maxTip],
-            height: this._constant.LABEL_HEIGHT
+            height: o.height
         });
-        var allItems = o.showTitle ? [title, {
-            el: this.right,
-            lgap: this._constant.DEFAULT_LEFT_GAP
-        }] : [this.right];
 
-        BI.createWidget({
+        o.showTitle ? BI.createWidget({
+            type: "bi.absolute",
+            items: [{
+                el: this.title,
+                left:0,
+                right:0,
+                top:0,
+                bottom:0,
+                width: 55
+            }, {
+                el: this.right,
+                left: 60,
+                right:0,
+                top:0,
+                bottom:0
+            }],
+            element: this.element
+        }) : BI.createWidget({
             type: "bi.horizontal",
-            items: allItems,
+            items: [this.right],
             element: this.element
         });
     },
@@ -109,6 +123,14 @@ BI.ListLabel = BI.inherit(BI.Widget, {
 
     getAllButtons: function () {
         return this.container.getAllButtons();
+    },
+
+    populate: function (v) {
+        if(v.title) {
+            this.title.setText(v.title);
+        }
+        this.removeAllItems();
+        this.addItems(v.items);
     },
 
     setValue: function (v) {

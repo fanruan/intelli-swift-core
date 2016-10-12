@@ -70,7 +70,7 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
             }
         });
         this.labelTwo.on(BI.Editor.EVENT_CONFIRM, function () {
-            var percent = self._getPercentByValue(this._getValue());
+            var percent = self._getPercentByValue(this.getValue());
             self._setLabelTwoPosition(percent);
             self._setSliderTwoPosition(percent);
             self._setBlueTrack();
@@ -122,11 +122,22 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
             type: "bi.absolute",
             element: this.element,
             items: [{
-                el: this.track,
+                el: {
+                    type: "bi.vertical",
+                    items: [{
+                        type: "bi.absolute",
+                        items: [{
+                            el: this.track,
+                            width: "100%",
+                            height: 24
+                        }]
+                    }],
+                    hgap: 7,
+                    height: 24
+                },
                 top: 33,
                 left: 0,
-                width: "100%",
-                height: 23
+                width: "100%"
             },
                 this._createLabelWrapper(),
                 this._createSliderWrapper()
@@ -180,7 +191,7 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
                     }]
                 }],
                 //rgap: 90,
-                hgap: 8,
+                hgap: 15,
                 height: 30
             },
             top: 30,
@@ -300,8 +311,8 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
-        var valueOne = this.labelOne.getValue();
-        var valueTwo = this.labelTwo.getValue();
+        var valueOne = BI.parseFloat(this.labelOne.getValue());
+        var valueTwo = BI.parseFloat(this.labelTwo.getValue());
         if (valueOne <= valueTwo) {
             return [valueOne, valueTwo]
         } else {
@@ -334,7 +345,7 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
             this.enable = true;
             this._setVisible(true);
             this._setErrorText();
-            if (BI.isNotEmptyArray(value)) {
+            if (BI.isNotEmptyArray(value) && BI.isNotNull(value[0])) {
                 this.setValue(value)
             } else {
                 this.labelOne.setValue(minNumber);

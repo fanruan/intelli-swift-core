@@ -64,7 +64,8 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
                     showTitle: false
                 });
                 temp.on(BI.ListLabel.EVENT_CHANGE, function (value, id) {
-                    self._changeView(idx, value, id)
+                    self._changeView(idx, value, id);
+                    self.fireEvent(BI.TreeLabelView.EVENT_CHANGE);
                 });
                 self.items.push(temp);
             })
@@ -93,8 +94,9 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
                 return;
             }
             var value = listLabel.getValue();
-            listLabel.removeAllItems();
-            listLabel.addItems(values[idx]);
+            listLabel.populate({
+                items: values[idx]
+            });
             listLabel.setValue(value);
         });
     },
@@ -146,5 +148,5 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
         return result;
     }
 });
-
+BI.TreeLabelView.EVENT_CHANGE = "BI.TreeLabelView.EVENT_CHANGE";
 $.shortcut('bi.tree_label_view', BI.TreeLabelView);
