@@ -110,8 +110,7 @@ mixin.onClass(TextButton, PureRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         justifyContent: 'center',
-        alignItems: 'center',
-        color: Colors.HIGHLIGHT
+        alignItems: 'center'
     },
     disabled: {
         color: Colors.DISABLED

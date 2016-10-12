@@ -68593,9 +68593,7 @@
 
 	_reactMixin2.default.onClass(Button, _reactAddonsPureRenderMixin2.default);
 	var styles = _lib.StyleSheet.create({
-	    wrapper: {
-	        color: _data.Colors.HIGHLIGHT
-	    },
+	    wrapper: {},
 	    disabled: {
 	        color: _data.Colors.DISABLED
 	    }
@@ -69182,8 +69180,7 @@
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
 	        justifyContent: 'center',
-	        alignItems: 'center',
-	        color: _data.Colors.HIGHLIGHT
+	        alignItems: 'center'
 	    },
 	    disabled: {
 	        color: _data.Colors.DISABLED

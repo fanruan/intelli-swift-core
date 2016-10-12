@@ -105,7 +105,7 @@ class Button extends Component {
 mixin.onClass(Button, PureRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
-        color: Colors.HIGHLIGHT
+
     },
     disabled: {
         color: Colors.DISABLED
