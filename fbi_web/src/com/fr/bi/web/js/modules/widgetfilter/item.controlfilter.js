@@ -45,6 +45,12 @@ BI.ControlFilterItem = BI.inherit(BI.Widget, {
             case BICst.WIDGET.TREE:
                 widgetIcon = "chart-tree-font";
                 break;
+            case BICst.WIDGET.LIST_LABEL:
+                widgetIcon = "chart-list-label-font";
+                break;
+            case BICst.WIDGET.TREE_LABEL:
+                widgetIcon = "chart-tree-label-font";
+                break;
         }
 
         BI.createWidget({

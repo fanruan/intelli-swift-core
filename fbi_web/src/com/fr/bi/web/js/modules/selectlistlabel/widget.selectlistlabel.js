@@ -15,9 +15,7 @@ BI.SelectListLabel = BI.inherit(BI.Widget, {
 
         this.listLabel = BI.createWidget({
             type: "bi.list_label",
-            element: this.element,
-            width: o.width,
-            height: o.height
+            element: this.element
         });
         this.listLabel.on(BI.ListLabel.EVENT_CHANGE, function () {
             self.fireEvent(BI.SelectListLabel.EVENT_CONFIRM, this);
@@ -41,11 +39,11 @@ BI.SelectListLabel = BI.inherit(BI.Widget, {
                     })
                 });
                 self.listLabel.populate({
-                    title: labels,
+                    title: labels + ":",
                     items: result
                 });
                 self.setValue(BI.Utils.getWidgetValueByID(o.wId));
-            }, {type: BICst.WIDGET.STRING});
+            }, {text_options: {times: 1}});
         }
     },
 
@@ -53,7 +51,7 @@ BI.SelectListLabel = BI.inherit(BI.Widget, {
         v = v || {};
         if (v.type === 1) {
             this.listLabel.setValue(v.value);
-        } else if (v.type === 2) {
+        } else {
             this.listLabel.setValue(["*"]);
         }
     },

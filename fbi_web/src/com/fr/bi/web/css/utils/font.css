@@ -1776,6 +1776,46 @@
   content: "\e61e";
   color: #808080;
 }
+.chart-list-label-font .b-font:before {
+  content: "\e6d6";
+  color: #808080;
+}
+.chart-list-label-font:hover .b-font:before,
+.chart-list-label-font:focus .b-font:before,
+.chart-list-label-font.hover .b-font:before {
+  content: "\e6d6";
+  color: #808080;
+}
+.chart-list-label-font:active .b-font:before,
+.chart-list-label-font.active .b-font:before {
+  content: "\e6d6";
+  color: #009de3;
+}
+.chart-list-label-font.native .b-font:before,
+.chart-list-label-font.disabled .b-font:before {
+  content: "\e6d6";
+  color: #808080;
+}
+.chart-tree-label-font .b-font:before {
+  content: "\e6d4";
+  color: #808080;
+}
+.chart-tree-label-font:hover .b-font:before,
+.chart-tree-label-font:focus .b-font:before,
+.chart-tree-label-font.hover .b-font:before {
+  content: "\e6d4";
+  color: #808080;
+}
+.chart-tree-label-font:active .b-font:before,
+.chart-tree-label-font.active .b-font:before {
+  content: "\e6d4";
+  color: #009de3;
+}
+.chart-tree-label-font.native .b-font:before,
+.chart-tree-label-font.disabled .b-font:before {
+  content: "\e6d4";
+  color: #808080;
+}
 .chart-date-font .b-font:before {
   content: "\e61b";
   color: #808080;
