@@ -407,6 +407,7 @@ public class BICoreModule extends AbstractModule {
                 new Service4BIConfigure(),
                 new Service4BIReport(),
                 new Service4BIDezi(),
+                new Service4BIH5(),
                 new Service4BIMobile(),
                 new Service4BIBase(),
 

@@ -1,0 +1,29 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.base-disabled {
+  cursor: default !important;
+  color: #c4c6c6 !important;
+}
+.base-disabled .b-font:before {
+  color: #c4c6c6 !important;
+}
+.base-invalid {
+  cursor: default !important;
+}
+.clearfix {
+  *zoom: 1;
+}
+.clearfix:before,
+.clearfix:after {
+  content: " ";
+  display: table;
+  line-height: 0;
+}
+.clearfix:after {
+  clear: both;
+}
+.sortable-helper {
+  z-index: 999999;
+  display: flex;
+}

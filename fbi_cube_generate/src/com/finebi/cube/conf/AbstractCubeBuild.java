@@ -100,7 +100,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
 //            if (!connectionCheck) {
 //                connectionValid = false;
 //                String errorMessage ="error:"+source.getTableName() + ": Connection test failed";
-//                BILogger.getLogger().error(errorMessage);
+//                BILoggerFactory.getLogger().error(errorMessage);
 //                BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), errorMessage, userId);
 //                break;
 //            }

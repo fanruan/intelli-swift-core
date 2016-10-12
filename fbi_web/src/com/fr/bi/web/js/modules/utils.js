@@ -405,6 +405,8 @@
                 widgetType === BICst.WIDGET.MONTH ||
                 widgetType === BICst.WIDGET.QUARTER ||
                 widgetType === BICst.WIDGET.TREE ||
+                widgetType === BICst.WIDGET.LIST_LABEL ||
+                widgetType === BICst.WIDGET.TREE_LABEL ||
                 widgetType === BICst.WIDGET.YEAR ||
                 widgetType === BICst.WIDGET.YMD ||
                 widgetType === BICst.WIDGET.GENERAL_QUERY;
@@ -419,9 +421,26 @@
                 widgetType === BICst.WIDGET.MONTH ||
                 widgetType === BICst.WIDGET.QUARTER ||
                 widgetType === BICst.WIDGET.TREE ||
+                widgetType === BICst.WIDGET.LIST_LABEL ||
+                widgetType === BICst.WIDGET.TREE_LABEL ||
                 widgetType === BICst.WIDGET.YEAR ||
                 widgetType === BICst.WIDGET.YMD ||
                 widgetType === BICst.WIDGET.GENERAL_QUERY;
+        },
+
+        isRealTimeControlWidgetByWidgetId: function (wid) {
+            var widgetType = this.getWidgetTypeByID(wid);
+            return widgetType === BICst.WIDGET.LIST_LABEL ||
+                   widgetType === BICst.WIDGET.TREE_LABEL ||
+                    widgetType === BICst.WIDGET.SINGLE_SLIDER ||
+                    widgetType === BICst.WIDGET.INTERVAL_SLIDER;
+        },
+
+        isRealTimeControlWidgetByWidgetType: function (widgetType) {
+            return widgetType === BICst.WIDGET.LIST_LABEL ||
+                widgetType === BICst.WIDGET.TREE_LABEL ||
+                widgetType === BICst.WIDGET.SINGLE_SLIDER ||
+                widgetType === BICst.WIDGET.INTERVAL_SLIDER;
         },
 
         isQueryControlExist: function () {
@@ -659,10 +678,16 @@
         },
 
         //settings  ---- start ----
-        getWSDetailSettingByID: function (wid) {
+        getWSTitleDetailSettingByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.title_detail) ? ws.title_detail :
             {};
+        },
+
+        getWSWidgetBGByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.widget_bg) ? ws.widget_bg :
+            {}
         },
 
         getWSTableFormByID: function (wid) {
@@ -1137,18 +1162,6 @@
                 BICst.DEFAULT_CHART_SETTING.big_data_mode
         },
 
-        getWSShowYCustomScale: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_y_custom_scale) ? ws.show_y_custom_scale :
-                BICst.DEFAULT_CHART_SETTING.show_y_custom_scale;
-        },
-
-        getWSCustomYScale: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.custom_y_scale) ? ws.custom_y_scale :
-                BICst.DEFAULT_CHART_SETTING.custom_scale
-        },
-
         getWSShowXCustomScale: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_x_custom_scale) ? ws.show_x_custom_scale :
@@ -1158,6 +1171,18 @@
         getWSCustomXScale: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.custom_x_scale) ? ws.custom_x_scale :
+                BICst.DEFAULT_CHART_SETTING.custom_scale
+        },
+
+        getWSShowYCustomScale: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_y_custom_scale) ? ws.show_y_custom_scale :
+                BICst.DEFAULT_CHART_SETTING.show_y_custom_scale;
+        },
+
+        getWSCustomYScale: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.custom_y_scale) ? ws.custom_y_scale :
                 BICst.DEFAULT_CHART_SETTING.custom_scale
         },
 
@@ -2237,6 +2262,7 @@
                         var filter = null;
                         switch (self.getWidgetTypeByID(id)) {
                             case BICst.WIDGET.STRING:
+                            case BICst.WIDGET.LIST_LABEL:
                                 fType = BICst.TARGET_FILTER_STRING.BELONG_VALUE;
                                 filter = {
                                     filter_type: fType,
@@ -2734,7 +2760,7 @@
             var allWidgetIds = this.getAllWidgetIDs();
             if (force === true || this.isQueryControlExist() === false) {
                 BI.each(allWidgetIds, function (i, wId) {
-                    if (!self.isControlWidgetByWidgetId(wId)) {
+                    if (!self.isControlWidgetByWidgetId(wId) || self.isRealTimeControlWidgetByWidgetId(wId)) {
                         BI.Broadcasts.send(BICst.BROADCAST.REFRESH_PREFIX + wId);
                     }
                 });

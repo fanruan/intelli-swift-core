@@ -175,7 +175,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
             }
         });
 
-        text = this._parseFloatByDot(text, format, num_separators);
+        text = BI.TargetBodyNormalCell.parseFloatByDot(text, format, num_separators);
         item.setText(text);
 
         if (BI.isNotEmptyString(color)) {

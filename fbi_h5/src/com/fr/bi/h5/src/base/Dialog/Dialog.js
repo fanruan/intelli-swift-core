@@ -1,4 +1,3 @@
-import PureRenderMixin from 'react-addons-pure-render-mixin'
 import TimerMixin from 'react-timer-mixin';
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
@@ -15,15 +14,9 @@ import React, {
     Dimensions,
 } from 'lib';
 
-const {width, height} = Dimensions.get('window');
-const navigatorH = 64; // navigator height
 const [aWidth, aHeight] = [300, 214];
-const [left, top] = [0, 0];
-const [middleLeft, middleTop] = [(width - aWidth) / 2, (height - aHeight) / 2 - navigatorH];
 
 class Dialog extends Component {
-    parent = {};
-
     constructor(props) {
         super(props);
         this.state = {
@@ -31,19 +24,15 @@ class Dialog extends Component {
             opacity: new Animated.Value(0),
             title: "",
             choose1: "",
-            choose2: "",
-            visible: false,
+            choose2: ""
         };
     }
 
     componentDidMount() {
-        this.in();
+        this.open();
     }
 
     render() {
-        if (!this.props.visible) {
-            return null;
-        }
         return (
             <View style={styles.container}>
                 <Modal
@@ -89,8 +78,7 @@ class Dialog extends Component {
         );
     }
 
-    //显示动画
-    in() {
+    open() {
         Animated.parallel([
             Animated.timing(
                 this.state.opacity,
@@ -111,8 +99,7 @@ class Dialog extends Component {
         ]).start();
     }
 
-    //隐藏动画
-    out() {
+    close() {
         Animated.parallel([
             Animated.timing(
                 this.state.opacity,
@@ -131,7 +118,9 @@ class Dialog extends Component {
                 }
             )
         ]).start((endState)=> {
-            this.setState({visible: false})
+            this.setState({visible: false}, ()=> {
+                this.props.onClose && this.props.onClose();
+            })
         });
     }
 }

@@ -3,7 +3,9 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import React, {
     Component,
+    StyleSheet,
     PropTypes,
+    Portal,
     Text,
     View,
     ListView,
@@ -57,6 +59,7 @@ import Main from '../components/Main.js'
 // import DialogDemo from '../examples/base/3/Dialog/Dialog'
 
 //import UIExplorerApp from '../examples/UIExplorer/UIExplorerApp.web'
+// import Game2048 from '../examples/2048/Game2048'
 
 
 class App extends Component {
@@ -94,10 +97,23 @@ class App extends Component {
 
     render() {
         return (
-            <Main $template={this.props.$template}/>
+            <View style={styles.wrapper}>
+                <Main $template={this.props.$template}/>
+                <Portal />
+            </View>
         )
     }
 }
+
+const styles = StyleSheet.create({
+    wrapper: {
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        right: 0,
+        bottom: 0
+    }
+});
 
 App.propTypes = {
     actions: PropTypes.object.isRequired,

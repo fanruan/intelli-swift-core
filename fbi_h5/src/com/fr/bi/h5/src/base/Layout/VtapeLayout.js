@@ -1,9 +1,9 @@
-
 import React, {
     Component,
     StyleSheet,
     View
 } from 'lib'
+import cn from 'classnames'
 
 class VtapeLayout extends Component {
     constructor(props, context) {
@@ -13,6 +13,9 @@ class VtapeLayout extends Component {
     render() {
         const {children, style, ...props} = this.props;
         const cs = React.Children.map(children, (child)=> {
+            if (!child) {
+                return null;
+            }
             let style;
             if (child.props.height) {
                 style = {height: child.props.height, ...child.props.style}
@@ -21,7 +24,8 @@ class VtapeLayout extends Component {
             }
             return React.cloneElement(child, {...child.props, style});
         });
-        return <View {...props} style={[styles.wrapper, style]}>{cs}</View>
+        return <View {...props} className={cn('react-view', props.className)}
+                     style={[styles.wrapper, style]}>{cs}</View>
     }
 }
 const styles = StyleSheet.create({

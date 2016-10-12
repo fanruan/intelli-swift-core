@@ -10,7 +10,8 @@ import React, {
     View,
     Fetch
 } from 'lib'
-import {Template, Widget} from 'data'
+import {IconLink, HtapeLayout, VtapeLayout} from 'base'
+import {Size, Template, Widget} from 'data'
 
 
 class ChartComponent extends Component {
@@ -50,14 +51,21 @@ class ChartComponent extends Component {
 
     render() {
 
-        return <View ref='chart' style={{height: this.props.height, ...style.wrapper}}></View>
+        return <View ref='chart' style={{height: this.props.height, ...styles.wrapper}}/>
     }
 }
 mixin.onClass(ChartComponent, ReactComponentWithImmutableRenderMixin);
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
     wrapper: {
         position: 'relative'
+    },
+    header: {
+        paddingLeft: 4,
+        paddingRight: 4,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
     }
 });
 export default ChartComponent

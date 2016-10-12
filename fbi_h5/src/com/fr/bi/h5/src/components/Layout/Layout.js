@@ -15,23 +15,18 @@ import React, {
 import {AutoSizer} from 'base'
 import {Colors, Template, Widget} from 'data'
 
-import ChartComponent from '../Chart/ChartComponent.js'
-import TableComponent from '../Table/TableComponent.js'
-import DetailTableComponent from '../DetailTable/DetailTableComponent.js'
+import ChartPaneComponent from '../Chart/ChartPaneComponent.js'
+import TablePaneComponent from '../Table/TablePaneComponent.js'
+import DetailTablePaneComponent from '../DetailTable/DetailTablePaneComponent.js'
 import MultiSelectorComponent from '../MultiSelector/MultiSelectorComponent.js'
 import MultiTreeSelectorComponent from '../MultiTreeSelector/MultiTreeSelectorComponent.js'
+import ContentComponent from '../Content/ContentComponent'
 
 class Layout extends Component {
     static propTypes = {};
 
     constructor(props, context) {
         super(props, context);
-        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        this.template = new Template(props.$template);
-        const rows = this.template.getAllWidgetIds();
-        this.state = {
-            dataSource: ds.cloneWithRows(rows)
-        }
     }
 
     _onPageScroll() {
@@ -44,6 +39,9 @@ class Layout extends Component {
 
     render() {
         const {...props} = this.props;
+        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        this.template = new Template(props.$template);
+        const rows = this.template.getAllWidgetIds();
         return <ViewPagerAndroid
             style={styles.viewPager}
             initialPage={0}
@@ -54,13 +52,8 @@ class Layout extends Component {
             }}>
             {[<ListView
                 {...props}
-                initialListSize={Math.ceil(props.height / 270) + 1}
-                dataSource={this.state.dataSource}
-                renderRow={this._renderRow.bind(this)}
-            />, <ListView
-                {...props}
-                initialListSize={Math.ceil(props.height / 270) + 1}
-                dataSource={this.state.dataSource}
+                initialListSize={Math.ceil(props.height / 310) + 1}
+                dataSource={ds.cloneWithRows(rows)}
                 renderRow={this._renderRow.bind(this)}
             />]}
         </ViewPagerAndroid>;
@@ -80,18 +73,18 @@ class Layout extends Component {
             $widget,
             wId,
             width: this.props.width - 40,
-            height: 230
+            height: 270
         };
         let component = null;
         switch (type) {
             case BICst.WIDGET.TABLE:
-                component = <TableComponent {...props} />;
+                component = <TablePaneComponent {...props} />;
                 break;
             //case BICst.WIDGET.CROSS_TABLE:
             //case BICst.WIDGET.COMPLEX_TABLE:
             //
             case BICst.WIDGET.DETAIL:
-                component = <DetailTableComponent {...props} />;
+                component = <DetailTablePaneComponent {...props} />;
                 break;
 
             case BICst.WIDGET.AXIS:
@@ -120,19 +113,22 @@ class Layout extends Component {
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.FUNNEL:
-                //case BICst.WIDGET.STRING:
-                //case BICst.WIDGET.NUMBER:
-                //case BICst.WIDGET.DATE:
-                //case BICst.WIDGET.YEAR:
-                //case BICst.WIDGET.QUARTER:
-                //case BICst.WIDGET.MONTH:
-                //case BICst.WIDGET.YMD:
-                //case BICst.WIDGET.QUERY:
-                //case BICst.WIDGET.RESET:
-                //case BICst.WIDGET.CONTENT:
-                //case BICst.WIDGET.IMAGE:
-                //case BICst.WIDGET.WEB:
-                component = <ChartComponent {...props} />;
+                component = <ChartPaneComponent {...props} />;
+                break;
+            case BICst.WIDGET.NUMBER:
+            case BICst.WIDGET.DATE:
+            case BICst.WIDGET.YEAR:
+            case BICst.WIDGET.QUARTER:
+            case BICst.WIDGET.MONTH:
+            case BICst.WIDGET.YMD:
+            case BICst.WIDGET.QUERY:
+            case BICst.WIDGET.RESET:
+                break;
+            case BICst.WIDGET.CONTENT:
+                component = <ContentComponent {...props} />;
+                break;
+            case BICst.WIDGET.IMAGE:
+            case BICst.WIDGET.WEB:
                 break;
             case BICst.WIDGET.STRING:
                 component = <MultiSelectorComponent {...props} />;

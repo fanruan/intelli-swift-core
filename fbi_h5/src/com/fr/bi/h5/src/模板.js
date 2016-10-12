@@ -4,11 +4,12 @@ import Immutable from 'immutable'
 
 import {
     ReactComponentWithPureRenderMixin, ReactComponentWithImmutableRenderMixin,
-    cn, sc, math, isNil, emptyFunction, shallowEqual, isEqual, isEmpty, each,
+    cn, sc, math, isNil, emptyFunction, shallowEqual, immutableShallowEqual, isEqual, isEmpty, each,
     translateDOMPositionXY, requestAnimationFrame
 } from 'core'
 import React, {
     Component,
+    PropTypes,
     StyleSheet,
     Text,
     Dimensions,
@@ -74,7 +75,7 @@ class TableComponent extends Component {
     }
 
 }
-mixin.onClass(TableComponent, ReactComponentWithPureRenderMixin);
+mixin.onClass(TableComponent, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         flex: 1

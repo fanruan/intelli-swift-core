@@ -222,6 +222,16 @@ class Widget {
         return this.$widget.get('value').toJS();
     }
 
+    //文本组件 内容
+    getContent() {
+        return this.$widget.get('content');
+    }
+
+    //文本组件 样式
+    getStyle() {
+        return this.$widget.get('style').toJS();
+    }
+
     getData(options) {
         const wi = this.createJson();
         switch (this.getType()) {
@@ -439,8 +449,13 @@ class Widget {
     }
 
 
-    setValue(value) {
+    setWidgetValue(value) {
         this.$widget = this.$widget.set('value', Immutable.fromJS(value));
+        return this;
+    }
+
+    setWidgetView(view) {
+        this.$widget = this.$widget.set('view', Immutable.fromJS(view));
         return this;
     }
 }

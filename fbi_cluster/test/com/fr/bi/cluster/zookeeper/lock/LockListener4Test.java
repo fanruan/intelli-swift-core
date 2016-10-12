@@ -1,6 +1,6 @@
 package com.fr.bi.cluster.zookeeper.lock;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 /**
  * Created by Connery on 2015/3/26.

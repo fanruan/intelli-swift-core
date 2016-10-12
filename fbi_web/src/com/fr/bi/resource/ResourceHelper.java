@@ -372,10 +372,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailstring.combo.show.js",
 
 
-                "com/fr/bi/web/js/modules4show/config.js",
                 "com/fr/bi/web/js/modules4show/constant.js",
-                "com/fr/bi/web/js/modules4show/broadcast.js",
                 "com/fr/bi/web/js/modules4show/cache.js",
+                "com/fr/bi/web/js/modules4show/broadcast.js",
+                "com/fr/bi/web/js/modules4show/config.js",
                 "com/fr/bi/web/js/modules4show/utils.js",
 
 
@@ -399,6 +399,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.singleslider.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.intervalslider.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.tree.js",
+                "com/fr/bi/web/js/show/modules/model/pane/widgets/model.listlabel.js",
+                "com/fr/bi/web/js/show/modules/model/pane/widgets/model.treelabel.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.year.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.yearmonth.js",
                 "com/fr/bi/web/js/show/modules/model/pane/widgets/model.yearquarter.js",
@@ -422,6 +424,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.detailtable.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.string.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.tree.js",
+                "com/fr/bi/web/js/show/modules/view/pane/widgets/show.listlabel.js",
+                "com/fr/bi/web/js/show/modules/view/pane/widgets/show.treelabel.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.date.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.year.js",
                 "com/fr/bi/web/js/show/modules/view/pane/widgets/show.yearmonth.js",
@@ -483,12 +487,16 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.singleslider.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.intervalslider.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.tree.js",
+                "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.listlabel.js",
+                "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.treelabel.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.year.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.yearmonth.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.yearquarter.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/model.generalquery.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.string.detail.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.tree.detail.js",
+                "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.listlabel.detail.js",
+                "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.treelabel.detail.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.year.detail.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.yearmonth.detail.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/model.yearquarter.detail.js",
@@ -507,6 +515,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/model.detail.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/model.string.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/model.tree.dimension.js",
+                "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/model.listlabel.dimension.js",
+                "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/model.treelabel.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/model.number.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/model.date.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/model.tree.dimension.js",
@@ -532,6 +542,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.singleslider.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.intervalslider.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.tree.js",
+                "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.listlabel.js",
+                "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.treelabel.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.generalquery.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.widgets.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/dezi.string.detail.js",
@@ -540,6 +552,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/dezi.singleslider.detail.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/dezi.intervalslider.detail.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/dezi.tree.detail.js",
+                "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/dezi.listlabel.detail.js",
+                "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/dezi.treelabel.detail.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/dezi.detail.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/dezi.year.detail.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/dezi.yearmonth.detail.js",
@@ -553,6 +567,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.detail.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.string.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.tree.dimension.js",
+                "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.listlabel.dimension.js",
+                "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.treelabel.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.number.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.date.dimension.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.tree.dimension.js",
@@ -820,6 +836,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/chartsetting/charts/customscale/combo.customscale.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/customscale/trigger.customscale.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/detailedsetting/showtitle/showtitle.detailed.setting.popup.css",
+                "com/fr/bi/web/css/modules/chartsetting/charts/detailedsetting/table/table.detailed.setting.popup.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/selectcolorcombo/item.selectcolor.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/selectcolorcombo/trigger.selectcolor.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/charts.setting.css",
@@ -850,6 +867,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/fit/widgetchooser/widget.dragicongroup.css",
                 "com/fr/bi/web/css/modules/fit/fit.widget.css",
                 "com/fr/bi/web/css/modules/fit/fit.css",
+
+                //复用面板
+                "com/fr/bi/web/css/modules/fit/widgetchooser/reuse/pane.reuse.css",
 
                 //全局样式
                 "com/fr/bi/web/css/modules/globalstyle/widget.globalstyle.css",
@@ -968,12 +988,12 @@ public class ResourceHelper {
 
     public static String[] getCommonJs() {
         return new String[]{
-                "com/fr/bi/web/js/modules/utils.js",
-                "com/fr/bi/web/js/modules/utils4conf.js",
-                "com/fr/bi/web/js/modules/config.js",
                 "com/fr/bi/web/js/modules/constant.js",
                 "com/fr/bi/web/js/modules/cache.js",
                 "com/fr/bi/web/js/modules/broadcast.js",
+                "com/fr/bi/web/js/modules/config.js",
+                "com/fr/bi/web/js/modules/utils.js",
+                "com/fr/bi/web/js/modules/utils4conf.js",
 
                 //下面是各个功能模块
                 "com/fr/bi/web/js/fragments/cube/button.hoursetting.js",
@@ -1135,6 +1155,12 @@ public class ResourceHelper {
 
                 //区间滑块
                 "com/fr/bi/web/js/modules/selectdataslider/selectdataintervalslider.js",
+
+                //文本标签控件
+                "com/fr/bi/web/js/modules/selectlistlabel/widget.selectlistlabel.js",
+
+                //树标签控件
+                "com/fr/bi/web/js/modules/selecttreelabel/widget.selecttreelabel.js",
 
                 "com/fr/bi/web/js/extend/excel/upload/excel.upload.js",
                 "com/fr/bi/web/js/extend/excel/upload/excel.upload.model.js",
@@ -1552,6 +1578,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/detailed.setting.trigger.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/showtitle/showtitle.detailed.setting.combo.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/showtitle/showtitle.detailed.setting.popup.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/table/table.detailed.setting.combo.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/table/table.detailed.setting.popup.js",
+
 
                 //展示表格
                 "com/fr/bi/web/js/modules/tablechartmanager/chartdisplay/chartdisplay.js",
@@ -1772,8 +1801,8 @@ public class ResourceHelper {
                 //实时报表日期选择字段
                 "com/fr/bi/web/js/modules4realtime/selectdate/widget.selectdate.js",
 
-                "com/fr/bi/web/js/modules4realtime/config.js",
                 "com/fr/bi/web/js/modules4realtime/constant.js",
+                "com/fr/bi/web/js/modules4realtime/config.js",
                 "com/fr/bi/web/js/modules4realtime/broadcast.js",
                 "com/fr/bi/web/js/modules4realtime/cache.js",
                 "com/fr/bi/web/js/modules4realtime/utils.js",

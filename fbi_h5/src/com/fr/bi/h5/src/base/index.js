@@ -14,7 +14,9 @@ export HorizontalCenterLayout from './Layout/HorizontalCenterLayout'
 
 export Icon from './Icon'
 export IconButton from './IconButton/IconButton'
+export IconLink from './IconLink/IconLink'
 export TextButton from './TextButton/TextButton'
+export TextLink from './TextLink/TextLink'
 export Checkbox from './Checkbox/Checkbox'
 export ART from './Art/ReactART'
 export Circle from './Art/Circle.art'
@@ -36,6 +38,7 @@ export VirtualScroll from './VirtualScroll'
 export Collection from './Collection'
 export Table from './Table'
 
+export Overlay from './Overlay/Overlay'
 export Dialog from './Dialog'
 
 export default module.exports;

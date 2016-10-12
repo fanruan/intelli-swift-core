@@ -3,7 +3,7 @@ package com.finebi.cube.tools;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ public class BITableSourceRelationPathTestTool {
             path.addRelationAtTail(BITableSourceRelationTestTool.getAB()).addRelationAtTail(BITableSourceRelationTestTool.getBC());
             return path;
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }
@@ -35,7 +35,7 @@ public class BITableSourceRelationPathTestTool {
             path.addRelationAtTail(BITableSourceRelationTestTool.getBC());
             return path;
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }
@@ -46,7 +46,7 @@ public class BITableSourceRelationPathTestTool {
             path.addRelationAtTail(BITableSourceRelationTestTool.getAaB()).addRelationAtTail(BITableSourceRelationTestTool.getBC());
             return path;
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }

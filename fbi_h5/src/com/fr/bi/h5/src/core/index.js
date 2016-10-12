@@ -84,6 +84,7 @@ export findLast from 'lodash/findLast'
 
 export isEmpty from 'lodash/isEmpty'
 export eq from 'lodash/eq'
+export immutableShallowEqual from './utils/immutableShallowEqual'
 export isEqual from 'lodash/isEqual'
 export isFunction from 'lodash/isFunction'
 export isArray from 'lodash/isArray'
@@ -103,6 +104,10 @@ export last from 'lodash/last'
 export nth from 'lodash/nth'
 
 export remove from 'lodash/remove'
+export arrayMove from './utils/arrayMove'
+
+export keys from 'lodash/keys'
+export values from 'lodash/values'
 
 export now from 'lodash/now'
 
@@ -110,7 +115,6 @@ export extend from 'lodash/extend'
 export clone from 'lodash/clone'
 export cloneDeep from 'lodash/cloneDeep'
 export deepClone from 'lodash/cloneDeep'
-
 
 export math from 'lodash/math'
 

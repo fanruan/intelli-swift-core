@@ -7,12 +7,13 @@ BI.ShowTitleDetailedSettingCombo = BI.inherit(BI.Widget, {
     _defaultConfig: function() {
         return BI.extend(BI.ShowTitleDetailedSettingCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-show-title-detailed-setting",
-            width: 100
+            width: 50
         })
     },
 
     _init: function() {
         BI.ShowTitleDetailedSettingCombo.superclass._init.apply(this, arguments);
+        var self = this;
 
         this.popup = BI.createWidget({
             type: "bi.show_title_detailed_setting_popup"
@@ -41,7 +42,7 @@ BI.ShowTitleDetailedSettingCombo = BI.inherit(BI.Widget, {
     },
 
     getValue: function() {
-        this.popup.getValue()
+        return this.popup.getValue()
     }
 });
 BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE = 'EVENT_CHANGE';

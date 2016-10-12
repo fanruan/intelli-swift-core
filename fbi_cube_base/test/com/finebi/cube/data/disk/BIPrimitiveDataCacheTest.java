@@ -5,7 +5,7 @@ import com.finebi.cube.data.disk.reader.primitive.BIByteNIOReader;
 import com.finebi.cube.data.disk.writer.primitive.BIByteNIOWriter;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.tools.BILocationBuildTestTool;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import junit.framework.TestCase;
 
 /**
@@ -54,7 +54,7 @@ public class BIPrimitiveDataCacheTest extends TestCase {
             assertFalse(writer_copy.canWriter());
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -76,7 +76,7 @@ public class BIPrimitiveDataCacheTest extends TestCase {
             assertFalse(reader.canReader());
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 }

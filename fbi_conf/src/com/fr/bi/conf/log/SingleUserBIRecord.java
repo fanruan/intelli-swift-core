@@ -91,7 +91,9 @@ public class SingleUserBIRecord implements BIRecord {
      */
     @Override
     public void recordToErrorTable(IPersistentTable table, String text) {
-        tableLogMap.put(table, new BITableErrorLog(table, text, userId));
+        if (null != table && !tableLogMap.containsKey(table)) {
+            tableLogMap.put(table, new BITableErrorLog(table, text, userId));
+        }
     }
 
     /**
@@ -103,7 +105,9 @@ public class SingleUserBIRecord implements BIRecord {
      */
     @Override
     public void recordToInfoTable(IPersistentTable table, long seconds, int percent) {
-        tableLogMap.put(table, new BITableRunningLog(table, seconds, percent, userId));
+        if (null != table) {
+            tableLogMap.put(table, new BITableRunningLog(table, seconds, percent, userId));
+        }
     }
 
     /**
@@ -210,7 +214,7 @@ public class SingleUserBIRecord implements BIRecord {
      */
     @Override
     public void errorRelation(RelationColumnKey ck, String text) {
-        if (null != ck) {
+        if (null != ck && !connectionLogMap.containsKey(ck)) {
             connectionLogMap.put(ck, new BIConnectionErrorLog(ck, text, userId));
         }
     }

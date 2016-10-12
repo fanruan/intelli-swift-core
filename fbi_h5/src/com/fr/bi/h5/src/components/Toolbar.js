@@ -78,7 +78,7 @@ class Toolbar extends Component {
 
     render() {
         const {...props} = this.props, {...state} = this.state;
-        return <IconButton onPress={this._onPress.bind(this)} className={'tool-filter'}
+        return <IconButton onPress={this._onPress.bind(this)} className={'tool-filter-font'}
                            style={[styles.filter]}/>
     }
 

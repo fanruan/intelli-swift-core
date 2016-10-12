@@ -160,21 +160,21 @@ BI.SingleAddRoleSearcher = BI.inherit(BI.Widget, {
         this.tab.setSelect(this._constant.SHOW_ROLE);
         var items = [];
         BI.each(sortedRoles, function (i, role) {
-            var found = BI.some(setRoles, function (j, r) {
-                if (r.role_id === role.id && r.role_type === role.role_type) {
+            var roleName = role.text || (role.department_name + "," + role.post_name);
+            var found = BI.some(settedRoles, function (j, r) {
+                if (roleName === r.role_id && r.role_type === role.role_type) {
                     return true;
                 }
             });
             if (found === true) {
                 return;
             }
-            var roleName = role.text || (role.department_name + "," + role.post_name);
             items.push({
                 type: "bi.text_button",
                 cls: "role-item",
                 text: roleName,
                 value: {
-                    role_id: role.id,
+                    role_id: roleName,   //id会变？用名字了
                     role_type: role.role_type
                 },
                 height: 30,

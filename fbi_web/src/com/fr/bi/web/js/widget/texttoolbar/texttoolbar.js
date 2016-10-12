@@ -19,13 +19,15 @@ BI.TextToolbar = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.size = BI.createWidget({
             type: "bi.text_toolbar_size_chooser",
-            cls: "text-toolbar-size-chooser-trigger"
+            cls: "text-toolbar-size-chooser-trigger",
+            title: BI.i18nText("BI-Font_Size")
         });
         this.size.on(BI.TextToolbarSizeChooser.EVENT_CHANGE, function () {
             self.fireEvent(BI.TextToolbar.EVENT_CHANGE, arguments);
         });
         this.bold = BI.createWidget({
             type: "bi.icon_button",
+            title: BI.i18nText("BI-Bold"),
             height: 20,
             width: 20,
             cls: "text-toolbar-button bi-list-item-active text-bold-font"
@@ -35,6 +37,7 @@ BI.TextToolbar = BI.inherit(BI.Widget, {
         });
         this.italic = BI.createWidget({
             type: "bi.icon_button",
+            title: BI.i18nText("BI-Italic"),
             height: 20,
             width: 20,
             cls: "text-toolbar-button bi-list-item-active text-italic-font"
@@ -44,6 +47,7 @@ BI.TextToolbar = BI.inherit(BI.Widget, {
         });
         this.underline = BI.createWidget({
             type: "bi.icon_button",
+            title: BI.i18nText("BI-Underline"),
             height: 20,
             width: 20,
             cls: "text-toolbar-button bi-list-item-active text-underline-font"
@@ -55,6 +59,7 @@ BI.TextToolbar = BI.inherit(BI.Widget, {
             type: "bi.color_chooser",
             el: {
                 type: "bi.text_toolbar_color_chooser_trigger",
+                title: BI.i18nText("BI-Font_Colour"),
                 cls: "text-toolbar-button"
             }
         });
@@ -66,6 +71,7 @@ BI.TextToolbar = BI.inherit(BI.Widget, {
             type: "bi.color_chooser",
             el: {
                 type: "bi.text_toolbar_background_chooser_trigger",
+                title: BI.i18nText("BI-Widget_Background_Colour"),
                 cls: "text-toolbar-button"
             }
         });

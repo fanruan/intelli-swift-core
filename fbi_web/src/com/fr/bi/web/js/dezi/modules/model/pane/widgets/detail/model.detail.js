@@ -48,7 +48,9 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                 }
                 BI.remove(arr, function (i, id) {
                     if(key2 === id){
-                        isTarget = true;
+                        if(region >= BICst.REGION.TARGET1){
+                            isTarget = true;
+                        }
                         return true;
                     }
                 })

@@ -24,9 +24,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         BI.Broadcasts.on(BICst.BROADCAST.LINKAGE_PREFIX + wId, function (dId, v) {
             var clicked = self.model.get("clicked") || {};
             var allFromIds = BI.Utils.getAllLinkageFromIdsByID(BI.Utils.getWidgetIDByDimensionID(dId));
-            //这条链上所有的其他clicked都应当被清掉
+            //这条链上所有的其他clicked都应当被清掉 钻取的东西也清掉
             BI.each(clicked, function (cid, click) {
-                if (allFromIds.contains(cid)) {
+                if (allFromIds.contains(cid) || BI.Utils.isDimensionByDimensionID(cid)) {
                     delete clicked[cid];
                 }
             });
@@ -69,7 +69,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         });
         this.tableChart.on(BI.TableChartManager.EVENT_CLICK_CHART, function (obj) {
             self._onClickChart(obj);
-            self.hideDrill()
+            self.hideDrill(self.model.get('id'))
         });
 
         this.widget = BI.createWidget({
@@ -112,7 +112,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         BI.Broadcasts.on(BICst.BROADCAST.WIDGET_SELECTED_PREFIX, function () {
             if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
                 self.tools.setVisible(false);
-                self.chartDrill.setDrillVisible()
+                self.chartDrill.setDrillVisible(self.model.get("id"))
             }
         });
     },
@@ -349,6 +349,33 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             .removeClass("dashboard-title-center").addClass(cls);
     },
 
+    _refreshWidgetTitle: function () {
+        var id = this.model.get("id");
+        var titleSetting = this.model.get("settings").title_detail || {};
+        var $title = this.title.element.find(".shelter-editor-text .bi-text");
+        $title.css(titleSetting.detail_style || {});
+
+        this.titleWrapper.element.css({"background": this._getBackgroundValue(titleSetting.detail_background)});
+    },
+
+    _refreshWidgetBG: function () {
+        var widgetBG = this.model.get("settings").widget_bg || {};
+        this.element.css({"background": this._getBackgroundValue(widgetBG)})
+    },
+
+    _getBackgroundValue: function (bg) {
+        if (!bg) {
+            return "";
+        }
+        switch (bg.type) {
+            case BICst.BACKGROUND_TYPE.COLOR:
+                return bg.value;
+            case BICst.BACKGROUND_TYPE.IMAGE:
+                return "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + bg["value"] + ")";
+        }
+        return "";
+    },
+
     _refreshGlobalStyle: function () {
         this._refreshTitlePosition();
     },
@@ -419,6 +446,12 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         if (BI.has(changed, "name")) {
             this.title.setValue(this.model.get("name"))
         }
+        if (BI.has(changed, "settings") && (changed.settings.title_detail !== prev.settings.title_detail)) {
+            this._refreshWidgetTitle()
+        }
+        if (BI.has(changed, "settings") && (changed.settings.widget_bg !== prev.settings.widget_bg)) {
+            this._refreshWidgetBG()
+        }
     },
 
     local: function () {
@@ -432,6 +465,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
 
     refresh: function () {
         this._buildWidgetTitle();
+        this._refreshWidgetTitle();
+        this._refreshWidgetBG();
         this._refreshMagnifyButton();
         this._refreshTableAndFilter();
         this._refreshLayout();

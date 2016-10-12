@@ -22,6 +22,7 @@ export DrawerLayoutAndroid from './DrawerLayout/DrawerLayout.web';
 export Image from './Image/Image.web';
 export ListView from './ListView/ListView.web';
 export Modal from './Modal/Modal.web';
+export Portal from './Portal/Portal';
 export Navigator from './Navigator/Navigator.web';
 export Picker from './Picker/Picker.web';
 export PickerIOS from './PickerIOS/PickerIOS.web';
