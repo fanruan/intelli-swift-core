@@ -1544,7 +1544,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/showtitle/showtitle.detailed.setting.popup.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/table/table.detailed.setting.combo.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/table/table.detailed.setting.popup.js",
-
+                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/tooltip/tooltip.detailed.setting.combo.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/tooltip/tooltip.detailed.setting.popup.js",
 
                 //展示表格
                 "com/fr/bi/web/js/modules/tablechartmanager/chartdisplay/chartdisplay.js",
