@@ -399,6 +399,8 @@
             var widgetType = this.getWidgetTypeByID(wid);
             return widgetType === BICst.WIDGET.STRING ||
                 widgetType === BICst.WIDGET.NUMBER ||
+                widgetType === BICst.WIDGET.SINGLE_SLIDER ||
+                widgetType === BICst.WIDGET.INTERVAL_SLIDER ||
                 widgetType === BICst.WIDGET.DATE ||
                 widgetType === BICst.WIDGET.MONTH ||
                 widgetType === BICst.WIDGET.QUARTER ||
@@ -413,6 +415,8 @@
         isControlWidgetByWidgetType: function (widgetType) {
             return widgetType === BICst.WIDGET.STRING ||
                 widgetType === BICst.WIDGET.NUMBER ||
+                widgetType === BICst.WIDGET.SINGLE_SLIDER ||
+                widgetType === BICst.WIDGET.INTERVAL_SLIDER ||
                 widgetType === BICst.WIDGET.DATE ||
                 widgetType === BICst.WIDGET.MONTH ||
                 widgetType === BICst.WIDGET.QUARTER ||
@@ -427,9 +431,9 @@
         isRealTimeControlWidgetByWidgetId: function (wid) {
             var widgetType = this.getWidgetTypeByID(wid);
             return widgetType === BICst.WIDGET.LIST_LABEL ||
-                   widgetType === BICst.WIDGET.TREE_LABEL ||
-                    widgetType === BICst.WIDGET.SINGLE_SLIDER ||
-                    widgetType === BICst.WIDGET.INTERVAL_SLIDER;
+                widgetType === BICst.WIDGET.TREE_LABEL ||
+                widgetType === BICst.WIDGET.SINGLE_SLIDER ||
+                widgetType === BICst.WIDGET.INTERVAL_SLIDER;
         },
 
         isRealTimeControlWidgetByWidgetType: function (widgetType) {
@@ -2266,6 +2270,8 @@
                                     _src: {field_id: self.getFieldIDByDimensionID(dimId)}
                                 };
                                 break;
+                            case BICst.WIDGET.SINGLE_SLIDER:
+                            case BICst.WIDGET.INTERVAL_SLIDER:
                             case BICst.WIDGET.NUMBER:
                                 fType = BICst.TARGET_FILTER_NUMBER.BELONG_VALUE;
                                 filter = {
