@@ -43,7 +43,7 @@ BI.SelectListLabel = BI.inherit(BI.Widget, {
                     items: result
                 });
                 self.setValue(BI.Utils.getWidgetValueByID(o.wId));
-            }, {});
+            }, {text_options: {times: 1}});
         }
     },
 
