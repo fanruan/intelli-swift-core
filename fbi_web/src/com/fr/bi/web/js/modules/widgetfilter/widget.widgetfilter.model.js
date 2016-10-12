@@ -2,38 +2,38 @@
  * Created by Young's on 2016/4/14.
  */
 BI.WidgetFilterModel = BI.inherit(FR.OB, {
-    _init: function(){
+    _init: function () {
         BI.WidgetFilterModel.superclass._init.apply(this, arguments);
 
     },
 
-    _parseComplexDate: function(v){
-        if(v.type === BICst.MULTI_DATE_PARAM) {
+    _parseComplexDate: function (v) {
+        if (v.type === BICst.MULTI_DATE_PARAM) {
             return this._parseComplexDate4Param(v);
         } else {
             return this._parseComplexDateCommon(v);
         }
     },
 
-    _parseComplexDate4Param: function(value){
+    _parseComplexDate4Param: function (value) {
         var wid = value.wId, se = value.startOrEnd;
-        if(BI.isNotNull(wid) && BI.isNotNull(se)) {
+        if (BI.isNotNull(wid) && BI.isNotNull(se)) {
             var wValue = BI.Utils.getWidgetValueByID(wid);
-            if(se === BI.MultiDateParamPane.start && BI.isNotNull(wValue.start)) {
+            if (se === BI.MultiDateParamPane.start && BI.isNotNull(wValue.start)) {
                 return this._parseComplexDateCommon(wValue.start);
             } else {
-                return this._parseComplexDateCommon(wValue,end);
+                return this._parseComplexDateCommon(wValue, end);
             }
         } else {
             return this._parseComplexDateCommon(BI.Utils.getWidgetValueByID())
         }
     },
 
-    _parseComplexDateCommon: function(v) {
+    _parseComplexDateCommon: function (v) {
         var type = v.type, value = v.value;
         var date = new Date();
         var currY = date.getFullYear(), currM = date.getMonth(), currD = date.getDate();
-        if(BI.isNull(type) && BI.isNotNull(v.year)) {
+        if (BI.isNull(type) && BI.isNotNull(v.year)) {
             return new Date(v.year, v.month, v.day);
         }
         switch (type) {
@@ -78,15 +78,15 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
 
             case BICst.MULTI_DATE_PARAM:
                 var wWid = value.wId, se = value.startOrEnd;
-                if(BI.isNotNull(wWid) && BI.isNotNull(se)) {
+                if (BI.isNotNull(wWid) && BI.isNotNull(se)) {
                     var wWValue = BI.Utils.getWidgetValueByID(wWid);
-                    if(se === BI.MultiDateParamPane.start && BI.isNotNull(wWValue.start)) {
+                    if (se === BI.MultiDateParamPane.start && BI.isNotNull(wWValue.start)) {
                         return new Date(wWValue.start.year, wWValue.start.month, wWValue.start.day);
                     } else {
                         return new Date(wWValue.end.year, wWValue.end.month, wWValue.end.day);
                     }
                 } else {
-                    if(BI.isNotNull(value.year) && BI.isNotNull(value.month) && BI.isNotNull(value.day)) {
+                    if (BI.isNotNull(value.year) && BI.isNotNull(value.month) && BI.isNotNull(value.day)) {
                         return new Date(value.year, value.month, value.day);
                     }
                 }
@@ -97,11 +97,11 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
         }
     },
 
-    parseTargetFilter: function(targetId, filter) {
+    parseTargetFilter: function (targetId, filter) {
         var self = this;
-        if(filter.filter_type === BICst.FILTER_TYPE.AND || filter.filter_type === BICst.FILTER_TYPE.OR) {
+        if (filter.filter_type === BICst.FILTER_TYPE.AND || filter.filter_type === BICst.FILTER_TYPE.OR) {
             var children = [];
-            BI.each(filter.filter_value, function(i, value){
+            BI.each(filter.filter_value, function (i, value) {
                 children.push(self.parseTargetFilter(targetId, value));
             });
             return {
@@ -118,12 +118,12 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
             }
         }
     },
-    
-    parseDimensionFilter: function(dimId, filter) {
+
+    parseDimensionFilter: function (dimId, filter) {
         var self = this;
-        if(filter.filter_type === BICst.FILTER_TYPE.AND || filter.filter_type === BICst.FILTER_TYPE.OR) {
+        if (filter.filter_type === BICst.FILTER_TYPE.AND || filter.filter_type === BICst.FILTER_TYPE.OR) {
             var children = [];
-            BI.each(filter.filter_value, function(i, value){
+            BI.each(filter.filter_value, function (i, value) {
                 children.push(self.parseDimensionFilter(dimId, value));
             });
             return {
@@ -141,16 +141,16 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
         }
     },
 
-    parseGeneralQueryFilter: function(filter){
+    parseGeneralQueryFilter: function (filter) {
         var self = this;
-        if(BI.isNull(filter)) {
+        if (BI.isNull(filter)) {
             return;
         }
-        if(filter.filter_type === BICst.FILTER_TYPE.AND || filter.filter_type === BICst.FILTER_TYPE.OR) {
+        if (filter.filter_type === BICst.FILTER_TYPE.AND || filter.filter_type === BICst.FILTER_TYPE.OR) {
             var children = [];
-            BI.each(filter.filter_value, function(i, value){
+            BI.each(filter.filter_value, function (i, value) {
                 var child = self.parseGeneralQueryFilter(value);
-                if(BI.isNotNull(child)) {
+                if (BI.isNotNull(child)) {
                     children.push(self.parseGeneralQueryFilter(value));
                 }
             });
@@ -159,7 +159,7 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
                 value: filter.filter_type,
                 children: children
             };
-        } else if(BI.isNotNull(filter._src)){
+        } else if (BI.isNotNull(filter._src)) {
             return {
                 id: BI.UUID(),
                 type: "bi.target_filter_item",
@@ -169,11 +169,11 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
         }
     },
 
-    isEmptyDrillById: function(wId){
+    isEmptyDrillById: function (wId) {
         var drills = BI.Utils.getDrillByID(wId);
         var isEmpty = true;
-        BI.some(drills, function(id, drill){
-            if( BI.isNotEmptyArray(drill)) {
+        BI.some(drills, function (id, drill) {
+            if (BI.isNotEmptyArray(drill)) {
                 isEmpty = false;
                 return true;
             }
@@ -181,73 +181,76 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
         return isEmpty;
     },
 
-    getControlWidgetValueTextByID: function(wid) {
+    getControlWidgetValueTextByID: function (wid) {
         var widgetValue = BI.Utils.getWidgetValueByID(wid);
         var widgetType = BI.Utils.getWidgetTypeByID(wid);
         var text = "";
-        if(BI.isNull(widgetValue)) {
+        if (BI.isNull(widgetValue)) {
             return text;
         }
         switch (widgetType) {
             case BICst.WIDGET.STRING:
             case BICst.WIDGET.LIST_LABEL:
-                if(BI.isNull(widgetValue.value) || widgetValue.value.length === 0) {
+                if (BI.isNull(widgetValue.value) || widgetValue.value.length === 0) {
                     return text;
                 }
-                if(widgetValue.type === BI.Selection.Multi) {
-                    text = BI.i18nText("BI-In") + " " +  widgetValue.value;
-                } else if(widgetValue.type === BI.Selection.All) {
+                if (widgetValue.type === BI.Selection.Multi) {
+                    text = BI.i18nText("BI-In") + " " + widgetValue.value;
+                } else if (widgetValue.type === BI.Selection.All) {
                     text = BI.i18nText("BI-Not_In") + " " + widgetValue.value;
                 }
                 return text;
+            case BICst.WIDGET.SINGLE_SLIDER:
+            case BICst.WIDGET.INTERVAL_SLIDER:
             case BICst.WIDGET.NUMBER:
                 return this.getNumberRangeText(widgetValue);
             case BICst.WIDGET.DATE:
                 return this.getDateRangeText(widgetValue);
             case BICst.WIDGET.MONTH:
                 var year = widgetValue.year, month = widgetValue.month;
-                if(BI.isNumeric(year) && BI.isNumeric(month)) {
+                if (BI.isNumeric(year) && BI.isNumeric(month)) {
                     text = year + "/" + (month + 1);
                 } else if (BI.isNumeric(year)) {
                     text = year;
-                } else if(BI.isNumeric(month)) {
+                } else if (BI.isNumeric(month)) {
                     text = month + 1;
                 }
                 return text;
             case BICst.WIDGET.QUARTER:
                 var year = widgetValue.year, quarter = widgetValue.quarter;
-                if(BI.isNumeric(year) && BI.isNumeric(quarter)) {
+                if (BI.isNumeric(year) && BI.isNumeric(quarter)) {
                     text = year + " " + BI.i18nText("BI-Di") + quarter + BI.i18nText("BI-Quarter");
                 } else if (BI.isNumeric(year)) {
                     text = year;
-                } else if(BI.isNumeric(quarter)) {
+                } else if (BI.isNumeric(quarter)) {
                     text = BI.i18nText("BI-Di") + quarter + BI.i18nText("BI-Quarter");
                 }
                 return text;
             case BICst.WIDGET.YEAR:
                 return widgetValue;
             case BICst.WIDGET.YMD:
-                if(BI.isNotNull(widgetValue)) {
+                if (BI.isNotNull(widgetValue)) {
                     var date = this._parseComplexDate(widgetValue);
                     text = BI.isNotNull(date) ? (date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate()) : "";
                 }
                 return text;
             case BICst.WIDGET.TREE:
-                function getChildrenNode(ob) {
-                    var text = "";
-                    var index = 0, size = BI.size(ob);
-                    BI.each(ob, function(name, children) {
-                        index++;
-                        var childNodes = getChildrenNode(children);
-                        text += name + (childNodes === "" ? "" : (":" + childNodes)) + (index === size ? "" : ",");
-                    });
-                    return text;
-                }
-                BI.each(widgetValue, function(name, children) {
+            function getChildrenNode(ob) {
+                var text = "";
+                var index = 0, size = BI.size(ob);
+                BI.each(ob, function (name, children) {
+                    index++;
+                    var childNodes = getChildrenNode(children);
+                    text += name + (childNodes === "" ? "" : (":" + childNodes)) + (index === size ? "" : ",");
+                });
+                return text;
+            }
+
+                BI.each(widgetValue, function (name, children) {
                     var childNodes = getChildrenNode(children);
                     text += name + (childNodes === "" ? "" : (":" + childNodes)) + "; ";
                 });
-                if(text !== "") {
+                if (text !== "") {
                     text = BI.i18nText("BI-In") + " " + text;
                 }
                 return text;
@@ -258,32 +261,32 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
         }
     },
 
-    getNumberRangeText: function( filterValue) {
+    getNumberRangeText: function (filterValue) {
         var text = "";
         var closemin = filterValue.closemin, closemax = filterValue.closemax, min = filterValue.min, max = filterValue.max;
-        if(BI.isNotNull(min) && BI.isNotEmptyString(min) && BI.isNotNull(max) && BI.isNotEmptyString(max)) {
+        if (BI.isNotNull(min) && BI.isNotEmptyString(min) && BI.isNotNull(max) && BI.isNotEmptyString(max)) {
             text = min + (closemin ? "<=" : "<") + BI.i18nText("BI-Value") + (closemax ? "<=" : "<") + max;
-        } else if(BI.isNotNull(min) && BI.isNotEmptyString(min)) {
+        } else if (BI.isNotNull(min) && BI.isNotEmptyString(min)) {
             text = min + (closemin ? "<=" : "<") + BI.i18nText("BI-Value");
-        } else if(BI.isNotNull(max) && BI.isNotEmptyString(max)) {
+        } else if (BI.isNotNull(max) && BI.isNotEmptyString(max)) {
             text = BI.i18nText("BI-Value") + (closemax ? "<=" : "<") + max;
         }
         return text;
     },
 
-    getDateRangeText: function(filterValue) {
+    getDateRangeText: function (filterValue) {
         var start = filterValue.start, end = filterValue.end;
         var sStart = "", sEnd = "";
-        if (BI.isNotNull(start)){
-            if(BI.isNotNull(start.year) && BI.isNotNull(start.month) && BI.isNotNull(start.day)) {
+        if (BI.isNotNull(start)) {
+            if (BI.isNotNull(start.year) && BI.isNotNull(start.month) && BI.isNotNull(start.day)) {
                 sStart = start.year + "/" + (start.month + 1) + "/" + start.day;
             } else {
                 var date = this._parseComplexDate(start);
                 sStart = BI.isNotNull(date) ? (date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate()) : "";
             }
         }
-        if(BI.isNotNull(end)) {
-            if(BI.isNotNull(end.year) && BI.isNotNull(end.month) && BI.isNotNull(end.day)) {
+        if (BI.isNotNull(end)) {
+            if (BI.isNotNull(end.year) && BI.isNotNull(end.month) && BI.isNotNull(end.day)) {
                 sEnd = end.year + "/" + (end.month + 1) + "/" + end.day;
             } else {
                 var date = this._parseComplexDate(end);

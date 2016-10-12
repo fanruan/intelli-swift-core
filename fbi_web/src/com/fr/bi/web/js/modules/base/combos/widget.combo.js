@@ -97,8 +97,10 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
             case BICst.WIDGET.TREE_LABEL:
                 return this._createLabelComboItems();
             case BICst.WIDGET.NUMBER :
+            case BICst.WIDGET.INTERVAL_SLIDER:
                 return BICst.NUMBER_CONTROL_SETCOMBO_ITEMS;
-
+            case BICst.WIDGET.SINGLE_SLIDER:
+                return BICst.SINGLE_SLIDER_CONTROL_SETCOMBO_ITEMS;
             case BICst.WIDGET.GENERAL_QUERY:
                 return BICst.GENERNAL_QUERY_CONTROL_SETCOMBO_ITEMS;
         }
