@@ -16,7 +16,7 @@ BI.TooltipDetailedSettingPopup = BI.inherit(BI.Widget, {
 
         //显示所有指标
         this.showTargets = BI.createWidget({
-            type: "multi_select_item",
+            type: "bi.multi_select_item",
             width: 200,
             value: BI.i18nText("BI-Show_All_Targets_In_Same_Category")
         });
@@ -27,7 +27,7 @@ BI.TooltipDetailedSettingPopup = BI.inherit(BI.Widget, {
 
         //分类名
         this.categoryName = BI.createWidget({
-            type: "multi_select_item",
+            type: "bi.multi_select_item",
             width: 55,
             value: BI.i18nText("BI-Category_Name")
         });
@@ -38,7 +38,7 @@ BI.TooltipDetailedSettingPopup = BI.inherit(BI.Widget, {
 
         //系列名
         this.seriesName = BI.createWidget({
-            type: "multi_select_item",
+            type: "bi.multi_select_item",
             width: 55,
             value: BI.i18nText("BI-Series_Name")
         });
@@ -49,7 +49,7 @@ BI.TooltipDetailedSettingPopup = BI.inherit(BI.Widget, {
 
         //值
         this.showValue = BI.createWidget({
-            type: "multi_select_item",
+            type: "bi.multi_select_item",
             width: 55,
             value: BI.i18nText("BI-Value")
         });
@@ -60,7 +60,7 @@ BI.TooltipDetailedSettingPopup = BI.inherit(BI.Widget, {
 
         //百分比
         this.showPercentage = BI.createWidget({
-            type: "multi_select_item",
+            type: "bi.multi_select_item",
             width: 55,
             value: BI.i18nText("BI-Percentage")
         });
