@@ -17,7 +17,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.widgetSetting = BI.createWidget({
             type: "bi.widget_block_setting",
-            wId: this.options.wId
+            wId: o.wId
         });
 
         this.widgetSetting.on(BI.WidgetBlockSetting.EVENT_CHANGE, function() {
