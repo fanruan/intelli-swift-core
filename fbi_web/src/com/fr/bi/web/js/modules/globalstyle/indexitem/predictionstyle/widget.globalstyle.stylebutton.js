@@ -36,22 +36,22 @@ BI.GlobalStyleStyleButton = BI.inherit(BI.Single, {
             type: "bi.absolute",
             element: this.element,
             items: [
-                this._createItem(mainBackgroundLayout,0,0),
-                this._createItem(widgetBackgroundLayout,10,10),
-                this._createItem(titleBackgroundLayout,10,10),
-                this._createItem(chartColorOne,27,20),
-                this._createItem(chartColorTwo,37,20),
-                this._createItem(chartColorThree,47,20)
+                this._createItem(mainBackgroundLayout, 0, 0),
+                this._createItem(widgetBackgroundLayout, 10, 10),
+                this._createItem(titleBackgroundLayout, 10, 10),
+                this._createItem(chartColorOne, 27, 20),
+                this._createItem(chartColorTwo, 37, 20),
+                this._createItem(chartColorThree, 47, 20)
             ],
             height: 70,
             width: 110
         });
     },
-    _createItem:function (el,top,left) {
+    _createItem: function (el, top, left) {
         return {
-            el:el,
-            top:top,
-            left:left
+            el: el,
+            top: top,
+            left: left
         }
     },
     _createLayout: function (height, width) {
