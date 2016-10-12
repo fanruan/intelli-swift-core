@@ -6,7 +6,7 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
 
     _defaultConfig: function() {
         return BI.extend(BI.ShowTitleDetailedSettingPopup.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-show-title-detailed-setting-popup"
+            baseCls: "bi-detailed-setting bi-show-title-detailed-setting-popup"
         })
     },
 
@@ -27,7 +27,7 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
         //标题文字
         this.titleWordStyle = BI.createWidget({
             type: "bi.data_label_text_toolbar",
-            cls: "tittle-setting-text-toolbar",
+            cls: "detailed-setting-popup",
             width: 230
         });
         this.titleWordStyle.on(BI.DataLabelTextToolBar.EVENT_CHANGE, function () {

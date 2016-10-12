@@ -6,7 +6,7 @@ BI.ChartLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
 
     _defaultConfig: function() {
         return BI.extend(BI.ChartLabelDetailedSettingPopup.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-chart-label-detailed-setting-popup"
+            baseCls: "bi-detailed-setting bi-chart-label-detailed-setting-popup"
         })
     },
 
@@ -19,7 +19,7 @@ BI.ChartLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
             type: "bi.sign_editor",
             width: 80,
             height: 26,
-            cls: "chart-label-setting-input",
+            cls: "detailed-setting-popup",
             allowBlank: false,
             value: "0",
             errorText: BI.i18nText("BI-Please_Enter_Number_From_To_To", -90, 90),
@@ -27,16 +27,28 @@ BI.ChartLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
                 return BI.isInteger(v) && v >= -90 && v <= 90;
             }
         });
+
         this.textDirection.on(BI.SignEditor.EVENT_CONFIRM, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.ChartLabelDetailedSettingPopup.EVENT_CHANGE);
         });
 
-        var textDirectionWrapper = this._createWrapper(BI.i18nText("BI-Text_Direction"), this.textDirection);
+        var direction = BI.createWidget({
+            type: "bi.left",
+            items: [this.textDirection, {
+                type: "bi.label",
+                text: "。",
+                textHeight: 15,
+                height: 28
+            }],
+            lgap: 2
+        });
+
+        var textDirectionWrapper = this._createWrapper(BI.i18nText("BI-Text_Direction"), direction);
 
         //字体设置
         this.textStyle = BI.createWidget({
             type: "bi.data_label_text_toolbar",
-            cls: "chart-label-setting-input",
+            cls: "detailed-setting-popup",
             width: 230
         });
         this.textStyle.on(BI.DataLabelTextToolBar.EVENT_CHANGE, function () {
