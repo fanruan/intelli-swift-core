@@ -13,7 +13,8 @@ import React, {
 } from 'lib'
 
 import {Size, Template, Widget} from 'data'
-import {IconLink, HtapeLayout, VtapeLayout} from 'base'
+import {IconLink} from 'base'
+import {Layout} from 'layout'
 import {TableWidget} from 'widgets';
 
 import DetailTableComponentHelper from './DetailTableComponentHelper';

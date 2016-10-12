@@ -17,6 +17,7 @@ module.exports = {
             core: `${srcPath}/core/`,
             data: `${srcPath}/data/`,
             lib: `${srcPath}/lib/`,
+            layout: `${srcPath}/layout/`,
             base: `${srcPath}/base/`,
             widgets: `${srcPath}/widgets/`,
             actions: `${srcPath}/actions/`,

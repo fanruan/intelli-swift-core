@@ -14,8 +14,8 @@ import React, {
 } from 'lib'
 
 import {Size, Template, Widget} from 'data'
-
-import {Layout, Table, Dialog, IconLink} from 'base'
+import {Layout} from 'layout'
+import {Table, Dialog, IconLink} from 'base'
 import {TableWidget} from 'widgets';
 
 import ChartComponent from './ChartComponent';

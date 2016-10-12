@@ -24,9 +24,8 @@ import React, {
 
 import {Colors, Size, Template, Widget, Dimension, Target} from 'data'
 
+import {Layout, CenterLayout} from 'layout'
 import {
-    Layout,
-    CenterLayout,
     Button,
     IconButton,
     TextButton,

@@ -15,7 +15,7 @@ import React, {
 } from 'lib'
 
 import {Colors, Size, Template} from 'data'
-import {Layout} from 'base'
+import {Layout} from 'layout'
 
 import Toolbar from './Toolbar'
 import LayoutComponent from './Layout/LayoutComponent'
