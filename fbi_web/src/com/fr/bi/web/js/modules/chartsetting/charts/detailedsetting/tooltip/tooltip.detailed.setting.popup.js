@@ -28,7 +28,7 @@ BI.TooltipDetailedSettingPopup = BI.inherit(BI.Widget, {
         //分类名
         this.categoryName = BI.createWidget({
             type: "bi.multi_select_item",
-            width: 55,
+            width: 75,
             value: BI.i18nText("BI-Category_Name")
         });
 
@@ -39,7 +39,7 @@ BI.TooltipDetailedSettingPopup = BI.inherit(BI.Widget, {
         //系列名
         this.seriesName = BI.createWidget({
             type: "bi.multi_select_item",
-            width: 55,
+            width: 75,
             value: BI.i18nText("BI-Series_Name")
         });
 
@@ -50,7 +50,7 @@ BI.TooltipDetailedSettingPopup = BI.inherit(BI.Widget, {
         //值
         this.showValue = BI.createWidget({
             type: "bi.multi_select_item",
-            width: 55,
+            width: 50,
             value: BI.i18nText("BI-Value")
         });
 
@@ -61,7 +61,7 @@ BI.TooltipDetailedSettingPopup = BI.inherit(BI.Widget, {
         //百分比
         this.showPercentage = BI.createWidget({
             type: "bi.multi_select_item",
-            width: 55,
+            width: 75,
             value: BI.i18nText("BI-Percentage")
         });
 
@@ -90,11 +90,11 @@ BI.TooltipDetailedSettingPopup = BI.inherit(BI.Widget, {
         this.centerItems = BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [
+            items: BI.createItems([
                 this.showTargets,
                 showWrapper,
                 textStyleWrapper
-            ],
+            ]),
             hgap: 5
         });
     },
