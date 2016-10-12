@@ -49,21 +49,9 @@ class ChartComponent extends Component {
         });
     }
 
-    _renderHeader() {
-        const {$widget} = this.props;
-        const widget = new Widget($widget);
-        return <View height={Size.HEADER_HEIGHT} style={styles.header}>
-            <Text>{widget.getName()}</Text>
-            <IconLink className='setting-font'/>
-        </View>
-    }
-
     render() {
 
-        return <VtapeLayout>
-            {this._renderHeader()}
-            <View ref='chart' style={{height: this.props.height, ...styles.wrapper}}/>
-        </VtapeLayout>
+        return <View ref='chart' style={{height: this.props.height, ...styles.wrapper}}/>
     }
 }
 mixin.onClass(ChartComponent, ReactComponentWithImmutableRenderMixin);

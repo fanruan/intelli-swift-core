@@ -60,23 +60,21 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
                 type: "bi.absolute",
                 items: [this.slider]
             }],
-            hgap: 8,
+            hgap: 15,
             height: 30
         });
         sliderVertical.element.click(function (e) {
             if (self.enable) {
-                var offset = e.clientX - self.element.offset().left - 8;
+                var offset = e.clientX - self.element.offset().left - 15;
                 var trackLength = self.track.element[0].scrollWidth;
                 var percent = 0;
-                console.log(offset);
-                console.log(trackLength);
                 if (offset < 0) {
                     percent = 0
                 }
-                if (offset > 0 && offset < (trackLength - 16)) {
+                if (offset > 0 && offset < (trackLength - 30)) {
                     percent = offset * 100 / self._getGrayTrackLength();
                 }
-                if (offset > (trackLength - 16)) {
+                if (offset > (trackLength - 30)) {
                     percent = 100
                 }
                 self._setAllPosition(percent);
@@ -107,11 +105,22 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
             type: "bi.absolute",
             element: this.element,
             items: [{
-                el: this.track,
+                el: {
+                    type: "bi.vertical",
+                    items: [{
+                        type: "bi.absolute",
+                        items: [{
+                            el: this.track,
+                            width: "100%",
+                            height: 24
+                        }]
+                    }],
+                    hgap: 7,
+                    height: 24
+                },
                 top: 33,
                 left: 0,
-                width: "100%",
-                height: 24
+                width: "100%"
             }, {
                 el: sliderVertical,
                 top: 30,
@@ -199,7 +208,7 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
-        this.label.getValue();
+        return this.label.getValue();
     },
 
     setValue: function (v) {
@@ -231,8 +240,8 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
                 this.label.setValue(valueNumber);
                 this._setAllPosition(this._getPercentByValue(valueNumber));
             } else {
-                this.label.setValue(minNumber);
-                this._setAllPosition(0);
+                this.label.setValue(maxNumber);
+                this._setAllPosition(100);
             }
         }
     }
