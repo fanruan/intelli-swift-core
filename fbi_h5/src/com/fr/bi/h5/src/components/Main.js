@@ -15,9 +15,10 @@ import React, {
 } from 'lib'
 
 import {Colors, Size, Template} from 'data'
+import {Layout} from 'base'
 
 import Toolbar from './Toolbar'
-import Layout from './Layout/Layout'
+import LayoutComponent from './Layout/LayoutComponent'
 
 const {width, height} = Dimensions.get('window');
 
@@ -122,16 +123,16 @@ class Main extends Component {
         const {name, Component, title, onValueChange, ...others} = route;
         if (name === 'index') {
             if (this.template.hasControlWidget()) {
-                return <View style={styles.index}>
-                    <Layout width={width} height={height - 50 - Size.ITEM_HEIGHT} {...props}
-                            navigator={navigationOperations}/>
+                return <Layout style={{height: '100%'}} dir='top' box='last'>
+                    <LayoutComponent width={width} height={height - 50 - Size.ITEM_HEIGHT} {...props}
+                                     navigator={navigationOperations}/>
 
                     <Toolbar {...props} navigator={navigationOperations}>
 
                     </Toolbar>
-                </View>
+                </Layout>
             }
-            return <Layout width={width} height={height} {...props}/>;
+            return <LayoutComponent width={width} height={height} {...props}/>;
         }
         return (
             <Component
@@ -196,11 +197,7 @@ class Main extends Component {
 mixin.onClass(Main, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
-        flex: 1,
         paddingTop: 50
-    },
-    index: {
-        flex: 1
     },
     sceneStyle: {
         backgroundColor: Colors.TEXT

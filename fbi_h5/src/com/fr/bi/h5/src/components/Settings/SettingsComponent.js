@@ -25,9 +25,8 @@ import React, {
 import {Colors, Size, Template, Widget, Dimension, Target} from 'data'
 
 import {
+    Layout,
     CenterLayout,
-    VtapeLayout,
-    HtapeLayout,
     Button,
     IconButton,
     TextButton,
@@ -53,10 +52,10 @@ const DragHandle = SortableHandle(() => {
 
 const SortableItem = SortableElement(({value}) => {
     return <Button>
-        <View style={styles.sortableItems}>
+        <Layout main='justify' style={styles.sortableItems}>
             <Text>{value.text}</Text>
             <DragHandle/>
-        </View>
+        </Layout>
     </Button>
 });
 
@@ -112,7 +111,7 @@ class SettingsComponent extends Component {
     _renderHeader() {
         const {$widget} = this.props;
         const widget = new Widget($widget);
-        return <View height={Size.HEADER_HEIGHT} style={styles.header}>
+        return <Layout main='justify' style={styles.header}>
             <TextLink onPress={()=> {
                 this.refs['overlay'].close();
             }} style={styles.back}>{'返回'}</TextLink>
@@ -120,7 +119,7 @@ class SettingsComponent extends Component {
             <TextLink onPress={()=> {
                 this.refs['overlay'].close(true);
             }} style={styles.complete}>{'完成'}</TextLink>
-        </View>
+        </Layout>
     }
 
     _onSortEnd = ({oldIndex, newIndex, viewId}) => {
@@ -171,10 +170,10 @@ class SettingsComponent extends Component {
                 this.props.onReturn();
             }
         }}>
-            <VtapeLayout style={styles.wrapper}>
+            <Layout dir='top' box='first' style={styles.wrapper}>
                 {this._renderHeader()}
                 {this._renderDialog()}
-            </VtapeLayout>
+            </Layout>
         </Overlay>
     }
 
@@ -202,21 +201,15 @@ const styles = StyleSheet.create({
         bottom: 10
     },
     header: {
-        flexDirection: 'row',
         paddingLeft: 20,
         paddingRight: 20,
-        alignItems: 'center',
-        justifyContent: 'space-between',
         color: Colors.TEXT,
-        backgroundColor: Colors.HIGHLIGHT
+        backgroundColor: Colors.HIGHLIGHT,
+        height: Size.HEADER_HEIGHT
     },
     sortableItems: {
-        flex: 1,
-        flexDirection: 'row',
         paddingLeft: 20,
         paddingRight: 20,
-        alignItems: 'center',
-        justifyContent: 'space-between',
         height: Size.ITEM_HEIGHT,
         borderBottomWidth: 1 / PixelRatio.get(),
         borderBottomColor: Colors.BORDER
@@ -225,7 +218,6 @@ const styles = StyleSheet.create({
         opacity: 0.25
     },
     collapseHeader: {
-        alignItems: 'left',
         paddingLeft: 20,
         backgroundColor: '#d8f2fd',
         height: Size.ITEM_HEIGHT

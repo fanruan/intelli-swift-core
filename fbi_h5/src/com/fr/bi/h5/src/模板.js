@@ -23,7 +23,9 @@ import React, {
 
 import {Colors, Size, Template, Widget, Dimension, Target} from 'data'
 
-import {CenterLayout, Icon, Table} from 'base'
+import {Layout, CenterLayout, HorizontalCenterLayout, VerticalCenterLayout} from 'layout';
+
+import {Icon, Table} from 'base'
 
 import {MultiSelectorWidget} from 'widgets'
 
@@ -77,8 +79,6 @@ class TableComponent extends Component {
 }
 mixin.onClass(TableComponent, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
-    wrapper: {
-        flex: 1
-    }
+    wrapper: {}
 });
 export default TableComponent

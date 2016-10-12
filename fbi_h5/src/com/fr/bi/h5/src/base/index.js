@@ -1,13 +1,6 @@
 //export Wheeler from './Wheeler/Wheeler'
 //export ScrollableWheeler from './Wheeler/ScrollableWheeler'
 
-export HtapeLayout from './Layout/HtapeLayout'
-export VtapeLayout from './Layout/VtapeLayout'
-export GridLayout from './Layout/GridLayout'
-export CenterLayout from './Layout/CenterLayout'
-export VerticalCenterLayout from './Layout/VerticalCenterLayout'
-export HorizontalCenterLayout from './Layout/HorizontalCenterLayout'
-
 //export Flex from './FlexBoxGrid/Flex'
 //export Row from './FlexBoxGrid/Row'
 //export Col from './FlexBoxGrid/Col'

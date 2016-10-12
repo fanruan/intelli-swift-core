@@ -33,21 +33,17 @@ webpackJsonp([0],{
 
 	var _View2 = _interopRequireDefault(_View);
 
-	var _Portal = __webpack_require__(640);
+	__webpack_require__(939);
 
-	var _Portal2 = _interopRequireDefault(_Portal);
+	__webpack_require__(941);
 
-	__webpack_require__(938);
+	__webpack_require__(943);
 
-	__webpack_require__(940);
+	__webpack_require__(945);
 
-	__webpack_require__(942);
+	__webpack_require__(947);
 
-	__webpack_require__(944);
-
-	__webpack_require__(946);
-
-	__webpack_require__(948);
+	__webpack_require__(949);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2133,13 +2129,19 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _template = __webpack_require__(780);
+	var _base = __webpack_require__(780);
+
+	var _template = __webpack_require__(905);
 
 	var TodoActions = _interopRequireWildcard(_template);
 
-	var _Main = __webpack_require__(781);
+	var _Main = __webpack_require__(906);
 
 	var _Main2 = _interopRequireDefault(_Main);
+
+	var _Layout = __webpack_require__(938);
+
+	var _Layout2 = _interopRequireDefault(_Layout);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -2190,7 +2192,6 @@ webpackJsonp([0],{
 	//import UIExplorerApp from '../examples/UIExplorer/UIExplorerApp.web'
 	// import Game2048 from '../examples/2048/Game2048'
 
-
 	var App = function (_Component) {
 	    _inherits(App, _Component);
 
@@ -2236,7 +2237,11 @@ webpackJsonp([0],{
 	            return _lib2.default.createElement(
 	                _lib.View,
 	                { style: styles.wrapper },
-	                _lib2.default.createElement(_Main2.default, { $template: this.props.$template }),
+	                _lib2.default.createElement(
+	                    _base.Layout,
+	                    { box: 'mean', style: styles.wrapper },
+	                    _lib2.default.createElement(_Main2.default, { $template: this.props.$template })
+	                ),
 	                _lib2.default.createElement(_lib.Portal, null)
 	            );
 	        }
@@ -2281,7 +2286,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 780:
+/***/ 905:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2308,7 +2313,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 781:
+/***/ 906:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2337,13 +2342,15 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _Toolbar = __webpack_require__(782);
+	var _base = __webpack_require__(780);
+
+	var _Toolbar = __webpack_require__(907);
 
 	var _Toolbar2 = _interopRequireDefault(_Toolbar);
 
-	var _Layout = __webpack_require__(923);
+	var _LayoutComponent = __webpack_require__(923);
 
-	var _Layout2 = _interopRequireDefault(_Layout);
+	var _LayoutComponent2 = _interopRequireDefault(_LayoutComponent);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2476,14 +2483,14 @@ webpackJsonp([0],{
 	            if (name === 'index') {
 	                if (this.template.hasControlWidget()) {
 	                    return _lib2.default.createElement(
-	                        _lib.View,
-	                        { style: styles.index },
-	                        _lib2.default.createElement(_Layout2.default, _extends({ width: width, height: height - 50 - _data.Size.ITEM_HEIGHT }, props, {
+	                        _base.Layout,
+	                        { style: { height: '100%' }, dir: 'top', box: 'last' },
+	                        _lib2.default.createElement(_LayoutComponent2.default, _extends({ width: width, height: height - 50 - _data.Size.ITEM_HEIGHT }, props, {
 	                            navigator: navigationOperations })),
 	                        _lib2.default.createElement(_Toolbar2.default, _extends({}, props, { navigator: navigationOperations }))
 	                    );
 	                }
-	                return _lib2.default.createElement(_Layout2.default, _extends({ width: width, height: height }, props));
+	                return _lib2.default.createElement(_LayoutComponent2.default, _extends({ width: width, height: height }, props));
 	            }
 	            return _lib2.default.createElement(Component, _extends({
 	                width: width, height: height - 50
@@ -2547,11 +2554,7 @@ webpackJsonp([0],{
 	_reactMixin2.default.onClass(Main, _core.ReactComponentWithImmutableRenderMixin);
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
-	        flex: 1,
 	        paddingTop: 50
-	    },
-	    index: {
-	        flex: 1
 	    },
 	    sceneStyle: {
 	        backgroundColor: _data.Colors.TEXT
@@ -2583,7 +2586,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 782:
+/***/ 907:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2612,7 +2615,7 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(780);
 
 	var _widgets = __webpack_require__(908);
 
@@ -2756,7 +2759,7 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(780);
 
 	var _GroupHeader = __webpack_require__(910);
 
@@ -2924,7 +2927,7 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(780);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3057,7 +3060,7 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(780);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3269,7 +3272,7 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(780);
 
 	var _data = __webpack_require__(773);
 
@@ -3545,7 +3548,7 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(780);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3798,7 +3801,7 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(780);
 
 	var _data = __webpack_require__(773);
 
@@ -4041,7 +4044,7 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(780);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4684,7 +4687,7 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(780);
 
 	var _widgets = __webpack_require__(908);
 
@@ -4840,7 +4843,7 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(780);
 
 	var _data = __webpack_require__(773);
 
@@ -4951,7 +4954,7 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(780);
 
 	var _data = __webpack_require__(773);
 
@@ -5062,7 +5065,7 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(780);
 
 	var _widgets = __webpack_require__(908);
 
@@ -5175,7 +5178,7 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(780);
 
 	var _data = __webpack_require__(773);
 
@@ -5213,16 +5216,16 @@ webpackJsonp([0],{
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var Layout = function (_Component) {
-	    _inherits(Layout, _Component);
+	var LayoutComponent = function (_Component) {
+	    _inherits(LayoutComponent, _Component);
 
-	    function Layout(props, context) {
-	        _classCallCheck(this, Layout);
+	    function LayoutComponent(props, context) {
+	        _classCallCheck(this, LayoutComponent);
 
-	        return _possibleConstructorReturn(this, (Layout.__proto__ || Object.getPrototypeOf(Layout)).call(this, props, context));
+	        return _possibleConstructorReturn(this, (LayoutComponent.__proto__ || Object.getPrototypeOf(LayoutComponent)).call(this, props, context));
 	    }
 
-	    _createClass(Layout, [{
+	    _createClass(LayoutComponent, [{
 	        key: '_onPageScroll',
 	        value: function _onPageScroll() {}
 	    }, {
@@ -5341,31 +5344,25 @@ webpackJsonp([0],{
 	            }
 	            return _lib2.default.createElement(
 	                _lib.View,
-	                null,
-	                _lib2.default.createElement(
-	                    _lib.View,
-	                    { style: styles.wrapper },
-	                    component
-	                )
+	                { style: styles.wrapper },
+	                component
 	            );
 	        }
 	    }]);
 
-	    return Layout;
+	    return LayoutComponent;
 	}(_lib.Component);
 
-	Layout.propTypes = {};
+	LayoutComponent.propTypes = {};
 
-	_reactMixin2.default.onClass(Layout, _core.ReactComponentWithImmutableRenderMixin);
+	_reactMixin2.default.onClass(LayoutComponent, _core.ReactComponentWithImmutableRenderMixin);
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
-	        margin: 20
+	        padding: 20
 	    },
-	    viewPager: {
-	        flex: 1
-	    }
+	    viewPager: {}
 	});
-	exports.default = Layout;
+	exports.default = LayoutComponent;
 
 /***/ },
 
@@ -5400,7 +5397,7 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(780);
 
 	var _widgets = __webpack_require__(908);
 
@@ -5449,8 +5446,8 @@ webpackJsonp([0],{
 
 	            var widget = new _data.Widget($widget);
 	            return _lib2.default.createElement(
-	                _lib.View,
-	                { height: _data.Size.HEADER_HEIGHT, style: styles.header },
+	                _base.Layout,
+	                { style: styles.header },
 	                _lib2.default.createElement(
 	                    _lib.Text,
 	                    null,
@@ -5482,8 +5479,8 @@ webpackJsonp([0],{
 	            var wId = _props2.wId;
 
 	            return _lib2.default.createElement(
-	                _base.VtapeLayout,
-	                null,
+	                _base.Layout,
+	                { dir: 'top', box: 'first' },
 	                this._renderHeader(),
 	                _lib2.default.createElement(_ChartComponent2.default, {
 	                    width: width,
@@ -5512,9 +5509,7 @@ webpackJsonp([0],{
 	    header: {
 	        paddingLeft: 4,
 	        paddingRight: 4,
-	        flexDirection: 'row',
-	        alignItems: 'center',
-	        justifyContent: 'space-between'
+	        height: _data.Size.HEADER_HEIGHT
 	    }
 	});
 	exports.default = ChartPaneComponent;
@@ -5548,7 +5543,7 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(780);
 
 	var _data = __webpack_require__(773);
 
@@ -5669,7 +5664,7 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(780);
 
 	var _widgets = __webpack_require__(908);
 
@@ -5705,8 +5700,8 @@ webpackJsonp([0],{
 	        _base.Button,
 	        null,
 	        _lib2.default.createElement(
-	            _lib.View,
-	            { style: styles.sortableItems },
+	            _base.Layout,
+	            { main: 'justify', style: styles.sortableItems },
 	            _lib2.default.createElement(
 	                _lib.Text,
 	                null,
@@ -5783,8 +5778,8 @@ webpackJsonp([0],{
 
 	            var widget = new _data.Widget($widget);
 	            return _lib2.default.createElement(
-	                _lib.View,
-	                { height: _data.Size.HEADER_HEIGHT, style: styles.header },
+	                _base.Layout,
+	                { main: 'justify', style: styles.header },
 	                _lib2.default.createElement(
 	                    _base.TextLink,
 	                    { onPress: function onPress() {
@@ -5871,8 +5866,8 @@ webpackJsonp([0],{
 	                        }
 	                    } },
 	                _lib2.default.createElement(
-	                    _base.VtapeLayout,
-	                    { style: styles.wrapper },
+	                    _base.Layout,
+	                    { dir: 'top', box: 'first', style: styles.wrapper },
 	                    this._renderHeader(),
 	                    this._renderDialog()
 	                )
@@ -5912,21 +5907,15 @@ webpackJsonp([0],{
 	        bottom: 10
 	    },
 	    header: {
-	        flexDirection: 'row',
 	        paddingLeft: 20,
 	        paddingRight: 20,
-	        alignItems: 'center',
-	        justifyContent: 'space-between',
 	        color: _data.Colors.TEXT,
-	        backgroundColor: _data.Colors.HIGHLIGHT
+	        backgroundColor: _data.Colors.HIGHLIGHT,
+	        height: _data.Size.HEADER_HEIGHT
 	    },
 	    sortableItems: {
-	        flex: 1,
-	        flexDirection: 'row',
 	        paddingLeft: 20,
 	        paddingRight: 20,
-	        alignItems: 'center',
-	        justifyContent: 'space-between',
 	        height: _data.Size.ITEM_HEIGHT,
 	        borderBottomWidth: 1 / _lib.PixelRatio.get(),
 	        borderBottomColor: _data.Colors.BORDER
@@ -5935,7 +5924,6 @@ webpackJsonp([0],{
 	        opacity: 0.25
 	    },
 	    collapseHeader: {
-	        alignItems: 'left',
 	        paddingLeft: 20,
 	        backgroundColor: '#d8f2fd',
 	        height: _data.Size.ITEM_HEIGHT
@@ -6059,7 +6047,7 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(780);
 
 	var _widgets = __webpack_require__(908);
 
@@ -6108,8 +6096,8 @@ webpackJsonp([0],{
 
 	            var widget = new _data.Widget($widget);
 	            return _lib2.default.createElement(
-	                _lib.View,
-	                { height: _data.Size.HEADER_HEIGHT, style: styles.header },
+	                _base.Layout,
+	                { main: 'justify', style: styles.header },
 	                _lib2.default.createElement(
 	                    _lib.Text,
 	                    null,
@@ -6141,8 +6129,8 @@ webpackJsonp([0],{
 	            var wId = _props2.wId;
 
 	            return _lib2.default.createElement(
-	                _base.VtapeLayout,
-	                null,
+	                _base.Layout,
+	                { dir: 'top', box: 'fist' },
 	                this._renderHeader(),
 	                _lib2.default.createElement(_TableComponent2.default, {
 	                    width: width,
@@ -6171,9 +6159,7 @@ webpackJsonp([0],{
 	    header: {
 	        paddingLeft: 4,
 	        paddingRight: 4,
-	        flexDirection: 'row',
-	        alignItems: 'center',
-	        justifyContent: 'space-between'
+	        height: _data.Size.HEADER_HEIGHT
 	    }
 	});
 	exports.default = TablePaneComponent;
@@ -6211,7 +6197,7 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(780);
 
 	var _widgets = __webpack_require__(908);
 
@@ -6698,7 +6684,7 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(780);
 
 	var _widgets = __webpack_require__(908);
 
@@ -6804,7 +6790,7 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(780);
 
 	var _widgets = __webpack_require__(908);
 
@@ -6910,7 +6896,7 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(780);
 
 	var _widgets = __webpack_require__(908);
 
@@ -6959,7 +6945,7 @@ webpackJsonp([0],{
 
 	            var widget = new _data.Widget($widget);
 	            return _lib2.default.createElement(
-	                _lib.View,
+	                _base.Layout,
 	                { height: _data.Size.HEADER_HEIGHT, style: styles.header },
 	                _lib2.default.createElement(
 	                    _lib.Text,
@@ -6992,7 +6978,7 @@ webpackJsonp([0],{
 	            var wId = _props2.wId;
 
 	            return _lib2.default.createElement(
-	                _base.VtapeLayout,
+	                _base.Layout,
 	                null,
 	                this._renderHeader(),
 	                _lib2.default.createElement(_DetailTableComponent2.default, {
@@ -7022,9 +7008,7 @@ webpackJsonp([0],{
 	    header: {
 	        paddingLeft: 4,
 	        paddingRight: 4,
-	        flexDirection: 'row',
-	        alignItems: 'center',
-	        justifyContent: 'space-between'
+	        height: _data.Size.HEADER_HEIGHT
 	    }
 	});
 	exports.default = DetailTablePaneComponent;
@@ -7062,7 +7046,7 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(780);
 
 	var _widgets = __webpack_require__(908);
 
@@ -7321,7 +7305,7 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(780);
 
 	var _widgets = __webpack_require__(908);
 
@@ -7408,10 +7392,206 @@ webpackJsonp([0],{
 /***/ 938:
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactMixin = __webpack_require__(206);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _immutable = __webpack_require__(200);
+
+	var _immutable2 = _interopRequireDefault(_immutable);
+
+	var _core = __webpack_require__(329);
+
+	var _lib = __webpack_require__(208);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _data = __webpack_require__(773);
+
+	var _base = __webpack_require__(780);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var LayoutDemo = function (_Component) {
+	    _inherits(LayoutDemo, _Component);
+
+	    function LayoutDemo(props, context) {
+	        _classCallCheck(this, LayoutDemo);
+
+	        var _this = _possibleConstructorReturn(this, (LayoutDemo.__proto__ || Object.getPrototypeOf(LayoutDemo)).call(this, props, context));
+
+	        _this.state = {};
+	        return _this;
+	    }
+
+	    _createClass(LayoutDemo, [{
+	        key: '_getNextState',
+	        value: function _getNextState(props) {
+	            var state = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	        }
+	    }, {
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {}
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var props = _objectWithoutProperties(this.props, []);
+	            var state = _objectWithoutProperties(this.state, []);
+
+	            return _lib2.default.createElement(
+	                _lib.ScrollView,
+	                null,
+	                _lib2.default.createElement(
+	                    _base.CenterLayout,
+	                    { style: styles.item },
+	                    _lib2.default.createElement(
+	                        _lib.Text,
+	                        { style: { backgroundColor: _data.Colors.HIGHLIGHT } },
+	                        '123'
+	                    )
+	                ),
+	                _lib2.default.createElement(
+	                    _base.HorizontalCenterLayout,
+	                    { style: styles.item },
+	                    _lib2.default.createElement(
+	                        _lib.Text,
+	                        { style: { backgroundColor: _data.Colors.HIGHLIGHT } },
+	                        '123'
+	                    )
+	                ),
+	                _lib2.default.createElement(
+	                    _base.VerticalCenterLayout,
+	                    { style: styles.item },
+	                    _lib2.default.createElement(
+	                        _lib.Text,
+	                        { style: { backgroundColor: _data.Colors.HIGHLIGHT } },
+	                        '123'
+	                    )
+	                ),
+	                _lib2.default.createElement(
+	                    _base.Layout,
+	                    { dir: 'left', box: 'justify', style: styles.item },
+	                    _lib2.default.createElement(
+	                        _base.CenterLayout,
+	                        { style: { width: 100, backgroundColor: _data.Colors.PRESS } },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            null,
+	                            '123'
+	                        )
+	                    ),
+	                    _lib2.default.createElement(
+	                        _base.CenterLayout,
+	                        { style: { backgroundColor: _data.Colors.HIGHLIGHT } },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            null,
+	                            '456'
+	                        )
+	                    ),
+	                    _lib2.default.createElement(
+	                        _base.CenterLayout,
+	                        { style: { width: 100, backgroundColor: _data.Colors.PRESS } },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            null,
+	                            '789'
+	                        )
+	                    )
+	                ),
+	                _lib2.default.createElement(
+	                    _base.Layout,
+	                    { dir: 'left', main: 'justify', style: styles.item },
+	                    _lib2.default.createElement(
+	                        _base.CenterLayout,
+	                        { style: { width: 100, backgroundColor: _data.Colors.PRESS } },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            null,
+	                            '123'
+	                        )
+	                    ),
+	                    _lib2.default.createElement(
+	                        _base.CenterLayout,
+	                        { style: { backgroundColor: _data.Colors.HIGHLIGHT } },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            null,
+	                            '456'
+	                        )
+	                    ),
+	                    _lib2.default.createElement(
+	                        _base.CenterLayout,
+	                        { style: { width: 100, backgroundColor: _data.Colors.PRESS } },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            null,
+	                            '789'
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {}
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate(nextProps, nextState) {}
+	    }, {
+	        key: 'componentDidUpdate',
+	        value: function componentDidUpdate(prevProps, prevState) {}
+	    }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {}
+	    }]);
+
+	    return LayoutDemo;
+	}(_lib.Component);
+
+	LayoutDemo.propTypes = {};
+	LayoutDemo.defaultProps = {};
+
+	_reactMixin2.default.onClass(LayoutDemo, _core.ReactComponentWithImmutableRenderMixin);
+	var styles = _lib.StyleSheet.create({
+	    item: {
+	        height: 100,
+	        borderBottomColor: _data.Colors.BORDER,
+	        borderBottomWidth: 1 / _lib.PixelRatio.get()
+	    }
+	});
+	exports.default = LayoutDemo;
+
+/***/ },
+
+/***/ 939:
+/***/ function(module, exports, __webpack_require__) {
+
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(939);
+	var content = __webpack_require__(940);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -7432,7 +7612,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 939:
+/***/ 940:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -7447,13 +7627,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 940:
+/***/ 941:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(941);
+	var content = __webpack_require__(942);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -7474,7 +7654,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 941:
+/***/ 942:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -7489,13 +7669,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 942:
+/***/ 943:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(943);
+	var content = __webpack_require__(944);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -7516,7 +7696,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 943:
+/***/ 944:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -7531,13 +7711,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 944:
+/***/ 945:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(945);
+	var content = __webpack_require__(946);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -7558,7 +7738,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 945:
+/***/ 946:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -7573,13 +7753,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 946:
+/***/ 947:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(947);
+	var content = __webpack_require__(948);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -7600,7 +7780,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 947:
+/***/ 948:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -7615,13 +7795,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 948:
+/***/ 949:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(949);
+	var content = __webpack_require__(950);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -7642,7 +7822,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 949:
+/***/ 950:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();

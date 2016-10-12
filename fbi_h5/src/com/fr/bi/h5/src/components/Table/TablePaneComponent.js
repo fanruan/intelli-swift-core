@@ -15,7 +15,7 @@ import React, {
 
 import {Size, Template, Widget} from 'data'
 
-import {Table, Dialog, IconLink, HtapeLayout, VtapeLayout} from 'base'
+import {Layout, Table, Dialog, IconLink} from 'base'
 import {TableWidget} from 'widgets';
 
 import TableComponent from './TableComponent';
@@ -48,7 +48,7 @@ class TablePaneComponent extends Component {
     _renderHeader() {
         const {$widget, wId} = this.props;
         const widget = new Widget($widget);
-        return <View height={Size.HEADER_HEIGHT} style={styles.header}>
+        return <Layout main='justify' style={styles.header}>
             <Text>{widget.getName()}</Text>
             <IconLink className='setting-font' onPress={()=> {
                 Portal.showModal('TableComponent', <SettingsComponent
@@ -64,12 +64,12 @@ class TablePaneComponent extends Component {
                     }}
                 />);
             }}/>
-        </View>
+        </Layout>
     }
 
     render() {
         const {width, height, $widget, wId} = this.props;
-        return <VtapeLayout>
+        return <Layout dir='top' box='fist'>
             {this._renderHeader()}
             <TableComponent
                 width={width}
@@ -78,7 +78,7 @@ class TablePaneComponent extends Component {
                 wId={wId}
             >
             </TableComponent>
-        </VtapeLayout>
+        </Layout>
     }
 }
 mixin.onClass(TablePaneComponent, ReactComponentWithImmutableRenderMixin);
@@ -90,9 +90,7 @@ const styles = StyleSheet.create({
     header: {
         paddingLeft: 4,
         paddingRight: 4,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between'
+        height: Size.HEADER_HEIGHT
     }
 });
 export default TablePaneComponent

@@ -4,7 +4,7 @@ var srcPath = path.join(__dirname, '/src');
 module.exports = {
     entry: {
         entry: `${srcPath}/index.js`,
-        vendor: ['react', 'react-dom', 'core', 'data', 'lib', 'base']
+        vendor: ['react', 'react-dom', 'core', 'data', 'lib', 'layout', 'base']
     },
     output: {
         filename: "[name].js",
