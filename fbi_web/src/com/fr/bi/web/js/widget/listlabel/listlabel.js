@@ -76,10 +76,10 @@ BI.ListLabel = BI.inherit(BI.Widget, {
                 right:0,
                 top:0,
                 bottom:0,
-                width: 40
+                width: 55
             }, {
                 el: this.right,
-                left: 50,
+                left: 60,
                 right:0,
                 top:0,
                 bottom:0
