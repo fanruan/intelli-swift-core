@@ -10,7 +10,7 @@ import React, {
     View,
     Fetch
 } from 'lib'
-import {IconLink, HtapeLayout, VtapeLayout} from 'base'
+import {IconLink} from 'base'
 import {Size, Template, Widget} from 'data'
 
 

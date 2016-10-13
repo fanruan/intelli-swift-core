@@ -14,8 +14,8 @@ import React, {
 } from 'lib'
 
 import {Size, Template, Widget} from 'data'
-
-import {Table, Dialog, IconLink, HtapeLayout, VtapeLayout} from 'base'
+import {Layout} from 'layout'
+import {Table, Dialog, IconLink} from 'base'
 import {TableWidget} from 'widgets';
 
 import DetailTableComponent from './DetailTableComponent';
@@ -48,7 +48,7 @@ class DetailTablePaneComponent extends Component {
     _renderHeader() {
         const {$widget, wId} = this.props;
         const widget = new Widget($widget);
-        return <View height={Size.HEADER_HEIGHT} style={styles.header}>
+        return <Layout main='justify' cross='center' height={Size.HEADER_HEIGHT} style={styles.header}>
             <Text>{widget.getName()}</Text>
             <IconLink className='setting-font' onPress={()=> {
                 Portal.showModal('DetailTableComponent', <SettingsComponent
@@ -64,12 +64,12 @@ class DetailTablePaneComponent extends Component {
                     }}
                 />);
             }}/>
-        </View>
+        </Layout>
     }
 
     render() {
         const {width, height, $widget, wId} = this.props;
-        return <VtapeLayout>
+        return <Layout>
             {this._renderHeader()}
             <DetailTableComponent
                 width={width}
@@ -78,7 +78,7 @@ class DetailTablePaneComponent extends Component {
                 wId={wId}
             >
             </DetailTableComponent>
-        </VtapeLayout>
+        </Layout>
     }
 }
 mixin.onClass(DetailTablePaneComponent, ReactComponentWithImmutableRenderMixin);
@@ -90,9 +90,7 @@ const styles = StyleSheet.create({
     header: {
         paddingLeft: 4,
         paddingRight: 4,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between'
+        height: Size.HEADER_HEIGHT
     }
 });
 export default DetailTablePaneComponent

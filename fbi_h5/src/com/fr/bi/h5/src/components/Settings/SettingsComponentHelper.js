@@ -6,28 +6,45 @@ export default class SettingsComponentHelper {
 
     }
 
-    getDimensionsItems() {
+    getViewItems() {
         const result = [];
-        each(this._getDimensionIds(), (dId)=> {
+        each(this._getViewIds(), (viewId)=> {
+            result.push({
+                text: '行表头',
+                viewId: viewId,
+            })
+        });
+        return result;
+    }
+
+    getDimensionsItems(viewId) {
+        const result = [];
+        each(this._getDimensionIds(viewId), (dId)=> {
             const dim = this.widget.getDimensionOrTargetById(dId);
             result.push({
                 text: dim.getName(),
+                viewId: viewId,
                 dId: dId
             })
         });
         return result;
     }
 
-    _getDimensionIds() {
+    _getViewIds() {
         const view = this.widget.getWidgetView();
-        return values(view)[0];
+        return keys(view);
     }
 
-    doMove(oldIndex, newIndex) {
+    _getDimensionIds(viewId) {
         const view = this.widget.getWidgetView();
-        const items = this._getDimensionIds();
+        return view[viewId] || [];
+    }
+
+    doMove(viewId, oldIndex, newIndex) {
+        const view = this.widget.getWidgetView();
+        const items = this._getDimensionIds(viewId);
         arrayMove(items, oldIndex, newIndex);
-        view[keys(view)[0]] = items;
+        view[viewId] = items;
         this.widget.setWidgetView(view);
         return this.widget.$get();
     }

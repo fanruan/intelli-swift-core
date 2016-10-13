@@ -4,7 +4,7 @@ import Immutable from 'immutable'
 
 import {
     ReactComponentWithPureRenderMixin, ReactComponentWithImmutableRenderMixin,
-    cn, sc, math, isNil, emptyFunction, shallowEqual, immutableShallowEqual, isEqual, isEmpty, each,
+    cn, sc, math, isNil, emptyFunction, shallowEqual, immutableShallowEqual, isEqual, isEmpty, each, clone,
     translateDOMPositionXY, requestAnimationFrame
 } from 'core'
 import React, {
@@ -18,12 +18,24 @@ import React, {
     Fetch,
     Promise,
     ScrollView,
-    TouchableHighlight
+    TouchableHighlight,
+    TouchableWithoutFeedback
 } from 'lib'
 
 import {Colors, Size, Template, Widget, Dimension, Target} from 'data'
 
-import {CenterLayout, VtapeLayout, HtapeLayout, IconButton, Icon, TextLink, Table, Overlay, Sortable} from 'base'
+import {Layout, CenterLayout} from 'layout'
+import {
+    Button,
+    IconButton,
+    TextButton,
+    Icon,
+    TextLink,
+    Table,
+    Overlay,
+    Sortable,
+    Collapsible
+} from 'base'
 
 import {MultiSelectorWidget} from 'widgets'
 
@@ -33,19 +45,22 @@ import SettingsComponentHelper from './SettingsComponentHelper'
 const {SortableContainer, SortableElement, SortableHandle, arrayMove} = Sortable;
 
 const DragHandle = SortableHandle(() => {
-    return <IconButton style={styles.dragHandler} className={'drag-handler-icon'} iconWidth={18} iconHeight={18}/>
+    return <IconButton effect={false} style={styles.dragHandler} className={'drag-handler-icon'} iconWidth={18}
+                       iconHeight={18}/>
 });
 
 const SortableItem = SortableElement(({value}) => {
-    return <View style={styles.sortableItems}>
-        <Text>{value.text}</Text>
-        <DragHandle/>
-    </View>
+    return <Button>
+        <Layout main='justify' cross='center' style={styles.sortableItems}>
+            <Text>{value.text}</Text>
+            <DragHandle/>
+        </Layout>
+    </Button>
 });
 
 const SortableList = SortableContainer(({items}) => {
     return (
-        <ScrollView>
+        <ScrollView style={{height: Size.ITEM_HEIGHT * items.length}}>
             {items.map((value, index) =>
                 <SortableItem key={`item-${value.dId}`} index={index} value={value}/>
             )}
@@ -70,7 +85,8 @@ class SettingsComponent extends Component {
     };
 
     state = {
-        $widget: this.props.$widget
+        $widget: this.props.$widget,
+        collapsed: {}
     };
 
     _getNextState(props, state = {}) {
@@ -94,7 +110,7 @@ class SettingsComponent extends Component {
     _renderHeader() {
         const {$widget} = this.props;
         const widget = new Widget($widget);
-        return <View height={Size.HEADER_HEIGHT} style={styles.header}>
+        return <Layout main='justify' cross='center' style={styles.header}>
             <TextLink onPress={()=> {
                 this.refs['overlay'].close();
             }} style={styles.back}>{'返回'}</TextLink>
@@ -102,23 +118,44 @@ class SettingsComponent extends Component {
             <TextLink onPress={()=> {
                 this.refs['overlay'].close(true);
             }} style={styles.complete}>{'完成'}</TextLink>
-        </View>
+        </Layout>
     }
 
-    _onSortEnd = ({oldIndex, newIndex}) => {
-        const $widget = this._helper.doMove(oldIndex, newIndex);
+    _onSortEnd = ({oldIndex, newIndex, viewId}) => {
+        const $widget = this._helper.doMove(viewId, oldIndex, newIndex);
         this.setState({
             $widget: $widget
         });
     };
 
     _renderDialog() {
-        return <SortableList items={this._helper.getDimensionsItems()}
-                             onSortEnd={this._onSortEnd}
-                             useDragHandle={true}
-                             lockAxis='y'
-                             helperClass='sortable-helper'
-        />;
+        const array = [];
+        each(this._helper.getViewItems(), (viewItem)=> {
+            array.push(<TextButton textAlign='left' style={styles.collapseHeader} onPress={()=> {
+                const collapsed = clone(this.state.collapsed);
+                collapsed[viewItem.viewId] = !collapsed[viewItem.viewId];
+                this.setState({
+                    collapsed
+                })
+            }}>{viewItem.text}</TextButton>);
+            const items = this._helper.getDimensionsItems(viewItem.viewId);
+            array.push(<Collapsible collapsed={this.state.collapsed[viewItem.viewId] || false}>
+                <SortableList items={items}
+                              onSortEnd={({oldIndex, newIndex})=> {
+                                  this._onSortEnd({
+                                      oldIndex, newIndex, viewId: viewItem.viewId
+                                  });
+                              }}
+                              useDragHandle={true}
+                              lockAxis='y'
+                              helperClass='sortable-helper'
+                />
+            </Collapsible>)
+        });
+
+        return <ScrollView>
+            {array}
+        </ScrollView>;
     }
 
     render() {
@@ -132,10 +169,10 @@ class SettingsComponent extends Component {
                 this.props.onReturn();
             }
         }}>
-            <VtapeLayout style={styles.wrapper}>
+            <Layout dir='top' box='first' style={styles.wrapper}>
                 {this._renderHeader()}
                 {this._renderDialog()}
-            </VtapeLayout>
+            </Layout>
         </Overlay>
     }
 
@@ -163,26 +200,26 @@ const styles = StyleSheet.create({
         bottom: 10
     },
     header: {
-        flexDirection: 'row',
         paddingLeft: 20,
         paddingRight: 20,
-        alignItems: 'center',
-        justifyContent: 'space-between',
         color: Colors.TEXT,
-        backgroundColor: Colors.HIGHLIGHT
+        backgroundColor: Colors.HIGHLIGHT,
+        height: Size.HEADER_HEIGHT
     },
     sortableItems: {
-        flexDirection: 'row',
         paddingLeft: 20,
         paddingRight: 20,
-        alignItems: 'center',
-        justifyContent: 'space-between',
         height: Size.ITEM_HEIGHT,
         borderBottomWidth: 1 / PixelRatio.get(),
         borderBottomColor: Colors.BORDER
     },
     dragHandler: {
         opacity: 0.25
+    },
+    collapseHeader: {
+        paddingLeft: 20,
+        backgroundColor: '#d8f2fd',
+        height: Size.ITEM_HEIGHT
     }
 });
 export default SettingsComponent

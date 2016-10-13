@@ -18,10 +18,9 @@ import React, {
     TouchableWithoutFeedback
 } from 'lib'
 
-import Icon from '../Icon/Icon'
 import {Colors} from 'data'
 
-class IconButton extends Component {
+class Button extends Component {
     constructor(props, context) {
         super(props, context);
         const {selected} = props;
@@ -76,51 +75,40 @@ class IconButton extends Component {
     render() {
         const {...props} = this.props, {...state} = this.state;
         if (props.disabled === true) {
-            return <View className={cn(props.className, 'react-view', 'base-disabled', cn({
-                active: state.selected
-            }))}
+            return <View className={cn(props.className, 'react-view', 'base-disabled')}
                          style={[styles.wrapper, styles.disabled, props.style]}>
-                <Icon width={props.iconWidth} height={props.iconHeight}/>
+                {props.children}
             </View>
         }
         if (props.invalid === true) {
-            return <View className={cn(props.className, 'react-view', 'base-invalid', cn({
-                active: state.selected
-            }))}
+            return <View className={cn(props.className, 'react-view', 'base-invalid')}
                          style={[styles.wrapper, props.style]}>
-                <Icon width={props.iconWidth} height={props.iconHeight}/>
+                {props.children}
             </View>
         }
         if (props.effect === true) {
             const {paddingLeft, paddingRight, paddingTop, paddingBottom, marginTop, marginBottom, marginLeft, marginRight, ...other} = props.style || {};
             return <TouchableHighlight style={[{...other}]} onPress={this._onPress.bind(this)}
                                        underlayColor={props.underlayColor || Colors.PRESS}>
-                <View className={cn(props.className, 'react-view', cn({
-                    active: state.selected
-                }))} style={[styles.wrapper, {flex: 1}, props.style]}>
-                    <Icon width={props.iconWidth} height={props.iconHeight}/>
+                <View className={cn(props.className, 'react-view')} style={[styles.wrapper, {flex: 1}, props.style]}>
+                    {props.children}
                 </View>
             </TouchableHighlight>
         }
         return <TouchableWithoutFeedback onPress={this._onPress.bind(this)}>
-            <View className={cn(props.className, 'react-view', cn({
-                active: state.selected
-            }))} style={[styles.wrapper, props.style]}>
-                <Icon width={props.iconWidth} height={props.iconHeight}/>
+            <View className={cn(props.className, 'react-view')} style={[styles.wrapper, props.style]}>
+                {props.children}
             </View>
         </TouchableWithoutFeedback>
     }
-
 }
-mixin.onClass(IconButton, PureRenderMixin);
+mixin.onClass(Button, PureRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        color: Colors.HIGHLIGHT
+
     },
     disabled: {
         color: Colors.DISABLED
     }
 });
-export default IconButton
+export default Button

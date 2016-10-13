@@ -33,21 +33,17 @@ webpackJsonp([0],{
 
 	var _View2 = _interopRequireDefault(_View);
 
-	var _Portal = __webpack_require__(640);
+	__webpack_require__(940);
 
-	var _Portal2 = _interopRequireDefault(_Portal);
+	__webpack_require__(942);
 
-	__webpack_require__(937);
+	__webpack_require__(944);
 
-	__webpack_require__(939);
+	__webpack_require__(946);
 
-	__webpack_require__(941);
+	__webpack_require__(948);
 
-	__webpack_require__(943);
-
-	__webpack_require__(945);
-
-	__webpack_require__(947);
+	__webpack_require__(950);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2133,13 +2129,19 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _template = __webpack_require__(780);
+	var _layout = __webpack_require__(780);
+
+	var _template = __webpack_require__(787);
 
 	var TodoActions = _interopRequireWildcard(_template);
 
-	var _Main = __webpack_require__(781);
+	var _Main = __webpack_require__(788);
 
 	var _Main2 = _interopRequireDefault(_Main);
+
+	var _Layout = __webpack_require__(939);
+
+	var _Layout2 = _interopRequireDefault(_Layout);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -2190,7 +2192,6 @@ webpackJsonp([0],{
 	//import UIExplorerApp from '../examples/UIExplorer/UIExplorerApp.web'
 	// import Game2048 from '../examples/2048/Game2048'
 
-
 	var App = function (_Component) {
 	    _inherits(App, _Component);
 
@@ -2235,8 +2236,12 @@ webpackJsonp([0],{
 	        value: function render() {
 	            return _lib2.default.createElement(
 	                _lib.View,
-	                { style: styles.wrapper },
-	                _lib2.default.createElement(_Main2.default, { $template: this.props.$template }),
+	                { left: 0, right: 0, top: 0, bottom: 0, style: styles.wrapper },
+	                _lib2.default.createElement(
+	                    _layout.Layout,
+	                    { box: 'mean', style: styles.wrapper },
+	                    _lib2.default.createElement(_Main2.default, { $template: this.props.$template })
+	                ),
 	                _lib2.default.createElement(_lib.Portal, null)
 	            );
 	        }
@@ -2281,7 +2286,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 780:
+/***/ 787:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2308,7 +2313,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 781:
+/***/ 788:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2337,13 +2342,15 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _Toolbar = __webpack_require__(782);
+	var _layout = __webpack_require__(780);
+
+	var _Toolbar = __webpack_require__(789);
 
 	var _Toolbar2 = _interopRequireDefault(_Toolbar);
 
-	var _Layout = __webpack_require__(922);
+	var _LayoutComponent = __webpack_require__(924);
 
-	var _Layout2 = _interopRequireDefault(_Layout);
+	var _LayoutComponent2 = _interopRequireDefault(_LayoutComponent);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2384,11 +2391,12 @@ webpackJsonp([0],{
 	                    }
 
 	                    return _lib2.default.createElement(
-	                        _lib.TouchableOpacity,
+	                        _lib.TouchableHighlight,
 	                        {
 	                            onPress: function onPress() {
 	                                return navigator.pop();
 	                            },
+	                            underlayColor: _data.Colors.PRESS,
 	                            style: styles.navBarLeftButton },
 	                        _lib2.default.createElement(
 	                            _lib.Text,
@@ -2404,7 +2412,7 @@ webpackJsonp([0],{
 
 	                    if (route.name === 'widget') {
 	                        return _lib2.default.createElement(
-	                            _lib.TouchableOpacity,
+	                            _lib.TouchableHighlight,
 	                            {
 	                                onPress: function onPress() {
 	                                    var prevRoute = navState.routeStack[navState.presentedIndex - 1];
@@ -2415,6 +2423,7 @@ webpackJsonp([0],{
 	                                        navigator.pop();
 	                                    }
 	                                },
+	                                underlayColor: _data.Colors.PRESS,
 	                                style: styles.navBarRightButton },
 	                            _lib2.default.createElement(
 	                                _lib.Text,
@@ -2426,7 +2435,7 @@ webpackJsonp([0],{
 
 	                    if (route.name === 'list') {
 	                        return _lib2.default.createElement(
-	                            _lib.TouchableOpacity,
+	                            _lib.TouchableHighlight,
 	                            {
 	                                onPress: function onPress() {
 	                                    var prevRoute = navState.routeStack[navState.presentedIndex - 1];
@@ -2438,6 +2447,7 @@ webpackJsonp([0],{
 	                                        navigator.pop();
 	                                    }
 	                                },
+	                                underlayColor: _data.Colors.PRESS,
 	                                style: styles.navBarRightButton },
 	                            _lib2.default.createElement(
 	                                _lib.Text,
@@ -2473,14 +2483,14 @@ webpackJsonp([0],{
 	            if (name === 'index') {
 	                if (this.template.hasControlWidget()) {
 	                    return _lib2.default.createElement(
-	                        _lib.View,
-	                        { style: styles.index },
-	                        _lib2.default.createElement(_Layout2.default, _extends({ width: width, height: height - 50 - _data.Size.ITEM_HEIGHT }, props, {
+	                        _layout.Layout,
+	                        { style: { height: '100%' }, dir: 'top', box: 'last' },
+	                        _lib2.default.createElement(_LayoutComponent2.default, _extends({ width: width, height: height - 50 - _data.Size.ITEM_HEIGHT }, props, {
 	                            navigator: navigationOperations })),
 	                        _lib2.default.createElement(_Toolbar2.default, _extends({}, props, { navigator: navigationOperations }))
 	                    );
 	                }
-	                return _lib2.default.createElement(_Layout2.default, _extends({ width: width, height: height }, props));
+	                return _lib2.default.createElement(_LayoutComponent2.default, _extends({ width: width, height: height }, props));
 	            }
 	            return _lib2.default.createElement(Component, _extends({
 	                width: width, height: height - 50
@@ -2544,11 +2554,7 @@ webpackJsonp([0],{
 	_reactMixin2.default.onClass(Main, _core.ReactComponentWithImmutableRenderMixin);
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
-	        flex: 1,
 	        paddingTop: 50
-	    },
-	    index: {
-	        flex: 1
 	    },
 	    sceneStyle: {
 	        backgroundColor: _data.Colors.TEXT
@@ -2580,7 +2586,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 782:
+/***/ 789:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2609,11 +2615,13 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _layout = __webpack_require__(780);
 
-	var _widgets = __webpack_require__(907);
+	var _base = __webpack_require__(790);
 
-	var _Controls = __webpack_require__(918);
+	var _widgets = __webpack_require__(909);
+
+	var _Controls = __webpack_require__(920);
 
 	var _Controls2 = _interopRequireDefault(_Controls);
 
@@ -2691,7 +2699,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 907:
+/***/ 909:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2701,15 +2709,15 @@ webpackJsonp([0],{
 	});
 	exports.MultiTreeSelectorWidget = exports.MultiSelectorWidget = exports.TableWidget = undefined;
 
-	var _TableWidget2 = __webpack_require__(908);
+	var _TableWidget2 = __webpack_require__(910);
 
 	var _TableWidget3 = _interopRequireDefault(_TableWidget2);
 
-	var _MultiSelectorWidget2 = __webpack_require__(911);
+	var _MultiSelectorWidget2 = __webpack_require__(913);
 
 	var _MultiSelectorWidget3 = _interopRequireDefault(_MultiSelectorWidget2);
 
-	var _MultiTreeSelectorWidget2 = __webpack_require__(914);
+	var _MultiTreeSelectorWidget2 = __webpack_require__(916);
 
 	var _MultiTreeSelectorWidget3 = _interopRequireDefault(_MultiTreeSelectorWidget2);
 
@@ -2722,7 +2730,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 908:
+/***/ 910:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2753,13 +2761,13 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(790);
 
-	var _GroupHeader = __webpack_require__(909);
+	var _GroupHeader = __webpack_require__(911);
 
 	var _GroupHeader2 = _interopRequireDefault(_GroupHeader);
 
-	var _GroupItems = __webpack_require__(910);
+	var _GroupItems = __webpack_require__(912);
 
 	var _GroupItems2 = _interopRequireDefault(_GroupItems);
 
@@ -2896,7 +2904,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 909:
+/***/ 911:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2921,7 +2929,7 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(790);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3029,7 +3037,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 910:
+/***/ 912:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3054,7 +3062,7 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(790);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3233,7 +3241,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 911:
+/***/ 913:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3266,15 +3274,17 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _layout = __webpack_require__(780);
+
+	var _base = __webpack_require__(790);
 
 	var _data = __webpack_require__(773);
 
-	var _Item = __webpack_require__(912);
+	var _Item = __webpack_require__(914);
 
 	var _Item2 = _interopRequireDefault(_Item);
 
-	var _MultiSelectorWidgetHelper = __webpack_require__(913);
+	var _MultiSelectorWidgetHelper = __webpack_require__(915);
 
 	var _MultiSelectorWidgetHelper2 = _interopRequireDefault(_MultiSelectorWidgetHelper);
 
@@ -3379,8 +3389,8 @@ webpackJsonp([0],{
 	            //    timeScrollStateLastsForAfterUserScrolls={1000}
 	            //    ></Infinite>;
 	            return _lib2.default.createElement(
-	                _base.VtapeLayout,
-	                { style: styles.wrapper },
+	                _layout.Layout,
+	                { dir: 'top', box: 'last', style: styles.wrapper },
 	                _lib2.default.createElement(_base.VirtualScroll, {
 	                    width: props.width,
 	                    height: props.height - _data.Size.ITEM_HEIGHT,
@@ -3393,7 +3403,7 @@ webpackJsonp([0],{
 	                }),
 	                _lib2.default.createElement(
 	                    _lib.View,
-	                    { height: _data.Size.ITEM_HEIGHT, style: styles.toolbar },
+	                    { style: styles.toolbar },
 	                    _lib2.default.createElement(
 	                        _base.TextButton,
 	                        { style: { flex: 1 },
@@ -3429,11 +3439,19 @@ webpackJsonp([0],{
 	            var _this5 = this;
 
 	            if (this.state.hasNext === true) {
-	                return _lib2.default.createElement(_base.TextButton, { style: { height: _data.Size.ITEM_HEIGHT }, text: '点击加载更多数据', onPress: function onPress() {
-	                        _this5._fetchData();
-	                    } });
+	                return _lib2.default.createElement(
+	                    _base.TextButton,
+	                    { style: { height: _data.Size.ITEM_HEIGHT }, onPress: function onPress() {
+	                            _this5._fetchData();
+	                        } },
+	                    '点击加载更多数据'
+	                );
 	            } else {
-	                return _lib2.default.createElement(_base.TextButton, { style: { height: _data.Size.ITEM_HEIGHT }, disabled: true, text: '无更多数据' });
+	                return _lib2.default.createElement(
+	                    _base.TextButton,
+	                    { style: { height: _data.Size.ITEM_HEIGHT }, disabled: true },
+	                    '无更多数据'
+	                );
 	            }
 	        }
 	    }, {
@@ -3491,19 +3509,18 @@ webpackJsonp([0],{
 
 	_reactMixin2.default.onClass(MultiSelectorWidget, _reactAddonsPureRenderMixin2.default);
 	var styles = _lib.StyleSheet.create({
-	    wrapper: {
-	        flex: 1
-	    },
+	    wrapper: {},
 	    toolbar: {
 	        borderTopWidth: 1 / _lib.PixelRatio.get(),
-	        borderTopColor: _data.Colors.BORDER
+	        borderTopColor: _data.Colors.BORDER,
+	        height: _data.Size.ITEM_HEIGHT
 	    }
 	});
 	exports.default = MultiSelectorWidget;
 
 /***/ },
 
-/***/ 912:
+/***/ 914:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3534,7 +3551,9 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _layout = __webpack_require__(780);
+
+	var _base = __webpack_require__(790);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3599,13 +3618,13 @@ webpackJsonp([0],{
 	            var state = _objectWithoutProperties(this.state, []);
 
 	            return _lib2.default.createElement(
-	                _lib.TouchableHighlight,
-	                { onPress: this._onPress.bind(this), underlayColor: _data.Colors.PRESS },
+	                _base.Button,
+	                { onPress: this._onPress.bind(this) },
 	                _lib2.default.createElement(
-	                    _lib.View,
-	                    { style: [styles.row] },
+	                    _layout.Layout,
+	                    { box: 'last', style: [styles.row] },
 	                    _lib2.default.createElement(
-	                        _lib.View,
+	                        _layout.VerticalCenterLayout,
 	                        { style: styles.text },
 	                        _lib2.default.createElement(
 	                            _lib.Text,
@@ -3614,8 +3633,8 @@ webpackJsonp([0],{
 	                        )
 	                    ),
 	                    _lib2.default.createElement(
-	                        _lib.View,
-	                        { style: [styles.icon, { width: _data.Size.ITEM_HEIGHT }] },
+	                        _layout.CenterLayout,
+	                        { style: [{ width: _data.Size.ITEM_HEIGHT }] },
 	                        _lib2.default.createElement(_base.Checkbox, { checked: this.state.selected, onChecked: this._onPress.bind(this) })
 	                    )
 	                )
@@ -3637,29 +3656,21 @@ webpackJsonp([0],{
 	_reactMixin2.default.onClass(Item, _reactAddonsPureRenderMixin2.default);
 	var styles = _lib.StyleSheet.create({
 	    row: {
-	        flexDirection: 'row',
 	        height: _data.Size.ITEM_HEIGHT,
 	        borderBottomColor: _data.Colors.SPLIT,
 	        borderBottomWidth: 1 / _lib.PixelRatio.get()
 	    },
 
 	    text: {
-	        justifyContent: 'center',
-	        flexGrow: 1,
 	        paddingLeft: 20,
 	        paddingRight: 20
-	    },
-
-	    icon: {
-	        justifyContent: 'center',
-	        alignItems: 'center'
 	    }
 	});
 	exports.default = Item;
 
 /***/ },
 
-/***/ 913:
+/***/ 915:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3754,7 +3765,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 914:
+/***/ 916:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3787,19 +3798,19 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(790);
 
 	var _data = __webpack_require__(773);
 
-	var _Item = __webpack_require__(915);
+	var _Item = __webpack_require__(917);
 
 	var _Item2 = _interopRequireDefault(_Item);
 
-	var _MultiTreeSelectorWidgetHelper = __webpack_require__(916);
+	var _MultiTreeSelectorWidgetHelper = __webpack_require__(918);
 
 	var _MultiTreeSelectorWidgetHelper2 = _interopRequireDefault(_MultiTreeSelectorWidgetHelper);
 
-	var _MultiTreeSelectorWidgetAsyncHelper = __webpack_require__(917);
+	var _MultiTreeSelectorWidgetAsyncHelper = __webpack_require__(919);
 
 	var _MultiTreeSelectorWidgetAsyncHelper2 = _interopRequireDefault(_MultiTreeSelectorWidgetAsyncHelper);
 
@@ -3999,7 +4010,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 915:
+/***/ 917:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4030,7 +4041,9 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _layout = __webpack_require__(780);
+
+	var _base = __webpack_require__(790);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4100,28 +4113,22 @@ webpackJsonp([0],{
 
 	            var row = void 0;
 	            if (!props.isLeaf) {
-	                row = _lib2.default.createElement(
-	                    _lib.View,
-	                    { className: (0, _core.cn)({
-	                            'active': state.expanded
-	                        }, 'node-fold-font', 'react-view'), style: [styles.icon, {
-	                            width: 44,
-	                            marginLeft: props.layer * 44
-	                        }] },
-	                    _lib2.default.createElement(_base.Icon, { width: 16, height: 16 })
-	                );
+	                row = _lib2.default.createElement(_base.IconButton, { className: 'node-fold-font', invalid: true, selected: state.expanded, style: [styles.icon, {
+	                        width: 44,
+	                        marginLeft: props.layer * 44
+	                    }] });
 	            }
 	            return _lib2.default.createElement(
-	                _lib.TouchableHighlight,
-	                { onPress: this._onExpand.bind(this), underlayColor: _data.Colors.PRESS },
+	                _base.Button,
+	                { onPress: this._onExpand.bind(this) },
 	                _lib2.default.createElement(
-	                    _lib.View,
-	                    { style: [styles.row] },
-	                    row,
+	                    _layout.Layout,
+	                    { box: 'justify', style: [styles.row] },
+	                    row ? row : _lib2.default.createElement(_lib.View, null),
 	                    _lib2.default.createElement(
-	                        _lib.View,
-	                        { style: [styles.text, {
-	                                marginLeft: (0, _core.isNil)(row) ? (props.layer + 1) * 44 : 0
+	                        _layout.VerticalCenterLayout,
+	                        { style: [{
+	                                paddingLeft: (0, _core.isNil)(row) ? (props.layer + 1) * 44 : 0
 	                            }] },
 	                        _lib2.default.createElement(
 	                            _lib.Text,
@@ -4130,8 +4137,8 @@ webpackJsonp([0],{
 	                        )
 	                    ),
 	                    _lib2.default.createElement(
-	                        _lib.View,
-	                        { style: [styles.icon, { width: _data.Size.ITEM_HEIGHT }] },
+	                        _layout.CenterLayout,
+	                        { style: [{ width: _data.Size.ITEM_HEIGHT }] },
 	                        _lib2.default.createElement(_base.Checkbox, { checked: state.checked, halfCheck: state.halfCheck,
 	                            onChecked: props.onSelected })
 	                    )
@@ -4165,16 +4172,6 @@ webpackJsonp([0],{
 	        height: _data.Size.ITEM_HEIGHT
 	    },
 
-	    text: {
-	        justifyContent: 'center',
-	        flexGrow: 1
-	    },
-
-	    icon: {
-	        justifyContent: 'center',
-	        alignItems: 'center'
-	    },
-
 	    selected: {
 	        backgroundColor: _data.Colors.HIGHLIGHT
 	    }
@@ -4183,7 +4180,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 916:
+/***/ 918:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4548,7 +4545,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 917:
+/***/ 919:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4561,7 +4558,7 @@ webpackJsonp([0],{
 
 	var _core = __webpack_require__(329);
 
-	var _MultiTreeSelectorWidgetHelper = __webpack_require__(916);
+	var _MultiTreeSelectorWidgetHelper = __webpack_require__(918);
 
 	var _MultiTreeSelectorWidgetHelper2 = _interopRequireDefault(_MultiTreeSelectorWidgetHelper);
 
@@ -4644,7 +4641,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 918:
+/***/ 920:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4673,19 +4670,21 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _layout = __webpack_require__(780);
 
-	var _widgets = __webpack_require__(907);
+	var _base = __webpack_require__(790);
 
-	var _MultiSelectorComponent = __webpack_require__(919);
+	var _widgets = __webpack_require__(909);
+
+	var _MultiSelectorComponent = __webpack_require__(921);
 
 	var _MultiSelectorComponent2 = _interopRequireDefault(_MultiSelectorComponent);
 
-	var _MultiTreeSelectorComponent = __webpack_require__(920);
+	var _MultiTreeSelectorComponent = __webpack_require__(922);
 
 	var _MultiTreeSelectorComponent2 = _interopRequireDefault(_MultiTreeSelectorComponent);
 
-	var _Item = __webpack_require__(921);
+	var _Item = __webpack_require__(923);
 
 	var _Item2 = _interopRequireDefault(_Item);
 
@@ -4708,15 +4707,6 @@ webpackJsonp([0],{
 	        var _this = _possibleConstructorReturn(this, (Controls.__proto__ || Object.getPrototypeOf(Controls)).call(this, props, context));
 
 	        _this.state = {};
-
-	        var ds = new _lib.ListView.DataSource({ rowHasChanged: function rowHasChanged(r1, r2) {
-	                return r1 !== r2;
-	            } });
-	        _this.template = new _data.Template(props.$template);
-	        var rows = _this.template.getAllControlWidgetIds();
-	        _this.state = {
-	            dataSource: ds.cloneWithRows(rows)
-	        };
 	        return _this;
 	    }
 
@@ -4739,6 +4729,7 @@ webpackJsonp([0],{
 
 	            var props = _objectWithoutProperties(this.props, []);
 
+	            this.template = new _data.Template(props.$template);
 	            return _lib2.default.createElement(
 	                _lib.ScrollView,
 	                { style: styles.wrapper },
@@ -4812,7 +4803,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 919:
+/***/ 921:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4837,11 +4828,11 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(790);
 
 	var _data = __webpack_require__(773);
 
-	var _widgets = __webpack_require__(907);
+	var _widgets = __webpack_require__(909);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4923,7 +4914,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 920:
+/***/ 922:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4948,11 +4939,11 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(790);
 
 	var _data = __webpack_require__(773);
 
-	var _widgets = __webpack_require__(907);
+	var _widgets = __webpack_require__(909);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5032,7 +5023,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 921:
+/***/ 923:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5059,9 +5050,11 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _layout = __webpack_require__(780);
 
-	var _widgets = __webpack_require__(907);
+	var _base = __webpack_require__(790);
+
+	var _widgets = __webpack_require__(909);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5107,19 +5100,15 @@ webpackJsonp([0],{
 	            var state = _objectWithoutProperties(this.state, []);
 
 	            return _lib2.default.createElement(
-	                _lib.TouchableHighlight,
-	                { underlayColor: _data.Colors.PRESS, onPress: this.props.onPress },
+	                _base.Button,
+	                { onPress: this.props.onPress },
 	                _lib2.default.createElement(
-	                    _lib.View,
-	                    null,
+	                    _layout.VerticalCenterLayout,
+	                    { style: styles.wrapper },
 	                    _lib2.default.createElement(
-	                        _base.VerticalCenterLayout,
-	                        { style: styles.wrapper },
-	                        _lib2.default.createElement(
-	                            _lib.Text,
-	                            null,
-	                            new _data.Widget(props.$widget).getName()
-	                        )
+	                        _lib.Text,
+	                        null,
+	                        new _data.Widget(props.$widget).getName()
 	                    )
 	                )
 	            );
@@ -5145,7 +5134,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 922:
+/***/ 924:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5172,31 +5161,31 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(790);
 
 	var _data = __webpack_require__(773);
 
-	var _ChartPaneComponent = __webpack_require__(923);
+	var _ChartPaneComponent = __webpack_require__(925);
 
 	var _ChartPaneComponent2 = _interopRequireDefault(_ChartPaneComponent);
 
-	var _TablePaneComponent = __webpack_require__(927);
+	var _TablePaneComponent = __webpack_require__(929);
 
 	var _TablePaneComponent2 = _interopRequireDefault(_TablePaneComponent);
 
-	var _DetailTablePaneComponent = __webpack_require__(933);
+	var _DetailTablePaneComponent = __webpack_require__(935);
 
 	var _DetailTablePaneComponent2 = _interopRequireDefault(_DetailTablePaneComponent);
 
-	var _MultiSelectorComponent = __webpack_require__(919);
+	var _MultiSelectorComponent = __webpack_require__(921);
 
 	var _MultiSelectorComponent2 = _interopRequireDefault(_MultiSelectorComponent);
 
-	var _MultiTreeSelectorComponent = __webpack_require__(920);
+	var _MultiTreeSelectorComponent = __webpack_require__(922);
 
 	var _MultiTreeSelectorComponent2 = _interopRequireDefault(_MultiTreeSelectorComponent);
 
-	var _ContentComponent = __webpack_require__(936);
+	var _ContentComponent = __webpack_require__(938);
 
 	var _ContentComponent2 = _interopRequireDefault(_ContentComponent);
 
@@ -5210,16 +5199,16 @@ webpackJsonp([0],{
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var Layout = function (_Component) {
-	    _inherits(Layout, _Component);
+	var LayoutComponent = function (_Component) {
+	    _inherits(LayoutComponent, _Component);
 
-	    function Layout(props, context) {
-	        _classCallCheck(this, Layout);
+	    function LayoutComponent(props, context) {
+	        _classCallCheck(this, LayoutComponent);
 
-	        return _possibleConstructorReturn(this, (Layout.__proto__ || Object.getPrototypeOf(Layout)).call(this, props, context));
+	        return _possibleConstructorReturn(this, (LayoutComponent.__proto__ || Object.getPrototypeOf(LayoutComponent)).call(this, props, context));
 	    }
 
-	    _createClass(Layout, [{
+	    _createClass(LayoutComponent, [{
 	        key: '_onPageScroll',
 	        value: function _onPageScroll() {}
 	    }, {
@@ -5338,35 +5327,29 @@ webpackJsonp([0],{
 	            }
 	            return _lib2.default.createElement(
 	                _lib.View,
-	                null,
-	                _lib2.default.createElement(
-	                    _lib.View,
-	                    { style: styles.wrapper },
-	                    component
-	                )
+	                { style: styles.wrapper },
+	                component
 	            );
 	        }
 	    }]);
 
-	    return Layout;
+	    return LayoutComponent;
 	}(_lib.Component);
 
-	Layout.propTypes = {};
+	LayoutComponent.propTypes = {};
 
-	_reactMixin2.default.onClass(Layout, _core.ReactComponentWithImmutableRenderMixin);
+	_reactMixin2.default.onClass(LayoutComponent, _core.ReactComponentWithImmutableRenderMixin);
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
-	        margin: 20
+	        padding: 20
 	    },
-	    viewPager: {
-	        flex: 1
-	    }
+	    viewPager: {}
 	});
-	exports.default = Layout;
+	exports.default = LayoutComponent;
 
 /***/ },
 
-/***/ 923:
+/***/ 925:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5397,15 +5380,17 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _layout = __webpack_require__(780);
 
-	var _widgets = __webpack_require__(907);
+	var _base = __webpack_require__(790);
 
-	var _ChartComponent = __webpack_require__(924);
+	var _widgets = __webpack_require__(909);
+
+	var _ChartComponent = __webpack_require__(926);
 
 	var _ChartComponent2 = _interopRequireDefault(_ChartComponent);
 
-	var _SettingsComponent = __webpack_require__(925);
+	var _SettingsComponent = __webpack_require__(927);
 
 	var _SettingsComponent2 = _interopRequireDefault(_SettingsComponent);
 
@@ -5446,8 +5431,8 @@ webpackJsonp([0],{
 
 	            var widget = new _data.Widget($widget);
 	            return _lib2.default.createElement(
-	                _lib.View,
-	                { height: _data.Size.HEADER_HEIGHT, style: styles.header },
+	                _layout.Layout,
+	                { main: 'justify', cross: 'center', style: styles.header },
 	                _lib2.default.createElement(
 	                    _lib.Text,
 	                    null,
@@ -5479,8 +5464,8 @@ webpackJsonp([0],{
 	            var wId = _props2.wId;
 
 	            return _lib2.default.createElement(
-	                _base.VtapeLayout,
-	                null,
+	                _layout.Layout,
+	                { dir: 'top', box: 'first' },
 	                this._renderHeader(),
 	                _lib2.default.createElement(_ChartComponent2.default, {
 	                    width: width,
@@ -5509,16 +5494,14 @@ webpackJsonp([0],{
 	    header: {
 	        paddingLeft: 4,
 	        paddingRight: 4,
-	        flexDirection: 'row',
-	        alignItems: 'center',
-	        justifyContent: 'space-between'
+	        height: _data.Size.HEADER_HEIGHT
 	    }
 	});
 	exports.default = ChartPaneComponent;
 
 /***/ },
 
-/***/ 924:
+/***/ 926:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5545,7 +5528,7 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(790);
 
 	var _data = __webpack_require__(773);
 
@@ -5637,7 +5620,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 925:
+/***/ 927:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5666,11 +5649,13 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _layout = __webpack_require__(780);
 
-	var _widgets = __webpack_require__(907);
+	var _base = __webpack_require__(790);
 
-	var _SettingsComponentHelper = __webpack_require__(926);
+	var _widgets = __webpack_require__(909);
+
+	var _SettingsComponentHelper = __webpack_require__(928);
 
 	var _SettingsComponentHelper2 = _interopRequireDefault(_SettingsComponentHelper);
 
@@ -5691,21 +5676,26 @@ webpackJsonp([0],{
 
 
 	var DragHandle = SortableHandle(function () {
-	    return _lib2.default.createElement(_base.IconButton, { style: styles.dragHandler, className: 'drag-handler-icon', iconWidth: 18, iconHeight: 18 });
+	    return _lib2.default.createElement(_base.IconButton, { effect: false, style: styles.dragHandler, className: 'drag-handler-icon', iconWidth: 18,
+	        iconHeight: 18 });
 	});
 
 	var SortableItem = SortableElement(function (_ref) {
 	    var value = _ref.value;
 
 	    return _lib2.default.createElement(
-	        _lib.View,
-	        { style: styles.sortableItems },
+	        _base.Button,
+	        null,
 	        _lib2.default.createElement(
-	            _lib.Text,
-	            null,
-	            value.text
-	        ),
-	        _lib2.default.createElement(DragHandle, null)
+	            _layout.Layout,
+	            { main: 'justify', cross: 'center', style: styles.sortableItems },
+	            _lib2.default.createElement(
+	                _lib.Text,
+	                null,
+	                value.text
+	            ),
+	            _lib2.default.createElement(DragHandle, null)
+	        )
 	    );
 	});
 
@@ -5714,7 +5704,7 @@ webpackJsonp([0],{
 
 	    return _lib2.default.createElement(
 	        _lib.ScrollView,
-	        null,
+	        { style: { height: _data.Size.ITEM_HEIGHT * items.length } },
 	        items.map(function (value, index) {
 	            return _lib2.default.createElement(SortableItem, { key: 'item-' + value.dId, index: index, value: value });
 	        })
@@ -5730,14 +5720,16 @@ webpackJsonp([0],{
 	        var _this = _possibleConstructorReturn(this, (SettingsComponent.__proto__ || Object.getPrototypeOf(SettingsComponent)).call(this, props, context));
 
 	        _this.state = {
-	            $widget: _this.props.$widget
+	            $widget: _this.props.$widget,
+	            collapsed: {}
 	        };
 
 	        _this._onSortEnd = function (_ref3) {
 	            var oldIndex = _ref3.oldIndex;
 	            var newIndex = _ref3.newIndex;
+	            var viewId = _ref3.viewId;
 
-	            var $widget = _this._helper.doMove(oldIndex, newIndex);
+	            var $widget = _this._helper.doMove(viewId, oldIndex, newIndex);
 	            _this.setState({
 	                $widget: $widget
 	            });
@@ -5773,8 +5765,8 @@ webpackJsonp([0],{
 
 	            var widget = new _data.Widget($widget);
 	            return _lib2.default.createElement(
-	                _lib.View,
-	                { height: _data.Size.HEADER_HEIGHT, style: styles.header },
+	                _layout.Layout,
+	                { main: 'justify', cross: 'center', style: styles.header },
 	                _lib2.default.createElement(
 	                    _base.TextLink,
 	                    { onPress: function onPress() {
@@ -5799,17 +5791,51 @@ webpackJsonp([0],{
 	    }, {
 	        key: '_renderDialog',
 	        value: function _renderDialog() {
-	            return _lib2.default.createElement(SortableList, { items: this._helper.getDimensionsItems(),
-	                onSortEnd: this._onSortEnd,
-	                useDragHandle: true,
-	                lockAxis: 'y',
-	                helperClass: 'sortable-helper'
+	            var _this3 = this;
+
+	            var array = [];
+	            (0, _core.each)(this._helper.getViewItems(), function (viewItem) {
+	                array.push(_lib2.default.createElement(
+	                    _base.TextButton,
+	                    { textAlign: 'left', style: styles.collapseHeader, onPress: function onPress() {
+	                            var collapsed = (0, _core.clone)(_this3.state.collapsed);
+	                            collapsed[viewItem.viewId] = !collapsed[viewItem.viewId];
+	                            _this3.setState({
+	                                collapsed: collapsed
+	                            });
+	                        } },
+	                    viewItem.text
+	                ));
+	                var items = _this3._helper.getDimensionsItems(viewItem.viewId);
+	                array.push(_lib2.default.createElement(
+	                    _base.Collapsible,
+	                    { collapsed: _this3.state.collapsed[viewItem.viewId] || false },
+	                    _lib2.default.createElement(SortableList, { items: items,
+	                        onSortEnd: function onSortEnd(_ref4) {
+	                            var oldIndex = _ref4.oldIndex;
+	                            var newIndex = _ref4.newIndex;
+
+	                            _this3._onSortEnd({
+	                                oldIndex: oldIndex, newIndex: newIndex, viewId: viewItem.viewId
+	                            });
+	                        },
+	                        useDragHandle: true,
+	                        lockAxis: 'y',
+	                        helperClass: 'sortable-helper'
+	                    })
+	                ));
 	            });
+
+	            return _lib2.default.createElement(
+	                _lib.ScrollView,
+	                null,
+	                array
+	            );
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this3 = this;
+	            var _this4 = this;
 
 	            var props = _objectWithoutProperties(this.props, []);
 	            var state = _objectWithoutProperties(this.state, []);
@@ -5819,16 +5845,16 @@ webpackJsonp([0],{
 	                _base.Overlay,
 	                { ref: 'overlay', onClose: function onClose(tag) {
 	                        if (tag === true) {
-	                            var $widget = _this3.state.$widget;var wId = _this3.props.wId;
+	                            var $widget = _this4.state.$widget;var wId = _this4.props.wId;
 
-	                            _this3.props.onComplete({ $widget: $widget, wId: wId });
+	                            _this4.props.onComplete({ $widget: $widget, wId: wId });
 	                        } else {
-	                            _this3.props.onReturn();
+	                            _this4.props.onReturn();
 	                        }
 	                    } },
 	                _lib2.default.createElement(
-	                    _base.VtapeLayout,
-	                    { style: styles.wrapper },
+	                    _layout.Layout,
+	                    { dir: 'top', box: 'first', style: styles.wrapper },
 	                    this._renderHeader(),
 	                    this._renderDialog()
 	                )
@@ -5868,33 +5894,33 @@ webpackJsonp([0],{
 	        bottom: 10
 	    },
 	    header: {
-	        flexDirection: 'row',
 	        paddingLeft: 20,
 	        paddingRight: 20,
-	        alignItems: 'center',
-	        justifyContent: 'space-between',
 	        color: _data.Colors.TEXT,
-	        backgroundColor: _data.Colors.HIGHLIGHT
+	        backgroundColor: _data.Colors.HIGHLIGHT,
+	        height: _data.Size.HEADER_HEIGHT
 	    },
 	    sortableItems: {
-	        flexDirection: 'row',
 	        paddingLeft: 20,
 	        paddingRight: 20,
-	        alignItems: 'center',
-	        justifyContent: 'space-between',
 	        height: _data.Size.ITEM_HEIGHT,
 	        borderBottomWidth: 1 / _lib.PixelRatio.get(),
 	        borderBottomColor: _data.Colors.BORDER
 	    },
 	    dragHandler: {
 	        opacity: 0.25
+	    },
+	    collapseHeader: {
+	        paddingLeft: 20,
+	        backgroundColor: '#d8f2fd',
+	        height: _data.Size.ITEM_HEIGHT
 	    }
 	});
 	exports.default = SettingsComponent;
 
 /***/ },
 
-/***/ 926:
+/***/ 928:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5919,33 +5945,52 @@ webpackJsonp([0],{
 	    }
 
 	    _createClass(SettingsComponentHelper, [{
+	        key: 'getViewItems',
+	        value: function getViewItems() {
+	            var result = [];
+	            (0, _core.each)(this._getViewIds(), function (viewId) {
+	                result.push({
+	                    text: '行表头',
+	                    viewId: viewId
+	                });
+	            });
+	            return result;
+	        }
+	    }, {
 	        key: 'getDimensionsItems',
-	        value: function getDimensionsItems() {
+	        value: function getDimensionsItems(viewId) {
 	            var _this = this;
 
 	            var result = [];
-	            (0, _core.each)(this._getDimensionIds(), function (dId) {
+	            (0, _core.each)(this._getDimensionIds(viewId), function (dId) {
 	                var dim = _this.widget.getDimensionOrTargetById(dId);
 	                result.push({
 	                    text: dim.getName(),
+	                    viewId: viewId,
 	                    dId: dId
 	                });
 	            });
 	            return result;
 	        }
 	    }, {
-	        key: '_getDimensionIds',
-	        value: function _getDimensionIds() {
+	        key: '_getViewIds',
+	        value: function _getViewIds() {
 	            var view = this.widget.getWidgetView();
-	            return (0, _core.values)(view)[0];
+	            return (0, _core.keys)(view);
+	        }
+	    }, {
+	        key: '_getDimensionIds',
+	        value: function _getDimensionIds(viewId) {
+	            var view = this.widget.getWidgetView();
+	            return view[viewId] || [];
 	        }
 	    }, {
 	        key: 'doMove',
-	        value: function doMove(oldIndex, newIndex) {
+	        value: function doMove(viewId, oldIndex, newIndex) {
 	            var view = this.widget.getWidgetView();
-	            var items = this._getDimensionIds();
+	            var items = this._getDimensionIds(viewId);
 	            (0, _core.arrayMove)(items, oldIndex, newIndex);
-	            view[(0, _core.keys)(view)[0]] = items;
+	            view[viewId] = items;
 	            this.widget.setWidgetView(view);
 	            return this.widget.$get();
 	        }
@@ -5958,7 +6003,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 927:
+/***/ 929:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5989,15 +6034,17 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _layout = __webpack_require__(780);
 
-	var _widgets = __webpack_require__(907);
+	var _base = __webpack_require__(790);
 
-	var _TableComponent = __webpack_require__(928);
+	var _widgets = __webpack_require__(909);
+
+	var _TableComponent = __webpack_require__(930);
 
 	var _TableComponent2 = _interopRequireDefault(_TableComponent);
 
-	var _SettingsComponent = __webpack_require__(925);
+	var _SettingsComponent = __webpack_require__(927);
 
 	var _SettingsComponent2 = _interopRequireDefault(_SettingsComponent);
 
@@ -6038,8 +6085,8 @@ webpackJsonp([0],{
 
 	            var widget = new _data.Widget($widget);
 	            return _lib2.default.createElement(
-	                _lib.View,
-	                { height: _data.Size.HEADER_HEIGHT, style: styles.header },
+	                _layout.Layout,
+	                { main: 'justify', cross: 'center', style: styles.header },
 	                _lib2.default.createElement(
 	                    _lib.Text,
 	                    null,
@@ -6071,8 +6118,8 @@ webpackJsonp([0],{
 	            var wId = _props2.wId;
 
 	            return _lib2.default.createElement(
-	                _base.VtapeLayout,
-	                null,
+	                _layout.Layout,
+	                { dir: 'top', box: 'fist' },
 	                this._renderHeader(),
 	                _lib2.default.createElement(_TableComponent2.default, {
 	                    width: width,
@@ -6101,16 +6148,14 @@ webpackJsonp([0],{
 	    header: {
 	        paddingLeft: 4,
 	        paddingRight: 4,
-	        flexDirection: 'row',
-	        alignItems: 'center',
-	        justifyContent: 'space-between'
+	        height: _data.Size.HEADER_HEIGHT
 	    }
 	});
 	exports.default = TablePaneComponent;
 
 /***/ },
 
-/***/ 928:
+/***/ 930:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6141,23 +6186,23 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(790);
 
-	var _widgets = __webpack_require__(907);
+	var _widgets = __webpack_require__(909);
 
-	var _TableComponentHelper = __webpack_require__(929);
+	var _TableComponentHelper = __webpack_require__(931);
 
 	var _TableComponentHelper2 = _interopRequireDefault(_TableComponentHelper);
 
-	var _TableComponentWidthHelper = __webpack_require__(930);
+	var _TableComponentWidthHelper = __webpack_require__(932);
 
 	var _TableComponentWidthHelper2 = _interopRequireDefault(_TableComponentWidthHelper);
 
-	var _TableCell = __webpack_require__(931);
+	var _TableCell = __webpack_require__(933);
 
 	var _TableCell2 = _interopRequireDefault(_TableCell);
 
-	var _TableHeader = __webpack_require__(932);
+	var _TableHeader = __webpack_require__(934);
 
 	var _TableHeader2 = _interopRequireDefault(_TableHeader);
 
@@ -6299,7 +6344,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 929:
+/***/ 931:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6445,7 +6490,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 930:
+/***/ 932:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6601,7 +6646,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 931:
+/***/ 933:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6628,9 +6673,9 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(790);
 
-	var _widgets = __webpack_require__(907);
+	var _widgets = __webpack_require__(909);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6707,7 +6752,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 932:
+/***/ 934:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6734,9 +6779,9 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(790);
 
-	var _widgets = __webpack_require__(907);
+	var _widgets = __webpack_require__(909);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6809,7 +6854,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 933:
+/***/ 935:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6840,15 +6885,17 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _layout = __webpack_require__(780);
 
-	var _widgets = __webpack_require__(907);
+	var _base = __webpack_require__(790);
 
-	var _DetailTableComponent = __webpack_require__(934);
+	var _widgets = __webpack_require__(909);
+
+	var _DetailTableComponent = __webpack_require__(936);
 
 	var _DetailTableComponent2 = _interopRequireDefault(_DetailTableComponent);
 
-	var _SettingsComponent = __webpack_require__(925);
+	var _SettingsComponent = __webpack_require__(927);
 
 	var _SettingsComponent2 = _interopRequireDefault(_SettingsComponent);
 
@@ -6889,8 +6936,8 @@ webpackJsonp([0],{
 
 	            var widget = new _data.Widget($widget);
 	            return _lib2.default.createElement(
-	                _lib.View,
-	                { height: _data.Size.HEADER_HEIGHT, style: styles.header },
+	                _layout.Layout,
+	                { main: 'justify', cross: 'center', height: _data.Size.HEADER_HEIGHT, style: styles.header },
 	                _lib2.default.createElement(
 	                    _lib.Text,
 	                    null,
@@ -6922,7 +6969,7 @@ webpackJsonp([0],{
 	            var wId = _props2.wId;
 
 	            return _lib2.default.createElement(
-	                _base.VtapeLayout,
+	                _layout.Layout,
 	                null,
 	                this._renderHeader(),
 	                _lib2.default.createElement(_DetailTableComponent2.default, {
@@ -6952,16 +6999,14 @@ webpackJsonp([0],{
 	    header: {
 	        paddingLeft: 4,
 	        paddingRight: 4,
-	        flexDirection: 'row',
-	        alignItems: 'center',
-	        justifyContent: 'space-between'
+	        height: _data.Size.HEADER_HEIGHT
 	    }
 	});
 	exports.default = DetailTablePaneComponent;
 
 /***/ },
 
-/***/ 934:
+/***/ 936:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6992,23 +7037,25 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(790);
 
-	var _widgets = __webpack_require__(907);
+	var _layout = __webpack_require__(780);
 
-	var _DetailTableComponentHelper = __webpack_require__(935);
+	var _widgets = __webpack_require__(909);
+
+	var _DetailTableComponentHelper = __webpack_require__(937);
 
 	var _DetailTableComponentHelper2 = _interopRequireDefault(_DetailTableComponentHelper);
 
-	var _TableComponentWidthHelper = __webpack_require__(930);
+	var _TableComponentWidthHelper = __webpack_require__(932);
 
 	var _TableComponentWidthHelper2 = _interopRequireDefault(_TableComponentWidthHelper);
 
-	var _TableCell = __webpack_require__(931);
+	var _TableCell = __webpack_require__(933);
 
 	var _TableCell2 = _interopRequireDefault(_TableCell);
 
-	var _TableHeader = __webpack_require__(932);
+	var _TableHeader = __webpack_require__(934);
 
 	var _TableHeader2 = _interopRequireDefault(_TableHeader);
 
@@ -7138,7 +7185,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 935:
+/***/ 937:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7220,7 +7267,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 936:
+/***/ 938:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7251,9 +7298,9 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(790);
 
-	var _widgets = __webpack_require__(907);
+	var _widgets = __webpack_require__(909);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7335,13 +7382,209 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 937:
+/***/ 939:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactMixin = __webpack_require__(206);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _immutable = __webpack_require__(200);
+
+	var _immutable2 = _interopRequireDefault(_immutable);
+
+	var _core = __webpack_require__(329);
+
+	var _lib = __webpack_require__(208);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _data = __webpack_require__(773);
+
+	var _base = __webpack_require__(790);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var LayoutDemo = function (_Component) {
+	    _inherits(LayoutDemo, _Component);
+
+	    function LayoutDemo(props, context) {
+	        _classCallCheck(this, LayoutDemo);
+
+	        var _this = _possibleConstructorReturn(this, (LayoutDemo.__proto__ || Object.getPrototypeOf(LayoutDemo)).call(this, props, context));
+
+	        _this.state = {};
+	        return _this;
+	    }
+
+	    _createClass(LayoutDemo, [{
+	        key: '_getNextState',
+	        value: function _getNextState(props) {
+	            var state = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	        }
+	    }, {
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {}
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var props = _objectWithoutProperties(this.props, []);
+	            var state = _objectWithoutProperties(this.state, []);
+
+	            return _lib2.default.createElement(
+	                _lib.ScrollView,
+	                null,
+	                _lib2.default.createElement(
+	                    _base.CenterLayout,
+	                    { style: styles.item },
+	                    _lib2.default.createElement(
+	                        _lib.Text,
+	                        { style: { backgroundColor: _data.Colors.HIGHLIGHT } },
+	                        '123'
+	                    )
+	                ),
+	                _lib2.default.createElement(
+	                    _base.HorizontalCenterLayout,
+	                    { style: styles.item },
+	                    _lib2.default.createElement(
+	                        _lib.Text,
+	                        { style: { backgroundColor: _data.Colors.HIGHLIGHT } },
+	                        '123'
+	                    )
+	                ),
+	                _lib2.default.createElement(
+	                    _base.VerticalCenterLayout,
+	                    { style: styles.item },
+	                    _lib2.default.createElement(
+	                        _lib.Text,
+	                        { style: { backgroundColor: _data.Colors.HIGHLIGHT } },
+	                        '123'
+	                    )
+	                ),
+	                _lib2.default.createElement(
+	                    _base.Layout,
+	                    { dir: 'left', box: 'justify', style: styles.item },
+	                    _lib2.default.createElement(
+	                        _base.CenterLayout,
+	                        { style: { width: 100, backgroundColor: _data.Colors.PRESS } },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            null,
+	                            '123'
+	                        )
+	                    ),
+	                    _lib2.default.createElement(
+	                        _base.CenterLayout,
+	                        { style: { backgroundColor: _data.Colors.HIGHLIGHT } },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            null,
+	                            '456'
+	                        )
+	                    ),
+	                    _lib2.default.createElement(
+	                        _base.CenterLayout,
+	                        { style: { width: 100, backgroundColor: _data.Colors.PRESS } },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            null,
+	                            '789'
+	                        )
+	                    )
+	                ),
+	                _lib2.default.createElement(
+	                    _base.Layout,
+	                    { dir: 'left', main: 'justify', style: styles.item },
+	                    _lib2.default.createElement(
+	                        _base.CenterLayout,
+	                        { style: { width: 100, backgroundColor: _data.Colors.PRESS } },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            null,
+	                            '123'
+	                        )
+	                    ),
+	                    _lib2.default.createElement(
+	                        _base.CenterLayout,
+	                        { style: { backgroundColor: _data.Colors.HIGHLIGHT } },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            null,
+	                            '456'
+	                        )
+	                    ),
+	                    _lib2.default.createElement(
+	                        _base.CenterLayout,
+	                        { style: { width: 100, backgroundColor: _data.Colors.PRESS } },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            null,
+	                            '789'
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {}
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate(nextProps, nextState) {}
+	    }, {
+	        key: 'componentDidUpdate',
+	        value: function componentDidUpdate(prevProps, prevState) {}
+	    }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {}
+	    }]);
+
+	    return LayoutDemo;
+	}(_lib.Component);
+
+	LayoutDemo.propTypes = {};
+	LayoutDemo.defaultProps = {};
+
+	_reactMixin2.default.onClass(LayoutDemo, _core.ReactComponentWithImmutableRenderMixin);
+	var styles = _lib.StyleSheet.create({
+	    item: {
+	        height: 100,
+	        borderBottomColor: _data.Colors.BORDER,
+	        borderBottomWidth: 1 / _lib.PixelRatio.get()
+	    }
+	});
+	exports.default = LayoutDemo;
+
+/***/ },
+
+/***/ 940:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(938);
+	var content = __webpack_require__(941);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -7362,7 +7605,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 938:
+/***/ 941:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -7377,13 +7620,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 939:
+/***/ 942:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(940);
+	var content = __webpack_require__(943);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -7404,7 +7647,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 940:
+/***/ 943:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -7412,20 +7655,20 @@ webpackJsonp([0],{
 
 
 	// module
-	exports.push([module.id, "/****添加计算宽度的--运算符直接需要space****/\n/****** common color(常用颜色,可用于普遍场景) *****/\n/**** custom color(自定义颜色,用于特定场景) ****/\n.base-disabled {\n  cursor: default !important;\n  color: #c4c6c6 !important;\n}\n.base-disabled .b-font:before {\n  color: #c4c6c6 !important;\n}\n.base-invalid {\n  cursor: default !important;\n}\n.clearfix {\n  *zoom: 1;\n}\n.clearfix:before,\n.clearfix:after {\n  content: \" \";\n  display: table;\n  line-height: 0;\n}\n.clearfix:after {\n  clear: both;\n}\n.sortable-helper {\n  z-index: 999999;\n  display: -ms-flexbox;\n  display: flex;\n}\n", ""]);
+	exports.push([module.id, "/****添加计算宽度的--运算符直接需要space****/\r\n/****** common color(常用颜色,可用于普遍场景) *****/\r\n/**** custom color(自定义颜色,用于特定场景) ****/\r\n.base-disabled {\r\n  cursor: default !important;\r\n  color: #c4c6c6 !important;\r\n}\r\n.base-disabled .b-font:before {\r\n  color: #c4c6c6 !important;\r\n}\r\n.base-invalid {\r\n  cursor: default !important;\r\n}\r\n.clearfix {\r\n  *zoom: 1;\r\n}\r\n.clearfix:before,\r\n.clearfix:after {\r\n  content: \" \";\r\n  display: table;\r\n  line-height: 0;\r\n}\r\n.clearfix:after {\r\n  clear: both;\r\n}\r\n.sortable-helper {\r\n  z-index: 999999;\r\n  display: -ms-flexbox;\r\n  display: flex;\r\n}\r\n", ""]);
 
 	// exports
 
 
 /***/ },
 
-/***/ 941:
+/***/ 944:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(942);
+	var content = __webpack_require__(945);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -7446,7 +7689,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 942:
+/***/ 945:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -7454,20 +7697,20 @@ webpackJsonp([0],{
 
 
 	// module
-	exports.push([module.id, "/****** common color(常用颜色,可用于普遍场景) *****/\n/**** custom color(自定义颜色,用于特定场景) ****/\n.tool-filter-font .b-font:before {\n  content: '\\E624';\n  color: #808080;\n}\n.tool-filter-font:active .b-font:before {\n  content: '\\E624';\n  color: #009de3;\n}\n.tool-filter-font.disabled .b-font:before {\n  content: '\\E624';\n  color: #808080;\n}\n.node-fold-font .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.node-fold-font:active .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.node-fold-font.active .b-font:before {\n  content: '\\E611';\n  color: #808080;\n}\n.node-fold-font.disabled .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.setting-font .b-font:before {\n  content: '\\E62A';\n  color: #808080;\n}\n.setting-font.disabled .b-font:before {\n  content: '\\E62A';\n  color: #808080;\n}\n", ""]);
+	exports.push([module.id, "/****** common color(常用颜色,可用于普遍场景) *****/\r\n/**** custom color(自定义颜色,用于特定场景) ****/\r\n.tool-filter-font .b-font:before {\r\n  content: '\\E624';\r\n  color: #808080;\r\n}\r\n.tool-filter-font:active .b-font:before {\r\n  content: '\\E624';\r\n  color: #009de3;\r\n}\r\n.tool-filter-font.disabled .b-font:before {\r\n  content: '\\E624';\r\n  color: #808080;\r\n}\r\n.node-fold-font .b-font:before {\r\n  content: '\\E610';\r\n  color: #808080;\r\n}\r\n.node-fold-font:active .b-font:before {\r\n  content: '\\E610';\r\n  color: #808080;\r\n}\r\n.node-fold-font.active .b-font:before {\r\n  content: '\\E611';\r\n  color: #808080;\r\n}\r\n.node-fold-font.disabled .b-font:before {\r\n  content: '\\E610';\r\n  color: #808080;\r\n}\r\n.setting-font .b-font:before {\r\n  content: '\\E62A';\r\n  color: #808080;\r\n}\r\n.setting-font.disabled .b-font:before {\r\n  content: '\\E62A';\r\n  color: #808080;\r\n}\r\n", ""]);
 
 	// exports
 
 
 /***/ },
 
-/***/ 943:
+/***/ 946:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(944);
+	var content = __webpack_require__(947);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -7488,7 +7731,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 944:
+/***/ 947:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -7496,20 +7739,20 @@ webpackJsonp([0],{
 
 
 	// module
-	exports.push([module.id, ".drag-handler-icon .x-icon {\n  background-image: url('data:image/svg+xml;charset=utf-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"50\" height=\"50\" viewBox=\"0 0 50 50\"><path d=\"M0 7.5v5h50v-5H0zm0 15v5h50v-5H0zm0 15v5h50v-5H0z\" color=\"#000\"/></svg>');\n  background-size: contain;\n  background-repeat: no-repeat;\n}\n", ""]);
+	exports.push([module.id, ".drag-handler-icon .x-icon {\r\n  background-image: url('data:image/svg+xml;charset=utf-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"50\" height=\"50\" viewBox=\"0 0 50 50\"><path d=\"M0 7.5v5h50v-5H0zm0 15v5h50v-5H0zm0 15v5h50v-5H0z\" color=\"#000\"/></svg>');\r\n  background-size: contain;\r\n  background-repeat: no-repeat;\r\n}\r\n", ""]);
 
 	// exports
 
 
 /***/ },
 
-/***/ 945:
+/***/ 948:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(946);
+	var content = __webpack_require__(949);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -7530,7 +7773,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 946:
+/***/ 949:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -7538,20 +7781,20 @@ webpackJsonp([0],{
 
 
 	// module
-	exports.push([module.id, ".base-line-conn-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-1.png') repeat-y 0 0;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-1.png');\n  _background: none;\n}\n.first-line-conn-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-2.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-2.png');\n  _background: none;\n}\n.last-line-conn-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-4.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-4.png');\n  _background: none;\n}\n.mid-line-conn-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-3.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-3.png');\n  _background: none;\n}\n.loading-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/loading.gif') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/loading.gif');\n  _background: none;\n}\n.loading-background-f25 {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/F.25.gif') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/F.25.gif');\n  _background: none;\n}\n.loading-background-e50 {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/E.50.gif') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/E.50.gif');\n  _background: none;\n}\n.loading-background-d100 {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/D.100.gif') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/D.100.gif');\n  _background: none;\n}\n.axis-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-accu-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_accu.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_accu.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-percent-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_percent.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_percent.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-compare-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_compare.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_compare.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-fall-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_fall.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_fall.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bubble-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bubble.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bubble.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bubble-force-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bubble_force.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bubble_force.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.dashboard-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/dashboard.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/dashboard.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.donut-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/donut.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/donut.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.funnel-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/funnel.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/funnel.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-gis-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_gis.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_gis.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-svg-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_svg.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_svg.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-svg-c-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_svg_c.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_svg_c.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-svg-g-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_svg_g.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_svg_g.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.pie-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/pie.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/pie.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.radar-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/radar.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/radar.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.radar-accu-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/radar_accu.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/radar_accu.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-accu-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_accu.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_accu.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-compare-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_compare.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_compare.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-percent-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_percent.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_percent.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-range-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_range.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_range.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bar-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bar.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bar.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bar-accu-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bar_accu.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bar_accu.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bar-compare-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bar_compare.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bar_compare.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.combine-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/combine.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/combine.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.combine-m-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/combine_m.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/combine_m.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.line-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/line.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/line.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.scatter-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/scatter.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/scatter.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.table-complex-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_complex.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_complex.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.table-cross-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_cross.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_cross.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.table-group-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_group.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_group.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.table-detail-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_detail.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_detail.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-accu-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_accu_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_accu_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-percent-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_percent_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_percent_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-compare-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_compare_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_compare_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.axis-fall-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_fall_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_fall_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bubble-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bubble_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bubble_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bubble-force-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bubble_force_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bubble_force_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.dashboard-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/dashboard_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/dashboard_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.donut-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/donut_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/donut_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.funnel-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/funnel_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/funnel_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-gis-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_gis_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_gis_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-svg-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_svg_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_svg_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-svg-c-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_svg_c_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_svg_c_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.map-svg-g-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_svg_g_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_svg_g_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.pie-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/pie_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/pie_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.radar-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/radar_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/radar_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.radar-accu-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/radar_accu_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/radar_accu_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-accu-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_accu_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_accu_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-compare-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_compare_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_compare_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-percent-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_percent_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_percent_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.area-range-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_range_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_range_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bar-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bar_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bar_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bar-accu-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bar_accu_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bar_accu_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.bar-compare-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bar_compare_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bar_compare_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.combine-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/combine_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/combine_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.combine-m-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/combine_m_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/combine_m_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.line-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/line_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/line_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.scatter-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/text/scatter_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/text/scatter_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.table-complex-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_complex_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_complex_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.table-cross-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_cross_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_cross_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.table-group-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_group_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_group_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.table-detail-text-tip-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_detail_text.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_detail_text.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n.data-miss-background {\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/data_miss.png') no-repeat center center;\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/data_miss.png');\n  _background: none;\n  background-color: #ffffff;\n  z-index: 2;\n}\n", ""]);
+	exports.push([module.id, ".base-line-conn-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-1.png') repeat-y 0 0;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-1.png');\r\n  _background: none;\r\n}\r\n.first-line-conn-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-2.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-2.png');\r\n  _background: none;\r\n}\r\n.last-line-conn-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-4.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-4.png');\r\n  _background: none;\r\n}\r\n.mid-line-conn-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-3.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/tree-vertical-line-3.png');\r\n  _background: none;\r\n}\r\n.loading-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/loading.gif') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/icon/loading.gif');\r\n  _background: none;\r\n}\r\n.loading-background-f25 {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/F.25.gif') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/F.25.gif');\r\n  _background: none;\r\n}\r\n.loading-background-e50 {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/E.50.gif') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/E.50.gif');\r\n  _background: none;\r\n}\r\n.loading-background-d100 {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/D.100.gif') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/D.100.gif');\r\n  _background: none;\r\n}\r\n.axis-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.axis-accu-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_accu.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_accu.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.axis-percent-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_percent.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_percent.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.axis-compare-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_compare.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_compare.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.axis-fall-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_fall.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/axis_fall.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.bubble-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bubble.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bubble.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.bubble-force-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bubble_force.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bubble_force.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.dashboard-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/dashboard.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/dashboard.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.donut-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/donut.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/donut.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.funnel-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/funnel.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/funnel.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.map-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.map-gis-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_gis.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_gis.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.map-svg-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_svg.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_svg.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.map-svg-c-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_svg_c.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_svg_c.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.map-svg-g-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_svg_g.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/map_svg_g.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.pie-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/pie.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/pie.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.radar-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/radar.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/radar.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.radar-accu-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/radar_accu.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/radar_accu.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.area-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.area-accu-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_accu.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_accu.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.area-compare-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_compare.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_compare.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.area-percent-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_percent.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_percent.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.area-range-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_range.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/area_range.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.bar-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bar.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bar.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.bar-accu-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bar_accu.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bar_accu.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.bar-compare-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bar_compare.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/bar_compare.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.combine-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/combine.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/combine.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.combine-m-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/combine_m.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/combine_m.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.line-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/line.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/line.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.scatter-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/scatter.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/scatter.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.table-complex-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_complex.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_complex.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.table-cross-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_cross.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_cross.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.table-group-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_group.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_group.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.table-detail-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_detail.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/table_detail.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.axis-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.axis-accu-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_accu_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_accu_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.axis-percent-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_percent_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_percent_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.axis-compare-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_compare_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_compare_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.axis-fall-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_fall_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/axis_fall_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.bubble-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bubble_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bubble_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.bubble-force-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bubble_force_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bubble_force_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.dashboard-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/dashboard_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/dashboard_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.donut-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/donut_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/donut_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.funnel-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/funnel_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/funnel_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.map-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.map-gis-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_gis_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_gis_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.map-svg-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_svg_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_svg_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.map-svg-c-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_svg_c_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_svg_c_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.map-svg-g-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_svg_g_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/map_svg_g_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.pie-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/pie_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/pie_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.radar-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/radar_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/radar_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.radar-accu-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/radar_accu_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/radar_accu_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.area-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.area-accu-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_accu_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_accu_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.area-compare-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_compare_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_compare_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.area-percent-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_percent_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_percent_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.area-range-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_range_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/area_range_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.bar-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bar_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bar_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.bar-accu-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bar_accu_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bar_accu_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.bar-compare-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bar_compare_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/bar_compare_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.combine-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/combine_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/combine_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.combine-m-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/combine_m_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/combine_m_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.line-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/line_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/line_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.scatter-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/text/scatter_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/text/scatter_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.table-complex-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_complex_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_complex_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.table-cross-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_cross_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_cross_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.table-group-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_group_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_group_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.table-detail-text-tip-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_detail_text.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/charts/text/table_detail_text.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n.data-miss-background {\r\n  background: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/data_miss.png') no-repeat center center;\r\n  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/images/background/data_miss.png');\r\n  _background: none;\r\n  background-color: #ffffff;\r\n  z-index: 2;\r\n}\r\n", ""]);
 
 	// exports
 
 
 /***/ },
 
-/***/ 947:
+/***/ 950:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(948);
+	var content = __webpack_require__(951);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -7572,7 +7815,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 948:
+/***/ 951:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -7580,7 +7823,7 @@ webpackJsonp([0],{
 
 
 	// module
-	exports.push([module.id, "/****添加计算宽度的--运算符直接需要space****/\n/****** common color(常用颜色,可用于普遍场景) *****/\n/**** custom color(自定义颜色,用于特定场景) ****/\n@font-face {\n  font-family: 'h5';\n  src: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.woff') format('woff'), /* chrome、firefox */ url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/ url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.svg#svgFontName') format('svg');\n  \n  /*  iOS 4.1- */\n}\n.b-font {\n  font-family: \"h5\";\n  font-style: normal;\n  -webkit-font-smoothing: antialiased;\n  -webkit-text-stroke-width: 0.2px;\n  -moz-osx-font-smoothing: grayscale;\n}\nhtml {\n  height: 100%;\n  overflow: hidden;\n}\nbody {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  top: 0;\n  left: 0;\n  background-repeat: repeat;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  -o-user-select: none;\n  user-select: none;\n  color: #1a1a1a;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  text-decoration: none;\n  -kthml-user-focus: normal;\n  -moz-user-focus: normal;\n  -moz-outline: 0 none;\n  outline: 0 none;\n}\n*,\n*:before,\n*:after {\n  box-sizing: border-box;\n}\n#wrapper {\n  position: absolute;\n  left: 0;\n  right: 0;\n  top: 0;\n  bottom: 0;\n  overflow: hidden;\n  overflow-x: hidden;\n  overflow-y: hidden;\n}\na {\n  outline: none;\n  text-decoration: none;\n}\na:focus {\n  outline: 0;\n}\ninput,\ntextarea {\n  margin: 0;\n  padding: 0;\n  outline: none;\n  border: 1px solid #cccccc;\n}\nul,\nol {\n  margin: 0;\n  padding: 0;\n}\nul {\n  list-style: disc;\n}\nli {\n  list-style-type: none;\n}\ni {\n  font-style: normal;\n  -webkit-font-smoothing: antialiased;\n  -webkit-text-stroke-width: 0.2px;\n  -moz-osx-font-smoothing: grayscale;\n}\n", ""]);
+	exports.push([module.id, "/****添加计算宽度的--运算符直接需要space****/\n/****** common color(常用颜色,可用于普遍场景) *****/\n/**** custom color(自定义颜色,用于特定场景) ****/\n@font-face {\n  font-family: 'h5';\n  src: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.woff') format('woff'), /* chrome、firefox */ url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/ url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.svg#svgFontName') format('svg');\n  \n  /*  iOS 4.1- */\n}\n.b-font {\n  font-family: \"h5\";\n  font-style: normal;\n  -webkit-font-smoothing: antialiased;\n  -webkit-text-stroke-width: 0.2px;\n  -moz-osx-font-smoothing: grayscale;\n}\na,\nimg,\nbutton,\ninput,\ntextarea,\n* {\n  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);\n}\ninput,\ntextarea {\n  -webkit-appearance: none;\n}\nhtml {\n  height: 100%;\n  overflow: hidden;\n}\nbody {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  top: 0;\n  left: 0;\n  background-repeat: repeat;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  -o-user-select: none;\n  user-select: none;\n  color: #1a1a1a;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  text-decoration: none;\n  -kthml-user-focus: normal;\n  -moz-user-focus: normal;\n  -moz-outline: 0 none;\n  outline: 0 none;\n}\n*,\n*:before,\n*:after {\n  box-sizing: border-box;\n}\n#wrapper {\n  position: absolute;\n  left: 0;\n  right: 0;\n  top: 0;\n  bottom: 0;\n  overflow: hidden;\n  overflow-x: hidden;\n  overflow-y: hidden;\n}\na {\n  outline: none;\n  text-decoration: none;\n}\na:focus {\n  outline: 0;\n}\ninput,\ntextarea {\n  margin: 0;\n  padding: 0;\n  outline: none;\n  border: 1px solid #cccccc;\n}\nul,\nol {\n  margin: 0;\n  padding: 0;\n}\nul {\n  list-style: disc;\n}\nli {\n  list-style-type: none;\n}\ni {\n  font-style: normal;\n  -webkit-font-smoothing: antialiased;\n  -webkit-text-stroke-width: 0.2px;\n  -moz-osx-font-smoothing: grayscale;\n}\n", ""]);
 
 	// exports
 

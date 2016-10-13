@@ -17,8 +17,8 @@ import React, {
 } from 'lib'
 
 import {Colors, Size} from 'data'
-
-import {Icon, Checkbox, Table, AutoSizer} from 'base'
+import {Layout, CenterLayout, VerticalCenterLayout} from 'layout'
+import {Icon, Button, Checkbox, Table, AutoSizer} from 'base'
 
 
 class Item extends Component {
@@ -66,40 +66,32 @@ class Item extends Component {
 
     render() {
         const {...props} = this.props, {...state} = this.state;
-        return <TouchableHighlight onPress={this._onPress.bind(this)} underlayColor={Colors.PRESS}>
-            <View style={[styles.row]}>
-                <View style={styles.text}>
+        return <Button onPress={this._onPress.bind(this)}>
+            <Layout box='last' style={[styles.row]}>
+                <VerticalCenterLayout style={styles.text}>
                     <Text>
                         {state.value == null ? state.text : state.value}
                     </Text>
-                </View>
-                <View style={[styles.icon, {width: Size.ITEM_HEIGHT}]}>
+                </VerticalCenterLayout>
+                <CenterLayout style={[{width: Size.ITEM_HEIGHT}]}>
                     <Checkbox checked={this.state.selected} onChecked={this._onPress.bind(this)}/>
-                </View>
-            </View>
-        </TouchableHighlight>;
+                </CenterLayout>
+            </Layout>
+        </Button>;
     }
 
 }
 mixin.onClass(Item, PureRenderMixin);
 const styles = StyleSheet.create({
     row: {
-        flexDirection: 'row',
         height: Size.ITEM_HEIGHT,
         borderBottomColor: Colors.SPLIT,
         borderBottomWidth: 1 / PixelRatio.get(),
     },
 
     text: {
-        justifyContent: 'center',
-        flexGrow: 1,
         paddingLeft: 20,
         paddingRight: 20
-    },
-
-    icon: {
-        justifyContent: 'center',
-        alignItems: 'center'
     }
 });
 export default Item
