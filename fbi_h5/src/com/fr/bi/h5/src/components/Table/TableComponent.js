@@ -21,6 +21,7 @@ import TableComponentHelper from './TableComponentHelper';
 import TableComponentWidthHelper from './TableComponentWidthHelper'
 import TableCell from './TableCell'
 import TableHeader from './TableHeader'
+import WidgetFactory from '../../data/Template/Widget/WidgetFactory'
 
 
 class TableComponent extends Component {
@@ -62,7 +63,7 @@ class TableComponent extends Component {
 
     _fetchData(props) {
         const {$widget, wId} = props;
-        const widget = new Widget($widget, this.context.$template, wId);
+        const widget = WidgetFactory.createWidget($widget, this.context.$template, wId);
         return widget.getData().then((data)=> {
             this.setState({data: data});
         });

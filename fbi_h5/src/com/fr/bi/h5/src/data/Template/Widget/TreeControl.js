@@ -1,11 +1,12 @@
 /**
- * TableWidget
- * Created by Young's on 2016/10/12.
+ * 树控件
+ * Created by Young's on 2016/10/13.
  */
 import AbstractWidget from './AbstractWidget'
-class TableWidget extends AbstractWidget{
+
+class TreeControl extends AbstractWidget{
     constructor($widget, $template, wId) {
         super($widget, $template, wId);
     }
 }
-export default TableWidget;
+export default TreeControl;
