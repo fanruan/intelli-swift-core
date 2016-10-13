@@ -530,6 +530,8 @@ BICst.DEFAULT_CHART_SETTING = {
     bubble_style: BICst.CHART_SHAPE.NO_PROJECTOR,
     show_background_layer: true,
     background_layer_info: '高德地图',
+    bubble_min_size: 15,
+    bubble_max_size: 80,
     custom_scale: {
         minScale: {},
         maxScale: {},
