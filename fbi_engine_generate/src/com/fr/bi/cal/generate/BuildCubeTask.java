@@ -201,7 +201,7 @@ public class BuildCubeTask implements CubeTask {
         BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
         BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuild.getSources());
         operationManager.initialWatcher();
-        
+
         operationManager.subscribeStartMessage();
         Map<CubeTableSource, UpdateSettingSource> updateSettingSources = cubeBuild.getUpdateSettingSources();
         operationManager.setUpdateSettingSourceMap(updateSettingSources);
