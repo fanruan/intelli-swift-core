@@ -3,13 +3,13 @@
  * Created by AstronautOO7 on 2016/10/13.
  */
 BI.ChartStyleBlockSetting = BI.inherit(BI.Widget, {
-    _defaultConfig: function() {
+    _defaultConfig: function () {
         return BI.extend(BI.ChartStyleBlockSetting.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-chart-style-block-setting bi-charts-setting"
         })
     },
 
-    _init: function() {
+    _init: function () {
         BI.ChartStyleBlockSetting.superclass._init.apply(this, arguments);
         var self = this;
 
@@ -85,19 +85,22 @@ BI.ChartStyleBlockSetting = BI.inherit(BI.Widget, {
         });
     },
 
-    populate: function() {
+    populate: function () {
         var wId = this.options.wId;
-
+        this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
+        this.chartStyleGroup.setValue(BI.Utils.getWSChartStyleByID(wId));
     },
 
-    getValue: function() {
+    getValue: function () {
         return {
-
+            chart_color: this.colorSelect.getValue()[0],
+            chart_style: this.chartStyleGroup.getValue()[0],
         }
     },
 
-    setValue: function(v) {
-
+    setValue: function (v) {
+        this.colorSelect.setValue(v.chart_color);
+        this.chartStyleGroup.setValue(v.chart_style);
     }
 
 });

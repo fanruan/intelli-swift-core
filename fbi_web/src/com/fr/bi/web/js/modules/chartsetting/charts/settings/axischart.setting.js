@@ -834,9 +834,8 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         }
 
         this.widgetSetting.populate();
+        this.chartStyleSetting.populate();
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
-        // this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
-        // this.chartStyleGroup.setValue(BI.Utils.getWSChartStyleByID(wId));
         this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
         this.rYAxisStyle.setValue(BI.Utils.getWSRightYAxisStyleByID(wId));
         this.numberLevellY.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
@@ -874,9 +873,8 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
     getValue: function () {
         return {
             widget_setting: this.widgetSetting.getValue(),
+            chart_style_setting: this.chartStyleSetting.getValue(),
             transfer_filter: this.transferFilter.isSelected(),
-            // chart_color: this.colorSelect.getValue()[0],
-            // chart_style: this.chartStyleGroup.getValue()[0],
             left_y_axis_style: this.lYAxisStyle.getValue()[0],
             right_y_axis_style: this.rYAxisStyle.getValue()[0],
             left_y_axis_number_level: this.numberLevellY.getValue()[0],
@@ -908,9 +906,8 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
     setValue: function (v) {
         this.widgetSetting.setValue(v.widget_setting);
+        this.chartStyleSetting.setValue(v.chart_style_setting);
         this.transferFilter.setSelected(v.transfer_filter);
-        // this.colorSelect.setValue(v.chart_color);
-        // this.chartStyleGroup.setValue(v.chart_style);
         this.lYAxisStyle.setValue(v.left_y_axis_style);
         this.rYAxisStyle.setValue(v.right_y_axis_style);
         this.numberLevellY.setValue(v.left_y_axis_number_level);
