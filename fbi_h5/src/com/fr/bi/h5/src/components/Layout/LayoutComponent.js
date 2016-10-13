@@ -23,7 +23,7 @@ import MultiTreeSelectorComponent from '../MultiTreeSelector/MultiTreeSelectorCo
 import ContentComponent from '../Content/ContentComponent'
 import ImageComponent from "../Image/ImageComponent"
 
-class Layout extends Component {
+class LayoutComponent extends Component {
     static propTypes = {};
 
     constructor(props, context) {
@@ -142,20 +142,16 @@ class Layout extends Component {
             default:
                 break;
         }
-        return <View>
-            <View style={styles.wrapper}>
-                {component}
-            </View>
+        return <View style={styles.wrapper}>
+            {component}
         </View>
     }
 }
-mixin.onClass(Layout, ReactComponentWithImmutableRenderMixin);
+mixin.onClass(LayoutComponent, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
-        margin: 20
+        padding: 20
     },
-    viewPager: {
-        flex: 1
-    }
+    viewPager: {}
 });
-export default Layout
+export default LayoutComponent

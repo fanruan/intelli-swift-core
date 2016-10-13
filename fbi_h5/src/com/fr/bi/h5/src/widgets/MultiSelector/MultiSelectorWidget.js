@@ -13,8 +13,8 @@ import React, {
     View,
     Fetch
 } from 'lib'
-
-import {TextButton, VirtualScroll, AutoSizer, Infinite, VtapeLayout} from 'base'
+import {Layout} from 'layout'
+import {TextButton, VirtualScroll, AutoSizer, Infinite} from 'base'
 import {Colors, Size} from 'data'
 
 import Item from './Item'
@@ -105,7 +105,7 @@ class MultiSelectorWidget extends Component {
         //    isInfiniteLoading={true}
         //    timeScrollStateLastsForAfterUserScrolls={1000}
         //    ></Infinite>;
-        return <VtapeLayout style={styles.wrapper}>
+        return <Layout dir='top' box='last' style={styles.wrapper}>
             <VirtualScroll
                 width={props.width}
                 height={props.height - Size.ITEM_HEIGHT}
@@ -116,11 +116,11 @@ class MultiSelectorWidget extends Component {
                 rowRenderer={this._rowRenderer.bind(this)}
                 //scrollToIndex={scrollToIndex}
             />
-            <View height={Size.ITEM_HEIGHT} style={styles.toolbar}>
+            <View style={styles.toolbar}>
                 <TextButton style={{flex: 1}}
                             onPress={this._onSelectAll.bind(this)}>{state.type === 1 ? '全选' : '全不选'}</TextButton>
             </View>
-        </VtapeLayout>;
+        </Layout>;
     }
 
     _onSelectAll() {
@@ -139,11 +139,11 @@ class MultiSelectorWidget extends Component {
 
     _moreRenderer() {
         if (this.state.hasNext === true) {
-            return <TextButton style={{height: Size.ITEM_HEIGHT}} text={'点击加载更多数据'} onPress={()=> {
+            return <TextButton style={{height: Size.ITEM_HEIGHT}} onPress={()=> {
                 this._fetchData();
-            }}/>
+            }}>点击加载更多数据</TextButton>
         } else {
-            return <TextButton style={{height: Size.ITEM_HEIGHT}} disabled={true} text={'无更多数据'}/>
+            return <TextButton style={{height: Size.ITEM_HEIGHT}} disabled={true}>无更多数据</TextButton>
         }
     }
 
@@ -174,11 +174,11 @@ class MultiSelectorWidget extends Component {
 mixin.onClass(MultiSelectorWidget, PureRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
-        flex: 1
     },
     toolbar: {
         borderTopWidth: 1 / PixelRatio.get(),
-        borderTopColor: Colors.BORDER
+        borderTopColor: Colors.BORDER,
+        height: Size.ITEM_HEIGHT
     }
 });
 export default MultiSelectorWidget

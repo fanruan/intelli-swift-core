@@ -190,6 +190,7 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
         }
         switch (widgetType) {
             case BICst.WIDGET.STRING:
+            case BICst.WIDGET.LIST_LABEL:
                 if (BI.isNull(widgetValue.value) || widgetValue.value.length === 0) {
                     return text;
                 }
@@ -252,6 +253,8 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
                 if (text !== "") {
                     text = BI.i18nText("BI-In") + " " + text;
                 }
+                return text;
+            case BICst.WIDGET.TREE_LABEL:
                 return text;
             default:
                 return widgetValue;

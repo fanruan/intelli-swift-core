@@ -7,7 +7,6 @@ import configureStore from './stores';
 import App from './containers/App';
 import StyleSheet from './lib/StyleSheet/StyleSheet.web';
 import View from './lib/View/View.web';
-import Portal from './lib/Portal/Portal';
 
 import 'reset.css';
 import 'styles/css/utils/common.css';

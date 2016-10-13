@@ -32,7 +32,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
 
             this._createItemWithStyle(item);
 
-        } else if(type === BICst.TARGET_TYPE.NUMBER || type === BICst.TARGET_TYPE.FORMULA ){
+        } else if (type === BICst.TARGET_TYPE.NUMBER || type === BICst.TARGET_TYPE.FORMULA) {
             var item = BI.createWidget({
                 type: "bi.label",
                 cls: "detail-table-cell-text",
@@ -45,7 +45,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
                 rgap: 5
             });
             this._createItemWithStyle(item);
-        } else{
+        } else {
             var item = BI.createWidget({
                 type: "bi.label",
                 cls: "detail-table-cell-text",
@@ -71,7 +71,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
         var num = BI.parseFloat(text);
         switch (dot) {
             case BICst.TARGET_STYLE.FORMAT.NORMAL:
-                if(separators){
+                if (separators) {
                     num = BI.contentFormat(num, '#,###.##;-#,###.##')
                 } else {
                     num = BI.contentFormat(num, '#.##;-#.##')
@@ -79,7 +79,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
                 return num;
                 break;
             case BICst.TARGET_STYLE.FORMAT.ZERO2POINT:
-                if(separators){
+                if (separators) {
                     num = BI.contentFormat(num, '#,###;-#,###')
                 } else {
                     num = BI.parseInt(num)
@@ -87,14 +87,14 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
                 return num;
                 break;
             case BICst.TARGET_STYLE.FORMAT.ONE2POINT:
-                if(separators){
+                if (separators) {
                     num = BI.contentFormat(num, '#,###.0;-#,###.0')
                 } else {
                     num = BI.contentFormat(num, '#.0;-#.0')
                 }
                 return num;
             case BICst.TARGET_STYLE.FORMAT.TWO2POINT:
-                if(separators){
+                if (separators) {
                     num = BI.contentFormat(num, '#,###.00;-#,###.00')
                 } else {
                     num = BI.contentFormat(num, '#.00;-#.00')
@@ -145,7 +145,10 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
         var text = o.text;
         var dId = this.options.dId;
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
-        text = this._getText(text);
+        var type = BI.Utils.getDimensionTypeByID(dId);
+        if (type === BICst.TARGET_TYPE.NUMBER || type === BICst.TARGET_TYPE.FORMULA) {
+            text = this._getText(text);
+        }
         var format = styleSettings.format, numLevel = styleSettings.num_level,
             iconStyle = styleSettings.icon_style, mark = styleSettings.mark,
             num_separators = styleSettings.num_separators;
@@ -153,7 +156,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
 
         if (text === Infinity) {
             text = "N/0";
-        } else if(BI.Utils.getDimensionSettingsByID(dId).num_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+        } else if (BI.Utils.getDimensionSettingsByID(dId).num_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
             text += "%";
         }
 

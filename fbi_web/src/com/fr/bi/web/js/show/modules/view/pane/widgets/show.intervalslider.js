@@ -15,6 +15,13 @@ BIShow.IntervalSliderWidgetView = BI.inherit(BI.View, {
 
     _init: function () {
         BIShow.IntervalSliderWidgetView.superclass._init.apply(this, arguments);
+        var self = this, wId=this.model.get("id");
+        BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX +wId, function () {
+            self.combo.populate();
+        });
+        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
+            self._resetValue();
+        });
     },
 
     _render: function (vessel) {

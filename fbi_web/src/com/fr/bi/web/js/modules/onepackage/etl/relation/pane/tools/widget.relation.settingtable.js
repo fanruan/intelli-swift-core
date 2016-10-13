@@ -36,6 +36,7 @@ BI.RelationSettingTable = BI.inherit(BI.Widget, {
         var removeButton = BI.createWidget({
             type: "bi.icon_button",
             cls: "close-h-font",
+            invisible: true,
             height: 20,
             width: 20
         });
@@ -44,13 +45,20 @@ BI.RelationSettingTable = BI.inherit(BI.Widget, {
             arguments[1] = BI.RelationSettingTable.CLICK_REMOVE;
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
+
         BI.createWidget({
-            type: "bi.center_adapt",
+            type: "bi.vertical_adapt",
             element: this.element,
             items: [this.setGroup, this.tableButton, removeButton],
             hgap: 20,
             vgap: 5
-        })
+        });
+
+        this.element.hover(function(){
+            removeButton.setVisible(true);
+        },function(){
+            removeButton.setVisible(false);
+        });
     },
 
     getValue: function(){

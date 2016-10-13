@@ -27,8 +27,8 @@ import React, {
 } from 'lib'
 
 import {Colors, Size, Template} from 'data'
-
-import {IconButton, Table, AutoSizer, HtapeLayout, VtapeLayout, GridLayout, CenterLayout} from 'base'
+import {Layout} from 'layout'
+import {IconButton, Table, AutoSizer} from 'base'
 
 import {MultiSelectorWidget} from 'widgets'
 

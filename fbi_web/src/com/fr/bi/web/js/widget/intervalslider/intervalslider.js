@@ -4,7 +4,12 @@
 BI.IntervalSlider = BI.inherit(BI.Widget, {
     _constant: {
         EDITOR_WIDTH: 90,
-        HEIGHT: 28
+        EDITOR_HEIGHT: 30,
+        HEIGHT: 28,
+        SLIDER_WIDTH_HALF: 15,
+        SLIDER_WIDTH: 30,
+        SLIDER_HEIGHT: 30,
+        TRACK_HEIGHT: 24
     },
     _defaultConfig: function () {
         return BI.extend(BI.IntervalSlider.superclass._defaultConfig.apply(this, arguments), {
@@ -21,7 +26,7 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
         this.backgroundTrack = BI.createWidget({
             type: "bi.layout",
             cls: "background-track",
-            height: 24
+            height: c.TRACK_HEIGHT
         });
         this.grayTrack = BI.createWidget({
             type: "bi.layout",
@@ -129,11 +134,11 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
                         items: [{
                             el: this.track,
                             width: "100%",
-                            height: 24
+                            height: c.TRACK_HEIGHT
                         }]
                     }],
                     hgap: 7,
-                    height: 24
+                    height: c.TRACK_HEIGHT
                 },
                 top: 33,
                 left: 0,
@@ -145,6 +150,7 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
         })
     },
     _createLabelWrapper: function () {
+        var c = this._constant;
         return {
             el: {
                 type: "bi.vertical",
@@ -163,7 +169,7 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
                         left: "100%"
                     }]
                 }],
-                rgap: 90,
+                rgap: c.EDITOR_WIDTH,
                 height: 90
             },
             top: 0,
@@ -172,6 +178,7 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
         }
     },
     _createSliderWrapper: function () {
+        var c = this._constant;
         return {
             el: {
                 type: "bi.vertical",
@@ -190,9 +197,8 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
                         left: "100%"
                     }]
                 }],
-                //rgap: 90,
-                hgap: 15,
-                height: 30
+                hgap: c.SLIDER_WIDTH_HALF,
+                height: c.SLIDER_HEIGHT
             },
             top: 30,
             left: 0,

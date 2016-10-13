@@ -18,6 +18,7 @@ import React, {
 
 import {ReactComponentWithImmutableRenderMixin} from 'core';
 import {Template} from 'data';
+import {Layout, AbsoluteLayout} from 'layout';
 import * as TodoActions from '../actions/template';
 
 import Main from '../components/Main.js'
@@ -61,6 +62,8 @@ import Main from '../components/Main.js'
 //import UIExplorerApp from '../examples/UIExplorer/UIExplorerApp.web'
 // import Game2048 from '../examples/2048/Game2048'
 
+import LayoutDemo from '../examples/base/Layout'
+
 
 class App extends Component {
     static childContextTypes = {
@@ -98,7 +101,9 @@ class App extends Component {
     render() {
         return (
             <View style={styles.wrapper}>
-                <Main $template={this.props.$template}/>
+                <Layout box='mean' style={styles.wrapper}>
+                    <Main $template={this.props.$template}/>
+                </Layout>
                 <Portal />
             </View>
         )

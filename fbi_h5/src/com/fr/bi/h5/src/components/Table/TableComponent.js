@@ -14,7 +14,7 @@ import React, {
 
 import {Size, Template, Widget} from 'data'
 
-import {Table, Dialog, IconLink, HtapeLayout, VtapeLayout} from 'base'
+import {Table, Dialog, IconLink} from 'base'
 import {TableWidget} from 'widgets';
 
 import TableComponentHelper from './TableComponentHelper';

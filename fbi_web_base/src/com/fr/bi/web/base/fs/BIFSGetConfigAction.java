@@ -1,20 +1,20 @@
 package com.fr.bi.web.base.fs;
 
 import com.fr.base.ChartPreStyleServerManager;
+import com.fr.bi.conf.fs.BIChartStyleAttr;
 import com.fr.bi.conf.fs.FBIConfig;
 import com.fr.bi.web.base.AbstractBIBaseAction;
 import com.fr.chart.base.ChartPreStyle;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
-import com.fr.stable.StringUtils;
 import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.awt.*;
 import java.io.PrintWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -64,6 +64,13 @@ public class BIFSGetConfigAction extends AbstractBIBaseAction {
             ja.put(nameJo);
         }
         jo.put("styleList", ja);
+        BIChartStyleAttr attr = FBIConfig.getInstance().getChartStyleAttr();
+        jo.put("mainBackground", new JSONObject(attr.getMainBackground().toString()));
+        jo.put("widgetBackground", new JSONObject(attr.getWidgetBackground().toString()));
+        jo.put("titleBackground", new JSONObject(attr.getTitleBackground().toString()));
+        jo.put("titleWordStyle", new JSONObject(attr.getTitleFont().toString()));
+        jo.put("chartWordStyle", new JSONObject(attr.getChartFont().toString()));
+        jo.put("controlTheme", attr.getControlTheme());
         pw.print(jo);
         pw.flush();
         pw.close();

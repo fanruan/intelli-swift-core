@@ -30,6 +30,7 @@ class TextButton extends Component {
     static propTypes = {};
 
     static defaultProps = {
+        textAlign: 'center',
         selected: null,
         disabled: false,
         invalid: false,
@@ -76,26 +77,30 @@ class TextButton extends Component {
         const {...props} = this.props, {...state} = this.state;
         if (props.disabled === true) {
             return <View className={cn(props.className, 'react-view', 'base-disabled')}
-                         style={[styles.wrapper, styles.disabled, props.style]}>
+                         style={[styles.wrapper, styles.disabled, {alignItems: props.textAlign}, props.style]}>
                 <Text>{props.children}</Text>
             </View>
         }
         if (props.invalid === true) {
             return <View className={cn(props.className, 'react-view', 'base-invalid')}
-                         style={[styles.wrapper, props.style]}>
+                         style={[styles.wrapper, {alignItems: props.textAlign}, props.style]}>
                 <Text>{props.children}</Text>
             </View>
         }
         if (props.effect === true) {
-            return <TouchableOpacity style={[props.style]} onPress={this._onPress.bind(this)}
-                                     underlayColor={props.underlayColor || Colors.PRESS}>
-                <View style={[styles.wrapper]}>
+            const {paddingLeft, paddingRight, paddingTop, paddingBottom, marginTop, marginBottom, marginLeft, marginRight, ...other} = props.style || {};
+            return <TouchableHighlight style={[{...other}]} onPress={this._onPress.bind(this)}
+                                       underlayColor={props.underlayColor || Colors.PRESS}>
+                <View className={cn(props.className, 'react-view')}
+                      style={[styles.wrapper, {flex: 1, alignItems: props.textAlign}, props.style]}>
                     <Text>{props.children}</Text>
                 </View>
-            </TouchableOpacity>
+            </TouchableHighlight>
         }
         return <TouchableWithoutFeedback onPress={this._onPress.bind(this)}>
-            <View style={[styles.wrapper, props.style]}>
+            <View className={cn(props.className, 'react-view', cn({
+                active: state.selected
+            }))} style={[styles.wrapper, {alignItems: props.textAlign}, props.style]}>
                 <Text>{props.children}</Text>
             </View>
         </TouchableWithoutFeedback>
@@ -105,10 +110,8 @@ class TextButton extends Component {
 mixin.onClass(TextButton, PureRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
-        flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
-        color: Colors.HIGHLIGHT
+        alignItems: 'center'
     },
     disabled: {
         color: Colors.DISABLED

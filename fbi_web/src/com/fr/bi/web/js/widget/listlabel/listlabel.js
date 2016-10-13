@@ -14,7 +14,7 @@ BI.ListLabel = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.ListLabel.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-list-label",
-            title: BI.i18nText("BI-Default"),
+            title: BI.i18nText("BI-List_Label_Con"),
             showTitle: true,
             items: [],
             height: 40
@@ -67,14 +67,27 @@ BI.ListLabel = BI.inherit(BI.Widget, {
             items: [this.container, this.minTip, this.maxTip],
             height: o.height
         });
-        var allItems = o.showTitle ? [this.title, {
-            el: this.right,
-            lgap: this._constant.DEFAULT_LEFT_GAP
-        }] : [this.right];
 
-        BI.createWidget({
+        o.showTitle ? BI.createWidget({
+            type: "bi.absolute",
+            items: [{
+                el: this.title,
+                left:0,
+                right:0,
+                top:0,
+                bottom:0,
+                width: 55
+            }, {
+                el: this.right,
+                left: 60,
+                right:0,
+                top:0,
+                bottom:0
+            }],
+            element: this.element
+        }) : BI.createWidget({
             type: "bi.horizontal",
-            items: allItems,
+            items: [this.right],
             element: this.element
         });
     },
