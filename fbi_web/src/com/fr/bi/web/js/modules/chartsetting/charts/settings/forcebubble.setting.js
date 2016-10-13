@@ -5,93 +5,23 @@
  */
 BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.ForceBubbleSetting.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-charts-setting bi-force-bubble-chart-setting"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.ForceBubbleSetting.superclass._init.apply(this, arguments);
-        var self = this, constant = BI.AbstractChartSetting;
+        var self = this, o = this.options, constant = BI.AbstractChartSetting;
 
-        //显示组件标题
-        this.showTitle = BI.createWidget({
-            type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Show_Chart_Title"),
-            cls: "attr-names",
-            logic: {
-                dynamic: true
-            }
-        });
-        this.showTitle.on(BI.Controller.EVENT_CHANGE, function () {
-            self.widgetTitle.setVisible(this.isSelected());
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+        this.widgetSetting = BI.createWidget({
+            type: "bi.widget_block_setting",
+            wId: o.wId
         });
 
-        //组件标题
-        this.title = BI.createWidget({
-            type: "bi.sign_editor",
-            cls: "title-input",
-            width: 120
-        });
-
-        this.title.on(BI.SignEditor.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
-        });
-
-        //详细设置
-        this.titleDetailSettting = BI.createWidget({
-            type: "bi.show_title_detailed_setting_combo"
-        });
-
-        this.titleDetailSettting.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
-        });
-
-        this.widgetTitle = BI.createWidget({
-            type: "bi.left",
-            items: [this.title, this.titleDetailSettting],
-            hgap: constant.SIMPLE_H_GAP
-        });
-
-        //组件背景
-        this.widgetBackground = BI.createWidget({
-            type: "bi.global_style_index_background"
-        });
-        this.widgetBackground.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
-        });
-
-        var widgetTitle = BI.createWidget({
-            type: "bi.left",
-            cls: "single-line-settings",
-            items: BI.createItems([{
-                type: "bi.label",
-                text: BI.i18nText("BI-Component_Widget"),
-                cls: "line-title",
-            }, {
-                type: "bi.label",
-                text: BI.i18nText("BI-Title"),
-                cls: "line-title",
-                lgap: 38
-            }, {
-                type: "bi.vertical_adapt",
-                items: [this.showTitle]
-            }, {
-                type: "bi.vertical_adapt",
-                items: [this.widgetTitle]
-            }, {
-                type: "bi.label",
-                text: BI.i18nText("BI-Background"),
-                cls: "line-title",
-            },{
-                type: "bi.vertical_adapt",
-                items: [this.widgetBackground]
-            }], {
-                height: constant.SINGLE_LINE_HEIGHT
-            }),
-            hgap: constant.SIMPLE_H_GAP
+        this.widgetSetting.on(BI.WidgetBlockSetting.EVENT_CHANGE, function() {
+            self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE)
         });
 
         //显示规则
@@ -200,7 +130,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
         });
         this.colorSelect.populate();
 
-        this.colorSelect.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function(){
+        this.colorSelect.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE);
         });
 
@@ -234,9 +164,41 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
             }]
         });
 
-        this.bubbleStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function(){
+        this.bubbleStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
             self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE);
         });
+
+        //气泡大小
+        this.bubbleSizeFrom = BI.createWidget({
+            type: "bi.sign_editor",
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
+            errorText: BI.i18nText("BI-Please_Input_Positive_Integer"),
+            cls: "unit-input",
+            validationChecker: function (v) {
+                return BI.parseInt(v) > 0 && BI.parseInt(v) <= BI.parseInt(self.bubbleSizeTo.getValue())
+            }
+        });
+
+        this.bubbleSizeFrom.on(BI.SignEditor.EVENT_CONFIRM, function () {
+            self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE)
+        });
+
+        this.bubbleSizeTo = BI.createWidget({
+            type: "bi.sign_editor",
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
+            errorText: BI.i18nText("BI-Please_Input_Integer_Greater_Than_Minimum"),
+            cls: "unit-input",
+            validationChecker: function (v) {
+                return BI.parseFloat(v) >= BI.parseFloat(self.bubbleSizeFrom.getValue())
+            }
+        });
+
+        this.bubbleSizeTo.on(BI.SignEditor.EVENT_CONFIRM, function () {
+            self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE)
+        });
+
 
         var tableStyle = BI.createWidget({
             type: "bi.horizontal_adapt",
@@ -257,16 +219,12 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Display_Rules"),
                     cls: "attr-names"
-                },  {
-                    el: {
-                        type: "bi.vertical_adapt",
-                        items: [this.rulesDisplay]
-                    }
-                },{
-                    el: {
-                        type: "bi.vertical_adapt",
-                        items: [this.colorSelect]
-                    }
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.rulesDisplay]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.colorSelect]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.dimensionColor]
@@ -275,10 +233,21 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Total_Style"),
                     cls: "attr-names"
                 }, {
-                    el: {
-                        type: "bi.vertical_adapt",
-                        items: [this.bubbleStyleGroup]
-                    }
+                    type: "bi.vertical_adapt",
+                    items: [this.bubbleStyleGroup]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [{
+                        type: "bi.label",
+                        text: BI.i18nText("BI-Bubble_Size")
+                    }, this.bubbleSizeFrom, {
+                        type: "bi.label",
+                        text: "px <" + BI.i18nText("BI-Diameter") + "≤"
+                    }, this.bubbleSizeTo, {
+                        type: "bi.label",
+                        text: "px"
+                    }],
+                    hgap: 3
                 }, this.fixedColorSetting, this.gradientColorSetting], {
                     height: constant.SINGLE_LINE_HEIGHT,
                     lgap: constant.SIMPLE_H_GAP
@@ -294,39 +263,8 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BICst.CHART_LEGEND
         });
 
-        this.legend.on(BI.Segment.EVENT_CHANGE, function(){
+        this.legend.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE);
-        });
-
-        //气泡大小
-        this.bubbleSizeFrom = BI.createWidget({
-            type: "bi.sign_editor",
-            width: constant.EDITOR_WIDTH,
-            height: constant.EDITOR_HEIGHT,
-            errorText: BI.i18nText("BI-Please_Input_Positive_Integer"),
-            cls: "unit-input",
-            validationChecker: function(v) {
-                return BI.parseInt(v) > 0 && BI.parseInt(v) <= BI.parseInt(self.bubbleSizeTo.getValue())
-            }
-        });
-
-        this.bubbleSizeFrom.on(BI.SignEditor.EVENT_CONFIRM, function () {
-            self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE)
-        });
-
-        this.bubbleSizeTo = BI.createWidget({
-            type: "bi.sign_editor",
-            width: constant.EDITOR_WIDTH,
-            height: constant.EDITOR_HEIGHT,
-            errorText: BI.i18nText("BI-Please_Input_Integer_Greater_Than_Minimum"),
-            cls: "unit-input",
-            validationChecker: function(v) {
-                return BI.parseFloat(v) >= BI.parseFloat(self.bubbleSizeFrom.getValue())
-            }
-        });
-
-        this.bubbleSizeTo.on(BI.SignEditor.EVENT_CONFIRM, function () {
-            self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE)
         });
 
         var showElement = BI.createWidget({
@@ -350,19 +288,6 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.legend]
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [{
-                        type: "bi.label",
-                        text: BI.i18nText("BI-Bubble_Size")
-                    }, this.bubbleSizeFrom, {
-                        type: "bi.label",
-                        text: "px <" + BI.i18nText("BI-Diameter") + "≤"
-                    }, this.bubbleSizeTo, {
-                        type: "bi.label",
-                        text: "px"
-                    }],
-                    hgap: 3
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -376,7 +301,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
             value: BI.i18nText("BI-Bind_Target_Condition"),
             width: 170
         });
-        this.transferFilter.on(BI.Controller.EVENT_CHANGE, function(){
+        this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE);
         });
 
@@ -397,7 +322,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [widgetTitle, tableStyle, showElement, otherAttr],
+            items: [this.widgetSetting, tableStyle, showElement, otherAttr],
             hgap: 10
         })
     },
@@ -428,13 +353,9 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
         }
     },
 
-    populate: function(){
+    populate: function () {
         var wId = this.options.wId;
-        this.showTitle.setSelected(BI.Utils.getWSShowNameByID(wId));
-        this.widgetTitle.setVisible(BI.Utils.getWSShowNameByID(wId));
-        this.title.setValue(BI.Utils.getWidgetNameByID(wId));
-        this.titleDetailSettting.setValue(BI.Utils.getWSTitleDetailSettingByID(wId));
-        this.widgetBackground.setValue(BI.Utils.getWSWidgetBGByID(wId));
+        this.widgetSetting.populate();
         this.rulesDisplay.setValue(BI.Utils.getWSShowRulesByID(wId));
         this._colorSettingChange(BI.Utils.getWSShowRulesByID(wId));
         this.fixedConditions.setValue(BI.Utils.getWSBubbleFixedColorsByID(wId));
@@ -447,12 +368,9 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
         this.bubbleStyleGroup.setValue(BI.Utils.getWSBubbleStyleByID(wId))
     },
 
-    getValue: function(){
+    getValue: function () {
         return {
-            show_name: this.showTitle.isSelected(),
-            widget_title: this.title.getValue(),
-            title_detail: this.titleDetailSettting.getValue(),
-            widget_bg: this.widgetBackground.getValue(),
+            widget_setting: this.widgetSetting.getValue(),
             rules_display: this.rulesDisplay.getValue()[0],
             fixed_colors: this.fixedConditions.getValue(),
             gradient_colors: this.gradientConditions.getValue(),
@@ -465,11 +383,8 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
         }
     },
 
-    setValue: function(v){
-        this.showTitle.setSelected(v.show_name);
-        this.title.setValue(v.widget_title);
-        this.titleDetailSettting.setValue(v.title_detail);
-        this.widgetBackground.setValue(v.widget_bg);
+    setValue: function (v) {
+        this.widgetSetting.setValue(v.widget_setting);
         this.rulesDisplay.setValue(v.rules_display);
         this.fixedConditions.setValue(v.fixed_colors);
         this.gradientConditions.setValue(v.gradient_colors);

@@ -76,6 +76,8 @@ BICst.WIDGET.Widths[BICst.WIDGET.WEB] = 450;
 
 BICst.WIDGET.Widths[BICst.WIDGET.STRING] = 250;
 BICst.WIDGET.Widths[BICst.WIDGET.NUMBER] = 300;
+BICst.WIDGET.Widths[BICst.WIDGET.SINGLE_SLIDER] = 350;
+BICst.WIDGET.Widths[BICst.WIDGET.INTERVAL_SLIDER] = 350;
 BICst.WIDGET.Widths[BICst.WIDGET.DATE] = 320;
 BICst.WIDGET.Widths[BICst.WIDGET.YEAR] = 250;
 BICst.WIDGET.Widths[BICst.WIDGET.QUARTER] = 250;
@@ -125,6 +127,8 @@ BICst.WIDGET.Heights[BICst.WIDGET.WEB] = 380;
 
 BICst.WIDGET.Heights[BICst.WIDGET.STRING] = 110;
 BICst.WIDGET.Heights[BICst.WIDGET.NUMBER] = 110;
+BICst.WIDGET.Heights[BICst.WIDGET.SINGLE_SLIDER] = 110;
+BICst.WIDGET.Heights[BICst.WIDGET.INTERVAL_SLIDER] = 140;
 BICst.WIDGET.Heights[BICst.WIDGET.DATE] = 110;
 BICst.WIDGET.Heights[BICst.WIDGET.YEAR] = 110;
 BICst.WIDGET.Heights[BICst.WIDGET.QUARTER] = 110;
@@ -438,6 +442,10 @@ BICst.GLOBAL_PREDICTION_STYLE = {
 
 //表设置所有默认属性（应该是包含分组表、交叉表、复杂表和其他所有图表）
 BICst.DEFAULT_CHART_SETTING = {
+    widget_setting: {
+        title_detail: {},
+        widget_bg: {},
+    },
     table_form: BICst.TABLE_FORM.OPEN_ROW,
     theme_color: "#65bce7",
     table_style: BICst.TABLE_STYLE.STYLE1,

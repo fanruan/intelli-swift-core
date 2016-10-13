@@ -174,7 +174,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                     self._expandWidget();
                 case BICst.DASHBOARD_WIDGET_SHOW_NAME:
                     var settings = self.model.get("settings");
-                    settings.show_name = !BI.Utils.getWSShowNameByID(self.model.get("id"));
+                    settings.widget_setting.show_name = !BI.Utils.getWSShowNameByID(self.model.get("id"));
                     self.model.set("settings", settings);
                     self._refreshLayout();
                     break;
@@ -282,7 +282,8 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
 
     _refreshWidgetTitle: function () {
         var id = this.model.get("id");
-        var titleSetting = this.model.get("settings").title_detail || {};
+        var widgetSetting = this.model.get("settings").widget_setting;
+        var titleSetting = widgetSetting ? widgetSetting.title_detail : {};
         var $title = this.title.element.find(".shelter-editor-text .bi-text");
         $title.css(titleSetting.detail_style || {});
 
@@ -290,7 +291,8 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
     },
 
     _refreshWidgetBG: function () {
-        var widgetBG = this.model.get("settings").widget_bg || {};
+        var widgetSetting = this.model.get("settings").widget_setting;
+        var widgetBG = widgetSetting ? widgetSetting.widget_bg : {};
         this.element.css({"background": this._getBackgroundValue(widgetBG)})
     },
 

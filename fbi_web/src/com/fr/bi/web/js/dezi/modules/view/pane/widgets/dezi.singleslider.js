@@ -13,8 +13,11 @@ BIDezi.SingleSliderWidgetView = BI.inherit(BI.View, {
     },
     _init: function () {
         BIDezi.SingleSliderWidgetView.superclass._init.apply(this, arguments);
-        var self = this;
-        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + this.model.get("id"), function () {
+        var self = this, wId=this.model.get("id");
+        BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX +wId, function () {
+            self.combo.populate();
+        });
+        BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
             self._resetValue();
         });
         //全局样式
