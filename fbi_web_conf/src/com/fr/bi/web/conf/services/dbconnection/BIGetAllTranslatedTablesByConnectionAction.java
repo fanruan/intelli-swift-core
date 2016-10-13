@@ -65,7 +65,9 @@ public class BIGetAllTranslatedTablesByConnectionAction extends
             try {
                 if (schemaName != null) {
                     jo.put("schema", schemaName);
-                    if(StringUtils.isNotEmpty(schemaName)) {
+                    //无schema的同样需要取
+                    String[] schemas = DataCoreUtils.getDatabaseSchema(dbc);
+                    if(StringUtils.isNotEmpty(schemaName) || schemas.length == 0) {
                         TableProcedure[] sqlTables = DataCoreUtils.getTables(dbc, TableProcedure.TABLE, schemaName, true);
                         tps = ArrayUtils.addAll(tps, sqlTables);
                         views = ArrayUtils.addAll(views, FRContext.getCurrentEnv().getTableProcedure(dbc, TableProcedure.VIEW, schemaName));
