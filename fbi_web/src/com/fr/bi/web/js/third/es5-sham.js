@@ -72,6 +72,12 @@
         }
     }
 
+    if (!String.prototype.trim) {
+        String.prototype.trim = function () {
+            return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
+        };
+    }
+
     // Production steps of ECMA-262, Edition 5, 15.4.4.19
     // Reference: http://es5.github.io/#x15.4.4.19
     if (!Array.prototype.map) {
