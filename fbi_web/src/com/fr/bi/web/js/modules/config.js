@@ -330,7 +330,7 @@ BICst.DASHBOARD_WIDGETS = [[{
     //     text: BI.i18nText("BI-Tree_Label_Con"),
     //     title: BI.i18nText("BI-Tree_Label_Con"),
     //     value: BICst.WIDGET.TREE_LABEL,
-    //     cls: "drag-tree-icon"
+    //     cls: "drag-tree-label-icon"
     //
     // }]
 }, {
