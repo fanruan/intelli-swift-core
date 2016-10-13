@@ -31,7 +31,9 @@ import com.finebi.cube.utils.BICubeRelationUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
 import com.fr.bi.common.factory.BIFactoryHelper;
+import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
@@ -47,10 +49,7 @@ import com.fr.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.Future;
 
 /**
@@ -202,11 +201,13 @@ public class BuildCubeTask implements CubeTask {
         BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
         BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuild.getSources());
         operationManager.initialWatcher();
+        
         operationManager.subscribeStartMessage();
-        operationManager.setUpdateSettingSourceMap(cubeBuild.getUpdateSettingSources());
+        Map<CubeTableSource, UpdateSettingSource> updateSettingSources = cubeBuild.getUpdateSettingSources();
+        operationManager.setUpdateSettingSourceMap(updateSettingSources);
         operationManager.setConnectionMap(cubeBuild.getConnections());
         manager.registerDataSource(cubeBuild.getAllSingleSources());
-        logTable(cubeBuild.getAllSingleSources());
+        logTable(cubeBuild.getAllSingleSources(), updateSettingSources);
         manager.registerRelation(cubeBuild.getTableSourceRelationSet());
         logRelation(cubeBuild.getTableSourceRelationSet());
         Set<BITableSourceRelationPath> relationPathSet = filterPath(cubeBuild.getBiTableSourceRelationPathSet());
@@ -228,15 +229,22 @@ public class BuildCubeTask implements CubeTask {
         }
     }
 
-    private void logTable(Set<CubeTableSource> tableSourceSet) {
+    private void logTable(Set<CubeTableSource> tableSourceSet, Map<CubeTableSource, UpdateSettingSource> updateSettingSources) {
+        Map<Integer, String> updateTypeMap = new HashMap();
+        updateTypeMap.put(DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL, "All");
+        updateTypeMap.put(DBConstant.SINGLE_TABLE_UPDATE_TYPE.PART, "Part");
+        updateTypeMap.put(DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER, "Never");
         logger.info("***************Table*****************");
         Integer tableCount = 0;
         if (tableSourceSet != null) {
             for (CubeTableSource tableSource : tableSourceSet) {
+                int updateType = null == updateSettingSources.get(tableSource) ? DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL : updateSettingSources.get(tableSource).getUpdateType();
                 logger.info(BIStringUtils.append(
                         "\n" + "       table: " + (tableCount++),
                         "\n" + "       Table Name:", tableSource.getTableName(),
-                        "\n" + "       Table ID:", tableSource.getSourceID()));
+                        "\n" + "       Table ID:", tableSource.getSourceID(),
+                        "\n" + "       update type:", updateTypeMap.get(updateType)
+                ));
             }
         }
         logger.info("***************Table end*****************\n");

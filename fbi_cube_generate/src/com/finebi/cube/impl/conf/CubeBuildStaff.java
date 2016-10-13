@@ -7,6 +7,7 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.CalculateDependTool;
 import com.finebi.cube.relation.*;
 import com.fr.bi.base.BIUser;
+import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -168,6 +169,15 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable {
         return true;
     }
 
+    @Override
+    public Map<CubeTableSource, UpdateSettingSource> getUpdateSettingSources() {
+        Map<CubeTableSource, UpdateSettingSource> updateSettingSourceMap = new HashMap<CubeTableSource, UpdateSettingSource>();
+        for (CubeTableSource source : allSingleSources) {
+            updateSettingSourceMap.put(source, setUpdateTypes(source));
+        }
+        return updateSettingSourceMap;
+    }
+
     public void setAllSingleSources(Set<CubeTableSource> allSingleSources) {
         this.allSingleSources = allSingleSources;
     }
@@ -242,7 +252,7 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable {
             this.cubeGenerateRelationSet.add(cal.calRelations(biTableSourceRelation, this.getSources()));
         }
         cubeGenerateRelationPathSet = new HashSet<BICubeGenerateRelationPath>();
-        cubeGenerateRelationPathSet= cal.calRelationPath(this.getBiTableSourceRelationPathSet(), this.tableSourceRelationSet);
+        cubeGenerateRelationPathSet = cal.calRelationPath(this.getBiTableSourceRelationPathSet(), this.tableSourceRelationSet);
     }
 
 }
