@@ -51,7 +51,7 @@ class ChartComponent extends Component {
 
     render() {
 
-        return <View ref='chart' style={{height: this.props.height, ...styles.wrapper}}/>
+        return <View ref='chart' style={{height: this.props.height, width: this.props.width, ...styles.wrapper}}/>
     }
 }
 mixin.onClass(ChartComponent, ReactComponentWithImmutableRenderMixin);
