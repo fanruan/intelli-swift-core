@@ -54,11 +54,13 @@ BI.AxisChart = BI.inherit(BI.AbstractChart, {
             switch (axis.axisIndex) {
                 case self.constants.LEFT_AXIS:
                     title = getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
+                    axis.title.style = self.config.left_axis_label_setting.text_style || {};
                     axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + title : title;
                     axis.title.rotation = self.constants.ROTATION;
                     BI.extend(axis, {
                         lineWidth: self.config.line_width,
-                        showLabel: self.config.show_label,
+                        showLabel: self.config.left_axis_show_label,
+                        labelRotation: self.config.left_axis_label_setting.text_direction || 0,
                         enableTick: self.config.enable_tick,
                         reversed: self.config.left_y_axis_reversed,
                         enableMinorTick: self.config.enable_minor_tick,
@@ -73,11 +75,13 @@ BI.AxisChart = BI.inherit(BI.AbstractChart, {
                     break;
                 case self.constants.RIGHT_AXIS:
                     title = getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
+                    axis.title.style = self.config.right_axis_label_setting.text_style || {};
                     axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + title : title;
                     axis.title.rotation = self.constants.ROTATION;
                     BI.extend(axis, {
                         lineWidth: self.config.line_width,
-                        showLabel: self.config.show_label,
+                        showLabel: self.config.right_axis_show_label,
+                        labelRotation: self.config.right_axis_label_setting.text_direction || 0,
                         enableTick: self.config.enable_tick,
                         reversed: self.config.right_y_axis_reversed,
                         enableMinorTick: self.config.enable_minor_tick,
@@ -231,7 +235,6 @@ BI.AxisChart = BI.inherit(BI.AbstractChart, {
             text_direction: options.text_direction || 0,
             cordon: options.cordon || [],
             line_width: BI.isNull(options.line_width) ? 1 : options.line_width,
-            show_label: BI.isNull(options.show_label) ? true : options.show_label,
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
             custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
@@ -239,7 +242,13 @@ BI.AxisChart = BI.inherit(BI.AbstractChart, {
             chart_demo: options.chart_demo || false,
             num_separators: options.num_separators || false,
             right_num_separators: options.right_num_separators || false,
-            chart_font: options.chart_font || c.FONT_STYLE
+            chart_font: options.chart_font || c.FONT_STYLE,
+            left_axis_show_label: options.left_axis_show_label,
+            left_axis_label_setting: options.left_axis_label_setting || {},
+            left_line_color: options.left_line_color,
+            right_axis_show_label: options.right_axis_show_label,
+            right_axis_label_setting: options.right_axis_label_setting || {},
+            right_line_color: options.right_line_color,
         };
         this.options.items = items;
 

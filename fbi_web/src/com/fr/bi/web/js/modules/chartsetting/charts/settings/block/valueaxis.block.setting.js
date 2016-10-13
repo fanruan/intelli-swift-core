@@ -92,6 +92,7 @@ BI.ValueAxisBlockSetting = BI.inherit(BI.Widget, {
         });
 
         this.showLable.on(BI.Controller.EVENT_CHANGE, function () {
+            self.label.setVisible(this.isSelected());
             self.fireEvent(BI.ValueAxisBlockSetting.EVENT_CHANGE)
         });
 
@@ -242,6 +243,7 @@ BI.ValueAxisBlockSetting = BI.inherit(BI.Widget, {
     setValue: function (v) {
         this.editTitle.setVisible(v.show_title);
         this.customScale.setVisible(v.show_custom_scale);
+        this.label.setVisible(v.show_label);
 
         this.numberLevel.setValue(v.number_level);
         this.unit.setValue(v.axis_unit);
