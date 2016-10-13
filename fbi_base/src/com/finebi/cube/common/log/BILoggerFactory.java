@@ -20,13 +20,13 @@ public class BILoggerFactory {
          * 添加默认Log配置
          */
         PropertyConfigurator.configure(defaultProperties());
-        if (PerformancePlugManager.getInstance().useLog4JPropertiesFile()) {
+//        if (PerformancePlugManager.getInstance().useLog4JPropertiesFile()) {
             URL resource = Loader.getResource("log4j.properties");
             if (resource != null) {
                 PropertyConfigurator.configure(resource);
                 System.out.println("The log properties url:" + resource.toString());
             }
-        }
+//        }
     }
 
     public static Map<Class, BILogger> loggerMap = new HashMap<Class, BILogger>();
