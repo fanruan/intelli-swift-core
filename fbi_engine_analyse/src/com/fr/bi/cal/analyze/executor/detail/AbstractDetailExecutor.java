@@ -168,9 +168,10 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
         for (int i = 0; i < viewDimension.length; i++) {
             BIDetailTarget t = viewDimension[i];
             Object v = ob[i];
-            if (t instanceof BIDateDetailTarget && ((BIDateDetailTarget) t).getGroup().getType() == BIReportConstant.GROUP.YMD && v != null) {
-                v = DateUtils.DATEFORMAT1.format(new Date(Long.parseLong(v.toString())));
-            }
+            v = viewDimension[i].createShowValue(v);
+//            if (t instanceof BIDateDetailTarget && ((BIDateDetailTarget) t).getGroup().getType() == BIReportConstant.GROUP.YMD && v != null) {
+//                v = DateUtils.DATEFORMAT1.format(new Date(Long.parseLong(v.toString())));
+//            }
 
             CBCell cell = new CBCell(v == null ? NONEVALUE : v.toString());
             cell.setRow(row);
