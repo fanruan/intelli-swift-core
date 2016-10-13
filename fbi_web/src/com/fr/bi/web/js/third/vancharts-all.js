@@ -4773,6 +4773,9 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
 
 
     function objectToArray(object){
+        if (object.length) {
+            return [].slice.call(object);
+        }
         var result = [];
         for(var key in object){
             result.push(object[key]);
@@ -6314,10 +6317,14 @@ define('HammerHandler',['require','./utils/BaseUtils','./Constants','./dom/DomEv
             var toolbar = vanchart.components[ComponentLibrary.TOOLBAR_COMPONENT];
 
             if(this.selectRect){
-                vanchart.dealAxisZoom(downPos, mousePos);
+                //兼容一些微小的误操作,14约等于10*1.414
+                if(BaseUtils.distance(downPos, mousePos) > 14){
+                    vanchart.dealAxisZoom(downPos, mousePos);
+                    toolbar && toolbar.showRefreshIconWhenZoom();
+                }
+
                 this.selectRect.remove();
                 this.selectRect = null;
-                toolbar && toolbar.showRefreshIconWhenZoom();
             }
 
             this.panTarget = null;
@@ -7186,8 +7193,8 @@ define('vector/SvgRenderer',['require','./Renderer','../utils/DomUtils','./Eleme
                 domWrapper.styles[BaseUtils.transPrefix + 'transform'] = transform;
                 dom.style.transform = transform;
             } else {
-                var centerX = dom.scrollWidth / 2;
-                var centerY = dom.scrollHeight / 2;
+                var centerX = (dom.scrollWidth || dom.getBBox().width) / 2; // firefox has no scroll size
+                var centerY = (dom.scrollHeight || dom.getBBox().height) / 2;
 
                 centerX += (+dom.getAttribute('x') || 0);
                 centerY += (+dom.getAttribute('y') || 0);
@@ -9276,6 +9283,10 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
             //组件
             this.width = this._getDomWidth(dom);
             this.height = this._getDomHeight(dom);
+
+            if(isNaN(+this.width) || isNaN(+this.height)){
+                return;
+            }
 
             dom = this._initLeafLet(dom, option);
 
@@ -17168,14 +17179,17 @@ define('chart/TreeSeries',['require','./Series','../utils/BaseUtils','../utils/Q
         },
 
         _onPointMouseOver: function (ev) {
-            var point = this;
+            var point = this, series = this.series,
+                vanchart = series.vanchart, hoverPoint = vanchart.hoverPoint;
+            
+            hoverPoint && hoverPoint._onPointMouseOut(hoverPoint, ev);
+
             if (!point.depth) {
                 return;
             }
-            var series = this.series;
             series.onPointMouseOver.call(point, ev);
-            series.vanchart.showTooltip(point, ev);
-            series.vanchart.hoverPoint = point;
+            vanchart.showTooltip(point, ev);
+            vanchart.hoverPoint = point;
         },
 
         _onPointMouseOut: function (ev) {
@@ -18246,7 +18260,7 @@ define('chart/Scatter',['require','./Series','../utils/BaseUtils','../Constants'
             series.lineGraphic
                 .attr('d', series.linePath)
                 .style({
-                    'display': series.visible ? 'inline' : 'none',
+                    'display': series.visible && series.lineWidth ? '' : 'none',
                     'stroke': series.color,
                     'stroke-width': series.lineWidth
                 });
@@ -23490,7 +23504,7 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
 
             this.tickData = [];
             var style = axisOption.labelStyle || {};
-            var tbStyle = BaseUtils.extend({'writingMode': 'tb-rl'}, style);
+            var tbStyle = BaseUtils.extend({'writing-mode': 'tb-rl'}, style);
             for(var i = 0, len = labels.length; i < len; i++){
                 var tickValue = labels[i];
                 var tickContent = this._getTickContent(tickValue, formatter);
@@ -24307,6 +24321,14 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
             var cfg = this.options, plotBounds = this.getPlotBounds(), animation = this.animation;
             var ticks = this.getTickData(), scale = this.scale, lastScale = this.lastScale || scale;
             var gridLineColor = cfg.gridLineColor, gridLineWidth = cfg.gridLineWidth;
+
+            // phantomjs 1.9, 
+            // svg 'stroke-width' has a default value 1
+            // 0 is still 1 (→_→ maybe "value || 1" in apple's webkit...)
+            if (gridLineWidth === 0) {
+                gridLineColor = '';
+            }
+
             var det = BaseUtils.lineSubPixelOpt(0, gridLineWidth), renderer = this.vanchart.renderer;
 
             var x1 = 'x1', y1 = 'y1', x2 = 'x2', y2 = 'y2', lineSize = plotBounds.height;
@@ -27444,7 +27466,7 @@ define('component/ToolbarIcon',['require','./Base','../utils/BaseUtils','../Cons
                         vanchart.orderType = Constants.ASCENDING;
                         icon.iconG.path.attr({'d':icon.getDecreaseIconPath()});
                     }
-                    toolbar.refreshIcon.showIcon();
+                    toolbar.refreshEnabled() && toolbar.refreshIcon.showIcon();
                     vanchart.orderData();
                     break;
                 case Constants.EXPORT_ICON:
@@ -27655,7 +27677,7 @@ define('component/ToolBar',['require','./Base','../utils/BaseUtils','../Constant
         },
 
         showRefreshIconWhenZoom:function(){
-            if(!this.refreshIcon.visible){
+            if(!this.refreshIcon.visible && this.refreshEnabled()){
                 if(this.menuIcon){
                     if(this.hidden){
                         var iconSize = this.toolbarIcons.length;
@@ -27670,6 +27692,10 @@ define('component/ToolBar',['require','./Base','../utils/BaseUtils','../Constant
                     this.refreshIcon.showIcon();
                 }
             }
+        },
+
+        refreshEnabled:function(){
+            return !(this.options.refresh && this.options.refresh.enabled === false);
         },
 
         getToolBarInitWidth: function () {
