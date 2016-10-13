@@ -199,7 +199,7 @@ BIDezi.TreeLabelDetailView = BI.inherit(BI.View, {
         this.dimensionsManager.on(BI.DimensionsManagerControl.EVENT_CHANGE, function () {
             var values = this.getValue();
             self.model.set(values);
-            this.setValue();
+            this.populate();
         });
 
 

@@ -265,40 +265,6 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         })
     },
 
-    // setValue: function (v) {
-    //     v = v || {};
-    //     var self = this, o = this.options, op = {
-    //         selected_values: v
-    //     };
-    //     var result = [];
-    //     convertToArray(v,result,0);
-    //
-    //
-    //     self.view._changeView({
-    //         type: 2
-    //     });
-    //
-    //     // o.itemsCreator(op, function (value) {
-    //     //     if(!self.items) {
-    //     //         self._initData(value);
-    //     //     }
-    //     //     self.view.setTitles();
-    //     //     //self.view.setValue(result);
-    //     // });
-    //
-    //     function convertToArray(obj, result, i) {
-    //         if(BI.isEmptyObject(obj)) {
-    //             return ;
-    //         }
-    //         var keys = Object.keys(obj);
-    //         result[i] = BI.uniq(BI.concat(result[i]||[],keys));
-    //         BI.each(keys, function (idx, key) {
-    //             convertToArray(obj[key], result, i+1)
-    //         })
-    //
-    //     }
-    // },
-
     getValue: function () {
         var selectedButtons = this.view.getSelectedButtons();
         var selectedValues = [];

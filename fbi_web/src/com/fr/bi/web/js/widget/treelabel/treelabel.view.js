@@ -197,7 +197,6 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
             width: this.options.titleWidth
         }));
         this.title.setHeight(titles.length * this._constant.LIST_LABEL_HEIGHT);
-        console.log(this.title.getAllButtons())
     },
 
     setValue: function (v) {
