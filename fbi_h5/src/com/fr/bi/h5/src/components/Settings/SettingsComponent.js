@@ -50,12 +50,10 @@ const DragHandle = SortableHandle(() => {
 });
 
 const SortableItem = SortableElement(({value}) => {
-    return <Button>
-        <Layout main='justify' cross='center' style={styles.sortableItems}>
-            <Text>{value.text}</Text>
-            <DragHandle/>
-        </Layout>
-    </Button>
+    return <Layout box='last' cross='center' style={styles.sortableItems}>
+        <TextButton textAlign={'left'} effect={false}>{value.text}</TextButton>
+        <DragHandle/>
+    </Layout>
 });
 
 const SortableList = SortableContainer(({items}) => {
