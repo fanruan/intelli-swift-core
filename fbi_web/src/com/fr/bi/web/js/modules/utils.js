@@ -867,7 +867,8 @@
 
             var gs = this.getGlobalStyle();
             var ws = this.getWidgetSettingsByID(wid);
-            return ws.chart_color
+            var chartWS = ws.chart_style_setting || {};
+            return chartWS.chart_color
                 || gs.chartColor
                 || getDefaultColor()
                 || BICst.DEFAULT_CHART_SETTING.chart_color;
@@ -882,9 +883,10 @@
             }
 
             var ws = this.getWidgetSettingsByID(wid);
+            var chartWS = ws.chart_style_setting || {};
             var chartStyle;
-            if (BI.isNotNull(ws.chart_style)) {
-                return ws.chart_style;
+            if (BI.isNotNull(chartWS.chart_style)) {
+                return chartWS.chart_style;
             }
             var gs = this.getGlobalStyle();
             if (BI.isNotNull(gs.chartStyle)) {
@@ -894,6 +896,69 @@
                 return chartStyle;
             }
             return BICst.DEFAULT_CHART_SETTING.chart_style;
+        },
+
+        getWSChartStyleSettingByID: function (wid) {
+            return {
+                chart_color: this.getWSChartColorByID(wid),
+                chart_style: this.getWSChartStyleByID(wid)
+            }
+        },
+
+        getWSLeftValueAxisSettingByID: function(wid) {
+            var view = BI.Utils.getWidgetViewByID(wid);
+            var titleLY = BI.Utils.getWSLeftYAxisTitleByID(wid);
+            if (titleLY === "") {
+                BI.any(view[BICst.REGION.TARGET1], function (idx, dId) {
+                    if (BI.Utils.isDimensionUsable(dId)) {
+                        titleLY = BI.Utils.getDimensionNameByID(dId);
+                        return true;
+                    }
+                    return false;
+                });
+            }
+            return {
+                number_level: this.getWSLeftYAxisNumLevelByID(wid),
+                axis_unit: this.getWSLeftYAxisUnitByID(wid),
+                axis_style: this.getWSLeftYAxisStyleByID(wid),
+                num_separator: this.getWSNumberSeparatorsByID(wid),
+                show_title: this.getWSShowLeftYAxisTitleByID(wid),
+                axis_title: titleLY,
+                // show_label: this.showLable.isSelected(),
+                // label_setting: this.label.getValue(),
+                // line_color: this.lineColor.getValue(),
+                axis_reversed: this.getWSLeftYAxisReversedByID(wid),
+                show_custom_scale: this.getWSShowYCustomScale(wid),
+                custom_scale: this.getWSCustomYScale(wid)
+            }
+        },
+
+        getWSRightValueAxisSettingByID: function(wid) {
+            var view = BI.Utils.getWidgetViewByID(wid);
+            var titleRY = BI.Utils.getWSRightYAxisTitleByID(wid);
+            if (titleRY === "") {
+                BI.any(view[BICst.REGION.TARGET2], function (idx, dId) {
+                    if (BI.Utils.isDimensionUsable(dId)) {
+                        titleRY = BI.Utils.getDimensionNameByID(dId);
+                        return true;
+                    }
+                    return false;
+                });
+            }
+            return {
+                number_level: this.getWSRightYAxisNumLevelByID(wid),
+                axis_unit: this.getWSRightYAxisUnitByID(wid),
+                axis_style: this.getWSRightYAxisStyleByID(wid),
+                num_separator: this.getWSRightNumberSeparatorsByID(wid),
+                show_title: this.getWSShowRightYAxisTitleByID(wid),
+                axis_title: titleRY,
+                // show_label: this.showLable.isSelected(),
+                // label_setting: this.label.getValue(),
+                // line_color: this.lineColor.getValue(),
+                axis_reversed: this.getWSRightYAxisReversedByID(wid),
+                show_custom_scale: this.getWSShowXCustomScale(wid),
+                custom_scale: this.getWSCustomXScale(wid)
+            }
         },
 
         getWSChartLineTypeByID: function (wid) {

@@ -3,13 +3,14 @@
  * Created by AstronautOO7 on 2016/10/12.
  */
 BI.ValueAxisBlockSetting = BI.inherit(BI.Widget, {
-    _defaultConfig: function() {
+    _defaultConfig: function () {
         return BI.extend(BI.ValueAxisBlockSetting.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-value-axis-block-setting bi-charts-setting"
+            baseCls: "bi-value-axis-block-setting bi-charts-setting",
+            headText: ""
         })
     },
 
-    _init: function() {
+    _init: function () {
         BI.ValueAxisBlockSetting.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
 
@@ -221,19 +222,36 @@ BI.ValueAxisBlockSetting = BI.inherit(BI.Widget, {
         })
     },
 
-    populate: function() {
-        var wId = this.options.wId;
-
-    },
-
-    getValue: function() {
+    getValue: function () {
         return {
-
+            number_level: this.numberLevel.getValue()[0],
+            axis_unit: this.unit.getValue(),
+            axis_style: this.axisStyle.getValue()[0],
+            num_separator: this.separator.isSelected(),
+            show_title: this.isShowTitle.isSelected(),
+            axis_title: this.editTitle.getValue(),
+            show_label: this.showLable.isSelected(),
+            label_setting: this.label.getValue(),
+            line_color: this.lineColor.getValue(),
+            axis_reversed: this.reversed.isSelected(),
+            show_custom_scale: this.showCustomScale.isSelected(),
+            custom_scale: this.customScale.getValue()
         }
     },
 
-    setValue: function(v) {
-
+    setValue: function (v) {
+        this.numberLevel.setValue(v.number_level);
+        this.unit.setValue(v.axis_unit);
+        this.axisStyle.setValue(v.axis_unit);
+        this.separator.setSelected(v.num_separator);
+        this.isShowTitle.setSelected(v.show_title);
+        this.editTitle.setValue(v.axis_title);
+        // this.showLable.setSelected(v.show_label);
+        // this.label.setValue(v.label_setting);
+        // this.lineColor.setValue(v.line_color);
+        this.reversed.setSelected(v.axis_reversed);
+        this.showCustomScale.setSelected(v.show_custom_scale);
+        this.customScale.setValue(v.custom_scale)
     }
 
 });

@@ -85,12 +85,6 @@ BI.ChartStyleBlockSetting = BI.inherit(BI.Widget, {
         });
     },
 
-    populate: function () {
-        var wId = this.options.wId;
-        this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
-        this.chartStyleGroup.setValue(BI.Utils.getWSChartStyleByID(wId));
-    },
-
     getValue: function () {
         return {
             chart_color: this.colorSelect.getValue()[0],
