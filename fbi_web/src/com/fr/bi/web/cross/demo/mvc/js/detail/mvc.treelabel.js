@@ -139,9 +139,19 @@ TreeLabelView = BI.inherit(BI.View, {
         });
 
         BI.createWidget({
-            type: "bi.vertical",
+            type: "bi.absolute",
             element: vessel,
-            items: [treeLabel, button]
+            items: [{
+                el: treeLabel,
+                top: 10,
+                bottom: 0,
+                left: 10,
+                right: 0
+            }, {
+                el: button,
+                top: 200,
+                left: 10
+            }]
         })
     }
 });

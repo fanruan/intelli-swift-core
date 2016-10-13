@@ -49,7 +49,7 @@ BI.SelectListLabel = BI.inherit(BI.Widget, {
 
     setValue: function (v) {
         v = v || {};
-        if (v.type === 1) {
+        if (v.type === BICst.Selection.Multi) {
             this.listLabel.setValue(v.value);
         } else {
             this.listLabel.setValue(["*"]);
@@ -60,12 +60,12 @@ BI.SelectListLabel = BI.inherit(BI.Widget, {
         var value = this.listLabel.getValue();
         if (BI.contains(value, "*")) {
             return {
-                type: 2,
+                type: BICst.Selection.All,
                 value: []
             }
         } else {
             return {
-                type: 1,
+                type: BICst.Selection.Multi,
                 value: value
             }
         }

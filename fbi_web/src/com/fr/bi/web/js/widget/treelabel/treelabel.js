@@ -16,9 +16,9 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         if (BI.isNotNull(o.items)) {
             this._initData(o.items);
         }
-        var titles = [];
+        this.titles = [];
         BI.each(o.titles, function (idx, title) {
-            titles.push({
+            self.titles.push({
                 text: title + ":"
             })
         });
@@ -26,10 +26,10 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
             type: "bi.tree_label_view",
             element: this.element,
             itemsCreator: BI.bind(this._itemsCreator, this),
-            titles: titles
+            titles: this.titles
         });
         this.view.on(BI.TreeLabelView.EVENT_CHANGE, function () {
-            self.fireEvent(BI.TreeLabel.EVENT_CHANGE);
+            self.fireEvent(BI.TreeLabel.EVENT_CHANGE, arguments);
         })
     },
 
@@ -204,6 +204,7 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         if (!this.items) {
             o.itemsCreator({}, function (value) {
+                self.titles = value.titles;
                 self._initData(value.items);
                 call();
             })
@@ -222,7 +223,7 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
     },
 
     _initLabelView: function (op, callback) {
-        callback(this.items);
+        callback({items: this.items, titles: this.titles});
     },
 
     _updateLabelView: function (op, callback) {
@@ -256,35 +257,47 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         callback(this.items, floor);
     },
 
-    setValue: function (v) {
-        v = v || {};
-        var self = this, o = this.options, op = {
-            selected_values: v
-        };
-        var result = [];
-        convertToArray(v,result,0);
-
-        o.itemsCreator(op, function (value) {
-            if(!self.items) {
-                self._initData(value);
-            }
-            self._updateData(value);
-            self._updateItems();
-            self.view.setValue(result);
-        });
-
-        function convertToArray(obj, result, i) {
-            if(BI.isEmptyObject(obj)) {
-                return ;
-            }
-            var keys = Object.keys(obj);
-            result[i] = BI.uniq(BI.concat(result[i]||[],keys));
-            BI.each(keys, function (idx, key) {
-                convertToArray(obj[key], result, i+1)
-            })
-
-        }
+    populate: function (v) {
+        this._initData(v.items);
+        this.view.refreshView({
+            items: this.items,
+            titles: v.titles
+        })
     },
+
+    // setValue: function (v) {
+    //     v = v || {};
+    //     var self = this, o = this.options, op = {
+    //         selected_values: v
+    //     };
+    //     var result = [];
+    //     convertToArray(v,result,0);
+    //
+    //
+    //     self.view._changeView({
+    //         type: 2
+    //     });
+    //
+    //     // o.itemsCreator(op, function (value) {
+    //     //     if(!self.items) {
+    //     //         self._initData(value);
+    //     //     }
+    //     //     self.view.setTitles();
+    //     //     //self.view.setValue(result);
+    //     // });
+    //
+    //     function convertToArray(obj, result, i) {
+    //         if(BI.isEmptyObject(obj)) {
+    //             return ;
+    //         }
+    //         var keys = Object.keys(obj);
+    //         result[i] = BI.uniq(BI.concat(result[i]||[],keys));
+    //         BI.each(keys, function (idx, key) {
+    //             convertToArray(obj[key], result, i+1)
+    //         })
+    //
+    //     }
+    // },
 
     getValue: function () {
         var selectedButtons = this.view.getSelectedButtons();
