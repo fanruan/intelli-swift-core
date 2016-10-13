@@ -237,7 +237,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                             layer: 1,
                             wId: o.wId,
                             text: BI.Utils.getTableNameByID(table.id) || "",
-                            title: BI.Utils.getTableNameByID(table.id) || "",
+                            title: BI.Utils.getPackageNameByID(BI.Utils.getPackageIDByTableID(table.id)) + "." + BI.Utils.getTableNameByID(table.id) || "",
                             value: table.id
                         }, table, {
                             isParent: true,
@@ -281,7 +281,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         BI.each(newFields, function (i, field) {
             var fid = field.id;
             var fieldName = BI.Utils.getFieldNameByID(fid) || "";
-            var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
+            var title = BI.Utils.getPackageNameByID(BI.Utils.getPackageIDByTableID(tableId)) + "." + (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
             //日期类型-特殊处理
             if (o.showDateGroup === true && BI.Utils.getFieldTypeByID(fid) === BICst.COLUMN.DATE) {
                 var _type = "bi.detail_select_data_level1_item";
@@ -320,7 +320,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 var id = field.id;
                 if (BI.isNotEmptyArray(map[id])) {
                     var fieldName = BI.Utils.getFieldNameByID(id) || "";
-                    var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
+                    var title = BI.Utils.getPackageNameByID(BI.Utils.getPackageIDByTableID(tableId)) + "." + (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
                     fieldStructure.push({
                         id: id,
                         pId: tableId,
@@ -367,7 +367,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         BI.each(foregion, function (i, f) {
             var fid = f.id;
             var fieldName = BI.Utils.getFieldNameByID(fid) || "";
-            var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
+            var title = BI.Utils.getPackageNameByID(BI.Utils.getPackageIDByTableID(tableId)) + "." + (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
 
             fieldStructure.push(BI.extend({
                 id: fid,
@@ -452,7 +452,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 return;
             }
             var fieldName = BI.Utils.getFieldNameByID(fid) || "";
-            var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
+            var title = BI.Utils.getPackageNameByID(BI.Utils.getPackageIDByTableID(tableId)) + "." + (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
             //日期类型-特殊处理
             if (o.showDateGroup === true && BI.Utils.getFieldTypeByID(fid) === BICst.COLUMN.DATE) {
                 var _type = isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item";
@@ -514,7 +514,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 var id = field.id;
                 if (BI.isNotEmptyArray(map[id])) {
                     var fieldName = BI.Utils.getFieldNameByID(id) || "";
-                    var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
+                    var title = BI.Utils.getPackageNameByID(BI.Utils.getPackageIDByTableID(tableId)) + "." + (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
                     fieldStructure.push({
                         id: id,
                         pId: tableId,
