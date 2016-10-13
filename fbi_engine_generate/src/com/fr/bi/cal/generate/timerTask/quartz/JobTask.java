@@ -31,9 +31,7 @@ public class JobTask implements Job {
         CubeBuild cubeBuild = (CubeBuild) data.get("CubeBuild");
         String message = "timerTask started!Current time is:" + new Date() + "\n Current task：" + jobName + "\nCurrent User：" + userId + "\n";
         BILoggerFactory.getLogger().info(message);
-        boolean conditionsMeet = cubeBuild.preConditionsCheck();
-        conditionsMeet=false;
-        if (!conditionsMeet) {
+        if (!cubeBuild.preConditionsCheck()) {
             String errorMessage = "preConditions check failed! Please check the available HD space and data connections";
             BILoggerFactory.getLogger().error(errorMessage);
             BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), errorMessage, userId);
