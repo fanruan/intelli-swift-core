@@ -128,7 +128,7 @@ BI.UploadImagePreview = BI.inherit(BI.Widget, {
             var file = files[files.length - 1];
             self.attachId = file.attach_id;
             var fileName = file.filename;
-            BI.requestAsync("fr_bi_dezi", "save_upload_image", {
+            BI.requestAsync("fr_bi_base", "save_upload_image", {
                 attach_id: self.attachId
             }, function () {
                 self.tab.setSelect(BI.UploadImagePreview.UPLOADED);

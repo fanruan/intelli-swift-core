@@ -54,7 +54,8 @@ BI.FieldRelationSettingPopup = BI.inherit(BI.BarPopoverSection, {
             textHeight: 35,
             textAlign: "left",
             cls: "detail-table-path-setting-tip-label",
-            value: BI.i18nText("BI-Detail_Setting_Path")
+            value: BI.i18nText("BI-Detail_Setting_Path"),
+            title: BI.i18nText("BI-Detail_Setting_Path")
         });
 
 
@@ -74,7 +75,8 @@ BI.FieldRelationSettingPopup = BI.inherit(BI.BarPopoverSection, {
             textHeight: 35,
             textAlign: "left",
             cls: "detail-table-path-setting-tip-label",
-            value: BI.i18nText("BI-Detail_Setting_Path_Multi_Path_Exist")
+            value: BI.i18nText("BI-Check_If_The_Relation_Below_Is_You_Need"),
+            title: BI.i18nText("BI-Check_If_The_Relation_Below_Is_You_Need")
         });
 
         this.tabPane = BI.createWidget({

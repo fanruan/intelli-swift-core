@@ -627,22 +627,46 @@
 
         //global style ---- start ----
         getGlobalStyle: function () {
-            return Data.SharingPool.get("globalStyle") || {};
+            var self = this;
+            var globalStyle =  Data.SharingPool.get("globalStyle") || {};
+            if(BI.keys(globalStyle).length === 0){
+                return checkLackProperty();
+            }
+            return globalStyle;
+
+            function checkLackProperty(){
+                var defaultChartConfig = self.getDefaultChartConfig();
+                var type = defaultChartConfig.defaultColor;
+                if(!BI.has(globalStyle, "chartColor")){
+                    if (BI.isKey(type)) {
+                        var finded = BI.find(defaultChartConfig.styleList, function (i, style) {
+                            return style.value === type;
+                        });
+                        if (finded) {
+                            globalStyle.chartColor = finded.colors;
+                        }
+                    }
+                    if (defaultChartConfig.styleList.length > 0) {
+                        globalStyle.chartColor = defaultChartConfig.styleList[0].colors;
+                    }
+                }
+                return BI.extend(globalStyle, defaultChartConfig);
+            }
         },
 
         getGSMainBackground: function () {
             var gs = this.getGlobalStyle();
-            return gs.mainBackground;
+            return gs.mainBackground || this.getDefaultChartConfig().mainBackground;
         },
 
         getGSWidgetBackground: function () {
             var gs = this.getGlobalStyle();
-            return gs.widgetBackground;
+            return gs.widgetBackground || this.getDefaultChartConfig().widgetBackground;
         },
 
         getGSChartFont: function () {
             var gs = this.getGlobalStyle();
-            return BI.extend(gs.chartFont, {
+            return BI.extend({}, this.getDefaultChartConfig().chartFont, gs.chartFont, {
                 "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
                 "fontSize": "12px"
             });
@@ -650,16 +674,16 @@
 
         getGSTitleBackground: function () {
             var gs = this.getGlobalStyle();
-            return gs.titleBackground;
+            return gs.titleBackground || this.getDefaultChartConfig().titleBackground;
         },
 
         getGSTitleFont: function () {
             var gs = this.getGlobalStyle();
-            return gs.titleFont;
+            return BI.extend({}, this.getDefaultChartConfig().titleFont, gs.titleFont);
         },
 
         getGSNamePos: function () {
-            var titleFont = this.getGSTitleFont();
+            var titleFont = this.getGSTitleFont() || this.getDefaultChartConfig().titleFont;
             if (BI.isNotNull(titleFont)) {
                 if (titleFont["text-align"] === "left") {
                     return BICst.DASHBOARD_WIDGET_NAME_POS_LEFT
