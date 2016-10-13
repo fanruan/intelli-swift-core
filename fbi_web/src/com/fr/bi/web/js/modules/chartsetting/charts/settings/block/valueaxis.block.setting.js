@@ -240,15 +240,18 @@ BI.ValueAxisBlockSetting = BI.inherit(BI.Widget, {
     },
 
     setValue: function (v) {
+        this.editTitle.setVisible(v.show_title);
+        this.customScale.setVisible(v.show_custom_scale);
+
         this.numberLevel.setValue(v.number_level);
         this.unit.setValue(v.axis_unit);
         this.axisStyle.setValue(v.axis_style);
         this.separator.setSelected(v.num_separator);
         this.isShowTitle.setSelected(v.show_title);
         this.editTitle.setValue(v.axis_title);
-        // this.showLable.setSelected(v.show_label);
-        // this.label.setValue(v.label_setting);
-        // this.lineColor.setValue(v.line_color);
+        this.showLable.setSelected(v.show_label);
+        this.label.setValue(v.label_setting);
+        this.lineColor.setValue(v.line_color);
         this.reversed.setSelected(v.axis_reversed);
         this.showCustomScale.setSelected(v.show_custom_scale);
         this.customScale.setValue(v.custom_scale)

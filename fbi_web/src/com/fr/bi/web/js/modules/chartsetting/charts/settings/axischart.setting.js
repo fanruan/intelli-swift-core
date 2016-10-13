@@ -25,7 +25,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
 
-        //图表样式
+        //图表样式设置
         this.chartStyleSetting = BI.createWidget({
             type: "bi.chart_style_block_setting"
         });
@@ -34,7 +34,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
 
-        //左值轴
+        //左值轴设置
         this.lValueAxisSetting = BI.createWidget({
             type: "bi.value_axis_block_setting",
             headText: BI.i18nText("BI-Left_Value_Axis"),
@@ -45,7 +45,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
 
-        //右值轴
+        //右值轴配置
         this.rValueAxisSetting = BI.createWidget({
             type: "bi.value_axis_block_setting",
             headText: BI.i18nText("BI-Right_Value_Axis"),
@@ -445,11 +445,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showZoom.setSelected(BI.Utils.getWSShowZoomByID(wId));
         this.minimalistModel.setSelected(BI.Utils.getWSMinimalistByID(wId));
         this._invisible(!BI.Utils.getWSMinimalistByID(wId));
-        // this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
-        // this.isShowTitleRY.isSelected() ? this.editTitleRY.setVisible(true) : this.editTitleRY.setVisible(false);
         this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false);
-        // this.customYScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
-        // this.customXScale.setVisible(BI.Utils.getWSShowXCustomScale(wId));
     },
 
     getValue: function () {

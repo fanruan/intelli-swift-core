@@ -1160,7 +1160,7 @@
         getWSRightYAxisTitleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             var rAxisSetting = ws.right_axis_setting || {};
-            return BI.isNotNull(rAxisSetting.axis_title) ? ws.axis_title :
+            return BI.isNotNull(rAxisSetting.axis_title) ? rAxisSetting.axis_title :
                 BICst.DEFAULT_CHART_SETTING.right_y_axis_title;
         },
 
@@ -1257,6 +1257,48 @@
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.right2_num_separators) ? ws.right2_num_separators :
                 BICst.DEFAULT_CHART_SETTING.right_num_separators;
+        },
+
+        getWSLeftAxisShowLabelByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var lAxisSetting = ws.left_axis_setting || {};
+            return BI.isNotNull(lAxisSetting.show_label) ? lAxisSetting.show_label :
+                BICst.DEFAULT_CHART_SETTING.show_label
+        },
+
+        getWSLeftAxisLabelSettingByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var lAxisSetting = ws.left_axis_setting || {};
+            return BI.isNotNull(lAxisSetting.label_setting) ? lAxisSetting.label_setting :
+                BICst.DEFAULT_CHART_SETTING.label_setting
+        },
+
+        getWSLeftAxisLineColorByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var lAxisSetting = ws.left_axis_setting || {};
+            return BI.isNotNull(lAxisSetting.line_color) ? lAxisSetting.line_color :
+                BICst.DEFAULT_CHART_SETTING.line_color
+        },
+
+        getWSRightAxisShowLabelByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var rAxisSetting = ws.right_axis_setting || {};
+            return BI.isNotNull(rAxisSetting.show_label) ? rAxisSetting.show_label :
+                BICst.DEFAULT_CHART_SETTING.show_label
+        },
+
+        getWSRightAxisLabelSettingByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var rAxisSetting = ws.right_axis_setting || {};
+            return BI.isNotNull(rAxisSetting.label_setting) ? rAxisSetting.label_setting :
+                BICst.DEFAULT_CHART_SETTING.label_setting
+        },
+
+        getWSRightAxisLineColorByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var rAxisSetting = ws.right_axis_setting || {};
+            return BI.isNotNull(rAxisSetting.line_color) ? rAxisSetting.line_color :
+                BICst.DEFAULT_CHART_SETTING.line_color
         },
 
         getWSMinimalistByID: function (wid) {

@@ -516,6 +516,11 @@ BICst.DEFAULT_CHART_SETTING = {
     mini_line_width: BICst.LINE_WIDTH.ZERO,
     show_label: true,
     mini_show_label: false,
+    label_setting: {
+        text_direction: 0,
+        text_style: {}
+    },
+    line_color: "#dddddd",
     enable_tick: true,
     mini_enable_tick: false,
     enable_minor_tick: true,
