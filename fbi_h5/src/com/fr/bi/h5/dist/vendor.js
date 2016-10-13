@@ -67818,6 +67818,11 @@
 	            return this.$$target.get('used');
 	        }
 	    }, {
+	        key: 'setUsed',
+	        value: function setUsed(b) {
+	            return this.$$target.set('used', !!b);
+	        }
+	    }, {
 	        key: 'getWidgetBelongTo',
 	        value: function getWidgetBelongTo() {
 	            return this._parent;

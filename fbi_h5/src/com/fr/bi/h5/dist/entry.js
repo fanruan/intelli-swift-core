@@ -5559,14 +5559,12 @@ webpackJsonp([0],{
 	        key: 'componentWillMount',
 	        value: function componentWillMount() {}
 	    }, {
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
+	        key: '_fetchData',
+	        value: function _fetchData(props) {
 	            var _this2 = this;
 
-	            this.chart = VanCharts.init(_reactDom2.default.findDOMNode(this.refs.chart));
-	            var _props = this.props;
-	            var $widget = _props.$widget;
-	            var wId = _props.wId;
+	            var $widget = props.$widget;
+	            var wId = props.wId;
 
 	            var widget = new _data.Widget($widget, this.context.$template, wId);
 	            widget.getData().then(function (data) {
@@ -5574,18 +5572,27 @@ webpackJsonp([0],{
 	            });
 	        }
 	    }, {
-	        key: 'componentWillUpdate',
-	        value: function componentWillUpdate() {
-	            var _this3 = this;
-
-	            var _props2 = this.props;
-	            var $widget = _props2.$widget;
-	            var wId = _props2.wId;
-
-	            var widget = new _data.Widget($widget, this.context.$template, wId);
-	            widget.getData().then(function (data) {
-	                _this3.chart.setData(data);
-	            });
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            this.chart = VanCharts.init(_reactDom2.default.findDOMNode(this.refs.chart));
+	            this._fetchData(this.props);
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {
+	            if (!(0, _core.immutableShallowEqual)(nextProps, this.props)) {
+	                this._fetchData(nextProps);
+	                this._changed = true;
+	            }
+	        }
+	    }, {
+	        key: 'shouldComponentUpdate',
+	        value: function shouldComponentUpdate() {
+	            if (this._changed) {
+	                this._changed = false;
+	                return false;
+	            }
+	            return true;
 	        }
 	    }, {
 	        key: 'render',
@@ -5597,13 +5604,11 @@ webpackJsonp([0],{
 
 	    return ChartComponent;
 	}(_lib.Component);
+	// mixin.onClass(ChartComponent, ReactComponentWithImmutableRenderMixin);
 
 	ChartComponent.contextTypes = {
 	    $template: _lib2.default.PropTypes.object
 	};
-
-	_reactMixin2.default.onClass(ChartComponent, _core.ReactComponentWithImmutableRenderMixin);
-
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
 	        position: 'relative'
@@ -6617,10 +6622,6 @@ webpackJsonp([0],{
 	        _this.state = {
 	            data: []
 	        };
-
-	        _this._tableHelper = new _TableComponentHelper2.default(props, context);
-	        _this._widthHelper = new _TableComponentWidthHelper2.default(_this._tableHelper, props.width);
-
 	        return _this;
 	    }
 
@@ -6636,10 +6637,18 @@ webpackJsonp([0],{
 	        key: 'componentWillReceiveProps',
 	        value: function componentWillReceiveProps(nextProps) {
 	            if (!(0, _core.immutableShallowEqual)(nextProps, this.props)) {
-	                this._tableHelper = new _TableComponentHelper2.default(nextProps, this.context);
-	                this._widthHelper = new _TableComponentWidthHelper2.default(this._tableHelper, nextProps.width);
 	                this._fetchData(nextProps);
+	                this._changed = true;
 	            }
+	        }
+	    }, {
+	        key: 'shouldComponentUpdate',
+	        value: function shouldComponentUpdate() {
+	            if (this._changed) {
+	                this._changed = false;
+	                return false;
+	            }
+	            return true;
 	        }
 	    }, {
 	        key: 'componentWillUpdate',
@@ -6664,6 +6673,8 @@ webpackJsonp([0],{
 	            var width = _props.width;
 	            var height = _props.height;var data = this.state.data;
 
+	            this._tableHelper = new _TableComponentHelper2.default(this.props, this.context);
+	            this._widthHelper = new _TableComponentWidthHelper2.default(this._tableHelper, this.props.width);
 	            this._tableHelper.setData(data);
 	            var items = this._tableHelper.getItems();
 	            this._widthHelper.setItems(items);
@@ -6711,13 +6722,11 @@ webpackJsonp([0],{
 
 	    return TableComponent;
 	}(_lib.Component);
+	// mixin.onClass(TableComponent, ReactComponentWithImmutableRenderMixin);
 
 	TableComponent.contextTypes = {
 	    $template: _lib2.default.PropTypes.object
 	};
-
-	_reactMixin2.default.onClass(TableComponent, _core.ReactComponentWithImmutableRenderMixin);
-
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
 	        position: 'relative'
@@ -7474,9 +7483,6 @@ webpackJsonp([0],{
 	        _this.state = {
 	            data: []
 	        };
-
-	        _this._tableHelper = new _DetailTableComponentHelper2.default(props, context);
-	        _this._widthHelper = new _TableComponentWidthHelper2.default(_this._tableHelper, props.width);
 	        return _this;
 	    }
 
@@ -7492,10 +7498,18 @@ webpackJsonp([0],{
 	        key: 'componentWillReceiveProps',
 	        value: function componentWillReceiveProps(nextProps) {
 	            if (!(0, _core.immutableShallowEqual)(nextProps, this.props)) {
-	                this._tableHelper = new _DetailTableComponentHelper2.default(nextProps, this.context);
-	                this._widthHelper = new _TableComponentWidthHelper2.default(this._tableHelper, nextProps.width);
 	                this._fetchData(nextProps);
+	                this._changed = true;
 	            }
+	        }
+	    }, {
+	        key: 'shouldComponentUpdate',
+	        value: function shouldComponentUpdate() {
+	            if (this._changed) {
+	                this._changed = false;
+	                return false;
+	            }
+	            return true;
 	        }
 	    }, {
 	        key: 'componentWillUpdate',
@@ -7520,6 +7534,8 @@ webpackJsonp([0],{
 	            var width = _props.width;
 	            var height = _props.height;var data = this.state.data;
 
+	            this._tableHelper = new _DetailTableComponentHelper2.default(this.props, this.context);
+	            this._widthHelper = new _TableComponentWidthHelper2.default(this._tableHelper, this.props.width);
 	            this._tableHelper.setData(data);
 	            var items = this._tableHelper.getItems();
 	            this._widthHelper.setItems(items);
@@ -7552,13 +7568,11 @@ webpackJsonp([0],{
 
 	    return DetailTableComponent;
 	}(_lib.Component);
+	// mixin.onClass(DetailTableComponent, ReactComponentWithImmutableRenderMixin);
 
 	DetailTableComponent.contextTypes = {
 	    $template: _lib2.default.PropTypes.object
 	};
-
-	_reactMixin2.default.onClass(DetailTableComponent, _core.ReactComponentWithImmutableRenderMixin);
-
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
 	        position: 'relative'
