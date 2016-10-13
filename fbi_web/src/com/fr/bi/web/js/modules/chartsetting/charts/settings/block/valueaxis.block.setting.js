@@ -6,7 +6,7 @@ BI.ValueAxisBlockSetting = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.ValueAxisBlockSetting.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-value-axis-block-setting bi-charts-setting",
-            headText: ""
+            headText: BI.i18nText("BI-Left_Value_Axis")
         })
     },
 
@@ -158,7 +158,7 @@ BI.ValueAxisBlockSetting = BI.inherit(BI.Widget, {
             items: [{
                 type: "bi.label",
                 textHeight: 58,
-                text: BI.i18nText("BI-Left_Value_Axis"),
+                text: o.headText,
                 textAlign: "left",
                 lgap: 5,
                 cls: "line-title"
@@ -242,7 +242,7 @@ BI.ValueAxisBlockSetting = BI.inherit(BI.Widget, {
     setValue: function (v) {
         this.numberLevel.setValue(v.number_level);
         this.unit.setValue(v.axis_unit);
-        this.axisStyle.setValue(v.axis_unit);
+        this.axisStyle.setValue(v.axis_style);
         this.separator.setSelected(v.num_separator);
         this.isShowTitle.setSelected(v.show_title);
         this.editTitle.setValue(v.axis_title);

@@ -37,6 +37,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         //左值轴
         this.lValueAxisSetting = BI.createWidget({
             type: "bi.value_axis_block_setting",
+            headText: BI.i18nText("BI-Left_Value_Axis"),
             wId: o.wId
         });
 
@@ -47,6 +48,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         //右值轴
         this.rValueAxisSetting = BI.createWidget({
             type: "bi.value_axis_block_setting",
+            headText: BI.i18nText("BI-Right_Value_Axis"),
             wId: o.wId
         });
 
@@ -453,6 +455,8 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
     getValue: function () {
         return {
             widget_setting: this.widgetSetting.getValue(),
+            left_axis_setting: this.lValueAxisSetting.getValue(),
+            right_axis_setting: this.rValueAxisSetting.getValue(),
             chart_style_setting: this.chartStyleSetting.getValue(),
             transfer_filter: this.transferFilter.isSelected(),
             show_x_axis_title: this.isShowTitleX.isSelected(),
@@ -468,6 +472,8 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
     setValue: function (v) {
         this.widgetSetting.setValue(v.widget_setting);
+        this.lValueAxisSetting.setValue(v.left_axis_setting);
+        this.rValueAxisSetting.setValue(v.right_axis_setting);
         this.chartStyleSetting.setValue(v.chart_style_setting);
         this.transferFilter.setSelected(v.transfer_filter);
         this.isShowTitleX.setSelected(v.x_axis_title);

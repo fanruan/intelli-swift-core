@@ -906,12 +906,12 @@
         },
 
         getWSLeftValueAxisSettingByID: function(wid) {
-            var view = BI.Utils.getWidgetViewByID(wid);
-            var titleLY = BI.Utils.getWSLeftYAxisTitleByID(wid);
+            var self = this, view = this.getWidgetViewByID(wid);
+            var titleLY = this.getWSLeftYAxisTitleByID(wid);
             if (titleLY === "") {
                 BI.any(view[BICst.REGION.TARGET1], function (idx, dId) {
-                    if (BI.Utils.isDimensionUsable(dId)) {
-                        titleLY = BI.Utils.getDimensionNameByID(dId);
+                    if (self.isDimensionUsable(dId)) {
+                        titleLY = self.getDimensionNameByID(dId);
                         return true;
                     }
                     return false;
@@ -934,12 +934,12 @@
         },
 
         getWSRightValueAxisSettingByID: function(wid) {
-            var view = BI.Utils.getWidgetViewByID(wid);
-            var titleRY = BI.Utils.getWSRightYAxisTitleByID(wid);
+            var self = this, view = this.getWidgetViewByID(wid);
+            var titleRY = this.getWSRightYAxisTitleByID(wid);
             if (titleRY === "") {
                 BI.any(view[BICst.REGION.TARGET2], function (idx, dId) {
-                    if (BI.Utils.isDimensionUsable(dId)) {
-                        titleRY = BI.Utils.getDimensionNameByID(dId);
+                    if (self.isDimensionUsable(dId)) {
+                        titleRY = self.getDimensionNameByID(dId);
                         return true;
                     }
                     return false;
@@ -999,7 +999,8 @@
 
         getWSLeftYAxisStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.left_y_axis_style) ? ws.left_y_axis_style :
+            var lAxisSetting = ws.left_axis_setting || {};
+            return BI.isNotNull(lAxisSetting.axis_style) ? lAxisSetting.axis_style :
                 BICst.DEFAULT_CHART_SETTING.left_y_axis_style;
         },
 
@@ -1011,7 +1012,8 @@
 
         getWSRightYAxisStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.right_y_axis_style) ? ws.right_y_axis_style :
+            var rAxisSetting = ws.right_axis_setting || {};
+            return BI.isNotNull(rAxisSetting.axis_style) ? rAxisSetting.axis_style :
                 BICst.DEFAULT_CHART_SETTING.right_y_axis_style;
         },
 
@@ -1023,7 +1025,8 @@
 
         getWSRightYAxisNumLevelByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.right_y_axis_number_level) ? ws.right_y_axis_number_level :
+            var rAxisSetting = ws.right_axis_setting || {};
+            return BI.isNotNull(rAxisSetting.number_level) ? rAxisSetting.number_level :
                 BICst.DEFAULT_CHART_SETTING.right_y_axis_number_level;
         },
 
@@ -1035,7 +1038,8 @@
 
         getWSLeftYAxisNumLevelByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.left_y_axis_number_level) ? ws.left_y_axis_number_level :
+            var lAxisSetting = ws.left_axis_setting || {};
+            return BI.isNotNull(lAxisSetting.number_level) ? lAxisSetting.number_level :
                 BICst.DEFAULT_CHART_SETTING.left_y_axis_number_level;
         },
 
@@ -1078,7 +1082,8 @@
 
         getWSLeftYAxisUnitByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.left_y_axis_unit) ? ws.left_y_axis_unit :
+            var lAxisSetting = ws.left_axis_setting || {};
+            return BI.isNotNull(lAxisSetting.axis_unit) ? lAxisSetting.axis_unit :
                 BICst.DEFAULT_CHART_SETTING.left_y_axis_unit;
         },
 
@@ -1114,7 +1119,8 @@
 
         getWSRightYAxisUnitByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.right_y_axis_unit) ? ws.right_y_axis_unit :
+            var rAxisSetting = ws.right_axis_setting || {};
+            return BI.isNotNull(rAxisSetting.axis_unit) ? rAxisSetting.axis_unit :
                 BICst.DEFAULT_CHART_SETTING.right_y_axis_unit;
         },
 
@@ -1126,13 +1132,15 @@
 
         getWSShowLeftYAxisTitleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_left_y_axis_title) ? ws.show_left_y_axis_title :
+            var lAxisSetting = ws.left_axis_setting || {};
+            return BI.isNotNull(lAxisSetting.show_title) ? lAxisSetting.show_title :
                 BICst.DEFAULT_CHART_SETTING.show_left_y_axis_title;
         },
 
         getWSShowRightYAxisTitleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_right_y_axis_title) ? ws.show_right_y_axis_title :
+            var rAxisSetting = ws.right_axis_setting || {};
+            return BI.isNotNull(rAxisSetting.show_title) ? rAxisSetting.show_title :
                 BICst.DEFAULT_CHART_SETTING.show_right_y_axis_title;
         },
 
@@ -1144,13 +1152,15 @@
 
         getWSLeftYAxisTitleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.left_y_axis_title) ? ws.left_y_axis_title :
+            var lAxisSetting = ws.left_axis_setting || {};
+            return BI.isNotNull(lAxisSetting.axis_title) ? lAxisSetting.axis_title :
                 BICst.DEFAULT_CHART_SETTING.left_y_axis_title;
         },
 
         getWSRightYAxisTitleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.right_y_axis_title) ? ws.right_y_axis_title :
+            var rAxisSetting = ws.right_axis_setting || {};
+            return BI.isNotNull(rAxisSetting.axis_title) ? ws.axis_title :
                 BICst.DEFAULT_CHART_SETTING.right_y_axis_title;
         },
 
@@ -1174,13 +1184,15 @@
 
         getWSLeftYAxisReversedByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.left_y_axis_reversed) ? ws.left_y_axis_reversed :
+            var lAxisSetting = ws.left_axis_setting || {};
+            return BI.isNotNull(lAxisSetting.axis_reversed) ? lAxisSetting.axis_reversed :
                 BICst.DEFAULT_CHART_SETTING.left_y_axis_reversed;
         },
 
         getWSRightYAxisReversedByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.right_y_axis_reversed) ? ws.right_y_axis_reversed :
+            var rAxisSetting = ws.right_axis_setting || {};
+            return BI.isNotNull(rAxisSetting.axis_reversed) ? rAxisSetting.axis_reversed :
                 BICst.DEFAULT_CHART_SETTING.right_y_axis_reversed;
         },
 
@@ -1229,13 +1241,15 @@
 
         getWSNumberSeparatorsByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.num_separators) ? ws.num_separators :
+            var lAxisSetting = ws.left_axis_setting || {};
+            return BI.isNotNull(lAxisSetting.num_separator) ? lAxisSetting.num_separator :
                 BICst.DEFAULT_CHART_SETTING.num_separators;
         },
 
         getWSRightNumberSeparatorsByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.right_num_separators) ? ws.right_num_separators :
+            var rAxisSetting = ws.right_axis_setting || {};
+            return BI.isNotNull(rAxisSetting.num_separator) ? rAxisSetting.num_separator :
                 BICst.DEFAULT_CHART_SETTING.right_num_separators;
         },
 
@@ -1259,25 +1273,29 @@
 
         getWSShowXCustomScale: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_x_custom_scale) ? ws.show_x_custom_scale :
+            var rAxisSetting = ws.right_axis_setting || {};
+            return BI.isNotNull(rAxisSetting.show_custom_scale) ? rAxisSetting.show_custom_scale :
                 BICst.DEFAULT_CHART_SETTING.show_x_custom_scale;
         },
 
         getWSCustomXScale: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.custom_x_scale) ? ws.custom_x_scale :
+            var rAxisSetting = ws.right_axis_setting || {};
+            return BI.isNotNull(rAxisSetting.custom_scale) ? rAxisSetting.custom_scale :
                 BICst.DEFAULT_CHART_SETTING.custom_scale
         },
 
         getWSShowYCustomScale: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_y_custom_scale) ? ws.show_y_custom_scale :
+            var lAxisSetting = ws.left_axis_setting || {};
+            return BI.isNotNull(lAxisSetting.show_custom_scale) ? lAxisSetting.show_custom_scale :
                 BICst.DEFAULT_CHART_SETTING.show_y_custom_scale;
         },
 
         getWSCustomYScale: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.custom_y_scale) ? ws.custom_y_scale :
+            var lAxisSetting = ws.left_axis_setting || {};
+            return BI.isNotNull(lAxisSetting.custom_scale) ? lAxisSetting.custom_scale :
                 BICst.DEFAULT_CHART_SETTING.custom_scale
         },
 
