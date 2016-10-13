@@ -20,6 +20,9 @@ import java.util.*;
  */
 public class BIUserAuthorAttr implements XMLable {
     public static final String XML_TAG = "UserAuthorAttr";
+    public static final String EDIT_AUTH_TAG = "biEditAuth";
+    public static final String VIEW_AUTH_TAG = "biViewAuth";
+    public static final String MOBILE_AUTH_TAG = "biMobileAuth";
     public static final int DEFAULT_MOBILE_USER_AUTH_LIMIT = 0;
     private final static int EDIT = 1;
     private final static int VIEW = 2;
@@ -59,11 +62,11 @@ public class BIUserAuthorAttr implements XMLable {
 
     private void readChild(XMLableReader reader) {
         String tagName = reader.getTagName();
-        if (ComparatorUtils.equals("biEditAuth", tagName)) {
+        if (ComparatorUtils.equals(EDIT_AUTH_TAG, tagName)) {
             reader.readXMLObject(getBiAuthReaderByMode(EDIT));
-        } else if (ComparatorUtils.equals("biViewAuth", tagName)) {
+        } else if (ComparatorUtils.equals(VIEW_AUTH_TAG, tagName)) {
             reader.readXMLObject(getBiAuthReaderByMode(VIEW));
-        } else if (ComparatorUtils.equals("biMobileAuth", tagName)) {
+        } else if (ComparatorUtils.equals(MOBILE_AUTH_TAG, tagName)) {
             reader.readXMLObject(getBiAuthReaderByMode(MOBILE));
         }
     }

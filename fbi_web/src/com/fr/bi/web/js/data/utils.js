@@ -2145,7 +2145,7 @@ Data.Utils = {
                     }
                 }
                 return function () {
-                    BI.contentFormat(arguments[0], formatter)
+                    return BI.contentFormat(arguments[0], formatter)
                 }
             }
         }

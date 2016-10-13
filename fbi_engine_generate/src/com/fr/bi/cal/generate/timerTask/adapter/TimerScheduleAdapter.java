@@ -23,11 +23,17 @@ import java.util.*;
 public class TimerScheduleAdapter {
     public static List<TimerTaskSchedule> convertSchedule(long userId, Map<String, UpdateSettingSource> allTimeTaskMap) {
         List<TimerTaskSchedule> scheduleList = new ArrayList<TimerTaskSchedule>();
+        Set<String> timeListSet = new HashSet<String>();
         for (String keys : allTimeTaskMap.keySet()) {
+            timeListSet.clear();
             UpdateSettingSource settingSource = allTimeTaskMap.get(keys);
             boolean isGlobalUpdate = keys.equals(DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE);
             for (TimeFrequency frequency : settingSource.getTimeList()) {
                 String scheduleTime = BIDateUtils.getScheduleTime(frequency.getUpdateTime(), frequency.getUpdateFrequency());
+                if (timeListSet.contains(scheduleTime)) {
+                    continue;
+                }
+                timeListSet.add(scheduleTime);
                 if (isGlobalUpdate) {
                     CubeBuild cubeBuild = new CubeBuildStaff(new BIUser(userId));
                     TimerTaskSchedule taskSchedule = new TimerTaskSchedule(scheduleTime, cubeBuild, keys, userId, DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
@@ -47,7 +53,7 @@ public class TimerScheduleAdapter {
     }
 
     private static TimerTaskSchedule setBaseTableUpdateSettings(long userId, TimeFrequency frequency, String scheduleTime, BusinessTable table) {
-        CubeBuild cubeBuild = new CubeBuildSingleTable(table, null, userId, frequency.getUpdateType());
+        CubeBuild cubeBuild = new CubeBuildSingleTable(table, table.getTableSource().getSourceID(), userId, frequency.getUpdateType());
         return new TimerTaskSchedule(scheduleTime, cubeBuild, table.getTableSource().getTableName(), userId, frequency.getUpdateType());
     }
 

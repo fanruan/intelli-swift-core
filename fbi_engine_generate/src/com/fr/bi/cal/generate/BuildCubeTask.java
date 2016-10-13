@@ -64,11 +64,11 @@ import java.util.concurrent.Future;
 public class BuildCubeTask implements CubeTask {
     private static final Logger logger = LoggerFactory.getLogger(BuildCubeTask.class);
     private CubeBuild cubeBuild;
-    private BIUser biUser;
+    protected BIUser biUser;
     protected ICubeResourceRetrievalService retrievalService;
     protected ICubeConfiguration cubeConfiguration;
     protected BICube cube;
-    private BICubeFinishObserver<Future<String>> finishObserver;
+    protected BICubeFinishObserver<Future<String>> finishObserver;
     private String uuid;
     private int retryNTimes;
 
@@ -140,7 +140,7 @@ public class BuildCubeTask implements CubeTask {
         }
     }
 
-    private void checkTaskFinish() {
+    protected void checkTaskFinish() {
         /**
          * Cube生成任务失败。但是Cube的局部可能还在继续生成。
          */

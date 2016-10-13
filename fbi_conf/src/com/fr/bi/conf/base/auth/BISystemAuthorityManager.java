@@ -1,16 +1,17 @@
 package com.fr.bi.conf.base.auth;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BISystemDataManager;
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.fr.bi.conf.base.auth.data.BIPackageAuthority;
 import com.fr.bi.conf.provider.BIAuthorityManageProvider;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.exception.BIKeyAbsentException;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 import com.fr.web.core.SessionDealWith;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -112,6 +113,16 @@ public class BISystemAuthorityManager extends BISystemDataManager<BIAuthorityMan
     }
 
     @Override
+    public long getAuthVersion() {
+        try {
+            return getValue(UserControl.getInstance().getSuperManagerID()).getVersion();
+        } catch (BIKeyAbsentException e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
+        return new Date().getTime();
+    }
+
+    @Override
     public void persistData(long userId) {
         super.persistUserData(userId);
     }
@@ -132,4 +143,5 @@ public class BISystemAuthorityManager extends BISystemDataManager<BIAuthorityMan
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
+
 }
