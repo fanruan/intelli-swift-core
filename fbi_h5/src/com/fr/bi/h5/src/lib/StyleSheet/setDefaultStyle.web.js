@@ -56,16 +56,16 @@ function appendSytle({
 }
 
 function setDefaultStyle(options) {
-  var metaEl = document.querySelector('meta[name="viewport"]');
-  if (!metaEl) {
-    return console.warn('Viewport meta not set');
-  }
-
-  window.addEventListener('resize', function() {
-    appendSytle(options);
-  }, false);
-
-  appendSytle(options);
+  // var metaEl = document.querySelector('meta[name="viewport"]');
+  // if (!metaEl) {
+  //   return console.warn('Viewport meta not set');
+  // }
+  //
+  // window.addEventListener('resize', function() {
+  //   appendSytle(options);
+  // }, false);
+  //
+  // appendSytle(options);
 }
 
 module.exports = setDefaultStyle;

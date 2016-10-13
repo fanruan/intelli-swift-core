@@ -17,9 +17,11 @@ BI.StyleLoaderManager = BI.inherit(FR.OB, {
     loadStyle: function (name, styleString) {
         var docEl = document.documentElement;
         var styleEl = document.createElement('style');
-        docEl.firstElementChild.appendChild(styleEl);
-        styleEl.innerHTML = styleString;
+        var firstElementChild = docEl.firstElementChild || docEl.children[0];   //兼容IE8
+        firstElementChild.appendChild(styleEl);
+        $('<style type="text/css">' + styleString + '</style>').appendTo('head');
         this.stylesManager[name] = styleEl;
+
         return this;
     },
 

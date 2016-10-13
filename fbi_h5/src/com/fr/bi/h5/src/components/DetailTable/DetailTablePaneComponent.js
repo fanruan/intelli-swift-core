@@ -69,7 +69,7 @@ class DetailTablePaneComponent extends Component {
 
     render() {
         const {width, height, $widget, wId} = this.props;
-        return <Layout>
+        return <Layout dir='top' box='first'>
             {this._renderHeader()}
             <DetailTableComponent
                 width={width}
