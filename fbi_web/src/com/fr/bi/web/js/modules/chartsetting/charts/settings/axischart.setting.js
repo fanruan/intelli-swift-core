@@ -24,74 +24,12 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
 
-        this.colorSelect = BI.createWidget({
-            type: "bi.chart_setting_select_color_combo",
-            width: 130
-        });
-        this.colorSelect.populate();
-
-        this.colorSelect.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
+        this.chartStyleSetting = BI.createWidget({
+            type: "bi.chart_style_block_setting"
         });
 
-        //风格——1、2
-        this.chartStyleGroup = BI.createWidget({
-            type: "bi.button_group",
-            items: BI.createItems(BICst.AXIS_STYLE_GROUP, {
-                type: "bi.icon_button",
-                extraCls: "chart-style-font",
-                width: constant.BUTTON_WIDTH,
-                height: constant.BUTTON_HEIGHT,
-                iconWidth: constant.ICON_WIDTH,
-                iconHeight: constant.ICON_HEIGHT
-            }),
-            layouts: [{
-                type: "bi.vertical_adapt",
-                height: constant.SINGLE_LINE_HEIGHT
-            }]
-        });
-        this.chartStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
-        });
-
-        this.tableStyle = BI.createWidget({
-            type: "bi.horizontal_adapt",
-            columnSize: [100],
-            cls: "single-line-settings",
-            items: [{
-                type: "bi.label",
-                text: BI.i18nText("BI-Chart"),
-                lgap: constant.SIMPLE_H_LGAP,
-                textAlign: "left",
-                cls: "line-title"
-            }, {
-                type: "bi.left",
-                cls: "detail-style",
-                items: BI.createItems([{
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Color_Setting"),
-                    cls: "attr-names"
-                }, {
-                    el: {
-                        type: "bi.vertical_adapt",
-                        items: [this.colorSelect]
-                    },
-                    lgap: constant.SIMPLE_H_GAP
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Table_Style"),
-                    cls: "attr-names",
-                    lgap: constant.SIMPLE_H_GAP
-                }, {
-                    el: {
-                        type: "bi.vertical_adapt",
-                        items: [this.chartStyleGroup]
-                    },
-                    lgap: constant.SIMPLE_H_GAP
-                }], {
-                    height: constant.SINGLE_LINE_HEIGHT
-                })
-            }]
+        this.chartStyleSetting.on(BI.ChartStyleBlockSetting.EVENT_CHANGE, function() {
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
 
         //格式和数量级
@@ -847,13 +785,13 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [this.widgetSetting, this.tableStyle, this.lYAxis, this.rYAxis, this.xAxis, this.showElement, this.otherAttr, modelChange],
+            items: [this.widgetSetting, this.chartStyleSetting, this.lYAxis, this.rYAxis, this.xAxis, this.showElement, this.otherAttr, modelChange],
             hgap: 10
         })
     },
 
     _invisible: function (v) {
-        this.tableStyle.setVisible(v);
+        this.chartStyleSetting.setVisible(v);
         this.lYAxis.setVisible(v);
         this.xAxis.setVisible(v);
         this.rYAxis.setVisible(v);
@@ -897,8 +835,8 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.widgetSetting.populate();
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
-        this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
-        this.chartStyleGroup.setValue(BI.Utils.getWSChartStyleByID(wId));
+        // this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
+        // this.chartStyleGroup.setValue(BI.Utils.getWSChartStyleByID(wId));
         this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
         this.rYAxisStyle.setValue(BI.Utils.getWSRightYAxisStyleByID(wId));
         this.numberLevellY.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
@@ -937,8 +875,8 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         return {
             widget_setting: this.widgetSetting.getValue(),
             transfer_filter: this.transferFilter.isSelected(),
-            chart_color: this.colorSelect.getValue()[0],
-            chart_style: this.chartStyleGroup.getValue()[0],
+            // chart_color: this.colorSelect.getValue()[0],
+            // chart_style: this.chartStyleGroup.getValue()[0],
             left_y_axis_style: this.lYAxisStyle.getValue()[0],
             right_y_axis_style: this.rYAxisStyle.getValue()[0],
             left_y_axis_number_level: this.numberLevellY.getValue()[0],
@@ -971,8 +909,8 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
     setValue: function (v) {
         this.widgetSetting.setValue(v.widget_setting);
         this.transferFilter.setSelected(v.transfer_filter);
-        this.colorSelect.setValue(v.chart_color);
-        this.chartStyleGroup.setValue(v.chart_style);
+        // this.colorSelect.setValue(v.chart_color);
+        // this.chartStyleGroup.setValue(v.chart_style);
         this.lYAxisStyle.setValue(v.left_y_axis_style);
         this.rYAxisStyle.setValue(v.right_y_axis_style);
         this.numberLevellY.setValue(v.left_y_axis_number_level);
