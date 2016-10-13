@@ -4,7 +4,12 @@
 BI.SingleSlider = BI.inherit(BI.Widget, {
     _constant: {
         EDITOR_WIDTH: 90,
-        HEIGHT: 28
+        EDITOR_HEIGHT: 30,
+        HEIGHT: 28,
+        SLIDER_WIDTH_HALF: 15,
+        SLIDER_WIDTH: 30,
+        SLIDER_HEIGHT: 30,
+        TRACK_HEIGHT: 24
     },
     _defaultConfig: function () {
         return BI.extend(BI.SingleSlider.superclass._defaultConfig.apply(this, arguments), {
@@ -21,7 +26,7 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
         this.backgroundTrack = BI.createWidget({
             type: "bi.layout",
             cls: "background-track",
-            height: 24
+            height: c.TRACK_HEIGHT
         });
         this.grayTrack = BI.createWidget({
             type: "bi.layout",
@@ -60,21 +65,21 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
                 type: "bi.absolute",
                 items: [this.slider]
             }],
-            hgap: 15,
-            height: 30
+            hgap: c.SLIDER_WIDTH_HALF,
+            height: c.SLIDER_HEIGHT
         });
         sliderVertical.element.click(function (e) {
             if (self.enable) {
-                var offset = e.clientX - self.element.offset().left - 15;
+                var offset = e.clientX - self.element.offset().left - c.SLIDER_WIDTH_HALF;
                 var trackLength = self.track.element[0].scrollWidth;
                 var percent = 0;
                 if (offset < 0) {
                     percent = 0
                 }
-                if (offset > 0 && offset < (trackLength - 30)) {
+                if (offset > 0 && offset < (trackLength - c.SLIDER_WIDTH)) {
                     percent = offset * 100 / self._getGrayTrackLength();
                 }
-                if (offset > (trackLength - 30)) {
+                if (offset > (trackLength - c.SLIDER_WIDTH)) {
                     percent = 100
                 }
                 self._setAllPosition(percent);
@@ -112,11 +117,11 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
                         items: [{
                             el: this.track,
                             width: "100%",
-                            height: 24
+                            height: c.TRACK_HEIGHT
                         }]
                     }],
                     hgap: 7,
-                    height: 24
+                    height: c.TRACK_HEIGHT
                 },
                 top: 33,
                 left: 0,
@@ -133,8 +138,8 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
                         type: "bi.absolute",
                         items: [this.label]
                     }],
-                    rgap: 90,
-                    height: 30
+                    rgap: c.EDITOR_WIDTH,
+                    height: c.EDITOR_HEIGHT
                 },
                 top: 0,
                 left: 0,
@@ -236,7 +241,7 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
             this._setVisible(true);
             this.enable = true;
             this.label.setErrorText(BI.i18nText("BI-Please_Enter") + minNumber + "-" + maxNumber + BI.i18nText("BI-De") + BI.i18nText("BI-Number"));
-            if (!isNaN(valueNumber)) {
+            if (!isNaN(valueNumber) && this._checkValidation(valueNumber)) {
                 this.label.setValue(valueNumber);
                 this._setAllPosition(this._getPercentByValue(valueNumber));
             } else {

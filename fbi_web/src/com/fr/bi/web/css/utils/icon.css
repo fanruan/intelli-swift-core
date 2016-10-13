@@ -1452,30 +1452,30 @@
 .drag-single-slider-icon:hover .x-icon,
 .drag-single-slider-icon:active .x-icon {
   display: block;
-  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_number.png') no-repeat 0px 0px;
-  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_number.png');
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_single_slider.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_single_slider.png');
   _background: none;
 }
 .drag-single-slider-icon.native .x-icon,
 .drag-single-slider-icon.disabled .x-icon {
   display: block;
-  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_number.png') no-repeat 0px 0px;
-  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_number.png');
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_single_slider.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_single_slider.png');
   _background: none;
 }
 .drag-interval-slider-icon .x-icon,
 .drag-interval-slider-icon:hover .x-icon,
 .drag-interval-slider-icon:active .x-icon {
   display: block;
-  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_number.png') no-repeat 0px 0px;
-  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_number.png');
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_interval_slider.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_interval_slider.png');
   _background: none;
 }
 .drag-interval-slider-icon.native .x-icon,
 .drag-interval-slider-icon.disabled .x-icon {
   display: block;
-  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_number.png') no-repeat 0px 0px;
-  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_number.png');
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_interval_slider.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_interval_slider.png');
   _background: none;
 }
 .drag-tree-icon .x-icon,
