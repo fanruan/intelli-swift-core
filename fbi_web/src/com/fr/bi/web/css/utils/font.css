@@ -1113,6 +1113,66 @@
   content: "\e6bb";
   color: #1a1a1a;
 }
+.table-page-left-h-font .b-font:before {
+  content: "\e6b7";
+  color: #1a1a1a;
+}
+.table-page-left-h-font:hover .b-font:before,
+.table-page-left-h-font:focus .b-font:before,
+.table-page-left-h-font.hover .b-font:before {
+  content: "\e6b7";
+  color: #1a1a1a;
+}
+.table-page-left-h-font.native .b-font:before,
+.table-page-left-h-font.disabled .b-font:before {
+  content: "\e6b7";
+  color: #1a1a1a;
+}
+.table-page-right-h-font .b-font:before {
+  content: "\e6b6";
+  color: #1a1a1a;
+}
+.table-page-right-h-font:hover .b-font:before,
+.table-page-right-h-font:focus .b-font:before,
+.table-page-right-h-font.hover .b-font:before {
+  content: "\e6b6";
+  color: #1a1a1a;
+}
+.table-page-right-h-font.native .b-font:before,
+.table-page-right-h-font.disabled .b-font:before {
+  content: "\e6b6";
+  color: #1a1a1a;
+}
+.table-page-top-h-font .b-font:before {
+  content: "\e698";
+  color: #1a1a1a;
+}
+.table-page-top-h-font:hover .b-font:before,
+.table-page-top-h-font:focus .b-font:before,
+.table-page-top-h-font.hover .b-font:before {
+  content: "\e698";
+  color: #1a1a1a;
+}
+.table-page-top-h-font.native .b-font:before,
+.table-page-top-h-font.disabled .b-font:before {
+  content: "\e698";
+  color: #1a1a1a;
+}
+.table-page-bottom-h-font .b-font:before {
+  content: "\e699";
+  color: #1a1a1a;
+}
+.table-page-bottom-h-font:hover .b-font:before,
+.table-page-bottom-h-font:focus .b-font:before,
+.table-page-bottom-h-font.hover .b-font:before {
+  content: "\e699";
+  color: #1a1a1a;
+}
+.table-page-bottom-h-font.native .b-font:before,
+.table-page-bottom-h-font.disabled .b-font:before {
+  content: "\e699";
+  color: #1a1a1a;
+}
 .trigger-triangle-font .b-font:before {
   content: "\e66a";
   color: #808080;

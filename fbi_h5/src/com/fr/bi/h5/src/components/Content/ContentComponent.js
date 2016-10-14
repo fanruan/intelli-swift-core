@@ -29,7 +29,7 @@ import {Colors, Size, Template, Widget, Dimension, Target} from 'data'
 
 import {CenterLayout, Icon, Table} from 'base'
 
-import {MultiSelectorWidget} from 'widgets'
+import WidgetFactory from '../../data/Template/Widget/WidgetFactory'
 
 
 class ContentComponent extends Component {
@@ -52,7 +52,7 @@ class ContentComponent extends Component {
 
     render() {
         const {$widget, wId} = this.props;
-        const widget = new Widget($widget, this.context.$template, wId);
+        const widget = WidgetFactory.createWidget($widget, this.context.$template, wId);
         const style = widget.getStyle();
         return <TextInput
             style={{height: this.props.height, ...styles.wrapper, ...style}}

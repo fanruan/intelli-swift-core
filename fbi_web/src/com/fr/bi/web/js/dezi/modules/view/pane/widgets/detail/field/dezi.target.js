@@ -145,6 +145,13 @@ BIDezi.TargetView = BI.inherit(BI.View, {
                 case BICst.TARGET_COMBO.FILTER:
                     self._buildFilterPane();
                     break;
+                case BICst.TARGET_COMBO.SHOW_FIELD:
+                    var used = self.model.get("used");
+                    self.model.set("used", !used);
+                    break;
+                case BICst.TARGET_COMBO.RENAME:
+                    self.editor.focus();
+                    break;
                 case BICst.TARGET_COMBO.COPY:
                     self._copyTarget();
                     break;
@@ -192,6 +199,13 @@ BIDezi.TargetView = BI.inherit(BI.View, {
                 case BICst.TARGET_COMBO.FILTER:
                     self._buildFilterPane();
                     break;
+                case BICst.TARGET_COMBO.SHOW_FIELD:
+                    var used = self.model.get("used");
+                    self.model.set("used", !used);
+                    break;
+                case BICst.TARGET_COMBO.RENAME:
+                    self.editor.focus();
+                    break;
                 case BICst.TARGET_COMBO.COPY:
                     self._copyTarget();
                     break;
@@ -230,17 +244,15 @@ BIDezi.TargetView = BI.inherit(BI.View, {
                 case BICst.CALCULATE_TARGET_COMBO.UPDATE_TARGET:
                     self._updateTarget();
                     break;
-                case BICst.CALCULATE_TARGET_COMBO.HIDDEN:
-                    self.model.set("used", false);
+                case BICst.TARGET_COMBO.SHOW_FIELD:
+                    var used = self.model.get("used");
+                    self.model.set("used", !used);
                     break;
-                case BICst.CALCULATE_TARGET_COMBO.DISPLAY:
-                    self.model.set("used", true);
+                case BICst.TARGET_COMBO.RENAME:
+                    self.editor.focus();
                     break;
                 case BICst.CALCULATE_TARGET_COMBO.DELETE:
                     self._deleteTarget();
-                    break;
-                case BICst.CALCULATE_TARGET_COMBO.RENAME:
-                    self.editor.focus();
                     break;
                 case BICst.CALCULATE_TARGET_COMBO.COPY:
                     self._copyTarget();

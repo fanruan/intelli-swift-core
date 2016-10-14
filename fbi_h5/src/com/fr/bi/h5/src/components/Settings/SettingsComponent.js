@@ -40,27 +40,19 @@ import {
 import {MultiSelectorWidget} from 'widgets'
 
 import SettingsComponentHelper from './SettingsComponentHelper'
+import DimensionComponent from './Dimensions/DimensionComponent'
+import DimensionSortableComponent from './Dimensions/DimensionSortableComponent'
 
 
-const {SortableContainer, SortableElement, SortableHandle, arrayMove} = Sortable;
+const {SortableContainer} = Sortable;
 
-const DragHandle = SortableHandle(() => {
-    return <IconButton effect={false} style={styles.dragHandler} className={'drag-handler-icon'} iconWidth={18}
-                       iconHeight={18}/>
-});
-
-const SortableItem = SortableElement(({value}) => {
-    return <Layout box='last' cross='center' style={styles.sortableItems}>
-        <TextButton textAlign={'left'} effect={false}>{value.text}</TextButton>
-        <DragHandle/>
-    </Layout>
-});
-
-const SortableList = SortableContainer(({items}) => {
+const SortableList = SortableContainer(({items, wId, $widget}) => {
     return (
         <ScrollView style={{height: Size.ITEM_HEIGHT * items.length}}>
             {items.map((value, index) =>
-                <SortableItem key={`item-${value.dId}`} index={index} value={value}/>
+                <DimensionSortableComponent key={`item-${value.dId}`} index={index} value={value} wId={wId}
+                                            $widget={$widget}
+                                            dId={value.dId}/>
             )}
         </ScrollView>
     );
@@ -84,7 +76,8 @@ class SettingsComponent extends Component {
 
     state = {
         $widget: this.props.$widget,
-        collapsed: {}
+        collapsed: {},
+        sortable: false
     };
 
     _getNextState(props, state = {}) {
@@ -126,6 +119,36 @@ class SettingsComponent extends Component {
         });
     };
 
+    _renderSortableList(viewItem) {
+        const items = this._helper.getDimensionsItems(viewItem.viewId);
+        return <SortableList items={items}
+                             $widget={this.state.$widget}
+                             wId={this.props.wId}
+                             onSortEnd={({oldIndex, newIndex})=> {
+                                 this._onSortEnd({
+                                     oldIndex, newIndex, viewId: viewItem.viewId
+                                 });
+                             }}
+                             useDragHandle={true}
+                             lockAxis='y'
+                             helperClass='sortable-helper'
+        />
+    }
+
+    _renderUnSortableList(viewItem) {
+        const items = this._helper.getDimensionsItems(viewItem.viewId);
+        return <ScrollView style={{height: Size.ITEM_HEIGHT * items.length}}>
+            {items.map((value, index) =>
+                <DimensionComponent key={index} value={value} wId={this.props.wId} $widget={this.state.$widget}
+                                    dId={value.dId} onSelected={($dimension)=> {
+                    this.setState({
+                        $widget: this._helper.set$Dimension($dimension, value.dId)
+                    });
+                }}/>
+            )}
+        </ScrollView>
+    }
+
     _renderDialog() {
         const array = [];
         each(this._helper.getViewItems(), (viewItem)=> {
@@ -136,24 +159,23 @@ class SettingsComponent extends Component {
                     collapsed
                 })
             }}>{viewItem.text}</TextButton>);
-            const items = this._helper.getDimensionsItems(viewItem.viewId);
             array.push(<Collapsible collapsed={this.state.collapsed[viewItem.viewId] || false}>
-                <SortableList items={items}
-                              onSortEnd={({oldIndex, newIndex})=> {
-                                  this._onSortEnd({
-                                      oldIndex, newIndex, viewId: viewItem.viewId
-                                  });
-                              }}
-                              useDragHandle={true}
-                              lockAxis='y'
-                              helperClass='sortable-helper'
-                />
+                {this.state.sortable ? this._renderSortableList(viewItem) : this._renderUnSortableList(viewItem)}
             </Collapsible>)
         });
 
-        return <ScrollView>
-            {array}
-        </ScrollView>;
+        return <Layout dir='top' box='first'>
+            <View style={{height: 100}}>
+                <TextButton onPress={()=> {
+                    this.setState({
+                        sortable: !this.state.sortable
+                    })
+                }} style={styles.sortChangeButton}>{this.state.sortable ? '退出排序' : '排序'}</TextButton>
+            </View>
+            <ScrollView>
+                {array}
+            </ScrollView>
+        </Layout>;
     }
 
     render() {
@@ -218,6 +240,13 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
         backgroundColor: '#d8f2fd',
         height: Size.ITEM_HEIGHT
+    },
+
+    sortChangeButton: {
+        position: 'absolute',
+        right: 20,
+        bottom: 20,
+        height: 20
     }
 });
 export default SettingsComponent

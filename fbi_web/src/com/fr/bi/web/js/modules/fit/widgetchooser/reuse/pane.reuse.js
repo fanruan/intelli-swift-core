@@ -52,7 +52,7 @@ BI.ReusePane = BI.inherit(BI.Widget, {
                     return;
                 }
                 if (BI.isNotNull(op.node.isParent)) {
-                    if(op.node.nodeType === BI.ReusePane.FOLDER){
+                    if(op.node.nodeType === BI.ReusePane.FOLDER && op.node.layer !== 0){
                         populate(self._findChildItemsFromItems(op.node.id, op.node.layer + 1));
                         return;
                     }
@@ -67,7 +67,7 @@ BI.ReusePane = BI.inherit(BI.Widget, {
 
     _getSearchResult: function (keyword) {
         var self = this;
-        var result = BI.filter(this.items, function(idx, item){
+        var result = BI.filter(BI.concat(this.items, this.sharedItems), function(idx, item){
             return BI.has(item, "buildUrl");
         });
         result = BI.map(result, function(idx, item){
@@ -200,15 +200,63 @@ BI.ReusePane = BI.inherit(BI.Widget, {
         if (BI.isEmptyArray(this.items)) {
             BI.Utils.getAllTemplates(function(items){
                 var currentTemplateId = BI.Utils.getCurrentTemplateId();
-                self.items = BI.filter(items, function(idx, item){
-                   return item.id != currentTemplateId;
+                self.items = [];
+                self.sharedItems = [];
+                BI.each(items, function(idx, item){
+                    if(item.id != currentTemplateId && item.isMine === true){
+                        self.items.push(item);
+                    }
+                    if(item.isMine === false){
+                        self.sharedItems.push(item);
+                    }
                 });
-                var its = self._findChildItemsFromItems(-1, 0);
-                callback(its);
-                self.setTipVisible(BI.isEmptyArray(its));
+                var its = self._findChildItemsFromItems(-1, 1);
+                callback(BI.concat(its, createStatisticNode()));
+                self.setTipVisible(BI.isEmptyArray(its) && BI.isEmptyArray(self.sharedItems));
             });
         } else {
-            callback(self._findChildItemsFromItems(-1, 0));
+            callback(BI.concat(self._findChildItemsFromItems(-1, 1), createStatisticNode()));
+        }
+
+        function createStatisticNode(){
+            var sharedReports = [];
+            BI.each(self.sharedItems, function(idx, item){
+                sharedReports.push({
+                    id: item.id,
+                    pId: -2,
+                    type: "bi.multilayer_icon_arrow_node",
+                    iconCls: "file-font",
+                    text: item.text,
+                    title: item.text,
+                    isParent: true,
+                    value: item.id,
+                    layer: 1,
+                    nodeType: BI.ReusePane.TEMPLATE
+                });
+            });
+            return BI.concat(sharedReports, [{
+                id: -1,
+                pId: -3,
+                type: "bi.multilayer_icon_arrow_node",
+                iconCls: "folder-font",
+                text: BI.i18nText("BI-My_Created"),
+                title: BI.i18nText("BI-My_Created"),
+                isParent: true,
+                value: -1,
+                layer: 0,
+                nodeType: BI.ReusePane.FOLDER
+            }, {
+                id: -2,
+                pId: -3,
+                type: "bi.multilayer_icon_arrow_node",
+                iconCls: "folder-font",
+                text: BI.i18nText("BI-Share_With_My"),
+                title: BI.i18nText("BI-Share_With_My"),
+                isParent: true,
+                value: -2,
+                layer: 0,
+                nodeType: BI.ReusePane.FOLDER
+            }]);
         }
     },
 

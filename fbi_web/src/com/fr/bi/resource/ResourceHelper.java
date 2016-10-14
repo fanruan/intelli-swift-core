@@ -802,6 +802,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/matchingrelationship/settingpane/targetlabelcontrol.settingpane.css",
                 "com/fr/bi/web/css/modules/matchingrelationship/settingpane/settingpane.css",
                 "com/fr/bi/web/css/modules/matchingrelationship/settingpane/multipathchooser.settingpane.css",
+                "com/fr/bi/web/css/modules/matchingrelationship/settingpane/multimatchmulti.settingpane.css",
 
                 //多路径设置
                 "com/fr/bi/web/css/fragments/multirelation/item.tablefield.multirelation.css",
@@ -1780,6 +1781,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level1.date.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/relationtable/node.relationtables.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/relationtable/node.level2.date.js",
+                "com/fr/bi/web/js/services/packageselectdataservice/relationtable/expander.relationtable.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/relationtable/expander.relationtables.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/packageselectdataservice.js",
 
@@ -2561,6 +2563,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/case/pager/pager.direction.js",
                 "com/fr/bi/web/js/case/pager/pager.skip.js",
                 "com/fr/bi/web/js/case/pager/pager.all.js",
+                "com/fr/bi/web/js/case/pager/pager.all.count.js",
 
                 "com/fr/bi/web/js/case/table/table.layertree.cell.js",
                 "com/fr/bi/web/js/case/table/table.layertree.js",

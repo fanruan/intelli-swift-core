@@ -2399,6 +2399,9 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                     var width = this.scrollContainer.element[0].clientWidth, height = this.scrollContainer.element[0].scrollHeight;
                     var clone = BI.toArray(this._cloneRegion());
                     clone.sort(function (r1, r2) {
+                        if (self._isEqual(r1.top, r2.top)) {
+                            return r1.left - r2.left;
+                        }
                         return r1.top - r2.top;
                     });
                     var count = clone.length;

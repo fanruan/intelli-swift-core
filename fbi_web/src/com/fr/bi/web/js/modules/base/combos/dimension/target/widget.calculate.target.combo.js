@@ -58,6 +58,15 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             //    cls: "dot-ha-font"
             //}],
             [{
+                text: BI.i18nText("BI-Show_Field"),
+                value: BICst.TARGET_COMBO.SHOW_FIELD,
+                cls: BI.Utils.isDimensionUsable(this.options.dId) ? "widget-combo-show-title-font" : ""
+            }],
+            [{
+                text: BI.i18nText("BI-Rename"),
+                value: BICst.TARGET_COMBO.RENAME
+            }],
+            [{
                 text: BI.i18nText("BI-Copy"),
                 value: BICst.CALCULATE_TARGET_COMBO.COPY,
                 cls: "copy-h-font"

@@ -160,6 +160,18 @@
             }
         },
 
+        getPackageIDByTableID: function(tableId){
+            var packageId;
+            BI.find(Pool.packages, function(pId, obj){
+                var ids = BI.pluck(obj.tables, "id");
+                if(BI.contains(ids, tableId)){
+                    packageId = pId;
+                    return true;
+                }
+            });
+            return packageId;
+        },
+
         /**
          * 表相关
          */
