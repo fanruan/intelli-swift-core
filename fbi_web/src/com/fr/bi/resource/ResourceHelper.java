@@ -802,6 +802,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/matchingrelationship/settingpane/targetlabelcontrol.settingpane.css",
                 "com/fr/bi/web/css/modules/matchingrelationship/settingpane/settingpane.css",
                 "com/fr/bi/web/css/modules/matchingrelationship/settingpane/multipathchooser.settingpane.css",
+                "com/fr/bi/web/css/modules/matchingrelationship/settingpane/multimatchmulti.settingpane.css",
 
                 //多路径设置
                 "com/fr/bi/web/css/fragments/multirelation/item.tablefield.multirelation.css",
