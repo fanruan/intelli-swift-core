@@ -29098,7 +29098,7 @@
 	                }
 	                childDisplay.push(_react2.default.createElement(
 	                    _View2.default,
-	                    { className: '', key: index, style: style, onClick: function onClick() {
+	                    { className: '', key: index, style: style, onTouchEnd: function onTouchEnd() {
 	                            return _this4._moveToValue(child.props.value);
 	                        } },
 	                    child
@@ -29156,7 +29156,8 @@
 	    }, {
 	        key: '_handleStartShouldSetPanResponder',
 	        value: function _handleStartShouldSetPanResponder(e) {
-	            return e.nativeEvent.target === _reactDom2.default.findDOMNode(this.refs[PICKER]);
+	            return true;
+	            // return e.nativeEvent.target === ReactDOM.findDOMNode(this.refs[PICKER])
 	        }
 	    }, {
 	        key: '_handlePanResponderGrant',

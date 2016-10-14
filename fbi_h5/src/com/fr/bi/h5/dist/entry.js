@@ -5227,8 +5227,6 @@ webpackJsonp([0],{
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this2 = this;
-
 	            var props = _objectWithoutProperties(this.props, []);
 
 	            var ds = new _lib.ListView.DataSource({ rowHasChanged: function rowHasChanged(r1, r2) {
@@ -5242,10 +5240,8 @@ webpackJsonp([0],{
 	                    style: styles.viewPager,
 	                    initialPage: 0,
 	                    onPageScroll: this._onPageScroll.bind(this),
-	                    onPageSelected: this._onPageSelected.bind(this),
-	                    ref: function ref(viewPager) {
-	                        _this2.viewPager = viewPager;
-	                    } },
+	                    onPageSelected: this._onPageSelected.bind(this)
+	                },
 	                [_lib2.default.createElement(_lib.ListView, _extends({}, props, {
 	                    initialListSize: Math.ceil(props.height / 310) + 1,
 	                    dataSource: ds.cloneWithRows(rows),
@@ -6399,7 +6395,22 @@ webpackJsonp([0],{
 	            var props = _objectWithoutProperties(this.props, []);
 	            var state = _objectWithoutProperties(this.state, []);
 
-	            return _lib2.default.createElement(_lib.View, { style: styles.wrapper });
+	            return _lib2.default.createElement(
+	                _layout.Layout,
+	                { box: 'mean', style: styles.wrapper },
+	                _lib2.default.createElement(
+	                    _lib.PickerIOS,
+	                    null,
+	                    _lib2.default.createElement(_lib.PickerIOS.Item, { value: BICst.SORT.ASC, label: '升序' }),
+	                    _lib2.default.createElement(_lib.PickerIOS.Item, { value: BICst.SORT.DESC, label: '降序' })
+	                ),
+	                _lib2.default.createElement(
+	                    _lib.PickerIOS,
+	                    null,
+	                    _lib2.default.createElement(_lib.PickerIOS.Item, { value: BICst.SORT.ASC, label: 'A' }),
+	                    _lib2.default.createElement(_lib.PickerIOS.Item, { value: BICst.SORT.DESC, label: 'B' })
+	                )
+	            );
 	        }
 	    }, {
 	        key: 'componentWillReceiveProps',

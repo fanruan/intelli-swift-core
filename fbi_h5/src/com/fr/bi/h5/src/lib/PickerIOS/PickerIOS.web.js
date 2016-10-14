@@ -78,7 +78,7 @@ class Picker extends Component {
                 style.push(styles.selected);
             }
             childDisplay.push(
-                <View className={''} key={index} style={style} onClick={()=>this._moveToValue(child.props.value)}>
+                <View className={''} key={index} style={style} onTouchEnd={()=>this._moveToValue(child.props.value)}>
                     {child}
                 </View>
             )
@@ -129,7 +129,8 @@ class Picker extends Component {
     }
 
     _handleStartShouldSetPanResponder(e) {
-        return e.nativeEvent.target === ReactDOM.findDOMNode(this.refs[PICKER])
+        return true;
+        // return e.nativeEvent.target === ReactDOM.findDOMNode(this.refs[PICKER])
     }
 
     _handlePanResponderGrant(e, gestureState) {

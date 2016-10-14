@@ -49,9 +49,7 @@ class LayoutComponent extends Component {
             initialPage={0}
             onPageScroll={this._onPageScroll.bind(this)}
             onPageSelected={this._onPageSelected.bind(this)}
-            ref={viewPager => {
-                this.viewPager = viewPager;
-            }}>
+            >
             {[<ListView
                 {...props}
                 initialListSize={Math.ceil(props.height / 310) + 1}

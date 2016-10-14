@@ -18,6 +18,7 @@ import React, {
     View,
     Fetch,
     Promise,
+    PickerIOS,
     TouchableHighlight
 } from 'lib'
 
@@ -55,9 +56,16 @@ class DimensionSortComponent extends Component {
 
     render() {
         const {...props} = this.props, {...state} = this.state;
-        return <View style={styles.wrapper}>
-
-        </View>
+        return <Layout box='mean' style={styles.wrapper}>
+            <PickerIOS>
+                <PickerIOS.Item value={BICst.SORT.ASC} label='升序'/>
+                <PickerIOS.Item value={BICst.SORT.DESC} label='降序'/>
+            </PickerIOS>
+            <PickerIOS>
+                <PickerIOS.Item value={BICst.SORT.ASC} label='A'/>
+                <PickerIOS.Item value={BICst.SORT.DESC} label='B'/>
+            </PickerIOS>
+        </Layout>
     }
 
     componentWillReceiveProps(nextProps) {
