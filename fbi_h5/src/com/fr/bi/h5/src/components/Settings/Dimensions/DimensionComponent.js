@@ -11,6 +11,7 @@ import React, {
     Component,
     StyleSheet,
     Text,
+    Portal,
     PixelRatio,
     ListView,
     View,
@@ -23,11 +24,12 @@ import {Colors, Sizes, TemplateFactory, WidgetFactory, DimensionFactory} from 'd
 
 import {Layout, CenterLayout, HorizontalCenterLayout, VerticalCenterLayout} from 'layout';
 
-import {Button, IconButton, TextButton, Table} from 'base'
+import {Button, IconButton, TextButton, Table, ActionSheet} from 'base'
 
 import {MultiSelectorWidget} from 'widgets'
 
 import DimensionComponentHelper from './DimensionComponentHelper'
+import DimensionSortComponent from './Sort/DimensionSortComponent'
 
 
 class DimensionComponent extends Component {
@@ -76,7 +78,22 @@ class DimensionComponent extends Component {
                           style={[sc([styles.disabledText, !this._helper.isUsed()]), styles.sortTargetName]}
                           effect={false}>{this._helper.getSortTargetName()}</Text>
                     <IconButton style={styles.sortIcon} onPress={()=> {
-                        this.props.onValueChange(this._helper.switchSort());
+                        Portal.showModal('DimensionSort', <ActionSheet
+                            onClose={(tag)=> {
+                                if (tag === '取消') {
+
+                                } else if (tag === '确定') {
+
+                                }
+                                Portal.closeModal('DimensionSort')
+                            }}
+                        >
+                            <Layout style = {styles.dimensionSortContainer}>
+                                <DimensionSortComponent
+
+                                />
+                            </Layout>
+                        </ActionSheet>)
                     }}
                                 className={this._helper.getSortTargetTypeFont()}/>
                 </Layout>
@@ -122,6 +139,14 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10,
         textAlign: 'right'
+    },
+
+    dimensionSortContainer:{
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0
     },
 
     disabledText: {

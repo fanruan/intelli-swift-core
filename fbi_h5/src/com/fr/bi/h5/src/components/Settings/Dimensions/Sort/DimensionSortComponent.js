@@ -30,7 +30,7 @@ import {Button, TextButton, IconButton, Table} from 'base'
 import {MultiSelectorWidget} from 'widgets'
 
 
-class TableComponent extends Component {
+class DimensionSortComponent extends Component {
     constructor(props, context) {
         super(props, context);
     }
@@ -77,8 +77,8 @@ class TableComponent extends Component {
     }
 
 }
-mixin.onClass(TableComponent, ReactComponentWithImmutableRenderMixin);
+mixin.onClass(DimensionSortComponent, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {}
 });
-export default TableComponent
+export default DimensionSortComponent

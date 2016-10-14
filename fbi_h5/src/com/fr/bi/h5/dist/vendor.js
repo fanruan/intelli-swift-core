@@ -68853,7 +68853,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.Dialog = exports.Overlay = exports.Table = exports.Collection = exports.VirtualScroll = exports.Grid = exports.InfiniteLoader = exports.AutoSizer = exports.Infinite = exports.Animatable = exports.Accordion = exports.Collapsible = exports.SideMenu = exports.GiftedListView = exports.Sortable = exports.Wedge = exports.Rectangle = exports.Circle = exports.ART = exports.Checkbox = exports.TextLink = exports.TextButton = exports.IconLink = exports.IconButton = exports.Button = exports.Icon = undefined;
+	exports.Dialog = exports.ActionSheet = exports.Overlay = exports.Table = exports.Collection = exports.VirtualScroll = exports.Grid = exports.InfiniteLoader = exports.AutoSizer = exports.Infinite = exports.Animatable = exports.Accordion = exports.Collapsible = exports.SideMenu = exports.GiftedListView = exports.Sortable = exports.Wedge = exports.Rectangle = exports.Circle = exports.ART = exports.Checkbox = exports.TextLink = exports.TextButton = exports.IconLink = exports.IconButton = exports.Button = exports.Icon = undefined;
 
 	var _Icon2 = __webpack_require__(803);
 
@@ -68955,7 +68955,11 @@
 
 	var _Overlay3 = _interopRequireDefault(_Overlay2);
 
-	var _Dialog2 = __webpack_require__(919);
+	var _ActionSheet2 = __webpack_require__(919);
+
+	var _ActionSheet3 = _interopRequireDefault(_ActionSheet2);
+
+	var _Dialog2 = __webpack_require__(920);
 
 	var _Dialog3 = _interopRequireDefault(_Dialog2);
 
@@ -68992,6 +68996,7 @@
 	exports.Collection = _Collection3.default;
 	exports.Table = _Table3.default;
 	exports.Overlay = _Overlay3.default;
+	exports.ActionSheet = _ActionSheet3.default;
 	exports.Dialog = _Dialog3.default;
 	exports.default = module.exports;
 
@@ -84771,14 +84776,6 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _reactAddonsPureRenderMixin = __webpack_require__(230);
-
-	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
-
-	var _reactTimerMixin = __webpack_require__(638);
-
-	var _reactTimerMixin2 = _interopRequireDefault(_reactTimerMixin);
-
 	var _reactMixin = __webpack_require__(206);
 
 	var _reactMixin2 = _interopRequireDefault(_reactMixin);
@@ -84790,6 +84787,8 @@
 	var _lib = __webpack_require__(208);
 
 	var _lib2 = _interopRequireDefault(_lib);
+
+	var _layout = __webpack_require__(790);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -84871,15 +84870,14 @@
 	var styles = _lib.StyleSheet.create({
 	    container: {},
 	    mask: {
-	        flex: 1,
-	        padding: 20,
-	        justifyContent: "flex-end",
-	        alignItems: 'center',
-	        backgroundColor: "rgba(56,56,56,0.6)"
+	        position: 'absolute',
+	        left: 0,
+	        right: 0,
+	        top: 0,
+	        bottom: 0,
+	        backgroundColor: 'rgba(56,56,56,0.6)'
 	    }
 	});
-
-	_reactMixin2.default.onClass(Overlay, _reactTimerMixin2.default);
 
 	exports.default = Overlay;
 
@@ -84890,11 +84888,241 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactAddonsPureRenderMixin = __webpack_require__(230);
+
+	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
+
+	var _reactTimerMixin = __webpack_require__(638);
+
+	var _reactTimerMixin2 = _interopRequireDefault(_reactTimerMixin);
+
+	var _reactMixin = __webpack_require__(206);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _lib = __webpack_require__(208);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _layout = __webpack_require__(790);
+
+	var _data = __webpack_require__(773);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var aHeight = 217;
+
+	var ActionSheet = function (_Component) {
+	    _inherits(ActionSheet, _Component);
+
+	    function ActionSheet(props) {
+	        _classCallCheck(this, ActionSheet);
+
+	        var _this = _possibleConstructorReturn(this, (ActionSheet.__proto__ || Object.getPrototypeOf(ActionSheet)).call(this, props));
+
+	        _this.state = {
+	            offset: new _lib.Animated.Value(0),
+	            opacity: new _lib.Animated.Value(0)
+	        };
+	        return _this;
+	    }
+
+	    _createClass(ActionSheet, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            this.open();
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this2 = this;
+
+	            return _lib2.default.createElement(
+	                _lib.View,
+	                { style: styles.container },
+	                _lib2.default.createElement(
+	                    _lib.Modal,
+	                    {
+	                        transparent: true
+	                    },
+	                    _lib2.default.createElement(
+	                        _lib.TouchableWithoutFeedback,
+	                        { onPress: function onPress() {
+	                                _this2.close();
+	                            } },
+	                        _lib2.default.createElement(
+	                            _lib.Animated.View,
+	                            { style: [styles.mask, {
+	                                    opacity: this.state.opacity
+	                                }] },
+	                            _lib2.default.createElement(
+	                                _lib.TouchableWithoutFeedback,
+	                                null,
+	                                _lib2.default.createElement(
+	                                    _lib.View,
+	                                    { style: styles.sheet },
+	                                    _lib2.default.createElement(
+	                                        _lib.Animated.View,
+	                                        { style: [styles.body, {
+	                                                height: aHeight,
+	                                                transform: [{
+	                                                    translateY: this.state.offset.interpolate({
+	                                                        inputRange: [0, 1],
+	                                                        outputRange: [aHeight, 0]
+	                                                    })
+	                                                }]
+	                                            }] },
+	                                        _lib2.default.createElement(
+	                                            _layout.Layout,
+	                                            { dir: 'top', box: 'first', style: styles.wrapper },
+	                                            _lib2.default.createElement(
+	                                                _layout.Layout,
+	                                                { main: 'justify', cross: 'center', style: styles.header },
+	                                                _lib2.default.createElement(
+	                                                    _lib.Text,
+	                                                    { onPress: function onPress() {
+	                                                            _this2.close(_this2.props.buttonText[0]);
+	                                                        } },
+	                                                    this.props.buttonText[0]
+	                                                ),
+	                                                _lib2.default.createElement(
+	                                                    _lib.Text,
+	                                                    null,
+	                                                    this.props.title
+	                                                ),
+	                                                _lib2.default.createElement(
+	                                                    _lib.Text,
+	                                                    { onPress: function onPress() {
+	                                                            _this2.close(_this2.props.buttonText[1]);
+	                                                        } },
+	                                                    this.props.buttonText[1]
+	                                                )
+	                                            ),
+	                                            _lib2.default.createElement(
+	                                                _layout.Layout,
+	                                                { box: 'mean' },
+	                                                this.props.children
+	                                            )
+	                                        )
+	                                    )
+	                                )
+	                            )
+	                        )
+	                    )
+	                )
+	            );
+	        }
+
+	        //显示动画
+
+	    }, {
+	        key: 'open',
+	        value: function open() {
+	            _lib.Animated.parallel([_lib.Animated.timing(this.state.opacity, {
+	                easing: _lib.Easing.linear,
+	                duration: 500,
+	                toValue: 1
+	            }), _lib.Animated.timing(this.state.offset, {
+	                easing: _lib.Easing.linear,
+	                duration: 500,
+	                toValue: 1
+	            })]).start();
+	        }
+
+	        //隐藏动画
+
+	    }, {
+	        key: 'close',
+	        value: function close(op) {
+	            var _this3 = this;
+
+	            _lib.Animated.parallel([_lib.Animated.timing(this.state.opacity, {
+	                easing: _lib.Easing.linear,
+	                duration: 500,
+	                toValue: 0
+	            }), _lib.Animated.timing(this.state.offset, {
+	                easing: _lib.Easing.linear,
+	                duration: 500,
+	                toValue: 0
+	            })]).start(function (endState) {
+	                _this3.setState({ visible: false }, function () {
+	                    _this3.props.onClose && _this3.props.onClose(op);
+	                });
+	            });
+	        }
+	    }]);
+
+	    return ActionSheet;
+	}(_lib.Component);
+
+	ActionSheet.defaultProps = {
+	    buttonText: ['取消', '确定']
+	};
+
+
+	var styles = _lib.StyleSheet.create({
+	    mask: {
+	        position: 'absolute',
+	        left: 0,
+	        right: 0,
+	        top: 0,
+	        bottom: 0,
+	        backgroundColor: 'rgba(56,56,56,0.6)'
+	    },
+	    sheet: {
+	        position: 'absolute',
+	        left: 0,
+	        right: 0,
+	        bottom: 0
+	    },
+	    body: {
+	        backgroundColor: '#ffffff'
+	    },
+	    wrapper: {
+	        height: aHeight,
+	        borderTopColor: _data.Colors.BORDER,
+	        borderTopWidth: 1
+	    },
+	    header: {
+	        paddingLeft: 20,
+	        paddingRight: 20,
+	        height: _data.Sizes.HEADER_HEIGHT,
+	        borderBottomColor: _data.Colors.BORDER,
+	        borderBottomWidth: 1 / _lib.PixelRatio.get()
+	    }
+	});
+
+	_reactMixin2.default.onClass(ActionSheet, _reactTimerMixin2.default);
+
+	exports.default = ActionSheet;
+
+/***/ },
+/* 920 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	exports.default = exports.Dialog = undefined;
 
-	var _Dialog2 = __webpack_require__(920);
+	var _Dialog2 = __webpack_require__(921);
 
 	var _Dialog3 = _interopRequireDefault(_Dialog2);
 
@@ -84904,7 +85132,7 @@
 	exports.default = _Dialog3.default;
 
 /***/ },
-/* 920 */
+/* 921 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -85085,10 +85313,12 @@
 	var styles = _lib.StyleSheet.create({
 	    container: {},
 	    mask: {
-	        flex: 1,
+	        position: 'absolute',
+	        left: 0,
+	        right: 0,
+	        top: 0,
+	        bottom: 0,
 	        padding: 20,
-	        justifyContent: "flex-end",
-	        alignItems: 'center',
 	        backgroundColor: "rgba(56,56,56,0.6)"
 	    },
 	    tip: {
