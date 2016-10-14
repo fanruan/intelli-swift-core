@@ -18,7 +18,7 @@ class TableComponentHelper {
             text: '行表头'
         }];
         ids.forEach((id)=> {
-            const $$dim = this.widget.get$$DimensionOrTargetById(id);
+            const $$dim = this.widget.get$DimensionOrTargetById(id);
             result.push({
                 text: DimensionFactory.createDimension($$dim).getName()
             })
@@ -88,7 +88,7 @@ class TableComponentHelper {
         const result = [];
         const ids = this.widget.getRowDimensionIds();
         each(ids, (id)=> {
-            const dimension = DimensionFactory.createDimension(this.widget.get$$DimensionById(id));
+            const dimension = DimensionFactory.createDimension(this.widget.get$DimensionById(id));
             result.push({
                 text: dimension.getName()
             });

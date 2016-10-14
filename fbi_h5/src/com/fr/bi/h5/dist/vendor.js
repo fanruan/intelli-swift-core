@@ -67146,14 +67146,14 @@
 	            return this.$template;
 	        }
 	    }, {
-	        key: 'get$$WidgetById',
-	        value: function get$$WidgetById(id) {
+	        key: 'get$WidgetById',
+	        value: function get$WidgetById(id) {
 	            return this.$template.getIn(['widgets', id]);
 	        }
 	    }, {
 	        key: 'getWidgetById',
 	        value: function getWidgetById(id) {
-	            return _WidgetFactory2.default.createWidget(this.get$$WidgetById(id), id, this);
+	            return _WidgetFactory2.default.createWidget(this.get$WidgetById(id), id, this);
 	        }
 	    }, {
 	        key: 'getAllWidgetIds',
@@ -67332,6 +67332,12 @@
 	    value: true
 	});
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _lib = __webpack_require__(208);
+
 	var _AbstractWidget2 = __webpack_require__(778);
 
 	var _AbstractWidget3 = _interopRequireDefault(_AbstractWidget2);
@@ -67363,6 +67369,31 @@
 	        return _possibleConstructorReturn(this, (_ref = TableWidget.__proto__ || Object.getPrototypeOf(TableWidget)).call.apply(_ref, [this, $widget].concat(props)));
 	    }
 
+	    _createClass(TableWidget, [{
+	        key: 'getData',
+	        value: function getData(options) {
+	            var wi = this.createJson();
+	            return (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
+	                method: "POST",
+	                body: JSON.stringify({
+	                    widget: _extends({
+	                        expander: {
+	                            x: {
+	                                type: true,
+	                                value: [[]]
+	                            },
+	                            y: {
+	                                type: true,
+	                                value: [[]]
+	                            }
+	                        } }, wi), sessionID: BH.sessionID
+	                })
+	            }).then(function (response) {
+	                return response.json();
+	            });
+	        }
+	    }]);
+
 	    return TableWidget;
 	}(_AbstractWidget3.default);
 
@@ -67377,8 +67408,6 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /**
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * AbstractWidget
@@ -67417,42 +67446,42 @@
 	            return this.$widget;
 	        }
 	    }, {
-	        key: 'get$$DimensionById',
-	        value: function get$$DimensionById(id) {
+	        key: 'get$DimensionById',
+	        value: function get$DimensionById(id) {
 	            (0, _core.invariant)(this.isDimensionById(id), id + "不是维度id");
 	            return this.$widget.getIn(['dimensions', id]);
 	        }
 	    }, {
-	        key: 'get$$TargetById',
-	        value: function get$$TargetById(id) {
+	        key: 'get$TargetById',
+	        value: function get$TargetById(id) {
 	            (0, _core.invariant)(this.isTargetById(id), id + "不是指标id");
 	            return this.$widget.getIn(['dimensions', id]);
 	        }
 	    }, {
-	        key: 'get$$DimensionOrTargetById',
-	        value: function get$$DimensionOrTargetById(id) {
+	        key: 'get$DimensionOrTargetById',
+	        value: function get$DimensionOrTargetById(id) {
 	            if (this.isDimensionById(id)) {
-	                return this.get$$DimensionById(id);
+	                return this.get$DimensionById(id);
 	            }
-	            return this.get$$TargetById(id);
+	            return this.get$TargetById(id);
 	        }
 	    }, {
 	        key: 'getDimensionById',
 	        value: function getDimensionById(id) {
-	            return _DimensionFactory2.default.createDimension(this.get$$DimensionById(id), id, this);
+	            return _DimensionFactory2.default.createDimension(this.get$DimensionById(id), id, this);
 	        }
 	    }, {
 	        key: 'getTargetById',
 	        value: function getTargetById(id) {
-	            return _DimensionFactory2.default.createTarget(this.get$$TargetById(id), id, this);
+	            return _DimensionFactory2.default.createTarget(this.get$TargetById(id), id, this);
 	        }
 	    }, {
 	        key: 'getDimensionOrTargetById',
 	        value: function getDimensionOrTargetById(id) {
 	            if (this.isDimensionById(id)) {
-	                return _DimensionFactory2.default.createDimension(this.get$$DimensionById(id), id, this);
+	                return _DimensionFactory2.default.createDimension(this.get$DimensionById(id), id, this);
 	            }
-	            return _DimensionFactory2.default.createTarget(this.get$$TargetById(id), id, this);
+	            return _DimensionFactory2.default.createTarget(this.get$TargetById(id), id, this);
 	        }
 	    }, {
 	        key: 'getAllDimensionIds',
@@ -67461,9 +67490,9 @@
 	                return this._dimensionIds;
 	            }
 	            var result = [];
-	            this.$widget.get('view').forEach(function ($$id, key) {
+	            this.$widget.get('view').forEach(function ($id, key) {
 	                if (parseInt(key) < BICst.REGION.TARGET1) {
-	                    result = result.concat($$id.toArray());
+	                    result = result.concat($id.toArray());
 	                }
 	            });
 	            this._dimensionIds = result;
@@ -67476,9 +67505,9 @@
 	                return this._targetIds;
 	            }
 	            var result = [];
-	            this.$widget.get('view').forEach(function ($$id, key) {
+	            this.$widget.get('view').forEach(function ($id, key) {
 	                if (parseInt(key) >= BICst.REGION.TARGET1) {
-	                    result = result.concat($$id.toArray());
+	                    result = result.concat($id.toArray());
 	                }
 	            });
 	            this._targetIds = result;
@@ -67509,8 +67538,8 @@
 	            var ids = this.getAllDimensionAndTargetIds();
 	            var result = [];
 	            ids.forEach(function (id) {
-	                var $$dim = _this.get$$DimensionOrTargetById(id);
-	                if (_DimensionFactory2.default.createDimension($$dim, id, _this).isUsed()) {
+	                var $dim = _this.get$DimensionOrTargetById(id);
+	                if (_DimensionFactory2.default.createDimension($dim, id, _this).isUsed()) {
 	                    result.push(id);
 	                }
 	            });
@@ -67524,8 +67553,8 @@
 	            var ids = this.getAllDimensionIds();
 	            var result = [];
 	            ids.forEach(function (id) {
-	                var $$dim = _this2.get$$DimensionById(id);
-	                if (_DimensionFactory2.default.createDimension($$dim, id, _this2).isUsed()) {
+	                var $dim = _this2.get$DimensionById(id);
+	                if (_DimensionFactory2.default.createDimension($dim, id, _this2).isUsed()) {
 	                    result.push(id);
 	                }
 	            });
@@ -67539,8 +67568,8 @@
 	            var ids = this.getAllTargetIds();
 	            var result = [];
 	            ids.forEach(function (id) {
-	                var $$dim = _this3.get$$TargetById(id);
-	                if (_DimensionFactory2.default.createTarget($$dim, id, _this3).isUsed()) {
+	                var $dim = _this3.get$TargetById(id);
+	                if (_DimensionFactory2.default.createTarget($dim, id, _this3).isUsed()) {
 	                    result.push(id);
 	                }
 	            });
@@ -67550,9 +67579,9 @@
 	        key: 'getRowDimensionIds',
 	        value: function getRowDimensionIds() {
 	            var result = [];
-	            this.$widget.get('view').forEach(function ($$id, key) {
+	            this.$widget.get('view').forEach(function ($id, key) {
 	                if (parseInt(key) === BICst.REGION.DIMENSION1) {
-	                    result = result.concat($$id.toArray());
+	                    result = result.concat($id.toArray());
 	                }
 	            });
 	            return result;
@@ -67561,9 +67590,9 @@
 	        key: 'getColDimensionIds',
 	        value: function getColDimensionIds() {
 	            var result = [];
-	            this.$widget.get('view').forEach(function ($$id, key) {
+	            this.$widget.get('view').forEach(function ($id, key) {
 	                if (parseInt(key) === BICst.REGION.DIMENSION2) {
-	                    result = result.concat($$id.toArray());
+	                    result = result.concat($id.toArray());
 	                }
 	            });
 	            return result;
@@ -67626,147 +67655,11 @@
 	    }, {
 	        key: 'isControl',
 	        value: function isControl() {
-	            switch (this.getType()) {
-	                case BICst.WIDGET.STRING:
-	                case BICst.WIDGET.NUMBER:
-	                case BICst.WIDGET.TREE:
-	                case BICst.WIDGET.DATE:
-	                case BICst.WIDGET.YEAR:
-	                case BICst.WIDGET.QUARTER:
-	                case BICst.WIDGET.MONTH:
-	                case BICst.WIDGET.YMD:
-	                    return true;
-	            }
-	        }
-	    }, {
-	        key: 'getSelectType',
-	        value: function getSelectType() {
-	            return this.$widget.getIn(['value', 'type']);
-	        }
-	    }, {
-	        key: 'getSelectValue',
-	        value: function getSelectValue() {
-	            var value = this.$widget.getIn(['value', 'value']);
-	            return value ? value.toArray() : [];
-	        }
-	    }, {
-	        key: 'getTreeFloors',
-	        value: function getTreeFloors() {
-	            return this.getAllDimensionIds().length;
-	        }
-	    }, {
-	        key: 'getSelectedTreeValue',
-	        value: function getSelectedTreeValue() {
-	            return this.$widget.get('value').toJS();
-	        }
-
-	        //文本组件 内容
-
-	    }, {
-	        key: 'getContent',
-	        value: function getContent() {
-	            return this.$widget.get('content');
-	        }
-
-	        //文本组件 样式
-
-	    }, {
-	        key: 'getStyle',
-	        value: function getStyle() {
-	            return this.$widget.get('style').toJS();
+	            return false;
 	        }
 	    }, {
 	        key: 'getData',
-	        value: function getData(options) {
-	            var wi = this.createJson();
-	            switch (this.getType()) {
-	                case BICst.WIDGET.TABLE:
-	                case BICst.WIDGET.CROSS_TABLE:
-	                case BICst.WIDGET.COMPLEX_TABLE:
-	                    return (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
-	                        method: "POST",
-	                        body: JSON.stringify({
-	                            widget: _extends({
-	                                expander: {
-	                                    x: {
-	                                        type: true,
-	                                        value: [[]]
-	                                    },
-	                                    y: {
-	                                        type: true,
-	                                        value: [[]]
-	                                    }
-	                                } }, wi), sessionID: BH.sessionID
-	                        })
-	                    }).then(function (response) {
-	                        return response.json();
-	                    });
-	                case BICst.WIDGET.DETAIL:
-	                    return (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
-	                        method: "POST",
-	                        body: JSON.stringify({ widget: wi, sessionID: BH.sessionID })
-	                    }).then(function (response) {
-	                        return response.json();
-	                    });
-	                case BICst.WIDGET.AXIS:
-	                case BICst.WIDGET.ACCUMULATE_AXIS:
-	                case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
-	                case BICst.WIDGET.COMPARE_AXIS:
-	                case BICst.WIDGET.FALL_AXIS:
-	                case BICst.WIDGET.BAR:
-	                case BICst.WIDGET.ACCUMULATE_BAR:
-	                case BICst.WIDGET.COMPARE_BAR:
-	                case BICst.WIDGET.LINE:
-	                case BICst.WIDGET.AREA:
-	                case BICst.WIDGET.ACCUMULATE_AREA:
-	                case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
-	                case BICst.WIDGET.COMPARE_AREA:
-	                case BICst.WIDGET.RANGE_AREA:
-	                case BICst.WIDGET.COMBINE_CHART:
-	                case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
-	                case BICst.WIDGET.PIE:
-	                case BICst.WIDGET.DONUT:
-	                case BICst.WIDGET.MAP:
-	                case BICst.WIDGET.GIS_MAP:
-	                case BICst.WIDGET.DASHBOARD:
-	                case BICst.WIDGET.BUBBLE:
-	                case BICst.WIDGET.FORCE_BUBBLE:
-	                case BICst.WIDGET.SCATTER:
-	                case BICst.WIDGET.RADAR:
-	                case BICst.WIDGET.ACCUMULATE_RADAR:
-	                case BICst.WIDGET.FUNNEL:
-	                    return (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=chart_setting', {
-	                        method: "POST",
-
-	                        body: JSON.stringify({ widget: _extends({}, wi, { page: -1 }), sessionID: BH.sessionID })
-	                    }).then(function (response) {
-	                        return response.json(); // 转换为JSON
-	                    });
-
-	                case BICst.WIDGET.DATE:
-	                case BICst.WIDGET.YEAR:
-	                case BICst.WIDGET.QUARTER:
-	                case BICst.WIDGET.MONTH:
-	                case BICst.WIDGET.YMD:
-	                    return;
-	                case BICst.WIDGET.STRING:
-	                    return (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
-	                        method: "POST",
-	                        body: JSON.stringify({ widget: _extends({}, wi, { text_options: options }), sessionID: BH.sessionID })
-	                    }).then(function (response) {
-	                        return response.json();
-	                    });
-	                case BICst.WIDGET.TREE:
-	                    return (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
-	                        method: "POST",
-	                        body: JSON.stringify({ widget: _extends({}, wi, { tree_options: options }), sessionID: BH.sessionID })
-	                    }).then(function (response) {
-	                        return response.json();
-	                    });
-	                case BICst.WIDGET.NUMBER:
-	                case BICst.WIDGET.GENERAL_QUERY:
-	            }
-	        }
+	        value: function getData(options) {}
 	    }, {
 	        key: 'getWidgetSettings',
 	        value: function getWidgetSettings() {
@@ -68142,6 +68035,12 @@
 	    value: true
 	});
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _lib = __webpack_require__(208);
+
 	var _AbstractWidget2 = __webpack_require__(778);
 
 	var _AbstractWidget3 = _interopRequireDefault(_AbstractWidget2);
@@ -68172,6 +68071,19 @@
 
 	        return _possibleConstructorReturn(this, (_ref = ChartWidget.__proto__ || Object.getPrototypeOf(ChartWidget)).call.apply(_ref, [this, $widget].concat(props)));
 	    }
+
+	    _createClass(ChartWidget, [{
+	        key: 'getData',
+	        value: function getData(options) {
+	            var wi = this.createJson();
+	            return (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=chart_setting', {
+	                method: "POST",
+	                body: JSON.stringify({ widget: _extends({}, wi, { page: -1 }), sessionID: BH.sessionID })
+	            }).then(function (response) {
+	                return response.json();
+	            });
+	        }
+	    }]);
 
 	    return ChartWidget;
 	}(_AbstractWidget3.default);
@@ -68221,11 +68133,17 @@
 	        return _possibleConstructorReturn(this, (_ref = ContentWidget.__proto__ || Object.getPrototypeOf(ContentWidget)).call.apply(_ref, [this, $widget].concat(props)));
 	    }
 
+	    //文本组件 内容
+
+
 	    _createClass(ContentWidget, [{
 	        key: 'getContent',
 	        value: function getContent() {
 	            return this.$widget.get('content');
 	        }
+
+	        //文本组件 样式
+
 	    }, {
 	        key: 'getStyle',
 	        value: function getStyle() {
@@ -68247,6 +68165,10 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _lib = __webpack_require__(208);
 
 	var _AbstractWidget2 = __webpack_require__(778);
 
@@ -68278,6 +68200,19 @@
 
 	        return _possibleConstructorReturn(this, (_ref = DetailWidget.__proto__ || Object.getPrototypeOf(DetailWidget)).call.apply(_ref, [this, $widget].concat(props)));
 	    }
+
+	    _createClass(DetailWidget, [{
+	        key: 'getData',
+	        value: function getData(options) {
+	            var wi = this.createJson();
+	            return (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
+	                method: "POST",
+	                body: JSON.stringify({ widget: wi, sessionID: BH.sessionID })
+	            }).then(function (response) {
+	                return response.json();
+	            });
+	        }
+	    }]);
 
 	    return DetailWidget;
 	}(_AbstractWidget3.default);
@@ -68340,6 +68275,12 @@
 	    value: true
 	});
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _lib = __webpack_require__(208);
+
 	var _AbstractWidget2 = __webpack_require__(778);
 
 	var _AbstractWidget3 = _interopRequireDefault(_AbstractWidget2);
@@ -68371,6 +68312,35 @@
 	        return _possibleConstructorReturn(this, (_ref = StringControl.__proto__ || Object.getPrototypeOf(StringControl)).call.apply(_ref, [this, $widget].concat(props)));
 	    }
 
+	    _createClass(StringControl, [{
+	        key: 'isControl',
+	        value: function isControl() {
+	            return true;
+	        }
+	    }, {
+	        key: 'getSelectType',
+	        value: function getSelectType() {
+	            return this.$widget.getIn(['value', 'type']);
+	        }
+	    }, {
+	        key: 'getSelectValue',
+	        value: function getSelectValue() {
+	            var value = this.$widget.getIn(['value', 'value']);
+	            return value ? value.toArray() : [];
+	        }
+	    }, {
+	        key: 'getData',
+	        value: function getData(options) {
+	            var wi = this.createJson();
+	            return (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
+	                method: "POST",
+	                body: JSON.stringify({ widget: _extends({}, wi, { text_options: options }), sessionID: BH.sessionID })
+	            }).then(function (response) {
+	                return response.json();
+	            });
+	        }
+	    }]);
+
 	    return StringControl;
 	}(_AbstractWidget3.default);
 
@@ -68385,6 +68355,12 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _lib = __webpack_require__(208);
 
 	var _AbstractWidget2 = __webpack_require__(778);
 
@@ -68416,6 +68392,34 @@
 
 	        return _possibleConstructorReturn(this, (_ref = TreeControl.__proto__ || Object.getPrototypeOf(TreeControl)).call.apply(_ref, [this, $widget].concat(props)));
 	    }
+
+	    _createClass(TreeControl, [{
+	        key: 'isControl',
+	        value: function isControl() {
+	            return true;
+	        }
+	    }, {
+	        key: 'getTreeFloors',
+	        value: function getTreeFloors() {
+	            return this.getAllDimensionIds().length;
+	        }
+	    }, {
+	        key: 'getSelectedTreeValue',
+	        value: function getSelectedTreeValue() {
+	            return this.$widget.get('value').toJS();
+	        }
+	    }, {
+	        key: 'getData',
+	        value: function getData(options) {
+	            var wi = this.createJson();
+	            return (0, _lib.Fetch)(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
+	                method: "POST",
+	                body: JSON.stringify({ widget: _extends({}, wi, { tree_options: options }), sessionID: BH.sessionID })
+	            }).then(function (response) {
+	                return response.json();
+	            });
+	        }
+	    }]);
 
 	    return TreeControl;
 	}(_AbstractWidget3.default);

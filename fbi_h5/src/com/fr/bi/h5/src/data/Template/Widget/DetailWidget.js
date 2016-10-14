@@ -2,13 +2,24 @@
  * DetailWidget
  * Created by Young's on 2016/10/12.
  */
+import {Fetch} from 'lib'
 import AbstractWidget from './AbstractWidget'
 
-class DetailWidget extends AbstractWidget{
+class DetailWidget extends AbstractWidget {
     constructor($widget, ...props) {
         super($widget, ...props);
     }
-        
+
+    getData(options) {
+        const wi = this.createJson();
+        return Fetch(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
+            method: "POST",
+            body: JSON.stringify({widget: wi, sessionID: BH.sessionID})
+        }).then(function (response) {
+            return response.json();
+        });
+
+    }
 }
 
 export default DetailWidget;

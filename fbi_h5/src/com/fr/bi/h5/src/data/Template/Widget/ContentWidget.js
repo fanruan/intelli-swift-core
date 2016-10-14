@@ -9,10 +9,12 @@ class ContentWidget extends AbstractWidget{
         super($widget, ...props);
     }
 
+    //文本组件 内容
     getContent() {
         return this.$widget.get('content');
     }
 
+    //文本组件 样式
     getStyle() {
         return this.$widget.get('style').toJS();
     }

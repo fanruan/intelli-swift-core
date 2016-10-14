@@ -12,19 +12,6 @@ export default class DimensionComponentHelper {
         return this.dimension.isUsed();
     }
 
-    switchSelect() {
-        return this.dimension.setUsed(!this.isUsed()).$get();
-    }
-
-    switchSort() {
-        switch (this.dimension.getSortType()) {
-            case BICst.SORT.ASC:
-                return this.dimension.setSortType(BICst.SORT.DESC).$get();
-            case BICst.SORT.DESC:
-                return this.dimension.setSortType(BICst.SORT.ASC).$get();
-        }
-    }
-
     getSortTargetName() {
         return this.dimension.getSortTargetName()
     }
@@ -36,5 +23,24 @@ export default class DimensionComponentHelper {
             case BICst.SORT.DESC:
                 return 'dsc-sort-font';
         }
+    }
+
+    switchSelect() {
+        this.dimension.setUsed(!this.isUsed()).$get();
+        this.widget.set$Dimension(this.dimension.$get(), this.dId);
+        return this.widget.$get();
+    }
+
+    switchSort() {
+        switch (this.dimension.getSortType()) {
+            case BICst.SORT.ASC:
+                this.dimension.setSortType(BICst.SORT.DESC).$get();
+                break
+            case BICst.SORT.DESC:
+                this.dimension.setSortType(BICst.SORT.ASC).$get();
+                break;
+        }
+        this.widget.set$Dimension(this.dimension.$get(), this.dId);
+        return this.widget.$get();
     }
 }

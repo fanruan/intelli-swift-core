@@ -69,7 +69,7 @@ class Controls extends Component {
         this.template = TemplateFactory.createTemplate(props.$template);
         return <ScrollView style={styles.wrapper}>
             {map(this.template.getAllControlWidgetIds(), (wId)=> {
-                const $widget = this.template.get$$WidgetById(wId);
+                const $widget = this.template.get$WidgetById(wId);
                 const widget = WidgetFactory.createWidget($widget, wId, this.template);
                 return <Item key={wId} id={wId} $widget={$widget} onPress={()=> {
                     let Component = null;

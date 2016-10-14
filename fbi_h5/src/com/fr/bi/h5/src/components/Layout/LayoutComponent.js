@@ -67,7 +67,7 @@ class LayoutComponent extends Component {
     }
 
     _renderRow(wId, sectionID, rowID) {
-        const $widget = this.template.get$$WidgetById(wId);
+        const $widget = this.template.get$WidgetById(wId);
         const type = WidgetFactory.createWidget($widget, wId, this.template).getType();
         const props = {
             key: wId,

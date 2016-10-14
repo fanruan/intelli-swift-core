@@ -16,7 +16,7 @@ class DetailTableComponentHelper {
         const ids = this.widget.getAllUsedDimensionAndTargetIds();
         const result = [];
         ids.forEach((id)=> {
-            const $$dim = this.widget.get$$DimensionOrTargetById(id);
+            const $$dim = this.widget.get$DimensionOrTargetById(id);
             result.push({
                 text: DimensionFactory.createDimension($$dim).getName()
             })

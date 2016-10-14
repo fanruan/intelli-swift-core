@@ -64,18 +64,18 @@ class DimensionComponent extends Component {
         return <Button onPress={()=> {
             this.props.onValueChange(this._helper.switchSelect());
         }}>
-            <Layout main='justify' style={styles.wrapper}>
-                <Layout cross='center'>
+            <Layout main='justify' box='mean' style={styles.wrapper}>
+                <Layout cross='center' box='first'>
                     <IconButton style={styles.icon} invalid={true} selected={this._helper.isUsed()}
                                 className={'single-select-font'}/>
-                    <Text style={sc([styles.disabledText, !this._helper.isUsed()])} textAlign={'left'}
+                    <Text numberOfLines={1} style={sc([styles.disabledText, !this._helper.isUsed()])}
                           effect={false}>{props.value.text}</Text>
                 </Layout>
-                <Layout cross='center'>
-                    <Text style={[sc([styles.disabledText, !this._helper.isUsed()]), styles.sortTargetName]}
-                          textAlign={'left'}
+                <Layout cross='center' box='last'>
+                    <Text numberOfLines={1}
+                          style={[sc([styles.disabledText, !this._helper.isUsed()]), styles.sortTargetName]}
                           effect={false}>{this._helper.getSortTargetName()}</Text>
-                    <IconButton style={{}} onPress={()=> {
+                    <IconButton style={styles.sortIcon} onPress={()=> {
                         this.props.onValueChange(this._helper.switchSort());
                     }}
                                 className={this._helper.getSortTargetTypeFont()}/>
@@ -114,11 +114,14 @@ const styles = StyleSheet.create({
         width: 40,
     },
 
-    sortIcon: {},
+    sortIcon: {
+        width: 20
+    },
 
     sortTargetName: {
         paddingLeft: 10,
-        paddingRight: 10
+        paddingRight: 10,
+        textAlign: 'right'
     },
 
     disabledText: {

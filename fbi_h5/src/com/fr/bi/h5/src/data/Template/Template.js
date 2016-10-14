@@ -9,12 +9,12 @@ class Template {
         return this.$template;
     }
 
-    get$$WidgetById(id) {
+    get$WidgetById(id) {
         return this.$template.getIn(['widgets', id]);
     }
 
     getWidgetById(id) {
-        return WidgetFactory.createWidget(this.get$$WidgetById(id), id, this);
+        return WidgetFactory.createWidget(this.get$WidgetById(id), id, this);
     }
 
     getAllWidgetIds() {

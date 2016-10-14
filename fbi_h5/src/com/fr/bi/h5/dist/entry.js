@@ -4734,7 +4734,7 @@ webpackJsonp([0],{
 	                _lib.ScrollView,
 	                { style: styles.wrapper },
 	                (0, _core.map)(this.template.getAllControlWidgetIds(), function (wId) {
-	                    var $widget = _this2.template.get$$WidgetById(wId);
+	                    var $widget = _this2.template.get$WidgetById(wId);
 	                    var widget = _data.WidgetFactory.createWidget($widget, wId, _this2.template);
 	                    return _lib2.default.createElement(_Item2.default, { key: wId, id: wId, $widget: $widget, onPress: function onPress() {
 	                            var Component = null;
@@ -5256,7 +5256,7 @@ webpackJsonp([0],{
 	    }, {
 	        key: '_renderRow',
 	        value: function _renderRow(wId, sectionID, rowID) {
-	            var $widget = this.template.get$$WidgetById(wId);
+	            var $widget = this.template.get$WidgetById(wId);
 	            var type = _data.WidgetFactory.createWidget($widget, wId, this.template).getType();
 	            var props = {
 	                key: wId,
@@ -5820,9 +5820,9 @@ webpackJsonp([0],{
 	                { style: { height: _data.Sizes.ITEM_HEIGHT * items.length } },
 	                items.map(function (value, index) {
 	                    return _lib2.default.createElement(_DimensionComponent2.default, { key: index, value: value, wId: _this4.props.wId, $widget: _this4.state.$widget,
-	                        dId: value.dId, onValueChange: function onValueChange($dimension) {
+	                        dId: value.dId, onValueChange: function onValueChange($widget) {
 	                            _this4.setState({
-	                                $widget: _this4._helper.set$Dimension($dimension, value.dId)
+	                                $widget: $widget
 	                            });
 	                        } });
 	                })
@@ -6045,11 +6045,6 @@ webpackJsonp([0],{
 	            this.widget.setWidgetView(view);
 	            return this.widget.$get();
 	        }
-	    }, {
-	        key: 'set$Dimension',
-	        value: function set$Dimension($dimension, dId) {
-	            return this.widget.set$Dimension($dimension, dId).$get();
-	        }
 	    }]);
 
 	    return SettingsComponentHelper;
@@ -6147,30 +6142,30 @@ webpackJsonp([0],{
 	                    } },
 	                _lib2.default.createElement(
 	                    _layout.Layout,
-	                    { main: 'justify', style: styles.wrapper },
+	                    { main: 'justify', box: 'mean', style: styles.wrapper },
 	                    _lib2.default.createElement(
 	                        _layout.Layout,
-	                        { cross: 'center' },
+	                        { cross: 'center', box: 'first' },
 	                        _lib2.default.createElement(_base.IconButton, { style: styles.icon, invalid: true, selected: this._helper.isUsed(),
 	                            className: 'single-select-font' }),
 	                        _lib2.default.createElement(
 	                            _lib.Text,
-	                            { style: (0, _core.sc)([styles.disabledText, !this._helper.isUsed()]), textAlign: 'left',
+	                            { numberOfLines: 1, style: (0, _core.sc)([styles.disabledText, !this._helper.isUsed()]),
 	                                effect: false },
 	                            props.value.text
 	                        )
 	                    ),
 	                    _lib2.default.createElement(
 	                        _layout.Layout,
-	                        { cross: 'center' },
+	                        { cross: 'center', box: 'last' },
 	                        _lib2.default.createElement(
 	                            _lib.Text,
-	                            { style: [(0, _core.sc)([styles.disabledText, !this._helper.isUsed()]), styles.sortTargetName],
-	                                textAlign: 'left',
+	                            { numberOfLines: 1,
+	                                style: [(0, _core.sc)([styles.disabledText, !this._helper.isUsed()]), styles.sortTargetName],
 	                                effect: false },
 	                            this._helper.getSortTargetName()
 	                        ),
-	                        _lib2.default.createElement(_base.IconButton, { style: {}, onPress: function onPress() {
+	                        _lib2.default.createElement(_base.IconButton, { style: styles.sortIcon, onPress: function onPress() {
 	                                _this2.props.onValueChange(_this2._helper.switchSort());
 	                            },
 	                            className: this._helper.getSortTargetTypeFont() })
@@ -6216,11 +6211,14 @@ webpackJsonp([0],{
 	        width: 40
 	    },
 
-	    sortIcon: {},
+	    sortIcon: {
+	        width: 20
+	    },
 
 	    sortTargetName: {
 	        paddingLeft: 10,
-	        paddingRight: 10
+	        paddingRight: 10,
+	        textAlign: 'right'
 	    },
 
 	    disabledText: {
@@ -6264,21 +6262,6 @@ webpackJsonp([0],{
 	            return this.dimension.isUsed();
 	        }
 	    }, {
-	        key: 'switchSelect',
-	        value: function switchSelect() {
-	            return this.dimension.setUsed(!this.isUsed()).$get();
-	        }
-	    }, {
-	        key: 'switchSort',
-	        value: function switchSort() {
-	            switch (this.dimension.getSortType()) {
-	                case BICst.SORT.ASC:
-	                    return this.dimension.setSortType(BICst.SORT.DESC).$get();
-	                case BICst.SORT.DESC:
-	                    return this.dimension.setSortType(BICst.SORT.ASC).$get();
-	            }
-	        }
-	    }, {
 	        key: 'getSortTargetName',
 	        value: function getSortTargetName() {
 	            return this.dimension.getSortTargetName();
@@ -6292,6 +6275,27 @@ webpackJsonp([0],{
 	                case BICst.SORT.DESC:
 	                    return 'dsc-sort-font';
 	            }
+	        }
+	    }, {
+	        key: 'switchSelect',
+	        value: function switchSelect() {
+	            this.dimension.setUsed(!this.isUsed()).$get();
+	            this.widget.set$Dimension(this.dimension.$get(), this.dId);
+	            return this.widget.$get();
+	        }
+	    }, {
+	        key: 'switchSort',
+	        value: function switchSort() {
+	            switch (this.dimension.getSortType()) {
+	                case BICst.SORT.ASC:
+	                    this.dimension.setSortType(BICst.SORT.DESC).$get();
+	                    break;
+	                case BICst.SORT.DESC:
+	                    this.dimension.setSortType(BICst.SORT.ASC).$get();
+	                    break;
+	            }
+	            this.widget.set$Dimension(this.dimension.$get(), this.dId);
+	            return this.widget.$get();
 	        }
 	    }]);
 
@@ -6845,7 +6849,7 @@ webpackJsonp([0],{
 	                text: '行表头'
 	            }];
 	            ids.forEach(function (id) {
-	                var $$dim = _this.widget.get$$DimensionOrTargetById(id);
+	                var $$dim = _this.widget.get$DimensionOrTargetById(id);
 	                result.push({
 	                    text: _data.DimensionFactory.createDimension($$dim).getName()
 	                });
@@ -6919,7 +6923,7 @@ webpackJsonp([0],{
 	            var result = [];
 	            var ids = this.widget.getRowDimensionIds();
 	            (0, _core.each)(ids, function (id) {
-	                var dimension = _data.DimensionFactory.createDimension(_this2.widget.get$$DimensionById(id));
+	                var dimension = _data.DimensionFactory.createDimension(_this2.widget.get$DimensionById(id));
 	                result.push({
 	                    text: dimension.getName()
 	                });
@@ -7689,7 +7693,7 @@ webpackJsonp([0],{
 	            var ids = this.widget.getAllUsedDimensionAndTargetIds();
 	            var result = [];
 	            ids.forEach(function (id) {
-	                var $$dim = _this.widget.get$$DimensionOrTargetById(id);
+	                var $$dim = _this.widget.get$DimensionOrTargetById(id);
 	                result.push({
 	                    text: _data.DimensionFactory.createDimension($$dim).getName()
 	                });
