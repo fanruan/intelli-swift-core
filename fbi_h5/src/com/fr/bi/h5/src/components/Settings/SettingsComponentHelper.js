@@ -48,4 +48,8 @@ export default class SettingsComponentHelper {
         this.widget.setWidgetView(view);
         return this.widget.$get();
     }
+
+    set$Dimension($dimension, dId){
+        return this.widget.set$Dimension($dimension, dId).$get();
+    }
 }

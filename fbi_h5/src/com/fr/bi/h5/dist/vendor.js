@@ -67723,6 +67723,12 @@
 	            this.$widget = this.$widget.set('view', _immutable2.default.fromJS(view));
 	            return this;
 	        }
+	    }, {
+	        key: 'set$Dimension',
+	        value: function set$Dimension($dimension, dId) {
+	            this.$widget = this.$widget.setIn(['dimensions', dId], $dimension);
+	            return this;
+	        }
 	    }]);
 
 	    return Widget;
@@ -67761,6 +67767,11 @@
 	        key: 'isUsed',
 	        value: function isUsed() {
 	            return this.$$dimension.get('used');
+	        }
+	    }, {
+	        key: 'setUsed',
+	        value: function setUsed(b) {
+	            return this.$$dimension.set('used', !!b);
 	        }
 	    }, {
 	        key: 'getWidgetBelongTo',
@@ -67805,6 +67816,11 @@
 	        key: 'isUsed',
 	        value: function isUsed() {
 	            return this.$$target.get('used');
+	        }
+	    }, {
+	        key: 'setUsed',
+	        value: function setUsed(b) {
+	            return this.$$target.set('used', !!b);
 	        }
 	    }, {
 	        key: 'getWidgetBelongTo',

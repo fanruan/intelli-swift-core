@@ -458,6 +458,11 @@ class Widget {
         this.$widget = this.$widget.set('view', Immutable.fromJS(view));
         return this;
     }
+
+    set$Dimension($dimension, dId) {
+        this.$widget = this.$widget.setIn(['dimensions', dId], $dimension);
+        return this;
+    }
 }
 
 export default Widget;

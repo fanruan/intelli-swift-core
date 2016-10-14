@@ -12,6 +12,10 @@ class Dimension {
         return this.$$dimension.get('used');
     }
 
+    setUsed(b) {
+        return this.$$dimension.set('used', !!b);
+    }
+
     getWidgetBelongTo() {
         return this._parent;
     }
