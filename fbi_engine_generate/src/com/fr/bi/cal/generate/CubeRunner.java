@@ -7,7 +7,7 @@ import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.fun.CubeConditionProvider;
 import com.finebi.cube.impl.conf.CubeBuildByPart;
-import com.finebi.cube.impl.conf.CubeBuildStaff;
+import com.finebi.cube.impl.conf.CubeBuildComplete;
 import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.inter.BrokenTraversal;
@@ -41,7 +41,7 @@ public class CubeRunner {
     protected volatile Status statue = Status.UNLOAD;
     protected BIUser biUser;
     QueueThread<CubeTask> cubeThread = new QueueThread<CubeTask>();
-    private CubeBuildStaff object;
+    private CubeBuildComplete object;
 
     public CubeRunner(long userId) {
         biUser = new BIUser(userId);
@@ -187,9 +187,9 @@ public class CubeRunner {
     }
 
 
-    public CubeBuildStaff getCubeGeneratingObjects() {
+    public CubeBuildComplete getCubeGeneratingObjects() {
         if (object == null) {
-            object = new CubeBuildStaff(biUser);
+            object = new CubeBuildComplete(biUser);
             object.initialCubeStuff();
         }
         return object;
