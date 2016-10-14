@@ -2485,7 +2485,7 @@ webpackJsonp([0],{
 	                    return _lib2.default.createElement(
 	                        _layout.Layout,
 	                        { style: { height: '100%' }, dir: 'top', box: 'last' },
-	                        _lib2.default.createElement(_LayoutComponent2.default, _extends({ width: width, height: height - 50 - _data.Size.ITEM_HEIGHT }, props, {
+	                        _lib2.default.createElement(_LayoutComponent2.default, _extends({ width: width, height: height - 50 - _data.Sizes.ITEM_HEIGHT }, props, {
 	                            navigator: navigationOperations })),
 	                        _lib2.default.createElement(_Toolbar2.default, _extends({}, props, { navigator: navigationOperations }))
 	                    );
@@ -2692,7 +2692,7 @@ webpackJsonp([0],{
 	var styles = _lib.StyleSheet.create({
 	    filter: {
 	        borderTop: '1px solid ' + _data.Colors.BORDER,
-	        height: _data.Size.ITEM_HEIGHT
+	        height: _data.Sizes.ITEM_HEIGHT
 	    }
 	});
 	exports.default = Toolbar;
@@ -3393,11 +3393,11 @@ webpackJsonp([0],{
 	                { dir: 'top', box: 'last', style: styles.wrapper },
 	                _lib2.default.createElement(_base.VirtualScroll, {
 	                    width: props.width,
-	                    height: props.height - _data.Size.ITEM_HEIGHT,
+	                    height: props.height - _data.Sizes.ITEM_HEIGHT,
 	                    overscanRowCount: 0
 	                    //noRowsRenderer={this._noRowsRenderer.bind(this)}
 	                    , rowCount: this._helper.getSortedItems().length + 1,
-	                    rowHeight: _data.Size.ITEM_HEIGHT,
+	                    rowHeight: _data.Sizes.ITEM_HEIGHT,
 	                    rowRenderer: this._rowRenderer.bind(this)
 	                    //scrollToIndex={scrollToIndex}
 	                }),
@@ -3441,7 +3441,7 @@ webpackJsonp([0],{
 	            if (this.state.hasNext === true) {
 	                return _lib2.default.createElement(
 	                    _base.TextButton,
-	                    { style: { height: _data.Size.ITEM_HEIGHT }, onPress: function onPress() {
+	                    { style: { height: _data.Sizes.ITEM_HEIGHT }, onPress: function onPress() {
 	                            _this5._fetchData();
 	                        } },
 	                    '点击加载更多数据'
@@ -3449,7 +3449,7 @@ webpackJsonp([0],{
 	            } else {
 	                return _lib2.default.createElement(
 	                    _base.TextButton,
-	                    { style: { height: _data.Size.ITEM_HEIGHT }, disabled: true },
+	                    { style: { height: _data.Sizes.ITEM_HEIGHT }, disabled: true },
 	                    '无更多数据'
 	                );
 	            }
@@ -3513,7 +3513,7 @@ webpackJsonp([0],{
 	    toolbar: {
 	        borderTopWidth: 1 / _lib.PixelRatio.get(),
 	        borderTopColor: _data.Colors.BORDER,
-	        height: _data.Size.ITEM_HEIGHT
+	        height: _data.Sizes.ITEM_HEIGHT
 	    }
 	});
 	exports.default = MultiSelectorWidget;
@@ -3634,7 +3634,7 @@ webpackJsonp([0],{
 	                    ),
 	                    _lib2.default.createElement(
 	                        _layout.CenterLayout,
-	                        { style: [{ width: _data.Size.ITEM_HEIGHT }] },
+	                        { style: [{ width: _data.Sizes.ITEM_HEIGHT }] },
 	                        _lib2.default.createElement(_base.Checkbox, { checked: this.state.selected, onChecked: this._onPress.bind(this) })
 	                    )
 	                )
@@ -3656,7 +3656,7 @@ webpackJsonp([0],{
 	_reactMixin2.default.onClass(Item, _reactAddonsPureRenderMixin2.default);
 	var styles = _lib.StyleSheet.create({
 	    row: {
-	        height: _data.Size.ITEM_HEIGHT,
+	        height: _data.Sizes.ITEM_HEIGHT,
 	        borderBottomColor: _data.Colors.SPLIT,
 	        borderBottomWidth: 1 / _lib.PixelRatio.get()
 	    },
@@ -3910,7 +3910,7 @@ webpackJsonp([0],{
 	                overscanRowCount: 0
 	                //noRowsRenderer={this._noRowsRenderer.bind(this)}
 	                , rowCount: this._helper.getSortedItems().length + 1,
-	                rowHeight: _data.Size.ITEM_HEIGHT,
+	                rowHeight: _data.Sizes.ITEM_HEIGHT,
 	                rowRenderer: this._rowRenderer.bind(this)
 	                //scrollToIndex={scrollToIndex}
 	            });
@@ -3923,7 +3923,7 @@ webpackJsonp([0],{
 	            if (this.state.hasNext === true) {
 	                return _lib2.default.createElement(
 	                    _base.TextButton,
-	                    { style: { height: _data.Size.ITEM_HEIGHT }, onPress: function onPress() {
+	                    { style: { height: _data.Sizes.ITEM_HEIGHT }, onPress: function onPress() {
 	                            _this3._fetchData();
 	                        } },
 	                    '点击加载更多数据'
@@ -3931,7 +3931,7 @@ webpackJsonp([0],{
 	            } else {
 	                return _lib2.default.createElement(
 	                    _base.TextButton,
-	                    { style: { height: _data.Size.ITEM_HEIGHT }, disabled: true },
+	                    { style: { height: _data.Sizes.ITEM_HEIGHT }, disabled: true },
 	                    '无更多数据'
 	                );
 	            }
@@ -4138,7 +4138,7 @@ webpackJsonp([0],{
 	                    ),
 	                    _lib2.default.createElement(
 	                        _layout.CenterLayout,
-	                        { style: [{ width: _data.Size.ITEM_HEIGHT }] },
+	                        { style: [{ width: _data.Sizes.ITEM_HEIGHT }] },
 	                        _lib2.default.createElement(_base.Checkbox, { checked: state.checked, halfCheck: state.halfCheck,
 	                            onChecked: props.onSelected })
 	                    )
@@ -4169,7 +4169,7 @@ webpackJsonp([0],{
 	        borderBottomColor: _data.Colors.SPLIT,
 	        borderBottomStyle: 'solid',
 	        borderBottomWidth: 1 / _lib.PixelRatio.get(),
-	        height: _data.Size.ITEM_HEIGHT
+	        height: _data.Sizes.ITEM_HEIGHT
 	    },
 
 	    selected: {
@@ -5124,7 +5124,7 @@ webpackJsonp([0],{
 	_reactMixin2.default.onClass(Item, _core.ReactComponentWithImmutableRenderMixin);
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
-	        height: _data.Size.ITEM_HEIGHT,
+	        height: _data.Sizes.ITEM_HEIGHT,
 	        paddingLeft: 20,
 	        paddingRight: 20,
 	        borderBottom: '1px solid ' + _data.Colors.SPLIT
@@ -5475,7 +5475,7 @@ webpackJsonp([0],{
 	                this._renderHeader(),
 	                _lib2.default.createElement(_ChartComponent2.default, {
 	                    width: width,
-	                    height: height - _data.Size.HEADER_HEIGHT,
+	                    height: height - _data.Sizes.HEADER_HEIGHT,
 	                    $widget: $widget,
 	                    wId: wId
 	                })
@@ -5500,7 +5500,7 @@ webpackJsonp([0],{
 	    header: {
 	        paddingLeft: 4,
 	        paddingRight: 4,
-	        height: _data.Size.HEADER_HEIGHT
+	        height: _data.Sizes.HEADER_HEIGHT
 	    }
 	});
 	exports.default = ChartPaneComponent;
@@ -5698,7 +5698,7 @@ webpackJsonp([0],{
 
 	    return _lib2.default.createElement(
 	        _lib.ScrollView,
-	        { style: { height: _data.Size.ITEM_HEIGHT * items.length } },
+	        { style: { height: _data.Sizes.ITEM_HEIGHT * items.length } },
 	        items.map(function (value, index) {
 	            return _lib2.default.createElement(_DimensionSortableComponent2.default, { key: 'item-' + value.dId, index: index, value: value, wId: wId,
 	                $widget: $widget,
@@ -5817,7 +5817,7 @@ webpackJsonp([0],{
 	            var items = this._helper.getDimensionsItems(viewItem.viewId);
 	            return _lib2.default.createElement(
 	                _lib.ScrollView,
-	                { style: { height: _data.Size.ITEM_HEIGHT * items.length } },
+	                { style: { height: _data.Sizes.ITEM_HEIGHT * items.length } },
 	                items.map(function (value, index) {
 	                    return _lib2.default.createElement(_DimensionComponent2.default, { key: index, value: value, wId: _this4.props.wId, $widget: _this4.state.$widget,
 	                        dId: value.dId, onValueChange: function onValueChange($dimension) {
@@ -5942,12 +5942,12 @@ webpackJsonp([0],{
 	        paddingRight: 20,
 	        color: _data.Colors.TEXT,
 	        backgroundColor: _data.Colors.HIGHLIGHT,
-	        height: _data.Size.HEADER_HEIGHT
+	        height: _data.Sizes.HEADER_HEIGHT
 	    },
 	    sortableItems: {
 	        paddingLeft: 20,
 	        paddingRight: 20,
-	        height: _data.Size.ITEM_HEIGHT,
+	        height: _data.Sizes.ITEM_HEIGHT,
 	        borderBottomWidth: 1 / _lib.PixelRatio.get(),
 	        borderBottomColor: _data.Colors.BORDER
 	    },
@@ -5957,7 +5957,7 @@ webpackJsonp([0],{
 	    collapseHeader: {
 	        paddingLeft: 20,
 	        backgroundColor: '#d8f2fd',
-	        height: _data.Size.ITEM_HEIGHT
+	        height: _data.Sizes.ITEM_HEIGHT
 	    },
 
 	    sortChangeButton: {
@@ -6208,7 +6208,7 @@ webpackJsonp([0],{
 	    wrapper: {
 	        paddingLeft: 20,
 	        paddingRight: 20,
-	        height: _data.Size.ITEM_HEIGHT,
+	        height: _data.Sizes.ITEM_HEIGHT,
 	        borderBottomWidth: 1 / _lib.PixelRatio.get(),
 	        borderBottomColor: _data.Colors.BORDER
 	    },
@@ -6429,7 +6429,7 @@ webpackJsonp([0],{
 	    wrapper: {
 	        paddingLeft: 20,
 	        paddingRight: 20,
-	        height: _data.Size.ITEM_HEIGHT,
+	        height: _data.Sizes.ITEM_HEIGHT,
 	        borderBottomWidth: 1 / _lib.PixelRatio.get(),
 	        borderBottomColor: _data.Colors.BORDER
 	    },
@@ -6577,7 +6577,7 @@ webpackJsonp([0],{
 	                this._renderHeader(),
 	                _lib2.default.createElement(_TableComponent2.default, {
 	                    width: width,
-	                    height: height - _data.Size.HEADER_HEIGHT,
+	                    height: height - _data.Sizes.HEADER_HEIGHT,
 	                    $widget: $widget,
 	                    wId: wId
 	                })
@@ -6602,7 +6602,7 @@ webpackJsonp([0],{
 	    header: {
 	        paddingLeft: 4,
 	        paddingRight: 4,
-	        height: _data.Size.HEADER_HEIGHT
+	        height: _data.Sizes.HEADER_HEIGHT
 	    }
 	});
 	exports.default = TablePaneComponent;
@@ -7395,7 +7395,7 @@ webpackJsonp([0],{
 	            var widget = _data.WidgetFactory.createWidget($widget, wId, _data.TemplateFactory.createTemplate(this.context.$template));
 	            return _lib2.default.createElement(
 	                _layout.Layout,
-	                { main: 'justify', cross: 'center', height: _data.Size.HEADER_HEIGHT, style: styles.header },
+	                { main: 'justify', cross: 'center', height: _data.Sizes.HEADER_HEIGHT, style: styles.header },
 	                _lib2.default.createElement(
 	                    _lib.Text,
 	                    null,
@@ -7432,7 +7432,7 @@ webpackJsonp([0],{
 	                this._renderHeader(),
 	                _lib2.default.createElement(_DetailTableComponent2.default, {
 	                    width: width,
-	                    height: height - _data.Size.HEADER_HEIGHT,
+	                    height: height - _data.Sizes.HEADER_HEIGHT,
 	                    $widget: $widget,
 	                    wId: wId
 	                })
@@ -7457,7 +7457,7 @@ webpackJsonp([0],{
 	    header: {
 	        paddingLeft: 4,
 	        paddingRight: 4,
-	        height: _data.Size.HEADER_HEIGHT
+	        height: _data.Sizes.HEADER_HEIGHT
 	    }
 	});
 	exports.default = DetailTablePaneComponent;
@@ -7601,7 +7601,7 @@ webpackJsonp([0],{
 
 	            return _lib2.default.createElement(_widgets.TableWidget, {
 	                width: width,
-	                height: height - _data.Size.HEADER_HEIGHT,
+	                height: height - _data.Sizes.HEADER_HEIGHT,
 	                freezeCols: this._tableHelper.isFreeze() ? [0] : [],
 	                columnSize: this._widthHelper.getWidth(),
 	                header: this._tableHelper.getHeader(),

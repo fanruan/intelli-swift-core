@@ -13,7 +13,7 @@ import React, {
     Portal
 } from 'lib'
 
-import {Size, TemplateFactory, WidgetFactory} from 'data'
+import {Sizes, TemplateFactory, WidgetFactory} from 'data'
 import {Layout} from 'layout'
 import {Table, Dialog, IconLink} from 'base'
 import {TableWidget} from 'widgets';
@@ -73,7 +73,7 @@ class ChartPaneComponent extends Component {
             {this._renderHeader()}
             <ChartComponent
                 width={width}
-                height={height - Size.HEADER_HEIGHT}
+                height={height - Sizes.HEADER_HEIGHT}
                 $widget={$widget}
                 wId={wId}
             >
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     header: {
         paddingLeft: 4,
         paddingRight: 4,
-        height: Size.HEADER_HEIGHT
+        height: Sizes.HEADER_HEIGHT
     }
 });
 export default ChartPaneComponent

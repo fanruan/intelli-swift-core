@@ -67055,7 +67055,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.Size = exports.Colors = exports.WidgetFactory = exports.DimensionFactory = exports.TemplateFactory = undefined;
+	exports.Sizes = exports.Colors = exports.WidgetFactory = exports.DimensionFactory = exports.TemplateFactory = undefined;
 
 	var _TemplateFactory2 = __webpack_require__(774);
 
@@ -67073,9 +67073,9 @@
 
 	var _Colors3 = _interopRequireDefault(_Colors2);
 
-	var _Size2 = __webpack_require__(789);
+	var _Sizes2 = __webpack_require__(789);
 
-	var _Size3 = _interopRequireDefault(_Size2);
+	var _Sizes3 = _interopRequireDefault(_Sizes2);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -67083,7 +67083,7 @@
 	exports.DimensionFactory = _DimensionFactory3.default;
 	exports.WidgetFactory = _WidgetFactory3.default;
 	exports.Colors = _Colors3.default;
-	exports.Size = _Size3.default;
+	exports.Sizes = _Sizes3.default;
 
 /***/ },
 /* 774 */

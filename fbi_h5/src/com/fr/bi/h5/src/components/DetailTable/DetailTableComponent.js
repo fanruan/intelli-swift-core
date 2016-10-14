@@ -12,7 +12,7 @@ import React, {
     Fetch
 } from 'lib'
 
-import {Size, TemplateFactory, WidgetFactory} from 'data'
+import {Sizes, TemplateFactory, WidgetFactory} from 'data'
 import {IconLink} from 'base'
 import {Layout} from 'layout'
 import {TableWidget} from 'widgets';
@@ -85,7 +85,7 @@ class DetailTableComponent extends Component {
 
         return <TableWidget
             width={width}
-            height={height - Size.HEADER_HEIGHT}
+            height={height - Sizes.HEADER_HEIGHT}
             freezeCols={this._tableHelper.isFreeze() ? [0] : []}
             columnSize={this._widthHelper.getWidth()}
             header={this._tableHelper.getHeader()}

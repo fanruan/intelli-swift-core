@@ -22,7 +22,7 @@ import React, {
     TouchableWithoutFeedback
 } from 'lib'
 
-import {Colors, Size, TemplateFactory, WidgetFactory} from 'data'
+import {Colors, Sizes, TemplateFactory, WidgetFactory} from 'data'
 
 import {Layout, CenterLayout} from 'layout'
 import {
@@ -48,7 +48,7 @@ const {SortableContainer} = Sortable;
 
 const SortableList = SortableContainer(({items, wId, $widget}) => {
     return (
-        <ScrollView style={{height: Size.ITEM_HEIGHT * items.length}}>
+        <ScrollView style={{height: Sizes.ITEM_HEIGHT * items.length}}>
             {items.map((value, index) =>
                 <DimensionSortableComponent key={`item-${value.dId}`} index={index} value={value} wId={wId}
                                             $widget={$widget}
@@ -137,7 +137,7 @@ class SettingsComponent extends Component {
 
     _renderUnSortableList(viewItem) {
         const items = this._helper.getDimensionsItems(viewItem.viewId);
-        return <ScrollView style={{height: Size.ITEM_HEIGHT * items.length}}>
+        return <ScrollView style={{height: Sizes.ITEM_HEIGHT * items.length}}>
             {items.map((value, index) =>
                 <DimensionComponent key={index} value={value} wId={this.props.wId} $widget={this.state.$widget}
                                     dId={value.dId} onValueChange={($dimension)=> {
@@ -224,12 +224,12 @@ const styles = StyleSheet.create({
         paddingRight: 20,
         color: Colors.TEXT,
         backgroundColor: Colors.HIGHLIGHT,
-        height: Size.HEADER_HEIGHT
+        height: Sizes.HEADER_HEIGHT
     },
     sortableItems: {
         paddingLeft: 20,
         paddingRight: 20,
-        height: Size.ITEM_HEIGHT,
+        height: Sizes.ITEM_HEIGHT,
         borderBottomWidth: 1 / PixelRatio.get(),
         borderBottomColor: Colors.BORDER
     },
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
     collapseHeader: {
         paddingLeft: 20,
         backgroundColor: '#d8f2fd',
-        height: Size.ITEM_HEIGHT
+        height: Sizes.ITEM_HEIGHT
     },
 
     sortChangeButton: {

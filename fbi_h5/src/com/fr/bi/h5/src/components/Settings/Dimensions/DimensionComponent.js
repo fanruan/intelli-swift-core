@@ -19,7 +19,7 @@ import React, {
     TouchableHighlight
 } from 'lib'
 
-import {Colors, Size, TemplateFactory, WidgetFactory, DimensionFactory} from 'data'
+import {Colors, Sizes, TemplateFactory, WidgetFactory, DimensionFactory} from 'data'
 
 import {Layout, CenterLayout, HorizontalCenterLayout, VerticalCenterLayout} from 'layout';
 
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     wrapper: {
         paddingLeft: 20,
         paddingRight: 20,
-        height: Size.ITEM_HEIGHT,
+        height: Sizes.ITEM_HEIGHT,
         borderBottomWidth: 1 / PixelRatio.get(),
         borderBottomColor: Colors.BORDER
     },

@@ -17,7 +17,7 @@ import React, {
     TouchableWithoutFeedback
 } from 'lib'
 
-import {Colors, Size} from 'data'
+import {Colors, Sizes} from 'data'
 import {Layout, CenterLayout, VerticalCenterLayout} from 'layout'
 
 import {Icon, Button, IconButton, Checkbox, Table, AutoSizer} from 'base'
@@ -90,7 +90,7 @@ class Item extends Component {
                         {isNil(state.value) ? state.text : state.value}
                     </Text>
                 </VerticalCenterLayout>
-                <CenterLayout style={[{width: Size.ITEM_HEIGHT}]}>
+                <CenterLayout style={[{width: Sizes.ITEM_HEIGHT}]}>
                     <Checkbox checked={state.checked} halfCheck={state.halfCheck}
                               onChecked={props.onSelected}/>
                 </CenterLayout>
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
         borderBottomColor: Colors.SPLIT,
         borderBottomStyle: 'solid',
         borderBottomWidth: 1 / PixelRatio.get(),
-        height: Size.ITEM_HEIGHT
+        height: Sizes.ITEM_HEIGHT
     },
 
     selected: {

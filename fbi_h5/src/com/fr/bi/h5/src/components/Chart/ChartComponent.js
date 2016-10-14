@@ -11,7 +11,7 @@ import React, {
     Fetch
 } from 'lib'
 import {IconLink} from 'base'
-import {Size, TemplateFactory, WidgetFactory} from 'data'
+import {Sizes, TemplateFactory, WidgetFactory} from 'data'
 
 
 class ChartComponent extends Component {

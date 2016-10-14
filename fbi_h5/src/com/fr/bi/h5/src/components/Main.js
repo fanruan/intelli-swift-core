@@ -14,7 +14,7 @@ import React, {
     TouchableHighlight
 } from 'lib'
 
-import {Colors, Size, TemplateFactory} from 'data'
+import {Colors, Sizes, TemplateFactory} from 'data'
 import {Layout} from 'layout'
 
 import Toolbar from './Toolbar'
@@ -124,7 +124,7 @@ class Main extends Component {
         if (name === 'index') {
             if (this.template.hasControlWidget()) {
                 return <Layout style={{height: '100%'}} dir='top' box='last'>
-                    <LayoutComponent width={width} height={height - 50 - Size.ITEM_HEIGHT} {...props}
+                    <LayoutComponent width={width} height={height - 50 - Sizes.ITEM_HEIGHT} {...props}
                                      navigator={navigationOperations}/>
 
                     <Toolbar {...props} navigator={navigationOperations}>

@@ -25,7 +25,7 @@ import React, {
     TouchableHighlight
 } from 'lib'
 
-import {Colors, Size, TemplateFactory, DimensionFactory, WidgetFactory} from 'data'
+import {Colors, Sizes, TemplateFactory, DimensionFactory, WidgetFactory} from 'data'
 
 import {CenterLayout, Icon, Table} from 'base'
 

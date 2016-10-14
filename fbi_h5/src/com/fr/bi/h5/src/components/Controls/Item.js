@@ -25,7 +25,7 @@ import React, {
     TouchableHighlight
 } from 'lib'
 
-import {Colors, Size, TemplateFactory, WidgetFactory} from 'data'
+import {Colors, Sizes, TemplateFactory, WidgetFactory} from 'data'
 import {Layout, VerticalCenterLayout} from 'layout'
 import {Icon, Button, Table, AutoSizer} from 'base'
 
@@ -76,7 +76,7 @@ class Item extends Component {
 mixin.onClass(Item, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
-        height: Size.ITEM_HEIGHT,
+        height: Sizes.ITEM_HEIGHT,
         paddingLeft: 20,
         paddingRight: 20,
         borderBottom: '1px solid ' + Colors.SPLIT

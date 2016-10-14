@@ -12,7 +12,7 @@ import React, {
     Fetch
 } from 'lib'
 
-import {Size, TemplateFactory, WidgetFactory} from 'data'
+import {Sizes, TemplateFactory, WidgetFactory} from 'data'
 
 import {Table, Dialog, IconLink} from 'base'
 import {TableWidget} from 'widgets';
