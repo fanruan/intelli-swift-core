@@ -234,6 +234,13 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
                 case BICst.DIMENSION_STRING_COMBO.DT_RELATION:
                     self._buildMatchingRelationShipPane();
                     break;
+                case BICst.DIMENSION_STRING_COMBO.RENAME:
+                    self.editor.focus();
+                    break;
+                case BICst.DIMENSION_STRING_COMBO.SHOW_FIELD:
+                    var used = self.model.get("used");
+                    self.model.set("used", !used);
+                    break;
                 case BICst.DIMENSION_STRING_COMBO.COPY:
                     self._copyDimension();
                     break;
@@ -283,6 +290,13 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
                     break;
                 case BICst.DIMENSION_NUMBER_COMBO.DT_RELATION:
                     self._buildMatchingRelationShipPane();
+                    break;
+                case BICst.DIMENSION_NUMBER_COMBO.SHOW_FIELD:
+                    var used = self.model.get("used");
+                    self.model.set("used", !used);
+                    break;
+                case BICst.DIMENSION_NUMBER_COMBO.RENAME:
+                    self.editor.focus();
                     break;
                 case BICst.DIMENSION_NUMBER_COMBO.COPY:
                     self._copyDimension();
@@ -336,6 +350,13 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
                     break;
                 case BICst.DIMENSION_DATE_COMBO.DT_RELATION:
                     self._buildMatchingRelationShipPane();
+                    break;
+                case BICst.DIMENSION_DATE_COMBO.SHOW_FIELD:
+                    var used = self.model.get("used");
+                    self.model.set("used", !used);
+                    break;
+                case BICst.DIMENSION_DATE_COMBO.RENAME:
+                    self.editor.focus();
                     break;
                 case BICst.DIMENSION_DATE_COMBO.COPY:
                     self._copyDimension();

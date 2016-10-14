@@ -64,15 +64,15 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 value: BICst.TARGET_COMBO.FILTER,
                 cls: "filter-h-font"
             }],
-            //[{
-            //    text: BI.i18nText("BI-Display"),
-            //    value: BICst.TARGET_COMBO.DISPLAY,
-            //    cls: "dot-ha-font"
-            //}, {
-            //    text: BI.i18nText("BI-Hidden"),
-            //    value: BICst.TARGET_COMBO.HIDDEN,
-            //    cls: "dot-ha-font"
-            //}],
+            [{
+                text: BI.i18nText("BI-Show_Field"),
+                value: BICst.TARGET_COMBO.SHOW_FIELD,
+                cls: BI.Utils.isDimensionUsable(this.options.dId) ? "widget-combo-show-title-font" : ""
+            }],
+            [{
+                text: BI.i18nText("BI-Rename"),
+                value: BICst.TARGET_COMBO.RENAME
+            }],
             [{
                 text: BI.i18nText("BI-Copy"),
                 value: BICst.TARGET_COMBO.COPY,

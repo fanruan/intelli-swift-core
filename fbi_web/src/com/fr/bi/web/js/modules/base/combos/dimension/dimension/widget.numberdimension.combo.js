@@ -145,6 +145,11 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 cls: ""
             }],
             [{
+                text: BI.i18nText("BI-Show_Field"),
+                value: BICst.DIMENSION_NUMBER_COMBO.SHOW_FIELD,
+                cls: BI.Utils.isDimensionUsable(this.options.dId) ? "widget-combo-show-title-font" : ""
+            }],
+            [{
                 text: BI.i18nText("BI-Copy"),
                 value: BICst.DIMENSION_NUMBER_COMBO.COPY,
                 cls: "copy-h-font"

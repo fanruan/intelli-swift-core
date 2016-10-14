@@ -31,6 +31,15 @@ BI.DetailStringDimensionCombo = BI.inherit(BI.Widget, {
                     value: BICst.DETAIL_STRING_COMBO.HYPERLINK
                 }],
                 [{
+                    text: BI.i18nText("BI-Show_Field"),
+                    value: BICst.DETAIL_STRING_COMBO.SHOW_FIELD,
+                    cls: BI.Utils.isDimensionUsable(this.options.dId) ? "widget-combo-show-title-font" : ""
+                }],
+                [{
+                    text: BI.i18nText("BI-Rename"),
+                    value: BICst.DETAIL_STRING_COMBO.RENAME
+                }],
+                [{
                     text: BI.i18nText("BI-Remove"),
                     value: BICst.DETAIL_STRING_COMBO.DELETE
                 }],

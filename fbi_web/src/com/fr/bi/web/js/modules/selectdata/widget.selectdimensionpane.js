@@ -10,6 +10,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
         TEMPLATE: 1,
         FOLDER: 2,
         CREATE_BY_ME_ID: "-1",
+        SHARED_TO_ME_ID: "-2",
         CONTROL_TYPE: [BICst.WIDGET.STRING, BICst.WIDGET.NUMBER, BICst.WIDGET.SINGLE_SLIDER, BICst.WIDGET.INTERVAL_SLIDER, BICst.WIDGET.DATE, BICst.WIDGET.MONTH,
             BICst.WIDGET.QUARTER, BICst.WIDGET.TREE, BICst.WIDGET.LIST_LABEL, BICst.WIDGET.TREE_LABEL, BICst.WIDGET.YEAR, BICst.WIDGET.YMD, BICst.WIDGET.GENERAL_QUERY,
             BICst.WIDGET.QUERY, BICst.WIDGET.RESET]
@@ -118,7 +119,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                         return;
                     }
                     if (BI.isNotNull(op.node.isParent)) {
-                        if (op.node.nodeType === self.constants.FOLDER) {
+                        if (op.node.nodeType === self.constants.FOLDER && op.node.layer !== 0) {
                             populate(self._findChildItemsFromItems(op.node.id, op.node.layer + 1));
                         }
                         if (op.node.nodeType === self.constants.TEMPLATE) {
@@ -191,9 +192,42 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
             layer: 0,
             nodeType: self.constants.FOLDER
         };
+        var sharedToMe = {
+            id: self.constants.SHARED_TO_ME_ID,
+            pId: BI.UUID(),
+            type: "bi.multilayer_icon_arrow_node",
+            iconCls: "folder-font",
+            text: BI.i18nText("BI-Share_With_My"),
+            title: BI.i18nText("BI-Share_With_My"),
+            isParent: true,
+            value: self.constants.SHARED_TO_ME_ID,
+            layer: 0,
+            nodeType: self.constants.FOLDER
+        };
         BI.Utils.getAllTemplates(function (res) {
-            self.templateItems = res;
+            self.templateItems = []; self.sharedItems = [];
             self.templateItems.push(createByMe);
+            self.sharedItems.push(sharedToMe);
+            var sharedReports = [];
+            BI.each(res, function(idx, item){
+                if(item.isMine === true){
+                    self.templateItems.push(item);
+                }else{
+                    self.sharedItems.push(item);
+                    sharedReports.push({
+                        id: item.id,
+                        pId: self.constants.SHARED_TO_ME_ID,
+                        type: "bi.multilayer_icon_arrow_node",
+                        iconCls: "file-font",
+                        text: item.text,
+                        title: item.text,
+                        isParent: true,
+                        value: item.id,
+                        layer: 1,
+                        nodeType: BI.ReusePane.TEMPLATE
+                    });
+                }
+            });
             var currentTemplate = BI.find(self.templateItems, function (idx, item) {
                 return item.id === BI.Utils.getCurrentTemplateId();
             });
@@ -209,7 +243,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                 layer: 0,
                 nodeType: self.constants.TEMPLATE
             };
-            callback(BI.concat([currentTemplateItem, createByMe], self._findChildItemsFromItems(-1, 1)));
+            callback(BI.concat(BI.concat([currentTemplateItem, createByMe, sharedToMe], self._findChildItemsFromItems(-1, 1)), sharedReports));
         });
     },
 

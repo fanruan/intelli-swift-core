@@ -37,8 +37,23 @@ public class BIGetReportAndFolder4ReuseAction extends ActionNoSessionCMD {
         for(int i = 0; i < nodeList.size(); i++){
             BIReportNode node = nodeList.get(i);
             JSONObject nodeJO = node.createJSONConfig();
+            nodeJO.put("isMine", true);
             ja.put(nodeJO);
         }
+
+        //分享给我的
+        List<BIReportNode> sharedNodeList = BIDAOUtils.getBIReportNodesByShare2User(userId);
+        BISortUtils.sortByModifyTime(sharedNodeList);
+        if (sharedNodeList == null) {
+            sharedNodeList = new ArrayList<BIReportNode>();
+        }
+        for(int i = 0; i < sharedNodeList.size(); i++){
+            BIReportNode node = sharedNodeList.get(i);
+            JSONObject nodeJO = node.createJSONConfig();
+            nodeJO.put("isMine", false);
+            ja.put(nodeJO);
+        }
+
         WebUtils.printAsJSON(res, ja);
     }
 
