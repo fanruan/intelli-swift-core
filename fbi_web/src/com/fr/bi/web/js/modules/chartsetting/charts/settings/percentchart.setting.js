@@ -24,13 +24,74 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.PercentChartsSetting.EVENT_CHANGE)
         });
 
-        //图表样式设置
-        this.chartStyleSetting = BI.createWidget({
-            type: "bi.chart_style_block_setting"
+        this.colorSelect = BI.createWidget({
+            type: "bi.chart_setting_select_color_combo",
+            width: 130
+        });
+        this.colorSelect.populate();
+
+        this.colorSelect.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.PercentChartsSetting.EVENT_CHANGE);
         });
 
-        this.chartStyleSetting.on(BI.ChartStyleBlockSetting.EVENT_CHANGE, function () {
-            self.fireEvent(BI.PercentChartsSetting.EVENT_CHANGE)
+        //风格——1、2
+        this.chartStyleGroup = BI.createWidget({
+            type: "bi.button_group",
+            items: BI.createItems(BICst.AXIS_STYLE_GROUP, {
+                type: "bi.icon_button",
+                extraCls: "chart-style-font",
+                width: constant.BUTTON_WIDTH,
+                height: constant.BUTTON_HEIGHT,
+                iconWidth: constant.ICON_WIDTH,
+                iconHeight: constant.ICON_HEIGHT
+            }),
+            layouts: [{
+                type: "bi.vertical_adapt",
+                height: constant.SINGLE_LINE_HEIGHT
+            }]
+        });
+        this.chartStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
+            self.fireEvent(BI.PercentChartsSetting.EVENT_CHANGE);
+        });
+
+        this.tableStyle = BI.createWidget({
+            type: "bi.horizontal_adapt",
+            columnSize: [100],
+            cls: "single-line-settings",
+            items: [{
+                type: "bi.label",
+                text: BI.i18nText("BI-Table_Sheet_Style"),
+                lgap: constant.SIMPLE_H_LGAP,
+                textAlign: "left",
+                cls: "line-title"
+            }, {
+                type: "bi.left",
+                cls: "detail-style",
+                items: BI.createItems([{
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Color_Setting"),
+                    cls: "attr-names"
+                }, {
+                    el: {
+                        type: "bi.vertical_adapt",
+                        items: [this.colorSelect]
+                    },
+                    lgap: constant.SIMPLE_H_GAP
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Table_Style"),
+                    cls: "attr-names",
+                    lgap: constant.SIMPLE_H_GAP
+                }, {
+                    el: {
+                        type: "bi.vertical_adapt",
+                        items: [this.chartStyleGroup]
+                    },
+                    lgap: constant.SIMPLE_H_GAP
+                }], {
+                    height: constant.SINGLE_LINE_HEIGHT
+                })
+            }]
         });
 
         //格式和数量级
@@ -395,13 +456,13 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [this.widgetSetting, this.widgetSetting, this.lYAxis, this.xAxis, this.showElement, this.otherAttr, modelChange],
+            items: [this.widgetSetting, this.tableStyle, this.lYAxis, this.xAxis, this.showElement, this.otherAttr, modelChange],
             hgap: 10
         })
     },
 
     _invisible: function (v) {
-        this.widgetSetting.setVisible(v);
+        this.tableStyle.setVisible(v);
         this.lYAxis.setVisible(v);
         this.xAxis.setVisible(v);
         this.showElement.setVisible(v);
@@ -433,8 +494,9 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             });
         }
         this.widgetSetting.populate();
-        this.chartStyleSetting.setValue(BI.Utils.getWSChartStyleSettingByID(wId));
-
+        this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
+        this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
+        this.chartStyleGroup.setValue(BI.Utils.getWSChartStyleByID(wId));
         this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
         this.LYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
         this.isShowTitleLY.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
@@ -447,7 +509,6 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showDataTable.setSelected(BI.Utils.getWSShowDataTableByID(wId));
         this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
         this.showZoom.setSelected(BI.Utils.getWSShowZoomByID(wId));
-        this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.minimalistModel.setSelected(BI.Utils.getWSMinimalistByID(wId));
         this._invisible(!BI.Utils.getWSMinimalistByID(wId));
         this.showYCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
@@ -462,8 +523,9 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
     getValue: function () {
         return {
             widget_setting: this.widgetSetting.getValue(),
-            chart_style_setting: this.chartStyleSetting.getValue(),
-
+            transfer_filter: this.transferFilter.isSelected(),
+            chart_color: this.colorSelect.getValue()[0],
+            chart_style: this.chartStyleGroup.getValue()[0],
             left_y_axis_style: this.lYAxisStyle.getValue()[0],
             left_y_axis_unit: this.LYUnit.getValue(),
             show_left_y_axis_title: this.isShowTitleLY.isSelected(),
@@ -479,16 +541,15 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             minimalist_model: this.minimalistModel.isSelected(),
             show_y_custom_scale: this.showYCustomScale.isSelected(),
             custom_y_scale: this.customYScale.getValue(),
-            num_separators: this.separators.isSelected(),
-            transfer_filter: this.transferFilter.isSelected(),
-
+            num_separators: this.separators.isSelected()
         }
     },
 
     setValue: function (v) {
         this.widgetSetting.setValue(v.widget_setting);
-        this.chartStyleSetting.setValue(v.chart_style_setting);
-
+        this.transferFilter.setSelected(v.transfer_filter);
+        this.colorSelect.setValue(v.chart_color);
+        this.chartStyleGroup.setValue(v.chart_style);
         this.lYAxisStyle.setValue(v.left_y_axis_style);
         this.LYUnit.setValue(v.left_y_axis_unit);
         this.isShowTitleLY.setSelected(v.show_left_y_axis_title);
@@ -505,7 +566,6 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showYCustomScale.setSelected(v.show_y_custom_scale);
         this.customYScale.setValue(v.custom_y_scale);
         this.separators.setSelected(v.num_separators);
-        this.transferFilter.setSelected(v.transfer_filter);
     }
 });
 BI.PercentChartsSetting.EVENT_CHANGE = "EVENT_CHANGE";

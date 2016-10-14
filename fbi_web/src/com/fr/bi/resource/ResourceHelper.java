@@ -1551,8 +1551,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/trigger.selectcolor.js",
                 "com/fr/bi/web/js/modules/chartsetting/widget.chartsetting.js",
                 "com/fr/bi/web/js/modules/chartsetting/grouptable/widget.grouptable.setting.js",
-                "com/fr/bi/web/js/modules/chartsetting/charts/settings/block/chartstyle.block.setting.js",
-                "com/fr/bi/web/js/modules/chartsetting/charts/settings/block/valueaxis.block.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/block/widget.block.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/abstractchart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/axischart.setting.js",

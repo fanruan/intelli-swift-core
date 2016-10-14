@@ -15,7 +15,6 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
         BI.LineAreaChartSetting.superclass._init.apply(this, arguments);
         var self = this, o = this.options, constant = BI.AbstractChartSetting;
 
-        //组件设置
         this.widgetSetting = BI.createWidget({
             type: "bi.widget_block_setting",
             wId: o.wId
@@ -135,27 +134,160 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
             }]
         });
 
-
-        //左值轴设置
-        this.lValueAxisSetting = BI.createWidget({
-            type: "bi.value_axis_block_setting",
-            headText: BI.i18nText("BI-Left_Value_Axis"),
-            wId: o.wId
+        //格式和数量级
+        this.lYAxisStyle = BI.createWidget({
+            type: "bi.segment",
+            width: constant.FORMAT_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
+            items: BICst.TARGET_STYLE_FORMAT
         });
 
-        this.lValueAxisSetting.on(BI.ValueAxisBlockSetting.EVENT_CHANGE, function () {
-            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE)
+        this.lYAxisStyle.on(BI.Segment.EVENT_CHANGE, function(){
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
-        //右值轴配置
-        this.rValueAxisSetting = BI.createWidget({
-            type: "bi.value_axis_block_setting",
-            headText: BI.i18nText("BI-Right_Value_Axis"),
-            wId: o.wId
+        this.numberLevellY = BI.createWidget({
+            type: "bi.segment",
+            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
+            items: BICst.TARGET_STYLE_LEVEL
         });
 
-        this.rValueAxisSetting.on(BI.ValueAxisBlockSetting.EVENT_CHANGE, function () {
-            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE)
+        this.numberLevellY.on(BI.Segment.EVENT_CHANGE, function(){
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
+        });
+
+        this.rYAxisStyle = BI.createWidget({
+            type: "bi.segment",
+            width: constant.FORMAT_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
+            items: BICst.TARGET_STYLE_FORMAT
+        });
+
+        this.rYAxisStyle.on(BI.Segment.EVENT_CHANGE, function(){
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
+        });
+
+        this.numberLevelrY = BI.createWidget({
+            type: "bi.segment",
+            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
+            items: BICst.TARGET_STYLE_LEVEL
+        });
+
+        this.numberLevelrY.on(BI.Segment.EVENT_CHANGE, function(){
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
+        });
+
+        //单位
+        this.LYUnit = BI.createWidget({
+            type: "bi.sign_editor",
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
+            cls: "unit-input",
+            watermark: BI.i18nText("BI-Custom_Input")
+        });
+
+        this.LYUnit.on(BI.SignEditor.EVENT_CONFIRM, function(){
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
+        });
+
+        this.RYUnit = BI.createWidget({
+            type: "bi.sign_editor",
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
+            cls: "unit-input",
+            watermark: BI.i18nText("BI-Custom_Input")
+        });
+
+        this.RYUnit.on(BI.SignEditor.EVENT_CONFIRM, function(){
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
+        });
+
+        //显示标题
+        this.isShowTitleLY = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Title"),
+            width: 90
+        });
+
+        this.isShowTitleLY.on(BI.Controller.EVENT_CHANGE, function(){
+            this.isSelected() ? self.editTitleLY.setVisible(true) : self.editTitleLY.setVisible(false);
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
+        });
+
+        this.editTitleLY = BI.createWidget({
+            type: "bi.sign_editor",
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
+            cls: "unit-input"
+        });
+        this.editTitleLY.on(BI.SignEditor.EVENT_CONFIRM, function(){
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
+        });
+
+        this.isShowTitleRY = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Title"),
+            width: 90
+        });
+
+        this.isShowTitleRY.on(BI.Controller.EVENT_CHANGE, function(){
+            this.isSelected() ? self.editTitleRY.setVisible(true) : self.editTitleRY.setVisible(false);
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
+        });
+
+        this.editTitleRY = BI.createWidget({
+            type: "bi.sign_editor",
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
+            cls: "unit-input"
+        });
+
+        this.editTitleRY.on(BI.SignEditor.EVENT_CONFIRM, function(){
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
+        });
+
+        //轴逆序
+        this.reversedLY = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Reversed_Axis"),
+            width: 80
+        });
+
+        this.reversedLY.on(BI.Controller.EVENT_CHANGE, function(){
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
+        });
+
+        this.reversedRY = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Reversed_Axis"),
+            width: 80
+        });
+
+        this.reversedRY.on(BI.Controller.EVENT_CHANGE, function(){
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
+        });
+
+        //千分符
+        this.separatorsLeft = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Separators"),
+            width: 80
+        });
+
+        this.separatorsLeft.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
+        });
+
+        this.separatorsRight = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Separators"),
+            width: 80
+        });
+
+        this.separatorsRight.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
         //横轴文本方向
@@ -259,6 +391,54 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
+        //左轴刻度自定义
+        this.showYCustomScale = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Scale_Customize"),
+            width: 115
+        });
+
+        this.showYCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
+            self.customYScale.setVisible(this.isSelected());
+            if (!this.isSelected()) {
+                self.customYScale.setValue({})
+            }
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE)
+        });
+
+        this.customYScale = BI.createWidget({
+            type: "bi.custom_scale",
+            wId: o.wId
+        });
+
+        this.customYScale.on(BI.CustomScale.EVENT_CHANGE, function () {
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE)
+        });
+
+        //右轴刻度自定义
+        this.showXCustomScale = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Scale_Customize"),
+            width: 115
+        });
+
+        this.showXCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
+            self.customXScale.setVisible(this.isSelected());
+            if (!this.isSelected()) {
+                self.customXScale.setValue({})
+            }
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE)
+        });
+
+        this.customXScale = BI.createWidget({
+            type: "bi.custom_scale",
+            wId: o.wId
+        });
+
+        this.customXScale.on(BI.CustomScale.EVENT_CHANGE, function () {
+            self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE)
+        });
+
         //空值连续nullContinue,之前去掉了，现在又要加回来
         this.nullContinue = BI.createWidget({
             type: "bi.multi_select_item",
@@ -353,6 +533,126 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
             }]
         });
 
+        this.lYAxis = BI.createWidget({
+            type: "bi.horizontal_adapt",
+            columnSize: [80],
+            cls: "single-line-settings",
+            verticalAlign: "top",
+            items: [{
+                type: "bi.label",
+                textHeight: constant.SINGLE_LINE_HEIGHT,
+                text: BI.i18nText("BI-Left_Value_Axis"),
+                textAlign: "left",
+                lgap: constant.SIMPLE_H_LGAP,
+                cls: "line-title"
+            }, {
+                type: "bi.left",
+                cls: "detail-style",
+                items: BI.createItems([{
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Num_Level"),
+                    lgap: constant.SIMPLE_H_GAP,
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.numberLevellY]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Unit_Normal"),
+                    lgap: constant.SIMPLE_H_GAP,
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.LYUnit]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Format"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.lYAxisStyle]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.separatorsLeft]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.isShowTitleLY, this.editTitleLY]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.reversedLY]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.showYCustomScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.customYScale]
+                }], {
+                    height: constant.SINGLE_LINE_HEIGHT
+                }),
+                lgap: constant.SIMPLE_H_GAP
+            }]
+        });
+
+        this.rYAxis = BI.createWidget({
+            type: "bi.horizontal_adapt",
+            columnSize: [80],
+            verticalAlign: "top",
+            cls: "single-line-settings",
+            items: [{
+                type: "bi.label",
+                textHeight: constant.SINGLE_LINE_HEIGHT,
+                lgap: constant.SIMPLE_H_LGAP,
+                textAlign: "left",
+                text: BI.i18nText("BI-Right_Value_Axis"),
+                cls: "line-title"
+            }, {
+                type: "bi.left",
+                cls: "detail-style",
+                items: BI.createItems([{
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Num_Level"),
+                    lgap: constant.SIMPLE_H_GAP,
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.numberLevelrY]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Unit_Normal"),
+                    lgap: constant.SIMPLE_H_GAP,
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.RYUnit]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Format"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.rYAxisStyle]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.separatorsRight]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.isShowTitleRY, this.editTitleRY]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.reversedRY]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.showXCustomScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.customXScale]
+                }], {
+                    height: constant.SINGLE_LINE_HEIGHT
+                }),
+                lgap: constant.SIMPLE_H_GAP
+            }]
+        });
+
         //联动传递指标过滤条件
         this.transferFilter = BI.createWidget({
             type: "bi.multi_select_item",
@@ -406,15 +706,15 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [this.widgetSetting, this.tableStyle, this.lValueAxisSetting, this.rValueAxisSetting, this.xAxis, this.showElement, this.otherAttr, modelChange],
+            items: [this.widgetSetting, this.tableStyle, this.lYAxis, this.rYAxis, this.xAxis, this.showElement, this.otherAttr, modelChange],
             hgap: 10
         })
     },
 
     _invisible: function (v) {
         this.tableStyle.setVisible(v);
-        this.lValueAxisSetting.setVisible(v);
-        this.rValueAxisSetting.setVisible(v);
+        this.lYAxis.setVisible(v);
+        this.rYAxis.setVisible(v);
         this.xAxis.setVisible(v);
         this.showElement.setVisible(v);
         this.otherAttr.setVisible(v);
@@ -424,7 +724,18 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
         var wId = this.options.wId;
 
         var view = BI.Utils.getWidgetViewByID(wId);
+        var titleLY = BI.Utils.getWSLeftYAxisTitleByID(wId);
         var titleX = BI.Utils.getWSXAxisTitleByID(wId);
+        var titleRY = BI.Utils.getWSRightYAxisTitleByID(wId);
+        if(titleLY === ""){
+            BI.any(view[BICst.REGION.TARGET1], function(idx, dId){
+                if(BI.Utils.isDimensionUsable(dId)){
+                    titleLY = BI.Utils.getDimensionNameByID(dId);
+                    return true;
+                }
+                return false;
+            });
+        }
         if(titleX === ""){
             BI.any(view[BICst.REGION.DIMENSION1], function(idx, dId){
                 if(BI.Utils.isDimensionUsable(dId)){
@@ -434,15 +745,34 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 return false;
             });
         }
+        if(titleRY === ""){
+            BI.any(view[BICst.REGION.TARGET2], function(idx, dId){
+                if(BI.Utils.isDimensionUsable(dId)){
+                    titleRY = BI.Utils.getDimensionNameByID(dId);
+                    return true;
+                }
+                return false;
+            });
+        }
         this.widgetSetting.populate();
+        this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
         this.chartStyleGroup.setValue(BI.Utils.getWSChartStyleByID(wId));
         this.chartTypeGroup.setValue(BI.Utils.getWSChartLineTypeByID(wId));
-        this.lValueAxisSetting.setValue(BI.Utils.getWSLeftValueAxisSettingByID(wId));
-        this.rValueAxisSetting.setValue(BI.Utils.getWSRightValueAxisSettingByID(wId));
-
+        this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
+        this.rYAxisStyle.setValue(BI.Utils.getWSRightYAxisStyleByID(wId));
+        this.numberLevellY.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
+        this.numberLevelrY.setValue(BI.Utils.getWSRightYAxisNumLevelByID(wId));
+        this.LYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
+        this.RYUnit.setValue(BI.Utils.getWSRightYAxisUnitByID(wId));
+        this.isShowTitleLY.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
+        this.isShowTitleRY.setSelected(BI.Utils.getWSShowRightYAxisTitleByID(wId));
         this.isShowTitleX.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
+        this.editTitleLY.setValue(titleLY);
+        this.editTitleRY.setValue(titleRY);
         this.editTitleX.setValue(titleX);
+        this.reversedLY.setSelected(BI.Utils.getWSLeftYAxisReversedByID(wId));
+        this.reversedRY.setSelected(BI.Utils.getWSRightYAxisReversedByID(wId));
         this.text_direction.setValue(BI.Utils.getWSTextDirectionByID(wId));
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
@@ -450,25 +780,43 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
         this.showZoom.setSelected(BI.Utils.getWSShowZoomByID(wId));
         this.nullContinue.setSelected(BI.Utils.getWSNullContinueByID(wId));
-
-        this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.minimalistModel.setSelected(BI.Utils.getWSMinimalistByID(wId));
         this._invisible(!BI.Utils.getWSMinimalistByID(wId));
+        this.showYCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
+        this.customYScale.setValue(BI.Utils.getWSCustomYScale(wId));
+        this.customYScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
+        this.showXCustomScale.setSelected(BI.Utils.getWSShowXCustomScale(wId));
+        this.customXScale.setValue(BI.Utils.getWSCustomXScale(wId));
+        this.customXScale.setVisible(BI.Utils.getWSShowXCustomScale(wId));
+        this.separatorsLeft.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
+        this.separatorsRight.setSelected(BI.Utils.getWSRightNumberSeparatorsByID(wId));
 
+        this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
+        this.isShowTitleRY.isSelected() ? this.editTitleRY.setVisible(true) : this.editTitleRY.setVisible(false);
         this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false);
     },
 
     getValue: function(){
         return {
             widget_setting: this.widgetSetting.getValue(),
+            transfer_filter: this.transferFilter.isSelected(),
             chart_color: this.colorSelect.getValue()[0],
             chart_style: this.chartStyleGroup.getValue()[0],
             chart_line_type: this.chartTypeGroup.getValue()[0],
-            left_axis_setting: this.lValueAxisSetting.getValue(),
-            right_axis_setting: this.rValueAxisSetting.getValue(),
-
+            left_y_axis_style: this.lYAxisStyle.getValue()[0],
+            right_y_axis_style: this.rYAxisStyle.getValue()[0],
+            left_y_axis_number_level: this.numberLevellY.getValue()[0],
+            right_y_axis_number_level: this.numberLevelrY.getValue()[0],
+            left_y_axis_unit: this.LYUnit.getValue(),
+            right_y_axis_unit: this.RYUnit.getValue(),
+            show_left_y_axis_title: this.isShowTitleLY.isSelected(),
+            show_right_y_axis_title: this.isShowTitleRY.isSelected(),
             show_x_axis_title: this.isShowTitleX.isSelected(),
+            left_y_axis_title: this.editTitleLY.getValue(),
+            right_y_axis_title: this.editTitleRY.getValue(),
             x_axis_title: this.editTitleX.getValue(),
+            left_y_axis_reversed: this.reversedLY.isSelected(),
+            right_y_axis_reversed: this.reversedRY.isSelected(),
             text_direction: this.text_direction.getValue(),
             chart_legend: this.legend.getValue()[0],
             show_data_label: this.showDataLabel.isSelected(),
@@ -476,21 +824,36 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
             show_grid_line: this.gridLine.isSelected(),
             show_zoom: this.showZoom.isSelected(),
             null_continue: this.nullContinue.isSelected(),
-            transfer_filter: this.transferFilter.isSelected(),
             minimalist_model: this.minimalistModel.isSelected(),
+            show_y_custom_scale: this.showYCustomScale.isSelected(),
+            custom_y_scale: this.customYScale.getValue(),
+            show_x_custom_scale: this.showXCustomScale.isSelected(),
+            custom_x_scale: this.customXScale.getValue(),
+            num_separators: this.separatorsLeft.isSelected(),
+            right_num_separators: this.separatorsRight.isSelected()
         }
     },
 
     setValue: function(v){
         this.widgetSetting.setValue(v.widget_setting);
+        this.transferFilter.setSelected(v.transfer_filter);
         this.colorSelect.setValue(v.chart_color);
         this.chartStyleGroup.setValue(v.chart_style);
         this.chartTypeGroup.setValue(v.chart_line_type);
-        this.lValueAxisSetting.setValue(v.left_axis_setting);
-        this.rValueAxisSetting.setValue(v.right_axis_setting);
-
+        this.lYAxisStyle.setValue(v.left_y_axis_style);
+        this.rYAxisStyle.setValue(v.right_y_axis_style);
+        this.numberLevellY.setValue(v.left_y_axis_number_level);
+        this.numberLevelrY.setValue(v.right_y_axis_number_level);
+        this.LYUnit.setValue(v.left_y_axis_unit);
+        this.RYUnit.setValue(v.right_y_axis_unit);
+        this.isShowTitleLY.setSelected(v.show_left_y_axis_title);
+        this.isShowTitleRY.setSelected(v.show_right_y_axis_title);
         this.isShowTitleX.setSelected(v.x_axis_title);
+        this.editTitleLY.setValue(v.left_y_axis_title);
+        this.editTitleRY.setValue(v.right_y_axis_title);
         this.editTitleX.setValue(v.x_axis_title);
+        this.reversedLY.setSelected(v.left_y_axis_reversed);
+        this.reversedRY.setSelected(v.right_y_axis_reversed);
         this.text_direction.setValue(v.text_direction);
         this.legend.setValue(v.chart_legend);
         this.showDataLabel.setSelected(v.show_data_label);
@@ -498,8 +861,13 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.gridLine.setSelected(v.show_grid_line);
         this.showZoom.setSelected(v.show_zoom);
         this.nullContinue.setSelected(v.null_continue);
-        this.transferFilter.setSelected(v.transfer_filter);
         this.minimalistModel.setSelected(v.minimalist_model);
+        this.showYCustomScale.setSelected(v.show_y_custom_scale);
+        this.customYScale.setValue(v.custom_y_scale);
+        this.showXCustomScale.setSelected(v.show_x_custom_scale);
+        this.customXScale.setValue(v.custom_x_scale);
+        this.separatorsLeft.setSelected(v.num_separators);
+        this.separatorsRight.setSelected(v.right_num_separators)
     }
 });
 BI.LineAreaChartSetting.EVENT_CHANGE = "EVENT_CHANGE";
