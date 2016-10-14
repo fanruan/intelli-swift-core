@@ -485,10 +485,10 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
             self.model.setDataAndPage(jsonData);
             // try {
             //考虑只有行表头情况
-            if (self.model._isColRegionExist()) {
-                self._prepareData();
+            if (!self.model._isColRegionExist() || !self.model._isRowRegionExist()) {
+                self._prepareGroupTableData();
             } else {
-                self._prepareGroupTableData()
+                self._prepareData();
             }
             if (self.model.getTableForm() !== self.tableForm) {
                 self._createTable();

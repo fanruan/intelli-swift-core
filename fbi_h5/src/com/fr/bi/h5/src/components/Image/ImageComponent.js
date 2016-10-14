@@ -1,5 +1,5 @@
 /**
- * 文本组件
+ * 图片组件
  * Created by Young's on 2016/10/10.
  */
 import mixin from 'react-mixin'
@@ -15,27 +15,23 @@ import React, {
     Component,
     StyleSheet,
     Text,
-    TextInput,
     Dimensions,
     PixelRatio,
     ListView,
     View,
     Fetch,
     Promise,
-    TouchableHighlight
+    TouchableHighlight,
+    Image
 } from 'lib'
 
 import {Colors, Size, Template, Widget, Dimension, Target} from 'data'
 
 import {CenterLayout, Icon, Table} from 'base'
 
-import WidgetFactory from '../../data/Template/Widget/WidgetFactory'
-
-
-class ContentComponent extends Component {
+class ImageComponent extends Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {content: ''}
     }
 
     _getNextState(props, state = {}) {
@@ -51,16 +47,10 @@ class ContentComponent extends Component {
     }
 
     render() {
-        const {$widget, wId} = this.props;
-        const widget = WidgetFactory.createWidget($widget, this.context.$template, wId);
-        const style = widget.getStyle();
-        return <TextInput
-            style={{height: this.props.height, ...styles.wrapper, ...style}}
-            ref="content"
-            autoCapitalize="none"
-            multiline="true"
-            value={widget.getContent()}
-            editable="true"
+        const {...props} = this.props, {...state} = this.state;
+        return <Image 
+            style={styles.wrapper}
+            source=""
         />
     }
 
@@ -81,10 +71,10 @@ class ContentComponent extends Component {
     }
 
 }
-mixin.onClass(ContentComponent, ReactComponentWithPureRenderMixin);
+mixin.onClass(ImageComponent, ReactComponentWithPureRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         flex: 1
     }
 });
-export default ContentComponent
+export default ImageComponent

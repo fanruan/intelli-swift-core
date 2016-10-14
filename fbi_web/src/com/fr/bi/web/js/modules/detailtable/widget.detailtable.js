@@ -18,7 +18,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
         var o = this.options;
 
         this.pager = BI.createWidget({
-            type: "bi.all_pager",
+            type: "bi.all_count_pager",
             cls: "page-table-pager",
             height: 18
         });
@@ -122,6 +122,7 @@ BI.DetailTable = BI.inherit(BI.Pane, {
                     callback([], [], [], []);
                     return;
                 }
+                self.pager.setCount(row);
                 var header = [], view = BI.Utils.getWidgetViewByID(widgetId);
                 BI.each(view[BICst.REGION.DIMENSION1], function (i, dId) {
                     var hyperlink = BI.Utils.getDimensionHyperLinkByID(dId) || {};

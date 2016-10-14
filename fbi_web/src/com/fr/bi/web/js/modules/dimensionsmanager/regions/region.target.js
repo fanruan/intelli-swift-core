@@ -123,7 +123,7 @@ BI.TargetRegion = BI.inherit(BI.AbstractRegion, {
         this._hideForbiddenMask();
     },
 
-    _getFieldDropOverHepler: function () {
+    _getFieldDropOverHelper: function () {
         //可以放置的字段 + 不可放置的字段
         var total = this.fields.length;
         var notNums = 0;
