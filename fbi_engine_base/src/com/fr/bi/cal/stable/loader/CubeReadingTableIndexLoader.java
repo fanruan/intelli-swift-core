@@ -18,7 +18,7 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.io.newio.NIOUtils;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
 import com.fr.general.GeneralContext;
 import com.fr.stable.EnvChangedListener;
@@ -48,7 +48,7 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
             try {
                 childLoaderMap.put(module.getModuleName(), provider.fetchCubeLoader(user));
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }
@@ -152,7 +152,7 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
     @Override
     public void clear() {
         synchronized (CubeReadingTableIndexLoader.class) {
-            BILogger.getLogger().info("start clear childLoaderMap");
+            BILoggerFactory.getLogger().info("start clear childLoaderMap");
             for (Map.Entry<String, ICubeDataLoader> entry : childLoaderMap.entrySet()) {
                 ICubeDataLoader loader = entry.getValue();
                 if (loader != null) {

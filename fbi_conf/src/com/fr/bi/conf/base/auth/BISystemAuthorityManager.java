@@ -1,16 +1,17 @@
 package com.fr.bi.conf.base.auth;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BISystemDataManager;
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.fr.bi.conf.base.auth.data.BIPackageAuthority;
 import com.fr.bi.conf.provider.BIAuthorityManageProvider;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.exception.BIKeyAbsentException;
-import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 import com.fr.web.core.SessionDealWith;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +39,7 @@ public class BISystemAuthorityManager extends BISystemDataManager<BIAuthorityMan
         try {
             return getValue(UserControl.getInstance().getSuperManagerID()).getPackageAuthByID(packageID, userId);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }
@@ -49,7 +50,7 @@ public class BISystemAuthorityManager extends BISystemDataManager<BIAuthorityMan
             BISessionProvider session = (BISessionProvider) SessionDealWith.getSessionIDInfor(sessionId);
             return getValue(UserControl.getInstance().getSuperManagerID()).getPackageAuthBySession(packageID, session);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }
@@ -59,7 +60,7 @@ public class BISystemAuthorityManager extends BISystemDataManager<BIAuthorityMan
         try {
             return getValue(UserControl.getInstance().getSuperManagerID()).getAuthPackagesByUser(userId);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }
@@ -70,7 +71,7 @@ public class BISystemAuthorityManager extends BISystemDataManager<BIAuthorityMan
             BISessionProvider session = (BISessionProvider) SessionDealWith.getSessionIDInfor(sessionId);
             return getValue(UserControl.getInstance().getSuperManagerID()).getAuthPackagesBySession(session);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }
@@ -88,7 +89,7 @@ public class BISystemAuthorityManager extends BISystemDataManager<BIAuthorityMan
         try {
             return getValue(UserControl.getInstance().getSuperManagerID()).createJSON(userId);
         } catch (BIKeyAbsentException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }
@@ -98,7 +99,7 @@ public class BISystemAuthorityManager extends BISystemDataManager<BIAuthorityMan
         try {
             getValue(UserControl.getInstance().getSuperManagerID()).clear(userId);
         } catch (BIKeyAbsentException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -107,8 +108,18 @@ public class BISystemAuthorityManager extends BISystemDataManager<BIAuthorityMan
         try {
             getValue(UserControl.getInstance().getSuperManagerID()).removeAuthPackage(packageID);
         } catch (BIKeyAbsentException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
+    }
+
+    @Override
+    public long getAuthVersion() {
+        try {
+            return getValue(UserControl.getInstance().getSuperManagerID()).getVersion();
+        } catch (BIKeyAbsentException e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
+        return new Date().getTime();
     }
 
     @Override
@@ -120,7 +131,7 @@ public class BISystemAuthorityManager extends BISystemDataManager<BIAuthorityMan
         try {
             return getValue(UserControl.getInstance().getSuperManagerID()).getPackagesAuth(userId);
         } catch (BIKeyAbsentException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }
@@ -129,7 +140,8 @@ public class BISystemAuthorityManager extends BISystemDataManager<BIAuthorityMan
         try {
             getValue(UserControl.getInstance().getSuperManagerID()).savePackageAuth(packageID, authorities, userId);
         } catch (BIKeyAbsentException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
+
 }

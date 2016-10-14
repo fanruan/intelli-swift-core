@@ -1,5 +1,7 @@
 package com.fr.bi.data;
 
+import com.finebi.cube.common.log.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.CubeConstant;
@@ -9,15 +11,12 @@ import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.SQLStatement;
 import com.fr.bi.stable.dbdealer.*;
 import com.fr.bi.stable.utils.BIDBUtils;
-import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.general.DateUtils;
 import com.fr.stable.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
@@ -34,7 +33,7 @@ import java.util.List;
  * @since Advanced FineBI Analysis 1.0
  */
 public abstract class DBExtractorImpl implements DBExtractor {
-    private static final Logger logger = LoggerFactory.getLogger(DBExtractorImpl.class);
+    private static final BILogger logger = BILoggerFactory.getLogger(DBExtractorImpl.class);
 
     private int dealWithResultSet(ResultSet rs,
                                   ICubeFieldSource[] columns,
@@ -154,7 +153,7 @@ public abstract class DBExtractorImpl implements DBExtractor {
             String sqlString = BIDBUtils.createSqlString(dialect, columns);
             sql.setSelect(sqlString);
             String query = dealWithSqlCharSet(sql.toString(), connection);
-            BILogger.getLogger().info("Start Query sql:" + query);
+            BILoggerFactory.getLogger().info("Start Query sql:" + query);
             stmt = createStatement(conn, dialect);
             try {
                 rs = stmt.executeQuery(query);
@@ -165,6 +164,7 @@ public abstract class DBExtractorImpl implements DBExtractor {
                 stmt = createStatement(conn, dialect);
                 rs = stmt.executeQuery(query);
             }
+            logger.info("sql: " + sql.toString() + " query cost:" + DateUtils.timeCostFrom(t));
             row = dealWithResultSet(rs, columns, traversal, needCharSetConvert, originalCharSetName, newCharSetName, row, sql.toString());
             logger.info("sql: " + sql.toString() + " execute cost:" + DateUtils.timeCostFrom(t));
         } catch (Throwable e) {

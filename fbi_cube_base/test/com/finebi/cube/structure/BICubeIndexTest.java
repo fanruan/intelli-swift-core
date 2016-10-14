@@ -12,7 +12,7 @@ import com.finebi.cube.tools.BICubeResourceLocationTestTool;
 import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.tools.GroupValueIndexTestTool;
 import com.fr.bi.common.factory.BIFactoryHelper;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import junit.framework.TestCase;
 
@@ -58,7 +58,7 @@ public class BICubeIndexTest extends TestCase {
             column.addIndex(0, GroupValueIndexTestTool.generateSampleIndex());
             assertEquals(GroupValueIndexTestTool.generateSampleIndex(), column.getBitmapIndex(0));
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertFalse(true);
         }
     }
@@ -69,7 +69,7 @@ public class BICubeIndexTest extends TestCase {
             column.addNULLIndex(0, GroupValueIndexTestTool.generateSampleIndex());
             assertEquals(GroupValueIndexTestTool.generateSampleIndex(), column.getNULLIndex(0));
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertFalse(true);
         }
     }
@@ -101,7 +101,7 @@ public class BICubeIndexTest extends TestCase {
             assertTrue(indexData.isNullReaderAvailable());
             assertTrue(indexData.isNullWriterAvailable());
         } catch (BICubeIndexException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertFalse(true);
         }
 

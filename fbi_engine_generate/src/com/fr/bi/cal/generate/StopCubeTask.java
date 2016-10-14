@@ -17,7 +17,7 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONObject;
 
@@ -64,7 +64,7 @@ public class StopCubeTask implements CubeTask {
     public void end() {
         Future<String> result = finishObserver.getOperationResult();
         try {
-            BILogger.getLogger().info(result.get());
+            BILoggerFactory.getLogger().info(result.get());
 //            BIFileUtils.moveFile(BICubeConfiguration.getTempConf(Long.toString(biUser.getUserId())).getRootURI().getPath(),
 //                    BICubeConfiguration.getConf(Long.toString(biUser.getUserId())).getRootURI().getPath());
         } catch (Exception e) {

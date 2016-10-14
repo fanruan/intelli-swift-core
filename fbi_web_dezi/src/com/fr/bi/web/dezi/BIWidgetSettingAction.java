@@ -10,7 +10,7 @@ import com.fr.bi.conf.report.BIReport;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.code.BIPrintUtils;
 import com.fr.json.JSONObject;
 import com.fr.web.core.ErrorHandlerHelper;
@@ -60,7 +60,7 @@ public class BIWidgetSettingAction extends AbstractBIDeziAction {
             MultiThreadManagerImpl.getInstance().refreshExecutorService();
             jo = widget.createDataJSON(sessionIDInfor);
         } catch (Exception exception) {
-            BILogger.getLogger().error(exception.getMessage(), exception);
+            BILoggerFactory.getLogger().error(exception.getMessage(), exception);
             jo.put("error", BIPrintUtils.outputException(exception));
         }
         if (sessionIDInfor.getLoader() instanceof CubeTempModelReadingTableIndexLoader) {

@@ -19,7 +19,7 @@ import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.exception.BITableAbsentException;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -98,7 +98,7 @@ public class BIPackageConfigManager implements Release {
                 }
             }
         } catch (CloneNotSupportedException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -251,7 +251,7 @@ public class BIPackageConfigManager implements Release {
                     t.put("id", groupID);
                     jo.put(groupID, t);
                 } catch (BIGroupAbsentException e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                     continue;
                 }
             }
@@ -325,15 +325,15 @@ public class BIPackageConfigManager implements Release {
                     try {
                         pack = packageConfigProvider.getPackage(userId, packID);
                     } catch (BIPackageAbsentException e) {
-                        BILogger.getLogger().error(e.getMessage(), e);
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
                     }
                     if (!ComparatorUtils.equals(newPackageName, pack.getName().getValue())) {
                         try {
                             BICubeConfigureCenter.getPackageManager().renamePackage(userId, packID, new BIPackageName(newPackageName));
                         } catch (BIPackageAbsentException e) {
-                            BILogger.getLogger().error(e.getMessage(), e);
+                            BILoggerFactory.getLogger().error(e.getMessage(), e);
                         } catch (BIPackageDuplicateException e) {
-                            BILogger.getLogger().error(e.getMessage(), e);
+                            BILoggerFactory.getLogger().error(e.getMessage(), e);
                         }
                     }
                 }
@@ -356,7 +356,7 @@ public class BIPackageConfigManager implements Release {
                         groupCollectionManager.addPackage(groupTagName, (BIBusinessPackage) biPackage);
                     }
                 } catch (Exception e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
             }
         }

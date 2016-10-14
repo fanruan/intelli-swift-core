@@ -1,6 +1,6 @@
 package com.fr.bi.cal.generate.relation.firstlinkindex;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.index.CubeGenerator;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -29,10 +29,10 @@ public class LinkFirstIndexEntry implements CubeGenerator {
 
     @Override
     public void generateCube() {
-        BILogger.getLogger().info("Prepare First Relations");
+        BILoggerFactory.getLogger().info("Prepare First Relations");
         long t = System.currentTimeMillis();
         generateBasicRowIndex(relations);
-        BILogger.getLogger().info("First Relations Completed, Cost:" + DateUtils.timeCostFrom(t));
+        BILoggerFactory.getLogger().info("First Relations Completed, Cost:" + DateUtils.timeCostFrom(t));
     }
 
 
@@ -51,7 +51,7 @@ public class LinkFirstIndexEntry implements CubeGenerator {
         try {
             CubeBaseUtils.invokeCubeThreads(calList);
         } catch (InterruptedException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 }

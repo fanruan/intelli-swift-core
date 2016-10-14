@@ -4,7 +4,7 @@ import com.fr.base.FRContext;
 import com.fr.bi.cluster.wrapper.ZooKeeperWrapper;
 import com.fr.bi.cluster.zookeeper.exception.MissionNotStopException;
 import com.fr.bi.cluster.zookeeper.watcher.BIWorker;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.FRLogger;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
@@ -96,7 +96,7 @@ public class BIMissionMonitor implements Watcher {
             }
 
         } catch (Exception ex) {
-             BILogger.getLogger().error(ex.getMessage(), ex);
+             BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         }
     }
 

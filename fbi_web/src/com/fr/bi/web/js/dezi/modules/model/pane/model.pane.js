@@ -4,7 +4,8 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
             layoutType: BI.Arrangement.LAYOUT_TYPE.FREE,
             layoutRatio: {},
             widgets: {},
-            globalStyle: {}
+            globalStyle: {},
+            version: BICst.VERSION
         });
     },
 

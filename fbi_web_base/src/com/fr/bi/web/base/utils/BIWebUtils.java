@@ -12,7 +12,7 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.Status;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.conf.BISystemEnvUtils;
 import com.fr.bi.web.base.operation.BIOperationRecord;
 import com.fr.fs.base.entity.User;
@@ -210,10 +210,12 @@ public class BIWebUtils {
         map.put("reportName", reportName);
         map.put("reg", VT4FBI.toJSONObject());
         map.put("description", node.getDescription());
-        map.put("__version__", BIConfigureManagerCenter.getCubeConfManager().getPackageLastModify() + "" + userId);
+        //cube版本号 和 权限版本号
+        map.put("__version__", BIConfigureManagerCenter.getCubeConfManager().getPackageLastModify() + ""
+                + BIConfigureManagerCenter.getAuthorityManager().getAuthVersion() + "" + userId);
         boolean biEdit = pop == null || ComparatorUtils.equals(edit, "_bi_edit_");
         boolean isEdit = sessionIDInfo.setEdit(biEdit);
-        if(biEdit && !isEdit) {
+        if (biEdit && !isEdit) {
             map.put("lockedBy", BISessionUtils.getCurrentEditingUserByReport(node.getId(), node.getUserId()));
         }
         if (!hasPrivilege(isEdit, userId, map) && !ComparatorUtils.equals(node.getDescription(), "fine_excel")) {
@@ -251,7 +253,7 @@ public class BIWebUtils {
                 FRLogManager.setSession(sessionIDInfo);
 
                 FRContext.getLogger().getRecordManager().recordAccessNoExecuteInfo(reportName,
-                        DeclareRecordType.WEB_WRITE_TYPE_VIEW, new ExecuteInfo("",""));
+                        DeclareRecordType.WEB_WRITE_TYPE_VIEW, new ExecuteInfo("", ""));
             } catch (Throwable e) {
                 FRContext.getLogger().log(Level.WARNING, e.getMessage(), e);
                 FRContext.getLogger().log(Level.WARNING, "RecordManager error. Record is close.");
@@ -284,7 +286,7 @@ public class BIWebUtils {
             }
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return true;
     }

@@ -1,5 +1,6 @@
 package com.finebi.cube.gen.oper;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
@@ -22,7 +23,6 @@ import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
-import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
@@ -53,9 +53,10 @@ public class BITablePathIndexBuilder extends BIProcessor {
 
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
-        logger.info(BIStringUtils.append("\n    ", logPath(), "start building path index"));
+        Stopwatch stopwatch = Stopwatch.createStarted();
+        logger.info(BIStringUtils.append("\n    ", logPath(), "start building path index main task"));
         buildRelationPathIndex();
-        logger.info(BIStringUtils.append("\n    ", logPath(), "finish building path index"));
+        logger.info(BIStringUtils.append("\n    ", logPath(), "finish building path index main task,{} second " ),stopwatch.elapsed(TimeUnit.SECONDS));
         return null;
     }
 
@@ -78,7 +79,6 @@ public class BITablePathIndexBuilder extends BIProcessor {
                         "\n       Foreign field:", relation.getForeignField().getColumnName(),
                         "\n"
                 ));
-
 
             }
             return sb.toString();
@@ -123,13 +123,13 @@ public class BITablePathIndexBuilder extends BIProcessor {
                 try {
                     biLogManager.infoRelation(columnKeyInfo, costTime, UserControl.getInstance().getSuperManagerID());
                 } catch (Exception e) {
-                    BILogger.getLogger().error(e.getMessage());
+                    BILoggerFactory.getLogger().error(e.getMessage());
                 }
             } catch (Exception e) {
                 try {
                     biLogManager.errorRelation(columnKeyInfo, e.getMessage(), UserControl.getInstance().getSuperManagerID());
                 } catch (Exception e1) {
-                    BILogger.getLogger().error(e1.getMessage());
+                    BILoggerFactory.getLogger().error(e1.getMessage());
 
                 }
                 throw BINonValueUtils.beyondControl(e.getMessage(), e);
@@ -174,7 +174,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
                     try {
                         result.or(reader.getBitmapIndex(rowIndices));
                     } catch (BICubeIndexException e) {
-                        BILogger.getLogger().error(e.getMessage(), e);
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
                     }
                 }
             });
@@ -236,7 +236,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
             try {
                 tableRelation = getTableRelation(relation);
             } catch (Exception e) {
-                BILogger.getLogger().error("get relationColumnKey failed! relation information used as listed:" + relation.getPrimaryTable().getSourceID() + "." + relation.getPrimaryField().getColumnName() + " to " + relation.getForeignTable().getSourceID() + "." + relation.getForeignField().getColumnName());
+                BILoggerFactory.getLogger().error("get relationColumnKey failed! relation information used as listed:" + relation.getPrimaryTable().getSourceID() + "." + relation.getPrimaryField().getColumnName() + " to " + relation.getForeignTable().getSourceID() + "." + relation.getForeignField().getColumnName());
             }
             field = tableRelation.getPrimaryKey();
             relations.add(tableRelation);

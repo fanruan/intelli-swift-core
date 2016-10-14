@@ -2145,7 +2145,7 @@ Data.Utils = {
                     }
                 }
                 return function () {
-                    BI.contentFormat(arguments[0], formatter)
+                    return BI.contentFormat(arguments[0], formatter)
                 }
             }
         }
@@ -6600,7 +6600,7 @@ Data.Utils = {
                         "hinge": "rgb(101,107,109)",
                         "dataLabels": {
                             "autoAdjust": true,
-                            "style": "{fontFamily:'inherit', color: #808080, fontSize: 12pt}",
+                            "style": "{fontFamily:'inherit', color: 'inherit', fontSize: 12pt}",
                             "formatter": {
                                 "identifier": "${VALUE}",
                                 "valueFormat": contentFormat2Decimal,
@@ -6623,8 +6623,8 @@ Data.Utils = {
                                 "categoryFormat": contentFormat
                             },
                             "style": {
-                                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
-                                "color": "#808080",
+                                "fontFamily": "inherit",
+                                "color": "inherit",
                                 "fontSize": "12px"
                             },
                             "align": "bottom",
@@ -6640,8 +6640,8 @@ Data.Utils = {
                             },
                             "backgroundColor": "rgb(255,255,0)",
                             "style": {
-                                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
-                                "color": "#808080",
+                                "fontFamily": "inherit",
+                                "color": "inherit",
                                 "fontSize": "12px"
                             },
                             "align": "inside",
@@ -6657,8 +6657,8 @@ Data.Utils = {
                                 "categoryFormat": contentFormat
                             },
                             "style": {
-                                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
-                                "color": "#808080",
+                                "fontFamily": "inherit",
+                                "color": "inherit",
                                 "fontSize": "12px"
                             },
                             "align": "bottom",
@@ -6695,15 +6695,15 @@ Data.Utils = {
                             "follow": false,
                             "enabled": true,
                             "animation": true,
-                            style: {
+                            "style": {
                                 "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
                                 "color": "#c4c6c6",
                                 "fontSize": "12px",
                                 "fontWeight": ""
                             }
                         },
-                        "maxSize": 70,
-                        "fillColorOpacity": 0.5,
+                        "maxSize": 80,
+                        "fillColorOpacity": 1.0,
                         "step": false,
                         "force": false,
                         "minSize": 15,
@@ -6715,7 +6715,7 @@ Data.Utils = {
                         "animation": true,
                         "lineWidth": 2,
 
-                        bubble: {
+                        "bubble": {
                             "large": false,
                             "connectNulls": false,
                             "shadow": true,
@@ -6733,22 +6733,22 @@ Data.Utils = {
                             }
                         }
                     },
-                    dTools: {
-                        enabled: 'true',
-                        style: {
-                            fontFamily: "Microsoft YaHei, Hiragino Sans GB W3",
-                            color: "#1a1a1a",
-                            fontSize: "12px"
+                    "dTools": {
+                        "enabled": 'true',
+                        "style": {
+                            "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                            "color": "#1a1a1a",
+                            "fontSize": "12px"
                         },
-                        backgroundColor: 'white'
+                        "backgroundColor": 'white'
                     },
-                    dataSheet: {
-                        enabled: false,
+                    "dataSheet": {
+                        "enabled": false,
                         "borderColor": "rgb(0,0,0)",
                         "borderWidth": 1,
                         "formatter": contentFormat2Decimal,
-                        style: {
-                            "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
+                        "style": {
+                            "fontFamily": "inherit", "color": "inherit", "fontSize": "12px"
                         }
                     },
                     "borderColor": "rgb(238,238,238)",
@@ -6760,7 +6760,7 @@ Data.Utils = {
                         "borderWidth": 0,
                         "visible": true,
                         "style": {
-                            "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#1a1a1a", "fontSize": "12px"
+                            "fontFamily": "inherit", "color": "inherit", "fontSize": "12px"
                         },
                         "position": "right",
                         "enabled": true

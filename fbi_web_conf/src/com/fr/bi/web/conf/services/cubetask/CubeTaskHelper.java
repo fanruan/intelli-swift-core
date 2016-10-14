@@ -21,7 +21,7 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.engine.CubeTask;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.bi.web.conf.services.utils.BICubeGenerateUtils;
 
@@ -35,7 +35,7 @@ public class CubeTaskHelper {
     private static BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
 
     public static boolean CubeBuildSingleTable(long userId, BITableID hostTableId, String childTableSourceId, int updateType) {
-        BILogger.getLogger().info(BIDateUtils.getCurrentDateTime() + " Cube single table update start");
+        BILoggerFactory.getLogger().info(BIDateUtils.getCurrentDateTime() + " Cube single table update start");
         CubeBuild cubeBuild = new CubeBuildSingleTable(new BIBusinessTable(hostTableId), childTableSourceId, userId, updateType);
         boolean taskAdd = cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId);
         return taskAdd;
@@ -59,17 +59,17 @@ public class CubeTaskHelper {
                 try {
                     msg.append(relation.createJSON().toString()+"\n");
                 } catch (Exception e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
             }
         } else {
             msg.append(" Cube all update start");
             cubeBuild = new CubeBuildStaff(new BIUser(userId));
-            BILogger.getLogger().info(BIDateUtils.getCurrentDateTime() + " preCondition checking……");
+            BILoggerFactory.getLogger().info(BIDateUtils.getCurrentDateTime() + " preCondition checking……");
         }
         if (preConditionsCheck(userId, cubeBuild)) {
             CubeTask task = new BuildCubeTask(new BIUser(userId), cubeBuild);
-            BILogger.getLogger().info(BIDateUtils.getCurrentDateTime() + msg);
+            BILoggerFactory.getLogger().info(BIDateUtils.getCurrentDateTime() + msg);
             taskAddResult = cubeManager.addTask(task, userId);
         }
         return taskAddResult;
@@ -90,7 +90,7 @@ public class CubeTaskHelper {
         boolean conditionsMeet = cubeBuild.preConditionsCheck();
         if (!conditionsMeet) {
             String errorMessage = "preConditions check failed! Please check the available HD space and data connections";
-            BILogger.getLogger().error(errorMessage);
+            BILoggerFactory.getLogger().error(errorMessage);
             BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), errorMessage, userId);
             BIConfigureManagerCenter.getLogManager().logEnd(userId);
         }

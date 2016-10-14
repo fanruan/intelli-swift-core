@@ -12,7 +12,7 @@ import com.fr.bi.etl.analysis.tableobj.ETLTableObject;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.structure.queue.QueueThread;
 import com.fr.bi.stable.structure.queue.ThreadUnitedQueue;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.stable.StringUtils;
@@ -89,7 +89,7 @@ public class SingleUserETLTableCubeManager implements Release {
 								data.end();
 								tq.add(new ETLTableObject(source, data.getPath()));
 							} catch (Exception e){
-								BILogger.getLogger().error(e.getMessage(), e);
+								BILoggerFactory.getLogger().error(e.getMessage(), e);
 							} finally {
 							}
 						}

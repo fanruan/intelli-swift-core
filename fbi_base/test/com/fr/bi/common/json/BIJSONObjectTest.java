@@ -1,10 +1,10 @@
 package com.fr.bi.common.json;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.common.persistent.json.generator.tool.BIJSONAutoTool;
 import com.fr.bi.common.world.Book;
 import com.fr.bi.common.world.BookRack;
 import com.fr.bi.common.world.people.Student;
-import com.fr.bi.stable.utils.code.BILogger;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -26,10 +26,10 @@ public class BIJSONObjectTest extends TestCase {
     private String generateString(Object obj) {
         try {
             String result = BIJSONAutoTool.generateJSON(obj, "", false).toString();
-            BILogger.getLogger().info(result);
+            BILoggerFactory.getLogger().info(result);
             return result;
         } catch (Exception ex) {
-            BILogger.getLogger().error(ex.getMessage(), ex);
+            BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         }
         return "";
     }
@@ -41,9 +41,9 @@ public class BIJSONObjectTest extends TestCase {
         books[2] = (Book.getRomanceOfThreeKingdomsBook());
 
         try {
-            BILogger.getLogger().info(BIJSONAutoTool.generateJSON(books, "", false).toString());
+            BILoggerFactory.getLogger().info(BIJSONAutoTool.generateJSON(books, "", false).toString());
         } catch (Exception ex) {
-            BILogger.getLogger().error(ex.getMessage(), ex);
+            BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         }
     }
 
@@ -71,9 +71,9 @@ public class BIJSONObjectTest extends TestCase {
         map.put("two", Book.getOneBook());
         map.put("three", Book.getOneBook());
         try {
-            BILogger.getLogger().info(BIJSONAutoTool.generateJSON(map, "", false).toString());
+            BILoggerFactory.getLogger().info(BIJSONAutoTool.generateJSON(map, "", false).toString());
         } catch (Exception ex) {
-            BILogger.getLogger().error(ex.getMessage(), ex);
+            BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         }
     }
 
@@ -83,9 +83,9 @@ public class BIJSONObjectTest extends TestCase {
 
             String str = BIJSONAutoTool.generateJSON(book, "", false).toString();
             Object object = BIJSONAutoTool.generateObject(str, Book.class);
-            BILogger.getLogger().info(BIJSONAutoTool.generateJSON(book, "", false).toString());
+            BILoggerFactory.getLogger().info(BIJSONAutoTool.generateJSON(book, "", false).toString());
         } catch (Exception ex) {
-            BILogger.getLogger().error(ex.getMessage(), ex);
+            BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         }
     }
 

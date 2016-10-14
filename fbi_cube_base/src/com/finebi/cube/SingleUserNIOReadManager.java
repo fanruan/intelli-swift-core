@@ -3,7 +3,7 @@ package com.finebi.cube;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.io.newio.NIOHelper;
 import com.fr.bi.stable.io.newio.NIOReader;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.io.File;
 import java.util.Map;
@@ -34,7 +34,7 @@ public class SingleUserNIOReadManager implements Release {
                     try {
                         o.getValue().clear();
                     } catch (Throwable e) {
-                        BILogger.getLogger().error(e.getMessage(), e);
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
                     }
                 }
             }
@@ -69,7 +69,7 @@ public class SingleUserNIOReadManager implements Release {
             try {
                 result = c.getConstructor(f.getClass()).newInstance(f);
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
             if (result == null) {
                 return null;

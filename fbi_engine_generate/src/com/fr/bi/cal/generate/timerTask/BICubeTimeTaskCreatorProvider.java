@@ -14,5 +14,5 @@ public interface BICubeTimeTaskCreatorProvider {
 
     void reGenerateTimeTasks(long userId, List<TimerTaskSchedule> scheduleList);
 
-    void removeAllTimeTasks(long userId, List<TimerTaskSchedule> scheduleList);
+    void removeAllTimeTasks(long userId);
 }

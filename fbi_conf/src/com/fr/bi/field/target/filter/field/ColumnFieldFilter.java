@@ -18,7 +18,7 @@ import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -142,7 +142,7 @@ public class ColumnFieldFilter extends ColumnFilter {
                     }
                 }
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
         return gvi;
@@ -164,7 +164,7 @@ public class ColumnFieldFilter extends ColumnFilter {
                 }
                 return createFilterIndex(target, loader, userId);
             } catch (JSONException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
 
         }

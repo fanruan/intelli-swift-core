@@ -50,7 +50,7 @@ public class BICube implements Cube {
 //            if (cacheTableReader.containsKey(tableKey.getSourceID())) {
 //                return cacheTableReader.get(tableKey.getSourceID());
 //            } else {
-//                BILogger.getLogger().info("add table reader:" + tableKey.getSourceID());
+//                BILoggerFactory.getLogger().info("add table reader:" + tableKey.getSourceID());
 //                cacheTableReader.put(tableKey.getSourceID(), new CompoundCubeTableReader(tableKey, resourceRetrievalService, discovery));
 //                return cacheTableReader.get(tableKey.getSourceID());
 //            }

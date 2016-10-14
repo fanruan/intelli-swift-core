@@ -1,6 +1,7 @@
 package com.finebi.cube.gen.oper;
 
 import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.impl.pubsub.BIProcessor;
 import com.finebi.cube.location.BICubeLocation;
@@ -12,7 +13,6 @@ import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
@@ -83,7 +83,7 @@ public abstract class BISourceDataTransport extends BIProcessor {
     }
 
     protected void copyFromOldCubes() {
-        long t=System.currentTimeMillis();
+        long t = System.currentTimeMillis();
         ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID()));
         ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID()));
         try {
@@ -91,11 +91,11 @@ public abstract class BISourceDataTransport extends BIProcessor {
             BICubeLocation to = new BICubeLocation(tempConf.getRootURI().getPath().toString(), tableSource.getSourceID());
             BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
         } catch (IOException e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         } catch (URISyntaxException e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
-BILogger.getLogger().info("table name: "+ tableSource.getTableName() +" update copy files cost time:" + DateUtils.timeCostFrom(t));
+        BILoggerFactory.getLogger().info("table name: " + tableSource.getTableName() + " update copy files cost time:" + DateUtils.timeCostFrom(t));
     }
 
     private Set<String> getParentFieldNames() {

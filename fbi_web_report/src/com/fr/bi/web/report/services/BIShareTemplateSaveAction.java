@@ -1,7 +1,7 @@
 package com.fr.bi.web.report.services;
 
 import com.fr.bi.fs.BISharedReportDAO;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.Decrypt;
@@ -40,7 +40,7 @@ public class BIShareTemplateSaveAction extends ActionNoSessionCMD {
             }
             result.put("result", true);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
         WebUtils.printAsJSON(res, result);
     }

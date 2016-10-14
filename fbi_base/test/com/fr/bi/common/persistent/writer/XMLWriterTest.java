@@ -1,5 +1,6 @@
 package com.fr.bi.common.persistent.writer;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.common.persistent.xml.reader.BIBeanXMLReaderWrapper;
 import com.fr.bi.common.persistent.xml.reader.XMLNormalValueReader;
 import com.fr.bi.common.persistent.xml.reader.XMLPersistentReader;
@@ -11,7 +12,6 @@ import com.fr.bi.common.world.people.Student;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.utils.algorithem.BIComparatorUtils;
-import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StableUtils;
@@ -33,7 +33,7 @@ public class XMLWriterTest extends TestCase {
             ArrayPart partNull = ArrayPart.generateNull();
             checkEquals(partNull, "arrayNull");
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
 
         }
     }
@@ -62,7 +62,7 @@ public class XMLWriterTest extends TestCase {
             ArrayPart part = ArrayPart.generateBasicOne();
             checkEquals(part, "arrayBasic");
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -82,7 +82,7 @@ public class XMLWriterTest extends TestCase {
             StableUtils.makesureFileExist(var3);
             XMLTools.writeOutputStreamXML(object, new FileOutputStream(var3));
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -138,7 +138,7 @@ public class XMLWriterTest extends TestCase {
             o = get(o, name);
             assertTrue(BIComparatorUtils.isExactlyEquals(o, obj));
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
 
         }
     }
@@ -159,7 +159,7 @@ public class XMLWriterTest extends TestCase {
             o = get(o, name);
             assertTrue(BIComparatorUtils.isExactlyEquals(o, obj));
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
 
         }
     }
@@ -172,7 +172,7 @@ public class XMLWriterTest extends TestCase {
             XMLTools.readInputStreamXML(reader, new FileInputStream(var3));
             return object;
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return object;
     }
@@ -180,7 +180,7 @@ public class XMLWriterTest extends TestCase {
     public void testReadTwoMapBasic() {
         MapPart part = new MapPart();
         Object o = get(part, "MapBasicTwo");
-        BILogger.getLogger().info(o.toString());
+        BILoggerFactory.getLogger().info(o.toString());
     }
 
     public void testIterationParts() {
@@ -204,7 +204,7 @@ public class XMLWriterTest extends TestCase {
             assertFalse(ComparatorUtils.equals(result.getB(), ("")));
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertFalse(true);
         }
     }
@@ -222,7 +222,7 @@ public class XMLWriterTest extends TestCase {
             assertEquals(result.getB(), ("b"));
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertFalse(true);
         }
     }
@@ -246,7 +246,7 @@ public class XMLWriterTest extends TestCase {
             assertEquals(result.getB(), ("b"));
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertFalse(true);
         }
     }
@@ -257,7 +257,7 @@ public class XMLWriterTest extends TestCase {
             innerClass4Test.initialInner();
             checkEquals(innerClass4Test, "Inner");
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertFalse(true);
         }
     }

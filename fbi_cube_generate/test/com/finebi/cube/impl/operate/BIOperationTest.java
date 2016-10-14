@@ -10,7 +10,7 @@ import com.finebi.cube.router.IRouter;
 import com.finebi.cube.router.fragment.IFragmentTag;
 import com.finebi.cube.router.status.IStatusTag;
 import com.fr.bi.common.factory.BIFactoryHelper;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import junit.framework.TestCase;
 
 /**
@@ -44,7 +44,7 @@ public class BIOperationTest extends TestCase {
 
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertFalse(true);
         }
     }
@@ -81,7 +81,7 @@ public class BIOperationTest extends TestCase {
             Thread.sleep(4000);
         } catch (Exception e) {
             e.printStackTrace();
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertFalse(true);
         }
     }

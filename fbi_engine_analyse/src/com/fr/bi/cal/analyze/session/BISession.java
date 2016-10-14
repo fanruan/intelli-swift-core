@@ -28,7 +28,7 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.log.CubeGenerateStatusProvider;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.data.TableDataSource;
 import com.fr.fs.base.entity.CompanyRole;
 import com.fr.fs.base.entity.CustomRole;
@@ -45,7 +45,6 @@ import com.fr.main.workbook.ResultWorkBook;
 import com.fr.report.report.ResultReport;
 import com.fr.report.stable.fun.Actor;
 import com.fr.stable.bridge.StableFactory;
-import com.fr.stable.fun.IOFileAttrMark;
 import com.fr.stable.script.CalculatorProvider;
 import com.fr.web.core.SessionDealWith;
 import com.fr.web.core.SessionIDInfor;
@@ -76,8 +75,8 @@ public class BISession extends BIAbstractSession {
     private Map<String, ConcurrentHashMap<Object, PageIteratorGroup>> partpageGroup = new ConcurrentHashMap<String, ConcurrentHashMap<Object, PageIteratorGroup>>();
 
     //young 当前用户（普通）的角色信息
-    private List<Long> customRoles = new ArrayList<Long>();
-    private List<Long> companyRoles = new ArrayList<Long>();
+    private List<CustomRole> customRoles = new ArrayList<CustomRole>();
+    private List<CompanyRole> companyRoles = new ArrayList<CompanyRole>();
 
     public BISession(String remoteAddress, BIWeblet let, long userId) {
         super(remoteAddress, let, userId);
@@ -180,15 +179,15 @@ public class BISession extends BIAbstractSession {
             if (this.getUserId() != UserControl.getInstance().getSuperManagerID()) {
                 Set<CustomRole> cusRoles = CustomRoleControl.getInstance().getCustomRoleSet(this.getUserId());
                 for (CustomRole role : cusRoles) {
-                    customRoles.add(role.getId());
+                    customRoles.add(role);
                 }
                 Set<CompanyRole> comRoles = CompanyRoleControl.getInstance().getCompanyRoleSet(this.getUserId());
                 for (CompanyRole role : comRoles) {
-                    companyRoles.add(role.getId());
+                    companyRoles.add(role);
                 }
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
     }
 
@@ -286,7 +285,7 @@ public class BISession extends BIAbstractSession {
             connections.put("connectionSet", connectionJA);
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
 
         JSONObject jo = new JSONObject();
@@ -414,12 +413,12 @@ public class BISession extends BIAbstractSession {
     }
 
     @Override
-    public List<Long> getCustomRoles() {
+    public List<CustomRole> getCustomRoles() {
         return customRoles;
     }
 
     @Override
-    public List<Long> getCompanyRoles() {
+    public List<CompanyRole> getCompanyRoles() {
         return companyRoles;
     }
 

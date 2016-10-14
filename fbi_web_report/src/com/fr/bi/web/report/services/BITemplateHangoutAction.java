@@ -2,7 +2,7 @@ package com.fr.bi.web.report.services;
 
 import com.fr.bi.fs.BIDAOUtils;
 import com.fr.bi.fs.BIReportNode;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
 import com.fr.web.core.ActionNoSessionCMD;
@@ -28,7 +28,7 @@ public class BITemplateHangoutAction extends ActionNoSessionCMD {
             BIDAOUtils.saveOrUpDate(reportNode, userId);
             jo.put("result", true);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
         WebUtils.printAsJSON(res, jo);
     }

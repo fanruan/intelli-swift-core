@@ -3,7 +3,7 @@ package com.fr.bi.web.conf.services.dbconnection;
 import com.fr.base.FRContext;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.data.core.DataCoreUtils;
 import com.fr.data.core.db.TableProcedure;
@@ -65,7 +65,9 @@ public class BIGetAllTranslatedTablesByConnectionAction extends
             try {
                 if (schemaName != null) {
                     jo.put("schema", schemaName);
-                    if(StringUtils.isNotEmpty(schemaName)) {
+                    //无schema的同样需要取
+                    String[] schemas = DataCoreUtils.getDatabaseSchema(dbc);
+                    if(StringUtils.isNotEmpty(schemaName) || schemas.length == 0) {
                         TableProcedure[] sqlTables = DataCoreUtils.getTables(dbc, TableProcedure.TABLE, schemaName, true);
                         tps = ArrayUtils.addAll(tps, sqlTables);
                         views = ArrayUtils.addAll(views, FRContext.getCurrentEnv().getTableProcedure(dbc, TableProcedure.VIEW, schemaName));
@@ -76,7 +78,7 @@ public class BIGetAllTranslatedTablesByConnectionAction extends
                 }
             } catch (Exception e) {
                 jo.put("error", e.getMessage());
-                BILogger.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().error(e.getMessage());
             }
 
             TableProcedure[] result = ArrayUtils.addAll(tps, views);

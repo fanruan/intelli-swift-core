@@ -1,6 +1,7 @@
 package com.finebi.cube.conf;
 
 import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.impl.conf.CalculateDependManager;
@@ -16,10 +17,11 @@ import com.fr.bi.conf.data.source.ServerTableSource;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.exception.BIKeyAbsentException;
+import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
-import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.data.impl.Connection;
@@ -53,7 +55,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         try {
             allRelationPathSet = BICubeConfigureCenter.getTableRelationManager().getAllTablePath(userId);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -100,7 +102,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
 //            if (!connectionCheck) {
 //                connectionValid = false;
 //                String errorMessage ="error:"+source.getTableName() + ": Connection test failed";
-//                BILogger.getLogger().error(errorMessage);
+//                BILoggerFactory.getLogger().error(errorMessage);
 //                BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), errorMessage, userId);
 //                break;
 //            }
@@ -140,32 +142,32 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         String tCubePath = tempConf.getRootURI().getPath();
         String tempFolderPath = advancedTempConf.getRootURI().getPath();
         try {
-            if (new File(tempFolderPath).exists()){
+            if (new File(tempFolderPath).exists()) {
                 BIFileUtils.delete(new File(tempFolderPath));
             }
-            if (new File(advancedPath).exists() &&! new File(tempFolderPath).exists()) {
+            if (new File(advancedPath).exists() && !new File(tempFolderPath).exists()) {
                 boolean renameFolder = BIFileUtils.renameFolder(new File(advancedPath), new File(tempFolderPath));
                 if (!renameFolder) {
-                    BILogger.getLogger().error("rename Advanced to tempFolder failed");
+                    BILoggerFactory.getLogger().error("rename Advanced to tempFolder failed");
                     return false;
                 }
             }
             if (new File(tCubePath).exists()) {
                 boolean renameFolder = BIFileUtils.renameFolder(new File(tCubePath), new File(advancedPath));
                 if (!renameFolder) {
-                    BILogger.getLogger().error("rename tCube to Advanced failed");
+                    BILoggerFactory.getLogger().error("rename tCube to Advanced failed");
                     return false;
                 }
             }
             if (new File(tempFolderPath).exists()) {
                 boolean deleteTempFolder = BIFileUtils.delete(new File(tempFolderPath));
                 if (!deleteTempFolder) {
-                    BILogger.getLogger().error("delete tempFolder failed ");
+                    BILoggerFactory.getLogger().error("delete tempFolder failed ");
                 }
             }
             return true;
         } catch (IOException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             return false;
         }
     }
@@ -177,13 +179,47 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         }
     }
 
-    @Override
-    public Map<CubeTableSource, UpdateSettingSource> getUpdateSettingSources() {
-        Map<CubeTableSource, UpdateSettingSource> updateSettingSourceMap = new HashMap<CubeTableSource, UpdateSettingSource>();
-        for (CubeTableSource tableSource : sources) {
-            updateSettingSourceMap.put(tableSource, BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(tableSource.getSourceID(), userId));
+    protected UpdateSettingSource setUpdateTypes(CubeTableSource source) {
+        switch (source.getType()) {
+            case BIBaseConstant.TABLETYPE.ETL:
+                return getEtlUpdateType(source);
+            default:
+                return getSingleSourceUpdateType(source);
         }
-        return updateSettingSourceMap;
+
+    }
+
+    private UpdateSettingSource getEtlUpdateType(CubeTableSource source) {
+        UpdateSettingSource updateSettingSource = new UpdateSettingSource();
+        Map<Integer, Set<CubeTableSource>> tableMaps = source.createGenerateTablesMap();
+        boolean needUpdate = false;
+        loop:
+        for (Integer integer : tableMaps.keySet()) {
+            for (CubeTableSource tableSource : tableMaps.get(integer)) {
+                if (tableSource.getType() != BIBaseConstant.TABLETYPE.ETL) {
+                    if (getSingleSourceUpdateType(tableSource).getUpdateType() == DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL) {
+                        needUpdate = true;
+                        break loop;
+                    }
+                }
+            }
+
+        }
+        if (needUpdate) {
+            updateSettingSource.setUpdateType(DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
+        } else {
+            updateSettingSource.setUpdateType(DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER);
+        }
+        return updateSettingSource;
+    }
+
+    private UpdateSettingSource getSingleSourceUpdateType(CubeTableSource source) {
+        UpdateSettingSource updateSettingSource = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(source.getSourceID(), userId);
+        if (null == updateSettingSource) {
+            updateSettingSource = new UpdateSettingSource();
+            updateSettingSource.setUpdateType(DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
+        }
+        return updateSettingSource;
     }
 
     @Override
@@ -232,7 +268,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         ICubeFieldSource primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
         ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
         if (!isTableRelationValid(relation)) {
-            BILogger.getLogger().error("tableSourceRelation invalid:" + relation.toString());
+            BILoggerFactory.getLogger().error("tableSourceRelation invalid:" + relation.toString());
             return null;
         }
         BITableSourceRelation biTableSourceRelation = new BITableSourceRelation(
@@ -275,7 +311,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
                     sourceIdMap.put(relation.toString(), relation);
                 }
             } catch (NullPointerException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
                 continue;
             }
         }
@@ -293,7 +329,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
                     sourceIdMap.put(path.getSourceID(), path);
                 }
             } catch (NullPointerException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
                 continue;
             }
         }

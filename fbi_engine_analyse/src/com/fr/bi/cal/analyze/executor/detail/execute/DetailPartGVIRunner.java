@@ -13,7 +13,7 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.structure.collection.CollectionKey;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.util.BIConfUtils;
 
 import java.util.*;
@@ -176,7 +176,7 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
                 session.setDetailIndexMap(paras.getSortKey(), page, currentIndex);
                 session.setDetailValueMap(paras.getSortKey(), page, values);
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }

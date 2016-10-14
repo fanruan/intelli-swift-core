@@ -1,6 +1,6 @@
 package com.fr.bi.test;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.json.JSONArray;
@@ -184,7 +184,7 @@ public class BIGetTreeNodeAction extends ActionNoSessionCMD {
                     nodeJa.put("halfCheck", state.isHalf());
 
                 } catch (JSONException e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
 
                 ja.put(nodeJa);

@@ -3,7 +3,7 @@ package com.fr.bi.cal.analyze.report.report.widget.detail;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.base.annotation.BICoreField;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -32,7 +32,7 @@ public class BIDetailReportSetting implements BIDetailSetting {
                     view[i] = dimIds.getString(i);
                 }
             } catch (Exception e){
-                BILogger.getLogger().info(e.getMessage());
+                BILoggerFactory.getLogger().info(e.getMessage());
             }
             if (views.has("style")) {
                 JSONObject style = views.getJSONObject("style");
