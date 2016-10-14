@@ -205,6 +205,7 @@ BI.Union = BI.inherit(BI.Widget, {
                 if(BI.isNotNull(table)) {
                     data.fields = table.fields;
                 }
+                self.model.updateFieldsId(data.fields);
                 self.fireEvent(BI.Union.EVENT_SAVE, data);
             }, function() {
                 mask.destroy();
