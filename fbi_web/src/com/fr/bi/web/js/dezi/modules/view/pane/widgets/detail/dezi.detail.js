@@ -235,7 +235,7 @@ BIDezi.DetailView = BI.inherit(BI.View, {
         });
         this.chartSetting.populate();
         this.chartSetting.on(BI.ChartSetting.EVENT_CHANGE, function (v) {
-            var name = v.widget_setting.widget_title;
+            var name = v.widget_title;
             self.model.set({"settings": BI.extend(self.model.get("settings"), v), "name": name});
         });
         return this.chartSetting;
