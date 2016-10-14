@@ -2,7 +2,7 @@ import {each, first, arrayMove, values, keys} from 'core'
 import {Widget, Template, Dimension} from 'data'
 export default class SettingsComponentHelper {
     constructor(props, context) {
-        this.widget = new Widget(props.$widget);
+        this.widget = new Widget(props.$widget, props.wId, new Template(context.$template));
 
     }
 
@@ -49,7 +49,7 @@ export default class SettingsComponentHelper {
         return this.widget.$get();
     }
 
-    set$Dimension($dimension, dId){
+    set$Dimension($dimension, dId) {
         return this.widget.set$Dimension($dimension, dId).$get();
     }
 }

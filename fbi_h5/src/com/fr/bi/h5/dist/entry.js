@@ -4735,7 +4735,7 @@ webpackJsonp([0],{
 	                { style: styles.wrapper },
 	                (0, _core.map)(this.template.getAllControlWidgetIds(), function (wId) {
 	                    var $widget = _this2.template.get$$WidgetById(wId);
-	                    var widget = new _data.Widget($widget);
+	                    var widget = new _data.Widget($widget, wId, _this2.template);
 	                    return _lib2.default.createElement(_Item2.default, { key: wId, id: wId, $widget: $widget, onPress: function onPress() {
 	                            var Component = null;
 	                            switch (widget.getType()) {
@@ -5812,7 +5812,7 @@ webpackJsonp([0],{
 	                { style: { height: _data.Size.ITEM_HEIGHT * items.length } },
 	                items.map(function (value, index) {
 	                    return _lib2.default.createElement(_DimensionComponent2.default, { key: index, value: value, wId: _this4.props.wId, $widget: _this4.state.$widget,
-	                        dId: value.dId, onSelected: function onSelected($dimension) {
+	                        dId: value.dId, onValueChange: function onValueChange($dimension) {
 	                            _this4.setState({
 	                                $widget: _this4._helper.set$Dimension($dimension, value.dId)
 	                            });
@@ -5984,7 +5984,7 @@ webpackJsonp([0],{
 	    function SettingsComponentHelper(props, context) {
 	        _classCallCheck(this, SettingsComponentHelper);
 
-	        this.widget = new _data.Widget(props.$widget);
+	        this.widget = new _data.Widget(props.$widget, props.wId, new _data.Template(context.$template));
 	    }
 
 	    _createClass(SettingsComponentHelper, [{
@@ -6135,18 +6135,37 @@ webpackJsonp([0],{
 	            return _lib2.default.createElement(
 	                _base.Button,
 	                { onPress: function onPress() {
-	                        _this2.props.onSelected(_this2._helper.switchSelect());
+	                        _this2.props.onValueChange(_this2._helper.switchSelect());
 	                    } },
 	                _lib2.default.createElement(
 	                    _layout.Layout,
-	                    { cross: 'center', style: styles.wrapper },
-	                    _lib2.default.createElement(_base.IconButton, { style: styles.icon, invalid: true, selected: this._helper.isUsed(),
-	                        className: 'single-select-font' }),
+	                    { main: 'justify', style: styles.wrapper },
 	                    _lib2.default.createElement(
-	                        _lib.Text,
-	                        { style: (0, _core.sc)([[styles.disabledText, !this._helper.isUsed()]]), textAlign: 'left',
-	                            effect: false },
-	                        props.value.text
+	                        _layout.Layout,
+	                        { cross: 'center' },
+	                        _lib2.default.createElement(_base.IconButton, { style: styles.icon, invalid: true, selected: this._helper.isUsed(),
+	                            className: 'single-select-font' }),
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            { style: (0, _core.sc)([styles.disabledText, !this._helper.isUsed()]), textAlign: 'left',
+	                                effect: false },
+	                            props.value.text
+	                        )
+	                    ),
+	                    _lib2.default.createElement(
+	                        _layout.Layout,
+	                        { cross: 'center' },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            { style: [(0, _core.sc)([styles.disabledText, !this._helper.isUsed()]), styles.sortTargetName],
+	                                textAlign: 'left',
+	                                effect: false },
+	                            this._helper.getSortTargetName()
+	                        ),
+	                        _lib2.default.createElement(_base.IconButton, { style: {}, onPress: function onPress() {
+	                                _this2.props.onValueChange(_this2._helper.switchSort());
+	                            },
+	                            className: this._helper.getSortTargetTypeFont() })
 	                    )
 	                )
 	            );
@@ -6189,6 +6208,13 @@ webpackJsonp([0],{
 	        width: 40
 	    },
 
+	    sortIcon: {},
+
+	    sortTargetName: {
+	        paddingLeft: 10,
+	        paddingRight: 10
+	    },
+
 	    disabledText: {
 	        color: _data.Colors.DISABLED
 	    }
@@ -6218,7 +6244,7 @@ webpackJsonp([0],{
 	    function DimensionComponentHelper(props, context) {
 	        _classCallCheck(this, DimensionComponentHelper);
 
-	        this.widget = new _data.Widget(props.$widget);
+	        this.widget = new _data.Widget(props.$widget, props.wId, context.$template);
 	        this.wId = props.wId;
 	        this.dId = props.dId;
 	        this.dimension = this.widget.getDimensionOrTargetById(this.dId);
@@ -6232,7 +6258,32 @@ webpackJsonp([0],{
 	    }, {
 	        key: 'switchSelect',
 	        value: function switchSelect() {
-	            return this.dimension.setUsed(!this.isUsed());
+	            return this.dimension.setUsed(!this.isUsed()).$get();
+	        }
+	    }, {
+	        key: 'switchSort',
+	        value: function switchSort() {
+	            switch (this.dimension.getSortType()) {
+	                case BICst.SORT.ASC:
+	                    return this.dimension.setSortType(BICst.SORT.DESC).$get();
+	                case BICst.SORT.DESC:
+	                    return this.dimension.setSortType(BICst.SORT.ASC).$get();
+	            }
+	        }
+	    }, {
+	        key: 'getSortTargetName',
+	        value: function getSortTargetName() {
+	            return this.dimension.getSortTargetName();
+	        }
+	    }, {
+	        key: 'getSortTargetTypeFont',
+	        value: function getSortTargetTypeFont() {
+	            switch (this.dimension.getSortType()) {
+	                case BICst.SORT.ASC:
+	                    return 'asc-sort-font';
+	                case BICst.SORT.DESC:
+	                    return 'dsc-sort-font';
+	            }
 	        }
 	    }]);
 
@@ -6332,7 +6383,7 @@ webpackJsonp([0],{
 	                        className: 'single-select-font' }),
 	                    _lib2.default.createElement(
 	                        _lib.Text,
-	                        { style: (0, _core.sc)([[styles.disabledText, !this._helper.isUsed()]]), textAlign: 'left',
+	                        { style: (0, _core.sc)([styles.disabledText, !this._helper.isUsed()]), textAlign: 'left',
 	                            effect: false },
 	                        props.value.text
 	                    )
@@ -6388,7 +6439,7 @@ webpackJsonp([0],{
 
 
 	var DragHandle = SortableHandle(function () {
-	    return _lib2.default.createElement(_base.IconButton, { effect: false, style: styles.dragHandler, className: 'drag-handler-icon', iconWidth: 18,
+	    return _lib2.default.createElement(_base.IconButton, { effect: false, style: styles.dragHandler, className: 'draggable-font', iconWidth: 18,
 	        iconHeight: 18 });
 	});
 
@@ -6478,7 +6529,7 @@ webpackJsonp([0],{
 	            var $widget = _props.$widget;
 	            var wId = _props.wId;
 
-	            var widget = new _data.Widget($widget);
+	            var widget = new _data.Widget($widget, wId, new _data.Template(this.context.$template));
 	            return _lib2.default.createElement(
 	                _layout.Layout,
 	                { main: 'justify', cross: 'center', style: styles.header },
@@ -6661,7 +6712,7 @@ webpackJsonp([0],{
 	            var $widget = props.$widget;
 	            var wId = props.wId;
 
-	            var widget = new _data.Widget($widget, this.context.$template, wId);
+	            var widget = new _data.Widget($widget, wId, new _data.Template(this.context.$template));
 	            return widget.getData().then(function (data) {
 	                _this2.setState({ data: data });
 	            });
@@ -6767,7 +6818,7 @@ webpackJsonp([0],{
 	        var $widget = props.$widget;
 	        var wId = props.wId;
 
-	        this.widget = new _data.Widget($widget, context.$template, wId);
+	        this.widget = new _data.Widget($widget, wId, new _data.Template(context.$template));
 	        this.data = [];
 	    }
 
@@ -7613,7 +7664,7 @@ webpackJsonp([0],{
 	        var $widget = props.$widget;
 	        var wId = props.wId;
 
-	        this.widget = new _data.Widget($widget, context.$template, wId);
+	        this.widget = new _data.Widget($widget, wId, new _data.Template(context.$template));
 	        this.data = [];
 	    }
 
@@ -7748,7 +7799,7 @@ webpackJsonp([0],{
 	            var $widget = _props.$widget;
 	            var wId = _props.wId;
 
-	            var widget = new _data.Widget($widget, this.context.$template, wId);
+	            var widget = new _data.Widget($widget, wId, new _data.Template(this.context.$template));
 	            var style = widget.getStyle();
 	            return _lib2.default.createElement(_lib.TextInput, {
 	                style: _extends({ height: this.props.height }, styles.wrapper, style),
@@ -8101,7 +8152,7 @@ webpackJsonp([0],{
 
 
 	// module
-	exports.push([module.id, "/****** common color(常用颜色,可用于普遍场景) *****/\n/**** custom color(自定义颜色,用于特定场景) ****/\n.tool-filter-font .b-font:before {\n  content: '\\E624';\n  color: #808080;\n}\n.tool-filter-font:active .b-font:before {\n  content: '\\E624';\n  color: #009de3;\n}\n.tool-filter-font.disabled .b-font:before {\n  content: '\\E624';\n  color: #808080;\n}\n.node-fold-font .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.node-fold-font:active .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.node-fold-font.active .b-font:before {\n  content: '\\E611';\n  color: #808080;\n}\n.node-fold-font.disabled .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.setting-font .b-font:before {\n  content: '\\E62A';\n  color: #808080;\n}\n.setting-font.disabled .b-font:before {\n  content: '\\E62A';\n  color: #808080;\n}\n.single-select-font .b-font:before {\n  content: '\\E618';\n  color: #ffffff;\n}\n.single-select-font.active .b-font:before {\n  content: '\\E618';\n  color: #009de3;\n}\n.single-select-font.disabled .b-font:before {\n  content: '\\E618';\n  color: #ffffff;\n}\n", ""]);
+	exports.push([module.id, "/****** common color(常用颜色,可用于普遍场景) *****/\n/**** custom color(自定义颜色,用于特定场景) ****/\n.tool-filter-font .b-font:before {\n  content: '\\E624';\n  color: #808080;\n}\n.tool-filter-font:active .b-font:before {\n  content: '\\E624';\n  color: #009de3;\n}\n.tool-filter-font.disabled .b-font:before {\n  content: '\\E624';\n  color: #808080;\n}\n.node-fold-font .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.node-fold-font:active .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.node-fold-font.active .b-font:before {\n  content: '\\E611';\n  color: #808080;\n}\n.node-fold-font.disabled .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.setting-font .b-font:before {\n  content: '\\E62A';\n  color: #808080;\n}\n.setting-font.disabled .b-font:before {\n  content: '\\E62A';\n  color: #808080;\n}\n.single-select-font .b-font:before {\n  content: '\\E618';\n  color: #ffffff;\n}\n.single-select-font.active .b-font:before {\n  content: '\\E618';\n  color: #009de3;\n}\n.single-select-font.disabled .b-font:before {\n  content: '\\E618';\n  color: #ffffff;\n}\n.draggable-font .b-font:before {\n  content: '\\E62C';\n  color: #808080;\n}\n.draggable-font.disabled .b-font:before {\n  content: '\\E62C';\n  color: #808080;\n}\n.asc-sort-font .b-font:before {\n  content: '\\E62D';\n  color: #808080;\n}\n.asc-sort-font.disabled .b-font:before {\n  content: '\\E62D';\n  color: #808080;\n}\n.dsc-sort-font .b-font:before {\n  content: '\\E62B';\n  color: #808080;\n}\n.dsc-sort-font.disabled .b-font:before {\n  content: '\\E62B';\n  color: #808080;\n}\n", ""]);
 
 	// exports
 

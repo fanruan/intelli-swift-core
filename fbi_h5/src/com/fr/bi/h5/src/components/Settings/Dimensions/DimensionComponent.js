@@ -62,13 +62,24 @@ class DimensionComponent extends Component {
         const {...props} = this.props, {...state} = this.state;
         this._helper = new DimensionComponentHelper(props, this.context);
         return <Button onPress={()=> {
-            this.props.onSelected(this._helper.switchSelect());
+            this.props.onValueChange(this._helper.switchSelect());
         }}>
-            <Layout cross='center' style={styles.wrapper}>
-                <IconButton style={styles.icon} invalid={true} selected={this._helper.isUsed()}
-                            className={'single-select-font'}/>
-                <Text style={sc([[styles.disabledText, !this._helper.isUsed()]])} textAlign={'left'}
-                      effect={false}>{props.value.text}</Text>
+            <Layout main='justify' style={styles.wrapper}>
+                <Layout cross='center'>
+                    <IconButton style={styles.icon} invalid={true} selected={this._helper.isUsed()}
+                                className={'single-select-font'}/>
+                    <Text style={sc([styles.disabledText, !this._helper.isUsed()])} textAlign={'left'}
+                          effect={false}>{props.value.text}</Text>
+                </Layout>
+                <Layout cross='center'>
+                    <Text style={[sc([styles.disabledText, !this._helper.isUsed()]), styles.sortTargetName]}
+                          textAlign={'left'}
+                          effect={false}>{this._helper.getSortTargetName()}</Text>
+                    <IconButton style={{}} onPress={()=> {
+                        this.props.onValueChange(this._helper.switchSort());
+                    }}
+                                className={this._helper.getSortTargetTypeFont()}/>
+                </Layout>
             </Layout>
         </Button>
     }
@@ -101,6 +112,13 @@ const styles = StyleSheet.create({
     },
     icon: {
         width: 40,
+    },
+
+    sortIcon: {},
+
+    sortTargetName: {
+        paddingLeft: 10,
+        paddingRight: 10
     },
 
     disabledText: {

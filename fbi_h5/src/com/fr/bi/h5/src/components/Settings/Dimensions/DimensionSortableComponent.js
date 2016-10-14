@@ -65,7 +65,7 @@ class DimensionSortableComponent extends Component {
                 <Layout cross='center'>
                     <IconButton style={styles.icon} invalid={true} selected={this._helper.isUsed()}
                                 className={'single-select-font'}/>
-                    <Text style={sc([[styles.disabledText, !this._helper.isUsed()]])} textAlign={'left'}
+                    <Text style={sc([styles.disabledText, !this._helper.isUsed()])} textAlign={'left'}
                           effect={false}>{props.value.text}</Text>
                 </Layout>
                 <DragHandle/>
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
 const {SortableElement, SortableHandle} = Sortable;
 
 const DragHandle = SortableHandle(() => {
-    return <IconButton effect={false} style={styles.dragHandler} className={'drag-handler-icon'} iconWidth={18}
+    return <IconButton effect={false} style={styles.dragHandler} className={'draggable-font'} iconWidth={18}
                        iconHeight={18}/>
 });
 

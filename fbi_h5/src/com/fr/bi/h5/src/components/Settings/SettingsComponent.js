@@ -140,7 +140,7 @@ class SettingsComponent extends Component {
         return <ScrollView style={{height: Size.ITEM_HEIGHT * items.length}}>
             {items.map((value, index) =>
                 <DimensionComponent key={index} value={value} wId={this.props.wId} $widget={this.state.$widget}
-                                    dId={value.dId} onSelected={($dimension)=> {
+                                    dId={value.dId} onValueChange={($dimension)=> {
                     this.setState({
                         $widget: this._helper.set$Dimension($dimension, value.dId)
                     });

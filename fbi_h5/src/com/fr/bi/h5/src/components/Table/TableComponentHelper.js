@@ -3,7 +3,7 @@ import {Template, Widget, Dimension} from 'data'
 class TableComponentHelper {
     constructor(props, context) {
         const {$widget, wId} = props;
-        this.widget = new Widget($widget, context.$template, wId);
+        this.widget = new Widget($widget, wId, new Template(context.$template));
         this.data = [];
     }
 

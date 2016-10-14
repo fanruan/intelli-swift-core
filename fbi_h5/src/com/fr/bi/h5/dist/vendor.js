@@ -67132,14 +67132,16 @@
 	    }, {
 	        key: 'getWidgetById',
 	        value: function getWidgetById(id) {
-	            return new _Widget2.default(this.get$$WidgetById(id));
+	            return new _Widget2.default(this.get$$WidgetById(id), id, this);
 	        }
 	    }, {
 	        key: 'getAllWidgetIds',
 	        value: function getAllWidgetIds() {
+	            var _this = this;
+
 	            var res = [];
 	            this.$template.get('widgets').forEach(function ($widget, wId) {
-	                if (!new _Widget2.default($widget).isControl()) {
+	                if (!new _Widget2.default($widget, wId, _this).isControl()) {
 	                    res.push(wId);
 	                }
 	            });
@@ -67148,9 +67150,11 @@
 	    }, {
 	        key: 'getAllControlWidgetIds',
 	        value: function getAllControlWidgetIds() {
+	            var _this2 = this;
+
 	            var res = [];
 	            this.$template.get('widgets').forEach(function ($widget, wId) {
-	                if (new _Widget2.default($widget).isControl()) {
+	                if (new _Widget2.default($widget, wId, _this2).isControl()) {
 	                    res.push(wId);
 	                }
 	            });
@@ -67159,8 +67163,10 @@
 	    }, {
 	        key: 'hasControlWidget',
 	        value: function hasControlWidget() {
+	            var _this3 = this;
+
 	            return this.$template.get('widgets').some(function ($widget, wId) {
-	                return new _Widget2.default($widget).isControl();
+	                return new _Widget2.default($widget, wId, _this3).isControl();
 	            });
 	        }
 	    }, {
@@ -67211,12 +67217,12 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var Widget = function () {
-	    function Widget($widget, $template, wId) {
+	    function Widget($widget, wId, template) {
 	        _classCallCheck(this, Widget);
 
 	        this.$widget = $widget;
-	        this.$template = $template;
 	        this.wId = wId;
+	        this.template = template;
 	    }
 
 	    _createClass(Widget, [{
@@ -67247,20 +67253,20 @@
 	    }, {
 	        key: 'getDimensionById',
 	        value: function getDimensionById(id) {
-	            return new _Dimension2.default(this.get$$DimensionById(id));
+	            return new _Dimension2.default(this.get$$DimensionById(id), id, this);
 	        }
 	    }, {
 	        key: 'getTargetById',
 	        value: function getTargetById(id) {
-	            return new _Target2.default(this.get$$TargetById(id));
+	            return new _Target2.default(this.get$$TargetById(id), id, this);
 	        }
 	    }, {
 	        key: 'getDimensionOrTargetById',
 	        value: function getDimensionOrTargetById(id) {
 	            if (this.isDimensionById(id)) {
-	                return new _Dimension2.default(this.get$$DimensionById(id));
+	                return new _Dimension2.default(this.get$$DimensionById(id), id, this);
 	            }
-	            return new _Target2.default(this.get$$TargetById(id));
+	            return new _Target2.default(this.get$$TargetById(id), id, this);
 	        }
 	    }, {
 	        key: 'getAllDimensionIds',
@@ -67318,7 +67324,7 @@
 	            var result = [];
 	            ids.forEach(function (id) {
 	                var $$dim = _this.get$$DimensionOrTargetById(id);
-	                if (new _Dimension2.default($$dim).isUsed()) {
+	                if (new _Dimension2.default($$dim, id, _this).isUsed()) {
 	                    result.push(id);
 	                }
 	            });
@@ -67333,7 +67339,7 @@
 	            var result = [];
 	            ids.forEach(function (id) {
 	                var $$dim = _this2.get$$DimensionById(id);
-	                if (new _Dimension2.default($$dim).isUsed()) {
+	                if (new _Dimension2.default($$dim, id, _this2).isUsed()) {
 	                    result.push(id);
 	                }
 	            });
@@ -67348,7 +67354,7 @@
 	            var result = [];
 	            ids.forEach(function (id) {
 	                var $$dim = _this3.get$$TargetById(id);
-	                if (new _Target2.default($$dim).isUsed()) {
+	                if (new _Target2.default($$dim, id, _this3).isUsed()) {
 	                    result.push(id);
 	                }
 	            });
@@ -67738,7 +67744,7 @@
 
 /***/ },
 /* 776 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -67748,35 +67754,69 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _core = __webpack_require__(329);
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var Dimension = function () {
-	    function Dimension($$dimension, id, widget) {
+	    function Dimension($dimension, dId, widget) {
 	        _classCallCheck(this, Dimension);
 
-	        this.$$dimension = $$dimension;
-	        this._parent = widget;
+	        this.$dimension = $dimension;
+	        this.dId = dId;
+	        this.widget = widget;
 	    }
 
 	    _createClass(Dimension, [{
+	        key: '$get',
+	        value: function $get() {
+	            return this.$dimension;
+	        }
+	    }, {
 	        key: 'getName',
 	        value: function getName() {
-	            return this.$$dimension.get('name');
+	            return this.$dimension.get('name');
 	        }
 	    }, {
 	        key: 'isUsed',
 	        value: function isUsed() {
-	            return this.$$dimension.get('used');
+	            return this.$dimension.get('used');
+	        }
+	    }, {
+	        key: 'getSortTargetName',
+	        value: function getSortTargetName() {
+	            var $sort = this.$dimension.get('sort');
+	            if ($sort) {
+	                var sort_target = $sort.get('sort_target');
+	                if (sort_target) {
+	                    return this.widget.getDimensionOrTargetById(sort_target).getName();
+	                }
+	            }
+	            return this.getName();
+	        }
+	    }, {
+	        key: 'getSortType',
+	        value: function getSortType() {
+	            var $sort = this.$dimension.get('sort');
+	            if ($sort) {
+	                var type = $sort.get('type');
+	                if (!(0, _core.isNil)(type)) {
+	                    return type;
+	                }
+	            }
+	            return BICst.SORT.ASC;
 	        }
 	    }, {
 	        key: 'setUsed',
 	        value: function setUsed(b) {
-	            return this.$$dimension.set('used', !!b);
+	            this.$dimension = this.$dimension.set('used', !!b);
+	            return this;
 	        }
 	    }, {
-	        key: 'getWidgetBelongTo',
-	        value: function getWidgetBelongTo() {
-	            return this._parent;
+	        key: 'setSortType',
+	        value: function setSortType(type) {
+	            this.$dimension = this.$dimension.setIn(['sort', 'type'], type);
+	            return this;
 	        }
 	    }]);
 
@@ -67787,7 +67827,7 @@
 
 /***/ },
 /* 777 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -67797,35 +67837,69 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _core = __webpack_require__(329);
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var Target = function () {
-	    function Target($$target, id, widget) {
+	    function Target($dimension, dId, widget) {
 	        _classCallCheck(this, Target);
 
-	        this.$$target = $$target;
-	        this._parent = widget;
+	        this.$dimension = $dimension;
+	        this.dId = dId;
+	        this.widget = widget;
 	    }
 
 	    _createClass(Target, [{
+	        key: '$get',
+	        value: function $get() {
+	            return this.$dimension;
+	        }
+	    }, {
 	        key: 'getName',
 	        value: function getName() {
-	            return this.$$target.get('name');
+	            return this.$dimension.get('name');
 	        }
 	    }, {
 	        key: 'isUsed',
 	        value: function isUsed() {
-	            return this.$$target.get('used');
+	            return this.$dimension.get('used');
+	        }
+	    }, {
+	        key: 'getSortTargetName',
+	        value: function getSortTargetName() {
+	            var $sort = this.$dimension.get('sort');
+	            if ($sort) {
+	                var sort_target = $sort.get('sort_target');
+	                if (sort_target) {
+	                    return this.widget.getDimensionOrTargetById(sort_target).getName();
+	                }
+	            }
+	            return this.getName();
+	        }
+	    }, {
+	        key: 'getSortType',
+	        value: function getSortType() {
+	            var $sort = this.$dimension.get('sort');
+	            if ($sort) {
+	                var type = $sort.get('type');
+	                if (!(0, _core.isNil)(type)) {
+	                    return type;
+	                }
+	            }
+	            return BICst.SORT.ASC;
 	        }
 	    }, {
 	        key: 'setUsed',
 	        value: function setUsed(b) {
-	            return this.$$target.set('used', !!b);
+	            this.$dimension = this.$dimension.set('used', !!b);
+	            return this;
 	        }
 	    }, {
-	        key: 'getWidgetBelongTo',
-	        value: function getWidgetBelongTo() {
-	            return this._parent;
+	        key: 'setSortType',
+	        value: function setSortType(type) {
+	            this.$dimension = this.$dimension.setIn(['sort', 'type'], type);
+	            return this;
 	        }
 	    }]);
 

@@ -52,7 +52,7 @@ class ContentComponent extends Component {
 
     render() {
         const {$widget, wId} = this.props;
-        const widget = new Widget($widget, this.context.$template, wId);
+        const widget = new Widget($widget, wId, new Template(this.context.$template));
         const style = widget.getStyle();
         return <TextInput
             style={{height: this.props.height, ...styles.wrapper, ...style}}

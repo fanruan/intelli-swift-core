@@ -70,7 +70,7 @@ class Controls extends Component {
         return <ScrollView style={styles.wrapper}>
             {map(this.template.getAllControlWidgetIds(), (wId)=> {
                 const $widget = this.template.get$$WidgetById(wId);
-                const widget = new Widget($widget);
+                const widget = new Widget($widget, wId, this.template);
                 return <Item key={wId} id={wId} $widget={$widget} onPress={()=> {
                     let Component = null;
                     switch (widget.getType()) {

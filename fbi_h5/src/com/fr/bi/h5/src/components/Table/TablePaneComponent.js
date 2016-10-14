@@ -47,7 +47,7 @@ class TablePaneComponent extends Component {
 
     _renderHeader() {
         const {$widget, wId} = this.props;
-        const widget = new Widget($widget);
+        const widget = new Widget($widget, wId, new Template(this.context.$template));
         return <Layout main='justify' cross='center' style={styles.header}>
             <Text>{widget.getName()}</Text>
             <IconLink className='setting-font' onPress={()=> {
