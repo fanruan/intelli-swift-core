@@ -109,16 +109,21 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
         var self = this;
         var updateList = this.items.slice(floor + 1);
         var values = items.slice(floor + 1);
-        BI.each(updateList, function (idx, listLabel) {
-            if (BI.isNull(values[idx])) {
+        for(var i = 0;i<updateList.length;i++) {
+            if (BI.isNull(values[i])) {
                 return;
             }
-            var value = listLabel.getValue();
-            listLabel.populate({
-                items: values[idx]
+            var value = updateList[i].getValue();
+            updateList[i].populate({
+                items: values[i]
             });
-            listLabel.setValue(value);
-        });
+            updateList[i].setValue(value);
+
+            var now = updateList[i].getValue();
+            if(value !== now) {     //接着刷新剩余行
+                return;
+            }
+        }
     },
 
     refreshView: function (data) {
