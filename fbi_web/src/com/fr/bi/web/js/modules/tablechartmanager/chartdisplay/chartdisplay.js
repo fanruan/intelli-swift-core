@@ -300,7 +300,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 self.errorPane.setVisible(true);
                 return;
             }
-            // try {
+            try {
                 var dimensionIds = BI.Utils.getAllDimDimensionIDs(o.wId);
                 var lnglat = BI.Utils.getDimensionPositionByID(dimensionIds[0]);
                 var op;
@@ -391,12 +391,12 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         num_separators: BI.Utils.getWSNumberSeparatorsByID(o.wId),
                         right_num_separators: BI.Utils.getWSRightNumberSeparatorsByID(o.wId),
                         right2_num_separators: BI.Utils.getWSRight2NumberSeparatorsByID(o.wId),
-                        left_axis_show_label: BI.Utils.getWSLeftAxisShowLabelByID(o.wId),
-                        left_axis_label_setting: BI.Utils.getWSLeftAxisLabelSettingByID(o.wId),
-                        left_line_color: BI.Utils.getWSLeftAxisLineColorByID(o.wId),
-                        right_axis_show_label: BI.Utils.getWSRightAxisShowLabelByID(o.wId),
-                        right_axis_label_setting: BI.Utils.getWSRightAxisLabelSettingByID(o.wId),
-                        right_line_color: BI.Utils.getWSRightAxisLineColorByID(o.wId),
+                        // left_axis_show_label: BI.Utils.getWSLeftAxisShowLabelByID(o.wId),
+                        // left_axis_label_setting: BI.Utils.getWSLeftAxisLabelSettingByID(o.wId),
+                        // left_line_color: BI.Utils.getWSLeftAxisLineColorByID(o.wId),
+                        // right_axis_show_label: BI.Utils.getWSRightAxisShowLabelByID(o.wId),
+                        // right_axis_label_setting: BI.Utils.getWSRightAxisLabelSettingByID(o.wId),
+                        // right_line_color: BI.Utils.getWSRightAxisLineColorByID(o.wId),
                         chart_font: BI.Utils.getGSChartFont(o.wId),
                         null_continue: BI.Utils.getWSNullContinueByID(o.wId),
                         background_layer_info: MapConst.WMS_INFO[BI.Utils.getWSBackgroundLayerInfoByID(o.wId)]
@@ -407,11 +407,11 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                     });
                 }
                 selectedTab.populate(data, op, types);
-            // } catch (e) {
-            //     self.errorPane.setErrorInfo("error happens during populate chart: " + e);
-            //     console.error(e);
-            //     self.errorPane.setVisible(true);
-            // }
+            } catch (e) {
+                self.errorPane.setErrorInfo("error happens during populate chart: " + e);
+                console.error(e);
+                self.errorPane.setVisible(true);
+            }
         });
     },
 
