@@ -34,13 +34,14 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
     },
 
     _initData: function (items) {
-        var self = this, result = [];
+        var self = this, result = [], allItems = [];
         this.map = {};
         this.itemsMap = {};
         BI.each(items, function (idx, item) {
             var temp = [];
             BI.each(item, function (i, data) {
                 var node = BI.clone(data);
+                allItems.push(node);
                 self.itemsMap[node.id] = node;
                 var has = contains(temp, node);
                 if (has) {
@@ -105,19 +106,19 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         }
     },
 
-    _updateItems: function (floor) {
+    _updateItems: function (floor, v) {
         floor = floor || 0;
         var self = this;
         var result = [];
-        var values = this.view.getValue();
+        var values = v || this.view.getValue();
         for (var i = floor + 1; i <= this.items.length - 1; i++) {
             var temp = [];
             var preItems = this.items[i - 1];
-            var preValues = values[i - 1];
+            var preValues = values[i - 1] || ["_*_"];
             var preSelectedItems = [];
 
             if (i === floor + 1) {
-                if (BI.contains(preValues, "*")) {
+                if (BI.contains(preValues, "_*_")) {
                     BI.each(preItems, function (idx, item) {
                         preSelectedItems = BI.concat(preSelectedItems, convertToItems(item));
                     });
@@ -129,7 +130,7 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
                     });
                 }
             } else {
-                if (BI.contains(preValues, "*")) {
+                if (BI.contains(preValues, "_*_")) {
                     BI.each(result[i - floor - 2], function (idx, item) {
                         preSelectedItems = BI.concat(preSelectedItems, convertToItems(item));
                     });
@@ -245,7 +246,7 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
             }
         }
 
-        if (BI.isNotEmptyArray(resultId) || BI.contains(op.value, "*")) {
+        if (BI.isNotEmptyArray(resultId) || BI.contains(op.value, "_*_")) {
             o.itemsCreator(op, function (value) {
                 self._updateData(value.items);
                 self._updateItems(floor);
@@ -259,11 +260,61 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
 
     populate: function (v) {
         this._initData(v.items);
+        var items = [];
+        BI.each(v.items, function (idx, array) {
+            BI.each(array, function (i, item) {
+                items.push(item);
+            })
+        });
+        this._updateData(items);
+
+        var result = [];
+        convertToArray(v.selectedValue, result, 0);
+        this._updateItems(0, result);
+
         this.view.refreshView({
             items: this.items,
             titles: v.titles
-        })
+        });
+
+        this.view.setValue(result);
+
+        function convertToArray(obj, result, i) {
+            if(BI.isEmptyObject(obj)) {
+                return ;
+            }
+            var keys = Object.keys(obj);
+            result[i] = BI.uniq(BI.concat(result[i]||[],keys));
+            BI.each(keys, function (idx, key) {
+                convertToArray(obj[key], result, i+1)
+            });
+            return result;
+        }
     },
+
+    // setValue: function (v) {
+    //     v = v || {};
+    //     var result = [];
+    //     convertToArray(v,result,0);
+    //     this._updateItems(0, result);
+    //     this.view.refreshView({
+    //         items: this.items
+    //     });
+    //
+    //     this.view.setValue(result);
+    //
+    //     function convertToArray(obj, result, i) {
+    //         if(BI.isEmptyObject(obj)) {
+    //             return ;
+    //         }
+    //         var keys = Object.keys(obj);
+    //         result[i] = BI.uniq(BI.concat(result[i]||[],keys));
+    //         BI.each(keys, function (idx, key) {
+    //             convertToArray(obj[key], result, i+1)
+    //         })
+    //
+    //     }
+    // },
 
     getValue: function () {
         var selectedButtons = this.view.getSelectedButtons();

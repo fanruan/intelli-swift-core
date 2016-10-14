@@ -122,8 +122,12 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
     },
 
     refreshView: function (data) {
-        this.setTitles(data.titles);
-        this.setItems(data.items);
+        if(data.titles) {
+            this.setTitles(data.titles);
+        }
+        if(data.items) {
+            this.setItems(data.items);
+        }
     },
 
     getSelectedButtons: function () {
@@ -199,6 +203,12 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
         this.title.setHeight(titles.length * this._constant.LIST_LABEL_HEIGHT);
     },
 
+    changeValue: function (v) {
+        BI.each(this.items, function (idx, item) {
+            item.changeValue(v[idx] || []);
+        });
+    },
+
     setValue: function (v) {
         var value = [];
         BI.each(this.items, function (idx, item) {
@@ -206,7 +216,7 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
                 item.setValue(v[idx] || []);
             }
             if (BI.isEmptyArray(v[idx]) || BI.isNull(v[idx])) {
-                value.push(["*"]);
+                value.push(["_*_"]);
             } else {
                 var temp = [];
                 // 排除错误的设置的值
@@ -215,7 +225,7 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
                 });
                 var valueTemp = BI.intersection(v[idx], temp);
                 if (BI.isEmptyArray(valueTemp)) {
-                    valueTemp = ["*"];
+                    valueTemp = ["_*_"];
                 }
                 value.push(valueTemp);
             }
