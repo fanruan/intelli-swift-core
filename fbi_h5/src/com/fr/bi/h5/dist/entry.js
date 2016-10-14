@@ -33,17 +33,17 @@ webpackJsonp([0],{
 
 	var _View2 = _interopRequireDefault(_View);
 
-	__webpack_require__(945);
+	__webpack_require__(956);
 
-	__webpack_require__(947);
+	__webpack_require__(958);
 
-	__webpack_require__(949);
+	__webpack_require__(960);
 
-	__webpack_require__(951);
+	__webpack_require__(962);
 
-	__webpack_require__(953);
+	__webpack_require__(964);
 
-	__webpack_require__(955);
+	__webpack_require__(966);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2129,17 +2129,17 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _layout = __webpack_require__(780);
+	var _layout = __webpack_require__(790);
 
-	var _template = __webpack_require__(789);
+	var _template = __webpack_require__(799);
 
 	var TodoActions = _interopRequireWildcard(_template);
 
-	var _Main = __webpack_require__(790);
+	var _Main = __webpack_require__(800);
 
 	var _Main2 = _interopRequireDefault(_Main);
 
-	var _Layout = __webpack_require__(944);
+	var _Layout = __webpack_require__(955);
 
 	var _Layout2 = _interopRequireDefault(_Layout);
 
@@ -2286,7 +2286,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 789:
+/***/ 799:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2313,7 +2313,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 790:
+/***/ 800:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2342,13 +2342,13 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _layout = __webpack_require__(780);
+	var _layout = __webpack_require__(790);
 
-	var _Toolbar = __webpack_require__(791);
+	var _Toolbar = __webpack_require__(801);
 
 	var _Toolbar2 = _interopRequireDefault(_Toolbar);
 
-	var _LayoutComponent = __webpack_require__(926);
+	var _LayoutComponent = __webpack_require__(936);
 
 	var _LayoutComponent2 = _interopRequireDefault(_LayoutComponent);
 
@@ -2376,7 +2376,7 @@ webpackJsonp([0],{
 	        var _this = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props, context));
 
 	        console.log(props);
-	        _this.template = new _data.Template(props.$template);
+	        _this.template = _data.TemplateFactory.createTemplate(props.$template);
 	        return _this;
 	    }
 
@@ -2586,7 +2586,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 791:
+/***/ 801:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2615,13 +2615,13 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _layout = __webpack_require__(780);
+	var _layout = __webpack_require__(790);
 
-	var _base = __webpack_require__(792);
+	var _base = __webpack_require__(802);
 
-	var _widgets = __webpack_require__(911);
+	var _widgets = __webpack_require__(921);
 
-	var _Controls = __webpack_require__(922);
+	var _Controls = __webpack_require__(932);
 
 	var _Controls2 = _interopRequireDefault(_Controls);
 
@@ -2699,7 +2699,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 911:
+/***/ 921:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2709,15 +2709,15 @@ webpackJsonp([0],{
 	});
 	exports.MultiTreeSelectorWidget = exports.MultiSelectorWidget = exports.TableWidget = undefined;
 
-	var _TableWidget2 = __webpack_require__(912);
+	var _TableWidget2 = __webpack_require__(922);
 
 	var _TableWidget3 = _interopRequireDefault(_TableWidget2);
 
-	var _MultiSelectorWidget2 = __webpack_require__(915);
+	var _MultiSelectorWidget2 = __webpack_require__(925);
 
 	var _MultiSelectorWidget3 = _interopRequireDefault(_MultiSelectorWidget2);
 
-	var _MultiTreeSelectorWidget2 = __webpack_require__(918);
+	var _MultiTreeSelectorWidget2 = __webpack_require__(928);
 
 	var _MultiTreeSelectorWidget3 = _interopRequireDefault(_MultiTreeSelectorWidget2);
 
@@ -2730,7 +2730,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 912:
+/***/ 922:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2761,13 +2761,13 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(792);
+	var _base = __webpack_require__(802);
 
-	var _GroupHeader = __webpack_require__(913);
+	var _GroupHeader = __webpack_require__(923);
 
 	var _GroupHeader2 = _interopRequireDefault(_GroupHeader);
 
-	var _GroupItems = __webpack_require__(914);
+	var _GroupItems = __webpack_require__(924);
 
 	var _GroupItems2 = _interopRequireDefault(_GroupItems);
 
@@ -2904,7 +2904,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 913:
+/***/ 923:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2929,7 +2929,7 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(792);
+	var _base = __webpack_require__(802);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3037,7 +3037,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 914:
+/***/ 924:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3062,7 +3062,7 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(792);
+	var _base = __webpack_require__(802);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3241,7 +3241,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 915:
+/***/ 925:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3274,17 +3274,17 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _layout = __webpack_require__(780);
+	var _layout = __webpack_require__(790);
 
-	var _base = __webpack_require__(792);
+	var _base = __webpack_require__(802);
 
 	var _data = __webpack_require__(773);
 
-	var _Item = __webpack_require__(916);
+	var _Item = __webpack_require__(926);
 
 	var _Item2 = _interopRequireDefault(_Item);
 
-	var _MultiSelectorWidgetHelper = __webpack_require__(917);
+	var _MultiSelectorWidgetHelper = __webpack_require__(927);
 
 	var _MultiSelectorWidgetHelper2 = _interopRequireDefault(_MultiSelectorWidgetHelper);
 
@@ -3520,7 +3520,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 916:
+/***/ 926:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3551,9 +3551,9 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _layout = __webpack_require__(780);
+	var _layout = __webpack_require__(790);
 
-	var _base = __webpack_require__(792);
+	var _base = __webpack_require__(802);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3670,7 +3670,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 917:
+/***/ 927:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3765,7 +3765,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 918:
+/***/ 928:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3798,19 +3798,19 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(792);
+	var _base = __webpack_require__(802);
 
 	var _data = __webpack_require__(773);
 
-	var _Item = __webpack_require__(919);
+	var _Item = __webpack_require__(929);
 
 	var _Item2 = _interopRequireDefault(_Item);
 
-	var _MultiTreeSelectorWidgetHelper = __webpack_require__(920);
+	var _MultiTreeSelectorWidgetHelper = __webpack_require__(930);
 
 	var _MultiTreeSelectorWidgetHelper2 = _interopRequireDefault(_MultiTreeSelectorWidgetHelper);
 
-	var _MultiTreeSelectorWidgetAsyncHelper = __webpack_require__(921);
+	var _MultiTreeSelectorWidgetAsyncHelper = __webpack_require__(931);
 
 	var _MultiTreeSelectorWidgetAsyncHelper2 = _interopRequireDefault(_MultiTreeSelectorWidgetAsyncHelper);
 
@@ -4010,7 +4010,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 919:
+/***/ 929:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4041,9 +4041,9 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _layout = __webpack_require__(780);
+	var _layout = __webpack_require__(790);
 
-	var _base = __webpack_require__(792);
+	var _base = __webpack_require__(802);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4180,7 +4180,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 920:
+/***/ 930:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4545,7 +4545,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 921:
+/***/ 931:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4558,7 +4558,7 @@ webpackJsonp([0],{
 
 	var _core = __webpack_require__(329);
 
-	var _MultiTreeSelectorWidgetHelper = __webpack_require__(920);
+	var _MultiTreeSelectorWidgetHelper = __webpack_require__(930);
 
 	var _MultiTreeSelectorWidgetHelper2 = _interopRequireDefault(_MultiTreeSelectorWidgetHelper);
 
@@ -4641,7 +4641,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 922:
+/***/ 932:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4670,21 +4670,21 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _layout = __webpack_require__(780);
+	var _layout = __webpack_require__(790);
 
-	var _base = __webpack_require__(792);
+	var _base = __webpack_require__(802);
 
-	var _widgets = __webpack_require__(911);
+	var _widgets = __webpack_require__(921);
 
-	var _MultiSelectorComponent = __webpack_require__(923);
+	var _MultiSelectorComponent = __webpack_require__(933);
 
 	var _MultiSelectorComponent2 = _interopRequireDefault(_MultiSelectorComponent);
 
-	var _MultiTreeSelectorComponent = __webpack_require__(924);
+	var _MultiTreeSelectorComponent = __webpack_require__(934);
 
 	var _MultiTreeSelectorComponent2 = _interopRequireDefault(_MultiTreeSelectorComponent);
 
-	var _Item = __webpack_require__(925);
+	var _Item = __webpack_require__(935);
 
 	var _Item2 = _interopRequireDefault(_Item);
 
@@ -4729,13 +4729,13 @@ webpackJsonp([0],{
 
 	            var props = _objectWithoutProperties(this.props, []);
 
-	            this.template = new _data.Template(props.$template);
+	            this.template = _data.TemplateFactory.createTemplate(props.$template);
 	            return _lib2.default.createElement(
 	                _lib.ScrollView,
 	                { style: styles.wrapper },
 	                (0, _core.map)(this.template.getAllControlWidgetIds(), function (wId) {
 	                    var $widget = _this2.template.get$$WidgetById(wId);
-	                    var widget = new _data.Widget($widget, wId, _this2.template);
+	                    var widget = _data.WidgetFactory.createWidget($widget, wId, _this2.template);
 	                    return _lib2.default.createElement(_Item2.default, { key: wId, id: wId, $widget: $widget, onPress: function onPress() {
 	                            var Component = null;
 	                            switch (widget.getType()) {
@@ -4803,7 +4803,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 923:
+/***/ 933:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4828,11 +4828,11 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(792);
+	var _base = __webpack_require__(802);
 
 	var _data = __webpack_require__(773);
 
-	var _widgets = __webpack_require__(911);
+	var _widgets = __webpack_require__(921);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4876,7 +4876,7 @@ webpackJsonp([0],{
 	            var props = _objectWithoutProperties(this.props, []);
 
 	            var wId = props.wId;
-	            var template = new _data.Template(props.$template);
+	            var template = _data.TemplateFactory.createTemplate(props.$template);
 	            var widget = template.getWidgetById(wId);
 	            return _lib2.default.createElement(_widgets.MultiSelectorWidget, {
 	                style: styles.wrapper,
@@ -4914,7 +4914,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 924:
+/***/ 934:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4939,11 +4939,11 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(792);
+	var _base = __webpack_require__(802);
 
 	var _data = __webpack_require__(773);
 
-	var _widgets = __webpack_require__(911);
+	var _widgets = __webpack_require__(921);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4987,7 +4987,7 @@ webpackJsonp([0],{
 	            var props = _objectWithoutProperties(this.props, []);
 
 	            var wId = props.wId;
-	            var template = new _data.Template(props.$template);
+	            var template = _data.TemplateFactory.createTemplate(props.$template);
 	            var widget = template.getWidgetById(wId);
 	            return _lib2.default.createElement(_widgets.MultiTreeSelectorWidget, {
 	                style: styles.wrapper,
@@ -5023,7 +5023,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 925:
+/***/ 935:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5050,11 +5050,11 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _layout = __webpack_require__(780);
+	var _layout = __webpack_require__(790);
 
-	var _base = __webpack_require__(792);
+	var _base = __webpack_require__(802);
 
-	var _widgets = __webpack_require__(911);
+	var _widgets = __webpack_require__(921);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5108,7 +5108,7 @@ webpackJsonp([0],{
 	                    _lib2.default.createElement(
 	                        _lib.Text,
 	                        null,
-	                        new _data.Widget(props.$widget).getName()
+	                        _data.WidgetFactory.createWidget(props.$widget).getName()
 	                    )
 	                )
 	            );
@@ -5134,7 +5134,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 926:
+/***/ 936:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5161,33 +5161,37 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(792);
+	var _base = __webpack_require__(802);
 
 	var _data = __webpack_require__(773);
 
-	var _ChartPaneComponent = __webpack_require__(927);
+	var _ChartPaneComponent = __webpack_require__(937);
 
 	var _ChartPaneComponent2 = _interopRequireDefault(_ChartPaneComponent);
 
-	var _TablePaneComponent = __webpack_require__(934);
+	var _TablePaneComponent = __webpack_require__(944);
 
 	var _TablePaneComponent2 = _interopRequireDefault(_TablePaneComponent);
 
-	var _DetailTablePaneComponent = __webpack_require__(940);
+	var _DetailTablePaneComponent = __webpack_require__(950);
 
 	var _DetailTablePaneComponent2 = _interopRequireDefault(_DetailTablePaneComponent);
 
-	var _MultiSelectorComponent = __webpack_require__(923);
+	var _MultiSelectorComponent = __webpack_require__(933);
 
 	var _MultiSelectorComponent2 = _interopRequireDefault(_MultiSelectorComponent);
 
-	var _MultiTreeSelectorComponent = __webpack_require__(924);
+	var _MultiTreeSelectorComponent = __webpack_require__(934);
 
 	var _MultiTreeSelectorComponent2 = _interopRequireDefault(_MultiTreeSelectorComponent);
 
-	var _ContentComponent = __webpack_require__(943);
+	var _ContentComponent = __webpack_require__(953);
 
 	var _ContentComponent2 = _interopRequireDefault(_ContentComponent);
+
+	var _ImageComponent = __webpack_require__(954);
+
+	var _ImageComponent2 = _interopRequireDefault(_ImageComponent);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5224,7 +5228,7 @@ webpackJsonp([0],{
 	            var ds = new _lib.ListView.DataSource({ rowHasChanged: function rowHasChanged(r1, r2) {
 	                    return r1 !== r2;
 	                } });
-	            this.template = new _data.Template(props.$template);
+	            this.template = _data.TemplateFactory.createTemplate(props.$template);
 	            var rows = this.template.getAllWidgetIds();
 	            return _lib2.default.createElement(
 	                _lib.ViewPagerAndroid,
@@ -5253,7 +5257,7 @@ webpackJsonp([0],{
 	        key: '_renderRow',
 	        value: function _renderRow(wId, sectionID, rowID) {
 	            var $widget = this.template.get$$WidgetById(wId);
-	            var type = new _data.Widget($widget).getType();
+	            var type = _data.WidgetFactory.createWidget($widget, wId, this.template).getType();
 	            var props = {
 	                key: wId,
 	                $widget: $widget,
@@ -5314,6 +5318,8 @@ webpackJsonp([0],{
 	                    component = _lib2.default.createElement(_ContentComponent2.default, props);
 	                    break;
 	                case BICst.WIDGET.IMAGE:
+	                    component = _lib2.default.createElement(_ImageComponent2.default, props);
+	                    break;
 	                case BICst.WIDGET.WEB:
 	                    break;
 	                case BICst.WIDGET.STRING:
@@ -5349,7 +5355,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 927:
+/***/ 937:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5380,17 +5386,17 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _layout = __webpack_require__(780);
+	var _layout = __webpack_require__(790);
 
-	var _base = __webpack_require__(792);
+	var _base = __webpack_require__(802);
 
-	var _widgets = __webpack_require__(911);
+	var _widgets = __webpack_require__(921);
 
-	var _ChartComponent = __webpack_require__(928);
+	var _ChartComponent = __webpack_require__(938);
 
 	var _ChartComponent2 = _interopRequireDefault(_ChartComponent);
 
-	var _SettingsComponent = __webpack_require__(929);
+	var _SettingsComponent = __webpack_require__(939);
 
 	var _SettingsComponent2 = _interopRequireDefault(_SettingsComponent);
 
@@ -5429,7 +5435,7 @@ webpackJsonp([0],{
 	            var $widget = _props.$widget;
 	            var wId = _props.wId;
 
-	            var widget = new _data.Widget($widget);
+	            var widget = _data.WidgetFactory.createWidget($widget, wId, _data.TemplateFactory.createTemplate(this.context.$template));
 	            return _lib2.default.createElement(
 	                _layout.Layout,
 	                { main: 'justify', cross: 'center', style: styles.header },
@@ -5501,7 +5507,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 928:
+/***/ 938:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5528,7 +5534,7 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(792);
+	var _base = __webpack_require__(802);
 
 	var _data = __webpack_require__(773);
 
@@ -5566,7 +5572,7 @@ webpackJsonp([0],{
 	            var $widget = props.$widget;
 	            var wId = props.wId;
 
-	            var widget = new _data.Widget($widget, this.context.$template, wId);
+	            var widget = _data.WidgetFactory.createWidget($widget, wId, _data.TemplateFactory.createTemplate(this.context.$template));
 	            widget.getData().then(function (data) {
 	                _this2.chart.setOptions(data);
 	            });
@@ -5625,7 +5631,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 929:
+/***/ 939:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5654,21 +5660,21 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _layout = __webpack_require__(780);
+	var _layout = __webpack_require__(790);
 
-	var _base = __webpack_require__(792);
+	var _base = __webpack_require__(802);
 
-	var _widgets = __webpack_require__(911);
+	var _widgets = __webpack_require__(921);
 
-	var _SettingsComponentHelper = __webpack_require__(930);
+	var _SettingsComponentHelper = __webpack_require__(940);
 
 	var _SettingsComponentHelper2 = _interopRequireDefault(_SettingsComponentHelper);
 
-	var _DimensionComponent = __webpack_require__(931);
+	var _DimensionComponent = __webpack_require__(941);
 
 	var _DimensionComponent2 = _interopRequireDefault(_DimensionComponent);
 
-	var _DimensionSortableComponent = __webpack_require__(933);
+	var _DimensionSortableComponent = __webpack_require__(943);
 
 	var _DimensionSortableComponent2 = _interopRequireDefault(_DimensionSortableComponent);
 
@@ -5752,9 +5758,11 @@ webpackJsonp([0],{
 	        value: function _renderHeader() {
 	            var _this2 = this;
 
-	            var $widget = this.props.$widget;
+	            var _props = this.props;
+	            var $widget = _props.$widget;
+	            var wId = _props.wId;
 
-	            var widget = new _data.Widget($widget);
+	            var widget = _data.WidgetFactory.createWidget($widget, wId, _data.TemplateFactory.createTemplate(this.context.$template));
 	            return _lib2.default.createElement(
 	                _layout.Layout,
 	                { main: 'justify', cross: 'center', style: styles.header },
@@ -5963,7 +5971,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 930:
+/***/ 940:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5984,7 +5992,7 @@ webpackJsonp([0],{
 	    function SettingsComponentHelper(props, context) {
 	        _classCallCheck(this, SettingsComponentHelper);
 
-	        this.widget = new _data.Widget(props.$widget, props.wId, new _data.Template(context.$template));
+	        this.widget = _data.WidgetFactory.createWidget(props.$widget, props.wId, _data.TemplateFactory.createTemplate(context.$template));
 	    }
 
 	    _createClass(SettingsComponentHelper, [{
@@ -6051,7 +6059,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 931:
+/***/ 941:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6080,13 +6088,13 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _layout = __webpack_require__(780);
+	var _layout = __webpack_require__(790);
 
-	var _base = __webpack_require__(792);
+	var _base = __webpack_require__(802);
 
-	var _widgets = __webpack_require__(911);
+	var _widgets = __webpack_require__(921);
 
-	var _DimensionComponentHelper = __webpack_require__(932);
+	var _DimensionComponentHelper = __webpack_require__(942);
 
 	var _DimensionComponentHelper2 = _interopRequireDefault(_DimensionComponentHelper);
 
@@ -6223,7 +6231,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 932:
+/***/ 942:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6244,7 +6252,7 @@ webpackJsonp([0],{
 	    function DimensionComponentHelper(props, context) {
 	        _classCallCheck(this, DimensionComponentHelper);
 
-	        this.widget = new _data.Widget(props.$widget, props.wId, context.$template);
+	        this.widget = _data.WidgetFactory.createWidget(props.$widget, props.wId, _data.TemplateFactory.createTemplate(context.$template));
 	        this.wId = props.wId;
 	        this.dId = props.dId;
 	        this.dimension = this.widget.getDimensionOrTargetById(this.dId);
@@ -6294,7 +6302,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 933:
+/***/ 943:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6323,13 +6331,13 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _layout = __webpack_require__(780);
+	var _layout = __webpack_require__(790);
 
-	var _base = __webpack_require__(792);
+	var _base = __webpack_require__(802);
 
-	var _widgets = __webpack_require__(911);
+	var _widgets = __webpack_require__(921);
 
-	var _DimensionComponentHelper = __webpack_require__(932);
+	var _DimensionComponentHelper = __webpack_require__(942);
 
 	var _DimensionComponentHelper2 = _interopRequireDefault(_DimensionComponentHelper);
 
@@ -6449,7 +6457,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 934:
+/***/ 944:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6480,17 +6488,17 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _layout = __webpack_require__(780);
+	var _layout = __webpack_require__(790);
 
-	var _base = __webpack_require__(792);
+	var _base = __webpack_require__(802);
 
-	var _widgets = __webpack_require__(911);
+	var _widgets = __webpack_require__(921);
 
-	var _TableComponent = __webpack_require__(935);
+	var _TableComponent = __webpack_require__(945);
 
 	var _TableComponent2 = _interopRequireDefault(_TableComponent);
 
-	var _SettingsComponent = __webpack_require__(929);
+	var _SettingsComponent = __webpack_require__(939);
 
 	var _SettingsComponent2 = _interopRequireDefault(_SettingsComponent);
 
@@ -6529,7 +6537,7 @@ webpackJsonp([0],{
 	            var $widget = _props.$widget;
 	            var wId = _props.wId;
 
-	            var widget = new _data.Widget($widget, wId, new _data.Template(this.context.$template));
+	            var widget = _data.WidgetFactory.createWidget($widget, wId, _data.TemplateFactory.createTemplate(this.context.$template));
 	            return _lib2.default.createElement(
 	                _layout.Layout,
 	                { main: 'justify', cross: 'center', style: styles.header },
@@ -6601,7 +6609,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 935:
+/***/ 945:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6632,23 +6640,23 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(792);
+	var _base = __webpack_require__(802);
 
-	var _widgets = __webpack_require__(911);
+	var _widgets = __webpack_require__(921);
 
-	var _TableComponentHelper = __webpack_require__(936);
+	var _TableComponentHelper = __webpack_require__(946);
 
 	var _TableComponentHelper2 = _interopRequireDefault(_TableComponentHelper);
 
-	var _TableComponentWidthHelper = __webpack_require__(937);
+	var _TableComponentWidthHelper = __webpack_require__(947);
 
 	var _TableComponentWidthHelper2 = _interopRequireDefault(_TableComponentWidthHelper);
 
-	var _TableCell = __webpack_require__(938);
+	var _TableCell = __webpack_require__(948);
 
 	var _TableCell2 = _interopRequireDefault(_TableCell);
 
-	var _TableHeader = __webpack_require__(939);
+	var _TableHeader = __webpack_require__(949);
 
 	var _TableHeader2 = _interopRequireDefault(_TableHeader);
 
@@ -6712,7 +6720,7 @@ webpackJsonp([0],{
 	            var $widget = props.$widget;
 	            var wId = props.wId;
 
-	            var widget = new _data.Widget($widget, wId, new _data.Template(this.context.$template));
+	            var widget = _data.WidgetFactory.createWidget($widget, wId, _data.TemplateFactory.createTemplate(this.context.$template));
 	            return widget.getData().then(function (data) {
 	                _this2.setState({ data: data });
 	            });
@@ -6794,7 +6802,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 936:
+/***/ 946:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6818,7 +6826,7 @@ webpackJsonp([0],{
 	        var $widget = props.$widget;
 	        var wId = props.wId;
 
-	        this.widget = new _data.Widget($widget, wId, new _data.Template(context.$template));
+	        this.widget = _data.WidgetFactory.createWidget($widget, wId, _data.TemplateFactory.createTemplate(context.$template));
 	        this.data = [];
 	    }
 
@@ -6839,7 +6847,7 @@ webpackJsonp([0],{
 	            ids.forEach(function (id) {
 	                var $$dim = _this.widget.get$$DimensionOrTargetById(id);
 	                result.push({
-	                    text: new _data.Dimension($$dim).getName()
+	                    text: _data.DimensionFactory.createDimension($$dim).getName()
 	                });
 	            });
 	            return result;
@@ -6911,7 +6919,7 @@ webpackJsonp([0],{
 	            var result = [];
 	            var ids = this.widget.getRowDimensionIds();
 	            (0, _core.each)(ids, function (id) {
-	                var dimension = new _data.Dimension(_this2.widget.get$$DimensionById(id));
+	                var dimension = _data.DimensionFactory.createDimension(_this2.widget.get$$DimensionById(id));
 	                result.push({
 	                    text: dimension.getName()
 	                });
@@ -6940,7 +6948,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 937:
+/***/ 947:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7096,7 +7104,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 938:
+/***/ 948:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7123,9 +7131,9 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(792);
+	var _base = __webpack_require__(802);
 
-	var _widgets = __webpack_require__(911);
+	var _widgets = __webpack_require__(921);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7202,7 +7210,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 939:
+/***/ 949:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7229,9 +7237,9 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(792);
+	var _base = __webpack_require__(802);
 
-	var _widgets = __webpack_require__(911);
+	var _widgets = __webpack_require__(921);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7304,7 +7312,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 940:
+/***/ 950:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7335,17 +7343,17 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _layout = __webpack_require__(780);
+	var _layout = __webpack_require__(790);
 
-	var _base = __webpack_require__(792);
+	var _base = __webpack_require__(802);
 
-	var _widgets = __webpack_require__(911);
+	var _widgets = __webpack_require__(921);
 
-	var _DetailTableComponent = __webpack_require__(941);
+	var _DetailTableComponent = __webpack_require__(951);
 
 	var _DetailTableComponent2 = _interopRequireDefault(_DetailTableComponent);
 
-	var _SettingsComponent = __webpack_require__(929);
+	var _SettingsComponent = __webpack_require__(939);
 
 	var _SettingsComponent2 = _interopRequireDefault(_SettingsComponent);
 
@@ -7384,7 +7392,7 @@ webpackJsonp([0],{
 	            var $widget = _props.$widget;
 	            var wId = _props.wId;
 
-	            var widget = new _data.Widget($widget);
+	            var widget = _data.WidgetFactory.createWidget($widget, wId, _data.TemplateFactory.createTemplate(this.context.$template));
 	            return _lib2.default.createElement(
 	                _layout.Layout,
 	                { main: 'justify', cross: 'center', height: _data.Size.HEADER_HEIGHT, style: styles.header },
@@ -7456,7 +7464,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 941:
+/***/ 951:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7487,25 +7495,25 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(792);
+	var _base = __webpack_require__(802);
 
-	var _layout = __webpack_require__(780);
+	var _layout = __webpack_require__(790);
 
-	var _widgets = __webpack_require__(911);
+	var _widgets = __webpack_require__(921);
 
-	var _DetailTableComponentHelper = __webpack_require__(942);
+	var _DetailTableComponentHelper = __webpack_require__(952);
 
 	var _DetailTableComponentHelper2 = _interopRequireDefault(_DetailTableComponentHelper);
 
-	var _TableComponentWidthHelper = __webpack_require__(937);
+	var _TableComponentWidthHelper = __webpack_require__(947);
 
 	var _TableComponentWidthHelper2 = _interopRequireDefault(_TableComponentWidthHelper);
 
-	var _TableCell = __webpack_require__(938);
+	var _TableCell = __webpack_require__(948);
 
 	var _TableCell2 = _interopRequireDefault(_TableCell);
 
-	var _TableHeader = __webpack_require__(939);
+	var _TableHeader = __webpack_require__(949);
 
 	var _TableHeader2 = _interopRequireDefault(_TableHeader);
 
@@ -7573,7 +7581,7 @@ webpackJsonp([0],{
 	            var $widget = props.$widget;
 	            var wId = props.wId;
 
-	            var widget = new _data.Widget($widget, this.context.$template, wId);
+	            var widget = _data.WidgetFactory.createWidget($widget, wId, _data.TemplateFactory.createTemplate(this.context.$template));
 	            return widget.getData().then(function (data) {
 	                _this2.setState({ data: data });
 	            });
@@ -7640,7 +7648,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 942:
+/***/ 952:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7664,7 +7672,7 @@ webpackJsonp([0],{
 	        var $widget = props.$widget;
 	        var wId = props.wId;
 
-	        this.widget = new _data.Widget($widget, wId, new _data.Template(context.$template));
+	        this.widget = _data.WidgetFactory.createWidget($widget, wId, _data.TemplateFactory.createTemplate(context.$template));
 	        this.data = [];
 	    }
 
@@ -7683,7 +7691,7 @@ webpackJsonp([0],{
 	            ids.forEach(function (id) {
 	                var $$dim = _this.widget.get$$DimensionOrTargetById(id);
 	                result.push({
-	                    text: new _data.Dimension($$dim).getName()
+	                    text: _data.DimensionFactory.createDimension($$dim).getName()
 	                });
 	            });
 	            return result;
@@ -7722,7 +7730,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 943:
+/***/ 953:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7753,9 +7761,7 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(792);
-
-	var _widgets = __webpack_require__(911);
+	var _base = __webpack_require__(802);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7799,7 +7805,7 @@ webpackJsonp([0],{
 	            var $widget = _props.$widget;
 	            var wId = _props.wId;
 
-	            var widget = new _data.Widget($widget, wId, new _data.Template(this.context.$template));
+	            var widget = _data.WidgetFactory.createWidget($widget, wId, _data.TemplateFactory.createTemplate(this.context.$template));
 	            var style = widget.getStyle();
 	            return _lib2.default.createElement(_lib.TextInput, {
 	                style: _extends({ height: this.props.height }, styles.wrapper, style),
@@ -7837,7 +7843,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 944:
+/***/ 954:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7866,7 +7872,110 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(792);
+	var _base = __webpack_require__(802);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * 图片组件
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by Young's on 2016/10/10.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+
+	var ImageComponent = function (_Component) {
+	    _inherits(ImageComponent, _Component);
+
+	    function ImageComponent(props, context) {
+	        _classCallCheck(this, ImageComponent);
+
+	        return _possibleConstructorReturn(this, (ImageComponent.__proto__ || Object.getPrototypeOf(ImageComponent)).call(this, props, context));
+	    }
+
+	    _createClass(ImageComponent, [{
+	        key: '_getNextState',
+	        value: function _getNextState(props) {
+	            var state = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	        }
+	    }, {
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {}
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var props = _objectWithoutProperties(this.props, []);
+	            var state = _objectWithoutProperties(this.state, []);
+
+	            return _lib2.default.createElement(_lib.Image, {
+	                style: styles.wrapper,
+	                source: ''
+	            });
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {}
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate(nextProps, nextState) {}
+	    }, {
+	        key: 'componentDidUpdate',
+	        value: function componentDidUpdate(prevProps, prevState) {}
+	    }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {}
+	    }]);
+
+	    return ImageComponent;
+	}(_lib.Component);
+
+	_reactMixin2.default.onClass(ImageComponent, _core.ReactComponentWithPureRenderMixin);
+	var styles = _lib.StyleSheet.create({
+	    wrapper: {
+	        flex: 1
+	    }
+	});
+	exports.default = ImageComponent;
+
+/***/ },
+
+/***/ 955:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactMixin = __webpack_require__(206);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _immutable = __webpack_require__(200);
+
+	var _immutable2 = _interopRequireDefault(_immutable);
+
+	var _core = __webpack_require__(329);
+
+	var _lib = __webpack_require__(208);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _data = __webpack_require__(773);
+
+	var _base = __webpack_require__(802);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8033,13 +8142,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 945:
+/***/ 956:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(946);
+	var content = __webpack_require__(957);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -8060,7 +8169,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 946:
+/***/ 957:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -8075,13 +8184,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 947:
+/***/ 958:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(948);
+	var content = __webpack_require__(959);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -8102,7 +8211,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 948:
+/***/ 959:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -8117,13 +8226,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 949:
+/***/ 960:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(950);
+	var content = __webpack_require__(961);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -8144,7 +8253,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 950:
+/***/ 961:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -8159,13 +8268,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 951:
+/***/ 962:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(952);
+	var content = __webpack_require__(963);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -8186,7 +8295,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 952:
+/***/ 963:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -8201,13 +8310,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 953:
+/***/ 964:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(954);
+	var content = __webpack_require__(965);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -8228,7 +8337,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 954:
+/***/ 965:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -8243,13 +8352,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 955:
+/***/ 966:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(956);
+	var content = __webpack_require__(967);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -8270,7 +8379,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 956:
+/***/ 967:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();

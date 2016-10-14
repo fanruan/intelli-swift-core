@@ -26,7 +26,7 @@ import React, {
     Promise
 } from 'lib'
 
-import {Colors, Template, Widget} from 'data'
+import {Colors, TemplateFactory, WidgetFactory} from 'data'
 import {Layout} from 'layout'
 import {Icon, Table, AutoSizer} from 'base'
 
@@ -66,11 +66,11 @@ class Controls extends Component {
 
     render() {
         const {...props} = this.props;
-        this.template = new Template(props.$template);
+        this.template = TemplateFactory.createTemplate(props.$template);
         return <ScrollView style={styles.wrapper}>
             {map(this.template.getAllControlWidgetIds(), (wId)=> {
                 const $widget = this.template.get$$WidgetById(wId);
-                const widget = new Widget($widget, wId, this.template);
+                const widget = WidgetFactory.createWidget($widget, wId, this.template);
                 return <Item key={wId} id={wId} $widget={$widget} onPress={()=> {
                     let Component = null;
                     switch (widget.getType()) {

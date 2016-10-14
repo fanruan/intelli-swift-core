@@ -22,7 +22,7 @@ import React, {
     TouchableWithoutFeedback
 } from 'lib'
 
-import {Colors, Size, Template, Widget, Dimension, Target} from 'data'
+import {Colors, Size, TemplateFactory, WidgetFactory} from 'data'
 
 import {Layout, CenterLayout} from 'layout'
 import {
@@ -99,8 +99,8 @@ class SettingsComponent extends Component {
     }
 
     _renderHeader() {
-        const {$widget} = this.props;
-        const widget = new Widget($widget);
+        const {$widget, wId} = this.props;
+        const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(this.context.$template));
         return <Layout main='justify' cross='center' style={styles.header}>
             <TextLink onPress={()=> {
                 this.refs['overlay'].close();

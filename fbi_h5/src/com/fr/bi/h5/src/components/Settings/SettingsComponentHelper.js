@@ -1,8 +1,8 @@
 import {each, first, arrayMove, values, keys} from 'core'
-import {Widget, Template, Dimension} from 'data'
+import {WidgetFactory, TemplateFactory} from 'data'
 export default class SettingsComponentHelper {
     constructor(props, context) {
-        this.widget = new Widget(props.$widget, props.wId, new Template(context.$template));
+        this.widget = WidgetFactory.createWidget(props.$widget, props.wId, TemplateFactory.createTemplate(context.$template));
 
     }
 

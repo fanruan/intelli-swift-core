@@ -25,7 +25,7 @@ import React, {
     TouchableHighlight
 } from 'lib'
 
-import {Colors, Size, Template, Widget, Dimension, Target, WidgetFactory} from 'data'
+import {Colors, Size, TemplateFactory, DimensionFactory, WidgetFactory} from 'data'
 
 import {CenterLayout, Icon, Table} from 'base'
 
@@ -50,7 +50,7 @@ class ContentComponent extends Component {
 
     render() {
         const {$widget, wId} = this.props;
-        const widget = WidgetFactory.createWidget($widget, wId, new Template(this.context.$template));
+        const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(this.context.$template));
         const style = widget.getStyle();
         return <TextInput
             style={{height: this.props.height, ...styles.wrapper, ...style}}

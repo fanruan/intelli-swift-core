@@ -13,7 +13,7 @@ import React, {
     Portal
 } from 'lib'
 
-import {Size, Template, Widget} from 'data'
+import {Size, TemplateFactory, WidgetFactory} from 'data'
 import {Layout} from 'layout'
 import {Table, Dialog, IconLink} from 'base'
 import {TableWidget} from 'widgets';
@@ -47,7 +47,7 @@ class DetailTablePaneComponent extends Component {
 
     _renderHeader() {
         const {$widget, wId} = this.props;
-        const widget = new Widget($widget);
+        const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(this.context.$template));
         return <Layout main='justify' cross='center' height={Size.HEADER_HEIGHT} style={styles.header}>
             <Text>{widget.getName()}</Text>
             <IconLink className='setting-font' onPress={()=> {

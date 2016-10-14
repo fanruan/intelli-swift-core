@@ -26,7 +26,7 @@ import React, {
     Navigator
 } from 'lib'
 
-import {Colors, Size, Template} from 'data'
+import {Colors, Size, TemplateFactory} from 'data'
 import {Layout} from 'layout'
 import {IconButton, Table, AutoSizer} from 'base'
 

@@ -14,7 +14,7 @@ import React, {
     TouchableHighlight
 } from 'lib'
 
-import {Colors, Size, Template} from 'data'
+import {Colors, Size, TemplateFactory} from 'data'
 import {Layout} from 'layout'
 
 import Toolbar from './Toolbar'
@@ -33,7 +33,7 @@ class Main extends Component {
     constructor(props, context) {
         super(props, context);
         console.log(props);
-        this.template = new Template(props.$template);
+        this.template = TemplateFactory.createTemplate(props.$template);
     }
 
     navigationBarRouteMapper() {

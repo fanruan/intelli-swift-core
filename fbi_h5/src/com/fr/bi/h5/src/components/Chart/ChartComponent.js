@@ -11,7 +11,7 @@ import React, {
     Fetch
 } from 'lib'
 import {IconLink} from 'base'
-import {Size, Template, Widget} from 'data'
+import {Size, TemplateFactory, WidgetFactory} from 'data'
 
 
 class ChartComponent extends Component {
@@ -34,7 +34,7 @@ class ChartComponent extends Component {
 
     _fetchData(props) {
         const {$widget, wId} = props;
-        const widget = new Widget($widget, this.context.$template, wId);
+        const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(this.context.$template));
         widget.getData().then((data)=> {
             this.chart.setOptions(data);
         });

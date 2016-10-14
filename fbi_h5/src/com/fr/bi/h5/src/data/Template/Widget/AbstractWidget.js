@@ -3,10 +3,9 @@
  * Created by Young's on 2016/10/12.
  */
 import Immutable from 'immutable'
-import Dimension from './Dimension'
-import Target from './Target'
 import {each, invariant, isNil, find, findKey} from 'core';
 import {Fetch} from 'lib'
+import DimensionFactory from './Dimensions/DimensionFactory'
 class AbstractWidget {
     constructor($widget, wId, template) {
         this.$widget = $widget;
@@ -36,18 +35,18 @@ class AbstractWidget {
     }
 
     getDimensionById(id) {
-        return new Dimension(this.get$$DimensionById(id), id, this);
+        return DimensionFactory.createDimension(this.get$$DimensionById(id), id, this);
     }
 
     getTargetById(id) {
-        return new Target(this.get$$TargetById(id), id, this);
+        return DimensionFactory.createTarget(this.get$$TargetById(id), id, this);
     }
 
     getDimensionOrTargetById(id) {
         if (this.isDimensionById(id)) {
-            return new Dimension(this.get$$DimensionById(id), id, this);
+            return DimensionFactory.createDimension(this.get$$DimensionById(id), id, this);
         }
-        return new Target(this.get$$TargetById(id), id, this);
+        return DimensionFactory.createTarget(this.get$$TargetById(id), id, this);
     }
 
     getAllDimensionIds() {
@@ -97,7 +96,7 @@ class AbstractWidget {
         const result = [];
         ids.forEach((id)=> {
             const $$dim = this.get$$DimensionOrTargetById(id);
-            if (new Dimension($$dim, id, this).isUsed()) {
+            if (DimensionFactory.createDimension($$dim, id, this).isUsed()) {
                 result.push(id);
             }
         });
@@ -109,7 +108,7 @@ class AbstractWidget {
         const result = [];
         ids.forEach((id)=> {
             const $$dim = this.get$$DimensionById(id);
-            if (new Dimension($$dim, id, this).isUsed()) {
+            if (DimensionFactory.createDimension($$dim, id, this).isUsed()) {
                 result.push(id);
             }
         });
@@ -121,7 +120,7 @@ class AbstractWidget {
         const result = [];
         ids.forEach((id)=> {
             const $$dim = this.get$$TargetById(id);
-            if (new Target($$dim, id, this).isUsed()) {
+            if (DimensionFactory.createTarget($$dim, id, this).isUsed()) {
                 result.push(id);
             }
         });

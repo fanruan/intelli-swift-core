@@ -13,7 +13,7 @@ import React, {
 } from 'lib'
 
 import {AutoSizer} from 'base'
-import {Colors, Template, Widget} from 'data'
+import {Colors, TemplateFactory, WidgetFactory} from 'data'
 
 import ChartPaneComponent from '../Chart/ChartPaneComponent.js'
 import TablePaneComponent from '../Table/TablePaneComponent.js'
@@ -41,7 +41,7 @@ class LayoutComponent extends Component {
     render() {
         const {...props} = this.props;
         const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        this.template = new Template(props.$template);
+        this.template = TemplateFactory.createTemplate(props.$template);
         const rows = this.template.getAllWidgetIds();
         return <ViewPagerAndroid
             style={styles.viewPager}
@@ -68,7 +68,7 @@ class LayoutComponent extends Component {
 
     _renderRow(wId, sectionID, rowID) {
         const $widget = this.template.get$$WidgetById(wId);
-        const type = new Widget($widget).getType();
+        const type = WidgetFactory.createWidget($widget, wId, this.template).getType();
         const props = {
             key: wId,
             $widget,

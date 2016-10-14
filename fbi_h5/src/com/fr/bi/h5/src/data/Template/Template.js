@@ -1,5 +1,5 @@
 import {each, some} from 'core'
-import Widget from './Widget'
+import WidgetFactory from './Widget/WidgetFactory'
 class Template {
     constructor(template) {
         this.$template = template;
@@ -14,13 +14,13 @@ class Template {
     }
 
     getWidgetById(id) {
-        return new Widget(this.get$$WidgetById(id), id, this);
+        return WidgetFactory.createWidget(this.get$$WidgetById(id), id, this);
     }
 
     getAllWidgetIds() {
         const res = [];
         this.$template.get('widgets').forEach(($widget, wId)=> {
-            if (!new Widget($widget, wId, this).isControl()) {
+            if (!WidgetFactory.createWidget($widget, wId, this).isControl()) {
                 res.push(wId);
             }
         });
@@ -30,7 +30,7 @@ class Template {
     getAllControlWidgetIds() {
         const res = [];
         this.$template.get('widgets').forEach(($widget, wId)=> {
-            if (new Widget($widget, wId, this).isControl()) {
+            if (WidgetFactory.createWidget($widget, wId, this).isControl()) {
                 res.push(wId);
             }
         });
@@ -39,7 +39,7 @@ class Template {
 
     hasControlWidget() {
         return this.$template.get('widgets').some(($widget, wId)=> {
-            return new Widget($widget, wId, this).isControl();
+            return WidgetFactory.createWidget($widget, wId, this).isControl();
         });
     }
 

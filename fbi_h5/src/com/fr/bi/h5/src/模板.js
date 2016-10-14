@@ -20,7 +20,7 @@ import React, {
     TouchableHighlight
 } from 'lib'
 
-import {Colors, Size, Template, Widget, Dimension, Target} from 'data'
+import {Colors, Size, TemplateFactory, WidgetFactory, DimensionFactory} from 'data'
 
 import {Layout, CenterLayout, HorizontalCenterLayout, VerticalCenterLayout} from 'layout';
 

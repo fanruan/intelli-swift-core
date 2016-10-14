@@ -1,8 +1,8 @@
 import {each, first, arrayMove, values, keys} from 'core'
-import {Widget, Template, Dimension} from 'data'
+import {WidgetFactory, TemplateFactory, DimensionFactory} from 'data'
 export default class DimensionComponentHelper {
     constructor(props, context) {
-        this.widget = new Widget(props.$widget, props.wId, context.$template);
+        this.widget = WidgetFactory.createWidget(props.$widget, props.wId, TemplateFactory.createTemplate(context.$template));
         this.wId = props.wId;
         this.dId = props.dId;
         this.dimension = this.widget.getDimensionOrTargetById(this.dId);

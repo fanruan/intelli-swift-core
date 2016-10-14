@@ -25,7 +25,7 @@ import React, {
     TouchableHighlight
 } from 'lib'
 
-import {Colors, Size, Template, Widget} from 'data'
+import {Colors, Size, TemplateFactory, WidgetFactory} from 'data'
 import {Layout, VerticalCenterLayout} from 'layout'
 import {Icon, Button, Table, AutoSizer} from 'base'
 
@@ -67,7 +67,7 @@ class Item extends Component {
         const {...props} = this.props, {...state} = this.state;
         return <Button onPress={this.props.onPress}>
             <VerticalCenterLayout style={styles.wrapper}>
-                <Text>{new Widget(props.$widget).getName()}</Text>
+                <Text>{WidgetFactory.createWidget(props.$widget).getName()}</Text>
             </VerticalCenterLayout>
         </Button>
     }
