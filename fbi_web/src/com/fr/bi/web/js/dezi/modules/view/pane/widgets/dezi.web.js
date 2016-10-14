@@ -38,7 +38,7 @@ BIDezi.WebWidgetView = BI.inherit(BI.View, {
         this.web.element.hover(function () {
             self.web.setToolbarVisible(true);
         }, function () {
-            if (!self.web.element.parent().parent().parent().hasClass("selected")) {
+            if (!self.web.element.parent().parent().parent().hasClass("selected") && !self.web.isSelected()) {
                 self.web.setToolbarVisible(false);
             }
         });
