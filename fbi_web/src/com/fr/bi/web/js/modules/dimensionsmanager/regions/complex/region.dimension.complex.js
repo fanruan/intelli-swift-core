@@ -25,9 +25,10 @@ BI.ComplexDimensionRegion = BI.inherit(BI.Widget, {
 
         this.sinlgeRegion = BI.createWidget({
             type: "bi.vertical",
-            element: this.element,
             cls: "dimensions-container",
             scrolly: true,
+            width: "100%",
+            height: "100%",
             lgap: this.constants.REGION_DIMENSION_LEFT_GAP,
             rgap: this.constants.REGION_DIMENSION_GAP,
             vgap: this.constants.REGION_DIMENSION_GAP
@@ -36,6 +37,8 @@ BI.ComplexDimensionRegion = BI.inherit(BI.Widget, {
             accept: ".select-data-level0-item-button, .select-date-level1-item-button",
             tolerance: "pointer",
             drop: function (event, ui) {
+                BI.isNotNull(self.dropArea) && self.dropArea.destroy();
+
                 var helper = ui.helper;
                 var data = helper.data("data");
                 if (self.options.regionType >= BICst.REGION.TARGET1) {
@@ -64,12 +67,27 @@ BI.ComplexDimensionRegion = BI.inherit(BI.Widget, {
                 if (data.length > 0) {
                     self.fireEvent(BI.ComplexDimensionRegion.EVENT_CHANGE);
                 }
+                BI.Broadcasts.send(BICst.BROADCAST.FIELD_DROP_PREFIX);
             },
-            over: function (event, ui) {
-
+            over: function(event, ui) {
+                if (BI.isNull(self.forbiddenMask) || !self.forbiddenMask.isVisible()) {
+                    self.dropArea = BI.createWidget({
+                        type: "bi.layout",
+                        height: 25,
+                        cls: "virtual-drop-area"
+                    });
+                    self.sinlgeRegion.addItem(self.dropArea);
+                }
+                var helperWidget = ui.helper.data().helperWidget;
+                var helper = self._getFieldDropOverHelper();
+                if (BI.isNotNull(helper)) {
+                    helperWidget.modifyContent(helper);
+                }
             },
-            out: function (event, ui) {
-
+            out: function(event, ui) {
+                BI.isNotNull(self.dropArea) && self.dropArea.destroy();
+                var helperWidget = ui.helper.data().helperWidget;
+                helperWidget.populate();
             }
         });
 
@@ -89,8 +107,116 @@ BI.ComplexDimensionRegion = BI.inherit(BI.Widget, {
             }]
         });
 
+        BI.createWidget({
+            type: "bi.default",
+            element: this.element,
+            items: [this.sinlgeRegion]
+        });
+
         //element上加Id
         this.element.attr("id", o.regionType);
+
+        BI.Broadcasts.on(BICst.BROADCAST.FIELD_DRAG_START, function (fields) {
+            self._fieldDragStart(fields);
+        });
+        BI.Broadcasts.on(BICst.BROADCAST.FIELD_DRAG_STOP, function () {
+            self._fieldDragStop();
+        });
+    },
+
+    _fieldDragStart: function (fields) {
+        this.fields = fields;
+        var onlyCounter = !BI.some(fields, function (i, fieldId) {
+            return BI.Utils.getFieldTypeByID(fieldId) !== BICst.COLUMN.COUNTER;
+        });
+        if (onlyCounter) {
+            this._showForbiddenMask();
+        }
+    },
+
+    _fieldDragStop: function () {
+        this.fields = null;
+        this._hideForbiddenMask();
+    },
+
+    _getFieldDropOverHelper: function () {
+        //可以放置的字段 + 不可放置的字段
+        var total = this.fields.length;
+        var counters = 0;
+        BI.each(this.fields, function (i, fieldId) {
+            if (BI.Utils.getFieldTypeByID(fieldId) === BICst.COLUMN.COUNTER) {
+                counters++;
+            }
+        });
+        if (counters > 0 && counters !== total) {
+            return BI.createWidget({
+                type: "bi.left",
+                cls: "helper-warning",
+                items: [{
+                    type: "bi.left",
+                    cls: "drag-helper-active-font",
+                    items: [{
+                        type: "bi.icon",
+                        width: 20,
+                        height: 20
+                    }, {
+                        type: "bi.label",
+                        text: total - counters
+                    }],
+                    lgap: 5
+                }, {
+                    type: "bi.left",
+                    cls: "drag-helper-forbidden-font",
+                    items: [{
+                        type: "bi.icon",
+                        width: 20,
+                        height: 20
+                    }, {
+                        type: "bi.label",
+                        text: counters
+                    }],
+                    lgap: 5
+                }],
+                rgap: 5
+            });
+        } else if (counters === total) {
+            return BI.createWidget({
+                type: "bi.left",
+                cls: "helper-warning drag-helper-forbidden-font",
+                items: [{
+                    type: "bi.icon",
+                    width: 20,
+                    height: 20
+                }],
+                hgap: 5
+            });
+        }
+    },
+
+    _showForbiddenMask: function () {
+        if (BI.isNotNull(this.forbiddenMask)) {
+            this.forbiddenMask.setVisible(true);
+        } else {
+            this.forbiddenMask = BI.createWidget({
+                type: "bi.layout",
+                cls: "forbidden-mask"
+            });
+            BI.createWidget({
+                type: "bi.absolute",
+                element: this.element,
+                items: [{
+                    el: this.forbiddenMask,
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0
+                }]
+            });
+        }
+    },
+
+    _hideForbiddenMask: function () {
+        BI.isNotNull(this.forbiddenMask) && this.forbiddenMask.setVisible(false);
     },
 
     addDimension: function (dId, options) {
@@ -115,7 +241,7 @@ BI.ComplexDimensionRegion = BI.inherit(BI.Widget, {
                 }]
             });
         } else {
-            var container = BI.createWidget({
+            this.containers[dId] = BI.createWidget({
                 type: "bi.absolute",
                 cls: "dimension-container",
                 data: {
@@ -130,16 +256,31 @@ BI.ComplexDimensionRegion = BI.inherit(BI.Widget, {
                     bottom: 0
                 }]
             });
-            this.containers[dId] = container;
         }
         return this.containers[dId];
     },
 
     getValue: function () {
+        var self = this, o = this.options || {};
         var result = [];
         var dimensions = $(".dimension-container", this.sinlgeRegion.element);
         BI.each(dimensions, function (i, dom) {
-            result.push($(dom).data("dId"));
+            var dId = $(dom).data("dId");
+            if (BI.isNull(self.containers[dId])) {
+                var dim = o.dimensionCreator(dId, o.regionType, o);
+                self.containers[dId] = BI.createWidget({
+                    type: "bi.absolute",
+                    element: dom,
+                    items: [{
+                        el: dim,
+                        left: 0,
+                        top: 0,
+                        right: 0,
+                        bottom: 0
+                    }]
+                });
+            }
+            result.push(dId);
         });
         return result;
     },

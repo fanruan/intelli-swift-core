@@ -1,9 +1,13 @@
+/**
+ * AbstractWidget
+ * Created by Young's on 2016/10/12.
+ */
 import Immutable from 'immutable'
 import Dimension from './Dimension'
 import Target from './Target'
 import {each, invariant, isNil, find, findKey} from 'core';
 import {Fetch} from 'lib'
-class Widget {
+class AbstractWidget {
     constructor($widget, wId, template) {
         this.$widget = $widget;
         this.wId = wId;
@@ -464,4 +468,4 @@ class Widget {
     }
 }
 
-export default Widget;
+export default AbstractWidget;

@@ -11,3 +11,15 @@
   color: #d4dadd;
   font-size: 14px;
 }
+.bi-complex-empty-region .virtual-drop-area {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  border: 1px dashed #a3d6e8;
+}
+.bi-complex-empty-region .forbidden-mask {
+  background: #1a1a1a;
+  opacity: 0.05;
+  filter: alpha(opacity=5);
+  z-index: 1;
+}
