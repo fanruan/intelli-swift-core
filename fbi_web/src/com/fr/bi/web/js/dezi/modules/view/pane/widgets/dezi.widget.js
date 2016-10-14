@@ -351,8 +351,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
 
     _refreshWidgetTitle: function () {
         var id = this.model.get("id");
-        var widgetSetting = this.model.get("settings").widget_setting;
-        var titleSetting = widgetSetting ? widgetSetting.title_detail : {};
+        var titleSetting = this.model.get("settings").title_detail || {};
         var $title = this.title.element.find(".shelter-editor-text .bi-text");
         $title.css(titleSetting.detail_style || {});
 
@@ -360,8 +359,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     },
 
     _refreshWidgetBG: function () {
-        var widgetSetting = this.model.get("settings").widget_setting;
-        var widgetBG = widgetSetting ? widgetSetting.widget_bg : {};
+        var widgetBG = this.model.get("settings").widget_bg || {};
         this.element.css({"background": this._getBackgroundValue(widgetBG)})
     },
 
