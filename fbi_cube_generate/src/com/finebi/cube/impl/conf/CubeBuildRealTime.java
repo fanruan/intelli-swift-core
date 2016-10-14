@@ -16,14 +16,14 @@ import java.util.*;
  * Created by kary on 16/6/1.
  * 主要用于实时报表的生成
  */
-public class CubeBuildTableSource extends AbstractCubeBuild implements CubeBuild {
+public class CubeBuildRealTime extends AbstractCubeBuild implements CubeBuild {
 
     private Set<CubeTableSource> allSingleSources;
     private ICubeConfiguration cubeConfiguration;
     private BIUser biUser;
     Set<List<Set<CubeTableSource>>> dependTableResource;
 
-    public CubeBuildTableSource(CubeTableSource cubeTableSource, ICubeConfiguration cubeConfiguration, long userId) {
+    public CubeBuildRealTime(CubeTableSource cubeTableSource, ICubeConfiguration cubeConfiguration, long userId) {
         super(userId);
         this.biUser = new BIUser(userId);
         this.cubeConfiguration = cubeConfiguration;
@@ -38,7 +38,7 @@ public class CubeBuildTableSource extends AbstractCubeBuild implements CubeBuild
 
     }
 
-    public CubeBuildTableSource(CubeTableSource cubeTableSource, long userId) {
+    public CubeBuildRealTime(CubeTableSource cubeTableSource, long userId) {
         super(userId);
         this.biUser = new BIUser(userId);
         this.cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));

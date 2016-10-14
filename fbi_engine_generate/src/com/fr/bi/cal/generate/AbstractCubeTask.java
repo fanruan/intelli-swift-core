@@ -2,7 +2,7 @@ package com.fr.bi.cal.generate;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.CubeBuild;
-import com.finebi.cube.impl.conf.CubeBuildStaff;
+import com.finebi.cube.impl.conf.CubeBuildComplete;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.index.IndexGenerator;
 import com.fr.bi.cal.generate.relation.RelationGenerator;
@@ -53,7 +53,7 @@ public abstract class AbstractCubeTask implements CubeTask {
     @Override
     public void start() {
         start = new Date();
-        cubeBuild =new CubeBuildStaff(biUser);
+        cubeBuild =new CubeBuildComplete(biUser);
         BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
         BIConfigureManagerCenter.getLogManager().logStart(getUserId());
     }
