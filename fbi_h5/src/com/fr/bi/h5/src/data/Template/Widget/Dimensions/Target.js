@@ -18,6 +18,13 @@ class Target {
         return this.$dimension.get('used');
     }
 
+    getSortTarget() {
+        const $sort = this.$dimension.get('sort');
+        if ($sort) {
+            return $sort.get('sort_target');
+        }
+    }
+
     getSortTargetName() {
         const $sort = this.$dimension.get('sort');
         if ($sort) {

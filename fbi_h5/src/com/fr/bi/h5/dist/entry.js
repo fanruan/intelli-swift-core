@@ -33,17 +33,17 @@ webpackJsonp([0],{
 
 	var _View2 = _interopRequireDefault(_View);
 
-	__webpack_require__(958);
+	__webpack_require__(959);
 
-	__webpack_require__(960);
+	__webpack_require__(961);
 
-	__webpack_require__(962);
+	__webpack_require__(963);
 
-	__webpack_require__(964);
+	__webpack_require__(965);
 
-	__webpack_require__(966);
+	__webpack_require__(967);
 
-	__webpack_require__(968);
+	__webpack_require__(969);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2139,7 +2139,7 @@ webpackJsonp([0],{
 
 	var _Main2 = _interopRequireDefault(_Main);
 
-	var _Layout = __webpack_require__(957);
+	var _Layout = __webpack_require__(958);
 
 	var _Layout2 = _interopRequireDefault(_Layout);
 
@@ -5175,11 +5175,11 @@ webpackJsonp([0],{
 
 	var _ChartPaneComponent2 = _interopRequireDefault(_ChartPaneComponent);
 
-	var _TablePaneComponent = __webpack_require__(946);
+	var _TablePaneComponent = __webpack_require__(947);
 
 	var _TablePaneComponent2 = _interopRequireDefault(_TablePaneComponent);
 
-	var _DetailTablePaneComponent = __webpack_require__(952);
+	var _DetailTablePaneComponent = __webpack_require__(953);
 
 	var _DetailTablePaneComponent2 = _interopRequireDefault(_DetailTablePaneComponent);
 
@@ -5191,11 +5191,11 @@ webpackJsonp([0],{
 
 	var _MultiTreeSelectorComponent2 = _interopRequireDefault(_MultiTreeSelectorComponent);
 
-	var _ContentComponent = __webpack_require__(955);
+	var _ContentComponent = __webpack_require__(956);
 
 	var _ContentComponent2 = _interopRequireDefault(_ContentComponent);
 
-	var _ImageComponent = __webpack_require__(956);
+	var _ImageComponent = __webpack_require__(957);
 
 	var _ImageComponent2 = _interopRequireDefault(_ImageComponent);
 
@@ -5676,7 +5676,7 @@ webpackJsonp([0],{
 
 	var _DimensionComponent2 = _interopRequireDefault(_DimensionComponent);
 
-	var _DimensionSortableComponent = __webpack_require__(945);
+	var _DimensionSortableComponent = __webpack_require__(946);
 
 	var _DimensionSortableComponent2 = _interopRequireDefault(_DimensionSortableComponent);
 
@@ -6175,12 +6175,20 @@ webpackJsonp([0],{
 	                                _lib.Portal.showModal('DimensionSort', _lib2.default.createElement(
 	                                    _base.ActionSheet,
 	                                    {
+	                                        title: '"' + _this2._helper.getSortTargetName() + '"排序',
 	                                        onClose: function onClose(tag) {
-	                                            if (tag === '取消') {} else if (tag === '确定') {}
+	                                            if (tag === '取消') {} else if (tag === '确定') {
+	                                                _this2.props.onValueChange(_this2._$widget);
+	                                            }
 	                                            _lib.Portal.closeModal('DimensionSort');
 	                                        }
 	                                    },
-	                                    _lib2.default.createElement(_DimensionSortComponent2.default, null)
+	                                    _lib2.default.createElement(_DimensionSortComponent2.default, {
+	                                        wId: props.wId, $widget: props.$widget, dId: props.value.dId,
+	                                        onValueChange: function onValueChange($widget) {
+	                                            _this2._$widget = $widget;
+	                                        }
+	                                    })
 	                                ));
 	                            },
 	                            className: this._helper.getSortTargetTypeFont() })
@@ -6298,20 +6306,6 @@ webpackJsonp([0],{
 	            this.widget.set$Dimension(this.dimension.$get(), this.dId);
 	            return this.widget.$get();
 	        }
-	    }, {
-	        key: 'switchSort',
-	        value: function switchSort() {
-	            switch (this.dimension.getSortType()) {
-	                case BICst.SORT.ASC:
-	                    this.dimension.setSortType(BICst.SORT.DESC).$get();
-	                    break;
-	                case BICst.SORT.DESC:
-	                    this.dimension.setSortType(BICst.SORT.ASC).$get();
-	                    break;
-	            }
-	            this.widget.set$Dimension(this.dimension.$get(), this.dId);
-	            return this.widget.$get();
-	        }
 	    }]);
 
 	    return DimensionComponentHelper;
@@ -6356,6 +6350,10 @@ webpackJsonp([0],{
 
 	var _widgets = __webpack_require__(922);
 
+	var _DimensionSortComponentHelper = __webpack_require__(945);
+
+	var _DimensionSortComponentHelper2 = _interopRequireDefault(_DimensionSortComponentHelper);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
@@ -6392,9 +6390,38 @@ webpackJsonp([0],{
 	    }, {
 	        key: 'render',
 	        value: function render() {
+	            var _this2 = this;
+
 	            var props = _objectWithoutProperties(this.props, []);
 	            var state = _objectWithoutProperties(this.state, []);
 
+	            this._helper = new _DimensionSortComponentHelper2.default(props, this.context);
+	            if (this._helper.hasSortTargetItems()) {
+	                return _lib2.default.createElement(
+	                    _layout.Layout,
+	                    { box: 'mean', style: styles.wrapper },
+	                    _lib2.default.createElement(
+	                        _lib.PickerIOS,
+	                        { selectedValue: this._helper.getSortType(), onValueChange: function onValueChange(type) {
+	                                _this2.props.onValueChange(_this2._helper.setSortType(type));
+	                            } },
+	                        _lib2.default.createElement(_lib.PickerIOS.Item, { value: BICst.SORT.ASC, label: '升序' }),
+	                        _lib2.default.createElement(_lib.PickerIOS.Item, { value: BICst.SORT.DESC, label: '降序' })
+	                    ),
+	                    _lib2.default.createElement(
+	                        _lib.PickerIOS,
+	                        { selectedValue: this._helper.getSortTargetValue(), onValueChange: function onValueChange(dId) {
+	                                _this2.props.onValueChange(_this2._helper.setSortTarget(dId));
+	                            } },
+	                        (0, _core.map)(this._helper.getSortTargetItems(), function (_ref) {
+	                            var value = _ref.value;
+	                            var label = _ref.label;
+
+	                            return _lib2.default.createElement(_lib.PickerIOS.Item, { value: value, label: label });
+	                        })
+	                    )
+	                );
+	            }
 	            return _lib2.default.createElement(
 	                _layout.Layout,
 	                { box: 'mean', style: styles.wrapper },
@@ -6403,12 +6430,6 @@ webpackJsonp([0],{
 	                    null,
 	                    _lib2.default.createElement(_lib.PickerIOS.Item, { value: BICst.SORT.ASC, label: '升序' }),
 	                    _lib2.default.createElement(_lib.PickerIOS.Item, { value: BICst.SORT.DESC, label: '降序' })
-	                ),
-	                _lib2.default.createElement(
-	                    _lib.PickerIOS,
-	                    null,
-	                    _lib2.default.createElement(_lib.PickerIOS.Item, { value: BICst.SORT.ASC, label: 'A' }),
-	                    _lib2.default.createElement(_lib.PickerIOS.Item, { value: BICst.SORT.DESC, label: 'B' })
 	                )
 	            );
 	        }
@@ -6441,6 +6462,89 @@ webpackJsonp([0],{
 /***/ },
 
 /***/ 945:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _core = __webpack_require__(329);
+
+	var _data = __webpack_require__(773);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var DimensionSortComponentHelper = function () {
+	    function DimensionSortComponentHelper(props, context) {
+	        _classCallCheck(this, DimensionSortComponentHelper);
+
+	        this.widget = _data.WidgetFactory.createWidget(props.$widget, props.wId);
+	        this.dId = props.dId;
+	        this.dimension = this.widget.getDimensionOrTargetById(props.dId);
+	    }
+
+	    _createClass(DimensionSortComponentHelper, [{
+	        key: 'getSortType',
+	        value: function getSortType() {
+	            return this.dimension.getSortType();
+	        }
+	    }, {
+	        key: 'getSortTargetValue',
+	        value: function getSortTargetValue() {
+	            return this.dimension.getSortTarget();
+	        }
+
+	        //指标没有sort_target
+
+	    }, {
+	        key: 'hasSortTargetItems',
+	        value: function hasSortTargetItems() {
+	            return this.widget.isDimensionById(this.dId);
+	        }
+	    }, {
+	        key: 'getSortTargetItems',
+	        value: function getSortTargetItems() {
+	            var _this = this;
+
+	            var name = this.dimension.getName();
+	            var result = [{ value: this.dId, label: name }];
+	            (0, _core.each)(this.widget.getAllTargetIds(), function (dId) {
+	                var name = _this.widget.getTargetById(dId).getName();
+	                result.push({
+	                    value: dId,
+	                    label: name
+	                });
+	            });
+	            return result;
+	        }
+	    }, {
+	        key: 'setSortType',
+	        value: function setSortType(type) {
+	            this.dimension.setSortType(type);
+	            this.widget.set$Dimension(this.dimension.$get(), this.dId);
+	            return this.widget.$get();
+	        }
+	    }, {
+	        key: 'setSortTarget',
+	        value: function setSortTarget(dId) {
+	            this.dimension.setSortTarget(dId);
+	            this.widget.set$Dimension(this.dimension.$get(), this.dId);
+	            return this.widget.$get();
+	        }
+	    }]);
+
+	    return DimensionSortComponentHelper;
+	}();
+
+	exports.default = DimensionSortComponentHelper;
+
+/***/ },
+
+/***/ 946:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6595,7 +6699,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 946:
+/***/ 947:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6632,7 +6736,7 @@ webpackJsonp([0],{
 
 	var _widgets = __webpack_require__(922);
 
-	var _TableComponent = __webpack_require__(947);
+	var _TableComponent = __webpack_require__(948);
 
 	var _TableComponent2 = _interopRequireDefault(_TableComponent);
 
@@ -6747,7 +6851,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 947:
+/***/ 948:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6782,19 +6886,19 @@ webpackJsonp([0],{
 
 	var _widgets = __webpack_require__(922);
 
-	var _TableComponentHelper = __webpack_require__(948);
+	var _TableComponentHelper = __webpack_require__(949);
 
 	var _TableComponentHelper2 = _interopRequireDefault(_TableComponentHelper);
 
-	var _TableComponentWidthHelper = __webpack_require__(949);
+	var _TableComponentWidthHelper = __webpack_require__(950);
 
 	var _TableComponentWidthHelper2 = _interopRequireDefault(_TableComponentWidthHelper);
 
-	var _TableCell = __webpack_require__(950);
+	var _TableCell = __webpack_require__(951);
 
 	var _TableCell2 = _interopRequireDefault(_TableCell);
 
-	var _TableHeader = __webpack_require__(951);
+	var _TableHeader = __webpack_require__(952);
 
 	var _TableHeader2 = _interopRequireDefault(_TableHeader);
 
@@ -6940,7 +7044,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 948:
+/***/ 949:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7086,7 +7190,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 949:
+/***/ 950:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7242,7 +7346,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 950:
+/***/ 951:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7348,7 +7452,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 951:
+/***/ 952:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7450,7 +7554,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 952:
+/***/ 953:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7487,7 +7591,7 @@ webpackJsonp([0],{
 
 	var _widgets = __webpack_require__(922);
 
-	var _DetailTableComponent = __webpack_require__(953);
+	var _DetailTableComponent = __webpack_require__(954);
 
 	var _DetailTableComponent2 = _interopRequireDefault(_DetailTableComponent);
 
@@ -7602,7 +7706,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 953:
+/***/ 954:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7639,19 +7743,19 @@ webpackJsonp([0],{
 
 	var _widgets = __webpack_require__(922);
 
-	var _DetailTableComponentHelper = __webpack_require__(954);
+	var _DetailTableComponentHelper = __webpack_require__(955);
 
 	var _DetailTableComponentHelper2 = _interopRequireDefault(_DetailTableComponentHelper);
 
-	var _TableComponentWidthHelper = __webpack_require__(949);
+	var _TableComponentWidthHelper = __webpack_require__(950);
 
 	var _TableComponentWidthHelper2 = _interopRequireDefault(_TableComponentWidthHelper);
 
-	var _TableCell = __webpack_require__(950);
+	var _TableCell = __webpack_require__(951);
 
 	var _TableCell2 = _interopRequireDefault(_TableCell);
 
-	var _TableHeader = __webpack_require__(951);
+	var _TableHeader = __webpack_require__(952);
 
 	var _TableHeader2 = _interopRequireDefault(_TableHeader);
 
@@ -7786,7 +7890,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 954:
+/***/ 955:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7868,7 +7972,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 955:
+/***/ 956:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7981,7 +8085,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 956:
+/***/ 957:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8084,7 +8188,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 957:
+/***/ 958:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8280,13 +8384,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 958:
+/***/ 959:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(959);
+	var content = __webpack_require__(960);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -8307,7 +8411,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 959:
+/***/ 960:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -8322,13 +8426,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 960:
+/***/ 961:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(961);
+	var content = __webpack_require__(962);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -8349,7 +8453,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 961:
+/***/ 962:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -8364,13 +8468,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 962:
+/***/ 963:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(963);
+	var content = __webpack_require__(964);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -8391,7 +8495,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 963:
+/***/ 964:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -8406,13 +8510,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 964:
+/***/ 965:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(965);
+	var content = __webpack_require__(966);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -8433,7 +8537,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 965:
+/***/ 966:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -8448,13 +8552,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 966:
+/***/ 967:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(967);
+	var content = __webpack_require__(968);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -8475,7 +8579,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 967:
+/***/ 968:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -8490,13 +8594,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 968:
+/***/ 969:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(969);
+	var content = __webpack_require__(970);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -8517,7 +8621,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 969:
+/***/ 970:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();

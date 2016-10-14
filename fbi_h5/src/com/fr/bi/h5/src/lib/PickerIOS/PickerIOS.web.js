@@ -78,7 +78,7 @@ class Picker extends Component {
                 style.push(styles.selected);
             }
             childDisplay.push(
-                <View className={''} key={index} style={style} onTouchEnd={()=>this._moveToValue(child.props.value)}>
+                <View className={''} key={index} style={style} >
                     {child}
                 </View>
             )

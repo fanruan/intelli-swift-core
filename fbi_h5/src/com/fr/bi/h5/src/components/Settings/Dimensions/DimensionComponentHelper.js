@@ -13,7 +13,7 @@ export default class DimensionComponentHelper {
     }
 
     getSortTargetName() {
-        return this.dimension.getSortTargetName()
+        return this.dimension.getSortTargetName();
     }
 
     getSortTargetTypeFont() {
@@ -27,19 +27,6 @@ export default class DimensionComponentHelper {
 
     switchSelect() {
         this.dimension.setUsed(!this.isUsed()).$get();
-        this.widget.set$Dimension(this.dimension.$get(), this.dId);
-        return this.widget.$get();
-    }
-
-    switchSort() {
-        switch (this.dimension.getSortType()) {
-            case BICst.SORT.ASC:
-                this.dimension.setSortType(BICst.SORT.DESC).$get();
-                break
-            case BICst.SORT.DESC:
-                this.dimension.setSortType(BICst.SORT.ASC).$get();
-                break;
-        }
         this.widget.set$Dimension(this.dimension.$get(), this.dId);
         return this.widget.$get();
     }

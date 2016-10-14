@@ -18,6 +18,13 @@ class Dimension {
         return this.$dimension.get('used');
     }
 
+    getSortTarget() {
+        const $sort = this.$dimension.get('sort');
+        if ($sort) {
+            return $sort.get('sort_target');
+        }
+    }
+
     getSortTargetName() {
         const $sort = this.$dimension.get('sort');
         if ($sort) {
@@ -47,6 +54,11 @@ class Dimension {
 
     setSortType(type) {
         this.$dimension = this.$dimension.setIn(['sort', 'type'], type);
+        return this;
+    }
+
+    setSortTarget(dId) {
+        this.$dimension = this.$dimension.setIn(['sort', 'sort_target'], dId);
         return this;
     }
 }

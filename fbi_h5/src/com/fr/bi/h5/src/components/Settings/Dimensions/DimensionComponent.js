@@ -79,17 +79,21 @@ class DimensionComponent extends Component {
                           effect={false}>{this._helper.getSortTargetName()}</Text>
                     <IconButton style={styles.sortIcon} onPress={()=> {
                         Portal.showModal('DimensionSort', <ActionSheet
+                            title={`"${this._helper.getSortTargetName()}"排序`}
                             onClose={(tag)=> {
                                 if (tag === '取消') {
 
                                 } else if (tag === '确定') {
-
+                                    this.props.onValueChange(this._$widget);
                                 }
                                 Portal.closeModal('DimensionSort')
                             }}
                         >
                             <DimensionSortComponent
-
+                                wId={props.wId} $widget={props.$widget} dId={props.value.dId}
+                                onValueChange={($widget)=> {
+                                    this._$widget = $widget;
+                                }}
                             />
                         </ActionSheet>)
                     }}

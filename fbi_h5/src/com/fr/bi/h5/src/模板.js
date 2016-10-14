@@ -4,7 +4,7 @@ import Immutable from 'immutable'
 
 import {
     ReactComponentWithPureRenderMixin, ReactComponentWithImmutableRenderMixin,
-    cn, sc, math, isNil, emptyFunction, shallowEqual, immutableShallowEqual, isEqual, isEmpty, each,
+    cn, sc, math, isNil, emptyFunction, shallowEqual, immutableShallowEqual, isEqual, isEmpty, each, map,
     translateDOMPositionXY, requestAnimationFrame
 } from 'core'
 import React, {

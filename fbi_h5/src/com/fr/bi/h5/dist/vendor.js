@@ -29098,9 +29098,7 @@
 	                }
 	                childDisplay.push(_react2.default.createElement(
 	                    _View2.default,
-	                    { className: '', key: index, style: style, onTouchEnd: function onTouchEnd() {
-	                            return _this4._moveToValue(child.props.value);
-	                        } },
+	                    { className: '', key: index, style: style },
 	                    child
 	                ));
 	            });
@@ -67901,6 +67899,14 @@
 	            return this.$dimension.get('used');
 	        }
 	    }, {
+	        key: 'getSortTarget',
+	        value: function getSortTarget() {
+	            var $sort = this.$dimension.get('sort');
+	            if ($sort) {
+	                return $sort.get('sort_target');
+	            }
+	        }
+	    }, {
 	        key: 'getSortTargetName',
 	        value: function getSortTargetName() {
 	            var $sort = this.$dimension.get('sort');
@@ -67934,6 +67940,12 @@
 	        key: 'setSortType',
 	        value: function setSortType(type) {
 	            this.$dimension = this.$dimension.setIn(['sort', 'type'], type);
+	            return this;
+	        }
+	    }, {
+	        key: 'setSortTarget',
+	        value: function setSortTarget(dId) {
+	            this.$dimension = this.$dimension.setIn(['sort', 'sort_target'], dId);
 	            return this;
 	        }
 	    }]);
@@ -67982,6 +67994,14 @@
 	        key: 'isUsed',
 	        value: function isUsed() {
 	            return this.$dimension.get('used');
+	        }
+	    }, {
+	        key: 'getSortTarget',
+	        value: function getSortTarget() {
+	            var $sort = this.$dimension.get('sort');
+	            if ($sort) {
+	                return $sort.get('sort_target');
+	            }
 	        }
 	    }, {
 	        key: 'getSortTargetName',
