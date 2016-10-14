@@ -451,9 +451,9 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
     getValue: function () {
         return {
             widget_setting: this.widgetSetting.getValue(),
+            chart_style_setting: this.chartStyleSetting.getValue(),
             left_axis_setting: this.lValueAxisSetting.getValue(),
             right_axis_setting: this.rValueAxisSetting.getValue(),
-            chart_style_setting: this.chartStyleSetting.getValue(),
             transfer_filter: this.transferFilter.isSelected(),
             show_x_axis_title: this.isShowTitleX.isSelected(),
             x_axis_title: this.editTitleX.getValue(),
@@ -468,9 +468,9 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
     setValue: function (v) {
         this.widgetSetting.setValue(v.widget_setting);
+        this.chartStyleSetting.setValue(v.chart_style_setting);
         this.lValueAxisSetting.setValue(v.left_axis_setting);
         this.rValueAxisSetting.setValue(v.right_axis_setting);
-        this.chartStyleSetting.setValue(v.chart_style_setting);
         this.transferFilter.setSelected(v.transfer_filter);
         this.isShowTitleX.setSelected(v.x_axis_title);
         this.editTitleX.setValue(v.x_axis_title);

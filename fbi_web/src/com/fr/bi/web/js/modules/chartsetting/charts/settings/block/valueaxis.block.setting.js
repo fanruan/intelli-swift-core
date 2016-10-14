@@ -6,7 +6,8 @@ BI.ValueAxisBlockSetting = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.ValueAxisBlockSetting.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-value-axis-block-setting bi-charts-setting",
-            headText: BI.i18nText("BI-Left_Value_Axis")
+            headText: BI.i18nText("BI-Left_Value_Axis"),
+            reversed: true
         })
     },
 
@@ -125,6 +126,8 @@ BI.ValueAxisBlockSetting = BI.inherit(BI.Widget, {
         this.reversed.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.ValueAxisBlockSetting.EVENT_CHANGE);
         });
+
+        this.reversed.setVisible(o.reversed);
 
         //轴刻度自定义
         this.showCustomScale = BI.createWidget({

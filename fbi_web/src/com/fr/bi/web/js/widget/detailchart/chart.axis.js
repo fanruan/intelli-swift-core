@@ -59,6 +59,7 @@ BI.AxisChart = BI.inherit(BI.AbstractChart, {
                     axis.title.rotation = self.constants.ROTATION;
                     BI.extend(axis, {
                         lineWidth: self.config.line_width,
+                        lineColor: self.config.left_line_color,
                         showLabel: self.config.left_axis_show_label,
                         labelRotation: self.config.left_axis_label_setting.text_direction || 0,
                         enableTick: self.config.enable_tick,
@@ -80,6 +81,7 @@ BI.AxisChart = BI.inherit(BI.AbstractChart, {
                     axis.title.rotation = self.constants.ROTATION;
                     BI.extend(axis, {
                         lineWidth: self.config.line_width,
+                        lineColor: self.config.right_line_color,
                         showLabel: self.config.right_axis_show_label,
                         labelRotation: self.config.right_axis_label_setting.text_direction || 0,
                         enableTick: self.config.enable_tick,

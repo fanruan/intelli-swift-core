@@ -961,6 +961,34 @@
             }
         },
 
+        getWSRight2ValueAxisSettingByID: function(wid) {
+            var self = this, view = this.getWidgetViewByID(wid);
+            var titleRY = this.getWSRightYAxis2TitleByID(wid);
+            if (titleRY === "") {
+                BI.any(view[BICst.REGION.TARGET2], function (idx, dId) {
+                    if (self.isDimensionUsable(dId)) {
+                        titleRY = self.getDimensionNameByID(dId);
+                        return true;
+                    }
+                    return false;
+                });
+            }
+            return {
+                number_level: this.getWSRightYAxis2NumLevelByID(wid),
+                axis_unit: this.getWSRightYAxis2UnitByID(wid),
+                axis_style: this.getWSRightYAxis2StyleByID(wid),
+                num_separator: this.getWSRightNumberSeparatorsByID(wid),
+                show_title: this.getWSShowRightYAxis2TitleByID(wid),
+                axis_title: titleRY,
+                show_label: this.getWSRightAxis2ShowLabelByID(wid),
+                label_setting: this.getWSRightAxis2LabelSettingByID(wid),
+                // line_color: this.lineColor.getValue(),
+                axis_reversed: this.getWSRightYAxis2ReversedByID(wid),
+                show_custom_scale: this.getWSShowY2CustomScale(wid),
+                custom_scale: this.getWSCustomY2Scale(wid)
+            }
+        },
+
         getWSChartLineTypeByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.chart_line_type) ? ws.chart_line_type :
@@ -1287,9 +1315,23 @@
                 BICst.DEFAULT_CHART_SETTING.show_label
         },
 
+        getWSRightAxis2ShowLabelByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var rAxisSetting = ws.right2_axis_setting || {};
+            return BI.isNotNull(rAxisSetting.show_label) ? rAxisSetting.show_label :
+                BICst.DEFAULT_CHART_SETTING.show_label
+        },
+
         getWSRightAxisLabelSettingByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             var rAxisSetting = ws.right_axis_setting || {};
+            return BI.isNotNull(rAxisSetting.label_setting) ? rAxisSetting.label_setting :
+                BICst.DEFAULT_CHART_SETTING.label_setting
+        },
+
+        getWSRightAxis2LabelSettingByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var rAxisSetting = ws.right2_axis_setting || {};
             return BI.isNotNull(rAxisSetting.label_setting) ? rAxisSetting.label_setting :
                 BICst.DEFAULT_CHART_SETTING.label_setting
         },
@@ -1318,6 +1360,20 @@
             var rAxisSetting = ws.right_axis_setting || {};
             return BI.isNotNull(rAxisSetting.show_custom_scale) ? rAxisSetting.show_custom_scale :
                 BICst.DEFAULT_CHART_SETTING.show_x_custom_scale;
+        },
+
+        getWSShowY2CustomScale: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var rAxisSetting = ws.right2_axis_setting || {};
+            return BI.isNotNull(rAxisSetting.show_custom_scale) ? rAxisSetting.show_custom_scale :
+                BICst.DEFAULT_CHART_SETTING.show_x_custom_scale;
+        },
+
+        getWSCustomY2Scale: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var lAxisSetting = ws.right2_axis_setting || {};
+            return BI.isNotNull(lAxisSetting.custom_scale) ? lAxisSetting.custom_scale :
+                BICst.DEFAULT_CHART_SETTING.custom_scale
         },
 
         getWSCustomXScale: function (wid) {
