@@ -58,6 +58,9 @@ BIDezi.WebWidgetView = BI.inherit(BI.View, {
     },
 
     refresh: function () {
-        this.web.setValue(this.model.get("url"))
+        var self = this;
+        BI.delay(function () {
+            self.web.setValue(self.model.get("url"))
+        }, 0);
     }
 });
