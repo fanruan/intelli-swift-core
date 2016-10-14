@@ -123,7 +123,7 @@ class Main extends Component {
         const {name, Component, title, onValueChange, ...others} = route;
         if (name === 'index') {
             if (this.template.hasControlWidget()) {
-                return <Layout style={{height: '100%'}} dir='top' box='last'>
+                return <Layout flex dir='top' box='last'>
                     <LayoutComponent width={width} height={height - 50 - Sizes.ITEM_HEIGHT} {...props}
                                      navigator={navigationOperations}/>
 
@@ -135,14 +135,16 @@ class Main extends Component {
             return <LayoutComponent width={width} height={height} {...props}/>;
         }
         return (
-            <Component
-                width={width} height={height - 50}
-                {...others}
-                onValueChange={$template=> {
-                    route.$template = $template;
-                }}
-                navigator={navigationOperations}
-            />
+            <Layout flex box='mean'>
+                <Component
+                    width={width} height={height - 50}
+                    {...others}
+                    onValueChange={$template=> {
+                        route.$template = $template;
+                    }}
+                    navigator={navigationOperations}
+                />
+            </Layout>
         );
     }
 

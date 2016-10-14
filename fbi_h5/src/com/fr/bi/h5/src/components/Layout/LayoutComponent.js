@@ -11,6 +11,7 @@ import React, {
     View,
     Fetch
 } from 'lib'
+import {Layout} from 'layout'
 
 import {AutoSizer} from 'base'
 import {Colors, TemplateFactory, WidgetFactory} from 'data'
@@ -142,9 +143,9 @@ class LayoutComponent extends Component {
             default:
                 break;
         }
-        return <View style={styles.wrapper}>
+        return <Layout box='mean' style={styles.wrapper}>
             {component}
-        </View>
+        </Layout>
     }
 }
 mixin.onClass(LayoutComponent, ReactComponentWithImmutableRenderMixin);

@@ -88,11 +88,9 @@ class DimensionComponent extends Component {
                                 Portal.closeModal('DimensionSort')
                             }}
                         >
-                            <Layout style = {styles.dimensionSortContainer}>
-                                <DimensionSortComponent
+                            <DimensionSortComponent
 
-                                />
-                            </Layout>
+                            />
                         </ActionSheet>)
                     }}
                                 className={this._helper.getSortTargetTypeFont()}/>
@@ -139,14 +137,6 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10,
         textAlign: 'right'
-    },
-
-    dimensionSortContainer:{
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0
     },
 
     disabledText: {

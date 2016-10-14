@@ -68629,12 +68629,14 @@
 	            var main = _props.main;
 	            var cross = _props.cross;
 	            var box = _props.box;
+	            var flex = _props.flex;
 
-	            var props = _objectWithoutProperties(_props, ['children', 'dir', 'main', 'cross', 'box']);
+	            var props = _objectWithoutProperties(_props, ['children', 'dir', 'main', 'cross', 'box', 'flex']);
 
 	            return _lib2.default.createElement(
 	                _lib.View,
-	                _extends({ 'data-flex': 'dir:' + dir + ' main:' + main + ' cross:' + cross + ' box:' + box }, props, {
+	                _extends({ 'data-flex-box': flex === true ? 1 : flex,
+	                    'data-flex': 'dir:' + dir + ' main:' + main + ' cross:' + cross + ' box:' + box }, props, {
 	                    className: (0, _classnames2.default)('', props.className) }),
 	                children
 	            );
@@ -68645,6 +68647,7 @@
 	}(_lib.Component);
 
 	Layout.defaultProps = {
+	    flex: '',
 	    dir: 'left', //left,right,top,bottom
 	    main: 'left', //left,right,center,justify
 	    cross: 'stretch', //top,bottom,center,baseline,stretch
@@ -68670,9 +68673,9 @@
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _classnames = __webpack_require__(513);
+	var _Layout = __webpack_require__(795);
 
-	var _classnames2 = _interopRequireDefault(_classnames);
+	var _Layout2 = _interopRequireDefault(_Layout);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -68702,9 +68705,8 @@
 	            var props = _objectWithoutProperties(_props, ['children']);
 
 	            return _lib2.default.createElement(
-	                _lib.View,
-	                _extends({ 'data-flex': 'main:center cross:center' }, props, {
-	                    className: (0, _classnames2.default)('', props.className) }),
+	                _Layout2.default,
+	                _extends({ main: 'center', cross: 'center' }, props),
 	                children
 	            );
 	        }
@@ -68733,9 +68735,9 @@
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _classnames = __webpack_require__(513);
+	var _Layout = __webpack_require__(795);
 
-	var _classnames2 = _interopRequireDefault(_classnames);
+	var _Layout2 = _interopRequireDefault(_Layout);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -68765,9 +68767,8 @@
 	            var props = _objectWithoutProperties(_props, ['children']);
 
 	            return _lib2.default.createElement(
-	                _lib.View,
-	                _extends({ 'data-flex': 'cross:center' }, props, {
-	                    className: (0, _classnames2.default)('', props.className) }),
+	                _Layout2.default,
+	                _extends({ cross: 'center' }, props),
 	                children
 	            );
 	        }
@@ -68796,9 +68797,9 @@
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _classnames = __webpack_require__(513);
+	var _Layout = __webpack_require__(795);
 
-	var _classnames2 = _interopRequireDefault(_classnames);
+	var _Layout2 = _interopRequireDefault(_Layout);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -68828,9 +68829,8 @@
 	            var props = _objectWithoutProperties(_props, ['children']);
 
 	            return _lib2.default.createElement(
-	                _lib.View,
-	                _extends({ 'data-flex': 'main:center' }, props, {
-	                    className: (0, _classnames2.default)('', props.className) }),
+	                _Layout2.default,
+	                _extends({ main: 'center' }, props),
 	                children
 	            );
 	        }

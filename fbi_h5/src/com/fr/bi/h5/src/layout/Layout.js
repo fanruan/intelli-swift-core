@@ -12,7 +12,7 @@ class Layout extends Component {
     }
 
     static defaultProps = {
-        full: false,
+        flex: '',
         dir: 'left', //left,right,top,bottom
         main: 'left', //left,right,center,justify
         cross: 'stretch', //top,bottom,center,baseline,stretch
@@ -20,13 +20,10 @@ class Layout extends Component {
     };
 
     render() {
-        const {children, dir, main, cross, box, full, style, ...props} = this.props;
-        const currentStyle = {};
-        if (full) {
-            currentStyle.flex = 1;
-        }
-        return <View data-flex={`dir:${dir} main:${main} cross:${cross} box:${box}`} {...props}
-                     className={cn('', props.className)} style={[currentStyle, style]}>{children}</View>
+        const {children, dir, main, cross, box, flex, ...props} = this.props;
+        return <View data-flex-box={flex === true ? 1 : flex}
+                     data-flex={`dir:${dir} main:${main} cross:${cross} box:${box}`} {...props}
+                     className={cn('', props.className)}>{children}</View>
     }
 }
 export default Layout
