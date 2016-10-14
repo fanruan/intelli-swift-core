@@ -6,16 +6,14 @@ import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.relation.*;
+import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by kary on 2016/6/8.
@@ -119,6 +117,15 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
             BILoggerFactory.getLogger().error(e.getMessage());
         }
         return true;
+    }
+
+    @Override
+    public Map<CubeTableSource, UpdateSettingSource> getUpdateSettingSources() {
+        Map<CubeTableSource, UpdateSettingSource> updateSettingSourceMap = new HashMap<CubeTableSource, UpdateSettingSource>();
+        for (CubeTableSource source : allSingleSources) {
+            updateSettingSourceMap.put(source, setUpdateTypes(source));
+        }
+        return updateSettingSourceMap;
     }
 
     public Set<BITableSourceRelationPath> getBiTableSourceRelationPathSet() {

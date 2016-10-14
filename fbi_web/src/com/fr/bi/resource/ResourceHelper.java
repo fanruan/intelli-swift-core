@@ -1780,6 +1780,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level1.date.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/relationtable/node.relationtables.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/relationtable/node.level2.date.js",
+                "com/fr/bi/web/js/services/packageselectdataservice/relationtable/expander.relationtable.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/relationtable/expander.relationtables.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/packageselectdataservice.js",
 

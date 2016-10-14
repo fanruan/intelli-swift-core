@@ -1,5 +1,6 @@
 package com.finebi.cube.gen.oper;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
@@ -22,7 +23,6 @@ import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
@@ -53,9 +53,10 @@ public class BITablePathIndexBuilder extends BIProcessor {
 
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
+        Stopwatch stopwatch = Stopwatch.createStarted();
         logger.info(BIStringUtils.append("\n    ", logPath(), "start building path index main task"));
         buildRelationPathIndex();
-        logger.info(BIStringUtils.append("\n    ", logPath(), "finish building path index main task"));
+        logger.info(BIStringUtils.append("\n    ", logPath(), "finish building path index main task,{} second " ),stopwatch.elapsed(TimeUnit.SECONDS));
         return null;
     }
 

@@ -23,14 +23,14 @@ import {Colors, Size, Template, Widget, Dimension, Target} from 'data'
 
 import {Layout, CenterLayout, HorizontalCenterLayout, VerticalCenterLayout} from 'layout';
 
-import {Button, IconButton, TextButton, Table} from 'base'
+import {Button, IconButton, TextButton, Table, Sortable} from 'base'
 
 import {MultiSelectorWidget} from 'widgets'
 
 import DimensionComponentHelper from './DimensionComponentHelper'
 
 
-class DimensionComponent extends Component {
+class DimensionSortableComponent extends Component {
     constructor(props, context) {
         super(props, context);
     }
@@ -61,16 +61,15 @@ class DimensionComponent extends Component {
     render() {
         const {...props} = this.props, {...state} = this.state;
         this._helper = new DimensionComponentHelper(props, this.context);
-        return <Button onPress={()=> {
-            this.props.onSelected(this._helper.switchSelect());
-        }}>
-            <Layout cross='center' style={styles.wrapper}>
-                <IconButton style={styles.icon} invalid={true} selected={this._helper.isUsed()}
-                            className={'single-select-font'}/>
-                <Text style={sc([[styles.disabledText, !this._helper.isUsed()]])} textAlign={'left'}
-                      effect={false}>{props.value.text}</Text>
+        return <Layout cross='center' box='last' style={styles.wrapper}>
+                <Layout cross='center'>
+                    <IconButton style={styles.icon} invalid={true} selected={this._helper.isUsed()}
+                                className={'single-select-font'}/>
+                    <Text style={sc([[styles.disabledText, !this._helper.isUsed()]])} textAlign={'left'}
+                          effect={false}>{props.value.text}</Text>
+                </Layout>
+                <DragHandle/>
             </Layout>
-        </Button>
     }
 
     componentWillReceiveProps(nextProps) {
@@ -90,7 +89,7 @@ class DimensionComponent extends Component {
     }
 
 }
-mixin.onClass(DimensionComponent, ReactComponentWithImmutableRenderMixin);
+mixin.onClass(DimensionSortableComponent, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         paddingLeft: 20,
@@ -107,4 +106,14 @@ const styles = StyleSheet.create({
         color: Colors.DISABLED
     }
 });
-export default DimensionComponent
+
+const {SortableElement, SortableHandle} = Sortable;
+
+const DragHandle = SortableHandle(() => {
+    return <IconButton effect={false} style={styles.dragHandler} className={'drag-handler-icon'} iconWidth={18}
+                       iconHeight={18}/>
+});
+
+export default SortableElement((props) => {
+    return <DimensionSortableComponent {...props}/>
+});
