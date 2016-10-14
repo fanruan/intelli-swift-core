@@ -1,16 +1,18 @@
 package com.fr.bi.web.conf.services.cubeconf;
 
+import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeGenerationManager;
+import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
-import com.fr.bi.web.conf.services.utils.BICubeGenerateUtils;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
 import com.fr.web.utils.WebUtils;
@@ -30,7 +32,8 @@ public class BICheckGenerateCubeAction extends AbstractBIConfigureAction {
         CubeTableSource source = TableSourceFactory.createTableSource(new JSONObject(tableJson), userId);
         JSONObject jo = new JSONObject();
         try {
-            boolean tableExisted = BICubeGenerateUtils.tableExisted(source, userId);
+            ICubeConfiguration cubeConfiguration = BICubeConfiguration.getConf(Long.toString(userId));
+            boolean tableExisted = BITableKeyUtils.isTableExisted(source, cubeConfiguration);
             if (tableExisted) {
                 ICubeDataLoader dataLoader = BIFactoryHelper.getObject(ICubeDataLoader.class, new BIUser(userId));
                 ICubeTableService tableService = dataLoader.getTableIndex(source);

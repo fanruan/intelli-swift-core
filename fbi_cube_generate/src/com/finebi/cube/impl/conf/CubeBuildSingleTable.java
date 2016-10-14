@@ -116,8 +116,9 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
     }
 
     public void setCubeGenerateRelationSet(Set<BITableRelation> inUseRelations, BusinessTable businessTable) {
+        ICubeConfiguration cubeConfiguration = BICubeConfiguration.getConf(String.valueOf(biUser.getUserId()));
         for (BITableRelation tableRelation : inUseRelations) {
-            if (isTableRelationValid(tableRelation)) {
+            if (isTableRelationAvailable(tableRelation, cubeConfiguration)) {
                 BITableRelation tempTableRelation = new BITableRelation(tableRelation.getPrimaryField(), tableRelation.getForeignField());
                 BITableSourceRelation convertRelation = convertRelation(tempTableRelation);
                 if (null != convertRelation) {
@@ -130,6 +131,8 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
                     BICubeGenerateRelation generateRelation = new BICubeGenerateRelation(convertRelation, dependTableSourceSet);
                     this.cubeGenerateRelationSet.add(generateRelation);
                 }
+            } else {
+                BILoggerFactory.getLogger().error("tableSourceRelation is not available:" + tableRelation.toString());
             }
         }
 

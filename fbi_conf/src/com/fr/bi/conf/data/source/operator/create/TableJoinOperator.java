@@ -3,19 +3,29 @@ package com.fr.bi.conf.data.source.operator.create;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.base.FinalInt;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.engine.SortTool;
+import com.fr.bi.stable.engine.SortToolUtils;
 import com.fr.bi.stable.engine.index.key.IndexKey;
+import com.fr.bi.stable.gvi.AllShowRoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
-import com.fr.bi.stable.structure.collection.list.IntList;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.io.newio.NIOConstant;
+import com.fr.bi.stable.structure.object.CubeValueEntry;
+import com.fr.cache.list.IntList;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -23,9 +33,7 @@ import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by GUY on 2015/3/5.
@@ -140,48 +148,57 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
 
 
     private int writeRIndex(Traversal<BIDataValue> travel, ICubeTableService lti, ICubeTableService rti) {
-        int rlen = getColumnSize(false);
-        ArrayList<ICubeColumnIndexReader> getter = new ArrayList<ICubeColumnIndexReader>();
-        for (int i = 0; i < left.size(); i++) {
-            getter.add(lti.loadGroup(new IndexKey(left.get(i)), new ArrayList<BITableSourceRelation>()));
-        }
+        int rLen = getColumnSize(false);
+        int lLeftCount = getColumnSize(true);
         int index = 0;
-        int lleftCount = getColumnSize(true);
-        GroupValueIndex rTotalGvi = null;
-        long row = rti.getRowCount();
-        for (int i = 0; i < row; i++) {
-            GroupValueIndex gvi = null;
-            Object[] rvalues = new Object[rlen];
-            for (int j = 0; j < rlen; j++) {
-                rvalues[j] = rti.getColumnDetailReader(new IndexKey(columns.get(j < right.size() ? j : lleftCount + j).getColumnName())).getValue(i);
-            }
-            for (int j = 0; j < right.size(); j++) {
-                Object[] key = getter.get(j).createKey(1);
-                key[0] = rvalues[j] instanceof Date ? ((Date) rvalues[j]).getTime() : rvalues[j];
-                GroupValueIndex rgvi = key[0] == null ? null : getter.get(j).getGroupIndex(key)[0];
-                if (rgvi == null) {
-                    gvi = null;
-                    break;
-                }
-                if (gvi == null) {
-                    gvi = rgvi;
-                } else {
-                    gvi = gvi.AND(rgvi);
-                }
-            }
-            if (rTotalGvi == null) {
-                rTotalGvi = gvi;
+        ValueIterator lValueIterator = new ValueIterator(lti, left);
+        ValueIterator rValueIterator = new ValueIterator(rti, right);
+        ValuesAndGVI lValuesAndGVI = lValueIterator.next();
+        Comparator[] comparators = new Comparator[left.size()];
+        for (int i = 0; i < comparators.length; i ++){
+            comparators[i] = lti.getColumns().get(new IndexKey(left.get(i))).getFieldType() == DBConstant.COLUMN.STRING ? BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC : BIBaseConstant.COMPARATOR.COMPARABLE.ASC;
+        }
+        while (rValueIterator.hasNext()){
+            ValuesAndGVI rValuesAndGVI = rValueIterator.next();
+            if (rValuesAndGVI.compareTo(lValuesAndGVI, comparators) < 0){
+                index = writeROneGroup(travel, lti, rti, rLen, lLeftCount, index, lValuesAndGVI.gvi, null);
+            } else if (rValuesAndGVI.compareTo(lValuesAndGVI, comparators) == 0){
+                index = writeROneGroup(travel, lti, rti, rLen, lLeftCount, index, lValuesAndGVI.gvi, rValuesAndGVI.gvi);
             } else {
-                rTotalGvi = rTotalGvi.OR(gvi);
+                while (rValuesAndGVI.compareTo(lValuesAndGVI, comparators) > 0){
+                    lValuesAndGVI = lValueIterator.next();
+                }
+                if (rValuesAndGVI.compareTo(lValuesAndGVI, comparators) == 0){
+                    index = writeROneGroup(travel, lti, rti, rLen, lLeftCount, index, lValuesAndGVI.gvi, rValuesAndGVI.gvi);
+                    lValuesAndGVI = lValueIterator.next();
+                }
             }
-            index = rtravel(travel, lti, rlen, index, gvi, rvalues, lleftCount);
         }
         return index;
     }
 
 
-    private int rtravel(Traversal<BIDataValue> travel, ICubeTableService lti, int rlen, int index, GroupValueIndex gvi, Object[] rvalues, int lleftCount) {
-        if (gvi == null || gvi.getRowsCountWithData() == 0) {
+    private int writeROneGroup(Traversal<BIDataValue> travel, ICubeTableService lti, ICubeTableService rti, int rLen, int lLeftCount, int index, GroupValueIndex lGvi, GroupValueIndex rGvi) {
+        final IntList list = new IntList();
+        rGvi.Traversal(new SingleRowTraversalAction() {
+            @Override
+            public void actionPerformed(int row) {
+                list.add(row);
+            }
+        });
+
+        for (int i = 0;i < list.size(); i++){
+            Object[] rvalues = new Object[rLen];
+            for (int j = 0; j < rLen; j++) {
+                rvalues[j] = rti.getColumnDetailReader(new IndexKey(columns.get(j < right.size() ? j : lLeftCount + j).getColumnName())).getValue(list.get(i));
+            }
+            index = rtravel(travel, lti, rLen, index, lGvi, rvalues, lLeftCount);
+        }
+        return index;
+    }
+
+    private int rtravel(Traversal<BIDataValue> travel, ICubeTableService lti, int rlen, int index, GroupValueIndex lGvi, Object[] rvalues, int lleftCount) {
+        if (lGvi == null || lGvi.getRowsCountWithData() == 0) {
             for (int j = 0; j < rlen; j++) {
                 travel.actionPerformed(new BIDataValue(index, j < right.size() ? j : lleftCount + j, rvalues[j]));
             }
@@ -190,19 +207,19 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
             }
             index++;
         } else {
-            final IntList rRows = new IntList();
-            gvi.Traversal(new SingleRowTraversalAction() {
+            final IntList lRows = new IntList();
+            lGvi.Traversal(new SingleRowTraversalAction() {
                 @Override
                 public void actionPerformed(int rowIndices) {
-                    rRows.add(rowIndices);
+                    lRows.add(rowIndices);
                 }
             });
-            for (int k = 0; k < rRows.size(); k++) {
+            for (int k = 0; k < lRows.size(); k++) {
                 for (int j = 0; j < rlen; j++) {
                     travel.actionPerformed(new BIDataValue(index, j < right.size() ? j : lleftCount + j, rvalues[j]));
                 }
                 for (int j = right.size(); j < lti.getColumns().size(); j++) {
-                    travel.actionPerformed(new BIDataValue(index, j, lti.getColumnDetailReader(new IndexKey(columns.get(j).getColumnName())).getValue(rRows.get(k))));
+                    travel.actionPerformed(new BIDataValue(index, j, lti.getColumnDetailReader(new IndexKey(columns.get(j).getColumnName())).getValue(lRows.get(k))));
                 }
                 index++;
             }
@@ -212,50 +229,380 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
 
 
     private int writeIndex(Traversal<BIDataValue> travel, ICubeTableService lti, ICubeTableService rti, boolean nullContinue, boolean writeLeft) {
-        int llen = getColumnSize(true);
-        ArrayList<ICubeColumnIndexReader> getter = new ArrayList<ICubeColumnIndexReader>();
-        for (int i = 0; i < right.size(); i++) {
-            getter.add(rti.loadGroup(new IndexKey(right.get(i)), new ArrayList<BITableSourceRelation>()));
-        }
+        int lLen = getColumnSize(true);
         int index = 0;
-        GroupValueIndex rTotalGvi = null;
-        long row = lti.getRowCount();
-        for (int i = 0; i < row; i++) {
-            GroupValueIndex gvi = null;
-            Object[] lvalues = new Object[llen];
-            for (int j = 0; j < llen; j++) {
-                lvalues[j] = lti.getColumnDetailReader(new IndexKey(columns.get(j).getColumnName())).getValue(i);
-            }
-            for (int j = 0; j < left.size(); j++) {
-                Object[] key = getter.get(j).createKey(1);
-                key[0] = lvalues[j] instanceof Date ? ((Date) lvalues[j]).getTime() : lvalues[j];
-                ICubeColumnIndexReader reader = getter.get(j);
-                GroupValueIndex rgvi = key[0] == null ? null : reader.getGroupIndex(key)[0];
-                if (rgvi == null) {
-                    gvi = null;
-                    break;
-                }
-                if (gvi == null) {
-                    gvi = rgvi;
-                } else {
-                    gvi = gvi.AND(rgvi);
-                }
-            }
-            if (rTotalGvi == null) {
-                rTotalGvi = gvi;
-            } else {
-                rTotalGvi = rTotalGvi.OR(gvi);
-            }
-            index = travel(travel, rti, llen, index, gvi, lvalues, nullContinue);
+        ValueIterator lValueIterator = new ValueIterator(lti, left);
+        ValueIterator rValueIterator = new ValueIterator(rti, right);
+        GroupValueIndex rTotalGvi = new RoaringGroupValueIndex();
+        ValuesAndGVI rValuesAndGVI = rValueIterator.next();
+        Comparator[] comparators = new Comparator[left.size()];
+        for (int i = 0; i < comparators.length; i ++){
+            comparators[i] = lti.getColumns().get(new IndexKey(left.get(i))).getFieldType() == DBConstant.COLUMN.STRING ? BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC : BIBaseConstant.COMPARATOR.COMPARABLE.ASC;
         }
-        return writeLeft ? writeLeftIndex(rTotalGvi, rti, llen, index, travel) : index;
+        while (lValueIterator.hasNext()){
+            ValuesAndGVI lValuesAndGVI = lValueIterator.next();
+            if (lValuesAndGVI.compareTo(rValuesAndGVI, comparators) < 0 && !nullContinue){
+                index = writeOneGroup(travel, lti, rti, lLen, index, lValuesAndGVI.gvi, null);
+            } else if (lValuesAndGVI.compareTo(rValuesAndGVI, comparators) == 0){
+                index = writeOneGroup(travel, lti, rti, lLen, index, lValuesAndGVI.gvi, rValuesAndGVI.gvi);
+            } else {
+                if (writeLeft){
+                    rTotalGvi.or(rValuesAndGVI.gvi);
+                }
+                while (lValuesAndGVI.compareTo(rValuesAndGVI, comparators) > 0){
+                    rValuesAndGVI = rValueIterator.next();
+                    if (writeLeft){
+                        rTotalGvi.or(rValuesAndGVI.gvi);
+                    }
+                }
+                if (lValuesAndGVI.compareTo(rValuesAndGVI, comparators) == 0){
+                    index = writeOneGroup(travel, lti, rti, lLen, index, lValuesAndGVI.gvi, rValuesAndGVI.gvi);
+                    rValuesAndGVI = rValueIterator.next();
+                }
+            }
+        }
+        return writeLeft ? writeLeftIndex(rTotalGvi, rti, lLen, index, travel) : index;
     }
 
-    private int travel(Traversal<BIDataValue> travel, ICubeTableService rti, int llen, int index, GroupValueIndex gvi, Object[] lvalues, boolean nullContinue) {
-        if (gvi == null || gvi.getRowsCountWithData() == 0) {
-            if (nullContinue) {
-                return index;
+    private int writeOneGroup(Traversal<BIDataValue> travel, ICubeTableService lti, ICubeTableService rti, int lLen, int index, GroupValueIndex lGvi, GroupValueIndex rGvi) {
+        final IntList list = new IntList();
+        lGvi.Traversal(new SingleRowTraversalAction() {
+            @Override
+            public void actionPerformed(int row) {
+                list.add(row);
             }
+        });
+        for (int i = 0;i < list.size(); i++){
+            Object[] lvalues = new Object[lLen];
+            for (int j = 0; j < lLen; j++) {
+                lvalues[j] = lti.getColumnDetailReader(new IndexKey(columns.get(j).getColumnName())).getValue(list.get(i));
+            }
+            index = travel(travel, rti, lLen, index, rGvi, lvalues);
+        }
+        return index;
+    }
+
+    private class ValuesAndGVI{
+        Object[] values;
+        GroupValueIndex gvi;
+
+        public ValuesAndGVI(Object[] values, GroupValueIndex gvi) {
+            this.values = values;
+            this.gvi = gvi;
+        }
+
+        public int compareTo(ValuesAndGVI o, Comparator[] comparators) {
+            if (o == null){
+                return -1;
+            }
+            for (int i = 0; i < values.length; i++){
+                int result = comparators[i].compare(values[i], o.values[i]);
+                if (result != 0){
+                    return result;
+                }
+            }
+            return 0;
+        }
+    }
+
+    private class ValueIterator{
+        private ICubeValueEntryGetter[] getters;
+        private ValuesAndGVI next;
+        private GroupValueIndex allShowIndex;
+        private Iterator<Map.Entry<Object, GroupValueIndex>>[] iterators;
+        private ValuesAndGVI[] valuesAndGVIs;
+        public ValueIterator(ICubeTableService ti, List<String> fields) {
+            allShowIndex = ti.getAllShowIndex();
+            getters = new ICubeValueEntryGetter[fields.size()];
+            iterators = new Iterator[fields.size()];
+            valuesAndGVIs = new ValuesAndGVI[fields.size() + 1];
+            valuesAndGVIs[0] = new ValuesAndGVI(new Object[0], allShowIndex);
+            for (int i = 0; i < fields.size(); i++) {
+                getters[i] = ti.getValueEntryGetter(new IndexKey(fields.get(i)), new ArrayList<BITableSourceRelation>());
+            }
+            iterators[0] = getIterByAllCal(getters[0], allShowIndex);
+            move(0);
+        }
+
+        public boolean hasNext() {
+            return next != null;
+        }
+
+        public ValuesAndGVI next() {
+            ValuesAndGVI temp = next;
+            moveNext();
+            return temp;
+        }
+
+        private void moveNext() {
+            for (int i = iterators.length - 1; i >= 0; i--){
+                if (iterators[i].hasNext()){
+                    move(i);
+                    return;
+                }
+            }
+            next = null;
+        }
+        private void move(int index){
+            for (int i = index; i < iterators.length; i ++){
+                if (i != index){
+                    iterators[i] = getIterByAllCal(getters[i], valuesAndGVIs[i].gvi);
+                }
+                Map.Entry<Object, GroupValueIndex> entry = iterators[i].next();
+                Object[] values = new Object[i + 1];
+                System.arraycopy(valuesAndGVIs[i].values, 0, values, 0, values.length - 1);
+                values[values.length - 1] = entry.getKey();
+                valuesAndGVIs[i + 1] = new ValuesAndGVI(values, entry.getValue().AND(valuesAndGVIs[i].gvi));
+            }
+            next = valuesAndGVIs[valuesAndGVIs.length - 1];
+        }
+
+        private Iterator getIterByAllCal(ICubeValueEntryGetter getter, GroupValueIndex gvi) {
+            if (RoaringGroupValueIndex.isAllShowRoaringGroupValueIndex(gvi)){
+                return getAllShowIterator(getter);
+            }
+            SortTool tool = SortToolUtils.getSortTool(getter.getGroupSize(), gvi.getRowsCountWithData());
+            switch (tool) {
+                case INT_ARRAY:
+                    return getArraySortIterator(getter, gvi);
+                case DIRECT:
+                    return getOneKeyIterator(getter, gvi);
+                case TREE_MAP:
+                    return getTreeMapSortIterator(getter, gvi);
+                default:
+                    return getArraySortIterator(getter, gvi);
+            }
+        }
+
+        private Iterator getArraySortIterator(final ICubeValueEntryGetter getter, GroupValueIndex gvi) {
+            final int[] groupIndex = new int[getter.getGroupSize()];
+            Arrays.fill(groupIndex, NIOConstant.INTEGER.NULL_VALUE);
+            gvi.Traversal(new SingleRowTraversalAction() {
+                @Override
+                public void actionPerformed(int row) {
+                    int groupRow = getter.getPositionOfGroupByRow(row);
+                    if (groupRow != NIOConstant.INTEGER.NULL_VALUE) {
+                        groupIndex[groupRow] = groupRow;
+                    }
+                }
+            });
+            return new Iterator() {
+
+                private int index = 0;
+
+                @Override
+                public void remove() {
+                    throw new UnsupportedOperationException("remove");
+                }
+                @Override
+                public boolean hasNext() {
+                    while (index < groupIndex.length && groupIndex[index] == NIOConstant.INTEGER.NULL_VALUE) {
+                        index++;
+                    }
+                    return index < groupIndex.length;
+                }
+
+                @Override
+                public Object next() {
+                    final CubeValueEntry gve = getter.getEntryByGroupRow(index);
+                    Map.Entry entry = new Map.Entry() {
+                        @Override
+                        public Object getKey() {
+                            return gve.getT();
+                        }
+
+                        @Override
+                        public Object getValue() {
+                            return gve.getGvi();
+                        }
+
+                        @Override
+                        public Object setValue(Object value) {
+                            return null;
+                        }
+
+                        @Override
+                        public boolean equals(Object o) {
+                            return false;
+                        }
+
+                        @Override
+                        public int hashCode() {
+                            return 0;
+                        }
+                    };
+                    index++;
+                    return entry;
+                }
+            };
+        }
+
+        private Iterator getAllShowIterator(final ICubeValueEntryGetter getter) {
+            return new Iterator() {
+                private int index = 0;
+                private int groupSize = getter.getGroupSize();
+                @Override
+                public void remove() {
+                    throw new UnsupportedOperationException("remove");
+                }
+
+                @Override
+                public boolean hasNext() {
+                    return index < groupSize;
+                }
+
+                @Override
+                public Object next() {
+                    final CubeValueEntry gve = getter.getEntryByGroupRow(index);
+                    Map.Entry entry = new Map.Entry() {
+                        @Override
+                        public Object getKey() {
+                            return gve.getT();
+                        }
+
+                        @Override
+                        public Object getValue() {
+                            return gve.getGvi();
+                        }
+
+                        @Override
+                        public Object setValue(Object value) {
+                            return null;
+                        }
+
+                        @Override
+                        public boolean equals(Object o) {
+                            return false;
+                        }
+
+                        @Override
+                        public int hashCode() {
+                            return 0;
+                        }
+                    };
+                    index++;
+                    return entry;
+                }
+            };
+        }
+
+
+        private Iterator getOneKeyIterator(final ICubeValueEntryGetter getter, GroupValueIndex gvi) {
+            final FinalInt i = new FinalInt();
+            i.value = NIOConstant.INTEGER.NULL_VALUE;
+            gvi.Traversal(new SingleRowTraversalAction() {
+                @Override
+                public void actionPerformed(int row) {
+                    i.value = getter.getPositionOfGroupByRow(row);
+                }
+            });
+            return new Iterator() {
+                @Override
+                public void remove() {
+                    throw new UnsupportedOperationException("remove");
+                }
+
+                @Override
+                public boolean hasNext() {
+                    return i.value != NIOConstant.INTEGER.NULL_VALUE;
+                }
+
+                @Override
+                public Object next() {
+                    final CubeValueEntry gve = getter.getEntryByGroupRow(i.value);
+                    Map.Entry entry = new Map.Entry() {
+                        @Override
+                        public Object getKey() {
+                            return gve.getT();
+                        }
+
+                        @Override
+                        public Object getValue() {
+                            return gve.getGvi();
+                        }
+
+                        @Override
+                        public Object setValue(Object value) {
+                            return null;
+                        }
+
+                        @Override
+                        public boolean equals(Object o) {
+                            return false;
+                        }
+
+                        @Override
+                        public int hashCode() {
+                            return 0;
+                        }
+                    };
+                    i.value = NIOConstant.INTEGER.NULL_VALUE;
+                    return entry;
+                }
+            };
+        }
+
+        private Iterator getTreeMapSortIterator(final ICubeValueEntryGetter getter, GroupValueIndex gvi) {
+            final TreeSet<Integer> set = new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
+            gvi.Traversal(new SingleRowTraversalAction() {
+                @Override
+                public void actionPerformed(int row) {
+                    int groupRow = getter.getPositionOfGroupByRow(row);
+                    if (groupRow != NIOConstant.INTEGER.NULL_VALUE) {
+                        set.add(groupRow);
+                    }
+                }
+            });
+            final Iterator<Integer> it = set.iterator();
+            return new Iterator() {
+                @Override
+                public void remove() {
+                    it.remove();
+                }
+
+                @Override
+                public boolean hasNext() {
+                    return it.hasNext();
+                }
+
+                @Override
+                public Object next() {
+                    final CubeValueEntry gve = getter.getEntryByGroupRow(it.next());
+                    Map.Entry entry = new Map.Entry() {
+                        @Override
+                        public Object getKey() {
+                            return gve.getT();
+                        }
+
+                        @Override
+                        public Object getValue() {
+                            return gve.getGvi();
+                        }
+
+                        @Override
+                        public Object setValue(Object value) {
+                            return null;
+                        }
+
+                        @Override
+                        public boolean equals(Object o) {
+                            return false;
+                        }
+
+                        @Override
+                        public int hashCode() {
+                            return 0;
+                        }
+                    };
+                    return entry;
+                }
+            };
+        }
+
+    }
+
+    private int travel(Traversal<BIDataValue> travel, ICubeTableService rti, int llen, int index, GroupValueIndex gvi, Object[] lvalues) {
+        if (gvi == null || gvi.getRowsCountWithData() == 0) {
             for (int j = 0; j < llen; j++) {
                 travel.actionPerformed(new BIDataValue(index, j, lvalues[j]));
             }

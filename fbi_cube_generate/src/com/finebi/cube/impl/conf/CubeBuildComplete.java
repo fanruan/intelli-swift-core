@@ -27,7 +27,7 @@ import java.util.*;
  * @since 4.0
  * kary 这个是真正意义上完整的全局更新，无论是否有数据，更新所有能更新的
  */
-public class CubeBuildStaff extends AbstractCubeBuild implements Serializable {
+public class CubeBuildComplete extends AbstractCubeBuild implements Serializable {
     /**
      *
      */
@@ -51,7 +51,7 @@ public class CubeBuildStaff extends AbstractCubeBuild implements Serializable {
     private Set<List<Set<CubeTableSource>>> dependTableResource;
 
 
-    public CubeBuildStaff(BIUser biUser) {
+    public CubeBuildComplete(BIUser biUser) {
         super(biUser.getUserId());
         this.biUser = biUser;
         initialCubeStuff();

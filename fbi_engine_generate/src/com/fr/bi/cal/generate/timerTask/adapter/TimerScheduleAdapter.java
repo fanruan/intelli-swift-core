@@ -4,7 +4,7 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.impl.conf.CubeBuildSingleTable;
-import com.finebi.cube.impl.conf.CubeBuildStaff;
+import com.finebi.cube.impl.conf.CubeBuildComplete;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.timerTask.TimerTaskSchedule;
@@ -35,7 +35,7 @@ public class TimerScheduleAdapter {
                 }
                 timeListSet.add(scheduleTime);
                 if (isGlobalUpdate) {
-                    CubeBuild cubeBuild = new CubeBuildStaff(new BIUser(userId));
+                    CubeBuild cubeBuild = new CubeBuildComplete(new BIUser(userId));
                     TimerTaskSchedule taskSchedule = new TimerTaskSchedule(scheduleTime, cubeBuild, keys, userId, DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
                     scheduleList.add(taskSchedule);
                 } else {

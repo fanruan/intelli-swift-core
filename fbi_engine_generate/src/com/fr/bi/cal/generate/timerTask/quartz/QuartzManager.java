@@ -1,5 +1,6 @@
 package com.fr.bi.cal.generate.timerTask.quartz;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.generate.timerTask.TimerTaskSchedule;
 import com.fr.general.jsqlparser.parser.ParseException;
 import com.fr.third.org.quartz.*;
@@ -33,7 +34,7 @@ public class QuartzManager {
         sched.scheduleJob(jobDetail, trigger);
         //启动
         if (!sched.isShutdown()) {
-            System.out.println("Time Task scheduled!\n Tables for update：" + schedule.getSourceName() + "\n Time settings：" + schedule.getTimeSchedule() + "\n"+"update type: "+schedule.getUpdateType());
+            BILoggerFactory.getLogger().info("Time Task scheduled!\n Tables for update：" + schedule.getSourceName() + "\n Time settings：" + schedule.getTimeSchedule() + "\n"+"update type: "+schedule.getUpdateType()+"\n task name:"+schedule.getJobName());
             sched.start();
         }
     }
@@ -133,6 +134,7 @@ public class QuartzManager {
             throws SchedulerException {
         Scheduler sched = sf.getScheduler();
         for (String jobName : sched.getJobNames(JOB_GROUP_NAME)) {
+            BILoggerFactory.getLogger().info("time task removed: "+jobName);
             removeJob(jobName);
         }
     }
