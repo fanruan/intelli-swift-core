@@ -231,7 +231,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     relationTablesStructure.push({
                         id: table.id,
                         pId: BI.PackageSelectDataService.RELATION_TABLE,
-                        type: "bi.expander",
+                        type: "bi.relation_table_expander",
                         el: BI.extend({
                             type: "bi.detail_select_data_level1_node",
                             layer: 1,
