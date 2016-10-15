@@ -2161,7 +2161,7 @@ Data.Utils = {
             }];
 
             formatChartDashboardStyle();
-            configs.chartType = "dashboard";
+            configs.chartType = "gauge";
             delete configs.xAxis;
             delete configs.yAxis;
             return BI.extend(configs, {
@@ -6550,7 +6550,7 @@ Data.Utils = {
                     case BICst.WIDGET.DONUT:
                         item = BI.extend({"type": "pie"}, items);
                         break;
-                    case BICst.WIDGET.RADAR:
+                    case BICst.WIkDGET.RADAR:
                     case BICst.WIDGET.ACCUMULATE_RADAR:
                         item = BI.extend({"type": "radar"}, items);
                         break;
