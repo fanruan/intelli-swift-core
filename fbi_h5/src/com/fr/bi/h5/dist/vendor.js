@@ -67637,6 +67637,18 @@
 	            return this.$widget.get('sub_type');
 	        }
 	    }, {
+	        key: 'getSortType',
+	        value: function getSortType() {
+	            var $sort = this.$widget.get('sort');
+	            if ($sort) {
+	                var type = $sort.get('type');
+	                if (!(0, _core.isNil)(type)) {
+	                    return type;
+	                }
+	            }
+	            return BICst.SORT.NONE;
+	        }
+	    }, {
 	        key: 'getWidgetValue',
 	        value: function getWidgetValue() {
 	            return this.$widget.get('value').toJS();
@@ -67811,6 +67823,12 @@
 	        key: 'set$Dimension',
 	        value: function set$Dimension($dimension, dId) {
 	            this.$widget = this.$widget.setIn(['dimensions', dId], $dimension);
+	            return this;
+	        }
+	    }, {
+	        key: 'setSortType',
+	        value: function setSortType(type) {
+	            this.$widget = this.$widget.setIn(['sort', 'type'], type);
 	            return this;
 	        }
 	    }]);

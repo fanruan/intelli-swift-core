@@ -6427,9 +6427,12 @@ webpackJsonp([0],{
 	                { box: 'mean', style: styles.wrapper },
 	                _lib2.default.createElement(
 	                    _lib.PickerIOS,
-	                    null,
+	                    { selectedValue: this._helper.getSortType(), onValueChange: function onValueChange(type) {
+	                            _this2.props.onValueChange(_this2._helper.setSortType(type));
+	                        } },
 	                    _lib2.default.createElement(_lib.PickerIOS.Item, { value: BICst.SORT.ASC, label: '升序' }),
-	                    _lib2.default.createElement(_lib.PickerIOS.Item, { value: BICst.SORT.DESC, label: '降序' })
+	                    _lib2.default.createElement(_lib.PickerIOS.Item, { value: BICst.SORT.DESC, label: '降序' }),
+	                    _lib2.default.createElement(_lib.PickerIOS.Item, { value: BICst.SORT.NONE, label: '不排序' })
 	                )
 	            );
 	        }
@@ -6488,14 +6491,24 @@ webpackJsonp([0],{
 	    }
 
 	    _createClass(DimensionSortComponentHelper, [{
+	        key: '_isDimension',
+	        value: function _isDimension() {
+	            return this.widget.isDimensionById(this.dId);
+	        }
+	    }, {
 	        key: 'getSortType',
 	        value: function getSortType() {
+	            if (this._isDimension()) {
+	                return this.dimension.getSortType();
+	            }
 	            return this.dimension.getSortType();
 	        }
 	    }, {
 	        key: 'getSortTargetValue',
 	        value: function getSortTargetValue() {
-	            return this.dimension.getSortTarget() || this.dId;
+	            if (this._isDimension()) {
+	                return this.dimension.getSortTarget() || this.dId;
+	            }
 	        }
 
 	        //指标没有sort_target
@@ -6503,7 +6516,7 @@ webpackJsonp([0],{
 	    }, {
 	        key: 'hasSortTargetItems',
 	        value: function hasSortTargetItems() {
-	            return this.widget.isDimensionById(this.dId);
+	            return this._isDimension();
 	        }
 	    }, {
 	        key: 'getSortTargetItems',
@@ -6524,8 +6537,12 @@ webpackJsonp([0],{
 	    }, {
 	        key: 'setSortType',
 	        value: function setSortType(type) {
-	            this.dimension.setSortType(type);
-	            this.widget.set$Dimension(this.dimension.$get(), this.dId);
+	            if (this._isDimension()) {
+	                this.dimension.setSortType(type);
+	                this.widget.set$Dimension(this.dimension.$get(), this.dId);
+	            } else {
+	                this.widget.setSortType(type);
+	            }
 	            return this.widget.$get();
 	        }
 	    }, {

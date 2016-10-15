@@ -77,9 +77,12 @@ class DimensionSortComponent extends Component {
             </Layout>
         }
         return <Layout box='mean' style={styles.wrapper}>
-            <PickerIOS>
+            <PickerIOS selectedValue={this._helper.getSortType()} onValueChange = {(type)=>{
+                this.props.onValueChange(this._helper.setSortType(type));
+            }}>
                 <PickerIOS.Item value={BICst.SORT.ASC} label='升序'/>
                 <PickerIOS.Item value={BICst.SORT.DESC} label='降序'/>
+                <PickerIOS.Item value={BICst.SORT.NONE} label='不排序'/>
             </PickerIOS>
         </Layout>
     }

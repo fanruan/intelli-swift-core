@@ -8,17 +8,26 @@ export default class DimensionSortComponentHelper {
         this.dimension = this.widget.getDimensionOrTargetById(props.dId);
     }
 
+    _isDimension() {
+        return this.widget.isDimensionById(this.dId);
+    }
+
     getSortType() {
+        if (this._isDimension()) {
+            return this.dimension.getSortType();
+        }
         return this.dimension.getSortType();
     }
 
     getSortTargetValue() {
-        return this.dimension.getSortTarget() || this.dId;
+        if(this._isDimension()) {
+            return this.dimension.getSortTarget() || this.dId;
+        }
     }
 
     //指标没有sort_target
     hasSortTargetItems() {
-        return this.widget.isDimensionById(this.dId);
+        return this._isDimension();
     }
 
     getSortTargetItems() {
@@ -35,8 +44,12 @@ export default class DimensionSortComponentHelper {
     }
 
     setSortType(type) {
-        this.dimension.setSortType(type);
-        this.widget.set$Dimension(this.dimension.$get(), this.dId);
+        if(this._isDimension()) {
+            this.dimension.setSortType(type);
+            this.widget.set$Dimension(this.dimension.$get(), this.dId);
+        } else {
+            this.widget.setSortType(type);
+        }
         return this.widget.$get();
     }
 

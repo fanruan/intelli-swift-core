@@ -179,6 +179,17 @@ class AbstractWidget {
         return this.$widget.get('sub_type');
     }
 
+    getSortType() {
+        const $sort = this.$widget.get('sort');
+        if ($sort) {
+            const type = $sort.get('type');
+            if (!isNil(type)) {
+                return type;
+            }
+        }
+        return BICst.SORT.NONE;
+    }
+
 
     getWidgetValue() {
         return this.$widget.get('value').toJS();
@@ -337,6 +348,11 @@ class AbstractWidget {
 
     set$Dimension($dimension, dId) {
         this.$widget = this.$widget.setIn(['dimensions', dId], $dimension);
+        return this;
+    }
+
+    setSortType(type) {
+        this.$widget = this.$widget.setIn(['sort', 'type'], type);
         return this;
     }
 }
