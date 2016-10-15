@@ -83,11 +83,15 @@ BI.ChartLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
 
     getValue: function() {
         return {
+            text_direction: this.textDirection.getValue(),
+            text_style: this.textStyle.getValue()
         }
     },
 
     setValue: function(v) {
         v || (v = {});
+        this.textDirection.setValue(v.text_direction);
+        this.textStyle.setValue(v.text_style)
     }
 
 });

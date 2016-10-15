@@ -516,6 +516,11 @@ BICst.DEFAULT_CHART_SETTING = {
     mini_line_width: BICst.LINE_WIDTH.ZERO,
     show_label: true,
     mini_show_label: false,
+    label_setting: {
+        text_direction: 0,
+        text_style: {}
+    },
+    line_color: "#dddddd",
     enable_tick: true,
     mini_enable_tick: false,
     enable_minor_tick: true,
@@ -530,6 +535,8 @@ BICst.DEFAULT_CHART_SETTING = {
     bubble_style: BICst.CHART_SHAPE.NO_PROJECTOR,
     show_background_layer: true,
     background_layer_info: '高德地图',
+    bubble_min_size: 15,
+    bubble_max_size: 80,
     custom_scale: {
         minScale: {},
         maxScale: {},
