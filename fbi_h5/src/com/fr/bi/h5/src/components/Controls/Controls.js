@@ -35,6 +35,7 @@ import {MultiSelectorWidget} from 'widgets'
 
 import MultiSelectorComponent from '../MultiSelector/MultiSelectorComponent.js'
 import MultiTreeSelectorComponent from '../MultiTreeSelector/MultiTreeSelectorComponent.js'
+import DateComponent from '../Date/DateComponent'
 
 import Item from './Item'
 
@@ -86,6 +87,7 @@ class Controls extends Component {
                         case BICst.WIDGET.QUARTER:
                         case BICst.WIDGET.MONTH:
                         case BICst.WIDGET.YMD:
+                            Component = DateComponent;
                     }
                     props.navigator.push({
                         ...props,

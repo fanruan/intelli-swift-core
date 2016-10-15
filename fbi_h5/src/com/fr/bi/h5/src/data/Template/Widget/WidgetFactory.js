@@ -9,6 +9,7 @@ import DetailWidget from './DetailWidget'
 import ImageWidget from './ImageWidget'
 import StringControl from './StringControl'
 import TreeControl from './TreeControl'
+import DateControl from './DateControl'
 
 
 export default {
@@ -59,6 +60,7 @@ export default {
             case BICst.WIDGET.QUARTER:
             case BICst.WIDGET.MONTH:
             case BICst.WIDGET.YMD:
+                return new DateControl($widget, ...props);
             case BICst.WIDGET.QUERY:
             case BICst.WIDGET.RESET:
                 break;

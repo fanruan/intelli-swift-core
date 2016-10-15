@@ -27,10 +27,10 @@ import {Layout, CenterLayout, HorizontalCenterLayout, VerticalCenterLayout} from
 
 import {Button, TextButton, IconButton, Table} from 'base'
 
-import {MultiSelectorWidget} from 'widgets'
+import {DateWidget} from 'widgets'
 
 
-class TableComponent extends Component {
+class DateComponent extends Component {
     constructor(props, context) {
         super(props, context);
     }
@@ -55,9 +55,19 @@ class TableComponent extends Component {
 
     render() {
         const {...props} = this.props, {...state} = this.state;
-        return <View style={styles.wrapper}>
-
-        </View>
+        const wId = props.wId;
+        const template = TemplateFactory.createTemplate(props.$template);
+        const widget = template.getWidgetById(wId);
+        return <DateWidget style={styles.wrapper}
+                           year={widget.getYear()}
+                           month={widget.getMonth()}
+                           day={widget.getDay()}
+                           onValueChange={(value)=> {
+                               widget.setWidgetValue(value);
+                               template.set$Widget(wId, widget.$get());
+                               this.props.onValueChange(template.$get());
+                           }}
+        />
     }
 
     componentWillReceiveProps(nextProps) {
@@ -77,8 +87,8 @@ class TableComponent extends Component {
     }
 
 }
-mixin.onClass(TableComponent, ReactComponentWithImmutableRenderMixin);
+mixin.onClass(DateComponent, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {}
 });
-export default TableComponent
+export default DateComponent

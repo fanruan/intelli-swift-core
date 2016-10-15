@@ -60,7 +60,7 @@ class MultiTreeSelectorComponent extends Component {
             }}
             onValueChange={(value)=> {
                 widget.setWidgetValue(value);
-                template.setWidget(wId, widget);
+                template.set$Widget(wId, widget.$get());
                 this.props.onValueChange(template.$get());
             }}
             width={props.width}

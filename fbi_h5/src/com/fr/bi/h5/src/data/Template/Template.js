@@ -43,8 +43,8 @@ class Template {
         });
     }
 
-    setWidget(id, widget) {
-        this.$template = this.$template.setIn(['widgets', id], widget.$get());
+    set$Widget(id, $widget) {
+        this.$template = this.$template.setIn(['widgets', id], $widget);
         return this;
     }
 }
