@@ -18,7 +18,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         //显示组件标题
         this.showTitle = BI.createWidget({
             type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Show_Chart_Title"),
+            value: BI.i18nText("BI-Show_Title"),
             cls: "attr-names",
             logic: {
                 dynamic: true
@@ -126,13 +126,13 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
 
-        var tableStyle = BI.createWidget({
+        var tableChart = BI.createWidget({
             type: "bi.horizontal_adapt",
-            columnSize: [100],
+            columnSize: [80],
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
-                text: BI.i18nText("BI-Table_Sheet_Style"),
+                text: BI.i18nText("BI-Chart"),
                 lgap: constant.SIMPLE_H_LGAP,
                 textAlign: "left",
                 cls: "line-title"
@@ -145,51 +145,36 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.colorSelect],
-                    lgap: constant.SIMPLE_H_GAP
+                    items: [this.colorSelect]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Table_Style"),
-                    cls: "attr-names",
-                    lgap: constant.SIMPLE_H_GAP
+                    cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.chartStyleGroup],
-                    lgap: constant.SIMPLE_H_GAP
+                    items: [this.chartStyleGroup]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Type"),
-                    cls: "attr-names",
-                    lgap: constant.SIMPLE_H_GAP
+                    cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.chartTypeGroup],
-                    lgap: constant.SIMPLE_H_GAP
+                    items: [this.chartTypeGroup]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Widget_Background_Colour"),
-                    cls: "line-title",
+                    cls: "line-title"
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.widgetBackground]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
-                })
+                }),
+                lgap: constant.SIMPLE_H_GAP
             }]
         });
 
-        //格式和数量级
-        this.lYAxisStyle = BI.createWidget({
-            type: "bi.segment",
-            width: constant.FORMAT_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_FORMAT
-        });
-
-        this.lYAxisStyle.on(BI.Segment.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
-        });
-
+        //数量级
         this.numberLevellY = BI.createWidget({
             type: "bi.segment",
             width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
@@ -201,7 +186,31 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
         });
 
-        //轴刻度自定义
+        //单位
+        this.LYUnit = BI.createWidget({
+            type: "bi.sign_editor",
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
+            cls: "unit-input",
+            watermark: BI.i18nText("BI-Custom_Input")
+        });
+
+        this.LYUnit.on(BI.SignEditor.EVENT_CONFIRM, function () {
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
+        });
+
+        //格式
+        this.lYAxisStyle = BI.createWidget({
+            type: "bi.segment",
+            width: constant.FORMAT_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
+            items: BICst.TARGET_STYLE_FORMAT
+        });
+
+        this.lYAxisStyle.on(BI.Segment.EVENT_CHANGE, function () {
+            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
+        });
+
         //千分符
         this.separators = BI.createWidget({
             type: "bi.multi_select_item",
@@ -213,6 +222,28 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
         });
 
+        //lValueAxisLabel
+        this.lValueAxisLabel = BI.createWidget({
+            type: "bi.chart_label_detailed_setting_combo"
+        });
+
+        this.lValueAxisLabel.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function() {
+            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
+        });
+
+        //lValueAxisLineColor
+        this.lValueAxisLineColor = BI.createWidget({
+            type: "bi.color_chooser",
+            width: 30,
+            height: 30
+
+        });
+
+        this.lValueAxisLineColor.on(BI.ColorChooser.EVENT_CHANGE, function() {
+            sel.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
+        });
+
+        //轴刻度自定义
         this.showCustomScale = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Scale_Customize"),
@@ -252,22 +283,38 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 cls: "detail-style",
                 items: BI.createItems([{
                     type: "bi.label",
+                    text: BI.i18nText("BI-Num_Level"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.numberLevellY]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Unit_Normal"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.LYUnit]
+                }, {
+                    type: "bi.label",
                     text: BI.i18nText("BI-Format"),
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.lYAxisStyle]
                 }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.separators]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.lValueAxisLabel]
+                }, {
                     type: "bi.label",
-                    text: BI.i18nText("BI-Num_Level"),
-                    lgap: constant.SIMPLE_H_GAP,
+                    text: BI.i18nText("BI-Axis_Line_Color"),
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.numberLevellY]
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.separators]
+                    items:[this.lValueAxisLabel]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.showCustomScale]
@@ -379,7 +426,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [widgetTitle, tableStyle, lYAxis, showElement, otherAttr],
+            items: [widgetTitle, tableChart, lYAxis, showElement, otherAttr],
             hgap: 10
         })
     },
