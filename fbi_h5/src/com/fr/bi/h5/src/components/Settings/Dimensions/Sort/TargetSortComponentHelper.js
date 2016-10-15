@@ -1,7 +1,7 @@
 import {each} from 'core'
 import {WidgetFactory, DimensionFactory} from 'data'
 
-export default class DimensionSortComponentHelper {
+export default class TargetSortComponentHelper {
     constructor(props, context) {
         this.widget = WidgetFactory.createWidget(props.$widget, props.wId);
         this.dId = props.dId;
@@ -10,10 +10,6 @@ export default class DimensionSortComponentHelper {
 
     getSortType() {
         return this.dimension.getSortType();
-    }
-
-    getSortTargetValue() {
-        return this.dimension.getSortTarget() || this.dId;
     }
 
     getSortTargetItems() {
@@ -30,8 +26,7 @@ export default class DimensionSortComponentHelper {
     }
 
     setSortType(type) {
-        this.dimension.setSortType(type);
-        this.widget.set$Dimension(this.dimension.$get(), this.dId);
+        this.widget.setSortType(type);
         return this.widget.$get();
     }
 

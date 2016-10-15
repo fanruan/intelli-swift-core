@@ -17,6 +17,10 @@ export default class SettingsComponentHelper {
         return result;
     }
 
+    isDimensionByDimensionId(dId) {
+        return this.widget.isDimensionById(dId);
+    }
+
     getDimensionsItems(viewId) {
         const result = [];
         each(this._getDimensionIds(viewId), (dId)=> {

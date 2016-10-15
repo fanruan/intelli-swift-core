@@ -41,6 +41,7 @@ import {MultiSelectorWidget} from 'widgets'
 
 import SettingsComponentHelper from './SettingsComponentHelper'
 import DimensionComponent from './Dimensions/DimensionComponent'
+import TargetComponent from './Dimensions/TargetComponent'
 import DimensionSortableComponent from './Dimensions/DimensionSortableComponent'
 
 
@@ -138,14 +139,25 @@ class SettingsComponent extends Component {
     _renderUnSortableList(viewItem) {
         const items = this._helper.getDimensionsItems(viewItem.viewId);
         return <ScrollView style={{height: Sizes.ITEM_HEIGHT * items.length}}>
-            {items.map((value, index) =>
-                <DimensionComponent key={index} value={value} wId={this.props.wId} $widget={this.state.$widget}
-                                    dId={value.dId} onValueChange={($widget)=> {
-                    this.setState({
-                        $widget: $widget
-                    });
-                }}/>
-            )}
+            {items.map((value, index) => {
+                if (this._helper.isDimensionByDimensionId(value.dId)) {
+                    return <DimensionComponent key={index} value={value} wId={this.props.wId}
+                                               $widget={this.state.$widget}
+                                               dId={value.dId} onValueChange={($widget)=> {
+                        this.setState({
+                            $widget: $widget
+                        });
+                    }}/>
+                } else {
+                    return <TargetComponent key={index} value={value} wId={this.props.wId}
+                                            $widget={this.state.$widget}
+                                            dId={value.dId} onValueChange={($widget)=> {
+                        this.setState({
+                            $widget: $widget
+                        });
+                    }}/>
+                }
+            })}
         </ScrollView>
     }
 

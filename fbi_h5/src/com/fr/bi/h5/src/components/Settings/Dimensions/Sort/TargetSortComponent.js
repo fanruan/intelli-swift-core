@@ -30,10 +30,10 @@ import {Button, TextButton, IconButton, Table} from 'base'
 
 import {MultiSelectorWidget} from 'widgets'
 
-import DimensionSortComponentHelper from './DimensionSortComponentHelper'
+import TargetSortComponentHelper from './TargetSortComponentHelper'
 
 
-class DimensionSortComponent extends Component {
+class TargetSortComponent extends Component {
     constructor(props, context) {
         super(props, context);
     }
@@ -58,20 +58,14 @@ class DimensionSortComponent extends Component {
 
     render() {
         const {...props} = this.props, {...state} = this.state;
-        this._helper = new DimensionSortComponentHelper(props, this.context);
+        this._helper = new TargetSortComponentHelper(props, this.context);
         return <Layout box='mean' style={styles.wrapper}>
             <PickerIOS selectedValue={this._helper.getSortType()} onValueChange={(type)=> {
                 this.props.onValueChange(this._helper.setSortType(type));
             }}>
                 <PickerIOS.Item value={BICst.SORT.ASC} label='升序'/>
                 <PickerIOS.Item value={BICst.SORT.DESC} label='降序'/>
-            </PickerIOS>
-            <PickerIOS selectedValue={this._helper.getSortTargetValue()} onValueChange={(dId)=> {
-                this.props.onValueChange(this._helper.setSortTarget(dId));
-            }}>
-                {map(this._helper.getSortTargetItems(), ({value, label})=> {
-                    return <PickerIOS.Item value={value} label={label}/>
-                })}
+                <PickerIOS.Item value={BICst.SORT.NONE} label='不排序'/>
             </PickerIOS>
         </Layout>
     }
@@ -93,8 +87,8 @@ class DimensionSortComponent extends Component {
     }
 
 }
-mixin.onClass(DimensionSortComponent, ReactComponentWithImmutableRenderMixin);
+mixin.onClass(TargetSortComponent, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {}
 });
-export default DimensionSortComponent
+export default TargetSortComponent
