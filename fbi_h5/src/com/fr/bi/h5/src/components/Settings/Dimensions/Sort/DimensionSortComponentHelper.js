@@ -13,7 +13,7 @@ export default class DimensionSortComponentHelper {
     }
 
     getSortTargetValue() {
-        return this.dimension.getSortTarget();
+        return this.dimension.getSortTarget() || this.dId;
     }
 
     //指标没有sort_target
