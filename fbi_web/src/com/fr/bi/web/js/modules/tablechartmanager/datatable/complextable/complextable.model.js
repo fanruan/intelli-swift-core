@@ -217,13 +217,14 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
             if (BI.parseInt(BICst.REGION.DIMENSION2) <= BI.parseInt(regionId) &&
                 BI.parseInt(regionId) < BI.parseInt(BICst.REGION.TARGET1) &&
                 dIds.length > 0) {
-                colRegions[regionId] = dIds;
-                if (BI.Utils.isDimensionUsable(dId)) {
-                    if (BI.isNull(colRegions[regionId])) {
-                        colRegions[regionId] = [];
+                BI.each(dIds, function(i, dId) {
+                    if (BI.Utils.isDimensionUsable(dId)) {
+                        if (BI.isNull(colRegions[regionId])) {
+                            colRegions[regionId] = [];
+                        }
+                        colRegions[regionId].push(dId);
                     }
-                    colRegions[regionId].push(dId);
-                }
+                });
             }
         });
         return colRegions;
@@ -487,7 +488,8 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
                 (self._isColRegionExist() || self._isRowRegionExist())) {
                 children.push({
                     text: BI.i18nText("BI-Summary_Values"),
-                    values: tItem.values
+                    values: tItem.values,
+                    cls: "summary-cell last"
                 });
             }
         });
@@ -1080,7 +1082,7 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
             this.data = [this.data];
         }
         BI.each(this.data, function (i, data) {
-            tempCrossItems.push(self._createCrossPartItems(data.c, 0, null, self._getDimsByDataPos(0, i)));
+            tempCrossItems.push({children: self._createCrossPartItems(data.c, 0, null, self._getDimsByDataPos(0, i))});
         });
         this._parseRowTableCrossItems(tempCrossItems);
     },

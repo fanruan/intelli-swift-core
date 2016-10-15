@@ -33,6 +33,12 @@ BI.SelectDataExpander = BI.inherit(BI.Widget, {
         this.expander.on(BI.Controller.EVENT_CHANGE, function (type) {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
+        this.expander.on(BI.Expander.EVENT_EXPAND, function(){
+
+        });
+        this.expander.on(BI.Expander.EVENT_COLLAPSE, function(){
+            this.getView().hideView();
+        });
         this.expander.on(BI.Expander.EVENT_AFTER_INIT, function () {
             this.getView().populate();
         });
@@ -58,6 +64,14 @@ BI.SelectDataExpander = BI.inherit(BI.Widget, {
 
     getValue: function () {
         return this.expander.getValue();
+    },
+
+    showView: function(b){
+        this.expander.showView();
+    },
+
+    hideView: function(){
+        this.expander.hideView();
     },
 
     isExpanded: function () {

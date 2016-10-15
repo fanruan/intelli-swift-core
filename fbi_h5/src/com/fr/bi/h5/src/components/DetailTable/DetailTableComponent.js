@@ -34,8 +34,6 @@ class DetailTableComponent extends Component {
 
     constructor(props, context) {
         super(props, context);
-        this._tableHelper = new DetailTableComponentHelper(props, context);
-        this._widthHelper = new TableComponentWidthHelper(this._tableHelper, props.width);
     }
 
     state = {
@@ -52,10 +50,17 @@ class DetailTableComponent extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (!immutableShallowEqual(nextProps, this.props)) {
-            this._tableHelper = new DetailTableComponentHelper(nextProps, this.context);
-            this._widthHelper = new TableComponentWidthHelper(this._tableHelper, nextProps.width);
             this._fetchData(nextProps);
+            this._changed = true;
         }
+    }
+
+    shouldComponentUpdate() {
+        if (this._changed) {
+            this._changed = false;
+            return false;
+        }
+        return true;
     }
 
     componentWillUpdate(nextProps) {
@@ -72,6 +77,8 @@ class DetailTableComponent extends Component {
 
     render() {
         const {width, height} = this.props, {data} = this.state;
+        this._tableHelper = new DetailTableComponentHelper(this.props, this.context);
+        this._widthHelper = new TableComponentWidthHelper(this._tableHelper, this.props.width);
         this._tableHelper.setData(data);
         const items = this._tableHelper.getItems();
         this._widthHelper.setItems(items);
@@ -93,7 +100,7 @@ class DetailTableComponent extends Component {
         </TableWidget>
     }
 }
-mixin.onClass(DetailTableComponent, ReactComponentWithImmutableRenderMixin);
+// mixin.onClass(DetailTableComponent, ReactComponentWithImmutableRenderMixin);
 
 const styles = StyleSheet.create({
     wrapper: {

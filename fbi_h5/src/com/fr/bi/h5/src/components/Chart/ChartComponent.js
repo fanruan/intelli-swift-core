@@ -1,6 +1,6 @@
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
-import {ReactComponentWithImmutableRenderMixin, requestAnimationFrame} from 'core'
+import {ReactComponentWithImmutableRenderMixin, requestAnimationFrame, immutableShallowEqual} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -32,29 +32,40 @@ class ChartComponent extends Component {
 
     }
 
-    componentDidMount() {
-        this.chart = VanCharts.init(ReactDOM.findDOMNode(this.refs.chart));
-        const {$widget, wId} = this.props;
+    _fetchData(props) {
+        const {$widget, wId} = props;
         const widget = new Widget($widget, this.context.$template, wId);
         widget.getData().then((data)=> {
             this.chart.setOptions(data);
         });
     }
 
-    componentWillUpdate() {
-        const {$widget, wId} = this.props;
-        const widget = new Widget($widget, this.context.$template, wId);
-        widget.getData().then((data)=> {
-            this.chart.setData(data);
-        });
+    componentDidMount() {
+        this.chart = VanCharts.init(ReactDOM.findDOMNode(this.refs.chart));
+        this._fetchData(this.props);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (!immutableShallowEqual(nextProps, this.props)) {
+            this._fetchData(nextProps);
+            this._changed = true;
+        }
+    }
+
+    shouldComponentUpdate() {
+        if (this._changed) {
+            this._changed = false;
+            return false;
+        }
+        return true;
     }
 
     render() {
 
-        return <View ref='chart' style={{height: this.props.height, ...styles.wrapper}}/>
+        return <View ref='chart' style={{height: this.props.height, width: this.props.width, ...styles.wrapper}}/>
     }
 }
-mixin.onClass(ChartComponent, ReactComponentWithImmutableRenderMixin);
+// mixin.onClass(ChartComponent, ReactComponentWithImmutableRenderMixin);
 
 const styles = StyleSheet.create({
     wrapper: {

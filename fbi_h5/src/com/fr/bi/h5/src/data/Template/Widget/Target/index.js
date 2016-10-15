@@ -12,6 +12,10 @@ class Target {
         return this.$$target.get('used');
     }
 
+    setUsed(b) {
+        return this.$$target.set('used', !!b);
+    }
+
     getWidgetBelongTo() {
         return this._parent;
     }

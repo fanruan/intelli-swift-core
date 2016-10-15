@@ -36,3 +36,15 @@
   content: '\e62a';
   color: #808080;
 }
+.single-select-font .b-font:before {
+  content: '\e618';
+  color: #ffffff;
+}
+.single-select-font.active .b-font:before {
+  content: '\e618';
+  color: #009de3;
+}
+.single-select-font.disabled .b-font:before {
+  content: '\e618';
+  color: #ffffff;
+}

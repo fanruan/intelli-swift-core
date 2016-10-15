@@ -30,6 +30,23 @@ BIDezi.DateDetailView = BI.inherit(BI.View, {
     _render: function (vessel) {
         var mask = BI.createWidget();
         mask.element.__buildZIndexMask__(0);
+        var west = this._buildWest();
+        var items = [{
+            el: west,
+            width: this.constants.DETAIL_WEST_WIDTH
+        }, {
+            type: "bi.vtape",
+            items: [{
+                el: this._buildNorth(), height: this.constants.DETAIL_NORTH_HEIGHT
+            }, {
+                el: this._buildCenter()
+            }]
+        }];
+        var htape = BI.createWidget({
+            type: "bi.htape",
+            cls: "widget-attribute-setter-container",
+            items: items
+        });
         BI.createWidget({
             type: "bi.absolute",
             element: vessel,
@@ -40,26 +57,27 @@ BIDezi.DateDetailView = BI.inherit(BI.View, {
                 top: 0,
                 bottom: 0
             }, {
-                el: {
-                    type: "bi.htape",
-                    cls: "widget-attribute-setter-container",
-                    items: [{
-                        el: this._buildWest(),
-                        width: this.constants.DETAIL_WEST_WIDTH
-                    }, {
-                        type: "bi.vtape",
-                        items: [{
-                            el: this._buildNorth(), height: this.constants.DETAIL_NORTH_HEIGHT
-                        }, {
-                            el: this._buildCenter()
-                        }]
-                    }]
-                },
+                el: htape,
                 left: 20,
                 right: 20,
                 top: 20,
                 bottom: 20
             }]
+        });
+        west.element.resizable({
+            handles: "e",
+            minWidth: 200,
+            maxWidth: 400,
+            autoHide: true,
+            helper: "bi-resizer",
+            start: function () {
+            },
+            resize: function (e, ui) {
+            },
+            stop: function (e, ui) {
+                items[0].width = ui.size.width;
+                htape.resize();
+            }
         });
     },
 

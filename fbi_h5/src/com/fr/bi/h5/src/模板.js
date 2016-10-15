@@ -12,7 +12,6 @@ import React, {
     PropTypes,
     StyleSheet,
     Text,
-    Dimensions,
     PixelRatio,
     ListView,
     View,
@@ -25,7 +24,7 @@ import {Colors, Size, Template, Widget, Dimension, Target} from 'data'
 
 import {Layout, CenterLayout, HorizontalCenterLayout, VerticalCenterLayout} from 'layout';
 
-import {Icon, Table} from 'base'
+import {Button, TextButton, IconButton, Table} from 'base'
 
 import {MultiSelectorWidget} from 'widgets'
 

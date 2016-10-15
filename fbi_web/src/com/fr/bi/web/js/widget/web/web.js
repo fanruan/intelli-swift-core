@@ -42,8 +42,10 @@ BI.WebPage = BI.inherit(BI.Widget, {
         });
 
         this.href.on(BI.ImageButtonHref.EVENT_CHANGE, function () {
+            var url = this.getValue();
             self.setValue(this.getValue());
-            self.fireEvent(BI.WebPage.EVENT_VALUE_CHANGE)
+            self._checkUrl(url);
+            self.fireEvent(BI.WebPage.EVENT_VALUE_CHANGE);
         });
 
         BI.createWidget({
@@ -72,8 +74,21 @@ BI.WebPage = BI.inherit(BI.Widget, {
         this._showLabel();
     },
 
+    _checkUrl: function(url){
+        BI.Bubbles.hide(this.getName());
+        if(BI.isEmptyString(url)){
+            BI.Bubbles.show(this.getName(), BI.i18nText("BI-Click_To_Add_Hyperlink"), this.href, {
+                offsetStyle: "left"
+            });
+        }
+    },
+
     _hideLabel: function () {
         this.label.invisible()
+    },
+
+    isSelected: function () {
+        return this.href.isSelected();
     },
 
     _showLabel: function () {
@@ -94,7 +109,8 @@ BI.WebPage = BI.inherit(BI.Widget, {
         if (BI.isNotEmptyString(url)) {
             self._hideLabel();
         } else {
-            self._showLabel();
+            this.setToolbarVisible(true);
+            this.href.showView();
         }
         this.href.setValue(url);
         this.iframe.setSrc(BI.Func.formatAddress(url))
