@@ -67837,6 +67837,12 @@
 	            this.$widget = this.$widget.setIn(['sort', 'type'], type);
 	            return this;
 	        }
+	    }, {
+	        key: 'setSortTarget',
+	        value: function setSortTarget(dId) {
+	            this.$widget = this.$widget.setIn(['sort', 'sort_target'], dId);
+	            return this;
+	        }
 	    }]);
 
 	    return AbstractWidget;

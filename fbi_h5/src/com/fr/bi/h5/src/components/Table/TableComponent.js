@@ -67,6 +67,7 @@ class TableComponent extends Component {
     _fetchData(props) {
         const {$widget, wId} = props;
         const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(this.context.$template));
+        console.log(widget.$get().toJS());
         return widget.getData().then((data)=> {
             this.setState({data: data});
         });

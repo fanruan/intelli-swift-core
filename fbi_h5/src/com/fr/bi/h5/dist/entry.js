@@ -6515,7 +6515,9 @@ webpackJsonp([0],{
 	                                        title: '"' + _this2._helper.getSortTargetName() + '"排序',
 	                                        onClose: function onClose(tag) {
 	                                            if (tag === '取消') {} else if (tag === '确定') {
-	                                                _this2.props.onValueChange(_this2._$widget);
+	                                                if (_this2._$widget) {
+	                                                    _this2.props.onValueChange(_this2._$widget);
+	                                                }
 	                                            }
 	                                            _lib.Portal.closeModal('DimensionSort');
 	                                        }
@@ -6973,7 +6975,9 @@ webpackJsonp([0],{
 	                                    title: '"' + _this2._helper.getSortTargetName() + '"排序',
 	                                    onClose: function onClose(tag) {
 	                                        if (tag === '取消') {} else if (tag === '确定') {
-	                                            _this2.props.onValueChange(_this2._$widget);
+	                                            if (_this2._$widget) {
+	                                                _this2.props.onValueChange(_this2._$widget);
+	                                            }
 	                                        }
 	                                        _lib.Portal.closeModal('DimensionSort');
 	                                    }
@@ -7081,12 +7085,12 @@ webpackJsonp([0],{
 	    }, {
 	        key: 'getSortTargetName',
 	        value: function getSortTargetName() {
-	            return this.dimension.getSortTargetName();
+	            return this.dimension.getName();
 	        }
 	    }, {
 	        key: 'getSortTargetTypeFont',
 	        value: function getSortTargetTypeFont() {
-	            switch (this.dimension.getSortType()) {
+	            switch (this.widget.getSortType()) {
 	                case BICst.SORT.ASC:
 	                    return 'asc-sort-font';
 	                case BICst.SORT.DESC:
@@ -7261,35 +7265,13 @@ webpackJsonp([0],{
 	    _createClass(TargetSortComponentHelper, [{
 	        key: 'getSortType',
 	        value: function getSortType() {
-	            return this.dimension.getSortType();
-	        }
-	    }, {
-	        key: 'getSortTargetItems',
-	        value: function getSortTargetItems() {
-	            var _this = this;
-
-	            var name = this.dimension.getName();
-	            var result = [{ value: this.dId, label: name }];
-	            (0, _core.each)(this.widget.getAllTargetIds(), function (dId) {
-	                var name = _this.widget.getTargetById(dId).getName();
-	                result.push({
-	                    value: dId,
-	                    label: name
-	                });
-	            });
-	            return result;
+	            return this.widget.getSortType();
 	        }
 	    }, {
 	        key: 'setSortType',
 	        value: function setSortType(type) {
 	            this.widget.setSortType(type);
-	            return this.widget.$get();
-	        }
-	    }, {
-	        key: 'setSortTarget',
-	        value: function setSortTarget(dId) {
-	            this.dimension.setSortTarget(dId);
-	            this.widget.set$Dimension(this.dimension.$get(), this.dId);
+	            this.widget.setSortTarget(this.dId);
 	            return this.widget.$get();
 	        }
 	    }]);
@@ -7720,6 +7702,7 @@ webpackJsonp([0],{
 	            var wId = props.wId;
 
 	            var widget = _data.WidgetFactory.createWidget($widget, wId, _data.TemplateFactory.createTemplate(this.context.$template));
+	            console.log(widget.$get().toJS());
 	            return widget.getData().then(function (data) {
 	                _this2.setState({ data: data });
 	            });

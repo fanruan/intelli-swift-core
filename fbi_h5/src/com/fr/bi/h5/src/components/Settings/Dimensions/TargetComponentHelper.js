@@ -13,11 +13,11 @@ export default class TargetComponentHelper {
     }
 
     getSortTargetName() {
-        return this.dimension.getSortTargetName();
+        return this.dimension.getName();
     }
 
     getSortTargetTypeFont() {
-        switch (this.dimension.getSortType()) {
+        switch (this.widget.getSortType()) {
             case BICst.SORT.ASC:
                 return 'asc-sort-font';
             case BICst.SORT.DESC:

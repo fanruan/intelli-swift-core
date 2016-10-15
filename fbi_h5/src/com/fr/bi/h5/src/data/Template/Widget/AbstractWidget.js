@@ -355,6 +355,11 @@ class AbstractWidget {
         this.$widget = this.$widget.setIn(['sort', 'type'], type);
         return this;
     }
+
+    setSortTarget(dId) {
+        this.$widget = this.$widget.setIn(['sort', 'sort_target'], dId);
+        return this;
+    }
 }
 
 export default AbstractWidget;

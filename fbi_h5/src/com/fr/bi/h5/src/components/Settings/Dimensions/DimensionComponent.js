@@ -84,7 +84,9 @@ class DimensionComponent extends Component {
                                 if (tag === '取消') {
 
                                 } else if (tag === '确定') {
-                                    this.props.onValueChange(this._$widget);
+                                    if (this._$widget) {
+                                        this.props.onValueChange(this._$widget);
+                                    }
                                 }
                                 Portal.closeModal('DimensionSort')
                             }}
