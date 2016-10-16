@@ -6549,7 +6549,7 @@ Data.Utils = {
                     case BICst.WIDGET.DONUT:
                         item = BI.extend({"type": "pie"}, items);
                         break;
-                    case BICst.WIkDGET.RADAR:
+                    case BICst.WIDGET.RADAR:
                     case BICst.WIDGET.ACCUMULATE_RADAR:
                         item = BI.extend({"type": "radar"}, items);
                         break;
