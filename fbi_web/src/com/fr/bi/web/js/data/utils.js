@@ -1147,10 +1147,9 @@ Data.Utils = {
                         if (config.number_of_pointer === constants.ONE_POINTER && items[0].length === 1) {//单个系列
                             BI.each(items[0][0].data, function (idx, da) {
                                 result.push({
-                                    data: [{
-                                        x: items[0][0].name,
-                                        y: da.y
-                                    }],
+                                    data: [BI.extend({}, da, {
+                                        x: items[0][0].name
+                                    })],
                                     name: da.x
                                 })
                             });
@@ -1174,10 +1173,10 @@ Data.Utils = {
                         BI.each(items[0], function (idx, item) {
                             BI.each(item.data, function (id, da) {
                                 others.push({
-                                    data: [{
+                                    data: [BI.extend({}, da, {
                                         x: item.name,
                                         y: da.y
-                                    }],
+                                    })],
                                     name: da.x
                                 })
                             })
