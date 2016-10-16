@@ -17,8 +17,23 @@ export default class SettingsComponentHelper {
         return result;
     }
 
+    getViewItemByViewId(viewId) {
+        return {
+            text: '行表头',
+            viewId: viewId
+        }
+    }
+
     isDimensionByDimensionId(dId) {
         return this.widget.isDimensionById(dId);
+    }
+
+    getAllDimensionItems() {
+        const result = {};
+        each(this._getViewIds(), (viewId)=> {
+            result[viewId] = this.getDimensionsItems(viewId);
+        });
+        return result;
     }
 
     getDimensionsItems(viewId) {
