@@ -52,6 +52,7 @@ class DetailTablePaneComponent extends Component {
             <Text>{widget.getName()}</Text>
             <IconLink className='setting-font' onPress={()=> {
                 Portal.showModal('DetailTableComponent', <SettingsComponent
+                    key={'DetailTableComponent'}
                     $widget={this.props.$widget}
                     wId={this.props.wId}
                     height={0}

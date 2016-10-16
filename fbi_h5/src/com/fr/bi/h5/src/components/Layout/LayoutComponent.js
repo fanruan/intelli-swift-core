@@ -49,8 +49,9 @@ class LayoutComponent extends Component {
             initialPage={0}
             onPageScroll={this._onPageScroll.bind(this)}
             onPageSelected={this._onPageSelected.bind(this)}
-            >
+        >
             {[<ListView
+                key={1}
                 {...props}
                 initialListSize={Math.ceil(props.height / 310) + 1}
                 dataSource={ds.cloneWithRows(rows)}
@@ -69,7 +70,6 @@ class LayoutComponent extends Component {
         const $widget = this.template.get$WidgetById(wId);
         const type = WidgetFactory.createWidget($widget, wId, this.template).getType();
         const props = {
-            key: wId,
             $widget,
             wId,
             width: this.props.width - 40,

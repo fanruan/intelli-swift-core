@@ -28760,17 +28760,17 @@
 	                month = [],
 	                day = [];
 	            for (var i = 1900; i <= 2050; i++) {
-	                year.push(_react2.default.createElement(_PickerIOS2.default.Item, { value: i, label: i + '年' }));
+	                year.push(_react2.default.createElement(_PickerIOS2.default.Item, { key: i, value: i, label: i + '年' }));
 	            }
 	            for (var _i = 0; _i < 12; _i++) {
-	                month.push(_react2.default.createElement(_PickerIOS2.default.Item, { value: _i, label: _i + 1 + '月' }));
+	                month.push(_react2.default.createElement(_PickerIOS2.default.Item, { key: _i, value: _i, label: _i + 1 + '月' }));
 	            }
-	            var len = this._isLeap(this.state.Y) && this.state.M === 1 ? 29 : DAYS[this.state.M];
+	            var len = DatePickerIOS._isLeap(this.state.Y) && this.state.M === 1 ? 29 : DAYS[this.state.M];
 	            if (this.state.D > len) {
 	                this.state.D = len;
 	            }
 	            for (var _i2 = 1; _i2 <= len; _i2++) {
-	                day.push(_react2.default.createElement(_PickerIOS2.default.Item, { value: _i2, label: _i2 + '日' }));
+	                day.push(_react2.default.createElement(_PickerIOS2.default.Item, { key: _i2, value: _i2, label: _i2 + '日' }));
 	            }
 	            return _react2.default.createElement(
 	                _View2.default,
@@ -28806,7 +28806,7 @@
 	                )
 	            );
 	        }
-	    }, {
+	    }], [{
 	        key: '_isLeap',
 	        value: function _isLeap(year) {
 	            return year % 4 === 0 && year % 100 !== 0 || year % 400 === 0;
@@ -67618,11 +67618,6 @@
 	            return this.$widget.toJS();
 	        }
 	    }, {
-	        key: 'isFreeze',
-	        value: function isFreeze() {
-	            return this.$widget.getIn(['settings', 'freeze_dim']);
-	        }
-	    }, {
 	        key: 'getWidgetBounds',
 	        value: function getWidgetBounds() {
 	            return this.$widget.get('bounds').toJS() || {};
@@ -67685,6 +67680,12 @@
 
 	        //settings  ---- start ----
 
+	    }, {
+	        key: 'isFreeze',
+	        value: function isFreeze() {
+	            var isFreeze = this.$widget.getIn(['settings', 'freeze_dim']);
+	            return (0, _core.isNil)(isFreeze) ? true : isFreeze;
+	        }
 	    }, {
 	        key: 'getWSTableForm',
 	        value: function getWSTableForm() {

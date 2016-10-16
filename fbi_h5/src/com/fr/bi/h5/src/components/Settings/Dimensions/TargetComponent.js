@@ -74,7 +74,8 @@ class TargetComponent extends Component {
                           effect={false}>{props.value.text}</Text>
                 </Layout>
                 <IconButton style={styles.sortIcon} onPress={()=> {
-                    Portal.showModal('DimensionSort', <ActionSheet
+                    Portal.showModal('TargetSort', <ActionSheet
+                        key={'TargetSort'}
                         title={`"${this._helper.getSortTargetName()}"排序`}
                         onClose={(tag)=> {
                             if (tag === '取消') {
@@ -84,7 +85,7 @@ class TargetComponent extends Component {
                                     this.props.onValueChange(this._$widget);
                                 }
                             }
-                            Portal.closeModal('DimensionSort')
+                            Portal.closeModal('TargetSort')
                         }}
                     >
                         <TargetSortComponent

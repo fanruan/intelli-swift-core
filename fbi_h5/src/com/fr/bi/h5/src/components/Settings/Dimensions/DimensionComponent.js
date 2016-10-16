@@ -79,6 +79,7 @@ class DimensionComponent extends Component {
                           effect={false}>{this._helper.getSortTargetName()}</Text>
                     <IconButton style={styles.sortIcon} onPress={()=> {
                         Portal.showModal('DimensionSort', <ActionSheet
+                            key={'DimensionSort'}
                             title={`"${this._helper.getSortTargetName()}"排序`}
                             onClose={(tag)=> {
                                 if (tag === '取消') {

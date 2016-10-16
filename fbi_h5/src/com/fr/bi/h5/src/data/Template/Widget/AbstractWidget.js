@@ -159,10 +159,6 @@ class AbstractWidget {
         return this.$widget.toJS();
     }
 
-    isFreeze() {
-        return this.$widget.getIn(['settings', 'freeze_dim']);
-    }
-
     getWidgetBounds() {
         return this.$widget.get('bounds').toJS() || {};
     }
@@ -217,6 +213,12 @@ class AbstractWidget {
     }
 
     //settings  ---- start ----
+
+    isFreeze() {
+        const isFreeze = this.$widget.getIn(['settings', 'freeze_dim']);
+        return isNil(isFreeze) ? true : isFreeze;
+    }
+
     getWSTableForm() {
         var ws = this.getWidgetSettings();
         return isNil(ws.table_form) ? ws.table_form :

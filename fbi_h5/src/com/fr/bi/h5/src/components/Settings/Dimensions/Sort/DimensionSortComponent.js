@@ -70,7 +70,7 @@ class DimensionSortComponent extends Component {
                 this.props.onValueChange(this._helper.setSortTarget(dId));
             }}>
                 {map(this._helper.getSortTargetItems(), ({value, label})=> {
-                    return <PickerIOS.Item value={value} label={label}/>
+                    return <PickerIOS.Item key={value} value={value} label={label}/>
                 })}
             </PickerIOS>
         </Layout>

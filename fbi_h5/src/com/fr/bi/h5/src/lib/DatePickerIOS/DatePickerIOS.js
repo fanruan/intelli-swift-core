@@ -62,42 +62,42 @@ class DatePickerIOS extends Component {
         const year = [], month = [], day = [];
         for (let i = 1900; i <= 2050; i++) {
             year.push(
-                <Picker.Item value={i} label={`${i}年`}></Picker.Item>
+                <Picker.Item key={i} value={i} label={`${i}年`}/>
             );
         }
         for (let i = 0; i < 12; i++) {
             month.push(
-                <Picker.Item value={i} label={`${i+1}月`}></Picker.Item>
+                <Picker.Item key={i} value={i} label={`${i + 1}月`}/>
             )
         }
-        const len = (this._isLeap(this.state.Y) && this.state.M === 1 ? 29 : DAYS[this.state.M]);
+        const len = (DatePickerIOS._isLeap(this.state.Y) && this.state.M === 1 ? 29 : DAYS[this.state.M]);
         if (this.state.D > len) {
             this.state.D = len;
         }
         for (let i = 1; i <= len; i++) {
             day.push(
-                <Picker.Item value={i} label={`${i}日`}></Picker.Item>
+                <Picker.Item key={i} value={i} label={`${i}日`}/>
             )
         }
         return (
             <View style={styles.datepicker}>
-                <View style={styles.highlight}></View>
+                <View style={styles.highlight}/>
                 <View style={styles.container}>
-                    <Picker selectedValue={this.state.Y} style={styles.picker} onValueChange={(Y)=>{
-                        this.setState({Y})
-                        this.props.onDateChange(new Date(this.state.Y,this.state.M,this.state.D))
+                    <Picker selectedValue={this.state.Y} style={styles.picker} onValueChange={(Y)=> {
+                        this.setState({Y});
+                        this.props.onDateChange(new Date(this.state.Y, this.state.M, this.state.D))
                     }}>
                         {year}
                     </Picker>
-                    <Picker selectedValue={this.state.M} style={styles.picker} onValueChange={(M)=>{
-                        this.setState({M})
-                        this.props.onDateChange(new Date(this.state.Y,this.state.M,this.state.D))
+                    <Picker selectedValue={this.state.M} style={styles.picker} onValueChange={(M)=> {
+                        this.setState({M});
+                        this.props.onDateChange(new Date(this.state.Y, this.state.M, this.state.D))
                     }}>
                         {month}
                     </Picker>
-                    <Picker selectedValue={this.state.D} style={styles.picker} onValueChange={(D)=>{
-                        this.setState({D})
-                        this.props.onDateChange(new Date(this.state.Y,this.state.M,this.state.D))
+                    <Picker selectedValue={this.state.D} style={styles.picker} onValueChange={(D)=> {
+                        this.setState({D});
+                        this.props.onDateChange(new Date(this.state.Y, this.state.M, this.state.D))
                     }}>
                         {day}
                     </Picker>
@@ -106,7 +106,7 @@ class DatePickerIOS extends Component {
         );
     }
 
-    _isLeap(year) {
+    static _isLeap(year) {
         return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
     }
 

@@ -2375,7 +2375,6 @@ webpackJsonp([0],{
 
 	        var _this = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props, context));
 
-	        console.log(props);
 	        _this.template = _data.TemplateFactory.createTemplate(props.$template);
 	        return _this;
 	    }
@@ -5559,7 +5558,9 @@ webpackJsonp([0],{
 	                    onPageScroll: this._onPageScroll.bind(this),
 	                    onPageSelected: this._onPageSelected.bind(this)
 	                },
-	                [_lib2.default.createElement(_lib.ListView, _extends({}, props, {
+	                [_lib2.default.createElement(_lib.ListView, _extends({
+	                    key: 1
+	                }, props, {
 	                    initialListSize: Math.ceil(props.height / 310) + 1,
 	                    dataSource: ds.cloneWithRows(rows),
 	                    renderRow: this._renderRow.bind(this)
@@ -5578,7 +5579,6 @@ webpackJsonp([0],{
 	            var $widget = this.template.get$WidgetById(wId);
 	            var type = _data.WidgetFactory.createWidget($widget, wId, this.template).getType();
 	            var props = {
-	                key: wId,
 	                $widget: $widget,
 	                wId: wId,
 	                width: this.props.width - 40,
@@ -5765,6 +5765,7 @@ webpackJsonp([0],{
 	                ),
 	                _lib2.default.createElement(_base.IconLink, { className: 'setting-font', onPress: function onPress() {
 	                        _lib.Portal.showModal('ChartComponent', _lib2.default.createElement(_SettingsComponent2.default, {
+	                            key: 'ChartComponent',
 	                            $widget: _this2.props.$widget,
 	                            wId: _this2.props.wId,
 	                            height: 0,
@@ -6171,7 +6172,7 @@ webpackJsonp([0],{
 	            (0, _core.each)(this._helper.getViewItems(), function (viewItem) {
 	                array.push(_lib2.default.createElement(
 	                    _base.TextButton,
-	                    { textAlign: 'left', style: styles.collapseHeader, onPress: function onPress() {
+	                    { key: viewItem.viewId, textAlign: 'left', style: styles.collapseHeader, onPress: function onPress() {
 	                            var collapsed = (0, _core.clone)(_this5.state.collapsed);
 	                            collapsed[viewItem.viewId] = !collapsed[viewItem.viewId];
 	                            _this5.setState({
@@ -6182,7 +6183,8 @@ webpackJsonp([0],{
 	                ));
 	                array.push(_lib2.default.createElement(
 	                    _base.Collapsible,
-	                    { collapsed: _this5.state.collapsed[viewItem.viewId] || false },
+	                    { key: 'collapsible-' + viewItem.viewId,
+	                        collapsed: _this5.state.collapsed[viewItem.viewId] || false },
 	                    _this5.state.sortable ? _this5._renderSortableList(viewItem) : _this5._renderUnSortableList(viewItem)
 	                ));
 	            });
@@ -6512,6 +6514,7 @@ webpackJsonp([0],{
 	                                _lib.Portal.showModal('DimensionSort', _lib2.default.createElement(
 	                                    _base.ActionSheet,
 	                                    {
+	                                        key: 'DimensionSort',
 	                                        title: '"' + _this2._helper.getSortTargetName() + '"排序',
 	                                        onClose: function onClose(tag) {
 	                                            if (tag === '取消') {} else if (tag === '确定') {
@@ -6755,7 +6758,7 @@ webpackJsonp([0],{
 	                        var value = _ref.value;
 	                        var label = _ref.label;
 
-	                        return _lib2.default.createElement(_lib.PickerIOS.Item, { value: value, label: label });
+	                        return _lib2.default.createElement(_lib.PickerIOS.Item, { key: value, value: value, label: label });
 	                    })
 	                )
 	            );
@@ -6969,9 +6972,10 @@ webpackJsonp([0],{
 	                        )
 	                    ),
 	                    _lib2.default.createElement(_base.IconButton, { style: styles.sortIcon, onPress: function onPress() {
-	                            _lib.Portal.showModal('DimensionSort', _lib2.default.createElement(
+	                            _lib.Portal.showModal('TargetSort', _lib2.default.createElement(
 	                                _base.ActionSheet,
 	                                {
+	                                    key: 'TargetSort',
 	                                    title: '"' + _this2._helper.getSortTargetName() + '"排序',
 	                                    onClose: function onClose(tag) {
 	                                        if (tag === '取消') {} else if (tag === '确定') {
@@ -6979,7 +6983,7 @@ webpackJsonp([0],{
 	                                                _this2.props.onValueChange(_this2._$widget);
 	                                            }
 	                                        }
-	                                        _lib.Portal.closeModal('DimensionSort');
+	                                        _lib.Portal.closeModal('TargetSort');
 	                                    }
 	                                },
 	                                _lib2.default.createElement(_TargetSortComponent2.default, {
@@ -7529,6 +7533,7 @@ webpackJsonp([0],{
 	                ),
 	                _lib2.default.createElement(_base.IconLink, { className: 'setting-font', onPress: function onPress() {
 	                        _lib.Portal.showModal('TableComponent', _lib2.default.createElement(_SettingsComponent2.default, {
+	                            key: 'TableComponent',
 	                            $widget: _this2.props.$widget,
 	                            wId: _this2.props.wId,
 	                            height: 0,
@@ -8385,6 +8390,7 @@ webpackJsonp([0],{
 	                ),
 	                _lib2.default.createElement(_base.IconLink, { className: 'setting-font', onPress: function onPress() {
 	                        _lib.Portal.showModal('DetailTableComponent', _lib2.default.createElement(_SettingsComponent2.default, {
+	                            key: 'DetailTableComponent',
 	                            $widget: _this2.props.$widget,
 	                            wId: _this2.props.wId,
 	                            height: 0,

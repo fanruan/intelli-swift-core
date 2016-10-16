@@ -52,6 +52,7 @@ class ChartPaneComponent extends Component {
             <Text>{widget.getName()}</Text>
             <IconLink className='setting-font' onPress={()=> {
                 Portal.showModal('ChartComponent', <SettingsComponent
+                    key={'ChartComponent'}
                     $widget={this.props.$widget}
                     wId={this.props.wId}
                     height={0}

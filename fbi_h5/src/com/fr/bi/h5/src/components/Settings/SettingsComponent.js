@@ -164,14 +164,15 @@ class SettingsComponent extends Component {
     _renderDialog() {
         const array = [];
         each(this._helper.getViewItems(), (viewItem)=> {
-            array.push(<TextButton textAlign='left' style={styles.collapseHeader} onPress={()=> {
+            array.push(<TextButton key={viewItem.viewId} textAlign='left' style={styles.collapseHeader} onPress={()=> {
                 const collapsed = clone(this.state.collapsed);
                 collapsed[viewItem.viewId] = !collapsed[viewItem.viewId];
                 this.setState({
                     collapsed
                 })
             }}>{viewItem.text}</TextButton>);
-            array.push(<Collapsible collapsed={this.state.collapsed[viewItem.viewId] || false}>
+            array.push(<Collapsible key={`collapsible-${viewItem.viewId}`}
+                                    collapsed={this.state.collapsed[viewItem.viewId] || false}>
                 {this.state.sortable ? this._renderSortableList(viewItem) : this._renderUnSortableList(viewItem)}
             </Collapsible>)
         });
