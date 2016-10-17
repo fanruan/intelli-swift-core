@@ -731,15 +731,6 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
-        //数据点提示详细设置
-        this.tooltipSetting = BI.createWidget({
-            type: "bi.tooltip_detailed_setting_combo"
-        });
-
-        this.tooltipSetting.on(BI.TooltipDetailedSettingCombo.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
-        });
-
         //数据表格
         this.showDataTable = BI.createWidget({
             type: "bi.multi_select_item",
@@ -766,6 +757,15 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                 self.showDataTable.setSelected(false);
             }
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
+        });
+
+        //数据点提示详细设置
+        this.tooltipSetting = BI.createWidget({
+            type: "bi.tooltip_detailed_setting_combo"
+        });
+
+        this.tooltipSetting.on(BI.TooltipDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
 
         this.showElement = BI.createWidget({
