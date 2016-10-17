@@ -27,6 +27,38 @@ BIDezi.TreeLabelDetailView = BI.inherit(BI.View, {
     _render: function (vessel) {
         var mask = BI.createWidget();
         mask.element.__buildZIndexMask__(0);
+        var west = this._buildWest();
+        var items = [{
+            el: west,
+            width: this.constants.DETAIL_WEST_WIDTH
+        }, {
+            type: "bi.vtape",
+            items: [{
+                el: this._buildNorth(), height: this.constants.DETAIL_NORTH_HEIGHT
+            }, {
+                el: this._buildCenter()
+            }]
+        }];
+        var htape = BI.createWidget({
+            type: "bi.htape",
+            cls: "widget-attribute-setter-container",
+            items: items
+        });
+        west.element.resizable({
+            handles: "e",
+            minWidth: 200,
+            maxWidth: 400,
+            autoHide: true,
+            helper: "bi-resizer",
+            start: function () {
+            },
+            resize: function (e, ui) {
+            },
+            stop: function (e, ui) {
+                items[0].width = ui.size.width;
+                htape.resize();
+            }
+        });
         BI.createWidget({
             type: "bi.absolute",
             element: vessel,
@@ -37,21 +69,7 @@ BIDezi.TreeLabelDetailView = BI.inherit(BI.View, {
                 top: 0,
                 bottom: 0
             }, {
-                el: {
-                    type: "bi.htape",
-                    cls: "widget-attribute-setter-container",
-                    items: [{
-                        el: this._buildWest(),
-                        width: this.constants.DETAIL_WEST_WIDTH
-                    }, {
-                        type: "bi.vtape",
-                        items: [{
-                            el: this._buildNorth(), height: this.constants.DETAIL_NORTH_HEIGHT
-                        }, {
-                            el: this._buildCenter()
-                        }]
-                    }]
-                },
+                el: htape,
                 left: 20,
                 right: 20,
                 top: 20,
@@ -199,7 +217,7 @@ BIDezi.TreeLabelDetailView = BI.inherit(BI.View, {
         this.dimensionsManager.on(BI.DimensionsManagerControl.EVENT_CHANGE, function () {
             var values = this.getValue();
             self.model.set(values);
-            this.setValue();
+            this.populate();
         });
 
 
@@ -212,7 +230,7 @@ BIDezi.TreeLabelDetailView = BI.inherit(BI.View, {
             type: "bi.select_tree_label",
             wId: this.model.get("id")
         });
-        this.treeLabel.on(BI.SelectTreeDataCombo.EVENT_CONFIRM, function () {
+        this.treeLabel.on(BI.SelectTreeLabel.EVENT_CONFIRM, function () {
             self.model.set("value", self.treeLabel.getValue());
         });
         return this.treeLabel;
@@ -226,9 +244,11 @@ BIDezi.TreeLabelDetailView = BI.inherit(BI.View, {
 
 
     change: function (changed, prev) {
-        this.treeLabel.setValue();
         if (BI.has(changed, "value")) {
-            this.treeLabel.setValue();
+            this.treeLabel.setValue(this.model.get("value"));
+        }
+        if (BI.has(changed, "view")) {
+            this.treeLabel.setValue(this.model.get("value"));
         }
     },
 
@@ -247,6 +267,6 @@ BIDezi.TreeLabelDetailView = BI.inherit(BI.View, {
 
     refresh: function () {
         this.dimensionsManager.populate();
-        this.treeLabel.setValue();
+        this.treeLabel.setValue(this.model.get("value"));
     }
 });

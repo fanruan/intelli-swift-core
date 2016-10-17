@@ -115,7 +115,7 @@ class TableComponentWidthHelper {
         const result = [];
         each(this.items, (col)=> {
             const fx = fit(this.getWidthsByOneCol(col));
-            result.push(math.ceil((fx.a + fx.b * math.ceil((1 + col.length) / 2)) * 14 * 1.2) + REMAIN_WIDTH);
+            result.push(math.ceil((fx.a + fx.b * math.ceil((1 + col.length) / 2)) * 16 * 1.2) + REMAIN_WIDTH);
         });
         return this.adjustWidth(result);
     }

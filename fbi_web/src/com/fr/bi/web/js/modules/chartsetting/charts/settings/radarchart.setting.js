@@ -307,10 +307,10 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.legend]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.showDataLabel]
+                    items: [this.gridLine]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.gridLine]
+                    items: [this.showDataLabel]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -335,13 +335,6 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 cls: "detail-style",
                 items: BI.createItems([{
                     type: "bi.label",
-                    text: BI.i18nText("BI-Format"),
-                    cls: "attr-names"
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.lYAxisStyle]
-                }, {
-                    type: "bi.label",
                     text: BI.i18nText("BI-Num_Level"),
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
@@ -349,14 +342,21 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.vertical_adapt",
                     items: [this.numberLevellY]
                 }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Format"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.separators]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.lYAxisStyle]
+                }, {
                     type: "bi.vertical_adapt",
                     items: [this.showCustomScale]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.customScale]
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.separators]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),

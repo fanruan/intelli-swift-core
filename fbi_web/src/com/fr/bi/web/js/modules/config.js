@@ -291,7 +291,7 @@ BICst.DASHBOARD_WIDGETS = [[{
         text: BI.i18nText("BI-List_Label_Con"),
         title: BI.i18nText("BI-List_Label_Con"),
         value: BICst.WIDGET.LIST_LABEL,
-        cls: "drag-string-icon"
+        cls: "drag-list-label-icon"
     }]
 }, {
     text: BI.i18nText("BI-Numeric_Control"),
@@ -330,7 +330,7 @@ BICst.DASHBOARD_WIDGETS = [[{
     //     text: BI.i18nText("BI-Tree_Label_Con"),
     //     title: BI.i18nText("BI-Tree_Label_Con"),
     //     value: BICst.WIDGET.TREE_LABEL,
-    //     cls: "drag-tree-icon"
+    //     cls: "drag-tree-label-icon"
     //
     // }]
 }, {

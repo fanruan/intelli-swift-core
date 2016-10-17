@@ -20,7 +20,7 @@ FS.ChartPreview = BI.inherit(BI.Widget, {
         var chart3 = this._createLine();
         var chart4 = this._createCombine();
 
-        BI.createWidget({
+        this.layout = BI.createWidget({
             type: "bi.grid",
             element: this.element,
             items: [[chart1, chart2], [chart3, chart4]]
@@ -811,6 +811,26 @@ FS.ChartPreview = BI.inherit(BI.Widget, {
                 config4.chart_color = finded.colors;
             }
         }
+        //界面背景
+        var mainBackgroundValue = data.mainBackground.value;
+        if(data.mainBackground.type === 2){
+            mainBackgroundValue = "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + mainBackgroundValue + ")";
+        }
+        this.layout.element.css("background", mainBackgroundValue);
+        //组件背景
+        var widgetBackgroundValue = data.widgetBackground.value;
+        if(data.widgetBackground.type === 2){
+            widgetBackgroundValue = "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + widgetBackgroundValue + ")";
+        }
+        this.chart1.element.css("background", widgetBackgroundValue);
+        this.chart2.element.css("background", widgetBackgroundValue);
+        this.chart3.element.css("background", widgetBackgroundValue);
+        this.chart4.element.css("background", widgetBackgroundValue);
+        //图表字体
+        config1.chart_font = data.chartFont;
+        config2.chart_font = data.chartFont;
+        config3.chart_font = data.chartFont;
+        config4.chart_font = data.chartFont;
 
         this.chart1.populate(this._getData1(), config1);
         this.chart2.populate(this._getData2(), config2);

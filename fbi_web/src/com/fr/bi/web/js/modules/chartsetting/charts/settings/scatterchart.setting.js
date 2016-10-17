@@ -374,10 +374,10 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.legend]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.showDataLabel]
+                    items: [this.gridLine]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.gridLine]
+                    items: [this.showDataLabel]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -401,13 +401,6 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 cls: "detail-style",
                 items: BI.createItems([{
                     type: "bi.label",
-                    text: BI.i18nText("BI-Format"),
-                    cls: "attr-names"
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.lYAxisStyle]
-                }, {
-                    type: "bi.label",
                     text: BI.i18nText("BI-Num_Level"),
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
@@ -423,6 +416,16 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.vertical_adapt",
                     items: [this.LYUnit]
                 }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Format"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.lYAxisStyle]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.YSeparators]
+                }, {
                     type: "bi.vertical_adapt",
                     items: [this.isShowTitleLY, this.editTitleLY]
                 }, {
@@ -431,9 +434,6 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.customYScale]
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.YSeparators]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -457,13 +457,6 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 cls: "detail-style",
                 items: BI.createItems([{
                     type: "bi.label",
-                    text: BI.i18nText("BI-Format"),
-                    cls: "attr-names"
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.XAxisStyle]
-                }, {
-                    type: "bi.label",
                     text: BI.i18nText("BI-Num_Level"),
                     lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
@@ -479,6 +472,16 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.vertical_adapt",
                     items: [this.XUnit]
                 }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Format"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.XAxisStyle]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.XSeparators]
+                }, {
                     type: "bi.vertical_adapt",
                     items: [this.isShowTitleX, this.editTitleX]
                 }, {
@@ -487,9 +490,6 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.customXScale]
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.XSeparators]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),

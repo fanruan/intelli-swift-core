@@ -803,6 +803,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/matchingrelationship/settingpane/targetlabelcontrol.settingpane.css",
                 "com/fr/bi/web/css/modules/matchingrelationship/settingpane/settingpane.css",
                 "com/fr/bi/web/css/modules/matchingrelationship/settingpane/multipathchooser.settingpane.css",
+                "com/fr/bi/web/css/modules/matchingrelationship/settingpane/multimatchmulti.settingpane.css",
 
                 //多路径设置
                 "com/fr/bi/web/css/fragments/multirelation/item.tablefield.multirelation.css",
@@ -836,8 +837,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/chartsetting/charts/customscale/formula/customscale.formula.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/customscale/combo.customscale.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/customscale/trigger.customscale.css",
-                "com/fr/bi/web/css/modules/chartsetting/charts/detailedsetting/showtitle/showtitle.detailed.setting.popup.css",
-                "com/fr/bi/web/css/modules/chartsetting/charts/detailedsetting/table/table.detailed.setting.popup.css",
+                "com/fr/bi/web/css/modules/chartsetting/charts/detailedsetting/detailed.setting.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/selectcolorcombo/item.selectcolor.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/selectcolorcombo/trigger.selectcolor.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/charts.setting.css",
@@ -1555,6 +1555,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/selectcolorcombo/trigger.selectcolor.js",
                 "com/fr/bi/web/js/modules/chartsetting/widget.chartsetting.js",
                 "com/fr/bi/web/js/modules/chartsetting/grouptable/widget.grouptable.setting.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/settings/block/widget.block.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/abstractchart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/axischart.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/settings/bubblechart.setting.js",
@@ -1579,11 +1580,16 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/complextable/widget.complextable.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/detailtable/widget.detailtable.setting.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/detailed.setting.trigger.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/chartlabel/chartlabel.detailed.setting.combo.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/chartlabel/chartlabel.detailed.setting.popup.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/legend/legend.detailed.setting.combo.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/legend/legend.detailed.setting.popup.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/showtitle/showtitle.detailed.setting.combo.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/showtitle/showtitle.detailed.setting.popup.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/table/table.detailed.setting.combo.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/table/table.detailed.setting.popup.js",
-
+                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/tooltip/tooltip.detailed.setting.combo.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/tooltip/tooltip.detailed.setting.popup.js",
 
                 //展示表格
                 "com/fr/bi/web/js/modules/tablechartmanager/chartdisplay/chartdisplay.js",
@@ -1778,6 +1784,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/services/packageselectdataservice/treenode/node.level1.date.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/relationtable/node.relationtables.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/relationtable/node.level2.date.js",
+                "com/fr/bi/web/js/services/packageselectdataservice/relationtable/expander.relationtable.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/relationtable/expander.relationtables.js",
                 "com/fr/bi/web/js/services/packageselectdataservice/packageselectdataservice.js",
 
@@ -2559,6 +2566,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/case/pager/pager.direction.js",
                 "com/fr/bi/web/js/case/pager/pager.skip.js",
                 "com/fr/bi/web/js/case/pager/pager.all.js",
+                "com/fr/bi/web/js/case/pager/pager.all.count.js",
 
                 "com/fr/bi/web/js/case/table/table.layertree.cell.js",
                 "com/fr/bi/web/js/case/table/table.layertree.js",

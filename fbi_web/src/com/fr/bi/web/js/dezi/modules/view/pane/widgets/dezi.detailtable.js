@@ -174,7 +174,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                     self._expandWidget();
                 case BICst.DASHBOARD_WIDGET_SHOW_NAME:
                     var settings = self.model.get("settings");
-                    settings.show_name = !BI.Utils.getWSShowNameByID(self.model.get("id"));
+                    settings.widget_setting.show_name = !BI.Utils.getWSShowNameByID(self.model.get("id"));
                     self.model.set("settings", settings);
                     self._refreshLayout();
                     break;

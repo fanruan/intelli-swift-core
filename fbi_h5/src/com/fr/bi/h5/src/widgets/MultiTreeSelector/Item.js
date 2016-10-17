@@ -17,9 +17,10 @@ import React, {
     TouchableWithoutFeedback
 } from 'lib'
 
-import {Colors, Size} from 'data'
+import {Colors, Sizes} from 'data'
+import {Layout, CenterLayout, VerticalCenterLayout} from 'layout'
 
-import {Icon, Checkbox, Table, AutoSizer} from 'base'
+import {Icon, Button, IconButton, Checkbox, Table, AutoSizer} from 'base'
 
 
 class Item extends Component {
@@ -73,31 +74,28 @@ class Item extends Component {
         const {...props} = this.props, {...state} = this.state;
         let row;
         if (!props.isLeaf) {
-            row = <View className={cn({
-                'active': state.expanded,
-            }, 'node-fold-font', 'react-view')} style={[styles.icon, {
-                width: 44,
-                marginLeft: props.layer * 44
-            }]}>
-                <Icon width={16} height={16}/>
-            </View>
+            row =
+                <IconButton className={'node-fold-font'} invalid={true} selected={state.expanded} style={[styles.icon, {
+                    width: 44,
+                    marginLeft: props.layer * 44
+                }]}/>
         }
-        return <TouchableHighlight onPress={this._onExpand.bind(this)} underlayColor={Colors.PRESS}>
-            <View style={[styles.row]}>
-                {row}
-                <View style={[styles.text, {
-                    marginLeft: isNil(row) ? ((props.layer + 1) * 44) : 0
+        return <Button onPress={this._onExpand.bind(this)}>
+            <Layout box='justify' style={[styles.row]}>
+                {row ? row : <View/>}
+                <VerticalCenterLayout style={[{
+                    paddingLeft: isNil(row) ? ((props.layer + 1) * 44) : 0
                 }]}>
                     <Text>
                         {isNil(state.value) ? state.text : state.value}
                     </Text>
-                </View>
-                <View style={[styles.icon, {width: Size.ITEM_HEIGHT}]}>
+                </VerticalCenterLayout>
+                <CenterLayout style={[{width: Sizes.ITEM_HEIGHT}]}>
                     <Checkbox checked={state.checked} halfCheck={state.halfCheck}
                               onChecked={props.onSelected}/>
-                </View>
-            </View>
-        </TouchableHighlight>
+                </CenterLayout>
+            </Layout>
+        </Button>
     }
 }
 mixin.onClass(Item, PureRenderMixin);
@@ -107,17 +105,7 @@ const styles = StyleSheet.create({
         borderBottomColor: Colors.SPLIT,
         borderBottomStyle: 'solid',
         borderBottomWidth: 1 / PixelRatio.get(),
-        height: Size.ITEM_HEIGHT
-    },
-
-    text: {
-        justifyContent: 'center',
-        flexGrow: 1
-    },
-
-    icon: {
-        justifyContent: 'center',
-        alignItems: 'center'
+        height: Sizes.ITEM_HEIGHT
     },
 
     selected: {

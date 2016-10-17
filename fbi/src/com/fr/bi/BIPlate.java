@@ -275,6 +275,12 @@ public class BIPlate extends AbstractFSPlate {
                 "/com/fr/bi/web/cross/css/reporthangout/hangoutreport.plate.css",
 
                 "/com/fr/bi/web/cross/css/bi.text.css",
+
+                //BI风格中用到的全局样式
+                "com/fr/bi/web/css/modules/globalstyle/indexitem/uploadimage/widget.uploadimage.preview.css",
+                "com/fr/bi/web/css/modules/globalstyle/indexitem/widget.globalstyle.indexalignchooser.css",
+                "com/fr/bi/web/css/modules/globalstyle/indexitem/widget.globalstyle.indexcombo.css",
+                "com/fr/bi/web/css/modules/globalstyle/indexitem/widget.globalstyle.indextitletoolbar.css"
         });
     }
 
@@ -298,8 +304,14 @@ public class BIPlate extends AbstractFSPlate {
                 "/com/fr/bi/web/cross/js/bi.toolbar.add.js",
                 "/com/fr/bi/web/cross/js/bi.directory.edit.js",
                 "/com/fr/bi/web/cross/js/reporthangout/hangoutreport.plate.js",
-                "/com/fr/bi/web/cross/js/reporthangout/bireportdialog.js"
+                "/com/fr/bi/web/cross/js/reporthangout/bireportdialog.js",
 
+                //BI风格中用到的全局样式
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/uploadimage/widget.uploadimage.preview.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indexalignchooser.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indexcombo.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indexcharttoolbar.js",
+                "com/fr/bi/web/js/modules/globalstyle/indexitem/widget.globalstyle.indextitletoolbar.js"
         });
     }
 

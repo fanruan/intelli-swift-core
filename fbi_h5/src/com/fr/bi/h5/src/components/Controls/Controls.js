@@ -26,15 +26,16 @@ import React, {
     Promise
 } from 'lib'
 
-import {Colors, Template, Widget} from 'data'
-
-import {Icon, Table, AutoSizer, VtapeLayout, HtapeLayout, VerticalCenterLayout, CenterLayout} from 'base'
+import {Colors, TemplateFactory, WidgetFactory} from 'data'
+import {Layout} from 'layout'
+import {Icon, Table, AutoSizer} from 'base'
 
 import {MultiSelectorWidget} from 'widgets'
 
 
 import MultiSelectorComponent from '../MultiSelector/MultiSelectorComponent.js'
 import MultiTreeSelectorComponent from '../MultiTreeSelector/MultiTreeSelectorComponent.js'
+import DateComponent from '../Date/DateComponent'
 
 import Item from './Item'
 
@@ -42,12 +43,6 @@ class Controls extends Component {
 
     constructor(props, context) {
         super(props, context);
-        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        this.template = new Template(props.$template);
-        const rows = this.template.getAllControlWidgetIds();
-        this.state = {
-            dataSource: ds.cloneWithRows(rows)
-        }
     }
 
     static propTypes = {};
@@ -72,10 +67,11 @@ class Controls extends Component {
 
     render() {
         const {...props} = this.props;
+        this.template = TemplateFactory.createTemplate(props.$template);
         return <ScrollView style={styles.wrapper}>
             {map(this.template.getAllControlWidgetIds(), (wId)=> {
-                const $widget = this.template.get$$WidgetById(wId);
-                const widget = new Widget($widget);
+                const $widget = this.template.get$WidgetById(wId);
+                const widget = WidgetFactory.createWidget($widget, wId, this.template);
                 return <Item key={wId} id={wId} $widget={$widget} onPress={()=> {
                     let Component = null;
                     switch (widget.getType()) {
@@ -91,6 +87,7 @@ class Controls extends Component {
                         case BICst.WIDGET.QUARTER:
                         case BICst.WIDGET.MONTH:
                         case BICst.WIDGET.YMD:
+                            Component = DateComponent;
                     }
                     props.navigator.push({
                         ...props,

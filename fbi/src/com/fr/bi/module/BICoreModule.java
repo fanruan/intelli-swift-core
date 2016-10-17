@@ -25,7 +25,7 @@ import com.fr.bi.conf.manager.excelview.BIExcelViewManager;
 import com.fr.bi.conf.manager.update.BIUpdateSettingManager;
 import com.fr.bi.conf.provider.*;
 import com.fr.bi.fs.*;
-//import com.fr.bi.h5.services.Service4BIH5;
+import com.fr.bi.h5.services.Service4BIH5;
 import com.fr.bi.resource.ResourceConstants;
 import com.fr.bi.resource.ResourceHelper;
 import com.fr.bi.stable.utils.BIDBUtils;
@@ -407,12 +407,12 @@ public class BICoreModule extends AbstractModule {
                 new Service4BIConfigure(),
                 new Service4BIReport(),
                 new Service4BIDezi(),
-                //new Service4BIH5(),
+                new Service4BIH5(),
                 new Service4BIMobile(),
                 new Service4BIBase(),
 
                 new Service4FineCube(),
-                //new Service4BIH5()
+                new Service4BIH5()
         };
     }
 

@@ -127,6 +127,16 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         if(items.length > 0 && BI.isNotNull(items[items.length - 1][0])){
             var map = BI.Utils.getDimensionMapByDimensionID(o.dId);
             var fromTextArray = [];
+            if(BI.keys(map).length === 0){
+                var fieldId = BI.Utils.getFieldIDByDimensionID(o.dId);
+                var fieldName = BI.Utils.getFieldNameByID(fieldId);
+                if(BI.isNull(fieldName)){
+                    items[items.length - 1][0].text = items[items.length - 1][0].title = BI.i18nText("BI-Dimension_From");
+                }else{
+                    var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldId));
+                    items[items.length - 1][0].text = items[items.length - 1][0].title = BI.i18nText("BI-Dimension_From") + ": " + tableName + "."  + fieldName;
+                }
+            }
             BI.each(map, function(tId, obj){
                 var fromText = "";
                 var name = BI.Utils.getFieldNameByID(obj._src.field_id);

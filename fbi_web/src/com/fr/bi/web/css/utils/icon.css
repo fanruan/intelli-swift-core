@@ -1493,6 +1493,36 @@
   _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_tree.png');
   _background: none;
 }
+.drag-list-label-icon .x-icon,
+.drag-list-label-icon:hover .x-icon,
+.drag-list-label-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_list_label.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_list_label.png');
+  _background: none;
+}
+.drag-list-label-icon.native .x-icon,
+.drag-list-label-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_list_label.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_list_label.png');
+  _background: none;
+}
+.drag-tree-label-icon .x-icon,
+.drag-tree-label-icon:hover .x-icon,
+.drag-tree-label-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_tree_label.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_tree_label.png');
+  _background: none;
+}
+.drag-tree-label-icon.native .x-icon,
+.drag-tree-label-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_tree_label.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_tree_label.png');
+  _background: none;
+}
 .drag-date-icon .x-icon,
 .drag-date-icon:hover .x-icon,
 .drag-date-icon:active .x-icon {

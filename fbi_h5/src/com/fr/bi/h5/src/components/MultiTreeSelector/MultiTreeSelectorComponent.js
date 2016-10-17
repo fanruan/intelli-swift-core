@@ -14,7 +14,7 @@ import React, {
 
 import {Table, AutoSizer} from 'base'
 
-import {Template, Widget} from 'data'
+import {TemplateFactory, WidgetFactory} from 'data'
 
 import {MultiTreeSelectorWidget} from 'widgets'
 
@@ -49,7 +49,7 @@ class MultiTreeSelectorComponent extends Component {
     render() {
         const {...props} = this.props;
         const wId = props.wId;
-        const template = new Template(props.$template);
+        const template = TemplateFactory.createTemplate(props.$template);
         const widget = template.getWidgetById(wId);
         return <MultiTreeSelectorWidget
             style={styles.wrapper}
@@ -60,7 +60,7 @@ class MultiTreeSelectorComponent extends Component {
             }}
             onValueChange={(value)=> {
                 widget.setWidgetValue(value);
-                template.setWidget(wId, widget);
+                template.set$Widget(wId, widget.$get());
                 this.props.onValueChange(template.$get());
             }}
             width={props.width}

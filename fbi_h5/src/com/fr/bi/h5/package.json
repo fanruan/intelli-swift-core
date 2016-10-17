@@ -72,6 +72,7 @@
     "dom-helpers": "^2.4.0",
     "domkit": "0.0.1",
     "fbjs": "^0.8.4",
+    "flex.css": "^1.1.4",
     "history": "^3.0.0",
     "immutable": "^3.8.1",
     "lodash": "^4.15.0",

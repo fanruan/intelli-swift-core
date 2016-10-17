@@ -56,6 +56,10 @@ BI.DetailTablePathSettingSwitch = BI.inherit(BI.Widget, {
         self.itemPanes[index].setVisible(true);
     },
 
+    setEnable: function (v) {
+        this.itemPanes[this.options.showIndex].setEnable(v);
+    },
+
     getValue: function () {
         var self = this;
         return self.itemPanes[self.options.showIndex].getValue();

@@ -130,10 +130,14 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
                 });
                 return multiPathChooser;
             case this.constants.Multi_Match_Multi:
-                return BI.createWidget({
+                var multiMatchMultiPathChooser = BI.createWidget({
                     type: "bi.multi_match_multi_path_chooser",
                     height: 200
                 });
+                multiMatchMultiPathChooser.on(BI.MultiMatchMultiPathChooser.EVENT_PATH_CHANGE, function(v){
+                    self.fireEvent(BI.SetRelationPane.EVENT_PATH_PANE_CHANGE, v);
+                });
+                return multiMatchMultiPathChooser;
             case this.constants.No_Select_Dimension:
                 return BI.createWidget({
                     type: "bi.vertical",

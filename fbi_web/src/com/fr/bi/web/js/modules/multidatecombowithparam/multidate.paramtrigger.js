@@ -84,6 +84,9 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
         this.editor.on(BI.SignEditor.EVENT_START, function () {
             self.fireEvent(BI.MultiDateParamTrigger.EVENT_START);
         });
+        this.editor.on(BI.SignEditor.EVENT_STOP, function () {
+            self.fireEvent(BI.MultiDateParamTrigger.EVENT_STOP);
+        });
         this.editor.on(BI.SignEditor.EVENT_CHANGE, function () {
             self.fireEvent(BI.MultiDateParamTrigger.EVENT_CHANGE);
         });
@@ -119,6 +122,93 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
             items: this.items
         });
         this._setChangeIconVisible(false);
+    },
+    parseComplexDate: function (v) {
+        if (v.type === BICst.MULTI_DATE_PARAM) {
+            return parseComplexDateForParam(v.value);
+        } else {
+            return parseComplexDateCommon(v);
+        }
+        function parseComplexDateForParam(value) {
+            var widgetInfo = value.widgetInfo, offset = value.offset;
+            if (BI.isNull(widgetInfo) || BI.isNull(offset)) {
+                return;
+            }
+            var paramdate;
+            var wWid = widgetInfo.wId, se = widgetInfo.startOrEnd;
+            if (BI.isNotNull(wWid) && BI.isNotNull(se)) {
+                var wWValue = BI.Utils.getWidgetValueByID(wWid);
+                if (BI.isNull(wWValue) || BI.isEmptyObject(wWValue)) {
+                    return;
+                }
+                if (se === BI.MultiDateParamPane.start && BI.isNotNull(wWValue.start)) {
+                    paramdate = parseComplexDateCommon(wWValue.start);
+                }
+                if (se === BI.MultiDateParamPane.end && BI.isNotNull(wWValue.end)) {
+                    paramdate = parseComplexDateCommon(wWValue.end);
+                }
+            } else {
+                if (BI.isNull(widgetInfo.wId) || BI.isNull(BI.Utils.getWidgetValueByID(widgetInfo.wId))) {
+                    return;
+                }
+                paramdate = parseComplexDateCommon(BI.Utils.getWidgetValueByID(widgetInfo.wId));
+            }
+            if (BI.isNotNull(paramdate)) {
+                return parseComplexDateCommon(offset, new Date(paramdate));
+            }
+        }
+
+        function parseComplexDateCommon(v, consultedDate) {
+            var type = v.type, value = v.value;
+            var date = BI.isNull(consultedDate) ? new Date() : consultedDate;
+            var currY = date.getFullYear(), currM = date.getMonth(), currD = date.getDate();
+            date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+            if (BI.isNull(type) && BI.isNotNull(v.year)) {
+                return new Date(v.year, v.month, v.day).getTime();
+            }
+            switch (type) {
+                case BICst.MULTI_DATE_YEAR_PREV:
+                    return new Date(currY - 1 * value, currM, currD).getTime();
+                case BICst.MULTI_DATE_YEAR_AFTER:
+                    return new Date(currY + 1 * value, currM, currD).getTime();
+                case BICst.MULTI_DATE_YEAR_BEGIN:
+                    return new Date(currY, 0, 1).getTime();
+                case BICst.MULTI_DATE_YEAR_END:
+                    return new Date(currY, 11, 31).getTime();
+
+                case BICst.MULTI_DATE_MONTH_PREV:
+                    return BI.Utils.getBeforeMultiMonth(value).getTime();
+                case BICst.MULTI_DATE_MONTH_AFTER:
+                    return BI.Utils.getAfterMultiMonth(value).getTime();
+                case BICst.MULTI_DATE_MONTH_BEGIN:
+                    return new Date(currY, currM, 1).getTime();
+                case BICst.MULTI_DATE_MONTH_END:
+                    return new Date(currY, currM, (date.getLastDateOfMonth()).getDate()).getTime();
+
+                case BICst.MULTI_DATE_QUARTER_PREV:
+                    return BI.Utils.getBeforeMulQuarter(value).getTime();
+                case BICst.MULTI_DATE_QUARTER_AFTER:
+                    return BI.Utils.getAfterMulQuarter(value).getTime();
+                case BICst.MULTI_DATE_QUARTER_BEGIN:
+                    return BI.Utils.getQuarterStartDate().getTime();
+                case BICst.MULTI_DATE_QUARTER_END:
+                    return BI.Utils.getQuarterEndDate().getTime();
+
+                case BICst.MULTI_DATE_WEEK_PREV:
+                    return date.getOffsetDate(-7 * value).getTime();
+                case BICst.MULTI_DATE_WEEK_AFTER:
+                    return date.getOffsetDate(7 * value).getTime();
+
+                case BICst.MULTI_DATE_DAY_PREV:
+                    return date.getOffsetDate(-1 * value).getTime();
+                case BICst.MULTI_DATE_DAY_AFTER:
+                    return date.getOffsetDate(1 * value).getTime();
+                case BICst.MULTI_DATE_DAY_TODAY:
+                    return date.getTime();
+                case BICst.MULTI_DATE_CALENDAR:
+                    return new Date(value.year, value.month, value.day).getTime();
+            }
+        }
     },
     _dateCheck: function (date) {
         return Date.parseDateTime(date, "%Y-%x-%d").print("%Y-%x-%d") == date || Date.parseDateTime(date, "%Y-%X-%d").print("%Y-%X-%d") == date || Date.parseDateTime(date, "%Y-%x-%e").print("%Y-%x-%e") == date || Date.parseDateTime(date, "%Y-%X-%e").print("%Y-%X-%e") == date;
@@ -179,7 +269,7 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
         var _setInnerValueForParam = function(){
             var widgetInfo = value.widgetInfo;
             var name = BI.Utils.getWidgetNameByID(widgetInfo.wId);
-            var showText = BI.isNull(widgetInfo.wId) ? name : BI.i18nText("BI-Relative") + name + BI.i18nText("BI-De") + (widgetInfo.startOrEnd ? BI.i18nText("BI-End_Time") : BI.i18nText("BI-Start_Time")) + BI.i18nText("BI-De");
+            var showText = BI.isNull(widgetInfo.wId) ? name : BI.i18nText("BI-Relative") + name + BI.i18nText("BI-De") + (widgetInfo.startOrEnd ? "(" + BI.i18nText("BI-End_Time") + ")": "(" + BI.i18nText("BI-Start_Time")) + ")" + BI.i18nText("BI-De");
             switch(value.offset.type){
                 case BICst.MULTI_DATE_YEAR_PREV:
                     showText += value.offset.value + BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_YEAR_PREV];
@@ -188,6 +278,8 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
                     showText += BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_YEAR_BEGIN];
                     break;
             }
+            var calcDate = self.parseComplexDate({type: type, value: value});
+            showText += ":" + BI.isNull(calcDate) ? "" : new Date(calcDate).print("%Y-%X-%d");
             self.editor.setState(showText);
             self.editor.setValue(showText);
             self.setTitle(showText);
@@ -318,6 +410,7 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
 BI.MultiDateParamTrigger.EVENT_FOCUS = "EVENT_FOCUS";
 BI.MultiDateParamTrigger.EVENT_KEY_DOWN = "EVENT_KEY_DOWN";
 BI.MultiDateParamTrigger.EVENT_START = "EVENT_START";
+BI.MultiDateParamTrigger.EVENT_STOP = "EVENT_STOP";
 BI.MultiDateParamTrigger.EVENT_CONFIRM = "EVENT_CONFIRM";
 BI.MultiDateParamTrigger.EVENT_CHANGE = "EVENT_CHANGE";
 BI.MultiDateParamTrigger.EVENT_VALID = "EVENT_VALID";

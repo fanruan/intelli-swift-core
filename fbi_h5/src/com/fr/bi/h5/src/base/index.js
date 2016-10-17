@@ -1,18 +1,12 @@
 //export Wheeler from './Wheeler/Wheeler'
 //export ScrollableWheeler from './Wheeler/ScrollableWheeler'
 
-export HtapeLayout from './Layout/HtapeLayout'
-export VtapeLayout from './Layout/VtapeLayout'
-export GridLayout from './Layout/GridLayout'
-export CenterLayout from './Layout/CenterLayout'
-export VerticalCenterLayout from './Layout/VerticalCenterLayout'
-export HorizontalCenterLayout from './Layout/HorizontalCenterLayout'
-
 //export Flex from './FlexBoxGrid/Flex'
 //export Row from './FlexBoxGrid/Row'
 //export Col from './FlexBoxGrid/Col'
 
 export Icon from './Icon'
+export Button from './Button/Button'
 export IconButton from './IconButton/IconButton'
 export IconLink from './IconLink/IconLink'
 export TextButton from './TextButton/TextButton'
@@ -27,6 +21,7 @@ export Sortable from './Sortable'
 
 export GiftedListView from './GiftedListView'
 export SideMenu from './SideMenu'
+export Collapsible from './Accordion/Collapsible'
 export Accordion from './Accordion/Accordion'
 export Animatable from './Animatable/Animatable'
 
@@ -39,6 +34,7 @@ export Collection from './Collection'
 export Table from './Table'
 
 export Overlay from './Overlay/Overlay'
+export ActionSheet from './ActionSheet/ActionSheet'
 export Dialog from './Dialog'
 
 export default module.exports;

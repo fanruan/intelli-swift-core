@@ -14,7 +14,7 @@ BI.ListLabel = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.ListLabel.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-list-label",
-            title: BI.i18nText("BI-Default"),
+            title: BI.i18nText("BI-List_Label_Con"),
             showTitle: true,
             items: [],
             height: 40
@@ -27,12 +27,15 @@ BI.ListLabel = BI.inherit(BI.Widget, {
         this.items = BI.clone(o.items);
         this.items.unshift({
             text: BI.i18nText("BI-Nolimited"),
-            value: "*"
+            value: "_*_"
         });
         this.title = BI.createWidget({
             type: "bi.label",
             text: o.title + ":",
             height: o.height
+        });
+        this.items = BI.filter(this.items, function (idx, item) {
+            return item.value !== "";
         });
         this.container = BI.createWidget({
             type: "bi.list_label_item_group",
@@ -67,20 +70,35 @@ BI.ListLabel = BI.inherit(BI.Widget, {
             items: [this.container, this.minTip, this.maxTip],
             height: o.height
         });
-        var allItems = o.showTitle ? [this.title, {
-            el: this.right,
-            lgap: this._constant.DEFAULT_LEFT_GAP
-        }] : [this.right];
 
-        BI.createWidget({
+        o.showTitle ? BI.createWidget({
+            type: "bi.absolute",
+            items: [{
+                el: this.title,
+                left:0,
+                right:0,
+                top:0,
+                bottom:0,
+                width: 55
+            }, {
+                el: this.right,
+                left: 60,
+                right:0,
+                top:0,
+                bottom:0
+            }],
+            element: this.element
+        }) : BI.createWidget({
             type: "bi.horizontal",
-            items: allItems,
+            items: [this.right],
             element: this.element
         });
     },
 
     addItems: function (v) {
-        v = v || [];
+        v = BI.filter(v, function (idx, item) {
+                return item.value !== "";
+            }) || [];
         this.checkTipsState(v);
         this.container.addItems(v.slice(0, this._constant.MAX_COLUMN_SIZE - 1));
     },
@@ -118,6 +136,10 @@ BI.ListLabel = BI.inherit(BI.Widget, {
         }
         this.removeAllItems();
         this.addItems(v.items);
+    },
+
+    changeValue: function (v) {
+        this.container.changeValue(v);
     },
 
     setValue: function (v) {

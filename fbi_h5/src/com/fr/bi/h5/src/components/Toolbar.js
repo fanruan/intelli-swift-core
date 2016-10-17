@@ -26,9 +26,9 @@ import React, {
     Navigator
 } from 'lib'
 
-import {Colors, Size, Template} from 'data'
-
-import {IconButton, Table, AutoSizer, HtapeLayout, VtapeLayout, GridLayout, CenterLayout} from 'base'
+import {Colors, Sizes, TemplateFactory} from 'data'
+import {Layout} from 'layout'
+import {IconButton, Table, AutoSizer} from 'base'
 
 import {MultiSelectorWidget} from 'widgets'
 
@@ -87,7 +87,7 @@ mixin.onClass(Toolbar, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     filter: {
         borderTop: '1px solid ' + Colors.BORDER,
-        height: Size.ITEM_HEIGHT
+        height: Sizes.ITEM_HEIGHT
     }
 });
 export default Toolbar

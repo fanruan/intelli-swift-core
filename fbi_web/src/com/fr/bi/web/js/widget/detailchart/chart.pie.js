@@ -77,7 +77,8 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
                     break;
             }
             config.plotOptions.innerRadius = self.config.chart_inner_radius + "%";
-            config.plotOptions.endAngle = self.config.chart_total_angle;
+            config.plotOptions.startAngle = 270;
+            config.plotOptions.endAngle = (270 + self.config.chart_total_angle) % 360;
         }
 
     },

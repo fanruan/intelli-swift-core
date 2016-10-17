@@ -10,13 +10,15 @@ import React, {
     View,
     Fetch,
     Navigator,
-    TouchableOpacity
+    TouchableOpacity,
+    TouchableHighlight
 } from 'lib'
 
-import {Colors, Size, Template} from 'data'
+import {Colors, Sizes, TemplateFactory} from 'data'
+import {Layout} from 'layout'
 
 import Toolbar from './Toolbar'
-import Layout from './Layout/Layout'
+import LayoutComponent from './Layout/LayoutComponent'
 
 const {width, height} = Dimensions.get('window');
 
@@ -30,8 +32,7 @@ class Main extends Component {
 
     constructor(props, context) {
         super(props, context);
-        console.log(props);
-        this.template = new Template(props.$template);
+        this.template = TemplateFactory.createTemplate(props.$template);
     }
 
     navigationBarRouteMapper() {
@@ -44,13 +45,14 @@ class Main extends Component {
                 }
 
                 return (
-                    <TouchableOpacity
+                    <TouchableHighlight
                         onPress={() => navigator.pop()}
+                        underlayColor={Colors.PRESS}
                         style={styles.navBarLeftButton}>
                         <Text style={[styles.navBarText, styles.navBarButtonText]}>
                             返回
                         </Text>
-                    </TouchableOpacity>
+                    </TouchableHighlight>
                 );
             },
 
@@ -61,7 +63,7 @@ class Main extends Component {
 
                 if (route.name === 'widget') {
                     return (
-                        <TouchableOpacity
+                        <TouchableHighlight
                             onPress={() => {
                                 const prevRoute = navState.routeStack[navState.presentedIndex - 1];
                                 if (route.$template) {
@@ -71,17 +73,18 @@ class Main extends Component {
                                     navigator.pop();
                                 }
                             }}
+                            underlayColor={Colors.PRESS}
                             style={styles.navBarRightButton}>
                             <Text style={[styles.navBarText, styles.navBarButtonText]}>
                                 确定
                             </Text>
-                        </TouchableOpacity>
+                        </TouchableHighlight>
                     );
                 }
 
                 if (route.name === 'list') {
                     return (
-                        <TouchableOpacity
+                        <TouchableHighlight
                             onPress={() => {
                                 const prevRoute = navState.routeStack[navState.presentedIndex - 1];
                                 if (route.$template) {
@@ -92,11 +95,12 @@ class Main extends Component {
                                     navigator.pop();
                                 }
                             }}
+                            underlayColor={Colors.PRESS}
                             style={styles.navBarRightButton}>
                             <Text style={[styles.navBarText, styles.navBarButtonText]}>
                                 查询
                             </Text>
-                        </TouchableOpacity>
+                        </TouchableHighlight>
                     );
                 }
 
@@ -118,26 +122,28 @@ class Main extends Component {
         const {name, Component, title, onValueChange, ...others} = route;
         if (name === 'index') {
             if (this.template.hasControlWidget()) {
-                return <View style={styles.index}>
-                    <Layout width={width} height={height - 50 - Size.ITEM_HEIGHT} {...props}
-                            navigator={navigationOperations}/>
+                return <Layout flex dir='top' box='last'>
+                    <LayoutComponent width={width} height={height - 50 - Sizes.ITEM_HEIGHT} {...props}
+                                     navigator={navigationOperations}/>
 
                     <Toolbar {...props} navigator={navigationOperations}>
 
                     </Toolbar>
-                </View>
+                </Layout>
             }
-            return <Layout width={width} height={height} {...props}/>;
+            return <LayoutComponent width={width} height={height} {...props}/>;
         }
         return (
-            <Component
-                width={width} height={height - 50}
-                {...others}
-                onValueChange={$template=> {
-                    route.$template = $template;
-                }}
-                navigator={navigationOperations}
-            />
+            <Layout flex box='mean'>
+                <Component
+                    width={width} height={height - 50}
+                    {...others}
+                    onValueChange={$template=> {
+                        route.$template = $template;
+                    }}
+                    navigator={navigationOperations}
+                />
+            </Layout>
         );
     }
 
@@ -192,11 +198,7 @@ class Main extends Component {
 mixin.onClass(Main, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
-        flex: 1,
         paddingTop: 50
-    },
-    index: {
-        flex: 1
     },
     sceneStyle: {
         backgroundColor: Colors.TEXT

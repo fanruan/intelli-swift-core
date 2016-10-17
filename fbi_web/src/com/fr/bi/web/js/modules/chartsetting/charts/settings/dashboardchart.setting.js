@@ -387,7 +387,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.separators]
-                }, {
+                }, this.dashboardScale, {
                     type: "bi.vertical_adapt",
                     items: [this.scale],
                     lgap: constant.SIMPLE_H_GAP
@@ -401,7 +401,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP,
                     width: "100%",
                     height: ""
-                }, this.dashboardScale], {
+                }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 })
             }]

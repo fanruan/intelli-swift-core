@@ -1,33 +1,69 @@
 import {each, first, arrayMove, values, keys} from 'core'
-import {Widget, Template, Dimension} from 'data'
+import {WidgetFactory, TemplateFactory} from 'data'
 export default class SettingsComponentHelper {
     constructor(props, context) {
-        this.widget = new Widget(props.$widget);
+        this.widget = WidgetFactory.createWidget(props.$widget, props.wId, TemplateFactory.createTemplate(context.$template));
 
     }
 
-    getDimensionsItems() {
+    getViewItems() {
         const result = [];
-        each(this._getDimensionIds(), (dId)=> {
+        each(this._getViewIds(), (viewId)=> {
+            result.push({
+                text: '行表头',
+                viewId: viewId,
+            })
+        });
+        return result;
+    }
+
+    getViewItemByViewId(viewId) {
+        return {
+            text: '行表头',
+            viewId: viewId
+        }
+    }
+
+    isDimensionByDimensionId(dId) {
+        return this.widget.isDimensionById(dId);
+    }
+
+    getAllDimensionItems() {
+        const result = {};
+        each(this._getViewIds(), (viewId)=> {
+            result[viewId] = this.getDimensionsItems(viewId);
+        });
+        return result;
+    }
+
+    getDimensionsItems(viewId) {
+        const result = [];
+        each(this._getDimensionIds(viewId), (dId)=> {
             const dim = this.widget.getDimensionOrTargetById(dId);
             result.push({
                 text: dim.getName(),
+                viewId: viewId,
                 dId: dId
             })
         });
         return result;
     }
 
-    _getDimensionIds() {
+    _getViewIds() {
         const view = this.widget.getWidgetView();
-        return values(view)[0];
+        return keys(view);
     }
 
-    doMove(oldIndex, newIndex) {
+    _getDimensionIds(viewId) {
         const view = this.widget.getWidgetView();
-        const items = this._getDimensionIds();
+        return view[viewId] || [];
+    }
+
+    doMove(viewId, oldIndex, newIndex) {
+        const view = this.widget.getWidgetView();
+        const items = this._getDimensionIds(viewId);
         arrayMove(items, oldIndex, newIndex);
-        view[keys(view)[0]] = items;
+        view[viewId] = items;
         this.widget.setWidgetView(view);
         return this.widget.$get();
     }

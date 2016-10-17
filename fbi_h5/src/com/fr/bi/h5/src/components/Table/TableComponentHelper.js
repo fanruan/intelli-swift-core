@@ -1,9 +1,9 @@
 import {each} from 'core';
-import {Template, Widget, Dimension} from 'data'
+import {TemplateFactory, WidgetFactory, DimensionFactory} from 'data'
 class TableComponentHelper {
     constructor(props, context) {
         const {$widget, wId} = props;
-        this.widget = new Widget($widget, context.$template, wId);
+        this.widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(context.$template));
         this.data = [];
     }
 
@@ -18,9 +18,9 @@ class TableComponentHelper {
             text: '行表头'
         }];
         ids.forEach((id)=> {
-            const $$dim = this.widget.get$$DimensionOrTargetById(id);
+            const $$dim = this.widget.get$DimensionOrTargetById(id);
             result.push({
-                text: new Dimension($$dim).getName()
+                text: DimensionFactory.createDimension($$dim).getName()
             })
         });
         return result;
@@ -88,7 +88,7 @@ class TableComponentHelper {
         const result = [];
         const ids = this.widget.getRowDimensionIds();
         each(ids, (id)=> {
-            const dimension = new Dimension(this.widget.get$$DimensionById(id));
+            const dimension = DimensionFactory.createDimension(this.widget.get$DimensionById(id));
             result.push({
                 text: dimension.getName()
             });

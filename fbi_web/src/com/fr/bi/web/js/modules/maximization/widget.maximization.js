@@ -32,7 +32,7 @@ BI.Maximization = BI.inherit(BI.Widget, {
     },
     _createMaximizationPane: function () {
         var self = this, o = this.options;
-        
+
         var backgroundLayer = BI.Layers.create(BICst.MAXIMIZATION_BACKGROUND_LAYER);
         backgroundLayer.element.css({"background-color": "#1a1a1a", "opacity": "0.2"});
         BI.Layers.show(BICst.MAXIMIZATION_BACKGROUND_LAYER);

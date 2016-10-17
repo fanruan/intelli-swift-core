@@ -18,7 +18,7 @@ BI.TableDetailedSettingCombo = BI.inherit(BI.Widget, {
         this.popup = BI.createWidget({
             type: "bi.table_detailed_setting_popup"
         });
-        this.popup.on(BI.ShowTitleDetailedSettingPopup.EVENT_CHANGE, function() {
+        this.popup.on(BI.TableDetailedSettingPopup.EVENT_CHANGE, function() {
             self.fireEvent(BI.TableDetailedSettingCombo.EVENT_CHANGE)
         });
 

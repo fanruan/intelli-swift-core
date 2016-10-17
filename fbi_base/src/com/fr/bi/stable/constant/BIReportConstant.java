@@ -406,6 +406,8 @@ public class BIReportConstant {
         public static final int STRING = 0x20;            //文本控件
         public static final int NUMBER = 0x21;            //数值控件
         public static final int TREE = 0x22;              //树控件
+        public static final int LIST_LABEL = 0x25;        //文本标签
+        public static final int TREE_LABEL = 0x26;        //树标签
 
         //仅前台使用的部分类型
         public static final int DATE = 0x30;

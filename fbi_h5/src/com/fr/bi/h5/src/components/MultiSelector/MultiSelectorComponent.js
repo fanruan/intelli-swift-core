@@ -14,7 +14,7 @@ import React, {
 
 import {Table, AutoSizer} from 'base'
 
-import {Template, Widget} from 'data'
+import {TemplateFactory, WidgetFactory} from 'data'
 
 import {MultiSelectorWidget} from 'widgets'
 
@@ -51,7 +51,7 @@ class MultiSelectorComponent extends Component {
     render() {
         const {...props} = this.props;
         const wId = props.wId;
-        const template = new Template(props.$template);
+        const template = TemplateFactory.createTemplate(props.$template);
         const widget = template.getWidgetById(wId);
         return <MultiSelectorWidget
             style={styles.wrapper}
@@ -64,7 +64,7 @@ class MultiSelectorComponent extends Component {
             height={props.height}
             onValueChange={(value)=> {
                 widget.setWidgetValue(value);
-                template.setWidget(wId, widget);
+                template.set$Widget(wId, widget.$get());
                 this.props.onValueChange(template.$get());
             }}
         >

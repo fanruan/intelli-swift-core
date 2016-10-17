@@ -33,21 +33,17 @@ webpackJsonp([0],{
 
 	var _View2 = _interopRequireDefault(_View);
 
-	var _Portal = __webpack_require__(640);
+	__webpack_require__(966);
 
-	var _Portal2 = _interopRequireDefault(_Portal);
+	__webpack_require__(968);
 
-	__webpack_require__(937);
+	__webpack_require__(970);
 
-	__webpack_require__(939);
+	__webpack_require__(972);
 
-	__webpack_require__(941);
+	__webpack_require__(974);
 
-	__webpack_require__(943);
-
-	__webpack_require__(945);
-
-	__webpack_require__(947);
+	__webpack_require__(976);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2133,13 +2129,19 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _template = __webpack_require__(780);
+	var _layout = __webpack_require__(791);
+
+	var _template = __webpack_require__(800);
 
 	var TodoActions = _interopRequireWildcard(_template);
 
-	var _Main = __webpack_require__(781);
+	var _Main = __webpack_require__(801);
 
 	var _Main2 = _interopRequireDefault(_Main);
+
+	var _Layout = __webpack_require__(965);
+
+	var _Layout2 = _interopRequireDefault(_Layout);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -2190,7 +2192,6 @@ webpackJsonp([0],{
 	//import UIExplorerApp from '../examples/UIExplorer/UIExplorerApp.web'
 	// import Game2048 from '../examples/2048/Game2048'
 
-
 	var App = function (_Component) {
 	    _inherits(App, _Component);
 
@@ -2235,8 +2236,12 @@ webpackJsonp([0],{
 	        value: function render() {
 	            return _lib2.default.createElement(
 	                _lib.View,
-	                { style: styles.wrapper },
-	                _lib2.default.createElement(_Main2.default, { $template: this.props.$template }),
+	                null,
+	                _lib2.default.createElement(
+	                    _layout.Layout,
+	                    { flex: true, box: 'mean' },
+	                    _lib2.default.createElement(_Main2.default, { $template: this.props.$template })
+	                ),
 	                _lib2.default.createElement(_lib.Portal, null)
 	            );
 	        }
@@ -2255,8 +2260,8 @@ webpackJsonp([0],{
 	    wrapper: {
 	        position: 'absolute',
 	        left: 0,
-	        top: 0,
 	        right: 0,
+	        top: 0,
 	        bottom: 0
 	    }
 	});
@@ -2281,7 +2286,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 780:
+/***/ 800:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2308,7 +2313,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 781:
+/***/ 801:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2337,13 +2342,15 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _Toolbar = __webpack_require__(782);
+	var _layout = __webpack_require__(791);
+
+	var _Toolbar = __webpack_require__(802);
 
 	var _Toolbar2 = _interopRequireDefault(_Toolbar);
 
-	var _Layout = __webpack_require__(922);
+	var _LayoutComponent = __webpack_require__(940);
 
-	var _Layout2 = _interopRequireDefault(_Layout);
+	var _LayoutComponent2 = _interopRequireDefault(_LayoutComponent);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2368,8 +2375,7 @@ webpackJsonp([0],{
 
 	        var _this = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props, context));
 
-	        console.log(props);
-	        _this.template = new _data.Template(props.$template);
+	        _this.template = _data.TemplateFactory.createTemplate(props.$template);
 	        return _this;
 	    }
 
@@ -2384,11 +2390,12 @@ webpackJsonp([0],{
 	                    }
 
 	                    return _lib2.default.createElement(
-	                        _lib.TouchableOpacity,
+	                        _lib.TouchableHighlight,
 	                        {
 	                            onPress: function onPress() {
 	                                return navigator.pop();
 	                            },
+	                            underlayColor: _data.Colors.PRESS,
 	                            style: styles.navBarLeftButton },
 	                        _lib2.default.createElement(
 	                            _lib.Text,
@@ -2404,7 +2411,7 @@ webpackJsonp([0],{
 
 	                    if (route.name === 'widget') {
 	                        return _lib2.default.createElement(
-	                            _lib.TouchableOpacity,
+	                            _lib.TouchableHighlight,
 	                            {
 	                                onPress: function onPress() {
 	                                    var prevRoute = navState.routeStack[navState.presentedIndex - 1];
@@ -2415,6 +2422,7 @@ webpackJsonp([0],{
 	                                        navigator.pop();
 	                                    }
 	                                },
+	                                underlayColor: _data.Colors.PRESS,
 	                                style: styles.navBarRightButton },
 	                            _lib2.default.createElement(
 	                                _lib.Text,
@@ -2426,7 +2434,7 @@ webpackJsonp([0],{
 
 	                    if (route.name === 'list') {
 	                        return _lib2.default.createElement(
-	                            _lib.TouchableOpacity,
+	                            _lib.TouchableHighlight,
 	                            {
 	                                onPress: function onPress() {
 	                                    var prevRoute = navState.routeStack[navState.presentedIndex - 1];
@@ -2438,6 +2446,7 @@ webpackJsonp([0],{
 	                                        navigator.pop();
 	                                    }
 	                                },
+	                                underlayColor: _data.Colors.PRESS,
 	                                style: styles.navBarRightButton },
 	                            _lib2.default.createElement(
 	                                _lib.Text,
@@ -2473,23 +2482,27 @@ webpackJsonp([0],{
 	            if (name === 'index') {
 	                if (this.template.hasControlWidget()) {
 	                    return _lib2.default.createElement(
-	                        _lib.View,
-	                        { style: styles.index },
-	                        _lib2.default.createElement(_Layout2.default, _extends({ width: width, height: height - 50 - _data.Size.ITEM_HEIGHT }, props, {
+	                        _layout.Layout,
+	                        { flex: true, dir: 'top', box: 'last' },
+	                        _lib2.default.createElement(_LayoutComponent2.default, _extends({ width: width, height: height - 50 - _data.Sizes.ITEM_HEIGHT }, props, {
 	                            navigator: navigationOperations })),
 	                        _lib2.default.createElement(_Toolbar2.default, _extends({}, props, { navigator: navigationOperations }))
 	                    );
 	                }
-	                return _lib2.default.createElement(_Layout2.default, _extends({ width: width, height: height }, props));
+	                return _lib2.default.createElement(_LayoutComponent2.default, _extends({ width: width, height: height }, props));
 	            }
-	            return _lib2.default.createElement(Component, _extends({
-	                width: width, height: height - 50
-	            }, others, {
-	                onValueChange: function onValueChange($template) {
-	                    route.$template = $template;
-	                },
-	                navigator: navigationOperations
-	            }));
+	            return _lib2.default.createElement(
+	                _layout.Layout,
+	                { flex: true, box: 'mean' },
+	                _lib2.default.createElement(Component, _extends({
+	                    width: width, height: height - 50
+	                }, others, {
+	                    onValueChange: function onValueChange($template) {
+	                        route.$template = $template;
+	                    },
+	                    navigator: navigationOperations
+	                }))
+	            );
 	        }
 	    }, {
 	        key: 'render',
@@ -2544,11 +2557,7 @@ webpackJsonp([0],{
 	_reactMixin2.default.onClass(Main, _core.ReactComponentWithImmutableRenderMixin);
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
-	        flex: 1,
 	        paddingTop: 50
-	    },
-	    index: {
-	        flex: 1
 	    },
 	    sceneStyle: {
 	        backgroundColor: _data.Colors.TEXT
@@ -2580,7 +2589,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 782:
+/***/ 802:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2609,11 +2618,13 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _layout = __webpack_require__(791);
 
-	var _widgets = __webpack_require__(907);
+	var _base = __webpack_require__(803);
 
-	var _Controls = __webpack_require__(918);
+	var _widgets = __webpack_require__(923);
+
+	var _Controls = __webpack_require__(935);
 
 	var _Controls2 = _interopRequireDefault(_Controls);
 
@@ -2684,14 +2695,14 @@ webpackJsonp([0],{
 	var styles = _lib.StyleSheet.create({
 	    filter: {
 	        borderTop: '1px solid ' + _data.Colors.BORDER,
-	        height: _data.Size.ITEM_HEIGHT
+	        height: _data.Sizes.ITEM_HEIGHT
 	    }
 	});
 	exports.default = Toolbar;
 
 /***/ },
 
-/***/ 907:
+/***/ 923:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2699,30 +2710,35 @@ webpackJsonp([0],{
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.MultiTreeSelectorWidget = exports.MultiSelectorWidget = exports.TableWidget = undefined;
+	exports.DateWidget = exports.MultiTreeSelectorWidget = exports.MultiSelectorWidget = exports.TableWidget = undefined;
 
-	var _TableWidget2 = __webpack_require__(908);
+	var _TableWidget2 = __webpack_require__(924);
 
 	var _TableWidget3 = _interopRequireDefault(_TableWidget2);
 
-	var _MultiSelectorWidget2 = __webpack_require__(911);
+	var _MultiSelectorWidget2 = __webpack_require__(927);
 
 	var _MultiSelectorWidget3 = _interopRequireDefault(_MultiSelectorWidget2);
 
-	var _MultiTreeSelectorWidget2 = __webpack_require__(914);
+	var _MultiTreeSelectorWidget2 = __webpack_require__(930);
 
 	var _MultiTreeSelectorWidget3 = _interopRequireDefault(_MultiTreeSelectorWidget2);
+
+	var _DateWidget2 = __webpack_require__(934);
+
+	var _DateWidget3 = _interopRequireDefault(_DateWidget2);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.TableWidget = _TableWidget3.default;
 	exports.MultiSelectorWidget = _MultiSelectorWidget3.default;
 	exports.MultiTreeSelectorWidget = _MultiTreeSelectorWidget3.default;
+	exports.DateWidget = _DateWidget3.default;
 	exports.default = module.exports;
 
 /***/ },
 
-/***/ 908:
+/***/ 924:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2753,13 +2769,13 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(803);
 
-	var _GroupHeader = __webpack_require__(909);
+	var _GroupHeader = __webpack_require__(925);
 
 	var _GroupHeader2 = _interopRequireDefault(_GroupHeader);
 
-	var _GroupItems = __webpack_require__(910);
+	var _GroupItems = __webpack_require__(926);
 
 	var _GroupItems2 = _interopRequireDefault(_GroupItems);
 
@@ -2874,8 +2890,8 @@ webpackJsonp([0],{
 	    isNeedFreeze: true,
 	    freezeCols: [],
 	    columnSize: [],
-	    rowHeight: 30,
-	    headerRowHeight: 30,
+	    rowHeight: 36,
+	    headerRowHeight: 36,
 	    header: [],
 	    items: [],
 	    groupHeader: [],
@@ -2896,7 +2912,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 909:
+/***/ 925:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2921,7 +2937,7 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(803);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3029,7 +3045,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 910:
+/***/ 926:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3054,7 +3070,7 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(803);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3233,7 +3249,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 911:
+/***/ 927:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3266,15 +3282,17 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _layout = __webpack_require__(791);
+
+	var _base = __webpack_require__(803);
 
 	var _data = __webpack_require__(773);
 
-	var _Item = __webpack_require__(912);
+	var _Item = __webpack_require__(928);
 
 	var _Item2 = _interopRequireDefault(_Item);
 
-	var _MultiSelectorWidgetHelper = __webpack_require__(913);
+	var _MultiSelectorWidgetHelper = __webpack_require__(929);
 
 	var _MultiSelectorWidgetHelper2 = _interopRequireDefault(_MultiSelectorWidgetHelper);
 
@@ -3379,21 +3397,21 @@ webpackJsonp([0],{
 	            //    timeScrollStateLastsForAfterUserScrolls={1000}
 	            //    ></Infinite>;
 	            return _lib2.default.createElement(
-	                _base.VtapeLayout,
-	                { style: styles.wrapper },
+	                _layout.Layout,
+	                { dir: 'top', box: 'last', style: styles.wrapper },
 	                _lib2.default.createElement(_base.VirtualScroll, {
 	                    width: props.width,
-	                    height: props.height - _data.Size.ITEM_HEIGHT,
+	                    height: props.height - _data.Sizes.ITEM_HEIGHT,
 	                    overscanRowCount: 0
 	                    //noRowsRenderer={this._noRowsRenderer.bind(this)}
 	                    , rowCount: this._helper.getSortedItems().length + 1,
-	                    rowHeight: _data.Size.ITEM_HEIGHT,
+	                    rowHeight: _data.Sizes.ITEM_HEIGHT,
 	                    rowRenderer: this._rowRenderer.bind(this)
 	                    //scrollToIndex={scrollToIndex}
 	                }),
 	                _lib2.default.createElement(
 	                    _lib.View,
-	                    { height: _data.Size.ITEM_HEIGHT, style: styles.toolbar },
+	                    { style: styles.toolbar },
 	                    _lib2.default.createElement(
 	                        _base.TextButton,
 	                        { style: { flex: 1 },
@@ -3429,11 +3447,19 @@ webpackJsonp([0],{
 	            var _this5 = this;
 
 	            if (this.state.hasNext === true) {
-	                return _lib2.default.createElement(_base.TextButton, { style: { height: _data.Size.ITEM_HEIGHT }, text: '点击加载更多数据', onPress: function onPress() {
-	                        _this5._fetchData();
-	                    } });
+	                return _lib2.default.createElement(
+	                    _base.TextButton,
+	                    { style: { height: _data.Sizes.ITEM_HEIGHT }, onPress: function onPress() {
+	                            _this5._fetchData();
+	                        } },
+	                    '点击加载更多数据'
+	                );
 	            } else {
-	                return _lib2.default.createElement(_base.TextButton, { style: { height: _data.Size.ITEM_HEIGHT }, disabled: true, text: '无更多数据' });
+	                return _lib2.default.createElement(
+	                    _base.TextButton,
+	                    { style: { height: _data.Sizes.ITEM_HEIGHT }, disabled: true },
+	                    '无更多数据'
+	                );
 	            }
 	        }
 	    }, {
@@ -3491,19 +3517,18 @@ webpackJsonp([0],{
 
 	_reactMixin2.default.onClass(MultiSelectorWidget, _reactAddonsPureRenderMixin2.default);
 	var styles = _lib.StyleSheet.create({
-	    wrapper: {
-	        flex: 1
-	    },
+	    wrapper: {},
 	    toolbar: {
 	        borderTopWidth: 1 / _lib.PixelRatio.get(),
-	        borderTopColor: _data.Colors.BORDER
+	        borderTopColor: _data.Colors.BORDER,
+	        height: _data.Sizes.ITEM_HEIGHT
 	    }
 	});
 	exports.default = MultiSelectorWidget;
 
 /***/ },
 
-/***/ 912:
+/***/ 928:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3534,7 +3559,9 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _layout = __webpack_require__(791);
+
+	var _base = __webpack_require__(803);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3599,13 +3626,13 @@ webpackJsonp([0],{
 	            var state = _objectWithoutProperties(this.state, []);
 
 	            return _lib2.default.createElement(
-	                _lib.TouchableHighlight,
-	                { onPress: this._onPress.bind(this), underlayColor: _data.Colors.PRESS },
+	                _base.Button,
+	                { onPress: this._onPress.bind(this) },
 	                _lib2.default.createElement(
-	                    _lib.View,
-	                    { style: [styles.row] },
+	                    _layout.Layout,
+	                    { box: 'last', style: [styles.row] },
 	                    _lib2.default.createElement(
-	                        _lib.View,
+	                        _layout.VerticalCenterLayout,
 	                        { style: styles.text },
 	                        _lib2.default.createElement(
 	                            _lib.Text,
@@ -3614,8 +3641,8 @@ webpackJsonp([0],{
 	                        )
 	                    ),
 	                    _lib2.default.createElement(
-	                        _lib.View,
-	                        { style: [styles.icon, { width: _data.Size.ITEM_HEIGHT }] },
+	                        _layout.CenterLayout,
+	                        { style: [{ width: _data.Sizes.ITEM_HEIGHT }] },
 	                        _lib2.default.createElement(_base.Checkbox, { checked: this.state.selected, onChecked: this._onPress.bind(this) })
 	                    )
 	                )
@@ -3637,29 +3664,21 @@ webpackJsonp([0],{
 	_reactMixin2.default.onClass(Item, _reactAddonsPureRenderMixin2.default);
 	var styles = _lib.StyleSheet.create({
 	    row: {
-	        flexDirection: 'row',
-	        height: _data.Size.ITEM_HEIGHT,
+	        height: _data.Sizes.ITEM_HEIGHT,
 	        borderBottomColor: _data.Colors.SPLIT,
 	        borderBottomWidth: 1 / _lib.PixelRatio.get()
 	    },
 
 	    text: {
-	        justifyContent: 'center',
-	        flexGrow: 1,
 	        paddingLeft: 20,
 	        paddingRight: 20
-	    },
-
-	    icon: {
-	        justifyContent: 'center',
-	        alignItems: 'center'
 	    }
 	});
 	exports.default = Item;
 
 /***/ },
 
-/***/ 913:
+/***/ 929:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3754,7 +3773,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 914:
+/***/ 930:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3787,19 +3806,19 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(803);
 
 	var _data = __webpack_require__(773);
 
-	var _Item = __webpack_require__(915);
+	var _Item = __webpack_require__(931);
 
 	var _Item2 = _interopRequireDefault(_Item);
 
-	var _MultiTreeSelectorWidgetHelper = __webpack_require__(916);
+	var _MultiTreeSelectorWidgetHelper = __webpack_require__(932);
 
 	var _MultiTreeSelectorWidgetHelper2 = _interopRequireDefault(_MultiTreeSelectorWidgetHelper);
 
-	var _MultiTreeSelectorWidgetAsyncHelper = __webpack_require__(917);
+	var _MultiTreeSelectorWidgetAsyncHelper = __webpack_require__(933);
 
 	var _MultiTreeSelectorWidgetAsyncHelper2 = _interopRequireDefault(_MultiTreeSelectorWidgetAsyncHelper);
 
@@ -3899,7 +3918,7 @@ webpackJsonp([0],{
 	                overscanRowCount: 0
 	                //noRowsRenderer={this._noRowsRenderer.bind(this)}
 	                , rowCount: this._helper.getSortedItems().length + 1,
-	                rowHeight: _data.Size.ITEM_HEIGHT,
+	                rowHeight: _data.Sizes.ITEM_HEIGHT,
 	                rowRenderer: this._rowRenderer.bind(this)
 	                //scrollToIndex={scrollToIndex}
 	            });
@@ -3912,7 +3931,7 @@ webpackJsonp([0],{
 	            if (this.state.hasNext === true) {
 	                return _lib2.default.createElement(
 	                    _base.TextButton,
-	                    { style: { height: _data.Size.ITEM_HEIGHT }, onPress: function onPress() {
+	                    { style: { height: _data.Sizes.ITEM_HEIGHT }, onPress: function onPress() {
 	                            _this3._fetchData();
 	                        } },
 	                    '点击加载更多数据'
@@ -3920,7 +3939,7 @@ webpackJsonp([0],{
 	            } else {
 	                return _lib2.default.createElement(
 	                    _base.TextButton,
-	                    { style: { height: _data.Size.ITEM_HEIGHT }, disabled: true },
+	                    { style: { height: _data.Sizes.ITEM_HEIGHT }, disabled: true },
 	                    '无更多数据'
 	                );
 	            }
@@ -3999,7 +4018,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 915:
+/***/ 931:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4030,7 +4049,9 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _layout = __webpack_require__(791);
+
+	var _base = __webpack_require__(803);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4100,28 +4121,22 @@ webpackJsonp([0],{
 
 	            var row = void 0;
 	            if (!props.isLeaf) {
-	                row = _lib2.default.createElement(
-	                    _lib.View,
-	                    { className: (0, _core.cn)({
-	                            'active': state.expanded
-	                        }, 'node-fold-font', 'react-view'), style: [styles.icon, {
-	                            width: 44,
-	                            marginLeft: props.layer * 44
-	                        }] },
-	                    _lib2.default.createElement(_base.Icon, { width: 16, height: 16 })
-	                );
+	                row = _lib2.default.createElement(_base.IconButton, { className: 'node-fold-font', invalid: true, selected: state.expanded, style: [styles.icon, {
+	                        width: 44,
+	                        marginLeft: props.layer * 44
+	                    }] });
 	            }
 	            return _lib2.default.createElement(
-	                _lib.TouchableHighlight,
-	                { onPress: this._onExpand.bind(this), underlayColor: _data.Colors.PRESS },
+	                _base.Button,
+	                { onPress: this._onExpand.bind(this) },
 	                _lib2.default.createElement(
-	                    _lib.View,
-	                    { style: [styles.row] },
-	                    row,
+	                    _layout.Layout,
+	                    { box: 'justify', style: [styles.row] },
+	                    row ? row : _lib2.default.createElement(_lib.View, null),
 	                    _lib2.default.createElement(
-	                        _lib.View,
-	                        { style: [styles.text, {
-	                                marginLeft: (0, _core.isNil)(row) ? (props.layer + 1) * 44 : 0
+	                        _layout.VerticalCenterLayout,
+	                        { style: [{
+	                                paddingLeft: (0, _core.isNil)(row) ? (props.layer + 1) * 44 : 0
 	                            }] },
 	                        _lib2.default.createElement(
 	                            _lib.Text,
@@ -4130,8 +4145,8 @@ webpackJsonp([0],{
 	                        )
 	                    ),
 	                    _lib2.default.createElement(
-	                        _lib.View,
-	                        { style: [styles.icon, { width: _data.Size.ITEM_HEIGHT }] },
+	                        _layout.CenterLayout,
+	                        { style: [{ width: _data.Sizes.ITEM_HEIGHT }] },
 	                        _lib2.default.createElement(_base.Checkbox, { checked: state.checked, halfCheck: state.halfCheck,
 	                            onChecked: props.onSelected })
 	                    )
@@ -4162,17 +4177,7 @@ webpackJsonp([0],{
 	        borderBottomColor: _data.Colors.SPLIT,
 	        borderBottomStyle: 'solid',
 	        borderBottomWidth: 1 / _lib.PixelRatio.get(),
-	        height: _data.Size.ITEM_HEIGHT
-	    },
-
-	    text: {
-	        justifyContent: 'center',
-	        flexGrow: 1
-	    },
-
-	    icon: {
-	        justifyContent: 'center',
-	        alignItems: 'center'
+	        height: _data.Sizes.ITEM_HEIGHT
 	    },
 
 	    selected: {
@@ -4183,7 +4188,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 916:
+/***/ 932:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4548,7 +4553,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 917:
+/***/ 933:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4561,7 +4566,7 @@ webpackJsonp([0],{
 
 	var _core = __webpack_require__(329);
 
-	var _MultiTreeSelectorWidgetHelper = __webpack_require__(916);
+	var _MultiTreeSelectorWidgetHelper = __webpack_require__(932);
 
 	var _MultiTreeSelectorWidgetHelper2 = _interopRequireDefault(_MultiTreeSelectorWidgetHelper);
 
@@ -4644,7 +4649,196 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 918:
+/***/ 934:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactMixin = __webpack_require__(206);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _immutable = __webpack_require__(200);
+
+	var _immutable2 = _interopRequireDefault(_immutable);
+
+	var _core = __webpack_require__(329);
+
+	var _lib = __webpack_require__(208);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _data = __webpack_require__(773);
+
+	var _layout = __webpack_require__(791);
+
+	var _base = __webpack_require__(803);
+
+	var _widgets = __webpack_require__(923);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var DateWidget = function (_Component) {
+	    _inherits(DateWidget, _Component);
+
+	    function DateWidget(props, context) {
+	        _classCallCheck(this, DateWidget);
+
+	        var _this = _possibleConstructorReturn(this, (DateWidget.__proto__ || Object.getPrototypeOf(DateWidget)).call(this, props, context));
+
+	        _this.state = {
+	            year: _this.props.year,
+	            month: _this.props.month,
+	            day: _this.props.day
+	        };
+	        return _this;
+	    }
+
+	    _createClass(DateWidget, [{
+	        key: '_getNextState',
+	        value: function _getNextState(props) {
+	            var state = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	        }
+	    }, {
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {}
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this2 = this;
+
+	            var props = _objectWithoutProperties(this.props, []);
+	            var state = _objectWithoutProperties(this.state, []);
+
+	            return _lib2.default.createElement(
+	                _layout.Layout,
+	                { dir: 'top', main: 'justify', style: styles.wrapper },
+	                _lib2.default.createElement(
+	                    _layout.Layout,
+	                    { cross: 'center', style: styles.button },
+	                    _lib2.default.createElement(
+	                        _lib.Text,
+	                        { style: styles.dateLabel },
+	                        '选择日期'
+	                    ),
+	                    _lib2.default.createElement(
+	                        _lib.Text,
+	                        {
+	                            style: styles.date },
+	                        state.year ? state.year + '年' + (state.month + 1) + '月' + state.day + '日' : '无限制'
+	                    )
+	                ),
+	                _lib2.default.createElement(
+	                    _layout.Layout,
+	                    { dir: 'top', box: 'first', style: styles.picker },
+	                    _lib2.default.createElement(
+	                        _layout.CenterLayout,
+	                        { style: styles.header },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            null,
+	                            '选择日期'
+	                        )
+	                    ),
+	                    _lib2.default.createElement(_lib.DatePickerIOS, { date: state.year ? new Date(state.year, state.month, state.day) : new Date(),
+	                        onDateChange: function onDateChange(date) {
+	                            _this2.setState({
+	                                year: date.getFullYear(),
+	                                month: date.getMonth(),
+	                                day: date.getDate()
+	                            }, function () {
+	                                var _state = _this2.state;
+	                                var year = _state.year;
+	                                var month = _state.month;
+	                                var day = _state.day;
+
+	                                _this2.props.onValueChange({ year: year, month: month, day: day });
+	                            });
+	                        } })
+	                )
+	            );
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {
+	            var year = nextProps.year;
+	            var month = nextProps.month;
+	            var day = nextProps.day;
+
+	            this.setState({ year: year, month: month, day: day });
+	        }
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate(nextProps, nextState) {}
+	    }, {
+	        key: 'componentDidUpdate',
+	        value: function componentDidUpdate(prevProps, prevState) {}
+	    }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {}
+	    }]);
+
+	    return DateWidget;
+	}(_lib.Component);
+
+	DateWidget.propTypes = {};
+	DateWidget.defaultProps = {
+	    onValueChange: _core.emptyFunction
+	};
+
+	_reactMixin2.default.onClass(DateWidget, _core.ReactComponentWithPureRenderMixin);
+	var styles = _lib.StyleSheet.create({
+	    wrapper: {},
+
+	    dateLabel: {
+	        width: 120,
+	        paddingLeft: 30
+	    },
+
+	    button: {
+	        height: _data.Sizes.HEADER_HEIGHT
+	    },
+
+	    date: {
+	        paddingLeft: 20
+	    },
+
+	    picker: {
+	        height: 217
+	    },
+
+	    header: {
+	        paddingLeft: 20,
+	        paddingRight: 20,
+	        height: _data.Sizes.HEADER_HEIGHT,
+	        borderBottomColor: _data.Colors.BORDER,
+	        borderBottomWidth: 1 / _lib.PixelRatio.get()
+	    }
+	});
+	exports.default = DateWidget;
+
+/***/ },
+
+/***/ 935:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4673,19 +4867,25 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _layout = __webpack_require__(791);
 
-	var _widgets = __webpack_require__(907);
+	var _base = __webpack_require__(803);
 
-	var _MultiSelectorComponent = __webpack_require__(919);
+	var _widgets = __webpack_require__(923);
+
+	var _MultiSelectorComponent = __webpack_require__(936);
 
 	var _MultiSelectorComponent2 = _interopRequireDefault(_MultiSelectorComponent);
 
-	var _MultiTreeSelectorComponent = __webpack_require__(920);
+	var _MultiTreeSelectorComponent = __webpack_require__(937);
 
 	var _MultiTreeSelectorComponent2 = _interopRequireDefault(_MultiTreeSelectorComponent);
 
-	var _Item = __webpack_require__(921);
+	var _DateComponent = __webpack_require__(938);
+
+	var _DateComponent2 = _interopRequireDefault(_DateComponent);
+
+	var _Item = __webpack_require__(939);
 
 	var _Item2 = _interopRequireDefault(_Item);
 
@@ -4708,15 +4908,6 @@ webpackJsonp([0],{
 	        var _this = _possibleConstructorReturn(this, (Controls.__proto__ || Object.getPrototypeOf(Controls)).call(this, props, context));
 
 	        _this.state = {};
-
-	        var ds = new _lib.ListView.DataSource({ rowHasChanged: function rowHasChanged(r1, r2) {
-	                return r1 !== r2;
-	            } });
-	        _this.template = new _data.Template(props.$template);
-	        var rows = _this.template.getAllControlWidgetIds();
-	        _this.state = {
-	            dataSource: ds.cloneWithRows(rows)
-	        };
 	        return _this;
 	    }
 
@@ -4739,12 +4930,13 @@ webpackJsonp([0],{
 
 	            var props = _objectWithoutProperties(this.props, []);
 
+	            this.template = _data.TemplateFactory.createTemplate(props.$template);
 	            return _lib2.default.createElement(
 	                _lib.ScrollView,
 	                { style: styles.wrapper },
 	                (0, _core.map)(this.template.getAllControlWidgetIds(), function (wId) {
-	                    var $widget = _this2.template.get$$WidgetById(wId);
-	                    var widget = new _data.Widget($widget);
+	                    var $widget = _this2.template.get$WidgetById(wId);
+	                    var widget = _data.WidgetFactory.createWidget($widget, wId, _this2.template);
 	                    return _lib2.default.createElement(_Item2.default, { key: wId, id: wId, $widget: $widget, onPress: function onPress() {
 	                            var Component = null;
 	                            switch (widget.getType()) {
@@ -4760,6 +4952,7 @@ webpackJsonp([0],{
 	                                case BICst.WIDGET.QUARTER:
 	                                case BICst.WIDGET.MONTH:
 	                                case BICst.WIDGET.YMD:
+	                                    Component = _DateComponent2.default;
 	                            }
 	                            props.navigator.push(_extends({}, props, {
 	                                name: 'widget',
@@ -4812,7 +5005,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 919:
+/***/ 936:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4837,11 +5030,11 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(803);
 
 	var _data = __webpack_require__(773);
 
-	var _widgets = __webpack_require__(907);
+	var _widgets = __webpack_require__(923);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4885,7 +5078,7 @@ webpackJsonp([0],{
 	            var props = _objectWithoutProperties(this.props, []);
 
 	            var wId = props.wId;
-	            var template = new _data.Template(props.$template);
+	            var template = _data.TemplateFactory.createTemplate(props.$template);
 	            var widget = template.getWidgetById(wId);
 	            return _lib2.default.createElement(_widgets.MultiSelectorWidget, {
 	                style: styles.wrapper,
@@ -4898,7 +5091,7 @@ webpackJsonp([0],{
 	                height: props.height,
 	                onValueChange: function onValueChange(value) {
 	                    widget.setWidgetValue(value);
-	                    template.setWidget(wId, widget);
+	                    template.set$Widget(wId, widget.$get());
 	                    _this2.props.onValueChange(template.$get());
 	                }
 	            });
@@ -4923,7 +5116,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 920:
+/***/ 937:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4948,11 +5141,11 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(803);
 
 	var _data = __webpack_require__(773);
 
-	var _widgets = __webpack_require__(907);
+	var _widgets = __webpack_require__(923);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4996,7 +5189,7 @@ webpackJsonp([0],{
 	            var props = _objectWithoutProperties(this.props, []);
 
 	            var wId = props.wId;
-	            var template = new _data.Template(props.$template);
+	            var template = _data.TemplateFactory.createTemplate(props.$template);
 	            var widget = template.getWidgetById(wId);
 	            return _lib2.default.createElement(_widgets.MultiTreeSelectorWidget, {
 	                style: styles.wrapper,
@@ -5007,7 +5200,7 @@ webpackJsonp([0],{
 	                },
 	                onValueChange: function onValueChange(value) {
 	                    widget.setWidgetValue(value);
-	                    template.setWidget(wId, widget);
+	                    template.set$Widget(wId, widget.$get());
 	                    _this2.props.onValueChange(template.$get());
 	                },
 	                width: props.width,
@@ -5032,7 +5225,125 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 921:
+/***/ 938:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactMixin = __webpack_require__(206);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _immutable = __webpack_require__(200);
+
+	var _immutable2 = _interopRequireDefault(_immutable);
+
+	var _core = __webpack_require__(329);
+
+	var _lib = __webpack_require__(208);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _data = __webpack_require__(773);
+
+	var _layout = __webpack_require__(791);
+
+	var _base = __webpack_require__(803);
+
+	var _widgets = __webpack_require__(923);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var DateComponent = function (_Component) {
+	    _inherits(DateComponent, _Component);
+
+	    function DateComponent(props, context) {
+	        _classCallCheck(this, DateComponent);
+
+	        var _this = _possibleConstructorReturn(this, (DateComponent.__proto__ || Object.getPrototypeOf(DateComponent)).call(this, props, context));
+
+	        _this.state = {};
+	        return _this;
+	    }
+
+	    _createClass(DateComponent, [{
+	        key: '_getNextState',
+	        value: function _getNextState(props) {
+	            var state = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	        }
+	    }, {
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {}
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this2 = this;
+
+	            var props = _objectWithoutProperties(this.props, []);
+	            var state = _objectWithoutProperties(this.state, []);
+
+	            var wId = props.wId;
+	            var template = _data.TemplateFactory.createTemplate(props.$template);
+	            var widget = template.getWidgetById(wId);
+	            return _lib2.default.createElement(_widgets.DateWidget, { style: styles.wrapper,
+	                year: widget.getYear(),
+	                month: widget.getMonth(),
+	                day: widget.getDay(),
+	                onValueChange: function onValueChange(value) {
+	                    widget.setWidgetValue(value);
+	                    template.set$Widget(wId, widget.$get());
+	                    _this2.props.onValueChange(template.$get());
+	                }
+	            });
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {}
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate(nextProps, nextState) {}
+	    }, {
+	        key: 'componentDidUpdate',
+	        value: function componentDidUpdate(prevProps, prevState) {}
+	    }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {}
+	    }]);
+
+	    return DateComponent;
+	}(_lib.Component);
+
+	DateComponent.propTypes = {};
+	DateComponent.defaultProps = {};
+
+	_reactMixin2.default.onClass(DateComponent, _core.ReactComponentWithImmutableRenderMixin);
+	var styles = _lib.StyleSheet.create({
+	    wrapper: {}
+	});
+	exports.default = DateComponent;
+
+/***/ },
+
+/***/ 939:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5059,9 +5370,11 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _layout = __webpack_require__(791);
 
-	var _widgets = __webpack_require__(907);
+	var _base = __webpack_require__(803);
+
+	var _widgets = __webpack_require__(923);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5107,19 +5420,15 @@ webpackJsonp([0],{
 	            var state = _objectWithoutProperties(this.state, []);
 
 	            return _lib2.default.createElement(
-	                _lib.TouchableHighlight,
-	                { underlayColor: _data.Colors.PRESS, onPress: this.props.onPress },
+	                _base.Button,
+	                { onPress: this.props.onPress },
 	                _lib2.default.createElement(
-	                    _lib.View,
-	                    null,
+	                    _layout.VerticalCenterLayout,
+	                    { style: styles.wrapper },
 	                    _lib2.default.createElement(
-	                        _base.VerticalCenterLayout,
-	                        { style: styles.wrapper },
-	                        _lib2.default.createElement(
-	                            _lib.Text,
-	                            null,
-	                            new _data.Widget(props.$widget).getName()
-	                        )
+	                        _lib.Text,
+	                        null,
+	                        _data.WidgetFactory.createWidget(props.$widget).getName()
 	                    )
 	                )
 	            );
@@ -5135,7 +5444,7 @@ webpackJsonp([0],{
 	_reactMixin2.default.onClass(Item, _core.ReactComponentWithImmutableRenderMixin);
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
-	        height: _data.Size.ITEM_HEIGHT,
+	        height: _data.Sizes.ITEM_HEIGHT,
 	        paddingLeft: 20,
 	        paddingRight: 20,
 	        borderBottom: '1px solid ' + _data.Colors.SPLIT
@@ -5145,7 +5454,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 922:
+/***/ 940:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5172,33 +5481,39 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _layout = __webpack_require__(791);
+
+	var _base = __webpack_require__(803);
 
 	var _data = __webpack_require__(773);
 
-	var _ChartPaneComponent = __webpack_require__(923);
+	var _ChartPaneComponent = __webpack_require__(941);
 
 	var _ChartPaneComponent2 = _interopRequireDefault(_ChartPaneComponent);
 
-	var _TablePaneComponent = __webpack_require__(927);
+	var _TablePaneComponent = __webpack_require__(954);
 
 	var _TablePaneComponent2 = _interopRequireDefault(_TablePaneComponent);
 
-	var _DetailTablePaneComponent = __webpack_require__(933);
+	var _DetailTablePaneComponent = __webpack_require__(960);
 
 	var _DetailTablePaneComponent2 = _interopRequireDefault(_DetailTablePaneComponent);
 
-	var _MultiSelectorComponent = __webpack_require__(919);
+	var _MultiSelectorComponent = __webpack_require__(936);
 
 	var _MultiSelectorComponent2 = _interopRequireDefault(_MultiSelectorComponent);
 
-	var _MultiTreeSelectorComponent = __webpack_require__(920);
+	var _MultiTreeSelectorComponent = __webpack_require__(937);
 
 	var _MultiTreeSelectorComponent2 = _interopRequireDefault(_MultiTreeSelectorComponent);
 
-	var _ContentComponent = __webpack_require__(936);
+	var _ContentComponent = __webpack_require__(963);
 
 	var _ContentComponent2 = _interopRequireDefault(_ContentComponent);
+
+	var _ImageComponent = __webpack_require__(964);
+
+	var _ImageComponent2 = _interopRequireDefault(_ImageComponent);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5210,16 +5525,16 @@ webpackJsonp([0],{
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var Layout = function (_Component) {
-	    _inherits(Layout, _Component);
+	var LayoutComponent = function (_Component) {
+	    _inherits(LayoutComponent, _Component);
 
-	    function Layout(props, context) {
-	        _classCallCheck(this, Layout);
+	    function LayoutComponent(props, context) {
+	        _classCallCheck(this, LayoutComponent);
 
-	        return _possibleConstructorReturn(this, (Layout.__proto__ || Object.getPrototypeOf(Layout)).call(this, props, context));
+	        return _possibleConstructorReturn(this, (LayoutComponent.__proto__ || Object.getPrototypeOf(LayoutComponent)).call(this, props, context));
 	    }
 
-	    _createClass(Layout, [{
+	    _createClass(LayoutComponent, [{
 	        key: '_onPageScroll',
 	        value: function _onPageScroll() {}
 	    }, {
@@ -5228,14 +5543,12 @@ webpackJsonp([0],{
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this2 = this;
-
 	            var props = _objectWithoutProperties(this.props, []);
 
 	            var ds = new _lib.ListView.DataSource({ rowHasChanged: function rowHasChanged(r1, r2) {
 	                    return r1 !== r2;
 	                } });
-	            this.template = new _data.Template(props.$template);
+	            this.template = _data.TemplateFactory.createTemplate(props.$template);
 	            var rows = this.template.getAllWidgetIds();
 	            return _lib2.default.createElement(
 	                _lib.ViewPagerAndroid,
@@ -5243,11 +5556,11 @@ webpackJsonp([0],{
 	                    style: styles.viewPager,
 	                    initialPage: 0,
 	                    onPageScroll: this._onPageScroll.bind(this),
-	                    onPageSelected: this._onPageSelected.bind(this),
-	                    ref: function ref(viewPager) {
-	                        _this2.viewPager = viewPager;
-	                    } },
-	                [_lib2.default.createElement(_lib.ListView, _extends({}, props, {
+	                    onPageSelected: this._onPageSelected.bind(this)
+	                },
+	                [_lib2.default.createElement(_lib.ListView, _extends({
+	                    key: 1
+	                }, props, {
 	                    initialListSize: Math.ceil(props.height / 310) + 1,
 	                    dataSource: ds.cloneWithRows(rows),
 	                    renderRow: this._renderRow.bind(this)
@@ -5263,10 +5576,9 @@ webpackJsonp([0],{
 	    }, {
 	        key: '_renderRow',
 	        value: function _renderRow(wId, sectionID, rowID) {
-	            var $widget = this.template.get$$WidgetById(wId);
-	            var type = new _data.Widget($widget).getType();
+	            var $widget = this.template.get$WidgetById(wId);
+	            var type = _data.WidgetFactory.createWidget($widget, wId, this.template).getType();
 	            var props = {
-	                key: wId,
 	                $widget: $widget,
 	                wId: wId,
 	                width: this.props.width - 40,
@@ -5325,6 +5637,8 @@ webpackJsonp([0],{
 	                    component = _lib2.default.createElement(_ContentComponent2.default, props);
 	                    break;
 	                case BICst.WIDGET.IMAGE:
+	                    component = _lib2.default.createElement(_ImageComponent2.default, props);
+	                    break;
 	                case BICst.WIDGET.WEB:
 	                    break;
 	                case BICst.WIDGET.STRING:
@@ -5337,36 +5651,30 @@ webpackJsonp([0],{
 	                    break;
 	            }
 	            return _lib2.default.createElement(
-	                _lib.View,
-	                null,
-	                _lib2.default.createElement(
-	                    _lib.View,
-	                    { style: styles.wrapper },
-	                    component
-	                )
+	                _layout.Layout,
+	                { box: 'mean', style: styles.wrapper },
+	                component
 	            );
 	        }
 	    }]);
 
-	    return Layout;
+	    return LayoutComponent;
 	}(_lib.Component);
 
-	Layout.propTypes = {};
+	LayoutComponent.propTypes = {};
 
-	_reactMixin2.default.onClass(Layout, _core.ReactComponentWithImmutableRenderMixin);
+	_reactMixin2.default.onClass(LayoutComponent, _core.ReactComponentWithImmutableRenderMixin);
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
-	        margin: 20
+	        padding: 20
 	    },
-	    viewPager: {
-	        flex: 1
-	    }
+	    viewPager: {}
 	});
-	exports.default = Layout;
+	exports.default = LayoutComponent;
 
 /***/ },
 
-/***/ 923:
+/***/ 941:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5397,15 +5705,17 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _layout = __webpack_require__(791);
 
-	var _widgets = __webpack_require__(907);
+	var _base = __webpack_require__(803);
 
-	var _ChartComponent = __webpack_require__(924);
+	var _widgets = __webpack_require__(923);
+
+	var _ChartComponent = __webpack_require__(942);
 
 	var _ChartComponent2 = _interopRequireDefault(_ChartComponent);
 
-	var _SettingsComponent = __webpack_require__(925);
+	var _SettingsComponent = __webpack_require__(943);
 
 	var _SettingsComponent2 = _interopRequireDefault(_SettingsComponent);
 
@@ -5444,10 +5754,10 @@ webpackJsonp([0],{
 	            var $widget = _props.$widget;
 	            var wId = _props.wId;
 
-	            var widget = new _data.Widget($widget);
+	            var widget = _data.WidgetFactory.createWidget($widget, wId, _data.TemplateFactory.createTemplate(this.context.$template));
 	            return _lib2.default.createElement(
-	                _lib.View,
-	                { height: _data.Size.HEADER_HEIGHT, style: styles.header },
+	                _layout.Layout,
+	                { main: 'justify', cross: 'center', style: styles.header },
 	                _lib2.default.createElement(
 	                    _lib.Text,
 	                    null,
@@ -5455,6 +5765,7 @@ webpackJsonp([0],{
 	                ),
 	                _lib2.default.createElement(_base.IconLink, { className: 'setting-font', onPress: function onPress() {
 	                        _lib.Portal.showModal('ChartComponent', _lib2.default.createElement(_SettingsComponent2.default, {
+	                            key: 'ChartComponent',
 	                            $widget: _this2.props.$widget,
 	                            wId: _this2.props.wId,
 	                            height: 0,
@@ -5479,12 +5790,12 @@ webpackJsonp([0],{
 	            var wId = _props2.wId;
 
 	            return _lib2.default.createElement(
-	                _base.VtapeLayout,
-	                null,
+	                _layout.Layout,
+	                { dir: 'top', box: 'first' },
 	                this._renderHeader(),
 	                _lib2.default.createElement(_ChartComponent2.default, {
 	                    width: width,
-	                    height: height - _data.Size.HEADER_HEIGHT,
+	                    height: height - _data.Sizes.HEADER_HEIGHT,
 	                    $widget: $widget,
 	                    wId: wId
 	                })
@@ -5509,16 +5820,14 @@ webpackJsonp([0],{
 	    header: {
 	        paddingLeft: 4,
 	        paddingRight: 4,
-	        flexDirection: 'row',
-	        alignItems: 'center',
-	        justifyContent: 'space-between'
+	        height: _data.Sizes.HEADER_HEIGHT
 	    }
 	});
 	exports.default = ChartPaneComponent;
 
 /***/ },
 
-/***/ 924:
+/***/ 942:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5545,7 +5854,7 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(803);
 
 	var _data = __webpack_require__(773);
 
@@ -5576,51 +5885,56 @@ webpackJsonp([0],{
 	        key: 'componentWillMount',
 	        value: function componentWillMount() {}
 	    }, {
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
+	        key: '_fetchData',
+	        value: function _fetchData(props) {
 	            var _this2 = this;
 
-	            this.chart = VanCharts.init(_reactDom2.default.findDOMNode(this.refs.chart));
-	            var _props = this.props;
-	            var $widget = _props.$widget;
-	            var wId = _props.wId;
+	            var $widget = props.$widget;
+	            var wId = props.wId;
 
-	            var widget = new _data.Widget($widget, this.context.$template, wId);
+	            var widget = _data.WidgetFactory.createWidget($widget, wId, _data.TemplateFactory.createTemplate(this.context.$template));
 	            widget.getData().then(function (data) {
 	                _this2.chart.setOptions(data);
 	            });
 	        }
 	    }, {
-	        key: 'componentWillUpdate',
-	        value: function componentWillUpdate() {
-	            var _this3 = this;
-
-	            var _props2 = this.props;
-	            var $widget = _props2.$widget;
-	            var wId = _props2.wId;
-
-	            var widget = new _data.Widget($widget, this.context.$template, wId);
-	            widget.getData().then(function (data) {
-	                _this3.chart.setData(data);
-	            });
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            this.chart = VanCharts.init(_reactDom2.default.findDOMNode(this.refs.chart));
+	            this._fetchData(this.props);
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {
+	            if (!(0, _core.immutableShallowEqual)(nextProps, this.props)) {
+	                this._fetchData(nextProps);
+	                this._changed = true;
+	            }
+	        }
+	    }, {
+	        key: 'shouldComponentUpdate',
+	        value: function shouldComponentUpdate() {
+	            if (this._changed) {
+	                this._changed = false;
+	                return false;
+	            }
+	            return true;
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
 
-	            return _lib2.default.createElement(_lib.View, { ref: 'chart', style: _extends({ height: this.props.height }, styles.wrapper) });
+	            return _lib2.default.createElement(_lib.View, { ref: 'chart', style: _extends({ height: this.props.height, width: this.props.width }, styles.wrapper) });
 	        }
 	    }]);
 
 	    return ChartComponent;
 	}(_lib.Component);
+	// mixin.onClass(ChartComponent, ReactComponentWithImmutableRenderMixin);
 
 	ChartComponent.contextTypes = {
 	    $template: _lib2.default.PropTypes.object
 	};
-
-	_reactMixin2.default.onClass(ChartComponent, _core.ReactComponentWithImmutableRenderMixin);
-
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
 	        position: 'relative'
@@ -5637,7 +5951,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 925:
+/***/ 943:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5666,13 +5980,27 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _layout = __webpack_require__(791);
 
-	var _widgets = __webpack_require__(907);
+	var _base = __webpack_require__(803);
 
-	var _SettingsComponentHelper = __webpack_require__(926);
+	var _widgets = __webpack_require__(923);
+
+	var _SettingsComponentHelper = __webpack_require__(944);
 
 	var _SettingsComponentHelper2 = _interopRequireDefault(_SettingsComponentHelper);
+
+	var _DimensionComponent = __webpack_require__(945);
+
+	var _DimensionComponent2 = _interopRequireDefault(_DimensionComponent);
+
+	var _TargetComponent = __webpack_require__(949);
+
+	var _TargetComponent2 = _interopRequireDefault(_TargetComponent);
+
+	var _DimensionSortableComponent = __webpack_require__(953);
+
+	var _DimensionSortableComponent2 = _interopRequireDefault(_DimensionSortableComponent);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5685,41 +6013,6 @@ webpackJsonp([0],{
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var SortableContainer = _base.Sortable.SortableContainer;
-	var SortableElement = _base.Sortable.SortableElement;
-	var SortableHandle = _base.Sortable.SortableHandle;
-	var arrayMove = _base.Sortable.arrayMove;
-
-
-	var DragHandle = SortableHandle(function () {
-	    return _lib2.default.createElement(_base.IconButton, { style: styles.dragHandler, className: 'drag-handler-icon', iconWidth: 18, iconHeight: 18 });
-	});
-
-	var SortableItem = SortableElement(function (_ref) {
-	    var value = _ref.value;
-
-	    return _lib2.default.createElement(
-	        _lib.View,
-	        { style: styles.sortableItems },
-	        _lib2.default.createElement(
-	            _lib.Text,
-	            null,
-	            value.text
-	        ),
-	        _lib2.default.createElement(DragHandle, null)
-	    );
-	});
-
-	var SortableList = SortableContainer(function (_ref2) {
-	    var items = _ref2.items;
-
-	    return _lib2.default.createElement(
-	        _lib.ScrollView,
-	        null,
-	        items.map(function (value, index) {
-	            return _lib2.default.createElement(SortableItem, { key: 'item-' + value.dId, index: index, value: value });
-	        })
-	    );
-	});
 
 	var SettingsComponent = function (_Component) {
 	    _inherits(SettingsComponent, _Component);
@@ -5730,14 +6023,17 @@ webpackJsonp([0],{
 	        var _this = _possibleConstructorReturn(this, (SettingsComponent.__proto__ || Object.getPrototypeOf(SettingsComponent)).call(this, props, context));
 
 	        _this.state = {
-	            $widget: _this.props.$widget
+	            $widget: _this.props.$widget,
+	            collapsed: {},
+	            sortable: false
 	        };
 
-	        _this._onSortEnd = function (_ref3) {
-	            var oldIndex = _ref3.oldIndex;
-	            var newIndex = _ref3.newIndex;
+	        _this._onSortEnd = function (_ref) {
+	            var oldIndex = _ref.oldIndex;
+	            var newIndex = _ref.newIndex;
+	            var viewId = _ref.viewId;
 
-	            var $widget = _this._helper.doMove(oldIndex, newIndex);
+	            var $widget = _this._helper.doMove(viewId, oldIndex, newIndex);
 	            _this.setState({
 	                $widget: $widget
 	            });
@@ -5769,12 +6065,14 @@ webpackJsonp([0],{
 	        value: function _renderHeader() {
 	            var _this2 = this;
 
-	            var $widget = this.props.$widget;
+	            var _props = this.props;
+	            var $widget = _props.$widget;
+	            var wId = _props.wId;
 
-	            var widget = new _data.Widget($widget);
+	            var widget = _data.WidgetFactory.createWidget($widget, wId, _data.TemplateFactory.createTemplate(this.context.$template));
 	            return _lib2.default.createElement(
-	                _lib.View,
-	                { height: _data.Size.HEADER_HEIGHT, style: styles.header },
+	                _layout.Layout,
+	                { main: 'justify', cross: 'center', style: styles.header },
 	                _lib2.default.createElement(
 	                    _base.TextLink,
 	                    { onPress: function onPress() {
@@ -5797,19 +6095,184 @@ webpackJsonp([0],{
 	            );
 	        }
 	    }, {
-	        key: '_renderDialog',
-	        value: function _renderDialog() {
-	            return _lib2.default.createElement(SortableList, { items: this._helper.getDimensionsItems(),
-	                onSortEnd: this._onSortEnd,
+	        key: '_renderSortableList',
+	        value: function _renderSortableList(viewItem) {
+	            var _this3 = this;
+
+	            var items = this._helper.getDimensionsItems(viewItem.viewId);
+	            return _lib2.default.createElement(SortableList, { items: items,
+	                $widget: this.state.$widget,
+	                wId: this.props.wId,
+	                onSortEnd: function onSortEnd(_ref2) {
+	                    var oldIndex = _ref2.oldIndex;
+	                    var newIndex = _ref2.newIndex;
+
+	                    _this3._onSortEnd({
+	                        oldIndex: oldIndex, newIndex: newIndex, viewId: viewItem.viewId
+	                    });
+	                },
 	                useDragHandle: true,
+	                lockToContainerEdges: true,
 	                lockAxis: 'y',
 	                helperClass: 'sortable-helper'
 	            });
 	        }
 	    }, {
+	        key: '_renderUnSortableList',
+	        value: function _renderUnSortableList(viewItem) {
+	            var _this4 = this;
+
+	            var items = this._helper.getDimensionsItems(viewItem.viewId);
+	            return _lib2.default.createElement(
+	                _lib.ScrollView,
+	                { style: { height: _data.Sizes.ITEM_HEIGHT * items.length } },
+	                items.map(function (value, index) {
+	                    if (_this4._helper.isDimensionByDimensionId(value.dId)) {
+	                        return _lib2.default.createElement(_DimensionComponent2.default, { key: index, value: value, wId: _this4.props.wId,
+	                            $widget: _this4.state.$widget,
+	                            dId: value.dId, onValueChange: function onValueChange($widget) {
+	                                _this4.setState({
+	                                    $widget: $widget
+	                                });
+	                            } });
+	                    } else {
+	                        return _lib2.default.createElement(_TargetComponent2.default, { key: index, value: value, wId: _this4.props.wId,
+	                            $widget: _this4.state.$widget,
+	                            dId: value.dId, onValueChange: function onValueChange($widget) {
+	                                _this4.setState({
+	                                    $widget: $widget
+	                                });
+	                            } });
+	                    }
+	                })
+	            );
+	        }
+	    }, {
+	        key: '_renderDimensionHeader',
+	        value: function _renderDimensionHeader(viewItem) {
+	            var _this5 = this;
+
+	            return _lib2.default.createElement(
+	                _base.TextButton,
+	                { key: viewItem.viewId, textAlign: 'left', style: styles.collapseHeader, onPress: function onPress() {
+	                        var collapsed = (0, _core.clone)(_this5.state.collapsed);
+	                        collapsed[viewItem.viewId] = !collapsed[viewItem.viewId];
+	                        _this5.setState({
+	                            collapsed: collapsed
+	                        });
+	                    } },
+	                viewItem.text
+	            );
+	        }
+	    }, {
+	        key: '_renderSortableContainer',
+	        value: function _renderSortableContainer() {
+	            var _this6 = this;
+
+	            var SortableList = SortableContainer(function (_ref3) {
+	                var viewItems = _ref3.viewItems;
+	                var wId = _ref3.wId;
+	                var $widget = _ref3.$widget;
+
+	                return _lib2.default.createElement(
+	                    _lib.ScrollView,
+	                    null,
+	                    (0, _core.map)(viewItems, function (items, viewId) {
+	                        var viewItem = _this6._helper.getViewItemByViewId(viewId);
+	                        return _lib2.default.createElement(
+	                            _lib.View,
+	                            null,
+	                            _this6._renderDimensionHeader(viewItem),
+	                            _lib2.default.createElement(
+	                                _base.Collapsible,
+	                                { key: 'collapsible-' + viewItem.viewId,
+	                                    collapsed: _this6.state.collapsed[viewItem.viewId] || false },
+	                                _lib2.default.createElement(
+	                                    _lib.ScrollView,
+	                                    { style: { height: _data.Sizes.ITEM_HEIGHT * items.length } },
+	                                    items.map(function (value, index) {
+	                                        return _lib2.default.createElement(_DimensionSortableComponent2.default, { key: 'item-' + value.dId,
+	                                            index: viewItem.viewId + '-' + index,
+	                                            value: value, wId: wId,
+	                                            $widget: $widget,
+	                                            collection: 0,
+	                                            dId: value.dId });
+	                                    })
+	                                )
+	                            )
+	                        );
+	                    })
+	                );
+	            });
+	            var viewItems = this._helper.getAllDimensionItems();
+	            return _lib2.default.createElement(SortableList, { viewItems: viewItems,
+	                $widget: this.state.$widget,
+	                wId: this.props.wId,
+	                onSortEnd: function onSortEnd(_ref4) {
+	                    var oldIndex = _ref4.oldIndex;
+	                    var oldViewId = _ref4.oldViewId;
+	                    var newIndex = _ref4.newIndex;
+	                    var newViewId = _ref4.newViewId;
+
+	                    _this6._onSortEnd({
+	                        oldIndex: oldIndex, newIndex: newIndex, oldViewId: oldViewId, newViewId: newViewId
+	                    });
+	                },
+	                useDragHandle: true,
+	                lockToContainerEdges: true,
+	                lockAxis: 'y',
+	                helperClass: 'sortable-helper'
+	            });
+	        }
+	    }, {
+	        key: '_renderUnSortableContainer',
+	        value: function _renderUnSortableContainer() {
+	            var _this7 = this;
+
+	            var array = [];
+	            (0, _core.each)(this._helper.getViewItems(), function (viewItem) {
+	                array.push(_this7._renderDimensionHeader(viewItem));
+	                array.push(_lib2.default.createElement(
+	                    _base.Collapsible,
+	                    { key: 'collapsible-' + viewItem.viewId,
+	                        collapsed: _this7.state.collapsed[viewItem.viewId] || false },
+	                    _this7._renderUnSortableList(viewItem)
+	                ));
+	            });
+	            return _lib2.default.createElement(
+	                _lib.ScrollView,
+	                null,
+	                array
+	            );
+	        }
+	    }, {
+	        key: '_renderDialog',
+	        value: function _renderDialog() {
+	            var _this8 = this;
+
+	            return _lib2.default.createElement(
+	                _layout.Layout,
+	                { dir: 'top', box: 'first' },
+	                _lib2.default.createElement(
+	                    _lib.View,
+	                    { style: { height: 100 } },
+	                    _lib2.default.createElement(
+	                        _base.TextButton,
+	                        { onPress: function onPress() {
+	                                _this8.setState({
+	                                    sortable: !_this8.state.sortable
+	                                });
+	                            }, style: styles.sortChangeButton },
+	                        this.state.sortable ? '退出排序' : '排序'
+	                    )
+	                ),
+	                this.state.sortable ? this._renderSortableContainer() : this._renderUnSortableContainer()
+	            );
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this3 = this;
+	            var _this9 = this;
 
 	            var props = _objectWithoutProperties(this.props, []);
 	            var state = _objectWithoutProperties(this.state, []);
@@ -5819,16 +6282,16 @@ webpackJsonp([0],{
 	                _base.Overlay,
 	                { ref: 'overlay', onClose: function onClose(tag) {
 	                        if (tag === true) {
-	                            var $widget = _this3.state.$widget;var wId = _this3.props.wId;
+	                            var $widget = _this9.state.$widget;var wId = _this9.props.wId;
 
-	                            _this3.props.onComplete({ $widget: $widget, wId: wId });
+	                            _this9.props.onComplete({ $widget: $widget, wId: wId });
 	                        } else {
-	                            _this3.props.onReturn();
+	                            _this9.props.onReturn();
 	                        }
 	                    } },
 	                _lib2.default.createElement(
-	                    _base.VtapeLayout,
-	                    { style: styles.wrapper },
+	                    _layout.Layout,
+	                    { dir: 'top', box: 'first', style: styles.wrapper },
 	                    this._renderHeader(),
 	                    this._renderDialog()
 	                )
@@ -5868,33 +6331,40 @@ webpackJsonp([0],{
 	        bottom: 10
 	    },
 	    header: {
-	        flexDirection: 'row',
 	        paddingLeft: 20,
 	        paddingRight: 20,
-	        alignItems: 'center',
-	        justifyContent: 'space-between',
 	        color: _data.Colors.TEXT,
-	        backgroundColor: _data.Colors.HIGHLIGHT
+	        backgroundColor: _data.Colors.HIGHLIGHT,
+	        height: _data.Sizes.HEADER_HEIGHT
 	    },
 	    sortableItems: {
-	        flexDirection: 'row',
 	        paddingLeft: 20,
 	        paddingRight: 20,
-	        alignItems: 'center',
-	        justifyContent: 'space-between',
-	        height: _data.Size.ITEM_HEIGHT,
+	        height: _data.Sizes.ITEM_HEIGHT,
 	        borderBottomWidth: 1 / _lib.PixelRatio.get(),
 	        borderBottomColor: _data.Colors.BORDER
 	    },
 	    dragHandler: {
 	        opacity: 0.25
+	    },
+	    collapseHeader: {
+	        paddingLeft: 20,
+	        backgroundColor: '#d8f2fd',
+	        height: _data.Sizes.ITEM_HEIGHT
+	    },
+
+	    sortChangeButton: {
+	        position: 'absolute',
+	        right: 20,
+	        bottom: 20,
+	        height: 20
 	    }
 	});
 	exports.default = SettingsComponent;
 
 /***/ },
 
-/***/ 926:
+/***/ 944:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5915,37 +6385,80 @@ webpackJsonp([0],{
 	    function SettingsComponentHelper(props, context) {
 	        _classCallCheck(this, SettingsComponentHelper);
 
-	        this.widget = new _data.Widget(props.$widget);
+	        this.widget = _data.WidgetFactory.createWidget(props.$widget, props.wId, _data.TemplateFactory.createTemplate(context.$template));
 	    }
 
 	    _createClass(SettingsComponentHelper, [{
-	        key: 'getDimensionsItems',
-	        value: function getDimensionsItems() {
+	        key: 'getViewItems',
+	        value: function getViewItems() {
+	            var result = [];
+	            (0, _core.each)(this._getViewIds(), function (viewId) {
+	                result.push({
+	                    text: '行表头',
+	                    viewId: viewId
+	                });
+	            });
+	            return result;
+	        }
+	    }, {
+	        key: 'getViewItemByViewId',
+	        value: function getViewItemByViewId(viewId) {
+	            return {
+	                text: '行表头',
+	                viewId: viewId
+	            };
+	        }
+	    }, {
+	        key: 'isDimensionByDimensionId',
+	        value: function isDimensionByDimensionId(dId) {
+	            return this.widget.isDimensionById(dId);
+	        }
+	    }, {
+	        key: 'getAllDimensionItems',
+	        value: function getAllDimensionItems() {
 	            var _this = this;
 
+	            var result = {};
+	            (0, _core.each)(this._getViewIds(), function (viewId) {
+	                result[viewId] = _this.getDimensionsItems(viewId);
+	            });
+	            return result;
+	        }
+	    }, {
+	        key: 'getDimensionsItems',
+	        value: function getDimensionsItems(viewId) {
+	            var _this2 = this;
+
 	            var result = [];
-	            (0, _core.each)(this._getDimensionIds(), function (dId) {
-	                var dim = _this.widget.getDimensionOrTargetById(dId);
+	            (0, _core.each)(this._getDimensionIds(viewId), function (dId) {
+	                var dim = _this2.widget.getDimensionOrTargetById(dId);
 	                result.push({
 	                    text: dim.getName(),
+	                    viewId: viewId,
 	                    dId: dId
 	                });
 	            });
 	            return result;
 	        }
 	    }, {
-	        key: '_getDimensionIds',
-	        value: function _getDimensionIds() {
+	        key: '_getViewIds',
+	        value: function _getViewIds() {
 	            var view = this.widget.getWidgetView();
-	            return (0, _core.values)(view)[0];
+	            return (0, _core.keys)(view);
+	        }
+	    }, {
+	        key: '_getDimensionIds',
+	        value: function _getDimensionIds(viewId) {
+	            var view = this.widget.getWidgetView();
+	            return view[viewId] || [];
 	        }
 	    }, {
 	        key: 'doMove',
-	        value: function doMove(oldIndex, newIndex) {
+	        value: function doMove(viewId, oldIndex, newIndex) {
 	            var view = this.widget.getWidgetView();
-	            var items = this._getDimensionIds();
+	            var items = this._getDimensionIds(viewId);
 	            (0, _core.arrayMove)(items, oldIndex, newIndex);
-	            view[(0, _core.keys)(view)[0]] = items;
+	            view[viewId] = items;
 	            this.widget.setWidgetView(view);
 	            return this.widget.$get();
 	        }
@@ -5958,7 +6471,1054 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 927:
+/***/ 945:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactMixin = __webpack_require__(206);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _immutable = __webpack_require__(200);
+
+	var _immutable2 = _interopRequireDefault(_immutable);
+
+	var _core = __webpack_require__(329);
+
+	var _lib = __webpack_require__(208);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _data = __webpack_require__(773);
+
+	var _layout = __webpack_require__(791);
+
+	var _base = __webpack_require__(803);
+
+	var _widgets = __webpack_require__(923);
+
+	var _DimensionComponentHelper = __webpack_require__(946);
+
+	var _DimensionComponentHelper2 = _interopRequireDefault(_DimensionComponentHelper);
+
+	var _DimensionSortComponent = __webpack_require__(947);
+
+	var _DimensionSortComponent2 = _interopRequireDefault(_DimensionSortComponent);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var DimensionComponent = function (_Component) {
+	    _inherits(DimensionComponent, _Component);
+
+	    function DimensionComponent(props, context) {
+	        _classCallCheck(this, DimensionComponent);
+
+	        var _this = _possibleConstructorReturn(this, (DimensionComponent.__proto__ || Object.getPrototypeOf(DimensionComponent)).call(this, props, context));
+
+	        _this.state = {};
+	        return _this;
+	    }
+
+	    _createClass(DimensionComponent, [{
+	        key: '_getNextState',
+	        value: function _getNextState(props) {
+	            var state = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	        }
+	    }, {
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {}
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this2 = this;
+
+	            var props = _objectWithoutProperties(this.props, []);
+	            var state = _objectWithoutProperties(this.state, []);
+
+	            this._helper = new _DimensionComponentHelper2.default(props, this.context);
+	            return _lib2.default.createElement(
+	                _base.Button,
+	                { onPress: function onPress() {
+	                        _this2.props.onValueChange(_this2._helper.switchSelect());
+	                    } },
+	                _lib2.default.createElement(
+	                    _layout.Layout,
+	                    { main: 'justify', box: 'mean', style: styles.wrapper },
+	                    _lib2.default.createElement(
+	                        _layout.Layout,
+	                        { cross: 'center', box: 'first' },
+	                        _lib2.default.createElement(_base.IconButton, { style: styles.icon, invalid: true, selected: this._helper.isUsed(),
+	                            className: 'single-select-font' }),
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            { numberOfLines: 1, style: (0, _core.sc)([styles.disabledText, !this._helper.isUsed()]),
+	                                effect: false },
+	                            props.value.text
+	                        )
+	                    ),
+	                    _lib2.default.createElement(
+	                        _layout.Layout,
+	                        { cross: 'center', box: 'last' },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            { numberOfLines: 1,
+	                                style: [(0, _core.sc)([styles.disabledText, !this._helper.isUsed()]), styles.sortTargetName],
+	                                effect: false },
+	                            this._helper.getSortTargetName()
+	                        ),
+	                        _lib2.default.createElement(_base.IconButton, { style: styles.sortIcon, onPress: function onPress() {
+	                                _lib.Portal.showModal('DimensionSort', _lib2.default.createElement(
+	                                    _base.ActionSheet,
+	                                    {
+	                                        key: 'DimensionSort',
+	                                        title: '"' + _this2._helper.getSortTargetName() + '"排序',
+	                                        onClose: function onClose(tag) {
+	                                            if (tag === '取消') {} else if (tag === '确定') {
+	                                                if (_this2._$widget) {
+	                                                    _this2.props.onValueChange(_this2._$widget);
+	                                                }
+	                                            }
+	                                            _lib.Portal.closeModal('DimensionSort');
+	                                        }
+	                                    },
+	                                    _lib2.default.createElement(_DimensionSortComponent2.default, {
+	                                        wId: props.wId, $widget: props.$widget, dId: props.value.dId,
+	                                        onValueChange: function onValueChange($widget) {
+	                                            _this2._$widget = $widget;
+	                                        }
+	                                    })
+	                                ));
+	                            },
+	                            className: this._helper.getSortTargetTypeFont() })
+	                    )
+	                )
+	            );
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {}
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate(nextProps, nextState) {}
+	    }, {
+	        key: 'componentDidUpdate',
+	        value: function componentDidUpdate(prevProps, prevState) {}
+	    }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {}
+	    }]);
+
+	    return DimensionComponent;
+	}(_lib.Component);
+
+	DimensionComponent.propTypes = {};
+	DimensionComponent.defaultProps = {
+	    wId: '',
+	    $widget: null,
+	    dId: '',
+	    value: {}
+	};
+
+	_reactMixin2.default.onClass(DimensionComponent, _core.ReactComponentWithImmutableRenderMixin);
+	var styles = _lib.StyleSheet.create({
+	    wrapper: {
+	        paddingLeft: 20,
+	        paddingRight: 20,
+	        height: _data.Sizes.ITEM_HEIGHT,
+	        borderBottomWidth: 1 / _lib.PixelRatio.get(),
+	        borderBottomColor: _data.Colors.BORDER
+	    },
+	    icon: {
+	        width: 40
+	    },
+
+	    sortIcon: {
+	        width: 20
+	    },
+
+	    sortTargetName: {
+	        paddingLeft: 10,
+	        paddingRight: 10,
+	        textAlign: 'right'
+	    },
+
+	    disabledText: {
+	        color: _data.Colors.DISABLED
+	    }
+	});
+	exports.default = DimensionComponent;
+
+/***/ },
+
+/***/ 946:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _core = __webpack_require__(329);
+
+	var _data = __webpack_require__(773);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var DimensionComponentHelper = function () {
+	    function DimensionComponentHelper(props, context) {
+	        _classCallCheck(this, DimensionComponentHelper);
+
+	        this.widget = _data.WidgetFactory.createWidget(props.$widget, props.wId, _data.TemplateFactory.createTemplate(context.$template));
+	        this.wId = props.wId;
+	        this.dId = props.dId;
+	        this.dimension = this.widget.getDimensionOrTargetById(this.dId);
+	    }
+
+	    _createClass(DimensionComponentHelper, [{
+	        key: 'isUsed',
+	        value: function isUsed() {
+	            return this.dimension.isUsed();
+	        }
+	    }, {
+	        key: 'getSortTargetName',
+	        value: function getSortTargetName() {
+	            return this.dimension.getSortTargetName();
+	        }
+	    }, {
+	        key: 'getSortTargetTypeFont',
+	        value: function getSortTargetTypeFont() {
+	            switch (this.dimension.getSortType()) {
+	                case BICst.SORT.ASC:
+	                    return 'asc-sort-font';
+	                case BICst.SORT.DESC:
+	                    return 'dsc-sort-font';
+	            }
+	        }
+	    }, {
+	        key: 'switchSelect',
+	        value: function switchSelect() {
+	            this.dimension.setUsed(!this.isUsed()).$get();
+	            this.widget.set$Dimension(this.dimension.$get(), this.dId);
+	            return this.widget.$get();
+	        }
+	    }]);
+
+	    return DimensionComponentHelper;
+	}();
+
+	exports.default = DimensionComponentHelper;
+
+/***/ },
+
+/***/ 947:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactMixin = __webpack_require__(206);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _immutable = __webpack_require__(200);
+
+	var _immutable2 = _interopRequireDefault(_immutable);
+
+	var _core = __webpack_require__(329);
+
+	var _lib = __webpack_require__(208);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _data = __webpack_require__(773);
+
+	var _layout = __webpack_require__(791);
+
+	var _base = __webpack_require__(803);
+
+	var _widgets = __webpack_require__(923);
+
+	var _DimensionSortComponentHelper = __webpack_require__(948);
+
+	var _DimensionSortComponentHelper2 = _interopRequireDefault(_DimensionSortComponentHelper);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var DimensionSortComponent = function (_Component) {
+	    _inherits(DimensionSortComponent, _Component);
+
+	    function DimensionSortComponent(props, context) {
+	        _classCallCheck(this, DimensionSortComponent);
+
+	        var _this = _possibleConstructorReturn(this, (DimensionSortComponent.__proto__ || Object.getPrototypeOf(DimensionSortComponent)).call(this, props, context));
+
+	        _this.state = {};
+	        return _this;
+	    }
+
+	    _createClass(DimensionSortComponent, [{
+	        key: '_getNextState',
+	        value: function _getNextState(props) {
+	            var state = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	        }
+	    }, {
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {}
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this2 = this;
+
+	            var props = _objectWithoutProperties(this.props, []);
+	            var state = _objectWithoutProperties(this.state, []);
+
+	            this._helper = new _DimensionSortComponentHelper2.default(props, this.context);
+	            return _lib2.default.createElement(
+	                _layout.Layout,
+	                { box: 'mean', style: styles.wrapper },
+	                _lib2.default.createElement(
+	                    _lib.PickerIOS,
+	                    { selectedValue: this._helper.getSortType(), onValueChange: function onValueChange(type) {
+	                            _this2.props.onValueChange(_this2._helper.setSortType(type));
+	                        } },
+	                    _lib2.default.createElement(_lib.PickerIOS.Item, { value: BICst.SORT.ASC, label: '升序' }),
+	                    _lib2.default.createElement(_lib.PickerIOS.Item, { value: BICst.SORT.DESC, label: '降序' })
+	                ),
+	                _lib2.default.createElement(
+	                    _lib.PickerIOS,
+	                    { selectedValue: this._helper.getSortTargetValue(), onValueChange: function onValueChange(dId) {
+	                            _this2.props.onValueChange(_this2._helper.setSortTarget(dId));
+	                        } },
+	                    (0, _core.map)(this._helper.getSortTargetItems(), function (_ref) {
+	                        var value = _ref.value;
+	                        var label = _ref.label;
+
+	                        return _lib2.default.createElement(_lib.PickerIOS.Item, { key: value, value: value, label: label });
+	                    })
+	                )
+	            );
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {}
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate(nextProps, nextState) {}
+	    }, {
+	        key: 'componentDidUpdate',
+	        value: function componentDidUpdate(prevProps, prevState) {}
+	    }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {}
+	    }]);
+
+	    return DimensionSortComponent;
+	}(_lib.Component);
+
+	DimensionSortComponent.propTypes = {};
+	DimensionSortComponent.defaultProps = {};
+
+	_reactMixin2.default.onClass(DimensionSortComponent, _core.ReactComponentWithImmutableRenderMixin);
+	var styles = _lib.StyleSheet.create({
+	    wrapper: {}
+	});
+	exports.default = DimensionSortComponent;
+
+/***/ },
+
+/***/ 948:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _core = __webpack_require__(329);
+
+	var _data = __webpack_require__(773);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var DimensionSortComponentHelper = function () {
+	    function DimensionSortComponentHelper(props, context) {
+	        _classCallCheck(this, DimensionSortComponentHelper);
+
+	        this.widget = _data.WidgetFactory.createWidget(props.$widget, props.wId);
+	        this.dId = props.dId;
+	        this.dimension = this.widget.getDimensionOrTargetById(props.dId);
+	    }
+
+	    _createClass(DimensionSortComponentHelper, [{
+	        key: 'getSortType',
+	        value: function getSortType() {
+	            return this.dimension.getSortType();
+	        }
+	    }, {
+	        key: 'getSortTargetValue',
+	        value: function getSortTargetValue() {
+	            return this.dimension.getSortTarget() || this.dId;
+	        }
+	    }, {
+	        key: 'getSortTargetItems',
+	        value: function getSortTargetItems() {
+	            var _this = this;
+
+	            var name = this.dimension.getName();
+	            var result = [{ value: this.dId, label: name }];
+	            (0, _core.each)(this.widget.getAllTargetIds(), function (dId) {
+	                var name = _this.widget.getTargetById(dId).getName();
+	                result.push({
+	                    value: dId,
+	                    label: name
+	                });
+	            });
+	            return result;
+	        }
+	    }, {
+	        key: 'setSortType',
+	        value: function setSortType(type) {
+	            this.dimension.setSortType(type);
+	            this.widget.set$Dimension(this.dimension.$get(), this.dId);
+	            return this.widget.$get();
+	        }
+	    }, {
+	        key: 'setSortTarget',
+	        value: function setSortTarget(dId) {
+	            this.dimension.setSortTarget(dId);
+	            this.widget.set$Dimension(this.dimension.$get(), this.dId);
+	            return this.widget.$get();
+	        }
+	    }]);
+
+	    return DimensionSortComponentHelper;
+	}();
+
+	exports.default = DimensionSortComponentHelper;
+
+/***/ },
+
+/***/ 949:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactMixin = __webpack_require__(206);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _immutable = __webpack_require__(200);
+
+	var _immutable2 = _interopRequireDefault(_immutable);
+
+	var _core = __webpack_require__(329);
+
+	var _lib = __webpack_require__(208);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _data = __webpack_require__(773);
+
+	var _layout = __webpack_require__(791);
+
+	var _base = __webpack_require__(803);
+
+	var _widgets = __webpack_require__(923);
+
+	var _TargetComponentHelper = __webpack_require__(950);
+
+	var _TargetComponentHelper2 = _interopRequireDefault(_TargetComponentHelper);
+
+	var _TargetSortComponent = __webpack_require__(951);
+
+	var _TargetSortComponent2 = _interopRequireDefault(_TargetSortComponent);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var TargetComponent = function (_Component) {
+	    _inherits(TargetComponent, _Component);
+
+	    function TargetComponent(props, context) {
+	        _classCallCheck(this, TargetComponent);
+
+	        var _this = _possibleConstructorReturn(this, (TargetComponent.__proto__ || Object.getPrototypeOf(TargetComponent)).call(this, props, context));
+
+	        _this.state = {};
+	        return _this;
+	    }
+
+	    _createClass(TargetComponent, [{
+	        key: '_getNextState',
+	        value: function _getNextState(props) {
+	            var state = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	        }
+	    }, {
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {}
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this2 = this;
+
+	            var props = _objectWithoutProperties(this.props, []);
+	            var state = _objectWithoutProperties(this.state, []);
+
+	            this._helper = new _TargetComponentHelper2.default(props, this.context);
+	            return _lib2.default.createElement(
+	                _base.Button,
+	                { onPress: function onPress() {
+	                        _this2.props.onValueChange(_this2._helper.switchSelect());
+	                    } },
+	                _lib2.default.createElement(
+	                    _layout.Layout,
+	                    { main: 'justify', box: 'last', style: styles.wrapper },
+	                    _lib2.default.createElement(
+	                        _layout.Layout,
+	                        { cross: 'center', box: 'first' },
+	                        _lib2.default.createElement(_base.IconButton, { style: styles.icon, invalid: true, selected: this._helper.isUsed(),
+	                            className: 'single-select-font' }),
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            { numberOfLines: 1, style: (0, _core.sc)([styles.disabledText, !this._helper.isUsed()]),
+	                                effect: false },
+	                            props.value.text
+	                        )
+	                    ),
+	                    _lib2.default.createElement(_base.IconButton, { style: styles.sortIcon, onPress: function onPress() {
+	                            _lib.Portal.showModal('TargetSort', _lib2.default.createElement(
+	                                _base.ActionSheet,
+	                                {
+	                                    key: 'TargetSort',
+	                                    title: '"' + _this2._helper.getSortTargetName() + '"排序',
+	                                    onClose: function onClose(tag) {
+	                                        if (tag === '取消') {} else if (tag === '确定') {
+	                                            if (_this2._$widget) {
+	                                                _this2.props.onValueChange(_this2._$widget);
+	                                            }
+	                                        }
+	                                        _lib.Portal.closeModal('TargetSort');
+	                                    }
+	                                },
+	                                _lib2.default.createElement(_TargetSortComponent2.default, {
+	                                    wId: props.wId, $widget: props.$widget, dId: props.value.dId,
+	                                    onValueChange: function onValueChange($widget) {
+	                                        _this2._$widget = $widget;
+	                                    }
+	                                })
+	                            ));
+	                        },
+	                        className: this._helper.getSortTargetTypeFont() })
+	                )
+	            );
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {}
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate(nextProps, nextState) {}
+	    }, {
+	        key: 'componentDidUpdate',
+	        value: function componentDidUpdate(prevProps, prevState) {}
+	    }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {}
+	    }]);
+
+	    return TargetComponent;
+	}(_lib.Component);
+
+	TargetComponent.propTypes = {};
+	TargetComponent.defaultProps = {
+	    wId: '',
+	    $widget: null,
+	    dId: '',
+	    value: {}
+	};
+
+	_reactMixin2.default.onClass(TargetComponent, _core.ReactComponentWithImmutableRenderMixin);
+	var styles = _lib.StyleSheet.create({
+	    wrapper: {
+	        paddingLeft: 20,
+	        paddingRight: 20,
+	        height: _data.Sizes.ITEM_HEIGHT,
+	        borderBottomWidth: 1 / _lib.PixelRatio.get(),
+	        borderBottomColor: _data.Colors.BORDER
+	    },
+	    icon: {
+	        width: 40
+	    },
+
+	    sortIcon: {
+	        width: 20
+	    },
+
+	    sortTargetName: {
+	        paddingLeft: 10,
+	        paddingRight: 10,
+	        textAlign: 'right'
+	    },
+
+	    disabledText: {
+	        color: _data.Colors.DISABLED
+	    }
+	});
+	exports.default = TargetComponent;
+
+/***/ },
+
+/***/ 950:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _core = __webpack_require__(329);
+
+	var _data = __webpack_require__(773);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var TargetComponentHelper = function () {
+	    function TargetComponentHelper(props, context) {
+	        _classCallCheck(this, TargetComponentHelper);
+
+	        this.widget = _data.WidgetFactory.createWidget(props.$widget, props.wId, _data.TemplateFactory.createTemplate(context.$template));
+	        this.wId = props.wId;
+	        this.dId = props.dId;
+	        this.dimension = this.widget.getDimensionOrTargetById(this.dId);
+	    }
+
+	    _createClass(TargetComponentHelper, [{
+	        key: 'isUsed',
+	        value: function isUsed() {
+	            return this.dimension.isUsed();
+	        }
+	    }, {
+	        key: 'getSortTargetName',
+	        value: function getSortTargetName() {
+	            return this.dimension.getName();
+	        }
+	    }, {
+	        key: 'getSortTargetTypeFont',
+	        value: function getSortTargetTypeFont() {
+	            switch (this.widget.getSortType()) {
+	                case BICst.SORT.ASC:
+	                    return 'asc-sort-font';
+	                case BICst.SORT.DESC:
+	                    return 'dsc-sort-font';
+	            }
+	        }
+	    }, {
+	        key: 'switchSelect',
+	        value: function switchSelect() {
+	            this.dimension.setUsed(!this.isUsed()).$get();
+	            this.widget.set$Dimension(this.dimension.$get(), this.dId);
+	            return this.widget.$get();
+	        }
+	    }]);
+
+	    return TargetComponentHelper;
+	}();
+
+	exports.default = TargetComponentHelper;
+
+/***/ },
+
+/***/ 951:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactMixin = __webpack_require__(206);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _immutable = __webpack_require__(200);
+
+	var _immutable2 = _interopRequireDefault(_immutable);
+
+	var _core = __webpack_require__(329);
+
+	var _lib = __webpack_require__(208);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _data = __webpack_require__(773);
+
+	var _layout = __webpack_require__(791);
+
+	var _base = __webpack_require__(803);
+
+	var _widgets = __webpack_require__(923);
+
+	var _TargetSortComponentHelper = __webpack_require__(952);
+
+	var _TargetSortComponentHelper2 = _interopRequireDefault(_TargetSortComponentHelper);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var TargetSortComponent = function (_Component) {
+	    _inherits(TargetSortComponent, _Component);
+
+	    function TargetSortComponent(props, context) {
+	        _classCallCheck(this, TargetSortComponent);
+
+	        var _this = _possibleConstructorReturn(this, (TargetSortComponent.__proto__ || Object.getPrototypeOf(TargetSortComponent)).call(this, props, context));
+
+	        _this.state = {};
+	        return _this;
+	    }
+
+	    _createClass(TargetSortComponent, [{
+	        key: '_getNextState',
+	        value: function _getNextState(props) {
+	            var state = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	        }
+	    }, {
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {}
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this2 = this;
+
+	            var props = _objectWithoutProperties(this.props, []);
+	            var state = _objectWithoutProperties(this.state, []);
+
+	            this._helper = new _TargetSortComponentHelper2.default(props, this.context);
+	            return _lib2.default.createElement(
+	                _layout.Layout,
+	                { box: 'mean', style: styles.wrapper },
+	                _lib2.default.createElement(
+	                    _lib.PickerIOS,
+	                    { selectedValue: this._helper.getSortType(), onValueChange: function onValueChange(type) {
+	                            _this2.props.onValueChange(_this2._helper.setSortType(type));
+	                        } },
+	                    _lib2.default.createElement(_lib.PickerIOS.Item, { value: BICst.SORT.ASC, label: '升序' }),
+	                    _lib2.default.createElement(_lib.PickerIOS.Item, { value: BICst.SORT.DESC, label: '降序' }),
+	                    _lib2.default.createElement(_lib.PickerIOS.Item, { value: BICst.SORT.NONE, label: '不排序' })
+	                )
+	            );
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {}
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate(nextProps, nextState) {}
+	    }, {
+	        key: 'componentDidUpdate',
+	        value: function componentDidUpdate(prevProps, prevState) {}
+	    }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {}
+	    }]);
+
+	    return TargetSortComponent;
+	}(_lib.Component);
+
+	TargetSortComponent.propTypes = {};
+	TargetSortComponent.defaultProps = {};
+
+	_reactMixin2.default.onClass(TargetSortComponent, _core.ReactComponentWithImmutableRenderMixin);
+	var styles = _lib.StyleSheet.create({
+	    wrapper: {}
+	});
+	exports.default = TargetSortComponent;
+
+/***/ },
+
+/***/ 952:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _core = __webpack_require__(329);
+
+	var _data = __webpack_require__(773);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var TargetSortComponentHelper = function () {
+	    function TargetSortComponentHelper(props, context) {
+	        _classCallCheck(this, TargetSortComponentHelper);
+
+	        this.widget = _data.WidgetFactory.createWidget(props.$widget, props.wId);
+	        this.dId = props.dId;
+	        this.dimension = this.widget.getDimensionOrTargetById(props.dId);
+	    }
+
+	    _createClass(TargetSortComponentHelper, [{
+	        key: 'getSortType',
+	        value: function getSortType() {
+	            return this.widget.getSortType();
+	        }
+	    }, {
+	        key: 'setSortType',
+	        value: function setSortType(type) {
+	            this.widget.setSortType(type);
+	            this.widget.setSortTarget(this.dId);
+	            return this.widget.$get();
+	        }
+	    }]);
+
+	    return TargetSortComponentHelper;
+	}();
+
+	exports.default = TargetSortComponentHelper;
+
+/***/ },
+
+/***/ 953:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactMixin = __webpack_require__(206);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _immutable = __webpack_require__(200);
+
+	var _immutable2 = _interopRequireDefault(_immutable);
+
+	var _core = __webpack_require__(329);
+
+	var _lib = __webpack_require__(208);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _data = __webpack_require__(773);
+
+	var _layout = __webpack_require__(791);
+
+	var _base = __webpack_require__(803);
+
+	var _widgets = __webpack_require__(923);
+
+	var _DimensionComponentHelper = __webpack_require__(946);
+
+	var _DimensionComponentHelper2 = _interopRequireDefault(_DimensionComponentHelper);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var DimensionSortableComponent = function (_Component) {
+	    _inherits(DimensionSortableComponent, _Component);
+
+	    function DimensionSortableComponent(props, context) {
+	        _classCallCheck(this, DimensionSortableComponent);
+
+	        var _this = _possibleConstructorReturn(this, (DimensionSortableComponent.__proto__ || Object.getPrototypeOf(DimensionSortableComponent)).call(this, props, context));
+
+	        _this.state = {};
+	        return _this;
+	    }
+
+	    _createClass(DimensionSortableComponent, [{
+	        key: '_getNextState',
+	        value: function _getNextState(props) {
+	            var state = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	        }
+	    }, {
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {}
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var props = _objectWithoutProperties(this.props, []);
+	            var state = _objectWithoutProperties(this.state, []);
+
+	            this._helper = new _DimensionComponentHelper2.default(props, this.context);
+	            return _lib2.default.createElement(
+	                _layout.Layout,
+	                { cross: 'center', box: 'last', style: styles.wrapper },
+	                _lib2.default.createElement(
+	                    _layout.Layout,
+	                    { cross: 'center' },
+	                    _lib2.default.createElement(_base.IconButton, { style: styles.icon, invalid: true, selected: this._helper.isUsed(),
+	                        className: 'single-select-font' }),
+	                    _lib2.default.createElement(
+	                        _lib.Text,
+	                        { style: (0, _core.sc)([styles.disabledText, !this._helper.isUsed()]), textAlign: 'left',
+	                            effect: false },
+	                        props.value.text
+	                    )
+	                ),
+	                _lib2.default.createElement(DragHandle, null)
+	            );
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {}
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate(nextProps, nextState) {}
+	    }, {
+	        key: 'componentDidUpdate',
+	        value: function componentDidUpdate(prevProps, prevState) {}
+	    }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {}
+	    }]);
+
+	    return DimensionSortableComponent;
+	}(_lib.Component);
+
+	DimensionSortableComponent.propTypes = {};
+	DimensionSortableComponent.defaultProps = {
+	    wId: '',
+	    $widget: null,
+	    dId: '',
+	    value: {}
+	};
+
+	_reactMixin2.default.onClass(DimensionSortableComponent, _core.ReactComponentWithImmutableRenderMixin);
+	var styles = _lib.StyleSheet.create({
+	    wrapper: {
+	        paddingLeft: 20,
+	        paddingRight: 20,
+	        height: _data.Sizes.ITEM_HEIGHT,
+	        borderBottomWidth: 1 / _lib.PixelRatio.get(),
+	        borderBottomColor: _data.Colors.BORDER
+	    },
+	    icon: {
+	        width: 40
+	    },
+
+	    disabledText: {
+	        color: _data.Colors.DISABLED
+	    }
+	});
+
+	var SortableElement = _base.Sortable.SortableElement;
+	var SortableHandle = _base.Sortable.SortableHandle;
+
+
+	var DragHandle = SortableHandle(function () {
+	    return _lib2.default.createElement(_base.IconButton, { effect: false, style: styles.dragHandler, className: 'draggable-font', iconWidth: 18,
+	        iconHeight: 18 });
+	});
+
+	exports.default = SortableElement(function (props) {
+	    return _lib2.default.createElement(DimensionSortableComponent, props);
+	});
+
+/***/ },
+
+/***/ 954:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5989,15 +7549,17 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _layout = __webpack_require__(791);
 
-	var _widgets = __webpack_require__(907);
+	var _base = __webpack_require__(803);
 
-	var _TableComponent = __webpack_require__(928);
+	var _widgets = __webpack_require__(923);
+
+	var _TableComponent = __webpack_require__(955);
 
 	var _TableComponent2 = _interopRequireDefault(_TableComponent);
 
-	var _SettingsComponent = __webpack_require__(925);
+	var _SettingsComponent = __webpack_require__(943);
 
 	var _SettingsComponent2 = _interopRequireDefault(_SettingsComponent);
 
@@ -6036,10 +7598,10 @@ webpackJsonp([0],{
 	            var $widget = _props.$widget;
 	            var wId = _props.wId;
 
-	            var widget = new _data.Widget($widget);
+	            var widget = _data.WidgetFactory.createWidget($widget, wId, _data.TemplateFactory.createTemplate(this.context.$template));
 	            return _lib2.default.createElement(
-	                _lib.View,
-	                { height: _data.Size.HEADER_HEIGHT, style: styles.header },
+	                _layout.Layout,
+	                { main: 'justify', cross: 'center', style: styles.header },
 	                _lib2.default.createElement(
 	                    _lib.Text,
 	                    null,
@@ -6047,6 +7609,7 @@ webpackJsonp([0],{
 	                ),
 	                _lib2.default.createElement(_base.IconLink, { className: 'setting-font', onPress: function onPress() {
 	                        _lib.Portal.showModal('TableComponent', _lib2.default.createElement(_SettingsComponent2.default, {
+	                            key: 'TableComponent',
 	                            $widget: _this2.props.$widget,
 	                            wId: _this2.props.wId,
 	                            height: 0,
@@ -6071,12 +7634,12 @@ webpackJsonp([0],{
 	            var wId = _props2.wId;
 
 	            return _lib2.default.createElement(
-	                _base.VtapeLayout,
-	                null,
+	                _layout.Layout,
+	                { dir: 'top', box: 'fist' },
 	                this._renderHeader(),
 	                _lib2.default.createElement(_TableComponent2.default, {
 	                    width: width,
-	                    height: height - _data.Size.HEADER_HEIGHT,
+	                    height: height - _data.Sizes.HEADER_HEIGHT,
 	                    $widget: $widget,
 	                    wId: wId
 	                })
@@ -6101,16 +7664,14 @@ webpackJsonp([0],{
 	    header: {
 	        paddingLeft: 4,
 	        paddingRight: 4,
-	        flexDirection: 'row',
-	        alignItems: 'center',
-	        justifyContent: 'space-between'
+	        height: _data.Sizes.HEADER_HEIGHT
 	    }
 	});
 	exports.default = TablePaneComponent;
 
 /***/ },
 
-/***/ 928:
+/***/ 955:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6141,23 +7702,23 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(803);
 
-	var _widgets = __webpack_require__(907);
+	var _widgets = __webpack_require__(923);
 
-	var _TableComponentHelper = __webpack_require__(929);
+	var _TableComponentHelper = __webpack_require__(956);
 
 	var _TableComponentHelper2 = _interopRequireDefault(_TableComponentHelper);
 
-	var _TableComponentWidthHelper = __webpack_require__(930);
+	var _TableComponentWidthHelper = __webpack_require__(957);
 
 	var _TableComponentWidthHelper2 = _interopRequireDefault(_TableComponentWidthHelper);
 
-	var _TableCell = __webpack_require__(931);
+	var _TableCell = __webpack_require__(958);
 
 	var _TableCell2 = _interopRequireDefault(_TableCell);
 
-	var _TableHeader = __webpack_require__(932);
+	var _TableHeader = __webpack_require__(959);
 
 	var _TableHeader2 = _interopRequireDefault(_TableHeader);
 
@@ -6182,10 +7743,6 @@ webpackJsonp([0],{
 	        _this.state = {
 	            data: []
 	        };
-
-	        _this._tableHelper = new _TableComponentHelper2.default(props, context);
-	        _this._widthHelper = new _TableComponentWidthHelper2.default(_this._tableHelper, props.width);
-
 	        return _this;
 	    }
 
@@ -6201,10 +7758,18 @@ webpackJsonp([0],{
 	        key: 'componentWillReceiveProps',
 	        value: function componentWillReceiveProps(nextProps) {
 	            if (!(0, _core.immutableShallowEqual)(nextProps, this.props)) {
-	                this._tableHelper = new _TableComponentHelper2.default(nextProps, this.context);
-	                this._widthHelper = new _TableComponentWidthHelper2.default(this._tableHelper, nextProps.width);
 	                this._fetchData(nextProps);
+	                this._changed = true;
 	            }
+	        }
+	    }, {
+	        key: 'shouldComponentUpdate',
+	        value: function shouldComponentUpdate() {
+	            if (this._changed) {
+	                this._changed = false;
+	                return false;
+	            }
+	            return true;
 	        }
 	    }, {
 	        key: 'componentWillUpdate',
@@ -6217,7 +7782,8 @@ webpackJsonp([0],{
 	            var $widget = props.$widget;
 	            var wId = props.wId;
 
-	            var widget = new _data.Widget($widget, this.context.$template, wId);
+	            var widget = _data.WidgetFactory.createWidget($widget, wId, _data.TemplateFactory.createTemplate(this.context.$template));
+	            console.log(widget.$get().toJS());
 	            return widget.getData().then(function (data) {
 	                _this2.setState({ data: data });
 	            });
@@ -6229,6 +7795,8 @@ webpackJsonp([0],{
 	            var width = _props.width;
 	            var height = _props.height;var data = this.state.data;
 
+	            this._tableHelper = new _TableComponentHelper2.default(this.props, this.context);
+	            this._widthHelper = new _TableComponentWidthHelper2.default(this._tableHelper, this.props.width);
 	            this._tableHelper.setData(data);
 	            var items = this._tableHelper.getItems();
 	            this._widthHelper.setItems(items);
@@ -6276,13 +7844,11 @@ webpackJsonp([0],{
 
 	    return TableComponent;
 	}(_lib.Component);
+	// mixin.onClass(TableComponent, ReactComponentWithImmutableRenderMixin);
 
 	TableComponent.contextTypes = {
 	    $template: _lib2.default.PropTypes.object
 	};
-
-	_reactMixin2.default.onClass(TableComponent, _core.ReactComponentWithImmutableRenderMixin);
-
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
 	        position: 'relative'
@@ -6299,7 +7865,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 929:
+/***/ 956:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6323,7 +7889,7 @@ webpackJsonp([0],{
 	        var $widget = props.$widget;
 	        var wId = props.wId;
 
-	        this.widget = new _data.Widget($widget, context.$template, wId);
+	        this.widget = _data.WidgetFactory.createWidget($widget, wId, _data.TemplateFactory.createTemplate(context.$template));
 	        this.data = [];
 	    }
 
@@ -6342,9 +7908,9 @@ webpackJsonp([0],{
 	                text: '行表头'
 	            }];
 	            ids.forEach(function (id) {
-	                var $$dim = _this.widget.get$$DimensionOrTargetById(id);
+	                var $$dim = _this.widget.get$DimensionOrTargetById(id);
 	                result.push({
-	                    text: new _data.Dimension($$dim).getName()
+	                    text: _data.DimensionFactory.createDimension($$dim).getName()
 	                });
 	            });
 	            return result;
@@ -6416,7 +7982,7 @@ webpackJsonp([0],{
 	            var result = [];
 	            var ids = this.widget.getRowDimensionIds();
 	            (0, _core.each)(ids, function (id) {
-	                var dimension = new _data.Dimension(_this2.widget.get$$DimensionById(id));
+	                var dimension = _data.DimensionFactory.createDimension(_this2.widget.get$DimensionById(id));
 	                result.push({
 	                    text: dimension.getName()
 	                });
@@ -6445,7 +8011,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 930:
+/***/ 957:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6588,7 +8154,7 @@ webpackJsonp([0],{
 	            var result = [];
 	            (0, _core.each)(this.items, function (col) {
 	                var fx = fit(_this3.getWidthsByOneCol(col));
-	                result.push(_core.math.ceil((fx.a + fx.b * _core.math.ceil((1 + col.length) / 2)) * 14 * 1.2) + REMAIN_WIDTH);
+	                result.push(_core.math.ceil((fx.a + fx.b * _core.math.ceil((1 + col.length) / 2)) * 16 * 1.2) + REMAIN_WIDTH);
 	            });
 	            return this.adjustWidth(result);
 	        }
@@ -6601,7 +8167,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 931:
+/***/ 958:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6628,9 +8194,9 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(803);
 
-	var _widgets = __webpack_require__(907);
+	var _widgets = __webpack_require__(923);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6707,7 +8273,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 932:
+/***/ 959:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6734,9 +8300,9 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(803);
 
-	var _widgets = __webpack_require__(907);
+	var _widgets = __webpack_require__(923);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6809,7 +8375,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 933:
+/***/ 960:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6840,15 +8406,17 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _layout = __webpack_require__(791);
 
-	var _widgets = __webpack_require__(907);
+	var _base = __webpack_require__(803);
 
-	var _DetailTableComponent = __webpack_require__(934);
+	var _widgets = __webpack_require__(923);
+
+	var _DetailTableComponent = __webpack_require__(961);
 
 	var _DetailTableComponent2 = _interopRequireDefault(_DetailTableComponent);
 
-	var _SettingsComponent = __webpack_require__(925);
+	var _SettingsComponent = __webpack_require__(943);
 
 	var _SettingsComponent2 = _interopRequireDefault(_SettingsComponent);
 
@@ -6887,10 +8455,10 @@ webpackJsonp([0],{
 	            var $widget = _props.$widget;
 	            var wId = _props.wId;
 
-	            var widget = new _data.Widget($widget);
+	            var widget = _data.WidgetFactory.createWidget($widget, wId, _data.TemplateFactory.createTemplate(this.context.$template));
 	            return _lib2.default.createElement(
-	                _lib.View,
-	                { height: _data.Size.HEADER_HEIGHT, style: styles.header },
+	                _layout.Layout,
+	                { main: 'justify', cross: 'center', height: _data.Sizes.HEADER_HEIGHT, style: styles.header },
 	                _lib2.default.createElement(
 	                    _lib.Text,
 	                    null,
@@ -6898,6 +8466,7 @@ webpackJsonp([0],{
 	                ),
 	                _lib2.default.createElement(_base.IconLink, { className: 'setting-font', onPress: function onPress() {
 	                        _lib.Portal.showModal('DetailTableComponent', _lib2.default.createElement(_SettingsComponent2.default, {
+	                            key: 'DetailTableComponent',
 	                            $widget: _this2.props.$widget,
 	                            wId: _this2.props.wId,
 	                            height: 0,
@@ -6922,12 +8491,12 @@ webpackJsonp([0],{
 	            var wId = _props2.wId;
 
 	            return _lib2.default.createElement(
-	                _base.VtapeLayout,
-	                null,
+	                _layout.Layout,
+	                { dir: 'top', box: 'first' },
 	                this._renderHeader(),
 	                _lib2.default.createElement(_DetailTableComponent2.default, {
 	                    width: width,
-	                    height: height - _data.Size.HEADER_HEIGHT,
+	                    height: height - _data.Sizes.HEADER_HEIGHT,
 	                    $widget: $widget,
 	                    wId: wId
 	                })
@@ -6952,16 +8521,14 @@ webpackJsonp([0],{
 	    header: {
 	        paddingLeft: 4,
 	        paddingRight: 4,
-	        flexDirection: 'row',
-	        alignItems: 'center',
-	        justifyContent: 'space-between'
+	        height: _data.Sizes.HEADER_HEIGHT
 	    }
 	});
 	exports.default = DetailTablePaneComponent;
 
 /***/ },
 
-/***/ 934:
+/***/ 961:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6992,23 +8559,25 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
+	var _base = __webpack_require__(803);
 
-	var _widgets = __webpack_require__(907);
+	var _layout = __webpack_require__(791);
 
-	var _DetailTableComponentHelper = __webpack_require__(935);
+	var _widgets = __webpack_require__(923);
+
+	var _DetailTableComponentHelper = __webpack_require__(962);
 
 	var _DetailTableComponentHelper2 = _interopRequireDefault(_DetailTableComponentHelper);
 
-	var _TableComponentWidthHelper = __webpack_require__(930);
+	var _TableComponentWidthHelper = __webpack_require__(957);
 
 	var _TableComponentWidthHelper2 = _interopRequireDefault(_TableComponentWidthHelper);
 
-	var _TableCell = __webpack_require__(931);
+	var _TableCell = __webpack_require__(958);
 
 	var _TableCell2 = _interopRequireDefault(_TableCell);
 
-	var _TableHeader = __webpack_require__(932);
+	var _TableHeader = __webpack_require__(959);
 
 	var _TableHeader2 = _interopRequireDefault(_TableHeader);
 
@@ -7037,9 +8606,6 @@ webpackJsonp([0],{
 	        _this.state = {
 	            data: []
 	        };
-
-	        _this._tableHelper = new _DetailTableComponentHelper2.default(props, context);
-	        _this._widthHelper = new _TableComponentWidthHelper2.default(_this._tableHelper, props.width);
 	        return _this;
 	    }
 
@@ -7055,10 +8621,18 @@ webpackJsonp([0],{
 	        key: 'componentWillReceiveProps',
 	        value: function componentWillReceiveProps(nextProps) {
 	            if (!(0, _core.immutableShallowEqual)(nextProps, this.props)) {
-	                this._tableHelper = new _DetailTableComponentHelper2.default(nextProps, this.context);
-	                this._widthHelper = new _TableComponentWidthHelper2.default(this._tableHelper, nextProps.width);
 	                this._fetchData(nextProps);
+	                this._changed = true;
 	            }
+	        }
+	    }, {
+	        key: 'shouldComponentUpdate',
+	        value: function shouldComponentUpdate() {
+	            if (this._changed) {
+	                this._changed = false;
+	                return false;
+	            }
+	            return true;
 	        }
 	    }, {
 	        key: 'componentWillUpdate',
@@ -7071,7 +8645,7 @@ webpackJsonp([0],{
 	            var $widget = props.$widget;
 	            var wId = props.wId;
 
-	            var widget = new _data.Widget($widget, this.context.$template, wId);
+	            var widget = _data.WidgetFactory.createWidget($widget, wId, _data.TemplateFactory.createTemplate(this.context.$template));
 	            return widget.getData().then(function (data) {
 	                _this2.setState({ data: data });
 	            });
@@ -7083,13 +8657,15 @@ webpackJsonp([0],{
 	            var width = _props.width;
 	            var height = _props.height;var data = this.state.data;
 
+	            this._tableHelper = new _DetailTableComponentHelper2.default(this.props, this.context);
+	            this._widthHelper = new _TableComponentWidthHelper2.default(this._tableHelper, this.props.width);
 	            this._tableHelper.setData(data);
 	            var items = this._tableHelper.getItems();
 	            this._widthHelper.setItems(items);
 
 	            return _lib2.default.createElement(_widgets.TableWidget, {
 	                width: width,
-	                height: height - _data.Size.HEADER_HEIGHT,
+	                height: height - _data.Sizes.HEADER_HEIGHT,
 	                freezeCols: this._tableHelper.isFreeze() ? [0] : [],
 	                columnSize: this._widthHelper.getWidth(),
 	                header: this._tableHelper.getHeader(),
@@ -7115,13 +8691,11 @@ webpackJsonp([0],{
 
 	    return DetailTableComponent;
 	}(_lib.Component);
+	// mixin.onClass(DetailTableComponent, ReactComponentWithImmutableRenderMixin);
 
 	DetailTableComponent.contextTypes = {
 	    $template: _lib2.default.PropTypes.object
 	};
-
-	_reactMixin2.default.onClass(DetailTableComponent, _core.ReactComponentWithImmutableRenderMixin);
-
 	var styles = _lib.StyleSheet.create({
 	    wrapper: {
 	        position: 'relative'
@@ -7138,7 +8712,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 935:
+/***/ 962:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7162,7 +8736,7 @@ webpackJsonp([0],{
 	        var $widget = props.$widget;
 	        var wId = props.wId;
 
-	        this.widget = new _data.Widget($widget, context.$template, wId);
+	        this.widget = _data.WidgetFactory.createWidget($widget, wId, _data.TemplateFactory.createTemplate(context.$template));
 	        this.data = [];
 	    }
 
@@ -7179,9 +8753,9 @@ webpackJsonp([0],{
 	            var ids = this.widget.getAllUsedDimensionAndTargetIds();
 	            var result = [];
 	            ids.forEach(function (id) {
-	                var $$dim = _this.widget.get$$DimensionOrTargetById(id);
+	                var $$dim = _this.widget.get$DimensionOrTargetById(id);
 	                result.push({
-	                    text: new _data.Dimension($$dim).getName()
+	                    text: _data.DimensionFactory.createDimension($$dim).getName()
 	                });
 	            });
 	            return result;
@@ -7220,7 +8794,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 936:
+/***/ 963:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7251,9 +8825,7 @@ webpackJsonp([0],{
 
 	var _data = __webpack_require__(773);
 
-	var _base = __webpack_require__(783);
-
-	var _widgets = __webpack_require__(907);
+	var _base = __webpack_require__(803);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7297,7 +8869,7 @@ webpackJsonp([0],{
 	            var $widget = _props.$widget;
 	            var wId = _props.wId;
 
-	            var widget = new _data.Widget($widget, this.context.$template, wId);
+	            var widget = _data.WidgetFactory.createWidget($widget, wId, _data.TemplateFactory.createTemplate(this.context.$template));
 	            var style = widget.getStyle();
 	            return _lib2.default.createElement(_lib.TextInput, {
 	                style: _extends({ height: this.props.height }, styles.wrapper, style),
@@ -7335,13 +8907,312 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 937:
+/***/ 964:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactMixin = __webpack_require__(206);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _immutable = __webpack_require__(200);
+
+	var _immutable2 = _interopRequireDefault(_immutable);
+
+	var _core = __webpack_require__(329);
+
+	var _lib = __webpack_require__(208);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _data = __webpack_require__(773);
+
+	var _base = __webpack_require__(803);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * 图片组件
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by Young's on 2016/10/10.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+
+	var ImageComponent = function (_Component) {
+	    _inherits(ImageComponent, _Component);
+
+	    function ImageComponent(props, context) {
+	        _classCallCheck(this, ImageComponent);
+
+	        return _possibleConstructorReturn(this, (ImageComponent.__proto__ || Object.getPrototypeOf(ImageComponent)).call(this, props, context));
+	    }
+
+	    _createClass(ImageComponent, [{
+	        key: '_getNextState',
+	        value: function _getNextState(props) {
+	            var state = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	        }
+	    }, {
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {}
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var props = _objectWithoutProperties(this.props, []);
+	            var state = _objectWithoutProperties(this.state, []);
+
+	            return _lib2.default.createElement(_lib.Image, {
+	                style: styles.wrapper,
+	                source: ''
+	            });
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {}
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate(nextProps, nextState) {}
+	    }, {
+	        key: 'componentDidUpdate',
+	        value: function componentDidUpdate(prevProps, prevState) {}
+	    }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {}
+	    }]);
+
+	    return ImageComponent;
+	}(_lib.Component);
+
+	_reactMixin2.default.onClass(ImageComponent, _core.ReactComponentWithPureRenderMixin);
+	var styles = _lib.StyleSheet.create({
+	    wrapper: {
+	        flex: 1
+	    }
+	});
+	exports.default = ImageComponent;
+
+/***/ },
+
+/***/ 965:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactMixin = __webpack_require__(206);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _immutable = __webpack_require__(200);
+
+	var _immutable2 = _interopRequireDefault(_immutable);
+
+	var _core = __webpack_require__(329);
+
+	var _lib = __webpack_require__(208);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _data = __webpack_require__(773);
+
+	var _base = __webpack_require__(803);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var LayoutDemo = function (_Component) {
+	    _inherits(LayoutDemo, _Component);
+
+	    function LayoutDemo(props, context) {
+	        _classCallCheck(this, LayoutDemo);
+
+	        var _this = _possibleConstructorReturn(this, (LayoutDemo.__proto__ || Object.getPrototypeOf(LayoutDemo)).call(this, props, context));
+
+	        _this.state = {};
+	        return _this;
+	    }
+
+	    _createClass(LayoutDemo, [{
+	        key: '_getNextState',
+	        value: function _getNextState(props) {
+	            var state = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	        }
+	    }, {
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {}
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var props = _objectWithoutProperties(this.props, []);
+	            var state = _objectWithoutProperties(this.state, []);
+
+	            return _lib2.default.createElement(
+	                _lib.ScrollView,
+	                null,
+	                _lib2.default.createElement(
+	                    _base.CenterLayout,
+	                    { style: styles.item },
+	                    _lib2.default.createElement(
+	                        _lib.Text,
+	                        { style: { backgroundColor: _data.Colors.HIGHLIGHT } },
+	                        '123'
+	                    )
+	                ),
+	                _lib2.default.createElement(
+	                    _base.HorizontalCenterLayout,
+	                    { style: styles.item },
+	                    _lib2.default.createElement(
+	                        _lib.Text,
+	                        { style: { backgroundColor: _data.Colors.HIGHLIGHT } },
+	                        '123'
+	                    )
+	                ),
+	                _lib2.default.createElement(
+	                    _base.VerticalCenterLayout,
+	                    { style: styles.item },
+	                    _lib2.default.createElement(
+	                        _lib.Text,
+	                        { style: { backgroundColor: _data.Colors.HIGHLIGHT } },
+	                        '123'
+	                    )
+	                ),
+	                _lib2.default.createElement(
+	                    _base.Layout,
+	                    { dir: 'left', box: 'justify', style: styles.item },
+	                    _lib2.default.createElement(
+	                        _base.CenterLayout,
+	                        { style: { width: 100, backgroundColor: _data.Colors.PRESS } },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            null,
+	                            '123'
+	                        )
+	                    ),
+	                    _lib2.default.createElement(
+	                        _base.CenterLayout,
+	                        { style: { backgroundColor: _data.Colors.HIGHLIGHT } },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            null,
+	                            '456'
+	                        )
+	                    ),
+	                    _lib2.default.createElement(
+	                        _base.CenterLayout,
+	                        { style: { width: 100, backgroundColor: _data.Colors.PRESS } },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            null,
+	                            '789'
+	                        )
+	                    )
+	                ),
+	                _lib2.default.createElement(
+	                    _base.Layout,
+	                    { dir: 'left', main: 'justify', style: styles.item },
+	                    _lib2.default.createElement(
+	                        _base.CenterLayout,
+	                        { style: { width: 100, backgroundColor: _data.Colors.PRESS } },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            null,
+	                            '123'
+	                        )
+	                    ),
+	                    _lib2.default.createElement(
+	                        _base.CenterLayout,
+	                        { style: { backgroundColor: _data.Colors.HIGHLIGHT } },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            null,
+	                            '456'
+	                        )
+	                    ),
+	                    _lib2.default.createElement(
+	                        _base.CenterLayout,
+	                        { style: { width: 100, backgroundColor: _data.Colors.PRESS } },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            null,
+	                            '789'
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {}
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate(nextProps, nextState) {}
+	    }, {
+	        key: 'componentDidUpdate',
+	        value: function componentDidUpdate(prevProps, prevState) {}
+	    }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {}
+	    }]);
+
+	    return LayoutDemo;
+	}(_lib.Component);
+
+	LayoutDemo.propTypes = {};
+	LayoutDemo.defaultProps = {};
+
+	_reactMixin2.default.onClass(LayoutDemo, _core.ReactComponentWithImmutableRenderMixin);
+	var styles = _lib.StyleSheet.create({
+	    item: {
+	        height: 100,
+	        borderBottomColor: _data.Colors.BORDER,
+	        borderBottomWidth: 1 / _lib.PixelRatio.get()
+	    }
+	});
+	exports.default = LayoutDemo;
+
+/***/ },
+
+/***/ 966:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(938);
+	var content = __webpack_require__(967);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -7362,7 +9233,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 938:
+/***/ 967:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -7377,13 +9248,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 939:
+/***/ 968:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(940);
+	var content = __webpack_require__(969);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -7404,7 +9275,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 940:
+/***/ 969:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -7412,20 +9283,20 @@ webpackJsonp([0],{
 
 
 	// module
-	exports.push([module.id, "/****添加计算宽度的--运算符直接需要space****/\n/****** common color(常用颜色,可用于普遍场景) *****/\n/**** custom color(自定义颜色,用于特定场景) ****/\n.base-disabled {\n  cursor: default !important;\n  color: #c4c6c6 !important;\n}\n.base-disabled .b-font:before {\n  color: #c4c6c6 !important;\n}\n.base-invalid {\n  cursor: default !important;\n}\n.clearfix {\n  *zoom: 1;\n}\n.clearfix:before,\n.clearfix:after {\n  content: \" \";\n  display: table;\n  line-height: 0;\n}\n.clearfix:after {\n  clear: both;\n}\n.sortable-helper {\n  z-index: 999999;\n  display: -ms-flexbox;\n  display: flex;\n}\n", ""]);
+	exports.push([module.id, "/****添加计算宽度的--运算符直接需要space****/\n/****** common color(常用颜色,可用于普遍场景) *****/\n/**** custom color(自定义颜色,用于特定场景) ****/\n.base-disabled {\n  cursor: default !important;\n  color: #c4c6c6 !important;\n}\n.base-disabled .b-font:before {\n  color: #c4c6c6 !important;\n}\n.base-invalid {\n  cursor: default !important;\n}\n.clearfix {\n  *zoom: 1;\n}\n.clearfix:before,\n.clearfix:after {\n  content: \" \";\n  display: table;\n  line-height: 0;\n}\n.clearfix:after {\n  clear: both;\n}\n.sortable-helper {\n  z-index: 999999;\n  box-shadow: 0px 0px 10px #888888;\n}\n", ""]);
 
 	// exports
 
 
 /***/ },
 
-/***/ 941:
+/***/ 970:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(942);
+	var content = __webpack_require__(971);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -7446,7 +9317,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 942:
+/***/ 971:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -7454,20 +9325,20 @@ webpackJsonp([0],{
 
 
 	// module
-	exports.push([module.id, "/****** common color(常用颜色,可用于普遍场景) *****/\n/**** custom color(自定义颜色,用于特定场景) ****/\n.tool-filter-font .b-font:before {\n  content: '\\E624';\n  color: #808080;\n}\n.tool-filter-font:active .b-font:before {\n  content: '\\E624';\n  color: #009de3;\n}\n.tool-filter-font.disabled .b-font:before {\n  content: '\\E624';\n  color: #808080;\n}\n.node-fold-font .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.node-fold-font:active .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.node-fold-font.active .b-font:before {\n  content: '\\E611';\n  color: #808080;\n}\n.node-fold-font.disabled .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.setting-font .b-font:before {\n  content: '\\E62A';\n  color: #808080;\n}\n.setting-font.disabled .b-font:before {\n  content: '\\E62A';\n  color: #808080;\n}\n", ""]);
+	exports.push([module.id, "/****** common color(常用颜色,可用于普遍场景) *****/\n/**** custom color(自定义颜色,用于特定场景) ****/\n.tool-filter-font .b-font:before {\n  content: '\\E624';\n  color: #808080;\n}\n.tool-filter-font:active .b-font:before {\n  content: '\\E624';\n  color: #009de3;\n}\n.tool-filter-font.disabled .b-font:before {\n  content: '\\E624';\n  color: #808080;\n}\n.node-fold-font .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.node-fold-font:active .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.node-fold-font.active .b-font:before {\n  content: '\\E611';\n  color: #808080;\n}\n.node-fold-font.disabled .b-font:before {\n  content: '\\E610';\n  color: #808080;\n}\n.setting-font .b-font:before {\n  content: '\\E62A';\n  color: #808080;\n}\n.setting-font.disabled .b-font:before {\n  content: '\\E62A';\n  color: #808080;\n}\n.single-select-font .b-font:before {\n  content: '\\E618';\n  color: #ffffff;\n}\n.single-select-font.active .b-font:before {\n  content: '\\E618';\n  color: #009de3;\n}\n.single-select-font.disabled .b-font:before {\n  content: '\\E618';\n  color: #ffffff;\n}\n.draggable-font .b-font:before {\n  content: '\\E62C';\n  color: #808080;\n}\n.draggable-font.disabled .b-font:before {\n  content: '\\E62C';\n  color: #808080;\n}\n.asc-sort-font .b-font:before {\n  content: '\\E62D';\n  color: #808080;\n}\n.asc-sort-font.disabled .b-font:before {\n  content: '\\E62D';\n  color: #808080;\n}\n.dsc-sort-font .b-font:before {\n  content: '\\E62B';\n  color: #808080;\n}\n.dsc-sort-font.disabled .b-font:before {\n  content: '\\E62B';\n  color: #808080;\n}\n", ""]);
 
 	// exports
 
 
 /***/ },
 
-/***/ 943:
+/***/ 972:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(944);
+	var content = __webpack_require__(973);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -7488,7 +9359,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 944:
+/***/ 973:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -7503,13 +9374,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 945:
+/***/ 974:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(946);
+	var content = __webpack_require__(975);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -7530,7 +9401,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 946:
+/***/ 975:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -7545,13 +9416,13 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 947:
+/***/ 976:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(948);
+	var content = __webpack_require__(977);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(628)(content, {});
@@ -7572,7 +9443,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 948:
+/***/ 977:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(627)();
@@ -7580,7 +9451,7 @@ webpackJsonp([0],{
 
 
 	// module
-	exports.push([module.id, "/****添加计算宽度的--运算符直接需要space****/\n/****** common color(常用颜色,可用于普遍场景) *****/\n/**** custom color(自定义颜色,用于特定场景) ****/\n@font-face {\n  font-family: 'h5';\n  src: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.woff') format('woff'), /* chrome、firefox */ url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/ url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.svg#svgFontName') format('svg');\n  \n  /*  iOS 4.1- */\n}\n.b-font {\n  font-family: \"h5\";\n  font-style: normal;\n  -webkit-font-smoothing: antialiased;\n  -webkit-text-stroke-width: 0.2px;\n  -moz-osx-font-smoothing: grayscale;\n}\nhtml {\n  height: 100%;\n  overflow: hidden;\n}\nbody {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  top: 0;\n  left: 0;\n  background-repeat: repeat;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  -o-user-select: none;\n  user-select: none;\n  color: #1a1a1a;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  text-decoration: none;\n  -kthml-user-focus: normal;\n  -moz-user-focus: normal;\n  -moz-outline: 0 none;\n  outline: 0 none;\n}\n*,\n*:before,\n*:after {\n  box-sizing: border-box;\n}\n#wrapper {\n  position: absolute;\n  left: 0;\n  right: 0;\n  top: 0;\n  bottom: 0;\n  overflow: hidden;\n  overflow-x: hidden;\n  overflow-y: hidden;\n}\na {\n  outline: none;\n  text-decoration: none;\n}\na:focus {\n  outline: 0;\n}\ninput,\ntextarea {\n  margin: 0;\n  padding: 0;\n  outline: none;\n  border: 1px solid #cccccc;\n}\nul,\nol {\n  margin: 0;\n  padding: 0;\n}\nul {\n  list-style: disc;\n}\nli {\n  list-style-type: none;\n}\ni {\n  font-style: normal;\n  -webkit-font-smoothing: antialiased;\n  -webkit-text-stroke-width: 0.2px;\n  -moz-osx-font-smoothing: grayscale;\n}\n", ""]);
+	exports.push([module.id, "/****添加计算宽度的--运算符直接需要space****/\n/****** common color(常用颜色,可用于普遍场景) *****/\n/**** custom color(自定义颜色,用于特定场景) ****/\n@font-face {\n  font-family: 'h5';\n  src: url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.woff') format('woff'), /* chrome、firefox */ url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/ url('${servletURL}?op=resource&resource=/com/fr/bi/h5/dist/resources/fonts/iconfont.svg#svgFontName') format('svg');\n  \n  /*  iOS 4.1- */\n}\n.b-font {\n  font-family: \"h5\";\n  font-style: normal;\n  -webkit-font-smoothing: antialiased;\n  -webkit-text-stroke-width: 0.2px;\n  -moz-osx-font-smoothing: grayscale;\n}\nhtml {\n  height: 100%;\n  overflow: hidden;\n}\nbody {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  top: 0;\n  left: 0;\n  background-repeat: repeat;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  -o-user-select: none;\n  user-select: none;\n  color: #1a1a1a;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  text-decoration: none;\n  -kthml-user-focus: normal;\n  -moz-user-focus: normal;\n  -moz-outline: 0 none;\n  outline: 0 none;\n}\n*,\n*:before,\n*:after {\n  box-sizing: border-box;\n}\na {\n  outline: none;\n  text-decoration: none;\n}\na:focus {\n  outline: 0;\n}\ninput,\ntextarea {\n  margin: 0;\n  padding: 0;\n  outline: none;\n  border: 1px solid #cccccc;\n}\nul,\nol {\n  margin: 0;\n  padding: 0;\n}\nul {\n  list-style: disc;\n}\nli {\n  list-style-type: none;\n}\ni {\n  font-style: normal;\n  -webkit-font-smoothing: antialiased;\n  -webkit-text-stroke-width: 0.2px;\n  -moz-osx-font-smoothing: grayscale;\n}\na,\nimg,\nbutton,\ninput,\ntextarea,\n* {\n  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);\n}\ninput,\ntextarea {\n  -webkit-appearance: none;\n}\n", ""]);
 
 	// exports
 

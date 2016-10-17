@@ -84,6 +84,8 @@ BICst.WIDGET.Widths[BICst.WIDGET.QUARTER] = 250;
 BICst.WIDGET.Widths[BICst.WIDGET.MONTH] = 250;
 BICst.WIDGET.Widths[BICst.WIDGET.YMD] = 250;
 BICst.WIDGET.Widths[BICst.WIDGET.TREE] = 250;
+BICst.WIDGET.Widths[BICst.WIDGET.LIST_LABEL] = 250;
+BICst.WIDGET.Widths[BICst.WIDGET.TREE_LABEL] = 250;
 BICst.WIDGET.Widths[BICst.WIDGET.GENERAL_QUERY] = 450;
 BICst.WIDGET.Widths[BICst.WIDGET.QUERY] = 250;
 BICst.WIDGET.Widths[BICst.WIDGET.RESET] = 250;
@@ -133,6 +135,8 @@ BICst.WIDGET.Heights[BICst.WIDGET.QUARTER] = 110;
 BICst.WIDGET.Heights[BICst.WIDGET.MONTH] = 110;
 BICst.WIDGET.Heights[BICst.WIDGET.YMD] = 110;
 BICst.WIDGET.Heights[BICst.WIDGET.TREE] = 110;
+BICst.WIDGET.Heights[BICst.WIDGET.LIST_LABEL] = 110;
+BICst.WIDGET.Heights[BICst.WIDGET.TREE_LABEL] = 110;
 BICst.WIDGET.Heights[BICst.WIDGET.GENERAL_QUERY] = 250;
 BICst.WIDGET.Heights[BICst.WIDGET.QUERY] = 40;
 BICst.WIDGET.Heights[BICst.WIDGET.RESET] = 40;
@@ -438,6 +442,10 @@ BICst.GLOBAL_PREDICTION_STYLE = {
 
 //表设置所有默认属性（应该是包含分组表、交叉表、复杂表和其他所有图表）
 BICst.DEFAULT_CHART_SETTING = {
+    widget_setting: {
+        title_detail: {},
+        widget_bg: {},
+    },
     table_form: BICst.TABLE_FORM.OPEN_ROW,
     theme_color: "#65bce7",
     table_style: BICst.TABLE_STYLE.STYLE1,
@@ -508,6 +516,11 @@ BICst.DEFAULT_CHART_SETTING = {
     mini_line_width: BICst.LINE_WIDTH.ZERO,
     show_label: true,
     mini_show_label: false,
+    label_setting: {
+        text_direction: 0,
+        text_style: {}
+    },
+    line_color: "#dddddd",
     enable_tick: true,
     mini_enable_tick: false,
     enable_minor_tick: true,
@@ -522,6 +535,8 @@ BICst.DEFAULT_CHART_SETTING = {
     bubble_style: BICst.CHART_SHAPE.NO_PROJECTOR,
     show_background_layer: true,
     background_layer_info: '高德地图',
+    bubble_min_size: 15,
+    bubble_max_size: 80,
     custom_scale: {
         minScale: {},
         maxScale: {},

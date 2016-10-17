@@ -116,7 +116,7 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
                     BI.size(self.store) === 0 && BI.isNotNull(self.tip) && self.tip.setVisible(false);
                 }
                 var helperWidget = ui.helper.data().helperWidget;
-                var helper = self._getFieldDropOverHepler();
+                var helper = self._getFieldDropOverHelper();
                 if (BI.isNotNull(helper)) {
                     helperWidget.modifyContent(helper);
                 }
@@ -174,7 +174,7 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
 
     },
 
-    _getFieldDropOverHepler: function () {
+    _getFieldDropOverHelper: function () {
 
     },
 

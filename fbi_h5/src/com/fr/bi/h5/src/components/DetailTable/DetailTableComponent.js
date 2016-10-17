@@ -12,8 +12,9 @@ import React, {
     Fetch
 } from 'lib'
 
-import {Size, Template, Widget} from 'data'
-import {IconLink, HtapeLayout, VtapeLayout} from 'base'
+import {Sizes, TemplateFactory, WidgetFactory} from 'data'
+import {IconLink} from 'base'
+import {Layout} from 'layout'
 import {TableWidget} from 'widgets';
 
 import DetailTableComponentHelper from './DetailTableComponentHelper';
@@ -33,8 +34,6 @@ class DetailTableComponent extends Component {
 
     constructor(props, context) {
         super(props, context);
-        this._tableHelper = new DetailTableComponentHelper(props, context);
-        this._widthHelper = new TableComponentWidthHelper(this._tableHelper, props.width);
     }
 
     state = {
@@ -51,10 +50,17 @@ class DetailTableComponent extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (!immutableShallowEqual(nextProps, this.props)) {
-            this._tableHelper = new DetailTableComponentHelper(nextProps, this.context);
-            this._widthHelper = new TableComponentWidthHelper(this._tableHelper, nextProps.width);
             this._fetchData(nextProps);
+            this._changed = true;
         }
+    }
+
+    shouldComponentUpdate() {
+        if (this._changed) {
+            this._changed = false;
+            return false;
+        }
+        return true;
     }
 
     componentWillUpdate(nextProps) {
@@ -63,7 +69,7 @@ class DetailTableComponent extends Component {
 
     _fetchData(props) {
         const {$widget, wId} = props;
-        const widget = new Widget($widget, this.context.$template, wId);
+        const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(this.context.$template));
         return widget.getData().then((data)=> {
             this.setState({data: data});
         });
@@ -71,13 +77,15 @@ class DetailTableComponent extends Component {
 
     render() {
         const {width, height} = this.props, {data} = this.state;
+        this._tableHelper = new DetailTableComponentHelper(this.props, this.context);
+        this._widthHelper = new TableComponentWidthHelper(this._tableHelper, this.props.width);
         this._tableHelper.setData(data);
         const items = this._tableHelper.getItems();
         this._widthHelper.setItems(items);
 
         return <TableWidget
             width={width}
-            height={height - Size.HEADER_HEIGHT}
+            height={height - Sizes.HEADER_HEIGHT}
             freezeCols={this._tableHelper.isFreeze() ? [0] : []}
             columnSize={this._widthHelper.getWidth()}
             header={this._tableHelper.getHeader()}
@@ -92,7 +100,7 @@ class DetailTableComponent extends Component {
         </TableWidget>
     }
 }
-mixin.onClass(DetailTableComponent, ReactComponentWithImmutableRenderMixin);
+// mixin.onClass(DetailTableComponent, ReactComponentWithImmutableRenderMixin);
 
 const styles = StyleSheet.create({
     wrapper: {
