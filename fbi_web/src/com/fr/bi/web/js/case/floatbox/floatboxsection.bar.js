@@ -109,5 +109,9 @@ BI.BarPopoverSection = BI.inherit(BI.PopoverSection, {
             hgap: 5,
             items: [this.cancel, this.sure]
         });
+    },
+
+    setConfirmButtonEnable: function(v){
+        this.sure.setEnable(!!v);
     }
 });

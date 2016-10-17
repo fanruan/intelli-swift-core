@@ -190,7 +190,10 @@ BI.CustomGroup = BI.inherit(BI.Widget, {
             var groupedItem = self.fieldPane.createItemFromGroupedFieldMap(groupedFieldMap);
             var ungroupedItem = self.fieldPane.createItemFromUngroupedFieldMap(ungroupedFieldMap);
             var chosenItem = BI.union(ungroupedItem, groupedItem);
-            self.chosenPane.populate(chosenItem);
+            self.chosenPane.populate(BI.map(chosenItem, function(idx, item){
+                item.title = BI.i18nText("BI-Click_To_Cancel_Selected_Value");
+                return item;
+            }));
             self._checkChosenNum();
         });
 

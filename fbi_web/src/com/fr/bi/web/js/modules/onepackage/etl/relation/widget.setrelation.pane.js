@@ -31,7 +31,7 @@ BI.RelationSetPane = BI.inherit(BI.BarPopoverSection, {
     },
 
     rebuildCenter: function(center){
-        var o = this.options;
+        var self = this, o = this.options;
         this.relationPane = BI.createWidget({
             type: "bi.relation_pane",
             element: center,
@@ -39,6 +39,12 @@ BI.RelationSetPane = BI.inherit(BI.BarPopoverSection, {
             relations: o.relations,
             translations: o.translations,
             all_fields: o.all_fields
+        });
+        this.relationPane.on(BI.RelationPane.EVENT_VALID, function(){
+            self.setConfirmButtonEnable(true);
+        });
+        this.relationPane.on(BI.RelationPane.EVENT_ERROR, function(){
+            self.setConfirmButtonEnable(false);
         });
     },
 

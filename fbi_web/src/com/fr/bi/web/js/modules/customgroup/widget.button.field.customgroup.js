@@ -44,7 +44,7 @@ BI.CustomGroupFieldButton = BI.inherit(BI.BasicButton, {
             text: o.textRight,
             value: o.valueRight
         });
-        this.setTitle(this.getValue());
+        this.setTitle(o.title || this.getValue());
 
         BI.createWidget({
             type: "bi.left",
