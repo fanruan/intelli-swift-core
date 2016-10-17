@@ -26,7 +26,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
         this.showTitle.on(BI.Controller.EVENT_CHANGE, function () {
             self.widgetTitle.setVisible(this.isSelected());
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
         });
 
         //组件标题
@@ -36,7 +36,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 120
         });
         this.title.on(BI.SignEditor.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
 
         //详细设置
@@ -44,7 +44,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.show_title_detailed_setting_combo"
         });
         this.titleDetailSettting.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
 
         this.widgetTitle = BI.createWidget({
@@ -121,7 +121,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.global_style_index_background"
         });
         this.widgetBackground.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
         });
 
         var tableChart = BI.createWidget({
@@ -194,7 +194,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.LYUnit.on(BI.SignEditor.EVENT_CONFIRM, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
         });
 
         //格式

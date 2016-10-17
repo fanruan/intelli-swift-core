@@ -150,7 +150,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
-                text: BI.i18nText("BI-Table_Sheet_Style"),
+                text: BI.i18nText("BI-Chart"),
                 textHeight: constant.SINGLE_LINE_HEIGHT,
                 lgap: constant.SIMPLE_H_LGAP,
                 textAlign: "left",
@@ -163,10 +163,8 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     text: BI.i18nText("BI-Color_Setting"),
                     cls: "attr-names"
                 }, {
-                    el: {
-                        type: "bi.vertical_adapt",
-                        items: [this.colorSelect]
-                    },
+                    type: "bi.vertical_adapt",
+                    items: [this.colorSelect],
                     lgap: constant.SIMPLE_H_GAP
                 }, {
                     type: "bi.label",
@@ -174,10 +172,8 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names",
                     lgap: constant.SIMPLE_H_GAP
                 }, {
-                    el: {
-                        type: "bi.vertical_adapt",
-                        items: [this.chartStyleGroup]
-                    },
+                    type: "bi.vertical_adapt",
+                    items: [this.chartStyleGroup],
                     lgap: constant.SIMPLE_H_GAP
                 }, {
                     type: "bi.label",
@@ -185,10 +181,8 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names",
                     lgap: constant.SIMPLE_H_GAP2
                 }, {
-                    el: {
-                        type: "bi.vertical_adapt",
-                        items: [this.chartTypeGroup]
-                    },
+                    type: "bi.vertical_adapt",
+                    items: [this.chartTypeGroup],
                     lgap: constant.SIMPLE_H_GAP
                 }, {
                     height: constant.SINGLE_LINE_HEIGHT

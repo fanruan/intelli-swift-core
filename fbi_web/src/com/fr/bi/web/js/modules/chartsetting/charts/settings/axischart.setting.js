@@ -26,7 +26,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
         this.showTitle.on(BI.Controller.EVENT_CHANGE, function () {
             self.widgetTitle.setVisible(this.isSelected());
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
         //组件标题
@@ -37,7 +37,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.title.on(BI.SignEditor.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
 
         //详细设置
@@ -46,7 +46,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.titleDetailSettting.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
 
         this.widgetTitle = BI.createWidget({
@@ -106,7 +106,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.global_style_index_background"
         });
         this.widgetBackground.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
         this.tableStyle = BI.createWidget({
@@ -849,7 +849,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.linkageSelection.on(BI.Controller.EVENT_CHANGE, function() {
-            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
 
         this.otherAttr = BI.createWidget({
