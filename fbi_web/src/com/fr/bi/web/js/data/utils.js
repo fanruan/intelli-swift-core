@@ -68,16 +68,16 @@ Data.Utils = {
         });
         if (type === BICst.WIDGET.MAP) {
             var subType = widget.sub_type;
-            if(BI.isNull(subType)){
-                BI.find(MapConst.INNER_MAP_INFO.MAP_LAYER, function(path, layer){
-                    if(layer === 0){
+            if (BI.isNull(subType)) {
+                BI.find(MapConst.INNER_MAP_INFO.MAP_LAYER, function (path, layer) {
+                    if (layer === 0) {
                         subType = path;
                         return true;
                     }
                 });
             }
             var name = MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType];
-            if(BI.isNull(name)){
+            if (BI.isNull(name)) {
                 name = MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME[subType]
             }
             options.initDrillPath = [name];
@@ -139,9 +139,8 @@ Data.Utils = {
                 case BICst.WIDGET.PIE:
                 case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
                 case BICst.WIDGET.FORCE_BUBBLE:
-                    return formatDataForAxis(data);
                 case BICst.WIDGET.DASHBOARD:
-                    return formatDataForDashBoard(data);
+                    return formatDataForAxis(data);
                 case BICst.WIDGET.BUBBLE:
                     return formatDataForBubble(data);
                 case BICst.WIDGET.SCATTER:
@@ -1147,10 +1146,9 @@ Data.Utils = {
                         if (config.number_of_pointer === constants.ONE_POINTER && items[0].length === 1) {//单个系列
                             BI.each(items[0][0].data, function (idx, da) {
                                 result.push({
-                                    data: [{
-                                        x: items[0][0].name,
-                                        y: da.y
-                                    }],
+                                    data: [BI.extend({}, da, {
+                                        x: items[0][0].name
+                                    })],
                                     name: da.x
                                 })
                             });
@@ -1174,10 +1172,10 @@ Data.Utils = {
                         BI.each(items[0], function (idx, item) {
                             BI.each(item.data, function (id, da) {
                                 others.push({
-                                    data: [{
+                                    data: [BI.extend({}, da, {
                                         x: item.name,
                                         y: da.y
-                                    }],
+                                    })],
                                     name: da.x
                                 })
                             })
@@ -1874,7 +1872,9 @@ Data.Utils = {
                         }
                     }
                 }
-                return function(){return BI.contentFormat(arguments[0], formatter)}
+                return function () {
+                    return BI.contentFormat(arguments[0], formatter)
+                }
             }
         }
 
@@ -2161,7 +2161,7 @@ Data.Utils = {
             }];
 
             formatChartDashboardStyle();
-            configs.chartType = "dashboard";
+            configs.chartType = "gauge";
             delete configs.xAxis;
             delete configs.yAxis;
             return BI.extend(configs, {
@@ -2904,7 +2904,9 @@ Data.Utils = {
                 labelStyle: {
                     "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
-                formatter: function(){ return this > 0 ? this : (-1) * this },
+                formatter: function () {
+                    return this > 0 ? this : (-1) * this
+                },
                 gridLineWidth: 0
             }];
             var yAxis = [{
@@ -3158,7 +3160,9 @@ Data.Utils = {
                 labelStyle: {
                     "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
-                formatter: function(){ return this > 0 ? this : (-1) * this },
+                formatter: function () {
+                    return this > 0 ? this : (-1) * this
+                },
                 gridLineWidth: 0
             }];
             var yAxis = [{
@@ -3424,7 +3428,9 @@ Data.Utils = {
                 labelStyle: {
                     "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3", "color": "#808080", "fontSize": "12px"
                 },
-                formatter: function(){ return this > 0 ? this : (-1) * this },
+                formatter: function () {
+                    return this > 0 ? this : (-1) * this
+                },
                 gridLineWidth: 0
             }];
             var yAxis = [{
@@ -6362,7 +6368,7 @@ Data.Utils = {
                 })
             }
 
-            function formatNumberLevelInYaxis (configs, items, type, position, formatter) {
+            function formatNumberLevelInYaxis(configs, items, type, position, formatter) {
                 var magnify = calcMagnify(type);
                 BI.each(items, function (idx, item) {
                     BI.each(item.data, function (id, da) {
