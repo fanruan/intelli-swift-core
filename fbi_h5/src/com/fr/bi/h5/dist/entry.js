@@ -6027,21 +6027,12 @@ webpackJsonp([0],{
 	    _createClass(Header, [{
 	        key: 'render',
 	        value: function render() {
-	            var _this2 = this;
-
-	            var _props = this.props;
-	            var viewItem = _props.viewItem;
-	            var collapsed = _props.collapsed;
+	            var viewItem = this.props.viewItem;
 
 	            return _lib2.default.createElement(
 	                _base.TextButton,
-	                { key: viewItem.viewId, textAlign: 'left', style: styles.collapseHeader, onPress: function onPress() {
-	                        var collapsed = (0, _core.clone)(collapsed);
-	                        collapsed[viewItem.viewId] = !collapsed[viewItem.viewId];
-	                        _this2.setState({
-	                            collapsed: collapsed
-	                        });
-	                    } },
+	                { key: viewItem.viewId, textAlign: 'left', style: styles.collapseHeader,
+	                    onPress: this.props.onPress },
 	                viewItem.text
 	            );
 	        }
@@ -6105,25 +6096,25 @@ webpackJsonp([0],{
 	    function SettingsComponent(props, context) {
 	        _classCallCheck(this, SettingsComponent);
 
-	        var _this3 = _possibleConstructorReturn(this, (SettingsComponent.__proto__ || Object.getPrototypeOf(SettingsComponent)).call(this, props, context));
+	        var _this2 = _possibleConstructorReturn(this, (SettingsComponent.__proto__ || Object.getPrototypeOf(SettingsComponent)).call(this, props, context));
 
-	        _this3.state = {
-	            $widget: _this3.props.$widget,
+	        _this2.state = {
+	            $widget: _this2.props.$widget,
 	            collapsed: {},
 	            sortable: false
 	        };
 
-	        _this3._onSortEnd = function (_ref3) {
+	        _this2._onSortEnd = function (_ref3) {
 	            var oldIndex = _ref3.oldIndex;
 	            var newIndex = _ref3.newIndex;
 
-	            var $widget = _this3._helper.doMove(oldIndex, newIndex);
-	            _this3.setState({
+	            var $widget = _this2._helper.doMove(oldIndex, newIndex);
+	            _this2.setState({
 	                $widget: $widget
 	            });
 	        };
 
-	        return _this3;
+	        return _this2;
 	    }
 
 	    _createClass(SettingsComponent, [{
@@ -6147,11 +6138,11 @@ webpackJsonp([0],{
 	    }, {
 	        key: '_renderHeader',
 	        value: function _renderHeader() {
-	            var _this4 = this;
+	            var _this3 = this;
 
-	            var _props2 = this.props;
-	            var $widget = _props2.$widget;
-	            var wId = _props2.wId;
+	            var _props = this.props;
+	            var $widget = _props.$widget;
+	            var wId = _props.wId;
 
 	            var widget = _data.WidgetFactory.createWidget($widget, wId, _data.TemplateFactory.createTemplate(this.context.$template));
 	            return _lib2.default.createElement(
@@ -6160,7 +6151,7 @@ webpackJsonp([0],{
 	                _lib2.default.createElement(
 	                    _base.TextLink,
 	                    { onPress: function onPress() {
-	                            _this4.refs['overlay'].close();
+	                            _this3.refs['overlay'].close();
 	                        }, style: styles.back },
 	                    '返回'
 	                ),
@@ -6172,7 +6163,7 @@ webpackJsonp([0],{
 	                _lib2.default.createElement(
 	                    _base.TextLink,
 	                    { onPress: function onPress() {
-	                            _this4.refs['overlay'].close(true);
+	                            _this3.refs['overlay'].close(true);
 	                        }, style: styles.complete },
 	                    '完成'
 	                )
@@ -6181,7 +6172,7 @@ webpackJsonp([0],{
 	    }, {
 	        key: '_renderSortableList',
 	        value: function _renderSortableList(viewItem) {
-	            var _this5 = this;
+	            var _this4 = this;
 
 	            var items = this._helper.getDimensionsItems(viewItem.viewId);
 	            return _lib2.default.createElement(SortableList, { items: items,
@@ -6191,7 +6182,7 @@ webpackJsonp([0],{
 	                    var oldIndex = _ref4.oldIndex;
 	                    var newIndex = _ref4.newIndex;
 
-	                    _this5._onSortEnd({
+	                    _this4._onSortEnd({
 	                        oldIndex: oldIndex, newIndex: newIndex, viewId: viewItem.viewId
 	                    });
 	                },
@@ -6204,37 +6195,33 @@ webpackJsonp([0],{
 	    }, {
 	        key: '_renderUnSortableList',
 	        value: function _renderUnSortableList(viewItem) {
-	            var _this6 = this;
+	            var _this5 = this;
 
 	            var items = this._helper.getDimensionsItems(viewItem.viewId);
-	            return _lib2.default.createElement(
-	                _lib.ScrollView,
-	                { style: { height: _data.Sizes.ITEM_HEIGHT * items.length } },
-	                items.map(function (value, index) {
-	                    if (_this6._helper.isDimensionByDimensionId(value.dId)) {
-	                        return _lib2.default.createElement(_DimensionComponent2.default, { key: index, value: value, wId: _this6.props.wId,
-	                            $widget: _this6.state.$widget,
-	                            dId: value.dId, onValueChange: function onValueChange($widget) {
-	                                _this6.setState({
-	                                    $widget: $widget
-	                                });
-	                            } });
-	                    } else {
-	                        return _lib2.default.createElement(_TargetComponent2.default, { key: index, value: value, wId: _this6.props.wId,
-	                            $widget: _this6.state.$widget,
-	                            dId: value.dId, onValueChange: function onValueChange($widget) {
-	                                _this6.setState({
-	                                    $widget: $widget
-	                                });
-	                            } });
-	                    }
-	                })
-	            );
+	            return items.map(function (value, index) {
+	                if (_this5._helper.isDimensionByDimensionId(value.dId)) {
+	                    return _lib2.default.createElement(_DimensionComponent2.default, { key: index, value: value, wId: _this5.props.wId,
+	                        $widget: _this5.state.$widget,
+	                        dId: value.dId, onValueChange: function onValueChange($widget) {
+	                            _this5.setState({
+	                                $widget: $widget
+	                            });
+	                        } });
+	                } else {
+	                    return _lib2.default.createElement(_TargetComponent2.default, { key: index, value: value, wId: _this5.props.wId,
+	                        $widget: _this5.state.$widget,
+	                        dId: value.dId, onValueChange: function onValueChange($widget) {
+	                            _this5.setState({
+	                                $widget: $widget
+	                            });
+	                        } });
+	                }
+	            });
 	        }
 	    }, {
 	        key: '_renderSortableContainer',
 	        value: function _renderSortableContainer() {
-	            var _this7 = this;
+	            var _this6 = this;
 
 	            var viewItems = this._helper.getAllDimensionItems();
 	            return _lib2.default.createElement(SortableList, { viewItems: viewItems,
@@ -6243,7 +6230,7 @@ webpackJsonp([0],{
 	                    var oldIndex = _ref5.oldIndex;
 	                    var newIndex = _ref5.newIndex;
 
-	                    _this7._onSortEnd({
+	                    _this6._onSortEnd({
 	                        oldIndex: oldIndex, newIndex: newIndex
 	                    });
 	                },
@@ -6256,16 +6243,22 @@ webpackJsonp([0],{
 	    }, {
 	        key: '_renderUnSortableContainer',
 	        value: function _renderUnSortableContainer() {
-	            var _this8 = this;
+	            var _this7 = this;
 
 	            var array = [];
 	            (0, _core.each)(this._helper.getViewItems(), function (viewItem) {
-	                array.push(_lib2.default.createElement(Header, { viewItem: viewItem, collapsed: _this8.state.collapsed }));
+	                array.push(_lib2.default.createElement(Header, { viewItem: viewItem, onPress: function onPress() {
+	                        var collapsed = (0, _core.clone)(_this7.state.collapsed);
+	                        collapsed[viewItem.viewId] = !collapsed[viewItem.viewId];
+	                        _this7.setState({
+	                            collapsed: collapsed
+	                        });
+	                    } }));
 	                array.push(_lib2.default.createElement(
 	                    _base.Collapsible,
 	                    { key: 'collapsible-' + viewItem.viewId,
-	                        collapsed: _this8.state.collapsed[viewItem.viewId] || false },
-	                    _this8._renderUnSortableList(viewItem)
+	                        collapsed: _this7.state.collapsed[viewItem.viewId] || false },
+	                    _this7._renderUnSortableList(viewItem)
 	                ));
 	            });
 	            return _lib2.default.createElement(
@@ -6277,7 +6270,7 @@ webpackJsonp([0],{
 	    }, {
 	        key: '_renderDialog',
 	        value: function _renderDialog() {
-	            var _this9 = this;
+	            var _this8 = this;
 
 	            return _lib2.default.createElement(
 	                _layout.Layout,
@@ -6288,8 +6281,8 @@ webpackJsonp([0],{
 	                    _lib2.default.createElement(
 	                        _base.TextButton,
 	                        { onPress: function onPress() {
-	                                _this9.setState({
-	                                    sortable: !_this9.state.sortable
+	                                _this8.setState({
+	                                    sortable: !_this8.state.sortable
 	                                });
 	                            }, style: styles.sortChangeButton },
 	                        this.state.sortable ? '退出排序' : '排序'
@@ -6301,7 +6294,7 @@ webpackJsonp([0],{
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this10 = this;
+	            var _this9 = this;
 
 	            var props = _objectWithoutProperties(this.props, []);
 	            var state = _objectWithoutProperties(this.state, []);
@@ -6311,11 +6304,11 @@ webpackJsonp([0],{
 	                _base.Overlay,
 	                { ref: 'overlay', onClose: function onClose(tag) {
 	                        if (tag === true) {
-	                            var $widget = _this10.state.$widget;var wId = _this10.props.wId;
+	                            var $widget = _this9.state.$widget;var wId = _this9.props.wId;
 
-	                            _this10.props.onComplete({ $widget: $widget, wId: wId });
+	                            _this9.props.onComplete({ $widget: $widget, wId: wId });
 	                        } else {
-	                            _this10.props.onReturn();
+	                            _this9.props.onReturn();
 	                        }
 	                    } },
 	                _lib2.default.createElement(

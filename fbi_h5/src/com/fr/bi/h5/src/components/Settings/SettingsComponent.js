@@ -53,14 +53,9 @@ class Header extends Component {
     }
 
     render() {
-        const {viewItem, collapsed} = this.props;
-        return <TextButton key={viewItem.viewId} textAlign='left' style={styles.collapseHeader} onPress={()=> {
-            const collapsed = clone(collapsed);
-            collapsed[viewItem.viewId] = !collapsed[viewItem.viewId];
-            this.setState({
-                collapsed
-            })
-        }}>{viewItem.text}</TextButton>
+        const {viewItem} = this.props;
+        return <TextButton key={viewItem.viewId} textAlign='left' style={styles.collapseHeader}
+                           onPress={this.props.onPress}>{viewItem.text}</TextButton>
     }
 }
 const SortHeader = SortableElement(({...props}) => {
@@ -180,27 +175,25 @@ class SettingsComponent extends Component {
 
     _renderUnSortableList(viewItem) {
         const items = this._helper.getDimensionsItems(viewItem.viewId);
-        return <ScrollView style={{height: Sizes.ITEM_HEIGHT * items.length}}>
-            {items.map((value, index) => {
-                if (this._helper.isDimensionByDimensionId(value.dId)) {
-                    return <DimensionComponent key={index} value={value} wId={this.props.wId}
-                                               $widget={this.state.$widget}
-                                               dId={value.dId} onValueChange={($widget)=> {
-                        this.setState({
-                            $widget: $widget
-                        });
-                    }}/>
-                } else {
-                    return <TargetComponent key={index} value={value} wId={this.props.wId}
-                                            $widget={this.state.$widget}
-                                            dId={value.dId} onValueChange={($widget)=> {
-                        this.setState({
-                            $widget: $widget
-                        });
-                    }}/>
-                }
-            })}
-        </ScrollView>
+        return items.map((value, index) => {
+            if (this._helper.isDimensionByDimensionId(value.dId)) {
+                return <DimensionComponent key={index} value={value} wId={this.props.wId}
+                                           $widget={this.state.$widget}
+                                           dId={value.dId} onValueChange={($widget)=> {
+                    this.setState({
+                        $widget: $widget
+                    });
+                }}/>
+            } else {
+                return <TargetComponent key={index} value={value} wId={this.props.wId}
+                                        $widget={this.state.$widget}
+                                        dId={value.dId} onValueChange={($widget)=> {
+                    this.setState({
+                        $widget: $widget
+                    });
+                }}/>
+            }
+        })
     }
 
     _renderSortableContainer() {
@@ -223,7 +216,13 @@ class SettingsComponent extends Component {
     _renderUnSortableContainer() {
         const array = [];
         each(this._helper.getViewItems(), (viewItem)=> {
-            array.push(<Header viewItem={viewItem} collapsed={this.state.collapsed}/>);
+            array.push(<Header viewItem={viewItem} onPress={()=> {
+                const collapsed = clone(this.state.collapsed);
+                collapsed[viewItem.viewId] = !collapsed[viewItem.viewId];
+                this.setState({
+                    collapsed
+                })
+            }}/>);
             array.push(<Collapsible key={`collapsible-${viewItem.viewId}`}
                                     collapsed={this.state.collapsed[viewItem.viewId] || false}>
                 {this._renderUnSortableList(viewItem)}
