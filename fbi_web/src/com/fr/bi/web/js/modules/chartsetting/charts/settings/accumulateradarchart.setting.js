@@ -223,7 +223,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
         });
 
-        //show left value axis label
+        //显示标签
         this.showLValueAxisLabel = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Label"),
@@ -234,7 +234,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
 
-        //lValueAxisLabel
+        //左值轴标签设置
         this.lValueAxisLabelSetting = BI.createWidget({
             type: "bi.chart_label_detailed_setting_combo"
         });
@@ -243,7 +243,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
 
-        //lValueAxisLineColor
+        //坐直轴线颜色
         this.lValueAxisLineColor = BI.createWidget({
             type: "bi.color_chooser",
             width: 30,
@@ -418,13 +418,36 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
         });
 
-        //show tooltip
+        //显示数据点提示
         this.showToolTip = BI.createWidget({
             type: "bi.multi_select_item",
-            value: BI.i18nText("")
+            value: BI.i18nText("BI-Show_Tooltip"),
+            width: 130
         });
 
-        //tooltip setting
+        this.showToolTip.on(BI.Controller.EVENT_CHANGE, function() {
+            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
+        });
+
+        //数据点提示详细设置
+        this.tooltipSetting = BI.createWidget({
+            type: "bi.tooltip_detailed_setting_combo"
+        });
+
+        this.tooltipSetting.on(BI.TooltipDetailedSettingCombo.EVENT_CHANGE, function() {
+            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
+        });
+
+        //空值连续
+        this.continuousNullValue = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Null_Continue"),
+            width: 90
+        });
+
+        this.continuousNullValue.on(BI.Controller.EVENT_CHANGE, function() {
+            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
+        });
 
         var showElement = BI.createWidget({
             type: "bi.horizontal_adapt",
@@ -469,6 +492,15 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.showToolTip]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.tooltipSetting]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.continuousNullValue]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -483,7 +515,18 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 170
         });
         this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
+        });
+
+        //手动选择联动条件
+        this.linkageSelection = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI.Select_Linkage_Manually"),
+            width: 150
+        });
+
+        this.linkageSelection.on(BI.Controller.EVENT_CHANGE, function() {
+            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
 
         var otherAttr = BI.createWidget({
@@ -494,7 +537,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Interactive_Attr"),
                     cls: "line-title"
-                }, this.transferFilter]
+                }, this.transferFilter, this.linkageSelection]
             },
             height: constant.SINGLE_LINE_HEIGHT,
             lhgap: constant.SIMPLE_H_GAP
@@ -538,10 +581,13 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.hGridLineColor.setValue();
         this.showVGridLine.setSelected();
         this.vGridLineColor.setValue();
-
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
+        this.showToolTip.setSelected();
+        this.tooltipSetting.setValue();
+        this.continuousNullValue.setSelected();
 
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
+        this.linkageSelection.setSelected();
     },
 
     getValue: function () {
@@ -549,18 +595,35 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             show_name: this.showTitle.isSelected(),
             widget_title: this.title.getValue(),
             title_detail: this.titleDetailSettting.getValue(),
-            widget_bg: this.widgetBackground.getValue(),
-            transfer_filter: this.transferFilter.isSelected(),
+
             chart_color: this.colorSelect.getValue()[0],
             chart_style: this.chartStyleGroup.getValue()[0],
             chart_radar_type: this.chartTypeGroup.getValue()[0],
-            left_y_axis_style: this.lYAxisStyle.getValue()[0],
+            widget_bg: this.widgetBackground.getValue(),
+
             left_y_axis_number_level: this.numberLevellY.getValue()[0],
-            chart_legend: this.legend.getValue()[0],
-            show_data_label: this.showDataLabel.isSelected(),
+            left_y_axis_unit: this.LYUnit.getValue(),
+            left_y_axis_style: this.lYAxisStyle.getValue()[0],
+            num_separators: this.separators.isSelected(),
+            show_lvalue_axis_label: this.showLValueAxisLabel.isSelected(),
+            lvalue_axis_label_setting: this.lValueAxisLabelSetting.getValue(),
+            lvalue_axis_line_color: this.lValueAxisLineColor.getValue(),
             show_y_custom_scale: this.showCustomScale.isSelected(),
             custom_y_scale: this.customScale.getValue(),
-            num_separators: this.separators.isSelected()
+
+            chart_legend: this.legend.getValue()[0],
+            chart_legend_setting: this.legendSetting.getValue(),
+            show_h_grid_line: this.showHGridLine.isSelected(),
+            h_grid_line_color: this.hGridLineColor.getValue(),
+            show_v_grid_line: this.showVGridLine.isSelected(),
+            v_grid_line_color: this.vGridLineColor.getValue(),
+            show_data_label: this.showDataLabel.isSelected(),
+            show_tooltip: this.showToolTip.isSelected(),
+            tooltip_setting: this.tooltipSetting.getValue(),
+            continuous_null_value: this.continuousNullValue.isSelected(),
+
+            transfer_filter: this.transferFilter.isSelected(),
+            manually_linkage_selection: this.linkageSelection.isSelected()
         }
     },
 
@@ -568,18 +631,35 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showTitle.setSelected(v.show_name);
         this.title.setValue(v.widget_title);
         this.titleDetailSettting.setValue(v.title_detail);
-        this.widgetBackground.setValue(v.widget_bg);
-        this.transferFilter.setSelected(v.transfer_filter);
+
         this.colorSelect.setValue(v.chart_color);
         this.chartStyleGroup.setValue(v.chart_style);
         this.chartTypeGroup.setValue(v.chart_radar_type);
-        this.lYAxisStyle.setValue(v.left_y_axis_style);
+        this.widgetBackground.setValue(v.widget_bg);
+
         this.numberLevellY.setValue(v.left_y_axis_number_level);
-        this.legend.setValue(v.chart_legend);
-        this.showDataLabel.setSelected(v.show_data_label);
+        this.LYUnit.setValue(v.left_y_axis_unit);
+        this.lYAxisStyle.setValue(v.left_y_axis_style);
+        this.separators.setSelected(v.num_separators);
+        this.showLValueAxisLabel.setSelected(v.show_lvalue_axis_label);
+        this.lValueAxisLabelSetting.setValue(v.lvalue_axis_label_setting);
+        this.lValueAxisLineColor.setValue(v.lvalue_axis_line_color);
         this.showCustomScale.setSelected(v.show_y_custom_scale);
-        this.customScale.setValue(v.custom_y_scale)
-        this.separators.setSelected(v.num_separators)
+        this.customScale.setValue(v.custom_y_scale);
+
+        this.legend.setValue(v.chart_legend);
+        this.legendSetting.setValue(v.chart_legend_setting);
+        this.showHGridLine.setSelected(v.show_h_grid_line);
+        this.hGridLineColor.setValue(v.h_grid_line_color);
+        this.showVGridLine.setSelected(v.show_v_grid_line);
+        this.vGridLineColor.setValue(v.v_grid_line_color);
+        this.showDataLabel.setSelected(v.show_data_label);
+        this.showToolTip.setSelected(v.show_tooltip);
+        this.tooltipSetting.setValue(v.tooltip_setting);
+        this.continuousNullValue.setSelected(v.continuous_null_value);
+
+        this.transferFilter.setSelected(v.transfer_filter);
+        this.linkageSelection.setSelected(v.manually_linkage_selection)
     }
 });
 BI.AccumulateRadarChartSetting.EVENT_CHANGE = "EVENT_CHANGE";
