@@ -23,6 +23,7 @@ import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
+import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
@@ -106,6 +107,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
                 targetPathEntity = buildTargetRelationPathWriter();
                 final GroupValueIndex appearPrimaryValue = GVIFactory.createAllEmptyIndexGVI();
                 int[] reverse = new int[getJuniorTableRowCount()];
+                Arrays.fill(reverse, NIOConstant.INTEGER.NULL_VALUE);
                 for (int row = 0; row < primaryRowCount; row++) {
                     GroupValueIndex frontGroupValueIndex = frontRelationPathReader.getBitmapIndex(row);
                     GroupValueIndex resultGroupValueIndex = getTableLinkedOrGVI(frontGroupValueIndex, lastRelationEntity);
