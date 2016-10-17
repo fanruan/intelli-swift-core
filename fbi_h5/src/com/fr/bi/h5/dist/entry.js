@@ -6059,32 +6059,43 @@ webpackJsonp([0],{
 	    var viewItems = _ref2.viewItems;
 	    var context = _ref2.context;
 
-	    var header = [],
-	        body = [],
-	        footer = [];
+	    var dimensionHeader = [],
+	        dimensionBody = [],
+	        targetHeader = [],
+	        targetBody = [];
 	    (0, _core.each)(viewItems, function (items, viewId) {
 	        var viewItem = context._helper.getViewItemByViewId(viewId);
-	        var h = _lib2.default.createElement(Header, { viewItem: viewItem, collapsed: {} });
+	        var header = dimensionHeader,
+	            body = dimensionBody,
+	            collection = 0;
+	        if (!context._helper.isDimensionByViewId(viewId)) {
+	            header = targetHeader;
+	            body = targetBody;
+	            collection = 1;
+	        }
 	        if (header.length === 0) {
-	            header.push(h);
+	            header.push(_lib2.default.createElement(Header, { key: 'header-' + viewItem.viewId, viewItem: viewItem, collapsed: {} }));
 	        } else {
-	            body.push(_lib2.default.createElement(SortHeader, { index: viewItem.viewId, collection: 0, viewItem: viewItem, collapsed: {} }));
+	            body.push(_lib2.default.createElement(SortHeader, { key: 'header-' + viewItem.viewId, index: viewItem.viewId, collection: collection,
+	                viewItem: viewItem,
+	                collapsed: {} }));
 	        }
 	        items.forEach(function (value, index) {
 	            body.push(_lib2.default.createElement(_DimensionSortableComponent2.default, { key: 'item-' + value.dId,
 	                index: viewItem.viewId + '-' + index,
 	                value: value, wId: context.props.wId,
 	                $widget: context.props.$widget,
-	                collection: 0,
+	                collection: collection,
 	                dId: value.dId }));
 	        });
 	    });
 	    return _lib2.default.createElement(
 	        _lib.ScrollView,
 	        null,
-	        header,
-	        body,
-	        footer
+	        dimensionHeader,
+	        dimensionBody,
+	        targetHeader,
+	        targetBody
 	    );
 	});
 
@@ -6427,6 +6438,11 @@ webpackJsonp([0],{
 	                text: '行表头',
 	                viewId: viewId
 	            };
+	        }
+	    }, {
+	        key: 'isDimensionByViewId',
+	        value: function isDimensionByViewId(viewId) {
+	            return this.widget.isDimensionByViewId(viewId);
 	        }
 	    }, {
 	        key: 'isDimensionByDimensionId',

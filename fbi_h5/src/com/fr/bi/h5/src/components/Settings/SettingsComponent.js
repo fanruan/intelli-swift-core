@@ -67,28 +67,36 @@ const SortHeader = SortableElement(({...props}) => {
     return <Header {...props}/>
 });
 const SortableList = SortableContainer(({viewItems, context}) => {
-    const header = [], body = [], footer = [];
+    const dimensionHeader = [], dimensionBody = [], targetHeader = [], targetBody = [];
     each(viewItems, (items, viewId)=> {
         const viewItem = context._helper.getViewItemByViewId(viewId);
-        const h = <Header viewItem={viewItem} collapsed={{}}/>;
+        let header = dimensionHeader, body = dimensionBody, collection = 0;
+        if (!context._helper.isDimensionByViewId(viewId)) {
+            header = targetHeader;
+            body = targetBody;
+            collection = 1;
+        }
         if (header.length === 0) {
-            header.push(h);
+            header.push(<Header key={`header-${viewItem.viewId}`} viewItem={viewItem} collapsed={{}}/>);
         } else {
-            body.push(<SortHeader index={viewItem.viewId} collection={0} viewItem={viewItem} collapsed={{}}/>);
+            body.push(<SortHeader key={`header-${viewItem.viewId}`} index={viewItem.viewId} collection={collection}
+                                  viewItem={viewItem}
+                                  collapsed={{}}/>);
         }
         items.forEach((value, index) => {
             body.push(<DimensionSortableComponent key={`item-${value.dId}`}
                                                   index={`${viewItem.viewId}-${index}`}
                                                   value={value} wId={context.props.wId}
                                                   $widget={context.props.$widget}
-                                                  collection={0}
+                                                  collection={collection}
                                                   dId={value.dId}/>);
         });
     });
     return <ScrollView>
-        {header}
-        {body}
-        {footer}
+        {dimensionHeader}
+        {dimensionBody}
+        {targetHeader}
+        {targetBody}
     </ScrollView>;
 });
 

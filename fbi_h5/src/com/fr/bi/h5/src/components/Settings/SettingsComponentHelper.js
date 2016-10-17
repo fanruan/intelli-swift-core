@@ -24,6 +24,10 @@ export default class SettingsComponentHelper {
         }
     }
 
+    isDimensionByViewId(viewId) {
+        return this.widget.isDimensionByViewId(viewId);
+    }
+
     isDimensionByDimensionId(dId) {
         return this.widget.isDimensionById(dId);
     }
