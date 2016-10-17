@@ -5,9 +5,9 @@ import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
-import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
 import com.fr.bi.stable.utils.time.RangeIndexGetter;
+import com.fr.stable.collections.array.IntArray;
 import junit.framework.TestCase;
 
 import java.util.Calendar;
@@ -30,20 +30,20 @@ public class RangeIndexGetterTest extends TestCase {
     }
 
     private CubeTreeMap<Integer> buildMap(long[] d, int Type) {
-        Map<Integer, IntList> treeMap = new TreeMap<Integer, IntList>();
+        Map<Integer, IntArray> treeMap = new TreeMap<Integer, IntArray>();
         for (int i = 0; i < d.length; i ++){
             Calendar date = Calendar.getInstance();
             date.setTimeInMillis(d[i]);
             int value = date.get(Type);
-            IntList list = treeMap.get(value);
+            IntArray list = treeMap.get(value);
             if (list == null) {
-                list = new IntList();
+                list = new IntArray();
                 treeMap.put(value, list);
             }
             list.add(i);
         }
         CubeTreeMap<Integer> getter = new CubeTreeMap<Integer>(ComparatorFacotry.INTEGER_ASC);
-        for (Map.Entry<Integer, IntList> entry : treeMap.entrySet()){
+        for (Map.Entry<Integer, IntArray> entry : treeMap.entrySet()){
             getter.put(entry.getKey(), GVIFactory.createGroupValueIndexBySimpleIndex(entry.getValue()));
         }
         return getter;

@@ -4,6 +4,7 @@ import com.finebi.cube.adapter.BIUserCubeManager;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
@@ -30,8 +31,6 @@ import com.fr.bi.stable.data.db.SqlSettedStatement;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
-import com.fr.bi.stable.structure.collection.list.IntList;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.util.BICubeDBUtils;
 import com.fr.data.core.db.dialect.Dialect;
@@ -42,6 +41,7 @@ import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.stable.StringUtils;
 import com.fr.stable.bridge.StableFactory;
+import com.fr.stable.collections.array.IntArray;
 
 import java.util.Date;
 import java.util.List;
@@ -109,8 +109,8 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         long rowCount = tableEntityService.isVersionAvailable() ? tableEntityService.getRowCount() : 0;
         TreeSet<Integer> sortRemovedList = new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
         if (tableEntityService.isRemovedListAvailable()) {
-            IntList removedList = tableEntityService.getRemovedList();
-            for (int i = 0; i < removedList.size(); i++) {
+            IntArray removedList = tableEntityService.getRemovedList();
+            for (int i = 0; i < removedList.size; i++) {
                 sortRemovedList.add(Integer.valueOf(removedList.get(i)));
             }
         }
