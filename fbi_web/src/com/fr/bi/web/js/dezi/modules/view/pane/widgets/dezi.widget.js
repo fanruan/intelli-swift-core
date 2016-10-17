@@ -200,6 +200,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     },
     _onClickShowName: function () {
         var settings = this.model.get("settings");
+        settings.widget_setting = settings.widget_setting || {};
         settings.widget_setting.show_name = !BI.Utils.getWSShowNameByID(this.model.get("id"));
         this.model.set("settings", settings);
         this._refreshLayout();
@@ -255,11 +256,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     self._onClickLinkage();
                     break;
                 case BICst.DASHBOARD_WIDGET_SHOW_NAME:
-                    // self._onClickShowName();
-                    // var settings = self.model.get("settings");
-                    // settings.show_name = !BI.Utils.getWSShowNameByID(self.model.get("id"));
-                    // self.model.set("settings", settings);
-                    // self._refreshLayout();
+                    self._onClickShowName();
                     break;
                 case BICst.DASHBOARD_WIDGET_RENAME:
                     self.title.focus();
@@ -314,10 +311,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     self._onClickLinkage();
                     break;
                 case BICst.DASHBOARD_WIDGET_SHOW_NAME:
-                    var settings = self.model.get("settings");
-                    settings.widget_setting.show_name = !BI.Utils.getWSShowNameByID(self.model.get("id"));
-                    self.model.set("settings", settings);
-                    self._refreshLayout();
+                    self._onClickShowName();
                     break;
                 case BICst.DASHBOARD_WIDGET_RENAME:
                     self.title.focus();
