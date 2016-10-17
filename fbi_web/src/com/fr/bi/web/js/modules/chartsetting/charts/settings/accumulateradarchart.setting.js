@@ -35,7 +35,6 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "title-input",
             width: 120
         });
-
         this.title.on(BI.SignEditor.EVENT_CHANGE, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
         });
@@ -44,7 +43,6 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.titleDetailSettting = BI.createWidget({
             type: "bi.show_title_detailed_setting_combo"
         });
-
         this.titleDetailSettting.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
         });
@@ -163,11 +161,10 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Widget_Background_Colour"),
-                    cls: "line-title"
+                    cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.widgetBackground],
-                    cls: "line-title"
+                    items: [this.widgetBackground]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -418,17 +415,6 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
         });
 
-        //显示数据点提示
-        this.showToolTip = BI.createWidget({
-            type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Show_Tooltip"),
-            width: 130
-        });
-
-        this.showToolTip.on(BI.Controller.EVENT_CHANGE, function() {
-            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
-        });
-
         //数据点提示详细设置
         this.tooltipSetting = BI.createWidget({
             type: "bi.tooltip_detailed_setting_combo"
@@ -493,8 +479,9 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
                 }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.showToolTip]
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Tooltip"),
+                    cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.tooltipSetting]
@@ -521,7 +508,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         //手动选择联动条件
         this.linkageSelection = BI.createWidget({
             type: "bi.multi_select_item",
-            value: BI.i18nText("BI.Select_Linkage_Manually"),
+            value: BI.i18nText("BI-Select_Linkage_Manually"),
             width: 150
         });
 
@@ -582,7 +569,6 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showVGridLine.setSelected();
         this.vGridLineColor.setValue();
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
-        this.showToolTip.setSelected();
         this.tooltipSetting.setValue();
         this.continuousNullValue.setSelected();
 
@@ -618,7 +604,6 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             show_v_grid_line: this.showVGridLine.isSelected(),
             v_grid_line_color: this.vGridLineColor.getValue(),
             show_data_label: this.showDataLabel.isSelected(),
-            show_tooltip: this.showToolTip.isSelected(),
             tooltip_setting: this.tooltipSetting.getValue(),
             continuous_null_value: this.continuousNullValue.isSelected(),
 
@@ -654,7 +639,6 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showVGridLine.setSelected(v.show_v_grid_line);
         this.vGridLineColor.setValue(v.v_grid_line_color);
         this.showDataLabel.setSelected(v.show_data_label);
-        this.showToolTip.setSelected(v.show_tooltip);
         this.tooltipSetting.setValue(v.tooltip_setting);
         this.continuousNullValue.setSelected(v.continuous_null_value);
 
