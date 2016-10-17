@@ -25,7 +25,7 @@ import React, {
     Image
 } from 'lib'
 
-import {Colors, Size, Template, Widget, Dimension, Target} from 'data'
+import {Colors, Sizes, Template, Widget, Dimension, Target} from 'data'
 
 import {CenterLayout, Icon, Table} from 'base'
 

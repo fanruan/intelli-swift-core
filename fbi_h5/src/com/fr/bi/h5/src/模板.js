@@ -3,15 +3,30 @@ import {findDOMNode} from 'react-dom'
 import Immutable from 'immutable'
 
 import {
-    ReactComponentWithPureRenderMixin, ReactComponentWithImmutableRenderMixin,
-    cn, sc, math, isNil, emptyFunction, shallowEqual, immutableShallowEqual, isEqual, isEmpty, each,
-    translateDOMPositionXY, requestAnimationFrame
+    ReactComponentWithPureRenderMixin,
+    ReactComponentWithImmutableRenderMixin,
+    cn,
+    sc,
+    math,
+    isNil,
+    emptyFunction,
+    shallowEqual,
+    immutableShallowEqual,
+    isEqual,
+    isEmpty,
+    each,
+    map,
+    clone,
+    deepClone,
+    translateDOMPositionXY,
+    requestAnimationFrame
 } from 'core'
 import React, {
     Component,
     PropTypes,
     StyleSheet,
     Text,
+    Portal,
     PixelRatio,
     ListView,
     View,
@@ -20,7 +35,7 @@ import React, {
     TouchableHighlight
 } from 'lib'
 
-import {Colors, Size, Template, Widget, Dimension, Target} from 'data'
+import {Colors, Sizes, TemplateFactory, WidgetFactory, DimensionFactory} from 'data'
 
 import {Layout, CenterLayout, HorizontalCenterLayout, VerticalCenterLayout} from 'layout';
 

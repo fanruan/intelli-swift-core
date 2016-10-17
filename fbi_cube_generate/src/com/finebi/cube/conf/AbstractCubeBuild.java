@@ -10,7 +10,7 @@ import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
-import com.finebi.cube.utils.relation.BITableRelationUtils;
+import com.finebi.cube.utils.BITableRelationUtils;
 import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.data.source.SQLTableSource;
 import com.fr.bi.conf.data.source.ServerTableSource;
@@ -285,8 +285,16 @@ public abstract class AbstractCubeBuild implements CubeBuild {
 
     protected boolean isTableRelationValid(BITableRelation relation) {
         boolean relationValid = BITableRelationUtils.isRelationValid(relation);
-        return allBusinessTable.contains(relation.getPrimaryTable()) && allBusinessTable.contains(relation.getForeignTable()) && relationValid;
+        boolean isStructureValid = allBusinessTable.contains(relation.getPrimaryTable()) && allBusinessTable.contains(relation.getForeignTable());
+        return isStructureValid && relationValid;
+    }
 
+    protected boolean isTableRelationAvailable(BITableRelation relation, ICubeConfiguration cubeConfiguration) {
+        if (isTableRelationValid(relation)) {
+            return BITableRelationUtils.isRelationAvailable(relation, cubeConfiguration);
+        } else {
+            return false;
+        }
     }
 
     protected BITableSourceRelationPath convertPath(BITableRelationPath path) throws BITablePathConfusionException {

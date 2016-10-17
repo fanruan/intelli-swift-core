@@ -5,8 +5,8 @@
 import AbstractWidget from './AbstractWidget'
 
 class ImageWidget extends AbstractWidget{
-    constructor($widget, $template, wId) {
-        super($widget, $template, wId);
+    constructor($widget, ...props) {
+        super($widget, ...props);
     }
 }
 

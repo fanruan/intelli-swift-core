@@ -15,7 +15,7 @@ import React, {
 } from 'lib'
 import {Layout} from 'layout'
 import {TextButton, VirtualScroll, AutoSizer, Infinite} from 'base'
-import {Colors, Size} from 'data'
+import {Colors, Sizes} from 'data'
 
 import Item from './Item'
 import MultiSelectorWidgetHelper from './MultiSelectorWidgetHelper'
@@ -108,11 +108,11 @@ class MultiSelectorWidget extends Component {
         return <Layout dir='top' box='last' style={styles.wrapper}>
             <VirtualScroll
                 width={props.width}
-                height={props.height - Size.ITEM_HEIGHT}
+                height={props.height - Sizes.ITEM_HEIGHT}
                 overscanRowCount={0}
                 //noRowsRenderer={this._noRowsRenderer.bind(this)}
                 rowCount={this._helper.getSortedItems().length + 1}
-                rowHeight={Size.ITEM_HEIGHT}
+                rowHeight={Sizes.ITEM_HEIGHT}
                 rowRenderer={this._rowRenderer.bind(this)}
                 //scrollToIndex={scrollToIndex}
             />
@@ -139,11 +139,11 @@ class MultiSelectorWidget extends Component {
 
     _moreRenderer() {
         if (this.state.hasNext === true) {
-            return <TextButton style={{height: Size.ITEM_HEIGHT}} onPress={()=> {
+            return <TextButton style={{height: Sizes.ITEM_HEIGHT}} onPress={()=> {
                 this._fetchData();
             }}>点击加载更多数据</TextButton>
         } else {
-            return <TextButton style={{height: Size.ITEM_HEIGHT}} disabled={true}>无更多数据</TextButton>
+            return <TextButton style={{height: Sizes.ITEM_HEIGHT}} disabled={true}>无更多数据</TextButton>
         }
     }
 
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     toolbar: {
         borderTopWidth: 1 / PixelRatio.get(),
         borderTopColor: Colors.BORDER,
-        height: Size.ITEM_HEIGHT
+        height: Sizes.ITEM_HEIGHT
     }
 });
 export default MultiSelectorWidget

@@ -2,6 +2,11 @@
  * Created by zcf on 2016/9/14.
  */
 BI.StyleSetManager = BI.inherit(FR.OB, {
+
+    constant: {
+        GLOBAL_STYLE: "__global_style__"
+    },
+
     _init: function () {
         BI.StyleSetManager.superclass._init.apply(this, arguments);
     },
@@ -47,7 +52,7 @@ BI.StyleSetManager = BI.inherit(FR.OB, {
         }
     },
 
-    setGlobalStyle: function (id, globalStyle) {
+    setGlobalStyle: function (globalStyle) {
         globalStyle || (globalStyle = {});
         var mainBackground = this._getBackgroundValue(globalStyle, "mainBackground");
         var widgetBackground = this._getBackgroundValue(globalStyle, "widgetBackground");
@@ -160,6 +165,6 @@ BI.StyleSetManager = BI.inherit(FR.OB, {
             },
             ".bi-control-widget .bi-filter-pane .condition-operator-input": {"border": border},
         };
-        this.setStyle(id, style);
+        this.setStyle(this.constant.GLOBAL_STYLE, style);
     }
 });

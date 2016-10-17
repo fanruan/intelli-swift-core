@@ -1,8 +1,8 @@
 import {each, first, arrayMove, values, keys} from 'core'
-import {Widget, Template, Dimension} from 'data'
+import {WidgetFactory, TemplateFactory} from 'data'
 export default class SettingsComponentHelper {
     constructor(props, context) {
-        this.widget = new Widget(props.$widget);
+        this.widget = WidgetFactory.createWidget(props.$widget, props.wId, TemplateFactory.createTemplate(context.$template));
 
     }
 
@@ -13,6 +13,25 @@ export default class SettingsComponentHelper {
                 text: '行表头',
                 viewId: viewId,
             })
+        });
+        return result;
+    }
+
+    getViewItemByViewId(viewId) {
+        return {
+            text: '行表头',
+            viewId: viewId
+        }
+    }
+
+    isDimensionByDimensionId(dId) {
+        return this.widget.isDimensionById(dId);
+    }
+
+    getAllDimensionItems() {
+        const result = {};
+        each(this._getViewIds(), (viewId)=> {
+            result[viewId] = this.getDimensionsItems(viewId);
         });
         return result;
     }
@@ -47,9 +66,5 @@ export default class SettingsComponentHelper {
         view[viewId] = items;
         this.widget.setWidgetView(view);
         return this.widget.$get();
-    }
-
-    set$Dimension($dimension, dId){
-        return this.widget.set$Dimension($dimension, dId).$get();
     }
 }

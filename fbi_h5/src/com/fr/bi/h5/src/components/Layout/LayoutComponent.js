@@ -11,9 +11,10 @@ import React, {
     View,
     Fetch
 } from 'lib'
+import {Layout} from 'layout'
 
 import {AutoSizer} from 'base'
-import {Colors, Template, Widget} from 'data'
+import {Colors, TemplateFactory, WidgetFactory} from 'data'
 
 import ChartPaneComponent from '../Chart/ChartPaneComponent.js'
 import TablePaneComponent from '../Table/TablePaneComponent.js'
@@ -41,17 +42,16 @@ class LayoutComponent extends Component {
     render() {
         const {...props} = this.props;
         const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        this.template = new Template(props.$template);
+        this.template = TemplateFactory.createTemplate(props.$template);
         const rows = this.template.getAllWidgetIds();
         return <ViewPagerAndroid
             style={styles.viewPager}
             initialPage={0}
             onPageScroll={this._onPageScroll.bind(this)}
             onPageSelected={this._onPageSelected.bind(this)}
-            ref={viewPager => {
-                this.viewPager = viewPager;
-            }}>
+        >
             {[<ListView
+                key={1}
                 {...props}
                 initialListSize={Math.ceil(props.height / 310) + 1}
                 dataSource={ds.cloneWithRows(rows)}
@@ -67,10 +67,9 @@ class LayoutComponent extends Component {
     }
 
     _renderRow(wId, sectionID, rowID) {
-        const $widget = this.template.get$$WidgetById(wId);
-        const type = new Widget($widget).getType();
+        const $widget = this.template.get$WidgetById(wId);
+        const type = WidgetFactory.createWidget($widget, wId, this.template).getType();
         const props = {
-            key: wId,
             $widget,
             wId,
             width: this.props.width - 40,
@@ -142,9 +141,9 @@ class LayoutComponent extends Component {
             default:
                 break;
         }
-        return <View style={styles.wrapper}>
+        return <Layout box='mean' style={styles.wrapper}>
             {component}
-        </View>
+        </Layout>
     }
 }
 mixin.onClass(LayoutComponent, ReactComponentWithImmutableRenderMixin);

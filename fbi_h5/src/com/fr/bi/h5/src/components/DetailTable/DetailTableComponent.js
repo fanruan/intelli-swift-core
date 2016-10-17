@@ -12,7 +12,7 @@ import React, {
     Fetch
 } from 'lib'
 
-import {Size, Template, Widget} from 'data'
+import {Sizes, TemplateFactory, WidgetFactory} from 'data'
 import {IconLink} from 'base'
 import {Layout} from 'layout'
 import {TableWidget} from 'widgets';
@@ -69,7 +69,7 @@ class DetailTableComponent extends Component {
 
     _fetchData(props) {
         const {$widget, wId} = props;
-        const widget = new Widget($widget, this.context.$template, wId);
+        const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(this.context.$template));
         return widget.getData().then((data)=> {
             this.setState({data: data});
         });
@@ -85,7 +85,7 @@ class DetailTableComponent extends Component {
 
         return <TableWidget
             width={width}
-            height={height - Size.HEADER_HEIGHT}
+            height={height - Sizes.HEADER_HEIGHT}
             freezeCols={this._tableHelper.isFreeze() ? [0] : []}
             columnSize={this._widthHelper.getWidth()}
             header={this._tableHelper.getHeader()}

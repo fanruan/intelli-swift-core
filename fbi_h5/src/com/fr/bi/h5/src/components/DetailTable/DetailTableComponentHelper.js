@@ -1,9 +1,9 @@
 import {each, isEmpty} from 'core';
-import {Template, Widget, Dimension} from 'data';
+import {TemplateFactory, WidgetFactory, DimensionFactory} from 'data';
 class DetailTableComponentHelper {
     constructor(props, context) {
         const {$widget, wId} = props;
-        this.widget = new Widget($widget, context.$template, wId);
+        this.widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(context.$template));
         this.data = [];
     }
 
@@ -16,9 +16,9 @@ class DetailTableComponentHelper {
         const ids = this.widget.getAllUsedDimensionAndTargetIds();
         const result = [];
         ids.forEach((id)=> {
-            const $$dim = this.widget.get$$DimensionOrTargetById(id);
+            const $$dim = this.widget.get$DimensionOrTargetById(id);
             result.push({
-                text: new Dimension($$dim).getName()
+                text: DimensionFactory.createDimension($$dim).getName()
             })
         });
         return result;

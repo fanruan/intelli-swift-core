@@ -34,6 +34,7 @@ export Collection from './Collection'
 export Table from './Table'
 
 export Overlay from './Overlay/Overlay'
+export ActionSheet from './ActionSheet/ActionSheet'
 export Dialog from './Dialog'
 
 export default module.exports;

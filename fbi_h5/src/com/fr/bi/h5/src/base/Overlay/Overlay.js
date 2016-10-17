@@ -1,5 +1,3 @@
-import PureRenderMixin from 'react-addons-pure-render-mixin'
-import TimerMixin from 'react-timer-mixin';
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
 import React, {
@@ -7,13 +5,11 @@ import React, {
     StyleSheet,
     Modal,
     View,
-    Image,
-    Text,
-    TouchableHighlight,
     Animated,
     Easing,
     Dimensions,
 } from 'lib';
+import {Layout} from 'layout'
 
 class Overlay extends Component {
     constructor(props) {
@@ -77,14 +73,13 @@ class Overlay extends Component {
 const styles = StyleSheet.create({
     container: {},
     mask: {
-        flex: 1,
-        padding: 20,
-        justifyContent: "flex-end",
-        alignItems: 'center',
-        backgroundColor: "rgba(56,56,56,0.6)"
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(56,56,56,0.6)'
     }
 });
-
-mixin.onClass(Overlay, TimerMixin);
 
 export default Overlay

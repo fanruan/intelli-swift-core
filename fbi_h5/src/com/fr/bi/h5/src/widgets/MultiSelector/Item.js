@@ -16,7 +16,7 @@ import React, {
     TouchableHighlight
 } from 'lib'
 
-import {Colors, Size} from 'data'
+import {Colors, Sizes} from 'data'
 import {Layout, CenterLayout, VerticalCenterLayout} from 'layout'
 import {Icon, Button, Checkbox, Table, AutoSizer} from 'base'
 
@@ -73,7 +73,7 @@ class Item extends Component {
                         {state.value == null ? state.text : state.value}
                     </Text>
                 </VerticalCenterLayout>
-                <CenterLayout style={[{width: Size.ITEM_HEIGHT}]}>
+                <CenterLayout style={[{width: Sizes.ITEM_HEIGHT}]}>
                     <Checkbox checked={this.state.selected} onChecked={this._onPress.bind(this)}/>
                 </CenterLayout>
             </Layout>
@@ -84,7 +84,7 @@ class Item extends Component {
 mixin.onClass(Item, PureRenderMixin);
 const styles = StyleSheet.create({
     row: {
-        height: Size.ITEM_HEIGHT,
+        height: Sizes.ITEM_HEIGHT,
         borderBottomColor: Colors.SPLIT,
         borderBottomWidth: 1 / PixelRatio.get(),
     },

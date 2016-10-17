@@ -12,7 +12,7 @@ import React, {
     Fetch
 } from 'lib'
 
-import {Size, Template, Widget} from 'data'
+import {Sizes, TemplateFactory, WidgetFactory} from 'data'
 
 import {Table, Dialog, IconLink} from 'base'
 import {TableWidget} from 'widgets';
@@ -21,7 +21,6 @@ import TableComponentHelper from './TableComponentHelper';
 import TableComponentWidthHelper from './TableComponentWidthHelper'
 import TableCell from './TableCell'
 import TableHeader from './TableHeader'
-import WidgetFactory from '../../data/Template/Widget/WidgetFactory'
 
 
 class TableComponent extends Component {
@@ -67,7 +66,8 @@ class TableComponent extends Component {
 
     _fetchData(props) {
         const {$widget, wId} = props;
-        const widget = WidgetFactory.createWidget($widget, this.context.$template, wId);
+        const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(this.context.$template));
+        console.log(widget.$get().toJS());
         return widget.getData().then((data)=> {
             this.setState({data: data});
         });

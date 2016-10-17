@@ -3,8 +3,8 @@ import React, {
     StyleSheet,
     View
 } from 'lib'
-import cn from 'classnames'
 
+import Layout from './Layout'
 
 class CenterLayout extends Component {
     constructor(props, context) {
@@ -13,8 +13,7 @@ class CenterLayout extends Component {
 
     render() {
         const {children, ...props} = this.props;
-        return <View data-flex='main:center cross:center'  {...props}
-                     className={cn('', props.className)}>{children}</View>
+        return <Layout main='center' cross='center'  {...props}>{children}</Layout>
     }
 }
 export default CenterLayout

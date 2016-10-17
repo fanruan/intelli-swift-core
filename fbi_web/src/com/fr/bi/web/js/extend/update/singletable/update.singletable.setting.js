@@ -203,6 +203,30 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                     break;
             }
         });
+        
+        //当前更新时间参数
+        var currParam = BI.i18nText("BI-Current_Update_Time");
+        var currentUpdateParam = BI.createWidget({
+            type: "bi.text_button",
+            text: currParam,
+            cls: "param-button",
+            height: 25
+        });
+        currentUpdateParam.on(BI.TextButton.EVENT_CHANGE, function () {
+            var v = self.tab.getSelect();
+            switch (v) {
+                case self._constants.PART_ADD:
+                    self.partAddSql.insertParam(currParam);
+                    break;
+                case self._constants.PART_DELETE:
+                    self.partDeleteSql.insertParam(currParam);
+                    break;
+                case self._constants.PART_MODIFY:
+                    self.partModifySql.insertParam(currParam);
+                    break;
+            }
+        });
+
 
         //预览按钮
         var previewButton = BI.createWidget({
@@ -239,7 +263,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                             text: BI.i18nText("BI-Parameter"),
                             height: 35,
                             cls: "param-comment"
-                        }, lastUpdateParam],
+                        }, lastUpdateParam, currentUpdateParam],
                         right: [previewButton]
                     },
                     height: 35,
