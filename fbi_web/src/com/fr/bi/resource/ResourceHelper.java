@@ -101,7 +101,7 @@ public class ResourceHelper {
             return buffer.toString();
         }
 
-        private void formatMapData() throws JSONException{
+        private void formatMapData() throws JSONException {
             BIMapInfoManager manager = BIMapInfoManager.getInstance();
             for (Map.Entry<String, Integer> innerLayerEntry : manager.getinnerMapLayer().entrySet()) {
                 innerMapInfo.getJSONObject("MAP_LAYER").put(innerLayerEntry.getKey(), innerLayerEntry.getValue());
@@ -185,11 +185,11 @@ public class ResourceHelper {
                 String gId = gIds.next();
                 JSONObject oneGroup = allGroups.getJSONObject(gId);
                 JSONArray nChildren = new JSONArray();
-                if(oneGroup.has("children")) {
+                if (oneGroup.has("children")) {
                     JSONArray children = oneGroup.getJSONArray("children");
-                    for(int i = 0; i < children.length(); i++) {
+                    for (int i = 0; i < children.length(); i++) {
                         JSONObject child = children.getJSONObject(i);
-                        if(allPacks.has(child.getString("id"))) {
+                        if (allPacks.has(child.getString("id"))) {
                             nChildren.put(child);
                         }
                     }
@@ -216,18 +216,18 @@ public class ResourceHelper {
                     String groupId = groupIds.next();
                     JSONObject group = allGroups.getJSONObject(groupId);
                     JSONArray nChildren = new JSONArray();
-                    if(group.has("children")) {
+                    if (group.has("children")) {
                         JSONArray children = group.getJSONArray("children");
-                        for(int i = 0; i < children.length(); i++) {
+                        for (int i = 0; i < children.length(); i++) {
                             JSONObject child = children.getJSONObject(i);
                             String childId = child.getString("id");
-                            if(packages.has(childId)) {
+                            if (packages.has(childId)) {
                                 nChildren.put(child);
                             }
                         }
                         group.put("children", nChildren);
                     }
-                    if(nChildren.length() > 0) {
+                    if (nChildren.length() > 0) {
                         groups.put(groupId, group);
                     }
                 }
@@ -648,7 +648,8 @@ public class ResourceHelper {
         return new String[]{
                 //驾驶舱相关模块
                 "com/fr/bi/web/css/modules/base/combos/widget.combo.css",
-
+                "com/fr/bi/web/css/modules/maximization/widget.maximization.css",
+                "com/fr/bi/web/css/modules/maximization/widget.maximization.chartpane.css",
                 "com/fr/bi/web/css/modules/tablefield/widget.tablefield.css",
                 "com/fr/bi/web/css/modules/tablefield/widget.tablefield.searchresult.pane.css",
 
@@ -1001,6 +1002,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/fragments/base/tabs/widget.datastyletab.js",
                 "com/fr/bi/web/js/fragments/base/items/widget.realdatacheckbox.js",
                 "com/fr/bi/web/js/modules/base/buttons/button.databasetable.js",
+                "com/fr/bi/web/js/modules/maximization/widget.maximization.js",
+                "com/fr/bi/web/js/modules/maximization/widget.maximization.chartpane.js",
                 "com/fr/bi/web/js/modules/base/combos/widget.combo.js",
                 "com/fr/bi/web/js/modules/base/combos/dimension/abstract.dimensiontarget.combo.js",
                 "com/fr/bi/web/js/modules/base/combos/dimension/dimension/abstract.dimension.combo.js",
@@ -1784,7 +1787,7 @@ public class ResourceHelper {
 
                 /**
                  * 实时报表
-                 */
+                */
 
 
                 //实时报表选择字段
@@ -1809,7 +1812,7 @@ public class ResourceHelper {
 
                 /**
                  * 切片
-                 */
+                */
 
                 //tablechartmanager
                 "com/fr/bi/web/js/aspects/tablechartmanager/aspect.tablechartmanager.js",
@@ -2168,7 +2171,7 @@ public class ResourceHelper {
 
                 /**
                  * components
-                 */
+                */
                 //模板管理
                 "com/fr/bi/web/css/components/templatemanager/liststyleitem/item.file.templatemanager.css",
                 "com/fr/bi/web/css/components/templatemanager/liststyleitem/item.folder.templatemanager.css",
@@ -2571,7 +2574,7 @@ public class ResourceHelper {
 
                 /**
                  * 基础类控件
-                 */
+                */
                 "com/fr/bi/web/js/widget/base/tip/tip.helper.js",
 
                 //text combo
@@ -2626,7 +2629,7 @@ public class ResourceHelper {
 
                 /**
                  * 详细控件实现
-                 */
+                */
                 //日期控件
                 "com/fr/bi/web/js/widget/date/trigger.date.js",
                 "com/fr/bi/web/js/widget/date/calendar/trigger.triangle.date.js",
@@ -2955,7 +2958,7 @@ public class ResourceHelper {
 
                 /**
                  * 以下是部件
-                 */
+                */
                 //loading面板
                 "com/fr/bi/web/js/components/pane.loading.js",
                 "com/fr/bi/web/js/components/pane.loading.2.js",
@@ -3032,8 +3035,8 @@ public class ResourceHelper {
         return (String[]) ArrayUtils.addAll(third, base);
     }
 
-    public static String[] getMobileJs(){
-        return new String[] {
+    public static String[] getMobileJs() {
+        return new String[]{
                 "com/fr/bi/web/mobile/mobile.jQuery.js",
                 "com/fr/bi/web/js/third/d3.js",
                 "com/fr/bi/web/js/third/es5-sham.js",
@@ -3053,8 +3056,8 @@ public class ResourceHelper {
         };
     }
 
-    public static String[] getH5Js(){
-        return new String[] {
+    public static String[] getH5Js() {
+        return new String[]{
                 "com/fr/bi/web/js/third/zepto.js",
                 "com/fr/bi/web/js/third/d3.js",
                 "com/fr/bi/web/js/third/leaflet.js",
