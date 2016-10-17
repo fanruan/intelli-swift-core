@@ -34,7 +34,8 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     private static String MAIN_DATA = "field";
     private static String ROW_COUNT_DATA = "count";
 
-    private static String TIMESTAMP_DATA = "timestamp";
+    private static String LAST_EXECUTE_TIME = "lastExecuteTime";
+    private static String CURRENT_EXECUTE_TIME = "currentExecuteTime";
     private static String SUPER_TABLES = "st";
 
     private static String REMOVED_LIST = "removedList";
@@ -53,8 +54,11 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     private ICubeLongWriterWrapper rowCountWriter;
     private ICubeLongReaderWrapper rowCountReader;
 
-    private ICubeLongWriterWrapper timeStampWriter;
-    private ICubeLongReaderWrapper timeStampReader;
+    private ICubeLongWriterWrapper lastExecuteTimeWriter;
+    private ICubeLongReaderWrapper lastExecuteTimeReader;
+
+    private ICubeLongWriterWrapper currentExecuteTimeWriter;
+    private ICubeLongReaderWrapper currentExecuteTimeReader;
 
     private ParentFieldProperty parentFieldProperty;
     private ICubeIntegerWriterWrapper removeListWriter;
@@ -100,12 +104,20 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         return removeListWriter != null;
     }
 
-    protected boolean isTimeStampWriterAvailable() {
-        return timeStampWriter != null;
+    protected boolean isLastExecuteTimeWriterAvailable() {
+        return lastExecuteTimeWriter != null;
     }
 
-    protected boolean isTimeStampReaderAvailable() {
-        return timeStampReader != null;
+    protected boolean isLastExecuteTimeReaderAvailable() {
+        return lastExecuteTimeReader != null;
+    }
+
+    protected boolean isCurrentExecuteTimeWriterAvailable() {
+        return currentExecuteTimeWriter != null;
+    }
+
+    protected boolean isCurrentExecuteTimeReaderAvailable() {
+        return currentExecuteTimeReader != null;
     }
 
     protected boolean isParentWriterAvailable() {
@@ -171,20 +183,34 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     }
 
-    private void initialTimeStampReader() throws Exception {
-        ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(TIMESTAMP_DATA);
-        rowCountLocation.setLongTypeWrapper();
-        rowCountLocation.setReaderSourceLocation();
-        timeStampReader = (ICubeLongReaderWrapper) discovery.getCubeReader(rowCountLocation);
+    private void initialLastExecuteTimeReader() throws Exception {
+        ICubeResourceLocation lastExecuteTimeLocation = this.currentLocation.buildChildLocation(LAST_EXECUTE_TIME);
+        lastExecuteTimeLocation.setLongTypeWrapper();
+        lastExecuteTimeLocation.setReaderSourceLocation();
+        lastExecuteTimeReader = (ICubeLongReaderWrapper) discovery.getCubeReader(lastExecuteTimeLocation);
 
     }
 
-    private void initialTimeStampWriter() throws Exception {
-        ICubeResourceLocation rowCountLocation = this.currentLocation.buildChildLocation(TIMESTAMP_DATA);
-        rowCountLocation.setLongTypeWrapper();
-        rowCountLocation.setWriterSourceLocation();
-        timeStampWriter = (ICubeLongWriterWrapper) discovery.getCubeWriter(rowCountLocation);
+    private void initialLastExecuteTimeWriter() throws Exception {
+        ICubeResourceLocation lastExecuteTimeLocation = this.currentLocation.buildChildLocation(LAST_EXECUTE_TIME);
+        lastExecuteTimeLocation.setLongTypeWrapper();
+        lastExecuteTimeLocation.setWriterSourceLocation();
+        lastExecuteTimeWriter = (ICubeLongWriterWrapper) discovery.getCubeWriter(lastExecuteTimeLocation);
+    }
 
+    private void initialCurrentExecuteTimeReader() throws Exception {
+        ICubeResourceLocation currentExecuteTimeLocation = this.currentLocation.buildChildLocation(CURRENT_EXECUTE_TIME);
+        currentExecuteTimeLocation.setLongTypeWrapper();
+        currentExecuteTimeLocation.setReaderSourceLocation();
+        currentExecuteTimeReader = (ICubeLongReaderWrapper) discovery.getCubeReader(currentExecuteTimeLocation);
+
+    }
+
+    private void initialCurrentExecuteTimeWriter() throws Exception {
+        ICubeResourceLocation currentExecuteTimeLocation = this.currentLocation.buildChildLocation(CURRENT_EXECUTE_TIME);
+        currentExecuteTimeLocation.setLongTypeWrapper();
+        currentExecuteTimeLocation.setWriterSourceLocation();
+        currentExecuteTimeWriter = (ICubeLongWriterWrapper) discovery.getCubeWriter(currentExecuteTimeLocation);
     }
 
 
@@ -248,23 +274,45 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         }
     }
 
-    public ICubeLongWriterWrapper getTimeStampWriter() {
+    public ICubeLongWriterWrapper getLastExecuteTimeWriter() {
         try {
-            if (!isTimeStampWriterAvailable()) {
-                initialTimeStampWriter();
+            if (!isLastExecuteTimeWriterAvailable()) {
+                initialLastExecuteTimeWriter();
             }
-            return timeStampWriter;
+            return lastExecuteTimeWriter;
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
         }
     }
 
-    public ICubeLongReaderWrapper getTimeStampReader() {
+    public ICubeLongReaderWrapper getLastExecuteTimeReader() {
         try {
-            if (!isTimeStampReaderAvailable()) {
-                initialTimeStampReader();
+            if (!isLastExecuteTimeReaderAvailable()) {
+                initialLastExecuteTimeReader();
             }
-            return timeStampReader;
+            return lastExecuteTimeReader;
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
+    public ICubeLongWriterWrapper getCurrentExecuteTimeWriter() {
+        try {
+            if (!isCurrentExecuteTimeWriterAvailable()) {
+                initialCurrentExecuteTimeWriter();
+            }
+            return currentExecuteTimeWriter;
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
+    public ICubeLongReaderWrapper getCurrentExecuteTimeReader() {
+        try {
+            if (!isCurrentExecuteTimeReaderAvailable()) {
+                initialCurrentExecuteTimeReader();
+            }
+            return currentExecuteTimeReader;
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
         }
@@ -397,8 +445,13 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     }
 
     @Override
-    public void recordLastTime() {
-        recordLastTime(System.currentTimeMillis());
+    public void recordLastExecuteTime(long time) {
+        getLastExecuteTimeWriter().recordSpecificValue(0,time);
+    }
+
+    @Override
+    public void recordCurrentExecuteTime() {
+        getCurrentExecuteTimeWriter().recordSpecificValue(0,System.currentTimeMillis());
     }
 
     @Override
@@ -415,10 +468,6 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     public List<ITableKey> getParentsTable() {
         initialParentsTable();
         return parentTable;
-    }
-
-    protected void recordLastTime(long time) {
-        getTimeStampWriter().recordSpecificValue(0, time);
     }
 
     @Override
@@ -455,9 +504,20 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     }
 
     @Override
-    public Date getCubeLastTime() {
+    public Date getLastExecuteTime() {
         try {
-            return new Date(getTimeStampReader().getSpecificValue(0));
+            return new Date(getLastExecuteTimeReader().getSpecificValue(0));
+        } catch (BIResourceInvalidException e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            BINonValueUtils.beyondControl(e.getMessage(), e);
+        }
+        return null;
+    }
+
+    @Override
+    public Date getCurrentExecuteTime() {
+        try {
+            return new Date(getCurrentExecuteTimeReader().getSpecificValue(0));
         } catch (BIResourceInvalidException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             BINonValueUtils.beyondControl(e.getMessage(), e);
@@ -527,17 +587,31 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         }
     }
 
-    protected void resetTimeStampWriter() {
-        if (isTimeStampWriterAvailable()) {
-            timeStampWriter.clear();
-            timeStampWriter = null;
+    protected void resetLastExecuteTimeWriter() {
+        if (isLastExecuteTimeWriterAvailable()) {
+            lastExecuteTimeWriter.clear();
+            lastExecuteTimeWriter = null;
         }
     }
 
-    protected void resetTimeStampReader() {
-        if (isTimeStampReaderAvailable()) {
-            timeStampReader.clear();
-            timeStampReader = null;
+    protected void resetLastExecuteTimeReader() {
+        if (isLastExecuteTimeReaderAvailable()) {
+            lastExecuteTimeReader.clear();
+            lastExecuteTimeReader = null;
+        }
+    }
+
+    protected void resetCurrentExecuteTimeWriter() {
+        if (isCurrentExecuteTimeWriterAvailable()) {
+            currentExecuteTimeWriter.clear();
+            currentExecuteTimeWriter = null;
+        }
+    }
+
+    protected void resetCurrentExecuteTimeReader() {
+        if (isLastExecuteTimeReaderAvailable()) {
+            currentExecuteTimeReader.clear();
+            currentExecuteTimeReader = null;
         }
     }
 
@@ -561,8 +635,10 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         resetFieldReader();
         resetRowCountWriter();
         resetRowCountReader();
-        resetTimeStampWriter();
-        resetTimeStampReader();
+        resetCurrentExecuteTimeReader();
+        resetCurrentExecuteTimeWriter();
+        resetLastExecuteTimeReader();
+        resetLastExecuteTimeWriter();
         resetParentReader();
         resetParentWriter();
         if (parentFieldProperty != null) {
@@ -587,11 +663,17 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         if (isRowCountWriterAvailable()) {
             rowCountWriter.forceRelease();
         }
-        if (isTimeStampWriterAvailable()) {
-            timeStampWriter.forceRelease();
+        if (isLastExecuteTimeReaderAvailable()) {
+            lastExecuteTimeReader.forceRelease();
         }
-        if (isTimeStampReaderAvailable()) {
-            timeStampReader.forceRelease();
+        if (isLastExecuteTimeWriterAvailable()) {
+            lastExecuteTimeWriter.forceRelease();
+        }
+        if (isCurrentExecuteTimeReaderAvailable()) {
+            currentExecuteTimeReader.forceRelease();
+        }
+        if (isCurrentExecuteTimeWriterAvailable()) {
+            currentExecuteTimeWriter.forceRelease();
         }
         if (isParentWriterAvailable()) {
             parentsWriter.forceRelease();
@@ -614,9 +696,13 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
             rowCountWriter.forceRelease();
             rowCountWriter = null;
         }
-        if (isTimeStampWriterAvailable()) {
-            timeStampWriter.forceRelease();
-            timeStampWriter = null;
+        if (isLastExecuteTimeWriterAvailable()) {
+            lastExecuteTimeWriter.forceRelease();
+            lastExecuteTimeWriter = null;
+        }
+        if (isCurrentExecuteTimeWriterAvailable()) {
+            currentExecuteTimeWriter.forceRelease();
+            currentExecuteTimeWriter = null;
         }
         if (isParentWriterAvailable()) {
             parentsWriter.forceRelease();
@@ -638,8 +724,13 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     }
 
     @Override
-    public boolean isCubeLastUpdateTimeAvailable() {
-        return getTimeStampReader().canRead();
+    public boolean isLastExecuteTimeAvailable() {
+        return getLastExecuteTimeReader().canRead();
+    }
+
+    @Override
+    public boolean isCurrentExecuteTimeAvailable() {
+        return getCurrentExecuteTimeReader().canRead();
     }
 
     @Override

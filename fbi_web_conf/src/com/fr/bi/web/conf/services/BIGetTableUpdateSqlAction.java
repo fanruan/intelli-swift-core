@@ -63,8 +63,8 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
         }
         if (null != tableSource) {
             CubeTableEntityService tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
-            if (tableEntityService.isCubeLastTimeAvailable()) {
-                lastUpdateDate = tableEntityService.getCubeLastTime();
+            if (tableEntityService.isLastExecuteTimeAvailable()) {
+                lastUpdateDate = tableEntityService.getLastExecuteTime();
             }
         }
         String sql = parseSQL(stringSql, lastUpdateDate);
@@ -112,14 +112,24 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
         WebUtils.printAsJSON(res, jo);
     }
 
-    private String parseSQL(String sql, Date date) {
-        Pattern pat = Pattern.compile("\\$[\\{][^\\}]*[\\}]");
-        Matcher matcher = pat.matcher(sql);
-        String dateStr = DateUtils.DATETIMEFORMAT2.format(date);
-        while (matcher.find()) {
-            String matchStr = matcher.group(0);
-            sql = sql.replace(matchStr, dateStr);
+    private String parseSQL(String sql, Date lastDate) {
+//        Pattern pat = Pattern.compile("\\$[\\{][^\\}]*[\\}]");
+        Pattern lastTimePat = Pattern.compile("\\$[\\{]上次更新时间[\\}]");
+        Matcher lastTimeMatcher = lastTimePat.matcher(sql);
+        String lastDateStr = DateUtils.DATETIMEFORMAT2.format(lastDate);
+        while (lastTimeMatcher.find()) {
+            String lastMatchStr = lastTimeMatcher.group(0);
+            sql = sql.replace(lastMatchStr, lastDateStr);
         }
+
+        Pattern currentTimePat = Pattern.compile("\\$[\\{]当前更新时间[\\}]");
+        Matcher currentTimeMatcher = currentTimePat.matcher(sql);
+        String currentDateStr = DateUtils.DATETIMEFORMAT2.format(System.currentTimeMillis());
+        while (currentTimeMatcher.find()) {
+            String currentMatchStr = currentTimeMatcher.group(0);
+            sql = sql.replace(currentMatchStr, currentDateStr);
+        }
+
         return sql;
     }
 }

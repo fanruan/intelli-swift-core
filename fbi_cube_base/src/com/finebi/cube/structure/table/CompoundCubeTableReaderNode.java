@@ -81,9 +81,13 @@ public class CompoundCubeTableReaderNode implements CubeTableEntityService {
     }
 
     @Override
-    public void recordLastTime() {
+    public void recordLastExecuteTime(long time) {
         throw new UnsupportedOperationException();
+    }
 
+    @Override
+    public void recordCurrentExecuteTime() {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -166,8 +170,13 @@ public class CompoundCubeTableReaderNode implements CubeTableEntityService {
     }
 
     @Override
-    public Date getCubeLastTime() {
-        return masterTable.getCubeLastTime();
+    public Date getLastExecuteTime() {
+        return masterTable.getLastExecuteTime();
+    }
+
+    @Override
+    public Date getCurrentExecuteTime() {
+        return masterTable.getCurrentExecuteTime();
     }
 
     @Override
@@ -226,9 +235,15 @@ public class CompoundCubeTableReaderNode implements CubeTableEntityService {
     }
 
     @Override
-    public boolean isCubeLastTimeAvailable() {
-        return masterTable.isCubeLastTimeAvailable();
+    public boolean isLastExecuteTimeAvailable() {
+        return masterTable.isLastExecuteTimeAvailable();
     }
+
+    @Override
+    public boolean isCurrentExecuteTimeAvailable() {
+        return masterTable.isCurrentExecuteTimeAvailable();
+    }
+
 
     @Override
     public void recordFieldNamesFromParent(Set<String> fieldNames) {

@@ -199,7 +199,7 @@ public class BICubeTableAdapter implements ICubeTableService {
 
     @Override
     public Date getLastTime() {
-        return primaryTable.getCubeLastTime();
+        return primaryTable.getLastExecuteTime();
     }
 
     @Override

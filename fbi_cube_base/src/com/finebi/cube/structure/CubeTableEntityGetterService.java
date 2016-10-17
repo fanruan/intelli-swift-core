@@ -44,12 +44,14 @@ public interface CubeTableEntityGetterService extends Release, ICubeVersion {
 
     ICubeFieldSource getSpecificColumn(String fieldName) throws BICubeColumnAbsentException;
 
-    Date getCubeLastTime();
+    Date getLastExecuteTime();
+
+    Date getCurrentExecuteTime();
 
     /**
      * 获取列的接口
      *
-     * @param key 列
+     * @param columnKey 列
      * @return 获取列的接口
      */
     CubeColumnReaderService getColumnDataGetter(BIColumnKey columnKey) throws BICubeColumnAbsentException;
@@ -75,5 +77,7 @@ public interface CubeTableEntityGetterService extends Release, ICubeVersion {
 
     boolean isRowCountAvailable();
 
-    boolean isCubeLastTimeAvailable();
+    boolean isLastExecuteTimeAvailable();
+
+    boolean isCurrentExecuteTimeAvailable();
 }

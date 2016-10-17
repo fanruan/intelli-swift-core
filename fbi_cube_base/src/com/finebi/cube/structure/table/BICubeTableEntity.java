@@ -92,8 +92,13 @@ public class BICubeTableEntity implements CubeTableEntityService {
     }
 
     @Override
-    public void recordLastTime() {
-        tableProperty.recordLastTime();
+    public void recordLastExecuteTime(long time) {
+        tableProperty.recordLastExecuteTime(time);
+    }
+
+    @Override
+    public void recordCurrentExecuteTime() {
+        tableProperty.recordCurrentExecuteTime();
     }
 
     @Override
@@ -180,8 +185,13 @@ public class BICubeTableEntity implements CubeTableEntityService {
     }
 
     @Override
-    public Date getCubeLastTime() {
-        return tableProperty.getCubeLastTime();
+    public Date getLastExecuteTime() {
+        return tableProperty.getLastExecuteTime();
+    }
+
+    @Override
+    public Date getCurrentExecuteTime() {
+        return tableProperty.getCurrentExecuteTime();
     }
 
     @Override
@@ -245,8 +255,13 @@ public class BICubeTableEntity implements CubeTableEntityService {
     }
 
     @Override
-    public boolean isCubeLastTimeAvailable() {
-        return tableProperty.isCubeLastUpdateTimeAvailable();
+    public boolean isLastExecuteTimeAvailable() {
+        return tableProperty.isLastExecuteTimeAvailable();
+    }
+
+    @Override
+    public boolean isCurrentExecuteTimeAvailable() {
+        return tableProperty.isCurrentExecuteTimeAvailable();
     }
 
     public long getCubeVersion() {
