@@ -178,6 +178,52 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         }
     },
 
+    _onClickLinkage: function () {
+        var self = this, wId = this.model.get("id");
+
+        var layer = BI.Layers.make(self.getName(), "body");
+        var linkage = BI.createWidget({
+            type: "bi.linkage",
+            element: layer,
+            wId: wId
+        });
+        linkage.on(BI.Linkage.EVENT_CONFIRM, function () {
+            var values = linkage.getValue();
+            self.model.set("linkages", values);
+            BI.Layers.remove(self.getName());
+        });
+        linkage.on(BI.Linkage.EVENT_CANCEL, function () {
+            BI.Layers.remove(self.getName());
+        });
+        linkage.populate();
+        BI.Layers.show(this.getName());
+    },
+    _onClickShowName: function () {
+        var settings = this.model.get("settings");
+        settings.widget_setting.show_name = !BI.Utils.getWSShowNameByID(this.model.get("id"));
+        this.model.set("settings", settings);
+        this._refreshLayout();
+    },
+    _onClickNamePosLeft: function () {
+        var settings = this.model.get("settings");
+        settings.name_pos = BICst.DASHBOARD_WIDGET_NAME_POS_LEFT;
+        this.model.set("settings", settings);
+        this._refreshTitlePosition();
+    },
+    _onClickNamePosCenter: function () {
+        var settings = this.model.get("settings");
+        settings.name_pos = BICst.DASHBOARD_WIDGET_NAME_POS_CENTER;
+        this.model.set("settings", settings);
+        this._refreshTitlePosition();
+    },
+    _onClickDelete: function () {
+        var self = this;
+        BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete") + this.model.get("name") + "?", function (v) {
+            if (v === true) {
+                self.model.destroy();
+            }
+        });
+    },
     _createTools: function () {
         var self = this, wId = this.model.get("id");
 
@@ -206,53 +252,29 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     self._expandWidget();
                     break;
                 case  BICst.DASHBOARD_WIDGET_LINKAGE:
-                    var layer = BI.Layers.make(self.getName(), "body");
-                    var linkage = BI.createWidget({
-                        type: "bi.linkage",
-                        element: layer,
-                        wId: wId
-                    });
-                    linkage.on(BI.Linkage.EVENT_CONFIRM, function () {
-                        var values = linkage.getValue();
-                        self.model.set("linkages", values);
-                        BI.Layers.remove(self.getName());
-                    });
-                    linkage.on(BI.Linkage.EVENT_CANCEL, function () {
-                        BI.Layers.remove(self.getName());
-                    });
-                    linkage.populate();
-                    BI.Layers.show(self.getName());
+                    self._onClickLinkage();
                     break;
                 case BICst.DASHBOARD_WIDGET_SHOW_NAME:
-                    var settings = self.model.get("settings");
-                    settings.show_name = !BI.Utils.getWSShowNameByID(self.model.get("id"));
-                    self.model.set("settings", settings);
-                    self._refreshLayout();
+                    // self._onClickShowName();
+                    // var settings = self.model.get("settings");
+                    // settings.show_name = !BI.Utils.getWSShowNameByID(self.model.get("id"));
+                    // self.model.set("settings", settings);
+                    // self._refreshLayout();
                     break;
                 case BICst.DASHBOARD_WIDGET_RENAME:
                     self.title.focus();
                     break;
                 case BICst.DASHBOARD_WIDGET_NAME_POS_LEFT:
-                    var settings = self.model.get("settings");
-                    settings.name_pos = BICst.DASHBOARD_WIDGET_NAME_POS_LEFT;
-                    self.model.set("settings", settings);
-                    self._refreshTitlePosition();
+                    self._onClickNamePosLeft();
                     break;
                 case BICst.DASHBOARD_WIDGET_NAME_POS_CENTER:
-                    var settings = self.model.get("settings");
-                    settings.name_pos = BICst.DASHBOARD_WIDGET_NAME_POS_CENTER;
-                    self.model.set("settings", settings);
-                    self._refreshTitlePosition();
+                    self._onClickNamePosCenter();
                     break;
                 case BICst.DASHBOARD_WIDGET_COPY:
                     self.model.copy();
                     break;
                 case BICst.DASHBOARD_WIDGET_DELETE:
-                    BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete") + self.model.get("name") + "?", function (v) {
-                        if (v === true) {
-                            self.model.destroy();
-                        }
-                    });
+                    self._onClickDelete();
                     break;
             }
         });
@@ -289,22 +311,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     self._expandWidget();
                     break;
                 case BICst.DASHBOARD_WIDGET_LINKAGE:
-                    var layer = BI.Layers.make(self.getName(), "body");
-                    var linkage = BI.createWidget({
-                        type: "bi.linkage",
-                        element: layer,
-                        wId: wId
-                    });
-                    linkage.on(BI.Linkage.EVENT_CONFIRM, function () {
-                        var values = linkage.getValue();
-                        self.model.set("linkages", values);
-                        BI.Layers.remove(self.getName());
-                    });
-                    linkage.on(BI.Linkage.EVENT_CANCEL, function () {
-                        BI.Layers.remove(self.getName());
-                    });
-                    linkage.populate();
-                    BI.Layers.show(self.getName());
+                    self._onClickLinkage();
                     break;
                 case BICst.DASHBOARD_WIDGET_SHOW_NAME:
                     var settings = self.model.get("settings");
@@ -316,16 +323,10 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     self.title.focus();
                     break;
                 case BICst.DASHBOARD_WIDGET_NAME_POS_LEFT:
-                    var settings = self.model.get("settings");
-                    settings.name_pos = BICst.DASHBOARD_WIDGET_NAME_POS_LEFT;
-                    self.model.set("settings", settings);
-                    self._refreshTitlePosition();
+                    self._onClickNamePosLeft();
                     break;
                 case BICst.DASHBOARD_WIDGET_NAME_POS_CENTER:
-                    var settings = self.model.get("settings");
-                    settings.name_pos = BICst.DASHBOARD_WIDGET_NAME_POS_CENTER;
-                    self.model.set("settings", settings);
-                    self._refreshTitlePosition();
+                    self._onClickNamePosCenter();
                     break;
                 case BICst.DASHBOARD_WIDGET_FILTER:
                     self._onClickFilter();
@@ -338,11 +339,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     self.model.copy();
                     break;
                 case BICst.DASHBOARD_WIDGET_DELETE:
-                    BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete") + self.model.get("name") + "?", function (v) {
-                        if (v === true) {
-                            self.model.destroy();
-                        }
-                    });
+                    self._onClickDelete();
                     break;
             }
         });
