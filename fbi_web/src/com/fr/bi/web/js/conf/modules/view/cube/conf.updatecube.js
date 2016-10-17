@@ -54,7 +54,13 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
 
         return BI.createWidget({
             type: "bi.left",
-            items: [this.immediateButton],
+            items: [this.immediateButton, {
+                type: "bi.label",
+                height: 28,
+                lgap: 5,
+                cls: "table-self-update-tip",
+                text: BI.i18nText("BI-Table_Self_Update")
+            }],
             height: 30
         })
     },

@@ -34,7 +34,7 @@ BIDezi.TreeLabelView = BI.inherit(BI.View, {
             type: "bi.select_tree_label",
             wId: this.model.get("id")
         });
-        this.treeLabel.on(BI.SelectTreeDataCombo.EVENT_CONFIRM, function () {
+        this.treeLabel.on(BI.SelectTreeLabel.EVENT_CONFIRM, function () {
             self.model.set("value", self.treeLabel.getValue());
         });
 
@@ -212,7 +212,7 @@ BIDezi.TreeLabelView = BI.inherit(BI.View, {
             isLayer: true
         }).skipTo("detail", "detail", "detail", {}, {
             id: wId
-        })
+        });
         BI.Broadcasts.send(BICst.BROADCAST.DETAIL_EDIT_PREFIX + wId);
     },
 

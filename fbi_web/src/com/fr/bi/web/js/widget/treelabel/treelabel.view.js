@@ -10,7 +10,6 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.TreeLabelView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-tree-label-view",
-            width: 330,
             titleWidth: 55
         })
     },
@@ -20,43 +19,15 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.container = BI.createWidget();
         this.items = [];
+        this.title = BI.createWidget();
         this._initView();
-        this.titile = BI.createWidget({
-            type: "bi.vertical",
-            items: BI.createItems(o.titles, {
-                type: "bi.label",
-                height: this._constant.LIST_LABEL_HEIGHT,
-                width: o.titleWidth
-            }),
-            height: this._constant.LIST_LABEL_HEIGHT * o.titles.length
-        });
-        BI.createWidget({
-            type: "bi.vertical",
-            element: this.container,
-            items: this.items
-        });
-        this.right = BI.createWidget({
-            type: "bi.horizontal",
-            cls: "list-label-group",
-            items: [this.container],
-            height: this._constant.LIST_LABEL_HEIGHT * this.items.length,
-            width: o.width - o.titleWidth - this._constant.DEFAULT_LEFT_GAP
-        });
-        BI.createWidget({
-            type: "bi.horizontal",
-            items: [this.titile, {
-                el: this.right,
-                lgap: this._constant.DEFAULT_LEFT_GAP
-            }],
-            element: this.element,
-            width: o.width
-        })
+
     },
 
     _initView: function () {
         var self = this, o = this.options;
-        var op = {};
-        o.itemsCreator(op, function (items) {
+        o.itemsCreator({}, function (v) {
+            var items = v.items || [], titles = BI.isEmptyArray(o.titles) ? v.titles || [] : o.titles;
             BI.each(items, function (idx, item) {
                 var temp = BI.createWidget({
                     type: "bi.list_label",
@@ -64,23 +35,72 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
                     showTitle: false
                 });
                 temp.on(BI.ListLabel.EVENT_CHANGE, function (value, id) {
-                    self._changeView(idx, value, id);
-                    self.fireEvent(BI.TreeLabelView.EVENT_CHANGE);
+                    self._changeView({
+                        floor: idx,
+                        value: value,
+                        id: id,
+                        type: 1
+                    });
+                    self.fireEvent(BI.TreeLabelView.EVENT_CHANGE, arguments);
                 });
                 self.items.push(temp);
+            });
+            self.title = BI.createWidget({
+                type: "bi.button_group",
+                items: BI.createItems(titles, {
+                    type: "bi.label",
+                    height: self._constant.LIST_LABEL_HEIGHT,
+                    width: o.titleWidth
+                }),
+                height: self._constant.LIST_LABEL_HEIGHT * titles.length,
+                layouts: [{
+                    type: "bi.vertical"
+                }]
+            });
+            BI.createWidget({
+                type: "bi.vertical",
+                element: self.container,
+                items: self.items
+            });
+            self.right = BI.createWidget({
+                type: "bi.button_group",
+                cls: "list-label-group",
+                items: [self.container],
+                height: self._constant.LIST_LABEL_HEIGHT * self.items.length,
+                layouts: [{
+                    type: "bi.horizontal"
+                }]
+            });
+            BI.createWidget({
+                type: "bi.absolute",
+                items: [{
+                    el: self.title,
+                    left:0,
+                    right:0,
+                    top:0,
+                    bottom:0,
+                    width: 55
+                }, {
+                    el: self.right,
+                    left: 60,
+                    right:0,
+                    top:0,
+                    bottom:0
+                }],
+                element: self.element
             })
         })
     },
 
-    _changeView: function (floor, value, id) {
-        if (floor === this.items.length - 1) {
+    _changeView: function (op) {
+        if (op.floor === this.items.length - 1) {
             return;
         }
         var options = {};
-        options.id = id;
-        options.type = 1;
-        options.floor = floor;
-        options.value = value;
+        options.id = op.id;
+        options.type = op.type;
+        options.floor = op.floor;
+        options.value = op.value;
         options.selectedValues = this.getValue();
         this.options.itemsCreator(options, BI.bind(this._updateView, this));
     },
@@ -89,39 +109,30 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
         var self = this;
         var updateList = this.items.slice(floor + 1);
         var values = items.slice(floor + 1);
-        BI.each(updateList, function (idx, listLabel) {
-            if (BI.isNull(values[idx])) {
+        for(var i = 0;i<updateList.length;i++) {
+            if (BI.isNull(values[i])) {
                 return;
             }
-            var value = listLabel.getValue();
-            listLabel.populate({
-                items: values[idx]
+            var value = updateList[i].getValue();
+            updateList[i].populate({
+                items: values[i]
             });
-            listLabel.setValue(value);
-        });
+            updateList[i].setValue(value);
+
+            var now = updateList[i].getValue();
+            if(value !== now) {     //接着刷新剩余行
+                return;
+            }
+        }
     },
 
-    setValue: function (v) {
-        var value = [];
-        BI.each(this.items, function (idx, item) {
-            if (BI.isNotEmptyArray(v[idx])) {
-                item.setValue(v[idx] || []);
-            }
-            if (BI.isEmptyArray(v[idx]) || BI.isNull(v[idx])) {
-                value.push(["*"]);
-            } else {
-                var temp = [];
-                // 排除错误的设置的值
-                BI.each(item.items, function (idx, itemValue) {
-                    temp.push(itemValue.value)
-                });
-                var valueTemp = BI.intersection(v[idx], temp);
-                if (BI.isEmptyArray(valueTemp)) {
-                    valueTemp = ["*"];
-                }
-                value.push(valueTemp);
-            }
-        });
+    refreshView: function (data) {
+        if(data.titles) {
+            this.setTitles(data.titles);
+        }
+        if(data.items) {
+            this.setItems(data.items);
+        }
     },
 
     getSelectedButtons: function () {
@@ -146,6 +157,84 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
             result.push(item.getValue());
         });
         return result;
+    },
+
+    setItems: function (items) {
+        var self =this;
+        var length = this.right.getAllButtons().length;
+        var deletes = [];
+        for(var i=0;i < length;i++) {
+            deletes.push(i);
+        }
+        this.right.removeItemAt(deletes);
+        self.items = [];
+        BI.each(items, function (idx, values) {
+            var temp = BI.createWidget({
+                type: "bi.list_label",
+                items: values,
+                showTitle: false
+            });
+            temp.on(BI.ListLabel.EVENT_CHANGE, function (value, id) {
+                self._changeView({
+                    floor: idx,
+                    value: value,
+                    id: id,
+                    type: 1
+                });
+                self.fireEvent(BI.TreeLabelView.EVENT_CHANGE, arguments);
+            });
+            self.items.push(temp);
+        });
+        var temp = BI.createWidget({
+            type: "bi.vertical",
+            items: self.items
+        });
+        this.right.addItems([temp]);
+        this.right.setHeight(self.items.length * this._constant.LIST_LABEL_HEIGHT);
+    },
+
+    setTitles: function (titles) {
+        var length = this.title.getAllButtons().length;
+        var deletes = [];
+        for(var i=0;i < length;i++) {
+            deletes.push(i);
+        }
+        this.title.removeItemAt(deletes);
+        this.title.addItems(BI.createItems(titles, {
+            type: "bi.label",
+            height: this._constant.LIST_LABEL_HEIGHT,
+            width: this.options.titleWidth
+        }));
+        this.title.setHeight(titles.length * this._constant.LIST_LABEL_HEIGHT);
+    },
+
+    changeValue: function (v) {
+        BI.each(this.items, function (idx, item) {
+            item.changeValue(v[idx] || []);
+        });
+    },
+
+    setValue: function (v) {
+        var value = [];
+        BI.each(this.items, function (idx, item) {
+            if (BI.isNotEmptyArray(v[idx])) {
+                item.setValue(v[idx] || []);
+            }
+            if (BI.isEmptyArray(v[idx]) || BI.isNull(v[idx])) {
+                value.push(["_*_"]);
+            } else {
+                var temp = [];
+                // 排除错误的设置的值
+                BI.each(item.items, function (idx, itemValue) {
+                    temp.push(itemValue.value)
+                });
+                var valueTemp = BI.intersection(v[idx], temp);
+                if (BI.isEmptyArray(valueTemp)) {
+                    valueTemp = ["_*_"];
+                }
+                value.push(valueTemp);
+            }
+        });
     }
 });
 BI.TreeLabelView.EVENT_CHANGE = "BI.TreeLabelView.EVENT_CHANGE";

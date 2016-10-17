@@ -207,6 +207,9 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 open: false
             }, table));
         });
+        if(tablesStructure.length === 5){
+            tablesStructure[0].open = true;
+        }
         return tablesStructure;
     },
 

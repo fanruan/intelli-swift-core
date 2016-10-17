@@ -17,9 +17,20 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
         BI.MultiDateParamPane.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
 
+        var items = self._getDateWidgetStructure();
+        var triggerItems = BI.deepClone(items);
+        BI.each(triggerItems, function(idx, item){
+            if(BI.has(item, "pId")){
+                item.text = item.title = BI.Utils.getWidgetNameByID(item.pId) + "(" + item.text +")"
+            }
+        });
         this.tree = BI.createWidget({
             type: "bi.single_tree_combo",
-            items: self._getDateWidgetStructure(),
+            trigger: {
+                type: "bi.single_tree_trigger",
+                items: triggerItems
+            },
+            items: items,
             width: 200
         });
 
@@ -77,8 +88,8 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
                 widgetItems.push({
                     id: BI.UUID(),
                     pId: w,
-                    text: BI.Utils.getWidgetNameByID(w) + BI.i18nText("BI-De") + BI.i18nText("BI-Start_Time"),
-                    title: BI.Utils.getWidgetNameByID(w) + BI.i18nText("BI-De") + BI.i18nText("BI-Start_Time"),
+                    text: BI.i18nText("BI-Start_Time"),
+                    title: BI.i18nText("BI-Start_Time"),
                     value: {
                         wId: w,
                         startOrEnd: BI.MultiDateParamPane.start
@@ -87,8 +98,8 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
                 widgetItems.push({
                     id: BI.UUID(),
                     pId: w,
-                    text: BI.Utils.getWidgetNameByID(w) + BI.i18nText("BI-De") + BI.i18nText("BI-End_Time"),
-                    title: BI.Utils.getWidgetNameByID(w) + BI.i18nText("BI-De") + BI.i18nText("BI-End_Time"),
+                    text: BI.i18nText("BI-End_Time"),
+                    title: BI.i18nText("BI-End_Time"),
                     value: {
                         wId: w,
                         startOrEnd: BI.MultiDateParamPane.end
