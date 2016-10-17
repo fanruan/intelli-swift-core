@@ -82,10 +82,11 @@ BI.BarPopoverSection = BI.inherit(BI.PopoverSection, {
     },
 
     rebuildSouth: function (south) {
-        var self = this;
+        var self = this, o = this.options;
         this.sure = BI.createWidget({
             type: 'bi.button',
             text: this.options.btns[0],
+            warningTitle: o.warningTitle,
             height: 30,
             value: 0,
             handler: function (v) {

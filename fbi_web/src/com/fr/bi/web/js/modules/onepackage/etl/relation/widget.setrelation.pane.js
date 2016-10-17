@@ -5,9 +5,9 @@
  */
 BI.RelationSetPane = BI.inherit(BI.BarPopoverSection, {
     _defaultConfig: function(){
-        return BI.RelationSetPane.superclass._defaultConfig.apply(this, arguments, {
-
-        })
+        return BI.extend(BI.RelationSetPane.superclass._defaultConfig.apply(this, arguments), {
+            warningTitle: BI.i18nText("BI-Please_Select_Relation_Between_Tables")
+        });
     },
 
     _init: function(){
