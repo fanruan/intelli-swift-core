@@ -4,7 +4,7 @@ import Immutable from 'immutable'
 
 import {
     ReactComponentWithPureRenderMixin, ReactComponentWithImmutableRenderMixin,
-    cn, sc, math, isNil, emptyFunction, shallowEqual, immutableShallowEqual, isEqual, isEmpty, each, map, clone,
+    cn, sc, math, isNil, emptyFunction, shallowEqual, immutableShallowEqual, isEqual, isEmpty, each, clone,
     translateDOMPositionXY, requestAnimationFrame
 } from 'core'
 import React, {
@@ -45,51 +45,18 @@ import TargetComponent from './Dimensions/TargetComponent'
 import DimensionSortableComponent from './Dimensions/DimensionSortableComponent'
 
 
-const {SortableContainer, SortableElement} = Sortable;
+const {SortableContainer} = Sortable;
 
-class Header extends Component {
-    constructor(props, context) {
-        super(props, context)
-    }
-
-    render() {
-        const {viewItem, collapsed} = this.props;
-        return <TextButton key={viewItem.viewId} textAlign='left' style={styles.collapseHeader} onPress={()=> {
-            const collapsed = clone(collapsed);
-            collapsed[viewItem.viewId] = !collapsed[viewItem.viewId];
-            this.setState({
-                collapsed
-            })
-        }}>{viewItem.text}</TextButton>
-    }
-}
-const SortHeader = SortableElement(({...props}) => {
-    return <Header {...props}/>
-});
-const SortableList = SortableContainer(({viewItems, context}) => {
-    const header = [], body = [], footer = [];
-    each(viewItems, (items, viewId)=> {
-        const viewItem = context._helper.getViewItemByViewId(viewId);
-        const h = <Header viewItem={viewItem} collapsed={{}}/>;
-        if (header.length === 0) {
-            header.push(h);
-        } else {
-            body.push(<SortHeader index={viewItem.viewId} collection={0} viewItem={viewItem} collapsed={{}}/>);
-        }
-        items.forEach((value, index) => {
-            body.push(<DimensionSortableComponent key={`item-${value.dId}`}
-                                                  index={`${viewItem.viewId}-${index}`}
-                                                  value={value} wId={context.props.wId}
-                                                  $widget={context.props.$widget}
-                                                  collection={0}
-                                                  dId={value.dId}/>);
-        });
-    });
-    return <ScrollView>
-        {header}
-        {body}
-        {footer}
-    </ScrollView>;
+const SortableList = SortableContainer(({items, wId, $widget}) => {
+    return (
+        <ScrollView style={{height: Sizes.ITEM_HEIGHT * items.length}}>
+            {items.map((value, index) =>
+                <DimensionSortableComponent key={`item-${value.dId}`} index={index} value={value} wId={wId}
+                                            $widget={$widget}
+                                            dId={value.dId}/>
+            )}
+        </ScrollView>
+    );
 });
 
 class SettingsComponent extends Component {
@@ -146,8 +113,8 @@ class SettingsComponent extends Component {
         </Layout>
     }
 
-    _onSortEnd = ({oldIndex, newIndex,}) => {
-        const $widget = this._helper.doMove(oldIndex, newIndex);
+    _onSortEnd = ({oldIndex, newIndex, viewId}) => {
+        const $widget = this._helper.doMove(viewId, oldIndex, newIndex);
         this.setState({
             $widget: $widget
         });
@@ -195,38 +162,22 @@ class SettingsComponent extends Component {
         </ScrollView>
     }
 
-    _renderSortableContainer() {
-
-        const viewItems = this._helper.getAllDimensionItems();
-        return <SortableList viewItems={viewItems}
-                             context={this}
-                             onSortEnd={({oldIndex, newIndex})=> {
-                                 this._onSortEnd({
-                                     oldIndex, newIndex
-                                 });
-                             }}
-                             useDragHandle={true}
-                             lockToContainerEdges={true}
-                             lockAxis='y'
-                             helperClass='sortable-helper'
-        />
-    }
-
-    _renderUnSortableContainer() {
+    _renderDialog() {
         const array = [];
         each(this._helper.getViewItems(), (viewItem)=> {
-            array.push(<Header viewItem={viewItem} collapsed={this.state.collapsed}/>);
+            array.push(<TextButton key={viewItem.viewId} textAlign='left' style={styles.collapseHeader} onPress={()=> {
+                const collapsed = clone(this.state.collapsed);
+                collapsed[viewItem.viewId] = !collapsed[viewItem.viewId];
+                this.setState({
+                    collapsed
+                })
+            }}>{viewItem.text}</TextButton>);
             array.push(<Collapsible key={`collapsible-${viewItem.viewId}`}
                                     collapsed={this.state.collapsed[viewItem.viewId] || false}>
-                {this._renderUnSortableList(viewItem)}
+                {this.state.sortable ? this._renderSortableList(viewItem) : this._renderUnSortableList(viewItem)}
             </Collapsible>)
         });
-        return <ScrollView>
-            {array}
-        </ScrollView>;
-    }
 
-    _renderDialog() {
         return <Layout dir='top' box='first'>
             <View style={{height: 100}}>
                 <TextButton onPress={()=> {
@@ -235,7 +186,9 @@ class SettingsComponent extends Component {
                     })
                 }} style={styles.sortChangeButton}>{this.state.sortable ? '退出排序' : '排序'}</TextButton>
             </View>
-            {this.state.sortable ? this._renderSortableContainer() : this._renderUnSortableContainer()}
+            <ScrollView>
+                {array}
+            </ScrollView>
         </Layout>;
     }
 
