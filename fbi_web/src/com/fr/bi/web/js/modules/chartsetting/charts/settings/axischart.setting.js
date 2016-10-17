@@ -222,13 +222,13 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //左轴标签
-        this.showLeftLable = BI.createWidget({
+        this.showLeftLabel = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Label"),
             width: 100
         });
 
-        this.showLeftLable.on(BI.Controller.EVENT_CHANGE, function () {
+        this.showLeftLabel.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
 
@@ -330,7 +330,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.isShowTitleLY, this.editTitleLY]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.showLeftLable]
+                    items: [this.showLeftLabel]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.leftLabel]
@@ -430,13 +430,13 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //右轴标签
-        this.showRightLable = BI.createWidget({
+        this.showRightLabel = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Label"),
             width: 100
         });
 
-        this.showRightLable.on(BI.Controller.EVENT_CHANGE, function () {
+        this.showRightLabel.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
 
@@ -538,7 +538,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.isShowTitleRY, this.editTitleRY]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.showRightLable]
+                    items: [this.showRightLabel]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.rightLabel]
@@ -588,13 +588,13 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //显示分类轴标签
-        this.showCatLable = BI.createWidget({
+        this.showCatLabel = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Label"),
             width: 100
         });
 
-        this.showCatLable.on(BI.Controller.EVENT_CHANGE, function () {
+        this.showCatLabel.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
 
@@ -633,15 +633,6 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                 type: "bi.left",
                 cls: "detail-style",
                 items: BI.createItems([{
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Text_Direction"),
-                    cls: "attr-names"
-                }, {
-                    type: "bi.label",
-                    text: "。",
-                    textHeight: 30,
-                    height: constant.SINGLE_LINE_HEIGHT
-                }, {
                     type: "bi.vertical_adapt",
                     items: [this.isShowTitleX]
                 }, {
@@ -649,7 +640,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.editTitleX]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.showCatLable]
+                    items: [this.showCatLabel]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.catLabel]
