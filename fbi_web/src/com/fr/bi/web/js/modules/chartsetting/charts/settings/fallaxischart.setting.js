@@ -59,15 +59,6 @@ BI.FallAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.left",
             cls: "single-line-settings",
             items: BI.createItems([{
-                type: "bi.label",
-                text: BI.i18nText("BI-Component_Widget"),
-                cls: "line-title",
-            }, {
-                type: "bi.label",
-                text: BI.i18nText("BI-Title"),
-                cls: "line-title",
-                lgap: 38
-            }, {
                 type: "bi.vertical_adapt",
                 items: [this.showTitle]
             }, {
@@ -444,6 +435,47 @@ BI.FallAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             }]
         });
 
+        //网格线设置
+        this.hGridLine = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Horizontal"),
+            width: 65
+        });
+
+        this.hGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+        });
+
+        this.hGridLineColor = BI.createWidget({
+            type: "bi.color_chooser",
+            width: 30,
+            height: 30
+        });
+
+        this.hGridLineColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+        });
+
+        this.vGridLine = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Vertical"),
+            width: 65
+        });
+
+        this.vGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+        });
+
+        this.vGridLineColor = BI.createWidget({
+            type: "bi.color_chooser",
+            width: 30,
+            height: 30
+        });
+
+        this.vGridLineColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+        });
+
         //数据标签
         this.showDataLabel = BI.createWidget({
             type: "bi.multi_select_item",
@@ -483,6 +515,15 @@ BI.FallAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.FallAxisChartSetting.EVENT_CHANGE);
         });
 
+        //数据点提示详细设置
+        this.tooltipSetting = BI.createWidget({
+            type: "bi.tooltip_detailed_setting_combo"
+        });
+
+        this.tooltipSetting.on(BI.TooltipDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+        });
+
         this.showElement = BI.createWidget({
             type: "bi.horizontal_adapt",
             columnSize: [80],
@@ -498,6 +539,22 @@ BI.FallAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 type: "bi.left",
                 cls: "detail-style",
                 items: BI.createItems([{
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Grid_Line"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.hGridLine]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.hGridLineColor]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.vGridLine]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.vGridLineColor]
+                }, {
                     type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
                 }, {
@@ -506,6 +563,13 @@ BI.FallAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.showZoom]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Tooltip"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.tooltipSetting]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -618,10 +682,8 @@ BI.FallAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.isShowTitleX.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
         this.editTitleLY.setValue(titleLY);
         this.editTitleX.setValue(titleX);
-        this.text_direction.setValue(BI.Utils.getWSTextDirectionByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
         this.showDataTable.setSelected(BI.Utils.getWSShowDataTableByID(wId));
-        this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
         this.showZoom.setSelected(BI.Utils.getWSShowZoomByID(wId));
         this.minimalistModel.setSelected(BI.Utils.getWSMinimalistByID(wId));
         this._invisible(!BI.Utils.getWSMinimalistByID(wId));
@@ -629,7 +691,6 @@ BI.FallAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.customYScale.setValue(BI.Utils.getWSCustomYScale(wId));
         this.customYScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
         this.YSeparators.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
-        this.XSeparators.setSelected(BI.Utils.getWSRightNumberSeparatorsByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false);
@@ -651,16 +712,13 @@ BI.FallAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             show_x_axis_title: this.isShowTitleX.isSelected(),
             left_y_axis_title: this.editTitleLY.getValue(),
             x_axis_title: this.editTitleX.getValue(),
-            text_direction: this.text_direction.getValue(),
             show_data_label: this.showDataLabel.isSelected(),
             show_data_table: this.showDataTable.isSelected(),
-            show_grid_line: this.gridLine.isSelected(),
             show_zoom: this.showZoom.isSelected(),
             minimalist_model: this.minimalistModel.isSelected(),
             show_y_custom_scale: this.showYCustomScale.isSelected(),
             custom_y_scale: this.customYScale.getValue(),
             num_separators: this.YSeparators.isSelected(),
-            right_num_separators: this.XSeparators.isSelected(),
             chart_legend: BICst.CHART_LEGENDS.NOT_SHOW
         }
     },
@@ -680,16 +738,13 @@ BI.FallAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.isShowTitleX.setSelected(v.x_axis_title);
         this.editTitleLY.setValue(v.left_y_axis_title);
         this.editTitleX.setValue(v.x_axis_title);
-        this.text_direction.setValue(v.text_direction);
         this.showDataLabel.setSelected(v.show_data_label);
         this.showDataTable.setSelected(v.show_data_table);
-        this.gridLine.setSelected(v.show_grid_line);
         this.showZoom.setSelected(v.show_zoom);
         this.minimalistModel.setSelected(v.minimalist_model);
         this.showYCustomScale.setSelected(v.show_y_custom_scale);
         this.customYScale.setValue(v.custom_y_scale);
         this.YSeparators.setSelected(v.num_separators);
-        this.XSeparators.setSelected(v.right_num_separators)
     }
 });
 BI.FallAxisChartSetting.EVENT_CHANGE = "EVENT_CHANGE";
