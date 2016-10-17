@@ -16,14 +16,12 @@ BI.SelectTreeLabel = BI.inherit(BI.Widget, {
             type: "bi.tree_label",
             element: this.element,
             itemsCreator: function (op, callback) {
-                BI.Utils.getWidgetDataByID(o.wId, function (data) {
-                    callback(data);
-                }, {type: BICst.WIDGET.TREE,     "tree_options": {
-                    "floors": 1,
-                    "selected_values": {},
-                    "times": 1,
-                    "type": 0
-                }})
+                if(BI.isEmptyObject(op)) {
+                    callback({});
+                } else {
+                    callback({
+                    })
+                }
             }
         });
 
@@ -32,9 +30,23 @@ BI.SelectTreeLabel = BI.inherit(BI.Widget, {
         });
     },
 
-    setValue: function () {
+    setValue: function (v) {
         var self = this, o = this.options;
-        self.treeLabel.setValue();
+        var dimensions = BI.Utils.getAllDimDimensionIDs(o.wId);
+        var titles = [];
+        BI.each(dimensions, function (idx, dId) {
+            var temp = BI.Utils.getDimensionNameByID(dId);
+            titles.push({
+                text: temp,
+                title: temp
+            })
+        });
+        this.treeLabel.populate({
+            items: [
+            ],
+            titles: titles,
+            selectedValue: v
+        });
     },
 
     getValue: function () {

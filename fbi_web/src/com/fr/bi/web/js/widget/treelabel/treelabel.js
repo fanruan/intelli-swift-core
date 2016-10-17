@@ -16,9 +16,9 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         if (BI.isNotNull(o.items)) {
             this._initData(o.items);
         }
-        var titles = [];
+        this.titles = [];
         BI.each(o.titles, function (idx, title) {
-            titles.push({
+            self.titles.push({
                 text: title + ":"
             })
         });
@@ -26,21 +26,22 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
             type: "bi.tree_label_view",
             element: this.element,
             itemsCreator: BI.bind(this._itemsCreator, this),
-            titles: titles
+            titles: this.titles
         });
         this.view.on(BI.TreeLabelView.EVENT_CHANGE, function () {
-            self.fireEvent(BI.TreeLabel.EVENT_CHANGE);
+            self.fireEvent(BI.TreeLabel.EVENT_CHANGE, arguments);
         })
     },
 
     _initData: function (items) {
-        var self = this, result = [];
+        var self = this, result = [], allItems = [];
         this.map = {};
         this.itemsMap = {};
         BI.each(items, function (idx, item) {
             var temp = [];
             BI.each(item, function (i, data) {
                 var node = BI.clone(data);
+                allItems.push(node);
                 self.itemsMap[node.id] = node;
                 var has = contains(temp, node);
                 if (has) {
@@ -105,19 +106,19 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         }
     },
 
-    _updateItems: function (floor) {
+    _updateItems: function (floor, v) {
         floor = floor || 0;
         var self = this;
         var result = [];
-        var values = this.view.getValue();
+        var values = v || this.view.getValue();
         for (var i = floor + 1; i <= this.items.length - 1; i++) {
             var temp = [];
             var preItems = this.items[i - 1];
-            var preValues = values[i - 1];
+            var preValues = values[i - 1] || ["_*_"];
             var preSelectedItems = [];
 
             if (i === floor + 1) {
-                if (BI.contains(preValues, "*")) {
+                if (BI.contains(preValues, "_*_")) {
                     BI.each(preItems, function (idx, item) {
                         preSelectedItems = BI.concat(preSelectedItems, convertToItems(item));
                     });
@@ -129,7 +130,7 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
                     });
                 }
             } else {
-                if (BI.contains(preValues, "*")) {
+                if (BI.contains(preValues, "_*_")) {
                     BI.each(result[i - floor - 2], function (idx, item) {
                         preSelectedItems = BI.concat(preSelectedItems, convertToItems(item));
                     });
@@ -204,6 +205,7 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         if (!this.items) {
             o.itemsCreator({}, function (value) {
+                self.titles = value.titles;
                 self._initData(value.items);
                 call();
             })
@@ -222,7 +224,7 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
     },
 
     _initLabelView: function (op, callback) {
-        callback(this.items);
+        callback({items: this.items, titles: this.titles});
     },
 
     _updateLabelView: function (op, callback) {
@@ -244,7 +246,7 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
             }
         }
 
-        if (BI.isNotEmptyArray(resultId) || BI.contains(op.value, "*")) {
+        if (BI.isNotEmptyArray(resultId) || BI.contains(op.value, "_*_")) {
             o.itemsCreator(op, function (value) {
                 self._updateData(value.items);
                 self._updateItems(floor);
@@ -256,22 +258,26 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         callback(this.items, floor);
     },
 
-    setValue: function (v) {
-        v = v || {};
-        var self = this, o = this.options, op = {
-            selected_values: v
-        };
-        var result = [];
-        convertToArray(v,result,0);
-
-        o.itemsCreator(op, function (value) {
-            if(!self.items) {
-                self._initData(value);
-            }
-            self._updateData(value);
-            self._updateItems();
-            self.view.setValue(result);
+    populate: function (v) {
+        this._initData(v.items);
+        var items = [];
+        BI.each(v.items, function (idx, array) {
+            BI.each(array, function (i, item) {
+                items.push(item);
+            })
         });
+        this._updateData(items);
+
+        var result = [];
+        convertToArray(v.selectedValue, result, 0);
+        this._updateItems(0, result);
+
+        this.view.refreshView({
+            items: this.items,
+            titles: v.titles
+        });
+
+        this.view.setValue(result);
 
         function convertToArray(obj, result, i) {
             if(BI.isEmptyObject(obj)) {
@@ -281,10 +287,34 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
             result[i] = BI.uniq(BI.concat(result[i]||[],keys));
             BI.each(keys, function (idx, key) {
                 convertToArray(obj[key], result, i+1)
-            })
-
+            });
+            return result;
         }
     },
+
+    // setValue: function (v) {
+    //     v = v || {};
+    //     var result = [];
+    //     convertToArray(v,result,0);
+    //     this._updateItems(0, result);
+    //     this.view.refreshView({
+    //         items: this.items
+    //     });
+    //
+    //     this.view.setValue(result);
+    //
+    //     function convertToArray(obj, result, i) {
+    //         if(BI.isEmptyObject(obj)) {
+    //             return ;
+    //         }
+    //         var keys = Object.keys(obj);
+    //         result[i] = BI.uniq(BI.concat(result[i]||[],keys));
+    //         BI.each(keys, function (idx, key) {
+    //             convertToArray(obj[key], result, i+1)
+    //         })
+    //
+    //     }
+    // },
 
     getValue: function () {
         var selectedButtons = this.view.getSelectedButtons();

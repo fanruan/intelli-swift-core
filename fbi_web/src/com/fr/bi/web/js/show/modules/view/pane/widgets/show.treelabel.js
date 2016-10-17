@@ -30,7 +30,7 @@ BIShow.TreeLabelView = BI.inherit(BI.View, {
             type: "bi.select_tree_label",
             wId: this.model.get("id")
         });
-        this.treeLabel.on(BI.SelectTreeDataCombo.EVENT_CONFIRM, function () {
+        this.treeLabel.on(BI.SelectTreeLabel.EVENT_CONFIRM, function () {
             self.model.set("value", self.treeLabel.getValue());
         });
 
@@ -180,7 +180,7 @@ BIShow.TreeLabelView = BI.inherit(BI.View, {
     refresh: function () {
         this._refreshLayout();
         this._buildWidgetTitle();
-        this.treeLabel.setValue();
+        this.treeLabel.setValue(this.model.get("value"));
         this._refreshTitlePosition();
     }
 
