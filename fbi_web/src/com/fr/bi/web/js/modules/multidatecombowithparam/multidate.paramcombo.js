@@ -69,6 +69,11 @@ BI.MultiDateParamCombo = BI.inherit(BI.Single, {
                 self.combo.hideView();
             }
         });
+        this.trigger.on(BI.MultiDateParamTrigger.EVENT_STOP, function(){
+            if(!self.combo.isViewVisible()){
+                self.combo.showView();
+            }
+        });
         this.trigger.on(BI.MultiDateParamTrigger.EVENT_FOCUS, function () {
             self.storeTriggerValue = self.trigger.getKey();
             if(!self.combo.isViewVisible()){
@@ -77,6 +82,11 @@ BI.MultiDateParamCombo = BI.inherit(BI.Single, {
             self.fireEvent(BI.MultiDateParamCombo.EVENT_FOCUS);
         });
         this.trigger.on(BI.MultiDateParamTrigger.EVENT_ERROR, function () {
+            self.storeValue = {
+                year: date.getFullYear(),
+                month: date.getMonth()
+            };
+            self.popup.setValue();
             self.fireEvent(BI.MultiDateParamCombo.EVENT_ERROR);
         });
         this.trigger.on(BI.MultiDateParamTrigger.EVENT_VALID, function () {
