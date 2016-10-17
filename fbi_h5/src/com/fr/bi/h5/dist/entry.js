@@ -6014,6 +6014,23 @@ webpackJsonp([0],{
 
 	var SortableContainer = _base.Sortable.SortableContainer;
 
+
+	var SortableList = SortableContainer(function (_ref) {
+	    var items = _ref.items;
+	    var wId = _ref.wId;
+	    var $widget = _ref.$widget;
+
+	    return _lib2.default.createElement(
+	        _lib.ScrollView,
+	        { style: { height: _data.Sizes.ITEM_HEIGHT * items.length } },
+	        items.map(function (value, index) {
+	            return _lib2.default.createElement(_DimensionSortableComponent2.default, { key: 'item-' + value.dId, index: index, value: value, wId: wId,
+	                $widget: $widget,
+	                dId: value.dId });
+	        })
+	    );
+	});
+
 	var SettingsComponent = function (_Component) {
 	    _inherits(SettingsComponent, _Component);
 
@@ -6028,10 +6045,10 @@ webpackJsonp([0],{
 	            sortable: false
 	        };
 
-	        _this._onSortEnd = function (_ref) {
-	            var oldIndex = _ref.oldIndex;
-	            var newIndex = _ref.newIndex;
-	            var viewId = _ref.viewId;
+	        _this._onSortEnd = function (_ref2) {
+	            var oldIndex = _ref2.oldIndex;
+	            var newIndex = _ref2.newIndex;
+	            var viewId = _ref2.viewId;
 
 	            var $widget = _this._helper.doMove(viewId, oldIndex, newIndex);
 	            _this.setState({
@@ -6103,9 +6120,9 @@ webpackJsonp([0],{
 	            return _lib2.default.createElement(SortableList, { items: items,
 	                $widget: this.state.$widget,
 	                wId: this.props.wId,
-	                onSortEnd: function onSortEnd(_ref2) {
-	                    var oldIndex = _ref2.oldIndex;
-	                    var newIndex = _ref2.newIndex;
+	                onSortEnd: function onSortEnd(_ref3) {
+	                    var oldIndex = _ref3.oldIndex;
+	                    var newIndex = _ref3.newIndex;
 
 	                    _this3._onSortEnd({
 	                        oldIndex: oldIndex, newIndex: newIndex, viewId: viewItem.viewId
@@ -6148,107 +6165,30 @@ webpackJsonp([0],{
 	            );
 	        }
 	    }, {
-	        key: '_renderDimensionHeader',
-	        value: function _renderDimensionHeader(viewItem) {
+	        key: '_renderDialog',
+	        value: function _renderDialog() {
 	            var _this5 = this;
-
-	            return _lib2.default.createElement(
-	                _base.TextButton,
-	                { key: viewItem.viewId, textAlign: 'left', style: styles.collapseHeader, onPress: function onPress() {
-	                        var collapsed = (0, _core.clone)(_this5.state.collapsed);
-	                        collapsed[viewItem.viewId] = !collapsed[viewItem.viewId];
-	                        _this5.setState({
-	                            collapsed: collapsed
-	                        });
-	                    } },
-	                viewItem.text
-	            );
-	        }
-	    }, {
-	        key: '_renderSortableContainer',
-	        value: function _renderSortableContainer() {
-	            var _this6 = this;
-
-	            var SortableList = SortableContainer(function (_ref3) {
-	                var viewItems = _ref3.viewItems;
-	                var wId = _ref3.wId;
-	                var $widget = _ref3.$widget;
-
-	                return _lib2.default.createElement(
-	                    _lib.ScrollView,
-	                    null,
-	                    (0, _core.map)(viewItems, function (items, viewId) {
-	                        var viewItem = _this6._helper.getViewItemByViewId(viewId);
-	                        return _lib2.default.createElement(
-	                            _lib.View,
-	                            null,
-	                            _this6._renderDimensionHeader(viewItem),
-	                            _lib2.default.createElement(
-	                                _base.Collapsible,
-	                                { key: 'collapsible-' + viewItem.viewId,
-	                                    collapsed: _this6.state.collapsed[viewItem.viewId] || false },
-	                                _lib2.default.createElement(
-	                                    _lib.ScrollView,
-	                                    { style: { height: _data.Sizes.ITEM_HEIGHT * items.length } },
-	                                    items.map(function (value, index) {
-	                                        return _lib2.default.createElement(_DimensionSortableComponent2.default, { key: 'item-' + value.dId,
-	                                            index: viewItem.viewId + '-' + index,
-	                                            value: value, wId: wId,
-	                                            $widget: $widget,
-	                                            collection: 0,
-	                                            dId: value.dId });
-	                                    })
-	                                )
-	                            )
-	                        );
-	                    })
-	                );
-	            });
-	            var viewItems = this._helper.getAllDimensionItems();
-	            return _lib2.default.createElement(SortableList, { viewItems: viewItems,
-	                $widget: this.state.$widget,
-	                wId: this.props.wId,
-	                onSortEnd: function onSortEnd(_ref4) {
-	                    var oldIndex = _ref4.oldIndex;
-	                    var oldViewId = _ref4.oldViewId;
-	                    var newIndex = _ref4.newIndex;
-	                    var newViewId = _ref4.newViewId;
-
-	                    _this6._onSortEnd({
-	                        oldIndex: oldIndex, newIndex: newIndex, oldViewId: oldViewId, newViewId: newViewId
-	                    });
-	                },
-	                useDragHandle: true,
-	                lockToContainerEdges: true,
-	                lockAxis: 'y',
-	                helperClass: 'sortable-helper'
-	            });
-	        }
-	    }, {
-	        key: '_renderUnSortableContainer',
-	        value: function _renderUnSortableContainer() {
-	            var _this7 = this;
 
 	            var array = [];
 	            (0, _core.each)(this._helper.getViewItems(), function (viewItem) {
-	                array.push(_this7._renderDimensionHeader(viewItem));
+	                array.push(_lib2.default.createElement(
+	                    _base.TextButton,
+	                    { key: viewItem.viewId, textAlign: 'left', style: styles.collapseHeader, onPress: function onPress() {
+	                            var collapsed = (0, _core.clone)(_this5.state.collapsed);
+	                            collapsed[viewItem.viewId] = !collapsed[viewItem.viewId];
+	                            _this5.setState({
+	                                collapsed: collapsed
+	                            });
+	                        } },
+	                    viewItem.text
+	                ));
 	                array.push(_lib2.default.createElement(
 	                    _base.Collapsible,
 	                    { key: 'collapsible-' + viewItem.viewId,
-	                        collapsed: _this7.state.collapsed[viewItem.viewId] || false },
-	                    _this7._renderUnSortableList(viewItem)
+	                        collapsed: _this5.state.collapsed[viewItem.viewId] || false },
+	                    _this5.state.sortable ? _this5._renderSortableList(viewItem) : _this5._renderUnSortableList(viewItem)
 	                ));
 	            });
-	            return _lib2.default.createElement(
-	                _lib.ScrollView,
-	                null,
-	                array
-	            );
-	        }
-	    }, {
-	        key: '_renderDialog',
-	        value: function _renderDialog() {
-	            var _this8 = this;
 
 	            return _lib2.default.createElement(
 	                _layout.Layout,
@@ -6259,20 +6199,24 @@ webpackJsonp([0],{
 	                    _lib2.default.createElement(
 	                        _base.TextButton,
 	                        { onPress: function onPress() {
-	                                _this8.setState({
-	                                    sortable: !_this8.state.sortable
+	                                _this5.setState({
+	                                    sortable: !_this5.state.sortable
 	                                });
 	                            }, style: styles.sortChangeButton },
 	                        this.state.sortable ? '退出排序' : '排序'
 	                    )
 	                ),
-	                this.state.sortable ? this._renderSortableContainer() : this._renderUnSortableContainer()
+	                _lib2.default.createElement(
+	                    _lib.ScrollView,
+	                    null,
+	                    array
+	                )
 	            );
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this9 = this;
+	            var _this6 = this;
 
 	            var props = _objectWithoutProperties(this.props, []);
 	            var state = _objectWithoutProperties(this.state, []);
@@ -6282,11 +6226,11 @@ webpackJsonp([0],{
 	                _base.Overlay,
 	                { ref: 'overlay', onClose: function onClose(tag) {
 	                        if (tag === true) {
-	                            var $widget = _this9.state.$widget;var wId = _this9.props.wId;
+	                            var $widget = _this6.state.$widget;var wId = _this6.props.wId;
 
-	                            _this9.props.onComplete({ $widget: $widget, wId: wId });
+	                            _this6.props.onComplete({ $widget: $widget, wId: wId });
 	                        } else {
-	                            _this9.props.onReturn();
+	                            _this6.props.onReturn();
 	                        }
 	                    } },
 	                _lib2.default.createElement(
