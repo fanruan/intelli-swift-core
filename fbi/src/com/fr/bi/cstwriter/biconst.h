@@ -325,6 +325,8 @@
 # define BI_CLASS_BYTE 10
 # define BI_CLASS_ROW 16
 # define BI_SYSTEM_USER_NAME @"__system_user_name__"
+# define BI_LAST_UPDATE_TIME @"__last_update_time__"
+# define BI_CURRENT_UPDATE_TIME @"__current_update_time__"
 
 # define BI_FUNCTION_TEXT 1
 # define BI_FUNCTION_MATH 2
