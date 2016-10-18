@@ -372,6 +372,8 @@ BICst.CLASS.TIME = 9;
 BICst.CLASS.BYTE = 10;
 BICst.CLASS.ROW = 16;
 BICst.SYSTEM_USER_NAME = "__system_user_name__";
+BICst.LAST_UPDATE_TIME = "__last_update_time__";
+BICst.CURRENT_UPDATE_TIME = "__current_update_time__";
 
 BICst.FUNCTION = {};
 BICst.FUNCTION.TEXT = 1;

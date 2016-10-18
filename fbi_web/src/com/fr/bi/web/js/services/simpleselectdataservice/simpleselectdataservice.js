@@ -53,6 +53,13 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
         }
     },
 
+    _getTitleByFieldId: function (fieldId) {
+        var fieldName = BI.Utils.getFieldNameByID(fieldId);
+        var tableId = BI.Utils.getTableIdByFieldID(fieldId);
+        var tableName = BI.Utils.getTableNameByID(tableId);
+        return tableName + "." + fieldName || "";
+    },
+
     /**
      * 搜索结果
      * @param type
@@ -116,7 +123,7 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
      * @private
      */
     _getTablesStructure: function () {
-        var o = this.options;
+        var self = this, o = this.options;
         var tablesStructure = [];
         var currentTables = o.tablesCreator();
         BI.each(currentTables, function (i, table) {
@@ -144,7 +151,6 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
         BI.each(newFields, function (i, field) {
             var fid = field.id;
             var fieldName = BI.Utils.getFieldNameByID(fid) || "";
-            var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
             fieldStructure.push(fieldMap[fid] = BI.extend({
                 id: fid,
                 pId: tableId,
@@ -153,7 +159,7 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
                 layer: 1,
                 fieldType: BI.Utils.getFieldTypeByID(fid),
                 text: fieldName,
-                title: title,
+                title: self._getTitleByFieldId(fid),
                 value: fid
             }, field))
         });
@@ -163,7 +169,6 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
                 var id = field.id;
                 if (BI.isNotEmptyArray(map[id])) {
                     var fieldName = BI.Utils.getFieldNameByID(id) || "";
-                    var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
                     fieldStructure.push({
                         id: id,
                         pId: tableId,
@@ -173,7 +178,7 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
                             wId: o.wId,
                             text: fieldName,
                             keyword: keyword,
-                            title: title,
+                            title: self._getTitleByFieldId(id),
                             fieldType: BI.Utils.getFieldTypeByID(id),
                             value: id
                         }, field, {
@@ -210,7 +215,6 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
         BI.each(foregion, function (i, f) {
             var fid = f.id;
             var fieldName = BI.Utils.getFieldNameByID(fid) || "";
-            var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
             fieldStructure.push(BI.extend({
                 id: fid,
                 pId: tableId,
@@ -219,7 +223,7 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
                 layer: 2,
                 fieldType: BI.Utils.getFieldTypeByID(fid),
                 text: fieldName,
-                title: title,
+                title: self._getTitleByFieldId(fid),
                 value: fid
             }, f));
         });
@@ -241,7 +245,6 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
                 return;
             }
             var fieldName = BI.Utils.getFieldNameByID(fid) || "";
-            var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
             fieldStructure.push(BI.extend({
                 id: fid,
                 pId: tableId,
@@ -250,7 +253,7 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
                 layer: 1,
                 fieldType: BI.Utils.getFieldTypeByID(fid),
                 text: fieldName,
-                title: title,
+                title: self._getTitleByFieldId(fid),
                 value: fid
             }, field));
         });
@@ -260,7 +263,6 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
                 var id = field.id;
                 if (BI.isNotEmptyArray(map[id])) {
                     var fieldName = BI.Utils.getFieldNameByID(id) || "";
-                    var title = (BI.Utils.getTableNameByID(tableId) || "") + "." + fieldName;
                     fieldStructure.push({
                         id: id,
                         pId: tableId,
@@ -269,7 +271,7 @@ BI.SimpleSelectDataService = BI.inherit(BI.Widget, {
                         el: BI.extend({
                             wId: o.wId,
                             text: fieldName,
-                            title: title,
+                            title: self._getTitleByFieldId(id),
                             fieldType: BI.Utils.getFieldTypeByID(id),
                             value: id
                         }, field, {

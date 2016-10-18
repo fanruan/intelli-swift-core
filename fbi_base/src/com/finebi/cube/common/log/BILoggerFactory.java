@@ -1,6 +1,5 @@
 package com.finebi.cube.common.log;
 
-import com.fr.bi.manager.PerformancePlugManager;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.helpers.Loader;
 import org.slf4j.LoggerFactory;
