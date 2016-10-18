@@ -100,7 +100,6 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
-
         //组件背景
         this.widgetBackground = BI.createWidget({
             type: "bi.global_style_index_background"
