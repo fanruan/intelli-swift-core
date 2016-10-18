@@ -127,4 +127,7 @@ public class DBConstant {
 
 
     public static final String SYSTEM_USER_NAME = "__system_user_name__";
+
+    public static final String LAST_UPDATE_TIME = "__last_update_time__";
+    public static final String CURRENT_UPDATE_TIME = "__current_update_time__";
 }
