@@ -26,10 +26,10 @@ import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
-import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.structure.collection.map.CubeLinkedHashMap;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
+import com.fr.stable.collections.array.IntArray;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -203,14 +203,14 @@ public class BICubeTableAdapter implements ICubeTableService {
     }
 
     @Override
-    public IntList getRemovedList() {
+    public IntArray getRemovedList() {
         return primaryTable.getRemovedList();
     }
 
 
     @Override
     public GroupValueIndex getAllShowIndex() {
-        if (null != getRemovedList() && getRemovedList().size() != 0) {
+        if (null != getRemovedList() && getRemovedList().size != 0) {
             return GVIFactory.createGroupValueIndexBySimpleIndex(getRemovedList()).NOT(getRowCount());
         } else {
             return GVIFactory.createAllShowIndexGVI(getRowCount());

@@ -1,5 +1,6 @@
 package com.finebi.cube.structure.table;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.exception.BICubeRelationAbsentException;
@@ -16,9 +17,8 @@ import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.structure.collection.list.IntList;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
+import com.fr.stable.collections.array.IntArray;
 
 import java.util.*;
 
@@ -174,13 +174,13 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
     }
 
     @Override
-    public IntList getRemovedList() {
+    public IntArray getRemovedList() {
         if (hostTable.isRemovedListAvailable()) {
             return hostTable.getRemovedList();
         } else if (null != parentTable && parentTable.isRemovedListAvailable()) {
             return parentTable.getRemovedList();
         } else {
-            return new IntList();
+            return new IntArray();
         }
 
     }
