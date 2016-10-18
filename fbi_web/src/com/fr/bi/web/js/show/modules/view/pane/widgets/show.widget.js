@@ -115,8 +115,8 @@ BIShow.WidgetView = BI.inherit(BI.View, {
                 textAlign: "left",
                 height: 25,
                 allowBlank: false,
-                errorText: function(v) {
-                    if(BI.isNotNull(v) && BI.trim(v) !== "") {
+                errorText: function (v) {
+                    if (BI.isNotNull(v) && BI.trim(v) !== "") {
                         return BI.i18nText("BI-Widget_Name_Can_Not_Repeat");
                     }
                     return BI.i18nText("BI-Widget_Name_Can_Not_Null");
@@ -161,7 +161,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
     },
 
     _createTools: function () {
-        var self = this;
+        var self = this, wId = this.model.get("id");
 
         this.refreshChartButton = BI.createWidget({
             type: "bi.icon_button",
@@ -171,6 +171,15 @@ BIShow.WidgetView = BI.inherit(BI.View, {
         });
         this.refreshChartButton.on(BI.IconButton.EVENT_CHANGE, function () {
             self.tableChart.magnify();
+        });
+
+        this.maximize = BI.createWidget({
+            type: "bi.maximization",
+            wId: wId,
+            status: BICst.WIDGET_STATUS.SHOW
+        });
+        this.maximize.on(BI.Maximization.EVENT_SET, function (widget) {
+            self.model.set(widget);
         });
 
         var expand = BI.createWidget({
@@ -195,7 +204,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
             if (BI.isNull(self.filterPane)) {
                 self.filterPane = BI.createWidget({
                     type: "bi.widget_filter",
-                    wId: self.model.get("id")
+                    wId: wId
                 });
                 self.filterPane.on(BI.WidgetFilter.EVENT_REMOVE_FILTER, function (widget) {
                     self.model.set(widget);
@@ -231,7 +240,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
         this.tools = BI.createWidget({
             type: "bi.left",
             cls: "operator-region",
-            items: [this.refreshChartButton, filterIcon, expand, excel],
+            items: [this.refreshChartButton, this.maximize, filterIcon, expand, excel],
             hgap: 3
         });
         this.tools.setVisible(false);
@@ -241,6 +250,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
         BI.isNotNull(this.filterPane) && this.filterPane.populate();
         this.tableChartPopupulate();
         this.chartDrill.populate();
+        this.maximize.populate();
     },
 
     _refreshLayout: function () {

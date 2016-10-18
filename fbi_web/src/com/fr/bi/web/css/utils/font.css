@@ -3299,6 +3299,24 @@
   content: "\e6ab";
   color: #009de3;
 }
+.widget-tools-maximization-font .b-font:before {
+  content: "\e6c6";
+  color: #009de3;
+}
+.widget-tools-maximization-font.native .b-font:before,
+.widget-tools-maximization-font.disabled .b-font:before {
+  content: "\e6c6";
+  color: #009de3;
+}
+.widget-tools-minimization-font .b-font:before {
+  content: "\e689";
+  color: #009de3;
+}
+.widget-tools-minimization-font.native .b-font:before,
+.widget-tools-minimization-font.disabled .b-font:before {
+  content: "\e689";
+  color: #009de3;
+}
 .widget-tools-filter-font .b-font:before {
   content: "\e60f";
   color: #009de3;
