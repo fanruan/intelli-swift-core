@@ -57,9 +57,8 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
     _formatConfig: function (config, items) {
         var self = this;
         var title = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
-        config.colors = this.config.chart_color;
-        config.style = formatChartStyle();
         formatChartRadarStyle();
+        config.colors = this.config.chart_color;
         this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
 
@@ -86,16 +85,6 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
         config.legend.style = this.config.chart_font;
 
         return [items, config];
-
-        function formatChartStyle() {
-            switch (self.config.chart_style) {
-                case BICst.CHART_STYLE.STYLE_GRADUAL:
-                    return "gradual";
-                case BICst.CHART_STYLE.STYLE_NORMAL:
-                default:
-                    return "normal";
-            }
-        }
 
         function formatChartRadarStyle() {
             switch (self.config.chart_radar_type) {
@@ -155,16 +144,16 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
         this.config = {
             chart_radar_type: options.chart_radar_type || c.NORMAL,
             chart_color: options.chart_color || [],
-            chart_style: options.chart_style || c.STYLE_NORMAL,
             left_y_axis_style: options.left_y_axis_style || c.NORMAL,
             left_y_axis_number_level: options.left_y_axis_number_level || c.NORMAL,
             chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
             show_data_label: options.show_data_label || false,
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             cordon: options.cordon || [],
-	     custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
+            custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
             num_separators: options.num_separators || false,
-            chart_font: options.chart_font || c.FONT_STYLE
+            chart_font: options.chart_font || c.FONT_STYLE,
+            left_y_axis_unit: options.left_y_axis_unit || "",
         };
         this.options.items = items;
         var types = [];
