@@ -26,7 +26,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
         this.showTitle.on(BI.Controller.EVENT_CHANGE, function () {
             self.widgetTitle.setVisible(this.isSelected());
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
         });
 
         //组件标题
@@ -37,7 +37,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.title.on(BI.SignEditor.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE)
         });
 
         //详细设置
@@ -46,7 +46,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.titleDetailSettting.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE)
         });
 
         this.widgetTitle = BI.createWidget({
@@ -124,7 +124,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.global_style_index_background"
         });
         this.widgetBackground.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
         });
 
         this.tableStyle = BI.createWidget({
@@ -258,7 +258,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showLeftLabel.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE)
         });
 
         this.leftLabel = BI.createWidget({
@@ -266,7 +266,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.leftLabel.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE)
         });
 
         //左轴线颜色
@@ -277,7 +277,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.leftLineColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE)
         });
 
         this.showYCustomScale = BI.createWidget({
@@ -447,7 +447,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showRightLabel.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE)
         });
 
         this.rightLabel = BI.createWidget({
@@ -455,7 +455,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.rightLabel.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE)
         });
 
         //逆轴刻度自定义
@@ -588,7 +588,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showCatLabel.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE)
         });
 
         //分类轴标签
@@ -597,7 +597,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.catLabel.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE)
         });
 
         //分类轴线颜色
@@ -608,7 +608,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.catLineColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE)
         });
 
         this.xAxis = BI.createWidget({
@@ -670,7 +670,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.legendSetting.on(BI.LegendDetailedSettingCombo.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE)
         });
 
         //显示横向网格线
@@ -681,7 +681,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showHGridLine.on(BI.Controller.EVENT_CHANGE, function() {
-            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE)
         });
 
         //网格线设置
@@ -692,7 +692,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.hGridLine.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE)
         });
 
         this.hGridLineColor = BI.createWidget({
@@ -702,7 +702,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.hGridLineColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE)
         });
 
         //显示纵向网格线
@@ -713,7 +713,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showVGridLine.on(BI.Controller.EVENT_CHANGE, function() {
-            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE)
         });
 
         this.vGridLine = BI.createWidget({
@@ -723,7 +723,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.vGridLine.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE)
         });
 
         this.vGridLineColor = BI.createWidget({
@@ -733,7 +733,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.vGridLineColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE)
         });
 
         //数据标签
@@ -794,7 +794,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.continuousNullValue.on(BI.Controller.EVENT_CHANGE, function() {
-            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE)
         });
 
         //数据点提示详细设置
@@ -803,7 +803,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.tooltipSetting.on(BI.TooltipDetailedSettingCombo.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE)
         });
 
         this.showElement = BI.createWidget({

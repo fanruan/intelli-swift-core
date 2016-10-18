@@ -26,7 +26,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
         this.showTitle.on(BI.Controller.EVENT_CHANGE, function () {
             self.widgetTitle.setVisible(this.isSelected());
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
         //组件标题
@@ -37,7 +37,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.title.on(BI.SignEditor.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
         });
 
         //详细设置
@@ -483,7 +483,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.isShowTitleLY, this.editTitleLY]
-                },  {
+                }, {
                     type: "bi.vertical_adapt",
                     items: [this.showLeftLabel]
                 }, {
@@ -674,7 +674,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.isShowTitleX, this.editTitleX]
-                },  {
+                }, {
                     type: "bi.vertical_adapt",
                     items: [this.showRightLabel]
                 }, {
@@ -803,7 +803,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.legend]
-                },{
+                }, {
                     type: "bi.vertical_adapt",
                     items: [this.legendSetting]
                 }, {

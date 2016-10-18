@@ -26,7 +26,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
         this.showTitle.on(BI.Controller.EVENT_CHANGE, function () {
             self.widgetTitle.setVisible(this.isSelected());
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE);
         });
 
         //组件标题
@@ -37,7 +37,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.title.on(BI.SignEditor.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
         });
 
         //详细设置
@@ -46,7 +46,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.titleDetailSettting.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
         });
 
         this.widgetTitle = BI.createWidget({
@@ -106,7 +106,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.global_style_index_background"
         });
         this.widgetBackground.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE);
         });
 
         this.tableStyle = BI.createWidget({
@@ -227,7 +227,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showLValueAxisLabel.on(BI.Controller.EVENT_CHANGE, function() {
-            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
         });
 
         //左值轴标签设置
@@ -236,7 +236,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.lValueAxisLabelSetting.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function() {
-            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
         });
 
         //坐直轴线颜色
@@ -247,7 +247,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.lValueAxisLineColor.on(BI.ColorChooser.EVENT_CHANGE, function() {
-            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
         });
 
         //左轴刻度自定义
@@ -319,6 +319,19 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.isShowTitleLY, this.editTitleLY]
                 }, {
                     type: "bi.vertical_adapt",
+                    items: [this.showLValueAxisLabel]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.lValueAxisLabelSetting]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Axis_Line_Color"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items:[this.lValueAxisLineColor]
+                },  {
+                    type: "bi.vertical_adapt",
                     items: [this.showYCustomScale]
                 }, {
                     type: "bi.vertical_adapt",
@@ -360,7 +373,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showCatLabel.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
         });
 
         //分类轴标签
@@ -369,7 +382,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.catLabel.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
         });
 
         //分类轴线颜色
@@ -380,7 +393,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.catLineColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
         });
 
         this.xAxis = BI.createWidget({
@@ -430,7 +443,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.hGridLine.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
         });
 
         this.hGridLineColor = BI.createWidget({
@@ -440,7 +453,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.hGridLineColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
         });
 
         this.vGridLine = BI.createWidget({
@@ -450,7 +463,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.vGridLine.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
         });
 
         this.vGridLineColor = BI.createWidget({
@@ -460,7 +473,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.vGridLineColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
         });
 
         //数据标签
@@ -485,7 +498,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             if (this.isSelected()) {
                 self.showDataTable.setSelected(false);
             }
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE);
         });
 
         //空值连续
@@ -496,7 +509,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.continuousNullValue.on(BI.Controller.EVENT_CHANGE, function() {
-            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
         });
 
         //数据点提示详细设置
@@ -505,7 +518,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.tooltipSetting.on(BI.TooltipDetailedSettingCombo.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
         });
 
         this.showElement = BI.createWidget({
@@ -664,9 +677,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.isShowTitleX.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
         this.editTitleLY.setValue(titleLY);
         this.editTitleX.setValue(titleX);
-        this.text_direction.setValue(BI.Utils.getWSTextDirectionByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
-        this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
         this.minimalistModel.setSelected(BI.Utils.getWSMinimalistByID(wId));
         this._invisible(!BI.Utils.getWSMinimalistByID(wId));
         this.showYCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
@@ -700,9 +711,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             left_y_axis_title: this.editTitleLY.getValue(),
             right_y_axis_title: this.editTitleLY.getValue(),
             x_axis_title: this.editTitleX.getValue(),
-            text_direction: this.text_direction.getValue(),
             show_data_label: this.showDataLabel.isSelected(),
-            show_grid_line: this.gridLine.isSelected(),
             minimalist_model: this.minimalistModel.isSelected(),
             show_y_custom_scale: this.showYCustomScale.isSelected(),
             custom_y_scale: this.customYScale.getValue(),
@@ -725,9 +734,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.isShowTitleX.setSelected(v.x_axis_title);
         this.editTitleLY.setValue(v.left_y_axis_title);
         this.editTitleX.setValue(v.x_axis_title);
-        this.text_direction.setValue(v.text_direction);
         this.showDataLabel.setSelected(v.show_data_label);
-        this.gridLine.setSelected(v.show_grid_line);
         this.minimalistModel.setSelected(v.minimalist_model);
         this.showYCustomScale.setSelected(v.show_y_custom_scale);
         this.customYScale.setValue(v.custom_y_scale);
