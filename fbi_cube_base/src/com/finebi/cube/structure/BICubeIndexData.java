@@ -203,7 +203,7 @@ public class BICubeIndexData implements ICubeIndexDataService {
     protected void resetNullWriter() {
         if (isNullWriterAvailable()) {
             nullWriter.clear();
-            nullReader = null;
+            nullWriter = null;
         }
     }
 
@@ -223,7 +223,7 @@ public class BICubeIndexData implements ICubeIndexDataService {
         }
         if (isNullWriterAvailable()) {
             nullWriter.forceRelease();
-            nullReader = null;
+            nullWriter = null;
         }
     }
 

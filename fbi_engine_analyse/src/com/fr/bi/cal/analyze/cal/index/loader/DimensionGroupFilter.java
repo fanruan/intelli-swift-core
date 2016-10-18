@@ -311,7 +311,7 @@ public class DimensionGroupFilter {
         while (!GroupUtils.isAllEmpty(roots)) {
             moveNext(roots);
             int firstChangeDeep = getFirstChangeDeep(roots, lastRoots);
-            clearLastIndex(lastRoots, firstChangeDeep);
+            clearLastIndex(roots, lastRoots, firstChangeDeep);
             for (int deep = firstChangeDeep; deep < rowDimension.length; deep++) {
                 fillValueIndex(groupValueIndexe2D, roots, counter, nodeBuilder, deep, shouldBuildTree, executor, hasFilter[deep]);
             }
@@ -330,13 +330,13 @@ public class DimensionGroupFilter {
         return groupValueIndexes;
     }
 
-    private void clearLastIndex(GroupConnectionValue[] roots, int firstChangeDeep) {
-        if (roots != null){
-            for (GroupConnectionValue root : roots){
-                if (root == null){
+    private void clearLastIndex(GroupConnectionValue[] roots, GroupConnectionValue[] lastRoots, int firstChangeDeep) {
+        if (roots != null && lastRoots != null){
+            for (int i = 0; i < roots.length; i++){
+                if (roots[i] == null || lastRoots[i] == null){
                     continue;
                 }
-                GroupConnectionValue chain = root.getChild();
+                GroupConnectionValue chain = lastRoots[i].getChild();
                 int deep = firstChangeDeep;
                 while (deep != 0){
                     if (chain == null){

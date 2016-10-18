@@ -1,15 +1,15 @@
 package com.fr.bi.cal;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeGenerationManager;
-import com.finebi.cube.impl.conf.CubeBuildTableSource;
+import com.finebi.cube.impl.conf.CubeBuildRealTime;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.cal.generate.BuildCubeTask;
+import com.fr.bi.cal.generate.BuildInstantCubeTask;
 import com.fr.bi.cal.stable.engine.TempCubeTask;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.utils.BIUserUtils;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.fs.control.UserControl;
 
 import java.util.Map;
@@ -25,9 +25,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class TempCubeManager implements Release {
 
     private static Map<TempCubeTask, TempCubeManager> cubeMap = new ConcurrentHashMap<TempCubeTask, TempCubeManager>();
-    private CubeBuildTableSource cubeBuildTool;
-    private CubeBuildTableSource cubeBuildToolGenerating;
-    private Queue<CubeBuildTableSource> generater;
+    private CubeBuildRealTime cubeBuildTool;
+    private CubeBuildRealTime cubeBuildToolGenerating;
+    private Queue<CubeBuildRealTime> generater;
     private TempCubeTask task;
     private CubeThread cubeThread;
     private Release release;
@@ -39,7 +39,7 @@ public class TempCubeManager implements Release {
     public TempCubeManager(TempCubeTask task) {
         this.task = task;
         this.cubeThread = new CubeThread();
-        this.generater = new ConcurrentLinkedQueue<CubeBuildTableSource>();
+        this.generater = new ConcurrentLinkedQueue<CubeBuildRealTime>();
         this.cubeThread.start();
     }
 
@@ -67,18 +67,18 @@ public class TempCubeManager implements Release {
         }
     }
 
-    public CubeBuildTableSource getCubeBuildTool() {
+    public CubeBuildRealTime getCubeBuildTool() {
         if (cubeBuildTool == null) {
             cubeBuildTool = cubeBuildToolGenerating;
         }
         return cubeBuildTool;
     }
 
-    public CubeBuildTableSource getCubeBuildToolGenerating() {
+    public CubeBuildRealTime getCubeBuildToolGenerating() {
         return cubeBuildToolGenerating;
     }
 
-    public boolean addLoader(CubeBuildTableSource cubeBuildTool, Release release) {
+    public boolean addLoader(CubeBuildRealTime cubeBuildTool, Release release) {
         this.generater.add(cubeBuildTool);
         synchronized (cubeThread) {
             this.cubeBuildToolGenerating = cubeBuildTool;
@@ -127,7 +127,7 @@ public class TempCubeManager implements Release {
                 }
                 cubeBuildToolGenerating = generater.poll();
                 BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
-                CubeTask cubeGenerateTask = new BuildCubeTask(new BIUser(task.getUserId()), cubeBuildToolGenerating);
+                CubeTask cubeGenerateTask = new BuildInstantCubeTask(new BIUser(task.getUserId()), cubeBuildToolGenerating);
                 cubeManager.addTask(cubeGenerateTask, task.getUserId());
                 cubeBuildTool = cubeBuildToolGenerating;
                 while (cubeManager.hasTask(cubeGenerateTask, task.getUserId())) {

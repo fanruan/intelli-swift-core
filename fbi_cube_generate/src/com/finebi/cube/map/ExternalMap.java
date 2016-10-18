@@ -332,7 +332,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
     }
 
     private void displaySeparateFile() {
-//       BILogger.getLogger().infoln("**************displaySeparateFile************");
+//       BILoggerFactory.getLogger().infoln("**************displaySeparateFile************");
 //        for (int i = 0; i < fileCount; i++) {
 //            System.out.println("ID:" + i + "  :");
 //            ExternalMapIO<K, V> io = getExternalMapIO(getDataFilePath(i));
@@ -341,7 +341,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
 //                try {
 //                    result = io.read();
 //                } catch (FileNotFoundException ex) {
-//                     BILogger.getLogger().error(e.getMessage(), e);
+//                     BILoggerFactory.getLogger().error(e.getMessage(), e);
 //                }
 //                display(result);
 //            } while (result.size() != 0);
@@ -667,7 +667,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
 //                        }
 //                        wait();
 //                    } catch (Exception ex) {
-//                        BILogger.getLogger().error(ex.getMessage(), ex);
+//                        BILoggerFactory.getLogger().error(ex.getMessage(), ex);
 //                    }
 //                }
 //            }

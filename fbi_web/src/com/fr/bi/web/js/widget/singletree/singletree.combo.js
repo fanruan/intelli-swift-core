@@ -42,8 +42,8 @@ BI.SingleTreeCombo = BI.inherit(BI.Widget, {
         this.combo.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
-        this.combo.on(BI.Combo.EVENT_BEFORE_POPUPVIEW, function(){
-            self.fireEvent(BI.SingleTreeCombo.EVENT_BEFORE_POPUPVIEW, arguments); 
+        this.combo.on(BI.Combo.EVENT_BEFORE_POPUPVIEW, function () {
+            self.fireEvent(BI.SingleTreeCombo.EVENT_BEFORE_POPUPVIEW, arguments);
         });
 
         this.popup.on(BI.SingleTreePopup.EVENT_CHANGE, function () {

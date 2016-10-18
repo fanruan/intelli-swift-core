@@ -1,17 +1,18 @@
 package com.finebi.cube.conf.relation;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.exception.BIRelationDuplicateException;
-import com.fr.bi.stable.utils.code.BILogger;
+
 import junit.framework.TestCase;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-/**
+    /**
  * Created by Connery on 2016/1/28.
  */
 public class BITableRelationManagerTest extends TestCase {
@@ -164,7 +165,7 @@ public class BITableRelationManagerTest extends TestCase {
                 assertEquals(path.getLastRelation(), BITableRelationTestTool.getAaBa());
             }
         } catch (Exception ignore) {
-            BILogger.getLogger().error(ignore.getMessage(), ignore);
+            BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
             assertTrue(false);
         }
     }
@@ -192,7 +193,7 @@ public class BITableRelationManagerTest extends TestCase {
             assertTrue(relationSet.contains(D_C_B));
 
         } catch (Exception ignore) {
-            BILogger.getLogger().error(ignore.getMessage(), ignore);
+            BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
             assertTrue(false);
         }
     }
@@ -242,7 +243,7 @@ public class BITableRelationManagerTest extends TestCase {
             assertTrue(relationSet.contains(D_A_B));
             assertTrue(relationSet.contains(D_C_B));
         } catch (Exception ignore) {
-            BILogger.getLogger().error(ignore.getMessage(), ignore);
+            BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
             assertTrue(false);
         }
     }
@@ -288,7 +289,7 @@ public class BITableRelationManagerTest extends TestCase {
              */
             assertEquals(relationSet.size(), 0);
         } catch (Exception ignore) {
-            BILogger.getLogger().error(ignore.getMessage(), ignore);
+            BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
             assertTrue(false);
         }
     }
@@ -304,7 +305,7 @@ public class BITableRelationManagerTest extends TestCase {
 
 
         } catch (Exception ignore) {
-            BILogger.getLogger().error(ignore.getMessage(), ignore);
+            BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
             assertTrue(false);
         }
     }

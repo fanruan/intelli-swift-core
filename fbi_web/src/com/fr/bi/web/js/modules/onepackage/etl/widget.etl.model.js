@@ -135,6 +135,9 @@ BI.ETLModel = BI.inherit(FR.OB, {
         var id = BI.UUID();
         //暂时从allFields里面获取原始的fieldId,allFields里面的数据不会删除,这个是个坑
         var oldFields = this.allFields;
+        if (BI.isNotNull(oldFields[fieldInfo.id])) {
+            return fieldInfo.id;
+        }
         BI.some(oldFields, function (index, fieldObj) {
             if (fieldObj.field_name === fieldInfo.field_name && fieldObj.table_id === self.id) {
                 id = fieldObj.id;
@@ -167,67 +170,6 @@ BI.ETLModel = BI.inherit(FR.OB, {
 
     setRelations: function (relations) {
         this.relations = relations;
-    },
-
-    //根据etlValue为会改变关联的etl操作设置关联
-    setRelationsByETLValue: function (etl) {
-        var self = this;
-        var etlValue = etl.etl_value;
-        var relations = this.getRelations();
-        var primKeyMap = relations["primKeyMap"], foreignKeyMap = relations["foreignKeyMap"];
-        var connectionSet = relations["connectionSet"];
-        //if (etl.etl_type === "circle") {
-        //    //设置1:N的关联
-        //    BI.each(etlValue.floors, function (idx, floor) {
-        //        var primaryId = getFieldIdByFieldName(etlValue.id_field_name);
-        //        var foreignId = getFieldIdByFieldName(floor.name);
-        //        connectionSet.push({
-        //            primaryKey: {
-        //                field_id: primaryId
-        //            },
-        //            foreignKey: {
-        //                field_id: foreignId
-        //            }
-        //        });
-        //        if (!primKeyMap[primaryId]) {
-        //            primKeyMap[primaryId] = [];
-        //        }
-        //        primKeyMap[primaryId].push({
-        //            primaryKey: {
-        //                field_id: primaryId
-        //            },
-        //            foreignKey: {
-        //                field_id: foreignId
-        //            }
-        //        });
-        //        if (!foreignKeyMap[foreignId]) {
-        //            foreignKeyMap[foreignId] = [];
-        //        }
-        //        foreignKeyMap[foreignId].push({
-        //            primaryKey: {
-        //                field_id: primaryId
-        //            },
-        //            foreignKey: {
-        //                field_id: foreignId
-        //            }
-        //        });
-        //    });
-        //}
-        this.setRelations(relations);
-
-        function getFieldIdByFieldName(field_name) {
-            var id = null;
-            BI.find(self.fields, function (idx, fieldArray) {
-                return BI.find(fieldArray, function (i, field) {
-                    if (field.field_name === field_name) {
-                        id = field.id;
-                        return true;
-                    }
-                    return false;
-                });
-            });
-            return id;
-        }
     },
 
     setTranslationsByETLValue: function (etl) {

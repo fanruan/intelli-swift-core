@@ -158,7 +158,7 @@ BI.BatchAddRoleSearcher = BI.inherit(BI.Widget, {
                 cls: "role-item",
                 text: roleName,
                 value: {
-                    role_id: role.id,
+                    role_id: roleName,      //使用名称
                     role_type: role.role_type
                 },
                 height: 30,
