@@ -2559,6 +2559,9 @@
                             BI.isNotNull(fatherFilterValue) && filterObj.filter_value.push(fatherFilterValue);
                             result.push(filterObj);
                         } else {
+                            if(leafFilterObj.filter_value.type === BICst.Selection.All) {
+                                leafFilterObj = fatherFilterValue
+                            }
                             createTreeLabelFilterValue(result, child, floor + 1, dimensionIds, leafFilterObj);
                         }
                     }

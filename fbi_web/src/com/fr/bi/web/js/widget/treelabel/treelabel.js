@@ -270,7 +270,9 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         var result = [];
         convertToArray(v.selectedValue, result, 0);
         this._updateItems(0, result);
-
+        for(var i =this.items.length; i < v.titles.length; i++) {
+            this.items.push([]);
+        }
         this.view.refreshView({
             items: this.items,
             titles: v.titles
