@@ -25,7 +25,7 @@ import React, {
     TouchableHighlight
 } from 'lib'
 
-import {Colors, Size, Template, Widget} from 'data'
+import {Colors, Sizes, TemplateFactory, WidgetFactory} from 'data'
 import {Layout, VerticalCenterLayout} from 'layout'
 import {Icon, Button, Table, AutoSizer} from 'base'
 
@@ -67,7 +67,7 @@ class Item extends Component {
         const {...props} = this.props, {...state} = this.state;
         return <Button onPress={this.props.onPress}>
             <VerticalCenterLayout style={styles.wrapper}>
-                <Text>{new Widget(props.$widget).getName()}</Text>
+                <Text>{WidgetFactory.createWidget(props.$widget).getName()}</Text>
             </VerticalCenterLayout>
         </Button>
     }
@@ -76,7 +76,7 @@ class Item extends Component {
 mixin.onClass(Item, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
-        height: Size.ITEM_HEIGHT,
+        height: Sizes.ITEM_HEIGHT,
         paddingLeft: 20,
         paddingRight: 20,
         borderBottom: '1px solid ' + Colors.SPLIT

@@ -8,7 +8,8 @@ BI.AbstractDimension = BI.inherit(BI.Widget, {
     constants: {
         DIMENSION_BUTTON_HEIGHT: 25,
         COMBO_WIDTH: 25,
-        LABEL_GAP : 5
+        LABEL_GAP : 5,
+        INVALID_NAME: "INVALID_NAME_IN_SUM"
     },
 
     _defaultConfig: function () {
@@ -27,8 +28,11 @@ BI.AbstractDimension = BI.inherit(BI.Widget, {
             type: "bi.sign_style_editor",
             cls: "etl-dimension-name",
             height:25,
-            validationChecker:function(){
-                return self._checkDimensionName(self.nameEditor.getValue());
+            validationChecker:function(v){
+                return self._checkDimensionName(v);
+            },
+            quitChecker: function (v) {
+                return false;
             }
         });
 
@@ -72,6 +76,13 @@ BI.AbstractDimension = BI.inherit(BI.Widget, {
                 return true;
             }
         });
+        if(valid === false){
+            BI.Bubbles.show(this.constants.INVALID_NAME, BI.i18nText("BI-Can_Not_Have_Rename_Fields"), this.nameEditor, {
+                offsetStyle: "center"
+            });
+        }else{
+            BI.Bubbles.hide(this.constants.INVALID_NAME);
+        }
         return valid;
     },
 

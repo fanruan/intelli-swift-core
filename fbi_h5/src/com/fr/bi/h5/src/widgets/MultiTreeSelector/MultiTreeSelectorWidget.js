@@ -14,7 +14,7 @@ import React, {
 } from 'lib'
 
 import {VirtualScroll, AutoSizer, TextButton} from 'base'
-import {Size} from 'data'
+import {Sizes} from 'data'
 
 import Item from './Item'
 import MultiTreeSelectorWidgetHelper from './MultiTreeSelectorWidgetHelper'
@@ -104,7 +104,7 @@ class MultiTreeSelectorWidget extends Component {
             overscanRowCount={0}
             //noRowsRenderer={this._noRowsRenderer.bind(this)}
             rowCount={this._helper.getSortedItems().length + 1}
-            rowHeight={Size.ITEM_HEIGHT}
+            rowHeight={Sizes.ITEM_HEIGHT}
             rowRenderer={this._rowRenderer.bind(this)}
             //scrollToIndex={scrollToIndex}
         />
@@ -112,11 +112,11 @@ class MultiTreeSelectorWidget extends Component {
 
     _moreRenderer() {
         if (this.state.hasNext === true) {
-            return <TextButton style={{height: Size.ITEM_HEIGHT}} onPress={()=> {
+            return <TextButton style={{height: Sizes.ITEM_HEIGHT}} onPress={()=> {
                 this._fetchData();
             }}>{'点击加载更多数据'}</TextButton>
         } else {
-            return <TextButton style={{height: Size.ITEM_HEIGHT}} disabled={true}>{'无更多数据'}</TextButton>
+            return <TextButton style={{height: Sizes.ITEM_HEIGHT}} disabled={true}>{'无更多数据'}</TextButton>
         }
     }
 

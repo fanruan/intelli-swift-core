@@ -5,14 +5,16 @@
 import AbstractWidget from './AbstractWidget'
 
 class ContentWidget extends AbstractWidget{
-    constructor($widget, $template, wId) {
-        super($widget, $template, wId);
+    constructor($widget, ...props) {
+        super($widget, ...props);
     }
 
+    //文本组件 内容
     getContent() {
         return this.$widget.get('content');
     }
 
+    //文本组件 样式
     getStyle() {
         return this.$widget.get('style').toJS();
     }

@@ -9,20 +9,21 @@ import DetailWidget from './DetailWidget'
 import ImageWidget from './ImageWidget'
 import StringControl from './StringControl'
 import TreeControl from './TreeControl'
+import DateControl from './DateControl'
 
 
 export default {
-    createWidget: ($widget, $template, wId)=> {
+    createWidget: ($widget, ...props)=> {
         const wType = $widget.get('type');
         switch (wType) {
             case BICst.WIDGET.TABLE:
-                return new TableWidget($widget, $template, wId);
+                return new TableWidget($widget, ...props);
                 break;
             //case BICst.WIDGET.CROSS_TABLE:
             //case BICst.WIDGET.COMPLEX_TABLE:
             //
             case BICst.WIDGET.DETAIL:
-                return new DetailWidget($widget, $template, wId);
+                return new DetailWidget($widget, ...props);
                 break;
 
             case BICst.WIDGET.AXIS:
@@ -51,7 +52,7 @@ export default {
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.FUNNEL:
-                return new ChartWidget($widget, $template, wId);
+                return new ChartWidget($widget, ...props);
                 break;
             case BICst.WIDGET.NUMBER:
             case BICst.WIDGET.DATE:
@@ -59,26 +60,27 @@ export default {
             case BICst.WIDGET.QUARTER:
             case BICst.WIDGET.MONTH:
             case BICst.WIDGET.YMD:
+                return new DateControl($widget, ...props);
             case BICst.WIDGET.QUERY:
             case BICst.WIDGET.RESET:
                 break;
             case BICst.WIDGET.CONTENT:
-                return new ContentWidget($widget, $template, wId);
+                return new ContentWidget($widget, ...props);
                 break;
             case BICst.WIDGET.IMAGE:
-                return new ImageWidget($widget, $template, wId);
+                return new ImageWidget($widget, ...props);
                 break;
             case BICst.WIDGET.WEB:
                 break;
             case BICst.WIDGET.STRING:
-                return new StringControl($widget, $template, wId);
+                return new StringControl($widget, ...props);
                 break;
             case BICst.WIDGET.TREE:
-                return new TreeControl($widget, $template, wId);
+                return new TreeControl($widget, ...props);
                 break;
             default:
                 break;
         }
     }
-    
+
 };

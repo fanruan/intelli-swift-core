@@ -126,11 +126,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             var gap = Math.ceil((wi - 200) / 2);
             this.buttonTop = 35;
             this.wrapper.setVisible(true);
-            this.outerWrapper.attr("items")[0].left = gap;
-            this.outerWrapper.attr("items")[0].right = gap;
-            this.outerWrapper.attr("items")[1].left = Math.ceil((wi - 60) / 2);
-            this.outerWrapper.attr("items")[1].top = this.buttonTop;
-            this.outerWrapper.resize();
+            this.resetLayout(gap, gap, Math.ceil((wi - 60) / 2), this.buttonTop);
             this._onClickPush(false);
             return;
         }
@@ -217,28 +213,34 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             }
         }
         this.wrapper.setVisible(true);
-        this.outerWrapper.attr("items")[0].left = hgap;
-        this.outerWrapper.attr("items")[0].right = hgap;
-        this.outerWrapper.attr("items")[1].left = Math.ceil((w - 60) / 2);
-        this.outerWrapper.attr("items")[1].top = this.buttonTop;
-        this.outerWrapper.resize();
+        this.resetLayout(hgap, hgap, Math.ceil((w - 60) / 2), this.buttonTop);
     },
 
-     hideDrill: function (wid) {
-        if(this._checkUPDrillEmpty(wid)){
+    resetLayout: function (leftOne, rightOne, leftTwo, topTwo) {
+        if (BI.isNotNull(this.outerWrapper)) {
+            this.outerWrapper.attr("items")[0].left = leftOne;
+            this.outerWrapper.attr("items")[0].right = rightOne;
+            this.outerWrapper.attr("items")[1].left = leftTwo;
+            this.outerWrapper.attr("items")[1].top = topTwo;
+            this.outerWrapper.resize();
+        }
+    },
+
+    hideDrill: function (wid) {
+        if (this._checkUPDrillEmpty(wid)) {
             this._onClickPush(false)
         }
     },
 
     setDrillVisible: function (wid) {
-        if(this._checkUPDrillEmpty(wid)){
+        if (this._checkUPDrillEmpty(wid)) {
             this.outerWrapper.setVisible(false)
         }
     },
 
     _checkUPDrillEmpty: function (wid) {
         var wType = BI.Utils.getWidgetTypeByID(wid);
-        if(wType < 5 || wType === BICst.WIDGET.MAP) {
+        if (wType < 5 || wType === BICst.WIDGET.MAP) {
             return false
         }
         var drillMap = BI.Utils.getDrillByID(wid);

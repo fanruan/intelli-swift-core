@@ -48,3 +48,27 @@
   content: '\e618';
   color: #ffffff;
 }
+.draggable-font .b-font:before {
+  content: '\e62c';
+  color: #808080;
+}
+.draggable-font.disabled .b-font:before {
+  content: '\e62c';
+  color: #808080;
+}
+.asc-sort-font .b-font:before {
+  content: '\e62d';
+  color: #808080;
+}
+.asc-sort-font.disabled .b-font:before {
+  content: '\e62d';
+  color: #808080;
+}
+.dsc-sort-font .b-font:before {
+  content: '\e62b';
+  color: #808080;
+}
+.dsc-sort-font.disabled .b-font:before {
+  content: '\e62b';
+  color: #808080;
+}

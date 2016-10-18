@@ -217,7 +217,7 @@ BIDezi.TreeLabelDetailView = BI.inherit(BI.View, {
         this.dimensionsManager.on(BI.DimensionsManagerControl.EVENT_CHANGE, function () {
             var values = this.getValue();
             self.model.set(values);
-            this.setValue();
+            this.populate();
         });
 
 
@@ -230,7 +230,7 @@ BIDezi.TreeLabelDetailView = BI.inherit(BI.View, {
             type: "bi.select_tree_label",
             wId: this.model.get("id")
         });
-        this.treeLabel.on(BI.SelectTreeDataCombo.EVENT_CONFIRM, function () {
+        this.treeLabel.on(BI.SelectTreeLabel.EVENT_CONFIRM, function () {
             self.model.set("value", self.treeLabel.getValue());
         });
         return this.treeLabel;
@@ -244,9 +244,11 @@ BIDezi.TreeLabelDetailView = BI.inherit(BI.View, {
 
 
     change: function (changed, prev) {
-        this.treeLabel.setValue();
         if (BI.has(changed, "value")) {
-            this.treeLabel.setValue();
+            this.treeLabel.setValue(this.model.get("value"));
+        }
+        if (BI.has(changed, "view")) {
+            this.treeLabel.setValue(this.model.get("value"));
         }
     },
 
@@ -265,6 +267,6 @@ BIDezi.TreeLabelDetailView = BI.inherit(BI.View, {
 
     refresh: function () {
         this.dimensionsManager.populate();
-        this.treeLabel.setValue();
+        this.treeLabel.setValue(this.model.get("value"));
     }
 });

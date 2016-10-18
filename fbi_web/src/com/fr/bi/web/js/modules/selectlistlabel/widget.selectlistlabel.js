@@ -52,13 +52,13 @@ BI.SelectListLabel = BI.inherit(BI.Widget, {
         if (v.type === 1) {
             this.listLabel.setValue(v.value);
         } else {
-            this.listLabel.setValue(["*"]);
+            this.listLabel.setValue(["_*_"]);
         }
     },
 
     getValue: function () {
         var value = this.listLabel.getValue();
-        if (BI.contains(value, "*")) {
+        if (BI.contains(value, "_*_")) {
             return {
                 type: 2,
                 value: []

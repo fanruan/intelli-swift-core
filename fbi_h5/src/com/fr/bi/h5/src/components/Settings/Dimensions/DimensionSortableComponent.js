@@ -19,7 +19,7 @@ import React, {
     TouchableHighlight
 } from 'lib'
 
-import {Colors, Size, Template, Widget, Dimension, Target} from 'data'
+import {Colors, Sizes, TemplateFactory, WidgetFactory, DimensionFactory} from 'data'
 
 import {Layout, CenterLayout, HorizontalCenterLayout, VerticalCenterLayout} from 'layout';
 
@@ -65,7 +65,7 @@ class DimensionSortableComponent extends Component {
                 <Layout cross='center'>
                     <IconButton style={styles.icon} invalid={true} selected={this._helper.isUsed()}
                                 className={'single-select-font'}/>
-                    <Text style={sc([[styles.disabledText, !this._helper.isUsed()]])} textAlign={'left'}
+                    <Text style={sc([styles.disabledText, !this._helper.isUsed()])} textAlign={'left'}
                           effect={false}>{props.value.text}</Text>
                 </Layout>
                 <DragHandle/>
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     wrapper: {
         paddingLeft: 20,
         paddingRight: 20,
-        height: Size.ITEM_HEIGHT,
+        height: Sizes.ITEM_HEIGHT,
         borderBottomWidth: 1 / PixelRatio.get(),
         borderBottomColor: Colors.BORDER
     },
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
 const {SortableElement, SortableHandle} = Sortable;
 
 const DragHandle = SortableHandle(() => {
-    return <IconButton effect={false} style={styles.dragHandler} className={'drag-handler-icon'} iconWidth={18}
+    return <IconButton effect={false} style={styles.dragHandler} className={'draggable-font'} iconWidth={18}
                        iconHeight={18}/>
 });
 

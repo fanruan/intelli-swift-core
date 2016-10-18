@@ -13,7 +13,7 @@ import React, {
     Portal
 } from 'lib'
 
-import {Size, Template, Widget} from 'data'
+import {Sizes, TemplateFactory, WidgetFactory} from 'data'
 import {Layout} from 'layout'
 import {Table, Dialog, IconLink} from 'base'
 import {TableWidget} from 'widgets';
@@ -47,11 +47,12 @@ class ChartPaneComponent extends Component {
 
     _renderHeader() {
         const {$widget, wId} = this.props;
-        const widget = new Widget($widget);
+        const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(this.context.$template));
         return <Layout main='justify' cross='center' style={styles.header}>
             <Text>{widget.getName()}</Text>
             <IconLink className='setting-font' onPress={()=> {
                 Portal.showModal('ChartComponent', <SettingsComponent
+                    key={'ChartComponent'}
                     $widget={this.props.$widget}
                     wId={this.props.wId}
                     height={0}
@@ -73,7 +74,7 @@ class ChartPaneComponent extends Component {
             {this._renderHeader()}
             <ChartComponent
                 width={width}
-                height={height - Size.HEADER_HEIGHT}
+                height={height - Sizes.HEADER_HEIGHT}
                 $widget={$widget}
                 wId={wId}
             >
@@ -90,7 +91,7 @@ const styles = StyleSheet.create({
     header: {
         paddingLeft: 4,
         paddingRight: 4,
-        height: Size.HEADER_HEIGHT
+        height: Sizes.HEADER_HEIGHT
     }
 });
 export default ChartPaneComponent

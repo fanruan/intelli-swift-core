@@ -213,7 +213,21 @@ BI.CustomGroupFieldPane = BI.inherit(BI.Widget, {
         var self = this;
         this.empty();
         this._initFields(items);
+        var title = "";
+        BI.find(items, function(idx, item){
+            if(BI.has(item, "title")){
+                title = item.title;
+                return true;
+            }
+        });
         var fieldExpanderItems = self.createItemFromFieldMap(self.fieldMap);
+        if(BI.isNotEmptyString(title)){
+            BI.each(fieldExpanderItems, function(idx, item){
+                BI.each(item.content, function(id, it){
+                    it.title = title;
+                });
+            })
+        }
         var emptyExpanderItems = self.createItemFromEmptyGroupMap();
         var expanderItems = BI.union(fieldExpanderItems, emptyExpanderItems);
         var groupWidgets = [];

@@ -18,7 +18,7 @@ import React, {
 
 import {ReactComponentWithImmutableRenderMixin} from 'core';
 import {Template} from 'data';
-import {Layout, AbsoluteLayout} from 'layout';
+import {Layout} from 'layout';
 import * as TodoActions from '../actions/template';
 
 import Main from '../components/Main.js'
@@ -100,8 +100,8 @@ class App extends Component {
 
     render() {
         return (
-            <View style={styles.wrapper}>
-                <Layout box='mean' style={styles.wrapper}>
+            <View>
+                <Layout flex box='mean'>
                     <Main $template={this.props.$template}/>
                 </Layout>
                 <Portal />
@@ -114,8 +114,8 @@ const styles = StyleSheet.create({
     wrapper: {
         position: 'absolute',
         left: 0,
-        top: 0,
         right: 0,
+        top: 0,
         bottom: 0
     }
 });

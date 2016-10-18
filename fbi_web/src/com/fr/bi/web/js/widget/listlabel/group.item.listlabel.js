@@ -12,7 +12,7 @@ BI.ListLabelItemGroup = BI.inherit(BI.ButtonGroup, {
         BI.ListLabelItemGroup.superclass._init.apply(this, arguments);
         if (BI.isEmptyArray(this.getValue())) {
             BI.each(this.buttons, function (idx, button) {
-                if (button.getValue() === "*") {
+                if (button.getValue() === "_*_") {
                     button.setSelected(true);
                 }
             });
@@ -42,8 +42,8 @@ BI.ListLabelItemGroup = BI.inherit(BI.ButtonGroup, {
                 if (type === BI.Events.CLICK) {
                     switch (o.chooseType) {
                         case BI.ButtonGroup.CHOOSE_TYPE_MULTI:
-                            if (btn.getValue() === "*") {
-                                self.setValue(["*"]);
+                            if (btn.getValue() === "_*_") {
+                                self.setValue(["_*_"]);
                             } else {
                                 self._checkBtnState();
                             }
@@ -69,22 +69,14 @@ BI.ListLabelItemGroup = BI.inherit(BI.ButtonGroup, {
     },
 
     _checkBtnState: function () {
-        var self = this;
-        if (BI.isEmptyArray(this.getValue()) || (this.getValue().length === 1 && BI.isEqual(this.getValue()[0], "*"))) {
-            BI.each(this.buttons, function (idx, btn) {
-                if (btn.getValue() === "*") {
-                    btn.setSelected(true);
-                    if(self.isVisible()) {
-                        self.fireEvent(BI.ButtonGroup.EVENT_CHANGE, btn.getValue(), btn);
-                    }
-                }
-            });
-        } else {
-            BI.each(this.buttons, function (idx, btn) {
-                if (btn.getValue() === "*") {
-                    btn.setSelected(false);
-                }
-            });
+        if (BI.isEmptyArray(this.getValue())) {
+            this.buttons[0].setSelected(true);
+            this.fireEvent(BI.ButtonGroup.EVENT_CHANGE, this.buttons[0].getValue(), this.buttons[0]);
+        } else if (this.getValue().length === 1 && BI.isEqual(this.getValue()[0], "_*_")) {
+            this.buttons[0].setSelected(true);
+        }
+        else {
+            this.buttons[0].setSelected(false);
         }
     },
 

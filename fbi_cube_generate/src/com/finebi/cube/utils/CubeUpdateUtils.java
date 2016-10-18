@@ -5,13 +5,8 @@ import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.data.ICubeResourceDiscovery;
-import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.relation.BITableRelation;
-import com.finebi.cube.structure.BICube;
-import com.finebi.cube.structure.BITableKey;
-import com.finebi.cube.structure.ITableKey;
-import com.fr.bi.common.factory.BIFactoryHelper;
+import com.fr.bi.base.BICore;
 import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.data.source.ETLTableSource;
 import com.fr.bi.conf.data.source.SQLTableSource;
@@ -31,25 +26,29 @@ import java.util.Set;
  * Created by kary on 16/7/14.
  */
 public class CubeUpdateUtils {
-    private static boolean forceCheck = false;
 
     /*是否需要更新cube*/
     public static boolean cubeStatusCheck(long userId) {
-//        return isNeedUpdate(userId)&&forceCheck;
         return false;
     }
 
-    private static boolean isNeedUpdate(long userId) {
+    public static boolean isNeedUpdate(long userId) {
         return getNewTables(userId).size() > 0 || getNewRelations(userId).size() > 0;
     }
 
     /* 获取所有新增的table*/
     public static Set<BIBusinessTable> getNewTables(long userId) {
         Set<BIBusinessTable> newTables = new HashSet<BIBusinessTable>();
+        ICubeConfiguration cubeConfiguration = BICubeConfiguration.getConf(Long.toString(userId));
         for (BusinessTable businessTable : BICubeConfigureCenter.getPackageManager().getAllTables(userId)) {
-            if (!tableExisted(businessTable.getTableSource(), userId)) {
-                newTables.add((BIBusinessTable) businessTable);
-            }
+            CubeTableSource source = businessTable.getTableSource();
+            Map<BICore, CubeTableSource> sourceMap = source.createSourceMap();
+            for (BICore core : sourceMap.keySet()) {
+                    if (!BITableKeyUtils.isTableExisted(sourceMap.get(core), cubeConfiguration)) {
+                        newTables.add((BIBusinessTable) businessTable);
+                        break;
+                    }
+                }
         }
         return newTables;
     }
@@ -70,18 +69,6 @@ public class CubeUpdateUtils {
             }
         }
         return newRelationSet;
-    }
-
-
-    private static boolean tableExisted(CubeTableSource source, long userId) {
-        ICubeConfiguration cubeConfiguration = BICubeConfiguration.getConf(Long.toString(userId));
-        BICube iCube = new BICube(new BICubeResourceRetrieval(cubeConfiguration), BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
-        ITableKey iTableKey = new BITableKey(source);
-        return iCube.exist(iTableKey);
-    }
-
-    public static void setForceCheck(boolean forceCheck) {
-        com.finebi.cube.utils.CubeUpdateUtils.forceCheck = forceCheck;
     }
 
     public static Map recordTableAndRelationInfo(long userId) {

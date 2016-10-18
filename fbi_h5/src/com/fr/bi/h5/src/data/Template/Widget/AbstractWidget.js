@@ -3,62 +3,60 @@
  * Created by Young's on 2016/10/12.
  */
 import Immutable from 'immutable'
-import Dimension from './Dimension'
-import Target from './Target'
 import {each, invariant, isNil, find, findKey} from 'core';
 import {Fetch} from 'lib'
+import DimensionFactory from './Dimensions/DimensionFactory'
 class AbstractWidget {
-    constructor($widget, $template, wId) {
+    constructor($widget, wId, template) {
         this.$widget = $widget;
-        this.$template = $template;
         this.wId = wId;
+        this.template = template;
     }
 
     $get() {
         return this.$widget;
     }
 
-    get$$DimensionById(id) {
+    get$DimensionById(id) {
         invariant(this.isDimensionById(id), id + "不是维度id");
         return this.$widget.getIn(['dimensions', id]);
     }
 
-    get$$TargetById(id) {
+    get$TargetById(id) {
         invariant(this.isTargetById(id), id + "不是指标id");
         return this.$widget.getIn(['dimensions', id])
     }
 
-    get$$DimensionOrTargetById(id) {
+    get$DimensionOrTargetById(id) {
         if (this.isDimensionById(id)) {
-            return this.get$$DimensionById(id);
+            return this.get$DimensionById(id);
         }
-        return this.get$$TargetById(id);
+        return this.get$TargetById(id);
     }
 
     getDimensionById(id) {
-        return new Dimension(this.get$$DimensionById(id));
+        return DimensionFactory.createDimension(this.get$DimensionById(id), id, this);
     }
 
     getTargetById(id) {
-        return new Target(this.get$$TargetById(id));
+        return DimensionFactory.createTarget(this.get$TargetById(id), id, this);
     }
 
     getDimensionOrTargetById(id) {
         if (this.isDimensionById(id)) {
-            return new Dimension(this.get$$DimensionById(id));
+            return DimensionFactory.createDimension(this.get$DimensionById(id), id, this);
         }
-        return new Target(this.get$$TargetById(id));
+        return DimensionFactory.createTarget(this.get$TargetById(id), id, this);
     }
-
 
     getAllDimensionIds() {
         if (this._dimensionIds) {
             return this._dimensionIds;
         }
         let result = [];
-        this.$widget.get('view').forEach(($$id, key)=> {
+        this.$widget.get('view').forEach(($id, key)=> {
             if (parseInt(key) < BICst.REGION.TARGET1) {
-                result = result.concat($$id.toArray());
+                result = result.concat($id.toArray());
             }
         });
         this._dimensionIds = result;
@@ -70,9 +68,9 @@ class AbstractWidget {
             return this._targetIds;
         }
         let result = [];
-        this.$widget.get('view').forEach(($$id, key)=> {
+        this.$widget.get('view').forEach(($id, key)=> {
             if (parseInt(key) >= BICst.REGION.TARGET1) {
-                result = result.concat($$id.toArray());
+                result = result.concat($id.toArray());
             }
         });
         this._targetIds = result;
@@ -82,6 +80,10 @@ class AbstractWidget {
     isDimensionById(id) {
         const dimensionIds = this.getAllDimensionIds();
         return dimensionIds.indexOf(id) > -1;
+    }
+
+    isDimensionByViewId(viewId) {
+        return parseInt(viewId, 10) < BICst.REGION.TARGET1;
     }
 
     isTargetById(id) {
@@ -97,8 +99,8 @@ class AbstractWidget {
         const ids = this.getAllDimensionAndTargetIds();
         const result = [];
         ids.forEach((id)=> {
-            const $$dim = this.get$$DimensionOrTargetById(id);
-            if (new Dimension($$dim).isUsed()) {
+            const $dim = this.get$DimensionOrTargetById(id);
+            if (DimensionFactory.createDimension($dim, id, this).isUsed()) {
                 result.push(id);
             }
         });
@@ -109,8 +111,8 @@ class AbstractWidget {
         const ids = this.getAllDimensionIds();
         const result = [];
         ids.forEach((id)=> {
-            const $$dim = this.get$$DimensionById(id);
-            if (new Dimension($$dim).isUsed()) {
+            const $dim = this.get$DimensionById(id);
+            if (DimensionFactory.createDimension($dim, id, this).isUsed()) {
                 result.push(id);
             }
         });
@@ -121,8 +123,8 @@ class AbstractWidget {
         const ids = this.getAllTargetIds();
         const result = [];
         ids.forEach((id)=> {
-            const $$dim = this.get$$TargetById(id);
-            if (new Target($$dim).isUsed()) {
+            const $dim = this.get$TargetById(id);
+            if (DimensionFactory.createTarget($dim, id, this).isUsed()) {
                 result.push(id);
             }
         });
@@ -131,9 +133,9 @@ class AbstractWidget {
 
     getRowDimensionIds() {
         let result = [];
-        this.$widget.get('view').forEach(($$id, key)=> {
+        this.$widget.get('view').forEach(($id, key)=> {
             if (parseInt(key) === BICst.REGION.DIMENSION1) {
-                result = result.concat($$id.toArray());
+                result = result.concat($id.toArray());
             }
         });
         return result;
@@ -141,9 +143,9 @@ class AbstractWidget {
 
     getColDimensionIds() {
         let result = [];
-        this.$widget.get('view').forEach(($$id, key)=> {
+        this.$widget.get('view').forEach(($id, key)=> {
             if (parseInt(key) === BICst.REGION.DIMENSION2) {
-                result = result.concat($$id.toArray());
+                result = result.concat($id.toArray());
             }
         });
         return result;
@@ -159,10 +161,6 @@ class AbstractWidget {
 
     createJson() {
         return this.$widget.toJS();
-    }
-
-    isFreeze() {
-        return this.$widget.getIn(['settings', 'freeze_dim']);
     }
 
     getWidgetBounds() {
@@ -181,6 +179,17 @@ class AbstractWidget {
         return this.$widget.get('sub_type');
     }
 
+    getSortType() {
+        const $sort = this.$widget.get('sort');
+        if ($sort) {
+            const type = $sort.get('type');
+            if (!isNil(type)) {
+                return type;
+            }
+        }
+        return BICst.SORT.NONE;
+    }
+
 
     getWidgetValue() {
         return this.$widget.get('value').toJS();
@@ -196,126 +205,10 @@ class AbstractWidget {
     }
 
     isControl() {
-        switch (this.getType()) {
-            case BICst.WIDGET.STRING:
-            case BICst.WIDGET.NUMBER:
-            case BICst.WIDGET.TREE:
-            case BICst.WIDGET.DATE:
-            case BICst.WIDGET.YEAR:
-            case BICst.WIDGET.QUARTER:
-            case BICst.WIDGET.MONTH:
-            case BICst.WIDGET.YMD:
-                return true;
-        }
-    }
-
-    getSelectType() {
-        return this.$widget.getIn(['value', 'type']);
-    }
-
-    getSelectValue() {
-        const value = this.$widget.getIn(['value', 'value']);
-        return value ? value.toArray() : [];
-    }
-
-    getTreeFloors() {
-        return this.getAllDimensionIds().length;
-    }
-
-    getSelectedTreeValue() {
-        return this.$widget.get('value').toJS();
+        return false;
     }
 
     getData(options) {
-        const wi = this.createJson();
-        switch (this.getType()) {
-            case BICst.WIDGET.TABLE:
-            case BICst.WIDGET.CROSS_TABLE:
-            case BICst.WIDGET.COMPLEX_TABLE:
-                return Fetch(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
-                    method: "POST",
-                    body: JSON.stringify({
-                        widget: {
-                            expander: {
-                                x: {
-                                    type: true,
-                                    value: [[]]
-                                },
-                                y: {
-                                    type: true,
-                                    value: [[]]
-                                }
-                            }, ...wi
-                        }, sessionID: BH.sessionID
-                    })
-                }).then(function (response) {
-                    return response.json();
-                });
-            case BICst.WIDGET.DETAIL:
-                return Fetch(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
-                    method: "POST",
-                    body: JSON.stringify({widget: wi, sessionID: BH.sessionID})
-                }).then(function (response) {
-                    return response.json();
-                });
-            case BICst.WIDGET.AXIS:
-            case BICst.WIDGET.ACCUMULATE_AXIS:
-            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
-            case BICst.WIDGET.COMPARE_AXIS:
-            case BICst.WIDGET.FALL_AXIS:
-            case BICst.WIDGET.BAR:
-            case BICst.WIDGET.ACCUMULATE_BAR:
-            case BICst.WIDGET.COMPARE_BAR:
-            case BICst.WIDGET.LINE:
-            case BICst.WIDGET.AREA:
-            case BICst.WIDGET.ACCUMULATE_AREA:
-            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
-            case BICst.WIDGET.COMPARE_AREA:
-            case BICst.WIDGET.RANGE_AREA:
-            case BICst.WIDGET.COMBINE_CHART:
-            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
-            case BICst.WIDGET.PIE:
-            case BICst.WIDGET.DONUT:
-            case BICst.WIDGET.MAP:
-            case BICst.WIDGET.GIS_MAP:
-            case BICst.WIDGET.DASHBOARD:
-            case BICst.WIDGET.BUBBLE:
-            case BICst.WIDGET.FORCE_BUBBLE:
-            case BICst.WIDGET.SCATTER:
-            case BICst.WIDGET.RADAR:
-            case BICst.WIDGET.ACCUMULATE_RADAR:
-            case BICst.WIDGET.FUNNEL:
-                return Fetch(BH.servletURL + '?op=fr_bi_dezi&cmd=chart_setting', {
-                    method: "POST",
-
-                    body: JSON.stringify({widget: {...wi, page: -1}, sessionID: BH.sessionID})
-                }).then(function (response) {
-                    return response.json();// 转换为JSON
-                });
-
-            case BICst.WIDGET.DATE:
-            case BICst.WIDGET.YEAR :
-            case BICst.WIDGET.QUARTER :
-            case BICst.WIDGET.MONTH:
-            case BICst.WIDGET.YMD :
-                return;
-            case BICst.WIDGET.STRING:
-                return Fetch(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
-                    method: "POST",
-                    body: JSON.stringify({widget: {...wi, text_options: options}, sessionID: BH.sessionID})
-                }).then(function (response) {
-                    return response.json();
-                });
-            case BICst.WIDGET.TREE :
-                return Fetch(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
-                    method: "POST",
-                    body: JSON.stringify({widget: {...wi, tree_options: options}, sessionID: BH.sessionID})
-                }).then(function (response) {
-                    return response.json();
-                });
-            case BICst.WIDGET.NUMBER :
-            case BICst.WIDGET.GENERAL_QUERY:
-        }
 
     }
 
@@ -324,6 +217,12 @@ class AbstractWidget {
     }
 
     //settings  ---- start ----
+
+    isFreeze() {
+        const isFreeze = this.$widget.getIn(['settings', 'freeze_dim']);
+        return isNil(isFreeze) ? true : isFreeze;
+    }
+
     getWSTableForm() {
         var ws = this.getWidgetSettings();
         return isNil(ws.table_form) ? ws.table_form :
@@ -450,6 +349,21 @@ class AbstractWidget {
 
     setWidgetView(view) {
         this.$widget = this.$widget.set('view', Immutable.fromJS(view));
+        return this;
+    }
+
+    set$Dimension($dimension, dId) {
+        this.$widget = this.$widget.setIn(['dimensions', dId], $dimension);
+        return this;
+    }
+
+    setSortType(type) {
+        this.$widget = this.$widget.setIn(['sort', 'type'], type);
+        return this;
+    }
+
+    setSortTarget(dId) {
+        this.$widget = this.$widget.setIn(['sort', 'sort_target'], dId);
         return this;
     }
 }

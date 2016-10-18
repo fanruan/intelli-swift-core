@@ -80,7 +80,7 @@ BI.GlobalStyle = BI.inherit(BI.Widget, {
     populate: function () {
         var globalStyle = BI.Utils.getGlobalStyle();
         this.manager.setThemeStyle(globalStyle);
-        this.manager.setGlobalStyle("globalstyle", globalStyle);
+        this.manager.setGlobalStyle(globalStyle);
     }
 });
 BI.GlobalStyle.EVENT_SET = "EVENT_SET";

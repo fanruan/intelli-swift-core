@@ -14,7 +14,7 @@ import React, {
     TouchableHighlight
 } from 'lib'
 
-import {Colors, Size, Template} from 'data'
+import {Colors, Sizes, TemplateFactory} from 'data'
 import {Layout} from 'layout'
 
 import Toolbar from './Toolbar'
@@ -32,8 +32,7 @@ class Main extends Component {
 
     constructor(props, context) {
         super(props, context);
-        console.log(props);
-        this.template = new Template(props.$template);
+        this.template = TemplateFactory.createTemplate(props.$template);
     }
 
     navigationBarRouteMapper() {
@@ -123,8 +122,8 @@ class Main extends Component {
         const {name, Component, title, onValueChange, ...others} = route;
         if (name === 'index') {
             if (this.template.hasControlWidget()) {
-                return <Layout style={{height: '100%'}} dir='top' box='last'>
-                    <LayoutComponent width={width} height={height - 50 - Size.ITEM_HEIGHT} {...props}
+                return <Layout flex dir='top' box='last'>
+                    <LayoutComponent width={width} height={height - 50 - Sizes.ITEM_HEIGHT} {...props}
                                      navigator={navigationOperations}/>
 
                     <Toolbar {...props} navigator={navigationOperations}>
@@ -135,14 +134,16 @@ class Main extends Component {
             return <LayoutComponent width={width} height={height} {...props}/>;
         }
         return (
-            <Component
-                width={width} height={height - 50}
-                {...others}
-                onValueChange={$template=> {
-                    route.$template = $template;
-                }}
-                navigator={navigationOperations}
-            />
+            <Layout flex box='mean'>
+                <Component
+                    width={width} height={height - 50}
+                    {...others}
+                    onValueChange={$template=> {
+                        route.$template = $template;
+                    }}
+                    navigator={navigationOperations}
+                />
+            </Layout>
         );
     }
 
