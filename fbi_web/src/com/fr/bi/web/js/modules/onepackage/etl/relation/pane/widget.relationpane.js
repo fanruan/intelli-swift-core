@@ -131,6 +131,7 @@ BI.RelationPane = BI.inherit(BI.Widget, {
         this.relationTree.on(BI.Controller.EVENT_CHANGE, function (type, clickType, fieldId) {
             switch (clickType) {
                 case BI.RelationSettingTable.CLICK_GROUP:
+                    self.fireEvent(BI.RelationPane.EVENT_VALID);
                     break;
                 case BI.RelationSettingTable.CLICK_TABLE:
                     self._createSelectDataMask(fieldId);
@@ -174,11 +175,24 @@ BI.RelationPane = BI.inherit(BI.Widget, {
         this.relationTree.populate(this._createBranchItems(relationChildren));
         this._drawSVGLine();
         this.model.setRelations(this.getValue());
+        if(this._checkAllRelationIsMatchingValid(relationChildren)){
+            this.fireEvent(BI.RelationPane.EVENT_VALID);
+        }else{
+            this.fireEvent(BI.RelationPane.EVENT_ERROR);
+        }
+    },
+
+    _checkAllRelationIsMatchingValid: function(items){
+        return BI.isNotNull(BI.find(items, function(idx, item){
+            return BI.isNotNull(item.relationType);
+        }))
     },
 
     getValue: function () {
         return this.model.getParsedRelation(this.relationTree.getValue());
     }
 });
+BI.RelationPane.EVENT_VALID = "EVENT_VALID";
+BI.RelationPane.EVENT_ERROR = "EVENT_ERROR";
 BI.RelationPane.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.relation_pane", BI.RelationPane);

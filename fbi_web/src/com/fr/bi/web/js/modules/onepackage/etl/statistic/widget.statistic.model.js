@@ -168,7 +168,7 @@ BI.GroupStatisticModel = BI.inherit(BI.Widget, {
                         };
                     case BICst.COLUMN.DATE:
                         return {
-                            type: BICst.GROUP.M
+                            type: BICst.GROUP.YMD
                         };
                 }
             };
