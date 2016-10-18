@@ -401,7 +401,9 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         show_v_grid_line: BI.Utils.getWSShowVGridLineByID(o.wId),
                         v_grid_line_color: BI.Utils.getWSVGridLineColorByID(o.wId),
                         tooltip_setting: BI.Utils.getWSToolTipSettingByID(o.wId),
-                        chart_font: BI.Utils.getGSChartFont(o.wId),
+                        chart_font: BI.extend(BI.Utils.getGSChartFont(o.wId), {
+                            fontSize: BI.Utils.getGSChartFont(o.wId).fontSize + "px"
+                        }),
                         null_continue: BI.Utils.getWSNullContinueByID(o.wId),
                         background_layer_info: MapConst.WMS_INFO[BI.Utils.getWSBackgroundLayerInfoByID(o.wId)]
                     }, {

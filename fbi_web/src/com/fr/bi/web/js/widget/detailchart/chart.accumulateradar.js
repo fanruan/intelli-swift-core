@@ -76,13 +76,19 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.columnType = true;
         delete config.xAxis;
         delete config.yAxis;
+
+        config.angleAxis[0].labelStyle = BI.extend(this.config.lvalue_axis_label_setting.text_style, {
+            fontSize: this.config.lvalue_axis_label_setting.text_style.fontSize + "px"
+        });
+        config.angleAxis[0].showLabel = this.config.show_lvalue_axis_label;
+        config.angleAxis[0].lineColor = this.config.lvalue_axis_line_color;
+
         //为了给数据标签加个%,还要遍历所有的系列，唉
         self.formatDataLabelForAxis(config.plotOptions.dataLabels.enabled, items, config.radiusAxis[0].formatter, this.config.chart_font, this.config.left_y_axis_unit);
 
         //全局样式的图表文字
-        config.radiusAxis[0].labelStyle = config.radiusAxis[0].title.style = this.config.chart_font;
-        config.angleAxis[0].labelStyle = config.angleAxis[0].title.style = this.config.chart_font;
-        config.legend.style = this.config.chart_font;
+        // config.radiusAxis[0].labelStyle = config.radiusAxis[0].title.style = this.config.chart_font;
+        // config.legend.style = this.config.chart_font;
 
         return [items, config];
 

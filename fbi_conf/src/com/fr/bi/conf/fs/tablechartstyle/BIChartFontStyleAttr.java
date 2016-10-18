@@ -19,7 +19,7 @@ public class BIChartFontStyleAttr extends BIAbstractFontStyleAttr{
 
     @Override
     public String toString() {
-        return "{" + "color:\"" + this.getColor() + "\", font-style: \"" + this.getFontStyle() +
-                "\",font-weight:\"" + this.getFontWidget() + "\"}";
+        return "{" + "color:\"" + this.getColor() + "\", fontStyle: \"" + this.getFontStyle() +
+                "\",fontWeight:\"" + this.getFontWidget() + "\"}";
     }
 }

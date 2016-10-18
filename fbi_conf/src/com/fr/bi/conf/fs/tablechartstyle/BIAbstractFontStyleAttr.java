@@ -27,8 +27,8 @@ public abstract class BIAbstractFontStyleAttr implements XMLable {
         if(reader.isChildNode()){
             if(ComparatorUtils.equals(reader.getTagName(), getTag())){
                 this.setColor(reader.getAttrAsString("color", ""));
-                this.setFontStyle(reader.getAttrAsString("font-style", ""));
-                this.setFontWidget(reader.getAttrAsString("font-weight", ""));
+                this.setFontStyle(reader.getAttrAsString("fontStyle", ""));
+                this.setFontWidget(reader.getAttrAsString("fontWeight", ""));
             }
         }
     }
@@ -42,8 +42,8 @@ public abstract class BIAbstractFontStyleAttr implements XMLable {
     public void writeXML(XMLPrintWriter writer) {
         writer.startTAG(getTag());
         writer.attr("color", this.color);
-        writer.attr("font-style", this.fontStyle);
-        writer.attr("font-weight", this.fontWidget);
+        writer.attr("fontStyle", this.fontStyle);
+        writer.attr("fontWeight", this.fontWidget);
         writer.end();
     }
 

@@ -105,24 +105,24 @@ BI.TextToolbar = BI.inherit(BI.Widget, {
 
     setValue: function (v) {
         v || (v = {});
-        this.size.setValue(v["font-size"] || 14);
-        this.bold.setSelected(v["font-weight"] === "bold");
-        this.italic.setSelected(v["font-style"] === "italic");
-        this.underline.setSelected(v["text-decoration"] === "underline");
+        this.size.setValue(v["fontSize"] || 14);
+        this.bold.setSelected(v["fontWeight"] === "bold");
+        this.italic.setSelected(v["fontStyle"] === "italic");
+        this.underline.setSelected(v["textDecoration"] === "underline");
         this.colorchooser.setValue(v["color"] || "#000000");
-        this.backgroundchooser.setValue(v["background-color"] || "#ffffff");
-        this.alignchooser.setValue(v["text-align"] || "left");
+        this.backgroundchooser.setValue(v["backgroundColor"] || "#ffffff");
+        this.alignchooser.setValue(v["textAlign"] || "left");
     },
 
     getValue: function () {
         return {
-            "font-size": this.size.getValue(),
-            "font-weight": this.bold.isSelected() ? "bold" : "normal",
-            "font-style": this.italic.isSelected() ? "italic" : "normal",
-            "text-decoration": this.underline.isSelected() ? "underline" : "initial",
+            "fontSize": this.size.getValue(),
+            "fontWeight": this.bold.isSelected() ? "bold" : "normal",
+            "fontStyle": this.italic.isSelected() ? "italic" : "normal",
+            "textDecoration": this.underline.isSelected() ? "underline" : "initial",
             "color": this.colorchooser.getValue(),
-            "background-color": this.backgroundchooser.getValue(),
-            "text-align": this.alignchooser.getValue()
+            "backgroundColor": this.backgroundchooser.getValue(),
+            "textAlign": this.alignchooser.getValue()
         }
     }
 });

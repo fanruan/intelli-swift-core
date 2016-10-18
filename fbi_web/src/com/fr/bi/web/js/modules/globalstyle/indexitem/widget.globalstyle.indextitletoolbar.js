@@ -66,18 +66,18 @@ BI.GlobalStyleIndexTitleToolBar = BI.inherit(BI.Widget, {
 
     getValue: function () {
         return {
-            "font-weight": this.bold.isSelected() ? "bold" : "normal",
-            "font-style": this.italic.isSelected() ? "italic" : "normal",
-            "text-align": this.alignChooser.getValue(),
+            "fontWeight": this.bold.isSelected() ? "bold" : "normal",
+            "fontStyle": this.italic.isSelected() ? "italic" : "normal",
+            "textAlign": this.alignChooser.getValue(),
             "color": this.colorchooser.getValue()
         }
     },
 
     setValue: function (v) {
         v || (v = {});
-        this.bold.setSelected(v["font-weight"] === "bold");
-        this.italic.setSelected(v["font-style"] === "italic");
-        this.alignChooser.setValue(v["text-align"] || "left");
+        this.bold.setSelected(v["fontWeight"] === "bold");
+        this.italic.setSelected(v["fontStyle"] === "italic");
+        this.alignChooser.setValue(v["textAlign"] || "left");
         this.colorchooser.setValue(v["color"] || "");
     }
 });
