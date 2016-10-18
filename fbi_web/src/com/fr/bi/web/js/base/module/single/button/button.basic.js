@@ -129,6 +129,7 @@ BI.BasicButton = BI.inherit(BI.Single, {
                             self._trigger();
                         }
                         mouseDown = false;
+                        $(document).unbind("mouseup." + self.getName());
                         // }
                     });
                     if (mouseDown === true) {
