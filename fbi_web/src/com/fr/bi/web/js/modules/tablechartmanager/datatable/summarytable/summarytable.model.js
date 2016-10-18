@@ -669,15 +669,20 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     item.cls = "cross-table-target-header";
                     self.header.push(item);
                 } else if (BI.isNotEmptyArray(item.values)) {
-                    BI.each(item.values, function (k, v) {
-                        self.header.push({
-                            type: "bi.page_table_cell",
-                            cls: "cross-table-target-header",
-                            text: BI.Utils.getDimensionNameByID(self.targetIds[k]),
-                            title: BI.Utils.getDimensionNameByID(self.targetIds[k]),
-                            tag: BI.UUID()
-                        })
-                    });
+                    //单指标情况下，指标不显示，合并到上面
+                    if (self.targetIds.length === 1) {
+                        self.header.push(item);
+                    } else {
+                        BI.each(item.values, function (k, v) {
+                            self.header.push({
+                                type: "bi.page_table_cell",
+                                cls: "cross-table-target-header",
+                                text: BI.Utils.getDimensionNameByID(self.targetIds[k]),
+                                title: BI.Utils.getDimensionNameByID(self.targetIds[k]),
+                                tag: BI.UUID()
+                            })
+                        });
+                    }
                 } else {
                     self.header.push({
                         type: "bi.page_table_cell",
@@ -685,7 +690,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                         text: dName,
                         title: dName,
                         tag: BI.UUID()
-                    })
+                    });
                 }
             });
         }

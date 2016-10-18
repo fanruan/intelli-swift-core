@@ -82,6 +82,10 @@ class AbstractWidget {
         return dimensionIds.indexOf(id) > -1;
     }
 
+    isDimensionByViewId(viewId) {
+        return parseInt(viewId, 10) < BICst.REGION.TARGET1;
+    }
+
     isTargetById(id) {
         const targetIds = this.getAllTargetIds();
         return targetIds.indexOf(id) > -1;

@@ -1,6 +1,5 @@
 package com.fr.bi.stable.utils;
 
-import com.fr.bi.stable.utils.file.FtpBusiness;
 import junit.framework.TestCase;
 
 /**
