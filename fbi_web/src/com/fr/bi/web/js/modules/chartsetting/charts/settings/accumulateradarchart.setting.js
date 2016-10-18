@@ -78,25 +78,6 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
         });
 
-        this.chartStyleGroup = BI.createWidget({
-            type: "bi.button_group",
-            items: BI.createItems(BICst.AXIS_STYLE_GROUP, {
-                type: "bi.icon_button",
-                extraCls: "chart-style-font",
-                width: constant.BUTTON_WIDTH,
-                height: constant.BUTTON_HEIGHT,
-                iconWidth: constant.ICON_WIDTH,
-                iconHeight: constant.ICON_HEIGHT
-            }),
-            layouts: [{
-                type: "bi.vertical_adapt",
-                height: constant.SINGLE_LINE_HEIGHT
-            }]
-        });
-        this.chartStyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
-        });
-
         this.chartTypeGroup = BI.createWidget({
             type: "bi.button_group",
             items: BI.createItems(BICst.ACC_RADAR_CHART_STYLE_GROUP, {
@@ -144,13 +125,6 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.colorSelect]
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Table_Style"),
-                    cls: "attr-names"
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.chartStyleGroup]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Type"),
@@ -547,7 +521,6 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.widgetTitle.setVisible(BI.Utils.getWSShowNameByID(wId));
 
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
-        this.chartStyleGroup.setValue(BI.Utils.getWSChartStyleByID(wId));
         this.chartTypeGroup.setValue(BI.Utils.getWSChartRadarTypeByID(wId));
         this.widgetBackground.setValue(BI.Utils.getWSWidgetBGByID(wId));
 
@@ -555,25 +528,25 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.LYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
         this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
         this.separators.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
-        this.showLValueAxisLabel.setSelected();
-        this.lValueAxisLabelSetting.setValue();
-        this.lValueAxisLineColor.setValue();
+        this.showLValueAxisLabel.setSelected(BI.Utils.getWSShowValueAxisLabelByID(wId));
+        this.lValueAxisLabelSetting.setValue(BI.Utils.getWSLValueAxisLabelSettingByID(wId));
+        this.lValueAxisLineColor.setValue(BI.Utils.getWSLValueAxisLineColorByID(wId));
         this.showCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
         this.customScale.setValue(BI.Utils.getWSCustomYScale(wId));
         this.customScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
 
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
-        this.legendSetting.setValue();
-        this.showHGridLine.setSelected();
-        this.hGridLineColor.setValue();
-        this.showVGridLine.setSelected();
-        this.vGridLineColor.setValue();
+        this.legendSetting.setValue(BI.Utils.getWSLegendSettingByID(wId));
+        this.showHGridLine.setSelected(BI.Utils.getWSShowHGridLineByID(wId));
+        this.hGridLineColor.setValue(BI.Utils.getWSHGridLineColorByID(wId));
+        this.showVGridLine.setSelected(BI.Utils.getWSShowVGridLineByID(wId));
+        this.vGridLineColor.setValue(BI.Utils.getWSVGridLineColorByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
-        this.tooltipSetting.setValue();
-        this.continuousNullValue.setSelected();
+        this.tooltipSetting.setValue(BI.Utils.getWSToolTipSettingByID(wId));
+        this.continuousNullValue.setSelected(BI.Utils.getWSNullContinueByID(wId));
 
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
-        this.linkageSelection.setSelected();
+        this.linkageSelection.setSelected(BI.Utils.getWSLinkageSelectionByID(wId));
     },
 
     getValue: function () {
@@ -583,7 +556,6 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             title_detail: this.titleDetailSettting.getValue(),
 
             chart_color: this.colorSelect.getValue()[0],
-            chart_style: this.chartStyleGroup.getValue()[0],
             chart_radar_type: this.chartTypeGroup.getValue()[0],
             widget_bg: this.widgetBackground.getValue(),
 
@@ -618,7 +590,6 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.titleDetailSettting.setValue(v.title_detail);
 
         this.colorSelect.setValue(v.chart_color);
-        this.chartStyleGroup.setValue(v.chart_style);
         this.chartTypeGroup.setValue(v.chart_radar_type);
         this.widgetBackground.setValue(v.widget_bg);
 

@@ -1192,6 +1192,66 @@
                 BICst.DEFAULT_CHART_SETTING.right_num_separators;
         },
 
+        getWSShowValueAxisLabelByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_lvalue_axis_label) ? ws.show_lvalue_axis_label :
+                BICst.DEFAULT_CHART_SETTING.show_lvalue_axis_label
+        },
+
+        getWSLValueAxisLabelSettingByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.lvalue_axis_label_setting) ? ws.lvalue_axis_label_setting :
+            {};
+        },
+
+        getWSLValueAxisLineColorByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.lvalue_axis_line_color) ? ws.lvalue_axis_line_color :
+                ""
+        },
+
+        getWSLegendSettingByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.chart_legend_setting) ? ws.chart_legend_setting :
+            {}
+        },
+
+        getWSShowHGridLineByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_h_grid_line) ? ws.show_h_grid_line :
+                BICst.DEFAULT_CHART_SETTING.show_h_grid_line
+        },
+
+        getWSHGridLineColorByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.h_grid_line_color) ? ws.h_grid_line_color :
+                ""
+        },
+
+        getWSShowVGridLineByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_v_grid_line) ? ws.show_v_grid_line :
+                BICst.DEFAULT_CHART_SETTING.show_v_grid_line
+        },
+
+        getWSVGridLineColorByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.v_grid_line_color) ? ws.v_grid_line_color :
+                ""
+        },
+
+        getWSToolTipSettingByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.tooltip_setting) ? ws.tooltip_setting :
+            {}
+        },
+
+        getWSLinkageSelectionByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.manually_linkage_selection) ? ws.manually_linkage_selection :
+                BICst.DEFAULT_CHART_SETTING.manually_linkage_selection
+        },
+
         getWSMinimalistByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.minimalist_model) ? ws.minimalist_model :
