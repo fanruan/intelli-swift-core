@@ -69,8 +69,8 @@ public class BIWidgetFactory {
                 return new ListLabelWidget();
             case BIReportConstant.WIDGET.TREE:
                 return new TreeWidget();
-//            case BIReportConstant.WIDGET.TREE_LABEL:
-//                return new TreeLabelWidget();
+            case BIReportConstant.WIDGET.TREE_LABEL:
+                return new TreeLabelWidget();
             default:
                 return new MultiChartWidget();
         }
