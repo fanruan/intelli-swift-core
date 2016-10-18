@@ -1,4 +1,4 @@
-import {each, first, arrayMove, values, keys} from 'core'
+import {each, first, arrayMove, values, keys, isNil} from 'core'
 import {WidgetFactory, TemplateFactory} from 'data'
 export default class SettingsComponentHelper {
     constructor(props, context) {
@@ -22,6 +22,10 @@ export default class SettingsComponentHelper {
             text: '行表头',
             viewId: viewId
         }
+    }
+
+    isDimensionByViewId(viewId) {
+        return this.widget.isDimensionByViewId(viewId);
     }
 
     isDimensionByDimensionId(dId) {
@@ -59,11 +63,46 @@ export default class SettingsComponentHelper {
         return view[viewId] || [];
     }
 
-    doMove(viewId, oldIndex, newIndex) {
+    _getPreViewIdByViewId(viewId) {
         const view = this.widget.getWidgetView();
-        const items = this._getDimensionIds(viewId);
-        arrayMove(items, oldIndex, newIndex);
-        view[viewId] = items;
+        const vs = keys(view);
+        let idx = -1;
+        if ((idx = vs.indexOf(viewId)) > 0) {
+            return vs[idx - 1];
+        }
+    }
+
+    doMove(oldIndex, newIndex) {
+        const oldValue = oldIndex.split('-');
+        const [oViewId,oIndex] = oldValue;
+        const newValue = newIndex.split('-');
+        const [nViewId,nIndex] = newValue;
+        const view = this.widget.getWidgetView();
+        const oItems = this._getDimensionIds(oViewId);
+        if (oViewId === nViewId) {
+            if (isNil(nIndex)) {
+                const curr = oItems.splice(oIndex, 1);
+                const preViewId = this._getPreViewIdByViewId(nViewId);
+                const nItems = this._getDimensionIds(preViewId);
+                nItems.push(curr[0]);
+                view[oViewId] = oItems;
+                view[preViewId] = nItems;
+            } else {
+                arrayMove(oItems, oIndex, nIndex);
+                view[oViewId] = oItems;
+            }
+        } else {
+            const nItems = this._getDimensionIds(nViewId);
+            const curr = oItems.splice(oIndex, 1);
+            if (parseInt(nViewId) > parseInt(oViewId)) {
+                nItems.splice(isNil(nIndex) ? 0 : (parseInt(nIndex, 10) + 1), 0, curr[0]);
+            } else {
+                nItems.splice(nIndex, 0, curr[0]);
+            }
+            view[oViewId] = oItems;
+            view[nViewId] = nItems;
+        }
+
         this.widget.setWidgetView(view);
         return this.widget.$get();
     }

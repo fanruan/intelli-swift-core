@@ -264,7 +264,10 @@ BI.ChartCombineFormatItemFactory = {
                 "toImage": {"enabled": true},
                 "sort": {"enabled": true},
                 "enabled": false,
-                "fullScreen": {"enabled": true}
+                "fullScreen": {"enabled": true},
+                "refresh": {
+                    "enabled": false
+                }
             },
             "plotBorderWidth": 0,
             "colors": ["rgb(99,178,238)", "rgb(118,218,145)"],
