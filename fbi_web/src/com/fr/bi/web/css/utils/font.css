@@ -3712,3 +3712,12 @@
   content: "\e6a2";
   color: #cccccc;
 }
+.tab-select-active-font .b-font:before {
+  content: "\e6dd";
+  color: #58cc7d;
+}
+.tab-select-active-font.native .b-font:before,
+.tab-select-active-font.disabled .b-font:before {
+  content: "\e6dd";
+  color: #58cc7d;
+}

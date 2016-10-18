@@ -332,7 +332,8 @@ BI.EditSQL = BI.inherit(BI.Widget, {
             table_name: this.model.getTableName()
         }], function (res) {
             var table = res[0];
-            if (!errorConnection && table.md5 === "Empty") {
+            //还是看fields信息吧
+            if ((!errorConnection && table.md5 === "Empty") || table.fields[0].length === 0) {
                 BI.Msg.confirm(BI.i18nText("BI-Prompt"), BI.i18nText("BI-Error_SQL_Not_Next_Step") + "," + BI.i18nText("BI-Sure_Next_Step"), function (v) {
                     v === true && self.fireEvent(BI.EditSQL.EVENT_SAVE, table);
                 });
