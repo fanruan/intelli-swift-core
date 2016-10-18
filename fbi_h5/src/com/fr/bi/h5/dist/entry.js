@@ -6657,7 +6657,7 @@ webpackJsonp([0],{
 	                        _lib2.default.createElement(
 	                            _lib.Text,
 	                            { numberOfLines: 1,
-	                                style: [(0, _core.sc)([styles.disabledText, !this._helper.isUsed()]), styles.sortTargetName],
+	                                style: [styles.disabledText, styles.sortTargetName],
 	                                effect: false },
 	                            this._helper.getSortTargetName()
 	                        ),
