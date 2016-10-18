@@ -39,7 +39,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         var self = this;
 
         config.colors = this.config.chart_color;
-        config.style = formatChartStyle(this.config.chart_style);
+        config.plotOptions.style = formatChartStyle(this.config.chart_style);
         formatChartLineStyle(this.config.chart_line_type);
         formatCordon(this.config.cordon);
         this.formatChartLegend(config, this.config.chart_legend);
