@@ -34,17 +34,23 @@ BI.DetailSelectDataLevel1Item = BI.inherit(BI.Single, {
     _init: function () {
         BI.DetailSelectDataLevel1Item.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-        this.button = BI.createWidget({
-            type: "bi.blank_icon_text_item",
+        var cType = o.isPrimaryKey ? {
+            iconCls1: "select-data-level0-item-button " + this._getFieldClass(o.fieldType),
+            iconCls2: "select-data-primary-key-font",
+            type: "bi.blank_icon_icon_text_item"
+        } : {
+            cls: "select-data-level0-item-button " + this._getFieldClass(o.fieldType),
+            type: "bi.blank_icon_text_item"
+        };
+        this.button = BI.createWidget(BI.extend({
             trigger: "mousedown",
-            cls: "select-date-level1-item-button " + this._getFieldClass(o.fieldType),
             text: o.text,
             value: o.value,
             blankWidth: o.layer * 20,
             height: 25,
             textLgap: 10,
             textRgap: 5
-        });
+        }, cType));
         this.button.on(BI.Controller.EVENT_CHANGE, function (type) {
             if (type === BI.Events.CLICK) {
                 self.setSelected(self.isSelected());
