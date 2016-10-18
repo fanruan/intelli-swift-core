@@ -67,15 +67,6 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.left",
             cls: "single-line-settings",
             items: BI.createItems([{
-                type: "bi.label",
-                text: BI.i18nText("BI-Component_Widget"),
-                cls: "line-title",
-            }, {
-                type: "bi.label",
-                text: BI.i18nText("BI-Title"),
-                cls: "line-title",
-                lgap: 38
-            }, {
                 type: "bi.vertical_adapt",
                 items: [this.showTitle]
             }, {
@@ -83,7 +74,7 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
                 items: [this.widgetTitle]
             }, {
                 type: "bi.label",
-                text: BI.i18nText("BI-Background"),
+                text: BI.i18nText("BI-Widget_Background_Colour"),
                 cls: "line-title",
             },{
                 type: "bi.vertical_adapt",
