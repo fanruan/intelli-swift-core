@@ -94,7 +94,7 @@ BI.BlankIconIconTextItem = BI.inherit(BI.BasicButton, {
             this.icon2.element.addClass("active");
         } else {
             this.icon1.element.removeClass("active");
-            this.icon2.element.addClass("active");
+            this.icon2.element.removeClass("active");
         }
     },
 
