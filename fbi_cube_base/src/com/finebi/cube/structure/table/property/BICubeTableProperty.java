@@ -609,7 +609,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     }
 
     protected void resetCurrentExecuteTimeReader() {
-        if (isLastExecuteTimeReaderAvailable()) {
+        if (isCurrentExecuteTimeReaderAvailable()) {
             currentExecuteTimeReader.clear();
             currentExecuteTimeReader = null;
         }

@@ -209,14 +209,16 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
     }
 
     private String addDateCondition(String sql) {
+        //替换上次更新时间
         if (tableEntityService.isLastExecuteTimeAvailable() && null != tableEntityService.getLastExecuteTime()) {
             Date lastTime = tableEntityService.getLastExecuteTime();
-            Pattern lastTimePat = Pattern.compile("\\$[\\{]上次更新时间[\\}]");
+            Pattern lastTimePat = Pattern.compile("\\$[\\{]__last_update_time__[\\}]");
             sql = replacePattern(sql, lastTimePat, lastTime);
         }
 
+        //替换当前更新时间
         Date currentTime = tableEntityService.getCurrentExecuteTime();
-        Pattern currentTimePat = Pattern.compile("\\$[\\{]当前更新时间[\\}]");
+        Pattern currentTimePat = Pattern.compile("\\$[\\{]__current_update_time__[\\}]");
         sql = replacePattern(sql, currentTimePat, currentTime);
         tableEntityService.clear();
         return sql;

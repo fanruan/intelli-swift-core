@@ -65,19 +65,20 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
             CubeTableEntityService tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
             if (tableEntityService.isLastExecuteTimeAvailable()) {
                 lastUpdateDate = tableEntityService.getLastExecuteTime();
+                tableEntityService.clear();
             }
         }
         String sql = parseSQL(stringSql, lastUpdateDate);
         JSONObject jo = new JSONObject();
         jo.put("sql", sql);
         jo.put("last_update_time", lastUpdateDate);
-        BILoggerFactory.getLogger().info("preview SQL："+sql);
+        BILoggerFactory.getLogger().info("preview SQL：" + sql);
         if (StringUtils.isNotEmpty(sql)) {
             //预览时不一定已经生成table，所以无法使用table类型来判断
-            String connectionName=null;
-            if (!table.toMap().get("connection_name").equals(DBConstant.CONNECTION.SQL_CONNECTION)){
-               connectionName = table.getString("connection_name");
-          }else {
+            String connectionName = null;
+            if (!table.toMap().get("connection_name").equals(DBConstant.CONNECTION.SQL_CONNECTION)) {
+                connectionName = table.getString("connection_name");
+            } else {
                 connectionName = table.getString("dataLinkName");
             }
             com.fr.data.impl.Connection dbc = DatasourceManager.getInstance().getConnection(connectionName);
@@ -113,23 +114,23 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
     }
 
     private String parseSQL(String sql, Date lastDate) {
-//        Pattern pat = Pattern.compile("\\$[\\{][^\\}]*[\\}]");
-        Pattern lastTimePat = Pattern.compile("\\$[\\{]上次更新时间[\\}]");
-        Matcher lastTimeMatcher = lastTimePat.matcher(sql);
-        String lastDateStr = DateUtils.DATETIMEFORMAT2.format(lastDate);
-        while (lastTimeMatcher.find()) {
-            String lastMatchStr = lastTimeMatcher.group(0);
-            sql = sql.replace(lastMatchStr, lastDateStr);
-        }
+        //替换上次更新时间
+        Pattern lastTimePat = Pattern.compile("\\$[\\{]__last_update_time__[\\}]");
+        sql = replacePattern(sql, lastTimePat, lastDate);
 
-        Pattern currentTimePat = Pattern.compile("\\$[\\{]当前更新时间[\\}]");
-        Matcher currentTimeMatcher = currentTimePat.matcher(sql);
-        String currentDateStr = DateUtils.DATETIMEFORMAT2.format(System.currentTimeMillis());
-        while (currentTimeMatcher.find()) {
-            String currentMatchStr = currentTimeMatcher.group(0);
-            sql = sql.replace(currentMatchStr, currentDateStr);
-        }
+        //替换当前时间
+        Pattern currentTimePat = Pattern.compile("\\$[\\{]__current_update_time__[\\}]");
+        sql = replacePattern(sql, currentTimePat, new Date(System.currentTimeMillis()));
+        return sql;
+    }
 
+    private String replacePattern(String sql, Pattern pattern, Date date) {
+        Matcher matcher = pattern.matcher(sql);
+        String dateStr = DateUtils.DATETIMEFORMAT2.format(date);
+        while (matcher.find()) {
+            String matchStr = matcher.group(0);
+            sql = sql.replace(matchStr, dateStr);
+        }
         return sql;
     }
 }
