@@ -97,6 +97,7 @@ public class BuildCubeTask implements CubeTask {
 
     @Override
     public void start() {
+        BIConfigureManagerCenter.getLogManager().logStart(biUser.getUserId());
         BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
         Long t = System.currentTimeMillis();
         BILoggerFactory.getLogger().info("start copy some files");
