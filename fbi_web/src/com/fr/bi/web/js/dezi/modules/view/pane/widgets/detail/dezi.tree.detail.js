@@ -244,6 +244,17 @@ BIDezi.TreeDetailView = BI.inherit(BI.View, {
         if (BI.has(changed, "value")) {
             this.combo.setValue(this.model.get("value"))
         }
+        if (BI.has(changed, "dimensions")) {
+            this._checkDataBind();
+        }
+    },
+
+    _checkDataBind: function () {
+        if(BI.size(this.model.get("dimensions")) > 0){
+            this.combo.setEnable(true);
+        }else{
+            this.combo.setEnable(false);
+        }
     },
 
 
@@ -261,6 +272,7 @@ BIDezi.TreeDetailView = BI.inherit(BI.View, {
 
     refresh: function () {
         this.dimensionsManager.populate();
+        this._checkDataBind();
         this.combo.setValue(this.model.get("value"));
     }
 });

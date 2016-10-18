@@ -259,6 +259,15 @@ BIDezi.StringDetailView = BI.inherit(BI.View, {
         }
         if (BI.has(changed, "dimensions")) {
             this._refreshDimensions();
+            this._checkDataBind();
+        }
+    },
+
+    _checkDataBind: function () {
+        if(BI.size(this.model.get("dimensions")) > 0){
+            this.combo.setEnable(true);
+        }else{
+            this.combo.setEnable(false);
         }
     },
 
@@ -275,6 +284,7 @@ BIDezi.StringDetailView = BI.inherit(BI.View, {
         var self = this;
         this.dimensionsManager.populate();
         this._refreshDimensions();
+        this._checkDataBind();
         this.combo.setValue(this.model.get("value"));
     }
 });
