@@ -10,8 +10,8 @@ import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
-import com.fr.bi.stable.structure.collection.list.IntList;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.stable.collections.array.IntArray;
 import com.fr.stable.core.UUID;
 
 import java.util.Date;
@@ -29,7 +29,7 @@ public abstract class AbstractTableIndex implements ICubeTableService {
     protected transient int rowCount;
     protected transient Map<BIKey, Long> groupCount = new ConcurrentHashMap<BIKey, Long>();
     //TODO removedlist 不需要放内存,直接用NIOReader可好
-    protected transient IntList removedList;
+    protected transient IntArray removedList;
     protected transient GroupValueIndex allShowIndex;
     protected BITableCubeFile cube;
     protected SingleUserNIOReadManager manager;
@@ -104,7 +104,7 @@ public abstract class AbstractTableIndex implements ICubeTableService {
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
-        this.allShowIndex = (removedList == null || removedList.size() == 0 )? GVIFactory.createAllShowIndexGVI(rowCount)
+        this.allShowIndex = (removedList == null || removedList.size == 0 )? GVIFactory.createAllShowIndexGVI(rowCount)
                 : GVIFactory.createGroupValueIndexBySimpleIndex(removedList).NOT(rowCount);
     }
 
@@ -151,7 +151,7 @@ public abstract class AbstractTableIndex implements ICubeTableService {
     }
 
     @Override
-    public IntList getRemovedList() {
+    public IntArray getRemovedList() {
         return removedList;
     }
 

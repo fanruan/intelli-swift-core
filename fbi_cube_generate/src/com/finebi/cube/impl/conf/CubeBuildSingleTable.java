@@ -1,6 +1,7 @@
 package com.finebi.cube.impl.conf;
 
 import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.*;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
@@ -15,6 +16,7 @@ import com.finebi.cube.structure.BITableKey;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BIRelationAbsentException;
@@ -22,7 +24,6 @@ import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.utils.BIRelationUtils;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
@@ -115,8 +116,9 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
     }
 
     public void setCubeGenerateRelationSet(Set<BITableRelation> inUseRelations, BusinessTable businessTable) {
+        ICubeConfiguration cubeConfiguration = BICubeConfiguration.getConf(String.valueOf(biUser.getUserId()));
         for (BITableRelation tableRelation : inUseRelations) {
-            if (isTableRelationValid(tableRelation)) {
+            if (isTableRelationAvailable(tableRelation, cubeConfiguration)) {
                 BITableRelation tempTableRelation = new BITableRelation(tableRelation.getPrimaryField(), tableRelation.getForeignField());
                 BITableSourceRelation convertRelation = convertRelation(tempTableRelation);
                 if (null != convertRelation) {
@@ -129,6 +131,8 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
                     BICubeGenerateRelation generateRelation = new BICubeGenerateRelation(convertRelation, dependTableSourceSet);
                     this.cubeGenerateRelationSet.add(generateRelation);
                 }
+            } else {
+                BILoggerFactory.getLogger().error("tableSourceRelation is not available:" + tableRelation.toString());
             }
         }
 
@@ -263,6 +267,10 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
         this.dependTableResource = dependTableResource;
     }
 
+    /***
+     * 单表更新ETL时，除了选中的表外，其他基础表不作更新
+     * @return
+     */
     @Override
     public Map<CubeTableSource, UpdateSettingSource> getUpdateSettingSources() {
         Map<CubeTableSource, UpdateSettingSource> map = new HashMap<CubeTableSource, UpdateSettingSource>();
@@ -271,15 +279,18 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
         }
         for (CubeTableSource source : this.getAllSingleSources()) {
             UpdateSettingSource updateSettingSource = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(source.getSourceID(), biUser.getUserId());
-            if (null != updateSettingSource) {
-                if (ComparatorUtils.equals(source.getSourceID(), this.childTableSource.getSourceID())) {
-                    updateSettingSource.setUpdateType(updateType);
+            if (null == updateSettingSource) {
+                updateSettingSource = new UpdateSettingSource();
+            }
+            if (ComparatorUtils.equals(source.getSourceID(), this.childTableSource.getSourceID())) {
+                updateSettingSource.setUpdateType(updateType);
+            } else {
+//                updateSettingSource.setUpdateType(setUpdateTypes(source).getUpdateType());
+                if (source.getType() == BIBaseConstant.TABLETYPE.ETL) {
+                    updateSettingSource.setUpdateType(DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
                 } else {
                     updateSettingSource.setUpdateType(DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER);
                 }
-            } else {
-                updateSettingSource = new UpdateSettingSource();
-                updateSettingSource.setUpdateType(DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER);
             }
             map.put(source, updateSettingSource);
         }
@@ -333,7 +344,7 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
         ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(biUser.getUserId()));
         ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(biUser.getUserId()));
         try {
-             BIFileUtils.moveFile(tempConf.getRootURI().getPath().toString(), advancedConf.getRootURI().getPath().toString());
+            BIFileUtils.moveFile(tempConf.getRootURI().getPath().toString(), advancedConf.getRootURI().getPath().toString());
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage());
         }

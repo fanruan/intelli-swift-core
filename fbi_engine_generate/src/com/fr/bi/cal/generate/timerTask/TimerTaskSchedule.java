@@ -25,7 +25,7 @@ public class TimerTaskSchedule {
         this.sourceName = sourceName == null ? DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE : sourceName;
         this.cubeBuild = cubeBuild;
         this.userId = userId;
-        this.jobName = sourceName + timeSchedule + UUID.randomUUID();
+        this.jobName = UUID.randomUUID().toString();
         this.updateType = updateType;
     }
 

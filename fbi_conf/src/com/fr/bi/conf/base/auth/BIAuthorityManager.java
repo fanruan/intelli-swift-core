@@ -21,14 +21,21 @@ import java.util.*;
  */
 public class BIAuthorityManager {
 
+    private long version = new Date().getTime();   //版本
+
     private Map<BIPackageID, List<BIPackageAuthority>> packagesAuth = new HashMap<BIPackageID, List<BIPackageAuthority>>();
 
     public void savePackageAuth(BIPackageID packageID, List<BIPackageAuthority> auth, long userId) {
         this.packagesAuth.put(packageID, auth);
+        this.version = new Date().getTime();
     }
 
     public Map<BIPackageID, List<BIPackageAuthority>> getPackagesAuth(long userId) {
         return packagesAuth;
+    }
+
+    public long getVersion() {
+        return  this.version;
     }
 
     public List<BIPackageAuthority> getPackageAuthByID(BIPackageID packageID, long userId) throws Exception {
@@ -188,5 +195,6 @@ public class BIAuthorityManager {
 
     public void removeAuthPackage(BIPackageID packageID) {
         this.packagesAuth.remove(packageID);
+        this.version = new Date().getTime();
     }
 }

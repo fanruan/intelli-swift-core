@@ -1,5 +1,6 @@
 package com.finebi.cube.structure.table.property;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.data.input.ICubeIntegerReaderWrapper;
 import com.finebi.cube.data.input.ICubeLongReaderWrapper;
@@ -16,10 +17,9 @@ import com.finebi.cube.structure.property.BICubeProperty;
 import com.finebi.cube.structure.property.BICubeVersion;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.structure.collection.list.IntList;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONObject;
+import com.fr.stable.collections.array.IntArray;
 
 import java.util.*;
 
@@ -433,9 +433,9 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     }
 
     @Override
-    public IntList getRemovedList() {
+    public IntArray getRemovedList() {
         ICubeIntegerReaderWrapper removedListReader = getRemovedListReader();
-        IntList removedList = new IntList();
+        IntArray removedList = new IntArray();
         int i = 0;
         try {
             /*removeList.size=1*/

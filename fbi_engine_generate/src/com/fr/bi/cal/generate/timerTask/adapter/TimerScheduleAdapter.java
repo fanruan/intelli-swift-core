@@ -4,7 +4,7 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.impl.conf.CubeBuildSingleTable;
-import com.finebi.cube.impl.conf.CubeBuildStaff;
+import com.finebi.cube.impl.conf.CubeBuildComplete;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.timerTask.TimerTaskSchedule;
@@ -23,13 +23,19 @@ import java.util.*;
 public class TimerScheduleAdapter {
     public static List<TimerTaskSchedule> convertSchedule(long userId, Map<String, UpdateSettingSource> allTimeTaskMap) {
         List<TimerTaskSchedule> scheduleList = new ArrayList<TimerTaskSchedule>();
+        Set<String> timeListSet = new HashSet<String>();
         for (String keys : allTimeTaskMap.keySet()) {
+            timeListSet.clear();
             UpdateSettingSource settingSource = allTimeTaskMap.get(keys);
             boolean isGlobalUpdate = keys.equals(DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE);
             for (TimeFrequency frequency : settingSource.getTimeList()) {
                 String scheduleTime = BIDateUtils.getScheduleTime(frequency.getUpdateTime(), frequency.getUpdateFrequency());
+                if (timeListSet.contains(scheduleTime)) {
+                    continue;
+                }
+                timeListSet.add(scheduleTime);
                 if (isGlobalUpdate) {
-                    CubeBuild cubeBuild = new CubeBuildStaff(new BIUser(userId));
+                    CubeBuild cubeBuild = new CubeBuildComplete(new BIUser(userId));
                     TimerTaskSchedule taskSchedule = new TimerTaskSchedule(scheduleTime, cubeBuild, keys, userId, DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
                     scheduleList.add(taskSchedule);
                 } else {
@@ -47,7 +53,7 @@ public class TimerScheduleAdapter {
     }
 
     private static TimerTaskSchedule setBaseTableUpdateSettings(long userId, TimeFrequency frequency, String scheduleTime, BusinessTable table) {
-        CubeBuild cubeBuild = new CubeBuildSingleTable(table, null, userId, frequency.getUpdateType());
+        CubeBuild cubeBuild = new CubeBuildSingleTable(table, table.getTableSource().getSourceID(), userId, frequency.getUpdateType());
         return new TimerTaskSchedule(scheduleTime, cubeBuild, table.getTableSource().getTableName(), userId, frequency.getUpdateType());
     }
 

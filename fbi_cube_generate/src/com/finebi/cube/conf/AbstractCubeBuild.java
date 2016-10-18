@@ -1,6 +1,7 @@
 package com.finebi.cube.conf;
 
 import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.impl.conf.CalculateDependManager;
@@ -9,17 +10,18 @@ import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
-import com.finebi.cube.utils.relation.BITableRelationUtils;
+import com.finebi.cube.utils.BITableRelationUtils;
 import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.data.source.SQLTableSource;
 import com.fr.bi.conf.data.source.ServerTableSource;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.exception.BIKeyAbsentException;
+import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.data.impl.Connection;
@@ -140,10 +142,10 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         String tCubePath = tempConf.getRootURI().getPath();
         String tempFolderPath = advancedTempConf.getRootURI().getPath();
         try {
-            if (new File(tempFolderPath).exists()){
+            if (new File(tempFolderPath).exists()) {
                 BIFileUtils.delete(new File(tempFolderPath));
             }
-            if (new File(advancedPath).exists() &&! new File(tempFolderPath).exists()) {
+            if (new File(advancedPath).exists() && !new File(tempFolderPath).exists()) {
                 boolean renameFolder = BIFileUtils.renameFolder(new File(advancedPath), new File(tempFolderPath));
                 if (!renameFolder) {
                     BILoggerFactory.getLogger().error("rename Advanced to tempFolder failed");
@@ -177,13 +179,47 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         }
     }
 
-    @Override
-    public Map<CubeTableSource, UpdateSettingSource> getUpdateSettingSources() {
-        Map<CubeTableSource, UpdateSettingSource> updateSettingSourceMap = new HashMap<CubeTableSource, UpdateSettingSource>();
-        for (CubeTableSource tableSource : sources) {
-            updateSettingSourceMap.put(tableSource, BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(tableSource.getSourceID(), userId));
+    protected UpdateSettingSource setUpdateTypes(CubeTableSource source) {
+        switch (source.getType()) {
+            case BIBaseConstant.TABLETYPE.ETL:
+                return getEtlUpdateType(source);
+            default:
+                return getSingleSourceUpdateType(source);
         }
-        return updateSettingSourceMap;
+
+    }
+
+    private UpdateSettingSource getEtlUpdateType(CubeTableSource source) {
+        UpdateSettingSource updateSettingSource = new UpdateSettingSource();
+        Map<Integer, Set<CubeTableSource>> tableMaps = source.createGenerateTablesMap();
+        boolean needUpdate = false;
+        loop:
+        for (Integer integer : tableMaps.keySet()) {
+            for (CubeTableSource tableSource : tableMaps.get(integer)) {
+                if (tableSource.getType() != BIBaseConstant.TABLETYPE.ETL) {
+                    if (getSingleSourceUpdateType(tableSource).getUpdateType() == DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL) {
+                        needUpdate = true;
+                        break loop;
+                    }
+                }
+            }
+
+        }
+        if (needUpdate) {
+            updateSettingSource.setUpdateType(DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
+        } else {
+            updateSettingSource.setUpdateType(DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER);
+        }
+        return updateSettingSource;
+    }
+
+    private UpdateSettingSource getSingleSourceUpdateType(CubeTableSource source) {
+        UpdateSettingSource updateSettingSource = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(source.getSourceID(), userId);
+        if (null == updateSettingSource) {
+            updateSettingSource = new UpdateSettingSource();
+            updateSettingSource.setUpdateType(DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
+        }
+        return updateSettingSource;
     }
 
     @Override
@@ -249,8 +285,16 @@ public abstract class AbstractCubeBuild implements CubeBuild {
 
     protected boolean isTableRelationValid(BITableRelation relation) {
         boolean relationValid = BITableRelationUtils.isRelationValid(relation);
-        return allBusinessTable.contains(relation.getPrimaryTable()) && allBusinessTable.contains(relation.getForeignTable()) && relationValid;
+        boolean isStructureValid = allBusinessTable.contains(relation.getPrimaryTable()) && allBusinessTable.contains(relation.getForeignTable());
+        return isStructureValid && relationValid;
+    }
 
+    protected boolean isTableRelationAvailable(BITableRelation relation, ICubeConfiguration cubeConfiguration) {
+        if (isTableRelationValid(relation)) {
+            return BITableRelationUtils.isRelationAvailable(relation, cubeConfiguration);
+        } else {
+            return false;
+        }
     }
 
     protected BITableSourceRelationPath convertPath(BITableRelationPath path) throws BITablePathConfusionException {

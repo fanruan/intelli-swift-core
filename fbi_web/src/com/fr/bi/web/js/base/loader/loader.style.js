@@ -15,11 +15,16 @@ BI.StyleLoaderManager = BI.inherit(FR.OB, {
     },
 
     loadStyle: function (name, styleString) {
-        var docEl = document.documentElement;
-        var styleEl = document.createElement('style');
-        docEl.firstElementChild.appendChild(styleEl);
-        styleEl.innerHTML = styleString;
-        this.stylesManager[name] = styleEl;
+        var d = document, styles = d.createElement('style');
+        d.getElementsByTagName('head')[0].appendChild(styles);
+        styles.setAttribute('type', 'text/css');
+        if (styles.styleSheet) {
+            styles.styleSheet.cssText = styleString;
+        } else {
+            styles.appendChild(document.createTextNode(styleString));
+        }
+        this.stylesManager[name] = styles;
+
         return this;
     },
 
