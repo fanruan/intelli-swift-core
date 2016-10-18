@@ -50,7 +50,7 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
         var yTitle = getXYAxisUnit(this.config.x_axis_number_level, this.constants.LEFT_AXIS);
         var xTitle = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.X_AXIS);
         config.colors = this.config.chart_color;
-        config.style = formatChartStyle();
+        config.plotOptions.style = formatChartStyle();
         formatCordon();
         this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;

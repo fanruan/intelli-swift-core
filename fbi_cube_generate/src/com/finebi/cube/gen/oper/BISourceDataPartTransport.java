@@ -4,6 +4,7 @@ import com.finebi.cube.adapter.BIUserCubeManager;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
@@ -30,9 +31,8 @@ import com.fr.bi.stable.data.db.SqlSettedStatement;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
-import com.fr.bi.stable.structure.collection.list.IntList;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.bi.util.BICubeDBUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
@@ -42,6 +42,9 @@ import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.stable.StringUtils;
 import com.fr.stable.bridge.StableFactory;
+import com.fr.stable.collections.array.IntArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.List;
@@ -55,6 +58,7 @@ import java.util.regex.Pattern;
  * Created by kary on 16/7/13.
  */
 public class BISourceDataPartTransport extends BISourceDataTransport {
+    private static final Logger logger = LoggerFactory.getLogger(BISourceDataPartTransport.class);
     protected UpdateSettingSource tableUpdateSetting;
 
     public BISourceDataPartTransport(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version, UpdateSettingSource tableUpdateSetting) {
@@ -65,11 +69,17 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
+        logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " start transport task"));
         long t = System.currentTimeMillis();
         try {
+            logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " copy old cube files"));
             copyFromOldCubes();
+            tableEntityService.recordCurrentExecuteTime();
+            logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " record table structure info"));
             recordTableInfo();
             long count = transport();
+            logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " finish transportation operation and record ",
+                    String.valueOf(count), " records"));
             ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
             ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
             cube = new BICube(resourceRetrievalService, discovery);
@@ -109,8 +119,8 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         long rowCount = tableEntityService.isVersionAvailable() ? tableEntityService.getRowCount() : 0;
         TreeSet<Integer> sortRemovedList = new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
         if (tableEntityService.isRemovedListAvailable()) {
-            IntList removedList = tableEntityService.getRemovedList();
-            for (int i = 0; i < removedList.size(); i++) {
+            IntArray removedList = tableEntityService.getRemovedList();
+            for (int i = 0; i < removedList.size; i++) {
                 sortRemovedList.add(Integer.valueOf(removedList.get(i)));
             }
         }
@@ -157,7 +167,6 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 }
             }
         };
-
         rowCount = tableSource.read4Part(AddTraversal, cubeFieldSources, SQL, rowCount);
         return rowCount;
     }
@@ -200,15 +209,27 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
     }
 
     private String addDateCondition(String sql) {
-        if (tableEntityService.isCubeLastTimeAvailable() && null != tableEntityService.getCubeLastTime()) {
-            Date lastTime = tableEntityService.getCubeLastTime();
-            Pattern pat = Pattern.compile("\\$[\\{][^\\}]*[\\}]");
-            Matcher matcher = pat.matcher(sql);
-            String dateStr = DateUtils.DATETIMEFORMAT2.format(lastTime);
-            while (matcher.find()) {
-                String matchStr = matcher.group(0);
-                sql = sql.replace(matchStr, dateStr);
-            }
+        //替换上次更新时间
+        if (tableEntityService.isLastExecuteTimeAvailable() && null != tableEntityService.getLastExecuteTime()) {
+            Date lastTime = tableEntityService.getLastExecuteTime();
+            Pattern lastTimePat = Pattern.compile("\\$[\\{]__last_update_time__[\\}]");
+            sql = replacePattern(sql, lastTimePat, lastTime);
+        }
+
+        //替换当前更新时间
+        Date currentTime = tableEntityService.getCurrentExecuteTime();
+        Pattern currentTimePat = Pattern.compile("\\$[\\{]__current_update_time__[\\}]");
+        sql = replacePattern(sql, currentTimePat, currentTime);
+        tableEntityService.clear();
+        return sql;
+    }
+
+    private String replacePattern(String sql, Pattern pattern, Date date) {
+        Matcher matcher = pattern.matcher(sql);
+        String dateStr = DateUtils.DATETIMEFORMAT2.format(date);
+        while (matcher.find()) {
+            String matchStr = matcher.group(0);
+            sql = sql.replace(matchStr, dateStr);
         }
         return sql;
     }
@@ -270,6 +291,10 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             return null;
         }
         return f;
+    }
+
+    private String fetchTableInfo() {
+        return BIStringUtils.append(tableSource.getTableName(), " ,", tableSource.getSourceID());
     }
 
 }

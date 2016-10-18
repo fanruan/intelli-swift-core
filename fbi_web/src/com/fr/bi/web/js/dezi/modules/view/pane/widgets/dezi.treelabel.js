@@ -38,6 +38,10 @@ BIDezi.TreeLabelView = BI.inherit(BI.View, {
             self.model.set("value", self.treeLabel.getValue());
         });
 
+        BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + this.model.get("id"), function () {
+            self.treeLabel.setValue(self.model.get("value"));
+        });
+
         this.widget = BI.createWidget({
             type: "bi.absolute",
             element: vessel,

@@ -4,6 +4,7 @@ import com.finebi.cube.data.input.ICubeByteArrayReader;
 import com.finebi.cube.data.input.ICubeGroupValueIndexReader;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.fr.bi.manager.PlugManager;
+import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.GroupValueIndexCreator;
 import com.finebi.cube.common.log.BILoggerFactory;
@@ -46,7 +47,7 @@ public class BIGroupValueIndexNIOReader implements ICubeGroupValueIndexReader {
                         } catch (BIResourceInvalidException e) {
                             BILoggerFactory.getLogger().error(e.getMessage(), e);
                         }
-                        return GroupValueIndexCreator.createGroupValueIndex(b);
+                        return GVIFactory.createGroupValueIndexByBytes(b);
                     }
                 });
     }
@@ -55,6 +56,11 @@ public class BIGroupValueIndexNIOReader implements ICubeGroupValueIndexReader {
     @Override
     public GroupValueIndex getSpecificValue(final int rowNumber) throws BIResourceInvalidException {
         try {
+            //pony IDGroupValueIndex不缓存，太占内存，效率太差，直接读一遍也很快的
+            byte[] b = byteArray.getSpecificValue(rowNumber);
+            if (b != null && b.length == 5 &&  b[0] == GroupValueIndexCreator.ROARING_INDEX_ID.getType()){
+                return GVIFactory.createGroupValueIndexByBytes(b);
+            }
             return cache.get(rowNumber);
         } catch (ExecutionException e) {
             BINonValueUtils.beyondControl(e);

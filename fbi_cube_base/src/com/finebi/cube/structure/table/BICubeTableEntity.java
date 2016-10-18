@@ -14,8 +14,8 @@ import com.finebi.cube.structure.table.property.BICubeTableProperty;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.stable.collections.array.IntArray;
 
 import java.util.*;
 
@@ -92,8 +92,13 @@ public class BICubeTableEntity implements CubeTableEntityService {
     }
 
     @Override
-    public void recordLastTime() {
-        tableProperty.recordLastTime();
+    public void recordLastExecuteTime(long time) {
+        tableProperty.recordLastExecuteTime(time);
+    }
+
+    @Override
+    public void recordCurrentExecuteTime() {
+        tableProperty.recordCurrentExecuteTime();
     }
 
     @Override
@@ -175,13 +180,18 @@ public class BICubeTableEntity implements CubeTableEntityService {
     }
 
     @Override
-    public IntList getRemovedList() {
+    public IntArray getRemovedList() {
         return tableProperty.getRemovedList();
     }
 
     @Override
-    public Date getCubeLastTime() {
-        return tableProperty.getCubeLastTime();
+    public Date getLastExecuteTime() {
+        return tableProperty.getLastExecuteTime();
+    }
+
+    @Override
+    public Date getCurrentExecuteTime() {
+        return tableProperty.getCurrentExecuteTime();
     }
 
     @Override
@@ -245,8 +255,13 @@ public class BICubeTableEntity implements CubeTableEntityService {
     }
 
     @Override
-    public boolean isCubeLastTimeAvailable() {
-        return tableProperty.isCubeLastUpdateTimeAvailable();
+    public boolean isLastExecuteTimeAvailable() {
+        return tableProperty.isLastExecuteTimeAvailable();
+    }
+
+    @Override
+    public boolean isCurrentExecuteTimeAvailable() {
+        return tableProperty.isCurrentExecuteTimeAvailable();
     }
 
     public long getCubeVersion() {

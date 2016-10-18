@@ -1192,6 +1192,66 @@
                 BICst.DEFAULT_CHART_SETTING.right_num_separators;
         },
 
+        getWSShowValueAxisLabelByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_lvalue_axis_label) ? ws.show_lvalue_axis_label :
+                BICst.DEFAULT_CHART_SETTING.show_lvalue_axis_label
+        },
+
+        getWSLValueAxisLabelSettingByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.lvalue_axis_label_setting) ? ws.lvalue_axis_label_setting :
+            {};
+        },
+
+        getWSLValueAxisLineColorByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.lvalue_axis_line_color) ? ws.lvalue_axis_line_color :
+                ""
+        },
+
+        getWSLegendSettingByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.chart_legend_setting) ? ws.chart_legend_setting :
+            {}
+        },
+
+        getWSShowHGridLineByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_h_grid_line) ? ws.show_h_grid_line :
+                BICst.DEFAULT_CHART_SETTING.show_h_grid_line
+        },
+
+        getWSHGridLineColorByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.h_grid_line_color) ? ws.h_grid_line_color :
+                ""
+        },
+
+        getWSShowVGridLineByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_v_grid_line) ? ws.show_v_grid_line :
+                BICst.DEFAULT_CHART_SETTING.show_v_grid_line
+        },
+
+        getWSVGridLineColorByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.v_grid_line_color) ? ws.v_grid_line_color :
+                ""
+        },
+
+        getWSToolTipSettingByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.tooltip_setting) ? ws.tooltip_setting :
+            {}
+        },
+
+        getWSLinkageSelectionByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.manually_linkage_selection) ? ws.manually_linkage_selection :
+                BICst.DEFAULT_CHART_SETTING.manually_linkage_selection
+        },
+
         getWSMinimalistByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.minimalist_model) ? ws.minimalist_model :
@@ -2433,6 +2493,17 @@
                         filterValues.push(filter);
                     }
 
+                    if (self.getWidgetTypeByID(id) === BICst.WIDGET.TREE_LABEL) {
+                        var viewDimensionIds = self.getWidgetViewByID(id)[BICst.REGION.DIMENSION1];
+                        var treeValue = [];
+                        createTreeLabelFilterValue(treeValue, value, 0, viewDimensionIds);
+                        filter = {
+                            filter_type: BICst.FILTER_TYPE.OR,
+                            filter_value: treeValue
+                        };
+                        filterValues.push(filter);
+                    }
+
                     if (value.length === 1) {
                         var filter = value[0];
                         parseFilter(filter);
@@ -2463,6 +2534,32 @@
                             result.push(filterObj);
                         } else {
                             createTreeFilterValue(result, child, floor + 1, dimensionIds, leafFilterObj);
+                        }
+                    }
+                );
+            }
+
+            function createTreeLabelFilterValue(result, v, floor, dimensionIds, fatherFilterValue) {
+                BI.each(v, function (value, child) {
+                        var leafFilterObj = {
+                            filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
+                            filter_value: {
+                                type:  value === "_*_" ? BI.Selection.All : BI.Selection.Multi,
+                                value: [value]
+                            },
+                            // _src: {field_id: self.getFieldIDByDimensionID(dimensionIds[floor])}
+                            _src: self.getDimensionSrcByID(dimensionIds[floor])
+                        };
+                        if (BI.isEmptyObject(child)) {
+                            var filterObj = {
+                                filter_type: BICst.FILTER_TYPE.AND,
+                                filter_value: []
+                            };
+                            filterObj.filter_value.push(leafFilterObj);
+                            BI.isNotNull(fatherFilterValue) && filterObj.filter_value.push(fatherFilterValue);
+                            result.push(filterObj);
+                        } else {
+                            createTreeLabelFilterValue(result, child, floor + 1, dimensionIds, leafFilterObj);
                         }
                     }
                 );
