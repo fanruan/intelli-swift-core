@@ -75,7 +75,7 @@ class DimensionComponent extends Component {
                 </Layout>
                 <Layout cross='center' box='last'>
                     <Text numberOfLines={1}
-                          style={[sc([styles.disabledText, !this._helper.isUsed()]), styles.sortTargetName]}
+                          style={[styles.disabledText, styles.sortTargetName]}
                           effect={false}>{this._helper.getSortTargetName()}</Text>
                     <IconButton style={styles.sortIcon} onPress={()=> {
                         Portal.showModal('DimensionSort', <ActionSheet

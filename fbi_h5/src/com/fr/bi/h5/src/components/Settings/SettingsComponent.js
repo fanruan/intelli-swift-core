@@ -45,8 +45,55 @@ import TargetComponent from './Dimensions/TargetComponent'
 import DimensionSortableComponent from './Dimensions/DimensionSortableComponent'
 
 
-const {SortableContainer} = Sortable;
+const {SortableContainer, SortableElement} = Sortable;
 
+class Header extends Component {
+    constructor(props, context) {
+        super(props, context)
+    }
+
+    render() {
+        const {viewItem} = this.props;
+        return <TextButton key={viewItem.viewId} textAlign='left' style={styles.collapseHeader}
+                           onPress={this.props.onPress}>{viewItem.text}</TextButton>
+    }
+}
+const SortHeader = SortableElement(({...props}) => {
+    return <Header {...props}/>
+});
+const SortableList = SortableContainer(({viewItems, context}) => {
+    const dimensionHeader = [], dimensionBody = [], targetHeader = [], targetBody = [];
+    each(viewItems, (items, viewId)=> {
+        const viewItem = context._helper.getViewItemByViewId(viewId);
+        let header = dimensionHeader, body = dimensionBody, collection = 0;
+        if (!context._helper.isDimensionByViewId(viewId)) {
+            header = targetHeader;
+            body = targetBody;
+            collection = 1;
+        }
+        if (header.length === 0) {
+            header.push(<Header key={`header-${viewItem.viewId}`} viewItem={viewItem} collapsed={{}}/>);
+        } else {
+            body.push(<SortHeader key={`header-${viewItem.viewId}`} index={viewItem.viewId} collection={collection}
+                                  viewItem={viewItem}
+                                  collapsed={{}}/>);
+        }
+        items.forEach((value, index) => {
+            body.push(<DimensionSortableComponent key={`item-${value.dId}`}
+                                                  index={`${viewItem.viewId}-${index}`}
+                                                  value={value} wId={context.props.wId}
+                                                  $widget={context.props.$widget}
+                                                  collection={collection}
+                                                  dId={value.dId}/>);
+        });
+    });
+    return <ScrollView>
+        {dimensionHeader}
+        {dimensionBody}
+        {targetHeader}
+        {targetBody}
+    </ScrollView>;
+});
 
 class SettingsComponent extends Component {
     static contextTypes = {
@@ -102,8 +149,8 @@ class SettingsComponent extends Component {
         </Layout>
     }
 
-    _onSortEnd = ({oldIndex, newIndex, viewId}) => {
-        const $widget = this._helper.doMove(viewId, oldIndex, newIndex);
+    _onSortEnd = ({oldIndex, newIndex,}) => {
+        const $widget = this._helper.doMove(oldIndex, newIndex);
         this.setState({
             $widget: $widget
         });
@@ -128,70 +175,35 @@ class SettingsComponent extends Component {
 
     _renderUnSortableList(viewItem) {
         const items = this._helper.getDimensionsItems(viewItem.viewId);
-        return <ScrollView style={{height: Sizes.ITEM_HEIGHT * items.length}}>
-            {items.map((value, index) => {
-                if (this._helper.isDimensionByDimensionId(value.dId)) {
-                    return <DimensionComponent key={index} value={value} wId={this.props.wId}
-                                               $widget={this.state.$widget}
-                                               dId={value.dId} onValueChange={($widget)=> {
-                        this.setState({
-                            $widget: $widget
-                        });
-                    }}/>
-                } else {
-                    return <TargetComponent key={index} value={value} wId={this.props.wId}
-                                            $widget={this.state.$widget}
-                                            dId={value.dId} onValueChange={($widget)=> {
-                        this.setState({
-                            $widget: $widget
-                        });
-                    }}/>
-                }
-            })}
-        </ScrollView>
-    }
-
-    _renderDimensionHeader(viewItem) {
-        return <TextButton key={viewItem.viewId} textAlign='left' style={styles.collapseHeader} onPress={()=> {
-            const collapsed = clone(this.state.collapsed);
-            collapsed[viewItem.viewId] = !collapsed[viewItem.viewId];
-            this.setState({
-                collapsed
-            })
-        }}>{viewItem.text}</TextButton>
+        return items.map((value, index) => {
+            if (this._helper.isDimensionByDimensionId(value.dId)) {
+                return <DimensionComponent key={index} value={value} wId={this.props.wId}
+                                           $widget={this.state.$widget}
+                                           dId={value.dId} onValueChange={($widget)=> {
+                    this.setState({
+                        $widget: $widget
+                    });
+                }}/>
+            } else {
+                return <TargetComponent key={index} value={value} wId={this.props.wId}
+                                        $widget={this.state.$widget}
+                                        dId={value.dId} onValueChange={($widget)=> {
+                    this.setState({
+                        $widget: $widget
+                    });
+                }}/>
+            }
+        })
     }
 
     _renderSortableContainer() {
-        const SortableList = SortableContainer(({viewItems, wId, $widget}) => {
-            return <ScrollView>
-                {map(viewItems, (items, viewId)=> {
-                    const viewItem = this._helper.getViewItemByViewId(viewId);
-                    return <View>
-                        {this._renderDimensionHeader(viewItem)}
-                        <Collapsible key={`collapsible-${viewItem.viewId}`}
-                                     collapsed={this.state.collapsed[viewItem.viewId] || false}>
-                            <ScrollView style={{height: Sizes.ITEM_HEIGHT * items.length}}>
-                                {items.map((value, index) =>
-                                    <DimensionSortableComponent key={`item-${value.dId}`}
-                                                                index={`${viewItem.viewId}-${index}`}
-                                                                value={value} wId={wId}
-                                                                $widget={$widget}
-                                                                collection={0}
-                                                                dId={value.dId}/>
-                                )}
-                            </ScrollView>
-                        </Collapsible>
-                    </View>;
-                })}
-            </ScrollView>;
-        });
+
         const viewItems = this._helper.getAllDimensionItems();
         return <SortableList viewItems={viewItems}
-                             $widget={this.state.$widget}
-                             wId={this.props.wId}
-                             onSortEnd={({oldIndex, oldViewId, newIndex, newViewId})=> {
+                             context={this}
+                             onSortEnd={({oldIndex, newIndex})=> {
                                  this._onSortEnd({
-                                     oldIndex, newIndex, oldViewId, newViewId
+                                     oldIndex, newIndex
                                  });
                              }}
                              useDragHandle={true}
@@ -204,7 +216,13 @@ class SettingsComponent extends Component {
     _renderUnSortableContainer() {
         const array = [];
         each(this._helper.getViewItems(), (viewItem)=> {
-            array.push(this._renderDimensionHeader(viewItem));
+            array.push(<Header viewItem={viewItem} onPress={()=> {
+                const collapsed = clone(this.state.collapsed);
+                collapsed[viewItem.viewId] = !collapsed[viewItem.viewId];
+                this.setState({
+                    collapsed
+                })
+            }}/>);
             array.push(<Collapsible key={`collapsible-${viewItem.viewId}`}
                                     collapsed={this.state.collapsed[viewItem.viewId] || false}>
                 {this._renderUnSortableList(viewItem)}

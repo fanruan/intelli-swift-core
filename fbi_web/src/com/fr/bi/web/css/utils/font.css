@@ -2243,6 +2243,26 @@
   content: "\e640";
   color: #1a1a1a;
 }
+.select-data-primary-key-font .b-font:before {
+  content: "\e67d";
+  color: #1a1a1a;
+}
+.select-data-primary-key-font:hover .b-font:before,
+.select-data-primary-key-font:focus .b-font:before,
+.select-data-primary-key-font.hover .b-font:before {
+  content: "\e67d";
+  color: #1a1a1a;
+}
+.select-data-primary-key-font:active .b-font:before,
+.select-data-primary-key-font.active .b-font:before {
+  content: "\e67d";
+  color: #ffffff;
+}
+.select-data-primary-key-font.native .b-font:before,
+.select-data-primary-key-font.disabled .b-font:before {
+  content: "\e67d";
+  color: #1a1a1a;
+}
 .select-data-field-string-group-font .b-font:before {
   content: "\e642";
   color: #808080;
@@ -3029,18 +3049,18 @@
   color: "";
 }
 .primary-key-font .b-font:before {
-  content: "\e67d;";
+  content: "\e67d";
   color: #808080;
 }
 .primary-key-font:hover .b-font:before,
 .primary-key-font:focus .b-font:before,
 .primary-key-font.hover .b-font:before {
-  content: "\e67d;";
+  content: "\e67d";
   color: #808080;
 }
 .primary-key-font.native .b-font:before,
 .primary-key-font.disabled .b-font:before {
-  content: "\e67d;";
+  content: "\e67d";
   color: #808080;
 }
 .table-open-row-style-font .b-font:before {
@@ -3297,6 +3317,24 @@
 .widget-combo-pull-down-font.native .b-font:before,
 .widget-combo-pull-down-font.disabled .b-font:before {
   content: "\e6ab";
+  color: #009de3;
+}
+.widget-tools-maximization-font .b-font:before {
+  content: "\e6c6";
+  color: #009de3;
+}
+.widget-tools-maximization-font.native .b-font:before,
+.widget-tools-maximization-font.disabled .b-font:before {
+  content: "\e6c6";
+  color: #009de3;
+}
+.widget-tools-minimization-font .b-font:before {
+  content: "\e689";
+  color: #009de3;
+}
+.widget-tools-minimization-font.native .b-font:before,
+.widget-tools-minimization-font.disabled .b-font:before {
+  content: "\e689";
   color: #009de3;
 }
 .widget-tools-filter-font .b-font:before {

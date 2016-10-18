@@ -1,15 +1,14 @@
 package com.fr.bi.conf.data.source.operator.create;
 
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.api.ICubeValueEntryGetter;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.IPersistentTable;
@@ -18,11 +17,10 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.SortTool;
 import com.fr.bi.stable.engine.SortToolUtils;
 import com.fr.bi.stable.engine.index.key.IndexKey;
-import com.fr.bi.stable.gvi.AllShowRoaringGroupValueIndex;
+import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.structure.object.CubeValueEntry;
 import com.fr.cache.list.IntList;
@@ -229,6 +227,7 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
 
 
     private int writeIndex(Traversal<BIDataValue> travel, ICubeTableService lti, ICubeTableService rti, boolean nullContinue, boolean writeLeft) {
+        long t = System.currentTimeMillis();
         int lLen = getColumnSize(true);
         int index = 0;
         ValueIterator lValueIterator = new ValueIterator(lti, left);
@@ -261,6 +260,7 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
                 }
             }
         }
+        System.out.println(System.currentTimeMillis() - t);
         return writeLeft ? writeLeftIndex(rTotalGvi, rti, lLen, index, travel) : index;
     }
 
@@ -358,7 +358,7 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
         }
 
         private Iterator getIterByAllCal(ICubeValueEntryGetter getter, GroupValueIndex gvi) {
-            if (RoaringGroupValueIndex.isAllShowRoaringGroupValueIndex(gvi)){
+            if (GVIUtils.isAllShowRoaringGroupValueIndex(gvi)){
                 return getAllShowIterator(getter);
             }
             SortTool tool = SortToolUtils.getSortTool(getter.getGroupSize(), gvi.getRowsCountWithData());

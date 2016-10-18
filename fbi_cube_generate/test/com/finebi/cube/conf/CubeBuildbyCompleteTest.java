@@ -1,7 +1,6 @@
 package com.finebi.cube.conf;
 
 import com.finebi.cube.conf.relation.BISystemTableRelationManager;
-import com.finebi.cube.conf.relation.BISystemTableRelationManager4Test;
 import com.finebi.cube.impl.conf.CubeBuildByPart;
 import com.finebi.cube.impl.conf.CubeBuildComplete;
 import com.finebi.cube.impl.conf.CubeBuildRealTime;
@@ -20,7 +19,7 @@ public class CubeBuildbyCompleteTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        StableFactory.registerMarkedObject(BISystemPackageConfigurationProvider.XML_TAG, new BISystemTableRelationManager4Test());
+//        StableFactory.registerMarkedObject(BISystemPackageConfigurationProvider.XML_TAG, new BISystemTableRelationManager4Test());
         StableFactory.registerMarkedObject(BITableRelationConfigurationProvider.XML_TAG, new BISystemTableRelationManager());
         StableFactory.registerMarkedObject(BICubeConfManagerProvider.XML_TAG, new BISystemCubeConfManager());
         StableFactory.registerMarkedObject(BILogManagerProvider.XML_TAG, new BILogManager());

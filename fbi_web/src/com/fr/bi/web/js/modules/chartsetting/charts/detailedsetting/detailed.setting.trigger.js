@@ -18,6 +18,7 @@ BI.DetailedSettingTrigger = BI.inherit(BI.Trigger, {
         var self = this, o = this.options;
         this.text = BI.createWidget({
             type: "bi.label",
+            cls: "detailed-setting-text",
             textAlign: "left",
             height: o.height,
             text: o.text

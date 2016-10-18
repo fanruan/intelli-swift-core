@@ -138,7 +138,7 @@ BI.ChartCombineFormatItemFactory = {
                     "align": "bottom",
                     "enabled": true
                 },
-                "style": "pointer",
+                "style": "normal",
                 "paneBackgroundColor": "rgb(252,252,252)",
                 "needle": "rgb(229,113,90)",
                 "large": false,
@@ -264,13 +264,15 @@ BI.ChartCombineFormatItemFactory = {
                 "toImage": {"enabled": true},
                 "sort": {"enabled": true},
                 "enabled": false,
-                "fullScreen": {"enabled": true}
+                "fullScreen": {"enabled": true},
+                "refresh": {
+                    "enabled": false
+                }
             },
             "plotBorderWidth": 0,
             "colors": ["rgb(99,178,238)", "rgb(118,218,145)"],
             "borderRadius": 0,
             "borderWidth": 0,
-            "style": "normal",
             "plotShadow": false,
             "plotBorderRadius": 0
         };
