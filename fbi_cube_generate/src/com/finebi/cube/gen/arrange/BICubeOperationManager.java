@@ -493,7 +493,7 @@ public class BICubeOperationManager {
         ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
         ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
         Cube advancedCube = new BICube(resourceRetrievalService, discovery);
-        if (null == tableUpdateSetting || !(advancedCube.getCubeTableWriter(BITableKeyUtils.convert(tableSource)).isVersionAvailable() && advancedCube.getCubeTableWriter(BITableKeyUtils.convert(tableSource)).isCubeLastTimeAvailable())) {
+        if (null == tableUpdateSetting || !(advancedCube.getCubeTableWriter(BITableKeyUtils.convert(tableSource)).isVersionAvailable() && advancedCube.getCubeTableWriter(BITableKeyUtils.convert(tableSource)).isLastExecuteTimeAvailable())) {
             return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
         }
         /*若设置为不随全局更新的话，那就不更新*/
