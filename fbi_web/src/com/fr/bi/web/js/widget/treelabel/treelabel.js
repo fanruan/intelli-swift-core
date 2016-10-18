@@ -34,14 +34,13 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
     },
 
     _initData: function (items) {
-        var self = this, result = [], allItems = [];
+        var self = this, result = [];
         this.map = {};
         this.itemsMap = {};
         BI.each(items, function (idx, item) {
             var temp = [];
             BI.each(item, function (i, data) {
                 var node = BI.clone(data);
-                allItems.push(node);
                 self.itemsMap[node.id] = node;
                 var has = contains(temp, node);
                 if (has) {
@@ -246,16 +245,16 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
             }
         }
 
-        if (BI.isNotEmptyArray(resultId) || BI.contains(op.value, "_*_")) {
+        //if (BI.isNotEmptyArray(resultId) || BI.contains(op.value, "_*_")) {
             o.itemsCreator(op, function (value) {
                 self._updateData(value.items);
                 self._updateItems(floor);
+                callback(self.items, floor);
             });
-        } else {
-            this._updateItems(floor);
-        }
-
-        callback(this.items, floor);
+        // } else {
+        //     this._updateItems(floor);
+        //     callback(this.items, floor);
+        // }
     },
 
     populate: function (v) {

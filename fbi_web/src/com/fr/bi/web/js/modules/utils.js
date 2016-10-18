@@ -2493,6 +2493,17 @@
                         filterValues.push(filter);
                     }
 
+                    if (self.getWidgetTypeByID(id) === BICst.WIDGET.TREE_LABEL) {
+                        var viewDimensionIds = self.getWidgetViewByID(id)[BICst.REGION.DIMENSION1];
+                        var treeValue = [];
+                        createTreeLabelFilterValue(treeValue, value, 0, viewDimensionIds);
+                        filter = {
+                            filter_type: BICst.FILTER_TYPE.OR,
+                            filter_value: treeValue
+                        };
+                        filterValues.push(filter);
+                    }
+
                     if (value.length === 1) {
                         var filter = value[0];
                         parseFilter(filter);
@@ -2523,6 +2534,32 @@
                             result.push(filterObj);
                         } else {
                             createTreeFilterValue(result, child, floor + 1, dimensionIds, leafFilterObj);
+                        }
+                    }
+                );
+            }
+
+            function createTreeLabelFilterValue(result, v, floor, dimensionIds, fatherFilterValue) {
+                BI.each(v, function (value, child) {
+                        var leafFilterObj = {
+                            filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
+                            filter_value: {
+                                type:  value === "_*_" ? BI.Selection.All : BI.Selection.Multi,
+                                value: [value]
+                            },
+                            // _src: {field_id: self.getFieldIDByDimensionID(dimensionIds[floor])}
+                            _src: self.getDimensionSrcByID(dimensionIds[floor])
+                        };
+                        if (BI.isEmptyObject(child)) {
+                            var filterObj = {
+                                filter_type: BICst.FILTER_TYPE.AND,
+                                filter_value: []
+                            };
+                            filterObj.filter_value.push(leafFilterObj);
+                            BI.isNotNull(fatherFilterValue) && filterObj.filter_value.push(fatherFilterValue);
+                            result.push(filterObj);
+                        } else {
+                            createTreeLabelFilterValue(result, child, floor + 1, dimensionIds, leafFilterObj);
                         }
                     }
                 );
