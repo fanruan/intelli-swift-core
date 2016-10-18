@@ -78,7 +78,7 @@ BI.CustomgroupGroupExpander = BI.inherit(BI.Widget, {
                         type: "bi.custom_group_field_button",
                         valueLeft: item_in.value,
                         id: item_in.id,
-                        title: o.title,
+                        title: item_in.title || o.title,
                         cls: "item-custom-group",
                         textHeight:25,
                         hgap: 10,

@@ -8,7 +8,8 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         COMBO_WIDTH: 25,
         CONTAINER_HEIGHT: 25,
         ICON_BUTTON_WIDTH: 12,
-        ICON_BUTTON_POS: 2
+        ICON_BUTTON_POS: 2,
+        INVALID_NAME: "invalid_name"
     },
 
     _defaultConfig: function () {
@@ -51,9 +52,13 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
             type: "bi.sign_editor",
             height: this.constants.DIMENSION_BUTTON_HEIGHT,
             cls: "bi-dimension-name",
+            errorText: "字段不可重名",
             allowBlank: false,
-            validationChecker: function () {
-                return self._checkDimensionName(self.editor.getValue());
+            validationChecker: function (v) {
+                return self._checkDimensionName(v);
+            },
+            quitChecker: function (v) {
+                return false;
             }
         });
         this.editor.on(BI.SignEditor.EVENT_CONFIRM, function () {

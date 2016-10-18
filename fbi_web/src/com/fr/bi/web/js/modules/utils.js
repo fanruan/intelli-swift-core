@@ -2056,6 +2056,25 @@
             return result;
         },
 
+        getAllPrimaryKeyByTableIds: function(tableIds){
+            var self = this;
+            var relations = Pool.relations;
+            return BI.flatten(BI.map(tableIds, function(i, tableId){
+                if (BI.isNull(tableId)) {
+                    return [];
+                }
+                if (BI.isNull(relations[tableId])) {
+                    return [];
+                }
+                var tPaths = relations[tableId];
+                return BI.map(tPaths, function(idx, paths){
+                    return BI.map(paths, function(id, path){
+                        return self.getFirstRelationPrimaryIdFromRelations(path);
+                    });
+                });
+            }));
+        },
+
         /**
          * 数据相关
          */

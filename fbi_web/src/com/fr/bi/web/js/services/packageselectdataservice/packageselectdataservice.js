@@ -227,6 +227,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         if (tablesStructure.length === 5) {
             tablesStructure[0].open = true;
         }
+        this.primaryFieldIds = BI.Utils.getAllPrimaryKeyByTableIds(BI.pluck(currentTables, "id"));
         return tablesStructure;
     },
 
@@ -324,6 +325,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     pId: tableId,
                     wId: o.wId,
                     type: "bi.detail_select_data_level0_item",
+                    isPrimaryKey: BI.contains(self.primaryFieldIds, fid),
                     layer: 1,
                     fieldType: BI.Utils.getFieldTypeByID(fid),
                     text: fieldName,
@@ -391,6 +393,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 pId: tableId,
                 wId: o.wId,
                 type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
+                isPrimaryKey: BI.contains(self.primaryFieldIds, fid),
                 layer: isRelation ? 3 : 2,
                 fieldType: BI.Utils.getFieldTypeByID(fid),
                 text: fieldName,
@@ -516,6 +519,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     wId: o.wId,
                     type: isRelation ? "bi.detail_select_data_level1_item" : "bi.detail_select_data_level0_item",
                     layer: isRelation ? 2 : 1,
+                    isPrimaryKey: BI.contains(self.primaryFieldIds, fid),
                     fieldType: BI.Utils.getFieldTypeByID(fid),
                     text: fieldName,
                     title: self._getTitleByFieldId(fid),
