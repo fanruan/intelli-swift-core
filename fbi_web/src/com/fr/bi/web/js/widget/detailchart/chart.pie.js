@@ -28,7 +28,7 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
         var self = this, o = this.options;
 
         config.colors = this.config.chart_color;
-        config.style = formatChartStyle();
+        config.plotOptions.style = formatChartStyle();
         formatChartPieStyle();
 
         this.formatChartLegend(config, this.config.chart_legend);
