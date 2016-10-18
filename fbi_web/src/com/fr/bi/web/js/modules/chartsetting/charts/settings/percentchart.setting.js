@@ -288,8 +288,14 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                 cls: "detail-style",
                 items: BI.createItems([{
                     type: "bi.label",
+                    text: BI.i18nText("BI-Num_Level"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.numberLevellY]
+                }, {
+                    type: "bi.label",
                     text: BI.i18nText("BI-Unit_Normal"),
-                    lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
@@ -710,11 +716,9 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.isShowTitleX.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
         this.editTitleLY.setValue(titleLY);
         this.editTitleX.setValue(titleX);
-        this.text_direction.setValue(BI.Utils.getWSTextDirectionByID(wId));
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
         this.showDataTable.setSelected(BI.Utils.getWSShowDataTableByID(wId));
-        this.gridLine.setSelected(BI.Utils.getWSShowGridLineByID(wId));
         this.showZoom.setSelected(BI.Utils.getWSShowZoomByID(wId));
         this.minimalistModel.setSelected(BI.Utils.getWSMinimalistByID(wId));
         this._invisible(!BI.Utils.getWSMinimalistByID(wId));
@@ -742,11 +746,9 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             show_x_axis_title: this.isShowTitleX.isSelected(),
             left_y_axis_title: this.editTitleLY.getValue(),
             x_axis_title: this.editTitleX.getValue(),
-            text_direction: this.text_direction.getValue(),
             chart_legend: this.legend.getValue()[0],
             show_data_label: this.showDataLabel.isSelected(),
             show_data_table: this.showDataTable.isSelected(),
-            show_grid_line: this.gridLine.isSelected(),
             show_zoom: this.showZoom.isSelected(),
             minimalist_model: this.minimalistModel.isSelected(),
             show_y_custom_scale: this.showYCustomScale.isSelected(),
@@ -769,11 +771,9 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.isShowTitleX.setSelected(v.x_axis_title);
         this.editTitleLY.setValue(v.left_y_axis_title);
         this.editTitleX.setValue(v.x_axis_title);
-        this.text_direction.setValue(v.text_direction);
         this.legend.setValue(v.chart_legend);
         this.showDataLabel.setSelected(v.show_data_label);
         this.showDataTable.setSelected(v.show_data_table);
-        this.gridLine.setSelected(v.show_grid_line);
         this.showZoom.setSelected(v.show_zoom);
         this.minimalistModel.setSelected(v.minimalist_model);
         this.showYCustomScale.setSelected(v.show_y_custom_scale);
