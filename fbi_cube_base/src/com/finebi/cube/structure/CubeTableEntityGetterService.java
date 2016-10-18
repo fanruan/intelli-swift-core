@@ -7,7 +7,7 @@ import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.structure.collection.list.IntList;
+import com.fr.stable.collections.array.IntArray;
 
 import java.util.Date;
 import java.util.List;
@@ -40,7 +40,7 @@ public interface CubeTableEntityGetterService extends Release, ICubeVersion {
 
     int getRowCount();
 
-    IntList getRemovedList();
+    IntArray getRemovedList();
 
     ICubeFieldSource getSpecificColumn(String fieldName) throws BICubeColumnAbsentException;
 
@@ -49,7 +49,7 @@ public interface CubeTableEntityGetterService extends Release, ICubeVersion {
     /**
      * 获取列的接口
      *
-     * @param key 列
+     * @param columnKey 列
      * @return 获取列的接口
      */
     CubeColumnReaderService getColumnDataGetter(BIColumnKey columnKey) throws BICubeColumnAbsentException;

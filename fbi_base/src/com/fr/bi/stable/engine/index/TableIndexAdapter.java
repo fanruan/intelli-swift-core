@@ -13,7 +13,7 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.GroupValueIndexArrayReader;
-import com.fr.bi.stable.structure.collection.list.IntList;
+import com.fr.stable.collections.array.IntArray;
 
 import java.util.Date;
 import java.util.List;
@@ -107,7 +107,7 @@ public class TableIndexAdapter implements ICubeTableService {
     }
 
     @Override
-    public IntList getRemovedList() {
+    public IntArray getRemovedList() {
         throw NULL_EXCEPTION;
     }
 
