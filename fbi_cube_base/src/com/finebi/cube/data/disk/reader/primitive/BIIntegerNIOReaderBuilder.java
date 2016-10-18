@@ -20,6 +20,7 @@ public class BIIntegerNIOReaderBuilder extends BIPrimitiveNIOReaderBuilder<ICube
 
     @Override
     protected ICubeIntegerReader createNIOReader(File target, ICubeResourceLocation targetLocation) {
-        return new BIIntegerNIOReader(target);
+  //      return new BIIntegerNIOReader(target);
+        return isSingleFile(target) ? new BIIntegerSingleFileNIOReader(target) : new BIIntegerNIOReader(target);
     }
 }
