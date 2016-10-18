@@ -98,7 +98,12 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
     }
 
     @Override
-    public void recordLastTime() {
+    public void recordLastExecuteTime(long time) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void recordCurrentExecuteTime() {
         throw new UnsupportedOperationException();
     }
 
@@ -191,9 +196,15 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
     }
 
     @Override
-    public Date getCubeLastTime() {
-        return hostTable.getCubeLastTime();
+    public Date getLastExecuteTime() {
+        return  hostTable.getLastExecuteTime();
     }
+
+    @Override
+    public Date getCurrentExecuteTime() {
+        return  hostTable.getCurrentExecuteTime();
+    }
+
 
     private CubeTableEntityService pickTableService(String fieldName) throws BICubeColumnAbsentException {
         ICubeFieldSource field = getSpecificColumn(fieldName);
@@ -254,8 +265,13 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
     }
 
     @Override
-    public boolean isCubeLastTimeAvailable() {
-        return hostTable.isCubeLastTimeAvailable() || (isParentAvailable() && parentTable.isCubeLastTimeAvailable());
+    public boolean isLastExecuteTimeAvailable() {
+        return hostTable.isLastExecuteTimeAvailable() || (isParentAvailable() && parentTable.isLastExecuteTimeAvailable());
+    }
+
+    @Override
+    public boolean isCurrentExecuteTimeAvailable() {
+        return hostTable.isCurrentExecuteTimeAvailable() || (isParentAvailable() && parentTable.isCurrentExecuteTimeAvailable());
     }
 
     @Override

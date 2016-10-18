@@ -305,13 +305,13 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         var sql = "", type = this.tab.getSelect();
         switch (type) {
             case this._constants.PART_ADD:
-                sql = this.partAddSql.getValue();
+                sql = this.model.getAddSql();
                 break;
             case this._constants.PART_DELETE:
-                sql = this.partDeleteSql.getValue();
+                sql = this.model.getDeleteSql();
                 break;
             case this._constants.PART_MODIFY:
-                sql = this.partModifySql.getValue();
+                sql = this.model.getModifySql();
                 break;
         }
         previewPane.populate(sql, type);
