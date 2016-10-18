@@ -82,13 +82,15 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
         });
         config.angleAxis[0].showLabel = this.config.show_lvalue_axis_label;
         config.angleAxis[0].lineColor = this.config.lvalue_axis_line_color;
+        config.legend.style = BI.extend( this.config.chart_legend_setting, {
+            fontSize:  this.config.chart_legend_setting.fontSize + "px"
+        });
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
         self.formatDataLabelForAxis(config.plotOptions.dataLabels.enabled, items, config.radiusAxis[0].formatter, this.config.chart_font, this.config.left_y_axis_unit);
 
         //全局样式的图表文字
-        // config.radiusAxis[0].labelStyle = config.radiusAxis[0].title.style = this.config.chart_font;
-        // config.legend.style = this.config.chart_font;
+        config.radiusAxis[0].labelStyle = config.radiusAxis[0].title.style = this.config.chart_font;
 
         return [items, config];
 

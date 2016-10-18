@@ -1209,8 +1209,10 @@
 
         getWSLegendSettingByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.chart_legend_setting) ? ws.chart_legend_setting :
-            {}
+            var chartFont = this.getGSChartFont();
+            var legendSetting = ws.chart_legend_setting || {};
+            legendSetting = BI.extend(chartFont, legendSetting.legend_style);
+            return legendSetting;
         },
 
         getWSShowHGridLineByID: function (wid) {
