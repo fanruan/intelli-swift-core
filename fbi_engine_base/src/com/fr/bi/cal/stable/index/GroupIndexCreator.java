@@ -14,8 +14,8 @@ import com.fr.bi.stable.io.newio.NIOReader;
 import com.fr.bi.stable.io.newio.NIOWriter;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.io.sortlist.ISortNIOReadList;
-import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.code.BIPrintUtils;
+import com.fr.stable.collections.array.IntArray;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -87,16 +87,16 @@ public class GroupIndexCreator<F, T> implements CubeGenerator {
     }
 
 
-    private Map<T, IntList> createTreeMap(IntList nullList) {
-        Map<T, IntList> treeMap = new TreeMap<T, IntList>(comparator);
+    private Map<T, IntArray> createTreeMap(IntArray nullList) {
+        Map<T, IntArray> treeMap = new TreeMap<T, IntArray>(comparator);
         long start = System.currentTimeMillis();
         for (int i = 0; i < rowCount; i++) {
             F fValue = sml.get(i);
             if (fValue != null) {
                 T value = converter.result2Value(fValue);
-                IntList list = treeMap.get(value);
+                IntArray list = treeMap.get(value);
                 if (list == null) {
-                    list = new IntList();
+                    list = new IntArray();
                     treeMap.put(value, list);
                 }
                 list.add(i);
@@ -121,19 +121,19 @@ public class GroupIndexCreator<F, T> implements CubeGenerator {
             log.recordColumnToInfoTable(tableKey,
                     fieldName, 0, 0);
         }
-        IntList nullList = new IntList();
-        Map<T, IntList> treeMap = createTreeMap(nullList);
+        IntArray nullList = new IntArray();
+        Map<T, IntArray> treeMap = createTreeMap(nullList);
         long groupCount = treeMap.size();
-        Iterator<Entry<T, IntList>> it = treeMap.entrySet().iterator();
+        Iterator<Entry<T, IntArray>> it = treeMap.entrySet().iterator();
         int i = 0;
         long start = System.currentTimeMillis();
         NIOWriter<T> wml = cf.createGroupWriter();
         NIOWriter<byte[]> indexWriter = cf.createIndexWriter();
         NIOWriter<byte[]> nullWriter = cf.createNullWriter();
         while (it.hasNext()) {
-            Entry<T, IntList> entry = it.next();
+            Entry<T, IntArray> entry = it.next();
             wml.add(i, entry.getKey());
-            IntList row = entry.getValue();
+            IntArray row = entry.getValue();
             GroupValueIndex gvi = GVIFactory.createGroupValueIndexBySimpleIndex(row);
             indexWriter.add(i, gvi.getBytes());
             i++;

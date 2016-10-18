@@ -83,19 +83,15 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
 
         ICubeColumnIndexReader getter = loader.getTableIndex(dimension.getField().getTableBelongTo().getTableSource()).loadGroup(new IndexTypeKey(dimension.getField().getFieldName(), group), BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations()));
         Iterator<BIDateValue> it = valueSet.iterator();
-        GroupValueIndex gvi = null;
+        GroupValueIndex gvi = GVIFactory.createAllEmptyIndexGVI();
         while (it.hasNext()) {
             BIDateValue dk = it.next();
             Object[] keys = getter.createKey(1);
             keys[0] = dk == null ? null : dk.getValue();
             GroupValueIndex cgvi = getter.getGroupIndex(keys)[0];
-            if (gvi == null) {
-                gvi = cgvi;
-            } else {
-                gvi = gvi.OR(cgvi);
-            }
+            gvi.or(cgvi);
         }
-        return gvi == null ? GVIFactory.createAllEmptyIndexGVI() : gvi;
+        return gvi;
     }
 
     private GroupValueIndex getGroupValueIndexWhenNull(BusinessTable targetKey, ICubeDataLoader loader) {

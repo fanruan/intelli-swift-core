@@ -328,9 +328,13 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                     type: "bi.code_editor",
                     cls: "sql-container"
                 });
-                this.partAddSql.setValue(this.model.getAddSql());
+                this.partAddSql.setValue(this.model.getAddSql()
+                    .replaceAll(BICst.LAST_UPDATE_TIME, BI.i18nText("BI-Last_Updated"))
+                    .replaceAll(BICst.CURRENT_UPDATE_TIME, BI.i18nText("BI-Current_Update_Time")));
                 this.partAddSql.on(BI.CodeEditor.EVENT_CHANGE, function () {
-                    self.model.setAddSql(self.partAddSql.getValue());
+                    self.model.setAddSql(self.partAddSql.getValue()
+                        .replaceAll(BI.i18nText("BI-Last_Updated"), BICst.LAST_UPDATE_TIME)
+                        .replaceAll(BI.i18nText("BI-Current_Update_Time"), BICst.CURRENT_UPDATE_TIME));
                     self._showOrHideIcon(v);
                 });
                 return BI.createWidget({
@@ -348,9 +352,13 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                     type: "bi.code_editor",
                     cls: "sql-container"
                 });
-                this.partDeleteSql.setValue(this.model.getDeleteSql());
+                this.partDeleteSql.setValue(this.model.getDeleteSql()
+                    .replaceAll(BICst.LAST_UPDATE_TIME, BI.i18nText("BI-Last_Updated"))
+                    .replaceAll(BICst.CURRENT_UPDATE_TIME, BI.i18nText("BI-Current_Update_Time")));
                 this.partDeleteSql.on(BI.CodeEditor.EVENT_CHANGE, function () {
-                    self.model.setDeleteSql(self.partDeleteSql.getValue());
+                    self.model.setDeleteSql(self.partDeleteSql.getValue()
+                        .replaceAll(BI.i18nText("BI-Last_Updated"), BICst.LAST_UPDATE_TIME)
+                        .replaceAll(BI.i18nText("BI-Current_Update_Time"), BICst.CURRENT_UPDATE_TIME));
                     self._showOrHideIcon(v);
                 });
                 return BI.createWidget({
@@ -368,9 +376,13 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                     type: "bi.code_editor",
                     cls: "sql-container"
                 });
-                this.partModifySql.setValue(this.model.getModifySql());
+                this.partModifySql.setValue(this.model.getModifySql()
+                    .replaceAll(BICst.LAST_UPDATE_TIME, BI.i18nText("BI-Last_Updated"))
+                    .replaceAll(BICst.CURRENT_UPDATE_TIME, BI.i18nText("BI-Current_Update_Time")));
                 this.partModifySql.on(BI.CodeEditor.EVENT_CHANGE, function () {
-                    self.model.setModifySql(self.partModifySql.getValue());
+                    self.model.setModifySql(self.partModifySql.getValue()
+                        .replaceAll(BI.i18nText("BI-Last_Updated"), BICst.LAST_UPDATE_TIME)
+                        .replaceAll(BI.i18nText("BI-Current_Update_Time"), BICst.CURRENT_UPDATE_TIME));
                     self._showOrHideIcon(v);
                 });
                 return BI.createWidget({

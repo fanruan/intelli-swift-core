@@ -18,9 +18,9 @@ import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.io.sortlist.ISortNIOReadList;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.bi.stable.structure.collection.CubeIndexGetterWithNullValue;
-import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
 import com.fr.stable.StringUtils;
+import com.fr.stable.collections.array.IntArray;
 
 import java.util.Comparator;
 import java.util.List;
@@ -126,8 +126,8 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
 
     public ICubeColumnIndexReader createGroupByType(BIKey key, ValueConverter converter, Comparator comparator) {
         CubeTreeMap getter = new CubeTreeMap(comparator);
-        Map<Object, IntList> treeMap = new TreeMap<Object, IntList>();
-        IntList nullList = new IntList();
+        Map<Object, IntArray> treeMap = new TreeMap<Object, IntArray>();
+        IntArray nullList = new IntArray();
         for (int i = 0; i < detail.size(); i ++){
             T t = detail.get(i);
             Object value = t;
@@ -138,9 +138,9 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
                 }
             }
             if(value != null) {
-                IntList list = treeMap.get(value);
+                IntArray list = treeMap.get(value);
                 if (list == null) {
-                    list = new IntList();
+                    list = new IntArray();
                     treeMap.put(value, list);
                 }
                 list.add(i);
@@ -148,10 +148,10 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
                 nullList.add(i);
             }
         }
-        for (Map.Entry<Object, IntList> entry : treeMap.entrySet()){
+        for (Map.Entry<Object, IntArray> entry : treeMap.entrySet()){
             getter.put(entry.getKey(), GVIFactory.createGroupValueIndexBySimpleIndex(entry.getValue()));
         }
-        return nullList.size() == 0 ? getter : new CubeIndexGetterWithNullValue(getter, GVIFactory.createGroupValueIndexBySimpleIndex(nullList));
+        return nullList.size == 0 ? getter : new CubeIndexGetterWithNullValue(getter, GVIFactory.createGroupValueIndexBySimpleIndex(nullList));
     }
 
     @Override
