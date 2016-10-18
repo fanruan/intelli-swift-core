@@ -2341,6 +2341,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/module/single/button/listitem/texticonitem.js",
                 "com/fr/bi/web/js/base/module/single/button/listitem/icontextitem.js",
                 "com/fr/bi/web/js/base/module/single/button/listitem/blankicontextitem.js",
+                "com/fr/bi/web/js/base/module/single/button/listitem/blankiconicontextitem.js",
                 "com/fr/bi/web/js/base/module/single/button/listitem/blankicontexticonitem.js",
                 "com/fr/bi/web/js/base/module/single/button/listitem/icontexticonitem.js",
                 "com/fr/bi/web/js/base/module/single/button/node/textnode.js",
