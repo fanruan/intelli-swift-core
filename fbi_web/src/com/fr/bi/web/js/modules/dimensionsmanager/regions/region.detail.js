@@ -18,6 +18,7 @@ BI.DetailRegion = BI.inherit(BI.AbstractRegion, {
             type: "bi.text_button",
             height: 25,
             disabled: true,
+            tipType: "success",
             value: BI.i18nText("BI-Field_Relation_Setting")
         });
 
