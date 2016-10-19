@@ -89,6 +89,7 @@ BI.Fit = BI.inherit(BI.Widget, {
                     wi.element.draggable('option', 'cursorAt', {left: 0, top: 0});
                     break;
                 case BI.Arrangement.LAYOUT_TYPE.FREE:
+                case BI.Arrangement.LAYOUT_TYPE.GRID:
                     wi.element.draggable('option', 'helper', 'original');
                     wi.element.draggable('option', 'cursorAt', false);
                     break;
@@ -125,6 +126,9 @@ BI.Fit = BI.inherit(BI.Widget, {
                             r = size || {};
                             break;
                         case BI.Arrangement.LAYOUT_TYPE.FREE:
+                            r = self.arrangement.getRegionByName(id);
+                            break;
+                        case BI.Arrangement.LAYOUT_TYPE.GRID:
                             r = self.arrangement.getRegionByName(id);
                             break;
                     }
@@ -174,6 +178,8 @@ BI.Fit = BI.inherit(BI.Widget, {
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
                 break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                break;
         }
     },
 
@@ -195,6 +201,17 @@ BI.Fit = BI.inherit(BI.Widget, {
                     top: position.top - offset.top
                 };
                 this.arrangement.draw(position, size, id);
+                this.arrangement.setRegionPosition(id, {
+                    left: position.left < 0 ? 0 : position.left,
+                    top: position.top < 0 ? 0 : position.top
+                });
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                var offset = this.arrangement._getScrollOffset();
+                position = {
+                    left: position.left - offset.left,
+                    top: position.top - offset.top
+                };
                 this.arrangement.setRegionPosition(id, {
                     left: position.left < 0 ? 0 : position.left,
                     top: position.top < 0 ? 0 : position.top
@@ -226,6 +243,18 @@ BI.Fit = BI.inherit(BI.Widget, {
                 });
                 flag = true;
                 break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                var offset = this.arrangement._getScrollOffset();
+                position = {
+                    left: position.left - offset.left,
+                    top: position.top - offset.top
+                };
+                this.arrangement.setRegionPosition(id, {
+                    left: position.left < 0 ? 0 : position.left,
+                    top: position.top < 0 ? 0 : position.top
+                });
+                flag = true;
+                break;
         }
         if (flag === true) {
             this.fireEvent(BI.Fit.EVENT_CHANGE);
@@ -237,6 +266,8 @@ BI.Fit = BI.inherit(BI.Widget, {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
                 break;
         }
     },
@@ -261,6 +292,15 @@ BI.Fit = BI.inherit(BI.Widget, {
                     height: size.height
                 });
                 break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                this.arrangement.setPosition({
+                    left: position.left,
+                    top: position.top
+                }, {
+                    width: size.width,
+                    height: size.height
+                });
+                break;
         }
     },
 
@@ -273,6 +313,11 @@ BI.Fit = BI.inherit(BI.Widget, {
                 });
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
+                flag = this.arrangement.addRegion({
+                    el: this._createItem(BI.UUID(), size, position, opt)
+                });
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
                 flag = this.arrangement.addRegion({
                     el: this._createItem(BI.UUID(), size, position, opt)
                 });

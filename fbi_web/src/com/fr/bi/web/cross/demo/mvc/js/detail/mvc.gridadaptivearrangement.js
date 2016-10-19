@@ -1,12 +1,12 @@
-AdaptiveArrangementView = BI.inherit(BI.View, {
+GridAdaptiveArrangementView = BI.inherit(BI.View, {
     _defaultConfig: function () {
-        return BI.extend(AdaptiveArrangementView.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-mvc-adaptive-arrangement bi-mvc-layout"
+        return BI.extend(GridAdaptiveArrangementView.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-mvc-grid-adaptive-arrangement bi-mvc-layout"
         })
     },
 
     _init: function () {
-        AdaptiveArrangementView.superclass._init.apply(this, arguments);
+        GridAdaptiveArrangementView.superclass._init.apply(this, arguments);
     },
 
     _createItem: function () {
@@ -124,4 +124,4 @@ AdaptiveArrangementView = BI.inherit(BI.View, {
     }
 });
 
-AdaptiveArrangementModel = BI.inherit(BI.Model, {});
+GridAdaptiveArrangementModel = BI.inherit(BI.Model, {});

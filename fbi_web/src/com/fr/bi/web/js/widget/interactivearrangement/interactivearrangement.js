@@ -484,6 +484,8 @@ BI.InteractiveArrangement = BI.inherit(BI.Widget, {
                     position = this.getPosition(null, position, size);
                     this.draw(position, size);
                     break;
+                case BI.Arrangement.LAYOUT_TYPE.GRID:
+                    break;
             }
         }
         var at = this.arrangement.setPosition(position, size);
@@ -496,6 +498,9 @@ BI.InteractiveArrangement = BI.inherit(BI.Widget, {
                 case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
                     break;
                 case BI.Arrangement.LAYOUT_TYPE.FREE:
+                    position = this.getPosition(name, position);
+                    break;
+                case BI.Arrangement.LAYOUT_TYPE.GRID:
                     position = this.getPosition(name, position);
                     break;
             }

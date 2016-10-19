@@ -36,6 +36,8 @@ BICst.DASHBOARD_LAYOUT_ARRAY = [{
     text: BI.i18nText("BI-Adaptive_Layout"), value: BICst.DASHBOARD_LAYOUT_ADAPT
 }, {
     text: BI.i18nText("BI-Free_Layout"), value: BICst.DASHBOARD_LAYOUT_FREE
+}, {
+    text: BI.i18nText("BI-Grid_Layout"), value: BICst.DASHBOARD_LAYOUT_GRID
 }];
 
 //类型&数据/样式tab

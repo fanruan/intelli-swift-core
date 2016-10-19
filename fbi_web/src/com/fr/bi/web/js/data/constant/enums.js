@@ -38,6 +38,7 @@ BICst.LAST_SAME_PERIOD = 28;
 //dashboard toolbar right layout textcombo
 BICst.DASHBOARD_LAYOUT_ADAPT = 0;
 BICst.DASHBOARD_LAYOUT_FREE = 1;
+BICst.DASHBOARD_LAYOUT_GRID = 2;
 
 BICst.WIDGET.Widths = {};
 BICst.WIDGET.Widths[BICst.WIDGET.TABLE] = 450;

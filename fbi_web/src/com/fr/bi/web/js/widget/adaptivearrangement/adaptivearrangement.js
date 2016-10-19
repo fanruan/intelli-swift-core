@@ -151,6 +151,9 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
             case BI.Arrangement.LAYOUT_TYPE.FREE:
                 this.setRegionSize(name, size);
                 break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                this.setRegionSize(name, size);
+                break;
         }
     },
 
@@ -223,6 +226,8 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
                 return newSize;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
                 return size;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                return size;
         }
     },
 
@@ -238,6 +243,9 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
                     $(">.ui-resizable-s", this.arrangement.container.element).css("zIndex", "");
                     break;
                 case BI.Arrangement.LAYOUT_TYPE.FREE:
+                    $(">.ui-resizable-s", this.arrangement.container.element).css("zIndex", "-1");
+                    break;
+                case BI.Arrangement.LAYOUT_TYPE.GRID:
                     $(">.ui-resizable-s", this.arrangement.container.element).css("zIndex", "-1");
                     break;
             }
@@ -330,6 +338,8 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
                     break;
                 case BI.Arrangement.LAYOUT_TYPE.FREE:
                     break;
+                case BI.Arrangement.LAYOUT_TYPE.GRID:
+                    break;
             }
             this.position = null;
         } else {
@@ -402,6 +412,8 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
                     break;
                 case BI.Arrangement.LAYOUT_TYPE.FREE:
                     break;
+                case BI.Arrangement.LAYOUT_TYPE.GRID:
+                    break;
             }
         }
         return this.position || at;
@@ -470,6 +482,8 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
                 });
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
                 break;
         }
     }

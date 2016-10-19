@@ -7,6 +7,10 @@
  */
 BI.Arrangement = BI.inherit(BI.Widget, {
 
+    _const: {
+        GRID_HEIGHT: 50
+    },
+
     _defaultConfig: function () {
         return BI.extend(BI.Arrangement.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-arrangement",
@@ -24,6 +28,11 @@ BI.Arrangement = BI.inherit(BI.Widget, {
             cls: "arrangement-block",
             invisible: true
         });
+        this.block = BI.createWidget({
+            type: "bi.arrangement_droppable",
+            cls: "arrangement-block",
+            invisible: true
+        });
         this.droppable = BI.createWidget({
             type: "bi.layout",
             cls: "arrangement-drop-container",
@@ -31,7 +40,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         });
         this.container = BI.createWidget({
             type: "bi.absolute",
-            items: o.items.concat([this.arrangement, {
+            items: o.items.concat([this.block, this.arrangement, {
                 el: this.droppable,
                 left: 0,
                 right: 0,
@@ -1849,9 +1858,9 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         });
     },
 
-    _applyRegion: function () {
+    _applyRegion: function (regions) {
         var self = this, o = this.options;
-        BI.each(this.regions, function (i, region) {
+        BI.each(regions || this.regions, function (i, region) {
             region.el.element.css({
                 left: region.left,
                 top: region.top,
@@ -1953,6 +1962,207 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         })
     },
 
+    //Grid
+    _getOneWidthPortion: function () {
+        return Math.floor(this.scrollContainer.element.width() / BI.Arrangement.PORTION);
+    },
+
+    _getGridPositionAndSize: function (position) {
+        var perWidth = this._getOneWidthPortion();
+        var widthPortion = Math.floor(position.width / perWidth);
+        var leftPortion = Math.floor(position.left / perWidth);
+        var topPortion = Math.floor(position.top / this._const.GRID_HEIGHT);
+        var heightPortion = Math.floor(position.height / this._const.GRID_HEIGHT);
+        if (leftPortion > BI.Arrangement.PORTION) {
+            leftPortion = BI.Arrangement.PORTION;
+        }
+        if (widthPortion > BI.Arrangement.PORTION) {
+            widthPortion = BI.Arrangement.PORTION;
+        }
+        if (leftPortion + widthPortion > BI.Arrangement.PORTION) {
+            leftPortion = BI.Arrangement.PORTION - widthPortion;
+        }
+        return {
+            x: leftPortion,
+            y: topPortion,
+            w: widthPortion,
+            h: heightPortion
+        }
+    },
+
+    _getBlockPositionAndSize: function (position) {
+        var perWidth = this._getOneWidthPortion();
+        return {
+            left: position.x * perWidth,
+            top: position.y * this._const.GRID_HEIGHT,
+            width: position.w * perWidth,
+            height: position.h * this._const.GRID_HEIGHT
+        };
+    },
+
+    _getLayoutsByRegions: function (regions) {
+        var self = this;
+        var result = [];
+        BI.each(regions || this.regions, function (id, region) {
+            result.push(BI.extend(self._getGridPositionAndSize(region), {
+                i: region.id
+            }))
+        });
+        return result;
+    },
+
+    _setBlockPositionAndSize: function (size) {
+        this.block.element.css({
+            left: size.left,
+            top: size.top,
+            width: size.width,
+            height: size.height
+        });
+    },
+
+    _getRegionsByLayout: function (layout) {
+        var self = this;
+        var regions = {};
+        BI.each(layout, function (i, ly) {
+            regions[ly.i] = BI.extend(regions[ly.i], self._getBlockPositionAndSize(ly), {
+                id: ly.i
+            });
+        });
+        return regions;
+    },
+
+    _setRegionsByLayout: function (regions, layout) {
+        var self = this;
+        regions || (regions = this.regions);
+        BI.each(layout, function (i, ly) {
+            if (regions[ly.i]) {
+                BI.extend(regions[ly.i], self._getBlockPositionAndSize(ly));
+            }
+        });
+        return regions;
+    },
+
+    _moveElement: function (layout, l, x, y, isUserAction) {
+        var self = this;
+        if (l.static) return layout;
+
+        if (l.y === y && l.x === x) return layout;
+
+        const movingUp = y && l.y > y;
+        if (typeof x === 'number') l.x = x;
+        if (typeof y === 'number') l.y = y;
+        l.moved = true;
+
+        let sorted = this._sortLayoutItemsByRowCol(layout);
+        if (movingUp) sorted = sorted.reverse();
+        const collisions = getAllCollisions(sorted, l);
+
+        for (var i = 0, len = collisions.length; i < len; i++) {
+            var collision = collisions[i];
+            if (collision.moved) continue;
+
+            if (l.y > collision.y && l.y - collision.y > collision.h / 4) continue;
+
+            if (collision.static) {
+                layout = this._moveElementAwayFromCollision(layout, collision, l, isUserAction);
+            } else {
+                layout = this._moveElementAwayFromCollision(layout, l, collision, isUserAction);
+            }
+        }
+
+        return layout;
+
+        function getAllCollisions(layout, layoutItem) {
+            return BI.filter(layout, function (i, l) {
+                return self._collides(l, layoutItem);
+            });
+        }
+    },
+
+    _sortLayoutItemsByRowCol: function (layout) {
+        return [].concat(layout).sort(function (a, b) {
+            if (a.y > b.y || (a.y === b.y && a.x > b.x)) {
+                return 1;
+            }
+            return -1;
+        });
+    },
+
+    _collides: function (l1, l2) {
+        if (l1 === l2) return false; // same element
+        if (l1.x + l1.w <= l2.x) return false; // l1 is left of l2
+        if (l1.x >= l2.x + l2.w) return false; // l1 is right of l2
+        if (l1.y + l1.h <= l2.y) return false; // l1 is above l2
+        if (l1.y >= l2.y + l2.h) return false; // l1 is below l2
+        return true; // boxes overlap
+    },
+
+    _getFirstCollision: function (layout, layoutItem) {
+        for (var i = 0, len = layout.length; i < len; i++) {
+            if (this._collides(layout[i], layoutItem)) return layout[i];
+        }
+    },
+
+    _moveElementAwayFromCollision: function (layout, collidesWith,
+                                             itemToMove, isUserAction) {
+        if (isUserAction) {
+            const fakeItem = {
+                x: itemToMove.x,
+                y: itemToMove.y,
+                w: itemToMove.w,
+                h: itemToMove.h,
+                i: '-1'
+            };
+            fakeItem.y = Math.max(collidesWith.y - itemToMove.h, 0);
+            if (!this._getFirstCollision(layout, fakeItem)) {
+                return this._moveElement(layout, itemToMove, undefined, fakeItem.y);
+            }
+        }
+
+        return this._moveElement(layout, itemToMove, undefined, itemToMove.y + 1);
+    },
+
+    _compactItem: function (compareWith, l, verticalCompact) {
+        if (verticalCompact) {
+            while (l.y > 0 && !this._getFirstCollision(compareWith, l)) {
+                l.y--;
+            }
+        }
+
+        var collides;
+        while ((collides = this._getFirstCollision(compareWith, l))) {
+            l.y = collides.y + collides.h;
+        }
+        return l;
+    },
+
+    compact: function (layout, verticalCompact) {
+        var compareWith = getStatics(layout);
+        var sorted = this._sortLayoutItemsByRowCol(layout);
+        var out = [];
+
+        for (var i = 0, len = sorted.length; i < len; i++) {
+            var l = sorted[i];
+
+            if (!l.static) {
+                l = this._compactItem(compareWith, l, verticalCompact);
+
+                compareWith.push(l);
+            }
+
+            out[layout.indexOf(l)] = l;
+
+            l.moved = false;
+        }
+
+        return out;
+        function getStatics(layout) {
+            return BI.filter(layout, function (i, l) {
+                return l.static;
+            });
+        }
+    },
+
     ////公有方法////
     getRegionByName: function (name) {
         var obj = {};
@@ -1982,6 +2192,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
     _start: function (cur) {
         this.arrangement.setVisible(true);
         this.droppable.setVisible(true);
+        this.block.setVisible(true);
         BI.each(this.drops, function (i, drop) {
             drop.el.setVisible(false);
         });
@@ -1995,6 +2206,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
     _stop: function () {
         this.arrangement.setVisible(false);
         this.droppable.setVisible(false);
+        this.block.setVisible(false);
     },
 
     getDirectRelativeRegions: function (name, direction) {
@@ -2016,6 +2228,8 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                     this.relayout();
                     break;
                 case BI.Arrangement.LAYOUT_TYPE.FREE:
+                    break;
+                case BI.Arrangement.LAYOUT_TYPE.GRID:
                     break;
             }
         }
@@ -2090,6 +2304,10 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                 this._deleteRegionByName(name);
                 this._populate(this.getAllRegions());
                 return true;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                this._deleteRegionByName(name);
+                this._populate(this.getAllRegions());
+                return true;
         }
         return false;
     },
@@ -2147,6 +2365,20 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                 });
                 if (this._test(clone)) {
                     this._modifyRegion(clone);
+                    flag = true;
+                }
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                var clone = this._cloneRegion();
+                BI.extend(clone[name], {
+                    width: size.width,
+                    height: size.height
+                });
+                if (this._test(clone)) {
+                    var layout = this._getLayoutsByRegions(clone);
+                    layout = this.compact(layout, true);
+                    var regions = this._getRegionsByLayout(layout);
+                    this._modifyRegion(regions);
                     flag = true;
                 }
                 break;
@@ -2229,6 +2461,31 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                     insert: insert
                 };
                 this._setArrangeSize(insert);
+                this._start();
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                var p = {
+                    top: position.top < 0 ? 0 : position.top,
+                    left: position.left < 0 ? 0 : position.left,
+                    width: size.width,
+                    height: size.height
+                };
+                if (position.top === 0 && position.left === 0) {
+                    debugger;
+                }
+                this._setArrangeSize(p);
+                var cur = this._getGridPositionAndSize(p);
+                var layout = [cur].concat(this._getLayoutsByRegions());
+                layout = this._moveElement(layout, layout[0], cur.x, cur.y, true);
+                layout = this.compact(layout, true);
+                var regions = this._setRegionsByLayout(this._cloneRegion(), layout);
+                var insert = this._getBlockPositionAndSize(layout[0]);
+                this.position = {
+                    insert: insert,
+                    regions: regions
+                };
+                this._applyRegion(regions);
+                this._setBlockPositionAndSize(insert);
                 this._start();
                 break;
         }
@@ -2466,9 +2723,11 @@ BI.Arrangement = BI.inherit(BI.Widget, {
     }
 });
 BI.extend(BI.Arrangement, {
+    PORTION: 12,
     LAYOUT_TYPE: {
         ADAPTIVE: BICst.DASHBOARD_LAYOUT_ADAPT,
-        FREE: BICst.DASHBOARD_LAYOUT_FREE
+        FREE: BICst.DASHBOARD_LAYOUT_FREE,
+        GRID: BICst.DASHBOARD_LAYOUT_GRID
     }
 });
 $.shortcut('bi.arrangement', BI.Arrangement);
