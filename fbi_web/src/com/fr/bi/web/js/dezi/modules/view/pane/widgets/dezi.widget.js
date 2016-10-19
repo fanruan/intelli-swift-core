@@ -36,6 +36,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                 clicked[dId] = v;
             }
             self.model.set("clicked", clicked);
+            self._refreshTableAndFilter();
         });
         BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + wId, function () {
             self._refreshTableAndFilter();
@@ -494,7 +495,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             BI.has(changed, "linkages")) {
             this._refreshTableAndFilter();
         }
-        if (BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
+        if (BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();
         }
         if (BI.has(changed, "type")) {
