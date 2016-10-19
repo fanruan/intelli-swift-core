@@ -93,7 +93,14 @@
                     status: status
                 }, function(res) {
                     if(BI.isNotNull(res.result)) {
-                        BI.Msg.toast(BI.i18nText("BI-Hanging_Out_Report_Success"));
+                        switch (status) {
+                            case BICst.REPORT_STATUS.APPLYING:
+                                BI.Msg.toast(BI.i18nText("BI-Hanging_Out_Report_Success"));
+                                break;
+                            case BICst.REPORT_STATUS.NORMAL:
+                                BI.Msg.toast(BI.i18nText("BI-Cancel_Hanging_Out"));
+                                break;
+                        }
                     }
                 });
             });
