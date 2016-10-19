@@ -394,7 +394,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
                 || (this.pager.hasHPrev && this.pager.hasHPrev()))) {
                 this.pager.setHPagerVisible(true);
                 this.pager.setVPagerVisible(true);
-                this.pager.setVisible(true);
+                this.pager.setPagerVisible ? this.pager.setPagerVisible(true) : this.pager.setVisible(true);
                 this.pager.element.width(this.pager.getWidth());
                 var w = this.pager.getWidth();
                 this.table.attr("pageSpace", w);
@@ -402,7 +402,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
                 || (this.pager.hasVPrev && this.pager.hasVPrev())) {
                 this.pager.setHPagerVisible(false);
                 this.pager.setVPagerVisible(true);
-                this.pager.setVisible(true);
+                this.pager.setPagerVisible ? this.pager.setPagerVisible(true) : this.pager.setVisible(true);
                 this.pager.element.width(this.pager.getWidth() / 2);
                 var w = this.pager.getWidth() / 2;
                 this.table.attr("pageSpace", w);
@@ -410,16 +410,16 @@ BI.PageTable = BI.inherit(BI.Widget, {
                 || (this.pager.hasHPrev && this.pager.hasHPrev())) {
                 this.pager.setHPagerVisible(true);
                 this.pager.setVPagerVisible(false);
-                this.pager.setVisible(true);
+                this.pager.setPagerVisible ? this.pager.setPagerVisible(true) : this.pager.setVisible(true);
                 this.pager.element.width(this.pager.getWidth() / 2);
                 var w = this.pager.getWidth() / 2;
                 this.table.attr("pageSpace", w);
             } else {
                 this.pager.setHPagerVisible && this.pager.setHPagerVisible(false);
                 this.pager.setVPagerVisible && this.pager.setVPagerVisible(false);
-                this.pager.setVisible(false);
-                this.pager.element.width(0);
-                this.table.attr("pageSpace", 0);
+                this.pager.setPagerVisible ? this.pager.setPagerVisible(false) : this.pager.setVisible(false);
+                this.pager.element.width(this.pager.getAliasWidth ? this.pager.getAliasWidth() : 0);
+                this.table.attr("pageSpace", this.pager.getAliasWidth ? this.pager.getAliasWidth() : 0);
             }
         }
     },
@@ -430,7 +430,7 @@ BI.PageTable = BI.inherit(BI.Widget, {
         BI.delay(function () {
             self._assertPager();
             if (self._hideChecker()) {
-                self.pager.setVisible(false);
+                self.pager.setPagerVisible ? self.pager.setPagerVisible(false) : self.pager.setVisible(false);
                 self.tipPager.setVisible(false);
                 return;
             }
@@ -440,11 +440,13 @@ BI.PageTable = BI.inherit(BI.Widget, {
 
             if (sWidth <= self._const.minScrollWidth) {
                 self.tipPager.setValue(self.getVPage());
-                self.pager.setVisible(false);
+                self.pager.setPagerVisible ? self.pager.setPagerVisible(false) : self.pager.setVisible(false);
+                self.pager.element.width(self.pager.getAliasWidth ? self.pager.getAliasWidth() : 0);
+                self.table.attr("pageSpace", self.pager.getAliasWidth ? self.pager.getAliasWidth() : 0);
                 self.tipPager.setVisible(true);
             } else {
                 self.tipPager.setVisible(false);
-                self.pager.setVisible(true);
+                self.pager.setPagerVisible ? self.pager.setPagerVisible(true) : self.pager.setVisible(true);
                 self._adjustPager();
             }
         }, 30);

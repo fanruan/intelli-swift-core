@@ -231,16 +231,16 @@ BIDezi.TreeLabelView = BI.inherit(BI.View, {
         }
 
         if (BI.has(changed, "value") || BI.has(changed, "dimensions")) {
-            BI.Utils.broadcastAllWidgets2Refresh();
+            BI.Utils.broadcastAllWidgets2Refresh(false, this.model.get("id"));
         }
     },
 
     duplicate: function () {
-        BI.Utils.broadcastAllWidgets2Refresh();
+        BI.Utils.broadcastAllWidgets2Refresh(false, this.model.get("id"));
     },
 
     splice: function () {
-        BI.Utils.broadcastAllWidgets2Refresh();
+        BI.Utils.broadcastAllWidgets2Refresh(false, this.model.get("id"));
     },
 
     local: function () {
