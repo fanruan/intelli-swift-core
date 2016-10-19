@@ -1196,7 +1196,10 @@
             var ws = this.getWidgetSettingsByID(wid);
             var chartFont = this.getGSChartFont();
             var labelSetting = ws.left_label_style || {};
-            labelSetting.text_style = BI.extend(chartFont, labelSetting.text_style);
+            var wt = this.getWidgetTypeByID(wid);
+            var colors = this.getWSChartColorByID(wid);
+            var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[0] : BICst.DEFAULT_CHART_SETTING.line_color;
+            labelSetting.text_style = BI.extend(chartFont, {"color" : color}, labelSetting.text_style);
             labelSetting.text_direction = labelSetting.text_direction || 0;
             return labelSetting;
         },
@@ -1206,7 +1209,7 @@
             var wt = this.getWidgetTypeByID(wid);
             var colors = this.getWSChartColorByID(wid);
             var lineColor = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[0] : BICst.DEFAULT_CHART_SETTING.line_color;
-            return BI.isNotEmptyString(ws.left_line_color) ? ws.left_line_color :
+            return BI.isNotNull(ws.left_line_color) ? ws.left_line_color :
                 lineColor
         },
 
@@ -1220,7 +1223,10 @@
             var ws = this.getWidgetSettingsByID(wid);
             var chartFont = this.getGSChartFont();
             var labelSetting = ws.right_label_style || {};
-            labelSetting.text_style = BI.extend(chartFont, labelSetting.text_style);
+            var wt = this.getWidgetTypeByID(wid);
+            var colors = this.getWSChartColorByID(wid);
+            var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[1] : BICst.DEFAULT_CHART_SETTING.line_color;
+            labelSetting.text_style = BI.extend(chartFont, {"color" : color}, labelSetting.text_style);
             labelSetting.text_direction = labelSetting.text_direction || 0;
             return labelSetting;
         },
@@ -1230,7 +1236,7 @@
             var wt = this.getWidgetTypeByID(wid);
             var colors = this.getWSChartColorByID(wid);
             var lineColor = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[1] : BICst.DEFAULT_CHART_SETTING.line_color;
-            return BI.isNotEmptyString(ws.right_line_color) ? ws.right_line_color :
+            return BI.isNotNull(ws.right_line_color) ? ws.right_line_color :
                 lineColor
         },
 
@@ -1244,7 +1250,10 @@
             var ws = this.getWidgetSettingsByID(wid);
             var chartFont = this.getGSChartFont();
             var labelSetting = ws.right2_label_style || {};
-            labelSetting.text_style = BI.extend(chartFont, labelSetting.text_style);
+            var wt = this.getWidgetTypeByID(wid);
+            var colors = this.getWSChartColorByID(wid);
+            var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[2] : BICst.DEFAULT_CHART_SETTING.line_color;
+            labelSetting.text_style = BI.extend(chartFont, {"color" : color}, labelSetting.text_style);
             labelSetting.text_direction = labelSetting.text_direction || 0;
             return labelSetting;
         },
@@ -1254,7 +1263,7 @@
             var wt = this.getWidgetTypeByID(wid);
             var colors = this.getWSChartColorByID(wid);
             var lineColor = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[1] : BICst.DEFAULT_CHART_SETTING.line_color;
-            return BI.isNotEmptyString(ws.right2_line_color) ? ws.right2_line_color :
+            return BI.isNotNull(ws.right2_line_color) ? ws.right2_line_color :
                 lineColor
         },
 
@@ -2786,7 +2795,7 @@
                             var dIndex = widget.view[drillRegionType].indexOf(drId);
                             BI.remove(widget.view[tempRegionType], drill.dId);
                             // if (drillRegionType === tempRegionType) {
-                                widget.view[drillRegionType].splice(dIndex, 0, drill.dId);
+                            widget.view[drillRegionType].splice(dIndex, 0, drill.dId);
                             // } else {
                             //     widget.view[drillRegionType].push(drill.dId);
                             // }
@@ -2973,7 +2982,7 @@
             if (force === true || this.isQueryControlExist() === false) {
                 BI.each(allWidgetIds, function (i, widgetId) {
                     if (!self.isControlWidgetByWidgetId(widgetId) || self.isRealTimeControlWidgetByWidgetId(widgetId)) {
-                        if(BI.isNull(wId) || wId !== widgetId) {
+                        if (BI.isNull(wId) || wId !== widgetId) {
                             BI.Broadcasts.send(BICst.BROADCAST.REFRESH_PREFIX + widgetId);
                         }
                     }
