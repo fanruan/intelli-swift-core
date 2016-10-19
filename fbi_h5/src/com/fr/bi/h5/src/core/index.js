@@ -97,6 +97,8 @@ export isString from 'lodash/isString'
 export clamp from 'lodash/clamp'
 export debounce from 'lodash/debounce'
 export throttle from 'lodash/throttle'
+export toInteger from 'lodash/toInteger'
+export toSafeInteger from 'lodash/toSafeInteger'
 
 //数组
 export first from 'lodash/first'
