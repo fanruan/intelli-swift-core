@@ -1969,10 +1969,10 @@ BI.Arrangement = BI.inherit(BI.Widget, {
 
     _getGridPositionAndSize: function (position) {
         var perWidth = this._getOneWidthPortion();
-        var widthPortion = Math.floor(position.width / perWidth);
-        var leftPortion = Math.floor(position.left / perWidth);
-        var topPortion = Math.floor(position.top / this._const.GRID_HEIGHT);
-        var heightPortion = Math.floor(position.height / this._const.GRID_HEIGHT);
+        var widthPortion = Math.round(position.width / perWidth);
+        var leftPortion = Math.round(position.left / perWidth);
+        var topPortion = Math.round(position.top / this._const.GRID_HEIGHT);
+        var heightPortion = Math.round(position.height / this._const.GRID_HEIGHT);
         if (leftPortion > BI.Arrangement.PORTION) {
             leftPortion = BI.Arrangement.PORTION;
         }
@@ -2011,6 +2011,12 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         return result;
     },
 
+    _getLayoutIndexByName: function(layout, name){
+        return BI.findIndex(layout, function(i,l){
+            return l.i === name;
+        });
+    },
+
     _setBlockPositionAndSize: function (size) {
         this.block.element.css({
             left: size.left,
@@ -2024,7 +2030,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         var self = this;
         var regions = {};
         BI.each(layout, function (i, ly) {
-            regions[ly.i] = BI.extend(regions[ly.i], self._getBlockPositionAndSize(ly), {
+            regions[ly.i] = BI.extend(self._getBlockPositionAndSize(ly), {
                 id: ly.i
             });
         });
@@ -2230,6 +2236,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                 case BI.Arrangement.LAYOUT_TYPE.FREE:
                     break;
                 case BI.Arrangement.LAYOUT_TYPE.GRID:
+                    this.relayout();
                     break;
             }
         }
@@ -2307,6 +2314,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
             case BI.Arrangement.LAYOUT_TYPE.GRID:
                 this._deleteRegionByName(name);
                 this._populate(this.getAllRegions());
+                this.resize();
                 return true;
         }
         return false;
@@ -2509,6 +2517,19 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                 });
                 this._applyRegion();
                 break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                // var cloned = this._cloneRegion();
+                // BI.extend(cloned[name], {
+                //     left: position.left < 0 ? 0 : position.left,
+                //     top: position.top < 0 ? 0 : position.top
+                // });
+                // var layout = this._getLayoutsByRegions(cloned);
+                // var cur = layout[this._getLayoutIndexByName(name)];
+                // layout = this._moveElement(layout, cur, cur.x, cur.y, true);
+                // layout = this.compact(layout, true);
+                // var regions = this._getRegionsByLayout(layout);
+                // this._modifyRegion(regions);
+                break;
         }
     },
 
@@ -2557,6 +2578,8 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                 }
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
                 break;
         }
         this.resize();
@@ -2641,6 +2664,12 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
                 break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                var layout = this._getLayoutsByRegions();
+                layout = this.compact(layout, true);
+                var regions = this._getRegionsByLayout(layout);
+                this._modifyRegion(regions);
+                break;
         }
     },
 
@@ -2698,7 +2727,9 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                 }
                 break;
             case BI.Arrangement.LAYOUT_TYPE.FREE:
-
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                this.resize();
                 break;
         }
     },

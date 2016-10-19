@@ -427,32 +427,39 @@ BI.InteractiveArrangement = BI.inherit(BI.Widget, {
     draw: function (position, size, name) {
         var self = this;
         this.stopDraw();
-        var other = this._getRegionExcept(name);
-        var left = this._leftAlign(position, size, other);
-        var right = this._rightAlign(position, size, other);
-        var top = this._topAlign(position, size, other);
-        var bottom = this._bottomAlign(position, size, other);
-        var center = this._centerAlign(position, size, other);
-        var middle = this._middleAlign(position, size, other);
+        switch (this.getLayoutType()) {
+            case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
+            case BI.Arrangement.LAYOUT_TYPE.FREE:
+                var other = this._getRegionExcept(name);
+                var left = this._leftAlign(position, size, other);
+                var right = this._rightAlign(position, size, other);
+                var top = this._topAlign(position, size, other);
+                var bottom = this._bottomAlign(position, size, other);
+                var center = this._centerAlign(position, size, other);
+                var middle = this._middleAlign(position, size, other);
 
-        BI.each(center, function (i, pos) {
-            self._drawOneTag(pos.start, pos.end);
-        });
-        BI.each(right, function (i, pos) {
-            self._drawOneTag(pos.start, pos.end);
-        });
-        BI.each(left, function (i, pos) {
-            self._drawOneTag(pos.start, pos.end);
-        });
-        BI.each(middle, function (i, pos) {
-            self._drawOneTag(pos.start, pos.end);
-        });
-        BI.each(bottom, function (i, pos) {
-            self._drawOneTag(pos.start, pos.end);
-        });
-        BI.each(top, function (i, pos) {
-            self._drawOneTag(pos.start, pos.end);
-        });
+                BI.each(center, function (i, pos) {
+                    self._drawOneTag(pos.start, pos.end);
+                });
+                BI.each(right, function (i, pos) {
+                    self._drawOneTag(pos.start, pos.end);
+                });
+                BI.each(left, function (i, pos) {
+                    self._drawOneTag(pos.start, pos.end);
+                });
+                BI.each(middle, function (i, pos) {
+                    self._drawOneTag(pos.start, pos.end);
+                });
+                BI.each(bottom, function (i, pos) {
+                    self._drawOneTag(pos.start, pos.end);
+                });
+                BI.each(top, function (i, pos) {
+                    self._drawOneTag(pos.start, pos.end);
+                });
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                break;
+        }
     },
 
     getDirectRelativeRegions: function (name, direction) {
@@ -501,7 +508,6 @@ BI.InteractiveArrangement = BI.inherit(BI.Widget, {
                     position = this.getPosition(name, position);
                     break;
                 case BI.Arrangement.LAYOUT_TYPE.GRID:
-                    position = this.getPosition(name, position);
                     break;
             }
         }

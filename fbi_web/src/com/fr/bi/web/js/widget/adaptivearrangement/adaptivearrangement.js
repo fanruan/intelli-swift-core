@@ -128,11 +128,11 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
             },
             resize: function (e, ui) {
                 // self._resize(item.attr("id"), ui.size);
-                var offset = self._getScrollOffset();
+                self._resize(item.attr("id"), ui.size);
                 self.fireEvent(BI.AdaptiveArrangement.EVENT_ELEMENT_RESIZE, item.attr("id"), ui.size);
             },
             stop: function (e, ui) {
-                self._resize(item.attr("id"), ui.size);
+                self._stopResize(item.attr("id"), ui.size);
                 self.fireEvent(BI.AdaptiveArrangement.EVENT_ELEMENT_STOP_RESIZE, item.attr("id"), ui.size);
                 self.fireEvent(BI.AdaptiveArrangement.EVENT_RESIZE);
             }
@@ -140,6 +140,19 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
     },
 
     _resize: function (name, size) {
+        var self = this;
+        switch (this.getLayoutType()) {
+            case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.FREE:
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                this.setRegionSize(name, size);
+                break;
+        }
+    },
+
+    _stopResize: function (name, size) {
         var self = this;
         switch (this.getLayoutType()) {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
