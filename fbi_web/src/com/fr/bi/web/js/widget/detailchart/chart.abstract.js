@@ -71,7 +71,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         BI.AbstractChart.superclass._init.apply(this, arguments);
     },
 
-    formatZoom: function(config, show_zoom){
+    formatZoom: function (config, show_zoom) {
         config.zoom.zoomTool.enabled = this.config.show_zoom;
         if (show_zoom === true) {
             delete config.dataSheet;
@@ -95,7 +95,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                     if (BI.isNotNull(da.y) && !BI.isNumber(da.y)) {
                         da.y = BI.parseFloat(da.y);
                     }
-                    if(BI.isNotNull(da.y)){
+                    if (BI.isNotNull(da.y)) {
                         da.y = BI.contentFormat(BI.parseFloat(da.y.div(magnify).toFixed(4)), "#.####;-#.####");
                     }
                 }
@@ -114,7 +114,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                 if (BI.isNotNull(da.x) && !BI.isNumber(da.x)) {
                     da.x = BI.parseFloat(da.x);
                 }
-                if(BI.isNotNull(da.x)){
+                if (BI.isNotNull(da.x)) {
                     da.x = BI.contentFormat(BI.parseFloat(da.x.div(magnify).toFixed(4)), "#.####;-#.####");
                 }
 
@@ -126,7 +126,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         if (!BI.isNumber(number)) {
             number = BI.parseFloat(number);
         }
-        if(BI.isNotNull(number)){
+        if (BI.isNotNull(number)) {
             return BI.contentFormat(BI.parseFloat(number.div(magnify).toFixed(4)), "#.####;-#.####");
         }
     },
@@ -185,8 +185,11 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             case BICst.TARGET_STYLE.NUM_LEVEL.YI:
                 unit = BI.i18nText("BI-Yi");
                 break;
+            case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
+                unit += '%';
+                break;
         }
-        return (BI.isEmptyString(unit) && BI.isEmptyString(axis_unit)) ? unit : "(" + unit + axis_unit + ")";
+        return (BI.isEmptyString(unit) && BI.isEmptyString(axis_unit)) ? unit : (unit + axis_unit);
     },
 
     formatTickInXYaxis: function (type, number_level, separators) {
@@ -226,8 +229,42 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         }
     },
 
+    formatTickForRadar: function (type, number_level, separators, unit) {
+        var formatter = '#.##';
+        switch (type) {
+            case this.constants.NORMAL:
+                formatter = '#.##';
+                if (separators) {
+                    formatter = '#,###.##'
+                }
+                break;
+            case this.constants.ZERO2POINT:
+                formatter = '#0';
+                if (separators) {
+                    formatter = '#,###';
+                }
+                break;
+            case this.constants.ONE2POINT:
+                formatter = '#0.0';
+                if (separators) {
+                    formatter = '#,###.0';
+                }
+                break;
+            case this.constants.TWO2POINT:
+                formatter = '#0.00';
+                if (separators) {
+                    formatter = '#,###.00';
+                }
+                break;
+        }
+        formatter += this.getXYAxisUnit(number_level, unit);
+        formatter += ";-" + formatter;
+        return function () {
+            return BI.contentFormat(arguments[0], formatter)
+        }
+    },
+
     formatDataLabel: function (state, items, config, style) {
-        var self = this;
         if (state === true) {
             BI.each(items, function (idx, item) {
                 item.dataLabels = {
@@ -245,7 +282,6 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
     },
 
     formatDataLabelForAxis: function (state, items, format, style) {
-        var self = this;
         if (state === true) {
             BI.each(items, function (idx, item) {
                 item.dataLabels = {

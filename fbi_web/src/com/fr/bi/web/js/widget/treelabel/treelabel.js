@@ -158,13 +158,13 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
             result.push(temp);
         }
         this.items = BI.concat(this.items.slice(0, floor + 1), result);
-        // BI.each(this.items, function (idx, items) {
-        //     items.sort(function (a, b) {
-        //         var flagA = BI.contains(values[idx], a.value);
-        //         var flagB = BI.contains(values[idx], b.value);
-        //         return flagB - flagA;
-        //     })
-        // });
+        BI.each(this.items, function (idx, items) {
+            items.sort(function (a, b) {
+                var flagA = BI.contains(values[idx], a.value);
+                var flagB = BI.contains(values[idx], b.value);
+                return flagB - flagA;
+            })
+        });
         return result;
 
         function contains(array, item) {
@@ -246,11 +246,11 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         }
 
         //if (BI.isNotEmptyArray(resultId) || BI.contains(op.value, "_*_")) {
-            o.itemsCreator(op, function (value) {
-                self._updateData(value.items);
-                self._updateItems(floor);
-                callback(self.items, floor);
-            });
+        o.itemsCreator(op, function (value) {
+            self._updateData(value.items);
+            self._updateItems(floor);
+            callback(self.items, floor);
+        });
         // } else {
         //     this._updateItems(floor);
         //     callback(this.items, floor);
@@ -270,7 +270,9 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         var result = [];
         convertToArray(v.selectedValue, result, 0);
         this._updateItems(0, result);
-
+        for (var i = this.items.length; i < v.titles.length; i++) {
+            this.items.push([]);
+        }
         this.view.refreshView({
             items: this.items,
             titles: v.titles
@@ -279,13 +281,13 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         this.view.setValue(result);
 
         function convertToArray(obj, result, i) {
-            if(BI.isEmptyObject(obj)) {
-                return ;
+            if (BI.isEmptyObject(obj)) {
+                return;
             }
             var keys = Object.keys(obj);
-            result[i] = BI.uniq(BI.concat(result[i]||[],keys));
+            result[i] = BI.uniq(BI.concat(result[i] || [], keys));
             BI.each(keys, function (idx, key) {
-                convertToArray(obj[key], result, i+1)
+                convertToArray(obj[key], result, i + 1)
             });
             return result;
         }
