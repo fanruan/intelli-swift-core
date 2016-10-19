@@ -20,8 +20,6 @@ import java.util.List;
 public interface BusinessTable extends JSONTransform, Cloneable {
     BITableID getID();
 
-
-
     Object clone() throws CloneNotSupportedException;
 
     List<BusinessField> getFields();
