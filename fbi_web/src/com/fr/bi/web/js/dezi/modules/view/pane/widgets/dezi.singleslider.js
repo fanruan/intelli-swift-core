@@ -22,7 +22,7 @@ BIDezi.SingleSliderWidgetView = BI.inherit(BI.View, {
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
             self._resetValue();
         });
-        //ȫ����ʽ
+        //全局样式
         BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
             self._refreshGlobalStyle(globalStyle);
         });
@@ -183,8 +183,8 @@ BIDezi.SingleSliderWidgetView = BI.inherit(BI.View, {
         var bounds = this.model.get("bounds");
         var height = bounds.height, width = bounds.width;
         var widgetName = this.model.get("name");
-        var minComboWidth = 70;     //Ĭ��combo����С���
-        var minNameWidth = 30;      //Ĭ��editor����С���
+        var minComboWidth = 70;
+        var minNameWidth = 30;
         var nameWidth = BI.DOM.getTextSizeWidth(widgetName, 16);
         // width =  5 + 10 + (4 + nameWidth + 4) + 10 + comboWidth + 10 + 5
         if (height < 100) {
