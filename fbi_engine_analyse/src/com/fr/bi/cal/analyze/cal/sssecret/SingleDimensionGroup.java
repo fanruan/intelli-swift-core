@@ -421,8 +421,10 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         Object keyValue = entry.getKey();
         GroupValueIndex gvi = (GroupValueIndex) entry.getValue();
         int keyValueSetSize = 0;
+        boolean isForeignTableToForeignTable = false;
         //多对多
         if (column.getDirectToDimensionRelationList().size() > 0) {
+            isForeignTableToForeignTable = true;
             //默认第一个位置放的是主表
             CubeTableSource primaryTableSource = column.getDirectToDimensionRelationList().get(0).getPrimaryTable();
             ICubeFieldSource primaryFieldSource = column.getDirectToDimensionRelationList().get(0).getPrimaryField();
@@ -448,7 +450,11 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
             keyValue = keyValueString;
         }
         NewDiskBaseRootNodeChild childNode = new NewDiskBaseRootNodeChild(column, keyValue);
-        if (keyValueSetSize > 0) {
+        if (isForeignTableToForeignTable) {
+            if (keyValueSetSize > 0) {
+                childNode.setGroupValueIndex(root.getGroupValueIndex().AND(gvi));
+            }
+        } else {
             childNode.setGroupValueIndex(root.getGroupValueIndex().AND(gvi));
         }
         return childNode;
