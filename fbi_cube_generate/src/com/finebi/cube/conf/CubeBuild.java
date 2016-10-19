@@ -47,4 +47,6 @@ public interface CubeBuild {
     Map<CubeTableSource, UpdateSettingSource> getUpdateSettingSources();
 
     Map<CubeTableSource, Connection> getConnections();
+
+   String getCubeTaskId();
 }

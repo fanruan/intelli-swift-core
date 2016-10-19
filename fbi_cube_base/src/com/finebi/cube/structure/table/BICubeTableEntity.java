@@ -98,6 +98,10 @@ public class BICubeTableEntity implements CubeTableEntityService {
 
     @Override
     public void recordRemovedLine(TreeSet<Integer> removedLine) {
+        if (null==removedLine||removedLine.size()==0){
+           tableProperty.recordRemovedList(0,-1);
+            return;
+        }
         Iterator<Integer> it = removedLine.iterator();
         int row = 0;
         while (it.hasNext()) {

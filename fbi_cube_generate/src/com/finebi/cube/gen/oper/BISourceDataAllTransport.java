@@ -60,7 +60,7 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
             try {
                 biLogManager.infoTable(tableSource.getPersistentTable(), tableCostTime, UserControl.getInstance().getSuperManagerID());
             } catch (Exception e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(tableSource.getTableName()+e.getMessage(), e);
             }
             return null;
         } catch (Exception e) {
