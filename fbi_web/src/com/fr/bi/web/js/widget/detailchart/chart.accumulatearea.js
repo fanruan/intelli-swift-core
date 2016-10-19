@@ -48,6 +48,10 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
         config.plotOptions.connectNulls = this.config.null_continue;
         this.formatZoom(config, this.config.show_zoom);
+        config.plotOptions.connectNulls = this.config.null_continue;
+        config.legend.style = BI.extend( this.config.chart_legend_setting, {
+            fontSize:  this.config.chart_legend_setting.fontSize + "px"
+        });
 
         config.yAxis = this.yAxis;
         BI.each(config.yAxis, function (idx, axis) {
@@ -57,35 +61,44 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
                     unit = self.getXYAxisUnit(self.config.left_y_axis_number_level, self.config.left_y_axis_unit);
                     axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + unit : unit;
                     axis.title.rotation = self.constants.ROTATION;
+                    axis.labelStyle = BI.extend(self.config.left_label_style.text_style, {
+                        fontSize: self.config.left_label_style.text_style.fontSize + "px"
+                    });
                     BI.extend(axis, {
                         lineWidth: self.config.line_width,
-                        showLabel: self.config.show_label,
+                        showLabel: self.config.show_left_label,
                         enableTick: self.config.enable_tick,
                         reversed: self.config.left_y_axis_reversed,
                         enableMinorTick: self.config.enable_minor_tick,
-                        gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
+                        gridLineWidth: self.config.show_h_grid_line === true ? 1 : 0,
+                        gridLineColor: self.config.h_grid_line_color,
                         min: self.config.custom_y_scale.minScale.scale || null,
                         max: self.config.custom_y_scale.maxScale.scale || null,
+                        labelRotation: self.config.left_label_style.text_direction,
                         tickInterval: BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
                             self.config.custom_y_scale.interval.scale : null,
                         formatter: self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level, self.config.num_separators)
                     });
                     self.formatNumberLevelInYaxis(config, items, self.config.left_y_axis_number_level, idx, axis.formatter, self.config.num_separators);
-
                     break;
                 case self.constants.RIGHT_AXIS:
                     unit = self.getXYAxisUnit(self.config.right_y_axis_number_level, self.config.right_y_axis_unit);
                     axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + unit : unit;
                     axis.title.rotation = self.constants.ROTATION;
+                    axis.labelStyle = BI.extend(self.config.right_label_style.text_style, {
+                        fontSize: self.config.right_label_style.text_style.fontSize + "px"
+                    });
                     BI.extend(axis, {
                         lineWidth: self.config.line_width,
-                        showLabel: self.config.show_label,
+                        showLabel: self.config.show_right_label,
                         enableTick: self.config.enable_tick,
                         reversed: self.config.right_y_axis_reversed,
                         enableMinorTick: self.config.enable_minor_tick,
-                        gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
+                        gridLineWidth: self.config.show_h_grid_line === true ? 1 : 0,
+                        gridLineColor: self.config.h_grid_line_color,
                         min: self.config.custom_x_scale.minScale.scale || null,
                         max: self.config.custom_x_scale.maxScale.scale || null,
+                        labelRotation: self.config.left_label_style.text_direction,
                         tickInterval: BI.isNumber(self.config.custom_x_scale.interval.scale) && self.config.custom_x_scale.interval.scale > 0 ?
                             self.config.custom_x_scale.interval.scale : null,
                         formatter: self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level, self.config.right_num_separators)
@@ -100,15 +113,21 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         BI.extend(config.xAxis[0], {
             lineWidth: this.config.line_width,
             enableTick: this.config.enable_tick,
-            labelRotation: this.config.text_direction,
-            gridLineWidth: this.config.show_grid_line === true ? 1 : 0
+            labelRotation: this.config.cat_label_style.text_direction,
+            gridLineWidth: this.config.show_v_grid_line === true ? 1 : 0,
+            lineColor: this.config.cat_line_color,
+            showLabel: this.config.show_cat_label,
+            labelStyle: BI.extend(this.config.cat_label_style.text_style, {
+                fontSize: this.config.cat_label_style.text_style.fontSize + "px"
+            }),
+            gridLineColor: self.config.v_grid_line_color,
         });
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
         this.formatDataLabel(config.plotOptions.dataLabels.enabled, items, config, this.config.chart_font);
 
         //全局样式的图表文字
-        this.setFontStyle(this.config.chart_font, config);
+        self.setFontStyle(this.config.chart_font, config);
 
         return [items, config];
 
@@ -232,7 +251,22 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
             custom_x_scale: options.custom_x_scale || c.CUSTOM_SCALE,
             num_separators: options.num_separators || false,
             right_num_separators: options.right_num_separators || false,
-            chart_font: options.chart_font || c.FONT_STYLE
+            chart_font: options.chart_font || c.FONT_STYLE,
+            show_left_label: BI.isNull(options.show_left_label) ? true : options.show_left_label,
+            left_label_style: options.left_label_style || {},
+            left_line_color: options.left_line_color || "",
+            show_right_label: BI.isNull(options.show_right_label) ? true : options.show_right_label,
+            right_label_style: options.right_label_style || {},
+            right_line_color: options.right_line_color || "",
+            show_cat_label: BI.isNull(options.show_cat_label) ? true : options.show_cat_label,
+            cat_label_style: options.cat_label_style || {},
+            cat_line_color: options.cat_line_color || "",
+            chart_legend_setting: options.chart_legend_setting || {},
+            show_h_grid_line: BI.isNull(options.show_h_grid_line) ? true : options.show_h_grid_line,
+            h_grid_line_color: options.h_grid_line_color || "",
+            show_v_grid_line: BI.isNull(options.show_v_grid_line) ? true : options.show_v_grid_line,
+            v_grid_line_color: options.v_grid_line_color || "",
+            tooltip_setting: options.tooltip_setting || {},
         };
         this.options.items = items;
         this.yAxis = [];
