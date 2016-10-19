@@ -160,11 +160,11 @@
             }
         },
 
-        getPackageIDByTableID: function(tableId){
+        getPackageIDByTableID: function (tableId) {
             var packageId;
-            BI.find(Pool.packages, function(pId, obj){
+            BI.find(Pool.packages, function (pId, obj) {
                 var ids = BI.pluck(obj.tables, "id");
-                if(BI.contains(ids, tableId)){
+                if (BI.contains(ids, tableId)) {
                     packageId = pId;
                     return true;
                 }
@@ -640,16 +640,16 @@
         //global style ---- start ----
         getGlobalStyle: function () {
             var self = this;
-            var globalStyle =  Data.SharingPool.get("globalStyle") || {};
-            if(BI.keys(globalStyle).length === 0){
+            var globalStyle = Data.SharingPool.get("globalStyle") || {};
+            if (BI.keys(globalStyle).length === 0) {
                 return checkLackProperty();
             }
             return globalStyle;
 
-            function checkLackProperty(){
+            function checkLackProperty() {
                 var defaultChartConfig = self.getDefaultChartConfig();
                 var type = defaultChartConfig.defaultColor;
-                if(!BI.has(globalStyle, "chartColor")){
+                if (!BI.has(globalStyle, "chartColor")) {
                     if (BI.isKey(type)) {
                         var finded = BI.find(defaultChartConfig.styleList, function (i, style) {
                             return style.value === type;
@@ -714,7 +714,7 @@
         },
 
         //settings  ---- start ----
-        getWSWidgetSettingByID:function (wid) {
+        getWSWidgetSettingByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.widget_setting) ? ws.widget_setting :
                 BICst.DEFAULT_CHART_SETTING.widget_setting;
@@ -2116,10 +2116,10 @@
             return result;
         },
 
-        getAllPrimaryKeyByTableIds: function(tableIds){
+        getAllPrimaryKeyByTableIds: function (tableIds) {
             var self = this;
             var relations = Pool.relations;
-            return BI.flatten(BI.map(tableIds, function(i, tableId){
+            return BI.flatten(BI.map(tableIds, function (i, tableId) {
                 if (BI.isNull(tableId)) {
                     return [];
                 }
@@ -2127,8 +2127,8 @@
                     return [];
                 }
                 var tPaths = relations[tableId];
-                return BI.map(tPaths, function(idx, paths){
-                    return BI.map(paths, function(id, path){
+                return BI.map(tPaths, function (idx, paths) {
+                    return BI.map(paths, function (id, path) {
                         return self.getFirstRelationPrimaryIdFromRelations(path);
                     });
                 });
@@ -2544,7 +2544,7 @@
                         var leafFilterObj = {
                             filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
                             filter_value: {
-                                type:  value === "_*_" ? BI.Selection.All : BI.Selection.Multi,
+                                type: value === "_*_" ? BI.Selection.All : BI.Selection.Multi,
                                 value: [value]
                             },
                             // _src: {field_id: self.getFieldIDByDimensionID(dimensionIds[floor])}
@@ -2559,6 +2559,9 @@
                             BI.isNotNull(fatherFilterValue) && filterObj.filter_value.push(fatherFilterValue);
                             result.push(filterObj);
                         } else {
+                            if (leafFilterObj.filter_value.type === BI.Selection.All) {
+                                leafFilterObj = fatherFilterValue
+                            }
                             createTreeLabelFilterValue(result, child, floor + 1, dimensionIds, leafFilterObj);
                         }
                     }
