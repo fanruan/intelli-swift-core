@@ -487,16 +487,14 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         IntArray removedList = new IntArray();
         int i = 0;
         try {
-            /*removeList.size=1*/
-            if (removedListReader.getSpecificValue(0) >= 0 && removedListReader.getSpecificValue(1) < 0) {
-                removedList.add(removedListReader.getSpecificValue(0));
-            } else {
-                while (removedListReader.getSpecificValue(i) < removedListReader.getSpecificValue(i + 1)) {
-                    removedList.add(removedListReader.getSpecificValue(i));
-                    i++;
-                }
-                removedList.add(removedListReader.getSpecificValue(i));
+            if (removedListReader.getSpecificValue(0) < 0) {
+                return removedList;
             }
+            while (removedListReader.getSpecificValue(i) < removedListReader.getSpecificValue(i + 1)) {
+                removedList.add(removedListReader.getSpecificValue(i));
+                i++;
+            }
+            removedList.add(removedListReader.getSpecificValue(i));
         } catch (BIResourceInvalidException e) {
             BILoggerFactory.getLogger().error(e.getMessage());
         }

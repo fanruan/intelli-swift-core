@@ -10,7 +10,7 @@ import java.io.Serializable;
 
 public interface CubeTask extends JSONCreator, Serializable {
 
-    String getUUID();
+    String getTaskId();
 
     CubeTaskType getTaskType();
 

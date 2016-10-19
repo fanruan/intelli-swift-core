@@ -40,7 +40,7 @@ public abstract class AbstractCubeTask implements CubeTask {
     public JSONObject createJSON() throws Exception {
         JSONObject jo = new JSONObject();
         jo.put("type", getTaskType());
-        jo.put("id", getUUID());
+        jo.put("id", getTaskId());
         if (start != null) {
             jo.put("start", start.getTime());
         }
@@ -68,7 +68,7 @@ public abstract class AbstractCubeTask implements CubeTask {
 
 
     @Override
-    public String getUUID() {
+    public String getTaskId() {
         return name;
     }
 

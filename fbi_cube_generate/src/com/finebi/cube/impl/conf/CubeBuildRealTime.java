@@ -8,7 +8,9 @@ import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.relation.*;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 
 import java.util.*;
 
@@ -22,9 +24,11 @@ public class CubeBuildRealTime extends AbstractCubeBuild implements CubeBuild {
     private ICubeConfiguration cubeConfiguration;
     private BIUser biUser;
     Set<List<Set<CubeTableSource>>> dependTableResource;
+    private String sourceId;
 
     public CubeBuildRealTime(CubeTableSource cubeTableSource, ICubeConfiguration cubeConfiguration, long userId) {
         super(userId);
+        sourceId = cubeTableSource.getSourceID();
         this.biUser = new BIUser(userId);
         this.cubeConfiguration = cubeConfiguration;
         Set<CubeTableSource> sourceSet = new HashSet<CubeTableSource>();
@@ -60,7 +64,7 @@ public class CubeBuildRealTime extends AbstractCubeBuild implements CubeBuild {
         }
         return result;
     }
-    
+
 
     public Set<BITableSourceRelationPath> getBiTableSourceRelationPathSet() {
         return new HashSet<BITableSourceRelationPath>();
@@ -96,7 +100,7 @@ public class CubeBuildRealTime extends AbstractCubeBuild implements CubeBuild {
     public Set<BITableRelation> getTableRelationSet() {
         return new HashSet<BITableRelation>();
     }
-    
+
 
     @Override
     public Set<BICubeGenerateRelationPath> getCubeGenerateRelationPathSet() {
@@ -132,7 +136,11 @@ public class CubeBuildRealTime extends AbstractCubeBuild implements CubeBuild {
     * 对实时报表来说，所有更新都是全量更新
      */
     @Override
-    public Map<CubeTableSource, UpdateSettingSource> getUpdateSettingSources(){
+    public Map<CubeTableSource, UpdateSettingSource> getUpdateSettingSources() {
         return new HashMap<CubeTableSource, UpdateSettingSource>();
+    }
+
+    public String getCubeTaskId() {
+        return BIStringUtils.append(DBConstant.CUBE_UPDATE_TYPE.SINGLETABLE_UPDATE, sourceId);
     }
 }

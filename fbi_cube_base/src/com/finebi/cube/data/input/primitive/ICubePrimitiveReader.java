@@ -18,4 +18,6 @@ public interface ICubePrimitiveReader extends CubeResourceRelease {
     void releaseSource();
 
     String getReaderHandler();
+
+    void releaseBuffer();
 }
