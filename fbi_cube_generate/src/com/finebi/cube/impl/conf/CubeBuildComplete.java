@@ -10,6 +10,7 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.exception.BIKeyAbsentException;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.finebi.cube.common.log.BILoggerFactory;
@@ -176,6 +177,10 @@ public class CubeBuildComplete extends AbstractCubeBuild implements Serializable
             updateSettingSourceMap.put(source, setUpdateTypes(source));
         }
         return updateSettingSourceMap;
+    }
+
+    public String getCubeTaskId() {
+        return DBConstant.GLOBAL_UPDATE_TYPE.COMPLETE_UPDATE;
     }
 
     public void setAllSingleSources(Set<CubeTableSource> allSingleSources) {
