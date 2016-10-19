@@ -124,8 +124,8 @@ BIShow.SingleSliderWidgetView = BI.inherit(BI.View, {
         var bounds = this.model.get("bounds");
         var height = bounds.height, width = bounds.width;
         var widgetName = this.model.get("name");
-        var minComboWidth = 70;     //默认combo的最小宽度
-        var minNameWidth = 30;      //默认editor的最小宽度
+        var minComboWidth = 70;
+        var minNameWidth = 30;
         var nameWidth = BI.DOM.getTextSizeWidth(widgetName, 16);
         // width =  5 + 10 + (4 + nameWidth + 4) + 10 + comboWidth + 10 + 5
         if (height < 100) {
@@ -166,7 +166,7 @@ BIShow.SingleSliderWidgetView = BI.inherit(BI.View, {
     },
 
     splice: function () {
-        BI.Utils.broadcastAllWidgets2Refresh();
+        BI.Utils.broadcastAllWidgets2Refresh(false, this.model.get("id"));
     },
 
     listenEnd: function () {
@@ -178,7 +178,7 @@ BIShow.SingleSliderWidgetView = BI.inherit(BI.View, {
             this._refreshLayout();
         }
         if (BI.has(changed, "value") || BI.has(changed, "dimensions")) {
-            BI.Utils.broadcastAllWidgets2Refresh();
+            BI.Utils.broadcastAllWidgets2Refresh(false, this.model.get("id"));
         }
     },
 
