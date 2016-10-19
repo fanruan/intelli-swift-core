@@ -43,6 +43,10 @@ BI.SelectTreeDataCombo = BI.inherit(BI.Widget, {
         });
     },
 
+    setEnable: function(v){
+        this.combo.setEnable(v);
+    },
+
     setValue: function (v) {
         this.combo.setValue(v);
     },

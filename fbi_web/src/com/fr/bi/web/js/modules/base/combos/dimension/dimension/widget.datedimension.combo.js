@@ -59,6 +59,7 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
             }],
             [{
                 text: BI.i18nText("BI-Show_Qualified_Result"),
+                title: BI.i18nText("BI-Dimension_Filter_Tip"),
                 value: BICst.DIMENSION_DATE_COMBO.FILTER,
                 cls: "filter-h-font"
             }],

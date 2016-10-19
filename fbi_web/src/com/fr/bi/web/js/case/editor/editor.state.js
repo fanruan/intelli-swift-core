@@ -156,8 +156,10 @@ BI.StateEditor = BI.inherit(BI.Single, {
     },
 
     focus: function () {
-        this._showInput();
-        this.editor.focus();
+        if(this.options.disabled === false){
+            this._showInput();
+            this.editor.focus();
+        }
     },
 
     blur: function () {
@@ -197,6 +199,11 @@ BI.StateEditor = BI.inherit(BI.Single, {
 
     setValue: function (k) {
         this.editor.setValue(k);
+    },
+
+    setEnable: function(v){
+        this.text.setEnable(v);
+        this.editor.setEnable(v);
     },
 
     getValue: function () {
