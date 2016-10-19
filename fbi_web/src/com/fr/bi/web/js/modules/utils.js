@@ -679,8 +679,8 @@
         getGSChartFont: function () {
             var gs = this.getGlobalStyle();
             return BI.extend({}, this.getDefaultChartConfig().chartFont, gs.chartFont, {
-                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
-                "fontSize": "12px"
+                "fontFamily": "Microsoft YaHei",
+                "fontSize": 12
             });
         },
 
@@ -714,12 +714,6 @@
         },
 
         //settings  ---- start ----
-        getWSWidgetSettingByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.widget_setting) ? ws.widget_setting :
-                BICst.DEFAULT_CHART_SETTING.widget_setting;
-        },
-
         getWSTitleDetailSettingByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.title_detail) ? ws.title_detail :
@@ -1200,20 +1194,25 @@
 
         getWSLValueAxisLabelSettingByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.lvalue_axis_label_setting) ? ws.lvalue_axis_label_setting :
-            {};
+            var chartFont = this.getGSChartFont();
+            var labelSetting = ws.lvalue_axis_label_setting || {};
+            labelSetting.text_style = BI.extend(chartFont, labelSetting.text_style);
+            labelSetting.text_direction = labelSetting.text_direction || 0;
+            return labelSetting;
         },
 
         getWSLValueAxisLineColorByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.lvalue_axis_line_color) ? ws.lvalue_axis_line_color :
-                ""
+                BICst.DEFAULT_CHART_SETTING.line_color
         },
 
         getWSLegendSettingByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.chart_legend_setting) ? ws.chart_legend_setting :
-            {}
+            var chartFont = this.getGSChartFont();
+            var legendSetting = ws.chart_legend_setting || {};
+            legendSetting = BI.extend(chartFont, legendSetting.legend_style);
+            return legendSetting;
         },
 
         getWSShowHGridLineByID: function (wid) {
@@ -1225,7 +1224,7 @@
         getWSHGridLineColorByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.h_grid_line_color) ? ws.h_grid_line_color :
-                ""
+                BICst.DEFAULT_CHART_SETTING.line_color
         },
 
         getWSShowVGridLineByID: function (wid) {
@@ -1237,7 +1236,7 @@
         getWSVGridLineColorByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.v_grid_line_color) ? ws.v_grid_line_color :
-                ""
+                BICst.DEFAULT_CHART_SETTING.line_color
         },
 
         getWSToolTipSettingByID: function (wid) {

@@ -53,16 +53,16 @@ BI.GlobalStyleIndexChartToolBar = BI.inherit(BI.Widget, {
 
     getValue: function () {
         return {
-            "font-weight": this.bold.isSelected() ? "bold" : "normal",
-            "font-style": this.italic.isSelected() ? "italic" : "normal",
+            "fontWeight": this.bold.isSelected() ? "bold" : "normal",
+            "fontStyle": this.italic.isSelected() ? "italic" : "normal",
             "color": this.colorchooser.getValue()
         }
     },
 
     setValue: function (v) {
         v || (v = {});
-        this.bold.setSelected(v["font-weight"] === "bold");
-        this.italic.setSelected(v["font-style"] === "italic");
+        this.bold.setSelected(v["fontWeight"] === "bold");
+        this.italic.setSelected(v["fontStyle"] === "italic");
         this.colorchooser.setValue(v["color"] || "");
     }
 });

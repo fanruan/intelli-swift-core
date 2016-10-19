@@ -27,9 +27,9 @@ public class BITitleFontStyleAttr extends BIAbstractFontStyleAttr {
     public void writeXML(XMLPrintWriter writer) {
         writer.startTAG(getTag());
         writer.attr("color", this.getColor());
-        writer.attr("font-style", this.getFontStyle());
-        writer.attr("font-weight", this.getFontWidget());
-        writer.attr("text-Align", this.textAlign);
+        writer.attr("fontStyle", this.getFontStyle());
+        writer.attr("fontWeight", this.getFontWidget());
+        writer.attr("textAlign", this.textAlign);
         writer.end();
     }
 
@@ -38,9 +38,9 @@ public class BITitleFontStyleAttr extends BIAbstractFontStyleAttr {
         if(reader.isChildNode()){
             if(ComparatorUtils.equals(reader.getTagName(), getTag())){
                 this.setColor(reader.getAttrAsString("color", ""));
-                this.setFontStyle(reader.getAttrAsString("font-style", ""));
-                this.setFontWidget(reader.getAttrAsString("font-weight", ""));
-                this.setTextAlign(reader.getAttrAsString("text-align", "left"));
+                this.setFontStyle(reader.getAttrAsString("fontStyle", ""));
+                this.setFontWidget(reader.getAttrAsString("fontWeight", ""));
+                this.setTextAlign(reader.getAttrAsString("textAlign", "left"));
             }
         }
     }
@@ -55,7 +55,7 @@ public class BITitleFontStyleAttr extends BIAbstractFontStyleAttr {
 
     @Override
     public String toString() {
-        return "{" + "color:\"" + this.getColor() + "\", font-style: \"" + this.getFontStyle() +
-                "\",font-weight:\"" + this.getFontWidget() + "\", text-align:\"" + this.getTextAlign() + "\"}";
+        return "{" + "color:\"" + this.getColor() + "\", fontStyle: \"" + this.getFontStyle() +
+                "\",fontWeight:\"" + this.getFontWidget() + "\", textAlign:\"" + this.getTextAlign() + "\"}";
     }
 }
