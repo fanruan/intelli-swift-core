@@ -2734,11 +2734,11 @@
                             var tempRegionType = self.getRegionTypeByDimensionID(drill.dId);
                             var dIndex = widget.view[drillRegionType].indexOf(drId);
                             BI.remove(widget.view[tempRegionType], drill.dId);
-                            if (drillRegionType === tempRegionType) {
+                            // if (drillRegionType === tempRegionType) {
                                 widget.view[drillRegionType].splice(dIndex, 0, drill.dId);
-                            } else {
-                                widget.view[drillRegionType].push(drill.dId);
-                            }
+                            // } else {
+                            //     widget.view[drillRegionType].push(drill.dId);
+                            // }
                         }
                         BI.each(drArray[i].values, function (i, v) {
                             var filterValue = parseSimpleFilter(v);
@@ -2853,6 +2853,7 @@
 
             widget.filter = {filter_type: BICst.FILTER_TYPE.AND, filter_value: filterValues};
             widget.real_data = true;
+
             return widget;
         },
 
@@ -2915,13 +2916,15 @@
         /**
          * 组件与表的关系
          */
-        broadcastAllWidgets2Refresh: function (force) {
+        broadcastAllWidgets2Refresh: function (force, wId) {
             var self = this;
             var allWidgetIds = this.getAllWidgetIDs();
             if (force === true || this.isQueryControlExist() === false) {
-                BI.each(allWidgetIds, function (i, wId) {
-                    if (!self.isControlWidgetByWidgetId(wId) || self.isRealTimeControlWidgetByWidgetId(wId)) {
-                        BI.Broadcasts.send(BICst.BROADCAST.REFRESH_PREFIX + wId);
+                BI.each(allWidgetIds, function (i, widgetId) {
+                    if (!self.isControlWidgetByWidgetId(widgetId) || self.isRealTimeControlWidgetByWidgetId(widgetId)) {
+                        if(BI.isNull(wId) || wId !== widgetId) {
+                            BI.Broadcasts.send(BICst.BROADCAST.REFRESH_PREFIX + widgetId);
+                        }
                     }
                 });
             }
