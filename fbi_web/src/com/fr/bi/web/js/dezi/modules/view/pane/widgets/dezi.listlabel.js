@@ -229,11 +229,11 @@ BIDezi.ListLabelView = BI.inherit(BI.View, {
     },
 
     duplicate: function () {
-        BI.Utils.broadcastAllWidgets2Refresh();
+        BI.Utils.broadcastAllWidgets2Refresh(false, this.model.get("id"));
     },
 
     splice: function () {
-        BI.Utils.broadcastAllWidgets2Refresh();
+        BI.Utils.broadcastAllWidgets2Refresh(false, this.model.get("id"));
     },
 
     listenEnd: function () {
@@ -245,7 +245,7 @@ BIDezi.ListLabelView = BI.inherit(BI.View, {
             this._refreshLayout();
         }
         if (BI.has(changed, "value") || BI.has(changed, "dimensions")) {
-            BI.Utils.broadcastAllWidgets2Refresh();
+            BI.Utils.broadcastAllWidgets2Refresh(false, this.model.get("id"));
             this.listLabel.populate();
         }
     },

@@ -124,8 +124,8 @@ BIShow.SingleSliderWidgetView = BI.inherit(BI.View, {
         var bounds = this.model.get("bounds");
         var height = bounds.height, width = bounds.width;
         var widgetName = this.model.get("name");
-        var minComboWidth = 70;     //Ä¬ÈÏcomboµÄ×îÐ¡¿í¶È
-        var minNameWidth = 30;      //Ä¬ÈÏeditorµÄ×îÐ¡¿í¶È
+        var minComboWidth = 70;     //Ä¬ï¿½ï¿½comboï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½
+        var minNameWidth = 30;      //Ä¬ï¿½ï¿½editorï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½
         var nameWidth = BI.DOM.getTextSizeWidth(widgetName, 16);
         // width =  5 + 10 + (4 + nameWidth + 4) + 10 + comboWidth + 10 + 5
         if (height < 100) {
@@ -166,7 +166,7 @@ BIShow.SingleSliderWidgetView = BI.inherit(BI.View, {
     },
 
     splice: function () {
-        BI.Utils.broadcastAllWidgets2Refresh();
+        BI.Utils.broadcastAllWidgets2Refresh(false, this.model.get("id"));
     },
 
     listenEnd: function () {
@@ -178,7 +178,7 @@ BIShow.SingleSliderWidgetView = BI.inherit(BI.View, {
             this._refreshLayout();
         }
         if (BI.has(changed, "value") || BI.has(changed, "dimensions")) {
-            BI.Utils.broadcastAllWidgets2Refresh();
+            BI.Utils.broadcastAllWidgets2Refresh(false, this.model.get("id"));
         }
     },
 

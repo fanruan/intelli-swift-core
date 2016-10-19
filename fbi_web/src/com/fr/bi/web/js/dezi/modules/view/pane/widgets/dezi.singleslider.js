@@ -225,11 +225,11 @@ BIDezi.SingleSliderWidgetView = BI.inherit(BI.View, {
             this._refreshLayout();
         }
         if (BI.has(changed, "dimension")) {
-            BI.Utils.broadcastAllWidgets2Refresh();
+            BI.Utils.broadcastAllWidgets2Refresh(false, this.model.get("id"));
             this.combo.populate();
         }
         if (BI.has(changed, "value")) {
-            BI.Utils.broadcastAllWidgets2Refresh();
+            BI.Utils.broadcastAllWidgets2Refresh(false, this.model.get("id"));
             this.combo.setValue();
         }
     },
