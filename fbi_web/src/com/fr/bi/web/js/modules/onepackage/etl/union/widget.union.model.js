@@ -347,6 +347,20 @@ BI.UnionModel = BI.inherit(BI.Widget, {
             }
         });
         return dName;
+    },
+
+    updateFieldsId: function (fields) {
+        var self = this;
+        var originalFields = this.tableInfo.fields;
+        var index = 0;
+        BI.each(fields, function (i, fs) {
+            BI.each(fs, function (j, field) {
+                if (BI.isNotEmptyString(self.unionArray[j][1])) {
+                    field.id = originalFields[0][index].id;
+                    index++;
+                }
+            });
+        });
     }
 });
 

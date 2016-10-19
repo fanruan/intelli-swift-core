@@ -14,6 +14,7 @@ import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.field.target.filter.AbstractTargetFilter;
+import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
@@ -200,16 +201,13 @@ public class TreeColumnFieldsFilter extends AbstractTargetFilter {
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
+        resgvi = GVIFactory.createAllEmptyIndexGVI();
 //        allPath.addAll(BIConfigureManagerCenter.getConnectionManager().getAllPath(userId, target, foreignTable));
         if (allPath != null || ComparatorUtils.equals(target, foreignTable)) {
             for (int i = 0; i < values.length; i++) {
                 if (values[i] != null) {
                     GroupValueIndex tgvi = values[i].createFilterIndex(dimension, this.keys, 0, foreignTable, this.relations, loader, userId);
-                    if (resgvi == null) {
-                        resgvi = tgvi;
-                    } else {
-                        resgvi = resgvi.OR(tgvi);
-                    }
+                     resgvi.or(tgvi);
                 }
             }
             GroupValueIndex gvi = null;

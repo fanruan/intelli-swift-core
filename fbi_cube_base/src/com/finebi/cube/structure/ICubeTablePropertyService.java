@@ -2,7 +2,7 @@ package com.finebi.cube.structure;
 
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.structure.collection.list.IntList;
+import com.fr.stable.collections.array.IntArray;
 
 import java.util.Date;
 import java.util.List;
@@ -27,7 +27,9 @@ public interface ICubeTablePropertyService extends Release, ICubeVersion {
 
     void recordRemovedList(int position, int value);
 
-    void recordLastTime();
+    void recordLastExecuteTime(long time);
+
+    void recordCurrentExecuteTime();
 
     void recordParentsTable(List<ITableKey> parentTables);
 
@@ -35,10 +37,11 @@ public interface ICubeTablePropertyService extends Release, ICubeVersion {
 
     int getRowCount();
 
-    IntList getRemovedList();
+    IntArray getRemovedList();
 
-    Date getCubeLastTime();
+    Date getLastExecuteTime();
 
+    Date getCurrentExecuteTime();
 
     List<ICubeFieldSource> getFieldInfo();
 
@@ -56,7 +59,9 @@ public interface ICubeTablePropertyService extends Release, ICubeVersion {
 
     boolean isRemovedListAvailable();
 
-    boolean isCubeLastUpdateTimeAvailable();
+    boolean isLastExecuteTimeAvailable();
+
+    boolean isCurrentExecuteTimeAvailable();
 
     void buildStructure();
 }

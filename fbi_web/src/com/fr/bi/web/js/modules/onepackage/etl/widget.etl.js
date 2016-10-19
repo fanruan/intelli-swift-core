@@ -262,7 +262,7 @@ BI.ETL = BI.inherit(BI.Widget, {
                             }
                         });
                     }
-                }, function() {
+                }, function () {
                     mask.destroy();
                 });
             }
@@ -364,20 +364,24 @@ BI.ETL = BI.inherit(BI.Widget, {
         var self = this;
         var allTables = this.model.getAllTables();
         if (allTables.length === 1) {
-            var mask = BI.createWidget({
-                type: "bi.loading_mask",
-                masker: BICst.BODY_ELEMENT,
-                text: BI.i18nText("BI-Loading")
-            });
-            BI.Utils.getTablesDetailInfoByTables([BI.extend(allTables[0][0], {id: this.model.getId()})], function (data) {
-                self.model.setFields(data[0].fields);
-                self.model.setRelationsByETLValue(data[0]);
-                self.model.setTranslationsByETLValue(data[0]);
-                self._populate();
-            }, function () {
-                mask.destroy();
-            });
-            return
+            var finalTable = allTables[0][0];
+            self.model.setFields(finalTable.fields);
+            self.model.setTranslationsByETLValue(finalTable);
+            // self._populate();
+            // var mask = BI.createWidget({
+            //     type: "bi.loading_mask",
+            //     masker: BICst.BODY_ELEMENT,
+            //     text: BI.i18nText("BI-Loading")
+            // });
+            // BI.Utils.getTablesDetailInfoByTables([BI.extend(allTables[0][0], {id: this.model.getId()})], function (data) {
+            //     self.model.setFields(data[0].fields);
+            //     self.model.setRelationsByETLValue(data[0]);
+            //     self.model.setTranslationsByETLValue(data[0]);
+            //     self._populate();
+            // }, function () {
+            //     mask.destroy();
+            // });
+            // return;
         }
         self._populate();
     },
@@ -956,7 +960,7 @@ BI.ETL = BI.inherit(BI.Widget, {
         });
         BI.Utils.checkCubeStatusByTable(table, function (status) {
             callback(status);
-        }, function() {
+        }, function () {
             mask.destroy();
         });
     },
