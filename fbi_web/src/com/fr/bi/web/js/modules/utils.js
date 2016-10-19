@@ -2921,7 +2921,7 @@
             if (force === true || this.isQueryControlExist() === false) {
                 BI.each(allWidgetIds, function (i, wId) {
                     if (!self.isControlWidgetByWidgetId(wId) || self.isRealTimeControlWidgetByWidgetId(wId)) {
-                        BI.Broadcasts.send(BICst.BROADCAST.REFRESH_PREFIX + wId);
+                        BI.Broadcasts.send(BICst.BROADCAST.REFRESH_PREFIX + wId, wId);
                     }
                 });
             }

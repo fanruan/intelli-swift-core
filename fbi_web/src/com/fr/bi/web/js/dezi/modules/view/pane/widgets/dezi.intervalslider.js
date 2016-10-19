@@ -15,13 +15,15 @@ BIDezi.IntervalSliderWidgetView = BI.inherit(BI.View, {
     _init: function () {
         BIDezi.IntervalSliderWidgetView.superclass._init.apply(this, arguments);
         var self = this, wId=this.model.get("id");
-        BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX +wId, function () {
-            self.combo.populate();
+        BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX +wId, function (wid) {
+            if (wId !== wid){
+                self.combo.populate();
+            }
         });
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
             self._resetValue();
         });
-        //È«¾ÖÑùÊ½
+        //È«ï¿½ï¿½ï¿½ï¿½Ê½
         BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
             self._refreshGlobalStyle(globalStyle);
         });
@@ -187,8 +189,8 @@ BIDezi.IntervalSliderWidgetView = BI.inherit(BI.View, {
         var bounds = this.model.get("bounds");
         var height = bounds.height, width = bounds.width;
         var widgetName = this.model.get("name");
-        var minComboWidth = 70;     //Ä¬ÈÏcomboµÄ×îÐ¡¿í¶È
-        var minNameWidth = 30;      //Ä¬ÈÏeditorµÄ×îÐ¡¿í¶È
+        var minComboWidth = 70;     //Ä¬ï¿½ï¿½comboï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½
+        var minNameWidth = 30;      //Ä¬ï¿½ï¿½editorï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½
         var nameWidth = BI.DOM.getTextSizeWidth(widgetName, 16);
         // width =  5 + 10 + (4 + nameWidth + 4) + 10 + comboWidth + 10 + 5
         if (height < 100) {

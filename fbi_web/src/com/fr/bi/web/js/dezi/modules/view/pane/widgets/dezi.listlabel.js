@@ -41,8 +41,10 @@ BIDezi.ListLabelView = BI.inherit(BI.View, {
             self.model.set("value", this.getValue());
         });
 
-        BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + this.model.get("id"), function () {
-            self.listLabel.populate();
+        BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + this.model.get("id"), function (wId) {
+            if (wId !== self.model.get("id")) {
+                self.listLabel.populate();
+            }
         });
 
         this.widget = BI.createWidget({
