@@ -20,7 +20,6 @@ public class BIByteNIOReaderBuilder extends BIPrimitiveNIOReaderBuilder<ICubeByt
 
     @Override
     protected ICubeByteReader createNIOReader(File target, ICubeResourceLocation targetLocation) {
-      //  return new BIByteNIOReader(target);
-       return isSingleFile(target) ? new BIByteSingleFileNIOReader(target) : new BIByteNIOReader(target);
+        return new BIByteNIOReader(target);
     }
 }

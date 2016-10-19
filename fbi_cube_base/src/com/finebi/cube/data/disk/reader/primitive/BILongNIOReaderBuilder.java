@@ -20,7 +20,6 @@ public class BILongNIOReaderBuilder extends BIPrimitiveNIOReaderBuilder<ICubeLon
 
     @Override
     protected ICubeLongReader createNIOReader(File target, ICubeResourceLocation targetLocation) {
-      //  return new BILongNIOReader(target);
-        return isSingleFile(target) ? new BILongSingleFileNIOReader(target) : new BILongNIOReader(target);
+        return new BILongNIOReader(target);
     }
 }
