@@ -38,6 +38,10 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
         return isNull(b) ? null : b;
     }
 
+    public byte getFirstByte(int row) throws BIResourceInvalidException {
+        return contentReader.getSpecificValue(positionReader.getSpecificValue(row));
+    }
+
     private boolean isNull(byte[] result) {
         if (result.length == CubeConstant.NULLBYTES.length) {
             for (int i = 0; i < result.length; i++) {
