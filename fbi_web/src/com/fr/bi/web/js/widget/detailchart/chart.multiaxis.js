@@ -58,7 +58,11 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                     title = self.getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
                     axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + title : title;
                     axis.title.rotation = self.constants.ROTATION;
-                    axis.labelStyle.color = axis.lineColor = axis.tickColor = config.colors[0];
+                    axis.labelStyle = BI.extend(self.config.left_label_style.text_style, {
+                        fontSize: self.config.left_label_style.text_style.fontSize + "px"
+                    });
+                    axis.lineColor = self.config.left_line_color;
+                    axis.tickColor = config.colors[0];
                     BI.extend(axis, {
                         lineWidth: self.config.line_width,
                         showLabel: self.config.show_label,
@@ -78,7 +82,11 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                     title = self.getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
                     axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + title : title;
                     axis.title.rotation = self.constants.ROTATION;
-                    axis.labelStyle.color = axis.lineColor = axis.tickColor = config.colors[1];
+                    axis.labelStyle = BI.extend(self.config.right_label_style.text_style, {
+                        fontSize: self.config.right_label_style.text_style.fontSize + "px"
+                    });
+                    axis.lineColor = self.config.right_line_color;
+                    axis.tickColor = config.colors[1];
                     BI.extend(axis, {
                         lineWidth: self.config.line_width,
                         showLabel: self.config.show_label,
@@ -98,7 +106,11 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                     title = self.getXYAxisUnit(self.config.right_y_axis_second_number_level, self.constants.RIGHT_AXIS_SECOND);
                     axis.title.text = self.config.show_right_y_axis_second_title === true ? self.config.right_y_axis_second_title + title : title;
                     axis.title.rotation = self.constants.ROTATION;
-                    axis.labelStyle.color = axis.lineColor = axis.tickColor = config.colors[2];
+                    axis.labelStyle = BI.extend(self.config.right2_label_style.text_style, {
+                        fontSize: self.config.right2_label_style.text_style.fontSize + "px"
+                    });
+                    axis.lineColor = self.config.right2_line_color;
+                    axis.tickColor = config.colors[2];
                     BI.extend(axis, {
                         lineWidth: self.config.line_width,
                         showLabel: self.config.show_label,
@@ -300,7 +312,16 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
             num_separators: options.num_separators || false,
             right_num_separators: options.right_num_separators || false,
             right2_num_separators: options.right2_num_separators || false,
-            chart_font: options.chart_font || c.FONT_STYLE
+            chart_font: options.chart_font || c.FONT_STYLE,
+            show_left_label: BI.isNull(options.show_left_label) ? true : options.show_left_label,
+            left_label_style: options.left_label_style || {},
+            left_line_color: options.left_line_color || "",
+            show_right_label: BI.isNull(options.show_right_label) ? true : options.show_right_label,
+            right_label_style: options.right_label_style || {},
+            right_line_color: options.right_line_color || "",
+            show_right2_label: BI.isNull(options.show_right2_label) ? true : options.show_right2_label,
+            right2_label_style: options.right2_label_style || {},
+            right2_line_color: options.right2_line_color || "",
         };
         this.options.items = items;
 
