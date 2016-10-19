@@ -2583,7 +2583,7 @@
                         var paths = self.getPathsFromFieldAToFieldB(pId, fId);
                         if(!BI.deepContains(paths, targetRelation)){
                             //维度和某个指标之间设置了路径但是路径在配置处被删了
-                            if(paths.length === 1){
+                            if(paths.length >= 1){
                                 widget.dimensions[dId].dimension_map[tableId].target_relation = paths[0];
                             }
                         }
