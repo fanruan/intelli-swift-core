@@ -69,6 +69,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                         enableTick: self.config.enable_tick,
                         reversed: self.config.left_y_axis_reversed,
                         enableMinorTick: self.config.enable_minor_tick,
+                        labelRotation: self.config.left_label_style.text_direction,
                         gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
                         min: self.config.custom_y_scale.minScale.scale || null,
                         max: self.config.custom_y_scale.maxScale.scale || null,
@@ -93,6 +94,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                         enableTick: self.config.enable_tick,
                         reversed: self.config.right_y_axis_reversed,
                         enableMinorTick: self.config.enable_minor_tick,
+                        labelRotation: self.config.left_label_style.text_direction,
                         gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
                         min: self.config.custom_x_scale.minScale.scale || null,
                         max: self.config.custom_x_scale.maxScale.scale || null,
@@ -117,6 +119,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                         enableTick: self.config.enable_tick,
                         reversed: self.config.right_y_axis_second_reversed,
                         enableMinorTick: self.config.enable_minor_tick,
+                        labelRotation: self.config.left_label_style.text_direction,
                         gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
                         min: self.config.custom_z_scale.minScale.scale || null,
                         max: self.config.custom_z_scale.maxScale.scale || null,
@@ -134,8 +137,11 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title : "";
         BI.extend(config.xAxis[0], {
             lineWidth: this.config.line_width,
+            lineColor: this.config.cat_line_color,
+            showLabel: this.config.show_cat_label,
+            labelStyle: this.config.cat_label_style.text_style,
             enableTick: this.config.enable_tick,
-            labelRotation: this.config.text_direction,
+            labelRotation: this.config.cat_label_style.text_direction,
             enableMinorTick: this.config.enable_minor_tick,
             gridLineWidth: this.config.show_grid_line === true ? 1 : 0
         });
@@ -158,7 +164,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         if (config.dataSheet) {
             config.dataSheet.style = this.config.chart_font;
         }
-        config.xAxis[0].title.style = config.xAxis[0].labelStyle = this.config.chart_font;
+        config.xAxis[0].title.style = this.config.chart_font;
         config.legend.style = this.config.chart_font;
         config.plotOptions.dataLabels.style = this.config.chart_font;
         BI.each(config.yAxis, function (idx, axis) {
@@ -322,6 +328,9 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
             show_right2_label: BI.isNull(options.show_right2_label) ? true : options.show_right2_label,
             right2_label_style: options.right2_label_style || {},
             right2_line_color: options.right2_line_color || "",
+            show_cat_label: BI.isNull(options.show_cat_label) ? true : options.show_cat_label,
+            cat_label_style: options.cat_label_style || {},
+            cat_line_color: options.cat_line_color || ""
         };
         this.options.items = items;
 

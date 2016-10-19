@@ -1267,6 +1267,28 @@
                 lineColor
         },
 
+        getWSShowCatLabelByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_cat_label) ? ws.show_cat_label :
+                BICst.DEFAULT_CHART_SETTING.show_cat_label
+        },
+
+        getWSCatLabelStyleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var chartFont = this.getGSChartFont();
+            var labelSetting = ws.cat_label_style || {};
+            labelSetting.text_style = BI.extend(chartFont, labelSetting.text_style);
+            labelSetting.text_direction = labelSetting.text_direction || 0;
+            return labelSetting;
+
+        },
+
+        getWSCatLineColorByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.cat_line_color) ? ws.cat_line_color :
+                BICst.DEFAULT_CHART_SETTING.line_color
+        },
+
         getWSLegendSettingByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             var chartFont = this.getGSChartFont();

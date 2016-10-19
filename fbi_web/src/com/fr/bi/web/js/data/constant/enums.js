@@ -507,6 +507,7 @@ BICst.DEFAULT_CHART_SETTING = {
     num_separators: false,
     right_num_separators: false,
     show_left_label: true,
+    show_cat_label: true,
     show_v_grid_line: true,
     show_h_grid_line: true,
     manually_linkage_selection: false,

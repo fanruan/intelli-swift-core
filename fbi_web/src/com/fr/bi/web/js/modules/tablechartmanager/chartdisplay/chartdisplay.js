@@ -411,6 +411,9 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                             fontSize: BI.Utils.getGSChartFont(o.wId).fontSize + "px"
                         }),
                         null_continue: BI.Utils.getWSNullContinueByID(o.wId),
+                        show_cat_label: BI.Utils.getWSShowCatLabelByID(o.wId),
+                        cat_label_style: BI.Utils.getWSCatLabelStyleByID(o.wId),
+                        cat_line_color: BI.Utils.getWSCatLineColorByID(o.wId),
                         background_layer_info: MapConst.WMS_INFO[BI.Utils.getWSBackgroundLayerInfoByID(o.wId)]
                     }, {
                         cordon: self.model.getCordon(),
