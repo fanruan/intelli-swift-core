@@ -37,11 +37,29 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
         });
     },
 
+    _getFieldClass: function (type) {
+        switch (type) {
+            case BICst.REGION.DIMENSION1:
+                return "classify-font";
+            case BICst.REGION.DIMENSION2:
+                return "classify-font";
+            case BICst.REGION.TARGET1:
+            case BICst.REGION.TARGET2:
+            case BICst.REGION.TARGET3:
+                return "series-font";
+            default:
+                return "classify-font";
+        }
+    },
+
     _createRegion: function () {
         var self = this, o = this.options;
         var titleName = BI.createWidget({
-            type: "bi.label",
-            cls: "region-north-title",
+            type: "bi.icon_text_item",
+            logic: {
+                dynamic: true
+            },
+            cls: "region-north-title " + this._getFieldClass(o.regionType),
             text: o.titleName,
             height: this.constants.REGION_HEIGHT_NORMAL
         });

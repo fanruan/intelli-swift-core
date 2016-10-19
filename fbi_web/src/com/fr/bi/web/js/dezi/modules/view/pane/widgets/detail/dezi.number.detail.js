@@ -239,7 +239,17 @@ BIDezi.NumberDetailView = BI.inherit(BI.View, {
     },
 
     change: function (changed, prev) {
+        if(BI.has(changed, "dimensions")){
+            this._checkDataBind();
+        }
+    },
 
+    _checkDataBind: function () {
+        if(BI.size(this.model.get("dimensions")) > 0){
+            this.combo.setEnable(true);
+        }else{
+            this.combo.setEnable(false);
+        }
     },
 
     splice: function (old, key1, key2) {
@@ -251,6 +261,7 @@ BIDezi.NumberDetailView = BI.inherit(BI.View, {
     refresh: function () {
         var self = this;
         this.dimensionsManager.populate();
+        this._checkDataBind();
         this.combo.setValue(this.model.get("value"));
     }
 });

@@ -286,6 +286,20 @@ BI.Linkage = BI.inherit(BI.Widget, {
                 var helper = ui.helper;
                 var targetId = helper.data("tId");
                 linkages.addOneLinkage(targetId);
+            },
+            over: function (event, ui) {
+                var helperWidget = ui.helper.data().helperWidget;
+                var helper = BI.createWidget({
+                    type: "bi.label",
+                    cls: "linkage-drop-helper",
+                    hgap: 10,
+                    text: BI.i18nText("BI-Drop_To_Complete_Setting")
+                });
+                helperWidget.modifyContent(helper);
+            },
+            out: function(event, ui){
+                var helperWidget = ui.helper.data().helperWidget;
+                helperWidget.populate();
             }
         });
         return linkages;

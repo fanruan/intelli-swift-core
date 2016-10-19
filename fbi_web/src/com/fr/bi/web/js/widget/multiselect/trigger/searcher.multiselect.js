@@ -121,6 +121,10 @@ BI.MultiSelectSearcher = BI.inherit(BI.Widget, {
         return this.searcher.getValue();
     },
 
+    setEnable: function(v){
+        this.editor.setEnable(v);
+    },
+
     populate: function (items) {
         this.searcher.populate.apply(this.searcher, arguments);
     }
