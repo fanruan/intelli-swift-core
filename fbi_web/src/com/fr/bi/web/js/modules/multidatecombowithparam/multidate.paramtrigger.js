@@ -279,7 +279,7 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
                     break;
             }
             var calcDate = self.parseComplexDate({type: type, value: value});
-            showText += ":" + BI.isNull(calcDate) ? "" : new Date(calcDate).print("%Y-%X-%d");
+            showText += ":" + (BI.isNull(calcDate) ? "" : new Date(calcDate).print("%Y-%X-%d"));
             self.editor.setState(showText);
             self.editor.setValue(showText);
             self.setTitle(showText);

@@ -16,11 +16,16 @@ BI.SelectTreeLabel = BI.inherit(BI.Widget, {
             type: "bi.tree_label",
             element: this.element,
             itemsCreator: function (op, callback) {
+                var data = {};
+                data.id = op.id;
+                data.floors = op.floor;
+                data.parent_values = [op.value];
                 if(BI.isEmptyObject(op)) {
                     callback({});
                 } else {
-                    callback({
-                    })
+                    BI.Utils.getWidgetDataByID(o.wId, function (jsonData) {
+                        callback(jsonData);
+                    }, {tree_options: data})
                 }
             }
         });
@@ -41,12 +46,17 @@ BI.SelectTreeLabel = BI.inherit(BI.Widget, {
                 title: temp
             })
         });
-        this.treeLabel.populate({
-            items: [
-            ],
-            titles: titles,
-            selectedValue: v
-        });
+        var data = {};
+        data.floors = 0;
+        data.selected_values = v;
+        data.parent_values = [];
+        BI.Utils.getWidgetDataByID(o.wId, function (jsonData) {
+            self.treeLabel.populate({
+                items: jsonData.items,
+                titles: titles,
+                selectedValue: v
+            });
+        }, { tree_options: data});
     },
 
     getValue: function () {

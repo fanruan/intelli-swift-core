@@ -22,7 +22,7 @@ BI.TargetRegion = BI.inherit(BI.AbstractRegion, {
         this.calculateAddButton = BI.createWidget({
             type: "bi.text_button",
             height: 25,
-            disabled: true,
+            disabled: BI.isEmptyArray(BI.Utils.getAllTargetDimensionIDs(this.options.wId)),
             value: BI.i18nText("BI-Add_Cal_Target")
         });
 

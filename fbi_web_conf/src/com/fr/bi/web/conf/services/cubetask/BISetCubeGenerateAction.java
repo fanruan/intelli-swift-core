@@ -29,7 +29,6 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
         String tableId = WebUtils.getHTTPRequestParameter(req, "tableId");
 //        Boolean isETL = Boolean.valueOf(WebUtils.getHTTPRequestParameter(req, "isETL"));
         int updateType = WebUtils.getHTTPRequestIntParameter(req, "updateType");
-        BIConfigureManagerCenter.getLogManager().logStart(userId);
         try {
             CubeUpdateUtils.recordTableAndRelationInfo(userId);
         } catch (Exception e) {
