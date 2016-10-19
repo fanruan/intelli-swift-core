@@ -869,13 +869,13 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //网格线设置
-        this.hGridLine = BI.createWidget({
+        this.showHGridLine = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Horizontal"),
             width: 65
         });
 
-        this.hGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+        this.showHGridLine.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
@@ -889,13 +889,13 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
-        this.vGridLine = BI.createWidget({
+        this.showVGridLine = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Vertical"),
             width: 65
         });
 
-        this.vGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+        this.showVGridLine.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
@@ -958,13 +958,13 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //空值连续
-        this.continuousNullValue = BI.createWidget({
+        this.nullContinuity = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Null_Continue"),
             width: 90
         });
 
-        this.continuousNullValue.on(BI.Controller.EVENT_CHANGE, function() {
+        this.nullContinuity.on(BI.Controller.EVENT_CHANGE, function() {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
@@ -998,13 +998,13 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.hGridLine]
+                    items: [this.showHGridLine]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.hGridLineColor]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.vGridLine]
+                    items: [this.showVGridLine]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.vGridLineColor]
@@ -1026,7 +1026,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.tooltipSetting]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.continuousNullValue]
+                    items: [this.nullContinuity]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -1204,6 +1204,13 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showCatLabel.setSelected(BI.Utils.getWSShowCatLabelByID(wId));
         this.catLabelStyle.setValue(BI.Utils.getWSCatLabelStyleByID(wId));
         this.catLineColor.setValue(BI.Utils.getWSCatLineColorByID(wId));
+        this.legendSetting.setValue(BI.Utils.getWSLegendSettingByID(wId));
+        this.showHGridLine.setSelected(BI.Utils.getWSShowHGridLineByID(wId));
+        this.hGridLineColor.setValue(BI.Utils.getWSHGridLineColorByID(wId));
+        this.showVGridLine.setSelected(BI.Utils.getWSShowVGridLineByID(wId));
+        this.vGridLineColor.setValue(BI.Utils.getWSVGridLineColorByID(wId));
+        this.nullContinuity.setSelected(BI.Utils.getWSNullContinueByID(wId));
+        this.tooltipSetting.setValue(BI.Utils.getWSToolTipSettingByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleRY.isSelected() ? this.editTitleRY.setVisible(true) : this.editTitleRY.setVisible(false);
@@ -1265,7 +1272,14 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             right2_line_color: this.right2LineColor.getValue(),
             show_cat_label: this.showCatLabel.isSelected(),
             cat_label_style: this.catLabelStyle.getValue(),
-            cat_line_color: this.catLineColor.getValue()
+            cat_line_color: this.catLineColor.getValue(),
+            chart_legend_setting: this.legendSetting.getValue(),
+            show_h_grid_line: this.showHGridLine.isSelected(),
+            h_grid_line_color: this.hGridLineColor.getValue(),
+            show_v_grid_line: this.showVGridLine.isSelected(),
+            v_grid_line_color: this.vGridLineColor.getValue(),
+            null_continue: this.nullContinuity.isSelected(),
+            tooltip_setting: this.tooltipSetting.getValue(),
         }
     },
 
@@ -1323,6 +1337,13 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showCatLabel.setSelected(v.show_cat_label);
         this.catLabelStyle.setValue(v.cat_label_style);
         this.catLineColor.setValue(v.cat_line_color);
+        this.legendSetting.setValue(v.chart_legend_setting);
+        this.showHGridLine.setSelected(v.show_h_grid_line);
+        this.hGridLineColor.setValue(v.h_grid_line_color);
+        this.showVGridLine.setSelected(v.show_v_grid_line);
+        this.vGridLineColor.setValue(v.v_grid_line_color);
+        this.nullContinuity.setSelected(v.null_continue);
+        this.tooltipSetting.setValue(v.tooltip_setting);
     }
 });
 BI.MultiAxisChartSetting.EVENT_CHANGE = "EVENT_CHANGE";

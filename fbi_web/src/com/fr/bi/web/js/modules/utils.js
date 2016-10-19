@@ -849,7 +849,8 @@
 
         getWSNullContinueByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.null_continue) ? ws.null_continue : BICst.DEFAULT_CHART_SETTING.null_continue;
+            return BI.isNotNull(ws.null_continue) ? ws.null_continue :
+                BICst.DEFAULT_CHART_SETTING.null_continue;
         },
 
         getWSChartColorByID: function (wid) {

@@ -399,13 +399,13 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //空值连续
-        this.continuousNullValue = BI.createWidget({
+        this.nullContinuity = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Null_Continue"),
             width: 90
         });
 
-        this.continuousNullValue.on(BI.Controller.EVENT_CHANGE, function() {
+        this.nullContinuity.on(BI.Controller.EVENT_CHANGE, function() {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
 
@@ -543,7 +543,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.vGridLineColor.setValue(BI.Utils.getWSVGridLineColorByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
         this.tooltipSetting.setValue(BI.Utils.getWSToolTipSettingByID(wId));
-        this.continuousNullValue.setSelected(BI.Utils.getWSNullContinueByID(wId));
+        this.nullContinuity.setSelected(BI.Utils.getWSNullContinueByID(wId));
 
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.linkageSelection.setSelected(BI.Utils.getWSLinkageSelectionByID(wId));
@@ -577,7 +577,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             v_grid_line_color: this.vGridLineColor.getValue(),
             show_data_label: this.showDataLabel.isSelected(),
             tooltip_setting: this.tooltipSetting.getValue(),
-            continuous_null_value: this.continuousNullValue.isSelected(),
+            null_continue: this.nullContinuity.isSelected(),
 
             transfer_filter: this.transferFilter.isSelected(),
             manually_linkage_selection: this.linkageSelection.isSelected()
@@ -611,7 +611,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.vGridLineColor.setValue(v.v_grid_line_color);
         this.showDataLabel.setSelected(v.show_data_label);
         this.tooltipSetting.setValue(v.tooltip_setting);
-        this.continuousNullValue.setSelected(v.continuous_null_value);
+        this.nullContinuity.setSelected(v.null_continue);
 
         this.transferFilter.setSelected(v.transfer_filter);
         this.linkageSelection.setSelected(v.manually_linkage_selection)
