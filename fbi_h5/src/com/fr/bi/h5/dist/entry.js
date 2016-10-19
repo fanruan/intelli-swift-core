@@ -33,17 +33,17 @@ webpackJsonp([0],{
 
 	var _View2 = _interopRequireDefault(_View);
 
-	__webpack_require__(930);
+	__webpack_require__(931);
 
-	__webpack_require__(932);
+	__webpack_require__(933);
 
-	__webpack_require__(934);
+	__webpack_require__(935);
 
-	__webpack_require__(936);
+	__webpack_require__(937);
 
-	__webpack_require__(938);
+	__webpack_require__(939);
 
-	__webpack_require__(940);
+	__webpack_require__(941);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2127,19 +2127,19 @@ webpackJsonp([0],{
 
 	var _core = __webpack_require__(329);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _layout = __webpack_require__(791);
+	var _layout = __webpack_require__(792);
 
-	var _template = __webpack_require__(800);
+	var _template = __webpack_require__(801);
 
 	var TodoActions = _interopRequireWildcard(_template);
 
-	var _Main = __webpack_require__(801);
+	var _Main = __webpack_require__(802);
 
 	var _Main2 = _interopRequireDefault(_Main);
 
-	var _Layout = __webpack_require__(929);
+	var _Layout = __webpack_require__(930);
 
 	var _Layout2 = _interopRequireDefault(_Layout);
 
@@ -2286,7 +2286,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 800:
+/***/ 801:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2313,7 +2313,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 801:
+/***/ 802:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2340,15 +2340,15 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _layout = __webpack_require__(791);
+	var _layout = __webpack_require__(792);
 
-	var _Toolbar = __webpack_require__(802);
+	var _Toolbar = __webpack_require__(803);
 
 	var _Toolbar2 = _interopRequireDefault(_Toolbar);
 
-	var _LayoutComponent = __webpack_require__(904);
+	var _LayoutComponent = __webpack_require__(905);
 
 	var _LayoutComponent2 = _interopRequireDefault(_LayoutComponent);
 
@@ -2589,7 +2589,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 802:
+/***/ 803:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2616,15 +2616,15 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _layout = __webpack_require__(791);
+	var _layout = __webpack_require__(792);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(888);
 
-	var _Controls = __webpack_require__(899);
+	var _Controls = __webpack_require__(900);
 
 	var _Controls2 = _interopRequireDefault(_Controls);
 
@@ -2702,7 +2702,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 887:
+/***/ 888:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2712,19 +2712,19 @@ webpackJsonp([0],{
 	});
 	exports.DateWidget = exports.MultiTreeSelectorWidget = exports.MultiSelectorWidget = exports.TableWidget = undefined;
 
-	var _TableWidget2 = __webpack_require__(888);
+	var _TableWidget2 = __webpack_require__(889);
 
 	var _TableWidget3 = _interopRequireDefault(_TableWidget2);
 
-	var _MultiSelectorWidget2 = __webpack_require__(891);
+	var _MultiSelectorWidget2 = __webpack_require__(892);
 
 	var _MultiSelectorWidget3 = _interopRequireDefault(_MultiSelectorWidget2);
 
-	var _MultiTreeSelectorWidget2 = __webpack_require__(894);
+	var _MultiTreeSelectorWidget2 = __webpack_require__(895);
 
 	var _MultiTreeSelectorWidget3 = _interopRequireDefault(_MultiTreeSelectorWidget2);
 
-	var _DateWidget2 = __webpack_require__(898);
+	var _DateWidget2 = __webpack_require__(899);
 
 	var _DateWidget3 = _interopRequireDefault(_DateWidget2);
 
@@ -2738,7 +2738,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 888:
+/***/ 889:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2769,13 +2769,13 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
-	var _GroupHeader = __webpack_require__(889);
+	var _GroupHeader = __webpack_require__(890);
 
 	var _GroupHeader2 = _interopRequireDefault(_GroupHeader);
 
-	var _GroupItems = __webpack_require__(890);
+	var _GroupItems = __webpack_require__(891);
 
 	var _GroupItems2 = _interopRequireDefault(_GroupItems);
 
@@ -2912,7 +2912,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 889:
+/***/ 890:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2937,7 +2937,7 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3045,7 +3045,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 890:
+/***/ 891:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3070,7 +3070,7 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3249,7 +3249,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 891:
+/***/ 892:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3282,17 +3282,17 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _layout = __webpack_require__(791);
+	var _layout = __webpack_require__(792);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _Item = __webpack_require__(892);
+	var _Item = __webpack_require__(893);
 
 	var _Item2 = _interopRequireDefault(_Item);
 
-	var _MultiSelectorWidgetHelper = __webpack_require__(893);
+	var _MultiSelectorWidgetHelper = __webpack_require__(894);
 
 	var _MultiSelectorWidgetHelper2 = _interopRequireDefault(_MultiSelectorWidgetHelper);
 
@@ -3528,7 +3528,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 892:
+/***/ 893:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3557,11 +3557,11 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _layout = __webpack_require__(791);
+	var _layout = __webpack_require__(792);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3678,7 +3678,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 893:
+/***/ 894:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3773,7 +3773,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 894:
+/***/ 895:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3806,19 +3806,19 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _Item = __webpack_require__(895);
+	var _Item = __webpack_require__(896);
 
 	var _Item2 = _interopRequireDefault(_Item);
 
-	var _MultiTreeSelectorWidgetHelper = __webpack_require__(896);
+	var _MultiTreeSelectorWidgetHelper = __webpack_require__(897);
 
 	var _MultiTreeSelectorWidgetHelper2 = _interopRequireDefault(_MultiTreeSelectorWidgetHelper);
 
-	var _MultiTreeSelectorWidgetAsyncHelper = __webpack_require__(897);
+	var _MultiTreeSelectorWidgetAsyncHelper = __webpack_require__(898);
 
 	var _MultiTreeSelectorWidgetAsyncHelper2 = _interopRequireDefault(_MultiTreeSelectorWidgetAsyncHelper);
 
@@ -4018,7 +4018,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 895:
+/***/ 896:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4047,11 +4047,11 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _layout = __webpack_require__(791);
+	var _layout = __webpack_require__(792);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4188,7 +4188,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 896:
+/***/ 897:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4553,7 +4553,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 897:
+/***/ 898:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4566,7 +4566,7 @@ webpackJsonp([0],{
 
 	var _core = __webpack_require__(329);
 
-	var _MultiTreeSelectorWidgetHelper = __webpack_require__(896);
+	var _MultiTreeSelectorWidgetHelper = __webpack_require__(897);
 
 	var _MultiTreeSelectorWidgetHelper2 = _interopRequireDefault(_MultiTreeSelectorWidgetHelper);
 
@@ -4649,7 +4649,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 898:
+/***/ 899:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4676,13 +4676,13 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _layout = __webpack_require__(791);
+	var _layout = __webpack_require__(792);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(888);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4838,7 +4838,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 899:
+/***/ 900:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4865,27 +4865,27 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _layout = __webpack_require__(791);
+	var _layout = __webpack_require__(792);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(888);
 
-	var _MultiSelectorComponent = __webpack_require__(900);
+	var _MultiSelectorComponent = __webpack_require__(901);
 
 	var _MultiSelectorComponent2 = _interopRequireDefault(_MultiSelectorComponent);
 
-	var _MultiTreeSelectorComponent = __webpack_require__(901);
+	var _MultiTreeSelectorComponent = __webpack_require__(902);
 
 	var _MultiTreeSelectorComponent2 = _interopRequireDefault(_MultiTreeSelectorComponent);
 
-	var _DateComponent = __webpack_require__(902);
+	var _DateComponent = __webpack_require__(903);
 
 	var _DateComponent2 = _interopRequireDefault(_DateComponent);
 
-	var _Item = __webpack_require__(903);
+	var _Item = __webpack_require__(904);
 
 	var _Item2 = _interopRequireDefault(_Item);
 
@@ -5005,7 +5005,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 900:
+/***/ 901:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5030,11 +5030,11 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(888);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5116,7 +5116,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 901:
+/***/ 902:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5141,11 +5141,11 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(888);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5225,7 +5225,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 902:
+/***/ 903:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5252,13 +5252,13 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _layout = __webpack_require__(791);
+	var _layout = __webpack_require__(792);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(888);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5343,7 +5343,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 903:
+/***/ 904:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5368,13 +5368,13 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _layout = __webpack_require__(791);
+	var _layout = __webpack_require__(792);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(888);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5454,7 +5454,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 904:
+/***/ 905:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5481,37 +5481,37 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _layout = __webpack_require__(791);
+	var _layout = __webpack_require__(792);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _ChartPaneComponent = __webpack_require__(905);
+	var _ChartPaneComponent = __webpack_require__(906);
 
 	var _ChartPaneComponent2 = _interopRequireDefault(_ChartPaneComponent);
 
-	var _TablePaneComponent = __webpack_require__(918);
+	var _TablePaneComponent = __webpack_require__(919);
 
 	var _TablePaneComponent2 = _interopRequireDefault(_TablePaneComponent);
 
-	var _DetailTablePaneComponent = __webpack_require__(924);
+	var _DetailTablePaneComponent = __webpack_require__(925);
 
 	var _DetailTablePaneComponent2 = _interopRequireDefault(_DetailTablePaneComponent);
 
-	var _MultiSelectorComponent = __webpack_require__(900);
+	var _MultiSelectorComponent = __webpack_require__(901);
 
 	var _MultiSelectorComponent2 = _interopRequireDefault(_MultiSelectorComponent);
 
-	var _MultiTreeSelectorComponent = __webpack_require__(901);
+	var _MultiTreeSelectorComponent = __webpack_require__(902);
 
 	var _MultiTreeSelectorComponent2 = _interopRequireDefault(_MultiTreeSelectorComponent);
 
-	var _ContentComponent = __webpack_require__(927);
+	var _ContentComponent = __webpack_require__(928);
 
 	var _ContentComponent2 = _interopRequireDefault(_ContentComponent);
 
-	var _ImageComponent = __webpack_require__(928);
+	var _ImageComponent = __webpack_require__(929);
 
 	var _ImageComponent2 = _interopRequireDefault(_ImageComponent);
 
@@ -5674,7 +5674,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 905:
+/***/ 906:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5703,19 +5703,19 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _layout = __webpack_require__(791);
+	var _layout = __webpack_require__(792);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(888);
 
-	var _ChartComponent = __webpack_require__(906);
+	var _ChartComponent = __webpack_require__(907);
 
 	var _ChartComponent2 = _interopRequireDefault(_ChartComponent);
 
-	var _SettingsComponent = __webpack_require__(907);
+	var _SettingsComponent = __webpack_require__(908);
 
 	var _SettingsComponent2 = _interopRequireDefault(_SettingsComponent);
 
@@ -5827,7 +5827,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 906:
+/***/ 907:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5854,9 +5854,9 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5951,7 +5951,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 907:
+/***/ 908:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5978,27 +5978,27 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _layout = __webpack_require__(791);
+	var _layout = __webpack_require__(792);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(888);
 
-	var _SettingsComponentHelper = __webpack_require__(908);
+	var _SettingsComponentHelper = __webpack_require__(909);
 
 	var _SettingsComponentHelper2 = _interopRequireDefault(_SettingsComponentHelper);
 
-	var _DimensionComponent = __webpack_require__(909);
+	var _DimensionComponent = __webpack_require__(910);
 
 	var _DimensionComponent2 = _interopRequireDefault(_DimensionComponent);
 
-	var _TargetComponent = __webpack_require__(913);
+	var _TargetComponent = __webpack_require__(914);
 
 	var _TargetComponent2 = _interopRequireDefault(_TargetComponent);
 
-	var _DimensionSortableComponent = __webpack_require__(917);
+	var _DimensionSortableComponent = __webpack_require__(918);
 
 	var _DimensionSortableComponent2 = _interopRequireDefault(_DimensionSortableComponent);
 
@@ -6386,7 +6386,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 908:
+/***/ 909:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6401,7 +6401,7 @@ webpackJsonp([0],{
 
 	var _core = __webpack_require__(329);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -6546,7 +6546,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 909:
+/***/ 910:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6573,19 +6573,19 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _layout = __webpack_require__(791);
+	var _layout = __webpack_require__(792);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(888);
 
-	var _DimensionComponentHelper = __webpack_require__(910);
+	var _DimensionComponentHelper = __webpack_require__(911);
 
 	var _DimensionComponentHelper2 = _interopRequireDefault(_DimensionComponentHelper);
 
-	var _DimensionSortComponent = __webpack_require__(911);
+	var _DimensionSortComponent = __webpack_require__(912);
 
 	var _DimensionSortComponent2 = _interopRequireDefault(_DimensionSortComponent);
 
@@ -6745,7 +6745,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 910:
+/***/ 911:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6758,7 +6758,7 @@ webpackJsonp([0],{
 
 	var _core = __webpack_require__(329);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -6808,7 +6808,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 911:
+/***/ 912:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6835,15 +6835,15 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _layout = __webpack_require__(791);
+	var _layout = __webpack_require__(792);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(888);
 
-	var _DimensionSortComponentHelper = __webpack_require__(912);
+	var _DimensionSortComponentHelper = __webpack_require__(913);
 
 	var _DimensionSortComponentHelper2 = _interopRequireDefault(_DimensionSortComponentHelper);
 
@@ -6942,7 +6942,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 912:
+/***/ 913:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6955,7 +6955,7 @@ webpackJsonp([0],{
 
 	var _core = __webpack_require__(329);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -7017,7 +7017,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 913:
+/***/ 914:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7044,19 +7044,19 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _layout = __webpack_require__(791);
+	var _layout = __webpack_require__(792);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(888);
 
-	var _TargetComponentHelper = __webpack_require__(914);
+	var _TargetComponentHelper = __webpack_require__(915);
 
 	var _TargetComponentHelper2 = _interopRequireDefault(_TargetComponentHelper);
 
-	var _TargetSortComponent = __webpack_require__(915);
+	var _TargetSortComponent = __webpack_require__(916);
 
 	var _TargetSortComponent2 = _interopRequireDefault(_TargetSortComponent);
 
@@ -7205,7 +7205,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 914:
+/***/ 915:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7218,7 +7218,7 @@ webpackJsonp([0],{
 
 	var _core = __webpack_require__(329);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -7268,7 +7268,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 915:
+/***/ 916:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7295,15 +7295,15 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _layout = __webpack_require__(791);
+	var _layout = __webpack_require__(792);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(888);
 
-	var _TargetSortComponentHelper = __webpack_require__(916);
+	var _TargetSortComponentHelper = __webpack_require__(917);
 
 	var _TargetSortComponentHelper2 = _interopRequireDefault(_TargetSortComponentHelper);
 
@@ -7391,7 +7391,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 916:
+/***/ 917:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7404,7 +7404,7 @@ webpackJsonp([0],{
 
 	var _core = __webpack_require__(329);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -7438,7 +7438,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 917:
+/***/ 918:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7465,15 +7465,15 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _layout = __webpack_require__(791);
+	var _layout = __webpack_require__(792);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(888);
 
-	var _DimensionComponentHelper = __webpack_require__(910);
+	var _DimensionComponentHelper = __webpack_require__(911);
 
 	var _DimensionComponentHelper2 = _interopRequireDefault(_DimensionComponentHelper);
 
@@ -7593,7 +7593,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 918:
+/***/ 919:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7622,19 +7622,19 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _layout = __webpack_require__(791);
+	var _layout = __webpack_require__(792);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(888);
 
-	var _TableComponent = __webpack_require__(919);
+	var _TableComponent = __webpack_require__(920);
 
 	var _TableComponent2 = _interopRequireDefault(_TableComponent);
 
-	var _SettingsComponent = __webpack_require__(907);
+	var _SettingsComponent = __webpack_require__(908);
 
 	var _SettingsComponent2 = _interopRequireDefault(_SettingsComponent);
 
@@ -7746,7 +7746,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 919:
+/***/ 920:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7775,25 +7775,25 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(888);
 
-	var _TableComponentHelper = __webpack_require__(920);
+	var _TableComponentHelper = __webpack_require__(921);
 
 	var _TableComponentHelper2 = _interopRequireDefault(_TableComponentHelper);
 
-	var _TableComponentWidthHelper = __webpack_require__(921);
+	var _TableComponentWidthHelper = __webpack_require__(922);
 
 	var _TableComponentWidthHelper2 = _interopRequireDefault(_TableComponentWidthHelper);
 
-	var _TableCell = __webpack_require__(922);
+	var _TableCell = __webpack_require__(923);
 
 	var _TableCell2 = _interopRequireDefault(_TableCell);
 
-	var _TableHeader = __webpack_require__(923);
+	var _TableHeader = __webpack_require__(924);
 
 	var _TableHeader2 = _interopRequireDefault(_TableHeader);
 
@@ -7940,7 +7940,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 920:
+/***/ 921:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7953,7 +7953,7 @@ webpackJsonp([0],{
 
 	var _core = __webpack_require__(329);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -8086,7 +8086,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 921:
+/***/ 922:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8242,7 +8242,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 922:
+/***/ 923:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8267,11 +8267,11 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(888);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8348,7 +8348,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 923:
+/***/ 924:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8373,11 +8373,11 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(888);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8450,7 +8450,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 924:
+/***/ 925:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8479,19 +8479,19 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _layout = __webpack_require__(791);
+	var _layout = __webpack_require__(792);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(888);
 
-	var _DetailTableComponent = __webpack_require__(925);
+	var _DetailTableComponent = __webpack_require__(926);
 
 	var _DetailTableComponent2 = _interopRequireDefault(_DetailTableComponent);
 
-	var _SettingsComponent = __webpack_require__(907);
+	var _SettingsComponent = __webpack_require__(908);
 
 	var _SettingsComponent2 = _interopRequireDefault(_SettingsComponent);
 
@@ -8603,7 +8603,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 925:
+/***/ 926:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8632,27 +8632,27 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
-	var _layout = __webpack_require__(791);
+	var _layout = __webpack_require__(792);
 
-	var _widgets = __webpack_require__(887);
+	var _widgets = __webpack_require__(888);
 
-	var _DetailTableComponentHelper = __webpack_require__(926);
+	var _DetailTableComponentHelper = __webpack_require__(927);
 
 	var _DetailTableComponentHelper2 = _interopRequireDefault(_DetailTableComponentHelper);
 
-	var _TableComponentWidthHelper = __webpack_require__(921);
+	var _TableComponentWidthHelper = __webpack_require__(922);
 
 	var _TableComponentWidthHelper2 = _interopRequireDefault(_TableComponentWidthHelper);
 
-	var _TableCell = __webpack_require__(922);
+	var _TableCell = __webpack_require__(923);
 
 	var _TableCell2 = _interopRequireDefault(_TableCell);
 
-	var _TableHeader = __webpack_require__(923);
+	var _TableHeader = __webpack_require__(924);
 
 	var _TableHeader2 = _interopRequireDefault(_TableHeader);
 
@@ -8787,7 +8787,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 926:
+/***/ 927:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8800,7 +8800,7 @@ webpackJsonp([0],{
 
 	var _core = __webpack_require__(329);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -8869,7 +8869,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 927:
+/***/ 928:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8898,9 +8898,9 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8982,7 +8982,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 928:
+/***/ 929:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9009,9 +9009,9 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9085,7 +9085,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 929:
+/***/ 930:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9112,9 +9112,9 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(773);
+	var _data = __webpack_require__(774);
 
-	var _base = __webpack_require__(803);
+	var _base = __webpack_require__(804);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9281,16 +9281,16 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 930:
+/***/ 931:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(931);
+	var content = __webpack_require__(932);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(628)(content, {});
+	var update = __webpack_require__(629)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -9308,10 +9308,10 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 931:
+/***/ 932:
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(627)();
+	exports = module.exports = __webpack_require__(628)();
 	// imports
 
 
@@ -9323,16 +9323,16 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 932:
+/***/ 933:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(933);
+	var content = __webpack_require__(934);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(628)(content, {});
+	var update = __webpack_require__(629)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -9350,10 +9350,10 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 933:
+/***/ 934:
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(627)();
+	exports = module.exports = __webpack_require__(628)();
 	// imports
 
 
@@ -9365,16 +9365,16 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 934:
+/***/ 935:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(935);
+	var content = __webpack_require__(936);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(628)(content, {});
+	var update = __webpack_require__(629)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -9392,10 +9392,10 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 935:
+/***/ 936:
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(627)();
+	exports = module.exports = __webpack_require__(628)();
 	// imports
 
 
@@ -9407,16 +9407,16 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 936:
+/***/ 937:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(937);
+	var content = __webpack_require__(938);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(628)(content, {});
+	var update = __webpack_require__(629)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -9434,10 +9434,10 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 937:
+/***/ 938:
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(627)();
+	exports = module.exports = __webpack_require__(628)();
 	// imports
 
 
@@ -9449,16 +9449,16 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 938:
+/***/ 939:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(939);
+	var content = __webpack_require__(940);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(628)(content, {});
+	var update = __webpack_require__(629)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -9476,10 +9476,10 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 939:
+/***/ 940:
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(627)();
+	exports = module.exports = __webpack_require__(628)();
 	// imports
 
 
@@ -9491,16 +9491,16 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 940:
+/***/ 941:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(941);
+	var content = __webpack_require__(942);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(628)(content, {});
+	var update = __webpack_require__(629)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -9518,10 +9518,10 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 941:
+/***/ 942:
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(627)();
+	exports = module.exports = __webpack_require__(628)();
 	// imports
 
 

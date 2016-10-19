@@ -7,10 +7,6 @@
  */
 BI.Arrangement = BI.inherit(BI.Widget, {
 
-    _const: {
-        perColumnSize: 100
-    },
-
     _defaultConfig: function () {
         return BI.extend(BI.Arrangement.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-arrangement",
@@ -2307,6 +2303,10 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                 break;
         }
         this.resize();
+    },
+
+    scrollTo: function (top) {
+        this.scrollContainer.element.scrollTop(top);
     },
 
     zoom: function (ratio) {
