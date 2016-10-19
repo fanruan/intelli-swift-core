@@ -158,9 +158,10 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
         }
         while (rValueIterator.hasNext()){
             ValuesAndGVI rValuesAndGVI = rValueIterator.next();
-            if (rValuesAndGVI.compareTo(lValuesAndGVI, comparators) < 0){
-                index = writeROneGroup(travel, lti, rti, rLen, lLeftCount, index, lValuesAndGVI.gvi, null);
-            } else if (rValuesAndGVI.compareTo(lValuesAndGVI, comparators) == 0){
+            int result = rValuesAndGVI.compareTo(lValuesAndGVI, comparators);
+            if (result < 0){
+                index = writeROneGroup(travel, lti, rti, rLen, lLeftCount, index, null, rValuesAndGVI.gvi);
+            } else if (result == 0){
                 index = writeROneGroup(travel, lti, rti, rLen, lLeftCount, index, lValuesAndGVI.gvi, rValuesAndGVI.gvi);
             } else {
                 while (rValuesAndGVI.compareTo(lValuesAndGVI, comparators) > 0){
@@ -168,7 +169,8 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
                 }
                 if (rValuesAndGVI.compareTo(lValuesAndGVI, comparators) == 0){
                     index = writeROneGroup(travel, lti, rti, rLen, lLeftCount, index, lValuesAndGVI.gvi, rValuesAndGVI.gvi);
-                    lValuesAndGVI = lValueIterator.next();
+                } else {
+                    index = writeROneGroup(travel, lti, rti, rLen, lLeftCount, index, null, rValuesAndGVI.gvi);
                 }
             }
         }
@@ -239,9 +241,10 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
         }
         while (lValueIterator.hasNext()){
             ValuesAndGVI lValuesAndGVI = lValueIterator.next();
-            if (lValuesAndGVI.compareTo(rValuesAndGVI, comparators) < 0 && !nullContinue){
+            int result = lValuesAndGVI.compareTo(rValuesAndGVI, comparators);
+            if (result < 0 && !nullContinue){
                 index = writeOneGroup(travel, lti, rti, lLen, index, lValuesAndGVI.gvi, null);
-            } else if (lValuesAndGVI.compareTo(rValuesAndGVI, comparators) == 0){
+            } else if (result == 0){
                 index = writeOneGroup(travel, lti, rti, lLen, index, lValuesAndGVI.gvi, rValuesAndGVI.gvi);
             } else {
                 if (writeLeft){
@@ -255,7 +258,8 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
                 }
                 if (lValuesAndGVI.compareTo(rValuesAndGVI, comparators) == 0){
                     index = writeOneGroup(travel, lti, rti, lLen, index, lValuesAndGVI.gvi, rValuesAndGVI.gvi);
-                    rValuesAndGVI = rValueIterator.next();
+                } else {
+                    index = writeOneGroup(travel, lti, rti, lLen, index, lValuesAndGVI.gvi, null);
                 }
             }
         }
