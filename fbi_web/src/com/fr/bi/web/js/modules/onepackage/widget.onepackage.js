@@ -326,7 +326,6 @@ BI.OnePackage = BI.inherit(BI.Widget, {
 
     _refreshEmptyTip: function () {
         if (BI.isEmptyArray(this.model.getTables())) {
-            this._onClickSelectTable();
             this.emptyTip.setVisible(true);
             return;
         }

@@ -34,7 +34,7 @@ BI.ComplexDimensionRegion = BI.inherit(BI.Widget, {
             vgap: this.constants.REGION_DIMENSION_GAP
         });
         this.sinlgeRegion.element.droppable({
-            accept: ".select-data-level0-item-button, .select-date-level1-item-button",
+            accept: ".select-data-level0-item-button, .select-data-level1-item-button",
             tolerance: "pointer",
             drop: function (event, ui) {
                 BI.isNotNull(self.dropArea) && self.dropArea.destroy();

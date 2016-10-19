@@ -87,7 +87,7 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
         });
 
         this.center.element.droppable({
-            accept: ".select-data-level0-item-button, .select-date-level1-item-button",
+            accept: ".select-data-level0-item-button, .select-data-level1-item-button",
             tolerance: "pointer",
             drop: function (event, ui) {
                 BI.isNotNull(self.dropArea) && self.dropArea.destroy();
