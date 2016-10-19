@@ -169,7 +169,7 @@ BIShow.TreeLabelView = BI.inherit(BI.View, {
             this._refreshLayout();
         }
         if (BI.has(changed, "value") || BI.has(changed, "dimensions")) {
-            BI.Utils.broadcastAllWidgets2Refresh();
+            BI.Utils.broadcastAllWidgets2Refresh(false, this.model.get("id"));
         }
     },
 

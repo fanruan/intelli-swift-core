@@ -183,6 +183,9 @@ BI.RelationPane = BI.inherit(BI.Widget, {
     },
 
     _checkAllRelationIsMatchingValid: function(items){
+        if(items.length === 0){
+            return true;
+        }
         return BI.isNotNull(BI.find(items, function(idx, item){
             return BI.isNotNull(item.relationType);
         }))

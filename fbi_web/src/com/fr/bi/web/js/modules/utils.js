@@ -2785,11 +2785,11 @@
                             var tempRegionType = self.getRegionTypeByDimensionID(drill.dId);
                             var dIndex = widget.view[drillRegionType].indexOf(drId);
                             BI.remove(widget.view[tempRegionType], drill.dId);
-                            if (drillRegionType === tempRegionType) {
+                            // if (drillRegionType === tempRegionType) {
                                 widget.view[drillRegionType].splice(dIndex, 0, drill.dId);
-                            } else {
-                                widget.view[drillRegionType].push(drill.dId);
-                            }
+                            // } else {
+                            //     widget.view[drillRegionType].push(drill.dId);
+                            // }
                         }
                         BI.each(drArray[i].values, function (i, v) {
                             var filterValue = parseSimpleFilter(v);
@@ -2902,45 +2902,9 @@
                 parseFilter(filter)
             });
 
-            //标红维度的处理
-            var dIds = this.getAllDimDimensionIDs(wid);
-            var tIds = this.getAllTargetDimensionIDs(wid);
-            BI.each(dIds, function(idx, dId){
-                var dimensionMap = self.getDimensionMapByDimensionID(dId);
-                var valid = true;
-                BI.any(tIds, function(idx, tId){
-                    if(!self.isCalculateTargetByDimensionID(tId)){
-                        //维度和某个指标之间没有设置路径
-                        if(!BI.has(dimensionMap, tId)){
-                            valid = false;
-                            return true;
-                        }else{
-                            var targetRelation = dimensionMap[tId].target_relation;
-                            BI.any(targetRelation, function(id, path){
-                                var pId = self.getFirstRelationPrimaryIdFromRelations(path);
-                                var fId = self.getLastRelationForeignIdFromRelations(path);
-                                var paths = self.getPathsFromFieldAToFieldB(pId, fId);
-                                if(!BI.deepContains(paths, path)){
-                                    //维度和某个指标之间设置了路径但是路径在配置处被删了
-                                    if(paths.length === 1){
-                                        widget.dimensions[dId].dimension_map[tId].target_relation.length = id;
-                                        widget.dimensions[dId].dimension_map[tId].target_relation.push(paths[0]);
-                                    }else{
-                                        valid = false;
-                                        return true;
-                                    }
-                                }
-                            })
-                        }
-                    }
-                });
-                if(valid === false){
-                    widget.dimensions[dId].used = false;
-                }
-            });
-
             widget.filter = {filter_type: BICst.FILTER_TYPE.AND, filter_value: filterValues};
             widget.real_data = true;
+
             return widget;
         },
 
@@ -3003,13 +2967,15 @@
         /**
          * 组件与表的关系
          */
-        broadcastAllWidgets2Refresh: function (force) {
+        broadcastAllWidgets2Refresh: function (force, wId) {
             var self = this;
             var allWidgetIds = this.getAllWidgetIDs();
             if (force === true || this.isQueryControlExist() === false) {
-                BI.each(allWidgetIds, function (i, wId) {
-                    if (!self.isControlWidgetByWidgetId(wId) || self.isRealTimeControlWidgetByWidgetId(wId)) {
-                        BI.Broadcasts.send(BICst.BROADCAST.REFRESH_PREFIX + wId);
+                BI.each(allWidgetIds, function (i, widgetId) {
+                    if (!self.isControlWidgetByWidgetId(widgetId) || self.isRealTimeControlWidgetByWidgetId(widgetId)) {
+                        if(BI.isNull(wId) || wId !== widgetId) {
+                            BI.Broadcasts.send(BICst.BROADCAST.REFRESH_PREFIX + widgetId);
+                        }
                     }
                 });
             }
