@@ -42,6 +42,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         });
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
             self.model.set("clicked", {});
+            self._refreshTableAndFilter();
         });
 
         //全局样式的修改
