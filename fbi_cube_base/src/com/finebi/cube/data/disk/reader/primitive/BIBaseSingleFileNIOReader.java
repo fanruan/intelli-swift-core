@@ -31,7 +31,6 @@ public abstract class BIBaseSingleFileNIOReader implements ICubePrimitiveReader 
         this.baseFile = cacheFile;
         this.isValid = true;
         readerHandler = UUID.randomUUID().toString();
-        initBuffer();
     }
 
     @Override
@@ -46,7 +45,7 @@ public abstract class BIBaseSingleFileNIOReader implements ICubePrimitiveReader 
 
     protected abstract void releaseChild();
 
-    private void initBuffer() {
+    protected void initBuffer() {
         /**
          * 资源不可用，需要初始化，释放读锁，加写锁。
          */

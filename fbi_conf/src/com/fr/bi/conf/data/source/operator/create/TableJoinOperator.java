@@ -227,7 +227,6 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
 
 
     private int writeIndex(Traversal<BIDataValue> travel, ICubeTableService lti, ICubeTableService rti, boolean nullContinue, boolean writeLeft) {
-        long t = System.currentTimeMillis();
         int lLen = getColumnSize(true);
         int index = 0;
         ValueIterator lValueIterator = new ValueIterator(lti, left);
@@ -260,7 +259,6 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
                 }
             }
         }
-        System.out.println(System.currentTimeMillis() - t);
         return writeLeft ? writeLeftIndex(rTotalGvi, rti, lLen, index, travel) : index;
     }
 

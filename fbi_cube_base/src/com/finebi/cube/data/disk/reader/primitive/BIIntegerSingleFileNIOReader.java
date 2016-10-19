@@ -22,6 +22,8 @@ public class BIIntegerSingleFileNIOReader extends BIBaseSingleFileNIOReader impl
             return intBuffer.get((int)filePosition);
         } catch (IndexOutOfBoundsException e) {
             throw new RuntimeException("the file is: "+baseFile , e);
+        } catch (NullPointerException e){
+            throw new RuntimeException("the file is released : "+baseFile , e);
         }
     }
 
@@ -31,7 +33,7 @@ public class BIIntegerSingleFileNIOReader extends BIBaseSingleFileNIOReader impl
         try {
             if (intBuffer != null) {
                 intBuffer.clear();
-//                intBuffer = null;
+                intBuffer = null;
             }
         } finally {
             readWriteLock.writeLock().unlock();

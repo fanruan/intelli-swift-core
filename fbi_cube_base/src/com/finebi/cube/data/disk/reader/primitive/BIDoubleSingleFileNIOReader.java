@@ -4,7 +4,6 @@ import com.finebi.cube.data.input.primitive.ICubeDoubleReader;
 import com.finebi.cube.exception.BIResourceInvalidException;
 
 import java.io.File;
-import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
 import java.nio.MappedByteBuffer;
 
@@ -23,6 +22,8 @@ public class BIDoubleSingleFileNIOReader extends BIBaseSingleFileNIOReader imple
             return doubleBuffer.get((int)filePosition);
         } catch (IndexOutOfBoundsException e) {
             throw new RuntimeException("the file is: "+baseFile , e);
+        } catch (NullPointerException e){
+            throw new RuntimeException("the file is released : "+baseFile , e);
         }
     }
 
@@ -32,7 +33,7 @@ public class BIDoubleSingleFileNIOReader extends BIBaseSingleFileNIOReader imple
         try {
             if (doubleBuffer != null) {
                 doubleBuffer.clear();
-//                doubleBuffer = null;
+                doubleBuffer = null;
             }
         } finally {
             readWriteLock.writeLock().unlock();

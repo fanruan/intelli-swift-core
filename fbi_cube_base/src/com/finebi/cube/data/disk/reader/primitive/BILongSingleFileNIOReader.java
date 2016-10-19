@@ -22,6 +22,8 @@ public class BILongSingleFileNIOReader extends BIBaseSingleFileNIOReader impleme
             return longBuffer.get((int)filePosition);
         } catch (IndexOutOfBoundsException e) {
             throw new RuntimeException("the file is: "+baseFile , e);
+        } catch (NullPointerException e){
+            throw new RuntimeException("the file is released : "+baseFile , e);
         }
     }
 
@@ -31,7 +33,7 @@ public class BILongSingleFileNIOReader extends BIBaseSingleFileNIOReader impleme
         try {
             if (longBuffer != null) {
                 longBuffer.clear();
-//                longBuffer = null;
+                longBuffer = null;
             }
         } finally {
             readWriteLock.writeLock().unlock();

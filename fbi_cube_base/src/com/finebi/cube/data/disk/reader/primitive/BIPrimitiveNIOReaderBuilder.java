@@ -14,6 +14,6 @@ import java.io.File;
  */
 public abstract class BIPrimitiveNIOReaderBuilder<T extends ICubePrimitiveReader> extends BIBasicNIOReaderBuilder<T> {
     boolean isSingleFile(File file){
-        return file!= null && file.exists() && file.length() < NIOConstant.SINGLE_FILE_LENGTH;
+        return file!= null && file.exists() && file.length() < NIOConstant.SINGLE_FILE_LENGTH && file.length() > 0;
     }
 }
