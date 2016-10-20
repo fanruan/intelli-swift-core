@@ -183,7 +183,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, */{
                     type: "bi.center_adapt",
                     items: [this.dimensionColor]
-                },/* {
+                }/* {
                     type: "bi.center_adapt",
                     items: [this.addGradientButton],
                     lgap:15
@@ -191,7 +191,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.center_adapt",
                     items: [this.addConditionButton],
                     lgap: 15
-                }, */{
+                }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Total_Style"),
                     cls: "attr-names",
@@ -202,7 +202,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                         items: [this.bubbleStyleGroup]
                     },
                     lgap: constant.SIMPLE_H_GAP
-                }/*, this.fixedColorSetting, this.gradientColorSetting*/], {
+                }, this.fixedColorSetting, this.gradientColorSetting*/], {
                     height: constant.SINGLE_LINE_HEIGHT
                 })
             }]

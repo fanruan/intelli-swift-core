@@ -68,7 +68,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
                         items: [this.colorSelect]
                     },
                     lgap: constant.SIMPLE_H_GAP
-                }, {
+                }/*, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Total_Style"),
                     cls: "attr-names",
@@ -79,7 +79,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
                         items: [this.bubbleStyleGroup]
                     },
                     lgap: constant.SIMPLE_H_GAP
-                }], {
+                }*/], {
                     height: constant.SINGLE_LINE_HEIGHT
                 })
             }]

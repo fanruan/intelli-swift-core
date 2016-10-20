@@ -46,7 +46,7 @@ BI.CompareAxisChart = BI.inherit(BI.AbstractChart, {
     _formatConfig: function(config, items){
         var self = this, o = this.options;
         config.colors = this.config.chart_color;
-        config.style = formatChartStyle();
+        config.plotOptions.style = formatChartStyle();
         formatChartLineStyle();
         formatCordon();
         this.formatChartLegend(config, this.config.chart_legend);
