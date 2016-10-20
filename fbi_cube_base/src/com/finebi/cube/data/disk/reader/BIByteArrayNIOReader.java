@@ -114,4 +114,20 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
                 lengthReader.isForceReleased() ||
                 contentReader.isForceReleased();
     }
+
+    @Override
+    public byte getFirstByte(int row) throws BIResourceInvalidException {
+        long start;
+        try {
+            start = positionReader.getSpecificValue(row);
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().info(BIStringUtils.append(
+                    e.getMessage(),
+                    "\n" + "retry again!"
+            ));
+            releaseBuffers();
+            start = positionReader.getSpecificValue(row);
+        }
+        return contentReader.getSpecificValue(start);
+    }
 }
