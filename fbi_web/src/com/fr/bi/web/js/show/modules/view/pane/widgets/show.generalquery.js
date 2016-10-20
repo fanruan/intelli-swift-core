@@ -113,7 +113,22 @@ BIShow.GeneralQueryView = BI.inherit(BI.View, {
     },
 
     _resetValue: function () {
-        this.model.set("value", []);
+        var value = this.model.get("value");
+
+        function resetValue(filters) {
+            BI.each(filters, function (i, filter) {
+                var fType = filter.filter_type;
+                var fValue = filter.filter_value;
+                if (fType === BICst.FILTER_TYPE.AND || fType === BICst.FILTER_TYPE.OR) {
+                    resetValue(fValue);
+                    return;
+                }
+                delete filter.filter_value;
+            });
+        }
+
+        resetValue(value);
+        this.model.set("value", value);
         this.refresh();
     },
 
