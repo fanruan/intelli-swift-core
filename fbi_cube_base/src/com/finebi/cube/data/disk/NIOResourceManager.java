@@ -51,7 +51,7 @@ public class NIOResourceManager implements ICubePrimitiveResourceDiscovery {
             if (canGetReader()) {
                 return readerHandlerManager.queryHandler();
             } else {
-                BILoggerFactory.getLogger().warn("can't get reader: " + resourceLocation.getAbsolutePath());
+                BILoggerFactory.getLogger().debug("can't get reader: " + resourceLocation.getAbsolutePath());
                 throw new RuntimeException("Writing,.Current can't get the resource reader");
             }
         }
@@ -69,8 +69,8 @@ public class NIOResourceManager implements ICubePrimitiveResourceDiscovery {
             if (canGetWriter()) {
                 return writerHandlerManager.queryHandler();
             } else {
-                BILoggerFactory.getLogger().warn("can't get writer: " + resourceLocation.getAbsolutePath());
-                BILoggerFactory.getLogger().warn("force release reader: " + resourceLocation.getAbsolutePath());
+                BILoggerFactory.getLogger().debug("can't get writer: " + resourceLocation.getAbsolutePath());
+                BILoggerFactory.getLogger().debug("force release reader: " + resourceLocation.getAbsolutePath());
 //                throw new RuntimeException("Writing or reading ,Current can't get the resource writer");
                 readerHandlerManager.forceReleaseHandler();
                 return writerHandlerManager.queryHandler();
