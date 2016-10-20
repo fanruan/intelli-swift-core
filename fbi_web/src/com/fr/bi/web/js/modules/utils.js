@@ -109,6 +109,14 @@
             return Data.SharingPool.get("reportId");
         },
 
+        getLayoutType: function () {
+            return Data.SharingPool.get("layoutType") || BICst.DASHBOARD_LAYOUT_GRID;
+        },
+
+        getLayoutRatio: function () {
+            return Data.SharingPool.get("layoutRatio");
+        },
+
         getWidgetsByTemplateId: function (tId, callback) {
             if (tId === this.getCurrentTemplateId()) {
                 callback(Data.SharingPool.cat("widgets"));
@@ -1200,7 +1208,7 @@
             var wt = this.getWidgetTypeByID(wid);
             var colors = this.getWSChartColorByID(wid);
             var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[0] : BICst.DEFAULT_CHART_SETTING.line_color;
-            labelSetting.text_style = BI.extend(chartFont, {"color" : color}, labelSetting.text_style);
+            labelSetting.text_style = BI.extend(chartFont, {"color": color}, labelSetting.text_style);
             labelSetting.text_direction = labelSetting.text_direction || 0;
             return labelSetting;
         },
@@ -1227,7 +1235,7 @@
             var wt = this.getWidgetTypeByID(wid);
             var colors = this.getWSChartColorByID(wid);
             var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[1] : BICst.DEFAULT_CHART_SETTING.line_color;
-            labelSetting.text_style = BI.extend(chartFont, {"color" : color}, labelSetting.text_style);
+            labelSetting.text_style = BI.extend(chartFont, {"color": color}, labelSetting.text_style);
             labelSetting.text_direction = labelSetting.text_direction || 0;
             return labelSetting;
         },
@@ -1254,7 +1262,7 @@
             var wt = this.getWidgetTypeByID(wid);
             var colors = this.getWSChartColorByID(wid);
             var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[2] : BICst.DEFAULT_CHART_SETTING.line_color;
-            labelSetting.text_style = BI.extend(chartFont, {"color" : color}, labelSetting.text_style);
+            labelSetting.text_style = BI.extend(chartFont, {"color": color}, labelSetting.text_style);
             labelSetting.text_direction = labelSetting.text_direction || 0;
             return labelSetting;
         },
@@ -2936,43 +2944,43 @@
 
             //标红维度的处理
             var dIds = this.getAllDimDimensionIDs(wid);
-            BI.each(dIds, function(idx, dId){
+            BI.each(dIds, function (idx, dId) {
                 var dimensionMap = self.getDimensionMapByDimensionID(dId);
                 var valid = true;
                 //树控件和明细表
-                if(widget.type === BICst.WIDGET.DETAIL || widget.type === BICst.WIDGET.TREE){
-                    BI.each(dimensionMap, function(tableId, obj){
+                if (widget.type === BICst.WIDGET.DETAIL || widget.type === BICst.WIDGET.TREE) {
+                    BI.each(dimensionMap, function (tableId, obj) {
                         var targetRelation = obj.target_relation;
                         var pId = self.getFirstRelationPrimaryIdFromRelations(targetRelation);
                         var fId = self.getLastRelationForeignIdFromRelations(targetRelation);
                         var paths = self.getPathsFromFieldAToFieldB(pId, fId);
-                        if(!BI.deepContains(paths, targetRelation)){
+                        if (!BI.deepContains(paths, targetRelation)) {
                             //维度和某个指标之间设置了路径但是路径在配置处被删了
-                            if(paths.length >= 1){
+                            if (paths.length >= 1) {
                                 widget.dimensions[dId].dimension_map[tableId].target_relation = paths[0];
                             }
                         }
                     })
-                }else{
+                } else {
                     var tIds = self.getAllTargetDimensionIDs(wid);
-                    BI.any(tIds, function(idx, tId){
-                        if(!self.isCalculateTargetByDimensionID(tId)){
+                    BI.any(tIds, function (idx, tId) {
+                        if (!self.isCalculateTargetByDimensionID(tId)) {
                             //维度和某个指标之间没有设置路径
-                            if(!BI.has(dimensionMap, tId)){
+                            if (!BI.has(dimensionMap, tId)) {
                                 valid = false;
                                 return true;
-                            }else{
+                            } else {
                                 var targetRelation = dimensionMap[tId].target_relation;
-                                BI.any(targetRelation, function(id, path){
+                                BI.any(targetRelation, function (id, path) {
                                     var pId = self.getFirstRelationPrimaryIdFromRelations(path);
                                     var fId = self.getLastRelationForeignIdFromRelations(path);
                                     var paths = self.getPathsFromFieldAToFieldB(pId, fId);
-                                    if(!BI.deepContains(paths, path)){
+                                    if (!BI.deepContains(paths, path)) {
                                         //维度和某个指标之间设置了路径但是路径在配置处被删了
-                                        if(paths.length === 1){
+                                        if (paths.length === 1) {
                                             widget.dimensions[dId].dimension_map[tId].target_relation.length = id;
                                             widget.dimensions[dId].dimension_map[tId].target_relation.push(paths[0]);
-                                        }else{
+                                        } else {
                                             valid = false;
                                             return true;
                                         }
@@ -2982,7 +2990,7 @@
                         }
                     });
                 }
-                if(valid === false){
+                if (valid === false) {
                     widget.dimensions[dId].used = false;
                 }
             });
