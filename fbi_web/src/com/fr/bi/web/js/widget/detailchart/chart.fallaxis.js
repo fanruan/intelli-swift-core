@@ -47,7 +47,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
         var self = this, o = this.options;
         var yTitle = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         config.colors = this.config.chart_color;
-        config.style = formatChartStyle();
+        config.plotOptions.style = formatChartStyle();
         formatCordon();
         config.legend.enabled = false;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
@@ -248,7 +248,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
                     return axis;
                 }),
                 stack: "stackedFall",
-                name: BI.UUID()
+                name: idx === 1 ? items[0].name : BI.UUID()
             };
         })];
     },

@@ -46,9 +46,9 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
 
 
     public void buildStructure() {
-        detailDataService.buildStructure();
-        groupDataService.buildStructure();
-        indexDataService.buildStructure();
+//        detailDataService.buildStructure();
+//        groupDataService.buildStructure();
+//        indexDataService.buildStructure();
     }
 
     @Override
@@ -203,6 +203,7 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
         groupDataService.clear();
         cubeVersion.clear();
         cubeColumnPositionOfGroupService.clear();
+        relationManagerService.clear();
     }
 
     @Override
@@ -214,6 +215,17 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
         cubeColumnPositionOfGroupService.forceReleaseWriter();
         relationManagerService.forceReleaseWriter();
     }
+
+    @Override
+    public void forceReleaseReader() {
+        detailDataService.forceReleaseReader();
+        indexDataService.forceReleaseReader();
+        groupDataService.forceReleaseReader();
+        cubeVersion.forceReleaseReader();
+        cubeColumnPositionOfGroupService.forceReleaseReader();
+        relationManagerService.forceReleaseReader();
+    }
+
 
     @Override
     public T getOriginalObjectValueByRow(int rowNumber) {

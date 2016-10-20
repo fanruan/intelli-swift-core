@@ -86,7 +86,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                         items: [this.colorSelect]
                     },
                     lgap: constant.SIMPLE_H_GAP
-                }, {
+                }, /*{
                     type: "bi.label",
                     text: BI.i18nText("BI-Table_Style"),
                     cls: "attr-names",
@@ -97,7 +97,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                         items: [this.chartStyleGroup]
                     },
                     lgap: constant.SIMPLE_H_GAP
-                }, {
+                }, */{
                     type: "bi.label",
                     text: BI.i18nText("BI-Type"),
                     cls: "attr-names",
