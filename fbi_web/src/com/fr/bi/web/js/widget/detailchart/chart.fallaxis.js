@@ -172,7 +172,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
                     }
                 })
             });
-            // config.plotOptions.tooltip.formatter.valueFormat = formatter;
+            config.plotOptions.tooltip.formatter.valueFormat = formatter;
         }
 
         function getXYAxisUnit(numberLevelType, position){
