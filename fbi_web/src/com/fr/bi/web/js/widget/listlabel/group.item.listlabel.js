@@ -106,6 +106,20 @@ BI.ListLabelItemGroup = BI.inherit(BI.ButtonGroup, {
         BI.ListLabelItemGroup.superclass.setValue.apply(this, arguments);
         this._checkBtnState();
         this._checkBtnStyle();
+        if (!arraysEqual(v, this.getValue())) {
+            this.fireEvent(BI.ButtonGroup.EVENT_CHANGE, this.buttons[0].getValue(), this.buttons[0]);
+        }
+        function arraysEqual (a1, a2) {     //仅考虑数值字符串等简单数据
+            if (a1.length !== a2.length) {
+                return false;
+            }
+            BI.each(a2, function (idx, data) {
+                if(a1.indexOf(data) === -1) {
+                    return false;
+                }
+            });
+            return true;
+        }
     }
 });
 
