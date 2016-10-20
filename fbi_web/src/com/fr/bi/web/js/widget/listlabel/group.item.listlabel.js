@@ -12,7 +12,7 @@ BI.ListLabelItemGroup = BI.inherit(BI.ButtonGroup, {
         BI.ListLabelItemGroup.superclass._init.apply(this, arguments);
         if (BI.isEmptyArray(this.getValue())) {
             BI.each(this.buttons, function (idx, button) {
-                if (button.getValue() === BICst.TREE_LIST_LABEL_ALL) {
+                if (button.getValue() === BICst.LIST_LABEL_TYPE.ALL) {
                     button.setSelected(true);
                 }
             });
@@ -42,8 +42,8 @@ BI.ListLabelItemGroup = BI.inherit(BI.ButtonGroup, {
                 if (type === BI.Events.CLICK) {
                     switch (o.chooseType) {
                         case BI.ButtonGroup.CHOOSE_TYPE_MULTI:
-                            if (btn.getValue() === BICst.TREE_LIST_LABEL_ALL) {
-                                self.setValue([BICst.TREE_LIST_LABEL_ALL]);
+                            if (btn.getValue() === BICst.LIST_LABEL_TYPE.ALL) {
+                                self.setValue([BICst.LIST_LABEL_TYPE.ALL]);
                             } else {
                                 self._checkBtnState();
                             }
@@ -72,7 +72,7 @@ BI.ListLabelItemGroup = BI.inherit(BI.ButtonGroup, {
         if (BI.isEmptyArray(this.getValue())) {
             this.buttons[0].setSelected(true);
             this.fireEvent(BI.ButtonGroup.EVENT_CHANGE, this.buttons[0].getValue(), this.buttons[0]);
-        } else if (this.getValue().length === 1 && BI.isEqual(this.getValue()[0], BICst.TREE_LIST_LABEL_ALL)) {
+        } else if (this.getValue().length === 1 && BI.isEqual(this.getValue()[0], BICst.LIST_LABEL_TYPE.ALL)) {
             this.buttons[0].setSelected(true);
         }
         else {

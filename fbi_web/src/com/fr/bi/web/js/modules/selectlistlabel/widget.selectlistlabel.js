@@ -52,13 +52,13 @@ BI.SelectListLabel = BI.inherit(BI.Widget, {
         if (v.type === 1) {
             this.listLabel.setValue(v.value);
         } else {
-            this.listLabel.setValue([BICst.TREE_LIST_LABEL_ALL]);
+            this.listLabel.setValue([BICst.LIST_LABEL_TYPE.ALL]);
         }
     },
 
     getValue: function () {
         var value = this.listLabel.getValue();
-        if (BI.contains(value, BICst.TREE_LIST_LABEL_ALL)) {
+        if (BI.contains(value, BICst.LIST_LABEL_TYPE.ALL)) {
             return {
                 type: 2,
                 value: []

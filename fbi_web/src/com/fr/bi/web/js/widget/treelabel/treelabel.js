@@ -113,11 +113,11 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         for (var i = floor + 1; i <= this.items.length - 1; i++) {
             var temp = [];
             var preItems = this.items[i - 1];
-            var preValues = values[i - 1] || [BICst.TREE_LIST_LABEL_ALL];
+            var preValues = values[i - 1] || [BICst.LIST_LABEL_TYPE.ALL];
             var preSelectedItems = [];
 
             if (i === floor + 1) {
-                if (BI.contains(preValues, BICst.TREE_LIST_LABEL_ALL)) {
+                if (BI.contains(preValues, BICst.LIST_LABEL_TYPE.ALL)) {
                     BI.each(preItems, function (idx, item) {
                         preSelectedItems = BI.concat(preSelectedItems, convertToItems(item));
                     });
@@ -129,7 +129,7 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
                     });
                 }
             } else {
-                if (BI.contains(preValues, BICst.TREE_LIST_LABEL_ALL)) {
+                if (BI.contains(preValues, BICst.LIST_LABEL_TYPE.ALL)) {
                     BI.each(result[i - floor - 2], function (idx, item) {
                         preSelectedItems = BI.concat(preSelectedItems, convertToItems(item));
                     });
@@ -254,7 +254,7 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
             }
         }
 
-        //if (BI.isNotEmptyArray(resultId) || BI.contains(op.value, BICst.TREE_LIST_LABEL_ALL)) {
+        //if (BI.isNotEmptyArray(resultId) || BI.contains(op.value, BICst.LIST_LABEL_TYPE.ALL)) {
         o.itemsCreator(op, function (value) {
             self._updateData(value.items);
             self._updateItems(floor);

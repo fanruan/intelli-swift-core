@@ -703,4 +703,6 @@ BICst.IMAGE_RESIZE_MODE = {
     STRETCH: 3
 };
 
-BICst.TREE_LIST_LABEL_ALL = "_*_";
+BICst.LIST_LABEL_TYPE = {
+    ALL: "_*_"
+};
