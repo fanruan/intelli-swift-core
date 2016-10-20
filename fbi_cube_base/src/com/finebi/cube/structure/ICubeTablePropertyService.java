@@ -27,7 +27,9 @@ public interface ICubeTablePropertyService extends Release, ICubeVersion {
 
     void recordRemovedList(int position, int value);
 
-    void recordLastTime();
+    void recordLastExecuteTime(long time);
+
+    void recordCurrentExecuteTime();
 
     void recordParentsTable(List<ITableKey> parentTables);
 
@@ -37,8 +39,9 @@ public interface ICubeTablePropertyService extends Release, ICubeVersion {
 
     IntArray getRemovedList();
 
-    Date getCubeLastTime();
+    Date getLastExecuteTime();
 
+    Date getCurrentExecuteTime();
 
     List<ICubeFieldSource> getFieldInfo();
 
@@ -56,7 +59,9 @@ public interface ICubeTablePropertyService extends Release, ICubeVersion {
 
     boolean isRemovedListAvailable();
 
-    boolean isCubeLastUpdateTimeAvailable();
+    boolean isLastExecuteTimeAvailable();
+
+    boolean isCurrentExecuteTimeAvailable();
 
     void buildStructure();
 }

@@ -25,4 +25,6 @@ public interface ICubePrimitiveReader extends CubeResourceRelease {
     void setHandlerReleaseHelper(NIOHandlerManager releaseHelper);
 
     void reSetValid(boolean isValid);
+
+    void releaseBuffer();
 }

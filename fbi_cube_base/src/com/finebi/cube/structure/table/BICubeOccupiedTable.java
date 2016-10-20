@@ -32,17 +32,21 @@ public class BICubeOccupiedTable implements CubeTableEntityService {
 
     }
 
-
-
     @Override
     public void recordRowCount(long rowCount) {
 
     }
 
     @Override
-    public void recordLastTime() {
+    public void recordLastExecuteTime(long time) {
 
     }
+
+    @Override
+    public void recordCurrentExecuteTime() {
+
+    }
+
 
     @Override
     public void recordRemovedLine(TreeSet<Integer> removedLine) {
@@ -111,7 +115,12 @@ public class BICubeOccupiedTable implements CubeTableEntityService {
     }
 
     @Override
-    public Date getCubeLastTime() {
+    public Date getLastExecuteTime() {
+        return null;
+    }
+
+    @Override
+    public Date getCurrentExecuteTime() {
         return null;
     }
 
@@ -141,7 +150,12 @@ public class BICubeOccupiedTable implements CubeTableEntityService {
     }
 
     @Override
-    public boolean isCubeLastTimeAvailable() {
+    public boolean isLastExecuteTimeAvailable() {
+        return false;
+    }
+
+    @Override
+    public boolean isCurrentExecuteTimeAvailable() {
         return false;
     }
 

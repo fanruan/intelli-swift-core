@@ -158,9 +158,10 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
         }
         while (rValueIterator.hasNext()){
             ValuesAndGVI rValuesAndGVI = rValueIterator.next();
-            if (rValuesAndGVI.compareTo(lValuesAndGVI, comparators) < 0){
-                index = writeROneGroup(travel, lti, rti, rLen, lLeftCount, index, lValuesAndGVI.gvi, null);
-            } else if (rValuesAndGVI.compareTo(lValuesAndGVI, comparators) == 0){
+            int result = rValuesAndGVI.compareTo(lValuesAndGVI, comparators);
+            if (result < 0){
+                index = writeROneGroup(travel, lti, rti, rLen, lLeftCount, index, null, rValuesAndGVI.gvi);
+            } else if (result == 0){
                 index = writeROneGroup(travel, lti, rti, rLen, lLeftCount, index, lValuesAndGVI.gvi, rValuesAndGVI.gvi);
             } else {
                 while (rValuesAndGVI.compareTo(lValuesAndGVI, comparators) > 0){
@@ -168,7 +169,8 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
                 }
                 if (rValuesAndGVI.compareTo(lValuesAndGVI, comparators) == 0){
                     index = writeROneGroup(travel, lti, rti, rLen, lLeftCount, index, lValuesAndGVI.gvi, rValuesAndGVI.gvi);
-                    lValuesAndGVI = lValueIterator.next();
+                } else {
+                    index = writeROneGroup(travel, lti, rti, rLen, lLeftCount, index, null, rValuesAndGVI.gvi);
                 }
             }
         }
@@ -227,7 +229,6 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
 
 
     private int writeIndex(Traversal<BIDataValue> travel, ICubeTableService lti, ICubeTableService rti, boolean nullContinue, boolean writeLeft) {
-        long t = System.currentTimeMillis();
         int lLen = getColumnSize(true);
         int index = 0;
         ValueIterator lValueIterator = new ValueIterator(lti, left);
@@ -240,27 +241,35 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
         }
         while (lValueIterator.hasNext()){
             ValuesAndGVI lValuesAndGVI = lValueIterator.next();
-            if (lValuesAndGVI.compareTo(rValuesAndGVI, comparators) < 0 && !nullContinue){
+            int result = lValuesAndGVI.compareTo(rValuesAndGVI, comparators);
+            if (result < 0 && !nullContinue){
                 index = writeOneGroup(travel, lti, rti, lLen, index, lValuesAndGVI.gvi, null);
-            } else if (lValuesAndGVI.compareTo(rValuesAndGVI, comparators) == 0){
+            } else if (result == 0){
                 index = writeOneGroup(travel, lti, rti, lLen, index, lValuesAndGVI.gvi, rValuesAndGVI.gvi);
+                rValuesAndGVI = rValueIterator.next();
             } else {
                 if (writeLeft){
                     rTotalGvi.or(rValuesAndGVI.gvi);
                 }
                 while (lValuesAndGVI.compareTo(rValuesAndGVI, comparators) > 0){
                     rValuesAndGVI = rValueIterator.next();
-                    if (writeLeft){
+                    if (writeLeft && lValuesAndGVI.compareTo(rValuesAndGVI, comparators) > 0){
                         rTotalGvi.or(rValuesAndGVI.gvi);
                     }
                 }
                 if (lValuesAndGVI.compareTo(rValuesAndGVI, comparators) == 0){
                     index = writeOneGroup(travel, lti, rti, lLen, index, lValuesAndGVI.gvi, rValuesAndGVI.gvi);
                     rValuesAndGVI = rValueIterator.next();
+                } else {
+                    index = writeOneGroup(travel, lti, rti, lLen, index, lValuesAndGVI.gvi, null);
                 }
             }
         }
-        System.out.println(System.currentTimeMillis() - t);
+        if (writeLeft){
+            while (rValueIterator.hasNext()){
+                rTotalGvi.or(rValueIterator.next().gvi);
+            }
+        }
         return writeLeft ? writeLeftIndex(rTotalGvi, rti, lLen, index, travel) : index;
     }
 
@@ -632,9 +641,8 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
     }
 
     private int writeLeftIndex(GroupValueIndex rTotalGvi, ICubeTableService rti, int llen, int index, Traversal<BIDataValue> travel) {
-        GroupValueIndex rLeft = rTotalGvi == null ? rti.getAllShowIndex() : rTotalGvi.NOT(rti.getRowCount()).AND(rti.getAllShowIndex());
         final IntList rLeftRows = new IntList();
-        rLeft.Traversal(new SingleRowTraversalAction() {
+        rTotalGvi.Traversal(new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int rowIndices) {
                 rLeftRows.add(rowIndices);

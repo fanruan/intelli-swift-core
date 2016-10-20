@@ -1,5 +1,6 @@
 package com.finebi.cube.data.disk.reader;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.input.ICubeByteArrayReader;
 import com.finebi.cube.data.input.primitive.ICubeByteReader;
 import com.finebi.cube.data.input.primitive.ICubeIntegerReader;
@@ -7,7 +8,7 @@ import com.finebi.cube.data.input.primitive.ICubeLongReader;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.constant.CubeConstant;
-import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 
 public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
 
@@ -26,8 +27,20 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
 
     @Override
     public byte[] getSpecificValue(final int row) throws BIResourceInvalidException {
-        long start = positionReader.getSpecificValue(row);
-        int size = lengthReader.getSpecificValue(row);
+        long start = 0;
+        int size = 0;
+        try {
+            start = positionReader.getSpecificValue(row);
+            size = lengthReader.getSpecificValue(row);
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().info(BIStringUtils.append(
+                    e.getMessage(),
+                    "\n" + "retry again!"
+            ));
+            releaseBuffers();
+            start = positionReader.getSpecificValue(row);
+            size = lengthReader.getSpecificValue(row);
+        }
         if (size == 0) {
             return new byte[]{};
         }
@@ -36,6 +49,11 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
             b[i] = contentReader.getSpecificValue(start + i);
         }
         return isNull(b) ? null : b;
+    }
+
+    private void releaseBuffers() {
+        positionReader.releaseBuffer();
+        lengthReader.releaseBuffer();
     }
 
     private boolean isNull(byte[] result) {
@@ -96,5 +114,21 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
         return positionReader.isForceReleased() ||
                 lengthReader.isForceReleased() ||
                 contentReader.isForceReleased();
+    }
+
+    @Override
+    public byte getFirstByte(int row) throws BIResourceInvalidException {
+        long start;
+        try {
+            start = positionReader.getSpecificValue(row);
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().info(BIStringUtils.append(
+                    e.getMessage(),
+                    "\n" + "retry again!"
+            ));
+            releaseBuffers();
+            start = positionReader.getSpecificValue(row);
+        }
+        return contentReader.getSpecificValue(start);
     }
 }

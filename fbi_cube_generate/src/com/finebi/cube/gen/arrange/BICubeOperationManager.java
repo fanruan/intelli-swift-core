@@ -30,7 +30,6 @@ import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.finebi.cube.utils.BICubeRelationUtils;
 import com.finebi.cube.utils.BITableKeyUtils;
-import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.data.source.ExcelTableSource;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.stable.constant.BIBaseConstant;
@@ -490,10 +489,7 @@ public class BICubeOperationManager {
         CubeTask currentTask = CubeGenerationManager.getCubeManager().getGeneratingTask(UserControl.getInstance().getSuperManagerID());
 /*若没有更新设置,按默认处理
 * 首次更新均为全局更新*/
-        ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
-        ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
-        Cube advancedCube = new BICube(resourceRetrievalService, discovery);
-        if (null == tableUpdateSetting || !(advancedCube.getCubeTableWriter(BITableKeyUtils.convert(tableSource)).isVersionAvailable() && advancedCube.getCubeTableWriter(BITableKeyUtils.convert(tableSource)).isCubeLastTimeAvailable())) {
+        if (null == tableUpdateSetting || !(BITableKeyUtils.isTableExisted(tableSource,BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID()))))) {
             return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
         }
         /*若设置为不随全局更新的话，那就不更新*/
@@ -506,8 +502,8 @@ public class BICubeOperationManager {
                 }
                 /*增量更新现在暂时只适用于SQL语句，其他数据集是不能用的*/
                 case DBConstant.SINGLE_TABLE_UPDATE_TYPE.PART: {
-//                    discovery = BICubeIncreaseDisDiscovery.getInstance();
-                    resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
+                    BICubeIncreaseDisDiscovery discovery = BICubeIncreaseDisDiscovery.getInstance();
+                    ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
                     cube = new BICube(resourceRetrievalService, discovery);
                     if (tableSource instanceof ExcelTableSource) {
                         return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);

@@ -28,7 +28,9 @@ public interface CubeTableEntityService extends CubeTableEntityGetterService {
 
     void recordRowCount(long rowCount);
 
-    void recordLastTime();
+    void recordLastExecuteTime(long time);
+
+    void recordCurrentExecuteTime();
 
     void recordRemovedLine(TreeSet<Integer> removedLine);
 

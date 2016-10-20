@@ -7,6 +7,7 @@ import com.finebi.cube.conf.CubeBuild;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.relation.*;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.finebi.cube.common.log.BILoggerFactory;
@@ -118,7 +119,9 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
         }
         return true;
     }
-
+    public String getCubeTaskId() {
+        return DBConstant.GLOBAL_UPDATE_TYPE.PART_UPDATE;
+    }
     @Override
     public Map<CubeTableSource, UpdateSettingSource> getUpdateSettingSources() {
         Map<CubeTableSource, UpdateSettingSource> updateSettingSourceMap = new HashMap<CubeTableSource, UpdateSettingSource>();

@@ -91,12 +91,21 @@ public class BICubeTableEntity implements CubeTableEntityService {
     }
 
     @Override
-    public void recordLastTime() {
-        tableProperty.recordLastTime();
+    public void recordLastExecuteTime(long time) {
+        tableProperty.recordLastExecuteTime(time);
+    }
+
+    @Override
+    public void recordCurrentExecuteTime() {
+        tableProperty.recordCurrentExecuteTime();
     }
 
     @Override
     public void recordRemovedLine(TreeSet<Integer> removedLine) {
+        if (null == removedLine || removedLine.size() == 0) {
+            tableProperty.recordRemovedList(0, -1);
+            return;
+        }
         Iterator<Integer> it = removedLine.iterator();
         int row = 0;
         while (it.hasNext()) {
@@ -179,8 +188,13 @@ public class BICubeTableEntity implements CubeTableEntityService {
     }
 
     @Override
-    public Date getCubeLastTime() {
-        return tableProperty.getCubeLastTime();
+    public Date getLastExecuteTime() {
+        return tableProperty.getLastExecuteTime();
+    }
+
+    @Override
+    public Date getCurrentExecuteTime() {
+        return tableProperty.getCurrentExecuteTime();
     }
 
     @Override
@@ -243,9 +257,13 @@ public class BICubeTableEntity implements CubeTableEntityService {
         return tableProperty.isRowCountAvailable();
     }
 
+    public boolean isLastExecuteTimeAvailable() {
+        return tableProperty.isLastExecuteTimeAvailable();
+    }
+
     @Override
-    public boolean isCubeLastTimeAvailable() {
-        return tableProperty.isCubeLastUpdateTimeAvailable();// TODO: 2016/10/11 需要释放资源 
+    public boolean isCurrentExecuteTimeAvailable() {
+        return tableProperty.isCurrentExecuteTimeAvailable();
     }
 
     public long getCubeVersion() {
@@ -271,6 +289,6 @@ public class BICubeTableEntity implements CubeTableEntityService {
 
     @Override
     public Boolean isVersionAvailable() {
-        return tableProperty.isVersionAvailable();// TODO: 2016/10/11 需要释放资源 
+        return tableProperty.isVersionAvailable();
     }
 }

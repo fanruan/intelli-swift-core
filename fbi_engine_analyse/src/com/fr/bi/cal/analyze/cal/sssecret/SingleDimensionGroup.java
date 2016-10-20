@@ -13,8 +13,6 @@ import com.fr.bi.cal.analyze.cal.Executor.Executor;
 import com.fr.bi.cal.analyze.cal.Executor.ILazyExecutorOperation;
 import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.cal.sssecret.sort.SortedNode;
-import com.fr.bi.cal.analyze.cal.store.GroupKey;
-import com.fr.bi.cal.analyze.cal.store.UserRightColumnKey;
 import com.fr.bi.cal.analyze.exception.TerminateExecutorException;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -422,8 +420,11 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
     private NewRootNodeChild getCurrentNodeChild(Entry entry) {
         Object keyValue = entry.getKey();
         GroupValueIndex gvi = (GroupValueIndex) entry.getValue();
+        int keyValueSetSize = 0;
+        boolean isForeignTableToForeignTable = false;
         //多对多
         if (column.getDirectToDimensionRelationList().size() > 0) {
+            isForeignTableToForeignTable = true;
             //默认第一个位置放的是主表
             CubeTableSource primaryTableSource = column.getDirectToDimensionRelationList().get(0).getPrimaryTable();
             ICubeFieldSource primaryFieldSource = column.getDirectToDimensionRelationList().get(0).getPrimaryField();
@@ -437,6 +438,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
                 }
             });
             String[] keyValueArray = keyValueSet.toArray(new String[keyValueSet.size()]);
+            keyValueSetSize = keyValueSet.size();
             String keyValueString = StringUtils.EMPTY;
             for (int i = 0; i < keyValueArray.length; i++) {
                 if (i == keyValueArray.length - 1) {
@@ -447,9 +449,14 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
             }
             keyValue = keyValueString;
         }
-
         NewDiskBaseRootNodeChild childNode = new NewDiskBaseRootNodeChild(column, keyValue);
-        childNode.setGroupValueIndex(root.getGroupValueIndex().AND(gvi));
+        if (isForeignTableToForeignTable) {
+            if (keyValueSetSize > 0) {
+                childNode.setGroupValueIndex(root.getGroupValueIndex().AND(gvi));
+            }
+        } else {
+            childNode.setGroupValueIndex(root.getGroupValueIndex().AND(gvi));
+        }
         return childNode;
     }
 

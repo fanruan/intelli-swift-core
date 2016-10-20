@@ -25,7 +25,8 @@ public class BITableSourceBuildWatcher extends BICubeBuildWatcher {
                 messagePublish.publicStopMessage(generateStopBody(""));
             } else {
                 messagePublish.publicFinishMessage(generateFinishBody(""));
-                tableEntityService.recordLastTime();
+//                tableEntityService.recordLastTime();
+                tableEntityService.recordLastExecuteTime(tableEntityService.getCurrentExecuteTime().getTime());
                 tableEntityService.forceReleaseWriter();
                 tableEntityService.clear();
             }

@@ -197,7 +197,6 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
             isValid = true;
             readWriteLock.writeLock().unlock();
         }
-
     }
 
     private boolean useReleaseManager() {
@@ -207,8 +206,7 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
     private boolean useNioHandlerManager() {
         return nioHandlerManager != null;
     }
-
-    private void releaseBuffer() {
+    public void releaseBuffer() {
         for (Entry<Integer, MappedByteBuffer> entry : buffers.entrySet()) {
             BIReleaseUtils.doClean(entry.getValue());
         }

@@ -42,6 +42,7 @@ import java.util.*;
 
 /**
  * @author Daniel
+ *
  */
 public class UserETLUpdateTask implements CubeTask {
 
@@ -103,7 +104,6 @@ public class UserETLUpdateTask implements CubeTask {
         }, cubeFieldSources, UserETLCubeTILoader.getInstance(biUser.getUserId())));
         tableEntityService.addVersion(getTableVersion());
         ICubeFieldSource[] fields = source.getFieldsArray(new HashSet<CubeTableSource>());
-        tableEntityService.clear();
         for (int i = 0; i < fields.length; i++) {
             ICubeFieldSource field = fields[i];
             Iterator<BIColumnKey> columnKeyIterator = BIColumnKey.generateColumnKey(field).iterator();
@@ -112,16 +112,16 @@ public class UserETLUpdateTask implements CubeTask {
                 new BIFieldIndexGenerator(cube, source, field, targetColumnKey).mainTask(null);
             }
         }
-
     }
 
 
-    private long getBaseSourceVersion(CubeTableSource source) {
+
+    private long getBaseSourceVersion(CubeTableSource source){
         ICubeTableService service = CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).getTableIndex(source);
         return service == null ? -1l : service.getTableVersion(new IndexKey(StringUtils.EMPTY));
     }
 
-    public String getPath() {
+    public String getPath(){
         return path;
     }
 
@@ -149,10 +149,10 @@ public class UserETLUpdateTask implements CubeTask {
     @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = new JSONObject();
-        if (start != null) {
+        if(start != null){
             jo.put("start", start.getTime());
         }
-        if (end != null) {
+        if(end != null){
             jo.put("end", end.getTime());
         }
         return jo;
@@ -160,10 +160,10 @@ public class UserETLUpdateTask implements CubeTask {
 
 
     /* (non-Javadoc)
-     * @see com.fr.bi.stable.engine.CubeTask#getUUID()
+     * @see com.fr.bi.stable.engine.CubeTask#getCubeTaskId()
      */
     @Override
-    public String getUUID() {
+    public String getTaskId() {
         return getPath();
     }
 
@@ -201,17 +201,17 @@ public class UserETLUpdateTask implements CubeTask {
         return oldVersion == getTableVersion();
     }
 
-    private long getTableVersion() {
+    private long getTableVersion(){
 
         TreeMap<String, CubeTableSource> tm = new TreeMap<String, CubeTableSource>();
         Set<CubeTableSource> set = new HashSet<CubeTableSource>();
-        for (CubeTableSource s : source.getSourceUsedBaseSource(set, new HashSet<CubeTableSource>())) {
+        for (CubeTableSource s : source.getSourceUsedBaseSource(set, new HashSet<CubeTableSource>())){
             tm.put(s.fetchObjectCore().getIDValue(), s);
         }
         tm.remove(source.getAnalysisCubeTableSource().fetchObjectCore().getIDValue());
         List versionList = new ArrayList();
         Iterator<Map.Entry<String, CubeTableSource>> iter = tm.entrySet().iterator();
-        while (iter.hasNext()) {
+        while(iter.hasNext()){
             Map.Entry<String, CubeTableSource> entry = iter.next();
             versionList.add(entry.getKey());
             versionList.add(getBaseSourceVersion(entry.getValue()));
