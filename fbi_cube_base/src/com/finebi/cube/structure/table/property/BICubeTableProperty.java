@@ -653,6 +653,10 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
             parentsWriter.forceRelease();
             parentsWriter = null;
         }
+        if (isRemoveListWriterAvailable()) {
+            removeListWriter.forceRelease();
+            removeListWriter = null;
+        }
         if (parentFieldProperty != null) {
             parentFieldProperty.forceReleaseWriter();
             parentFieldProperty = null;

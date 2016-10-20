@@ -26,6 +26,7 @@ public class BITableSourceBuildWatcher extends BICubeBuildWatcher {
             } else {
                 messagePublish.publicFinishMessage(generateFinishBody(""));
                 tableEntityService.recordLastTime();
+                tableEntityService.forceReleaseWriter();
                 tableEntityService.clear();
             }
         } catch (BIDeliverFailureException e) {
