@@ -511,7 +511,7 @@ BICst.DEFAULT_CHART_SETTING = {
     show_cat_label: true,
     show_v_grid_line: true,
     show_h_grid_line: true,
-    manually_linkage_selection: false,
+    select_linkage: false,
     mini_show_grid_line: false,
     minimalist_model: false,
     big_data_mode: false,

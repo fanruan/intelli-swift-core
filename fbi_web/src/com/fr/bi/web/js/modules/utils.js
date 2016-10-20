@@ -1333,8 +1333,8 @@
 
         getWSLinkageSelectionByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.manually_linkage_selection) ? ws.manually_linkage_selection :
-                BICst.DEFAULT_CHART_SETTING.manually_linkage_selection
+            return BI.isNotNull(ws.select_linkage) ? ws.select_linkage :
+                BICst.DEFAULT_CHART_SETTING.select_linkage
         },
 
         getWSMinimalistByID: function (wid) {

@@ -580,7 +580,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             null_continue: this.nullContinuity.isSelected(),
 
             transfer_filter: this.transferFilter.isSelected(),
-            manually_linkage_selection: this.linkageSelection.isSelected()
+            select_linkage: this.linkageSelection.isSelected()
         }
     },
 
@@ -614,7 +614,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.nullContinuity.setSelected(v.null_continue);
 
         this.transferFilter.setSelected(v.transfer_filter);
-        this.linkageSelection.setSelected(v.manually_linkage_selection)
+        this.linkageSelection.setSelected(v.select_linkage)
     }
 });
 BI.AccumulateRadarChartSetting.EVENT_CHANGE = "EVENT_CHANGE";
