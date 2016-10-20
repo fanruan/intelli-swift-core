@@ -110,7 +110,8 @@
         },
 
         getLayoutType: function () {
-            return Data.SharingPool.get("layoutType") || BICst.DASHBOARD_LAYOUT_GRID;
+            var layoutType = Data.SharingPool.get("layoutType");
+            return BI.isNull(layoutType) ? BICst.DASHBOARD_LAYOUT_GRID : layoutType;
         },
 
         getLayoutRatio: function () {
