@@ -2,6 +2,9 @@
 
 .bi-fit-widget {
   .transition(all 200ms ease);
+  &.selected {
+    .transition(all 0ms ease);
+  }
   & .fit-widget-drag-bar {
     background: @color-bi-background-dark;
   }
