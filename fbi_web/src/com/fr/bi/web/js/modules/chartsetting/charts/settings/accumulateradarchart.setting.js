@@ -40,16 +40,16 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //详细设置
-        this.titleDetailSettting = BI.createWidget({
+        this.titleDetailSetting = BI.createWidget({
             type: "bi.show_title_detailed_setting_combo"
         });
-        this.titleDetailSettting.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
+        this.titleDetailSetting.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
 
         this.widgetTitle = BI.createWidget({
             type: "bi.left",
-            items: [this.title, this.titleDetailSettting],
+            items: [this.title, this.titleDetailSetting],
             hgap: constant.SIMPLE_H_GAP
         });
 
@@ -201,7 +201,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 90
         });
 
-        this.showLeftLabel.on(BI.Controller.EVENT_CHANGE, function() {
+        this.showLeftLabel.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
 
@@ -210,7 +210,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.chart_label_detailed_setting_combo"
         });
 
-        this.leftLabelStyle.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function() {
+        this.leftLabelStyle.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
 
@@ -221,7 +221,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             height: 30
         });
 
-        this.leftLineColor.on(BI.ColorChooser.EVENT_CHANGE, function() {
+        this.leftLineColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
 
@@ -299,7 +299,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items:[this.leftLineColor]
+                    items: [this.leftLineColor]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.showCustomScale]
@@ -330,7 +330,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.legend_detailed_setting_combo"
         });
 
-        this.legendSetting.on(BI.LegendDetailedSettingCombo.EVENT_CHANGE, function() {
+        this.legendSetting.on(BI.LegendDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
 
@@ -341,7 +341,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 60
         });
 
-        this.showHGridLine.on(BI.Controller.EVENT_CHANGE, function() {
+        this.showHGridLine.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
 
@@ -352,7 +352,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             height: 30
         });
 
-        this.hGridLineColor.on(BI.ColorChooser.EVENT_CHANGE, function() {
+        this.hGridLineColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
 
@@ -363,7 +363,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 60
         });
 
-        this.showVGridLine.on(BI.Controller.EVENT_CHANGE, function() {
+        this.showVGridLine.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
 
@@ -374,7 +374,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             height: 30
         });
 
-        this.vGridLineColor.on(BI.ColorChooser.EVENT_CHANGE, function() {
+        this.vGridLineColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
 
@@ -394,7 +394,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.tooltip_detailed_setting_combo"
         });
 
-        this.tooltipSetting.on(BI.TooltipDetailedSettingCombo.EVENT_CHANGE, function() {
+        this.tooltipSetting.on(BI.TooltipDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
 
@@ -405,7 +405,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 90
         });
 
-        this.nullContinuity.on(BI.Controller.EVENT_CHANGE, function() {
+        this.nullContinuity.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
 
@@ -461,7 +461,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.tooltipSetting]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.continuousNullValue]
+                    items: [this.nullContinuity]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -486,7 +486,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 150
         });
 
-        this.linkageSelection.on(BI.Controller.EVENT_CHANGE, function() {
+        this.linkageSelection.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
 
@@ -517,7 +517,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.showTitle.setSelected(BI.Utils.getWSShowNameByID(wId));
         this.title.setValue(BI.Utils.getWidgetNameByID(wId));
-        this.titleDetailSettting.setValue(BI.Utils.getWSTitleDetailSettingByID(wId));
+        this.titleDetailSetting.setValue(BI.Utils.getWSTitleDetailSettingByID(wId));
         this.widgetTitle.setVisible(BI.Utils.getWSShowNameByID(wId));
 
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
@@ -553,7 +553,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         return {
             show_name: this.showTitle.isSelected(),
             widget_title: this.title.getValue(),
-            title_detail: this.titleDetailSettting.getValue(),
+            title_detail: this.titleDetailSetting.getValue(),
 
             chart_color: this.colorSelect.getValue()[0],
             chart_radar_type: this.chartTypeGroup.getValue()[0],
@@ -584,37 +584,55 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         }
     },
 
+    _setValue: function (map) {
+        var self = this;
+        BI.each(map, function (k, v) {
+            self[k] = v
+        })
+    },
+
+    _setSelected: function (map) {
+        var self = this;
+        BI.each(map, function (k, v) {
+            self[k] = v
+        })
+    },
+
     setValue: function (v) {
-        this.showTitle.setSelected(v.show_name);
-        this.title.setValue(v.widget_title);
-        this.titleDetailSettting.setValue(v.title_detail);
+        this._setValue({
+            title: v.widget_title,
+            titleDetailSetting: v.title_detail,
+            colorSelect: v.chart_color,
+            chartTypeGroup: v.chart_radar_type,
+            widgetBackground: v.widget_bg,
+            numberLevellY: v.left_y_axis_number_level,
+            LYUnit: v.left_y_axis_unit,
+            lYAxisStyle: v.left_y_axis_style,
+            leftLabelStyle: v.left_label_style,
+            leftLineColor: v.left_line_color,
+            customScale: v.custom_y_scale,
+            legend: v.chart_legend,
+            legendSetting: v.chart_legend_setting,
+            hGridLineColor: v.h_grid_line_color,
+            vGridLineColor: v.v_grid_line_color,
+            tooltipSetting: v.tooltip_setting,
 
-        this.colorSelect.setValue(v.chart_color);
-        this.chartTypeGroup.setValue(v.chart_radar_type);
-        this.widgetBackground.setValue(v.widget_bg);
+        });
 
-        this.numberLevellY.setValue(v.left_y_axis_number_level);
-        this.LYUnit.setValue(v.left_y_axis_unit);
-        this.lYAxisStyle.setValue(v.left_y_axis_style);
-        this.separators.setSelected(v.num_separators);
-        this.showLeftLabel.setSelected(v.show_left_label);
-        this.leftLabelStyle.setValue(v.left_label_style);
-        this.leftLineColor.setValue(v.left_line_color);
-        this.showCustomScale.setSelected(v.show_y_custom_scale);
-        this.customScale.setValue(v.custom_y_scale);
+        this._setSelected({
+            showTitle: v.show_name,
+            separators: v.num_separators,
+            showLeftLabel: v.show_left_label,
+            showCustomScale: v.show_y_custom_scale,
+            showHGridLine: v.show_h_grid_line,
+            showVGridLine: v.show_v_grid_line,
+            showDataLabel: v.show_data_label,
+            nullContinuity: v.null_continue,
+            transferFilter: v.transfer_filter,
+            linkageSelection: v.select_linkage
+        });
 
-        this.legend.setValue(v.chart_legend);
-        this.legendSetting.setValue(v.chart_legend_setting);
-        this.showHGridLine.setSelected(v.show_h_grid_line);
-        this.hGridLineColor.setValue(v.h_grid_line_color);
-        this.showVGridLine.setSelected(v.show_v_grid_line);
-        this.vGridLineColor.setValue(v.v_grid_line_color);
-        this.showDataLabel.setSelected(v.show_data_label);
-        this.tooltipSetting.setValue(v.tooltip_setting);
-        this.nullContinuity.setSelected(v.null_continue);
-
-        this.transferFilter.setSelected(v.transfer_filter);
-        this.linkageSelection.setSelected(v.select_linkage)
+        this.widgetTitle.setVisible(v.show_name);
     }
 });
 BI.AccumulateRadarChartSetting.EVENT_CHANGE = "EVENT_CHANGE";
