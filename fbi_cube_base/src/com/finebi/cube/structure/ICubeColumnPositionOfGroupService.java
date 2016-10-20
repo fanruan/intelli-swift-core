@@ -25,4 +25,6 @@ public interface ICubeColumnPositionOfGroupService extends Release {
     int getPositionOfGroup(int row) throws BIResourceInvalidException;
 
     void forceReleaseWriter();
+
+    void forceReleaseReader();
 }

@@ -33,4 +33,5 @@ public interface ICubeDetailDataService<T> extends Release {
 
     void forceReleaseWriter();
 
+    void forceReleaseReader();
 }

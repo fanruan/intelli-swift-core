@@ -32,7 +32,7 @@ public class BIBasicNIOWriterManager<T> {
             if (tag2Builder.containsKey(resourceLocation.getFragment())) {
                 return (T) tag2Builder.get(resourceLocation.getFragment()).buildWriter(resourceLocation);
             } else {
-                 throw new IllegalCubeResourceLocationException(BIStringUtils.appendWithSpace("Please check location fragment:",
+                throw new IllegalCubeResourceLocationException(BIStringUtils.appendWithSpace("Please check location fragment:",
                         resourceLocation.getFragment(), "which should be wrong fragment tag"));
             }
         } else {

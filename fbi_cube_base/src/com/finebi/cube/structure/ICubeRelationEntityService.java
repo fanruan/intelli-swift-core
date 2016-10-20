@@ -25,4 +25,6 @@ public interface ICubeRelationEntityService extends CubeRelationEntityGetterServ
 
     void forceReleaseWriter();
 
+
+    void forceReleaseReader();
 }
