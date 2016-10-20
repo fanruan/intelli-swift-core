@@ -221,7 +221,7 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
                 item.setValue(v[idx] || []);
             }
             if (BI.isEmptyArray(v[idx]) || BI.isNull(v[idx])) {
-                value.push(["_*_"]);
+                value.push([BICst.LIST_LABEL_TYPE.ALL]);
             } else {
                 var temp = [];
                 // 排除错误的设置的值
@@ -230,7 +230,7 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
                 });
                 var valueTemp = BI.intersection(v[idx], temp);
                 if (BI.isEmptyArray(valueTemp)) {
-                    valueTemp = ["_*_"];
+                    valueTemp = [BICst.LIST_LABEL_TYPE.ALL];
                 }
                 value.push(valueTemp);
             }

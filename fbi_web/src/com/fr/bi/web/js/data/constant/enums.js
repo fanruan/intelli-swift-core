@@ -702,3 +702,7 @@ BICst.IMAGE_RESIZE_MODE = {
     EQUAL: 2,
     STRETCH: 3
 };
+
+BICst.LIST_LABEL_TYPE = {
+    ALL: "_*_"
+};

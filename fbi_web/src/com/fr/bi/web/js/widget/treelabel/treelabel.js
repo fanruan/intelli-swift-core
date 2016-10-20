@@ -113,11 +113,11 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         for (var i = floor + 1; i <= this.items.length - 1; i++) {
             var temp = [];
             var preItems = this.items[i - 1];
-            var preValues = values[i - 1] || ["_*_"];
+            var preValues = values[i - 1] || [BICst.LIST_LABEL_TYPE.ALL];
             var preSelectedItems = [];
 
             if (i === floor + 1) {
-                if (BI.contains(preValues, "_*_")) {
+                if (BI.contains(preValues, BICst.LIST_LABEL_TYPE.ALL)) {
                     BI.each(preItems, function (idx, item) {
                         preSelectedItems = BI.concat(preSelectedItems, convertToItems(item));
                     });
@@ -129,7 +129,7 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
                     });
                 }
             } else {
-                if (BI.contains(preValues, "_*_")) {
+                if (BI.contains(preValues, BICst.LIST_LABEL_TYPE.ALL)) {
                     BI.each(result[i - floor - 2], function (idx, item) {
                         preSelectedItems = BI.concat(preSelectedItems, convertToItems(item));
                     });
@@ -159,6 +159,15 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         }
         this.items = BI.concat(this.items.slice(0, floor + 1), result);
         BI.each(this.items, function (idx, items) {
+            // var selected = [], unselected = [];
+            // BI.each(items, function (i, item) {
+            //     if(BI.contains(values[idx], item.value)) {
+            //         selected.push(item);
+            //     } else {
+            //         unselected.push(item);
+            //     }
+            // });
+            // self.items[idx] = BI.concat(selected, unselected);
             items.sort(function (a, b) {
                 var flagA = BI.contains(values[idx], a.value);
                 var flagB = BI.contains(values[idx], b.value);
@@ -245,7 +254,7 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
             }
         }
 
-        //if (BI.isNotEmptyArray(resultId) || BI.contains(op.value, "_*_")) {
+        //if (BI.isNotEmptyArray(resultId) || BI.contains(op.value, BICst.LIST_LABEL_TYPE.ALL)) {
         o.itemsCreator(op, function (value) {
             self._updateData(value.items);
             self._updateItems(floor);
