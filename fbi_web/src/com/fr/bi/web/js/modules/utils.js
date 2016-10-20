@@ -2937,6 +2937,59 @@
                 parseFilter(filter)
             });
 
+            //标红维度的处理
+            var dIds = this.getAllDimDimensionIDs(wid);
+            BI.each(dIds, function(idx, dId){
+                var dimensionMap = self.getDimensionMapByDimensionID(dId);
+                var valid = true;
+                //树控件和明细表
+                if(widget.type === BICst.WIDGET.DETAIL || widget.type === BICst.WIDGET.TREE){
+                    BI.each(dimensionMap, function(tableId, obj){
+                        var targetRelation = obj.target_relation;
+                        var pId = self.getFirstRelationPrimaryIdFromRelations(targetRelation);
+                        var fId = self.getLastRelationForeignIdFromRelations(targetRelation);
+                        var paths = self.getPathsFromFieldAToFieldB(pId, fId);
+                        if(!BI.deepContains(paths, targetRelation)){
+                            //维度和某个指标之间设置了路径但是路径在配置处被删了
+                            if(paths.length >= 1){
+                                widget.dimensions[dId].dimension_map[tableId].target_relation = paths[0];
+                            }
+                        }
+                    })
+                }else{
+                    var tIds = self.getAllTargetDimensionIDs(wid);
+                    BI.any(tIds, function(idx, tId){
+                        if(!self.isCalculateTargetByDimensionID(tId)){
+                            //维度和某个指标之间没有设置路径
+                            if(!BI.has(dimensionMap, tId)){
+                                valid = false;
+                                return true;
+                            }else{
+                                var targetRelation = dimensionMap[tId].target_relation;
+                                BI.any(targetRelation, function(id, path){
+                                    var pId = self.getFirstRelationPrimaryIdFromRelations(path);
+                                    var fId = self.getLastRelationForeignIdFromRelations(path);
+                                    var paths = self.getPathsFromFieldAToFieldB(pId, fId);
+                                    if(!BI.deepContains(paths, path)){
+                                        //维度和某个指标之间设置了路径但是路径在配置处被删了
+                                        if(paths.length === 1){
+                                            widget.dimensions[dId].dimension_map[tId].target_relation.length = id;
+                                            widget.dimensions[dId].dimension_map[tId].target_relation.push(paths[0]);
+                                        }else{
+                                            valid = false;
+                                            return true;
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                    });
+                }
+                if(valid === false){
+                    widget.dimensions[dId].used = false;
+                }
+            });
+
             widget.filter = {filter_type: BICst.FILTER_TYPE.AND, filter_value: filterValues};
             widget.real_data = true;
 

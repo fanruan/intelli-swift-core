@@ -153,14 +153,13 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
         } finally {
             readWriteLock.writeLock().unlock();
         }
-
     }
 
     private boolean useReleaseManager() {
         return releaseManager != null;
     }
 
-    private void releaseBuffer() {
+    public void releaseBuffer() {
         for (Entry<Integer, MappedByteBuffer> entry : buffers.entrySet()) {
             BIReleaseUtils.doClean(entry.getValue());
         }

@@ -175,7 +175,9 @@ BI.MultiPathChooser = BI.inherit(BI.Widget, {
 
     setValue: function (v) {
         this.path = v[0];
-        this.pathChooser.setValue(this._unpackValueByValue(v[0]));
+        if(BI.size(this.pathValueMap) > 1){
+            this.pathChooser.setValue(this._unpackValueByValue(v[0]));
+        }
     },
 
     getValue: function () {

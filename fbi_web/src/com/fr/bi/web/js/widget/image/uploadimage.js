@@ -181,10 +181,10 @@ BI.UploadImage = BI.inherit(BI.Widget, {
     _sizeChange: function (size) {
         var self = this, o = this.options;
         switch (size) {
-            case BI.ImageButtonSize.ORIGINAL:
+            case BICst.IMAGE_RESIZE_MODE.ORIGINAL:
                 self._setSize("auto", "auto");
                 break;
-            case BI.ImageButtonSize.EQUAL:
+            case BICst.IMAGE_RESIZE_MODE.EQUAL:
                 self._setSize("auto", "auto");
                 var width = this.img.getImageWidth(), height = this.img.getImageHeight();
                 var W = this.element.width(), H = this.element.height();
@@ -194,9 +194,11 @@ BI.UploadImage = BI.inherit(BI.Widget, {
                     self._setSize("100%", "auto");
                 }
                 break;
-            case BI.ImageButtonSize.WIDGET_SIZE:
+            case BICst.IMAGE_RESIZE_MODE.STRETCH:
                 self._setSize("100%", "100%");
                 break;
+            default :
+                self._setSize("auto", "auto");
         }
     },
 

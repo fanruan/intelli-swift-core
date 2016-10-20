@@ -126,11 +126,12 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         } else {
             var packages = [packageId];
         }
+        var isRelation = packages.length === 1;
         //选择了表
         if (type & BI.SelectDataSearchSegment.SECTION_TABLE) {
             var result = [];
             BI.each(packages, function (i, pid) {
-                var items = self._getTablesStructureByPackId(pid);
+                var items = self._getTablesStructureByPackId(pid, isRelation);
                 result.push(BI.Func.getSearchResult(items, keyword));
             });
             BI.each(result, function (i, sch) {
@@ -140,7 +141,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         } else {
             var result = [], map = {}, tables = [], field2TableMap = {};
             BI.each(packages, function (i, pid) {
-                tables = self._getTablesStructureByPackId(pid);
+                tables = self._getTablesStructureByPackId(pid, isRelation);
                 var items = [];
                 BI.each(tables, function (i, table) {
                     var fields = self._getFieldsStructureByTableId(table.id || table.value);
@@ -204,29 +205,40 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
     /**
      * 业务包中，所有表
      * @param packageId
+     * @param isRelation
      * @returns {Array}
      * @private
      */
-    _getTablesStructureByPackId: function (packageId) {
+    _getTablesStructureByPackId: function (packageId, isRelation) {
         var self = this, o = this.options;
         var tablesStructure = [];
         var currentTables = o.tablesCreator(packageId);
-        BI.each(currentTables, function (i, table) {
+        var currentTablesIds = BI.pluck(currentTables, "id");
+        var relationAndCurrentTables = currentTables;
+        if(isRelation === true){
+            BI.each(currentTablesIds, function(id, tId){
+                var relationAndCurrentTablesIds = BI.pluck(relationAndCurrentTables, "id");
+                var tmpRelationAndCurrentTables = BI.filter(o.tablesCreator(tId, true), function (i, t) {
+                    return !BI.contains(relationAndCurrentTablesIds, t.id);
+                });
+                relationAndCurrentTables = BI.concat(relationAndCurrentTables, tmpRelationAndCurrentTables);
+            });
+        }
+        BI.each(relationAndCurrentTables, function (i, table) {
+            var showText = BI.contains(currentTablesIds, table.id) ? (BI.Utils.getTableNameByID(table.id) || "")
+                : (BI.Utils.getTableNameByID(table.id) || "") + "(" + BI.i18nText("BI-Relation_Table") + ")";
             tablesStructure.push(BI.extend({
                 id: table.id,
                 wId: o.wId,
                 type: "bi.detail_select_data_level0_node",
                 layer: 0,
-                text: BI.Utils.getTableNameByID(table.id) || "",
+                text: showText,
                 title: self._getTitleByTableId(table.id),
                 value: table.id,
                 isParent: true,
                 open: false
             }, table));
         });
-        if (tablesStructure.length === 5) {
-            tablesStructure[0].open = true;
-        }
         this.primaryFieldIds = BI.Utils.getAllPrimaryKeyByTableIds(BI.pluck(currentTables, "id"));
         return tablesStructure;
     },

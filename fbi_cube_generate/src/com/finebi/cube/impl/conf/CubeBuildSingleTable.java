@@ -26,6 +26,7 @@ import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.utils.BIRelationUtils;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.general.ComparatorUtils;
 
 import java.io.File;
@@ -52,6 +53,7 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
     private Set<BITableRelationPath> inUsePaths = new HashSet<BITableRelationPath>();
     private int updateType = DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL;
     private CubeTableSource childTableSource;
+    private String taskId;
 
     public CubeBuildSingleTable(BusinessTable hostTable, String childTableSourceId, long userId, int updateType) {
         super(userId);
@@ -61,8 +63,8 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
     }
 
     public void init(BusinessTable businessTable, String childTableSourceId) {
-
         try {
+            setTaskId(businessTable, childTableSourceId);
             setAllSources(businessTable);
             Set<List<Set<CubeTableSource>>> depends = calculateTableSource(getSources());
             setDependTableResource(depends);
@@ -72,6 +74,10 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
         }
+    }
+
+    private void setTaskId(BusinessTable businessTable, String childTableSourceId) {
+        taskId = BIStringUtils.append(DBConstant.CUBE_UPDATE_TYPE.SINGLETABLE_UPDATE, businessTable.getID().getIdentity(), childTableSourceId);
     }
 
     private void setChildTableSource(String childTableSourceId) {
@@ -135,7 +141,6 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
                 BILoggerFactory.getLogger().error("tableSourceRelation is not available:" + tableRelation.toString());
             }
         }
-
     }
 
     public void setCubeGenerateRelationPathSet(Set<BITableRelationPath> inUsePaths) {
@@ -223,6 +228,9 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
         return biTableSourceRelationPathSet;
     }
 
+    public String getCubeTaskId() {
+        return taskId;
+    }
 
     @Override
     public Set<CubeTableSource> getAllSingleSources() {

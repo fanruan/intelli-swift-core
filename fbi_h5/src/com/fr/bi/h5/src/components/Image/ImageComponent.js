@@ -26,8 +26,9 @@ import React, {
 } from 'lib'
 
 import {Colors, Sizes, Template, Widget, Dimension, Target} from 'data'
-
 import {CenterLayout, Icon, Table} from 'base'
+import WidgetFactory from '../../data/Template/Widget/WidgetFactory'
+import TemplateFactory from '../../data/Template/TemplateFactory'
 
 class ImageComponent extends Component {
     constructor(props, context) {
@@ -47,10 +48,12 @@ class ImageComponent extends Component {
     }
 
     render() {
-        const {...props} = this.props, {...state} = this.state;
-        return <Image 
-            style={styles.wrapper}
-            source=""
+        const {$widget, wId} = this.props;
+        const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(this.context.$template));
+        return <Image
+            style={{height: this.props.height, ...styles.wrapper}}
+            source={widget.getSrc()}
+            resizeMode={widget.getSizeMode()}
         />
     }
 

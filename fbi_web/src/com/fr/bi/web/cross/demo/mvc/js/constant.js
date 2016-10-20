@@ -447,6 +447,10 @@ var _JS = [
 
     "detail/mvc.adaptivearrangement.js",
 
+    "detail/mvc.gridarrangement.js",
+
+    "detail/mvc.gridadaptivearrangement.js",
+
     "detail/mvc.detailcharts.js",
 
     "detail/mvc.columncharts.js",
@@ -667,6 +671,8 @@ var _Routes = {
     "/arrangement_droppable": "ArrangementDroppableView",
     "/arrangement": "ArrangementView",
     "/adaptive_arrangement": "AdaptiveArrangementView",
+    "/grid_arrangement": "GridArrangementView",
+    "/grid_adaptive_arrangement": "GridAdaptiveArrangementView",
 
     "/detail_chart": "DetailChartView",
     "/column_charts": "ColumnChartsView",
@@ -1501,6 +1507,14 @@ _Models.detail = [{
         pId: 29,
         text: "bi.adaptive_arrangement",
         value: "adaptive_arrangement"
+    }, {
+        pId: 29,
+        text: "bi.arrangement(网格布局)",
+        value: "grid_arrangement"
+    }, {
+        pId: 29,
+        text: "bi.adaptive_arrangement(网格布局)",
+        value: "grid_adaptive_arrangement"
     }, {
         pId: 30,
         text: "bi.simple_searcher",
