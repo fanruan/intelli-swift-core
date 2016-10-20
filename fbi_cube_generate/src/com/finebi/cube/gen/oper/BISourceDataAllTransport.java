@@ -47,7 +47,7 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
             buildTableBasicStructure();
             long count = transport();
             logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " finish transportation operation and record ",
-                    String.valueOf(count)," records"));
+                    String.valueOf(count), " records"));
             if (count >= 0) {
                 /*清除remove的过滤条件*/
                 TreeSet<Integer> sortRemovedList = new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);

@@ -28,7 +28,7 @@ BI.DonutChart = BI.inherit(BI.AbstractChart, {
         var self = this;
 
         config.colors = this.config.chart_color;
-        config.style = formatChartStyle();
+        config.plotOptions.style = formatChartStyle();
 
         this.formatChartLegend(config, this.config.chart_legend);
 

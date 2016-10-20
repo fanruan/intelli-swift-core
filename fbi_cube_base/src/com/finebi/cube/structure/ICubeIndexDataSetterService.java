@@ -32,4 +32,6 @@ public interface ICubeIndexDataSetterService {
 
     void forceReleaseWriter();
 
+    void forceReleaseReader();
+
 }

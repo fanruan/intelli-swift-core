@@ -89,6 +89,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 tableEntityService.recordRowCount(count);
             }
             tableEntityService.addVersion(version);
+            tableEntityService.forceReleaseWriter();
             tableEntityService.clear();
             long tableCostTime = System.currentTimeMillis() - t;
             System.out.println("table usage:" + tableCostTime);
@@ -175,6 +176,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                     row++;
                 }
             }
+
             return row;
         } catch (BICubeColumnAbsentException e) {
             throw BINonValueUtils.beyondControl(e.getMessage(), e);

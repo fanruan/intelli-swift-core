@@ -79,7 +79,6 @@ public class BIPlate extends AbstractFSPlate {
         TimerRunner timerRunner = new TimerRunner(UserControl.getInstance().getSuperManagerID());
         timerRunner.reGenerateTimeTasks();
         /*若发现cube需要更新的话,更新cube*/
-        BIConfigureManagerCenter.getLogManager().logStart(UserControl.getInstance().getSuperManagerID());
         if (CubeUpdateUtils.cubeStatusCheck(UserControl.getInstance().getSuperManagerID())) {
 //            if (markedObject.checkCubeStatus(UserControl.getInstance().getSuperManagerID())) {
             markedObject.generateCubes();

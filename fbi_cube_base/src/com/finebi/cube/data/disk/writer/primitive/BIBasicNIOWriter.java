@@ -1,6 +1,7 @@
 package com.finebi.cube.data.disk.writer.primitive;
 
 import com.finebi.cube.data.ICubeSourceReleaseManager;
+import com.finebi.cube.data.disk.NIOHandlerManager;
 import com.finebi.cube.data.output.primitive.ICubePrimitiveWriter;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.finebi.cube.common.log.BILoggerFactory;
@@ -24,6 +25,7 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
     private FileChannel fc;
     private long currentIndex = -1L;
     private ICubeSourceReleaseManager releaseManager;
+    private NIOHandlerManager nioHandlerManager;
     protected final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
     private long file_index = -1L;
     private boolean isReleased = false;
@@ -53,8 +55,8 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
     public void releaseHandler() {
         readWriteLock.writeLock().lock();
         try {
-            if (useReleaseManager()) {
-                releaseManager.release(this);
+            if (useNioHandlerManager()) {
+                nioHandlerManager.releaseHandler();
             } else {
                 releaseSource();
             }
@@ -64,22 +66,33 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
         }
     }
 
-    public void releaseSource() {
-        if (!isReleased) {
-            readWriteLock.writeLock().lock();
-            try {
-
+    @Override
+    public void destoryResource() {
+        readWriteLock.writeLock().lock();
+        try {
+            if (!isReleased) {
+                isReleased = true;
                 clearBuffer();
                 currentIndex = -1L;
                 file_index = -1L;
-                isReleased = true;
-                if (useReleaseManager()) {
-                    releaseManager.release(this);
-                }
-
-            } finally {
-                readWriteLock.writeLock().unlock();
             }
+        } finally {
+            readWriteLock.writeLock().unlock();
+        }
+    }
+
+    public void releaseSource() {
+        readWriteLock.writeLock().lock();
+        try {
+            if (!isReleased) {
+                isReleased = true;
+                clearBuffer();
+                currentIndex = -1L;
+                file_index = -1L;
+            }
+        } finally {
+            isReleased = false;
+            readWriteLock.writeLock().unlock();
         }
     }
 
@@ -90,7 +103,16 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
 
     @Override
     public void forceRelease() {
-        releaseSource();
+        if (useNioHandlerManager()) {
+            nioHandlerManager.forceReleaseHandler();
+        } else {
+            destoryResource();
+        }
+    }
+
+    @Override
+    public void reSetValid(boolean isValid) {
+        this.isReleased = isValid;
     }
 
     @Override
@@ -105,6 +127,10 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
 
     private boolean useReleaseManager() {
         return releaseManager != null;
+    }
+
+    private boolean useNioHandlerManager() {
+        return nioHandlerManager != null;
     }
 
     private void clearBuffer() {
@@ -147,6 +173,11 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
 
     public void setReleaseManager(ICubeSourceReleaseManager releaseManager) {
         this.releaseManager = releaseManager;
+    }
+
+    @Override
+    public void setHandlerReleaseHelper(NIOHandlerManager releaseHelper) {
+        this.nioHandlerManager = releaseHelper;
     }
 
     @Override

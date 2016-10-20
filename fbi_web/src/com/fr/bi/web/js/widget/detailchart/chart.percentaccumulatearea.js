@@ -46,7 +46,7 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.AbstractChart, {
     _formatConfig: function (config, items) {
         var self = this;
         config.colors = this.config.chart_color;
-        config.style = formatChartStyle();
+        config.plotOptions.style = formatChartStyle();
         formatCordon();
         this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;

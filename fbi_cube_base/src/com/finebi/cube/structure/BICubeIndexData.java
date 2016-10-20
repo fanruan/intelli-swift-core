@@ -98,6 +98,7 @@ public class BICubeIndexData implements ICubeIndexDataService {
         return indexReader != null;
     }
 
+
     public ICubeGroupValueIndexReader getIndexReader() {
         initIndexReader();
         return indexReader;
@@ -126,10 +127,10 @@ public class BICubeIndexData implements ICubeIndexDataService {
     }
 
     public void buildStructure() {
-        initNullReader();
-        initNullWriter();
-        initIndexWriter();
-        initIndexReader();
+//        initNullReader();
+//        initNullWriter();
+//        initIndexWriter();
+//        initIndexReader();
     }
 
     private void initNullReader() {
@@ -182,7 +183,7 @@ public class BICubeIndexData implements ICubeIndexDataService {
     protected void resetIndexReader() {
         if (isIndexReaderAvailable()) {
             indexReader.clear();
-            indexReader = null;
+//            indexReader = null;
         }
     }
 
@@ -196,7 +197,7 @@ public class BICubeIndexData implements ICubeIndexDataService {
     protected void resetNullReader() {
         if (isNullReaderAvailable()) {
             nullReader.clear();
-            nullReader = null;
+//            nullReader = null;
         }
     }
 
@@ -210,9 +211,9 @@ public class BICubeIndexData implements ICubeIndexDataService {
     @Override
     public void clear() {
         resetIndexReader();
-        resetIndexWriter();
+//        resetIndexWriter();
         resetNullReader();
-        resetNullWriter();
+//        resetNullWriter();
     }
 
     @Override
@@ -224,6 +225,16 @@ public class BICubeIndexData implements ICubeIndexDataService {
         if (isNullWriterAvailable()) {
             nullWriter.forceRelease();
             nullWriter = null;
+        }
+    }
+
+    @Override
+    public void forceReleaseReader() {
+        if (isIndexReaderAvailable()) {
+            indexReader.forceRelease();
+        }
+        if (isNullReaderAvailable()) {
+            nullReader.forceRelease();
         }
     }
 
