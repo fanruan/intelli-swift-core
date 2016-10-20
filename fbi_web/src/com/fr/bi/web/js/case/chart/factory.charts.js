@@ -260,11 +260,10 @@ BI.ChartCombineFormatItemFactory = {
             "zoom": {"zoomType": "xy", "zoomTool": {"visible": false, "resize": true, "from": "", "to": ""}},
             "plotBorderColor": "rgba(255,255,255,0)",
             "tools": {
-                "hidden": true,
-                "toImage": {"enabled": true},
-                "sort": {"enabled": true},
-                "enabled": false,
-                "fullScreen": {"enabled": true},
+                "hidden": false,
+                "toImage": {"enabled": false},
+                "sort": {"enabled": false},
+                "fullScreen": {"enabled": false},
                 "refresh": {
                     "enabled": false
                 }

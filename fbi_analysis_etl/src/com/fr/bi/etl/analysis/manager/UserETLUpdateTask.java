@@ -160,10 +160,10 @@ public class UserETLUpdateTask implements CubeTask {
 
 
 	/* (non-Javadoc)
-	 * @see com.fr.bi.stable.engine.CubeTask#getUUID()
+	 * @see com.fr.bi.stable.engine.CubeTask#getCubeTaskId()
 	 */
 	@Override
-	public String getUUID() {
+	public String getTaskId() {
 		return getPath();
 	}
 

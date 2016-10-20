@@ -1,34 +1,35 @@
-AdaptiveArrangementView = BI.inherit(BI.View, {
+GridArrangementView = BI.inherit(BI.View, {
     _defaultConfig: function () {
-        return BI.extend(AdaptiveArrangementView.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-mvc-adaptive-arrangement bi-mvc-layout"
+        return BI.extend(GridArrangementView.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-mvc-grid-arrangement bi-mvc-layout"
         })
     },
 
     _init: function () {
-        AdaptiveArrangementView.superclass._init.apply(this, arguments);
+        GridArrangementView.superclass._init.apply(this, arguments);
+        this.index = 0;
     },
 
     _createItem: function () {
         var self = this;
-        var id = BI.UUID();
         var item = BI.createWidget({
             type: "bi.text_button",
-            id: id,
+            id: this.index,
+            text: this.index,
             cls: "layout-bg" + BI.random(1, 8),
             handler: function () {
-                self.arrangement.deleteRegion(id);
+                self.arrangement.deleteRegion(this.getName());
             }
         });
-        item.setValue(item.attr("id"));
+        this.index++;
         return item;
     },
 
     _render: function (vessel) {
         var self = this;
         this.arrangement = BI.createWidget({
-            type: "bi.adaptive_arrangement",
-            layoutType: BI.Arrangement.LAYOUT_TYPE.ADAPTIVE,
+            type: "bi.arrangement",
+            layoutType: BI.Arrangement.LAYOUT_TYPE.GRID,
             cls: "mvc-border",
             width: 800,
             height: 400,
@@ -108,20 +109,9 @@ AdaptiveArrangementView = BI.inherit(BI.View, {
                 },
                 left: 230,
                 top: 450
-            }, {
-                el: {
-                    type: "bi.button",
-                    text: "relayout",
-                    height: 25,
-                    handler: function () {
-                        self.arrangement.relayout();
-                    }
-                },
-                left: 330,
-                top: 450
             }]
         });
     }
 });
 
-AdaptiveArrangementModel = BI.inherit(BI.Model, {});
+GridArrangementModel = BI.inherit(BI.Model, {});

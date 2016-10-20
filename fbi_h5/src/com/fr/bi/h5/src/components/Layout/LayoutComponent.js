@@ -141,7 +141,7 @@ class LayoutComponent extends Component {
             default:
                 break;
         }
-        return <Layout box='mean' style={styles.wrapper}>
+        return <Layout flex box='mean' style={styles.wrapper}>
             {component}
         </Layout>
     }
@@ -151,6 +151,8 @@ const styles = StyleSheet.create({
     wrapper: {
         padding: 20
     },
-    viewPager: {}
+    viewPager: {
+        flex: 1
+    }
 });
 export default LayoutComponent
