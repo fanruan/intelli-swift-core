@@ -113,6 +113,12 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
             if (BI.isNull(values[i])) {
                 return;
             }
+            if(BI.isEmptyArray(values[i])) {
+                for (var j = i;j<updateList.length;j++) {
+                    updateList[j].populate({items: []});
+                }
+                return;
+            }
             var value = updateList[i].getValue();
             updateList[i].populate({
                 items: values[i]
@@ -120,9 +126,21 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
             updateList[i].setValue(value);
 
             var now = updateList[i].getValue();
-            if(value !== now) {     //接着刷新剩余行
+            if(!arraysEqual(value, now)) {     //接着刷新剩余行
                 return;
             }
+        }
+
+        function arraysEqual (a1, a2) {     //仅考虑数值字符串等简单数据
+            if (a1.length !== a2.length) {
+                return false;
+            }
+            BI.each(a2, function (idx, data) {
+                if(a1.indexOf(data) === -1) {
+                    return false;
+                }
+            });
+            return true;
         }
     },
 
