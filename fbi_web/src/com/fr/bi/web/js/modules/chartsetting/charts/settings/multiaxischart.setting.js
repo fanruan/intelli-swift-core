@@ -110,7 +110,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.tableStyle = BI.createWidget({
             type: "bi.horizontal_adapt",
-            columnSize: [100],
+            columnSize: [80],
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
@@ -138,7 +138,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Widget_Background_Colour"),
-                    cls: "line-title",
+                    cls: "attr-names",
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.widgetBackground]
@@ -229,11 +229,11 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
-        this.leftLabel = BI.createWidget({
+        this.leftLabelStyle = BI.createWidget({
             type: "bi.chart_label_detailed_setting_combo"
         });
 
-        this.leftLabel.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function () {
+        this.leftLabelStyle.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
@@ -330,7 +330,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.showLeftLabel]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.leftLabel]
+                    items: [this.leftLabelStyle]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Axis_Line_Color"),
@@ -431,11 +431,11 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
-        this.rightLabel = BI.createWidget({
+        this.rightLabelStyle = BI.createWidget({
             type: "bi.chart_label_detailed_setting_combo"
         });
 
-        this.rightLabel.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function () {
+        this.rightLabelStyle.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
@@ -502,7 +502,6 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 items: BI.createItems([{
                     type: "bi.label",
                     text: BI.i18nText("BI-Num_Level"),
-                    lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
@@ -510,7 +509,6 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Unit_Normal"),
-                    lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
@@ -533,7 +531,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.showRightLabel]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.rightLabel]
+                    items: [this.rightLabelStyle]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Axis_Line_Color"),
@@ -634,11 +632,11 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
-        this.right2Label = BI.createWidget({
+        this.right2LabelStyle = BI.createWidget({
             type: "bi.chart_label_detailed_setting_combo"
         });
 
-        this.right2Label.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function () {
+        this.right2LabelStyle.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
@@ -705,7 +703,6 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 items: BI.createItems([{
                     type: "bi.label",
                     text: BI.i18nText("BI-Num_Level"),
-                    lgap: constant.SIMPLE_H_GAP,
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
@@ -736,7 +733,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.showRight2Label]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.right2Label]
+                    items: [this.right2LabelStyle]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Axis_Line_Color"),
@@ -794,11 +791,11 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //分类轴标签
-        this.catLabel = BI.createWidget({
+        this.catLabelStyle = BI.createWidget({
             type: "bi.chart_label_detailed_setting_combo"
         });
 
-        this.catLabel.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function () {
+        this.catLabelStyle.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
@@ -834,7 +831,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.showCatLabel]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.catLabel]
+                    items: [this.catLabelStyle]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Axis_Line_Color"),
@@ -871,13 +868,13 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //网格线设置
-        this.hGridLine = BI.createWidget({
+        this.showHGridLine = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Horizontal"),
             width: 65
         });
 
-        this.hGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+        this.showHGridLine.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
@@ -891,13 +888,13 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
-        this.vGridLine = BI.createWidget({
+        this.showVGridLine = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Vertical"),
             width: 65
         });
 
-        this.vGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+        this.showVGridLine.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
@@ -960,13 +957,13 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //空值连续
-        this.continuousNullValue = BI.createWidget({
+        this.nullContinuity = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Null_Continue"),
             width: 90
         });
 
-        this.continuousNullValue.on(BI.Controller.EVENT_CHANGE, function() {
+        this.nullContinuity.on(BI.Controller.EVENT_CHANGE, function() {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
@@ -1000,13 +997,13 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.hGridLine]
+                    items: [this.showHGridLine]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.hGridLineColor]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.vGridLine]
+                    items: [this.showVGridLine]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.vGridLineColor]
@@ -1028,7 +1025,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.tooltipSetting]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.continuousNullValue]
+                    items: [this.nullContinuity]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -1194,6 +1191,25 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.separatorsLeft.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
         this.separatorsRight.setSelected(BI.Utils.getWSRightNumberSeparatorsByID(wId));
         this.separatorsRight2.setSelected(BI.Utils.getWSRight2NumberSeparatorsByID(wId));
+        this.showLeftLabel.setSelected(BI.Utils.getWSShowLValueAxisLabelByID(wId));
+        this.leftLabelStyle.setValue(BI.Utils.getWSLValueAxisLabelSettingByID(wId));
+        this.leftLineColor.setValue(BI.Utils.getWSLValueAxisLineColorByID(wId));
+        this.showRightLabel.setSelected(BI.Utils.getWSShowRValueAxisLabelByID(wId));
+        this.rightLabelStyle.setValue(BI.Utils.getWSRValueAxisLabelSettingByID(wId));
+        this.rightLineColor.setValue(BI.Utils.getWSRValueAxisLineColorByID(wId));
+        this.showRight2Label.setSelected(BI.Utils.getWSShowR2ValueAxisLabelByID(wId));
+        this.right2LabelStyle.setValue(BI.Utils.getWSR2ValueAxisLabelSettingByID(wId));
+        this.right2LineColor.setValue(BI.Utils.getWSR2ValueAxisLineColorByID(wId));
+        this.showCatLabel.setSelected(BI.Utils.getWSShowCatLabelByID(wId));
+        this.catLabelStyle.setValue(BI.Utils.getWSCatLabelStyleByID(wId));
+        this.catLineColor.setValue(BI.Utils.getWSCatLineColorByID(wId));
+        this.legendSetting.setValue(BI.Utils.getWSLegendSettingByID(wId));
+        this.showHGridLine.setSelected(BI.Utils.getWSShowHGridLineByID(wId));
+        this.hGridLineColor.setValue(BI.Utils.getWSHGridLineColorByID(wId));
+        this.showVGridLine.setSelected(BI.Utils.getWSShowVGridLineByID(wId));
+        this.vGridLineColor.setValue(BI.Utils.getWSVGridLineColorByID(wId));
+        this.nullContinuity.setSelected(BI.Utils.getWSNullContinueByID(wId));
+        this.tooltipSetting.setValue(BI.Utils.getWSToolTipSettingByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleRY.isSelected() ? this.editTitleRY.setVisible(true) : this.editTitleRY.setVisible(false);
@@ -1243,7 +1259,26 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             custom_z_scale: this.customZScale.getValue(),
             num_separators: this.separatorsLeft.isSelected(),
             right_num_separators: this.separatorsRight.isSelected(),
-            right2_num_separators: this.separatorsRight2.isSelected()
+            right2_num_separators: this.separatorsRight2.isSelected(),
+            show_left_label: this.showLeftLabel.isSelected(),
+            left_label_style: this.leftLabelStyle.getValue(),
+            left_line_color: this.leftLineColor.getValue(),
+            show_right_label: this.showRightLabel.isSelected(),
+            right_label_style: this.rightLabelStyle.getValue(),
+            right_line_color: this.rightLineColor.getValue(),
+            show_right2_label: this.showRight2Label.isSelected(),
+            right2_label_style: this.right2LabelStyle.getValue(),
+            right2_line_color: this.right2LineColor.getValue(),
+            show_cat_label: this.showCatLabel.isSelected(),
+            cat_label_style: this.catLabelStyle.getValue(),
+            cat_line_color: this.catLineColor.getValue(),
+            chart_legend_setting: this.legendSetting.getValue(),
+            show_h_grid_line: this.showHGridLine.isSelected(),
+            h_grid_line_color: this.hGridLineColor.getValue(),
+            show_v_grid_line: this.showVGridLine.isSelected(),
+            v_grid_line_color: this.vGridLineColor.getValue(),
+            null_continue: this.nullContinuity.isSelected(),
+            tooltip_setting: this.tooltipSetting.getValue(),
         }
     },
 
@@ -1288,7 +1323,26 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.customZScale.setValue(v.custom_z_scale);
         this.separatorsLeft.setSelected(v.num_separators);
         this.separatorsRight.setSelected(v.right_num_separators);
-        this.separatorsRight2.setSelected(v.right2_num_separators)
+        this.separatorsRight2.setSelected(v.right2_num_separators);
+        this.showLeftLabel.setSelected(v.show_left_label);
+        this.leftLabelStyle.setValue(v.left_label_style);
+        this.leftLineColor.setValue(v.left_line_color);
+        this.showRightLabel.setSelected(v.show_right_label);
+        this.rightLabelStyle.setValue(v.right_label_style);
+        this.rightLineColor.setValue(v.right_line_color);
+        this.showRight2Label.setSelected(v.show_right2_label);
+        this.right2LabelStyle.setValue(v.right2_label_style);
+        this.right2LineColor.setValue(v.right2_line_color);
+        this.showCatLabel.setSelected(v.show_cat_label);
+        this.catLabelStyle.setValue(v.cat_label_style);
+        this.catLineColor.setValue(v.cat_line_color);
+        this.legendSetting.setValue(v.chart_legend_setting);
+        this.showHGridLine.setSelected(v.show_h_grid_line);
+        this.hGridLineColor.setValue(v.h_grid_line_color);
+        this.showVGridLine.setSelected(v.show_v_grid_line);
+        this.vGridLineColor.setValue(v.v_grid_line_color);
+        this.nullContinuity.setSelected(v.null_continue);
+        this.tooltipSetting.setValue(v.tooltip_setting);
     }
 });
 BI.MultiAxisChartSetting.EVENT_CHANGE = "EVENT_CHANGE";

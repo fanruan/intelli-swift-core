@@ -303,10 +303,10 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             config.dataSheet.style = fontStyle;
         }
         config.xAxis[0].title.style = fontStyle;
-        config.xAxis[0].labelStyle = fontStyle;
-        config.legend.style = fontStyle;
+        // config.xAxis[0].labelStyle = fontStyle;
+        // config.legend.style = fontStyle;
         BI.each(config.yAxis, function (idx, axis) {
-            axis.labelStyle = fontStyle;
+            // axis.labelStyle = fontStyle;
             axis.title.style = fontStyle;
         })
     },

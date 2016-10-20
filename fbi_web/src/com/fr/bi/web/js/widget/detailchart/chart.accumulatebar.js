@@ -221,7 +221,7 @@ BI.AccumulateBarChart = BI.inherit(BI.AbstractChart, {
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
             num_separators: options.num_separators || false,
-	     custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
+	        custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
             chart_font: options.chart_font || c.FONT_STYLE
         };
         this.options.items = items;

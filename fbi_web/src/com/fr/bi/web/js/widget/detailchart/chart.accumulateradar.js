@@ -64,24 +64,28 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
 
         config.radiusAxis = this.radiusAxis;
         config.angleAxis = this.angleAxis;
+        config.radiusAxis[0].gridLineWidth = this.config.show_h_grid_line === true ? 1 : 0;
+        config.radiusAxis[0].gridLineColor = this.config.h_grid_line_color;
         config.radiusAxis[0].formatter = self.formatTickForRadar(this.config.left_y_axis_style, this.config.left_y_axis_number_level, this.config.num_separators, this.config.left_y_axis_unit);
         formatNumberLevelInYaxis(this.config.left_y_axis_number_level, self.constants.LEFT_AXIS, config.radiusAxis[0].formatter);
         config.radiusAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + title : title;
-        config.radiusAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.radiusAxis[0].min = this.config.custom_y_scale.minScale.scale || null;
         config.radiusAxis[0].max = this.config.custom_y_scale.maxScale.scale || null;
         config.radiusAxis[0].tickInterval = BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
             self.config.custom_y_scale.interval.scale : null;
         config.chartType = "radar";
         config.plotOptions.columnType = true;
+        config.plotOptions.connectNulls = this.config.null_continue;
         delete config.xAxis;
         delete config.yAxis;
 
-        config.angleAxis[0].labelStyle = BI.extend(this.config.lvalue_axis_label_setting.text_style, {
-            fontSize: this.config.lvalue_axis_label_setting.text_style.fontSize + "px"
+        config.angleAxis[0].labelStyle = BI.extend(this.config.left_label_style.text_style, {
+            fontSize: this.config.left_label_style.text_style.fontSize + "px"
         });
-        config.angleAxis[0].showLabel = this.config.show_lvalue_axis_label;
-        config.angleAxis[0].lineColor = this.config.lvalue_axis_line_color;
+        config.angleAxis[0].showLabel = this.config.show_left_label;
+        config.angleAxis[0].lineColor = this.config.left_line_color;
+        config.angleAxis[0].gridLineWidth = this.config.show_v_grid_line === true ? 1 : 0;
+        config.angleAxis[0].gridLineColor = this.config.v_grid_line_color;
         config.legend.style = BI.extend( this.config.chart_legend_setting, {
             fontSize:  this.config.chart_legend_setting.fontSize + "px"
         });
@@ -162,16 +166,16 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
             num_separators: options.num_separators || false,
             chart_font: options.chart_font || c.FONT_STYLE,
             left_y_axis_unit: options.left_y_axis_unit || "",
-            show_lvalue_axis_label: BI.isNull(options.show_lvalue_axis_label) ? true : options.show_lvalue_axis_label,
-            lvalue_axis_label_setting: options.lvalue_axis_label_setting || {},
-            lvalue_axis_line_color: options.lvalue_axis_line_color || "",
+            show_left_label: BI.isNull(options.show_left_label) ? true : options.show_left_label,
+            left_label_style: options.left_label_style || {},
+            left_line_color: options.left_line_color || "",
             chart_legend_setting: options.chart_legend_setting || {},
             show_h_grid_line: BI.isNull(options.show_h_grid_line) ? true : options.show_h_grid_line,
             h_grid_line_color: options.h_grid_line_color || "",
             show_v_grid_line: BI.isNull(options.show_v_grid_line) ? true : options.show_v_grid_line,
             v_grid_line_color: options.v_grid_line_color || "",
             tooltip_setting: options.tooltip_setting || {},
-
+            null_continue: options.null_continue
         };
         this.options.items = items;
         var types = [];

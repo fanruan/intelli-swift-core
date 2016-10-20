@@ -195,33 +195,33 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //显示标签
-        this.showLValueAxisLabel = BI.createWidget({
+        this.showLeftLabel = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Label"),
             width: 90
         });
 
-        this.showLValueAxisLabel.on(BI.Controller.EVENT_CHANGE, function() {
+        this.showLeftLabel.on(BI.Controller.EVENT_CHANGE, function() {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
 
         //左值轴标签设置
-        this.lValueAxisLabelSetting = BI.createWidget({
+        this.leftLabelStyle = BI.createWidget({
             type: "bi.chart_label_detailed_setting_combo"
         });
 
-        this.lValueAxisLabelSetting.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function() {
+        this.leftLabelStyle.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function() {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
 
         //坐直轴线颜色
-        this.lValueAxisLineColor = BI.createWidget({
+        this.leftLineColor = BI.createWidget({
             type: "bi.color_chooser",
             width: 30,
             height: 30
         });
 
-        this.lValueAxisLineColor.on(BI.ColorChooser.EVENT_CHANGE, function() {
+        this.leftLineColor.on(BI.ColorChooser.EVENT_CHANGE, function() {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
 
@@ -289,17 +289,17 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.separators]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.showLValueAxisLabel]
+                    items: [this.showLeftLabel]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.lValueAxisLabelSetting]
+                    items: [this.leftLabelStyle]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Axis_Line_Color"),
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items:[this.lValueAxisLineColor]
+                    items:[this.leftLineColor]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.showCustomScale]
@@ -399,13 +399,13 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //空值连续
-        this.continuousNullValue = BI.createWidget({
+        this.nullContinuity = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Null_Continue"),
             width: 90
         });
 
-        this.continuousNullValue.on(BI.Controller.EVENT_CHANGE, function() {
+        this.nullContinuity.on(BI.Controller.EVENT_CHANGE, function() {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
 
@@ -528,9 +528,9 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.LYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
         this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
         this.separators.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
-        this.showLValueAxisLabel.setSelected(BI.Utils.getWSShowValueAxisLabelByID(wId));
-        this.lValueAxisLabelSetting.setValue(BI.Utils.getWSLValueAxisLabelSettingByID(wId));
-        this.lValueAxisLineColor.setValue(BI.Utils.getWSLValueAxisLineColorByID(wId));
+        this.showLeftLabel.setSelected(BI.Utils.getWSShowLValueAxisLabelByID(wId));
+        this.leftLabelStyle.setValue(BI.Utils.getWSLValueAxisLabelSettingByID(wId));
+        this.leftLineColor.setValue(BI.Utils.getWSLValueAxisLineColorByID(wId));
         this.showCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
         this.customScale.setValue(BI.Utils.getWSCustomYScale(wId));
         this.customScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
@@ -543,7 +543,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.vGridLineColor.setValue(BI.Utils.getWSVGridLineColorByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
         this.tooltipSetting.setValue(BI.Utils.getWSToolTipSettingByID(wId));
-        this.continuousNullValue.setSelected(BI.Utils.getWSNullContinueByID(wId));
+        this.nullContinuity.setSelected(BI.Utils.getWSNullContinueByID(wId));
 
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.linkageSelection.setSelected(BI.Utils.getWSLinkageSelectionByID(wId));
@@ -563,9 +563,9 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             left_y_axis_unit: this.LYUnit.getValue(),
             left_y_axis_style: this.lYAxisStyle.getValue()[0],
             num_separators: this.separators.isSelected(),
-            show_lvalue_axis_label: this.showLValueAxisLabel.isSelected(),
-            lvalue_axis_label_setting: this.lValueAxisLabelSetting.getValue(),
-            lvalue_axis_line_color: this.lValueAxisLineColor.getValue(),
+            show_left_label: this.showLeftLabel.isSelected(),
+            left_label_style: this.leftLabelStyle.getValue(),
+            left_line_color: this.leftLineColor.getValue(),
             show_y_custom_scale: this.showCustomScale.isSelected(),
             custom_y_scale: this.customScale.getValue(),
 
@@ -577,7 +577,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             v_grid_line_color: this.vGridLineColor.getValue(),
             show_data_label: this.showDataLabel.isSelected(),
             tooltip_setting: this.tooltipSetting.getValue(),
-            continuous_null_value: this.continuousNullValue.isSelected(),
+            null_continue: this.nullContinuity.isSelected(),
 
             transfer_filter: this.transferFilter.isSelected(),
             manually_linkage_selection: this.linkageSelection.isSelected()
@@ -597,9 +597,9 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.LYUnit.setValue(v.left_y_axis_unit);
         this.lYAxisStyle.setValue(v.left_y_axis_style);
         this.separators.setSelected(v.num_separators);
-        this.showLValueAxisLabel.setSelected(v.show_lvalue_axis_label);
-        this.lValueAxisLabelSetting.setValue(v.lvalue_axis_label_setting);
-        this.lValueAxisLineColor.setValue(v.lvalue_axis_line_color);
+        this.showLeftLabel.setSelected(v.show_left_label);
+        this.leftLabelStyle.setValue(v.left_label_style);
+        this.leftLineColor.setValue(v.left_line_color);
         this.showCustomScale.setSelected(v.show_y_custom_scale);
         this.customScale.setValue(v.custom_y_scale);
 
@@ -611,7 +611,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.vGridLineColor.setValue(v.v_grid_line_color);
         this.showDataLabel.setSelected(v.show_data_label);
         this.tooltipSetting.setValue(v.tooltip_setting);
-        this.continuousNullValue.setSelected(v.continuous_null_value);
+        this.nullContinuity.setSelected(v.null_continue);
 
         this.transferFilter.setSelected(v.transfer_filter);
         this.linkageSelection.setSelected(v.manually_linkage_selection)
