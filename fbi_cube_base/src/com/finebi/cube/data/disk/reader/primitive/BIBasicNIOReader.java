@@ -1,9 +1,11 @@
 package com.finebi.cube.data.disk.reader.primitive;
 
+import com.finebi.cube.data.BICubeReleaseRecorder;
 import com.finebi.cube.data.ICubeSourceReleaseManager;
 import com.finebi.cube.data.disk.NIOHandlerManager;
 import com.finebi.cube.data.input.primitive.ICubePrimitiveReader;
 import com.finebi.cube.exception.BIResourceInvalidException;
+import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.mem.BIReleaseUtils;
@@ -58,8 +60,8 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
         if (filePosition < 0) {
             throw BINonValueUtils.illegalArgument("The value of argument must be positive,but it's " + filePosition + " now");
         }
-        if(isValid) {
-            int index = (int)(filePosition >> getPageStep() >> NIOConstant.MAX_SINGLE_FILE_PART_SIZE);
+        if (isValid) {
+            int index = (int) (filePosition >> getPageStep() >> NIOConstant.MAX_SINGLE_FILE_PART_SIZE);
             initBuffer(index);
             return index;
         } else {
@@ -68,15 +70,15 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
 
     }
 
-    protected int getIndex(long filePosition){
+    protected int getIndex(long filePosition) {
         return (int) (filePosition & getPageModeValue());
     }
 
-    private boolean buffersContains(int index){
-        if (bufferArray.length <= index){
-            synchronized (this){
-                if (bufferArray.length <= index){
-                    MappedByteBuffer[] temp = new MappedByteBuffer[index+1];
+    private boolean buffersContains(int index) {
+        if (bufferArray.length <= index) {
+            synchronized (this) {
+                if (bufferArray.length <= index) {
+                    MappedByteBuffer[] temp = new MappedByteBuffer[index + 1];
                     System.arraycopy(bufferArray, 0, temp, 0, bufferArray.length);
                     bufferArray = temp;
                 }
@@ -112,6 +114,7 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
             }
         }
     }
+
     @Override
     public void releaseHandler() {
         if (useNioHandlerManager()) {
@@ -126,9 +129,8 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
         if (useNioHandlerManager()) {
             nioHandlerManager.forceReleaseHandler();
         } else {
-            releaseSource();
+            destroySource();
         }
-        isValid = false;
     }
 
     @Override
@@ -136,28 +138,63 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
         return !isValid;
     }
 
-    public void releaseSource() {
+    private void unMap() throws IOException {
+        releaseChild();
+        releaseBuffer();
+        releaseChannel();
+    }
+
+    @Override
+    public void destroySource() {
         try {
-        readWriteLock.writeLock().lock();
-        if (!isValid) {
-            return;
-        }
-//        //先改变isValid状态再判断canClear
-//        isValid = false;
-        try {
-            //但愿10ms能 执行完get方法否则可能导致jvm崩溃
-            //锁太浪费资源了，10ms目前并没有遇到问题
-            //daniel:改成1ms，最垃圾的磁盘也读完了
-            Thread.currentThread().sleep(1);
-        } catch (InterruptedException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
-        }
-            releaseChild();
-            releaseBuffer();
-            releaseChannel();
+            readWriteLock.writeLock().lock();
+            if (!isValid) {
+                return;
+            }
+            //先改变isValid状态再判断canClear
+            isValid = false;
+            try {
+                //但愿10ms能 执行完get方法否则可能导致jvm崩溃
+                //锁太浪费资源了，10ms目前并没有遇到问题
+                //daniel:改成1ms，最垃圾的磁盘也读完了
+                Thread.currentThread().sleep(1);
+            } catch (InterruptedException e) {
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
+            }
+            unMap();
         } catch (IOException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         } finally {
+            readWriteLock.writeLock().unlock();
+        }
+    }
+
+    @Override
+    public void reSetValid(boolean isValid) {
+        this.isValid = isValid;
+    }
+
+    public void releaseSource() {
+        try {
+            readWriteLock.writeLock().lock();
+            if (!isValid) {
+                return;
+            }
+            //先改变isValid状态再判断canClear
+            isValid = false;
+            try {
+                //但愿10ms能 执行完get方法否则可能导致jvm崩溃
+                //锁太浪费资源了，10ms目前并没有遇到问题
+                //daniel:改成1ms，最垃圾的磁盘也读完了
+                Thread.currentThread().sleep(1);
+            } catch (InterruptedException e) {
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
+            }
+            unMap();
+        } catch (IOException e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        } finally {
+            isValid = true;
             readWriteLock.writeLock().unlock();
         }
 
@@ -167,7 +204,7 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
         return releaseManager != null;
     }
 
-    private boolean useNioHandlerManager(){
+    private boolean useNioHandlerManager() {
         return nioHandlerManager != null;
     }
 
@@ -205,9 +242,10 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
     }
 
     @Override
-    public  void setHandlerReleaseHelper(NIOHandlerManager releaseHelper){
+    public void setHandlerReleaseHelper(NIOHandlerManager releaseHelper) {
         this.nioHandlerManager = releaseHelper;
     }
+
     protected abstract void initChild(int index, MappedByteBuffer buffer);
 
     private FileChannel initFile(long fileIndex) {

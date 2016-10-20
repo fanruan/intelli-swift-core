@@ -145,6 +145,7 @@ public class BIDiskWriterReaderTest extends TestCase {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
+
     public void testBigWriter() {
 
         int filesize = 1;
@@ -163,7 +164,7 @@ public class BIDiskWriterReaderTest extends TestCase {
 
 
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -179,18 +180,18 @@ public class BIDiskWriterReaderTest extends TestCase {
                 location.setReaderSourceLocation();
                 BIStringNIOReader reader = (BIStringNIOReader) BICubeDiskDiscovery.getInstance().getCubeReader(location);
                 for (int j = 0; j < size; j++) {
-                    r =   reader.getSpecificValue(j);
+                    r = reader.getSpecificValue(j);
                 }
                 reader.clear();
             }
             System.out.println("finish...");
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
-    public void testMultiThreadRead(){
-        ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(BIDiskWriterReaderTest.projectPath, "writer" + 0+ "ok");
+    public void testMultiThreadRead() {
+        ICubeResourceLocation location = BILocationBuildTestTool.buildWrite(BIDiskWriterReaderTest.projectPath, "writer" + 0 + "ok");
         location.setStringType();
         location.setReaderSourceLocation();
         BIStringNIOReader reader = null;
@@ -217,7 +218,7 @@ public class BIDiskWriterReaderTest extends TestCase {
                     }
                     System.out.println("finish...");
                 } catch (Exception e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
             }
         };

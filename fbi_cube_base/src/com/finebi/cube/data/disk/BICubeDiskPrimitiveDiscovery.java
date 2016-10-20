@@ -63,9 +63,9 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
             try {
                 nioReaderManager.getReadWriteLock().readLock().lock();
                 return nioReaderManager.getCubeReader(resourceLocation);
-            }catch (Exception e){
+            } catch (Exception e) {
                 throw BINonValueUtils.beyondControl(e);
-            }finally {
+            } finally {
                 nioReaderManager.getReadWriteLock().readLock().unlock();
             }
 
@@ -87,9 +87,9 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
             try {
                 nioWriterManager.getReadWriteLock().writeLock().lock();
                 return nioWriterManager.getCubeWriter(resourceLocation);
-            }catch (Exception e){
+            } catch (Exception e) {
                 throw BINonValueUtils.beyondControl(e);
-            }finally {
+            } finally {
                 nioWriterManager.getReadWriteLock().writeLock().unlock();
             }
         }
@@ -112,9 +112,9 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
         }
     }
 
-    public List<ICubeResourceLocation>  getUnReleasedLocation() {
-        synchronized (this){
-            List<ICubeResourceLocation> locations=new ArrayList<ICubeResourceLocation>();
+    public List<ICubeResourceLocation> getUnReleasedLocation() {
+        synchronized (this) {
+            List<ICubeResourceLocation> locations = new ArrayList<ICubeResourceLocation>();
             try {
 //                locations = readerCache.getUnReleasedLocation();
 //                locations.addAll(writerCache.getUnReleasedLocation());
@@ -140,14 +140,31 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
         synchronized (this) {
             releasingResource = true;
             try {
-                for (NIOResourceManager nioManager:fileResourceMap.values()){
+                for (NIOResourceManager nioManager : fileResourceMap.values()) {
                     nioManager.forceRelease();
                 }
             } catch (Exception e) {
                 BILoggerFactory.getLogger().error(e.getMessage(), e);
             } finally {
-
+                releasingResource = false;
             }
         }
     }
+
+    //fortest
+    public void printCountOfHandler() {
+        synchronized (this) {
+            releasingResource = true;
+            try {
+                for (NIOResourceManager nioManager : fileResourceMap.values()) {
+                    nioManager.printCountOfHandler();
+                }
+            } catch (Exception e) {
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
+            } finally {
+                releasingResource = false;
+            }
+        }
+    }
+
 }

@@ -133,11 +133,17 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
     @Override
     public void clear() {
         selfColumnEntity.clear();
+        hostDataColumn.clear();
     }
 
     @Override
     public void forceReleaseWriter() {
         selfColumnEntity.forceReleaseWriter();
+    }
+
+    @Override
+    public void forceReleaseReader() {
+        selfColumnEntity.forceReleaseReader();
     }
 
     /**

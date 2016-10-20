@@ -506,7 +506,7 @@ public class BICubeOperationManager {
                 }
                 /*增量更新现在暂时只适用于SQL语句，其他数据集是不能用的*/
                 case DBConstant.SINGLE_TABLE_UPDATE_TYPE.PART: {
-                    discovery = BICubeIncreaseDisDiscovery.getInstance();
+//                    discovery = BICubeIncreaseDisDiscovery.getInstance();
                     resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
                     cube = new BICube(resourceRetrievalService, discovery);
                     if (tableSource instanceof ExcelTableSource) {

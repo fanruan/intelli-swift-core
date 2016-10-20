@@ -22,6 +22,7 @@ public interface ICubePrimitiveWriter<T> extends CubeResourceRelease {
     void flush();
 
     void setReleaseManager(ICubeSourceReleaseManager releaseHelper);
+
     void setHandlerReleaseHelper(NIOHandlerManager releaseHelper);
 
     void releaseSource();
@@ -29,6 +30,10 @@ public interface ICubePrimitiveWriter<T> extends CubeResourceRelease {
     String getWriterHandler();
 
     boolean canWriter();
+
+    void reSetValid(boolean isValid);
+
+    void destoryResource();
 }
 
 

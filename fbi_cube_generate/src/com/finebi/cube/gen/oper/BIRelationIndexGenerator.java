@@ -190,7 +190,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
              */
             int primaryGroupSize = primaryColumn.sizeOfGroup();
             int foreignGroupSize = foreignColumn.sizeOfGroup();
-            if (foreignGroupSize == 0){
+            if (foreignGroupSize == 0) {
                 return;
             }
             int foreignIndex = 0;
@@ -213,14 +213,14 @@ public class BIRelationIndexGenerator extends BIProcessor {
                 /**
                  * 小于0说明主表的id在子表找不到，大于0说明子表的id在主表找不到
                  */
-                if (result < 0){
+                if (result < 0) {
                     pGroupValueIndex.Traversal(new SingleRowTraversalAction() {
                         @Override
                         public void actionPerformed(int row) {
                             finalTableRelation.addRelationIndex(row, GVIFactory.createAllEmptyIndexGVI());
                         }
                     });
-                } else if (result == 0){
+                } else if (result == 0) {
                     final IntArray array = new IntArray();
                     pGroupValueIndex.Traversal(new TraversalAction() {
                         @Override
@@ -228,7 +228,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
                             array.addAll(data);
                         }
                     });
-                    for (int i = 0; i < array.size; i++){
+                    for (int i = 0; i < array.size; i++) {
                         tableRelation.addRelationIndex(array.get(i), foreignGroupValueIndex);
 
                         try {
@@ -249,10 +249,10 @@ public class BIRelationIndexGenerator extends BIProcessor {
                     foreignColumnValue = foreignColumn.getGroupObjectValue(foreignIndex);
                     foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
                 } else {
-                    while (foreignIndex < foreignGroupSize && c.compare(primaryColumnValue, foreignColumnValue) < 0){
+                    while (foreignIndex < foreignGroupSize && c.compare(primaryColumnValue, foreignColumnValue) < 0) {
                         nullIndex.or(foreignGroupValueIndex);
                         foreignIndex++;
-                        if (foreignIndex == foreignGroupSize){
+                        if (foreignIndex == foreignGroupSize) {
                             foreignColumnValue = null;
                             foreignGroupValueIndex = null;
                         } else {
@@ -266,7 +266,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
                     logger.info(BIStringUtils.append("\n    ", logRelation(), "read ", String.valueOf(index), " rows field value and time elapse:", String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)), " second"));
                 }
             }
-            while (foreignIndex < foreignGroupSize - 1){
+            while (foreignIndex < foreignGroupSize - 1) {
                 nullIndex.or(foreignGroupValueIndex);
                 foreignIndex++;
                 foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
@@ -284,24 +284,27 @@ public class BIRelationIndexGenerator extends BIProcessor {
         } finally {
             if (primaryTable != null) {
                 ((CubeTableEntityService) primaryTable).forceReleaseWriter();
-                primaryTable.clear();
+//                primaryTable.clear();
             }
             if (foreignTable != null) {
                 ((CubeTableEntityService) foreignTable).forceReleaseWriter();
 
-                foreignTable.clear();
+//                foreignTable.clear();
             }
             if (primaryColumn != null) {
                 primaryColumn.forceReleaseWriter();
-                primaryColumn.clear();
+//                primaryColumn.clear();
             }
             if (foreignColumn != null) {
                 foreignColumn.forceReleaseWriter();
-                foreignColumn.clear();
+//                foreignColumn.clear();
             }
             if (tableRelation != null) {
                 tableRelation.forceReleaseWriter();
-                tableRelation.clear();
+//                tableRelation.clear();
+            }
+            if (cube != null) {
+                cube.clear();
             }
 
         }

@@ -450,6 +450,8 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
             }
         } catch (BIResourceInvalidException e) {
             BILoggerFactory.getLogger().error(e.getMessage());
+        } finally {
+            removedListReader.clear();
         }
         return removedList;
     }
@@ -498,7 +500,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     protected void resetFieldReader() {
         if (isFieldReaderAvailable()) {
             fieldInfoReader.clear();
-            fieldInfoReader = null;
+//            fieldInfoReader = null;
         }
     }
 
@@ -523,7 +525,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     protected void resetRowCountReader() {
         if (isRowCountReaderAvailable()) {
             rowCountReader.clear();
-            rowCountReader = null;
+//            rowCountReader = null;
         }
     }
 
@@ -537,7 +539,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     protected void resetTimeStampReader() {
         if (isTimeStampReaderAvailable()) {
             timeStampReader.clear();
-            timeStampReader = null;
+//            timeStampReader = null;
         }
     }
 
@@ -551,7 +553,21 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     protected void resetParentReader() {
         if (isParentReaderAvailable()) {
             parentsReader.clear();
-            parentsReader = null;
+//            parentsReader = null;
+        }
+    }
+
+    protected void resetRemoveListReader() {
+        if (isRemoveListReaderAvailable()) {
+            removeListReader.clear();
+//            removeListReader = null;
+        }
+    }
+
+    protected void resetRemoveListWriter() {
+        if (isRemoveListWriterAvailable()) {
+            removeListWriter.clear();
+            removeListWriter = null;
         }
     }
 
@@ -571,37 +587,52 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         if (version != null) {
             version.clear();
         }
+        resetRemoveListReader();
+        resetRemoveListWriter();
+
     }
 
     public void forceRelease() {
         if (isFieldWriterAvailable()) {
             fieldInfoWriter.forceRelease();
+            fieldInfoWriter = null;
         }
-        if (isFieldReaderAvailable()) {
-            fieldInfoReader.forceRelease();
-        }
+//        if (isFieldReaderAvailable()) {
+//            fieldInfoReader.forceRelease();
+//        }
 
-        if (isRowCountReaderAvailable()) {
-            rowCountReader.forceRelease();
-        }
+//        if (isRowCountReaderAvailable()) {
+//            rowCountReader.forceRelease();
+//        }
         if (isRowCountWriterAvailable()) {
             rowCountWriter.forceRelease();
+            rowCountWriter = null;
         }
         if (isTimeStampWriterAvailable()) {
             timeStampWriter.forceRelease();
+            timeStampWriter = null;
         }
-        if (isTimeStampReaderAvailable()) {
-            timeStampReader.forceRelease();
-        }
+//        if (isTimeStampReaderAvailable()) {
+//            timeStampReader.forceRelease();
+//        }
         if (isParentWriterAvailable()) {
             parentsWriter.forceRelease();
+            parentsWriter = null;
         }
-        if (isParentReaderAvailable()) {
-            parentsReader.forceRelease();
+//        if (isParentReaderAvailable()) {
+//            parentsReader.forceRelease();
+//        }
+        if (isRemoveListWriterAvailable()) {
+            removeListWriter.clear();
+            removeListWriter = null;
         }
+//        if(isRemoveListReaderAvailable()){
+//            removeListReader.clear();
+////            removeListReader = null;
+//        }
         parentFieldProperty.forceRelease();
         ((BICubeProperty) version).forceRelease();
-        clear();
+//        clear();
     }
 
     @Override

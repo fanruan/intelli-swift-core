@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.bi.etl.analysis.manager;
 
@@ -42,20 +42,19 @@ import java.util.*;
 
 /**
  * @author Daniel
- *
  */
 public class UserETLUpdateTask implements CubeTask {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 8163408533936978327L;
-	private String path = UUID.randomUUID().toString();
-	
-	private UserCubeTableSource source;
 
-	private Date start;
-	private Date end;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 8163408533936978327L;
+    private String path = UUID.randomUUID().toString();
+
+    private UserCubeTableSource source;
+
+    private Date start;
+    private Date end;
 
     private BIUser biUser;
     @BIIgnoreField
@@ -104,6 +103,7 @@ public class UserETLUpdateTask implements CubeTask {
         }, cubeFieldSources, UserETLCubeTILoader.getInstance(biUser.getUserId())));
         tableEntityService.addVersion(getTableVersion());
         ICubeFieldSource[] fields = source.getFieldsArray(new HashSet<CubeTableSource>());
+        tableEntityService.clear();
         for (int i = 0; i < fields.length; i++) {
             ICubeFieldSource field = fields[i];
             Iterator<BIColumnKey> columnKeyIterator = BIColumnKey.generateColumnKey(field).iterator();
@@ -112,110 +112,110 @@ public class UserETLUpdateTask implements CubeTask {
                 new BIFieldIndexGenerator(cube, source, field, targetColumnKey).mainTask(null);
             }
         }
+
     }
 
 
-
-	private long getBaseSourceVersion(CubeTableSource source){
+    private long getBaseSourceVersion(CubeTableSource source) {
         ICubeTableService service = CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).getTableIndex(source);
         return service == null ? -1l : service.getTableVersion(new IndexKey(StringUtils.EMPTY));
-	}
+    }
 
-	public String getPath(){
-		return path;
-	}
-	
-	
-	@Override
-	public void start() {
-		start = new Date();
-		BILoggerFactory.getLogger().info("started in file path:" + path);
-	}
-	
-
-	@Override
-	public void end() {
-		UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
-		manager.setCubePath(source.fetchObjectCore().getID().getIdentityValue(), getPath());
-		end = new Date();
-		manager.invokeUpdate(source.fetchObjectCore().getID().getIdentityValue(), source.getUserId());
-		manager.releaseCurrentThread();
-	}
+    public String getPath() {
+        return path;
+    }
 
 
-	/* (non-Javadoc)
-	 * @see com.fr.json.JSONCreator#createJSON()
-	 */
-	@Override
-	public JSONObject createJSON() throws Exception {
-		JSONObject jo = new JSONObject();
-		if(start != null){
-			jo.put("start", start.getTime());
-		}
-		if(end != null){
-			jo.put("end", end.getTime());
-		}
-		return jo;
-	}
+    @Override
+    public void start() {
+        start = new Date();
+        BILoggerFactory.getLogger().info("started in file path:" + path);
+    }
 
 
-	/* (non-Javadoc)
-	 * @see com.fr.bi.stable.engine.CubeTask#getUUID()
-	 */
-	@Override
-	public String getUUID() {
-		return getPath();
-	}
+    @Override
+    public void end() {
+        UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
+        manager.setCubePath(source.fetchObjectCore().getID().getIdentityValue(), getPath());
+        end = new Date();
+        manager.invokeUpdate(source.fetchObjectCore().getID().getIdentityValue(), source.getUserId());
+        manager.releaseCurrentThread();
+    }
 
 
-	/* (non-Javadoc)
-	 * @see com.fr.bi.stable.engine.CubeTask#getTaskType()
-	 */
-	@Override
-	public CubeTaskType getTaskType() {
-		return CubeTaskType.CHECK;
-	}
+    /* (non-Javadoc)
+     * @see com.fr.json.JSONCreator#createJSON()
+     */
+    @Override
+    public JSONObject createJSON() throws Exception {
+        JSONObject jo = new JSONObject();
+        if (start != null) {
+            jo.put("start", start.getTime());
+        }
+        if (end != null) {
+            jo.put("end", end.getTime());
+        }
+        return jo;
+    }
 
 
-	/* (non-Javadoc)
-	 * @see com.fr.bi.stable.engine.CubeTask#getUserId()
-	 */
-	@Override
-	public long getUserId() {
-		return source.getUserId();
-	}
+    /* (non-Javadoc)
+     * @see com.fr.bi.stable.engine.CubeTask#getUUID()
+     */
+    @Override
+    public String getUUID() {
+        return getPath();
+    }
 
 
-	/**
-	 * @return
-	 */
-	public boolean check(long oldVersion) {
+    /* (non-Javadoc)
+     * @see com.fr.bi.stable.engine.CubeTask#getTaskType()
+     */
+    @Override
+    public CubeTaskType getTaskType() {
+        return CubeTaskType.CHECK;
+    }
+
+
+    /* (non-Javadoc)
+     * @see com.fr.bi.stable.engine.CubeTask#getUserId()
+     */
+    @Override
+    public long getUserId() {
+        return source.getUserId();
+    }
+
+
+    /**
+     * @return
+     */
+    public boolean check(long oldVersion) {
         UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
         return manager.getCubePath(source.fetchObjectCore().getID().getIdentityValue()) != null && checkSourceVersion(oldVersion);
-	}
-	
-	/**
-	 * @return
-	 */
-	private boolean checkSourceVersion(long oldVersion) {
-		return oldVersion == getTableVersion();
-	}
-	
-	private long getTableVersion(){
+    }
 
-		TreeMap<String, CubeTableSource> tm = new TreeMap<String, CubeTableSource>();
-		Set<CubeTableSource> set = new HashSet<CubeTableSource>();
-        for (CubeTableSource s : source.getSourceUsedBaseSource(set, new HashSet<CubeTableSource>())){
+    /**
+     * @return
+     */
+    private boolean checkSourceVersion(long oldVersion) {
+        return oldVersion == getTableVersion();
+    }
+
+    private long getTableVersion() {
+
+        TreeMap<String, CubeTableSource> tm = new TreeMap<String, CubeTableSource>();
+        Set<CubeTableSource> set = new HashSet<CubeTableSource>();
+        for (CubeTableSource s : source.getSourceUsedBaseSource(set, new HashSet<CubeTableSource>())) {
             tm.put(s.fetchObjectCore().getIDValue(), s);
         }
         tm.remove(source.getAnalysisCubeTableSource().fetchObjectCore().getIDValue());
         List versionList = new ArrayList();
         Iterator<Map.Entry<String, CubeTableSource>> iter = tm.entrySet().iterator();
-		while(iter.hasNext()){
+        while (iter.hasNext()) {
             Map.Entry<String, CubeTableSource> entry = iter.next();
             versionList.add(entry.getKey());
-			versionList.add(getBaseSourceVersion(entry.getValue()));
-		}
-		return Arrays.hashCode(versionList.toArray());
-	}
+            versionList.add(getBaseSourceVersion(entry.getValue()));
+        }
+        return Arrays.hashCode(versionList.toArray());
+    }
 }

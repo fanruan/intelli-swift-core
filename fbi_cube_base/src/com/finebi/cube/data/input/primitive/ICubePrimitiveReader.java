@@ -18,7 +18,11 @@ public interface ICubePrimitiveReader extends CubeResourceRelease {
 
     void releaseSource();
 
+    void destroySource();
+
     String getReaderHandler();
 
     void setHandlerReleaseHelper(NIOHandlerManager releaseHelper);
+
+    void reSetValid(boolean isValid);
 }

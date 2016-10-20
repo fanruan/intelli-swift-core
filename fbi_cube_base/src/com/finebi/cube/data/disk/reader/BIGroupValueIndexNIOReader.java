@@ -58,7 +58,7 @@ public class BIGroupValueIndexNIOReader implements ICubeGroupValueIndexReader {
         try {
             //pony IDGroupValueIndex不缓存，太占内存，效率太差，直接读一遍也很快的
             byte[] b = byteArray.getSpecificValue(rowNumber);
-            if (b != null && b.length == 5 &&  b[0] == GroupValueIndexCreator.ROARING_INDEX_ID.getType()){
+            if (b != null && b.length == 5 && b[0] == GroupValueIndexCreator.ROARING_INDEX_ID.getType()) {
                 return GVIFactory.createGroupValueIndexByBytes(b);
             }
             return cache.get(rowNumber);
@@ -75,10 +75,9 @@ public class BIGroupValueIndexNIOReader implements ICubeGroupValueIndexReader {
 
     @Override
     public void clear() {
-
         if (byteArray != null) {
             byteArray.clear();
-            byteArray = null;
+//            byteArray = null;
         }
         if (cache != null) {
             cache.invalidateAll();
@@ -88,7 +87,7 @@ public class BIGroupValueIndexNIOReader implements ICubeGroupValueIndexReader {
 
     @Override
     public boolean canRead() {
-        return byteArray.canRead();
+        return byteArray != null && byteArray.canRead();
     }
 
     @Override

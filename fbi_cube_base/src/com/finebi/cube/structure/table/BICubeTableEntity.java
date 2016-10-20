@@ -46,7 +46,6 @@ public class BICubeTableEntity implements CubeTableEntityService {
             if (tableProperty.isPropertyExist()) {
                 columnManager = new BICubeTableColumnManager(tableKey, resourceRetrievalService, getAllFields(), discovery);
             }
-
             relationManager = new BICubeTableRelationEntityManager(this.resourceRetrievalService, this.tableKey, discovery);
         } catch (Exception e) {
             BINonValueUtils.beyondControl(e.getMessage(), e);
@@ -246,7 +245,7 @@ public class BICubeTableEntity implements CubeTableEntityService {
 
     @Override
     public boolean isCubeLastTimeAvailable() {
-        return tableProperty.isCubeLastUpdateTimeAvailable();
+        return tableProperty.isCubeLastUpdateTimeAvailable();// TODO: 2016/10/11 需要释放资源 
     }
 
     public long getCubeVersion() {
@@ -272,6 +271,6 @@ public class BICubeTableEntity implements CubeTableEntityService {
 
     @Override
     public Boolean isVersionAvailable() {
-        return tableProperty.isVersionAvailable();
+        return tableProperty.isVersionAvailable();// TODO: 2016/10/11 需要释放资源 
     }
 }

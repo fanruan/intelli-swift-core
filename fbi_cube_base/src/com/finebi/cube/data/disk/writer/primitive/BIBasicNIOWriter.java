@@ -66,17 +66,34 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
         }
     }
 
-    public void releaseSource() {
-            readWriteLock.writeLock().lock();
-            try {
-                if (!isReleased) {
-                    clearBuffer();
-                    currentIndex = -1L;
-                    file_index = -1L;
-                }
-            } finally {
-                readWriteLock.writeLock().unlock();
+    @Override
+    public void destoryResource() {
+        readWriteLock.writeLock().lock();
+        try {
+            if (!isReleased) {
+                isReleased = true;
+                clearBuffer();
+                currentIndex = -1L;
+                file_index = -1L;
             }
+        } finally {
+            readWriteLock.writeLock().unlock();
+        }
+    }
+
+    public void releaseSource() {
+        readWriteLock.writeLock().lock();
+        try {
+            if (!isReleased) {
+                isReleased = true;
+                clearBuffer();
+                currentIndex = -1L;
+                file_index = -1L;
+            }
+        } finally {
+            isReleased = false;
+            readWriteLock.writeLock().unlock();
+        }
     }
 
     @Override
@@ -89,9 +106,13 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
         if (useNioHandlerManager()) {
             nioHandlerManager.forceReleaseHandler();
         } else {
-            releaseSource();
+            destoryResource();
         }
-        isReleased = true;
+    }
+
+    @Override
+    public void reSetValid(boolean isValid) {
+        this.isReleased = isValid;
     }
 
     @Override
@@ -108,9 +129,10 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
         return releaseManager != null;
     }
 
-    private boolean useNioHandlerManager(){
+    private boolean useNioHandlerManager() {
         return nioHandlerManager != null;
     }
+
     private void clearBuffer() {
         readWriteLock.writeLock().lock();
         try {
@@ -154,9 +176,10 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
     }
 
     @Override
-    public void setHandlerReleaseHelper(NIOHandlerManager releaseHelper){
+    public void setHandlerReleaseHelper(NIOHandlerManager releaseHelper) {
         this.nioHandlerManager = releaseHelper;
     }
+
     @Override
     public void flush() {
         //buffer.force();
