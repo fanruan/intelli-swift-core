@@ -172,7 +172,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
                     }
                 })
             });
-            config.plotOptions.tooltip.formatter.valueFormat = formatter;
+            // config.plotOptions.tooltip.formatter.valueFormat = formatter;
         }
 
         function getXYAxisUnit(numberLevelType, position){
@@ -248,7 +248,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
                     return axis;
                 }),
                 stack: "stackedFall",
-                name: BI.UUID()
+                name: idx === 1 ? items[0].name : BI.UUID()
             };
         })];
     },
