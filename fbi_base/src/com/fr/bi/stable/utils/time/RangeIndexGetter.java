@@ -4,7 +4,6 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.DateUtils;
 
 /**
@@ -42,11 +41,11 @@ public class RangeIndexGetter {
     public GroupValueIndex createRangeIndex(BIDay start, BIDay end) {
         GroupValueIndex gvi = GVIFactory.createAllEmptyIndexGVI();
         if(start == null){
-            Integer firstYear = (Integer) yearMap.firstKey();
+            Integer firstYear =  Integer.valueOf(yearMap.firstKey().toString());
             start = new BIDay(firstYear, 0, 0);
         }
         if(end == null){
-            Integer lastYear = (Integer) yearMap.lastKey();
+            Integer lastYear = Integer.valueOf(yearMap.lastKey().toString());
             end = new BIDay(lastYear,  BIDateUtils.MAX_MONTH, BIDateUtils.MAX_DAY);
         }
         if (start.compareTo(end) <= 0){

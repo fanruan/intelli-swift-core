@@ -70,7 +70,7 @@ BI.ETLDateFilterCombo = BI.inherit(BI.Single, {
             max: this.constants.DATE_MAX_VALUE
         });
         this.popup.on(BI.DateCalendarPopup.EVENT_CHANGE, function () {
-            self._setOBJValue(self.popup.getValue());
+            self._setOBJValue({value: self.popup.getValue()});
             self.combo.hideView();
             self.fireEvent(BI.ETLDateFilterCombo.EVENT_CHANGE);
         });
