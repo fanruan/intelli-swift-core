@@ -2626,7 +2626,7 @@
                         var leafFilterObj = {
                             filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
                             filter_value: {
-                                type: value === "_*_" ? BI.Selection.All : BI.Selection.Multi,
+                                type: value === BICst.LIST_LABEL_TYPE.ALL ? BI.Selection.All : BI.Selection.Multi,
                                 value: [value]
                             },
                             // _src: {field_id: self.getFieldIDByDimensionID(dimensionIds[floor])}

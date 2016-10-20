@@ -244,9 +244,9 @@ BIDezi.TreeLabelDetailView = BI.inherit(BI.View, {
 
 
     change: function (changed, prev) {
-        if (BI.has(changed, "value")) {
-            this.treeLabel.setValue(this.model.get("value"));
-        }
+        //if (BI.has(changed, "value")) {
+        //    this.treeLabel.setValue(this.model.get("value"));
+        //}
         if (BI.has(changed, "view")) {
             this.treeLabel.setValue(this.model.get("value"));
         }
