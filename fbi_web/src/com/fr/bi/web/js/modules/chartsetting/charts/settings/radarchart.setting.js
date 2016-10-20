@@ -145,14 +145,14 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.colorSelect]
-                }, {
+                }, /*{
                     type: "bi.label",
                     text: BI.i18nText("BI-Table_Style"),
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.chartStyleGroup]
-                }, {
+                }, */{
                     type: "bi.label",
                     text: BI.i18nText("BI-Type"),
                     cls: "attr-names",

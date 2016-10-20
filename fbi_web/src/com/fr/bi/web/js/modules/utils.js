@@ -833,7 +833,7 @@
 
         getWSShowNameByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return (BI.isNotNull(ws.widget_setting) && BI.isNotNull(ws.widget_setting.show_name)) ? ws.widget_setting.show_name :
+            return BI.isNotNull(ws.show_name) ? ws.show_name :
                 BICst.DEFAULT_CHART_SETTING.show_name;
         },
 
