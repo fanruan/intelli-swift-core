@@ -131,15 +131,15 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
             }
         }
 
-        function arraysEqual (a1, a2) {
+        function arraysEqual (a1, a2) {     //仅考虑数值字符串等简单数据
             if (a1.length !== a2.length) {
                 return false;
             }
             BI.each(a2, function (idx, data) {
-                if(a2.indexOf(data) === -1) {
+                if(a1.indexOf(data) === -1) {
                     return false;
                 }
-            })
+            });
             return true;
         }
     },
