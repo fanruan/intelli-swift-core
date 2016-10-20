@@ -3197,6 +3197,9 @@
                 parseFilter(value);
             });
         }
+        if (BI.isNull(filterValue)) {
+            return;
+        }
         if (filterType === BICst.FILTER_DATE.BELONG_DATE_RANGE || filterType === BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE) {
             var start = filterValue.start, end = filterValue.end;
             if (BI.isNotNull(start)) {
