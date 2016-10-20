@@ -251,7 +251,8 @@ BI.Fit = BI.inherit(BI.Widget, {
                 };
                 this.arrangement.setRegionPosition(id, {
                     left: position.left < 0 ? 0 : position.left,
-                    top: position.top < 0 ? 0 : position.top
+                    top: position.top < 0 ? 0 : position.top,
+                    stop: true
                 });
                 flag = true;
                 break;
