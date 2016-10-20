@@ -146,6 +146,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         /*add*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartAddSQL())) {
             rowCount = dealWidthAdd(resultMap.get(ADD), rowCount);
+            tableEntityService.forceReleaseWriter();
         }
 
         /*modify*/
@@ -154,16 +155,18 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             sortRemovedList = dealWithRemove(columnName,
                     resultMap.get(MODIFY), sortRemovedList, loader);
             rowCount = dealWidthAdd(resultMap.get(MODIFY), rowCount);
-
+            tableEntityService.forceReleaseWriter();
         }
 
         if (null != sortRemovedList && sortRemovedList.size() != 0) {
             tableEntityService.recordRemovedLine(sortRemovedList);
+            tableEntityService.forceReleaseWriter();
         }
         return rowCount;
     }
 
     private long dealWidthAdd(List<Object[]> addList, long rowCount) {
+        tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
         try {
             int row = (int) rowCount;
             for (int i = 1; i < addList.size(); i++) {
@@ -176,7 +179,6 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                     row++;
                 }
             }
-
             return row;
         } catch (BICubeColumnAbsentException e) {
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
