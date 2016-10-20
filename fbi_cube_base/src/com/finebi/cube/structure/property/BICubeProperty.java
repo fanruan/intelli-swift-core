@@ -88,20 +88,17 @@ public abstract class BICubeProperty<R extends ICubeReader, W extends ICubeWrite
     protected void resetReader() {
         if (isReaderAvailable()) {
             reader.clear();
-            reader = null;
+//            reader = null;
         }
     }
 
     @Override
     public void clear() {
         resetReader();
-        resetWriter();
+//        resetWriter();
     }
 
     public void forceRelease() {
-        if (isWriterAvailable()) {
-            writer.forceRelease();
-        }
         forceReleaseWriter();
         resetReader();
     }
@@ -110,6 +107,12 @@ public abstract class BICubeProperty<R extends ICubeReader, W extends ICubeWrite
         if (isWriterAvailable()) {
             writer.forceRelease();
             writer = null;
+        }
+    }
+
+    public void forceReleaseReader() {
+        if (isReaderAvailable()) {
+            reader.forceRelease();
         }
     }
 }

@@ -75,10 +75,9 @@ public class BIGroupValueIndexNIOReader implements ICubeGroupValueIndexReader {
 
     @Override
     public void clear() {
-
         if (byteArray != null) {
             byteArray.clear();
-            byteArray = null;
+//            byteArray = null;
         }
         if (cache != null) {
             cache.invalidateAll();
@@ -88,7 +87,7 @@ public class BIGroupValueIndexNIOReader implements ICubeGroupValueIndexReader {
 
     @Override
     public boolean canRead() {
-        return byteArray.canRead();
+        return byteArray != null && byteArray.canRead();
     }
 
     @Override
