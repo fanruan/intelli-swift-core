@@ -42,7 +42,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
     _formatConfig: function (config, items) {
         var self = this, o = this.options;
         config.colors = this.config.chart_color;
-        config.style = this.formatChartStyle();
+        config.plotOptions.style = this.formatChartStyle();
         this.formatCordon();
         this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;

@@ -183,7 +183,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, */{
                     type: "bi.center_adapt",
                     items: [this.dimensionColor]
-                },/* {
+                }, /*{
                     type: "bi.center_adapt",
                     items: [this.addGradientButton],
                     lgap:15
