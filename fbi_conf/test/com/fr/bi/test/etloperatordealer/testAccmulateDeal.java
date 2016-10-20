@@ -72,6 +72,11 @@ public class testAccmulateDeal extends TestCase {
             public PrimitiveDetailGetter createPrimitiveDetailGetter() {
                 return null;
             }
+
+            @Override
+            public void clear() {
+
+            }
         }).anyTimes();
         control.replay();
         Traversal<BIDataValue> t = new Traversal<BIDataValue>() {
