@@ -23,17 +23,17 @@ BI.ImageButtonSize = BI.inherit(BI.Widget, {
                 cls: "image-button-size-button-group",
                 width: 55,
                 selected: true,
-                value: BI.ImageButtonSize.ORIGINAL
+                value: BICst.IMAGE_RESIZE_MODE.ORIGINAL
             },{
                 text: BI.i18nText("BI-Equal_Size_Adapt"),
                 cls: "image-button-size-button-group",
                 width: 67,
-                value: BI.ImageButtonSize.EQUAL
+                value: BICst.IMAGE_RESIZE_MODE.EQUAL
             },{
                 text: BI.i18nText("BI-Widget_Size_Adapt"),
                 cls: "image-button-size-button-group",
                 width: 67,
-                value: BI.ImageButtonSize.WIDGET_SIZE
+                value: BICst.IMAGE_RESIZE_MODE.STRETCH
             }],{
                 type: "bi.image_button_size_radio"
             }),
@@ -66,12 +66,6 @@ BI.ImageButtonSize = BI.inherit(BI.Widget, {
     setValue: function (v) {
         this.sizeChooser.setValue(v)
     }
-});
-
-BI.extend(BI.ImageButtonSize, {
-    ORIGINAL: "original",
-    EQUAL: "equal",
-    WIDGET_SIZE: "widget_size"
 });
 BI.ImageButtonSize.EVENT_CHANGE = "BI.ImageButtonSize.EVENT_CHANGE";
 $.shortcut("bi.image_button_size" , BI.ImageButtonSize);

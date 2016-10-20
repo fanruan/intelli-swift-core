@@ -392,9 +392,15 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         num_separators: BI.Utils.getWSNumberSeparatorsByID(o.wId),
                         right_num_separators: BI.Utils.getWSRightNumberSeparatorsByID(o.wId),
                         right2_num_separators: BI.Utils.getWSRight2NumberSeparatorsByID(o.wId),
-                        show_lvalue_axis_label: BI.Utils.getWSShowValueAxisLabelByID(o.wId),
-                        lvalue_axis_label_setting: BI.Utils.getWSLValueAxisLabelSettingByID(o.wId),
-                        lvalue_axis_line_color: BI.Utils.getWSLValueAxisLineColorByID(o.wId),
+                        show_left_label: BI.Utils.getWSShowLValueAxisLabelByID(o.wId),
+                        left_label_style: BI.Utils.getWSLValueAxisLabelSettingByID(o.wId),
+                        left_line_color: BI.Utils.getWSLValueAxisLineColorByID(o.wId),
+                        show_right_label: BI.Utils.getWSShowRValueAxisLabelByID(o.wId),
+                        right_label_style: BI.Utils.getWSRValueAxisLabelSettingByID(o.wId),
+                        right_line_color: BI.Utils.getWSRValueAxisLineColorByID(o.wId),
+                        show_right2_label: BI.Utils.getWSShowR2ValueAxisLabelByID(o.wId),
+                        right2_label_style: BI.Utils.getWSR2ValueAxisLabelSettingByID(o.wId),
+                        right2_line_color: BI.Utils.getWSR2ValueAxisLineColorByID(o.wId),
                         chart_legend_setting: BI.Utils.getWSLegendSettingByID(o.wId),
                         show_h_grid_line: BI.Utils.getWSShowHGridLineByID(o.wId),
                         h_grid_line_color: BI.Utils.getWSHGridLineColorByID(o.wId),
@@ -405,6 +411,9 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                             fontSize: BI.Utils.getGSChartFont(o.wId).fontSize + "px"
                         }),
                         null_continue: BI.Utils.getWSNullContinueByID(o.wId),
+                        show_cat_label: BI.Utils.getWSShowCatLabelByID(o.wId),
+                        cat_label_style: BI.Utils.getWSCatLabelStyleByID(o.wId),
+                        cat_line_color: BI.Utils.getWSCatLineColorByID(o.wId),
                         background_layer_info: MapConst.WMS_INFO[BI.Utils.getWSBackgroundLayerInfoByID(o.wId)]
                     }, {
                         cordon: self.model.getCordon(),
