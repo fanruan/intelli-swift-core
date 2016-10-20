@@ -298,15 +298,71 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         }
     },
 
+    catSetting: function (config) {
+        return {
+            enableTick: config.enable_tick,
+            lineWidth: config.line_width,
+            lineColor: config.cat_line_color,
+            gridLineColor: config.v_grid_line_color,
+            gridLineWidth: config.show_v_grid_line === true ? 1 : 0,
+            showLabel: config.show_cat_label,
+            labelRotation: config.cat_label_style.text_direction,
+            labelStyle: BI.extend(config.cat_label_style.text_style, {
+                fontSize: config.cat_label_style.text_style.fontSize + "px"
+            }),
+        }
+    },
+
+    leftAxisSetting: function (config) {
+        return {
+            lineWidth: config.line_width,
+            lineColor: config.left_line_color,
+            gridLineWidth: config.show_h_grid_line === true ? 1 : 0,
+            gridLineColor: config.h_grid_line_color,
+            showLabel: config.show_left_label,
+            labelStyle: BI.extend(config.left_label_style.text_style, {
+                fontSize: config.left_label_style.text_style.fontSize + "px"
+            }),
+            labelRotation: config.left_label_style.text_direction,
+            enableTick: config.enable_tick,
+            reversed: config.left_y_axis_reversed,
+            enableMinorTick: config.enable_minor_tick,
+            min: config.custom_y_scale.minScale.scale || null,
+            max: config.custom_y_scale.maxScale.scale || null,
+            tickInterval: BI.isNumber(config.custom_y_scale.interval.scale) && config.custom_y_scale.interval.scale > 0 ?
+                config.custom_y_scale.interval.scale : null,
+            formatter: this.formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators)
+        }  
+    },
+
+    rightAxisSetting: function (config) {
+        return {
+            lineWidth: config.line_width,
+            lineColor: config.right_line_color,
+            gridLineWidth: config.show_h_grid_line === true ? 1 : 0,
+            gridLineColor: config.h_grid_line_color,
+            showLabel: config.show_right_label,
+            labelStyle: BI.extend(config.right_label_style.text_style, {
+                fontSize: config.right_label_style.text_style.fontSize + "px"
+            }),
+            labelRotation: config.right_label_style.text_direction,
+            reversed: config.right_y_axis_reversed,
+            enableTick: config.enable_tick,
+            enableMinorTick: config.enable_minor_tick,
+            min: config.custom_x_scale.minScale.scale || null,
+            max: config.custom_x_scale.maxScale.scale || null,
+            tickInterval: BI.isNumber(config.custom_x_scale.interval.scale) && config.custom_x_scale.interval.scale > 0 ?
+                config.custom_x_scale.interval.scale : null,
+            formatter: this.formatTickInXYaxis(config.right_y_axis_style, config.right_y_axis_number_level, config.right_num_separators)
+        }
+    },
+
     setFontStyle: function (fontStyle, config) {
         if (config.dataSheet) {
             config.dataSheet.style = fontStyle;
         }
         config.xAxis[0].title.style = fontStyle;
-        // config.xAxis[0].labelStyle = fontStyle;
-        // config.legend.style = fontStyle;
         BI.each(config.yAxis, function (idx, axis) {
-            // axis.labelStyle = fontStyle;
             axis.title.style = fontStyle;
         })
     },

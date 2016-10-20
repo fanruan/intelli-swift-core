@@ -722,8 +722,11 @@
 
         getWSWidgetBGByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.widget_bg) ? ws.widget_bg :
-            {}
+            var wbg = this.getGSWidgetBackground(wid);
+            if(BI.isNull(ws.widget_bg)){
+                return wbg ? wbg : {}
+            }
+            return ws.widget_bg
         },
 
         getWSTableFormByID: function (wid) {

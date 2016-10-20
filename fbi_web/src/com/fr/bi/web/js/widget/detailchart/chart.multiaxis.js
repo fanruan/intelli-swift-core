@@ -49,8 +49,8 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
         this.formatZoom(config, this.config.show_zoom);
-        config.legend.style = BI.extend( this.config.chart_legend_setting, {
-            fontSize:  this.config.chart_legend_setting.fontSize + "px"
+        config.legend.style = BI.extend(this.config.chart_legend_setting, {
+            fontSize: this.config.chart_legend_setting.fontSize + "px"
         });
 
         config.yAxis = this.yAxis;
@@ -65,10 +65,10 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                     axis.labelStyle = BI.extend(self.config.left_label_style.text_style, {
                         fontSize: self.config.left_label_style.text_style.fontSize + "px"
                     });
-                    axis.lineColor = self.config.left_line_color;
                     axis.tickColor = config.colors[0];
                     BI.extend(axis, {
                         lineWidth: self.config.line_width,
+                        lineColor: self.config.left_line_color,
                         showLabel: self.config.show_left_label,
                         enableTick: self.config.enable_tick,
                         reversed: self.config.left_y_axis_reversed,
@@ -91,10 +91,10 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                     axis.labelStyle = BI.extend(self.config.right_label_style.text_style, {
                         fontSize: self.config.right_label_style.text_style.fontSize + "px"
                     });
-                    axis.lineColor = self.config.right_line_color;
                     axis.tickColor = config.colors[1];
                     BI.extend(axis, {
                         lineWidth: self.config.line_width,
+                        lineColor: self.config.right_line_color,
                         showLabel: self.config.show_right_label,
                         enableTick: self.config.enable_tick,
                         reversed: self.config.right_y_axis_reversed,
@@ -117,10 +117,10 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                     axis.labelStyle = BI.extend(self.config.right2_label_style.text_style, {
                         fontSize: self.config.right2_label_style.text_style.fontSize + "px"
                     });
-                    axis.lineColor = self.config.right2_line_color;
                     axis.tickColor = config.colors[2];
                     BI.extend(axis, {
                         lineWidth: self.config.line_width,
+                        lineColor: self.config.right2_line_color,
                         showLabel: self.config.show_right2_label,
                         enableTick: self.config.enable_tick,
                         reversed: self.config.right_y_axis_second_reversed,
@@ -144,11 +144,11 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title : "";
         BI.extend(config.xAxis[0], {
             lineWidth: this.config.line_width,
-                lineColor: this.config.cat_line_color,
-                showLabel: this.config.show_cat_label,
-                labelStyle: BI.extend(this.config.cat_label_style.text_style, {
-                    fontSize: this.config.cat_label_style.text_style.fontSize + "px"
-                }),
+            lineColor: this.config.cat_line_color,
+            showLabel: this.config.show_cat_label,
+            labelStyle: BI.extend(this.config.cat_label_style.text_style, {
+                fontSize: this.config.cat_label_style.text_style.fontSize + "px"
+            }),
             enableTick: this.config.enable_tick,
             labelRotation: this.config.cat_label_style.text_direction,
             enableMinorTick: this.config.enable_minor_tick,
