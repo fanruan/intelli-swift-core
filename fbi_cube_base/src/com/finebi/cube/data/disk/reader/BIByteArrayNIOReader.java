@@ -91,9 +91,10 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
 
     @Override
     public void clear() {
-        positionReader.releaseHandler();
-        lengthReader.releaseHandler();
-        contentReader.releaseHandler();
+//        尝试reader不通过外界clear，在需要writer时进行强制释放
+//        positionReader.releaseHandler();
+//        lengthReader.releaseHandler();
+//        contentReader.releaseHandler();
     }
 
     @Override
@@ -113,5 +114,21 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
         return positionReader.isForceReleased() ||
                 lengthReader.isForceReleased() ||
                 contentReader.isForceReleased();
+    }
+
+    @Override
+    public byte getFirstByte(int row) throws BIResourceInvalidException {
+        long start;
+        try {
+            start = positionReader.getSpecificValue(row);
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().info(BIStringUtils.append(
+                    e.getMessage(),
+                    "\n" + "retry again!"
+            ));
+            releaseBuffers();
+            start = positionReader.getSpecificValue(row);
+        }
+        return contentReader.getSpecificValue(start);
     }
 }

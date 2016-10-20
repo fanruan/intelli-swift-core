@@ -94,4 +94,5 @@ public interface ICubeColumnEntityService<T> extends CubeColumnReaderService<T> 
 
     void forceReleaseWriter();
 
+    void forceReleaseReader();
 }

@@ -88,6 +88,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 tableEntityService.recordRowCount(count);
             }
             tableEntityService.addVersion(version);
+            tableEntityService.forceReleaseWriter();
             tableEntityService.clear();
             long tableCostTime = System.currentTimeMillis() - t;
             System.out.println("table usage:" + tableCostTime);
@@ -168,6 +169,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             }
         };
         rowCount = tableSource.read4Part(AddTraversal, cubeFieldSources, SQL, rowCount);
+        tableEntityService.forceReleaseWriter();
         return rowCount;
     }
 
@@ -205,6 +207,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             }
         };
         DBQueryExecutor.getInstance().runSQL(sqlStatement, new ICubeFieldSource[]{f}, removeTraversal);
+        tableEntityService.forceReleaseWriter();
         return sortRemovedList;
     }
 

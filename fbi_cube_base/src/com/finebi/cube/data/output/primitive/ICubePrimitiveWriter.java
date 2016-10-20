@@ -2,6 +2,7 @@ package com.finebi.cube.data.output.primitive;
 
 import com.finebi.cube.CubeResourceRelease;
 import com.finebi.cube.data.ICubeSourceReleaseManager;
+import com.finebi.cube.data.disk.NIOHandlerManager;
 
 /**
  * This class created on 2016/3/2.
@@ -22,11 +23,17 @@ public interface ICubePrimitiveWriter<T> extends CubeResourceRelease {
 
     void setReleaseManager(ICubeSourceReleaseManager releaseHelper);
 
+    void setHandlerReleaseHelper(NIOHandlerManager releaseHelper);
+
     void releaseSource();
 
     String getWriterHandler();
 
     boolean canWriter();
+
+    void reSetValid(boolean isValid);
+
+    void destoryResource();
 }
 
 

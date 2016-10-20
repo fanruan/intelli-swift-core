@@ -27,6 +27,10 @@ public class BICubeReleaseRecorder implements ICubeSourceReleaseManager {
         content = new HashMap<Object, StackTraceElement[]>();
     }
 
+    public Map<Object, StackTraceElement[]> getContent() {
+        return content;
+    }
+
     public void record(Object obj) {
         synchronized (content) {
             if (!content.containsKey(obj)) {
@@ -35,6 +39,10 @@ public class BICubeReleaseRecorder implements ICubeSourceReleaseManager {
 //            throw BINonValueUtils.beyondControl();
             }
         }
+    }
+
+    public void clear() {
+        content.clear();
     }
 
     public void remove(Object obj) {

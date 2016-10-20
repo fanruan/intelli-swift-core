@@ -26,7 +26,7 @@ public class BICubeByteWriterWrapperBuilder extends BINIOWriterBuilder<ICubeByte
         contentLocation.setWriterSourceLocation();
         contentLocation.setByteType();
         try {
-            return new BICubeByteWriterWrapper( BICubeDiskPrimitiveDiscovery.getInstance().getCubeWriter(contentLocation));
+            return new BICubeByteWriterWrapper(BICubeDiskPrimitiveDiscovery.getInstance().getCubeWriter(contentLocation));
         } catch (Exception ignore) {
             throw new RuntimeException(ignore.getMessage(), ignore);
         }

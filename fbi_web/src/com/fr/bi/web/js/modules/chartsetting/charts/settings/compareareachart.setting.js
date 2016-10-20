@@ -150,7 +150,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.vertical_adapt",
                     items: [this.colorSelect],
                     lgap: constant.SIMPLE_H_GAP
-                }, {
+                },/* {
                     type: "bi.label",
                     text: BI.i18nText("BI-Table_Style"),
                     cls: "attr-names",
@@ -159,7 +159,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.vertical_adapt",
                     items: [this.chartStyleGroup],
                     lgap: constant.SIMPLE_H_GAP
-                }, {
+                },*/ {
                     type: "bi.label",
                     text: BI.i18nText("BI-Type"),
                     cls: "attr-names",
