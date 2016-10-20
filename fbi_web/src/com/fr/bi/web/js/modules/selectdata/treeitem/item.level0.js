@@ -127,7 +127,7 @@ BI.DetailSelectDataLevel0Item = BI.inherit(BI.Single, {
         });
         //标蓝
         BI.Utils.isSrcUsedBySrcID(o.id) === true && this.doHighLight();
-        BI.Broadcasts.on(BICst.BROADCAST.FIELD_DROP_PREFIX, function (v) {
+        BI.Broadcasts.on(BICst.BROADCAST.SRC_PREFIX + o.id, function (v) {
             if (v === true) {
                 self.doHighLight();
             } else {
@@ -135,6 +135,8 @@ BI.DetailSelectDataLevel0Item = BI.inherit(BI.Single, {
                     self.unHighLight();
                 }
             }
+        });
+        BI.Broadcasts.on(BICst.BROADCAST.FIELD_DROP_PREFIX, function (v) {
             BI.defer(function () {
                 self.setSelected(false);
             });
