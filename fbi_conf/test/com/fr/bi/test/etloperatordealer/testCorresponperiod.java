@@ -100,6 +100,11 @@ public class testCorresponperiod extends TestCase {
             public PrimitiveDetailGetter createPrimitiveDetailGetter() {
                 return null;
             }
+
+            @Override
+            public void clear() {
+
+            }
         }).anyTimes();
         ti.getColumnDetailReader(key2);
         EasyMock.expectLastCall().andReturn(new ICubeColumnDetailGetter(){
@@ -117,6 +122,11 @@ public class testCorresponperiod extends TestCase {
             @Override
             public PrimitiveDetailGetter createPrimitiveDetailGetter() {
                 return null;
+            }
+
+            @Override
+            public void clear() {
+
             }
         }).anyTimes();
         control.replay();
