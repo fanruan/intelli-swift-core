@@ -14,7 +14,8 @@ BI.ExcelViewSettingCell = BI.inherit(BI.TextButton, {
             text: "",
             textAlign: "left",
             whiteSpace: "nowrap",
-            hgap: 5
+            hgap: 5,
+            margeCellId:""
         });
     },
 
