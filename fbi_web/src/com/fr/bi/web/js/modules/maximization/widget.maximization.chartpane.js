@@ -198,7 +198,6 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
     },
 
     populate: function () {
-        this.tableChart.populate();
         this._refreshTableAndFilter();
     }
 });

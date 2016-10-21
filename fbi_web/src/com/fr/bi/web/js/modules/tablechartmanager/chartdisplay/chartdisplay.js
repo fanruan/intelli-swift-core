@@ -312,11 +312,13 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         transfer_filter: BI.Utils.getWSTransferFilterByID(o.wId),
                         left_y_axis_reversed: BI.Utils.getWSLeftYAxisReversedByID(o.wId),
                         right_y_axis_reversed: BI.Utils.getWSRightYAxisReversedByID(o.wId),
-                        chart_font: BI.Utils.getGSChartFont(o.wId),
+                        chart_font: BI.extend(BI.Utils.getGSChartFont(o.wId), {
+                            fontSize: BI.Utils.getGSChartFont(o.wId).fontSize + "px"
+                        }),
+                        show_left_label: false,
+                        show_right_label: false,
+                        show_right2_label: false,
                         line_width: BICst.DEFAULT_CHART_SETTING.mini_line_width,
-                        show_label: BICst.DEFAULT_CHART_SETTING.mini_show_label,
-                        // left_axis_show_label: BICst.DEFAULT_CHART_SETTING.mini_show_label,
-                        // right_axis_show_label: BICst.DEFAULT_CHART_SETTING.mini_show_label,
                         enable_tick: BICst.DEFAULT_CHART_SETTING.mini_enable_tick,
                         enable_minor_tick: BICst.DEFAULT_CHART_SETTING.mini_enable_minor_tick,
                         left_y_axis_unit: BICst.DEFAULT_CHART_SETTING.left_y_axis_unit,

@@ -1306,7 +1306,7 @@
             var ws = this.getWidgetSettingsByID(wid);
             var chartFont = this.getGSChartFont();
             var legendSetting = ws.chart_legend_setting || {};
-            legendSetting = BI.extend(chartFont, legendSetting.legend_style);
+            legendSetting = BI.extend(chartFont, legendSetting);
             return legendSetting;
         },
 

@@ -111,7 +111,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.tableStyle = BI.createWidget({
             type: "bi.horizontal_adapt",
-            columnSize: [100],
+            columnSize: [80],
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
@@ -220,33 +220,33 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //显示标签
-        this.showLValueAxisLabel = BI.createWidget({
+        this.showLeftLabel = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Label"),
             width: 90
         });
 
-        this.showLValueAxisLabel.on(BI.Controller.EVENT_CHANGE, function() {
+        this.showLeftLabel.on(BI.Controller.EVENT_CHANGE, function() {
             self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
         });
 
         //左值轴标签设置
-        this.lValueAxisLabelSetting = BI.createWidget({
+        this.leftLabelStyle = BI.createWidget({
             type: "bi.chart_label_detailed_setting_combo"
         });
 
-        this.lValueAxisLabelSetting.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function() {
+        this.leftLabelStyle.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function() {
             self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
         });
 
         //坐直轴线颜色
-        this.lValueAxisLineColor = BI.createWidget({
+        this.leftLineColor = BI.createWidget({
             type: "bi.color_chooser",
             width: 30,
             height: 30
         });
 
-        this.lValueAxisLineColor.on(BI.ColorChooser.EVENT_CHANGE, function() {
+        this.leftLineColor.on(BI.ColorChooser.EVENT_CHANGE, function() {
             self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
         });
 
@@ -319,17 +319,17 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.isShowTitleLY, this.editTitleLY]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.showLValueAxisLabel]
+                    items: [this.showLeftLabel]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.lValueAxisLabelSetting]
+                    items: [this.leftLabelStyle]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Axis_Line_Color"),
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items:[this.lValueAxisLineColor]
+                    items:[this.leftLineColor]
                 },  {
                     type: "bi.vertical_adapt",
                     items: [this.showYCustomScale]
@@ -377,11 +377,11 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //分类轴标签
-        this.catLabel = BI.createWidget({
+        this.catLabelStyle = BI.createWidget({
             type: "bi.chart_label_detailed_setting_combo"
         });
 
-        this.catLabel.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function () {
+        this.catLabelStyle.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
         });
 
@@ -420,7 +420,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.showCatLabel]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.catLabel]
+                    items: [this.catLabelStyle]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Axis_Line_Color"),
@@ -436,13 +436,13 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //网格线设置
-        this.hGridLine = BI.createWidget({
+        this.showHGridLine = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Horizontal"),
             width: 65
         });
 
-        this.hGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+        this.showHGridLine.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
         });
 
@@ -456,13 +456,13 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
         });
 
-        this.vGridLine = BI.createWidget({
+        this.showVGridLine = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Vertical"),
             width: 65
         });
 
-        this.vGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+        this.showVGridLine.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
         });
 
@@ -502,13 +502,13 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //空值连续
-        this.continuousNullValue = BI.createWidget({
+        this.nullContinuity = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Null_Continue"),
             width: 90
         });
 
-        this.continuousNullValue.on(BI.Controller.EVENT_CHANGE, function() {
+        this.nullContinuity.on(BI.Controller.EVENT_CHANGE, function() {
             self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE)
         });
 
@@ -528,6 +528,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Element_Show"),
+                lgap: constant.SIMPLE_H_LGAP,
                 textHeight: constant.SINGLE_LINE_HEIGHT,
                 cls: "line-title"
             }, {
@@ -539,13 +540,13 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.hGridLine]
+                    items: [this.showHGridLine]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.hGridLineColor]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.vGridLine]
+                    items: [this.showVGridLine]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.vGridLineColor]
@@ -557,7 +558,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.showZoom]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.continuousNullValue]
+                    items: [this.nullContinuity]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Tooltip"),
@@ -683,8 +684,18 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showYCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
         this.customYScale.setValue(BI.Utils.getWSCustomYScale(wId));
         this.customYScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
-
         this.separators.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
+        this.showLeftLabel.setSelected(BI.Utils.getWSShowLValueAxisLabelByID(wId));
+        this.leftLabelStyle.setValue(BI.Utils.getWSLValueAxisLabelSettingByID(wId));
+        this.leftLineColor.setValue(BI.Utils.getWSLValueAxisLineColorByID(wId));
+        this.showCatLabel.setSelected(BI.Utils.getWSShowCatLabelByID(wId));
+        this.catLabelStyle.setValue(BI.Utils.getWSCatLabelStyleByID(wId));
+        this.catLineColor.setValue(BI.Utils.getWSCatLineColorByID(wId));
+        this.showHGridLine.setSelected(BI.Utils.getWSShowHGridLineByID(wId));
+        this.hGridLineColor.setValue(BI.Utils.getWSHGridLineColorByID(wId));
+        this.showVGridLine.setSelected(BI.Utils.getWSShowVGridLineByID(wId));
+        this.vGridLineColor.setValue(BI.Utils.getWSVGridLineColorByID(wId));
+        this.tooltipSetting.setValue(BI.Utils.getWSToolTipSettingByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false);
@@ -715,7 +726,18 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             minimalist_model: this.minimalistModel.isSelected(),
             show_y_custom_scale: this.showYCustomScale.isSelected(),
             custom_y_scale: this.customYScale.getValue(),
-            num_separators: this.separators.isSelected()
+            num_separators: this.separators.isSelected(),
+            show_left_label: this.showLeftLabel.isSelected(),
+            left_label_style: this.leftLabelStyle.getValue(),
+            left_line_color: this.leftLineColor.getValue(),
+            show_cat_label: this.showCatLabel.isSelected(),
+            cat_label_style: this.catLabelStyle.getValue(),
+            cat_line_color: this.catLineColor.getValue(),
+            show_h_grid_line: this.showHGridLine.isSelected(),
+            h_grid_line_color: this.hGridLineColor.getValue(),
+            show_v_grid_line: this.showVGridLine.isSelected(),
+            v_grid_line_color: this.vGridLineColor.getValue(),
+            tooltip_setting: this.tooltipSetting.getValue(),
         }
     }
 });

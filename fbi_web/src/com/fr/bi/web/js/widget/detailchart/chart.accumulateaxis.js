@@ -56,9 +56,6 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
                 case self.constants.RIGHT_AXIS:
                     axis.title.text = getTitleText(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS, self.config.show_right_y_axis_title, self.config.right_y_axis_title);
                     axis.title.rotation = self.constants.ROTATION;
-                    axis.labelStyle = BI.extend(self.config.right_label_style.text_style, {
-                        fontSize: self.config.right_label_style.text_style.fontSize + "px"
-                    });
                     BI.extend(axis, self.rightAxisSetting(self.config));
                     self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_number_level, idx, axis.formatter);
                     break;
@@ -217,13 +214,13 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
             right_num_separators: options.right_num_separators || false,
             chart_font: options.chart_font || c.FONT_STYLE,
             show_left_label: BI.isNull(options.show_left_label) ? true : options.show_left_label,
-            left_label_style: options.left_label_style || {},
+            left_label_style: options.left_label_style ||  c.LEFT_LABEL_STYLE,
             left_line_color: options.left_line_color || "",
             show_right_label: BI.isNull(options.show_right_label) ? true : options.show_right_label,
-            right_label_style: options.right_label_style || {},
+            right_label_style: options.right_label_style || c.RIGHT_LABEL_STYLE,
             right_line_color: options.right_line_color || "",
             show_cat_label: BI.isNull(options.show_cat_label) ? true : options.show_cat_label,
-            cat_label_style: options.cat_label_style || {},
+            cat_label_style: options.cat_label_style ||  c.CAT_LABEL_STYLE,
             cat_line_color: options.cat_line_color || "",
             chart_legend_setting: options.chart_legend_setting || {},
             show_h_grid_line: BI.isNull(options.show_h_grid_line) ? true : options.show_h_grid_line,
