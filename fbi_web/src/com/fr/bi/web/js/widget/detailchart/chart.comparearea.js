@@ -199,17 +199,23 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
         function formatChartLineStyle() {
             switch (self.config.chart_line_type) {
                 case BICst.CHART_SHAPE.RIGHT_ANGLE:
-                    config.plotOptions.curve = false;
-                    config.plotOptions.step = true;
+                    config.plotOptions.area = {
+                        curve: false,
+                        step: true
+                    };
                     break;
                 case BICst.CHART_SHAPE.CURVE:
-                    config.plotOptions.curve = true;
-                    config.plotOptions.step = false;
+                    config.plotOptions.area = {
+                        curve: true,
+                        step: false
+                    };
                     break;
                 case BICst.CHART_SHAPE.NORMAL:
                 default:
-                    config.plotOptions.curve = false;
-                    config.plotOptions.step = false;
+                    config.plotOptions.area = {
+                        curve: false,
+                        step: false
+                    };
                     break;
             }
         }

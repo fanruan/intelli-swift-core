@@ -490,23 +490,6 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
             bubble_max_size: this.bubbleSizeTo.getValue(),
             bubble_style: this.bubbleStyleGroup.getValue()[0]
         }
-    },
-
-    setValue: function (v) {
-        this.showTitle.setSelected(v.show_name);
-        this.title.setValue(v.widget_title);
-        this.titleDetailSettting.setValue(v.title_detail);
-        this.widgetBackground.setValue(v.widget_bg);
-        this.rulesDisplay.setValue(v.rules_display);
-        this.fixedConditions.setValue(v.fixed_colors);
-        this.gradientConditions.setValue(v.gradient_colors);
-        this.bubbleStyleGroup.setValue(v.bubble_style);
-        this.transferFilter.setSelected(v.transfer_filter);
-        this.colorSelect.setValue(v.chart_color);
-        this.legend.setValue(v.chart_legend);
-        this.bubbleSizeFrom.setValue(v.bubble_min_size);
-        this.bubbleSizeTo.setValue(v.bubble_max_size);
-        this.bubbleStyleGroup.setValue(v.bubble_style)
     }
 });
 BI.ForceBubbleSetting.EVENT_CHANGE = "EVENT_CHANGE";

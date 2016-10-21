@@ -1280,69 +1280,6 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             null_continue: this.nullContinuity.isSelected(),
             tooltip_setting: this.tooltipSetting.getValue(),
         }
-    },
-
-    setValue: function (v) {
-        this.showTitle.setSelected(v.show_name);
-        this.title.setValue(v.widget_title);
-        this.titleDetailSettting.setValue(v.title_detail);
-        this.widgetBackground.setValue(v.widget_bg);
-        this.transferFilter.setSelected(v.transfer_filter);
-        this.colorSelect.setValue(v.chart_color);
-        this.chartSyleGroup.setValue(v.chart_style);
-        this.lYAxisStyle.setValue(v.left_y_axis_style);
-        this.rYAxisStyle.setValue(v.right_y_axis_style);
-        this.rYAxis2Style.setValue(v.right_y_axis_second_style);
-        this.numberLevellY.setValue(v.left_y_axis_number_level);
-        this.numberLevelrY.setValue(v.right_y_axis_number_level);
-        this.numberLevelrY2.setValue(v.right_y_axis_second_number_level);
-        this.LYUnit.setValue(v.left_y_axis_unit);
-        this.RYUnit.setValue(v.right_y_axis_unit);
-        this.RY2Unit.setValue(v.right_y_axis_second_unit);
-        this.isShowTitleLY.setSelected(v.show_left_y_axis_title);
-        this.isShowTitleRY.setSelected(v.show_right_y_axis_title);
-        this.isShowTitleRY2.setSelected(v.show_right_y_axis_second_title);
-        this.isShowTitleX.setSelected(v.x_axis_title);
-        this.editTitleLY.setValue(v.left_y_axis_title);
-        this.editTitleRY.setValue(v.right_y_axis_title);
-        this.editTitleRY2.setValue(v.right_y_axis_second_title);
-        this.editTitleX.setValue(v.x_axis_title);
-        this.reversedLY.setSelected(v.left_y_axis_reversed);
-        this.reversedRY.setSelected(v.right_y_axis_reversed);
-        this.reversedRY2.setSelected(v.right_y_axis_second_reversed);
-        this.legend.setValue(v.chart_legend);
-        this.showDataLabel.setSelected(v.show_data_label);
-        this.showDataTable.setSelected(v.show_data_table);
-        this.showZoom.setSelected(v.show_zoom);
-        this.minimalistModel.setSelected(v.minimalist_model);
-        this.showYCustomScale.setSelected(v.show_y_custom_scale);
-        this.customYScale.setValue(v.custom_y_scale);
-        this.showXCustomScale.setSelected(v.show_x_custom_scale);
-        this.customXScale.setValue(v.custom_x_scale);
-        this.showZCustomScale.setSelected(v.show_z_custom_scale);
-        this.customZScale.setValue(v.custom_z_scale);
-        this.separatorsLeft.setSelected(v.num_separators);
-        this.separatorsRight.setSelected(v.right_num_separators);
-        this.separatorsRight2.setSelected(v.right2_num_separators);
-        this.showLeftLabel.setSelected(v.show_left_label);
-        this.leftLabelStyle.setValue(v.left_label_style);
-        this.leftLineColor.setValue(v.left_line_color);
-        this.showRightLabel.setSelected(v.show_right_label);
-        this.rightLabelStyle.setValue(v.right_label_style);
-        this.rightLineColor.setValue(v.right_line_color);
-        this.showRight2Label.setSelected(v.show_right2_label);
-        this.right2LabelStyle.setValue(v.right2_label_style);
-        this.right2LineColor.setValue(v.right2_line_color);
-        this.showCatLabel.setSelected(v.show_cat_label);
-        this.catLabelStyle.setValue(v.cat_label_style);
-        this.catLineColor.setValue(v.cat_line_color);
-        this.legendSetting.setValue(v.chart_legend_setting);
-        this.showHGridLine.setSelected(v.show_h_grid_line);
-        this.hGridLineColor.setValue(v.h_grid_line_color);
-        this.showVGridLine.setSelected(v.show_v_grid_line);
-        this.vGridLineColor.setValue(v.v_grid_line_color);
-        this.nullContinuity.setSelected(v.null_continue);
-        this.tooltipSetting.setValue(v.tooltip_setting);
     }
 });
 BI.MultiAxisChartSetting.EVENT_CHANGE = "EVENT_CHANGE";

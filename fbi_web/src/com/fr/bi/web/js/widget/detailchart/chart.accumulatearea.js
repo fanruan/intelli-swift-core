@@ -42,12 +42,12 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.style = formatChartStyle(this.config.chart_style);
         formatChartLineStyle(this.config.chart_line_type);
         formatCordon(this.config.cordon);
-        this.formatChartLegend(config, this.config.chart_legend);
+        self.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
         config.plotOptions.connectNulls = this.config.null_continue;
-        this.formatZoom(config, this.config.show_zoom);
+        self.formatZoom(config, this.config.show_zoom);
         config.plotOptions.connectNulls = this.config.null_continue;
         config.legend.style = BI.extend( this.config.chart_legend_setting, {
             fontSize:  this.config.chart_legend_setting.fontSize + "px"
@@ -61,48 +61,14 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
                     unit = self.getXYAxisUnit(self.config.left_y_axis_number_level, self.config.left_y_axis_unit);
                     axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + unit : unit;
                     axis.title.rotation = self.constants.ROTATION;
-                    axis.labelStyle = BI.extend(self.config.left_label_style.text_style, {
-                        fontSize: self.config.left_label_style.text_style.fontSize + "px"
-                    });
-                    BI.extend(axis, {
-                        lineWidth: self.config.line_width,
-                        showLabel: self.config.show_left_label,
-                        enableTick: self.config.enable_tick,
-                        reversed: self.config.left_y_axis_reversed,
-                        enableMinorTick: self.config.enable_minor_tick,
-                        gridLineWidth: self.config.show_h_grid_line === true ? 1 : 0,
-                        gridLineColor: self.config.h_grid_line_color,
-                        min: self.config.custom_y_scale.minScale.scale || null,
-                        max: self.config.custom_y_scale.maxScale.scale || null,
-                        labelRotation: self.config.left_label_style.text_direction,
-                        tickInterval: BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
-                            self.config.custom_y_scale.interval.scale : null,
-                        formatter: self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level, self.config.num_separators)
-                    });
+                    BI.extend(axis, self.leftAxisSetting(self.config));
                     self.formatNumberLevelInYaxis(config, items, self.config.left_y_axis_number_level, idx, axis.formatter, self.config.num_separators);
                     break;
                 case self.constants.RIGHT_AXIS:
                     unit = self.getXYAxisUnit(self.config.right_y_axis_number_level, self.config.right_y_axis_unit);
                     axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + unit : unit;
                     axis.title.rotation = self.constants.ROTATION;
-                    axis.labelStyle = BI.extend(self.config.right_label_style.text_style, {
-                        fontSize: self.config.right_label_style.text_style.fontSize + "px"
-                    });
-                    BI.extend(axis, {
-                        lineWidth: self.config.line_width,
-                        showLabel: self.config.show_right_label,
-                        enableTick: self.config.enable_tick,
-                        reversed: self.config.right_y_axis_reversed,
-                        enableMinorTick: self.config.enable_minor_tick,
-                        gridLineWidth: self.config.show_h_grid_line === true ? 1 : 0,
-                        gridLineColor: self.config.h_grid_line_color,
-                        min: self.config.custom_x_scale.minScale.scale || null,
-                        max: self.config.custom_x_scale.maxScale.scale || null,
-                        labelRotation: self.config.left_label_style.text_direction,
-                        tickInterval: BI.isNumber(self.config.custom_x_scale.interval.scale) && self.config.custom_x_scale.interval.scale > 0 ?
-                            self.config.custom_x_scale.interval.scale : null,
-                        formatter: self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level, self.config.right_num_separators)
-                    });
+                    BI.extend(axis, self.rightAxisSetting(self.config));
                     self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_number_level, idx, axis.formatter, self.config.right_num_separators);
                     break;
             }
@@ -110,21 +76,10 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
 
         config.xAxis[0].title.align = "center";
         config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title : "";
-        BI.extend(config.xAxis[0], {
-            lineWidth: this.config.line_width,
-            enableTick: this.config.enable_tick,
-            labelRotation: this.config.cat_label_style.text_direction,
-            gridLineWidth: this.config.show_v_grid_line === true ? 1 : 0,
-            lineColor: this.config.cat_line_color,
-            showLabel: this.config.show_cat_label,
-            labelStyle: BI.extend(this.config.cat_label_style.text_style, {
-                fontSize: this.config.cat_label_style.text_style.fontSize + "px"
-            }),
-            gridLineColor: self.config.v_grid_line_color,
-        });
+        BI.extend(config.xAxis[0], self.catSetting(this.config));
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        this.formatDataLabel(config.plotOptions.dataLabels.enabled, items, config, this.config.chart_font);
+        self.formatDataLabel(config.plotOptions.dataLabels.enabled, items, config, this.config.chart_font);
 
         //全局样式的图表文字
         self.setFontStyle(this.config.chart_font, config);
