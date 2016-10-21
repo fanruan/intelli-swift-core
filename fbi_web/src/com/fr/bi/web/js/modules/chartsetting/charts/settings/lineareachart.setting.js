@@ -1101,20 +1101,6 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
         }
     },
 
-    _setValue: function (map) {
-        var self = this;
-        BI.each(map, function (k, v) {
-            self[k] = v
-        })
-    },
-
-    _setSelected: function (map) {
-        var self = this;
-        BI.each(map, function (k, v) {
-            self[k] = v
-        })
-    },
-
     setValue: function (v) {
         this.showTitle.setSelected(v.show_name);
         this.title.setValue(v.widget_title);

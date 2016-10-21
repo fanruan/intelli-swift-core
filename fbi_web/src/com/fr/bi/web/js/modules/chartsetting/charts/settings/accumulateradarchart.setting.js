@@ -584,20 +584,6 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         }
     },
 
-    _setValue: function (map) {
-        var self = this;
-        BI.each(map, function (k, v) {
-            self[k] = v
-        })
-    },
-
-    _setSelected: function (map) {
-        var self = this;
-        BI.each(map, function (k, v) {
-            self[k] = v
-        })
-    },
-
     setValue: function (v) {
         this._setValue({
             title: v.widget_title,
