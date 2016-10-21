@@ -3,15 +3,11 @@
  * Created by Young's on 2016/10/13.
  */
 import {Fetch} from 'lib'
-import AbstractWidget from './AbstractWidget'
+import AbstractControl from './AbstractControl'
 
-class TreeControl extends AbstractWidget {
+class TreeControl extends AbstractControl {
     constructor($widget, ...props) {
         super($widget, ...props);
-    }
-
-    isControl() {
-        return true;
     }
 
     getTreeFloors() {

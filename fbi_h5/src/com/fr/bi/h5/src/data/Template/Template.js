@@ -1,5 +1,6 @@
-import {each, some, find} from 'core'
+import {each, some, find, isNil} from 'core'
 import WidgetFactory from './Widget/WidgetFactory'
+import DimensionFactory from './Widget/Dimensions/DimensionFactory'
 class Template {
     constructor(template) {
         this.$template = template;
@@ -14,7 +15,15 @@ class Template {
     }
 
     get$DimensionById(id) {
-        return this.$template.getIn(['dimensions', id]);
+        let $dimension;
+        some(this.getAllWidgetIds(), (wId)=> {
+            const widget = this.getWidgetById(wId);
+            if (widget.hasDimensionById(id)) {
+                $dimension = widget.get$DimensionById(id);
+                return true;
+            }
+        });
+        return $dimension;
     }
 
     getWidgetById(id) {
@@ -56,26 +65,14 @@ class Template {
     }
 
     isControlWidgetByWidgetId(wid) {
-        var widgetType = this.getWidgetById(wid).getType();
-        return widgetType === BICst.WIDGET.STRING ||
-            widgetType === BICst.WIDGET.NUMBER ||
-            widgetType === BICst.WIDGET.SINGLE_SLIDER ||
-            widgetType === BICst.WIDGET.INTERVAL_SLIDER ||
-            widgetType === BICst.WIDGET.DATE ||
-            widgetType === BICst.WIDGET.MONTH ||
-            widgetType === BICst.WIDGET.QUARTER ||
-            widgetType === BICst.WIDGET.TREE ||
-            widgetType === BICst.WIDGET.LIST_LABEL ||
-            widgetType === BICst.WIDGET.TREE_LABEL ||
-            widgetType === BICst.WIDGET.YEAR ||
-            widgetType === BICst.WIDGET.YMD ||
-            widgetType === BICst.WIDGET.GENERAL_QUERY;
+        return this.getWidgetById(wid).isControl();
     }
 
     isQueryControlExist() {
         var isQueryExist = false;
-        this.$template.get('widgets').some(($widget, wId)=>{
-            if (WidgetFactory.createWidget($widget, wId, this).getType() === BICst.WIDGET.QUERY) {
+        this.$template.get('widgets').some(($widget, wId)=> {
+            const control = WidgetFactory.createWidget($widget, wId, this);
+            if (control.isControl() && control.isQueryControl()) {
                 return isQueryExist = true;
             }
         });
@@ -91,7 +88,7 @@ class Template {
         return this.getAllWidgetIDs().contains(wid);
     }
 
-    getWidgetIDByDimensionID(dId){
+    getWidgetIDByDimensionID(dId) {
         if (!this._dimension2WidgetMap) {
             this._dimension2WidgetMap = {};
         }
@@ -111,7 +108,7 @@ class Template {
 
     getWSTransferFilterById(wid) {
         var ws = this.getWidgetById(wid).getWidgetSettings();
-        return BI.isNil(ws.transfer_filter) ? ws.transfer_filter :
+        return isNil(ws.transfer_filter) ? ws.transfer_filter :
             BICst.DEFAULT_CHART_SETTING.transfer_filter;
     }
 
@@ -123,7 +120,7 @@ class Template {
         return {};
     }
 
-    getWidgetLinkageByID(wid){
+    getWidgetLinkageByID(wid) {
         var widget = this.getWidgetById(wid);
         return widget.getLinkageValues();
     }
