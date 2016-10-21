@@ -752,41 +752,6 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             tooltip_setting: this.tooltipSetting.getValue(),
 
         }
-    },
-
-    setValue: function (v) {
-        this.showTitle.setSelected(v.show_name);
-        this.title.setValue(v.widget_title);
-        this.titleDetailSettting.setValue(v.title_detail);
-        this.widgetBackground.setValue(v.widget_bg);
-        this.transferFilter.setSelected(v.transfer_filter);
-        this.colorSelect.setValue(v.chart_color);
-        this.chartStyleGroup.setValue(v.chart_style);
-        this.lYAxisStyle.setValue(v.left_y_axis_style);
-        this.numberLevellY.setValue(v.left_y_axis_number_level);
-        this.LYUnit.setValue(v.left_y_axis_unit);
-        this.isShowTitleLY.setSelected(v.show_left_y_axis_title);
-        this.isShowTitleX.setSelected(v.show_x_axis_title);
-        this.editTitleLY.setValue(v.left_y_axis_title);
-        this.editTitleX.setValue(v.x_axis_title);
-        this.legend.setValue(v.chart_legend);
-        this.showDataLabel.setSelected(v.show_data_label);
-        this.minimalistModel.setSelected(v.minimalist_model);
-        this.showYCustomScale.setSelected(v.show_y_custom_scale);
-        this.customYScale.setValue(v.custom_y_scale);
-        this.separators.setSelected(v.num_separators);
-        this.showLeftLabel.setSelected(v.show_left_label);
-        this.leftLabelStyle.setValue(v.left_label_style);
-        this.leftLineColor.setValue(v.left_line_color);
-        this.showCatLabel.setSelected(v.show_cat_label);
-        this.catLabelStyle.setValue(v.cat_label_style);
-        this.catLineColor.setValue(v.cat_line_color);
-        this.legendSetting.setValue(v.chart_legend_setting);
-        this.showHGridLine.setSelected(v.show_h_grid_line);
-        this.hGridLineColor.setValue(v.h_grid_line_color);
-        this.showVGridLine.setSelected(v.show_v_grid_line);
-        this.vGridLineColor.setValue(v.v_grid_line_color);
-        this.tooltipSetting.setValue(v.tooltip_setting);
     }
 });
 BI.BarChartsSetting.EVENT_CHANGE = "EVENT_CHANGE";

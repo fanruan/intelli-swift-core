@@ -4,20 +4,6 @@
  */
 BI.AbstractChartSetting = BI.inherit(BI.Widget, {
 
-    _setValue: function (map) {
-        var self = this;
-        BI.each(map, function (k, v) {
-            self[k] = v
-        })
-    },
-
-    _setSelected: function (map) {
-        var self = this;
-        BI.each(map, function (k, v) {
-            self[k] = v
-        })
-    },
-
 });
 
 BI.extend(BI.AbstractChartSetting, {

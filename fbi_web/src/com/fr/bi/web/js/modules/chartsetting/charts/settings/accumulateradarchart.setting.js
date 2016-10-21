@@ -582,43 +582,6 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             transfer_filter: this.transferFilter.isSelected(),
             select_linkage: this.linkageSelection.isSelected()
         }
-    },
-
-    setValue: function (v) {
-        this._setValue({
-            title: v.widget_title,
-            titleDetailSetting: v.title_detail,
-            colorSelect: v.chart_color,
-            chartTypeGroup: v.chart_radar_type,
-            widgetBackground: v.widget_bg,
-            numberLevellY: v.left_y_axis_number_level,
-            LYUnit: v.left_y_axis_unit,
-            lYAxisStyle: v.left_y_axis_style,
-            leftLabelStyle: v.left_label_style,
-            leftLineColor: v.left_line_color,
-            customScale: v.custom_y_scale,
-            legend: v.chart_legend,
-            legendSetting: v.chart_legend_setting,
-            hGridLineColor: v.h_grid_line_color,
-            vGridLineColor: v.v_grid_line_color,
-            tooltipSetting: v.tooltip_setting,
-
-        });
-
-        this._setSelected({
-            showTitle: v.show_name,
-            separators: v.num_separators,
-            showLeftLabel: v.show_left_label,
-            showCustomScale: v.show_y_custom_scale,
-            showHGridLine: v.show_h_grid_line,
-            showVGridLine: v.show_v_grid_line,
-            showDataLabel: v.show_data_label,
-            nullContinuity: v.null_continue,
-            transferFilter: v.transfer_filter,
-            linkageSelection: v.select_linkage
-        });
-
-        this.widgetTitle.setVisible(v.show_name);
     }
 });
 BI.AccumulateRadarChartSetting.EVENT_CHANGE = "EVENT_CHANGE";
