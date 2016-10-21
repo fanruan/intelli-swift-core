@@ -66,6 +66,12 @@ BI.ExcelViewSettingExcel = BI.inherit(BI.Widget, {
             return BI.map(row, function (j, cell) {
                 var mergeCellId = cell.slice(-36);
                 var text = cell.slice(0, -36);
+                if (mergeCellId === cell) {
+                    mergeCellId = NaN;
+                }
+                if(BI.isEmptyString(text)){
+                    text=cell;
+                }
                 map[i][j] = BI.createWidget({
                     type: "bi.excel_view_setting_cell",
                     text: text,
