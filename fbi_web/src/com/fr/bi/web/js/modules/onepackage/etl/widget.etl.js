@@ -391,7 +391,7 @@ BI.ETL = BI.inherit(BI.Widget, {
      * @private
      */
     _buildDataSetPane: function () {
-        var self = this;
+        var self = this, o = this.options;
         var allTables = this.model.getAllTables();
         if (allTables.length === 0) {
             this.dataSetTab.setSelect(BICst.CONF_ETL_DATA_SET_EMPTY_TIP);
@@ -418,6 +418,37 @@ BI.ETL = BI.inherit(BI.Widget, {
         });
         tableName.setValue(this.model.getTranName());
 
+        this.refreshTable = BI.createWidget({
+            type: "bi.icon_button",
+            cls: "refresh-table-font",
+            width: 30,
+            height: 30,
+            warningTitle: BI.i18nText("BI-Only_Database_Table_Can_Refresh"),
+            title: BI.i18nText("BI-Refresh_Database_Table")
+        });
+        this.refreshTable.on(BI.IconButton.EVENT_CHANGE, function () {
+            var mask = BI.createWidget({
+                type: "bi.refresh_table_loading_mask",
+                masker: self.element,
+                table: self.model.getAllTables()[0][0]
+            });
+            mask.on(BI.RefreshTableLoadingMask.EVENT_REFRESH_SUCCESS, function (data) {
+                //将原来的id根据名称放入到新的fields中
+                self.model.refresh4Fields(data);
+                self.model = new BI.ETLModel({
+                    id: o.id,
+                    table_data: data,
+                    relations: o.relations,
+                    translations: o.translations,
+                    all_fields: o.all_fields,
+                    used_fields: o.used_fields,
+                    excel_view: o.excel_view,
+                    update_settings: o.update_settings
+                });
+                self._populate();
+            });
+        });
+
         this.tableNameWrapper = BI.createWidget({
             type: "bi.absolute",
             items: [{
@@ -434,6 +465,10 @@ BI.ETL = BI.inherit(BI.Widget, {
                 el: tableName,
                 left: this.constants.ETL_TABLE_NAME_WIDTH,
                 top: 0
+            }, {
+                el: this.refreshTable,
+                top: 0,
+                right: 0
             }]
         });
         var tableInfo = BI.createWidget({
@@ -1241,6 +1276,7 @@ BI.ETL = BI.inherit(BI.Widget, {
         //表预览按钮
         var allTables = this.model.getAllTables();
         var isEnable = false, warningTitle = "";
+        this.refreshTable.setEnable(false);
         if (allTables.length === 1) {
             //如果不是etl表，也是可以预览的
             if (BI.isNotNull(allTables[0][0].etl_type)) {
@@ -1253,7 +1289,9 @@ BI.ETL = BI.inherit(BI.Widget, {
                     }
                 });
             } else {
-                self.tablePreview.setEnable(true);
+                this.tablePreview.setEnable(true);
+                //仅在原始表的情况下允许刷新
+                this.refreshTable.setEnable(true);
             }
             isEnable = true;
         } else {
