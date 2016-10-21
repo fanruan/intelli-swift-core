@@ -117,7 +117,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
                 self._onClickDrill(drillUpID);
             });
             this.wrapper.addItem(drill);
-            this.wrapper.element.width(200);
+            this.wrapper.element.width(190);
             this.wrapper.setVisible(true);
             this._onClickPush(false);
             return;
@@ -172,7 +172,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
                 self._onClickDrill(classification, value, drillId);
             });
             this.wrapper.addItem(cDrill);
-            width += 200;
+            width += 190;
         }
         if (BI.isNotNull(series)) {
             var sDrill = BI.createWidget({
@@ -187,7 +187,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
                 self._onClickDrill(series, obj.seriesName, drillId);
             });
             this.wrapper.addItem(sDrill);
-            width += 200;
+            width += 190;
         }
         this.wrapper.element.width(width);
         this.wrapper.setVisible(true);
