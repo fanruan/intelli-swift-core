@@ -51,7 +51,11 @@ public interface ICubeResourceLocation {
 
     ICubeResourceLocation setByteArrayType();
 
+    ICubeResourceLocation setByteArrayIncreaseType();
+
     ICubeResourceLocation setStringType();
+
+    ICubeResourceLocation setStringIncreaseType();
 
     ICubeResourceLocation setGroupValueIndexType();
 

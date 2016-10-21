@@ -29,7 +29,7 @@ public class BICubeLongDetailData extends BICubeDetailData<Long> {
     }
 
     @Override
-    protected ICubeResourceLocation setDetailType() {
+    protected ICubeResourceLocation setDetailType(boolean isIncrease) {
         return currentLocation.setLongTypeWrapper();
     }
 

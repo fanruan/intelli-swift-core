@@ -41,6 +41,8 @@ public interface CubeTableEntityService extends CubeTableEntityGetterService {
      */
     void addDataValue(BIDataValue originalDataValue) throws BICubeColumnAbsentException;
 
+    void increaseAddDataValue(BIDataValue originalDataValue) throws BICubeColumnAbsentException;
+
     boolean checkRelationVersion(List<BITableSourceRelation> relations,
                                  int relation_version);
 
