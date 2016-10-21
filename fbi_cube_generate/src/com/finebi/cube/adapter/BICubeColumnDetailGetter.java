@@ -4,6 +4,7 @@ import com.finebi.cube.api.*;
 import com.finebi.cube.structure.column.BICubeDoubleColumn;
 import com.finebi.cube.structure.column.BICubeLongColumn;
 import com.finebi.cube.structure.column.CubeColumnReaderService;
+import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.io.newio.NIOConstant;
 
@@ -30,19 +31,19 @@ public class BICubeColumnDetailGetter implements ICubeColumnDetailGetter {
     @Override
     public PrimitiveDetailGetter createPrimitiveDetailGetter() {
         PrimitiveType type = getPrimitiveType();
-        if (type == PrimitiveType.DOUBLE){
+        if (type == PrimitiveType.DOUBLE) {
             return new PrimitiveDoubleGetter() {
                 @Override
                 public double getValue(int row) {
-                    double value =  ((BICubeDoubleColumn)service).getOriginalValueByRow(row);
+                    double value = ((BICubeDoubleColumn) service).getOriginalValueByRow(row);
                     return Double.isNaN(value) ? 0 : value;
                 }
             };
-        } else if (type == PrimitiveType.LONG){
+        } else if (type == PrimitiveType.LONG) {
             return new PrimitiveLongGetter() {
                 @Override
                 public long getValue(int row) {
-                    long value =  ((BICubeLongColumn)service).getOriginalValueByRow(row);
+                    long value = ((BICubeLongColumn) service).getOriginalValueByRow(row);
                     return value == NIOConstant.LONG.NULL_VALUE ? 0 : value;
                 }
             };
@@ -50,4 +51,8 @@ public class BICubeColumnDetailGetter implements ICubeColumnDetailGetter {
         return null;
     }
 
+    @Override
+    public void clear() {
+        service.clear();
+    }
 }

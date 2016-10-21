@@ -48,7 +48,7 @@ BI.RangeAreaChart = BI.inherit(BI.AbstractChart, {
         var self = this;
         var title = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         config.colors = this.config.chart_color;
-        config.style = formatChartStyle();
+        config.plotOptions.style = formatChartStyle();
         formatCordon();
         config.plotOptions.connectNulls = this.config.null_continue;
         this.formatChartLegend(config, this.config.chart_legend);

@@ -111,7 +111,13 @@ BIDezi.TreeWidgetView = BI.inherit(BI.View, {
             type: "bi.icon_button",
             width: this._constants.TOOL_ICON_WIDTH,
             height: this._constants.TOOL_ICON_HEIGHT,
-            title: BI.i18nText("BI-Detailed_Setting"),
+            title: function(){
+                if(BI.size(self.model.get("dimensions")) > 0){
+                    return BI.i18nText("BI-Detailed_Setting");
+                }else{
+                    return BI.i18nText("BI-Please_Do_Detail_Setting");
+                }
+            },
             cls: "widget-combo-detail-font dashboard-title-detail"
         });
         expand.on(BI.IconButton.EVENT_CHANGE, function () {
@@ -226,8 +232,20 @@ BIDezi.TreeWidgetView = BI.inherit(BI.View, {
             this._refreshLayout();
         }
 
-        if (BI.has(changed, "value") || BI.has(changed, "dimensions")) {
+        if (BI.has(changed, "value")) {
             BI.Utils.broadcastAllWidgets2Refresh();
+        }
+        if(BI.has(changed, "dimensions")){
+            this._checkDataBind();
+            BI.Utils.broadcastAllWidgets2Refresh();
+        }
+    },
+
+    _checkDataBind: function () {
+        if(BI.size(this.model.get("dimensions")) > 0){
+            this.combo.setEnable(true);
+        }else{
+            this.combo.setEnable(false);
         }
     },
 
@@ -253,6 +271,7 @@ BIDezi.TreeWidgetView = BI.inherit(BI.View, {
         this._buildWidgetTitle();
         this._refreshTitlePosition();
         this._refreshGlobalStyle();
+        this._checkDataBind();
         this.combo.setValue(this.model.get("value"));
     }
 

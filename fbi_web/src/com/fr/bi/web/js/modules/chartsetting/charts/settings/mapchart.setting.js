@@ -26,7 +26,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
         });
         this.showTitle.on(BI.Controller.EVENT_CHANGE, function () {
             self.widgetTitle.setVisible(this.isSelected());
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.MapSetting.EVENT_CHANGE);
         });
 
         //组件标题
@@ -37,7 +37,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.title.on(BI.SignEditor.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+            self.fireEvent(BI.MapSetting.EVENT_CHANGE)
         });
 
         //详细设置
@@ -46,7 +46,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.titleDetailSettting.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+            self.fireEvent(BI.MapSetting.EVENT_CHANGE)
         });
 
         this.widgetTitle = BI.createWidget({
@@ -60,7 +60,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.global_style_index_background"
         });
         this.widgetBackground.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.MapSetting.EVENT_CHANGE);
         });
 
         var widgetTitle = BI.createWidget({
@@ -407,23 +407,6 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
             show_background_layer: this.isShowBackgroundLayer.isSelected(),
             background_layer_info: this.selectLayerCombo.getValue()[0]
         }
-    },
-
-    setValue: function (v) {
-        this.showTitle.setSelected(v.show_name);
-        this.title.setValue(v.widget_title);
-        this.titleDetailSettting.setValue(v.title_detail);
-        this.widgetBackground.setValue(v.widget_bg);
-        this.colorChooser.setValue(v.theme_color);
-        this.styleRadio.setValue(v.auto_custom);
-        this._doClickButton(v.auto_custom);
-        this.conditions.setValue(v.map_styles);
-        this.transferFilter.setSelected(v.transfer_filter);
-        this.legend.setValue(v.chart_legend);
-        this.showDataLabel.setSelected(v.show_data_label);
-        this.isShowBackgroundLayer.setSelected(v.show_background_layer);
-        this.selectLayerCombo.setValue(v.background_layer_info);
-        this._setNumberLevel()
     }
 });
 BI.MapSetting.EVENT_CHANGE = "EVENT_CHANGE";

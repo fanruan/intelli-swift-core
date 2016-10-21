@@ -43,7 +43,10 @@ BIShow.TreeLabelView = BI.inherit(BI.View, {
                 top: 0,
                 right: 0
             }, {
-                el: this.treeLabel,
+                el: {
+                    type: "bi.vertical",
+                    items: [this.treeLabel]
+                },
                 top: 10,
                 right: 10
             }, {
@@ -146,6 +149,7 @@ BIShow.TreeLabelView = BI.inherit(BI.View, {
             this.widget.attr("items")[1].top = 35;
             this.widget.attr("items")[1].left = 10;
         }
+        this.treeLabel.setHeight(height - 42);
         this.widget.resize();
     },
 
@@ -169,7 +173,7 @@ BIShow.TreeLabelView = BI.inherit(BI.View, {
             this._refreshLayout();
         }
         if (BI.has(changed, "value") || BI.has(changed, "dimensions")) {
-            BI.Utils.broadcastAllWidgets2Refresh();
+            BI.Utils.broadcastAllWidgets2Refresh(false, this.model.get("id"));
         }
     },
 

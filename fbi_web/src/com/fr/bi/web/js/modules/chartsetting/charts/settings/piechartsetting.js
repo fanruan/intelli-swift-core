@@ -5,13 +5,13 @@
  */
 BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.PieChartSetting.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-charts-setting bi-pie-chart-setting"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.PieChartSetting.superclass._init.apply(this, arguments);
         var self = this, constant = BI.AbstractChartSetting;
 
@@ -26,7 +26,7 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
         this.showTitle.on(BI.Controller.EVENT_CHANGE, function () {
             self.widgetTitle.setVisible(this.isSelected());
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.PieChartSetting.EVENT_CHANGE);
         });
 
         //组件标题
@@ -37,7 +37,7 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.title.on(BI.SignEditor.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+            self.fireEvent(BI.PieChartSetting.EVENT_CHANGE)
         });
 
         //详细设置
@@ -46,7 +46,7 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.titleDetailSettting.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+            self.fireEvent(BI.PieChartSetting.EVENT_CHANGE)
         });
 
         this.widgetTitle = BI.createWidget({
@@ -55,39 +55,15 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
             hgap: constant.SIMPLE_H_GAP
         });
 
-        //组件背景
-        this.widgetBackground = BI.createWidget({
-            type: "bi.global_style_index_background"
-        });
-        this.widgetBackground.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
-        });
-
         var widgetTitle = BI.createWidget({
             type: "bi.left",
             cls: "single-line-settings",
             items: BI.createItems([{
-                type: "bi.label",
-                text: BI.i18nText("BI-Component_Widget"),
-                cls: "line-title",
-            }, {
-                type: "bi.label",
-                text: BI.i18nText("BI-Title"),
-                cls: "line-title",
-                lgap: 38
-            }, {
                 type: "bi.vertical_adapt",
                 items: [this.showTitle]
             }, {
                 type: "bi.vertical_adapt",
                 items: [this.widgetTitle]
-            }, {
-                type: "bi.label",
-                text: BI.i18nText("BI-Background"),
-                cls: "line-title",
-            },{
-                type: "bi.vertical_adapt",
-                items: [this.widgetBackground]
             }], {
                 height: constant.SINGLE_LINE_HEIGHT
             }),
@@ -100,7 +76,7 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
         this.colorSelect.populate();
 
-        this.colorSelect.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function(){
+        this.colorSelect.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.PieChartSetting.EVENT_CHANGE);
         });
 
@@ -138,59 +114,8 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 height: constant.SINGLE_LINE_HEIGHT
             }]
         });
-        this.chartTypeGroup.on(BI.ButtonGroup.EVENT_CHANGE, function(){
+        this.chartTypeGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
             self.fireEvent(BI.PieChartSetting.EVENT_CHANGE);
-        });
-
-        var tableStyle = BI.createWidget({
-            type: "bi.horizontal_adapt",
-            columnSize: [100],
-            cls: "single-line-settings",
-            items: [{
-                type: "bi.label",
-                text: BI.i18nText("BI-Table_Sheet_Style"),
-                lgap: constant.SIMPLE_H_LGAP,
-                textAlign: "left",
-                cls: "line-title"
-            }, {
-                type: "bi.left",
-                cls: "detail-style",
-                items: BI.createItems([{
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Color_Setting"),
-                    cls: "attr-names"
-                }, {
-                    el: {
-                        type: "bi.vertical_adapt",
-                        items: [this.colorSelect]
-                    },
-                    lgap: constant.SIMPLE_H_GAP
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Table_Style"),
-                    cls: "attr-names",
-                    lgap: constant.SIMPLE_H_GAP
-                }, {
-                    el: {
-                        type: "bi.vertical_adapt",
-                        items: [this.chartStyleGroup]
-                    },
-                    lgap: constant.SIMPLE_H_GAP
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Type"),
-                    cls: "attr-names",
-                    lgap: constant.SIMPLE_H_GAP2
-                }, {
-                    el: {
-                        type: "bi.vertical_adapt",
-                        items: [this.chartTypeGroup]
-                    },
-                    lgap: constant.SIMPLE_H_GAP
-                }], {
-                    height: constant.SINGLE_LINE_HEIGHT
-                })
-            }]
         });
 
         //内径大小
@@ -200,15 +125,15 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
             height: constant.EDITOR_HEIGHT,
             cls: "unit-input",
             errorText: BI.i18nText("BI-Please_Enter_Number_1_To_100"),
-            validationChecker: function(v){
-                if(BI.isNaturalNumber(v)){
+            validationChecker: function (v) {
+                if (BI.isNaturalNumber(v)) {
                     return BI.parseInt(v) <= 100 && BI.parseInt(v) >= 0;
                 }
                 return false;
             }
         });
 
-        this.innerRadius.on(BI.SignEditor.EVENT_CONFIRM, function(){
+        this.innerRadius.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self.fireEvent(BI.PieChartSetting.EVENT_CHANGE);
         });
 
@@ -220,8 +145,79 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BICst.PIE_TOTAL_ANGLE
         });
 
-        this.totalAngle.on(BI.Segment.EVENT_CHANGE, function(){
+        this.totalAngle.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.PieChartSetting.EVENT_CHANGE);
+        });
+
+        //组件背景
+        this.widgetBackground = BI.createWidget({
+            type: "bi.global_style_index_background"
+        });
+        this.widgetBackground.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
+            self.fireEvent(BI.PieChartSetting.EVENT_CHANGE);
+        });
+
+        var tableStyle = BI.createWidget({
+            type: "bi.horizontal_adapt",
+            columnSize: [80],
+            cls: "single-line-settings",
+            items: [{
+                type: "bi.label",
+                text: BI.i18nText("BI-Chart"),
+                lgap: constant.SIMPLE_H_LGAP,
+                textAlign: "left",
+                cls: "line-title"
+            }, {
+                type: "bi.left",
+                cls: "detail-style",
+                items: BI.createItems([{
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Color_Setting"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.colorSelect]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Table_Style"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.chartStyleGroup]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Type"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.chartTypeGroup]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Inner_Radius_Size"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.innerRadius]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Total_Angle"),
+                    lgap: constant.SIMPLE_H_GAP,
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.totalAngle]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Widget_Background_Colour"),
+                    cls: "line-title",
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.widgetBackground]
+                }], {
+                    height: constant.SINGLE_LINE_HEIGHT
+                }),
+                lgap: constant.SIMPLE_H_GAP
+            }]
         });
 
         //图例
@@ -232,8 +228,17 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
             items: BICst.CHART_LEGEND
         });
 
-        this.legend.on(BI.Segment.EVENT_CHANGE, function(){
+        this.legend.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.PieChartSetting.EVENT_CHANGE);
+        });
+
+        //图例详细设置
+        this.legendSetting = BI.createWidget({
+            type: "bi.legend_detailed_setting_combo"
+        });
+
+        this.legendSetting.on(BI.LegendDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.PieChartSetting.EVENT_CHANGE)
         });
 
         //数据标签
@@ -243,8 +248,17 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 115
         });
 
-        this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function(){
+        this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.PieChartSetting.EVENT_CHANGE);
+        });
+
+        //数据点提示详细设置
+        this.tooltipSetting = BI.createWidget({
+            type: "bi.tooltip_detailed_setting_combo"
+        });
+
+        this.tooltipSetting.on(BI.TooltipDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.PieChartSetting.EVENT_CHANGE)
         });
 
         var showElement = BI.createWidget({
@@ -270,43 +284,17 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.legend]
                 }, {
                     type: "bi.vertical_adapt",
+                    items: [this.legendSetting]
+                }, {
+                    type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
-                }], {
-                    height: constant.SINGLE_LINE_HEIGHT
-                }),
-                lgap: constant.SIMPLE_H_GAP
-            }]
-        });
-
-        var lYAxis = BI.createWidget({
-            type: "bi.horizontal_adapt",
-            columnSize: [80],
-            cls: "single-line-settings",
-            items: [{
-                type: "bi.label",
-                textHeight: constant.SINGLE_LINE_HEIGHT,
-                text: BI.i18nText("BI-Show_Param"),
-                lgap: constant.SIMPLE_H_LGAP,
-                textAlign: "left",
-                cls: "line-title"
-            }, {
-                type: "bi.left",
-                cls: "detail-style",
-                items: BI.createItems([{
+                }, {
                     type: "bi.label",
-                    text: BI.i18nText("BI-Inner_Radius_Size"),
+                    text: BI.i18nText("BI-Tooltip"),
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.innerRadius]
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Total_Angle"),
-                    lgap: constant.SIMPLE_H_GAP,
-                    cls: "attr-names"
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.totalAngle]
+                    items: [this.tooltipSetting]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -320,7 +308,7 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
             value: BI.i18nText("BI-Bind_Target_Condition"),
             width: 170
         });
-        this.transferFilter.on(BI.Controller.EVENT_CHANGE, function(){
+        this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.PieChartSetting.EVENT_CHANGE);
         });
 
@@ -341,12 +329,12 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [widgetTitle, tableStyle, lYAxis, showElement, otherAttr],
+            items: [widgetTitle, tableStyle, showElement, otherAttr],
             hgap: 10
         })
     },
 
-    populate: function(){
+    populate: function () {
         var wId = this.options.wId;
         this.showTitle.setSelected(BI.Utils.getWSShowNameByID(wId));
         this.widgetTitle.setVisible(BI.Utils.getWSShowNameByID(wId));
@@ -364,7 +352,7 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     },
 
-    getValue: function(){
+    getValue: function () {
         return {
             show_name: this.showTitle.isSelected(),
             widget_title: this.title.getValue(),
@@ -379,21 +367,6 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
             chart_legend: this.legend.getValue()[0],
             show_data_label: this.showDataLabel.isSelected()
         }
-    },
-
-    setValue: function(v){
-        this.showTitle.setSelected(v.show_name);
-        this.title.setValue(v.widget_title);
-        this.titleDetailSettting.setValue(v.title_detail);
-        this.widgetBackground.setValue(v.widget_bg);
-        this.transferFilter.setSelected(v.transfer_filter);
-        this.colorSelect.setValue(v.chart_color);
-        this.chartStyleGroup.setValue(v.chart_style);
-        this.chartTypeGroup.setValue(v.chart_pie_type);
-        this.totalAngle.setValue(v.chart_total_angle);
-        this.innerRadius.setValue(v.chart_inner_radius);
-        this.legend.setValue(v.chart_legend);
-        this.showDataLabel.setSelected(v.show_data_label);
     }
 });
 BI.PieChartSetting.EVENT_CHANGE = "EVENT_CHANGE";

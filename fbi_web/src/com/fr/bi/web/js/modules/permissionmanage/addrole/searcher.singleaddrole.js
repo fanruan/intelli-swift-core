@@ -161,7 +161,7 @@ BI.SingleAddRoleSearcher = BI.inherit(BI.Widget, {
         var items = [];
         BI.each(sortedRoles, function (i, role) {
             var roleName = role.text || (role.department_name + "," + role.post_name);
-            var found = BI.some(settedRoles, function (j, r) {
+            var found = BI.some(setRoles, function (j, r) {
                 if (roleName === r.role_id && r.role_type === role.role_type) {
                     return true;
                 }

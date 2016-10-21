@@ -33,3 +33,7 @@
 .bi-linkage .linkage-widget .linkage-widget-title {
   font-size: 16px;
 }
+.bi-linkage .linkage-drop-helper {
+  border: 1px solid #0c6d23;
+  color: #0c6d23;
+}

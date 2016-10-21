@@ -35,11 +35,11 @@ BI.DetailSelectDataLevel1Item = BI.inherit(BI.Single, {
         BI.DetailSelectDataLevel1Item.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var cType = o.isPrimaryKey ? {
-            iconCls1: "select-data-level0-item-button " + this._getFieldClass(o.fieldType),
+            iconCls1: "select-data-level1-item-button " + this._getFieldClass(o.fieldType),
             iconCls2: "select-data-primary-key-font",
             type: "bi.blank_icon_icon_text_item"
         } : {
-            cls: "select-data-level0-item-button " + this._getFieldClass(o.fieldType),
+            cls: "select-data-level1-item-button " + this._getFieldClass(o.fieldType),
             type: "bi.blank_icon_text_item"
         };
         this.button = BI.createWidget(BI.extend({
@@ -126,7 +126,7 @@ BI.DetailSelectDataLevel1Item = BI.inherit(BI.Single, {
         });
 
         BI.Utils.isSrcUsedBySrcID(o.id) === true && this.doHighLight();
-        BI.Broadcasts.on(BICst.BROADCAST.FIELD_DROP_PREFIX, function (v) {
+        BI.Broadcasts.on(BICst.BROADCAST.SRC_PREFIX + o.id, function (v) {
             if (v === true) {
                 self.doHighLight();
             } else {
@@ -134,6 +134,8 @@ BI.DetailSelectDataLevel1Item = BI.inherit(BI.Single, {
                     self.unHighLight();
                 }
             }
+        });
+        BI.Broadcasts.on(BICst.BROADCAST.FIELD_DROP_PREFIX, function (v) {
             BI.defer(function () {
                 self.setSelected(false);
             });

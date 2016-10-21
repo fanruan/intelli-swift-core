@@ -50,7 +50,7 @@ BI.ETLSQL = BI.inherit(BI.ETL, {
         this.tableNameWrapper.addItem({
             el: reModifySQL,
             top: 0,
-            right: 0
+            right: 30
         });
     }
 });

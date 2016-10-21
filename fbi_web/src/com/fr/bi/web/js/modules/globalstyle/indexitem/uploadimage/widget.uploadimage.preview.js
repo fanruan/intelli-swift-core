@@ -149,6 +149,7 @@ BI.UploadImagePreview = BI.inherit(BI.Widget, {
         //delete this.imageId;
         this.imageId = "";
         this.tab.setSelect(BI.UploadImagePreview.TO_UPLOAD);
+        this.fireEvent(BI.UploadImagePreview.EVENT_CHANGE)
     },
 
     getValue: function () {

@@ -53,7 +53,7 @@ BI.ETLExcel = BI.inherit(BI.ETL, {
         this.tableNameWrapper.addItem({
             el: reUploadExcel,
             top: 0,
-            right: 0
+            right: 30
         });
 
         this.updateSetButton.setVisible(false);

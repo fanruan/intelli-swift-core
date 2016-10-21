@@ -2,11 +2,34 @@
  * ImageWidget
  * Created by Young's on 2016/10/12.
  */
+import {Image} from 'lib'
 import AbstractWidget from './AbstractWidget'
 
 class ImageWidget extends AbstractWidget{
     constructor($widget, ...props) {
         super($widget, ...props);
+    }
+
+    getSizeMode() {
+        const size = this.$widget.get('size');
+        switch (size) {
+            case BICst.IMAGE_RESIZE_MODE.ORIGINAL:
+                return Image.resizeMode.cover;
+            case BICst.IMAGE_RESIZE_MODE.EQUAL:
+                return Image.resizeMode.contain;
+            case BICst.IMAGE_RESIZE_MODE.STRETCH:
+                return Image.resizeMode.stretch;
+            default:
+                return Image.resizeMode.contain;
+        }
+    }
+
+    getSrc() {
+        return this.$widget.get('src');
+    }
+
+    getHref() {
+        return this.$widget.get('href');
     }
 }
 

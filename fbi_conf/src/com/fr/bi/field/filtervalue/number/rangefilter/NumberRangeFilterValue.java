@@ -156,21 +156,14 @@ public abstract class NumberRangeFilterValue extends AbstractFilterValue<Number>
             return ti.getAllShowIndex();
         }
         Iterator it = dimension.createNoneSortNoneGroupValueMapGetter(target, loader).iterator();
-        GroupValueIndex gvi = null;
+        GroupValueIndex gvi = GVIFactory.createAllEmptyIndexGVI();
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry) it.next();
             Number v = (Number) entry.getKey();
             GroupValueIndex g = (GroupValueIndex) entry.getValue();
             if (v != null && gi.contains(v.doubleValue())) {
-                if (gvi == null) {
-                    gvi = g;
-                } else {
-                    gvi = gvi.OR(g);
-                }
+                gvi.or(g);
             }
-        }
-        if (gvi == null) {
-            return GVIFactory.createAllEmptyIndexGVI();
         }
         return gvi;
     }

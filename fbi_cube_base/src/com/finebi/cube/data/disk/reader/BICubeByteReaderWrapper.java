@@ -14,7 +14,8 @@ public class BICubeByteReaderWrapper extends BICubePrimitiveReaderWrapper implem
     public BICubeByteReaderWrapper(ICubeByteReader reader) {
         super(reader);
     }
+
     public byte getSpecificValue(int rowNumber) throws BIResourceInvalidException {
-        return ((ICubeByteReader)reader).getSpecificValue(rowNumber);
+        return ((ICubeByteReader) reader).getSpecificValue(rowNumber);
     }
 }

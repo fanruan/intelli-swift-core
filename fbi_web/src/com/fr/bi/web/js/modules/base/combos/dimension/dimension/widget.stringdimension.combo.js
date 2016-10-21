@@ -58,6 +58,7 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
             [{
                 text: BI.i18nText("BI-Show_Qualified_Result"),
                 value: BICst.DIMENSION_STRING_COMBO.FILTER,
+                title: BI.i18nText("BI-Dimension_Filter_Tip"),
                 cls: "filter-h-font"
             }],
             [{

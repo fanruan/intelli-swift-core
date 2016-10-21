@@ -11,13 +11,13 @@ BI.AuthoritySingleAddRolePane = BI.inherit(BI.Widget, {
         AUTHORITY_FILTER: "__authority_filter__"
     },
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.AuthoritySingleAddRolePane.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-authority-single-add-role-pane"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.AuthoritySingleAddRolePane.superclass._init.apply(this, arguments);
         var self = this;
         var addRoleButton = BI.createWidget({
@@ -25,7 +25,7 @@ BI.AuthoritySingleAddRolePane = BI.inherit(BI.Widget, {
             text: "+" + BI.i18nText("Add_Role"),
             height: 30
         });
-        addRoleButton.on(BI.Button.EVENT_CHANGE, function(){
+        addRoleButton.on(BI.Button.EVENT_CHANGE, function () {
             self.fireEvent(BI.AuthoritySingleAddRolePane.EVENT_ADD_ROLE);
         });
 
@@ -54,7 +54,7 @@ BI.AuthoritySingleAddRolePane = BI.inherit(BI.Widget, {
         })
     },
 
-    _createRolesTab: function(v) {
+    _createRolesTab: function (v) {
         switch (v) {
             case this._constants.SHOW_EMPTY:
                 return BI.createWidget({
@@ -80,15 +80,15 @@ BI.AuthoritySingleAddRolePane = BI.inherit(BI.Widget, {
         }
     },
 
-    populate: function(v){
+    populate: function (v) {
         var self = this;
-        if(BI.isNotNull(v)) {
+        if (BI.isNotNull(v)) {
             this.rolesTab.setSelect(this._constants.SHOW_PANE);
             var roles = BI.Utils.getPackageAuthorityByID(v);
             var items = [];
-            BI.each(roles, function(i, role) {
+            BI.each(roles, function (i, role) {
                 var roleName = role.role_id;
-                if(BI.isNull(roleName) || roleName === "") {
+                if (BI.isNull(roleName) || roleName === "" || !self._isRoleExist(role)) {
                     return;
                 }
                 var filter = role.filter;
@@ -99,7 +99,7 @@ BI.AuthoritySingleAddRolePane = BI.inherit(BI.Widget, {
                     height: 30,
                     hgap: 5
                 });
-                if(BI.isNotNull(filter)) {
+                if (BI.isNotNull(filter)) {
                     trigger = BI.createWidget({
                         type: "bi.text_icon_item",
                         cls: "role-item filter-font",
@@ -129,7 +129,7 @@ BI.AuthoritySingleAddRolePane = BI.inherit(BI.Widget, {
                         }]
                     ]
                 });
-                combo.on(BI.DownListCombo.EVENT_CHANGE, function(v){
+                combo.on(BI.DownListCombo.EVENT_CHANGE, function (v) {
                     self._operatorRole(v, role);
                 });
                 items.push(combo);
@@ -137,8 +137,16 @@ BI.AuthoritySingleAddRolePane = BI.inherit(BI.Widget, {
             this.roles.populate(items);
         }
     },
-    
-    _operatorRole: function(operator, role) {
+
+    _isRoleExist: function (role) {
+        var allRoles = BI.Utils.getAuthorityRoles();
+        return BI.some(allRoles, function (i, aRole) {
+            var roleName = aRole.text || (aRole.department_name + "," + aRole.post_name);
+            return role.role_type === aRole.role_type && role.role_id === roleName;
+        });
+    },
+
+    _operatorRole: function (operator, role) {
         var self = this;
         switch (operator) {
             case this._constants.SET_FILTER:

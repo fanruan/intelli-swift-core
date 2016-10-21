@@ -38,6 +38,10 @@ BIDezi.TreeLabelView = BI.inherit(BI.View, {
             self.model.set("value", self.treeLabel.getValue());
         });
 
+        BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + this.model.get("id"), function () {
+            self.treeLabel.setValue(self.model.get("value"));
+        });
+
         this.widget = BI.createWidget({
             type: "bi.absolute",
             element: vessel,
@@ -51,7 +55,10 @@ BIDezi.TreeLabelView = BI.inherit(BI.View, {
                 left: 0,
                 right: 0
             }, {
-                el: this.treeLabel,
+                el: {
+                    type: "bi.vertical",
+                    items: [this.treeLabel]
+                },
                 top: 10,
                 right: 10
             }]
@@ -202,6 +209,7 @@ BIDezi.TreeLabelView = BI.inherit(BI.View, {
             this.widget.attr("items")[2].top = 35;
             this.widget.attr("items")[2].left = 10;
         }
+        this.treeLabel.setHeight(height - 42);
         this.widget.resize();
     },
 
@@ -227,16 +235,16 @@ BIDezi.TreeLabelView = BI.inherit(BI.View, {
         }
 
         if (BI.has(changed, "value") || BI.has(changed, "dimensions")) {
-            BI.Utils.broadcastAllWidgets2Refresh();
+            BI.Utils.broadcastAllWidgets2Refresh(false, this.model.get("id"));
         }
     },
 
     duplicate: function () {
-        BI.Utils.broadcastAllWidgets2Refresh();
+        BI.Utils.broadcastAllWidgets2Refresh(false, this.model.get("id"));
     },
 
     splice: function () {
-        BI.Utils.broadcastAllWidgets2Refresh();
+        BI.Utils.broadcastAllWidgets2Refresh(false, this.model.get("id"));
     },
 
     local: function () {

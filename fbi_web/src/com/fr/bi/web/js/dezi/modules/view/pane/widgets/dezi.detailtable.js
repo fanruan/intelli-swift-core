@@ -38,9 +38,11 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                 clicked[dId] = v;
             }
             self.model.set("clicked", clicked);
+            self._refreshTableAndFilter();
         });
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
             self.model.set("clicked", {});
+            self._refreshTableAndFilter();
         });
 
         //全局样式的修改
@@ -174,7 +176,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                     self._expandWidget();
                 case BICst.DASHBOARD_WIDGET_SHOW_NAME:
                     var settings = self.model.get("settings");
-                    settings.widget_setting.show_name = !BI.Utils.getWSShowNameByID(self.model.get("id"));
+                    settings.show_name = !BI.Utils.getWSShowNameByID(self.model.get("id"));
                     self.model.set("settings", settings);
                     self._refreshLayout();
                     break;
@@ -330,7 +332,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         if (BI.has(changed, "bounds")) {
             this.tableResize();
         }
-        if (BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
+        if (BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();
         }
         if (BI.has(changed, "dimensions") ||

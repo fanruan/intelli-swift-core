@@ -838,6 +838,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/chartsetting/charts/customscale/combo.customscale.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/customscale/trigger.customscale.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/detailedsetting/detailed.setting.css",
+                "com/fr/bi/web/css/modules/chartsetting/charts/detailedsetting/detailed.setting.trigger.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/selectcolorcombo/item.selectcolor.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/selectcolorcombo/trigger.selectcolor.css",
                 "com/fr/bi/web/css/modules/chartsetting/charts/charts.setting.css",
@@ -2169,6 +2170,7 @@ public class ResourceHelper {
 
                 //布局
                 "com/fr/bi/web/css/widget/arrangement/arrangement.droppable.css",
+                "com/fr/bi/web/css/widget/arrangement/arrangement.block.css",
                 "com/fr/bi/web/css/widget/arrangement/arrangement.css",
 
 
@@ -2956,6 +2958,7 @@ public class ResourceHelper {
 
                 //布局
                 "com/fr/bi/web/js/widget/arrangement/arrangement.droppable.js",
+                "com/fr/bi/web/js/widget/arrangement/arrangement.block.js",
                 "com/fr/bi/web/js/widget/arrangement/arrangement.js",
 
                 //自适应布局
@@ -3043,44 +3046,5 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/third/leaflet.js",
         };
         return (String[]) ArrayUtils.addAll(third, base);
-    }
-
-    public static String[] getMobileJs() {
-        return new String[]{
-                "com/fr/bi/web/mobile/mobile.jQuery.js",
-                "com/fr/bi/web/js/third/d3.js",
-                "com/fr/bi/web/js/third/es5-sham.js",
-                "com/fr/bi/web/js/third/raphael.js",
-                "com/fr/bi/web/js/third/leaflet.js",
-                "com/fr/bi/web/js/third/vancharts-all.js",
-                "com/fr/bi/web/js/core/underscore.js",
-                "com/fr/bi/web/js/base/base.js",
-                "com/fr/bi/web/mobile/mobile.data.js",
-                "com/fr/bi/web/js/data/data.js",
-                "com/fr/bi/web/js/data/constant/biconst.js",
-                "com/fr/bi/web/js/data/constant/enums.js",
-                "com/fr/bi/web/js/base/proto/number.js",
-                "com/fr/bi/web/js/base/proto/array.js",
-                "com/fr/bi/web/js/base/proto/date.js",
-                "com/fr/bi/web/js/data/utils.js"
-        };
-    }
-
-    public static String[] getH5Js() {
-        return new String[]{
-                "com/fr/bi/web/js/third/zepto.js",
-                "com/fr/bi/web/js/third/d3.js",
-                "com/fr/bi/web/js/third/leaflet.js",
-                "com/fr/bi/web/js/third/vancharts-all.js",
-                "com/fr/bi/web/mobile/mobile.data.js",
-                "com/fr/bi/web/js/core/foundation.js",
-                "com/fr/bi/web/js/data/data.js",
-                "com/fr/bi/web/js/data/constant/biconst.js",
-                "com/fr/bi/web/js/data/constant/constant.js",
-                "com/fr/bi/web/js/data/constant/strings.js",
-                "com/fr/bi/web/js/data/constant/enums.js",
-                "com/fr/bi/web/js/data/constant/colors.js",
-                "com/fr/bi/web/js/data/constant/attrs.js"
-        };
     }
 }

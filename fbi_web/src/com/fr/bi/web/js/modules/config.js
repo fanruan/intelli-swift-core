@@ -36,6 +36,8 @@ BICst.DASHBOARD_LAYOUT_ARRAY = [{
     text: BI.i18nText("BI-Adaptive_Layout"), value: BICst.DASHBOARD_LAYOUT_ADAPT
 }, {
     text: BI.i18nText("BI-Free_Layout"), value: BICst.DASHBOARD_LAYOUT_FREE
+}, {
+    text: BI.i18nText("BI-Grid_Layout"), value: BICst.DASHBOARD_LAYOUT_GRID
 }];
 
 //类型&数据/样式tab
@@ -321,18 +323,18 @@ BICst.DASHBOARD_WIDGETS = [[{
     title: BI.i18nText("BI-Tree_Control"),
     value: BICst.WIDGET.TREE,
     cls: "drag-tree-icon",
-    // children: [{
-    //     text: BI.i18nText("BI-Tree_Control"),
-    //     title: BI.i18nText("BI-Tree_Control"),
-    //     value: BICst.WIDGET.TREE,
-    //     cls: "drag-tree-icon",
-    // }, {
-    //     text: BI.i18nText("BI-Tree_Label_Con"),
-    //     title: BI.i18nText("BI-Tree_Label_Con"),
-    //     value: BICst.WIDGET.TREE_LABEL,
-    //     cls: "drag-tree-label-icon"
-    //
-    // }]
+    children: [{
+        text: BI.i18nText("BI-Tree_Control"),
+        title: BI.i18nText("BI-Tree_Control"),
+        value: BICst.WIDGET.TREE,
+        cls: "drag-tree-icon",
+    }, {
+        text: BI.i18nText("BI-Tree_Label_Con"),
+        title: BI.i18nText("BI-Tree_Label_Con"),
+        value: BICst.WIDGET.TREE_LABEL,
+        cls: "drag-tree-label-icon"
+
+    }]
 }, {
     text: BI.i18nText("BI-Date_Control"),
     title: BI.i18nText("BI-Date_Control"),

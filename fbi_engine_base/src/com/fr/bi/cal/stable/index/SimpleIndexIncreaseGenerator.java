@@ -51,7 +51,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
     protected long writeSimpleIndex() {
         int oldCount = loadOldValue();
         TreeSet<Integer> sortRemovedList = new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
-        for (int i = 0; i < oldTi.getRemovedList().size(); i++) {
+        for (int i = 0; i < oldTi.getRemovedList().size; i++) {
             sortRemovedList.add(oldTi.getRemovedList().get(i));
         }
         oldCount = writeData(sortRemovedList, oldCount);

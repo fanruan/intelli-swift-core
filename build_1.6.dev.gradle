@@ -68,7 +68,7 @@ sourceSets{
 }
 //声明外部依赖
 dependencies{
-	compile fileTree(dir:"${BI_HOME}/lib/${branchName}",include:'**/*.jar')
+	compile fileTree(dir:"${BI_HOME}/lib/bugfix%2F4.0",include:'**/*.jar')
 	testCompile 'junit:junit:4.12'
 }
 //指明无法编译文件所在路径
@@ -111,6 +111,7 @@ task compressJS(dependsOn:'copyFile'){
 			include (name:'**/*.js')
 			include (name:'**/*.css')
 			exclude (name:'**/js/template/*.js')
+			exclude (name:"js/widget/arrangement/arrangement.js")
 			exclude (name:'**/js/third/*.js')
 			exclude (name:'**/cross/demo/**')
 			exclude (name:'**/test/**')

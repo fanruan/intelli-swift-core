@@ -25,6 +25,7 @@ public class Service4BIH5 implements Service {
 
 
     private static ActionCMD[] actions = {
+        new EmbResourceService(),
         new H5InitAction()
     };
 

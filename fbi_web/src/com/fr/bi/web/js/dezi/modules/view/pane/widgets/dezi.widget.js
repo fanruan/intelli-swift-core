@@ -36,12 +36,14 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                 clicked[dId] = v;
             }
             self.model.set("clicked", clicked);
+            self._refreshTableAndFilter();
         });
         BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + wId, function () {
             self._refreshTableAndFilter();
         });
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
             self.model.set("clicked", {});
+            self._refreshTableAndFilter();
         });
         //全局样式的修改
         BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
@@ -66,6 +68,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         this.tableChartResize = BI.debounce(BI.bind(this.tableChart.resize, this.tableChart), 0);
         this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function (widget) {
             self.model.set(widget);
+            if (BI.isNotNull(widget.clicked)) {
+                self._refreshTableAndFilter();
+            }
         });
         this.tableChart.on(BI.TableChartManager.EVENT_CLICK_CHART, function (obj) {
             self._onClickChart(obj);
@@ -166,6 +171,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         });
         this.chartDrill.on(BI.ChartDrill.EVENT_CHANGE, function (widget) {
             self.model.set(widget);
+            if (BI.isNotNull(widget.clicked)) {
+                self._refreshTableAndFilter();
+            }
         });
         this.chartDrill.populate();
     },
@@ -173,6 +181,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     _onClickChart: function (obj) {
         if (BI.has(obj, "clicked")) {
             this.model.set(obj);
+            this._refreshTableAndFilter();
         } else {
             this.chartDrill.populate(obj);
         }
@@ -200,8 +209,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     },
     _onClickShowName: function () {
         var settings = this.model.get("settings");
-        settings.widget_setting = settings.widget_setting || {};
-        settings.widget_setting.show_name = !BI.Utils.getWSShowNameByID(this.model.get("id"));
+        settings.show_name = !BI.Utils.getWSShowNameByID(this.model.get("id"));
         this.model.set("settings", settings);
         this._refreshLayout();
     },
@@ -494,7 +502,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             BI.has(changed, "linkages")) {
             this._refreshTableAndFilter();
         }
-        if (BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
+        if (BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();
         }
         if (BI.has(changed, "type")) {

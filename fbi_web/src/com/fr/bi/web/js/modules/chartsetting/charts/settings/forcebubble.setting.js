@@ -26,7 +26,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
         });
         this.showTitle.on(BI.Controller.EVENT_CHANGE, function () {
             self.widgetTitle.setVisible(this.isSelected());
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE);
         });
 
         //组件标题
@@ -37,7 +37,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.title.on(BI.SignEditor.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+            self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE)
         });
 
         //详细设置
@@ -46,7 +46,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.titleDetailSettting.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+            self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE)
         });
 
         this.widgetTitle = BI.createWidget({
@@ -55,39 +55,15 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
             hgap: constant.SIMPLE_H_GAP
         });
 
-        //组件背景
-        this.widgetBackground = BI.createWidget({
-            type: "bi.global_style_index_background"
-        });
-        this.widgetBackground.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
-        });
-
         var widgetTitle = BI.createWidget({
             type: "bi.left",
             cls: "single-line-settings",
             items: BI.createItems([{
-                type: "bi.label",
-                text: BI.i18nText("BI-Component_Widget"),
-                cls: "line-title",
-            }, {
-                type: "bi.label",
-                text: BI.i18nText("BI-Title"),
-                cls: "line-title",
-                lgap: 38
-            }, {
                 type: "bi.vertical_adapt",
                 items: [this.showTitle]
             }, {
                 type: "bi.vertical_adapt",
                 items: [this.widgetTitle]
-            }, {
-                type: "bi.label",
-                text: BI.i18nText("BI-Background"),
-                cls: "line-title",
-            }, {
-                type: "bi.vertical_adapt",
-                items: [this.widgetBackground]
             }], {
                 height: constant.SINGLE_LINE_HEIGHT
             }),
@@ -269,6 +245,13 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE)
         });
 
+        //组件背景
+        this.widgetBackground = BI.createWidget({
+            type: "bi.global_style_index_background"
+        });
+        this.widgetBackground.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
+            self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE);
+        });
 
         var tableStyle = BI.createWidget({
             type: "bi.horizontal_adapt",
@@ -318,7 +301,14 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
                         text: "px"
                     }],
                     hgap: 3
-                }, this.fixedColorSetting, this.gradientColorSetting], {
+                }, this.fixedColorSetting, this.gradientColorSetting, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Widget_Background_Colour"),
+                    cls: "line-title",
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.widgetBackground]
+                }], {
                     height: constant.SINGLE_LINE_HEIGHT,
                     lgap: constant.SIMPLE_H_GAP
                 })
@@ -335,6 +325,35 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.legend.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE);
+        });
+
+        //图例详细设置
+        this.legendSetting = BI.createWidget({
+            type: "bi.legend_detailed_setting_combo"
+        });
+
+        this.legendSetting.on(BI.LegendDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE)
+        });
+
+        //数据标签
+        this.showDataLabel = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Data_Label"),
+            width: 115
+        });
+
+        this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE);
+        });
+
+        //数据点提示详细设置
+        this.tooltipSetting = BI.createWidget({
+            type: "bi.tooltip_detailed_setting_combo"
+        });
+
+        this.tooltipSetting.on(BI.TooltipDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE)
         });
 
         var showElement = BI.createWidget({
@@ -358,6 +377,19 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.legend]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.legendSetting]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.showDataLabel]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Tooltip"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.tooltipSetting]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -458,23 +490,6 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
             bubble_max_size: this.bubbleSizeTo.getValue(),
             bubble_style: this.bubbleStyleGroup.getValue()[0]
         }
-    },
-
-    setValue: function (v) {
-        this.showTitle.setSelected(v.show_name);
-        this.title.setValue(v.widget_title);
-        this.titleDetailSettting.setValue(v.title_detail);
-        this.widgetBackground.setValue(v.widget_bg);
-        this.rulesDisplay.setValue(v.rules_display);
-        this.fixedConditions.setValue(v.fixed_colors);
-        this.gradientConditions.setValue(v.gradient_colors);
-        this.bubbleStyleGroup.setValue(v.bubble_style);
-        this.transferFilter.setSelected(v.transfer_filter);
-        this.colorSelect.setValue(v.chart_color);
-        this.legend.setValue(v.chart_legend);
-        this.bubbleSizeFrom.setValue(v.bubble_min_size);
-        this.bubbleSizeTo.setValue(v.bubble_max_size);
-        this.bubbleStyleGroup.setValue(v.bubble_style)
     }
 });
 BI.ForceBubbleSetting.EVENT_CHANGE = "EVENT_CHANGE";

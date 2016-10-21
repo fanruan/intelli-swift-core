@@ -26,7 +26,7 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
         });
         this.showTitle.on(BI.Controller.EVENT_CHANGE, function () {
             self.widgetTitle.setVisible(this.isSelected());
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.GISMapSetting.EVENT_CHANGE);
         });
 
         //组件标题
@@ -37,7 +37,7 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.title.on(BI.SignEditor.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+            self.fireEvent(BI.GISMapSetting.EVENT_CHANGE)
         });
 
         //详细设置
@@ -46,7 +46,7 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.titleDetailSettting.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
+            self.fireEvent(BI.GISMapSetting.EVENT_CHANGE)
         });
 
         this.widgetTitle = BI.createWidget({
@@ -60,22 +60,13 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.global_style_index_background"
         });
         this.widgetBackground.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
-            self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
+            self.fireEvent(BI.GISMapSetting.EVENT_CHANGE);
         });
 
         var widgetTitle = BI.createWidget({
             type: "bi.left",
             cls: "single-line-settings",
             items: BI.createItems([{
-                type: "bi.label",
-                text: BI.i18nText("BI-Component_Widget"),
-                cls: "line-title",
-            }, {
-                type: "bi.label",
-                text: BI.i18nText("BI-Title"),
-                cls: "line-title",
-                lgap: 38
-            }, {
                 type: "bi.vertical_adapt",
                 items: [this.showTitle]
             }, {
@@ -83,7 +74,7 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
                 items: [this.widgetTitle]
             }, {
                 type: "bi.label",
-                text: BI.i18nText("BI-Background"),
+                text: BI.i18nText("BI-Widget_Background_Colour"),
                 cls: "line-title",
             },{
                 type: "bi.vertical_adapt",
@@ -181,15 +172,6 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
             transfer_filter: this.transferFilter.isSelected(),
             show_data_label: this.showDataLabel.isSelected()
         }
-    },
-
-    setValue: function(v){
-        this.showTitle.setSelected(v.show_name);
-        this.title.setValue(v.widget_title);
-        this.titleDetailSettting.setValue(v.title_detail);
-        this.widgetBackground.setValue(v.widget_bg);
-        this.transferFilter.setSelected(v.transfer_filter);
-        this.showDataLabel.setSelected(v.show_data_label);
     }
 });
 BI.GISMapSetting.EVENT_CHANGE = "EVENT_CHANGE";

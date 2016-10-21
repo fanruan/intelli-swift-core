@@ -18,6 +18,7 @@ BI.DetailRegion = BI.inherit(BI.AbstractRegion, {
             type: "bi.text_button",
             height: 25,
             disabled: true,
+            tipType: "success",
             value: BI.i18nText("BI-Field_Relation_Setting")
         });
 
@@ -194,6 +195,12 @@ BI.DetailRegion = BI.inherit(BI.AbstractRegion, {
             this.calculateAddButton.setTitle("");
         }
 
+        //if(hasMultiRelation()){
+        //    this.relationButton.element.addClass("animated infinite pulse");
+        //}else{
+        //    this.relationButton.element.removeClass("animated infinite pulse");
+        //}
+
         function checkRelationValid(){
             var tableIds = BI.map(BI.Utils.getAllDimDimensionIDs(o.wId), function(idx, dId){
                 return BI.Utils.getTableIDByDimensionID(dId);
@@ -215,6 +222,22 @@ BI.DetailRegion = BI.inherit(BI.AbstractRegion, {
                 var targetType = BI.Utils.getDimensionTypeByID(dId);
                 return targetType === BICst.TARGET_TYPE.NUMBER || targetType === BICst.TARGET_TYPE.FORMULA
             }));
+        }
+
+        function hasMultiRelation(){
+            var tableIds = BI.map(BI.Utils.getAllDimDimensionIDs(o.wId), function(idx, dId){
+                return BI.Utils.getTableIDByDimensionID(dId);
+            });
+            var commonTableIds = BI.Utils.getCommonForeignTablesByTableIDs(tableIds);
+            if(commonTableIds.length > 1){
+                return true;
+            }else{
+                return BI.isNotNull(BI.find(tableIds, function(idx, primaryTid){
+                    return BI.find(commonTableIds, function(idx, foreignTid){
+                        return BI.Utils.getPathsFromTableAToTableB(primaryTid, foreignTid).length > 1;
+                    })
+                }));
+            }
         }
     },
 

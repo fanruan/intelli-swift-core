@@ -24,7 +24,7 @@ public abstract class BIAbstractSession extends AbstractSession implements BISes
     protected boolean isShareReq;
 
     public BIAbstractSession(String remoteAddress, BIWeblet let, long userId) {
-        super(remoteAddress);
+        super(remoteAddress, userId);
         this.let = let;
         this.accessUserId = userId;
     }

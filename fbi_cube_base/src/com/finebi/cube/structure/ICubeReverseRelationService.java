@@ -25,4 +25,6 @@ public interface ICubeReverseRelationService extends Release {
     int getReverseRow(int row) throws BIResourceInvalidException;
 
     void forceReleaseWriter();
+
+    void forceReleaseReader();
 }

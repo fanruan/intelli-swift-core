@@ -49,28 +49,16 @@ BI.BlankIconIconTextItem = BI.inherit(BI.BasicButton, {
             height: o.height
         });
         this.icon1 = BI.createWidget({
-            type: "bi.center_adapt",
+            type: "bi.icon_button",
             cls: o.iconCls1,
-            width: c.commonWidth,
-            items: [{
-                el: {
-                    type: "bi.icon",
-                    width: o.iconWidth,
-                    height: o.iconHeight
-                }
-            }]
+            forceNotSelected: true,
+            width: c.commonWidth
         });
         this.icon2 = BI.createWidget({
-            type: "bi.center_adapt",
+            type: "bi.icon_button",
             cls: o.iconCls2,
-            width: c.commonWidth,
-            items: [{
-                el: {
-                    type: "bi.icon",
-                    width: o.iconWidth,
-                    height: o.iconHeight
-                }
-            }]
+            forceNotSelected: true,
+            width: c.commonWidth
         });
 
         BI.createWidget(BI.extend({
@@ -89,13 +77,8 @@ BI.BlankIconIconTextItem = BI.inherit(BI.BasicButton, {
 
     setSelected: function (b) {
         BI.BlankIconIconTextItem.superclass.setSelected.apply(this, arguments);
-        if (this.isSelected()) {
-            this.icon1.element.addClass("active");
-            this.icon2.element.addClass("active");
-        } else {
-            this.icon1.element.removeClass("active");
-            this.icon2.element.addClass("active");
-        }
+        this.icon1.setSelected(b);
+        this.icon2.setSelected(b);
     },
 
     setValue: function () {

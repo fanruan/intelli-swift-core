@@ -109,6 +109,15 @@
             return Data.SharingPool.get("reportId");
         },
 
+        getLayoutType: function () {
+            var layoutType = Data.SharingPool.get("layoutType");
+            return BI.isNull(layoutType) ? BICst.DASHBOARD_LAYOUT_GRID : layoutType;
+        },
+
+        getLayoutRatio: function () {
+            return Data.SharingPool.get("layoutRatio");
+        },
+
         getWidgetsByTemplateId: function (tId, callback) {
             if (tId === this.getCurrentTemplateId()) {
                 callback(Data.SharingPool.cat("widgets"));
@@ -160,11 +169,11 @@
             }
         },
 
-        getPackageIDByTableID: function(tableId){
+        getPackageIDByTableID: function (tableId) {
             var packageId;
-            BI.find(Pool.packages, function(pId, obj){
+            BI.find(Pool.packages, function (pId, obj) {
                 var ids = BI.pluck(obj.tables, "id");
-                if(BI.contains(ids, tableId)){
+                if (BI.contains(ids, tableId)) {
                     packageId = pId;
                     return true;
                 }
@@ -640,16 +649,16 @@
         //global style ---- start ----
         getGlobalStyle: function () {
             var self = this;
-            var globalStyle =  Data.SharingPool.get("globalStyle") || {};
-            if(BI.keys(globalStyle).length === 0){
+            var globalStyle = Data.SharingPool.get("globalStyle") || {};
+            if (BI.keys(globalStyle).length === 0) {
                 return checkLackProperty();
             }
             return globalStyle;
 
-            function checkLackProperty(){
+            function checkLackProperty() {
                 var defaultChartConfig = self.getDefaultChartConfig();
                 var type = defaultChartConfig.defaultColor;
-                if(!BI.has(globalStyle, "chartColor")){
+                if (!BI.has(globalStyle, "chartColor")) {
                     if (BI.isKey(type)) {
                         var finded = BI.find(defaultChartConfig.styleList, function (i, style) {
                             return style.value === type;
@@ -679,8 +688,8 @@
         getGSChartFont: function () {
             var gs = this.getGlobalStyle();
             return BI.extend({}, this.getDefaultChartConfig().chartFont, gs.chartFont, {
-                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
-                "fontSize": "12px"
+                "fontFamily": "Microsoft YaHei",
+                "fontSize": 12
             });
         },
 
@@ -714,12 +723,6 @@
         },
 
         //settings  ---- start ----
-        getWSWidgetSettingByID:function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.widget_setting) ? ws.widget_setting :
-                BICst.DEFAULT_CHART_SETTING.widget_setting;
-        },
-
         getWSTitleDetailSettingByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.title_detail) ? ws.title_detail :
@@ -728,8 +731,11 @@
 
         getWSWidgetBGByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.widget_bg) ? ws.widget_bg :
-            {}
+            var wbg = this.getGSWidgetBackground(wid);
+            if(BI.isNull(ws.widget_bg)){
+                return wbg ? wbg : {}
+            }
+            return ws.widget_bg
         },
 
         getWSTableFormByID: function (wid) {
@@ -836,7 +842,7 @@
 
         getWSShowNameByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return (BI.isNotNull(ws.widget_setting) && BI.isNotNull(ws.widget_setting.show_name)) ? ws.widget_setting.show_name :
+            return BI.isNotNull(ws.show_name) ? ws.show_name :
                 BICst.DEFAULT_CHART_SETTING.show_name;
         },
 
@@ -855,7 +861,8 @@
 
         getWSNullContinueByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.null_continue) ? ws.null_continue : BICst.DEFAULT_CHART_SETTING.null_continue;
+            return BI.isNotNull(ws.null_continue) ? ws.null_continue :
+                BICst.DEFAULT_CHART_SETTING.null_continue;
         },
 
         getWSChartColorByID: function (wid) {
@@ -1190,6 +1197,153 @@
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.right2_num_separators) ? ws.right2_num_separators :
                 BICst.DEFAULT_CHART_SETTING.right_num_separators;
+        },
+
+        getWSShowLValueAxisLabelByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_left_label) ? ws.show_left_label :
+                BICst.DEFAULT_CHART_SETTING.show_left_label
+        },
+
+        getWSLValueAxisLabelSettingByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var chartFont = this.getGSChartFont();
+            var labelSetting = ws.left_label_style || {};
+            var wt = this.getWidgetTypeByID(wid);
+            var colors = this.getWSChartColorByID(wid);
+            var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[0] : BICst.DEFAULT_CHART_SETTING.line_color;
+            labelSetting.text_style = BI.extend(chartFont, {"color": color}, labelSetting.text_style);
+            labelSetting.text_direction = labelSetting.text_direction || 0;
+            return labelSetting;
+        },
+
+        getWSLValueAxisLineColorByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var wt = this.getWidgetTypeByID(wid);
+            var colors = this.getWSChartColorByID(wid);
+            var lineColor = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[0] : BICst.DEFAULT_CHART_SETTING.line_color;
+            return BI.isNotNull(ws.left_line_color) ? ws.left_line_color :
+                lineColor
+        },
+
+        getWSShowRValueAxisLabelByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_right_label) ? ws.show_right_label :
+                BICst.DEFAULT_CHART_SETTING.show_left_label
+        },
+
+        getWSRValueAxisLabelSettingByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var chartFont = this.getGSChartFont();
+            var labelSetting = ws.right_label_style || {};
+            var wt = this.getWidgetTypeByID(wid);
+            var colors = this.getWSChartColorByID(wid);
+            var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[1] : BICst.DEFAULT_CHART_SETTING.line_color;
+            labelSetting.text_style = BI.extend(chartFont, {"color": color}, labelSetting.text_style);
+            labelSetting.text_direction = labelSetting.text_direction || 0;
+            return labelSetting;
+        },
+
+        getWSRValueAxisLineColorByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var wt = this.getWidgetTypeByID(wid);
+            var colors = this.getWSChartColorByID(wid);
+            var lineColor = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[1] : BICst.DEFAULT_CHART_SETTING.line_color;
+            return BI.isNotNull(ws.right_line_color) ? ws.right_line_color :
+                lineColor
+        },
+
+        getWSShowR2ValueAxisLabelByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_right2_label) ? ws.show_right2_label :
+                BICst.DEFAULT_CHART_SETTING.show_left_label
+        },
+
+        getWSR2ValueAxisLabelSettingByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var chartFont = this.getGSChartFont();
+            var labelSetting = ws.right2_label_style || {};
+            var wt = this.getWidgetTypeByID(wid);
+            var colors = this.getWSChartColorByID(wid);
+            var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[2] : BICst.DEFAULT_CHART_SETTING.line_color;
+            labelSetting.text_style = BI.extend(chartFont, {"color": color}, labelSetting.text_style);
+            labelSetting.text_direction = labelSetting.text_direction || 0;
+            return labelSetting;
+        },
+
+        getWSR2ValueAxisLineColorByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var wt = this.getWidgetTypeByID(wid);
+            var colors = this.getWSChartColorByID(wid);
+            var lineColor = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[1] : BICst.DEFAULT_CHART_SETTING.line_color;
+            return BI.isNotNull(ws.right2_line_color) ? ws.right2_line_color :
+                lineColor
+        },
+
+        getWSShowCatLabelByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_cat_label) ? ws.show_cat_label :
+                BICst.DEFAULT_CHART_SETTING.show_cat_label
+        },
+
+        getWSCatLabelStyleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var chartFont = this.getGSChartFont();
+            var labelSetting = ws.cat_label_style || {};
+            labelSetting.text_style = BI.extend(chartFont, labelSetting.text_style);
+            labelSetting.text_direction = labelSetting.text_direction || 0;
+            return labelSetting;
+
+        },
+
+        getWSCatLineColorByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.cat_line_color) ? ws.cat_line_color :
+                BICst.DEFAULT_CHART_SETTING.line_color
+        },
+
+        getWSLegendSettingByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var chartFont = this.getGSChartFont();
+            var legendSetting = ws.chart_legend_setting || {};
+            legendSetting = BI.extend(chartFont, legendSetting.legend_style);
+            return legendSetting;
+        },
+
+        getWSShowHGridLineByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_h_grid_line) ? ws.show_h_grid_line :
+                BICst.DEFAULT_CHART_SETTING.show_h_grid_line
+        },
+
+        getWSHGridLineColorByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.h_grid_line_color) ? ws.h_grid_line_color :
+                BICst.DEFAULT_CHART_SETTING.line_color
+        },
+
+        getWSShowVGridLineByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.show_v_grid_line) ? ws.show_v_grid_line :
+                BICst.DEFAULT_CHART_SETTING.show_v_grid_line
+        },
+
+        getWSVGridLineColorByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.v_grid_line_color) ? ws.v_grid_line_color :
+                BICst.DEFAULT_CHART_SETTING.line_color
+        },
+
+        getWSToolTipSettingByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.tooltip_setting) ? ws.tooltip_setting :
+            {}
+        },
+
+        getWSLinkageSelectionByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.select_linkage) ? ws.select_linkage :
+                BICst.DEFAULT_CHART_SETTING.select_linkage
         },
 
         getWSMinimalistByID: function (wid) {
@@ -2056,10 +2210,10 @@
             return result;
         },
 
-        getAllPrimaryKeyByTableIds: function(tableIds){
+        getAllPrimaryKeyByTableIds: function (tableIds) {
             var self = this;
             var relations = Pool.relations;
-            return BI.flatten(BI.map(tableIds, function(i, tableId){
+            return BI.flatten(BI.map(tableIds, function (i, tableId) {
                 if (BI.isNull(tableId)) {
                     return [];
                 }
@@ -2067,8 +2221,8 @@
                     return [];
                 }
                 var tPaths = relations[tableId];
-                return BI.map(tPaths, function(idx, paths){
-                    return BI.map(paths, function(id, path){
+                return BI.map(tPaths, function (idx, paths) {
+                    return BI.map(paths, function (id, path) {
                         return self.getFirstRelationPrimaryIdFromRelations(path);
                     });
                 });
@@ -2433,6 +2587,17 @@
                         filterValues.push(filter);
                     }
 
+                    if (self.getWidgetTypeByID(id) === BICst.WIDGET.TREE_LABEL) {
+                        var viewDimensionIds = self.getWidgetViewByID(id)[BICst.REGION.DIMENSION1];
+                        var treeValue = [];
+                        createTreeLabelFilterValue(treeValue, value, 0, viewDimensionIds);
+                        filter = {
+                            filter_type: BICst.FILTER_TYPE.OR,
+                            filter_value: treeValue
+                        };
+                        filterValues.push(filter);
+                    }
+
                     if (value.length === 1) {
                         var filter = value[0];
                         parseFilter(filter);
@@ -2463,6 +2628,35 @@
                             result.push(filterObj);
                         } else {
                             createTreeFilterValue(result, child, floor + 1, dimensionIds, leafFilterObj);
+                        }
+                    }
+                );
+            }
+
+            function createTreeLabelFilterValue(result, v, floor, dimensionIds, fatherFilterValue) {
+                BI.each(v, function (value, child) {
+                        var leafFilterObj = {
+                            filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
+                            filter_value: {
+                                type: value === BICst.LIST_LABEL_TYPE.ALL ? BI.Selection.All : BI.Selection.Multi,
+                                value: [value]
+                            },
+                            // _src: {field_id: self.getFieldIDByDimensionID(dimensionIds[floor])}
+                            _src: self.getDimensionSrcByID(dimensionIds[floor])
+                        };
+                        if (BI.isEmptyObject(child)) {
+                            var filterObj = {
+                                filter_type: BICst.FILTER_TYPE.AND,
+                                filter_value: []
+                            };
+                            filterObj.filter_value.push(leafFilterObj);
+                            BI.isNotNull(fatherFilterValue) && filterObj.filter_value.push(fatherFilterValue);
+                            result.push(filterObj);
+                        } else {
+                            if (leafFilterObj.filter_value.type === BI.Selection.All) {
+                                leafFilterObj = fatherFilterValue
+                            }
+                            createTreeLabelFilterValue(result, child, floor + 1, dimensionIds, leafFilterObj);
                         }
                     }
                 );
@@ -2635,11 +2829,11 @@
                             var tempRegionType = self.getRegionTypeByDimensionID(drill.dId);
                             var dIndex = widget.view[drillRegionType].indexOf(drId);
                             BI.remove(widget.view[tempRegionType], drill.dId);
-                            if (drillRegionType === tempRegionType) {
-                                widget.view[drillRegionType].splice(dIndex, 0, drill.dId);
-                            } else {
-                                widget.view[drillRegionType].push(drill.dId);
-                            }
+                            // if (drillRegionType === tempRegionType) {
+                            widget.view[drillRegionType].splice(dIndex, 0, drill.dId);
+                            // } else {
+                            //     widget.view[drillRegionType].push(drill.dId);
+                            // }
                         }
                         BI.each(drArray[i].values, function (i, v) {
                             var filterValue = parseSimpleFilter(v);
@@ -2752,8 +2946,62 @@
                 parseFilter(filter)
             });
 
+            //标红维度的处理
+            var dIds = this.getAllDimDimensionIDs(wid);
+            BI.each(dIds, function (idx, dId) {
+                var dimensionMap = self.getDimensionMapByDimensionID(dId);
+                var valid = true;
+                //树控件和明细表
+                if (widget.type === BICst.WIDGET.DETAIL || widget.type === BICst.WIDGET.TREE) {
+                    BI.each(dimensionMap, function (tableId, obj) {
+                        var targetRelation = obj.target_relation;
+                        var pId = self.getFirstRelationPrimaryIdFromRelations(targetRelation);
+                        var fId = self.getLastRelationForeignIdFromRelations(targetRelation);
+                        var paths = self.getPathsFromFieldAToFieldB(pId, fId);
+                        if (!BI.deepContains(paths, targetRelation)) {
+                            //维度和某个指标之间设置了路径但是路径在配置处被删了
+                            if (paths.length >= 1) {
+                                widget.dimensions[dId].dimension_map[tableId].target_relation = paths[0];
+                            }
+                        }
+                    })
+                } else {
+                    var tIds = self.getAllTargetDimensionIDs(wid);
+                    BI.any(tIds, function (idx, tId) {
+                        if (!self.isCalculateTargetByDimensionID(tId)) {
+                            //维度和某个指标之间没有设置路径
+                            if (!BI.has(dimensionMap, tId)) {
+                                valid = false;
+                                return true;
+                            } else {
+                                var targetRelation = dimensionMap[tId].target_relation;
+                                BI.any(targetRelation, function (id, path) {
+                                    var pId = self.getFirstRelationPrimaryIdFromRelations(path);
+                                    var fId = self.getLastRelationForeignIdFromRelations(path);
+                                    var paths = self.getPathsFromFieldAToFieldB(pId, fId);
+                                    if (!BI.deepContains(paths, path)) {
+                                        //维度和某个指标之间设置了路径但是路径在配置处被删了
+                                        if (paths.length === 1) {
+                                            widget.dimensions[dId].dimension_map[tId].target_relation.length = id;
+                                            widget.dimensions[dId].dimension_map[tId].target_relation.push(paths[0]);
+                                        } else {
+                                            valid = false;
+                                            return true;
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                    });
+                }
+                if (valid === false) {
+                    widget.dimensions[dId].used = false;
+                }
+            });
+
             widget.filter = {filter_type: BICst.FILTER_TYPE.AND, filter_value: filterValues};
             widget.real_data = true;
+
             return widget;
         },
 
@@ -2816,13 +3064,15 @@
         /**
          * 组件与表的关系
          */
-        broadcastAllWidgets2Refresh: function (force) {
+        broadcastAllWidgets2Refresh: function (force, wId) {
             var self = this;
             var allWidgetIds = this.getAllWidgetIDs();
             if (force === true || this.isQueryControlExist() === false) {
-                BI.each(allWidgetIds, function (i, wId) {
-                    if (!self.isControlWidgetByWidgetId(wId) || self.isRealTimeControlWidgetByWidgetId(wId)) {
-                        BI.Broadcasts.send(BICst.BROADCAST.REFRESH_PREFIX + wId);
+                BI.each(allWidgetIds, function (i, widgetId) {
+                    if (!self.isControlWidgetByWidgetId(widgetId) || self.isRealTimeControlWidgetByWidgetId(widgetId)) {
+                        if (BI.isNull(wId) || wId !== widgetId) {
+                            BI.Broadcasts.send(BICst.BROADCAST.REFRESH_PREFIX + widgetId);
+                        }
                     }
                 });
             }
@@ -2950,6 +3200,9 @@
             BI.each(filterValue, function (i, value) {
                 parseFilter(value);
             });
+        }
+        if (BI.isNull(filterValue)) {
+            return;
         }
         if (filterType === BICst.FILTER_DATE.BELONG_DATE_RANGE || filterType === BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE) {
             var start = filterValue.start, end = filterValue.end;

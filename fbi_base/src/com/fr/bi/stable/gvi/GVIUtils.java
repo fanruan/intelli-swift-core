@@ -42,4 +42,16 @@ public class GVIUtils {
         }
         return a.OR(b);
     }
+
+    public static boolean isAllShowRoaringGroupValueIndex(GroupValueIndex valueIndex) {
+        return ((AbstractGroupValueIndex)valueIndex).getType() == GroupValueIndexCreator.ROARING_INDEX_All_SHOW.getType();
+    }
+
+    public static boolean isAllEmptyRoaringGroupValueIndex(GroupValueIndex valueIndex) {
+        return valueIndex.getRowsCountWithData() == 0;
+    }
+
+    public static boolean isIDGroupValueIndex(GroupValueIndex valueIndex) {
+        return ((AbstractGroupValueIndex)valueIndex).getType() == GroupValueIndexCreator.ROARING_INDEX_ID.getType();
+    }
 }

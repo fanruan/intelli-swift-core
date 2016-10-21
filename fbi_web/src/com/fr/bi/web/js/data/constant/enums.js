@@ -38,6 +38,7 @@ BICst.LAST_SAME_PERIOD = 28;
 //dashboard toolbar right layout textcombo
 BICst.DASHBOARD_LAYOUT_ADAPT = 0;
 BICst.DASHBOARD_LAYOUT_FREE = 1;
+BICst.DASHBOARD_LAYOUT_GRID = 2;
 
 BICst.WIDGET.Widths = {};
 BICst.WIDGET.Widths[BICst.WIDGET.TABLE] = 450;
@@ -506,6 +507,11 @@ BICst.DEFAULT_CHART_SETTING = {
     show_grid_line: true,
     num_separators: false,
     right_num_separators: false,
+    show_left_label: true,
+    show_cat_label: true,
+    show_v_grid_line: true,
+    show_h_grid_line: true,
+    select_linkage: false,
     mini_show_grid_line: false,
     minimalist_model: false,
     big_data_mode: false,
@@ -690,3 +696,13 @@ BICst.DATACOLUMN.Y = 112;
 BICst.DATACOLUMN.Z = 128;
 BICst.DATACOLUMN.XANDY = 144;
 BICst.DATACOLUMN.XANDYANDSIZE = 160;
+
+BICst.IMAGE_RESIZE_MODE = {
+    ORIGINAL: 1,
+    EQUAL: 2,
+    STRETCH: 3
+};
+
+BICst.LIST_LABEL_TYPE = {
+    ALL: "_*_"
+};

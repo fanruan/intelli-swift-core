@@ -25,7 +25,7 @@ public class BICubeLongWriterWrapperBuilder extends BINIOWriterBuilder<ICubeLong
         contentLocation.setWriterSourceLocation();
         contentLocation.setLongType();
         try {
-            return new BICubeLongWriterWrapper( BICubeDiskPrimitiveDiscovery.getInstance().getCubeWriter(contentLocation));
+            return new BICubeLongWriterWrapper(BICubeDiskPrimitiveDiscovery.getInstance().getCubeWriter(contentLocation));
         } catch (Exception ignore) {
             throw new RuntimeException(ignore.getMessage(), ignore);
         }

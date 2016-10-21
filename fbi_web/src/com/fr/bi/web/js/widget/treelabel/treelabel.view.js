@@ -113,6 +113,12 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
             if (BI.isNull(values[i])) {
                 return;
             }
+            if(BI.isEmptyArray(values[i])) {
+                for (var j = i;j<updateList.length;j++) {
+                    updateList[j].populate({items: []});
+                }
+                return;
+            }
             var value = updateList[i].getValue();
             updateList[i].populate({
                 items: values[i]
@@ -120,9 +126,21 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
             updateList[i].setValue(value);
 
             var now = updateList[i].getValue();
-            if(value !== now) {     //接着刷新剩余行
+            if(!arraysEqual(value, now)) {     //接着刷新剩余行
                 return;
             }
+        }
+
+        function arraysEqual (a1, a2) {     //仅考虑数值字符串等简单数据
+            if (a1.length !== a2.length) {
+                return false;
+            }
+            BI.each(a2, function (idx, data) {
+                if(a1.indexOf(data) === -1) {
+                    return false;
+                }
+            });
+            return true;
         }
     },
 
@@ -221,7 +239,7 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
                 item.setValue(v[idx] || []);
             }
             if (BI.isEmptyArray(v[idx]) || BI.isNull(v[idx])) {
-                value.push(["_*_"]);
+                value.push([BICst.LIST_LABEL_TYPE.ALL]);
             } else {
                 var temp = [];
                 // 排除错误的设置的值
@@ -230,7 +248,7 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
                 });
                 var valueTemp = BI.intersection(v[idx], temp);
                 if (BI.isEmptyArray(valueTemp)) {
-                    valueTemp = ["_*_"];
+                    valueTemp = [BICst.LIST_LABEL_TYPE.ALL];
                 }
                 value.push(valueTemp);
             }

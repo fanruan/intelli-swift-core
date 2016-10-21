@@ -10,6 +10,7 @@ import ImageWidget from './ImageWidget'
 import StringControl from './StringControl'
 import TreeControl from './TreeControl'
 import DateControl from './DateControl'
+import WebWidget from './WebWidget'
 
 
 export default {
@@ -71,6 +72,7 @@ export default {
                 return new ImageWidget($widget, ...props);
                 break;
             case BICst.WIDGET.WEB:
+                return new WebWidget($widget, ...props);
                 break;
             case BICst.WIDGET.STRING:
                 return new StringControl($widget, ...props);

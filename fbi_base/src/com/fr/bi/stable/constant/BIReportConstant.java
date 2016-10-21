@@ -513,6 +513,11 @@ public class BIReportConstant {
         public static final int TREE_ITEM_COUNT_PER_PAGE = 0x64;
     }
 
+    public static final class TREE_LABEL {
+
+        public static final int TREE_LABEL_ITEM_COUNT_NUM = 0x28;
+    }
+
     public static final class FIELD_ID {
         public static final String HEAD = "81c48028-1401-11e6-a148-3e1d05defe78";
     }

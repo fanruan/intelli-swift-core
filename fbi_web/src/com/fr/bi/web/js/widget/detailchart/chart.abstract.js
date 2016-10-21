@@ -71,7 +71,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         BI.AbstractChart.superclass._init.apply(this, arguments);
     },
 
-    formatZoom: function(config, show_zoom){
+    formatZoom: function (config, show_zoom) {
         config.zoom.zoomTool.enabled = this.config.show_zoom;
         if (show_zoom === true) {
             delete config.dataSheet;
@@ -95,7 +95,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                     if (BI.isNotNull(da.y) && !BI.isNumber(da.y)) {
                         da.y = BI.parseFloat(da.y);
                     }
-                    if(BI.isNotNull(da.y)){
+                    if (BI.isNotNull(da.y)) {
                         da.y = BI.contentFormat(BI.parseFloat(da.y.div(magnify).toFixed(4)), "#.####;-#.####");
                     }
                 }
@@ -114,7 +114,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                 if (BI.isNotNull(da.x) && !BI.isNumber(da.x)) {
                     da.x = BI.parseFloat(da.x);
                 }
-                if(BI.isNotNull(da.x)){
+                if (BI.isNotNull(da.x)) {
                     da.x = BI.contentFormat(BI.parseFloat(da.x.div(magnify).toFixed(4)), "#.####;-#.####");
                 }
 
@@ -126,7 +126,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         if (!BI.isNumber(number)) {
             number = BI.parseFloat(number);
         }
-        if(BI.isNotNull(number)){
+        if (BI.isNotNull(number)) {
             return BI.contentFormat(BI.parseFloat(number.div(magnify).toFixed(4)), "#.####;-#.####");
         }
     },
@@ -185,8 +185,11 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             case BICst.TARGET_STYLE.NUM_LEVEL.YI:
                 unit = BI.i18nText("BI-Yi");
                 break;
+            case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
+                unit += '%';
+                break;
         }
-        return (BI.isEmptyString(unit) && BI.isEmptyString(axis_unit)) ? unit : "(" + unit + axis_unit + ")";
+        return (BI.isEmptyString(unit) && BI.isEmptyString(axis_unit)) ? unit : (unit + axis_unit);
     },
 
     formatTickInXYaxis: function (type, number_level, separators) {
@@ -226,8 +229,42 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         }
     },
 
+    formatTickForRadar: function (type, number_level, separators, unit) {
+        var formatter = '#.##';
+        switch (type) {
+            case this.constants.NORMAL:
+                formatter = '#.##';
+                if (separators) {
+                    formatter = '#,###.##'
+                }
+                break;
+            case this.constants.ZERO2POINT:
+                formatter = '#0';
+                if (separators) {
+                    formatter = '#,###';
+                }
+                break;
+            case this.constants.ONE2POINT:
+                formatter = '#0.0';
+                if (separators) {
+                    formatter = '#,###.0';
+                }
+                break;
+            case this.constants.TWO2POINT:
+                formatter = '#0.00';
+                if (separators) {
+                    formatter = '#,###.00';
+                }
+                break;
+        }
+        formatter += this.getXYAxisUnit(number_level, unit);
+        formatter += ";-" + formatter;
+        return function () {
+            return BI.contentFormat(arguments[0], formatter)
+        }
+    },
+
     formatDataLabel: function (state, items, config, style) {
-        var self = this;
         if (state === true) {
             BI.each(items, function (idx, item) {
                 item.dataLabels = {
@@ -245,7 +282,6 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
     },
 
     formatDataLabelForAxis: function (state, items, format, style) {
-        var self = this;
         if (state === true) {
             BI.each(items, function (idx, item) {
                 item.dataLabels = {
@@ -262,15 +298,71 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         }
     },
 
+    catSetting: function (config) {
+        return {
+            enableTick: config.enable_tick,
+            lineWidth: config.line_width,
+            lineColor: config.cat_line_color,
+            gridLineColor: config.v_grid_line_color,
+            gridLineWidth: config.show_v_grid_line === true ? 1 : 0,
+            showLabel: config.show_cat_label,
+            labelRotation: config.cat_label_style.text_direction,
+            labelStyle: BI.extend(config.cat_label_style.text_style, {
+                fontSize: config.cat_label_style.text_style.fontSize + "px"
+            }),
+        }
+    },
+
+    leftAxisSetting: function (config) {
+        return {
+            lineWidth: config.line_width,
+            lineColor: config.left_line_color,
+            gridLineWidth: config.show_h_grid_line === true ? 1 : 0,
+            gridLineColor: config.h_grid_line_color,
+            showLabel: config.show_left_label,
+            labelStyle: BI.extend(config.left_label_style.text_style, {
+                fontSize: config.left_label_style.text_style.fontSize + "px"
+            }),
+            labelRotation: config.left_label_style.text_direction,
+            enableTick: config.enable_tick,
+            reversed: config.left_y_axis_reversed,
+            enableMinorTick: config.enable_minor_tick,
+            min: config.custom_y_scale.minScale.scale || null,
+            max: config.custom_y_scale.maxScale.scale || null,
+            tickInterval: BI.isNumber(config.custom_y_scale.interval.scale) && config.custom_y_scale.interval.scale > 0 ?
+                config.custom_y_scale.interval.scale : null,
+            formatter: this.formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators)
+        }  
+    },
+
+    rightAxisSetting: function (config) {
+        return {
+            lineWidth: config.line_width,
+            lineColor: config.right_line_color,
+            gridLineWidth: config.show_h_grid_line === true ? 1 : 0,
+            gridLineColor: config.h_grid_line_color,
+            showLabel: config.show_right_label,
+            labelStyle: BI.extend(config.right_label_style.text_style, {
+                fontSize: config.right_label_style.text_style.fontSize + "px"
+            }),
+            labelRotation: config.right_label_style.text_direction,
+            reversed: config.right_y_axis_reversed,
+            enableTick: config.enable_tick,
+            enableMinorTick: config.enable_minor_tick,
+            min: config.custom_x_scale.minScale.scale || null,
+            max: config.custom_x_scale.maxScale.scale || null,
+            tickInterval: BI.isNumber(config.custom_x_scale.interval.scale) && config.custom_x_scale.interval.scale > 0 ?
+                config.custom_x_scale.interval.scale : null,
+            formatter: this.formatTickInXYaxis(config.right_y_axis_style, config.right_y_axis_number_level, config.right_num_separators)
+        }
+    },
+
     setFontStyle: function (fontStyle, config) {
         if (config.dataSheet) {
             config.dataSheet.style = fontStyle;
         }
         config.xAxis[0].title.style = fontStyle;
-        config.xAxis[0].labelStyle = fontStyle;
-        config.legend.style = fontStyle;
         BI.each(config.yAxis, function (idx, axis) {
-            axis.labelStyle = fontStyle;
             axis.title.style = fontStyle;
         })
     },
