@@ -1,7 +1,6 @@
 package com.finebi.cube.data.disk.reader;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.data.BICubeReleaseRecorder;
 import com.finebi.cube.data.disk.NIOHandlerManager;
 import com.finebi.cube.data.input.primitive.ICubePrimitiveReader;
 import com.finebi.cube.location.ICubeResourceLocation;
@@ -34,7 +33,7 @@ public class ReaderHandlerManager implements NIOHandlerManager<ICubePrimitiveRea
         try {
             readWriteLock.readLock().lock();
             countOfReaders.incrementAndGet();
-            BILoggerFactory.getLogger().debug(" query reader " + resourceLocation.getAbsolutePath().substring(50) + " " + countOfReaders.get());
+            BILoggerFactory.getLogger().debug(" query reader " + resourceLocation.getAbsolutePath() + " " + countOfReaders.get());
             return reader;
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
@@ -53,7 +52,7 @@ public class ReaderHandlerManager implements NIOHandlerManager<ICubePrimitiveRea
                     isForceReleased = true;
                     reader.releaseSource();
                     countOfReaders.set(0);
-                    BILoggerFactory.getLogger().debug("count=0 release reader " + resourceLocation.getAbsolutePath().substring(50) + " " + countOfReaders.get());
+                    BILoggerFactory.getLogger().debug("count=0 release reader " + resourceLocation.getAbsolutePath() + " " + countOfReaders.get());
                 } catch (Exception e) {
 
                 } finally {
@@ -61,9 +60,9 @@ public class ReaderHandlerManager implements NIOHandlerManager<ICubePrimitiveRea
                 }
             } else if (currentCount < 0) {
                 countOfReaders.set(0);
-                BILoggerFactory.getLogger().debug("count<0 reset count reader " + resourceLocation.getAbsolutePath().substring(50) + " " + countOfReaders.get());
+                BILoggerFactory.getLogger().debug("count<0 reset count reader " + resourceLocation.getAbsolutePath() + " " + countOfReaders.get());
             } else {
-                BILoggerFactory.getLogger().debug("count>0 reduce count of reader " + resourceLocation.getAbsolutePath().substring(50) + " " + countOfReaders.get());
+                BILoggerFactory.getLogger().debug("count>0 reduce count of reader " + resourceLocation.getAbsolutePath() + " " + countOfReaders.get());
             }
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
@@ -79,7 +78,7 @@ public class ReaderHandlerManager implements NIOHandlerManager<ICubePrimitiveRea
             isForceReleased = true;
             reader.destroySource();
             countOfReaders.set(0);
-            BILoggerFactory.getLogger().debug("force release reader " + resourceLocation.getAbsolutePath().substring(50) + " " + countOfReaders.get());
+            BILoggerFactory.getLogger().debug("force release reader " + resourceLocation.getAbsolutePath() + " " + countOfReaders.get());
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
         } finally {
@@ -102,7 +101,7 @@ public class ReaderHandlerManager implements NIOHandlerManager<ICubePrimitiveRea
     @Override
     public void printCountOfHandler() {
         if (countOfReaders.get() != 0) {
-            BILoggerFactory.getLogger().debug("count reader " + resourceLocation.getAbsolutePath().substring(50) + " " + countOfReaders.get());
+            BILoggerFactory.getLogger().debug("count reader " + resourceLocation.getAbsolutePath() + " " + countOfReaders.get());
         }
     }
 

@@ -174,7 +174,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 if (objects != null) {
                     for (int column = 0; column < objects.length; column++) {
                         BIDataValue biDataValue = new BIDataValue(row, column, objects[column]);
-                        tableEntityService.addDataValue(biDataValue);
+                        tableEntityService.increaseAddDataValue(biDataValue);
                     }
                     row++;
                 }
