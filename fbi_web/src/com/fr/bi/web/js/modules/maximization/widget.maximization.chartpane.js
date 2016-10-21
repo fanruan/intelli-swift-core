@@ -9,8 +9,6 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.MaximizationChartPane.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-maximization-chart-pane",
-            height: 600,
-            width: 800,
             wId: "",
             status: null
         })
@@ -33,10 +31,8 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
         });
         this.tableChart.on(BI.TableChartManager.EVENT_CLICK_CHART, function (obj) {
             self._onClickChart(obj);
-            self.hideDrill(o.wId);
         });
 
-        this.hideDrill = BI.debounce(BI.bind(this.chartDrill.hideDrill, this.chartDrill), 3000);
         this.tableChartPopupulate = BI.debounce(BI.bind(this.tableChart.populate, this.tableChart), 0);
 
         BI.createWidget({
@@ -66,7 +62,6 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
             this.fireEvent(BI.MaximizationChartPane.EVENT_SET, obj);
         } else {
             this.chartDrill.populate(obj);
-            this.chartDrill.resetLayout(300, 300, 370, 35);
         }
     },
     _buildChartDrill: function () {
@@ -79,7 +74,6 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
             self.fireEvent(BI.MaximizationChartPane.EVENT_SET, widget);
         });
         this.chartDrill.populate();
-        this.chartDrill.resetLayout(300, 300, 370, 35);
     },
     _createToolsButton: function (title, cls) {
         return BI.createWidget({
@@ -164,7 +158,6 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
         });
         combo.on(BI.WidgetCombo.EVENT_BEFORE_POPUPVIEW, function () {
             self.chartDrill.populate();
-            self.chartDrill.resetLayout(300, 300, 370, 35);
         });
 
         return BI.createWidget({
@@ -202,7 +195,6 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
         BI.isNotNull(this.filterPane) && this.filterPane.populate();
         this.tableChartPopupulate();
         this.chartDrill.populate();
-        this.chartDrill.resetLayout(300, 300, 370, 35);
     },
 
     populate: function () {

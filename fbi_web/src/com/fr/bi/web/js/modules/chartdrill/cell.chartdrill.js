@@ -5,7 +5,9 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.ChartDrillCell.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-chart-drill-cell",
-            disableDownButton: false
+            disableDownButton: false,
+            width: 180,
+            height: 25
         })
     },
 
@@ -64,9 +66,7 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
             }, {
                 el: this.downDrill,
                 width: 60
-            }],
-            width: "100%",
-            height: 25
+            }]
         });
     },
 
