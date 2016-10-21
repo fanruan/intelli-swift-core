@@ -144,6 +144,7 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Chart"),
+                lgap: constant.SIMPLE_H_LGAP,
                 textAlign: "left",
                 cls: "line-title"
             }, {

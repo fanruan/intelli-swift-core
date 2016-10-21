@@ -58,6 +58,22 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             interval: {
                 scale: null
             }
+        },
+        LEFT_LABEL_STYLE: {
+            text_direction: 0,
+            text_style: {}
+        },
+        RIGHT_LABEL_STYLE: {
+            text_direction: 0,
+            text_style: {}
+        },
+        RIGHT2_LABEL_STYLE: {
+            text_direction: 0,
+            text_style: {}
+        },
+        CAT_LABEL_STYLE: {
+            text_direction: 0,
+            text_style: {}
         }
     },
 
@@ -317,6 +333,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         return {
             lineWidth: config.line_width,
             lineColor: config.left_line_color,
+            tickColor: config.left_line_color,
             gridLineWidth: config.show_h_grid_line === true ? 1 : 0,
             gridLineColor: config.h_grid_line_color,
             showLabel: config.show_left_label,
@@ -339,6 +356,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         return {
             lineWidth: config.line_width,
             lineColor: config.right_line_color,
+            tickColor: config.right_line_color,
             gridLineWidth: config.show_h_grid_line === true ? 1 : 0,
             gridLineColor: config.h_grid_line_color,
             showLabel: config.show_right_label,
@@ -354,6 +372,29 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             tickInterval: BI.isNumber(config.custom_x_scale.interval.scale) && config.custom_x_scale.interval.scale > 0 ?
                 config.custom_x_scale.interval.scale : null,
             formatter: this.formatTickInXYaxis(config.right_y_axis_style, config.right_y_axis_number_level, config.right_num_separators)
+        }
+    },
+
+    right2AxisSetting: function (config) {
+        return {
+            lineWidth: config.line_width,
+            lineColor: config.right2_line_color,
+            tickColor: config.right2_line_color,
+            gridLineWidth: config.show_h_grid_line === true ? 1 : 0,
+            gridLineColor: config.h_grid_line_color,
+            showLabel: config.show_right2_label,
+            labelStyle: BI.extend(config.right2_label_style.text_style, {
+                fontSize: config.right2_label_style.text_style.fontSize + "px"
+            }),
+            labelRotation: config.right2_label_style.text_direction,
+            reversed: config.right_y_axis_second_reversed,
+            enableTick: config.enable_tick,
+            enableMinorTick: config.enable_minor_tick,
+            min: config.custom_z_scale.minScale.scale || null,
+            max: config.custom_z_scale.maxScale.scale || null,
+            tickInterval: BI.isNumber(config.custom_z_scale.interval.scale) && config.custom_z_scale.interval.scale > 0 ?
+                config.custom_z_scale.interval.scale : null,
+            formatter: this.formatTickInXYaxis(config.right_y_axis_second_style, config.right_y_axis_second_number_level, config.right2_num_separators)
         }
     },
 

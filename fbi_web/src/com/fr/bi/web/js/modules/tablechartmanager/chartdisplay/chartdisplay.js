@@ -300,7 +300,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 self.errorPane.setVisible(true);
                 return;
             }
-            try {
+            // try {
                 var dimensionIds = BI.Utils.getAllDimDimensionIDs(o.wId);
                 var lnglat = BI.Utils.getDimensionPositionByID(dimensionIds[0]);
                 var op;
@@ -315,10 +315,10 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         chart_font: BI.extend(BI.Utils.getGSChartFont(o.wId), {
                             fontSize: BI.Utils.getGSChartFont(o.wId).fontSize + "px"
                         }),
+                        show_left_label: false,
+                        show_right_label: false,
+                        show_right2_label: false,
                         line_width: BICst.DEFAULT_CHART_SETTING.mini_line_width,
-                        show_label: BICst.DEFAULT_CHART_SETTING.mini_show_label,
-                        // left_axis_show_label: BICst.DEFAULT_CHART_SETTING.mini_show_label,
-                        // right_axis_show_label: BICst.DEFAULT_CHART_SETTING.mini_show_label,
                         enable_tick: BICst.DEFAULT_CHART_SETTING.mini_enable_tick,
                         enable_minor_tick: BICst.DEFAULT_CHART_SETTING.mini_enable_minor_tick,
                         left_y_axis_unit: BICst.DEFAULT_CHART_SETTING.left_y_axis_unit,
@@ -424,11 +424,11 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                     });
                 }
                 selectedTab.populate(data, op, types);
-            } catch (e) {
-                self.errorPane.setErrorInfo("error happens during populate chart: " + e);
-                console.error(e);
-                self.errorPane.setVisible(true);
-            }
+            // } catch (e) {
+            //     self.errorPane.setErrorInfo("error happens during populate chart: " + e);
+            //     console.error(e);
+            //     self.errorPane.setVisible(true);
+            // }
         });
     },
 

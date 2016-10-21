@@ -750,7 +750,6 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             show_v_grid_line: this.showVGridLine.isSelected(),
             v_grid_line_color: this.vGridLineColor.getValue(),
             tooltip_setting: this.tooltipSetting.getValue(),
-
         }
     }
 });

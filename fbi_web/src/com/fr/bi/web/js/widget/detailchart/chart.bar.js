@@ -60,32 +60,21 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
         config.yAxis = this.yAxis;
         config.yAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title : "";
         config.yAxis[0].title.rotation = this.constants.ROTATION;
-        if(this.config.chart_demo) {
+        if (this.config.chart_demo) {
             config.yAxis[0].showLabel = this.config.show_label;
         }
-        BI.extend(config.yAxis[0], {
-            gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
-            labelRotation: this.config.text_direction,
-            enableTick: this.config.enable_tick,
-            lineWidth: this.config.line_width
+
+        BI.extend(config.yAxis[0], self.catSetting(this.config));
+
+        config.legend.style = BI.extend( this.config.chart_legend_setting, {
+            fontSize:  this.config.chart_legend_setting.fontSize + "px"
         });
 
         //值轴
         self.formatNumberLevelInXaxis(items, this.config.left_y_axis_number_level);
         config.xAxis[0].title.text = getXAxisTitle(this.config.left_y_axis_number_level, this.constants.X_AXIS);
         config.xAxis[0].title.align = "center";
-        BI.extend(config.xAxis[0], {
-            formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level, this.config.num_separators),
-            gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
-            enableTick: this.config.enable_tick,
-            showLabel: this.config.show_label,
-            lineWidth: this.config.line_width,
-            enableMinorTick: this.config.enable_minor_tick,
-            min: self.config.custom_y_scale.minScale.scale || null,
-            max: self.config.custom_y_scale.maxScale.scale || null,
-            tickInterval: BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
-                self.config.custom_y_scale.interval.scale : null
-        });
+        BI.extend(config.xAxis[0], self.leftAxisSetting(self.config));
         config.chartType = "bar";
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
@@ -117,7 +106,7 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style" : self.config.chart_font,
+                                "style": self.config.chart_font,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -139,7 +128,7 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style" : self.config.chart_font,
+                                "style": self.config.chart_font,
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -217,10 +206,22 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
             show_label: BI.isNull(options.show_label) ? true : options.show_label,
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
-	     custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
-            chart_demo : options.chart_demo || false,            
+            custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
+            chart_demo: options.chart_demo || false,
             num_separators: options.num_separators || false,
-            chart_font: options.chart_font || c.FONT_STYLE
+            chart_font: options.chart_font || c.FONT_STYLE,
+            show_left_label: BI.isNull(options.show_left_label) ? true : options.show_left_label,
+            left_label_style: options.left_label_style ||  c.LEFT_LABEL_STYLE,
+            left_line_color: options.left_line_color || "",
+            show_cat_label: BI.isNull(options.show_cat_label) ? true : options.show_cat_label,
+            cat_label_style: options.cat_label_style ||  c.CAT_LABEL_STYLE,
+            cat_line_color: options.cat_line_color || "",
+            chart_legend_setting: options.chart_legend_setting || {},
+            show_h_grid_line: BI.isNull(options.show_h_grid_line) ? true : options.show_h_grid_line,
+            h_grid_line_color: options.h_grid_line_color || "",
+            show_v_grid_line: BI.isNull(options.show_v_grid_line) ? true : options.show_v_grid_line,
+            v_grid_line_color: options.v_grid_line_color || "",
+            tooltip_setting: options.tooltip_setting || {},
         };
         this.options.items = items;
         var types = [];
