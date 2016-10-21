@@ -7,6 +7,7 @@ import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.stable.data.BITableID;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -75,11 +76,11 @@ public class AnalysisETLSourceFactory {
     }
 
     private static BusinessTable getAnyTableWithSource(AnalysisBaseTableSource temp) {
-//        for (BusinessTable table :  BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()){
-//            if (ComparatorUtils.equals(table.getTableSource().getSourceID(), temp.getSourceID())){
-//                return table;
-//            }
-//        }
+        for (BusinessTable table :  BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()){
+            if (ComparatorUtils.equals(table.getTableSource().getSourceID(), temp.getSourceID())){
+                return table;
+            }
+        }
         return null;
     }
 

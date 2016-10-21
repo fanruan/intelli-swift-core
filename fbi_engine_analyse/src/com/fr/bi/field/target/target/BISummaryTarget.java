@@ -1,5 +1,6 @@
 package com.fr.bi.field.target.target;
 
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.stable.constant.DBConstant;
@@ -17,6 +18,7 @@ import java.util.Map;
  * @author Daniel
  */
 public abstract class BISummaryTarget extends BIAbstractTarget {
+    @BICoreField
     private TargetFilter filter;
 
 
