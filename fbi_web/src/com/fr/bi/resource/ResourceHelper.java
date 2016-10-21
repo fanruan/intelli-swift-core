@@ -2170,6 +2170,7 @@ public class ResourceHelper {
 
                 //布局
                 "com/fr/bi/web/css/widget/arrangement/arrangement.droppable.css",
+                "com/fr/bi/web/css/widget/arrangement/arrangement.block.css",
                 "com/fr/bi/web/css/widget/arrangement/arrangement.css",
 
 
@@ -2957,6 +2958,7 @@ public class ResourceHelper {
 
                 //布局
                 "com/fr/bi/web/js/widget/arrangement/arrangement.droppable.js",
+                "com/fr/bi/web/js/widget/arrangement/arrangement.block.js",
                 "com/fr/bi/web/js/widget/arrangement/arrangement.js",
 
                 //自适应布局

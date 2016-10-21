@@ -28,7 +28,7 @@ GridAdaptiveArrangementView = BI.inherit(BI.View, {
         var self = this;
         this.arrangement = BI.createWidget({
             type: "bi.adaptive_arrangement",
-            layoutType: BI.Arrangement.LAYOUT_TYPE.ADAPTIVE,
+            layoutType: BI.Arrangement.LAYOUT_TYPE.GRID,
             cls: "mvc-border",
             width: 800,
             height: 400,

@@ -35,7 +35,7 @@ BI.TableChartManagerAspect = function () {
         BI.each(view, function (vId, v) {
             if (BI.parseInt(vId) < BI.parseInt(BICst.REGION.DIMENSION2)) {
                 BI.each(v, function (i, dId) {
-                    BI.Utils.isDimensionUsable(dId) && dim1Size++;
+                    BI.Utils.isDimensionUsable(dId) && _checkDimensionValid(dId) && dim1Size++;
                 });
             } else if (BI.parseInt(BICst.REGION.DIMENSION2) <= BI.parseInt(vId) &&
                 BI.parseInt(vId) < BI.parseInt(BICst.REGION.TARGET1)) {
@@ -149,6 +149,15 @@ BI.TableChartManagerAspect = function () {
                 break;
         }
         return cls;
+
+        function _checkDimensionValid(dId){
+            var dimensionMap = BI.Utils.getDimensionMapByDimensionID(dId);
+            var tIds = BI.Utils.getAllTargetDimensionIDs(BI.Utils.getWidgetIDByDimensionID(dId));
+            var res = BI.find(tIds, function(idx, tId){
+                return !BI.has(dimensionMap, tId) && !BI.Utils.isCalculateTargetByDimensionID(tId);
+            });
+            return BI.isNull(res);
+        }
     };
 
 

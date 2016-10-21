@@ -50,7 +50,7 @@ public class BIAuthorityManager {
             switch (roleType) {
                 case BIBaseConstant.ROLE_TYPE.COMPANY:
                     for (CompanyRole companyRole : comRoles) {
-                        String dName = DepartmentControl.getInstance().getDepartmentShowName(companyRole.getDepartmentId());
+                        String dName = DepartmentControl.getInstance().getDepartmentShowName(companyRole.getDepartmentId(), ",");
                         String pName = PostControl.getInstance().getPostName(companyRole.getPostId());
                         if (ComparatorUtils.equals(dName + "," + pName, roleName)) {
                             result.add(auth);
@@ -81,7 +81,7 @@ public class BIAuthorityManager {
             switch (roleType) {
                 case BIBaseConstant.ROLE_TYPE.COMPANY:
                     for (CompanyRole companyRole : comRoles) {
-                        String dName = DepartmentControl.getInstance().getDepartmentShowName(companyRole.getDepartmentId());
+                        String dName = DepartmentControl.getInstance().getDepartmentShowName(companyRole.getDepartmentId(), ",");
                         String pName = PostControl.getInstance().getPostName(companyRole.getPostId());
                         if (ComparatorUtils.equals(dName + "," + pName, roleName)) {
                             result.add(auth);
@@ -116,7 +116,7 @@ public class BIAuthorityManager {
                 switch (roleType) {
                     case BIBaseConstant.ROLE_TYPE.COMPANY:
                         for (CompanyRole companyRole : comRoles) {
-                            String dName = DepartmentControl.getInstance().getDepartmentShowName(companyRole.getDepartmentId());
+                            String dName = DepartmentControl.getInstance().getDepartmentShowName(companyRole.getDepartmentId(), ",");
                             String pName = PostControl.getInstance().getPostName(companyRole.getPostId());
                             if (ComparatorUtils.equals(dName + "," + pName, roleName)) {
                                 packageIDs.add(pId);
@@ -152,7 +152,7 @@ public class BIAuthorityManager {
                 switch (roleType) {
                     case BIBaseConstant.ROLE_TYPE.COMPANY:
                         for (CompanyRole companyRole : comRoles) {
-                            String dName = DepartmentControl.getInstance().getDepartmentShowName(companyRole.getDepartmentId());
+                            String dName = DepartmentControl.getInstance().getDepartmentShowName(companyRole.getDepartmentId(), ",");
                             String pName = PostControl.getInstance().getPostName(companyRole.getPostId());
                             if (ComparatorUtils.equals(dName + "," + pName, roleName)) {
                                 packageIDs.add(pId);

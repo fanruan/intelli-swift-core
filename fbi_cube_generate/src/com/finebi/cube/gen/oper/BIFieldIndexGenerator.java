@@ -71,7 +71,6 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
             CubeTableEntityGetterService tableEntityService = cube.getCubeTable(new BITableKey(tableSource.getSourceID()));
             columnEntityService = (ICubeColumnEntityService<T>) tableEntityService.getColumnDataGetter(targetColumnKey);
             rowCount = tableEntityService.getRowCount();
-            tableEntityService.clear();
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
@@ -115,12 +114,15 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
             }
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
+        } finally {
+            columnEntityService.forceReleaseWriter();
         }
     }
 
     @Override
     public void release() {
         columnEntityService.forceReleaseWriter();
+        columnEntityService.forceReleaseReader();
         columnEntityService.clear();
     }
 

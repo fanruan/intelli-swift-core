@@ -511,7 +511,7 @@ BICst.DEFAULT_CHART_SETTING = {
     show_cat_label: true,
     show_v_grid_line: true,
     show_h_grid_line: true,
-    manually_linkage_selection: false,
+    select_linkage: false,
     mini_show_grid_line: false,
     minimalist_model: false,
     big_data_mode: false,
@@ -701,4 +701,8 @@ BICst.IMAGE_RESIZE_MODE = {
     ORIGINAL: 1,
     EQUAL: 2,
     STRETCH: 3
+};
+
+BICst.LIST_LABEL_TYPE = {
+    ALL: "_*_"
 };

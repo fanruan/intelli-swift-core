@@ -367,21 +367,6 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
             chart_legend: this.legend.getValue()[0],
             show_data_label: this.showDataLabel.isSelected()
         }
-    },
-
-    setValue: function (v) {
-        this.showTitle.setSelected(v.show_name);
-        this.title.setValue(v.widget_title);
-        this.titleDetailSettting.setValue(v.title_detail);
-        this.widgetBackground.setValue(v.widget_bg);
-        this.transferFilter.setSelected(v.transfer_filter);
-        this.colorSelect.setValue(v.chart_color);
-        this.chartStyleGroup.setValue(v.chart_style);
-        this.chartTypeGroup.setValue(v.chart_pie_type);
-        this.totalAngle.setValue(v.chart_total_angle);
-        this.innerRadius.setValue(v.chart_inner_radius);
-        this.legend.setValue(v.chart_legend);
-        this.showDataLabel.setSelected(v.show_data_label);
     }
 });
 BI.PieChartSetting.EVENT_CHANGE = "EVENT_CHANGE";

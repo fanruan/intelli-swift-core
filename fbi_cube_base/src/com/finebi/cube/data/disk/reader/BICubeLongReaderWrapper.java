@@ -15,7 +15,7 @@ public class BICubeLongReaderWrapper extends BICubePrimitiveReaderWrapper implem
         super(reader);
     }
 
-    public long getSpecificValue(int rowNumber) throws BIResourceInvalidException{
-        return ((ICubeLongReader)reader).getSpecificValue(rowNumber);
+    public long getSpecificValue(int rowNumber) throws BIResourceInvalidException {
+        return ((ICubeLongReader) reader).getSpecificValue(rowNumber);
     }
 }

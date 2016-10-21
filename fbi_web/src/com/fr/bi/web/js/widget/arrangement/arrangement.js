@@ -8,7 +8,7 @@
 BI.Arrangement = BI.inherit(BI.Widget, {
 
     _const: {
-        GRID_HEIGHT: 50
+        GRID_HEIGHT: 80
     },
 
     _defaultConfig: function () {
@@ -29,8 +29,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
             invisible: true
         });
         this.block = BI.createWidget({
-            type: "bi.arrangement_droppable",
-            cls: "arrangement-block",
+            type: "bi.arrangement_block",
             invisible: true
         });
         this.droppable = BI.createWidget({
@@ -599,17 +598,24 @@ BI.Arrangement = BI.inherit(BI.Widget, {
 
     //布局是否是优良的
     _isArrangeFine: function (regions) {
-        if (this.options.layoutType === BI.Arrangement.LAYOUT_TYPE.ADAPTIVE) {
-            if (this._isRegionOverlay()) {
-                return false;
-            }
-            var maxRegion = this._getRegionOccupied(regions);
-            var area = maxRegion.width * maxRegion.height;
-            var all = 0;
-            BI.each(regions || this.regions, function (id, region) {
-                all += region.width * region.height;
-            });
-            return Math.abs(area - all) < 8;
+        switch (this.options.layoutType) {
+            case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
+                if (this._isRegionOverlay()) {
+                    return false;
+                }
+                var maxRegion = this._getRegionOccupied(regions);
+                var area = maxRegion.width * maxRegion.height;
+                var all = 0;
+                BI.each(regions || this.regions, function (id, region) {
+                    all += region.width * region.height;
+                });
+                return Math.abs(area - all) < 8;
+            case BI.Arrangement.LAYOUT_TYPE.FREE:
+                return true;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                if (this._isRegionOverlay()) {
+                    return false;
+                }
         }
         return true;
     },
@@ -659,7 +665,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
     _test: function (regions) {
         var self = this;
         return !BI.any(regions || this.regions, function (i, region) {
-            if (region.width <= 21 || region.height <= 21) {
+            if (BI.isNaN(region.width) || BI.isNaN(region.height) || region.width <= 21 || region.height <= 21) {
                 return true;
             }
         })
@@ -1882,6 +1888,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         });
         this._applyContainer();
         this._calculateDrops();
+        this.ratio = this.getLayoutRatio();
     },
 
     _renderRegion: function () {
@@ -1964,7 +1971,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
 
     //Grid
     _getOneWidthPortion: function () {
-        return Math.floor(this.scrollContainer.element.width() / BI.Arrangement.PORTION);
+        return this.scrollContainer.element.width() / BI.Arrangement.PORTION;
     },
 
     _getGridPositionAndSize: function (position) {
@@ -1981,6 +1988,12 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         }
         if (leftPortion + widthPortion > BI.Arrangement.PORTION) {
             leftPortion = BI.Arrangement.PORTION - widthPortion;
+        }
+        if (widthPortion === 0) {
+            widthPortion = 1;
+        }
+        if (heightPortion === 0) {
+            heightPortion = 1;
         }
         return {
             x: leftPortion,
@@ -2011,8 +2024,8 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         return result;
     },
 
-    _getLayoutIndexByName: function(layout, name){
-        return BI.findIndex(layout, function(i,l){
+    _getLayoutIndexByName: function (layout, name) {
+        return BI.findIndex(layout, function (i, l) {
             return l.i === name;
         });
     },
@@ -2198,7 +2211,9 @@ BI.Arrangement = BI.inherit(BI.Widget, {
     _start: function (cur) {
         this.arrangement.setVisible(true);
         this.droppable.setVisible(true);
-        this.block.setVisible(true);
+        if (this.options.layoutType === BI.Arrangement.LAYOUT_TYPE.GRID) {
+            this.block.setVisible(true);
+        }
         BI.each(this.drops, function (i, drop) {
             drop.el.setVisible(false);
         });
@@ -2397,13 +2412,22 @@ BI.Arrangement = BI.inherit(BI.Widget, {
     },
 
     setPosition: function (position, size) {
+        var self = this, o = this.options;
+        var insert, regions = [], cur;
         if (position.left < 0 || position.top < 0) {
+            switch (o.layoutType) {
+                case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
+                    break;
+                case BI.Arrangement.LAYOUT_TYPE.FREE:
+                    break;
+                case BI.Arrangement.LAYOUT_TYPE.GRID:
+                    this.resize();
+                    break;
+            }
             this._stop();
             this.position = null;
             return null;
         }
-        var self = this, o = this.options;
-        var insert, regions = [], cur;
         var offset = this._getScrollOffset();
         position = {
             left: position.left + offset.left,
@@ -2478,12 +2502,11 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                     width: size.width,
                     height: size.height
                 };
-                if (position.top === 0 && position.left === 0) {
-                    debugger;
-                }
                 this._setArrangeSize(p);
                 var cur = this._getGridPositionAndSize(p);
-                var layout = [cur].concat(this._getLayoutsByRegions());
+                var layout = [{
+                    x: 0, y: BI.MAX, w: cur.w, h: cur.h, i: cur.i
+                }].concat(this._getLayoutsByRegions());
                 layout = this._moveElement(layout, layout[0], cur.x, cur.y, true);
                 layout = this.compact(layout, true);
                 var regions = this._setRegionsByLayout(this._cloneRegion(), layout);
@@ -2503,10 +2526,10 @@ BI.Arrangement = BI.inherit(BI.Widget, {
     setRegionPosition: function (name, position) {
         var self = this, o = this.options;
         var offset = this._getScrollOffset();
-        position = {
+        position = BI.extend(position, {
             left: position.left + offset.left,
             top: position.top + offset.top
-        };
+        });
         switch (o.layoutType) {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
                 break;
@@ -2518,17 +2541,43 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                 this._applyRegion();
                 break;
             case BI.Arrangement.LAYOUT_TYPE.GRID:
-                // var cloned = this._cloneRegion();
-                // BI.extend(cloned[name], {
-                //     left: position.left < 0 ? 0 : position.left,
-                //     top: position.top < 0 ? 0 : position.top
-                // });
-                // var layout = this._getLayoutsByRegions(cloned);
-                // var cur = layout[this._getLayoutIndexByName(name)];
-                // layout = this._moveElement(layout, cur, cur.x, cur.y, true);
-                // layout = this.compact(layout, true);
-                // var regions = this._getRegionsByLayout(layout);
-                // this._modifyRegion(regions);
+                if (!position.stop) {
+                    BI.extend(this.regions[name], {
+                        left: position.left < 0 ? 0 : position.left,
+                        top: position.top < 0 ? 0 : position.top
+                    });
+                    var cloned = this._cloneRegion();
+                    var cur = this._getGridPositionAndSize(BI.extend(cloned[name], {
+                        left: position.left < 0 ? 0 : position.left,
+                        top: position.top < 0 ? 0 : position.top
+                    }));
+                    var x = cur.x, y = cur.y;
+                    cur = BI.extend(cur, {
+                        x: 0, y: BI.MAX, i: -1
+                    });
+                    delete cloned[name];
+                    var layout = this._getLayoutsByRegions(cloned);
+                    layout = this._moveElement([cur].concat(layout), cur, x, y, true);
+                    layout = this.compact(layout, true);
+                    var regions = this._getRegionsByLayout(layout);
+                    this._modifyRegion(regions);
+                    this._applyRegion();
+
+                    this._setBlockPositionAndSize(this._getBlockPositionAndSize(cur));
+                    this.block.setVisible(true);
+                } else {
+                    BI.extend(this.regions[name], {
+                        left: position.left < 0 ? 0 : position.left,
+                        top: position.top < 0 ? 0 : position.top
+                    });
+                    var cloned = this._cloneRegion();
+                    var layout = this._getLayoutsByRegions(cloned);
+                    layout = this.compact(layout, true);
+                    var regions = this._getRegionsByLayout(layout);
+                    this._modifyRegion(regions);
+                    this._applyRegion();
+                    this.block.setVisible(false);
+                }
                 break;
         }
     },
@@ -2591,25 +2640,54 @@ BI.Arrangement = BI.inherit(BI.Widget, {
 
     zoom: function (ratio) {
         var self = this, o = this.options;
+        if (!ratio) {
+            return;
+        }
         var occupied = this._applyContainer();
-        if (this._isArrangeFine()) {
-            var width = this.scrollContainer.element[0].clientWidth, height = this.scrollContainer.element[0].clientHeight;
-            var xRatio = (ratio.x || 1) * width / (occupied.left + occupied.width);
-            //var yRatio = ratio.y * height / (occupied.top + occupied.height);
-            var regions = this._cloneRegion();
-            BI.each(regions, function (i, region) {
-                region.left = region.left * xRatio;
-                //region.top = region.top * yRatio;
-                region.width = region.width * xRatio;
-                //region.height = region.height * yRatio;
-            });
-            if (this._test(regions)) {
-                this._modifyRegion(regions);
-                this._applyRegion();
-            }
-            this.resize();
-        } else {
-            this.relayout();
+        switch (this.getLayoutType()) {
+            case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
+                if (this._isArrangeFine()) {
+                    var width = this.scrollContainer.element[0].clientWidth;
+                    var xRatio = (ratio.x || 1) * width / (occupied.left + occupied.width);
+                    //var yRatio = ratio.y * height / (occupied.top + occupied.height);
+                    var regions = this._cloneRegion();
+                    BI.each(regions, function (i, region) {
+                        region.left = region.left * xRatio;
+                        //region.top = region.top * yRatio;
+                        region.width = region.width * xRatio;
+                        //region.height = region.height * yRatio;
+                    });
+                    if (this._test(regions)) {
+                        this._modifyRegion(regions);
+                        this._applyRegion();
+                    }
+                    this.resize();
+                } else {
+                    this.relayout();
+                }
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.FREE:
+                break;
+            case BI.Arrangement.LAYOUT_TYPE.GRID:
+                if (this._isArrangeFine()) {
+                    var width = this.scrollContainer.element[0].clientWidth;
+                    var xRatio = (ratio.x || 1) * width / (occupied.left + occupied.width);
+                    var regions = this._cloneRegion();
+                    BI.each(regions, function (i, region) {
+                        region.left = region.left * xRatio;
+                        region.width = region.width * xRatio;
+                    });
+                    if (this._test(regions)) {
+                        var layout = this._getLayoutsByRegions(regions);
+                        layout = this.compact(layout, true);
+                        regions = this._getRegionsByLayout(layout);
+                        this._modifyRegion(regions);
+                        this._applyRegion();
+                    }
+                } else {
+                    this.relayout();
+                }
+                break;
         }
     },
 
@@ -2665,10 +2743,13 @@ BI.Arrangement = BI.inherit(BI.Widget, {
             case BI.Arrangement.LAYOUT_TYPE.FREE:
                 break;
             case BI.Arrangement.LAYOUT_TYPE.GRID:
-                var layout = this._getLayoutsByRegions();
+                this.zoom(this.ratio);
+                var regions = this._cloneRegion();
+                var layout = this._getLayoutsByRegions(regions);
                 layout = this.compact(layout, true);
-                var regions = this._getRegionsByLayout(layout);
+                regions = this._getRegionsByLayout(layout);
                 this._modifyRegion(regions);
+                this._applyRegion();
                 break;
         }
     },
@@ -2729,7 +2810,50 @@ BI.Arrangement = BI.inherit(BI.Widget, {
             case BI.Arrangement.LAYOUT_TYPE.FREE:
                 break;
             case BI.Arrangement.LAYOUT_TYPE.GRID:
-                this.resize();
+                var width = this.scrollContainer.element[0].clientWidth, height = this.scrollContainer.element[0].scrollHeight;
+                var regions = this._cloneRegion();
+                var clone = BI.toArray(regions);
+                clone.sort(function (r1, r2) {
+                    if (self._isEqual(r1.top, r2.top)) {
+                        return r1.left - r2.left;
+                    }
+                    return r1.top - r2.top;
+                });
+                var count = clone.length;
+                var cols = 3, rows = Math.floor((count - 1) / 3 + 1);
+                var w = width / cols, h = height / rows;
+                var store = {};
+                BI.each(clone, function (i, region) {
+                    var row = Math.floor(i / 3), col = i % 3;
+                    BI.extend(region, {
+                        top: row * 380,
+                        left: col * w,
+                        width: w,
+                        height: 380
+                    });
+                    if (!store[row]) {
+                        store[row] = {};
+                    }
+                    store[row][col] = region;
+                });
+                //非3的倍数
+                if (count % 3 !== 0) {
+                    var lasts = store[rows - 1];
+                    var perWidth = width / (count % 3);
+                    BI.each(lasts, function (i, region) {
+                        BI.extend(region, {
+                            left: BI.parseInt(i) * perWidth,
+                            width: perWidth
+                        });
+                    });
+                }
+                if (this._test(clone)) {
+                    var layout = this._getLayoutsByRegions(regions);
+                    layout = this.compact(layout, true);
+                    regions = this._getRegionsByLayout(layout);
+                    this._modifyRegion(regions);
+                    this._populate(clone);
+                }
                 break;
         }
     },

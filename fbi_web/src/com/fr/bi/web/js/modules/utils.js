@@ -109,6 +109,15 @@
             return Data.SharingPool.get("reportId");
         },
 
+        getLayoutType: function () {
+            var layoutType = Data.SharingPool.get("layoutType");
+            return BI.isNull(layoutType) ? BICst.DASHBOARD_LAYOUT_GRID : layoutType;
+        },
+
+        getLayoutRatio: function () {
+            return Data.SharingPool.get("layoutRatio");
+        },
+
         getWidgetsByTemplateId: function (tId, callback) {
             if (tId === this.getCurrentTemplateId()) {
                 callback(Data.SharingPool.cat("widgets"));
@@ -722,8 +731,11 @@
 
         getWSWidgetBGByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.widget_bg) ? ws.widget_bg :
-            {}
+            var wbg = this.getGSWidgetBackground(wid);
+            if(BI.isNull(ws.widget_bg)){
+                return wbg ? wbg : {}
+            }
+            return ws.widget_bg
         },
 
         getWSTableFormByID: function (wid) {
@@ -830,7 +842,7 @@
 
         getWSShowNameByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return (BI.isNotNull(ws.widget_setting) && BI.isNotNull(ws.widget_setting.show_name)) ? ws.widget_setting.show_name :
+            return BI.isNotNull(ws.show_name) ? ws.show_name :
                 BICst.DEFAULT_CHART_SETTING.show_name;
         },
 
@@ -1200,7 +1212,7 @@
             var wt = this.getWidgetTypeByID(wid);
             var colors = this.getWSChartColorByID(wid);
             var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[0] : BICst.DEFAULT_CHART_SETTING.line_color;
-            labelSetting.text_style = BI.extend(chartFont, {"color" : color}, labelSetting.text_style);
+            labelSetting.text_style = BI.extend(chartFont, {"color": color}, labelSetting.text_style);
             labelSetting.text_direction = labelSetting.text_direction || 0;
             return labelSetting;
         },
@@ -1227,7 +1239,7 @@
             var wt = this.getWidgetTypeByID(wid);
             var colors = this.getWSChartColorByID(wid);
             var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[1] : BICst.DEFAULT_CHART_SETTING.line_color;
-            labelSetting.text_style = BI.extend(chartFont, {"color" : color}, labelSetting.text_style);
+            labelSetting.text_style = BI.extend(chartFont, {"color": color}, labelSetting.text_style);
             labelSetting.text_direction = labelSetting.text_direction || 0;
             return labelSetting;
         },
@@ -1254,7 +1266,7 @@
             var wt = this.getWidgetTypeByID(wid);
             var colors = this.getWSChartColorByID(wid);
             var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[2] : BICst.DEFAULT_CHART_SETTING.line_color;
-            labelSetting.text_style = BI.extend(chartFont, {"color" : color}, labelSetting.text_style);
+            labelSetting.text_style = BI.extend(chartFont, {"color": color}, labelSetting.text_style);
             labelSetting.text_direction = labelSetting.text_direction || 0;
             return labelSetting;
         },
@@ -1330,8 +1342,8 @@
 
         getWSLinkageSelectionByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.manually_linkage_selection) ? ws.manually_linkage_selection :
-                BICst.DEFAULT_CHART_SETTING.manually_linkage_selection
+            return BI.isNotNull(ws.select_linkage) ? ws.select_linkage :
+                BICst.DEFAULT_CHART_SETTING.select_linkage
         },
 
         getWSMinimalistByID: function (wid) {
@@ -2626,7 +2638,7 @@
                         var leafFilterObj = {
                             filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
                             filter_value: {
-                                type: value === "_*_" ? BI.Selection.All : BI.Selection.Multi,
+                                type: value === BICst.LIST_LABEL_TYPE.ALL ? BI.Selection.All : BI.Selection.Multi,
                                 value: [value]
                             },
                             // _src: {field_id: self.getFieldIDByDimensionID(dimensionIds[floor])}
@@ -2936,43 +2948,43 @@
 
             //标红维度的处理
             var dIds = this.getAllDimDimensionIDs(wid);
-            BI.each(dIds, function(idx, dId){
+            BI.each(dIds, function (idx, dId) {
                 var dimensionMap = self.getDimensionMapByDimensionID(dId);
                 var valid = true;
                 //树控件和明细表
-                if(widget.type === BICst.WIDGET.DETAIL || widget.type === BICst.WIDGET.TREE){
-                    BI.each(dimensionMap, function(tableId, obj){
+                if (widget.type === BICst.WIDGET.DETAIL || widget.type === BICst.WIDGET.TREE) {
+                    BI.each(dimensionMap, function (tableId, obj) {
                         var targetRelation = obj.target_relation;
                         var pId = self.getFirstRelationPrimaryIdFromRelations(targetRelation);
                         var fId = self.getLastRelationForeignIdFromRelations(targetRelation);
                         var paths = self.getPathsFromFieldAToFieldB(pId, fId);
-                        if(!BI.deepContains(paths, targetRelation)){
+                        if (!BI.deepContains(paths, targetRelation)) {
                             //维度和某个指标之间设置了路径但是路径在配置处被删了
-                            if(paths.length >= 1){
+                            if (paths.length >= 1) {
                                 widget.dimensions[dId].dimension_map[tableId].target_relation = paths[0];
                             }
                         }
                     })
-                }else{
+                } else {
                     var tIds = self.getAllTargetDimensionIDs(wid);
-                    BI.any(tIds, function(idx, tId){
-                        if(!self.isCalculateTargetByDimensionID(tId)){
+                    BI.any(tIds, function (idx, tId) {
+                        if (!self.isCalculateTargetByDimensionID(tId)) {
                             //维度和某个指标之间没有设置路径
-                            if(!BI.has(dimensionMap, tId)){
+                            if (!BI.has(dimensionMap, tId)) {
                                 valid = false;
                                 return true;
-                            }else{
+                            } else {
                                 var targetRelation = dimensionMap[tId].target_relation;
-                                BI.any(targetRelation, function(id, path){
+                                BI.any(targetRelation, function (id, path) {
                                     var pId = self.getFirstRelationPrimaryIdFromRelations(path);
                                     var fId = self.getLastRelationForeignIdFromRelations(path);
                                     var paths = self.getPathsFromFieldAToFieldB(pId, fId);
-                                    if(!BI.deepContains(paths, path)){
+                                    if (!BI.deepContains(paths, path)) {
                                         //维度和某个指标之间设置了路径但是路径在配置处被删了
-                                        if(paths.length === 1){
+                                        if (paths.length === 1) {
                                             widget.dimensions[dId].dimension_map[tId].target_relation.length = id;
                                             widget.dimensions[dId].dimension_map[tId].target_relation.push(paths[0]);
-                                        }else{
+                                        } else {
                                             valid = false;
                                             return true;
                                         }
@@ -2982,7 +2994,7 @@
                         }
                     });
                 }
-                if(valid === false){
+                if (valid === false) {
                     widget.dimensions[dId].used = false;
                 }
             });
@@ -3188,6 +3200,9 @@
             BI.each(filterValue, function (i, value) {
                 parseFilter(value);
             });
+        }
+        if (BI.isNull(filterValue)) {
+            return;
         }
         if (filterType === BICst.FILTER_DATE.BELONG_DATE_RANGE || filterType === BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE) {
             var start = filterValue.start, end = filterValue.end;
