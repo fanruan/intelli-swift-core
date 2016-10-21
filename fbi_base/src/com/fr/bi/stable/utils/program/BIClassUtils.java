@@ -1,5 +1,6 @@
 package com.fr.bi.stable.utils.program;
 
+import com.finebi.cube.common.log.BILogger;
 import com.fr.bi.stable.utils.code.BILogDelegate;
 import com.finebi.cube.common.log.BILoggerFactory;
 
@@ -11,6 +12,7 @@ import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.jar.JarEntry;
@@ -20,6 +22,8 @@ import java.util.jar.JarFile;
  * Created by Connery on 2015/12/8.
  */
 public class BIClassUtils {
+    private static BILogger logger = BILoggerFactory.getLogger(BIClassUtils.class);
+
     public static Set<Class<?>> getClasses(String pack) {
 
         // 第一个class类的集合
@@ -32,12 +36,15 @@ public class BIClassUtils {
         // 定义一个枚举的集合 并进行循环来处理这个目录下的things
         Enumeration<URL> dirs;
         try {
-            dirs = BIClassUtils.class.getClassLoader().getResources(
+            dirs = getAggregatedClassLoader(BIClassUtils.class.getClassLoader()).getResources(
                     packageDirName);
+            logger.info("get the package:" + packageDirName);
             // 循环迭代下去
             while (dirs.hasMoreElements()) {
                 // 获取下一个元素
                 URL url = dirs.nextElement();
+                logger.info("scan the URL:" + url.toString());
+
                 // 得到协议的名称
                 String protocol = url.getProtocol();
                 // 如果是以文件的形式保存在服务器上
@@ -57,7 +64,7 @@ public class BIClassUtils {
     private static String scanJars(Set<Class<?>> classes, boolean recursive, String packageName, String packageDirName, URL url) {
         // 如果是jar包文件
         // 定义一个JarFile
-        BILoggerFactory.getLogger().info("jar type");
+//        BILoggerFactory.getLogger().info("jar type");
         JarFile jar;
         try {
             // 获取jar
@@ -89,9 +96,8 @@ public class BIClassUtils {
                             // 去掉后面的".class" 获取真正的类名
                             String className = name.substring(packageName.length() + 1, name.length() - 6);
                             try {
-                                Thread.currentThread().getClass().getClassLoader();
                                 // 添加到classes
-                                classes.add(BIClassUtils.class.getClassLoader().loadClass(packageName + '.' + className));
+                                classes.add(getAggregatedClassLoader(BIClassUtils.class.getClassLoader()).loadClass(packageName + '.' + className));
                             } catch (ClassNotFoundException e) {
                                 BILogDelegate.errorDelegate(e.getMessage(), e);
                             }
@@ -106,7 +112,7 @@ public class BIClassUtils {
     }
 
     private static void scanFiles(Set<Class<?>> classes, boolean recursive, String packageName, URL url) throws UnsupportedEncodingException {
-        BILoggerFactory.getLogger().info("file type");
+//        BILoggerFactory.getLogger().info("file type");
         // 获取包的物理路径
         String filePath = URLDecoder.decode(url.getFile(), "UTF-8");
         // 以文件的方式扫描整个包下的文件 并添加到集合中
@@ -153,6 +159,92 @@ public class BIClassUtils {
                 }
             }
         }
+    }
+
+    private static ClassLoader locateThreadClassLoader() {
+        try {
+            return Thread.currentThread().getContextClassLoader();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static ClassLoader locateSystemClassLoader() {
+        try {
+            return ClassLoader.getSystemClassLoader();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static class AggregatedClassLoader extends ClassLoader {
+        private final ClassLoader[] individualClassLoaders;
+
+        private AggregatedClassLoader(final LinkedHashSet<ClassLoader> orderedClassLoaderSet) {
+            super(null);
+            individualClassLoaders = orderedClassLoaderSet.toArray(new ClassLoader[orderedClassLoaderSet.size()]);
+        }
+
+        @Override
+        public Enumeration<URL> getResources(String name) throws IOException {
+            final LinkedHashSet<URL> resourceUrls = new LinkedHashSet<URL>();
+
+            for (ClassLoader classLoader : individualClassLoaders) {
+                final Enumeration<URL> urls = classLoader.getResources(name);
+                while (urls.hasMoreElements()) {
+                    resourceUrls.add(urls.nextElement());
+                }
+            }
+
+            return new Enumeration<URL>() {
+                final Iterator<URL> resourceUrlIterator = resourceUrls.iterator();
+
+                @Override
+                public boolean hasMoreElements() {
+                    return resourceUrlIterator.hasNext();
+                }
+
+                @Override
+                public URL nextElement() {
+                    return resourceUrlIterator.next();
+                }
+            };
+        }
+
+        @Override
+        protected URL findResource(String name) {
+            for (ClassLoader classLoader : individualClassLoaders) {
+                final URL resource = classLoader.getResource(name);
+                if (resource != null) {
+                    return resource;
+                }
+            }
+            return super.findResource(name);
+        }
+
+        @Override
+        protected Class<?> findClass(String name) throws ClassNotFoundException {
+            for (ClassLoader classLoader : individualClassLoaders) {
+                try {
+                    return classLoader.loadClass(name);
+                } catch (Exception ignore) {
+                } catch (LinkageError ignore) {
+                }
+            }
+
+            throw new ClassNotFoundException("Could not load requested class : " + name);
+        }
+
+    }
+
+    public static ClassLoader getAggregatedClassLoader(ClassLoader classLoader) {
+        LinkedHashSet<ClassLoader> classLoaderLinkedHashSet = new LinkedHashSet<ClassLoader>();
+        classLoaderLinkedHashSet.add(locateSystemClassLoader());
+        classLoaderLinkedHashSet.add(locateThreadClassLoader());
+        if (classLoader != null) {
+            classLoaderLinkedHashSet.add(classLoader);
+        }
+        return new AggregatedClassLoader(classLoaderLinkedHashSet);
     }
 
 }
