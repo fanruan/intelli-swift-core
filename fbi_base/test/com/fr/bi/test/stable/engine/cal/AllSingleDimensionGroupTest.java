@@ -175,6 +175,11 @@ public class AllSingleDimensionGroupTest extends TestCase {
                 public PrimitiveDetailGetter createPrimitiveDetailGetter() {
                     return null;
                 }
+
+                @Override
+                public void clear() {
+
+                }
             };
         }
 

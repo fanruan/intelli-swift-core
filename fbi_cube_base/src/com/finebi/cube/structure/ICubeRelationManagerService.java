@@ -24,4 +24,6 @@ public interface ICubeRelationManagerService extends Release {
     void setOwner(ITableKey owner);
 
     void forceReleaseWriter();
+
+    void forceReleaseReader();
 }

@@ -160,11 +160,6 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
         return this.size() == 0;
     }
 
-    public void clear() {
-        columnReaderService.clear();
-        indexDataGetterService.clear();
-    }
-
     @Override
     public T[] createKey(int length) {
         return (T[]) new Object[length];

@@ -2309,6 +2309,10 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         this.resize();
     },
 
+    scrollTo: function (top) {
+        this.scrollContainer.element.scrollTop(top);
+    },
+
     zoom: function (ratio) {
         var self = this, o = this.options;
         var occupied = this._applyContainer();

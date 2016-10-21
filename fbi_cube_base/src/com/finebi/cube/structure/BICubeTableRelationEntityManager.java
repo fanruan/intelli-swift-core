@@ -112,6 +112,15 @@ public class BICubeTableRelationEntityManager extends BIMapContainer<ICubeResour
         super.clear();
     }
 
+    @Override
+    public void forceReleaseReader() {
+        Iterator<ICubeRelationEntityService> it = container.values().iterator();
+        while (it.hasNext()) {
+            it.next().forceReleaseReader();
+        }
+        super.clear();
+    }
+
     public boolean existPath(BICubeTablePath path) {
         try {
             ICubeRelationEntityService service = getRelationService(path);

@@ -23,19 +23,13 @@ public class IDGroupValueIndex extends AbstractGroupValueIndex {
 
     @Override
     public GroupValueIndex AND(GroupValueIndex valueIndex) {
-        if (valueIndex == null || GVIUtils.isAllShowRoaringGroupValueIndex(valueIndex)) {
+        if (valueIndex == null) {
             return this.clone();
         }
-        if (GVIUtils.isAllEmptyRoaringGroupValueIndex(valueIndex)) {
+        if (!valueIndex.isOneAt(id)){
             return GVIFactory.createAllEmptyIndexGVI();
         }
-        GroupValueIndex result = valueIndex.clone();
-        if (GVIUtils.isIDGroupValueIndex(valueIndex)){
-            return ((IDGroupValueIndex)valueIndex).id == id ? result : GVIFactory.createAllEmptyIndexGVI();
-        } else {
-            ((RoaringGroupValueIndex)result).removeValueByIndex(id);
-            return result;
-        }
+        return this.clone();
     }
 
     @Override

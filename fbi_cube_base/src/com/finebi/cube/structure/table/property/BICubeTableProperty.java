@@ -34,7 +34,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     private static String MAIN_DATA = "field";
     private static String ROW_COUNT_DATA = "count";
 
-    private static String LAST_EXECUTE_TIME = "lastExecuteTime";
+    private static String LAST_EXECUTE_TIME = "timestamp";
     private static String CURRENT_EXECUTE_TIME = "currentExecuteTime";
     private static String SUPER_TABLES = "st";
 
@@ -497,6 +497,8 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
             removedList.add(removedListReader.getSpecificValue(i));
         } catch (BIResourceInvalidException e) {
             BILoggerFactory.getLogger().error(e.getMessage());
+        } finally {
+            removedListReader.clear();
         }
         return removedList;
     }
@@ -556,7 +558,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     protected void resetFieldReader() {
         if (isFieldReaderAvailable()) {
             fieldInfoReader.clear();
-            fieldInfoReader = null;
+//            fieldInfoReader = null;
         }
     }
 
@@ -581,7 +583,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     protected void resetRowCountReader() {
         if (isRowCountReaderAvailable()) {
             rowCountReader.clear();
-            rowCountReader = null;
+//            rowCountReader = null;
         }
     }
 
@@ -623,7 +625,21 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     protected void resetParentReader() {
         if (isParentReaderAvailable()) {
             parentsReader.clear();
-            parentsReader = null;
+//            parentsReader = null;
+        }
+    }
+
+    protected void resetRemoveListReader() {
+        if (isRemoveListReaderAvailable()) {
+            removeListReader.clear();
+//            removeListReader = null;
+        }
+    }
+
+    protected void resetRemoveListWriter() {
+        if (isRemoveListWriterAvailable()) {
+            removeListWriter.clear();
+            removeListWriter = null;
         }
     }
 
@@ -645,43 +661,62 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         if (version != null) {
             version.clear();
         }
+        resetRemoveListReader();
+        resetRemoveListWriter();
+
     }
 
     public void forceRelease() {
         if (isFieldWriterAvailable()) {
             fieldInfoWriter.forceRelease();
+            fieldInfoWriter = null;
         }
-        if (isFieldReaderAvailable()) {
-            fieldInfoReader.forceRelease();
-        }
+//        if (isFieldReaderAvailable()) {
+//            fieldInfoReader.forceRelease();
+//        }
 
-        if (isRowCountReaderAvailable()) {
-            rowCountReader.forceRelease();
-        }
+//        if (isRowCountReaderAvailable()) {
+//            rowCountReader.forceRelease();
+//        }
         if (isRowCountWriterAvailable()) {
             rowCountWriter.forceRelease();
+            rowCountWriter = null;
         }
-        if (isLastExecuteTimeReaderAvailable()) {
-            lastExecuteTimeReader.forceRelease();
-        }
+//        if (isTimeStampReaderAvailable()) {
+//            timeStampReader.forceRelease();
+//        }
+//        if (isLastExecuteTimeReaderAvailable()) {
+//            lastExecuteTimeReader.forceRelease();
+//        }
         if (isLastExecuteTimeWriterAvailable()) {
             lastExecuteTimeWriter.forceRelease();
+            lastExecuteTimeWriter = null;
         }
-        if (isCurrentExecuteTimeReaderAvailable()) {
-            currentExecuteTimeReader.forceRelease();
-        }
+//        if (isCurrentExecuteTimeReaderAvailable()) {
+//            currentExecuteTimeReader.forceRelease();
+//        }
         if (isCurrentExecuteTimeWriterAvailable()) {
             currentExecuteTimeWriter.forceRelease();
+            currentExecuteTimeWriter = null;
         }
         if (isParentWriterAvailable()) {
             parentsWriter.forceRelease();
+            parentsWriter = null;
         }
-        if (isParentReaderAvailable()) {
-            parentsReader.forceRelease();
+//        if (isParentReaderAvailable()) {
+//            parentsReader.forceRelease();
+//        }
+        if (isRemoveListWriterAvailable()) {
+            removeListWriter.clear();
+            removeListWriter = null;
         }
+//        if(isRemoveListReaderAvailable()){
+//            removeListReader.clear();
+////            removeListReader = null;
+//        }
         parentFieldProperty.forceRelease();
         ((BICubeProperty) version).forceRelease();
-        clear();
+//        clear();
     }
 
     @Override
@@ -705,6 +740,10 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         if (isParentWriterAvailable()) {
             parentsWriter.forceRelease();
             parentsWriter = null;
+        }
+        if (isRemoveListWriterAvailable()) {
+            removeListWriter.forceRelease();
+            removeListWriter = null;
         }
         if (parentFieldProperty != null) {
             parentFieldProperty.forceReleaseWriter();

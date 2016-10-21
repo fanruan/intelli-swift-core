@@ -42,4 +42,6 @@ public interface ICubeGroupDataService<T> extends Release {
     void buildStructure();
 
     void forceReleaseWriter();
+
+    void forceReleaseReader();
 }

@@ -368,6 +368,28 @@ BI.ETLModel = BI.inherit(FR.OB, {
         });
     },
 
+    refresh4Fields: function(data) {
+        var fields = data.fields, oFields = this.fields;
+
+        function getFieldId(name, fields) {
+            var fieldId = BI.UUID();
+            BI.some(fields, function(i, fs) {
+                return BI.some(fs, function(j, field) {
+                     if (field.field_name === name) {
+                         fieldId = field.id;
+                         return true;
+                     }
+                });
+            });
+            return fieldId;
+        }
+        BI.each(fields, function(i, fs) {
+            BI.each(fs, function(j, field) {
+                field.id = getFieldId(field.field_name, oFields);
+            });
+        });
+    },
+
     _getDistinctTableName: function (name) {
         var self = this;
         var allTableNameTrans = [];
