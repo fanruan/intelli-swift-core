@@ -256,11 +256,9 @@ function accDiv(arg1, arg2) {
     }
     catch (e) {
     }
-    with (Math) {
-        r1 = Number(arg1.toString().replace(".", ""));
-        r2 = Number(arg2.toString().replace(".", ""));
-        return (r1 / r2) * pow(10, t2 - t1);
-    }
+    r1 = Number(arg1.toString().replace(".", ""));
+    r2 = Number(arg2.toString().replace(".", ""));
+    return (r1 / r2) * Math.pow(10, t2 - t1);
 }
 
 //给Number类型增加一个div方法，调用起来更加方便。

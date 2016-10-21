@@ -111,6 +111,7 @@ task compressJS(dependsOn:'copyFile'){
 			include (name:'**/*.js')
 			include (name:'**/*.css')
 			exclude (name:'**/js/template/*.js')
+			exclude (name:"js/widget/arrangement/arrangement.js")
 			exclude (name:'**/js/third/*.js')
 			exclude (name:'**/cross/demo/**')
 			exclude (name:'**/test/**')
