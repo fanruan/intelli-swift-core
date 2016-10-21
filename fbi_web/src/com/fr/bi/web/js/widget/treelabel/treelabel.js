@@ -158,22 +158,24 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
             result.push(temp);
         }
         this.items = BI.concat(this.items.slice(0, floor + 1), result);
-        BI.each(this.items, function (idx, items) {
-            // var selected = [], unselected = [];
-            // BI.each(items, function (i, item) {
-            //     if(BI.contains(values[idx], item.value)) {
-            //         selected.push(item);
-            //     } else {
-            //         unselected.push(item);
-            //     }
-            // });
-            // self.items[idx] = BI.concat(selected, unselected);
-            items.sort(function (a, b) {
-                var flagA = BI.contains(values[idx], a.value);
-                var flagB = BI.contains(values[idx], b.value);
-                return flagB - flagA;
-            })
-        });
+        // BI.each(this.items, function (idx, items) {
+        //     // var selected = [], unselected = [];
+        //     // BI.each(items, function (i, item) {
+        //     //     if(BI.contains(values[idx], item.value)) {
+        //     //         selected.push(item);
+        //     //     } else {
+        //     //         unselected.push(item);
+        //     //     }
+        //     // });
+        //     // self.items[idx] = BI.concat(selected, unselected);
+        //     if(items.length >= 40) {
+        //         items.sort(function (a, b) {
+        //             var flagA = BI.contains(values[idx], a.value);
+        //             var flagB = BI.contains(values[idx], b.value);
+        //             return flagB - flagA;
+        //         })
+        //     }
+        // });
         return result;
 
         function contains(array, item) {
