@@ -128,9 +128,21 @@ public class BICubeTableEntity implements CubeTableEntityService {
         int columnIndex = originalDataValue.getCol();
         int rowNumber = originalDataValue.getRow();
         Object value = originalDataValue.getValue();
+
         ICubeFieldSource field = getAllFields().get(columnIndex);
         ICubeColumnEntityService columnService = columnManager.getColumn(BIColumnKey.covertColumnKey(field));
         columnService.addOriginalDataValue(rowNumber, value);
+    }
+
+    @Override
+    public void increaseAddDataValue(BIDataValue originalDataValue) throws BICubeColumnAbsentException {
+        int columnIndex = originalDataValue.getCol();
+        int rowNumber = originalDataValue.getRow();
+        Object value = originalDataValue.getValue();
+
+        ICubeFieldSource field = getAllFields().get(columnIndex);
+        ICubeColumnEntityService columnService = columnManager.getColumn(BIColumnKey.covertColumnKey(field));
+        columnService.increaseAddOriginalDataValue(rowNumber, value);
     }
 
     private List<ICubeFieldSource> getAllFields() {

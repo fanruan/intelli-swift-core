@@ -5,10 +5,8 @@ import com.finebi.cube.data.BICubeReleaseRecorder;
 import com.finebi.cube.data.disk.NIOHandlerManager;
 import com.finebi.cube.data.output.primitive.ICubePrimitiveWriter;
 import com.finebi.cube.location.ICubeResourceLocation;
-import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by wang on 2016/9/30.
@@ -19,7 +17,7 @@ public class WriterHandlerManager implements NIOHandlerManager<ICubePrimitiveWri
     protected AtomicInteger countOfWriters = new AtomicInteger(0);
     protected boolean isForceReleased = false;
     ICubeResourceLocation resourceLocation = null;
-
+    public BICubeReleaseRecorder queryRecorder = new BICubeReleaseRecorder();
     public WriterHandlerManager(ICubePrimitiveWriter writer) {
         this.writer = writer;
     }
@@ -33,6 +31,7 @@ public class WriterHandlerManager implements NIOHandlerManager<ICubePrimitiveWri
     public ICubePrimitiveWriter queryHandler() {
         synchronized (this) {
             countOfWriters.getAndIncrement();
+            queryRecorder.record(Thread.getAllStackTraces().toString());
             BILoggerFactory.getLogger().debug("query writer " + resourceLocation.getAbsolutePath().substring(50) + " " + countOfWriters.get());
             return writer;
         }

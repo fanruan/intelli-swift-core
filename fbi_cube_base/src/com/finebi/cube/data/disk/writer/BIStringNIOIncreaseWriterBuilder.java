@@ -3,7 +3,7 @@ package com.finebi.cube.data.disk.writer;
 import com.finebi.cube.data.disk.BICubeDiskDiscovery;
 import com.finebi.cube.data.output.ICubeByteArrayWriter;
 import com.finebi.cube.data.output.ICubeStringWriter;
-import com.finebi.cube.data.output.ICubeStringWriterBuilder;
+import com.finebi.cube.data.output.ICubeStringWriterIncreaseBuilder;
 import com.finebi.cube.location.ICubeResourceLocation;
 
 import java.io.File;
@@ -14,7 +14,7 @@ import java.io.File;
  * @author kary
  * @since 4.0
  */
-public class BIStringNIOIncreaseWriterBuilder extends BINIOWriterBuilder<ICubeStringWriter> implements ICubeStringWriterBuilder {
+public class BIStringNIOIncreaseWriterBuilder extends BINIOWriterBuilder<ICubeStringWriter> implements ICubeStringWriterIncreaseBuilder {
 
     @Override
     protected String getFragmentTag() {
@@ -25,7 +25,7 @@ public class BIStringNIOIncreaseWriterBuilder extends BINIOWriterBuilder<ICubeSt
     protected ICubeStringWriter createNIOWriter(File target, ICubeResourceLocation location) {
         try {
             ICubeResourceLocation byteArrayLocation = location.copy();
-            byteArrayLocation.setByteArrayType();
+            byteArrayLocation.setByteArrayIncreaseType();
             ICubeByteArrayWriter byteArrayWriter = (BIByteArrayNIOIncreaseWriter) BICubeDiskDiscovery.getInstance().getCubeWriter(byteArrayLocation);
             return new BIStringNIOWriter(byteArrayWriter);
         } catch (Exception ignore) {
