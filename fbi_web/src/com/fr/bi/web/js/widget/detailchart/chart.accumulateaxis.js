@@ -56,9 +56,6 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
                 case self.constants.RIGHT_AXIS:
                     axis.title.text = getTitleText(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS, self.config.show_right_y_axis_title, self.config.right_y_axis_title);
                     axis.title.rotation = self.constants.ROTATION;
-                    axis.labelStyle = BI.extend(self.config.right_label_style.text_style, {
-                        fontSize: self.config.right_label_style.text_style.fontSize + "px"
-                    });
                     BI.extend(axis, self.rightAxisSetting(self.config));
                     self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_number_level, idx, axis.formatter);
                     break;

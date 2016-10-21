@@ -139,11 +139,11 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.tableStyle = BI.createWidget({
             type: "bi.horizontal_adapt",
-            columnSize: [100],
+            columnSize: [80],
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
-                text: BI.i18nText("BI-Table_Sheet_Style"),
+                text: BI.i18nText("BI-Chart"),
                 textAlign: "left",
                 cls: "line-title"
             }, {
@@ -668,7 +668,7 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.showCatLabel]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.catLabel]
+                    items: [this.catLabelStyle]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Axis_Line_Color"),
@@ -1030,7 +1030,6 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showCatLabel.setSelected(BI.Utils.getWSShowCatLabelByID(wId));
         this.catLabelStyle.setValue(BI.Utils.getWSCatLabelStyleByID(wId));
         this.catLineColor.setValue(BI.Utils.getWSCatLineColorByID(wId));
-        this.legendSetting.setValue(BI.Utils.getWSLegendSettingByID(wId));
         this.showHGridLine.setSelected(BI.Utils.getWSShowHGridLineByID(wId));
         this.hGridLineColor.setValue(BI.Utils.getWSHGridLineColorByID(wId));
         this.showVGridLine.setSelected(BI.Utils.getWSShowVGridLineByID(wId));

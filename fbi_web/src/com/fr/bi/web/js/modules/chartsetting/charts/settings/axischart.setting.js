@@ -110,12 +110,11 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.tableStyle = BI.createWidget({
             type: "bi.horizontal_adapt",
-            columnSize: [100],
+            columnSize: [80],
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Chart"),
-                lgap: constant.SIMPLE_H_LGAP,
                 textAlign: "left",
                 cls: "line-title"
             }, {
@@ -127,27 +126,25 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.colorSelect],
-                    lgap: constant.SIMPLE_H_GAP
+                    items: [this.colorSelect]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Table_Style"),
-                    cls: "attr-names",
-                    lgap: constant.SIMPLE_H_GAP
+                    cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.chartStyleGroup],
-                    lgap: constant.SIMPLE_H_GAP
+                    items: [this.chartStyleGroup]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Widget_Background_Colour"),
-                    cls: "attr-names",
+                    cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.widgetBackground]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
-                })
+                }),
+                lgap: constant.SIMPLE_H_GAP
             }]
         });
 
