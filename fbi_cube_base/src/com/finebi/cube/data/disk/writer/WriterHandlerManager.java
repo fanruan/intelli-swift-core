@@ -32,7 +32,7 @@ public class WriterHandlerManager implements NIOHandlerManager<ICubePrimitiveWri
         synchronized (this) {
             countOfWriters.getAndIncrement();
             queryRecorder.record(Thread.getAllStackTraces().toString());
-            BILoggerFactory.getLogger().debug("query writer " + resourceLocation.getAbsolutePath().substring(50) + " " + countOfWriters.get());
+            BILoggerFactory.getLogger().debug("query writer " + resourceLocation.getAbsolutePath() + " " + countOfWriters.get());
             return writer;
         }
     }
