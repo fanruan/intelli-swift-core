@@ -59,7 +59,6 @@ BI.RefreshTableLoadingMask = BI.inherit(BI.Widget, {
         var self = this;
         this.wrapper.empty();
         this.isCancel = false;
-        var tableId = this.options.tableId;
         var items = [{
             type: "bi.center_adapt",
             cls: "loading-bar-icon",
@@ -88,16 +87,17 @@ BI.RefreshTableLoadingMask = BI.inherit(BI.Widget, {
             }]
         }];
         this.wrapper.populate(items);
-        BI.Utils.refreshFieldsOfOneTable(tableId, function (data) {
+        BI.Utils.getTablesDetailInfoByTables([this.options.table], function (data) {
             if (self.isCancel === true) {
                 self.isCancel = false;
                 return;
             }
-            if (data.none_table != true) {
+            var fields = data[0].fields;
+            if (fields[0].length !== 0) {
                 setTimeout(function () {
                     BI.Maskers.remove(self.maskId);
                 }, 500);
-                self.fireEvent(BI.RefreshTableLoadingMask.EVENT_REFRESH_SUCCESS, data);
+                self.fireEvent(BI.RefreshTableLoadingMask.EVENT_REFRESH_SUCCESS, data[0]);
             } else {
                 self.wrapper.empty();
                 var cancelButton = BI.createWidget({

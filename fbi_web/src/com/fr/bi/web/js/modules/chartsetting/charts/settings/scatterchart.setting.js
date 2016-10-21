@@ -800,34 +800,6 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
             num_separators: this.YSeparators.isSelected(),
             right_num_separators: this.XSeparators.isSelected()
         }
-    },
-
-    setValue: function (v) {
-        this.showTitle.setSelected(v.show_name);
-        this.title.setValue(v.widget_title);
-        this.titleDetailSettting.setValue(v.title_detail);
-        this.widgetBackground.setValue(v.widget_bg);
-        this.transferFilter.setSelected(v.transfer_filter);
-        this.colorSelect.setValue(v.chart_color);
-        this.lYAxisStyle.setValue(v.left_y_axis_style);
-        this.XAxisStyle.setValue(v.x_axis_style);
-        this.numberLevellY.setValue(v.left_y_axis_number_level);
-        this.numberLevelX.setValue(v.x_axis_number_level);
-        this.LYUnit.setValue(v.left_y_axis_unit);
-        this.XUnit.setValue(v.x_axis_unit);
-        this.isShowTitleLY.setSelected(v.show_left_y_axis_title);
-        this.isShowTitleX.setSelected(v.x_axis_title);
-        this.editTitleLY.setValue(v.left_y_axis_title);
-        this.editTitleX.setValue(v.x_axis_title);
-        this.legend.setValue(v.chart_legend);
-        this.showDataLabel.setSelected(v.show_data_label);
-        this.bigDataMode.setSelected(v.big_data_mode);
-        this.showYCustomScale.setSelected(v.show_y_custom_scale);
-        this.customYScale.setValue(v.custom_y_scale);
-        this.showXCustomScale.setSelected(v.show_x_custom_scale);
-        this.customXScale.setValue(v.custom_x_scale);
-        this.YSeparators.setSelected(v.num_separators);
-        this.XSeparators.setSelected(v.right_num_separators)
     }
 });
 BI.ScatterChartSetting.EVENT_CHANGE = "EVENT_CHANGE";

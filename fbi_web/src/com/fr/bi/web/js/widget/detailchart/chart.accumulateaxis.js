@@ -50,37 +50,16 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
                 case self.constants.LEFT_AXIS:
                     axis.title.text = getTitleText(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS, self.config.show_left_y_axis_title, self.config.left_y_axis_title);
                     axis.title.rotation = self.constants.ROTATION;
-                    BI.extend(axis, {
-                        lineWidth: self.config.line_width,
-                        showLabel: self.config.show_label,
-                        enableTick: self.config.enable_tick,
-                        reversed: self.config.left_y_axis_reversed,
-                        enableMinorTick: self.config.enable_minor_tick,
-                        gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
-                        min: self.config.custom_y_scale.minScale.scale || null,
-                        max: self.config.custom_y_scale.maxScale.scale || null,
-                        tickInterval: BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
-                            self.config.custom_y_scale.interval.scale : null,
-                        formatter: self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level, self.config.num_separators)
-                    });
+                    BI.extend(axis, self.leftAxisSetting(self.config));
                     self.formatNumberLevelInYaxis(config, items, self.config.left_y_axis_number_level, idx, axis.formatter);
                     break;
                 case self.constants.RIGHT_AXIS:
                     axis.title.text = getTitleText(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS, self.config.show_right_y_axis_title, self.config.right_y_axis_title);
                     axis.title.rotation = self.constants.ROTATION;
-                    BI.extend(axis, {
-                        lineWidth: self.config.line_width,
-                        showLabel: self.config.show_label,
-                        enableTick: self.config.enable_tick,
-                        reversed: self.config.right_y_axis_reversed,
-                        enableMinorTick: self.config.enable_minor_tick,
-                        gridLineWidth: self.config.show_grid_line === true ? 1 : 0,
-                        min: self.config.custom_x_scale.minScale.scale || null,
-                        max: self.config.custom_x_scale.maxScale.scale || null,
-                        tickInterval: BI.isNumber(self.config.custom_x_scale.interval.scale) && self.config.custom_x_scale.interval.scale > 0 ?
-                            self.config.custom_x_scale.interval.scale : null,
-                        formatter: self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level, self.config.right_num_separators)
+                    axis.labelStyle = BI.extend(self.config.right_label_style.text_style, {
+                        fontSize: self.config.right_label_style.text_style.fontSize + "px"
                     });
+                    BI.extend(axis, self.rightAxisSetting(self.config));
                     self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_number_level, idx, axis.formatter);
                     break;
             }
@@ -88,11 +67,10 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
 
         config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title : "";
         config.xAxis[0].title.align = "center";
-        BI.extend(config.xAxis[0], {
-            lineWidth: self.config.line_width,
-            enableTick: self.config.enable_tick,
-            labelRotation: this.config.text_direction,
-            gridLineWidth: this.config.show_grid_line === true ? 1 : 0
+        BI.extend(config.xAxis[0], self.catSetting(this.config));
+
+        config.legend.style = BI.extend( this.config.chart_legend_setting, {
+            fontSize:  this.config.chart_legend_setting.fontSize + "px"
         });
 
         config.chartType = "column";
@@ -237,7 +215,22 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
             custom_x_scale: options.custom_x_scale || c.CUSTOM_SCALE,
             num_separators: options.num_separators || false,
             right_num_separators: options.right_num_separators || false,
-            chart_font: options.chart_font || c.FONT_STYLE
+            chart_font: options.chart_font || c.FONT_STYLE,
+            show_left_label: BI.isNull(options.show_left_label) ? true : options.show_left_label,
+            left_label_style: options.left_label_style || {},
+            left_line_color: options.left_line_color || "",
+            show_right_label: BI.isNull(options.show_right_label) ? true : options.show_right_label,
+            right_label_style: options.right_label_style || {},
+            right_line_color: options.right_line_color || "",
+            show_cat_label: BI.isNull(options.show_cat_label) ? true : options.show_cat_label,
+            cat_label_style: options.cat_label_style || {},
+            cat_line_color: options.cat_line_color || "",
+            chart_legend_setting: options.chart_legend_setting || {},
+            show_h_grid_line: BI.isNull(options.show_h_grid_line) ? true : options.show_h_grid_line,
+            h_grid_line_color: options.h_grid_line_color || "",
+            show_v_grid_line: BI.isNull(options.show_v_grid_line) ? true : options.show_v_grid_line,
+            v_grid_line_color: options.v_grid_line_color || "",
+            tooltip_setting: options.tooltip_setting || {},
         };
         this.options.items = items;
         this.yAxis = [];

@@ -46,10 +46,7 @@ import com.fr.stable.collections.array.IntArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,6 +56,10 @@ import java.util.regex.Pattern;
  */
 public class BISourceDataPartTransport extends BISourceDataTransport {
     private static final Logger logger = LoggerFactory.getLogger(BISourceDataPartTransport.class);
+    private static String ADD = "add";
+    private static String DELETE = "delete";
+    private static String MODIFY = "modify";
+
     protected UpdateSettingSource tableUpdateSetting;
 
     public BISourceDataPartTransport(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version, UpdateSettingSource tableUpdateSetting) {
@@ -126,88 +127,80 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             }
         }
         BIUserCubeManager loader = new BIUserCubeManager(UserControl.getInstance().getSuperManagerID(), cube);
+        Map<String, List<Object[]>> resultMap = preHandleSQLs(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartDeleteSQL()),
+                addDateCondition(tableUpdateSetting.getPartAddSQL()),
+                addDateCondition(tableUpdateSetting.getPartModifySQL()));
 
           /*remove*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartDeleteSQL())) {
-            sortRemovedList = dealWithRemove(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartDeleteSQL()), sortRemovedList, loader);
+            String columnName = getKeyName(tableUpdateSetting.getPartDeleteSQL());
+            if (getCubeFieldSource(cubeFieldSources, columnName) != null) {
+                sortRemovedList = dealWithRemove(columnName,
+                        resultMap.get(DELETE), sortRemovedList, loader);
+            } else {
+                BILoggerFactory.getLogger().error("can not find field " + columnName);
+            }
+
         }
+
         /*add*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartAddSQL())) {
-            rowCount = dealWidthAdd(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartAddSQL()), rowCount);
+            rowCount = dealWidthAdd(resultMap.get(ADD), rowCount);
+            tableEntityService.forceReleaseWriter();
         }
+
         /*modify*/
         if (StringUtils.isNotEmpty(tableUpdateSetting.getPartModifySQL())) {
-            sortRemovedList = dealWithRemove(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartModifySQL()), sortRemovedList, loader);
-            try {
-                String modifySql;
-                modifySql = getModifySql(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartModifySQL()));
-                if (StringUtils.isEmpty(modifySql)) {
-                    BILoggerFactory.getLogger().error("current table: " + tableSource.getTableName() + " modifySql error: " + tableUpdateSetting.getPartModifySQL());
-                } else {
-                    rowCount = dealWidthAdd(cubeFieldSources, modifySql, rowCount);
-                }
-            } catch (Exception e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
-            }
+            String columnName = getKeyName(tableUpdateSetting.getPartModifySQL());
+            sortRemovedList = dealWithRemove(columnName,
+                    resultMap.get(MODIFY), sortRemovedList, loader);
+            rowCount = dealWidthAdd(resultMap.get(MODIFY), rowCount);
+            tableEntityService.forceReleaseWriter();
         }
+
         if (null != sortRemovedList && sortRemovedList.size() != 0) {
             tableEntityService.recordRemovedLine(sortRemovedList);
+            tableEntityService.forceReleaseWriter();
         }
         return rowCount;
     }
 
-
-    private long dealWidthAdd(ICubeFieldSource[] cubeFieldSources, String SQL, long rowCount) {
-        Traversal<BIDataValue> AddTraversal = new Traversal<BIDataValue>() {
-            @Override
-            public void actionPerformed(BIDataValue v) {
-                try {
-                    tableEntityService.addDataValue(v);
-                } catch (BICubeColumnAbsentException e) {
-                    BILoggerFactory.getLogger().error(e.getMessage());
+    private long dealWidthAdd(List<Object[]> addList, long rowCount) {
+        tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
+        try {
+            int row = (int) rowCount;
+            for (int i = 1; i < addList.size(); i++) {
+                Object[] objects = addList.get(i);
+                if (objects != null) {
+                    for (int column = 0; column < objects.length; column++) {
+                        BIDataValue biDataValue = new BIDataValue(row, column, objects[column]);
+                        tableEntityService.addDataValue(biDataValue);
+                    }
+                    row++;
                 }
             }
-        };
-        rowCount = tableSource.read4Part(AddTraversal, cubeFieldSources, SQL, rowCount);
-        tableEntityService.forceReleaseWriter();
-        return rowCount;
+            return row;
+        } catch (BICubeColumnAbsentException e) {
+            throw BINonValueUtils.beyondControl(e.getMessage(), e);
+        }
     }
 
-
-    private TreeSet<Integer> dealWithRemove(ICubeFieldSource[] fields, String partDeleteSQL, final TreeSet<Integer> sortRemovedList, ICubeDataLoader loader) {
-        com.fr.data.impl.Connection connection = ((DBTableSource) tableSource).getConnection();
-        SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
-        sqlStatement.setSql(partDeleteSQL);
-        String columnName = BICubeDBUtils.getColumnName(connection, sqlStatement, partDeleteSQL);
-        ICubeFieldSource f = null;
-        for (ICubeFieldSource field : fields) {
-            if (ComparatorUtils.equals(field.getFieldName(), columnName)) {
-                f = field;
-                break;
-            }
-        }
-        if (f == null) {
-            BILoggerFactory.getLogger().error("can not find field " + columnName);
-            return sortRemovedList;
-        }
+    private TreeSet<Integer> dealWithRemove(String columnName, List<Object[]> deleteLists, final TreeSet<Integer> sortRemovedList, ICubeDataLoader loader) {
         BIKey key = new IndexKey(columnName);
         ICubeTableService oldTi = loader.getTableIndex(tableSource);
         final ICubeColumnIndexReader getter = oldTi.loadGroup(key);
-        Traversal<BIDataValue> removeTraversal = new Traversal<BIDataValue>() {
-            @Override
-            public void actionPerformed(BIDataValue data) {
-                Object[] key = getter.createKey(1);
-                key[0] = data.getValue();
-                getter.getGroupIndex(key)[0].Traversal(new SingleRowTraversalAction() {
+
+        for (int i = 1; i < deleteLists.size(); i++) {
+            Object[] objects = deleteLists.get(i);
+            if (objects != null) {
+                getter.getIndex(objects[0]).Traversal(new SingleRowTraversalAction() {
                     @Override
                     public void actionPerformed(int data) {
                         sortRemovedList.add(data);
                     }
                 });
             }
-        };
-        DBQueryExecutor.getInstance().runSQL(sqlStatement, new ICubeFieldSource[]{f}, removeTraversal);
-        tableEntityService.forceReleaseWriter();
+        }
         return sortRemovedList;
     }
 
@@ -239,14 +232,14 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
 
     /**
      * 以前SQL数据集和数据表的SQL语句使用两套逻辑处理
-     * 统一逻辑，select id和 select a1,a2,a3都是合理的
+     * 统一逻辑，select id和 select id,a1,a2,a3都是合理的
      *
      * @param fields
      * @param sql
      * @return
      * @throws Exception
      */
-    private String getModifySql(ICubeFieldSource[] fields, String sql) throws Exception {
+    private String getModifySql(ICubeFieldSource[] fields, String sql){
         sql = addDateCondition(sql);
         com.fr.data.impl.Connection connection = null;
         if (tableSource.getType() == BIBaseConstant.TABLETYPE.DB) {
@@ -257,7 +250,12 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         }
         SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
         sqlStatement.setSql(sql);
-        Dialect dialect = DialectFactory.generateDialect(sqlStatement.getSqlConn(), connection.getDriver());
+        Dialect dialect = null;
+        try {
+            dialect = DialectFactory.generateDialect(sqlStatement.getSqlConn(), connection.getDriver());
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e.getMessage(), e);
+        }
         String finalSql = null;
         int columnNum = BICubeDBUtils.getColumnNum(connection, sqlStatement, sql);
         if (columnNum == fields.length) {
@@ -265,7 +263,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         }
         if (columnNum == 1) {
             String columnName = BICubeDBUtils.getColumnName(connection, sqlStatement, sql);
-            ICubeFieldSource f = getiCubeFieldSource(fields, columnName);
+            ICubeFieldSource f = getCubeFieldSource(fields, columnName);
             if (f == null) return null;
             if (tableSource.getType() == BIBaseConstant.TABLETYPE.DB) {
                 String dbName = ((DBTableSource) tableSource).getDbName();
@@ -276,28 +274,153 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 finalSql = ((SQLTableSource) tableSource).getQuery() + " t" + " WHERE " + "t." + columnName + " IN " + "(" + sql + ")";
             }
         } else {
-            BILoggerFactory.getLogger().error("SQL syntax error: " + tableSource.getTableName() + " columns length incorrect " + sql);
+            logger.error("SQL syntax error: " + tableSource.getTableName() + " columns length incorrect " + sql);
         }
         return finalSql;
     }
 
-    private ICubeFieldSource getiCubeFieldSource(ICubeFieldSource[] fields, String columnName) {
-        ICubeFieldSource f = null;
-        for (ICubeFieldSource field : fields) {
-            if (ComparatorUtils.equals(field.getFieldName(), columnName)) {
-                f = field;
-                break;
-            }
-        }
-        if (f == null) {
-            BILoggerFactory.getLogger().error("can not find field " + columnName);
-            return null;
-        }
-        return f;
-    }
-
     private String fetchTableInfo() {
         return BIStringUtils.append(tableSource.getTableName(), " ,", tableSource.getSourceID());
+    }
+
+
+    private Map<String, List<Object[]>> preHandleSQLs(ICubeFieldSource[] fields, String partDeleteSQL, String partAddSQL, String partModifySQL) {
+        List<Object[]> addList = executeSQL(fields, partAddSQL);
+        List<Object[]> deleteList = executeSQL(new ICubeFieldSource[]{getCubeFieldSource(fields, getKeyName(partDeleteSQL))}, partDeleteSQL);
+        List<Object[]>  modifyList = executeSQL(fields, getModifySql(fields, partModifySQL));
+
+        /*
+        * 预处理逻辑：对于同一条Key的记录
+        * 1. 新增中出现n次，修改中出现n-1次，则处理后新增留一次，删除中没有该记录
+        * 2. 修改中出现n次，处理后则留一次
+        *
+        * 经过1处理后，某个key的记录最多在新增中出现一次或在删除中出现一次
+        * 经过2处理后，某个key的记录最多在修改中出现一次
+        *
+        * 3. 如果修改和删除中都出现某条记录，则留删除，修改中去掉该记录
+        * 4. 如果修改和新增中都出现某条记录，则留新增，修改中去掉该记录
+        *
+        * */
+        handleAddAndDelete(addList, deleteList);
+        handleModify(modifyList);
+        handleModifyAndDelete(modifyList, deleteList);
+        handleModifyAndAdd(modifyList, addList);
+
+        Map<String, List<Object[]>> resultMap = new HashMap<String, List<Object[]>>();
+        resultMap.put(ADD, addList);
+        resultMap.put(MODIFY, modifyList);
+        resultMap.put(DELETE, deleteList);
+
+        return resultMap;
+    }
+
+    private List<Object[]> executeSQL(final ICubeFieldSource[] fields, String SQL) {
+        final List<Object[]> rows = new ArrayList<Object[]>();
+        Object[] objects = new Object[fields.length];
+        rows.add(objects);
+        for (int i = 0; i < fields.length; i++) {
+            objects[i] = fields[i].getFieldName();
+        }
+
+        SqlSettedStatement sqlStatement = new SqlSettedStatement(((DBTableSource) tableSource).getConnection());
+        sqlStatement.setSql(addDateCondition(SQL));
+        Traversal<BIDataValue> removeTraversal = new Traversal<BIDataValue>() {
+            @Override
+            public void actionPerformed(BIDataValue data) {
+                if (rows.size() - 1 < data.getRow() + 1) {
+                    Object[] objects = new Object[fields.length];
+                    rows.add(objects);
+                    objects[data.getCol()] = data.getValue();
+                } else {
+                    rows.get(data.getRow() + 1)[data.getCol()] = data.getValue();
+                }
+            }
+        };
+        DBQueryExecutor.getInstance().runSQL(sqlStatement, fields, removeTraversal);
+        return rows;
+    }
+
+    private void handleAddAndDelete(List<Object[]> addList, List<Object[]> deleteList) {
+        if (addList.size() > 1 && deleteList.size() > 1) {
+            for (int i = 1; i < addList.size(); i++) {
+                if (addList.get(i) != null && removeValueFromList(deleteList, addList.get(i)[0], (String) addList.get(0)[0])) {
+                    addList.set(i, null);
+                }
+            }
+        }
+    }
+
+    private void handleModify(List<Object[]> modifyList) {
+        if (modifyList.size() > 1) {
+            for (int i = 1; i < modifyList.size(); i++) {
+                Object[] objects = modifyList.get(i);
+                if (objects != null) {
+                    removeDuplicateValue(modifyList, objects[0], i + 1);
+                }
+            }
+        }
+    }
+
+    private void handleModifyAndDelete(List<Object[]> modifyList, List<Object[]> deleteList) {
+        removeFromModify(modifyList, deleteList);
+    }
+
+    private void handleModifyAndAdd(List<Object[]> modifyList, List<Object[]> addList) {
+        removeFromModify(modifyList, addList);
+    }
+
+    private void removeFromModify(List<Object[]> modifyList, List<Object[]> list) {
+        if (list.size() > 1 && modifyList.size() > 1) {
+            for (int i = 1; i < list.size(); i++) {
+                if (list.get(i) != null) {
+                    removeValueFromList(modifyList, list.get(i)[0], (String) list.get(0)[0]);
+                }
+            }
+        }
+    }
+
+    private boolean removeValueFromList(List<Object[]> list, Object value, String columnName) {
+        int column = -1;
+        for (int i = 0; i < list.get(0).length; i++) {
+            if (list.get(0)[i].equals(columnName)) {
+                column = i;
+            }
+        }
+
+        if (column > -1) {
+            for (int i = 1; i < list.size(); i++) {
+                if (list.get(i) != null && list.get(i)[column].equals(value)) {
+                    list.set(i, null);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void removeDuplicateValue(List<Object[]> list, Object value, int row) {
+        for (int i = row; i < list.size(); i++) {
+            if (list.get(i) != null && list.get(i)[0].equals(value)) {
+                list.set(i, null);
+            }
+        }
+    }
+
+    private String getKeyName(String sql) {
+        com.fr.data.impl.Connection connection = ((DBTableSource) tableSource).getConnection();
+        SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
+        sqlStatement.setSql(sql);
+        return BICubeDBUtils.getColumnName(connection, sqlStatement, sql);
+    }
+
+    private ICubeFieldSource getCubeFieldSource(ICubeFieldSource[] fields, String columnName) {
+        ICubeFieldSource iCubeFieldSource = null;
+        for (ICubeFieldSource field : fields) {
+            if (ComparatorUtils.equals(field.getFieldName(), columnName)) {
+                iCubeFieldSource = field;
+            }
+        }
+        return iCubeFieldSource;
     }
 
 }

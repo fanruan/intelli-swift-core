@@ -221,35 +221,12 @@ public class BIRelationIndexGenerator extends BIProcessor {
                         }
                     });
                 } else if (result == 0) {
-                    final IntArray array = new IntArray();
-                    pGroupValueIndex.Traversal(new TraversalAction() {
-                        @Override
-                        public void actionPerformed(int[] data) {
-                            array.addAll(data);
-                        }
-                    });
-                    for (int i = 0; i < array.size; i++) {
-                        tableRelation.addRelationIndex(array.get(i), foreignGroupValueIndex);
-
-                        try {
-                            initReverseIndex(reverse, array.get(i), foreignGroupValueIndex);
-                        } catch (ArrayIndexOutOfBoundsException e) {
-                            logger.error("GVI:" + foreignGroupValueIndex.toString());
-
-                            foreignGroupValueIndex.Traversal(new SingleRowTraversalAction() {
-                                @Override
-                                public void actionPerformed(int rowIndex) {
-                                    logger.error("GVI value:" + rowIndex);
-                                }
-                            });
-                            logger.error(e.getMessage(), e);
-                        }
-                    }
+                    matchRelation(tableRelation, foreignGroupValueIndex, reverse, pGroupValueIndex);
                     foreignIndex++;
                     foreignColumnValue = foreignColumn.getGroupObjectValue(foreignIndex);
                     foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
                 } else {
-                    while (foreignIndex < foreignGroupSize && c.compare(primaryColumnValue, foreignColumnValue) < 0) {
+                    while (foreignIndex < foreignGroupSize && c.compare(primaryColumnValue, foreignColumnValue) > 0) {
                         nullIndex.or(foreignGroupValueIndex);
                         foreignIndex++;
                         if (foreignIndex == foreignGroupSize) {
@@ -259,6 +236,19 @@ public class BIRelationIndexGenerator extends BIProcessor {
                             foreignColumnValue = foreignColumn.getGroupObjectValue(foreignIndex);
                             foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
                         }
+                    }
+                    if (c.compare(primaryColumnValue, foreignColumnValue) == 0) {
+                        matchRelation(tableRelation, foreignGroupValueIndex, reverse, pGroupValueIndex);
+                        foreignIndex++;
+                        foreignColumnValue = foreignColumn.getGroupObjectValue(foreignIndex);
+                        foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
+                    } else {
+                        pGroupValueIndex.Traversal(new SingleRowTraversalAction() {
+                            @Override
+                            public void actionPerformed(int row) {
+                                finalTableRelation.addRelationIndex(row, GVIFactory.createAllEmptyIndexGVI());
+                            }
+                        });
                     }
                 }
 
@@ -309,6 +299,33 @@ public class BIRelationIndexGenerator extends BIProcessor {
 
         }
 
+    }
+
+    private void matchRelation(BICubeRelationEntity tableRelation, GroupValueIndex foreignGroupValueIndex, int[] reverse, GroupValueIndex pGroupValueIndex) {
+        final IntArray array = new IntArray();
+        pGroupValueIndex.Traversal(new TraversalAction() {
+            @Override
+            public void actionPerformed(int[] data) {
+                array.addAll(data);
+            }
+        });
+        for (int i = 0; i < array.size; i++) {
+            tableRelation.addRelationIndex(array.get(i), foreignGroupValueIndex);
+
+            try {
+                initReverseIndex(reverse, array.get(i), foreignGroupValueIndex);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                logger.error("GVI:" + foreignGroupValueIndex.toString());
+
+                foreignGroupValueIndex.Traversal(new SingleRowTraversalAction() {
+                    @Override
+                    public void actionPerformed(int rowIndex) {
+                        logger.error("GVI value:" + rowIndex);
+                    }
+                });
+                logger.error(e.getMessage(), e);
+            }
+        }
     }
 
     private void initReverseIndex(final int[] index, final int row, GroupValueIndex gvi) {

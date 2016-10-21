@@ -145,14 +145,14 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.colorSelect]
-                }, {
+                }, /*{
                     type: "bi.label",
                     text: BI.i18nText("BI-Table_Style"),
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.chartStyleGroup]
-                }, {
+                }, */{
                     type: "bi.label",
                     text: BI.i18nText("BI-Type"),
                     cls: "attr-names",
@@ -575,24 +575,6 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             custom_y_scale: this.customScale.getValue(),
             num_separators: this.separators.isSelected()
         }
-    },
-
-    setValue: function (v) {
-        this.showTitle.setSelected(v.show_name);
-        this.title.setValue(v.widget_title);
-        this.titleDetailSettting.setValue(v.title_detail);
-        this.widgetBackground.setValue(v.widget_bg);
-        this.transferFilter.setSelected(v.transfer_filter);
-        this.colorSelect.setValue(v.chart_color);
-        this.chartStyleGroup.setValue(v.chart_style);
-        this.chartTypeGroup.setValue(v.chart_radar_type);
-        this.lYAxisStyle.setValue(v.left_y_axis_style);
-        this.numberLevellY.setValue(v.left_y_axis_number_level);
-        this.legend.setValue(v.chart_legend);
-        this.showDataLabel.setSelected(v.show_data_label);
-        this.showCustomScale.setSelected(v.show_y_custom_scale);
-        this.customScale.setValue(v.custom_y_scale);
-        this.separators.setSelected(v.num_separators);
     }
 });
 BI.RadarChartSetting.EVENT_CHANGE = "EVENT_CHANGE";

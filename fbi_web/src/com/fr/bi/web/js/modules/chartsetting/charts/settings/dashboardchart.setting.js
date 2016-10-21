@@ -492,24 +492,6 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             show_percentage: this.percentage.getValue()[0],
             num_separators: this.separators.isSelected()
         }
-    },
-
-    setValue: function (v) {
-        this.showTitle.setSelected(v.show_name);
-        this.title.setValue(v.widget_title);
-        this.titleDetailSettting.setValue(v.title_detail);
-        this.widgetBackground.setValue(v.widget_bg);
-        this.transferFilter.setSelected(v.transfer_filter);
-        this.chartTypeGroup.setValue(v.chart_dashboard_type);
-        this.pointer.setValue(v.number_of_pointer);
-        this.numberLevellY.setValue(v.dashboard_number_level);
-        this.scale.setValue(v.auto_custom);
-        this.conditions.setValue(v.style_conditions);
-        this.LYUnit.setValue(v.dashboard_unit);
-        this.minScale.setValue(v.min_scale);
-        this.maxScale.setValue(v.max_scale);
-        this.percentage.setValue(v.show_percentage);
-        this.separators.setSelected(v.num_separators);
     }
 });
 BI.DashboardChartSetting.EVENT_CHANGE = "EVENT_CHANGE";

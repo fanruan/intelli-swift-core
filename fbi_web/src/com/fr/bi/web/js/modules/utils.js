@@ -110,7 +110,8 @@
         },
 
         getLayoutType: function () {
-            return Data.SharingPool.get("layoutType") || BICst.DASHBOARD_LAYOUT_GRID;
+            var layoutType = Data.SharingPool.get("layoutType");
+            return BI.isNull(layoutType) ? BICst.DASHBOARD_LAYOUT_GRID : layoutType;
         },
 
         getLayoutRatio: function () {
@@ -730,8 +731,11 @@
 
         getWSWidgetBGByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.widget_bg) ? ws.widget_bg :
-            {}
+            var wbg = this.getGSWidgetBackground(wid);
+            if(BI.isNull(ws.widget_bg)){
+                return wbg ? wbg : {}
+            }
+            return ws.widget_bg
         },
 
         getWSTableFormByID: function (wid) {
@@ -838,7 +842,7 @@
 
         getWSShowNameByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return (BI.isNotNull(ws.widget_setting) && BI.isNotNull(ws.widget_setting.show_name)) ? ws.widget_setting.show_name :
+            return BI.isNotNull(ws.show_name) ? ws.show_name :
                 BICst.DEFAULT_CHART_SETTING.show_name;
         },
 
@@ -1338,8 +1342,8 @@
 
         getWSLinkageSelectionByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.manually_linkage_selection) ? ws.manually_linkage_selection :
-                BICst.DEFAULT_CHART_SETTING.manually_linkage_selection
+            return BI.isNotNull(ws.select_linkage) ? ws.select_linkage :
+                BICst.DEFAULT_CHART_SETTING.select_linkage
         },
 
         getWSMinimalistByID: function (wid) {
@@ -3196,6 +3200,9 @@
             BI.each(filterValue, function (i, value) {
                 parseFilter(value);
             });
+        }
+        if (BI.isNull(filterValue)) {
+            return;
         }
         if (filterType === BICst.FILTER_DATE.BELONG_DATE_RANGE || filterType === BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE) {
             var start = filterValue.start, end = filterValue.end;
