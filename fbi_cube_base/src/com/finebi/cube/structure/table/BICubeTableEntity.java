@@ -15,6 +15,7 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.stable.collections.array.IntArray;
 
 import java.util.*;
@@ -131,7 +132,15 @@ public class BICubeTableEntity implements CubeTableEntityService {
 
         ICubeFieldSource field = getAllFields().get(columnIndex);
         ICubeColumnEntityService columnService = columnManager.getColumn(BIColumnKey.covertColumnKey(field));
-        columnService.addOriginalDataValue(rowNumber, value);
+        try {
+            columnService.addOriginalDataValue(rowNumber, value);
+        } catch (ClassCastException e) {
+            throw BINonValueUtils.beyondControl(BIStringUtils.append(e.getMessage(), "Table:" + tableKey != null ? tableKey.getSourceID() : ""
+                    , "Field column index:" + columnIndex
+                    , "Field row number:" + rowNumber
+                    , "the value:" + value)
+                    , e);
+        }
     }
 
     @Override
