@@ -57,28 +57,15 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         config.yAxis = this.yAxis;
         config.yAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         config.yAxis[0].title.rotation = this.constants.ROTATION;
-        BI.extend(config.yAxis[0], {
-            lineWidth: this.config.line_width,
-            showLabel: this.config.show_label,
-            enableTick: this.config.enable_tick,
-            reversed: this.config.left_y_axis_reversed,
-            enableMinorTick: this.config.enable_minor_tick,
-            gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
-            min: self.config.custom_y_scale.minScale.scale || null,
-            max: self.config.custom_y_scale.maxScale.scale || null,
-            tickInterval: BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
-                self.config.custom_y_scale.interval.scale : null,
-            formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level, this.config.num_separators)
-        });
+        BI.extend(config.yAxis[0], self.leftAxisSetting(self.config));
         self.formatNumberLevelInYaxis(config, items, this.config.left_y_axis_number_level, this.constants.LEFT_AXIS, config.yAxis[0].formatter);
 
         config.xAxis[0].title.align = "center";
         config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title : "";
-        BI.extend(config.xAxis[0], {
-            lineWidth: this.config.line_width,
-            enableTick: this.config.enable_tick,
-            labelRotation: this.config.text_direction,
-            gridLineWidth: this.config.show_grid_line === true ? 1 : 0
+        BI.extend(config.xAxis[0], self.catSetting(this.config));
+
+        config.legend.style = BI.extend( this.config.chart_legend_setting, {
+            fontSize:  this.config.chart_legend_setting.fontSize + "px"
         });
 
         config.chartType = "area";
@@ -210,9 +197,21 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.AbstractChart, {
             show_label: BI.isNull(options.show_label) ? true : options.show_label,
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
-             custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
-	     num_separators: options.num_separators || false,
-            chart_font: options.chart_font || c.FONT_STYLE
+            custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
+            num_separators: options.num_separators || false,
+            chart_font: options.chart_font || c.FONT_STYLE,
+            show_left_label: BI.isNull(options.show_left_label) ? true : options.show_left_label,
+            left_label_style: options.left_label_style || c.LEFT_LABEL_STYLE,
+            left_line_color: options.left_line_color || "",
+            show_cat_label: BI.isNull(options.show_cat_label) ? true : options.show_cat_label,
+            cat_label_style: options.cat_label_style || c.CAT_LABEL_STYLE,
+            cat_line_color: options.cat_line_color || "",
+            chart_legend_setting: options.chart_legend_setting || {},
+            show_h_grid_line: BI.isNull(options.show_h_grid_line) ? true : options.show_h_grid_line,
+            h_grid_line_color: options.h_grid_line_color || "",
+            show_v_grid_line: BI.isNull(options.show_v_grid_line) ? true : options.show_v_grid_line,
+            v_grid_line_color: options.v_grid_line_color || "",
+            tooltip_setting: options.tooltip_setting || {},
         };
         this.options.items = items;
 
