@@ -66,6 +66,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         this.tableChartResize = BI.debounce(BI.bind(this.tableChart.resize, this.tableChart), 0);
         this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function (widget) {
             self.model.set(widget);
+            if (BI.isNotNull(widget.clicked)) {
+                self._refreshTableAndFilter();
+            }
         });
         this.tableChart.on(BI.TableChartManager.EVENT_CLICK_CHART, function (obj) {
             self._onClickChart(obj);
@@ -164,6 +167,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         });
         this.chartDrill.on(BI.ChartDrill.EVENT_CHANGE, function (widget) {
             self.model.set(widget);
+            if (BI.isNotNull(widget.clicked)) {
+                self._refreshTableAndFilter();
+            }
         });
         this.chartDrill.populate();
     },
