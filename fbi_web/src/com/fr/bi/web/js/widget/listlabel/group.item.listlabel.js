@@ -12,7 +12,7 @@ BI.ListLabelItemGroup = BI.inherit(BI.ButtonGroup, {
         BI.ListLabelItemGroup.superclass._init.apply(this, arguments);
         if (BI.isEmptyArray(this.getValue())) {
             BI.each(this.buttons, function (idx, button) {
-                if (button.getValue() === "_*_") {
+                if (button.getValue() === BICst.LIST_LABEL_TYPE.ALL) {
                     button.setSelected(true);
                 }
             });
@@ -42,8 +42,8 @@ BI.ListLabelItemGroup = BI.inherit(BI.ButtonGroup, {
                 if (type === BI.Events.CLICK) {
                     switch (o.chooseType) {
                         case BI.ButtonGroup.CHOOSE_TYPE_MULTI:
-                            if (btn.getValue() === "_*_") {
-                                self.setValue(["_*_"]);
+                            if (btn.getValue() === BICst.LIST_LABEL_TYPE.ALL) {
+                                self.setValue([BICst.LIST_LABEL_TYPE.ALL]);
                             } else {
                                 self._checkBtnState();
                             }
@@ -72,7 +72,7 @@ BI.ListLabelItemGroup = BI.inherit(BI.ButtonGroup, {
         if (BI.isEmptyArray(this.getValue())) {
             this.buttons[0].setSelected(true);
             this.fireEvent(BI.ButtonGroup.EVENT_CHANGE, this.buttons[0].getValue(), this.buttons[0]);
-        } else if (this.getValue().length === 1 && BI.isEqual(this.getValue()[0], "_*_")) {
+        } else if (this.getValue().length === 1 && BI.isEqual(this.getValue()[0], BICst.LIST_LABEL_TYPE.ALL)) {
             this.buttons[0].setSelected(true);
         }
         else {
@@ -106,6 +106,20 @@ BI.ListLabelItemGroup = BI.inherit(BI.ButtonGroup, {
         BI.ListLabelItemGroup.superclass.setValue.apply(this, arguments);
         this._checkBtnState();
         this._checkBtnStyle();
+        if (!arraysEqual(v, this.getValue())) {
+            this.fireEvent(BI.ButtonGroup.EVENT_CHANGE, this.buttons[0].getValue(), this.buttons[0]);
+        }
+        function arraysEqual (a1, a2) {     //仅考虑数值字符串等简单数据
+            if (a1.length !== a2.length) {
+                return false;
+            }
+            BI.each(a2, function (idx, data) {
+                if(a1.indexOf(data) === -1) {
+                    return false;
+                }
+            });
+            return true;
+        }
     }
 });
 

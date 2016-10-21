@@ -57,7 +57,6 @@ public class BICubeRelationEntity implements ICubeRelationEntityService {
     @Override
     public GroupValueIndex getBitmapIndex(int position) throws BICubeIndexException {
         return indexDataService.getBitmapIndex(position);
-
     }
 
     @Override
@@ -77,6 +76,13 @@ public class BICubeRelationEntity implements ICubeRelationEntityService {
         indexDataService.forceReleaseWriter();
         reverseRelationService.forceReleaseWriter();
         version.forceReleaseWriter();
+    }
+
+    @Override
+    public void forceReleaseReader() {
+        indexDataService.forceReleaseReader();
+        reverseRelationService.forceReleaseReader();
+        version.forceReleaseReader();
     }
 
     @Override

@@ -32,5 +32,10 @@ public class NormalDetailGetter implements ICubeColumnDetailGetter {
         return null;
     }
 
+    @Override
+    public void clear() {
+        reader.clear();
+    }
+
 
 }

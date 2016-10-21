@@ -1,3 +1,5 @@
+import "./proto/date"
+import "./proto/number"
 export Heap from './structure/Heap'
 export IntegerBufferSet from './structure/IntegerBufferSet'
 export PrefixIntervalTree from './structure/PrefixIntervalTree'
@@ -91,6 +93,7 @@ export isArray from 'lodash/isArray'
 export isInteger from 'lodash/isInteger'
 export isNil from 'lodash/isNil'
 export isNumber from 'lodash/isNumber'
+export isNumeric from './utils/isNumeric'
 export isObject from 'lodash/isObject'
 export isPlainObject from 'lodash/isPlainObject'
 export isString from 'lodash/isString'

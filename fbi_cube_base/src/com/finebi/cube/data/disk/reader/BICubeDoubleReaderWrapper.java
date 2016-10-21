@@ -16,6 +16,6 @@ public class BICubeDoubleReaderWrapper extends BICubePrimitiveReaderWrapper impl
     }
 
     public double getSpecificValue(int rowNumber) throws BIResourceInvalidException {
-        return ((ICubeDoubleReader)reader).getSpecificValue(rowNumber);
+        return ((ICubeDoubleReader) reader).getSpecificValue(rowNumber);
     }
 }

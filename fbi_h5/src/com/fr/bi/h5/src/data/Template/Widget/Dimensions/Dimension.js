@@ -10,6 +10,10 @@ class Dimension {
         return this.$dimension;
     }
 
+    getType(){
+        return this.$dimension.get('type');
+    }
+
     getName() {
         return this.$dimension.get('name');
     }
@@ -60,6 +64,47 @@ class Dimension {
     setSortTarget(dId) {
         this.$dimension = this.$dimension.setIn(['sort', 'sort_target'], dId);
         return this;
+    }
+
+    getGroupType(){
+        const $group = this.$dimension.get('group');
+        if($group){
+            const type = $group.get('type');
+            if(!isNil(type)){
+                return type;
+            }
+        }
+    }
+
+    getGroup(){
+        const $group = this.$dimension.get('group');
+        if($group){
+            return $group.toJS();
+        }
+    }
+
+    getFilterValue(){
+        const $filter = this.$dimension.get('filter_value');
+        if($filter){
+            return $filter.toJS();
+        }
+    }
+
+    getFieldId(){
+        const $src = this.$dimension.get('_src');
+        if($src){
+            const field_id = $src.get('field_id');
+            if(!isNil(field_id)){
+                return field_id;
+            }
+        }
+    }
+
+    getDimensionSrc() {
+        const $src = this.$dimension.get('_src');
+        if($src){
+            return $src.toJS();
+        }
     }
 }
 export default Dimension

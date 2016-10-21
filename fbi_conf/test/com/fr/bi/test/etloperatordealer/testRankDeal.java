@@ -96,6 +96,11 @@ public class testRankDeal extends TestCase {
             public PrimitiveDetailGetter createPrimitiveDetailGetter() {
                 return null;
             }
+
+            @Override
+            public void clear() {
+
+            }
         }).anyTimes();
         control.replay();
 

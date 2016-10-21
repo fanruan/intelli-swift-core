@@ -132,10 +132,10 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
     }
 
     public void buildStructure() {
-        initialGroupLengthReader();
-        initialGroupLengthWriter();
-        initialGroupReader();
-        initialGroupWriter();
+//        initialGroupLengthReader();
+//        initialGroupLengthWriter();
+//        initialGroupReader();
+//        initialGroupWriter();
     }
 
     protected boolean isGroupReaderAvailable() {
@@ -206,14 +206,14 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
     protected void resetGroupReader() {
         if (isGroupReaderAvailable()) {
             groupReader.clear();
-            groupReader = null;
+//            groupReader = null;
         }
     }
 
     protected void resetLengthReader() {
         if (isLengthReaderAvailable()) {
             groupLengthReader.clear();
-            groupLengthReader = null;
+//            groupLengthReader = null;
         }
     }
 
@@ -241,6 +241,16 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
         if (isLengthWriterAvailable()) {
             groupLengthWriter.forceRelease();
             groupLengthWriter = null;
+        }
+    }
+
+    @Override
+    public void forceReleaseReader() {
+        if (isGroupReaderAvailable()) {
+            groupReader.forceRelease();
+        }
+        if (isLengthReaderAvailable()) {
+            groupLengthReader.forceRelease();
         }
     }
 

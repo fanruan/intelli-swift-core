@@ -151,7 +151,9 @@ BI.DetailTablePathSettingTab = BI.inherit(BI.Widget, {
                     items: items
                 });
                 this.tab.setEnable(items.length > 1);
-                this.pathChooser.setValue(self._getPathValue(o.choosePath));
+                if (items.length > 1) {
+                    this.pathChooser.setValue(self._getPathValue(o.choosePath));
+                }
                 return BI.createWidget({
                     type: "bi.vertical",
                     vgap: 10,

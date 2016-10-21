@@ -4,6 +4,7 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.data.ICubeResourceDiscovery;
+import com.finebi.cube.data.disk.BICubeDiskDiscovery;
 import com.finebi.cube.data.disk.BICubeIncreaseDisDiscovery;
 import com.finebi.cube.exception.BIRegisterIsForbiddenException;
 import com.finebi.cube.exception.BITopicAbsentException;
@@ -502,7 +503,7 @@ public class BICubeOperationManager {
                 }
                 /*增量更新现在暂时只适用于SQL语句，其他数据集是不能用的*/
                 case DBConstant.SINGLE_TABLE_UPDATE_TYPE.PART: {
-                    ICubeResourceDiscovery discovery = BICubeIncreaseDisDiscovery.getInstance();
+                    BICubeDiskDiscovery discovery = BICubeDiskDiscovery.getInstance();
                     ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
                     cube = new BICube(resourceRetrievalService, discovery);
                     if (tableSource instanceof ExcelTableSource) {

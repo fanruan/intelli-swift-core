@@ -246,21 +246,28 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
                 index = writeOneGroup(travel, lti, rti, lLen, index, lValuesAndGVI.gvi, null);
             } else if (result == 0){
                 index = writeOneGroup(travel, lti, rti, lLen, index, lValuesAndGVI.gvi, rValuesAndGVI.gvi);
+                rValuesAndGVI = rValueIterator.next();
             } else {
                 if (writeLeft){
                     rTotalGvi.or(rValuesAndGVI.gvi);
                 }
                 while (lValuesAndGVI.compareTo(rValuesAndGVI, comparators) > 0){
                     rValuesAndGVI = rValueIterator.next();
-                    if (writeLeft){
+                    if (writeLeft && lValuesAndGVI.compareTo(rValuesAndGVI, comparators) > 0){
                         rTotalGvi.or(rValuesAndGVI.gvi);
                     }
                 }
                 if (lValuesAndGVI.compareTo(rValuesAndGVI, comparators) == 0){
                     index = writeOneGroup(travel, lti, rti, lLen, index, lValuesAndGVI.gvi, rValuesAndGVI.gvi);
+                    rValuesAndGVI = rValueIterator.next();
                 } else {
                     index = writeOneGroup(travel, lti, rti, lLen, index, lValuesAndGVI.gvi, null);
                 }
+            }
+        }
+        if (writeLeft){
+            while (rValueIterator.hasNext()){
+                rTotalGvi.or(rValueIterator.next().gvi);
             }
         }
         return writeLeft ? writeLeftIndex(rTotalGvi, rti, lLen, index, travel) : index;
@@ -634,9 +641,8 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
     }
 
     private int writeLeftIndex(GroupValueIndex rTotalGvi, ICubeTableService rti, int llen, int index, Traversal<BIDataValue> travel) {
-        GroupValueIndex rLeft = rTotalGvi == null ? rti.getAllShowIndex() : rTotalGvi.NOT(rti.getRowCount()).AND(rti.getAllShowIndex());
         final IntList rLeftRows = new IntList();
-        rLeft.Traversal(new SingleRowTraversalAction() {
+        rTotalGvi.Traversal(new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int rowIndices) {
                 rLeftRows.add(rowIndices);
