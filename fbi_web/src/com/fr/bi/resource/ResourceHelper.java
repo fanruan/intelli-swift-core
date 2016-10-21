@@ -3047,43 +3047,4 @@ public class ResourceHelper {
         };
         return (String[]) ArrayUtils.addAll(third, base);
     }
-
-    public static String[] getMobileJs() {
-        return new String[]{
-                "com/fr/bi/web/mobile/mobile.jQuery.js",
-                "com/fr/bi/web/js/third/d3.js",
-                "com/fr/bi/web/js/third/es5-sham.js",
-                "com/fr/bi/web/js/third/raphael.js",
-                "com/fr/bi/web/js/third/leaflet.js",
-                "com/fr/bi/web/js/third/vancharts-all.js",
-                "com/fr/bi/web/js/core/underscore.js",
-                "com/fr/bi/web/js/base/base.js",
-                "com/fr/bi/web/mobile/mobile.data.js",
-                "com/fr/bi/web/js/data/data.js",
-                "com/fr/bi/web/js/data/constant/biconst.js",
-                "com/fr/bi/web/js/data/constant/enums.js",
-                "com/fr/bi/web/js/base/proto/number.js",
-                "com/fr/bi/web/js/base/proto/array.js",
-                "com/fr/bi/web/js/base/proto/date.js",
-                "com/fr/bi/web/js/data/utils.js"
-        };
-    }
-
-    public static String[] getH5Js() {
-        return new String[]{
-                "com/fr/bi/web/js/third/zepto.js",
-                "com/fr/bi/web/js/third/d3.js",
-                "com/fr/bi/web/js/third/leaflet.js",
-                "com/fr/bi/web/js/third/vancharts-all.js",
-                "com/fr/bi/web/mobile/mobile.data.js",
-                "com/fr/bi/web/js/core/foundation.js",
-                "com/fr/bi/web/js/data/data.js",
-                "com/fr/bi/web/js/data/constant/biconst.js",
-                "com/fr/bi/web/js/data/constant/constant.js",
-                "com/fr/bi/web/js/data/constant/strings.js",
-                "com/fr/bi/web/js/data/constant/enums.js",
-                "com/fr/bi/web/js/data/constant/colors.js",
-                "com/fr/bi/web/js/data/constant/attrs.js"
-        };
-    }
 }
