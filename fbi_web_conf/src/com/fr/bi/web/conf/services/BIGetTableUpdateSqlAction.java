@@ -1,20 +1,20 @@
 package com.fr.bi.web.conf.services;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
-import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.structure.BICube;
+import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.Cube;
 import com.finebi.cube.structure.CubeTableEntityService;
+import com.finebi.cube.structure.table.CubeSourceHelper;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.data.impl.DBTableData;
 import com.fr.data.impl.EmbeddedTableData;
@@ -51,23 +51,29 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
         Date lastUpdateDate = new Date();
         long threeDaysAgo = lastUpdateDate.getTime() - 24 * 3600 * 1000 * 3;
         lastUpdateDate.setTime(threeDaysAgo);
-        String tableId = (String) table.get("id");
-        ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
-        ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
-        CubeTableSource tableSource = null;
-        Cube cube = new BICube(resourceRetrievalService, discovery);
-        for (BusinessTable businessTable : BICubeConfigureCenter.getPackageManager().getAllTables(UserControl.getInstance().getSuperManagerID())) {
-            if (businessTable.getID().getIdentity().equals(tableId)) {
-                tableSource = businessTable.getTableSource();
-            }
-        }
+//        String tableId = (String) table.get("id");
+//        ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
+//        ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
+//        CubeTableSource tableSource = null;
+//        Cube cube = new BICube(resourceRetrievalService, discovery);
+//        for (BusinessTable businessTable : BICubeConfigureCenter.getPackageManager().getAllTables(UserControl.getInstance().getSuperManagerID())) {
+//            if (businessTable.getID().getIdentity().equals(tableId)) {
+//                tableSource = businessTable.getTableSource();
+//            }
+//        }
+            CubeTableSource tableSource = CubeSourceHelper.getSource(new BITableKey((String) table.get("md5")));
         if (null != tableSource) {
+                    ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
+        ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
+                    Cube cube = new BICube(resourceRetrievalService, discovery);
             CubeTableEntityService tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
             if (tableEntityService.isLastExecuteTimeAvailable()) {
                 lastUpdateDate = tableEntityService.getLastExecuteTime();
                 tableEntityService.clear();
             }
         }
+
+
         String sql = parseSQL(stringSql, lastUpdateDate);
         JSONObject jo = new JSONObject();
         jo.put("sql", sql);
