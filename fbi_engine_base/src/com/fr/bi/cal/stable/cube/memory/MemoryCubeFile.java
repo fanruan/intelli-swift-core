@@ -14,7 +14,7 @@ import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
-import com.fr.bi.stable.structure.collection.list.IntList;
+import com.fr.stable.collections.array.IntArray;
 
 import java.util.*;
 
@@ -119,8 +119,8 @@ public class MemoryCubeFile extends AbstractCubeFile {
     }
 
     @Override
-    public IntList getRemoveList(SingleUserNIOReadManager manager) {
-        return new IntList();
+    public IntArray getRemoveList(SingleUserNIOReadManager manager) {
+        return new IntArray();
     }
 
     @Override

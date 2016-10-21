@@ -33,7 +33,7 @@ public class BIGetPackageAuthorityAction extends AbstractBIConfigureAction {
         for(int i = 0; i < roles.size(); i++) {
             CompanyRole role = roles.get(i);
             JSONObject roleJO = role.createJSONConfig();
-            String departName = DepartmentControl.getInstance().getDepartmentShowName(role.getDepartmentId(), "-");
+            String departName = DepartmentControl.getInstance().getDepartmentShowName(role.getDepartmentId(), ",");
             String postName = PostControl.getInstance().getPostName(role.getPostId());
             if(departName != null && postName != null) {
                 roleJO.put("department_name", departName);

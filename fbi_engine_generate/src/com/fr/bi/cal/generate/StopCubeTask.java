@@ -46,7 +46,7 @@ public class StopCubeTask implements CubeTask {
     }
 
     @Override
-    public String getUUID() {
+    public String getTaskId() {
         return "BUILD_CUBE";
     }
 

@@ -17,4 +17,5 @@ public interface ICubeColumnDetailGetter {
 
     PrimitiveDetailGetter createPrimitiveDetailGetter();
 
+    void clear();
 }

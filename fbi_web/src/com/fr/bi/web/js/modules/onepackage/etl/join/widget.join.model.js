@@ -35,6 +35,7 @@ BI.JoinModel = BI.inherit(FR.OB, {
                 self._initJoinNames();
             }
             callback();
+        }, function () {
             mask.destroy();
         });
     },
@@ -401,5 +402,24 @@ BI.JoinModel = BI.inherit(FR.OB, {
             joinFields.push(items);
         });
         return joinFields;
+    },
+
+    updateFieldsId: function (fields) {
+        var self = this;
+        BI.each(fields, function (i, fs) {
+            BI.each(fs, function (j, field) {
+                var joinType = self.joinStyle;
+                var originalFields = self.tableInfo.fields;
+                //右合并 isLeft: false
+                if ((joinType === BICst.ETL_JOIN_STYLE.RIGHT_JOIN && self.joinNames[j].isLeft === false) ||
+                    (joinType !== BICst.ETL_JOIN_STYLE.RIGHT_JOIN && self.joinNames[j].isLeft === true)) {
+                    BI.each(originalFields[0], function (k, oField) {
+                        if (oField.field_name === self.joinNames[j].column_name) {
+                            field.id = oField.id;
+                        }
+                    });
+                }
+            });
+        });
     }
 });

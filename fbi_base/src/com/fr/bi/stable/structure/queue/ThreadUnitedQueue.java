@@ -7,7 +7,7 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.common.inter.Delete;
@@ -17,7 +17,7 @@ import com.fr.bi.common.inter.Delete;
  *
  */
 public class ThreadUnitedQueue<T extends Delete> implements Release {
-	private volatile Deque<ConcurrentUUIDObject<T>> queue = new ConcurrentLinkedDeque<ConcurrentUUIDObject<T>>();
+	private volatile Deque<ConcurrentUUIDObject<T>> queue = new LinkedBlockingDeque<ConcurrentUUIDObject<T>>();
 	private volatile boolean isClear = false;
 	private Map<Long, ConcurrentUUIDObject<T>> map = new ConcurrentHashMap<Long, ConcurrentUUIDObject<T>>();
 	

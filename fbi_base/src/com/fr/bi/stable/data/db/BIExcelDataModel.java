@@ -65,14 +65,14 @@ public class BIExcelDataModel extends AbstractDataModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) throws TableDataException {
         initData();
-        if( columnIndex > columnNames.length || rowIndex > rowDataList.size() ) {
+        if(rowIndex > rowDataList.size() - 1 || columnIndex > rowDataList.get(rowIndex).length - 1) {
             return null;
         }
         return rowDataList.get(rowIndex)[columnIndex];
     }
 
     public Object getValueAt4Preview(int rowIndex, int columnIndex) throws Exception {
-        if(columnIndex > columnNames.length || rowIndex > rowDataList.size()){
+        if(rowIndex > rowDataList.size() - 1 || columnIndex > rowDataList.get(rowIndex).length - 1){
             return null;
         }
         return rowDataList.get(rowIndex)[columnIndex];

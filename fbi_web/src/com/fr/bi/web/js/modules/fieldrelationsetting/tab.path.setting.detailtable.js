@@ -56,6 +56,7 @@ BI.DetailTablePathSettingTab = BI.inherit(BI.Widget, {
             }
         });
 
+        o.choosePath = self._getPathRelation(this.tabWidget.getValue());
 
         this.tabWidget.on(BI.Tab.EVENT_CHANGE, function (value) {
             self.setValue(value);
@@ -145,11 +146,14 @@ BI.DetailTablePathSettingTab = BI.inherit(BI.Widget, {
         var self = this, o = this.options, c = this.constant;
         switch (v) {
             case c.CHANGE_VALUE:
+                var items = self._createPathChooserItem();
                 this.pathChooser = BI.createWidget({
                     type: "bi.path_chooser",
-                    items: self._createPathChooserItem()
+                    items: items
                 });
-                this.pathChooser.setValue(self._getPathValue(o.choosePath));
+                if(items.length > 1){
+                    this.pathChooser.setValue(self._getPathValue(o.choosePath));
+                }
                 return BI.createWidget({
                     type: "bi.vertical",
                     vgap: 10,

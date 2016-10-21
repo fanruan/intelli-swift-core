@@ -62,19 +62,15 @@ BI.UpdateSingleTableSettingModel = BI.inherit(FR.OB, {
     },
 
     getAddSql: function () {
-        return this.addSql;
+        return BI.deepClone(this.addSql);
     },
 
     getDeleteSql: function () {
-        return this.deleteSql;
+        return BI.deepClone(this.deleteSql);
     },
 
     getModifySql: function () {
-        return this.modifySql;
-    },
-
-    getTogetherNever: function () {
-        return this.togetherNever;
+        return BI.deepClone(this.modifySql);
     },
 
     getTimeList: function () {

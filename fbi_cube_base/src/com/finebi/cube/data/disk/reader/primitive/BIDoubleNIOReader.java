@@ -33,7 +33,7 @@ public class BIDoubleNIOReader extends BIBasicNIOReader implements ICubeDoubleRe
             int pageIndex = getPage(filePosition);
             return doubleBufferArray[pageIndex].get(getIndex(filePosition));
         } catch (IndexOutOfBoundsException e) {
-            throw new RuntimeException("the file is: "+baseFile +" the expect position value is: " + getIndex(filePosition) + " and the current capacity  value is: " + doubleBufferArray[getPage(filePosition)].capacity() + " and the pageIndex is :" + getPage(filePosition) + e, e);
+            throw new RuntimeException("the file is: " + baseFile + " the expect position value is: " + getIndex(filePosition) + " and the current capacity  value is: " + doubleBufferArray[getPage(filePosition)].capacity() + " and the pageIndex is :" + getPage(filePosition) + e, e);
         } finally {
         }
     }

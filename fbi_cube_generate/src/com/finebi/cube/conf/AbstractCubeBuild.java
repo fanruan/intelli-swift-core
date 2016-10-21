@@ -16,14 +16,12 @@ import com.fr.bi.conf.data.source.SQLTableSource;
 import com.fr.bi.conf.data.source.ServerTableSource;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.utils.file.BIFileUtils;
-import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.data.impl.Connection;
 import com.fr.file.DatasourceManager;
 
@@ -222,6 +220,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         return updateSettingSource;
     }
 
+
     @Override
     public Map<CubeTableSource, Connection> getConnections() {
         Map<CubeTableSource, Connection> connectionMap = new HashMap<CubeTableSource, Connection>();
@@ -257,28 +256,30 @@ public abstract class AbstractCubeBuild implements CubeBuild {
     }
 
     protected BITableSourceRelation convertRelation(BITableRelation relation) {
-        CubeTableSource primaryTable;
-        CubeTableSource foreignTable;
-        try {
-            primaryTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getPrimaryField().getTableBelongTo());
-            foreignTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getForeignField().getTableBelongTo());
-        } catch (BIKeyAbsentException e) {
-            throw BINonValueUtils.beyondControl(e);
-        }
-        ICubeFieldSource primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
-        ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
         if (!isTableRelationValid(relation)) {
             BILoggerFactory.getLogger().error("tableSourceRelation invalid:" + relation.toString());
             return null;
         }
-        BITableSourceRelation biTableSourceRelation = new BITableSourceRelation(
-                primaryField,
-                foreignField,
-                primaryTable,
-                foreignTable
-        );
-        primaryField.setTableBelongTo(primaryTable);
-        foreignField.setTableBelongTo(foreignTable);
+        BITableSourceRelation biTableSourceRelation ;
+        try {
+            CubeTableSource primaryTable;
+            CubeTableSource foreignTable;
+            primaryTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getPrimaryField().getTableBelongTo());
+            foreignTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getForeignField().getTableBelongTo());
+            ICubeFieldSource primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
+            ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
+            biTableSourceRelation = new BITableSourceRelation(
+                    primaryField,
+                    foreignField,
+                    primaryTable,
+                    foreignTable
+            );
+            primaryField.setTableBelongTo(primaryTable);
+            foreignField.setTableBelongTo(foreignTable);
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            return null;
+        }
         return biTableSourceRelation;
     }
 

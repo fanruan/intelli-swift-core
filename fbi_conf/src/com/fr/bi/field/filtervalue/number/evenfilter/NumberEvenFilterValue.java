@@ -60,11 +60,7 @@ public abstract class NumberEvenFilterValue extends AbstractFilterValue<Number> 
             Number v = (Number) entry.getKey();
             GroupValueIndex g = (GroupValueIndex) entry.getValue();
             if (v != null && isMatchValue(v.doubleValue())) {
-                if (gvi == null) {
-                    gvi = g;
-                } else {
-                    gvi = gvi.OR(g);
-                }
+                    gvi.or(g);
             }
         }
         return gvi;

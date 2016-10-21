@@ -138,7 +138,7 @@ BI.ChartCombineFormatItemFactory = {
                     "align": "bottom",
                     "enabled": true
                 },
-                "style": "pointer",
+                "style": "normal",
                 "paneBackgroundColor": "rgb(252,252,252)",
                 "needle": "rgb(229,113,90)",
                 "large": false,
@@ -175,7 +175,7 @@ BI.ChartCombineFormatItemFactory = {
                     }
                 },
                 "maxSize": 80,
-                "fillColorOpacity": 1.0,
+                "fillColorOpacity": 0.5,
                 "step": false,
                 "force": false,
                 "minSize": 15,
@@ -260,17 +260,18 @@ BI.ChartCombineFormatItemFactory = {
             "zoom": {"zoomType": "xy", "zoomTool": {"visible": false, "resize": true, "from": "", "to": ""}},
             "plotBorderColor": "rgba(255,255,255,0)",
             "tools": {
-                "hidden": true,
-                "toImage": {"enabled": true},
-                "sort": {"enabled": true},
-                "enabled": false,
-                "fullScreen": {"enabled": true}
+                "hidden": false,
+                "toImage": {"enabled": false},
+                "sort": {"enabled": false},
+                "fullScreen": {"enabled": false},
+                "refresh": {
+                    "enabled": false
+                }
             },
             "plotBorderWidth": 0,
             "colors": ["rgb(99,178,238)", "rgb(118,218,145)"],
             "borderRadius": 0,
             "borderWidth": 0,
-            "style": "normal",
             "plotShadow": false,
             "plotBorderRadius": 0
         };
