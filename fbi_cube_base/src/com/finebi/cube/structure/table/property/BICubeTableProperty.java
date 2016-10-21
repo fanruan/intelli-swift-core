@@ -34,7 +34,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     private static String MAIN_DATA = "field";
     private static String ROW_COUNT_DATA = "count";
 
-    private static String LAST_EXECUTE_TIME = "lastExecuteTime";
+    private static String LAST_EXECUTE_TIME = "timestamp";
     private static String CURRENT_EXECUTE_TIME = "currentExecuteTime";
     private static String SUPER_TABLES = "st";
 

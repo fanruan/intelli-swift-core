@@ -2810,51 +2810,49 @@ BI.Arrangement = BI.inherit(BI.Widget, {
             case BI.Arrangement.LAYOUT_TYPE.FREE:
                 break;
             case BI.Arrangement.LAYOUT_TYPE.GRID:
-                if (!this._isArrangeFine()) {
-                    var width = this.scrollContainer.element[0].clientWidth, height = this.scrollContainer.element[0].scrollHeight;
-                    var regions = this._cloneRegion();
-                    var clone = BI.toArray(regions);
-                    clone.sort(function (r1, r2) {
-                        if (self._isEqual(r1.top, r2.top)) {
-                            return r1.left - r2.left;
-                        }
-                        return r1.top - r2.top;
+                var width = this.scrollContainer.element[0].clientWidth, height = this.scrollContainer.element[0].scrollHeight;
+                var regions = this._cloneRegion();
+                var clone = BI.toArray(regions);
+                clone.sort(function (r1, r2) {
+                    if (self._isEqual(r1.top, r2.top)) {
+                        return r1.left - r2.left;
+                    }
+                    return r1.top - r2.top;
+                });
+                var count = clone.length;
+                var cols = 3, rows = Math.floor((count - 1) / 3 + 1);
+                var w = width / cols, h = height / rows;
+                var store = {};
+                BI.each(clone, function (i, region) {
+                    var row = Math.floor(i / 3), col = i % 3;
+                    BI.extend(region, {
+                        top: row * 380,
+                        left: col * w,
+                        width: w,
+                        height: 380
                     });
-                    var count = clone.length;
-                    var cols = 3, rows = Math.floor((count - 1) / 3 + 1);
-                    var w = width / cols, h = height / rows;
-                    var store = {};
-                    BI.each(clone, function (i, region) {
-                        var row = Math.floor(i / 3), col = i % 3;
+                    if (!store[row]) {
+                        store[row] = {};
+                    }
+                    store[row][col] = region;
+                });
+                //非3的倍数
+                if (count % 3 !== 0) {
+                    var lasts = store[rows - 1];
+                    var perWidth = width / (count % 3);
+                    BI.each(lasts, function (i, region) {
                         BI.extend(region, {
-                            top: row * 380,
-                            left: col * w,
-                            width: w,
-                            height: 380
+                            left: BI.parseInt(i) * perWidth,
+                            width: perWidth
                         });
-                        if (!store[row]) {
-                            store[row] = {};
-                        }
-                        store[row][col] = region;
                     });
-                    //非3的倍数
-                    if (count % 3 !== 0) {
-                        var lasts = store[rows - 1];
-                        var perWidth = width / (count % 3);
-                        BI.each(lasts, function (i, region) {
-                            BI.extend(region, {
-                                left: BI.parseInt(i) * perWidth,
-                                width: perWidth
-                            });
-                        });
-                    }
-                    if (this._test(clone)) {
-                        var layout = this._getLayoutsByRegions(regions);
-                        layout = this.compact(layout, true);
-                        regions = this._getRegionsByLayout(layout);
-                        this._modifyRegion(regions);
-                        this._populate(clone);
-                    }
+                }
+                if (this._test(clone)) {
+                    var layout = this._getLayoutsByRegions(regions);
+                    layout = this.compact(layout, true);
+                    regions = this._getRegionsByLayout(layout);
+                    this._modifyRegion(regions);
+                    this._populate(clone);
                 }
                 break;
         }

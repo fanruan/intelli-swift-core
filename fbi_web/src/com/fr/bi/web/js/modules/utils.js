@@ -110,7 +110,8 @@
         },
 
         getLayoutType: function () {
-            return Data.SharingPool.get("layoutType") || BICst.DASHBOARD_LAYOUT_GRID;
+            var layoutType = Data.SharingPool.get("layoutType");
+            return BI.isNull(layoutType) ? BICst.DASHBOARD_LAYOUT_GRID : layoutType;
         },
 
         getLayoutRatio: function () {
@@ -3199,6 +3200,9 @@
             BI.each(filterValue, function (i, value) {
                 parseFilter(value);
             });
+        }
+        if (BI.isNull(filterValue)) {
+            return;
         }
         if (filterType === BICst.FILTER_DATE.BELONG_DATE_RANGE || filterType === BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE) {
             var start = filterValue.start, end = filterValue.end;
