@@ -152,10 +152,10 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
                 element: this.element,
                 items: [{
                     el: this.filterPane,
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0
+                    top: 45,
+                    left: 10,
+                    right: 10,
+                    bottom: 10
                 }]
             });
             return;
