@@ -45,14 +45,14 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
                 top: 45,
                 bottom: 10
             }, {
-                el: this.tools,
-                top: 0,
-                right: 10
-            }, {
                 el: this.chartDrill,
                 left: 0,
                 top: 0,
                 right: 0
+            }, {
+                el: this.tools,
+                top: 0,
+                right: 10
             }]
         })
     },
