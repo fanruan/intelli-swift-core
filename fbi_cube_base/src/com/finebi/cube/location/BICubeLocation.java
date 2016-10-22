@@ -5,6 +5,8 @@ import com.finebi.cube.data.input.primitive.ICubeByteReaderBuilder;
 import com.finebi.cube.data.input.primitive.ICubeDoubleReaderBuilder;
 import com.finebi.cube.data.input.primitive.ICubeIntegerReaderBuilder;
 import com.finebi.cube.data.input.primitive.ICubeLongReaderBuilder;
+import com.finebi.cube.data.output.ICubeByteArrayWriterIncreaseBuilder;
+import com.finebi.cube.data.output.ICubeStringWriterIncreaseBuilder;
 import com.finebi.cube.data.output.ICubeWriterBuilder;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
@@ -131,6 +133,7 @@ public class BICubeLocation implements ICubeResourceLocation, Cloneable {
         return this;
     }
 
+
     @Override
     public ICubeResourceLocation setLongType() {
         changeArgument(baseLocation.getQuery(), ICubeLongReaderBuilder.FRAGMENT_TAG);
@@ -180,8 +183,20 @@ public class BICubeLocation implements ICubeResourceLocation, Cloneable {
     }
 
     @Override
+    public ICubeResourceLocation setByteArrayIncreaseType() {
+        changeArgument(baseLocation.getQuery(), ICubeByteArrayWriterIncreaseBuilder.FRAGMENT_TAG);
+        return this;
+    }
+
+    @Override
     public ICubeResourceLocation setStringType() {
         changeArgument(baseLocation.getQuery(), ICubeStringReaderBuilder.FRAGMENT_TAG);
+        return this;
+    }
+
+    @Override
+    public ICubeResourceLocation setStringIncreaseType() {
+        changeArgument(baseLocation.getQuery(), ICubeStringWriterIncreaseBuilder.FRAGMENT_TAG);
         return this;
     }
 

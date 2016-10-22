@@ -103,6 +103,11 @@ public class CompoundCubeTableReaderNode implements CubeTableEntityService {
     }
 
     @Override
+    public void increaseAddDataValue(BIDataValue originalDataValue) throws BICubeColumnAbsentException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public boolean checkRelationVersion(List<BITableSourceRelation> relations, int relation_version) {
         throw new UnsupportedOperationException();
     }
