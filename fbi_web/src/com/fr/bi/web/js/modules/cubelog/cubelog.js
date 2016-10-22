@@ -186,7 +186,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
                     + er.relation.foreignTableName + "." + er.relation.foreignFieldName + ':' + er.error_text;
             }
             children.push({
-                value: errorInfo
+                value: BI.i18nText("BI-Error_Infor") + errorInfo
             })
         });
         items.push({
