@@ -75,7 +75,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
         this._refreshLog4Init();
     },
 
-    _refreshLog4Init: function() {
+    _refreshLog4Init: function () {
         var self = this;
         BI.Utils.getCubeLog(function (data) {
             if (BI.isNotNull(data.cube_end) || (BI.isNull(data.cube_end) && BI.isNull(data.cube_start))) {
@@ -177,8 +177,16 @@ BI.CubeLog = BI.inherit(BI.Widget, {
         var errors = data.errors;
         var children = [];
         BI.each(errors, function (i, er) {
+            var errorInfo = er.error_text;
+            if (undefined != er.tableName && '' != er.tableName) {
+                errorInfo = BI.i18nText("BI-Table_Name") + '-' + er.tableName + ':' + er.error_text;
+            } else if (undefined != er.relation) {
+                errorInfo = BI.i18nText("BI-Relations") + "-" +
+                    er.relation.primaryTableName + "." + er.relation.primaryFieldName + "->"
+                    + er.relation.foreignTableName + "." + er.relation.foreignFieldName + ':' + er.error_text;
+            }
             children.push({
-                value: er.error_text
+                value: errorInfo
             })
         });
         items.push({
