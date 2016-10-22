@@ -44,7 +44,7 @@ public abstract class DBExtractorImpl implements DBExtractor {
         @SuppressWarnings("rawtypes")
         DBDealer[] dealers = createDBDealer(needCharSetConvert, originalCharSetName, newCharSetName, columns);
         int ilen = dealers.length;
-        while (rs.next()&&row<100000) {
+        while (rs.next()) {
             for (int i = 0; i < ilen; i++) {
                 Object value = dealers[i].dealWithResultSet(rs);
                 traversal.actionPerformed(new BIDataValue(row, i, value));

@@ -72,8 +72,6 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
                 tableEntityService.clear();
             }
         }
-
-
         String sql = parseSQL(stringSql, lastUpdateDate);
         JSONObject jo = new JSONObject();
         jo.put("sql", sql);
