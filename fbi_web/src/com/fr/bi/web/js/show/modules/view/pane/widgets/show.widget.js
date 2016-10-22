@@ -169,7 +169,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
         });
 
         this.maximize = BI.createWidget({
-            type: "bi.maximization",
+            type: "bi.maximization_4show",
             wId: wId,
             status: BICst.WIDGET_STATUS.SHOW
         });

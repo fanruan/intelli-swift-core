@@ -18,12 +18,21 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             hgap: 5,
             vgap: 5
         });
+        this.wrapper.element.hover(function () {
+            self._doHide = false;
+        }, function () {
+            self._doHide = true;
+            self._debounce2Hide();
+        });
         this.pushButton = BI.createWidget({
             type: "bi.drill_push_button",
         });
         this.pushButton.on(BI.DrillPushButton.EVENT_CHANGE, function () {
             self._onClickPush(!self.wrapper.isVisible());
         });
+
+        this._doHide = true;
+        this._debounce2Hide = BI.debounce(BI.bind(this._hideDrill, this), 3000);
 
         BI.createWidget({
             type: "bi.horizontal_auto",
@@ -34,6 +43,12 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
                 el: this.pushButton,
             }]
         })
+    },
+
+    _hideDrill: function () {
+        if (this._doHide) {
+            this.setVisible(false);
+        }
     },
 
     _canChartDrillShow: function () {
@@ -84,6 +99,66 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
 
         }
         return showDrill;
+    },
+
+    _checkUPDrillEmpty: function (wid) {
+        var wType = BI.Utils.getWidgetTypeByID(wid);
+        if (wType < 5 || wType === BICst.WIDGET.MAP) {
+            return false
+        }
+        var drillMap = BI.Utils.getDrillByID(wid);
+        var upDrillID = null, dId = null;
+        BI.each(drillMap, function (drId, ds) {
+            var rType = BI.Utils.getRegionTypeByDimensionID(drId);
+            if (rType === BICst.REGION.DIMENSION1 && ds.length > 0) {
+                dId = ds[ds.length - 1].dId;
+            }
+            if (rType === BICst.REGION.DIMENSION2 && ds.length > 0) {
+                dId = ds[ds.length - 1].dId;
+            }
+            if (ds.length > 0 && (dId === drId || ds[ds.length - 1].dId === dId)) {
+                if (ds.length > 1) {
+                    upDrillID = ds[ds.length - 2].dId
+                } else {
+                    upDrillID = drId;
+                }
+            }
+        });
+        return BI.isNull(upDrillID)
+    },
+
+    _onClickPush: function (isVisible) {
+        this.wrapper.setVisible(isVisible);
+        isVisible ? this.pushButton.setPushUp() : this.pushButton.setPushDown();
+    },
+
+    _onClickDrill: function (dId, value, drillId) {
+        var wId = this.options.wId;
+        var drillMap = BI.Utils.getDrillByID(wId);
+        //value 存当前的过滤条件——因为每一次钻取都要带上所有父节点的值
+        //当前钻取的根节点
+        var rootId = dId;
+        BI.each(drillMap, function (drId, ds) {
+            if (dId === drId || (ds.length > 0 && ds[ds.length - 1].dId === dId)) {
+                rootId = drId;
+            }
+        });
+
+        var drillOperators = drillMap[rootId] || [];
+        //上钻
+        if (BI.isNull(drillId)) {
+            drillOperators.pop();
+        } else {
+            drillOperators.push({
+                dId: drillId,
+                values: [{
+                    dId: dId,
+                    value: [value]
+                }]
+            });
+        }
+        drillMap[rootId] = drillOperators;
+        this.fireEvent(BI.ChartDrill.EVENT_CHANGE, {clicked: BI.extend(BI.Utils.getLinkageValuesByID(wId), drillMap)});
     },
 
     populate: function (obj) {
@@ -191,67 +266,8 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         }
         this.wrapper.element.width(width);
         this.wrapper.setVisible(true);
+        this._debounce2Hide();
     },
-
-    _checkUPDrillEmpty: function (wid) {
-        var wType = BI.Utils.getWidgetTypeByID(wid);
-        if (wType < 5 || wType === BICst.WIDGET.MAP) {
-            return false
-        }
-        var drillMap = BI.Utils.getDrillByID(wid);
-        var upDrillID = null, dId = null;
-        BI.each(drillMap, function (drId, ds) {
-            var rType = BI.Utils.getRegionTypeByDimensionID(drId);
-            if (rType === BICst.REGION.DIMENSION1 && ds.length > 0) {
-                dId = ds[ds.length - 1].dId;
-            }
-            if (rType === BICst.REGION.DIMENSION2 && ds.length > 0) {
-                dId = ds[ds.length - 1].dId;
-            }
-            if (ds.length > 0 && (dId === drId || ds[ds.length - 1].dId === dId)) {
-                if (ds.length > 1) {
-                    upDrillID = ds[ds.length - 2].dId
-                } else {
-                    upDrillID = drId;
-                }
-            }
-        });
-        return BI.isNull(upDrillID)
-    },
-
-    _onClickPush: function (isVisible) {
-        this.wrapper.setVisible(isVisible);
-        isVisible ? this.pushButton.setPushUp() : this.pushButton.setPushDown();
-    },
-
-    _onClickDrill: function (dId, value, drillId) {
-        var wId = this.options.wId;
-        var drillMap = BI.Utils.getDrillByID(wId);
-        //value 存当前的过滤条件——因为每一次钻取都要带上所有父节点的值
-        //当前钻取的根节点
-        var rootId = dId;
-        BI.each(drillMap, function (drId, ds) {
-            if (dId === drId || (ds.length > 0 && ds[ds.length - 1].dId === dId)) {
-                rootId = drId;
-            }
-        });
-
-        var drillOperators = drillMap[rootId] || [];
-        //上钻
-        if (BI.isNull(drillId)) {
-            drillOperators.pop();
-        } else {
-            drillOperators.push({
-                dId: drillId,
-                values: [{
-                    dId: dId,
-                    value: [value]
-                }]
-            });
-        }
-        drillMap[rootId] = drillOperators;
-        this.fireEvent(BI.ChartDrill.EVENT_CHANGE, {clicked: BI.extend(BI.Utils.getLinkageValuesByID(wId), drillMap)});
-    }
 });
 BI.ChartDrill.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.chart_drill", BI.ChartDrill);
