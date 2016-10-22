@@ -61,11 +61,11 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
 //                tableSource = businessTable.getTableSource();
 //            }
 //        }
-            CubeTableSource tableSource = CubeSourceHelper.getSource(new BITableKey((String) table.get("md5")));
+        CubeTableSource tableSource = CubeSourceHelper.getSource(new BITableKey((String) table.get("md5")));
         if (null != tableSource) {
-                    ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
-        ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
-                    Cube cube = new BICube(resourceRetrievalService, discovery);
+            ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
+            ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
+            Cube cube = new BICube(resourceRetrievalService, discovery);
             CubeTableEntityService tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
             if (tableEntityService.isLastExecuteTimeAvailable()) {
                 lastUpdateDate = tableEntityService.getLastExecuteTime();
