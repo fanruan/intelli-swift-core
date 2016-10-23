@@ -24,9 +24,9 @@ public class BIUserAuthorAttr implements XMLable {
     public static final String VIEW_AUTH_TAG = "biViewAuth";
     public static final String MOBILE_AUTH_TAG = "biMobileAuth";
     public static final int DEFAULT_MOBILE_USER_AUTH_LIMIT = 0;
-    private final static int EDIT = 1;
-    private final static int VIEW = 2;
-    private final static int MOBILE = 3;
+    public final static int EDIT = 1;
+    public final static int VIEW = 2;
+    public final static int MOBILE = 3;
     private static long biEditUserLimit = 0;
     private static long biViewUserLimit = 0;
     private static long biMobileUserLimit = 0;
