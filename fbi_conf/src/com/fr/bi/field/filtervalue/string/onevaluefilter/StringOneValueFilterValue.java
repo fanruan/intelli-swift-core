@@ -4,6 +4,7 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.string.StringFilterValue;
 import com.fr.bi.field.filtervalue.string.StringFilterValueUtils;
@@ -27,7 +28,7 @@ public abstract class StringOneValueFilterValue extends AbstractFilterValue<Stri
     private static final long serialVersionUID = 360509300932967000L;
 
     private static String XML_TAG = "StringOneValueFilterValue";
-
+    @BICoreField
     protected String value;
 
     /**

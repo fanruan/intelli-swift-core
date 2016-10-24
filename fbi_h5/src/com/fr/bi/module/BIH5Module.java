@@ -66,6 +66,6 @@ public class BIH5Module extends AbstractModule {
 
     @Override
     public void clearAnalysisETLCache(long userId) {
-        
+
     }
 }

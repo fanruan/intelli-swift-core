@@ -24,7 +24,7 @@ import {Colors, Sizes, TemplateFactory, WidgetFactory, DimensionFactory} from 'd
 
 import {Layout, CenterLayout, HorizontalCenterLayout, VerticalCenterLayout} from 'layout';
 
-import {Button, IconButton, TextButton, Table, ActionSheet} from 'base'
+import {Button, IconButton, TextButton, Table, Dialog} from 'base'
 
 import {MultiSelectorWidget} from 'widgets'
 
@@ -74,7 +74,7 @@ class TargetComponent extends Component {
                           effect={false}>{props.value.text}</Text>
                 </Layout>
                 <IconButton style={styles.sortIcon} onPress={()=> {
-                    Portal.showModal('TargetSort', <ActionSheet
+                    Portal.showModal('TargetSort', <Dialog
                         key={'TargetSort'}
                         title={`"${this._helper.getSortTargetName()}"排序`}
                         onClose={(tag)=> {
@@ -94,7 +94,7 @@ class TargetComponent extends Component {
                                 this._$widget = $widget;
                             }}
                         />
-                    </ActionSheet>)
+                    </Dialog>)
                 }}
                             className={this._helper.getSortTargetTypeFont()}/>
             </Layout>
