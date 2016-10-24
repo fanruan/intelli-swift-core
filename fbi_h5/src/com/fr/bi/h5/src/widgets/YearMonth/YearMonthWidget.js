@@ -29,9 +29,11 @@ import {Layout, CenterLayout, HorizontalCenterLayout, VerticalCenterLayout} from
 
 import {Button, TextButton, IconButton, Table} from 'base'
 
+import {PickerIOS} from 'lib'
+
 import {MultiSelectorWidget} from 'widgets'
 
-
+const PICKER_ITEM_HEIGHT = 36;
 class YearMonthWidget extends Component {
     constructor(props, context) {
         super(props, context);
@@ -64,26 +66,45 @@ class YearMonthWidget extends Component {
     render() {
         const {...props} = this.props, {...state} = this.state;
         var detailPicker;
+        const year = [], month = [];
+        for (let i = 1900; i <= 2050; i++) {
+            year.push(
+                <PickerIOS.Item key={i} value={i} label={`${i + BH.i18nText("BH-Year")}`}/>
+            );
+        }
+        for (let i = 0; i < 12; i++) {
+            month.push(
+                <PickerIOS.Item key={i} value={i} label={`${(i + 1) + BH.i18nText("BH-Month")}`}/>
+            )
+        }
         if(this.state.selection === 1){
-            detailPicker = <YearPicker year={state.year || new Date().getFullYear()}
-                                       onYearChange={(Y)=> {
-            this.setState({
-                year: Y
-            }, ()=> {
-                const {year, month}=this.state;
-                this.props.onValueChange({year, month});
-            });
-        }}/>
+            detailPicker = <View style={styles.datepicker}>
+                <View style={styles.highlight}/>
+                <View style={styles.container}>
+                    <PickerIOS selectedValue={this.state.year || new Date().getFullYear()} onValueChange={(Y)=> {
+                        this.setState({year: Y}, ()=>{
+                            const {year, month}=this.state;
+                            this.props.onValueChange({year, month});
+                        });
+                    }}>
+                        {year}
+                    </PickerIOS>
+                </View>
+            </View>
         }else{
-            detailPicker = <MonthPicker month={state.month || new Date().getMonth()}
-                                       onMonthChange={(M)=> {
-            this.setState({
-                month: M
-            }, ()=> {
-                const {year, month}=this.state;
-                this.props.onValueChange({year, month});
-            });
-        }}/>
+            detailPicker = <View style={styles.datepicker}>
+                <View style={styles.highlight}/>
+                <View style={styles.container}>
+                    <PickerIOS selectedValue={this.state.month || new Date().getMonth()} onValueChange={(M)=> {
+                        this.setState({month: M}, ()=>{
+                            const {year, month} = this.state;
+                            this.props.onValueChange({year, month})
+                        });
+                    }}>
+                        {month}
+                    </PickerIOS>
+                </View>
+            </View>
         }
         return <Layout dir='top' main='justify' style={styles.wrapper}>
             <Layout cross='center' style={styles.button}>
@@ -158,6 +179,27 @@ const styles = StyleSheet.create({
         height: Sizes.HEADER_HEIGHT,
         borderBottomColor: Colors.BORDER,
         borderBottomWidth: 1 / PixelRatio.get()
+    },
+    datepicker: {
+        flexDirection: 'row',
+        justifyContent: 'center'
+    },
+    container: {
+        flexDirection: 'row'
+    },
+    highlight: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        height: PICKER_ITEM_HEIGHT,
+        top: '50%',
+        marginTop: -1 * PICKER_ITEM_HEIGHT / 2,
+        borderTopWidth: 1,
+        borderTopStyle: 'solid',
+        borderTopColor: '#ddd',
+        borderBottomWidth: 1,
+        borderBottomStyle: 'solid',
+        borderBottomColor: '#ddd'
     }
 });
 export default YearMonthWidget

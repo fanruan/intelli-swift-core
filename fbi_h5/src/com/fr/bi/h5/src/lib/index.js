@@ -18,8 +18,6 @@ export * from 'react';
 export ActivityIndicatorIOS from './ActivityIndicator/ActivityIndicator.web';
 export ActivityIndicator from './ActivityIndicator/ActivityIndicator.web';
 export DatePickerIOS from './DatePickerIOS/DatePickerIOS';
-export YearPicker from './YearPicker/YearPicker';
-export MonthPicker from './MonthPicker/MonthPicker';
 export DrawerLayoutAndroid from './DrawerLayout/DrawerLayout.web';
 export Image from './Image/Image.web';
 export ListView from './ListView/ListView.web';
