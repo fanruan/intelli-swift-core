@@ -54,6 +54,7 @@ export Alert from './Alert/Alert.web';
 export AlertIOS from './Alert/Alert.web';
 export Animated from './Animated/Animated.web';
 export AsyncStorage from './Storage/AsyncStorage.web';
+export ActionSheetIOS from './ActionSheetIOS/ActionSheetIOS';
 export Dimensions from './Dimensions/Dimensions.web';
 export Easing from 'animated/lib/Easing';
 export InteractionManager from './Interaction/InteractionManager.web';
