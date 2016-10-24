@@ -255,6 +255,16 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
                 }
                 return text;
             case BICst.WIDGET.TREE_LABEL:
+                BI.each(widgetValue, function (name, children) {
+                    var childNodes = getChildrenNode(children);
+                    text += name + (childNodes === "" ? "" : (":" + childNodes)) + "; ";
+                    if(childNodes === BICst.LIST_LABEL_TYPE.ALL) {
+                        text = "";
+                    }
+                });
+                if (text !== "") {
+                    text = BI.i18nText("BI-In") + " " + text;
+                }
                 return text;
             default:
                 return widgetValue;

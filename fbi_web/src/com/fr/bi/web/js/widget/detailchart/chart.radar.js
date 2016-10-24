@@ -154,7 +154,7 @@ BI.RadarChart = BI.inherit(BI.AbstractChart, {
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             cordon: options.cordon || [],
             custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
-	     num_separators: options.num_separators || false,
+            num_separators: options.num_separators || false,
             chart_font: options.chart_font || c.FONT_STYLE
         };
         this.options.items = items;

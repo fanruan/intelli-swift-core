@@ -22,7 +22,8 @@ import DetailTablePaneComponent from '../DetailTable/DetailTablePaneComponent.js
 import MultiSelectorComponent from '../MultiSelector/MultiSelectorComponent.js'
 import MultiTreeSelectorComponent from '../MultiTreeSelector/MultiTreeSelectorComponent.js'
 import ContentComponent from '../Content/ContentComponent'
-import ImageComponent from "../Image/ImageComponent"
+import ImageComponent from '../Image/ImageComponent'
+import WebComponent from '../Web/WebCompontent'
 
 class LayoutComponent extends Component {
     static propTypes = {};
@@ -133,6 +134,7 @@ class LayoutComponent extends Component {
                 component = <ImageComponent {...props}/>;
                 break;
             case BICst.WIDGET.WEB:
+                component = <WebComponent {...props}/>;
                 break;
             case BICst.WIDGET.STRING:
                 component = <MultiSelectorComponent {...props} />;

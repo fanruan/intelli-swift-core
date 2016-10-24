@@ -49,15 +49,13 @@ BI.LegendDetailedSettingPopup = BI.inherit(BI.Widget, {
         }
     },
 
-    getValue: function() {
-        return {
-            legend_style: this.textStyle.getValue()
-        }
+      getValue: function() {
+        return this.textStyle.getValue()
     },
 
     setValue: function(v) {
         v || (v = {});
-        this.textStyle.setValue(v.legend_style)
+        this.textStyle.setValue(v)
     }
 
 });

@@ -26,7 +26,7 @@ BI.ExcelViewSettingExcel = BI.inherit(BI.Widget, {
         this.tab = BI.createWidget({
             type: "bi.tab",
             element: this.element,
-            cardCreator: function(v){
+            cardCreator: function (v) {
                 switch (v) {
                     case self._constants.SHOW_TIP:
                         return BI.createWidget({
@@ -38,7 +38,16 @@ BI.ExcelViewSettingExcel = BI.inherit(BI.Widget, {
                     case self._constants.SHOW_EXCEL:
                         self.table = BI.createWidget({
                             type: "bi.excel_table",
-                            isNeedMerge: false
+                            isNeedMerge: true,
+                            mergeRule: function (row1, row2) {
+                                var o1 = row1.options;
+                                var o2 = row2.options;
+                                if (BI.isNull(o1) || BI.isNull(o2)) {
+                                    return false
+                                } else {
+                                    return o1.mergeCellId === o2.mergeCellId;
+                                }
+                            }
                         });
                         return self.table;
                 }
@@ -55,9 +64,18 @@ BI.ExcelViewSettingExcel = BI.inherit(BI.Widget, {
             map[i] = {};
             store[i] = {};
             return BI.map(row, function (j, cell) {
+                var mergeCellId = cell.slice(-36);
+                var text = cell.slice(0, -36);
+                if (mergeCellId === cell) {
+                    mergeCellId = NaN;
+                }
+                if(BI.isEmptyString(text)){
+                    text=cell;
+                }
                 map[i][j] = BI.createWidget({
                     type: "bi.excel_view_setting_cell",
-                    text: cell,
+                    text: text,
+                    mergeCellId: mergeCellId,
                     height: 18,
                     handler: function () {
                         //if (!this.isSelected()) {
@@ -70,7 +88,7 @@ BI.ExcelViewSettingExcel = BI.inherit(BI.Widget, {
         });
     },
 
-    setValue: function(positions) {
+    setValue: function (positions) {
         var self = this;
         BI.each(this.store, function (i, cols) {
             BI.each(cols, function (j, col) {
@@ -79,7 +97,7 @@ BI.ExcelViewSettingExcel = BI.inherit(BI.Widget, {
             });
             self.store[i] = {};
         });
-        BI.each(positions, function(fieldId, mark) {
+        BI.each(positions, function (fieldId, mark) {
             var col = mark.col, row = mark.row;
             var el = self.map[row][col];
             el.setSelected(true);
@@ -88,7 +106,7 @@ BI.ExcelViewSettingExcel = BI.inherit(BI.Widget, {
         })
     },
 
-    _getFieldNameByFieldId: function(fieldId) {
+    _getFieldNameByFieldId: function (fieldId) {
         var allFields = this.options.all_fields;
         return allFields[fieldId].field_name;
     },
@@ -98,12 +116,13 @@ BI.ExcelViewSettingExcel = BI.inherit(BI.Widget, {
     },
 
     populate: function (items) {
-        if(BI.isEmptyArray(items)) {
+        if (BI.isEmptyArray(items)) {
             this.tab.setSelect(this._constants.SHOW_TIP);
             return;
         }
         this.tab.setSelect(this._constants.SHOW_EXCEL);
         this.table.attr("columnSize", BI.makeArray(items[0].length, ""));
+        this.table.attr("mergeCols", BI.makeArray(items[0].length));
         this.table.populate(this._formatItems(items));
     }
 });
