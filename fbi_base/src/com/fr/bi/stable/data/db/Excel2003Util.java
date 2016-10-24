@@ -9,6 +9,7 @@ import com.fr.general.DateUtils;
 import com.fr.general.Inter;
 import com.fr.stable.ColumnRow;
 import com.fr.stable.StringUtils;
+import com.fr.stable.core.UUID;
 import com.fr.third.v2.org.apache.poi.hssf.eventusermodel.*;
 import com.fr.third.v2.org.apache.poi.hssf.eventusermodel.dummyrecord.LastCellOfRowDummyRecord;
 import com.fr.third.v2.org.apache.poi.hssf.eventusermodel.dummyrecord.MissingCellDummyRecord;
@@ -48,16 +49,18 @@ public class Excel2003Util implements HSSFListener {
     private boolean outputNextStringRecord;
     private int thisRow = -1, thisColumn = -1;
     private String thisStr = null;
+
     public Excel2003Util(String filename) throws IOException {
         this.fs = new POIFSFileSystem(new FileInputStream(filename));
     }
+
     public Excel2003Util(String filePath, boolean preview) throws Exception {
-        preview = preview;
+        this.preview = preview;
         resetValues();
         Object lock = BIPictureUtils.getImageLock(filePath);
         synchronized (lock) {
-            Excel2003Util excel2003Util = new Excel2003Util(filePath);
-            excel2003Util.process();
+            this.fs = new POIFSFileSystem(new FileInputStream(filePath));
+            process();
         }
         mergeCells();
         initFieldNames();
@@ -78,7 +81,7 @@ public class Excel2003Util implements HSSFListener {
 
     public List<Object[]> getRowDataList() {
         //此处在外部获取的应当是数据，不包括字段名称
-        return  rowDataList.subList(1, rowDataList.size());
+        return rowDataList.subList(1, rowDataList.size());
     }
 
     public void resetValues() {
@@ -184,7 +187,13 @@ public class Excel2003Util implements HSSFListener {
             thisStr = StringUtils.EMPTY;
         }
         if (thisStr != null) {
-            tempData.add(thisStr);
+            if (thisStr.equals(StringUtils.EMPTY)) {
+                tempData.add(thisStr);
+            } else {
+                String mergeCellId = UUID.randomUUID().toString();
+                String tempStr = thisStr + mergeCellId;
+                tempData.add(tempStr);
+            }
         }
         if (thisRow > -1) {
             lastRowNumber = thisRow;
@@ -208,9 +217,9 @@ public class Excel2003Util implements HSSFListener {
         }
     }
 
-    private void processRowRecord(Record record){
+    private void processRowRecord(Record record) {
         //此处读到的count都包含了标识行和列结束的cell，即+1了
-        columnCount = ((RowRecord)record).getLastCol();
+        columnCount = ((RowRecord) record).getLastCol();
     }
 
     public void processBlankRecord(Record record) {
@@ -286,11 +295,14 @@ public class Excel2003Util implements HSSFListener {
     public void processMergeRecord(Record record) {
         try {
             MergeCellsRecord merge = (MergeCellsRecord) record;
-            String m = merge.getAreaAt(0).formatAsString();
-            String[] merged = m.split(":");
-            String s = merged[0], e = merged[1];
-            ColumnRow start = ColumnRow.valueOf(s), end = ColumnRow.valueOf(e);
-            mergeCells.put(start, end);
+            Short num = merge.getNumAreas();
+            for (int i = 0; i < num; i++) {
+                String m = merge.getAreaAt(i).formatAsString();
+                String[] merged = m.split(":");
+                String s = merged[0], e = merged[1];
+                ColumnRow start = ColumnRow.valueOf(s), end = ColumnRow.valueOf(e);
+                mergeCells.put(start, end);
+            }
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage());
         }
@@ -319,8 +331,8 @@ public class Excel2003Util implements HSSFListener {
         tempData = new ArrayList<String>();
     }
 
-    private void initFieldNames(){
-        Object [] firstRow = rowDataList.get(0);
+    private void initFieldNames() {
+        Object[] firstRow = rowDataList.get(0);
         columnNames = new String[firstRow.length];
         //如果是首行含有空值或特殊字符
         for (int i = 0; i < firstRow.length; i++) {
@@ -329,18 +341,18 @@ public class Excel2003Util implements HSSFListener {
             Pattern p = Pattern.compile(regEx);
             Matcher m = p.matcher(firstRow[i].toString());
             columnNames[i] = m.replaceAll(StringUtils.EMPTY).trim();
-            if (ComparatorUtils.equals(StringUtils.EMPTY, columnNames[i])) {
-                columnNames[i] = Inter.getLocText("BI-Field") + (i + 1);
-            }
+//            if (ComparatorUtils.equals(StringUtils.EMPTY, columnNames[i])) {
+//                columnNames[i] = Inter.getLocText("BI-Field") + (i + 1);
+//            }
         }
     }
 
     //从第二行来读取数据类型
     public void initFieldType() {
-        Object [] secondRow = rowDataList.get(1);
+        Object[] secondRow = rowDataList.get(1);
         columnTypes = new int[secondRow.length];
-        if(secondRow == null){
-            for(int i = 0; i < columnNames.length; i++){
+        if (secondRow == null) {
+            for (int i = 0; i < columnNames.length; i++) {
                 columnTypes[i] = DBConstant.COLUMN.STRING;
             }
             return;
@@ -373,19 +385,19 @@ public class Excel2003Util implements HSSFListener {
             ColumnRow s = m.getKey();
             ColumnRow e = m.getValue();
             //如果是横向合并
-            if (s.getRow() == e.getRow() && s.getRow() != 0) {
+            if (s.getRow() == e.getRow()) {
                 int mergedColCount = e.getColumn() - s.getColumn();
                 for (int i = 0; i < mergedColCount; i++) {
-                    Object[] tempArray = rowDataList.get(e.getRow() - 1);
-                    tempArray[e.getColumn() - i] = rowDataList.get(e.getRow() - 1)[e.getColumn() - i - 1];
-                    rowDataList.set(e.getRow() - 1, tempArray);
+                    Object[] tempArray = rowDataList.get(e.getRow());
+                    tempArray[e.getColumn() - i] = rowDataList.get(e.getRow())[e.getColumn() - i - 1];
+                    rowDataList.set(e.getRow(), tempArray);
                 }
             } else if (s.getRow() != 0) {
                 int mergedRowCount = e.getRow() - s.getRow();
                 for (int j = 0; j < mergedRowCount; j++) {
-                    Object[] tempArray = rowDataList.get(e.getRow() - j - 1);
-                    tempArray[e.getColumn()] = rowDataList.get(s.getRow() - 1)[e.getColumn()];
-                    rowDataList.set(e.getRow() - j - 1, tempArray);
+                    Object[] tempArray = rowDataList.get(e.getRow() - j);
+                    tempArray[e.getColumn()] = rowDataList.get(s.getRow())[e.getColumn()];
+                    rowDataList.set(e.getRow() - j, tempArray);
                 }
             }
         }

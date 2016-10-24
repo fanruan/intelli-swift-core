@@ -31,7 +31,17 @@ BI.ExcelView = BI.inherit(BI.Single, {
             text: BI.i18nText("BI-Close_Excel_View")
         });
         this.table = BI.createWidget({
-            type: "bi.excel_table"
+            type: "bi.excel_table",
+            isNeedMerge: true,
+            mergeRule: function (row1, row2) {
+                var o1 = row1.mergeCellId;
+                var o2 = row2.mergeCellId;
+                if (BI.isNull(o1) || BI.isNull(o2)) {
+                    return false
+                } else {
+                    return o1 === o2;
+                }
+            }
         });
         this.combo = BI.createWidget({
             type: "bi.combo",
@@ -219,7 +229,15 @@ BI.ExcelView = BI.inherit(BI.Single, {
             BI.each(excel, function (i, row) {
                 var item = [];
                 BI.each(row, function (j, cell) {
-                    item.push({text: cell})
+                    var mergeCellId = cell.slice(-36);
+                    var text = cell.slice(0, -36);
+                    if (mergeCellId === cell) {
+                        mergeCellId = NaN;
+                    }
+                    if (BI.isEmptyString(text)) {
+                        text = cell;
+                    }
+                    item.push({text: text, mergeCellId: mergeCellId})
                 });
                 items.push(item);
             });
@@ -228,6 +246,7 @@ BI.ExcelView = BI.inherit(BI.Single, {
             });
             items = this._createItems(items);
             this.table.attr("columnSize", BI.makeArray(items[0].length, ""));
+            this.table.attr("mergeCols", BI.makeArray(items[0].length));
             this.table.populate(items);
         }
     }
