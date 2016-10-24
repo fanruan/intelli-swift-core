@@ -31,7 +31,7 @@ BI.DatabaseTablesMainPane = BI.inherit(BI.Widget, {
         });
 
         //搜索
-        this.seacher = BI.createWidget({
+        var searcher = BI.createWidget({
             type: "bi.searcher",
             width: 230,
             onSearch: function (op, callback) {
@@ -55,14 +55,14 @@ BI.DatabaseTablesMainPane = BI.inherit(BI.Widget, {
                 tables: this.options.tables
             }
         });
-        this.seacher.on(BI.Searcher.EVENT_START, function () {
+        searcher.on(BI.Searcher.EVENT_START, function () {
             self.tablesPane.setComboEnable(false);
         });
-        this.seacher.on(BI.Searcher.EVENT_STOP, function () {
+        searcher.on(BI.Searcher.EVENT_STOP, function () {
             self.tablesPane.setComboEnable(true);
             self.tablesPane.refreshSelectedTables();
         });
-        this.seacher.on(BI.Searcher.EVENT_CHANGE, function (value, obj) {
+        searcher.on(BI.Searcher.EVENT_CHANGE, function (value, obj) {
             //搜索的时候不做setValue操作，而是在结束的时候对所有已存在的page做，同时createPage的时候也是需要做的
             var selectedTables = self.tablesPane.getSelectedTables();
             if (obj.isSelected() === false) {
@@ -90,7 +90,7 @@ BI.DatabaseTablesMainPane = BI.inherit(BI.Widget, {
                     items: [{
                         el: {
                             type: "bi.right",
-                            items: [this.seacher],
+                            items: [searcher],
                             hgap: 10,
                             vgap: 15
                         },
@@ -112,7 +112,7 @@ BI.DatabaseTablesMainPane = BI.inherit(BI.Widget, {
                 left: 0
             }]
         });
-        this.seacher.setAdapter(this.tablesPane);
+        searcher.setAdapter(this.tablesPane);
     },
 
     populate: function (connectionName) {
