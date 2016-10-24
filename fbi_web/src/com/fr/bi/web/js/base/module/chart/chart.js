@@ -56,6 +56,7 @@ BI.Chart = BI.inherit(BI.Pane, {
 
         var setOptions = function () {
             self.vanCharts.setOptions(self.config);
+            self.isSetOptions = true;
         };
         BI.nextTick(setOptions);
     }

@@ -675,6 +675,14 @@ Data.Utils = {
         }
     },
 
+    /**
+     * 配置属性方法
+     * @param type
+     * @param data
+     * @param options
+     * @param types
+     * @returns {*}
+     */
     convertWidgetDataToChartData: function (type, data, options, types) {
         options || (options = {});
         var constants = ChartConstants();
@@ -737,7 +745,12 @@ Data.Utils = {
             line_width: BI.isNull(options.line_width) ? 1 : options.line_width,
             show_label: BI.isNull(options.show_label) ? true : options.show_label,
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
-            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick
+            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
+            chart_font:  {
+                "fontFamily": "inherit",
+                "color": "inherit",
+                "fontSize": "12px"
+            }
         };
 
         var maxes = [];
@@ -1326,6 +1339,42 @@ Data.Utils = {
                     }
                 })
             })
+        }
+
+        function _formatDataLabel (items, config, style) {
+            var self = this;
+            if (config.plotOptions.dataLabels.enabled === true) {
+                BI.each(items, function (idx, item) {
+                    item.dataLabels = {
+                        "align": "outside",
+                        "autoAdjust": true,
+                        style: style,
+                        enabled: true,
+                        formatter: {
+                            identifier: "${VALUE}",
+                            valueFormat: config.yAxis[item.yAxis].formatter
+                        }
+                    };
+                });
+            }
+        }
+
+        function _formatDataLabelForAxis (state, items, format, style) {
+            var self = this;
+            if (state === true) {
+                BI.each(items, function (idx, item) {
+                    item.dataLabels = {
+                        "align": "outside",
+                        "autoAdjust": true,
+                        style: style,
+                        enabled: true,
+                        formatter: {
+                            identifier: "${VALUE}",
+                            valueFormat: format
+                        }
+                    };
+                });
+            }
         }
 
         function formatConfigForMap(configs, items) {
@@ -2589,6 +2638,8 @@ Data.Utils = {
                 }
             });
 
+            _formatDataLabel(items, configs, config.chart_font);
+
             return BI.extend(configs, {
                 series: BI.concat(otherItem, lineItem)
             });
@@ -2978,6 +3029,8 @@ Data.Utils = {
                 enableMinorTick: config.enable_minor_tick
             });
 
+            _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.xAxis[0].formatter, config.chart_font);
+
             configs.chartType = "bar";
             return BI.extend(configs, {
                 series: items
@@ -3245,6 +3298,9 @@ Data.Utils = {
             formatNumberLevelInXaxis(config.left_y_axis_number_level);
 
             configs.chartType = "bar";
+
+            _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.xAxis[0].formatter, config.chart_font);
+
             return BI.extend(configs, {
                 series: items
             });
@@ -3507,6 +3563,9 @@ Data.Utils = {
             });
 
             configs.chartType = "bar";
+
+            _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.xAxis[0].formatter, config.chart_font);
+
             return BI.extend(configs, {
                 series: items
             });
@@ -3754,6 +3813,9 @@ Data.Utils = {
 
             configs.chartType = "area";
             configs.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${VALUE}";
+
+            _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.yAxis[0].formatter, config.chart_font);
+
             return BI.extend(configs, {
                 series: items
             });
@@ -3999,6 +4061,25 @@ Data.Utils = {
                 labelRotation: config.text_direction,
                 gridLineWidth: config.show_grid_line === true ? 1 : 0
             });
+
+            if(configs.plotOptions.dataLabels.enabled === true){
+                BI.each(items, function(idx, item){
+                    if(idx === 0){
+                        item.dataLabels = {};
+                        return;
+                    }
+                    item.dataLabels = {
+                        "style": config.chart_font,
+                        "align": "outside",
+                        "autoAdjust": true,
+                        enabled: true,
+                        formatter: {
+                            identifier: "${VALUE}",
+                            valueFormat: configs.yAxis[0].formatter
+                        }
+                    };
+                });
+            }
 
             return BI.extend(configs, {
                 series: items
@@ -4332,6 +4413,8 @@ Data.Utils = {
                 gridLineWidth: config.show_grid_line === true ? 1 : 0
             });
 
+            _formatDataLabel(items, configs, config.chart_font);
+
             return BI.extend(configs, {
                 series: items
             });
@@ -4656,6 +4739,9 @@ Data.Utils = {
 
             configs.chartType = "area";
             configs.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${PERCENT}";
+
+            _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.xAxis[0].formatter, config.chart_font);
+
             return BI.extend(configs, {
                 series: items
             });
@@ -4946,6 +5032,8 @@ Data.Utils = {
                 labelRotation: config.text_direction,
                 gridLineWidth: config.show_grid_line === true ? 1 : 0
             });
+
+            _formatDataLabel(items, configs, config.chart_font);
 
             return BI.extend(configs, {
                 series: items
@@ -5270,6 +5358,8 @@ Data.Utils = {
                 gridLineWidth: config.show_grid_line === true ? 1 : 0,
             });
 
+            _formatDataLabel(items, configs, config.chart_font);
+
             return BI.extend(configs, {
                 series: items
             });
@@ -5500,6 +5590,9 @@ Data.Utils = {
             configs.plotOptions.columnType = true;
             delete configs.xAxis;
             delete configs.yAxis;
+
+            _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.radiusAxis[0].formatter, config.chart_font);
+
             return BI.extend(configs, {
                 series: items
             });
@@ -5689,6 +5782,9 @@ Data.Utils = {
             configs.chartType = "radar";
             delete configs.xAxis;
             delete configs.yAxis;
+
+            _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.radiusAxis[0].formatter, config.chart_font);
+
             return BI.extend(configs, {
                 series: items
             });
@@ -5956,6 +6052,9 @@ Data.Utils = {
             });
 
             configs.chartType = "area";
+
+            _formatDataLabel(items, configs, config.chart_font);
+
             return BI.extend(configs, {
                 series: items
             });
@@ -6156,7 +6255,6 @@ Data.Utils = {
             }
         }
 
-
         function formatConfigForAxis(configs, items) {
 
             var xAxis = [{
@@ -6284,6 +6382,8 @@ Data.Utils = {
                     otherItem.push(item);
                 }
             });
+
+            _formatDataLabel(items, configs, config.chart_font);
 
             return BI.extend(configs, {
                 series: BI.concat(otherItem, lineItem)
