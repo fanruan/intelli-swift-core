@@ -45,7 +45,7 @@ class YearPicker extends Component {
         const year = [], month = [], day = [];
         for (let i = 1900; i <= 2050; i++) {
             year.push(
-                <Picker.Item key={i} value={i} label={`${i}年`}/>
+                <Picker.Item key={i} value={i} label={`${i + BH.i18nText("BH-Year")}`}/>
             );
         }
         return (

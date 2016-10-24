@@ -45,7 +45,7 @@ class MonthPicker extends Component {
         const year = [], month = [], day = [];
         for (let i = 0; i < 12; i++) {
             month.push(
-                <Picker.Item key={i} value={i} label={`${i + 1}月`}/>
+                <Picker.Item key={i} value={i} label={`${(i + 1) + BH.i18nText("BH-Month")}`}/>
             )
         }
         return (

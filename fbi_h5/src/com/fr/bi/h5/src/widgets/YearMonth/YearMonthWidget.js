@@ -88,25 +88,25 @@ class YearMonthWidget extends Component {
         return <Layout dir='top' main='justify' style={styles.wrapper}>
             <Layout cross='center' style={styles.button}>
                 <Layout>
-                    <Text style={styles.dateLabel}>选择年份</Text>
+                    <Text style={styles.dateLabel}>{BH.i18nText("BH-Select_Year")}</Text>
                     <TextButton style={styles.date} onPress = {()=>{
                 this.setState({
                     selection: 1
                 })
-                }}>{state.year ? `${state.year}年` : '无限制'}</TextButton>
+                }}>{state.year ? `${state.year + BH.i18nText("BH-Year")}` : BH.i18nText("BH-Unrestricted")}</TextButton>
                 </Layout>
                 <Layout>
-                    <Text style={styles.dateLabel}>选择月份</Text>
+                    <Text style={styles.dateLabel}>{BH.i18nText("BH-Select_Month")}</Text>
                     <TextButton style={styles.date} onPress = {()=>{
                 this.setState({
                     selection: 2
                 })
-                }}>{state.month ? `${state.month + 1}月` : '无限制'}</TextButton>
+                }}>{state.month ? `${(state.month + 1) + BH.i18nText("BH-Month")}` : BH.i18nText("BH-Unrestricted")}</TextButton>
                 </Layout>
             </Layout>
             <Layout dir='top' box='first' style={styles.picker}>
                 <CenterLayout style={styles.header}>
-                    <Text>{'选择日期'}</Text>
+                    <Text>{BH.i18nText("BH-Select_Date")}</Text>
                 </CenterLayout>
                 {detailPicker}
             </Layout>
