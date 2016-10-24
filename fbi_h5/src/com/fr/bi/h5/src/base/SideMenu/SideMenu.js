@@ -16,6 +16,7 @@ const deviceScreen = Dimensions.get('window');
  */
 const barrierForward = deviceScreen.width / 4;
 
+//noinspection JSAnnotator
 /**
  * Check if the current gesture offset bigger than allowed one
  * before opening menu
