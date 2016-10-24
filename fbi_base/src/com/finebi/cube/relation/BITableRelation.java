@@ -3,6 +3,7 @@ package com.finebi.cube.relation;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.common.factory.BIFactoryHelper;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
 
@@ -47,6 +48,29 @@ public class BITableRelation extends BIBasicRelation<BusinessTable, BusinessFiel
         return jo;
     }
 
+    /**
+     *
+     * @param o
+     * @return
+     * 这个地方很恶心,etl-join有可能会导致tableRelation没变,但是sourceRelation改变,之后需要把sourceRelation提出来单独一个manager来解藕
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (!super.equals(o)) {
+            return false;
+        }
+        if (!(o instanceof BITableRelation)) {
+            return false;
+        }
+        BITableRelation that = (BITableRelation) o;
+
+        if (primaryTable.getTableSource() != null ? !ComparatorUtils.equals(primaryTable.getTableSource(), that.primaryTable.getTableSource()) : that.primaryTable.getTableSource() != null) {
+            return false;
+        }
+        return !(foreignTable.getTableSource() != null ? !ComparatorUtils.equals(foreignTable.getTableSource(), that.foreignTable.getTableSource()) : that.foreignTable.getTableSource() != null);
+
+
+    }
 //    @Override
 //    public boolean equals(Object o) {
 //        if (!(o instanceof BITableRelation)) {

@@ -58,7 +58,7 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
         var self = this;
         var title = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         config.colors = this.config.chart_color;
-        config.style = formatChartStyle();
+        config.plotOptions.style = formatChartStyle();
         formatChartRadarStyle();
         this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;

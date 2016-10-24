@@ -103,23 +103,12 @@ public class CubeRunner {
         Iterator<CubeTask> iterator = cubeThread.iterator();
         while (iterator.hasNext()) {
             CubeTask task = iterator.next();
-            if (task.getUUID().equals(t.getUUID())) {
+            if (task.getTaskId().equals(t.getTaskId())) {
                 return true;
             }
         }
         return false;
 //        return cubeThread.contains(task);
-    }
-
-    public boolean hasTask(String uuid) {
-        Iterator<CubeTask> iterator = cubeThread.iterator();
-        while (iterator.hasNext()) {
-            CubeTask task = iterator.next();
-            if (task.getUUID().equals(uuid)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public boolean hasTask() {
@@ -138,14 +127,14 @@ public class CubeRunner {
     }
 
     public void addTask(CubeTask task) {
-        cubeThread.add(task);
+            cubeThread.add(task);
     }
 
-    public void removeTask(String uuid) {
+    public void removeTask(String taskId) {
         Iterator<CubeTask> it = cubeThread.iterator();
         while (it.hasNext()) {
             CubeTask task = it.next();
-            if (ComparatorUtils.equals(task.getUUID(), uuid)) {
+            if (ComparatorUtils.equals(task.getTaskId(), taskId)) {
                 it.remove();
             }
         }

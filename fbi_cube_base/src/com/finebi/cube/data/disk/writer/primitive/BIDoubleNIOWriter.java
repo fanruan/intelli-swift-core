@@ -14,6 +14,7 @@ public class BIDoubleNIOWriter extends BIBasicNIOWriter<Double> implements ICube
     public BIDoubleNIOWriter(File cacheFile) {
         super(cacheFile);
     }
+
     public BIDoubleNIOWriter(String path) {
         super(new File(path));
     }
@@ -35,6 +36,7 @@ public class BIDoubleNIOWriter extends BIBasicNIOWriter<Double> implements ICube
             doubleBuffer = null;
         }
     }
+
 
     @Override
     protected void addValue(int row, Double value) {

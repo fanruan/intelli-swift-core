@@ -28,7 +28,6 @@ public class BICubeByteGroupData extends BICubeGroupData<Byte> {
     public byte getGroupValueByPosition(int position) {
         try {
             return ((ICubeByteReaderWrapper)getGroupReader()).getSpecificValue(position);
-
         } catch (BIResourceInvalidException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             throw new RuntimeException("read byte failed", e);

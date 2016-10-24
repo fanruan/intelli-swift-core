@@ -26,10 +26,10 @@ import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
-import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.structure.collection.map.CubeLinkedHashMap;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
+import com.fr.stable.collections.array.IntArray;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -63,7 +63,7 @@ public class BICubeTableAdapter implements ICubeTableService {
     }
 
     private void initData() {
-        rowCount =  primaryTable.getRowCount();
+        rowCount = primaryTable.getRowCount();
     }
 
     private void initial(CubeTableSource tableSource) {
@@ -134,18 +134,18 @@ public class BICubeTableAdapter implements ICubeTableService {
 //                columnSet.put(getColumnIndex(field.getFieldName()), field);
 //            }
 //        }
-            synchronized (this) {
-                if (!isColumnInitial()) {
-                    Map<BIKey, ICubeFieldSource> columnSetTemp = new ConcurrentHashMap<BIKey, ICubeFieldSource>();
-                    List<ICubeFieldSource> list = primaryTable.getFieldInfo();
-                    Iterator<ICubeFieldSource> tableFieldIt = list.iterator();
-                    while (tableFieldIt.hasNext()) {
-                        ICubeFieldSource field = tableFieldIt.next();
-                        columnSetTemp.put(getColumnIndex(field.getFieldName()), field);
-                    }
-                    columnSet = columnSetTemp;
+        synchronized (this) {
+            if (!isColumnInitial()) {
+                Map<BIKey, ICubeFieldSource> columnSetTemp = new ConcurrentHashMap<BIKey, ICubeFieldSource>();
+                List<ICubeFieldSource> list = primaryTable.getFieldInfo();
+                Iterator<ICubeFieldSource> tableFieldIt = list.iterator();
+                while (tableFieldIt.hasNext()) {
+                    ICubeFieldSource field = tableFieldIt.next();
+                    columnSetTemp.put(getColumnIndex(field.getFieldName()), field);
                 }
+                columnSet = columnSetTemp;
             }
+        }
         return columnSet;
     }
 
@@ -199,18 +199,18 @@ public class BICubeTableAdapter implements ICubeTableService {
 
     @Override
     public Date getLastTime() {
-        return primaryTable.getCubeLastTime();
+        return primaryTable.getLastExecuteTime();
     }
 
     @Override
-    public IntList getRemovedList() {
+    public IntArray getRemovedList() {
         return primaryTable.getRemovedList();
     }
 
 
     @Override
     public GroupValueIndex getAllShowIndex() {
-        if (null != getRemovedList() && getRemovedList().size() != 0) {
+        if (null != getRemovedList() && getRemovedList().size != 0) {
             return GVIFactory.createGroupValueIndexBySimpleIndex(getRemovedList()).NOT(getRowCount());
         } else {
             return GVIFactory.createAllShowIndexGVI(getRowCount());
@@ -413,6 +413,13 @@ public class BICubeTableAdapter implements ICubeTableService {
 
     @Override
     public void clear() {
+        for (ICubeColumnDetailGetter detailGetter : columnDetailReaderServiceMap.values()) {
+            detailGetter.clear();
+        }
+        for (CubeColumnReaderService readerService : columnReaderServiceMap.values()) {
+            readerService.clear();
+        }
+        primaryTable.clear();
     }
 
     @Override

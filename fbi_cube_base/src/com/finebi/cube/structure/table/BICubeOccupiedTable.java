@@ -3,6 +3,7 @@ package com.finebi.cube.structure.table;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.exception.BICubeRelationAbsentException;
 import com.finebi.cube.exception.IllegalRelationPathException;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.structure.BICubeTablePath;
 import com.finebi.cube.structure.CubeRelationEntityGetterService;
 import com.finebi.cube.structure.CubeTableEntityService;
@@ -12,8 +13,7 @@ import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.finebi.cube.relation.BITableSourceRelation;
-import com.fr.bi.stable.structure.collection.list.IntList;
+import com.fr.stable.collections.array.IntArray;
 
 import java.util.Date;
 import java.util.List;
@@ -32,17 +32,21 @@ public class BICubeOccupiedTable implements CubeTableEntityService {
 
     }
 
-
-
     @Override
     public void recordRowCount(long rowCount) {
 
     }
 
     @Override
-    public void recordLastTime() {
+    public void recordLastExecuteTime(long time) {
 
     }
+
+    @Override
+    public void recordCurrentExecuteTime() {
+
+    }
+
 
     @Override
     public void recordRemovedLine(TreeSet<Integer> removedLine) {
@@ -51,6 +55,11 @@ public class BICubeOccupiedTable implements CubeTableEntityService {
 
     @Override
     public void addDataValue(BIDataValue originalDataValue) throws BICubeColumnAbsentException {
+
+    }
+
+    @Override
+    public void increaseAddDataValue(BIDataValue originalDataValue) throws BICubeColumnAbsentException {
 
     }
 
@@ -101,7 +110,7 @@ public class BICubeOccupiedTable implements CubeTableEntityService {
     }
 
     @Override
-    public IntList getRemovedList() {
+    public IntArray getRemovedList() {
         return null;
     }
 
@@ -111,7 +120,12 @@ public class BICubeOccupiedTable implements CubeTableEntityService {
     }
 
     @Override
-    public Date getCubeLastTime() {
+    public Date getLastExecuteTime() {
+        return null;
+    }
+
+    @Override
+    public Date getCurrentExecuteTime() {
         return null;
     }
 
@@ -141,7 +155,12 @@ public class BICubeOccupiedTable implements CubeTableEntityService {
     }
 
     @Override
-    public boolean isCubeLastTimeAvailable() {
+    public boolean isLastExecuteTimeAvailable() {
+        return false;
+    }
+
+    @Override
+    public boolean isCurrentExecuteTimeAvailable() {
         return false;
     }
 

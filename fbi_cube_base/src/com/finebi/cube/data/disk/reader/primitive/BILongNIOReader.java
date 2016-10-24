@@ -31,7 +31,7 @@ public class BILongNIOReader extends BIBasicNIOReader implements ICubeLongReader
             int pageIndex = getPage(filePosition);
             return longBufferArray[pageIndex].get(getIndex(filePosition));
         } catch (IndexOutOfBoundsException e) {
-            throw new RuntimeException("the file is: "+baseFile +" the expect position value is: " + getIndex(filePosition) + " and the current capacity  value is: " + longBufferArray[getPage(filePosition)].capacity() + " and the pageIndex is :" + getPage(filePosition) + e, e);
+            throw new RuntimeException("the file is: " + baseFile + " the expect position value is: " + getIndex(filePosition) + " and the current capacity  value is: " + longBufferArray[getPage(filePosition)].capacity() + " and the pageIndex is :" + getPage(filePosition) + e, e);
         } finally {
         }
 

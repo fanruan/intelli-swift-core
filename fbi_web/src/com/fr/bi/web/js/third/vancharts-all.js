@@ -1758,6 +1758,9 @@ define("almond", function(){});
             var hammerHandler = this.manager.options._handler;
             if(!hammerHandler.pressed && !hammerHandler._inZoomBar(input)){
                 return;
+            }else{
+                //如果是pressed状态或者位置在缩放控件内，则阻止浏览器默认行为
+                _preventDefault(srcEvent);
             }
 
             // if the touch action did prevented once this session
@@ -1784,7 +1787,7 @@ define("almond", function(){});
             }
 
             if (hasPanX && hasPanY) {
-                // `pan-x pan-y` means browser handles all scrolling/panning, do not prevent
+
                 return;
             }
 
@@ -1823,8 +1826,10 @@ define("almond", function(){});
         // for different directions, e.g. horizontal pan but vertical swipe?)
         // we need none (as otherwise with pan-x pan-y combined none of these
         // recognizers will work, since the browser would handle all panning
+
+        //部分的安卓机型，如果返回TOUCH_ACTION_NONE，页面滚动就没了。。。。
         if (hasPanX && hasPanY) {
-            return TOUCH_ACTION_NONE;
+            return TOUCH_ACTION_MANIPULATION;
         }
 
         // pan-x OR pan-y
@@ -4062,6 +4067,8 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
             SVG_CONTAINER.style.visibility = "hidden";
         }
 
+        SVG_CONTAINER.style.display = "";
+
         var node = SVG_CONTAINER._textNode;
         node.textContent = text;
 
@@ -4074,8 +4081,10 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
         }
 
         var box = node.getBBox();
-        
-        return {width: box.width, height:box.height};
+        var size = {width: box.width, height:box.height};
+
+        SVG_CONTAINER.style.display = "none";
+        return size;
     }
 
     function setDomBackground(dom, opt){
@@ -6455,9 +6464,11 @@ define('vector/ElementWrapper',['require','../utils/Class'],function(require){
          * the other elements on the container
          */
         remove:function(){
-            this.renderer.removeChildElement(this);
 
-            this.rawElement = this.renderer = null;
+            if(this.renderer){
+                this.renderer.removeChildElement(this);
+                this.rawElement = this.renderer = null;
+            }
 
             return this;
         },
@@ -9292,6 +9303,12 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
 
             this.dom = dom;
             this.dom.style.cssText += ';-ms-user-select:none;-webkit-user-select:none;-moz-user-select:none;-o-user-select:none;user-select:none;';
+
+            //ie8下面加了hidden会显示不出，也是奇葩
+            if(BaseUtils.isSupportSVG()){
+                this.dom.style.cssText += ';overflow:hidden;'
+            }
+
             this.dom.onselectstart = this.dom.ondrag = function(){
                 return false;
             };
@@ -11597,6 +11614,10 @@ define('VanChartMap',['require','./VanChart','./utils/BaseUtils','./utils/PathUt
                     var feature = layer._data;
                     vanchart.drillDown(feature);
                     feature.onClick && feature.onClick(e.originalEvent);
+
+                    if(BaseUtils.hasTouch()){
+                        tooltip.showWithPoint(feature);
+                    }
                 },
 
                 mouseover:function(){
@@ -11647,6 +11668,10 @@ define('VanChartMap',['require','./VanChart','./utils/BaseUtils','./utils/PathUt
                     var feature = layer._data;
                     vanchart.drillDown(feature);
                     feature.onClick && feature.onClick(e.originalEvent);
+
+                    if(BaseUtils.hasTouch()){
+                        tooltip.showWithPoint(feature);
+                    }
                 },
 
                 mouseover:function(){
@@ -11720,6 +11745,10 @@ define('VanChartMap',['require','./VanChart','./utils/BaseUtils','./utils/PathUt
                     var feature = layer._data;
                     vanchart.drillDown(feature);
                     feature.onClick && feature.onClick(e.originalEvent);
+
+                    if(BaseUtils.hasTouch()){
+                        tooltip.showWithPoint(feature);
+                    }
                 },
 
                 mouseover:function(){
@@ -11780,6 +11809,10 @@ define('VanChartMap',['require','./VanChart','./utils/BaseUtils','./utils/PathUt
                     var feature = layer._data;
                     vanchart.drillDown(feature);
                     feature.onClick && feature.onClick(e.originalEvent);
+
+                    if(BaseUtils.hasTouch()){
+                        tooltip.showWithPoint(feature);
+                    }
                 },
 
                 mouseover:function(){
@@ -14123,7 +14156,6 @@ define('chart/Series',['require','../utils/BaseUtils','../utils/QueryUtils','../
 
             if(!this.group){
                 this.group = this._createGroup(renderer, vanchart).attr('transform', BaseUtils.makeTranslate(this._getTranslate()));
-                this.additionalClip && this.additionalClip(this.group);
             }
 
             //对于可以自定义位置的如雷达图,仪表盘这边的translate不是绘图取
@@ -16935,6 +16967,758 @@ define('chart/Line',['require','../Constants','../utils/BaseUtils','../utils/Que
     return Line;
 });
 /**
+ * Created by eason on 16/8/22.
+ */
+
+define('chart/ColumnRadar',['require'],function(require){
+
+    var ANIMATION_TIME = 500;
+    var EASE = 'back-out';
+
+    var UPDATE_TIME = 500;
+    var UPDATE_EASE = 'exp-out';
+
+    var CHOSEN_STROKE_WIDTH = 6;
+    var CHOSEN_STROKE_OPACITY = 0.35;
+
+    var TOP = 'radar-top';
+    var BOTTOM = 'radar-bottom';
+    var LEFT = 'radar-left';
+    var RIGHT = 'radar-right';
+    var LABEL_BORDER_GAP = 8;
+
+    return {
+
+        columnType:true,
+
+        _calcLabelPos:function(point){
+
+            var position = this.polar.angleAxis._getPolarPosition(point.category);
+            var pos = this._getArcPoint(point.outerRadius - LABEL_BORDER_GAP, point.radian);
+            var labelDim = point.labelDim;
+
+            switch (position){
+                case TOP:
+
+                    point.labelPos = {
+                        x:-labelDim.width/2,
+                        y:pos[1]
+                    };
+
+                    break;
+
+                case RIGHT:
+
+                    point.labelPos = {
+                        x:pos[0] - labelDim.width,
+                        y:pos[1] - labelDim.height/2
+                    };
+                    break;
+
+                case BOTTOM:
+
+                    point.labelPos = {
+                        x:-labelDim.width/2,
+                        y:pos[1] - labelDim.height
+                    };
+
+                    break;
+
+                case LEFT:
+
+                    point.labelPos = {
+                        x:pos[0],
+                        y:pos[1] - labelDim.height/2
+                    };
+
+                    break
+            }
+        },
+
+        _getMoreLabelDefaultCenter:function(d, moreLabelDim){
+            var pos = this._getArcPoint(d.outerRadius/2, d.radian);
+
+            return {
+                centerX: pos[0],
+                centerY: pos[1]
+            }
+        },
+
+        getAttrs:function(p){
+            return {'d':this._getRadarColumnPath(p.innerRadius, p.outerRadius, p.radian)};
+        },
+
+        getStyle:function(p){
+            return {
+                'fill':p.color,
+                'fill-opacity':p.opacity,
+                'stroke':p.borderColor,
+                'stroke-width':p.borderWidth
+            };
+        },
+
+        getHighLightStyle:function(p){
+            return {
+                'stroke':p.mouseOverColor || p.color,
+                'fill':p.color,
+                'fill-opacity': 1,
+                'stroke-width':CHOSEN_STROKE_WIDTH,
+                'stroke-opacity':CHOSEN_STROKE_OPACITY
+            }
+        },
+
+        getPressedStyle:function(p){
+            return {
+                'fill':p.clickColor,
+                'fill-opacity': p.clickOpacity
+            }
+        },
+
+        getPointGraphicKey:function(){
+            return 'path';
+        },
+
+        _getRadarColumnPath:function(innerRadius, radius, radian){
+
+            var halfSize = this.polar.angleAxis.piece * 0.375;
+
+            var startRadian = radian - halfSize;
+
+            var endRadian = radian + halfSize;
+
+            var arc = d3.svg.arc()
+                .innerRadius(innerRadius).outerRadius(radius)
+                .startAngle(startRadian).endAngle(endRadian);
+
+            return arc();
+        },
+
+        createAnimation:function(dom, point){
+            dom._innerRadius_ = point.innerRadius;
+            dom._outerRadius_ = point.outerRadius;
+            var series = this;
+
+            d3.select(dom).transition().duration(ANIMATION_TIME).ease(EASE)
+                .attrTween('d', function(){
+                    var iInterpolate = d3.interpolate(point.animateInitRadius, point.innerRadius);
+                    var oInterpolate = d3.interpolate(point.animateInitRadius, point.outerRadius);
+                    return function(t){
+                        return series._getRadarColumnPath(iInterpolate(t), oInterpolate(t), point.radian);
+                    }
+                });
+        },
+
+        updateAnimation:function(dom, point){
+            var series = this;
+            d3.select(dom).transition().duration(UPDATE_TIME).ease(UPDATE_EASE)
+                .attrTween('d', function(){
+
+                    var innerInterpolate = d3.interpolate(dom._innerRadius_, point.innerRadius);
+                    var outerInterpolate = d3.interpolate(dom._outerRadius_, point.outerRadius);
+
+                    dom._innerRadius_ = point.innerRadius;
+                    dom._outerRadius_ = point.outerRadius;
+
+                    return function(t){
+                        return series._getRadarColumnPath(innerInterpolate(t), outerInterpolate(t), point.radian);
+                    }
+                });
+        },
+
+        dropAnimation:function(dom, point){
+
+            var series = this;
+
+            d3.select(dom).transition().duration(UPDATE_TIME).ease(UPDATE_EASE)
+                .attrTween('d', function(){
+                    var interpolate = d3.interpolate(point.outerRadius, point.innerRadius);
+
+                    return function(t){
+                        return series._getRadarColumnPath(point.innerRadius, interpolate(t), point.radian);
+                    }
+                })
+                .remove();
+
+        },
+
+        //onPointXXX的方法,this 指向的是Point
+        onPointMouseOver:function(){
+            var point = this, series = point.series, animation = series.animation, style = series.getHighLightStyle(point);
+            if(animation){
+                d3.select(point.graphic.rawElement).transition()
+                    .duration(100).ease('ease-out-in').style(style);
+            }else{
+                point.graphic.style(style)
+            }
+        },
+
+        onPointMouseOut:function(){
+            var point = this, series = point.series, animation = series.animation, style = series.getStyle(point);
+            if(animation){
+                d3.select(point.graphic.rawElement).transition()
+                    .duration(100).ease('ease-out-in').style(style);
+            }else{
+                point.graphic.style(style)
+            }
+        },
+
+        _getFixedPos:function(datum, divDim){
+
+            var centerAngle = datum.radian, center = this.getCenter();
+
+            var x = datum.posX + center[0];
+            var y = datum.posY + center[1];
+
+            if(centerAngle < Math.PI / 2){
+                y -= divDim.height;
+            }else if(centerAngle >= Math.PI && centerAngle < 3 * Math.PI / 2){
+                x -= divDim.width;
+            }else if(centerAngle >= 3 * Math.PI / 2 && centerAngle < Math.PI * 2){
+                y -= divDim.height;
+                x -= divDim.width;
+            }
+
+            return [x, y];
+        }
+
+
+    };
+});
+/**
+ * Created by eason on 16/8/22.
+ */
+
+define('chart/LineRadar',['require','../utils/BaseUtils'],function(require){
+
+    var BaseUtils  = require('../utils/BaseUtils');
+
+    var ANIMATION_TIME = 500;
+    var EASE = 'back-out';
+
+    var EXIT_TIME = 500;
+    var EXIT_EASE = 'exp-out';
+
+    var TOP = 'radar-top';
+    var BOTTOM = 'radar-bottom';
+    var LEFT = 'radar-left';
+    var RIGHT = 'radar-right';
+    var LABEL_BORDER_GAP = 8;
+
+    return {
+        columnType:false,
+
+        _calcLabelPos:function(point){
+
+            var position = this.polar.angleAxis._getPolarPosition(point.category);
+            var pos = this._getArcPoint(point.outerRadius + LABEL_BORDER_GAP, point.radian);
+            var labelDim = point.labelDim;
+
+            switch (position){
+                case TOP:
+
+                    point.labelPos = {
+                        x:-labelDim.width/2,
+                        y:pos[1] - labelDim.height
+                    };
+
+                    break;
+
+                case RIGHT:
+
+                    point.labelPos = {
+                        x:pos[0],
+                        y:pos[1] - labelDim.height/2
+                    };
+                    break;
+
+                case BOTTOM:
+
+                    point.labelPos = {
+                        x:-labelDim.width/2,
+                        y:pos[1]
+                    };
+
+                    break;
+
+                case LEFT:
+
+                    point.labelPos = {
+                        x:pos[0] - labelDim.width,
+                        y:pos[1] - labelDim.height/2
+                    };
+
+                    break
+            }
+
+        },
+
+
+        _getMoreLabelDefaultCenter:function(d, moreLabelDim){
+            return {
+                centerX: d.posX + d.marker.radius/2,
+                centerY: d.posY - moreLabelDim.height/2 - d.marker.radius/2
+            }
+        },
+
+        _isSeriesInteractive:function(){
+            return true;
+        },
+
+        drawSeries:function(){
+
+            var series = this, vanchart = series.vanchart, renderer = vanchart.renderer;
+
+            this.defaultMarker && this.defaultMarker.remove();
+            this.defaultMarker = null;
+
+            if(series.visible){
+                if(!this.radarPath){
+                    this.radarPath = renderer.path().addTo(series.group);
+                }
+
+
+                var fillOpacity = series.fillColor ? series.fillColorOpacity : 0;
+
+
+                this.radarPath.style({
+                    'fill': fillOpacity == 0 ? 'none' : series.fillColor,
+                    'fill-opacity': fillOpacity,
+                    'stroke': series.color,
+                    'stroke-width': series.lineWidth
+                });
+
+                if(series.animation){
+                    d3.select(this.radarPath.node()).transition().duration(ANIMATION_TIME).ease(EASE)
+                        .attrTween('d', function(){
+                            var useLastPathSeg = !!this._pathSegment_;
+                            if(useLastPathSeg && this._pathSegment_.length == series.pathSegment.length){
+                                var last = this._pathSegment_;
+                                for(var i = 0, count = last.length; i < count && useLastPathSeg; i++){
+                                    if(last[i].length != series.pathSegment[i].length){
+                                        useLastPathSeg = false;
+                                    }
+                                }
+                            }
+                            var initPathSeg = useLastPathSeg ? this._pathSegment_ : series._getInitPathSegment(series.pathSegment);
+                            var interpolate  = d3.interpolateArray(initPathSeg, series.pathSegment);
+                            this._pathSegment_ = series.pathSegment;
+                            return function(t){
+                                return series._getRadarSeriesStrokePath(interpolate(t), series.connectNulls);
+                            };
+                        });
+                }else{
+                    this.radarPath.attr('d', series._getRadarSeriesStrokePath(series.pathSegment, series.connectNulls))
+                }
+            }else if(this.radarPath){
+                if(series.animation){
+                    d3.select(this.radarPath.node()).transition()
+                        .duration(EXIT_TIME).ease(EXIT_EASE)
+                        .attrTween('d', function(){
+                            var initPathSeg = series._getInitPathSegment(series.pathSegment);
+                            var interpolate  = d3.interpolateArray(series.pathSegment, initPathSeg);
+                            return function(t){
+                                return series._getRadarSeriesStrokePath(interpolate(t), series.connectNulls);
+                            };
+                        })
+                        .remove();
+                    this.radarPath = null;
+                }else{
+                    this.radarPath.remove();
+                    this.radarPath = null;
+                }
+            }
+        },
+
+        getAttrs:function(point){
+            return {'transform':BaseUtils.makeTranslate([point.posX, point.posY])};
+        },
+
+        getStyle:function(){
+            return {};
+        },
+
+        _createPointGraphic:function(point){
+            return point.graphic = this._createMarker(point.marker);
+        },
+
+        _updatePointGraphicStyle:function(point){
+            this._updateMarker(point.graphic, point.marker);
+        },
+
+        getDataToDraw: function () {
+            return this.points.filter(function(p){return p.marker && p.marker.symbol});
+        },
+
+        getTextDataToDraw: function () {
+            return this.points;
+        },
+
+        onPointPress:function(){
+            var point = this, series = point.series;
+            series._onMarkerPressed(point);
+        },
+
+        onPointPressUp:function(){
+            var point = this, series = point.series;
+            series._updateMarker(point.graphic, point.marker);
+        },
+
+        //onPointXXX的方法,this 指向的是Point
+        onPointMouseOver:function(){
+            var point = this, series = point.series;
+            series._onMarkerMouseOver(point);
+        },
+
+        onPointMouseOut:function(){
+            var point = this, series = point.series;
+            series._onMarkerMouseOut(point);
+        },
+
+        createAnimation:function(dom, point){
+            d3.select(dom)
+                .attr('transform', 'translate('+ 0 +','+ 0 +') scale(0.01)')
+                .transition().duration(ANIMATION_TIME).ease(EASE)
+                .attr('transform', 'translate('+ point.posX +','+ point.posY +') scale(1)');
+        },
+
+        updateAnimation:function(dom, point){
+            d3.select(dom).transition().ease(EASE).duration(ANIMATION_TIME).
+            attr('transform', 'translate(' + point.posX + ',' + point.posY + ') scale(1)');
+        },
+
+        dropAnimation:function(dom){
+            d3.select(dom).remove();
+        },
+
+        _calculateLabelPos:function(){
+
+        },
+
+        _getFixedPos:function(datum){
+            var radius = isNaN(datum.marker.radius) ? 4.5 : datum.marker.radius, center = this.getCenter();
+            var x, y;
+            x = center[0] + datum.posX + radius;
+            y = center[1] + datum.posY + radius;
+
+            return [x, y];
+        },
+
+        _onSeriesMouseOver:function(){
+            var series = this;
+            if(series.radarPath){
+                series.radarPath.style({
+                    'stroke-width':series.lineWidth + 1
+                });
+            }
+
+            BaseUtils.toFront(series.group.node());
+        },
+
+        _onSeriesUnChosen:function(){
+
+            var series = this;
+            if(series.radarPath){
+                series.radarPath.style({
+                    'stroke-width':series.lineWidth
+                });
+            }
+
+            this.defaultMarker && this.defaultMarker.remove();
+            this.defaultMarker = null;
+        },
+
+        getClosestPoint:function(pos){
+
+            var center = this.getCenter(), minDistance = Number.MAX_VALUE;
+            var selectedPoint;
+            
+            this.points.forEach(function(point){
+                var detX = point.posX + center[0] - pos[0];
+                var detY = point.posY + center[1] - pos[1];
+                var dis = Math.sqrt(detX * detX + detY * detY);
+                if(dis < minDistance && !point.isNull){
+                    selectedPoint = point;
+                    minDistance = dis;
+                }
+            });
+
+            return selectedPoint;
+        }
+    }
+
+});
+/**
+ * Created by eason on 15/12/31.
+ */
+define('chart/Radar',['require','./Series','../utils/BaseUtils','../Constants','../utils/QueryUtils','../utils/BoundsManager','./ColumnRadar','./LineRadar','../ChartLibrary'],function(require){
+
+    var Series = require('./Series');
+    var BaseUtils = require('../utils/BaseUtils');
+    var Constants = require('../Constants');
+    var QueryUtils = require('../utils/QueryUtils');
+    var BoundsManager = require('../utils/BoundsManager');
+    var ColumnRadar = require('./ColumnRadar');
+    var LineRadar = require('./LineRadar');
+
+    var DELAY = 200;
+    var PADDING_GAP = 10;
+    var LABEL_BORDER_GAP = 8;
+
+    var ANIMATION_TIME = 500;
+
+    var UPDATE_TIME = 500;
+
+    var Radar = Series.extend({
+        _refresh:function() {
+            var queryList = this._getQueryList();
+            var columnType = QueryUtils.queryList(queryList, 'columnType');
+
+            var connectNulls = BaseUtils.pick(QueryUtils.queryList(queryList, 'connectNulls'), true);
+            var lineWidth = QueryUtils.queryList(queryList, 'lineWidth') || 0;
+
+            BaseUtils.extend(this,{
+                marker:columnType ? null : this.marker,
+                lineWidth:lineWidth,
+                columnType:columnType,
+                connectNulls:connectNulls
+            });
+
+            if(columnType != this.columnType){
+                this.remove();
+            }
+
+            this.stack = this.columnType ? 'radar-column'+this.stack : this.stack;
+
+            BaseUtils.extend(this, columnType ? ColumnRadar : LineRadar);
+        },
+
+        getInitShowTime: function () {
+            return ANIMATION_TIME;
+        },
+
+        getReAppearTime: function () {
+            return UPDATE_TIME;
+        },
+
+        _getAxisTypes:function(){
+            return ['angleAxis', 'radiusAxis', 'polar'];
+        },
+
+        _bindAxis:function(){
+            var series = this,
+                seriesOptions = series.options,
+                vanchart = series.vanchart;
+
+            series._getAxisTypes().forEach(function(axisType){
+
+                if(vanchart[axisType]){
+                    var targetAxis = vanchart[axisType](seriesOptions['polar']);
+                    if(targetAxis){
+                        targetAxis.series.push(series);
+                        series[axisType] = targetAxis;
+                    }
+                }
+
+            });
+        },
+
+        _getDefaultFillColorOpacity: function () {
+            var queryList = this._getQueryList();
+            var columnType = QueryUtils.queryList(queryList, 'columnType');
+
+            return columnType ? 1 : 0.15;
+        },
+
+        _getTranslate:function(){
+            return this.getCenter();
+        },
+
+        getCenter:function(){
+            return this.polar && this.polar.center;
+        },
+
+        getRadius:function(){
+            return this.polar && this.polar.radius;
+        },
+        
+        doLayout:function(){
+            var series = this, polar = series.polar, radiusAxis = polar.radiusAxis, angleAxis = polar.angleAxis;
+            var center = this.getCenter(), radius = this.getRadius(), piece = angleAxis.piece, valueScale = radiusAxis.scale, cateScale = angleAxis.scale;
+
+            //todo 先排序作用是
+            // series.points.sort(function(pointA, pointB){
+            //     return self.cateScale(pointA.category) - self.cateScale(pointB.category);
+            // });
+
+            series.points.forEach(function(point){
+
+                point.innerRadius = valueScale(point.y0);
+
+                point.outerRadius = valueScale(point.getTargetValue() + point.y0);
+
+                point.animateInitRadius = radiusAxis.getStartPos();
+
+                point.radian = cateScale(point.category) * piece;
+
+                var pos = series._getArcPoint(point.outerRadius, point.radian);
+                point.posX = pos[0];
+
+                point.posY = pos[1];
+
+                this._calcLabelPos(point);
+
+            }, this);
+
+            series.pathSegment = series._getPathSegment(series.points, series.connectNulls);
+        },
+
+        _calculateLabelPos:function () {
+
+        },
+
+        getTargetKey: function () {
+            return 'y';
+        },
+
+        _createGroup: function (renderer, vanchart) {
+            return renderer.group().addTo(vanchart.seriesGroup);
+        },
+
+        additionalClip: function (group) {
+            this.vanchart.renderer.clip(group, this.polar.clip);
+        },
+        
+        _getPathSegment:function(dataPoints, connectNulls){
+
+            var series = this, polar = series.polar, angleAxis = polar.angleAxis, cateScale = angleAxis.scale;
+
+            dataPoints = [].concat(dataPoints);
+
+            dataPoints.sort(function(pointA, pointB){
+                return cateScale(pointA.category) - cateScale(pointB.category);
+            });
+
+            var pathSeg = [];
+
+            var tmp = [];
+
+            if(connectNulls){
+
+                pathSeg.push(tmp);
+
+                dataPoints.forEach(function(dataPoint){
+
+                    if(!dataPoint.isNull){
+                        tmp.push([dataPoint.posX, dataPoint.posY]);
+                    }
+
+                });
+            }else{
+
+                var startIndex = 0;
+                var count = dataPoints.length;
+
+                for(var index = count - 1; index > 0; index--){
+
+                    var current = dataPoints[index];
+                    var pre = dataPoints[index - 1];
+
+                    if(!current.isNull && pre.isNull){
+                        startIndex = index;
+                    }
+                }
+
+                for(var index = 0; index < count; index++){
+
+                    var dataPoint = dataPoints[(index + startIndex) % count];
+
+                    if(dataPoint.isNull && tmp.length){
+
+                        if(tmp.length > 1){
+                            pathSeg.push(tmp)
+                        };
+
+                        tmp = [];
+                    }else{
+                        tmp.push([dataPoint.posX, dataPoint.posY]);
+                    }
+
+                }
+
+                if(tmp.length){
+                    pathSeg.push(tmp);
+                }
+            }
+
+            return pathSeg;
+        },
+
+        _getRadarSeriesFillPath:function(pathSeg, connectNulls){
+            return this._getRadarSeriesPath(pathSeg, connectNulls, true);
+        },
+
+        _getRadarSeriesStrokePath:function(pathSeg, connectNulls){
+            return this._getRadarSeriesPath(pathSeg, connectNulls, false);
+        },
+
+        _getRadarSeriesPath:function(pathSeg, connectNulls, toCenter){
+
+            var path = '';
+            var tmp = [];
+            if(pathSeg.length == 1){
+
+                tmp = pathSeg[0];
+
+                var fullShape = tmp.length == this.angleAxis.getCategoryCount() || connectNulls;
+
+                toCenter = (!fullShape && toCenter);
+
+                path = toCenter ? 'M0,0' : '';
+
+                for(var i = 0, count = tmp.length; i < count; i++){
+
+                    var mOrl = (i || toCenter) ? 'L' : 'M';
+
+                    path += (mOrl + BaseUtils.dealFloatPrecision(tmp[i][0]) + "," + BaseUtils.dealFloatPrecision(tmp[i][1]));
+                }
+
+                path += (fullShape || toCenter) ? 'Z' : '';
+
+            }else{
+                pathSeg.forEach(function(tmp){
+
+                    path += toCenter ? 'M0,0' : '';
+
+                    tmp.forEach(function(pos){
+                        path += ('L' + BaseUtils.dealFloatPrecision(pos[0]) + "," + BaseUtils.dealFloatPrecision(pos[1]));
+                    });
+
+                    path += toCenter ? 'Z' : '';
+                });
+            }
+
+            return path;
+        },
+
+        _getInitPathSegment:function(pathSeg){
+            var init = [];
+            pathSeg.forEach(function(seg){
+                var tmp = [];
+                init.push(tmp);
+
+                seg.forEach(function(){
+                    tmp.push([0,0])
+                })
+            });
+            return init;
+        }
+    });
+
+    require('../ChartLibrary').register(Constants.RADAR_CHART, Radar);
+    
+    return Radar;
+});
+/**
  * Created by Yuqian on 16/8/9.
  * 树状系列
  */
@@ -18033,6 +18817,20 @@ define('chart/ForceBubble',['require','./Bubble','../Constants','../utils/BaseUt
                 'r': node.radius,
                 'transform': BaseUtils.makeTranslate({x:node.x, y:node.y})
             };
+        },
+
+        remove:function(){
+
+            this.points.forEach(function(point){
+                if(point.graphic){
+                    point.graphic.remove();
+                    point.graphic = null;
+                }
+            });
+
+            this.textGraphicGroup && this.textGraphicGroup.remove();
+            this.group && this.group.remove();
+            this.textGraphicGroup = this._canvas = this.group = null;
         }
 
     });
@@ -21269,6 +22067,8 @@ define('chart/Gauge',['require','../Constants','../utils/BaseUtils','./Series','
 
             this.gaugeType = gaugeType;
             this.thermometerLayout = thermometerLayout;
+            this.valueLabelBackground = this.seriesLabelContent
+                = this.percentageLabelContent = this.valueLabelContent = null;
 
             BaseUtils.extend(this, Gauge.prototype, PROTOTYPES[gaugeType]);
         },
@@ -21673,760 +22473,6 @@ define('chart/Gauge',['require','../Constants','../utils/BaseUtils','./Series','
     require('../ChartLibrary').register(Constants.GAUGE_CHART, Gauge);
 
     return Gauge;
-});
-/**
- * Created by eason on 16/8/22.
- */
-
-define('chart/ColumnRadar',['require'],function(require){
-
-    var ANIMATION_TIME = 500;
-    var EASE = 'back-out';
-
-    var UPDATE_TIME = 500;
-    var UPDATE_EASE = 'exp-out';
-
-    var CHOSEN_STROKE_WIDTH = 6;
-    var CHOSEN_STROKE_OPACITY = 0.35;
-
-    var TOP = 'radar-top';
-    var BOTTOM = 'radar-bottom';
-    var LEFT = 'radar-left';
-    var RIGHT = 'radar-right';
-    var LABEL_BORDER_GAP = 8;
-
-    return {
-
-        columnType:true,
-
-        _calcLabelPos:function(point){
-
-            var position = this.polar.angleAxis._getPolarPosition(point.category);
-            var pos = this._getArcPoint(point.outerRadius - LABEL_BORDER_GAP, point.radian);
-            var labelDim = point.labelDim;
-
-            switch (position){
-                case TOP:
-
-                    point.labelPos = {
-                        x:-labelDim.width/2,
-                        y:pos[1]
-                    };
-
-                    break;
-
-                case RIGHT:
-
-                    point.labelPos = {
-                        x:pos[0] - labelDim.width,
-                        y:pos[1] - labelDim.height/2
-                    };
-                    break;
-
-                case BOTTOM:
-
-                    point.labelPos = {
-                        x:-labelDim.width/2,
-                        y:pos[1] - labelDim.height
-                    };
-
-                    break;
-
-                case LEFT:
-
-                    point.labelPos = {
-                        x:pos[0],
-                        y:pos[1] - labelDim.height/2
-                    };
-
-                    break
-            }
-        },
-
-        _getMoreLabelDefaultCenter:function(d, moreLabelDim){
-            var pos = this._getArcPoint(d.outerRadius/2, d.radian);
-
-            return {
-                centerX: pos[0],
-                centerY: pos[1]
-            }
-        },
-
-        getAttrs:function(p){
-            return {'d':this._getRadarColumnPath(p.innerRadius, p.outerRadius, p.radian)};
-        },
-
-        getStyle:function(p){
-            return {
-                'fill':p.color,
-                'fill-opacity':p.opacity,
-                'stroke':p.borderColor,
-                'stroke-width':p.borderWidth
-            };
-        },
-
-        getHighLightStyle:function(p){
-            return {
-                'stroke':p.mouseOverColor || p.color,
-                'fill':p.color,
-                'fill-opacity': 1,
-                'stroke-width':CHOSEN_STROKE_WIDTH,
-                'stroke-opacity':CHOSEN_STROKE_OPACITY
-            }
-        },
-
-        getPressedStyle:function(p){
-            return {
-                'fill':p.clickColor,
-                'fill-opacity': p.clickOpacity
-            }
-        },
-
-        getPointGraphicKey:function(){
-            return 'path';
-        },
-
-        _getRadarColumnPath:function(innerRadius, radius, radian){
-
-            var halfSize = this.polar.angleAxis.piece * 0.375;
-
-            var startRadian = radian - halfSize;
-
-            var endRadian = radian + halfSize;
-
-            var arc = d3.svg.arc()
-                .innerRadius(innerRadius).outerRadius(radius)
-                .startAngle(startRadian).endAngle(endRadian);
-
-            return arc();
-        },
-
-        createAnimation:function(dom, point){
-            dom._innerRadius_ = point.innerRadius;
-            dom._outerRadius_ = point.outerRadius;
-            var series = this;
-
-            d3.select(dom).transition().duration(ANIMATION_TIME).ease(EASE)
-                .attrTween('d', function(){
-                    var iInterpolate = d3.interpolate(point.animateInitRadius, point.innerRadius);
-                    var oInterpolate = d3.interpolate(point.animateInitRadius, point.outerRadius);
-                    return function(t){
-                        return series._getRadarColumnPath(iInterpolate(t), oInterpolate(t), point.radian);
-                    }
-                });
-        },
-
-        updateAnimation:function(dom, point){
-            var series = this;
-            d3.select(dom).transition().duration(UPDATE_TIME).ease(UPDATE_EASE)
-                .attrTween('d', function(){
-
-                    var innerInterpolate = d3.interpolate(dom._innerRadius_, point.innerRadius);
-                    var outerInterpolate = d3.interpolate(dom._outerRadius_, point.outerRadius);
-
-                    dom._innerRadius_ = point.innerRadius;
-                    dom._outerRadius_ = point.outerRadius;
-
-                    return function(t){
-                        return series._getRadarColumnPath(innerInterpolate(t), outerInterpolate(t), point.radian);
-                    }
-                });
-        },
-
-        dropAnimation:function(dom, point){
-
-            var series = this;
-
-            d3.select(dom).transition().duration(UPDATE_TIME).ease(UPDATE_EASE)
-                .attrTween('d', function(){
-                    var interpolate = d3.interpolate(point.outerRadius, point.innerRadius);
-
-                    return function(t){
-                        return series._getRadarColumnPath(point.innerRadius, interpolate(t), point.radian);
-                    }
-                })
-                .remove();
-
-        },
-
-        //onPointXXX的方法,this 指向的是Point
-        onPointMouseOver:function(){
-            var point = this, series = point.series, animation = series.animation, style = series.getHighLightStyle(point);
-            if(animation){
-                d3.select(point.graphic.rawElement).transition()
-                    .duration(100).ease('ease-out-in').style(style);
-            }else{
-                point.graphic.style(style)
-            }
-        },
-
-        onPointMouseOut:function(){
-            var point = this, series = point.series, animation = series.animation, style = series.getStyle(point);
-            if(animation){
-                d3.select(point.graphic.rawElement).transition()
-                    .duration(100).ease('ease-out-in').style(style);
-            }else{
-                point.graphic.style(style)
-            }
-        },
-
-        _getFixedPos:function(datum, divDim){
-
-            var centerAngle = datum.radian, center = this.getCenter();
-
-            var x = datum.posX + center[0];
-            var y = datum.posY + center[1];
-
-            if(centerAngle < Math.PI / 2){
-                y -= divDim.height;
-            }else if(centerAngle >= Math.PI && centerAngle < 3 * Math.PI / 2){
-                x -= divDim.width;
-            }else if(centerAngle >= 3 * Math.PI / 2 && centerAngle < Math.PI * 2){
-                y -= divDim.height;
-                x -= divDim.width;
-            }
-
-            return [x, y];
-        }
-
-
-    };
-});
-/**
- * Created by eason on 16/8/22.
- */
-
-define('chart/LineRadar',['require','../utils/BaseUtils'],function(require){
-
-    var BaseUtils  = require('../utils/BaseUtils');
-
-    var ANIMATION_TIME = 500;
-    var EASE = 'back-out';
-
-    var EXIT_TIME = 500;
-    var EXIT_EASE = 'exp-out';
-
-    var TOP = 'radar-top';
-    var BOTTOM = 'radar-bottom';
-    var LEFT = 'radar-left';
-    var RIGHT = 'radar-right';
-    var LABEL_BORDER_GAP = 8;
-
-    return {
-        columnType:false,
-
-        _calcLabelPos:function(point){
-
-            var position = this.polar.angleAxis._getPolarPosition(point.category);
-            var pos = this._getArcPoint(point.outerRadius + LABEL_BORDER_GAP, point.radian);
-            var labelDim = point.labelDim;
-
-            switch (position){
-                case TOP:
-
-                    point.labelPos = {
-                        x:-labelDim.width/2,
-                        y:pos[1] - labelDim.height
-                    };
-
-                    break;
-
-                case RIGHT:
-
-                    point.labelPos = {
-                        x:pos[0],
-                        y:pos[1] - labelDim.height/2
-                    };
-                    break;
-
-                case BOTTOM:
-
-                    point.labelPos = {
-                        x:-labelDim.width/2,
-                        y:pos[1]
-                    };
-
-                    break;
-
-                case LEFT:
-
-                    point.labelPos = {
-                        x:pos[0] - labelDim.width,
-                        y:pos[1] - labelDim.height/2
-                    };
-
-                    break
-            }
-
-        },
-
-
-        _getMoreLabelDefaultCenter:function(d, moreLabelDim){
-            return {
-                centerX: d.posX + d.marker.radius/2,
-                centerY: d.posY - moreLabelDim.height/2 - d.marker.radius/2
-            }
-        },
-
-        _isSeriesInteractive:function(){
-            return true;
-        },
-
-        drawSeries:function(){
-
-            var series = this, vanchart = series.vanchart, renderer = vanchart.renderer;
-
-            this.defaultMarker && this.defaultMarker.remove();
-            this.defaultMarker = null;
-
-            if(series.visible){
-                if(!this.radarPath){
-                    this.radarPath = renderer.path().addTo(series.group);
-                }
-
-
-                var fillOpacity = series.fillColor ? series.fillColorOpacity : 0;
-
-
-                this.radarPath.style({
-                    'fill': fillOpacity == 0 ? 'none' : series.fillColor,
-                    'fill-opacity': fillOpacity,
-                    'stroke': series.color,
-                    'stroke-width': series.lineWidth
-                });
-
-                if(series.animation){
-                    d3.select(this.radarPath.node()).transition().duration(ANIMATION_TIME).ease(EASE)
-                        .attrTween('d', function(){
-                            var useLastPathSeg = !!this._pathSegment_;
-                            if(useLastPathSeg && this._pathSegment_.length == series.pathSegment.length){
-                                var last = this._pathSegment_;
-                                for(var i = 0, count = last.length; i < count && useLastPathSeg; i++){
-                                    if(last[i].length != series.pathSegment[i].length){
-                                        useLastPathSeg = false;
-                                    }
-                                }
-                            }
-                            var initPathSeg = useLastPathSeg ? this._pathSegment_ : series._getInitPathSegment(series.pathSegment);
-                            var interpolate  = d3.interpolateArray(initPathSeg, series.pathSegment);
-                            this._pathSegment_ = series.pathSegment;
-                            return function(t){
-                                return series._getRadarSeriesStrokePath(interpolate(t), series.connectNulls);
-                            };
-                        });
-                }else{
-                    this.radarPath.attr('d', series._getRadarSeriesStrokePath(series.pathSegment, series.connectNulls))
-                }
-            }else if(this.radarPath){
-                if(series.animation){
-                    d3.select(this.radarPath.node()).transition()
-                        .duration(EXIT_TIME).ease(EXIT_EASE)
-                        .attrTween('d', function(){
-                            var initPathSeg = series._getInitPathSegment(series.pathSegment);
-                            var interpolate  = d3.interpolateArray(series.pathSegment, initPathSeg);
-                            return function(t){
-                                return series._getRadarSeriesStrokePath(interpolate(t), series.connectNulls);
-                            };
-                        })
-                        .remove();
-                    this.radarPath = null;
-                }else{
-                    this.radarPath.remove();
-                    this.radarPath = null;
-                }
-            }
-        },
-
-        getAttrs:function(point){
-            return {'transform':BaseUtils.makeTranslate([point.posX, point.posY])};
-        },
-
-        getStyle:function(){
-            return {};
-        },
-
-        _createPointGraphic:function(point){
-            return point.graphic = this._createMarker(point.marker);
-        },
-
-        _updatePointGraphicStyle:function(point){
-            this._updateMarker(point.graphic, point.marker);
-        },
-
-        getDataToDraw: function () {
-            return this.points.filter(function(p){return p.marker && p.marker.symbol});
-        },
-
-        getTextDataToDraw: function () {
-            return this.points;
-        },
-
-        onPointPress:function(){
-            var point = this, series = point.series;
-            series._onMarkerPressed(point);
-        },
-
-        onPointPressUp:function(){
-            var point = this, series = point.series;
-            series._updateMarker(point.graphic, point.marker);
-        },
-
-        //onPointXXX的方法,this 指向的是Point
-        onPointMouseOver:function(){
-            var point = this, series = point.series;
-            series._onMarkerMouseOver(point);
-        },
-
-        onPointMouseOut:function(){
-            var point = this, series = point.series;
-            series._onMarkerMouseOut(point);
-        },
-
-        createAnimation:function(dom, point){
-            d3.select(dom)
-                .attr('transform', 'translate('+ 0 +','+ 0 +') scale(0.01)')
-                .transition().duration(ANIMATION_TIME).ease(EASE)
-                .attr('transform', 'translate('+ point.posX +','+ point.posY +') scale(1)');
-        },
-
-        updateAnimation:function(dom, point){
-            d3.select(dom).transition().ease(EASE).duration(ANIMATION_TIME).
-            attr('transform', 'translate(' + point.posX + ',' + point.posY + ') scale(1)');
-        },
-
-        dropAnimation:function(dom){
-            d3.select(dom).remove();
-        },
-
-        _calculateLabelPos:function(){
-
-        },
-
-        _getFixedPos:function(datum){
-            var radius = isNaN(datum.marker.radius) ? 4.5 : datum.marker.radius, center = this.getCenter();
-            var x, y;
-            x = center[0] + datum.posX + radius;
-            y = center[1] + datum.posY + radius;
-
-            return [x, y];
-        },
-
-        _onSeriesMouseOver:function(){
-            var series = this;
-            if(series.radarPath){
-                series.radarPath.style({
-                    'stroke-width':series.lineWidth + 1
-                });
-            }
-
-            BaseUtils.toFront(series.group.node());
-        },
-
-        _onSeriesUnChosen:function(){
-
-            var series = this;
-            if(series.radarPath){
-                series.radarPath.style({
-                    'stroke-width':series.lineWidth
-                });
-            }
-
-            this.defaultMarker && this.defaultMarker.remove();
-            this.defaultMarker = null;
-        },
-
-        getClosestPoint:function(pos){
-
-            var center = this.getCenter(), minDistance = Number.MAX_VALUE;
-            var selectedPoint;
-            
-            this.points.forEach(function(point){
-                var detX = point.posX + center[0] - pos[0];
-                var detY = point.posY + center[1] - pos[1];
-                var dis = Math.sqrt(detX * detX + detY * detY);
-                if(dis < minDistance && !point.isNull){
-                    selectedPoint = point;
-                    minDistance = dis;
-                }
-            });
-
-            return selectedPoint;
-        }
-    }
-
-});
-/**
- * Created by eason on 15/12/31.
- */
-define('chart/Radar',['require','./Series','../utils/BaseUtils','../Constants','../utils/QueryUtils','../utils/BoundsManager','./ColumnRadar','./LineRadar','../ChartLibrary'],function(require){
-
-    var Series = require('./Series');
-    var BaseUtils = require('../utils/BaseUtils');
-    var Constants = require('../Constants');
-    var QueryUtils = require('../utils/QueryUtils');
-    var BoundsManager = require('../utils/BoundsManager');
-    var ColumnRadar = require('./ColumnRadar');
-    var LineRadar = require('./LineRadar');
-
-    var DELAY = 200;
-    var PADDING_GAP = 10;
-    var LABEL_BORDER_GAP = 8;
-
-    var ANIMATION_TIME = 500;
-
-    var UPDATE_TIME = 500;
-
-    var Radar = Series.extend({
-        _refresh:function() {
-            var queryList = this._getQueryList();
-            var columnType = QueryUtils.queryList(queryList, 'columnType');
-
-            var connectNulls = BaseUtils.pick(QueryUtils.queryList(queryList, 'connectNulls'), true);
-            var lineWidth = QueryUtils.queryList(queryList, 'lineWidth') || 0;
-
-            BaseUtils.extend(this,{
-                marker:columnType ? null : this.marker,
-                lineWidth:lineWidth,
-                columnType:columnType,
-                connectNulls:connectNulls
-            });
-
-            if(columnType != this.columnType){
-                this.remove();
-            }
-
-            this.stack = this.columnType ? 'radar-column'+this.stack : this.stack;
-
-            BaseUtils.extend(this, columnType ? ColumnRadar : LineRadar);
-        },
-
-        getInitShowTime: function () {
-            return ANIMATION_TIME;
-        },
-
-        getReAppearTime: function () {
-            return UPDATE_TIME;
-        },
-
-        _getAxisTypes:function(){
-            return ['angleAxis', 'radiusAxis', 'polar'];
-        },
-
-        _bindAxis:function(){
-            var series = this,
-                seriesOptions = series.options,
-                vanchart = series.vanchart;
-
-            series._getAxisTypes().forEach(function(axisType){
-
-                if(vanchart[axisType]){
-                    var targetAxis = vanchart[axisType](seriesOptions['polar']);
-                    if(targetAxis){
-                        targetAxis.series.push(series);
-                        series[axisType] = targetAxis;
-                    }
-                }
-
-            });
-        },
-
-        _getDefaultFillColorOpacity: function () {
-            var queryList = this._getQueryList();
-            var columnType = QueryUtils.queryList(queryList, 'columnType');
-
-            return columnType ? 1 : 0.15;
-        },
-
-        _getTranslate:function(){
-            return this.getCenter();
-        },
-
-        getCenter:function(){
-            return this.polar && this.polar.center;
-        },
-
-        getRadius:function(){
-            return this.polar && this.polar.radius;
-        },
-        
-        doLayout:function(){
-            var series = this, polar = series.polar, radiusAxis = polar.radiusAxis, angleAxis = polar.angleAxis;
-            var center = this.getCenter(), radius = this.getRadius(), piece = angleAxis.piece, valueScale = radiusAxis.scale, cateScale = angleAxis.scale;
-
-            //todo 先排序作用是
-            // series.points.sort(function(pointA, pointB){
-            //     return self.cateScale(pointA.category) - self.cateScale(pointB.category);
-            // });
-
-            series.points.forEach(function(point){
-
-                point.innerRadius = valueScale(point.y0);
-
-                point.outerRadius = valueScale(point.getTargetValue() + point.y0);
-
-                point.animateInitRadius = radiusAxis.getStartPos();
-
-                point.radian = cateScale(point.category) * piece;
-
-                var pos = series._getArcPoint(point.outerRadius, point.radian);
-                point.posX = pos[0];
-
-                point.posY = pos[1];
-
-                if (point.outerRadius < radius) {
-                    this._calcLabelPos(point);
-                }
-
-            }, this);
-
-            series.pathSegment = series._getPathSegment(series.points, series.connectNulls);
-        },
-
-        _calculateLabelPos:function () {
-
-        },
-
-        getTargetKey: function () {
-            return 'y';
-        },
-
-        _createGroup: function (renderer, vanchart) {
-            return renderer.group().addTo(vanchart.seriesGroup);
-        },
-
-        additionalClip: function (group) {
-            this.vanchart.renderer.clip(group, this.polar.clip);
-        },
-        
-        _getPathSegment:function(dataPoints, connectNulls){
-
-            var series = this, polar = series.polar, angleAxis = polar.angleAxis, cateScale = angleAxis.scale;
-
-            dataPoints = [].concat(dataPoints);
-
-            dataPoints.sort(function(pointA, pointB){
-                return cateScale(pointA.category) - cateScale(pointB.category);
-            });
-
-            var pathSeg = [];
-
-            var tmp = [];
-
-            if(connectNulls){
-
-                pathSeg.push(tmp);
-
-                dataPoints.forEach(function(dataPoint){
-
-                    if(!dataPoint.isNull){
-                        tmp.push([dataPoint.posX, dataPoint.posY]);
-                    }
-
-                });
-            }else{
-
-                var startIndex = 0;
-                var count = dataPoints.length;
-
-                for(var index = count - 1; index > 0; index--){
-
-                    var current = dataPoints[index];
-                    var pre = dataPoints[index - 1];
-
-                    if(!current.isNull && pre.isNull){
-                        startIndex = index;
-                    }
-                }
-
-                for(var index = 0; index < count; index++){
-
-                    var dataPoint = dataPoints[(index + startIndex) % count];
-
-                    if(dataPoint.isNull && tmp.length){
-
-                        if(tmp.length > 1){
-                            pathSeg.push(tmp)
-                        };
-
-                        tmp = [];
-                    }else{
-                        tmp.push([dataPoint.posX, dataPoint.posY]);
-                    }
-
-                }
-
-                if(tmp.length){
-                    pathSeg.push(tmp);
-                }
-            }
-
-            return pathSeg;
-        },
-
-        _getRadarSeriesFillPath:function(pathSeg, connectNulls){
-            return this._getRadarSeriesPath(pathSeg, connectNulls, true);
-        },
-
-        _getRadarSeriesStrokePath:function(pathSeg, connectNulls){
-            return this._getRadarSeriesPath(pathSeg, connectNulls, false);
-        },
-
-        _getRadarSeriesPath:function(pathSeg, connectNulls, toCenter){
-
-            var path = '';
-            var tmp = [];
-            if(pathSeg.length == 1){
-
-                tmp = pathSeg[0];
-
-                var fullShape = tmp.length == this.angleAxis.getCategoryCount() || connectNulls;
-
-                toCenter = (!fullShape && toCenter);
-
-                path = toCenter ? 'M0,0' : '';
-
-                for(var i = 0, count = tmp.length; i < count; i++){
-
-                    var mOrl = (i || toCenter) ? 'L' : 'M';
-
-                    path += (mOrl + BaseUtils.dealFloatPrecision(tmp[i][0]) + "," + BaseUtils.dealFloatPrecision(tmp[i][1]));
-                }
-
-                path += (fullShape || toCenter) ? 'Z' : '';
-
-            }else{
-                pathSeg.forEach(function(tmp){
-
-                    path += toCenter ? 'M0,0' : '';
-
-                    tmp.forEach(function(pos){
-                        path += ('L' + BaseUtils.dealFloatPrecision(pos[0]) + "," + BaseUtils.dealFloatPrecision(pos[1]));
-                    });
-
-                    path += toCenter ? 'Z' : '';
-                });
-            }
-
-            return path;
-        },
-
-        _getInitPathSegment:function(pathSeg){
-            var init = [];
-            pathSeg.forEach(function(seg){
-                var tmp = [];
-                init.push(tmp);
-
-                seg.forEach(function(){
-                    tmp.push([0,0])
-                })
-            });
-            return init;
-        }
-    });
-
-    require('../ChartLibrary').register(Constants.RADAR_CHART, Radar);
-    
-    return Radar;
 });
 /**
  * Created by eason on 16/5/9.
@@ -23105,8 +23151,9 @@ define('component/Tooltip',['require','./Base','../utils/BaseUtils','../Constant
                         cssText.push('background-Color:' + opt.backgroundColor);
                     }else{
                         var hexAlpha = ColorUtils.colorToHexAlpha(opt.backgroundColor);
-                        cssText.push('background-Color:' + hexAlpha.hex);
-                        cssText.push('filter:alpha(opacity=' + hexAlpha.alpha * 100 + ')')
+                        // ms: #alpha+hex
+                        var msColor = '#' + ('0' + (hexAlpha.alpha * 255 | 0).toString(16)).slice(-2) + hexAlpha.hex.replace('#', '');
+                        cssText.push('filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=' + msColor + ', endColorstr=' + msColor + ', GradientType=0)');
                     }
                 }else if(typeof opt.backgroundColor == 'object'){
 
@@ -23976,8 +24023,11 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
         },
 
         getPosition:function(){
+            var defaultPosition = this.componentType == ComponentLibrary.X_AXIS_COMPONENT ? 'bottom' : 'left';
+            var position = this.options.position || defaultPosition;
+
             if (this.vanchart.isInverted()){
-                switch (this.options.position) {
+                switch (position) {
                     case Constants.TOP:
                         return Constants.RIGHT;
                     case Constants.RIGHT:
@@ -23988,7 +24038,7 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
                         return Constants.TOP;
                 }
             } else {
-                return this.options.position;
+                return position;
             }
         },
 
@@ -24478,7 +24528,7 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
             var scale = this.scale, isDate = this.type == ComponentLibrary.DATE_AXIS_COMPONENT;
             var result = [], axis = this, renderer = this.vanchart.renderer;
             plotLines.forEach(function(d){
-                if (!d.value) {
+                if (BaseUtils.isEmpty(d.value)) {
                     return;
                 }
 
@@ -26921,6 +26971,8 @@ define('component/ZoomBar',['require','./Base','../utils/BaseUtils','../Constant
 
                 line.attr('d', lineSvg(usedSeries[i]._sortPoints || points)).addTo(this.zoomBarGroup);
             }
+
+            this._lineG.length = len;
         },
 
         _createSideRect:function(startX, isLeft){
@@ -31752,7 +31804,7 @@ define('component/DataSheet',['require','./Base','../utils/BaseUtils','../utils/
  * Created by eason on 16/2/5.
  */
 
-define('FullChartTypes',['require','./VanCharts','./VanChart','./chart/Bar','./chart/Pie','./chart/Line','./chart/TreeMap','./chart/Bubble','./chart/ForceBubble','./chart/Scatter','./chart/MultiPie','./chart/Gauge','./chart/Radar','./chart/Map','./component/Tooltip','./component/Axis','./component/GaugeAxis','./component/Legend','./component/ZoomBar','./component/ToolBar','./component/RangeLegend','./component/Polar','./component/PolarAxis','./component/Title','./component/Geo','./component/DrillTools','./component/DataSheet'],function(require){
+define('FullChartTypes',['require','./VanCharts','./VanChart','./chart/Bar','./chart/Pie','./chart/Line','./chart/Radar','./chart/TreeMap','./chart/Bubble','./chart/ForceBubble','./chart/Scatter','./chart/MultiPie','./chart/Gauge','./chart/Map','./component/Tooltip','./component/Axis','./component/GaugeAxis','./component/Legend','./component/ZoomBar','./component/ToolBar','./component/RangeLegend','./component/Polar','./component/PolarAxis','./component/Title','./component/Geo','./component/DrillTools','./component/DataSheet'],function(require){
 
     require('./VanCharts');
     require('./VanChart');
@@ -31761,13 +31813,14 @@ define('FullChartTypes',['require','./VanCharts','./VanChart','./chart/Bar','./c
     require('./chart/Bar');
     require('./chart/Pie');
     require('./chart/Line');
+    require('./chart/Radar');
+
     require('./chart/TreeMap');
     require('./chart/Bubble');
     require('./chart/ForceBubble');
     require('./chart/Scatter');
     require('./chart/MultiPie');
     require('./chart/Gauge');
-    require('./chart/Radar');
     require('./chart/Map');
 
     //components
@@ -31801,13 +31854,14 @@ require('./VanChart');
 require('./chart/Bar');
 require('./chart/Pie');
 require('./chart/Line');
+require('./chart/Radar');
+
 require('./chart/TreeMap');
 require('./chart/Bubble');
 require('./chart/ForceBubble');
 require('./chart/Scatter');
 require('./chart/MultiPie');
 require('./chart/Gauge');
-require('./chart/Radar');
 require('./chart/Map');
 
 //components

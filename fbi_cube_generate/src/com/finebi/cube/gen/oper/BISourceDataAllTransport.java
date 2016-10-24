@@ -38,6 +38,7 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
     public Object mainTask(IMessage lastReceiveMessage) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
         logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " start transport task"));
+        tableEntityService.recordCurrentExecuteTime();
         long t = System.currentTimeMillis();
         try {
             logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " record table structure info"));
@@ -46,7 +47,7 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
             buildTableBasicStructure();
             long count = transport();
             logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " finish transportation operation and record ",
-                    String.valueOf(count)," records"));
+                    String.valueOf(count), " records"));
             if (count >= 0) {
                 /*清除remove的过滤条件*/
                 TreeSet<Integer> sortRemovedList = new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
@@ -60,7 +61,7 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
             try {
                 biLogManager.infoTable(tableSource.getPersistentTable(), tableCostTime, UserControl.getInstance().getSuperManagerID());
             } catch (Exception e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(tableSource.getTableName()+e.getMessage(), e);
             }
             return null;
         } catch (Exception e) {

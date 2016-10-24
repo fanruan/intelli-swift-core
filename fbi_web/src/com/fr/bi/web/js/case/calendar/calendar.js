@@ -166,6 +166,14 @@ BI.extend(BI.Calendar, {
         var page = (json.year - year) * 12;
         page += json.month - month;
         return page;
+    },
+    getDateJSONByPage: function(v){
+        var year = BI.parseInt(v / 12);
+        var month = v % 12;
+        return {
+            year: new Date().getFullYear() + year,
+            month: new Date().getMonth() + month
+        }
     }
 });
 

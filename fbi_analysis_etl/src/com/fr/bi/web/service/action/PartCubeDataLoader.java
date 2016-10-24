@@ -44,6 +44,7 @@ public class PartCubeDataLoader implements ICubeDataLoader {
         return loader;
     }
 
+   
     private void registSource(CubeTableSource source) {
         BICore core = source.fetchObjectCore();
         if (!sourceMap.containsKey(core)) {

@@ -14,8 +14,9 @@ import com.finebi.cube.structure.table.property.BICubeTableProperty;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.bi.stable.utils.program.BIStringUtils;
+import com.fr.stable.collections.array.IntArray;
 
 import java.util.*;
 
@@ -46,11 +47,14 @@ public class BICubeTableEntity implements CubeTableEntityService {
             if (tableProperty.isPropertyExist()) {
                 columnManager = new BICubeTableColumnManager(tableKey, resourceRetrievalService, getAllFields(), discovery);
             }
-
             relationManager = new BICubeTableRelationEntityManager(this.resourceRetrievalService, this.tableKey, discovery);
         } catch (Exception e) {
             BINonValueUtils.beyondControl(e.getMessage(), e);
         }
+    }
+
+    public static BIColumnKey convert(ICubeFieldSource field) {
+        return BIColumnKey.covertColumnKey(field);
     }
 
     public void buildStructure() {
@@ -85,19 +89,27 @@ public class BICubeTableEntity implements CubeTableEntityService {
         columnManager = new BICubeTableColumnManager(tableKey, resourceRetrievalService, getAllFields(), discovery);
     }
 
-
     @Override
     public void recordRowCount(long rowCount) {
         tableProperty.recordRowCount(rowCount);
     }
 
     @Override
-    public void recordLastTime() {
-        tableProperty.recordLastTime();
+    public void recordLastExecuteTime(long time) {
+        tableProperty.recordLastExecuteTime(time);
+    }
+
+    @Override
+    public void recordCurrentExecuteTime() {
+        tableProperty.recordCurrentExecuteTime();
     }
 
     @Override
     public void recordRemovedLine(TreeSet<Integer> removedLine) {
+        if (null == removedLine || removedLine.size() == 0) {
+            tableProperty.recordRemovedList(0, -1);
+            return;
+        }
         Iterator<Integer> it = removedLine.iterator();
         int row = 0;
         while (it.hasNext()) {
@@ -117,12 +129,34 @@ public class BICubeTableEntity implements CubeTableEntityService {
 
     @Override
     public void addDataValue(BIDataValue originalDataValue) throws BICubeColumnAbsentException {
+        addValue(originalDataValue, false);
+    }
+
+    @Override
+    public void increaseAddDataValue(BIDataValue originalDataValue) throws BICubeColumnAbsentException {
+        addValue(originalDataValue, true);
+    }
+
+    private void addValue(BIDataValue originalDataValue, boolean isIncrease) throws BICubeColumnAbsentException {
         int columnIndex = originalDataValue.getCol();
         int rowNumber = originalDataValue.getRow();
         Object value = originalDataValue.getValue();
+
         ICubeFieldSource field = getAllFields().get(columnIndex);
         ICubeColumnEntityService columnService = columnManager.getColumn(BIColumnKey.covertColumnKey(field));
-        columnService.addOriginalDataValue(rowNumber, value);
+        try {
+            if (!isIncrease) {
+                columnService.addOriginalDataValue(rowNumber, value);
+            } else {
+                columnService.increaseAddOriginalDataValue(rowNumber, value);
+            }
+        } catch (ClassCastException e) {
+            throw BINonValueUtils.beyondControl(BIStringUtils.append(e.getMessage(), "Table:" + tableKey != null ? tableKey.getSourceID() : ""
+                    , "Field column index:" + columnIndex
+                    , "Field row number:" + rowNumber
+                    , "the value:" + value)
+                    , e);
+        }
     }
 
     private List<ICubeFieldSource> getAllFields() {
@@ -175,13 +209,18 @@ public class BICubeTableEntity implements CubeTableEntityService {
     }
 
     @Override
-    public IntList getRemovedList() {
+    public IntArray getRemovedList() {
         return tableProperty.getRemovedList();
     }
 
     @Override
-    public Date getCubeLastTime() {
-        return tableProperty.getCubeLastTime();
+    public Date getLastExecuteTime() {
+        return tableProperty.getLastExecuteTime();
+    }
+
+    @Override
+    public Date getCurrentExecuteTime() {
+        return tableProperty.getCurrentExecuteTime();
     }
 
     @Override
@@ -193,10 +232,6 @@ public class BICubeTableEntity implements CubeTableEntityService {
     public CubeColumnReaderService getColumnDataGetter(String columnName) throws BICubeColumnAbsentException {
         ICubeFieldSource field = getSpecificColumn(columnName);
         return getColumnDataGetter(convert(field));
-    }
-
-    public static BIColumnKey convert(ICubeFieldSource field) {
-        return BIColumnKey.covertColumnKey(field);
     }
 
     @Override
@@ -244,9 +279,13 @@ public class BICubeTableEntity implements CubeTableEntityService {
         return tableProperty.isRowCountAvailable();
     }
 
+    public boolean isLastExecuteTimeAvailable() {
+        return tableProperty.isLastExecuteTimeAvailable();
+    }
+
     @Override
-    public boolean isCubeLastTimeAvailable() {
-        return tableProperty.isCubeLastUpdateTimeAvailable();
+    public boolean isCurrentExecuteTimeAvailable() {
+        return tableProperty.isCurrentExecuteTimeAvailable();
     }
 
     public long getCubeVersion() {

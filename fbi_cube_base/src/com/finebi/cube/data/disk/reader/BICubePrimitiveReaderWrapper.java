@@ -24,7 +24,8 @@ public class BICubePrimitiveReaderWrapper implements ICubeReader {
 
     @Override
     public void clear() {
-        reader.releaseHandler();
+//        reader暂时全部不clear，在调用writer的时候，如果有reader再进行强制释放
+//        reader.releaseHandler();
     }
 
     @Override

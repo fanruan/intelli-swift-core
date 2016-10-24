@@ -1,5 +1,6 @@
 package com.finebi.cube.structure.table;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.exception.BICubeRelationAbsentException;
@@ -16,9 +17,8 @@ import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.structure.collection.list.IntList;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
+import com.fr.stable.collections.array.IntArray;
 
 import java.util.*;
 
@@ -98,7 +98,12 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
     }
 
     @Override
-    public void recordLastTime() {
+    public void recordLastExecuteTime(long time) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void recordCurrentExecuteTime() {
         throw new UnsupportedOperationException();
     }
 
@@ -112,6 +117,11 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
     public void addDataValue(BIDataValue originalDataValue) throws BICubeColumnAbsentException {
         throw new UnsupportedOperationException();
 
+    }
+
+    @Override
+    public void increaseAddDataValue(BIDataValue originalDataValue) throws BICubeColumnAbsentException {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -169,13 +179,13 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
     }
 
     @Override
-    public IntList getRemovedList() {
+    public IntArray getRemovedList() {
         if (hostTable.isRemovedListAvailable()) {
             return hostTable.getRemovedList();
         } else if (null != parentTable && parentTable.isRemovedListAvailable()) {
             return parentTable.getRemovedList();
         } else {
-            return new IntList();
+            return new IntArray();
         }
 
     }
@@ -191,9 +201,15 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
     }
 
     @Override
-    public Date getCubeLastTime() {
-        return hostTable.getCubeLastTime();
+    public Date getLastExecuteTime() {
+        return  hostTable.getLastExecuteTime();
     }
+
+    @Override
+    public Date getCurrentExecuteTime() {
+        return  hostTable.getCurrentExecuteTime();
+    }
+
 
     private CubeTableEntityService pickTableService(String fieldName) throws BICubeColumnAbsentException {
         ICubeFieldSource field = getSpecificColumn(fieldName);
@@ -254,8 +270,13 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
     }
 
     @Override
-    public boolean isCubeLastTimeAvailable() {
-        return hostTable.isCubeLastTimeAvailable() || (isParentAvailable() && parentTable.isCubeLastTimeAvailable());
+    public boolean isLastExecuteTimeAvailable() {
+        return hostTable.isLastExecuteTimeAvailable() || (isParentAvailable() && parentTable.isLastExecuteTimeAvailable());
+    }
+
+    @Override
+    public boolean isCurrentExecuteTimeAvailable() {
+        return hostTable.isCurrentExecuteTimeAvailable() || (isParentAvailable() && parentTable.isCurrentExecuteTimeAvailable());
     }
 
     @Override

@@ -19,11 +19,14 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
+import com.fr.bi.stable.gvi.traversal.TraversalAction;
+import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.bridge.StableFactory;
+import com.fr.stable.collections.array.IntArray;
 import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +65,6 @@ public class BIRelationIndexGenerator extends BIProcessor {
         }
         try {
             buildRelationIndex();
-
             biLogManager.infoRelation(relationColumnKeyInfo, stopwatch.elapsed(TimeUnit.SECONDS), UserControl.getInstance().getSuperManagerID());
             logger.info(BIStringUtils.append("\n    ", logRelation(), "finish building relation index ,elapse {} second"), stopwatch.elapsed(TimeUnit.SECONDS));
 
@@ -180,59 +182,85 @@ public class BIRelationIndexGenerator extends BIProcessor {
              * 表间关联对象
              */
             tableRelation = (BICubeRelationEntity) cube.getCubeRelation(primaryTableKey, relation);
-
-            final GroupValueIndex appearPrimaryValue = GVIFactory.createAllEmptyIndexGVI();
+            final BICubeRelationEntity finalTableRelation = tableRelation;
+            GroupValueIndex nullIndex = GVIFactory.createAllEmptyIndexGVI();
             /**
              * 主表的行数
              */
-            int primaryRowCount = primaryTable.getRowCount();
+            int primaryGroupSize = primaryColumn.sizeOfGroup();
+            int foreignGroupSize = foreignColumn.sizeOfGroup();
+            if (foreignGroupSize == 0) {
+                return;
+            }
+            int foreignIndex = 0;
+            Object foreignColumnValue = foreignColumn.getGroupObjectValue(foreignIndex);
+            GroupValueIndex foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
+            Comparator c = primaryColumn.getGroupComparator();
             int[] reverse = new int[foreignTable.getRowCount()];
+            Arrays.fill(reverse, NIOConstant.INTEGER.NULL_VALUE);
             Stopwatch stopwatch = Stopwatch.createStarted();
-
-            for (int row = 0; row < primaryRowCount; row++) {
+            for (int index = 0; index < primaryGroupSize; index++) {
                 /**
                  * 关联主字段的value值
                  */
-                Object primaryColumnValue = primaryColumn.getOriginalObjectValueByRow(row);
+                Object primaryColumnValue = primaryColumn.getGroupObjectValue(index);
                 /**
-                 * value值在子字段中的索引位置
+                 * value值在主表的索引
                  */
-
-                int position = -1;
-                if (foreignColumn.sizeOfGroup() > 0) {
-                    position = foreignColumn.getPositionOfGroupByGroupValue(primaryColumnValue);
-                }
-
+                GroupValueIndex pGroupValueIndex = primaryColumn.getBitmapIndex(index);
+                int result = c.compare(primaryColumnValue, foreignColumnValue);
                 /**
-                 * 依据索引位置，取出索引
+                 * 小于0说明主表的id在子表找不到，大于0说明子表的id在主表找不到
                  */
-                GroupValueIndex foreignGroupValueIndex;
-                if (position != -1) {
-                    foreignGroupValueIndex = foreignColumn.getBitmapIndex(position);
-                } else {
-                    foreignGroupValueIndex = GVIFactory.createAllEmptyIndexGVI();
-                }
-                appearPrimaryValue.or(foreignGroupValueIndex);
-                tableRelation.addRelationIndex(row, foreignGroupValueIndex);
-
-                try {
-                    initReverseIndex(reverse, row, foreignGroupValueIndex);
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    logger.error("GVI:" + foreignGroupValueIndex.toString());
-
-                    foreignGroupValueIndex.Traversal(new SingleRowTraversalAction() {
+                if (result < 0) {
+                    pGroupValueIndex.Traversal(new SingleRowTraversalAction() {
                         @Override
-                        public void actionPerformed(int rowIndex) {
-                            logger.error("GVI value:" + rowIndex);
+                        public void actionPerformed(int row) {
+                            finalTableRelation.addRelationIndex(row, GVIFactory.createAllEmptyIndexGVI());
                         }
                     });
-                    logger.error(e.getMessage(), e);
+                } else if (result == 0) {
+                    matchRelation(tableRelation, foreignGroupValueIndex, reverse, pGroupValueIndex);
+                    foreignIndex++;
+                    foreignColumnValue = foreignColumn.getGroupObjectValue(foreignIndex);
+                    foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
+                } else {
+                    while (foreignIndex < foreignGroupSize && c.compare(primaryColumnValue, foreignColumnValue) > 0) {
+                        nullIndex.or(foreignGroupValueIndex);
+                        foreignIndex++;
+                        if (foreignIndex == foreignGroupSize) {
+                            foreignColumnValue = null;
+                            foreignGroupValueIndex = null;
+                        } else {
+                            foreignColumnValue = foreignColumn.getGroupObjectValue(foreignIndex);
+                            foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
+                        }
+                    }
+                    if (c.compare(primaryColumnValue, foreignColumnValue) == 0) {
+                        matchRelation(tableRelation, foreignGroupValueIndex, reverse, pGroupValueIndex);
+                        foreignIndex++;
+                        foreignColumnValue = foreignColumn.getGroupObjectValue(foreignIndex);
+                        foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
+                    } else {
+                        pGroupValueIndex.Traversal(new SingleRowTraversalAction() {
+                            @Override
+                            public void actionPerformed(int row) {
+                                finalTableRelation.addRelationIndex(row, GVIFactory.createAllEmptyIndexGVI());
+                            }
+                        });
+                    }
                 }
-                if (CubeConstant.LOG_SEPERATOR_ROW != 0 && row % CubeConstant.LOG_SEPERATOR_ROW == 0) {
-                    logger.info(BIStringUtils.append("\n    ", logRelation(), "read ", String.valueOf(row), " rows field value and time elapse:", String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)), " second"));
+
+                if (CubeConstant.LOG_SEPERATOR_ROW != 0 && index % CubeConstant.LOG_SEPERATOR_ROW == 0) {
+                    logger.info(BIStringUtils.append("\n    ", logRelation(), "read ", String.valueOf(index), " rows field value and time elapse:", String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)), " second"));
                 }
             }
-            GroupValueIndex nullIndex = appearPrimaryValue.NOT(foreignTable.getRowCount());
+            while (foreignIndex < foreignGroupSize - 1) {
+                nullIndex.or(foreignGroupValueIndex);
+                foreignIndex++;
+                foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
+            }
+            nullIndex.or(foreignGroupValueIndex);
             buildReverseIndex(tableRelation, reverse);
             tableRelation.addRelationNULLIndex(0, nullIndex);
         } catch (Exception e) {
@@ -245,28 +273,58 @@ public class BIRelationIndexGenerator extends BIProcessor {
         } finally {
             if (primaryTable != null) {
                 ((CubeTableEntityService) primaryTable).forceReleaseWriter();
-                primaryTable.clear();
+//                primaryTable.clear();
             }
             if (foreignTable != null) {
                 ((CubeTableEntityService) foreignTable).forceReleaseWriter();
 
-                foreignTable.clear();
+//                foreignTable.clear();
             }
             if (primaryColumn != null) {
                 primaryColumn.forceReleaseWriter();
-                primaryColumn.clear();
+//                primaryColumn.clear();
             }
             if (foreignColumn != null) {
                 foreignColumn.forceReleaseWriter();
-                foreignColumn.clear();
+//                foreignColumn.clear();
             }
             if (tableRelation != null) {
                 tableRelation.forceReleaseWriter();
-                tableRelation.clear();
+//                tableRelation.clear();
+            }
+            if (cube != null) {
+                cube.clear();
             }
 
         }
 
+    }
+
+    private void matchRelation(BICubeRelationEntity tableRelation, GroupValueIndex foreignGroupValueIndex, int[] reverse, GroupValueIndex pGroupValueIndex) {
+        final IntArray array = new IntArray();
+        pGroupValueIndex.Traversal(new TraversalAction() {
+            @Override
+            public void actionPerformed(int[] data) {
+                array.addAll(data);
+            }
+        });
+        for (int i = 0; i < array.size; i++) {
+            tableRelation.addRelationIndex(array.get(i), foreignGroupValueIndex);
+
+            try {
+                initReverseIndex(reverse, array.get(i), foreignGroupValueIndex);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                logger.error("GVI:" + foreignGroupValueIndex.toString());
+
+                foreignGroupValueIndex.Traversal(new SingleRowTraversalAction() {
+                    @Override
+                    public void actionPerformed(int rowIndex) {
+                        logger.error("GVI value:" + rowIndex);
+                    }
+                });
+                logger.error(e.getMessage(), e);
+            }
+        }
     }
 
     private void initReverseIndex(final int[] index, final int row, GroupValueIndex gvi) {

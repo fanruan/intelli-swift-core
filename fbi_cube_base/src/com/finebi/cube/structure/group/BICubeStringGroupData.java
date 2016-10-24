@@ -32,7 +32,7 @@ public class BICubeStringGroupData extends BICubeGroupData<String> {
 
     public String getGroupValueByPosition(int position) {
         try {
-            return ((ICubeStringReader)getGroupReader()).getSpecificValue(position);
+            return ((ICubeStringReader) getGroupReader()).getSpecificValue(position);
         } catch (BIResourceInvalidException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             return null;

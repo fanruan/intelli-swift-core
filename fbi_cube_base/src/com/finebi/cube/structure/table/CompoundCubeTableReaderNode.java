@@ -16,9 +16,9 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
-import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
+import com.fr.stable.collections.array.IntArray;
 
 import java.util.*;
 
@@ -81,9 +81,13 @@ public class CompoundCubeTableReaderNode implements CubeTableEntityService {
     }
 
     @Override
-    public void recordLastTime() {
+    public void recordLastExecuteTime(long time) {
         throw new UnsupportedOperationException();
+    }
 
+    @Override
+    public void recordCurrentExecuteTime() {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -96,6 +100,11 @@ public class CompoundCubeTableReaderNode implements CubeTableEntityService {
     public void addDataValue(BIDataValue originalDataValue) throws BICubeColumnAbsentException {
         throw new UnsupportedOperationException();
 
+    }
+
+    @Override
+    public void increaseAddDataValue(BIDataValue originalDataValue) throws BICubeColumnAbsentException {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -151,7 +160,7 @@ public class CompoundCubeTableReaderNode implements CubeTableEntityService {
     }
 
     @Override
-    public IntList getRemovedList() {
+    public IntArray getRemovedList() {
         return masterTable.getRemovedList();
     }
 
@@ -166,8 +175,13 @@ public class CompoundCubeTableReaderNode implements CubeTableEntityService {
     }
 
     @Override
-    public Date getCubeLastTime() {
-        return masterTable.getCubeLastTime();
+    public Date getLastExecuteTime() {
+        return masterTable.getLastExecuteTime();
+    }
+
+    @Override
+    public Date getCurrentExecuteTime() {
+        return masterTable.getCurrentExecuteTime();
     }
 
     @Override
@@ -226,9 +240,15 @@ public class CompoundCubeTableReaderNode implements CubeTableEntityService {
     }
 
     @Override
-    public boolean isCubeLastTimeAvailable() {
-        return masterTable.isCubeLastTimeAvailable();
+    public boolean isLastExecuteTimeAvailable() {
+        return masterTable.isLastExecuteTimeAvailable();
     }
+
+    @Override
+    public boolean isCurrentExecuteTimeAvailable() {
+        return masterTable.isCurrentExecuteTimeAvailable();
+    }
+
 
     @Override
     public void recordFieldNamesFromParent(Set<String> fieldNames) {

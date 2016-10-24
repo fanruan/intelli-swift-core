@@ -1,15 +1,14 @@
 package com.fr.bi.conf.data.source.operator.create;
 
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.api.ICubeValueEntryGetter;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.IPersistentTable;
@@ -18,11 +17,10 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.SortTool;
 import com.fr.bi.stable.engine.SortToolUtils;
 import com.fr.bi.stable.engine.index.key.IndexKey;
-import com.fr.bi.stable.gvi.AllShowRoaringGroupValueIndex;
+import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.structure.object.CubeValueEntry;
 import com.fr.cache.list.IntList;
@@ -160,9 +158,10 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
         }
         while (rValueIterator.hasNext()){
             ValuesAndGVI rValuesAndGVI = rValueIterator.next();
-            if (rValuesAndGVI.compareTo(lValuesAndGVI, comparators) < 0){
-                index = writeROneGroup(travel, lti, rti, rLen, lLeftCount, index, lValuesAndGVI.gvi, null);
-            } else if (rValuesAndGVI.compareTo(lValuesAndGVI, comparators) == 0){
+            int result = rValuesAndGVI.compareTo(lValuesAndGVI, comparators);
+            if (result < 0){
+                index = writeROneGroup(travel, lti, rti, rLen, lLeftCount, index, null, rValuesAndGVI.gvi);
+            } else if (result == 0){
                 index = writeROneGroup(travel, lti, rti, rLen, lLeftCount, index, lValuesAndGVI.gvi, rValuesAndGVI.gvi);
             } else {
                 while (rValuesAndGVI.compareTo(lValuesAndGVI, comparators) > 0){
@@ -170,7 +169,8 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
                 }
                 if (rValuesAndGVI.compareTo(lValuesAndGVI, comparators) == 0){
                     index = writeROneGroup(travel, lti, rti, rLen, lLeftCount, index, lValuesAndGVI.gvi, rValuesAndGVI.gvi);
-                    lValuesAndGVI = lValueIterator.next();
+                } else {
+                    index = writeROneGroup(travel, lti, rti, rLen, lLeftCount, index, null, rValuesAndGVI.gvi);
                 }
             }
         }
@@ -241,24 +241,33 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
         }
         while (lValueIterator.hasNext()){
             ValuesAndGVI lValuesAndGVI = lValueIterator.next();
-            if (lValuesAndGVI.compareTo(rValuesAndGVI, comparators) < 0 && !nullContinue){
+            int result = lValuesAndGVI.compareTo(rValuesAndGVI, comparators);
+            if (result < 0 && !nullContinue){
                 index = writeOneGroup(travel, lti, rti, lLen, index, lValuesAndGVI.gvi, null);
-            } else if (lValuesAndGVI.compareTo(rValuesAndGVI, comparators) == 0){
+            } else if (result == 0){
                 index = writeOneGroup(travel, lti, rti, lLen, index, lValuesAndGVI.gvi, rValuesAndGVI.gvi);
+                rValuesAndGVI = rValueIterator.next();
             } else {
                 if (writeLeft){
                     rTotalGvi.or(rValuesAndGVI.gvi);
                 }
                 while (lValuesAndGVI.compareTo(rValuesAndGVI, comparators) > 0){
                     rValuesAndGVI = rValueIterator.next();
-                    if (writeLeft){
+                    if (writeLeft && lValuesAndGVI.compareTo(rValuesAndGVI, comparators) > 0){
                         rTotalGvi.or(rValuesAndGVI.gvi);
                     }
                 }
                 if (lValuesAndGVI.compareTo(rValuesAndGVI, comparators) == 0){
                     index = writeOneGroup(travel, lti, rti, lLen, index, lValuesAndGVI.gvi, rValuesAndGVI.gvi);
                     rValuesAndGVI = rValueIterator.next();
+                } else {
+                    index = writeOneGroup(travel, lti, rti, lLen, index, lValuesAndGVI.gvi, null);
                 }
+            }
+        }
+        if (writeLeft){
+            while (rValueIterator.hasNext()){
+                rTotalGvi.or(rValueIterator.next().gvi);
             }
         }
         return writeLeft ? writeLeftIndex(rTotalGvi, rti, lLen, index, travel) : index;
@@ -358,7 +367,7 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
         }
 
         private Iterator getIterByAllCal(ICubeValueEntryGetter getter, GroupValueIndex gvi) {
-            if (RoaringGroupValueIndex.isAllShowRoaringGroupValueIndex(gvi)){
+            if (GVIUtils.isAllShowRoaringGroupValueIndex(gvi)){
                 return getAllShowIterator(getter);
             }
             SortTool tool = SortToolUtils.getSortTool(getter.getGroupSize(), gvi.getRowsCountWithData());
@@ -632,9 +641,8 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
     }
 
     private int writeLeftIndex(GroupValueIndex rTotalGvi, ICubeTableService rti, int llen, int index, Traversal<BIDataValue> travel) {
-        GroupValueIndex rLeft = rTotalGvi == null ? rti.getAllShowIndex() : rTotalGvi.NOT(rti.getRowCount()).AND(rti.getAllShowIndex());
         final IntList rLeftRows = new IntList();
-        rLeft.Traversal(new SingleRowTraversalAction() {
+        rTotalGvi.Traversal(new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int rowIndices) {
                 rLeftRows.add(rowIndices);

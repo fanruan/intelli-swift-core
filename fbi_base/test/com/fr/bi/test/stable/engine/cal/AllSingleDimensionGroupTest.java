@@ -15,9 +15,9 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
-import com.fr.bi.stable.structure.collection.list.IntList;
 import com.fr.bi.stable.structure.object.CubeValueEntry;
 import com.fr.bi.stable.utils.BIServerUtils;
+import com.fr.stable.collections.array.IntArray;
 import com.fr.stable.core.UUID;
 import edu.emory.mathcs.backport.java.util.Arrays;
 import junit.framework.TestCase;
@@ -83,24 +83,24 @@ public class AllSingleDimensionGroupTest extends TestCase {
             }
             values = new String[rowCount];
             vv = new double[rowCount];
-            Map<String, IntList> treeMap = new TreeMap<String, IntList>(ComparatorFacotry.CHINESE_ASC);
+            Map<String, IntArray> treeMap = new TreeMap<String, IntArray>(ComparatorFacotry.CHINESE_ASC);
             for (int i = 0; i < values.length; i++) {
                 values[i] = group[(int) (Math.random() * 15)];
                 vv[i] = Math.random() * 10000;
-                IntList list = treeMap.get(values[i]);
+                IntArray list = treeMap.get(values[i]);
                 if (list == null) {
-                    list = new IntList();
+                    list = new IntArray();
                     treeMap.put(values[i], list);
                 }
                 list.add(i);
             }
-            Iterator<Entry<String, IntList>> iter = treeMap.entrySet().iterator();
+            Iterator<Entry<String, IntArray>> iter = treeMap.entrySet().iterator();
             while (iter.hasNext()) {
-                Entry<String, IntList> entry = iter.next();
+                Entry<String, IntArray> entry = iter.next();
                 map.put(entry.getKey(), GVIFactory.createGroupValueIndexBySimpleIndex(entry.getValue()));
-                IntList v = entry.getValue();
+                IntArray v = entry.getValue();
                 double result = 0;
-                Integer[] array = v.toArray();
+                int[] array = v.toArray();
                 for (int i = 0; i < array.length; i++) {
                     result += vv[array[i]];
                 }
@@ -174,6 +174,11 @@ public class AllSingleDimensionGroupTest extends TestCase {
                 @Override
                 public PrimitiveDetailGetter createPrimitiveDetailGetter() {
                     return null;
+                }
+
+                @Override
+                public void clear() {
+
                 }
             };
         }

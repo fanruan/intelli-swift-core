@@ -124,7 +124,7 @@ BI.BasicButton = BI.inherit(BI.Single, {
                     // if (e.button === 0) {
                     $(document).bind("mouseup." + self.getName(), function (e) {
                         // if (e.button === 0) {
-                        if (!hand.__isMouseInBounds__(e) && mouseDown === true && !selected) {
+                        if (BI.DOM.isExist(self) && !hand.__isMouseInBounds__(e) && mouseDown === true && !selected) {
                             self.setSelected(!self.isSelected());
                             self._trigger();
                         }
@@ -146,7 +146,7 @@ BI.BasicButton = BI.inherit(BI.Single, {
                 });
                 hand.mouseup(function (e) {
                     // if (e.button === 0) {
-                    if (mouseDown === true && selected === true) {
+                    if (BI.DOM.isExist(self) && mouseDown === true && selected === true) {
                         clk(e);
                     }
                     mouseDown = false;

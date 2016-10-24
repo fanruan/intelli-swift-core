@@ -68,7 +68,6 @@ public class BuildCubeTask implements CubeTask {
     protected ICubeConfiguration cubeConfiguration;
     protected BICube cube;
     protected BICubeFinishObserver<Future<String>> finishObserver;
-    private String uuid;
     private int retryNTimes;
 
 
@@ -78,13 +77,12 @@ public class BuildCubeTask implements CubeTask {
         cubeConfiguration = cubeBuild.getCubeConfiguration();
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         this.cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
-        uuid = "BUILD_CUBE" + UUID.randomUUID();
         retryNTimes = 1000;
     }
 
     @Override
-    public String getUUID() {
-        return uuid;
+    public String getTaskId() {
+        return cubeBuild.getCubeTaskId();
     }
 
     @Override
@@ -101,6 +99,7 @@ public class BuildCubeTask implements CubeTask {
 
     @Override
     public void start() {
+        BIConfigureManagerCenter.getLogManager().logStart(biUser.getUserId());
         BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
         Long t = System.currentTimeMillis();
         BILoggerFactory.getLogger().info("start copy some files");
@@ -223,7 +222,6 @@ public class BuildCubeTask implements CubeTask {
         operationManager.generateRelationBuilder(cubeBuild.getCubeGenerateRelationSet());
         operationManager.generateTableRelationPath(cubeBuild.getCubeGenerateRelationPathSet());
         IRouter router = BIFactoryHelper.getObject(IRouter.class);
-
         try {
             BIConfigureManagerCenter.getLogManager().relationPathSet(cubeBuild.getBiTableSourceRelationPathSet(), biUser.getUserId());
             BIConfigureManagerCenter.getLogManager().cubeTableSourceSet(cubeBuild.getAllSingleSources(), biUser.getUserId());
@@ -359,7 +357,7 @@ public class BuildCubeTask implements CubeTask {
 
     @Override
     public boolean equals(Object obj) {
-        return this.getUUID().equals(((BuildCubeTask) obj).getUUID());
+        return this.getTaskId().equals(((BuildCubeTask) obj).getTaskId());
     }
 
 }

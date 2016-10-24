@@ -104,8 +104,8 @@ BI.ETLModel = BI.inherit(FR.OB, {
     constructFieldNameAndTranslationFieldNameRelation: function () {
         var fieldsIdName = [];
         var translations = this.getTranslations();
-        BI.each(this.getFields(), function(idx, arr){
-            BI.each(arr, function(id, field){
+        BI.each(this.getFields(), function (idx, arr) {
+            BI.each(arr, function (id, field) {
                 fieldsIdName[field.field_name] = translations[field.id];
             });
         });
@@ -119,9 +119,9 @@ BI.ETLModel = BI.inherit(FR.OB, {
     constructFieldNamesWhichHasRelation: function () {
         var fieldsName = [];
         var primKeyMap = this.relations.primKeyMap, foreignKeyMap = this.relations.foreignKeyMap;
-        BI.each(this.getFields(), function(idx, arr){
-            BI.each(arr, function(id, field){
-                if(BI.has(primKeyMap, field.id) || BI.has(foreignKeyMap, field.id)){
+        BI.each(this.getFields(), function (idx, arr) {
+            BI.each(arr, function (id, field) {
+                if (BI.has(primKeyMap, field.id) || BI.has(foreignKeyMap, field.id)) {
                     fieldsName.push(field.field_name);
                 }
             });
@@ -174,7 +174,7 @@ BI.ETLModel = BI.inherit(FR.OB, {
 
     setTranslationsByETLValue: function (etl) {
         var self = this;
-        if(BI.has(etl, "etl_type") && BI.isEqual(etl.etl_type, "convert")){
+        if (BI.has(etl, "etl_type") && BI.isEqual(etl.etl_type, "convert")) {
             var etlValue = etl.etl_value;
             var translations = this.getTranslations();
             var transText = [], text = [];
@@ -255,13 +255,13 @@ BI.ETLModel = BI.inherit(FR.OB, {
         return fieldNames;
     },
 
-    modifyExcelData: function(tId, fullFileName){
+    modifyExcelData: function (tId, fullFileName) {
         var table = this.getTableById(tId);
         table.full_file_name = fullFileName;
         this.saveTableById(tId, table);
     },
 
-    modifySQLData: function(tId, sql, linkName) {
+    modifySQLData: function (tId, sql, linkName) {
         var table = this.getTableById(tId);
         table.sql = sql;
         table.linkName = linkName;
@@ -368,6 +368,29 @@ BI.ETLModel = BI.inherit(FR.OB, {
         });
     },
 
+    refresh4Fields: function (data) {
+        var fields = data.fields, oFields = this.fields;
+
+        function getFieldId(name, fields) {
+            var fieldId = BI.UUID();
+            BI.some(fields, function (i, fs) {
+                return BI.some(fs, function (j, field) {
+                    if (field.field_name === name) {
+                        fieldId = field.id;
+                        return true;
+                    }
+                });
+            });
+            return fieldId;
+        }
+
+        BI.each(fields, function (i, fs) {
+            BI.each(fs, function (j, field) {
+                field.id = getFieldId(field.field_name, oFields);
+            });
+        });
+    },
+
     _getDistinctTableName: function (name) {
         var self = this;
         var allTableNameTrans = [];
@@ -382,19 +405,23 @@ BI.ETLModel = BI.inherit(FR.OB, {
     },
 
     //自己有id的table使用原来的
-    _addId2Tables: function (tables, ids) {
+    _addId2Tables: function (tables, ids, isTemp) {
         var self = this;
         BI.each(tables, function (i, table) {
             var id = table.id || BI.UUID();
             if (BI.isNotNull(table.tables)) {
-                self._addId2Tables(tables[i].tables, ids);
+                self._addId2Tables(tables[i].tables, ids, true);
                 tables[i] = BI.extend(table, {
                     id: id,
-                    tables: tables[i].tables
+                    tables: tables[i].tables,
+                    temp_name: table.temp_name || (table.tables[0].temp_name + "_" + table.etl_type)
                 });
             } else {
                 tables[i] = BI.extend(table, {
-                    id: id
+                    id: id,
+                    temp_name: isTemp ?
+                        (table.temp_name || self.translations[id] || table.table_name) :
+                        (self.translations[id] || table.table_name)
                 });
             }
             ids[id] = tables[i];
