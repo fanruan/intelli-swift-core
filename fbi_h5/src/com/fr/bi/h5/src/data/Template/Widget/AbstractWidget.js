@@ -7,49 +7,6 @@ import {each, invariant, isNil, find, findKey, remove, isEqual, size, keys, isNu
 import {Fetch} from 'lib'
 import DimensionFactory from './Dimensions/DimensionFactory'
 
-function _getQuarterStartMonth(date) {
-    var quarterStartMonth = 0;
-    var nowMonth = date.getMonth();
-    if (nowMonth < 3) {
-        quarterStartMonth = 0;
-    }
-    if (2 < nowMonth && nowMonth < 6) {
-        quarterStartMonth = 3;
-    }
-    if (5 < nowMonth && nowMonth < 9) {
-        quarterStartMonth = 6;
-    }
-    if (nowMonth > 8) {
-        quarterStartMonth = 9;
-    }
-    return quarterStartMonth;
-}
-
-//获得指定日期所在季度的起始日期
-function _getQuarterStartDate(date) {
-    return new Date(date.getFullYear(), _getQuarterStartMonth(date), 1);
-}
-
-//获得指定日期所在季度的结束日期
-function _getQuarterEndDate(date) {
-    var quarterEndMonth = _getQuarterStartMonth(date) + 2;
-    return new Date(date.getFullYear(), quarterEndMonth, date.getMonthDays(quarterEndMonth));
-}
-
-//指定日期n个月之前或之后的日期
-function _getOffsetMonth(date, n) {
-    var dt = new Date(date);
-    dt.setMonth(dt.getMonth() + parseInt(n));
-    return dt;
-}
-
-//指定日期n个季度之前或之后的日期
-function _getOffsetQuarter(date, n) {
-    var dt = new Date(date);
-    dt.setMonth(dt.getMonth() + n * 3);
-    return dt;
-}
-
 class AbstractWidget {
     constructor($widget, wId, template) {
         this.$widget = $widget;
@@ -59,6 +16,37 @@ class AbstractWidget {
 
     $get() {
         return this.$widget;
+    }
+
+    isControl() {
+        return false;
+    }
+
+    isDimensionByViewId(viewId) {
+        return parseInt(viewId, 10) < BICst.REGION.TARGET1;
+    }
+
+    isDimensionById(id) {
+        const dimensionIds = this.getAllDimensionIds();
+        return dimensionIds.indexOf(id) > -1;
+    }
+
+    isTargetById(id) {
+        const targetIds = this.getAllTargetIds();
+        return targetIds.indexOf(id) > -1;
+    }
+
+    createJson() {
+        return this.$widget.toJS();
+    }
+
+    isFreeze() {
+        const isFreeze = this.$widget.getIn(['settings', 'freeze_dim']);
+        return isNil(isFreeze) ? true : isFreeze;
+    }
+
+    hasDimensionById(dId) {
+        return !isNil(this.$widget.getIn(['dimensions', dId]))
     }
 
     get$DimensionById(id) {
@@ -119,20 +107,6 @@ class AbstractWidget {
         });
         this._targetIds = result;
         return result;
-    }
-
-    isDimensionById(id) {
-        const dimensionIds = this.getAllDimensionIds();
-        return dimensionIds.indexOf(id) > -1;
-    }
-
-    isDimensionByViewId(viewId) {
-        return parseInt(viewId, 10) < BICst.REGION.TARGET1;
-    }
-
-    isTargetById(id) {
-        const targetIds = this.getAllTargetIds();
-        return targetIds.indexOf(id) > -1;
     }
 
     getAllDimensionAndTargetIds() {
@@ -203,10 +177,6 @@ class AbstractWidget {
         return this.$widget.get('name');
     }
 
-    createJson() {
-        return this.$widget.toJS();
-    }
-
     getWidgetBounds() {
         return this.$widget.get('bounds').toJS() || {};
     }
@@ -248,10 +218,6 @@ class AbstractWidget {
         });
     }
 
-    isControl() {
-        return false;
-    }
-
     getControlCalculations(notcontain) {
         var self = this, filterValues = [];
         //控件
@@ -275,7 +241,7 @@ class AbstractWidget {
                 dimensionIds.forEach((dimId, i) => {
                     var dimension = self.template.getDimensionById(dimId);
                     var fValue = value, fType = "";
-                    if (isNil(fValue) || (isString(value) && value.length === 0 )|| size(value) === 0) {
+                    if (isNil(fValue) || (isString(value) && value.length === 0 ) || size(value) === 0) {
                         return;
                     }
                     var filter = null;
@@ -479,14 +445,14 @@ class AbstractWidget {
         //钻取条件  对于交叉表，要考虑的不仅仅是used，还有行表头与列表头之间的钻取问题
         var drill = this.getDrill();
         if (!isNil(drill) && this.getType() !== BICst.WIDGET.MAP) {
-            drill.forEach((drArray, drId)=>{
+            drill.forEach((drArray, drId)=> {
                 if (drArray.length === 0) {
                     return;
                 }
                 var dimension = this.getDimensionById(drId);
                 !isNil(dimension) && dimension.setUsed(false);
                 this.set$Dimension(dimension.$get(), drId);
-                drArray.forEach((drill, i)=>{
+                drArray.forEach((drill, i)=> {
                     var dimension = this.getDimensionById(drill.dId);
                     if (!isNil(dimension)) {
                         dimension.setUsed(i === drArray.length - 1);
@@ -496,7 +462,7 @@ class AbstractWidget {
                         var tempRegionType = this.getRegionTypeByDimensionID(drill.dId);
                         var view = this.getWidgetView();
                         var dIndex = view[drillRegionType].indexOf(drId);
-                        remove(view[tempRegionType], function(s){
+                        remove(view[tempRegionType], function (s) {
                             return isEqual(s, drill.dId);
                         });
                         view.splice(dIndex, 0, drill.dId);
@@ -519,8 +485,8 @@ class AbstractWidget {
 
         //联动 由于这个clicked现在放到了自己的属性里，直接拿就好了
         var linkages = this.getLinkageValues();
-        linkages.forEach((linkValue, cId)=>{
-            linkValue.forEach((v, i)=>{
+        linkages.forEach((linkValue, cId)=> {
+            linkValue.forEach((v, i)=> {
                 var filterValue = parseSimpleFilter(v);
                 if (!isNil(filterValue)) {
                     filterValues.push(filterValue);
@@ -543,9 +509,9 @@ class AbstractWidget {
         var allLinksWIds = [];
 
         getLinkedIds(allLinksWIds);
-        allLinksWIds.forEach((lId, i)=>{
+        allLinksWIds.forEach((lId, i)=> {
             var lLinkages = this.getLinkageValues();
-            lLinkages.forEach((linkValue, cId)=>{
+            lLinkages.forEach((linkValue, cId)=> {
                 var lTransferFilter = this.template.getWSTransferFilterById(this.template.getWidgetIDByDimensionID(cId));
                 if (lTransferFilter === true) {
                     var lTarFilter = this.template.getDimensionFilterValueByID(cId);
@@ -558,11 +524,11 @@ class AbstractWidget {
             //还应该拿到所有的联动过来的组件的钻取条件 也是给跪了
             var linkDrill = this.getDrill();
             if (!isNil(linkDrill)) {
-                linkDrill.forEach((drArray, drId)=>{
+                linkDrill.forEach((drArray, drId)=> {
                     if (drArray.length === 0) {
                         return;
                     }
-                    drArray.forEach((drill, id)=>{
+                    drArray.forEach((drill, id)=> {
                         drArray[i].values.forEach((v, i) => {
                             var filterValue = parseSimpleFilter(v);
                             if (!isNill(filterValue)) {
@@ -577,7 +543,7 @@ class AbstractWidget {
 
         //日期类型的过滤条件
         var dimensions = this.getAllDimensionAndTargetIds();
-        dimensions.forEach((dimension, dId)=>{
+        dimensions.forEach((dimension, dId)=> {
             var filterValue = this.getDimensionById(dId).getFilterValue() || {};
             this._parseFilter(filterValue);
             this.set$Dimension(dimension.$get(), dId);
@@ -585,7 +551,7 @@ class AbstractWidget {
 
         //考虑表头上指标过滤条件的日期类型
         var target_filter = this.getWidgetFilterValue();
-        target_filter.forEach((filter, tId)=>{
+        target_filter.forEach((filter, tId)=> {
             this._parseFilter(filter)
         });
         this.setWidgetFilterValue(target_filter);
@@ -618,11 +584,6 @@ class AbstractWidget {
     }
 
     //settings  ---- start ----
-
-    isFreeze() {
-        const isFreeze = this.$widget.getIn(['settings', 'freeze_dim']);
-        return isNil(isFreeze) ? true : isFreeze;
-    }
 
     getWSTableForm() {
         var ws = this.getWidgetSettings();
@@ -758,17 +719,17 @@ class AbstractWidget {
         return this;
     }
 
-    setWidgetFilter(filter){
+    setWidgetFilter(filter) {
         this.$widget = this.$widget.set('filter', Immutable.fromJS(filter));
         return this;
     }
 
-    setWidgetFilterValue(filter_value){
+    setWidgetFilterValue(filter_value) {
         this.$widget = this.$widget.set('filter_value', Immutable.fromJS(filter_value));
         return this;
     }
 
-    setWidgetRealData(real_data){
+    setWidgetRealData(real_data) {
         this.$widget = this.$widget.set('real_data', Immutable.fromJS(real_data));
         return this;
     }
@@ -789,6 +750,7 @@ class AbstractWidget {
     }
 
     _parseFilter(filter) {
+        var self = this;
         var filterType = filter.filter_type, filterValue = filter.filter_value;
         if (filterType === BICst.FILTER_TYPE.AND || filterType === BICst.FILTER_TYPE.OR) {
             filterValue.forEach((value, i) => {
@@ -1220,3 +1182,47 @@ class AbstractWidget {
 }
 
 export default AbstractWidget;
+
+
+function _getQuarterStartMonth(date) {
+    var quarterStartMonth = 0;
+    var nowMonth = date.getMonth();
+    if (nowMonth < 3) {
+        quarterStartMonth = 0;
+    }
+    if (2 < nowMonth && nowMonth < 6) {
+        quarterStartMonth = 3;
+    }
+    if (5 < nowMonth && nowMonth < 9) {
+        quarterStartMonth = 6;
+    }
+    if (nowMonth > 8) {
+        quarterStartMonth = 9;
+    }
+    return quarterStartMonth;
+}
+
+//获得指定日期所在季度的起始日期
+function _getQuarterStartDate(date) {
+    return new Date(date.getFullYear(), _getQuarterStartMonth(date), 1);
+}
+
+//获得指定日期所在季度的结束日期
+function _getQuarterEndDate(date) {
+    var quarterEndMonth = _getQuarterStartMonth(date) + 2;
+    return new Date(date.getFullYear(), quarterEndMonth, date.getMonthDays(quarterEndMonth));
+}
+
+//指定日期n个月之前或之后的日期
+function _getOffsetMonth(date, n) {
+    var dt = new Date(date);
+    dt.setMonth(dt.getMonth() + parseInt(n));
+    return dt;
+}
+
+//指定日期n个季度之前或之后的日期
+function _getOffsetQuarter(date, n) {
+    var dt = new Date(date);
+    dt.setMonth(dt.getMonth() + n * 3);
+    return dt;
+}

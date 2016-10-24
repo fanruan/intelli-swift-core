@@ -8,6 +8,7 @@ import com.fr.general.DateUtils;
 import com.fr.general.Inter;
 import com.fr.stable.ColumnRow;
 import com.fr.stable.StringUtils;
+import com.fr.stable.core.UUID;
 import com.fr.third.v2.org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import com.fr.third.v2.org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import com.fr.third.v2.org.apache.poi.openxml4j.opc.OPCPackage;
@@ -118,9 +119,9 @@ public class Excel2007Util {
                     int mergedColCount = e.getColumn() - s.getColumn();
                     for (int i = 0; i < mergedColCount; i++) {
                         Object[] tempArray = tempRowDataList.get(e.getRow());
-                        if(tempArray.length < e.getColumn() - 1) {
-                            Object [] tArray = new Object[e.getColumn() - 1];
-                            for(int k = 0; k < tempArray.length; k++) {
+                        if (tempArray.length < e.getColumn() - 1) {
+                            Object[] tArray = new Object[e.getColumn() - 1];
+                            for (int k = 0; k < tempArray.length; k++) {
                                 tArray[k] = tempArray[k];
                             }
                             tArray[e.getColumn() - i] = tempRowDataList.get(e.getRow())[s.getColumn()];
@@ -134,9 +135,9 @@ public class Excel2007Util {
                     int mergedRowCount = e.getRow() - s.getRow();
                     for (int j = 0; j < mergedRowCount; j++) {
                         Object[] tempArray = tempRowDataList.get(e.getRow() - j);
-                        if(tempArray.length < e.getColumn() + 1) {
-                            Object [] tArray = new Object[e.getColumn() + 1];
-                            for(int k = 0; k < tempArray.length; k++) {
+                        if (tempArray.length < e.getColumn() + 1) {
+                            Object[] tArray = new Object[e.getColumn() + 1];
+                            for (int k = 0; k < tempArray.length; k++) {
                                 tArray[k] = tempArray[k];
                             }
                             tArray[e.getColumn()] = tempRowDataList.get(s.getRow())[e.getColumn()];
@@ -186,7 +187,7 @@ public class Excel2007Util {
                         columnNames[j] = Inter.getLocText("BI-Field");
                     }
                 }
-                createDistinctColumnNames();
+                //createDistinctColumnNames();
             } else if (i == 1) {
                 columnTypes = new int[columnCount];
                 for (int j = 0; j < columnCount; j++) {
@@ -466,7 +467,8 @@ public class Excel2007Util {
                         tempData.add(StringUtils.EMPTY);
                     }
                 }
-                tempData.add(cellValue);
+                String mergeCellId = UUID.randomUUID().toString();
+                tempData.add(cellValue + mergeCellId);
 
                 if (thisColumn > -1) {
                     lastColumnNumber = thisColumn;
@@ -478,6 +480,7 @@ public class Excel2007Util {
             } else if ("row".equals(name)) {
                 tempRowDataList.add(tempData.toArray());
                 tempData = new ArrayList<String>();
+                lastColumnNumber = -1;
             } else if (!"oddHeader".equals(name) && !"evenHeader".equals(name) && !"firstHeader".equals(name)) {
                 if ("oddFooter".equals(name) || "evenFooter".equals(name) || "firstFooter".equals(name)) {
                     this.hfIsOpen = false;

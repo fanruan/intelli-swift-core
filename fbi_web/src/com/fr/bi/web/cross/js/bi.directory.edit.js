@@ -48,6 +48,10 @@
             BI.requestAsync("fr_bi", "hangout_report_to_plate", {
                 report: bi
             }, function (report) {
+                if (BI.isNotNull(report.error)) {
+                    BI.Msg.toast(BI.i18nText("BI-Report_Hangout_Error"), "warning");
+                    return;
+                }
                 //DOM操作
                 var tName = 'bi';
                 var catalogWidths = [156, 300];

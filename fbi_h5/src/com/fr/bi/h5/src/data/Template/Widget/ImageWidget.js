@@ -2,6 +2,7 @@
  * ImageWidget
  * Created by Young's on 2016/10/12.
  */
+import {Image} from 'lib'
 import AbstractWidget from './AbstractWidget'
 
 class ImageWidget extends AbstractWidget{
@@ -13,13 +14,13 @@ class ImageWidget extends AbstractWidget{
         const size = this.$widget.get('size');
         switch (size) {
             case BICst.IMAGE_RESIZE_MODE.ORIGINAL:
-                return 'contain';
+                return Image.resizeMode.cover;
             case BICst.IMAGE_RESIZE_MODE.EQUAL:
-                return 'cover';
+                return Image.resizeMode.contain;
             case BICst.IMAGE_RESIZE_MODE.STRETCH:
-                return 'stretch';
+                return Image.resizeMode.stretch;
             default:
-                return 'contain'
+                return Image.resizeMode.contain;
         }
     }
 

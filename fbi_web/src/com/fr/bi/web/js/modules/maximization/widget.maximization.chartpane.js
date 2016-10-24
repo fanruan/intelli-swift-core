@@ -9,8 +9,6 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.MaximizationChartPane.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-maximization-chart-pane",
-            height: 600,
-            width: 800,
             wId: "",
             status: null
         })
@@ -20,7 +18,7 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
 
         var self = this, o = this.options;
 
-        this.tools = (o.status === BICst.WIDGET_STATUS.EDIT) ? this._createDeziTools() : this._createShowTools();
+        this.tools = this._createTools();
         this._buildChartDrill();
 
         this.tableChart = BI.createWidget({
@@ -29,14 +27,12 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
             status: o.status
         });
         this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function (widget) {
-            self.fireEvent(BI.MaximizationChartPane.EVENT_SET, widget);
+            self.fireEvent(BI.MaximizationChartPane.EVENT_SET, arguments);
         });
         this.tableChart.on(BI.TableChartManager.EVENT_CLICK_CHART, function (obj) {
             self._onClickChart(obj);
-            self.hideDrill(o.wId);
         });
 
-        this.hideDrill = BI.debounce(BI.bind(this.chartDrill.hideDrill, this.chartDrill), 3000);
         this.tableChartPopupulate = BI.debounce(BI.bind(this.tableChart.populate, this.tableChart), 0);
 
         BI.createWidget({
@@ -49,26 +45,22 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
                 top: 45,
                 bottom: 10
             }, {
-                el: this.tools,
-                top: 0,
-                right: 10
-            }, {
                 el: this.chartDrill,
                 left: 0,
                 top: 0,
                 right: 0
+            }, {
+                el: this.tools,
+                top: 0,
+                right: 10
             }]
         })
     },
 
     _onClickChart: function (obj) {
-        if (BI.has(obj, "clicked")) {
-            this.fireEvent(BI.MaximizationChartPane.EVENT_SET, obj);
-        } else {
-            this.chartDrill.populate(obj);
-            this.chartDrill.resetLayout(300, 300, 370, 35);
-        }
+        this.chartDrill.populate(obj);
     },
+
     _buildChartDrill: function () {
         var self = this, wId = this.options.wId;
         this.chartDrill = BI.createWidget({
@@ -78,9 +70,8 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
         this.chartDrill.on(BI.ChartDrill.EVENT_CHANGE, function (widget) {
             self.fireEvent(BI.MaximizationChartPane.EVENT_SET, widget);
         });
-        this.chartDrill.populate();
-        this.chartDrill.resetLayout(300, 300, 370, 35);
     },
+
     _createToolsButton: function (title, cls) {
         return BI.createWidget({
             type: "bi.icon_button",
@@ -90,33 +81,8 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
             cls: cls + " dashboard-title-detail"
         });
     },
-    _createShowTools: function () {
-        var self = this, wId = this.options.wId;
 
-        var minimize = this._createToolsButton("BI-minimization", "widget-tools-minimization-font");
-        minimize.on(BI.IconButton.EVENT_CHANGE, function () {
-            self.fireEvent(BI.MaximizationChartPane.EVENT_CLOSE);
-        });
-
-        var filter = this._createToolsButton("BI-Show_Filters", "widget-tools-filter-font");
-        filter.on(BI.IconButton.EVENT_CHANGE, function () {
-            self._onClickFilter();
-        });
-
-        var excel = this._createToolsButton("BI-Export_As_Excel", "widget-tools-export-excel-font");
-        excel.on(BI.IconButton.EVENT_CHANGE, function () {
-            window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
-                + window.encodeURIComponent(BI.Utils.getWidgetNameByID(wId)));
-        });
-
-        return BI.createWidget({
-            type: "bi.left",
-            cls: "operator-region",
-            items: [minimize, filter, excel],
-            hgap: 3
-        });
-    },
-    _createDeziTools: function () {
+    _createTools: function () {
         var self = this, wId = this.options.wId;
 
         var minimize = this._createToolsButton("BI-minimization", "widget-tools-minimization-font");
@@ -164,7 +130,6 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
         });
         combo.on(BI.WidgetCombo.EVENT_BEFORE_POPUPVIEW, function () {
             self.chartDrill.populate();
-            self.chartDrill.resetLayout(300, 300, 370, 35);
         });
 
         return BI.createWidget({
@@ -184,13 +149,13 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
             });
             BI.createWidget({
                 type: "bi.absolute",
-                element: this.tableChart,
+                element: this.element,
                 items: [{
                     el: this.filterPane,
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0
+                    top: 45,
+                    left: 10,
+                    right: 10,
+                    bottom: 10
                 }]
             });
             return;
@@ -202,11 +167,9 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
         BI.isNotNull(this.filterPane) && this.filterPane.populate();
         this.tableChartPopupulate();
         this.chartDrill.populate();
-        this.chartDrill.resetLayout(300, 300, 370, 35);
     },
 
     populate: function () {
-        this.tableChart.populate();
         this._refreshTableAndFilter();
     }
 });

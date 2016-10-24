@@ -42,6 +42,11 @@
   filter: alpha(opacity=80);
   z-index: 1000000000 !important;
 }
+.bi-overlay {
+  background-color: #1a1a1a;
+  opacity: 0.2;
+  filter: alpha(opacity=20);
+}
 .bi-list-item:hover,
 .bi-list-item.hover {
   background-color: #f4f4f4;

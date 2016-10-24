@@ -42,7 +42,11 @@
                     text: data.text
                 };
                 BI.requestAsync("fr_bi", "hangout_report_to_plate", {report: bi}, function (res) {
-                    BI.Msg.toast(BI.i18nText("BI-Report_Hangout_Success"));
+                    if (BI.isNotNull(res.error)) {
+                        BI.Msg.toast(BI.i18nText("BI-Report_Hangout_Error"), "warning");
+                    } else {
+                        BI.Msg.toast(BI.i18nText("BI-Report_Hangout_Success"));
+                    }
                 });
             });
         });
