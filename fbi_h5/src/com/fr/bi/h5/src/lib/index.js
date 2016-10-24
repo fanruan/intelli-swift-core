@@ -47,7 +47,7 @@ export RefreshControl from './RefreshControl/RefreshControl.web';
 export View from './View/View.web';
 export ViewPagerAndroid from './ViewPager/ViewPager.web';
 export ViewPager from './ViewPager/ViewPager.web';
-
+export WebView from './Web/WebView.web';
 
 // APIs
 export Alert from './Alert/Alert.web';

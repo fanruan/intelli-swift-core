@@ -123,6 +123,8 @@ export deepClone from 'lodash/cloneDeep'
 
 export math from 'lodash/math'
 
+export formatAddress from './utils/formatAddress'
+
 
 export ReactComponentWithImmutableRenderMixin from './mixin/ReactComponentWithImmutableRenderMixin'
 export ReactComponentWithPureRenderMixin from 'react-addons-pure-render-mixin'
