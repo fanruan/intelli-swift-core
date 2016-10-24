@@ -652,7 +652,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                         }
                     }
                     name = BI.Utils.getFieldNameByID(fId);
-                    if (BI.Utils.isControlWidgetByWidgetId(o.wId)) {
+                    if (o.wId && BI.Utils.isControlWidgetByWidgetId(o.wId)) {
                         name = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fId)) + '.' + name;
                     }
                     return {
