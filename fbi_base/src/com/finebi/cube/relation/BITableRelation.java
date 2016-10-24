@@ -1,8 +1,11 @@
 package com.finebi.cube.relation;
 
+import com.finebi.cube.common.log.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.common.factory.BIFactoryHelper;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
@@ -49,10 +52,8 @@ public class BITableRelation extends BIBasicRelation<BusinessTable, BusinessFiel
     }
 
     /**
-     *
      * @param o
-     * @return
-     * 这个地方很恶心,etl-join有可能会导致tableRelation没变,但是sourceRelation改变,之后需要把sourceRelation提出来单独一个manager来解藕
+     * @return 这个地方很恶心, etl-join有可能会导致tableRelation没变,但是sourceRelation改变,之后需要把sourceRelation提出来单独一个manager来解藕
      */
     @Override
     public boolean equals(Object o) {
@@ -89,4 +90,6 @@ public class BITableRelation extends BIBasicRelation<BusinessTable, BusinessFiel
 //        }
 //        return 0;
 //    }
+
+
 }
