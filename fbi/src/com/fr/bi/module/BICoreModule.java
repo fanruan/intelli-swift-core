@@ -394,6 +394,11 @@ public class BICoreModule extends AbstractModule {
         return BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesByUser(userId);
     }
 
+    @Override
+    public void clearAnalysisETLCache(long userId) {
+
+    }
+
     private void registerSystemManager() {
     }
 
