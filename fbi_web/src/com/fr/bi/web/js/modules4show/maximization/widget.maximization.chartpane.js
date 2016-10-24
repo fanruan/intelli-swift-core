@@ -1,20 +1,20 @@
 /**
  * Created by zcf on 2016/10/14.
  */
-BI.MaximizationChartPane = BI.inherit(BI.Widget, {
+BI.Maximization4ShowChartPane = BI.inherit(BI.Widget, {
     _constants: {
         TOOL_ICON_WIDTH: 20,
         TOOL_ICON_HEIGHT: 20
     },
     _defaultConfig: function () {
-        return BI.extend(BI.MaximizationChartPane.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-maximization-chart-pane",
+        return BI.extend(BI.Maximization4ShowChartPane.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-maximization-4show-chart-pane",
             wId: "",
             status: null
         })
     },
     _init: function () {
-        BI.MaximizationChartPane.superclass._init.apply(this, arguments);
+        BI.Maximization4ShowChartPane.superclass._init.apply(this, arguments);
 
         var self = this, o = this.options;
 
@@ -27,7 +27,7 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
             status: o.status
         });
         this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function (widget) {
-            self.fireEvent(BI.MaximizationChartPane.EVENT_SET, arguments);
+            self.fireEvent(BI.Maximization4ShowChartPane.EVENT_SET, arguments);
         });
         this.tableChart.on(BI.TableChartManager.EVENT_CLICK_CHART, function (obj) {
             self._onClickChart(obj);
@@ -68,8 +68,9 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
             wId: wId
         });
         this.chartDrill.on(BI.ChartDrill.EVENT_CHANGE, function (widget) {
-            self.fireEvent(BI.MaximizationChartPane.EVENT_SET, widget);
+            self.fireEvent(BI.Maximization4ShowChartPane.EVENT_SET, widget);
         });
+        this.chartDrill.populate();
     },
 
     _createToolsButton: function (title, cls) {
@@ -81,13 +82,12 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
             cls: cls + " dashboard-title-detail"
         });
     },
-
     _createTools: function () {
         var self = this, wId = this.options.wId;
 
         var minimize = this._createToolsButton("BI-minimization", "widget-tools-minimization-font");
         minimize.on(BI.IconButton.EVENT_CHANGE, function () {
-            self.fireEvent(BI.MaximizationChartPane.EVENT_CLOSE);
+            self.fireEvent(BI.Maximization4ShowChartPane.EVENT_CLOSE);
         });
 
         var filter = this._createToolsButton("BI-Show_Filters", "widget-tools-filter-font");
@@ -95,48 +95,17 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
             self._onClickFilter();
         });
 
-        var expand = this._createToolsButton("BI-Detailed_Setting", "widget-combo-detail-font");
-        expand.on(BI.IconButton.EVENT_CHANGE, function () {
-            self.fireEvent(BI.MaximizationChartPane.EVENT_CHANGE, BICst.DASHBOARD_WIDGET_EXPAND);
-        });
-
-        var combo = BI.createWidget({
-            type: "bi.widget_combo",
-            wId: wId
-        });
-        combo.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
-            switch (type) {
-                case BICst.DASHBOARD_WIDGET_EXPAND:
-                case BICst.DASHBOARD_WIDGET_SHOW_NAME:
-                case BICst.DASHBOARD_WIDGET_NAME_POS_LEFT:
-                case BICst.DASHBOARD_WIDGET_NAME_POS_CENTER:
-                    self.fireEvent(BI.MaximizationChartPane.EVENT_CHANGE, type);
-                    break;
-                case BICst.DASHBOARD_WIDGET_LINKAGE:
-                case BICst.DASHBOARD_WIDGET_RENAME:
-                case BICst.DASHBOARD_WIDGET_COPY:
-                case BICst.DASHBOARD_WIDGET_DELETE:
-                    self.fireEvent(BI.MaximizationChartPane.EVENT_CHANGE, type);
-                    self.fireEvent(BI.MaximizationChartPane.EVENT_CLOSE);
-                    break;
-                case BICst.DASHBOARD_WIDGET_FILTER:
-                    self._onClickFilter();
-                    break;
-                case BICst.DASHBOARD_WIDGET_EXCEL:
-                    window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
-                        + window.encodeURIComponent(BI.Utils.getWidgetNameByID(wId)));
-                    break;
-            }
-        });
-        combo.on(BI.WidgetCombo.EVENT_BEFORE_POPUPVIEW, function () {
-            self.chartDrill.populate();
+        var excel = this._createToolsButton("BI-Export_As_Excel", "widget-tools-export-excel-font");
+        excel.on(BI.IconButton.EVENT_CHANGE, function () {
+            window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
+                + window.encodeURIComponent(BI.Utils.getWidgetNameByID(wId)));
         });
 
         return BI.createWidget({
             type: "bi.left",
             cls: "operator-region",
-            items: [minimize, filter, expand, combo],
-            lgap: 10
+            items: [minimize, filter, excel],
+            hgap: 3
         });
     },
 
@@ -173,7 +142,7 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
         this._refreshTableAndFilter();
     }
 });
-BI.MaximizationChartPane.EVENT_SET = "BI.MaximizationChartPane.EVENT_SET";
-BI.MaximizationChartPane.EVENT_CHANGE = "BI.MaximizationChartPane.EVENT_CHANGE";
-BI.MaximizationChartPane.EVENT_CLOSE = "BI.MaximizationChartPane.EVENT_CLOSE";
-$.shortcut("bi.maximization_chart_pane", BI.MaximizationChartPane);
+BI.Maximization4ShowChartPane.EVENT_SET = "BI.Maximization4ShowChartPane.EVENT_SET";
+BI.Maximization4ShowChartPane.EVENT_CHANGE = "BI.Maximization4ShowChartPane.EVENT_CHANGE";
+BI.Maximization4ShowChartPane.EVENT_CLOSE = "BI.Maximization4ShowChartPane.EVENT_CLOSE";
+$.shortcut("bi.maximization_4show_chart_pane", BI.Maximization4ShowChartPane);

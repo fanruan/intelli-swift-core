@@ -28,7 +28,7 @@ public class BICubeIntegerDetailData extends BICubeDetailData<Integer> {
         }
     }
     @Override
-    protected ICubeResourceLocation setDetailType() {
+    protected ICubeResourceLocation setDetailType(boolean isIncrease) {
         return currentLocation.setIntegerTypeWrapper();
     }
     @Override
