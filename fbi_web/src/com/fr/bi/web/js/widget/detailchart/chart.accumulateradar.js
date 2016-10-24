@@ -167,7 +167,7 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
             chart_font: options.chart_font || c.FONT_STYLE,
             left_y_axis_unit: options.left_y_axis_unit || "",
             show_left_label: BI.isNull(options.show_left_label) ? true : options.show_left_label,
-            left_label_style: options.left_label_style || {},
+            left_label_style: options.left_label_style ||  c.LEFT_LABEL_STYLE,
             left_line_color: options.left_line_color || "",
             chart_legend_setting: options.chart_legend_setting || {},
             show_h_grid_line: BI.isNull(options.show_h_grid_line) ? true : options.show_h_grid_line,

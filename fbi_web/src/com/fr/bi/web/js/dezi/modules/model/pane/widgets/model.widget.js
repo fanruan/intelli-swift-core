@@ -12,6 +12,18 @@ BIDezi.WidgetModel = BI.inherit(BI.Model, {
         })
     },
 
+    _init: function () {
+        BIDezi.WidgetModel.superclass._init.apply(this, arguments);
+    },
+
+    local: function () {
+        if (this.has("expand")) {
+            this.get("expand");
+            return true;
+        }
+        return false;
+    },
+
     change: function (changed, pre) {
         if (BI.has(changed, "detail")) {
             this.set(this.get("detail"), {
@@ -71,17 +83,5 @@ BIDezi.WidgetModel = BI.inherit(BI.Model, {
         }, {
             silent: true
         });
-    },
-
-    local: function () {
-        if (this.has("expand")) {
-            this.get("expand");
-            return true;
-        }
-        return false;
-    },
-
-    _init: function () {
-        BIDezi.WidgetModel.superclass._init.apply(this, arguments);
     }
 });

@@ -78,7 +78,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
             return;
         }
         if (BI.isNull(dId)) {
-            this.fireEvent(BI.ChartDisplay.EVENT_CHANGE, {clicked: BI.extend(BI.Utils.getLinkageValuesByID(wId), {})});
+            this.fireEvent(BI.ChartDisplay.EVENT_SET, {clicked: BI.extend(BI.Utils.getLinkageValuesByID(wId), {})});
             return;
         }
         //value 存当前的过滤条件——因为每一次钻取都要带上所有父节点的值
@@ -113,7 +113,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
             });
         }
         drillMap[rootId] = drillOperators;
-        this.fireEvent(BI.ChartDisplay.EVENT_CHANGE, {clicked: BI.extend(BI.Utils.getLinkageValuesByID(wId), drillMap)});
+        this.fireEvent(BI.ChartDisplay.EVENT_SET, {clicked: BI.extend(BI.Utils.getLinkageValuesByID(wId), drillMap)});
     },
 
     _send2AllChildLinkWidget: function (wid, dId, clicked) {
@@ -312,11 +312,13 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         transfer_filter: BI.Utils.getWSTransferFilterByID(o.wId),
                         left_y_axis_reversed: BI.Utils.getWSLeftYAxisReversedByID(o.wId),
                         right_y_axis_reversed: BI.Utils.getWSRightYAxisReversedByID(o.wId),
-                        chart_font: BI.Utils.getGSChartFont(o.wId),
+                        chart_font: BI.extend(BI.Utils.getGSChartFont(o.wId), {
+                            fontSize: BI.Utils.getGSChartFont(o.wId).fontSize + "px"
+                        }),
+                        show_left_label: false,
+                        show_right_label: false,
+                        show_right2_label: false,
                         line_width: BICst.DEFAULT_CHART_SETTING.mini_line_width,
-                        show_label: BICst.DEFAULT_CHART_SETTING.mini_show_label,
-                        // left_axis_show_label: BICst.DEFAULT_CHART_SETTING.mini_show_label,
-                        // right_axis_show_label: BICst.DEFAULT_CHART_SETTING.mini_show_label,
                         enable_tick: BICst.DEFAULT_CHART_SETTING.mini_enable_tick,
                         enable_minor_tick: BICst.DEFAULT_CHART_SETTING.mini_enable_minor_tick,
                         left_y_axis_unit: BICst.DEFAULT_CHART_SETTING.left_y_axis_unit,
@@ -459,4 +461,5 @@ BI.extend(BI.ChartDisplay, {
     ]
 });
 BI.ChartDisplay.EVENT_CHANGE = "EVENT_CHANGE";
+BI.ChartDisplay.EVENT_SET = "EVENT_SET";
 $.shortcut('bi.chart_display', BI.ChartDisplay);

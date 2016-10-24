@@ -59,6 +59,11 @@ public class BICubeOccupiedTable implements CubeTableEntityService {
     }
 
     @Override
+    public void increaseAddDataValue(BIDataValue originalDataValue) throws BICubeColumnAbsentException {
+
+    }
+
+    @Override
     public boolean checkRelationVersion(List<BITableSourceRelation> relations, int relation_version) {
         return false;
     }

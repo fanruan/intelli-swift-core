@@ -60,28 +60,18 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
         config.yAxis = this.yAxis;
         config.yAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + yTitle : yTitle;
         config.yAxis[0].title.rotation = this.constants.ROTATION;
-        BI.extend(config.yAxis[0], {
-            gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
-            lineWidth: this.config.line_width,
-            enableTick: this.config.enable_tick,
-            labelRotation: this.config.text_direction
+
+        BI.extend(config.yAxis[0], self.catSetting(this.config));
+
+        config.legend.style = BI.extend( this.config.chart_legend_setting, {
+            fontSize:  this.config.chart_legend_setting.fontSize + "px"
         });
 
         self.formatNumberLevelInXaxis(items, this.config.left_y_axis_number_level);
         config.xAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + xTitle : xTitle;
         config.xAxis[0].title.align = "center";
-        BI.extend(config.xAxis[0], {
-            formatter: self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level, this.config.num_separators),
-            gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
-            lineWidth: this.config.line_width,
-            showLabel: this.config.show_label,
-            enableTick: this.config.enable_tick,
-            min: self.config.custom_y_scale.minScale.scale || null,
-            max: self.config.custom_y_scale.maxScale.scale || null,
-            tickInterval: BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
-                self.config.custom_y_scale.interval.scale : null,
-            enableMinorTick: this.config.enable_minor_tick
-        });
+
+        BI.extend(config.xAxis[0], self.leftAxisSetting(self.config));
 
         config.chartType = "bar";
         //为了给数据标签加个%,还要遍历所有的系列，唉
@@ -113,7 +103,7 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style" : self.config.chart_font,
+                                "style": self.config.chart_font,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -138,7 +128,7 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style" : self.config.chart_font,
+                                "style": self.config.chart_font,
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -227,9 +217,21 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
             show_label: BI.isNull(options.show_label) ? true : options.show_label,
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
-	     custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,            
-	     num_separators: options.num_separators || false,
-            chart_font: options.chart_font || c.FONT_STYLE
+            custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
+            num_separators: options.num_separators || false,
+            chart_font: options.chart_font || c.FONT_STYLE,
+            show_left_label: BI.isNull(options.show_left_label) ? true : options.show_left_label,
+            left_label_style: options.left_label_style ||  c.LEFT_LABEL_STYLE,
+            left_line_color: options.left_line_color || "",
+            show_cat_label: BI.isNull(options.show_cat_label) ? true : options.show_cat_label,
+            cat_label_style: options.cat_label_style ||  c.CAT_LABEL_STYLE,
+            cat_line_color: options.cat_line_color || "",
+            chart_legend_setting: options.chart_legend_setting || {},
+            show_h_grid_line: BI.isNull(options.show_h_grid_line) ? true : options.show_h_grid_line,
+            h_grid_line_color: options.h_grid_line_color || "",
+            show_v_grid_line: BI.isNull(options.show_v_grid_line) ? true : options.show_v_grid_line,
+            v_grid_line_color: options.v_grid_line_color || "",
+            tooltip_setting: options.tooltip_setting || {},
         };
         this.options.items = this._formatItems(items);
         var types = [];

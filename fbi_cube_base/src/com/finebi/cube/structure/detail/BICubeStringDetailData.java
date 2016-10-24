@@ -29,8 +29,11 @@ public class BICubeStringDetailData extends BICubeDetailData<String> {
     }
 
     @Override
-    protected ICubeResourceLocation setDetailType() {
-        return currentLocation.setStringType();
+    protected ICubeResourceLocation setDetailType(boolean isIncrease) {
+        if(!isIncrease) {
+            return currentLocation.setStringType();
+        }
+        return currentLocation.setStringIncreaseType();
     }
 
     @Override

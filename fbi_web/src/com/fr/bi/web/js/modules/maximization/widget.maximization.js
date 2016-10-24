@@ -33,8 +33,12 @@ BI.Maximization = BI.inherit(BI.Widget, {
     _createMaximizationPane: function () {
         var self = this, o = this.options;
 
-        var backgroundLayer = BI.Layers.create(BICst.MAXIMIZATION_BACKGROUND_LAYER);
-        backgroundLayer.element.css({"background-color": "#1a1a1a", "opacity": "0.2"});
+        var backgroundLayer = BI.Layers.create(BICst.MAXIMIZATION_BACKGROUND_LAYER, null, {
+            render: {
+                type: "bi.layout",
+                cls: "bi-overlay"
+            }
+        });
         BI.Layers.show(BICst.MAXIMIZATION_BACKGROUND_LAYER);
 
         var layer = BI.Layers.create(BICst.MAXIMIZATION_LAYER);
@@ -59,16 +63,17 @@ BI.Maximization = BI.inherit(BI.Widget, {
 
         BI.createWidget({
             type: "bi.absolute",
-            element: backgroundLayer
-        });
-        BI.createWidget({
-            type: "bi.absolute_center_adapt",
             element: layer,
             items: [{
-                el: this.chartPane
+                el: this.chartPane,
+                left: 150,
+                right: 150,
+                top: 50,
+                bottom: 50
             }]
         })
     },
+
     populate: function () {
         if (BI.isNotNull(this.chartPane)) {
             this.chartPane.populate();
