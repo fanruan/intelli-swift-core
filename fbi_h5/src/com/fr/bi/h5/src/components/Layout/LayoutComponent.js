@@ -120,6 +120,8 @@ class LayoutComponent extends Component {
             case BICst.WIDGET.YEAR:
             case BICst.WIDGET.QUARTER:
             case BICst.WIDGET.MONTH:
+                component = <YearMonthComponent {...props} />;
+                break;
             case BICst.WIDGET.YMD:
             case BICst.WIDGET.QUERY:
             case BICst.WIDGET.RESET:
