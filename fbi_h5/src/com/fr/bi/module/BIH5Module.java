@@ -63,4 +63,9 @@ public class BIH5Module extends AbstractModule {
     public Collection<BIPackageID> getAvailablePackID(long userId) {
         return null;
     }
+
+    @Override
+    public void clearAnalysisETLCache(long userId) {
+        
+    }
 }
