@@ -732,7 +732,7 @@
         getWSWidgetBGByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             var wbg = this.getGSWidgetBackground(wid);
-            if(BI.isNull(ws.widget_bg)){
+            if (BI.isNull(ws.widget_bg)) {
                 return wbg ? wbg : {}
             }
             return ws.widget_bg
@@ -1807,6 +1807,24 @@
                 }
             });
             return BI.parseInt(region) >= BI.parseInt(BICst.REGION.TARGET1) && _set.contains(type);
+        },
+
+        isDimensionType: function (type) {
+            return type === BICst.TARGET_TYPE.STRING || type === BICst.TARGET_TYPE.DATE || type === BICst.TARGET_TYPE.NUMBER;
+        },
+
+        isTargetType: function (type) {
+            return type === BICst.TARGET_TYPE.NUMBER || type === BICst.TARGET_TYPE.COUNTER || type === BICst.TARGET_TYPE.FORMULA ||
+                type === BICst.TARGET_TYPE.YEAR_ON_YEAR_RATE ||
+                type === BICst.TARGET_TYPE.MONTH_ON_MONTH_RATE ||
+                type === BICst.TARGET_TYPE.YEAR_ON_YEAR_VALUE ||
+                type === BICst.TARGET_TYPE.MONTH_ON_MONTH_VALUE ||
+                type === BICst.TARGET_TYPE.SUM_OF_ABOVE ||
+                type === BICst.TARGET_TYPE.SUM_OF_ABOVE_IN_GROUP ||
+                type === BICst.TARGET_TYPE.SUM_OF_ALL ||
+                type === BICst.TARGET_TYPE.SUM_OF_ALL_IN_GROUP ||
+                type === BICst.TARGET_TYPE.RANK ||
+                type === BICst.TARGET_TYPE.RANK_IN_GROUP;
         },
 
         isCalculateTargetByDimensionID: function (dId) {

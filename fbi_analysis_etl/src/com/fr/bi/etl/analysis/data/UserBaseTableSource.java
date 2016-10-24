@@ -22,13 +22,13 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
     @BICoreField
     private long userId;
     private AnalysisBaseTableSource parent;
+
     public UserBaseTableSource(AnalysisBaseTableSource parent, long userId) {
-        super(parent.widget, parent.etlType,  parent.fieldList, parent.name, parent.widgetTableId);
+        super(parent.widget, parent.etlType, parent.fieldList, parent.name, parent.widgetTableId);
         this.userId = userId;
         this.parent = parent;
         this.userWidget = new UserWidget(parent.widget, userId);
     }
-
 
 
     /**
@@ -44,8 +44,8 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
     public boolean containsIDParentsWithMD5(String md5, long userId) {
         Set<AnalysisCubeTableSource> set = new HashSet<AnalysisCubeTableSource>();
         getSourceUsedAnalysisETLSource(set);
-        for (AnalysisCubeTableSource source : set){
-            if (ComparatorUtils.equals(source.createUserTableSource(userId).fetchObjectCore().getIDValue(), md5)){
+        for (AnalysisCubeTableSource source : set) {
+            if (ComparatorUtils.equals(source.createUserTableSource(userId).fetchObjectCore().getIDValue(), md5)) {
                 return true;
             }
         }
@@ -66,36 +66,37 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
     public long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader) {
         this.userWidget.clear();
         int index = 0, step = 1000, total = 0;
-        while (total == (index) * step){
-            List<List> values = userWidget.createData(index*step, index*step + step);
-            for (int i = 0; i < values.size(); i ++){
+        while (total == (index) * step) {
+            List<List> values = userWidget.createData(index * step, index * step + step);
+            for (int i = 0; i < values.size(); i++) {
                 List value = values.get(i);
-                for (int j = 0; j < value.size(); j++){
+                for (int j = 0; j < value.size(); j++) {
                     travel.actionPerformed(new BIDataValue(i + total, j, value.get(j)));
                 }
             }
-            total +=values.size();
+            total += values.size();
             index++;
         }
         return total;
     }
+
     /**
      * @return
      */
     @Override
     public Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set, Set<CubeTableSource> helper) {
-        if(helper.contains(parent)){
+        if (helper.contains(parent)) {
             return set;
         }
         helper.add(parent);
         set.add(parent);
-        for (BITargetAndDimension dim : widget.getViewDimensions()){
-            if (dim.createTableKey() != null && dim.createTableKey().getTableSource() != null){
+        for (BITargetAndDimension dim : widget.getViewDimensions()) {
+            if (dim.createTableKey() != null && dim.createTableKey().getTableSource() != null) {
                 dim.createTableKey().getTableSource().getSourceUsedBaseSource(set, helper);
             }
         }
-        for (BITargetAndDimension target : widget.getViewTargets()){
-            if (target.createTableKey() != null && target.createTableKey().getTableSource() != null){
+        for (BITargetAndDimension target : widget.getViewTargets()) {
+            if (target.createTableKey() != null && target.createTableKey().getTableSource() != null) {
                 target.createTableKey().getTableSource().getSourceUsedBaseSource(set, helper);
             }
         }
@@ -110,12 +111,18 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
     @Override
     public long read4Part(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
         List<List> values = userWidget.createData(start, end);
-        for (int i = 0; i < values.size(); i ++){
+        for (int i = 0; i < values.size(); i++) {
             List value = values.get(i);
-            for (int j = 0; j < value.size(); j++){
+            for (int j = 0; j < value.size(); j++) {
                 travel.actionPerformed(new BIDataValue(i, j, value.get(j)));
             }
         }
         return values.size();
+    }
+
+    @Override
+    public void clearUserBaseTableMap() {
+        super.clearUserBaseTableMap();
+        userWidget.clear();
     }
 }

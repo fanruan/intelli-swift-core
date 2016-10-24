@@ -42,11 +42,11 @@ public class RangeIndexGetter {
     public GroupValueIndex createRangeIndex(BIDay start, BIDay end) {
         GroupValueIndex gvi = GVIFactory.createAllEmptyIndexGVI();
         if (start == null) {
-            Integer firstYear = (Integer) GeneralUtils.objectToNumber(yearMap.firstKey());
+            Integer firstYear = GeneralUtils.objectToNumber(yearMap.firstKey()).intValue();
             start = new BIDay(firstYear, 0, 0);
         }
         if (end == null) {
-            Integer lastYear = (Integer) GeneralUtils.objectToNumber(yearMap.lastKey());
+            Integer lastYear = GeneralUtils.objectToNumber(yearMap.lastKey()).intValue();
             end = new BIDay(lastYear, BIDateUtils.MAX_MONTH, BIDateUtils.MAX_DAY);
         }
         if (start.compareTo(end) <= 0) {

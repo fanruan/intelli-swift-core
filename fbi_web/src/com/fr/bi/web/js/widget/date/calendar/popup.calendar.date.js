@@ -15,6 +15,7 @@ BI.DateCalendarPopup = BI.inherit(BI.Widget, {
     },
 
     _createNav: function (v) {
+        var date = BI.Calendar.getDateJSONByPage(v);
         var calendar = BI.createWidget({
             type: "bi.calendar",
             logic: {
@@ -22,8 +23,8 @@ BI.DateCalendarPopup = BI.inherit(BI.Widget, {
             },
             min: this.options.min,
             max: this.options.max,
-            year: this.selectedTime.year,
-            month: this.selectedTime.month,
+            year: date.year,
+            month: date.month,
             day: this.selectedTime.day
         });
         return calendar;
@@ -69,12 +70,13 @@ BI.DateCalendarPopup = BI.inherit(BI.Widget, {
 
         this.datePicker.on(BI.DatePicker.EVENT_CHANGE, function () {
             self.selectedTime = self.datePicker.getValue();
+            self.selectedTime.day = 1;
             self.calendar.setSelect(BI.Calendar.getPageByDateJSON(self.selectedTime));
         });
 
         this.calendar.on(BI.Navigation.EVENT_CHANGE, function () {
             self.selectedTime = self.calendar.getValue();
-            self.setValue(self.calendar.getValue());
+            self.setValue(self.selectedTime);
             self.fireEvent(BI.DateCalendarPopup.EVENT_CHANGE);
         });
     },
