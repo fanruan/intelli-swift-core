@@ -129,34 +129,12 @@ BI.ETLTableCombo = BI.inherit(BI.Widget, {
         var table = this.options.tableInfo;
         var tableNameText = "";
         if (BI.isNotNull(table.etl_type)) {
-            tableNameText = this._getCenterETLName(table.tables) + "_" + table.etl_type;
+            var oTable = table.tables[0];
+            tableNameText = table.temp_name || ((oTable.temp_name || oTable.table_name) + "_" + table.etl_type);
         } else {
-            tableNameText = table.table_name
+            tableNameText = table.temp_name || table.table_name;
         }
         return tableNameText;
-    },
-
-    _getCenterETLName: function (tables) {
-        var tableName = [];
-
-        function getDefaultName(tables) {
-            //只取tables[0]
-            if (BI.isNotNull(tables[0].etl_type)) {
-                tableName.push("_" + tables[0].etl_type);
-                getDefaultName(tables[0].tables);
-            } else {
-                tableName.push(tables[0].table_name);
-            }
-        }
-
-        getDefaultName(tables);
-        //反向遍历
-        tableName.reverse();
-        var tableNameString = "";
-        BI.each(tableName, function (i, name) {
-            tableNameString += name;
-        });
-        return tableNameString;
     },
 
     _setPartItemsDisable: function () {

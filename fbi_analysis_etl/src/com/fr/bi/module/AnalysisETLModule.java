@@ -5,9 +5,12 @@ import com.finebi.cube.conf.BIAliasManagerProvider;
 import com.finebi.cube.conf.BIDataSourceManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.pack.data.BIPackageID;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cluster.ClusterAdapter;
 import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.etl.analysis.Constants;
+import com.fr.bi.etl.analysis.data.AnalysisBaseTableSource;
+import com.fr.bi.etl.analysis.data.AnalysisETLTableSource;
 import com.fr.bi.etl.analysis.manager.*;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberBottomNFilter;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberLargeOrEqualsCLFilter;
@@ -17,6 +20,7 @@ import com.fr.bi.field.filtervalue.BIFilterValueMap;
 import com.fr.bi.resource.ResourceConstants;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.web.service.Service4AnalysisETL;
+import com.fr.bi.web.service.action.PartCubeDataLoader;
 import com.fr.cluster.rpc.RPC;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
@@ -50,7 +54,7 @@ public class AnalysisETLModule extends AbstractModule {
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_CONF_CSS, ETLResourcesHelper.getAnimateCss());
     }
 
-    public void loadResources (Locale[] locales) {
+    public void loadResources(Locale[] locales) {
         ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_DESIGN_JS);
         ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DESIGN_CSS);
         ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_CONF_CSS);
@@ -61,6 +65,20 @@ public class AnalysisETLModule extends AbstractModule {
         List<BIPackageID> list = new ArrayList<BIPackageID>();
         list.add(new BIPackageID(Constants.PACK_ID));
         return list;
+    }
+
+    @Override
+    public void clearAnalysisETLCache(long userId) {
+        for (BusinessTable table : BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()) {
+            int tableType = table.getTableSource().getType();
+            if (tableType == Constants.TABLE_TYPE.BASE) {
+                ((AnalysisBaseTableSource) table.getTableSource()).clearUserBaseTableMap();
+            }
+            if (tableType == Constants.TABLE_TYPE.ETL) {
+                ((AnalysisETLTableSource) table.getTableSource()).clearUserBaseTableMap();
+            }
+        }
+        PartCubeDataLoader.clearAll();
     }
 
     /**

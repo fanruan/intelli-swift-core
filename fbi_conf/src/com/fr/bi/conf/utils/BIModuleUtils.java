@@ -40,6 +40,7 @@ public class BIModuleUtils {
 
     /**
      * 分析用pack
+     *
      * @param userId
      * @param locale
      * @return
@@ -170,5 +171,11 @@ public class BIModuleUtils {
             }
         }
         return authPacks;
+    }
+
+    public static void clearAnalysisETLCache(long userId) {
+        for (BIModule module : BIModuleManager.getModules()) {
+            module.clearAnalysisETLCache(userId);
+        }
     }
 }

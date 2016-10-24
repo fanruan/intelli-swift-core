@@ -1284,7 +1284,7 @@ BI.ETL = BI.inherit(BI.Widget, {
         //表预览按钮
         var allTables = this.model.getAllTables();
         var isEnable = false, warningTitle = "";
-        this.refreshTable.setEnable(false);
+        BI.isNotNull(this.refreshTable) && this.refreshTable.setEnable(false);
         if (allTables.length === 1) {
             //如果不是etl表，也是可以预览的
             if (BI.isNotNull(allTables[0][0].etl_type)) {
