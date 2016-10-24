@@ -196,7 +196,7 @@ BI.extend(BI.TargetBodyNormalCell, {
                 }
                 return num;
         }
-        return text;
+        return BI.contentFormat(num, '#.##;-#.##');
     },
     parseNumByLevel: function (text, numLevel) {
         if (text === Infinity || text !== text || !BI.isNumber(text)) {
@@ -212,7 +212,7 @@ BI.extend(BI.TargetBodyNormalCell, {
             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
                 return BI.contentFormat(text * 100, "#.##;-#.##");
             default:
-                return BI.contentFormat(BI.parseFloat(text.div(1).toFixed(2)), "#.##;-#.##");
+                return text;
         }
     }
 });
