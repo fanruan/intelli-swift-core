@@ -273,7 +273,7 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
             if(BI.has(widgetInfo, "startOrEnd")){
                 partTimeText = (widgetInfo.startOrEnd ? "(" + BI.i18nText("BI-End_Time") + ")": "(" + BI.i18nText("BI-Start_Time")) + ")";
             }
-            var showText = BI.isNull(widgetInfo.wId) ? name : BI.i18nText("BI-Relative") + name + BI.i18nText("BI-De") + partTimeText + BI.i18nText("BI-De");
+            var showText = BI.isNull(widgetInfo.wId) ? name : BI.i18nText("BI-Relative") + name + BI.i18nText("BI-De") + partTimeText;
             switch(value.offset.type){
                 case BICst.MULTI_DATE_YEAR_PREV:
                     showText += value.offset.value + BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_YEAR_PREV];
