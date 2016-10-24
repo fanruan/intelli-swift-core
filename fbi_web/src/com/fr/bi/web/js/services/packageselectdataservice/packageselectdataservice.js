@@ -215,8 +215,8 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         var currentTables = o.tablesCreator(packageId);
         var currentTablesIds = BI.pluck(currentTables, "id");
         var relationAndCurrentTables = currentTables;
-        if(isRelation === true){
-            BI.each(currentTablesIds, function(id, tId){
+        if (isRelation === true) {
+            BI.each(currentTablesIds, function (id, tId) {
                 var relationAndCurrentTablesIds = BI.pluck(relationAndCurrentTables, "id");
                 var tmpRelationAndCurrentTables = BI.filter(o.tablesCreator(tId, true), function (i, t) {
                     return !BI.contains(relationAndCurrentTablesIds, t.id);
@@ -581,7 +581,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
      * @private
      */
     _createDrag: function (fieldName) {
-        var self = this;
+        var self = this, o = this.options;
         return {
             cursor: BICst.cursorUrl,
             cursorAt: {left: 5, top: 5},
@@ -636,6 +636,9 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                         var name = BI.Utils.getFieldNameByID(fId.field_id);
                         if (BI.Utils.getFieldIsCircleByID(fId.field_id) === true) {
                             name = BI.Utils.getFieldNameByID(fId.field_id) + "." + BI.Utils.getFieldNameByID(BI.Utils.getForeignIdFromRelation(fId.target_relation[0]));
+                        }
+                        if (BI.Utils.isControlWidgetByWidgetId(o.wId)) {
+                            name = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fId.field_id));
                         }
                         return {
                             name: name,
