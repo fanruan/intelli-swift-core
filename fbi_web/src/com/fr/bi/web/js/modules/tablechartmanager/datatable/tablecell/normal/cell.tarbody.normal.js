@@ -196,7 +196,7 @@ BI.extend(BI.TargetBodyNormalCell, {
                 }
                 return num;
         }
-        return text;
+        return BI.contentFormat(num, '#.##;-#.##');
     },
     parseNumByLevel: function (text, numLevel) {
         if (text === Infinity || text !== text || !BI.isNumber(text)) {
