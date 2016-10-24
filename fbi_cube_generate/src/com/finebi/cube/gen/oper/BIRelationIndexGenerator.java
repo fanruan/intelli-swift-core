@@ -273,24 +273,24 @@ public class BIRelationIndexGenerator extends BIProcessor {
         } finally {
             if (primaryTable != null) {
                 ((CubeTableEntityService) primaryTable).forceReleaseWriter();
-//                primaryTable.clearAnalysisETLCache();
+//                primaryTable.clear();
             }
             if (foreignTable != null) {
                 ((CubeTableEntityService) foreignTable).forceReleaseWriter();
 
-//                foreignTable.clearAnalysisETLCache();
+//                foreignTable.clear();
             }
             if (primaryColumn != null) {
                 primaryColumn.forceReleaseWriter();
-//                primaryColumn.clearAnalysisETLCache();
+//                primaryColumn.clear();
             }
             if (foreignColumn != null) {
                 foreignColumn.forceReleaseWriter();
-//                foreignColumn.clearAnalysisETLCache();
+//                foreignColumn.clear();
             }
             if (tableRelation != null) {
                 tableRelation.forceReleaseWriter();
-//                tableRelation.clearAnalysisETLCache();
+//                tableRelation.clear();
             }
             if (cube != null) {
                 cube.clear();

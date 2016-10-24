@@ -24,9 +24,9 @@ public class BIUserMapCacheClearAction extends AbstractBIConfigureAction {
     }
 
     private String clearCache() {
-        BILoggerFactory.getLogger().info("start clearAnalysisETLCache userMap");
+        BILoggerFactory.getLogger().info("start clear userMap");
         String readingCubeReader = CubeReaderCacheUtils.clearUserMapCache();
-        BILoggerFactory.getLogger().info("userMap clearAnalysisETLCache finished");
+        BILoggerFactory.getLogger().info("userMap clear finished");
         return readingCubeReader;
     }
 }
