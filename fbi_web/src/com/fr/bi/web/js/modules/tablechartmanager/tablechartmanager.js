@@ -68,10 +68,13 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
         var chart = BI.createWidget({
             type: "bi.chart_display",
             wId: o.wId,
-            status: o.status 
+            status: o.status
         });
         chart.on(BI.ChartDisplay.EVENT_CHANGE, function () {
             self.fireEvent(BI.TableChartManager.EVENT_CLICK_CHART, arguments);
+        });
+        chart.on(BI.ChartDisplay.EVENT_SET, function () {
+            self.fireEvent(BI.TableChartManager.EVENT_CHANGE, arguments);
         });
         return chart;
     },
@@ -88,8 +91,8 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
         });
         return this.table;
     },
-    
-    _createComplexTable: function() {
+
+    _createComplexTable: function () {
         var self = this, o = this.options;
         this.table = BI.createWidget({
             type: "bi.complex_table",
@@ -110,7 +113,7 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
         return this.tableChartTab.getValue();
     },
 
-    magnify: function(){
+    magnify: function () {
         this.tableChartTab.getSelectedTab().magnify();
     },
 

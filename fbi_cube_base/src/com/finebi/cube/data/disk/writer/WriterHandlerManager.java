@@ -1,14 +1,11 @@
 package com.finebi.cube.data.disk.writer;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.data.BICubeReleaseRecorder;
 import com.finebi.cube.data.disk.NIOHandlerManager;
 import com.finebi.cube.data.output.primitive.ICubePrimitiveWriter;
 import com.finebi.cube.location.ICubeResourceLocation;
-import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by wang on 2016/9/30.
@@ -33,7 +30,7 @@ public class WriterHandlerManager implements NIOHandlerManager<ICubePrimitiveWri
     public ICubePrimitiveWriter queryHandler() {
         synchronized (this) {
             countOfWriters.getAndIncrement();
-            BILoggerFactory.getLogger().debug("query writer " + resourceLocation.getAbsolutePath().substring(50) + " " + countOfWriters.get());
+            BILoggerFactory.getLogger().debug("query writer " + resourceLocation.getAbsolutePath() + " " + countOfWriters.get());
             return writer;
         }
     }

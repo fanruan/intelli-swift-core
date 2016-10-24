@@ -55,7 +55,7 @@ BI.GlobalStyle = BI.inherit(BI.Widget, {
                 self.fireEvent(BI.GlobalStyle.EVENT_SET, gs);
             });
             this.globalStyleSetting.on(BI.GlobalStyleSetting.EVENT_CHART, function () {
-                self.fireEvent(BI.GlobalStyle.EVENT_CHART_CHANGE);
+                BI.Utils.broadcastAllWidgets2Refresh(true);
             });
             BI.createWidget({
                 type: "bi.absolute",

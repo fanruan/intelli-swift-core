@@ -12,14 +12,47 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
     _static: function () {
         var self = this;
         return {
-            getOperatorIndex: function () {
+            childType: function (type) {
+                switch (type) {
+                    case BICst.WIDGET.TABLE:
+                    case BICst.WIDGET.CROSS_TABLE:
+                    case BICst.WIDGET.COMPLEX_TABLE:
+                    case BICst.WIDGET.AXIS:
+                    case BICst.WIDGET.ACCUMULATE_AXIS:
+                    case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+                    case BICst.WIDGET.COMPARE_AXIS:
+                    case BICst.WIDGET.FALL_AXIS:
+                    case BICst.WIDGET.BAR:
+                    case BICst.WIDGET.ACCUMULATE_BAR:
+                    case BICst.WIDGET.COMPARE_BAR:
+                    case BICst.WIDGET.LINE:
+                    case BICst.WIDGET.AREA:
+                    case BICst.WIDGET.ACCUMULATE_AREA:
+                    case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+                    case BICst.WIDGET.COMPARE_AREA:
+                    case BICst.WIDGET.RANGE_AREA:
+                    case BICst.WIDGET.COMBINE_CHART:
+                    case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                    case BICst.WIDGET.PIE:
+                    case BICst.WIDGET.DONUT:
+                    case BICst.WIDGET.MAP:
+                    case BICst.WIDGET.GIS_MAP:
+                    case BICst.WIDGET.DASHBOARD:
+                    case BICst.WIDGET.BUBBLE:
+                    case BICst.WIDGET.FORCE_BUBBLE:
+                    case BICst.WIDGET.SCATTER:
+                    case BICst.WIDGET.RADAR:
+                    case BICst.WIDGET.ACCUMULATE_RADAR:
+                    case BICst.WIDGET.FUNNEL:
+                        return BICst.WIDGET.TABLE;
+                }
+                return type;
+            },
+            operatorIndex: function () {
                 return self.operatorIndex;
             },
-            isUndoRedoSet: function () {
+            undoRedoSet: function () {
                 return self.isUndoRedoSet;
-            },
-            setUndoRedoSet: function (v) {
-                self.isUndoRedoSet = v;
             }
         }
     },
@@ -90,6 +123,10 @@ BIDezi.PaneModel = BI.inherit(BI.Model, {
         if (this.has("redo")) {
             this.get("redo");
             this._undoRedoOperator(false);
+            return true;
+        }
+        if(this.has("undoRedoSet")){
+            this.isUndoRedoSet = this.get("undoRedoSet");
             return true;
         }
         return false;

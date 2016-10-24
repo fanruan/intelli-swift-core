@@ -71,6 +71,10 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
         detailDataService.addDetailDataValue(rowNumber, originalValue);
     }
 
+    public void increaseAddOriginalDataValue(int rowNumber, T originalValue) {
+        detailDataService.increaseAddDetailDataValue(rowNumber, originalValue);
+    }
+
     @Override
     public void addGroupValue(int position, T groupValue) {
         groupDataService.addGroupDataValue(position, groupValue);

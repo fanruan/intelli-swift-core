@@ -323,6 +323,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules4show/dimensionsmanager4show/regionsmanager.css",
                 "com/fr/bi/web/css/modules4show/dimensionsmanager4show/dimensionsmanager.css",
 
+                //最大化
+                "com/fr/bi/web/css/modules4show/maximization/widget.maximization.chartpane.css",
+                "com/fr/bi/web/css/modules4show/maximization/widget.maximization.css",
+
                 "com/fr/bi/web/css/show/show.view.css",
                 "com/fr/bi/web/css/show/pane/show.pane.css",
                 "com/fr/bi/web/css/show/pane/widgets/show.widgets.css",
@@ -370,6 +374,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailformula.combo.show.js",
                 "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailnumber.combo.show.js",
                 "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailstring.combo.show.js",
+
+                //最大化
+                "com/fr/bi/web/js/modules4show/maximization/widget.maximization.chartpane.js",
+                "com/fr/bi/web/js/modules4show/maximization/widget.maximization.js",
 
 
                 "com/fr/bi/web/js/modules4show/constant.js",
@@ -648,10 +656,6 @@ public class ResourceHelper {
         return new String[]{
                 //驾驶舱相关模块
                 "com/fr/bi/web/css/modules/base/combos/widget.combo.css",
-                "com/fr/bi/web/css/modules/maximization/widget.maximization.css",
-                "com/fr/bi/web/css/modules/maximization/widget.maximization.chartpane.css",
-                "com/fr/bi/web/css/modules/tablefield/widget.tablefield.css",
-                "com/fr/bi/web/css/modules/tablefield/widget.tablefield.searchresult.pane.css",
 
                 //过滤
                 "com/fr/bi/web/css/modules/filter/filteritems/dimension/item.notypefield.css",
@@ -952,8 +956,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/saveas/report.saveas.floatbox.css",
 
                 //图表钻取
-                "com/fr/bi/web/css/modules/chartdrill/widget.chartdrill.css",
                 "com/fr/bi/web/css/modules/chartdrill/cell.chartdrill.css",
+                "com/fr/bi/web/css/modules/chartdrill/button.pushdrill.css",
+                "com/fr/bi/web/css/modules/chartdrill/widget.chartdrill.css",
 
                 //excelview
                 "com/fr/bi/web/css/extend/excelview/excelview.cell.css",
@@ -984,7 +989,15 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/detailtablepopup/detailtablepopup.css",
 
                 //选择字段服务
-                "com/fr/bi/web/css/services/packageselectdataservice/relationtable/node.relationtables.css"
+                "com/fr/bi/web/css/services/packageselectdataservice/relationtable/node.relationtables.css",
+
+                //业务包包字段
+                "com/fr/bi/web/css/modules/tablefield/widget.tablefield.css",
+                "com/fr/bi/web/css/modules/tablefield/widget.tablefield.searchresult.pane.css",
+
+                //最大化
+                "com/fr/bi/web/css/modules/maximization/widget.maximization.chartpane.css",
+                "com/fr/bi/web/css/modules/maximization/widget.maximization.css",
         };
     }
 
@@ -1003,8 +1016,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/fragments/base/tabs/widget.datastyletab.js",
                 "com/fr/bi/web/js/fragments/base/items/widget.realdatacheckbox.js",
                 "com/fr/bi/web/js/modules/base/buttons/button.databasetable.js",
-                "com/fr/bi/web/js/modules/maximization/widget.maximization.js",
-                "com/fr/bi/web/js/modules/maximization/widget.maximization.chartpane.js",
                 "com/fr/bi/web/js/modules/base/combos/widget.combo.js",
                 "com/fr/bi/web/js/modules/base/combos/dimension/abstract.dimensiontarget.combo.js",
                 "com/fr/bi/web/js/modules/base/combos/dimension/dimension/abstract.dimension.combo.js",
@@ -1792,6 +1803,11 @@ public class ResourceHelper {
 
                 //简单字段选择服务
                 "com/fr/bi/web/js/services/simpleselectdataservice/simpleselectdataservice.js",
+
+
+                //最大化
+                "com/fr/bi/web/js/modules/maximization/widget.maximization.chartpane.js",
+                "com/fr/bi/web/js/modules/maximization/widget.maximization.js",
 
 
                 /**
