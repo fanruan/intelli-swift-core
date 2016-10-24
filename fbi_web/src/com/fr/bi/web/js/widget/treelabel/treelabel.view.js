@@ -10,7 +10,7 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.TreeLabelView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-tree-label-view",
-            titleWidth: 55
+            titleWidth: 60
         })
     },
 
@@ -79,10 +79,10 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
                     right:0,
                     top:0,
                     bottom:0,
-                    width: 55
+                    width: 60
                 }, {
                     el: self.right,
-                    left: 60,
+                    left: 65,
                     right:0,
                     top:0,
                     bottom:0
@@ -146,10 +146,13 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
 
     refreshView: function (data) {
         if(data.titles) {
-            this.setTitles(data.titles);
+            this.setTitles(BI.isEmpty(data.titles) ? [{
+                text: BI.i18nText("BI-Tree_Label_Con"),
+                title: BI.i18nText("BI-Tree_Label_Con")
+            }] : data.titles);
         }
         if(data.items) {
-            this.setItems(data.items);
+            this.setItems(BI.isEmpty(data.items) ? [[]] : data.items);
         }
     },
 
