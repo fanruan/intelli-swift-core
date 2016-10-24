@@ -19,6 +19,7 @@ BI.PackageTablePane = BI.inherit(BI.Widget, {
         BI.PackageTablePane.superclass._init.apply(this, arguments);
         var self = this;
         var packId = this.options.packId;
+        var translations = this.options.translations;
         var wrapper = BI.createWidget({
             type: "bi.absolute",
             element: this.element
@@ -34,7 +35,10 @@ BI.PackageTablePane = BI.inherit(BI.Widget, {
                 tableItems.push({
                     connName: table.connection_name,
                     text: self.getTableTranName(id, table),
-                    value: BI.extend(table, {id: id})
+                    value: BI.extend(table, {
+                        id: id,
+                        temp_name: translations[id]
+                    })
                 })
             });
             self.packageTables = BI.createWidget({

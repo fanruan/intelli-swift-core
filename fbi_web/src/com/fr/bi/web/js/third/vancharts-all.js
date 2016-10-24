@@ -1758,6 +1758,9 @@ define("almond", function(){});
             var hammerHandler = this.manager.options._handler;
             if(!hammerHandler.pressed && !hammerHandler._inZoomBar(input)){
                 return;
+            }else{
+                //如果是pressed状态或者位置在缩放控件内，则阻止浏览器默认行为
+                _preventDefault(srcEvent);
             }
 
             // if the touch action did prevented once this session
@@ -1784,7 +1787,7 @@ define("almond", function(){});
             }
 
             if (hasPanX && hasPanY) {
-                // `pan-x pan-y` means browser handles all scrolling/panning, do not prevent
+
                 return;
             }
 
@@ -1823,8 +1826,10 @@ define("almond", function(){});
         // for different directions, e.g. horizontal pan but vertical swipe?)
         // we need none (as otherwise with pan-x pan-y combined none of these
         // recognizers will work, since the browser would handle all panning
+
+        //部分的安卓机型，如果返回TOUCH_ACTION_NONE，页面滚动就没了。。。。
         if (hasPanX && hasPanY) {
-            return TOUCH_ACTION_NONE;
+            return TOUCH_ACTION_MANIPULATION;
         }
 
         // pan-x OR pan-y
@@ -18812,6 +18817,20 @@ define('chart/ForceBubble',['require','./Bubble','../Constants','../utils/BaseUt
                 'r': node.radius,
                 'transform': BaseUtils.makeTranslate({x:node.x, y:node.y})
             };
+        },
+
+        remove:function(){
+
+            this.points.forEach(function(point){
+                if(point.graphic){
+                    point.graphic.remove();
+                    point.graphic = null;
+                }
+            });
+
+            this.textGraphicGroup && this.textGraphicGroup.remove();
+            this.group && this.group.remove();
+            this.textGraphicGroup = this._canvas = this.group = null;
         }
 
     });
@@ -22048,7 +22067,8 @@ define('chart/Gauge',['require','../Constants','../utils/BaseUtils','./Series','
 
             this.gaugeType = gaugeType;
             this.thermometerLayout = thermometerLayout;
-            this.valueLabelBackground = null;
+            this.valueLabelBackground = this.seriesLabelContent
+                = this.percentageLabelContent = this.valueLabelContent = null;
 
             BaseUtils.extend(this, Gauge.prototype, PROTOTYPES[gaugeType]);
         },

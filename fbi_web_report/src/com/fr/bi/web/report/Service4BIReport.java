@@ -3,10 +3,7 @@ package com.fr.bi.web.report;
 
 import com.fr.bi.web.base.utils.BIServiceUtil;
 import com.fr.bi.web.report.services.*;
-import com.fr.bi.web.report.services.authuser.BIGetAllAuthUserListAction;
-import com.fr.bi.web.report.services.authuser.BIGetAuthUserListAction;
-import com.fr.bi.web.report.services.authuser.BIGetLimitBIUserCountAction;
-import com.fr.bi.web.report.services.authuser.BISetAuthUserAction;
+import com.fr.bi.web.report.services.authuser.*;
 import com.fr.bi.web.report.services.fs.BIInitAllReportAction;
 import com.fr.bi.web.report.services.fs.BIInitCreatedByMeAction;
 import com.fr.bi.web.report.services.fs.BIInitSharedToMeAction;
@@ -19,7 +16,6 @@ import com.fr.general.ComparatorUtils;
 import com.fr.privilege.base.PrivilegeVote;
 import com.fr.stable.fun.Service;
 import com.fr.stable.web.RequestCMDReceiver;
-import com.fr.web.core.ActionCMD;
 import com.fr.web.core.WebActionsDispatcher;
 import com.fr.web.utils.WebUtils;
 
@@ -63,6 +59,7 @@ public class Service4BIReport implements Service {
             new BIGetAllAuthUserListAction(),
             new BIGetLimitBIUserCountAction(),
             new BISetAuthUserAction(),
+            new BIGetUserEditAuthAction(),
 
             new BIInitCreatedByMeAction(),
             new BIInitAllReportAction(),
