@@ -10,6 +10,7 @@ import ImageWidget from './ImageWidget'
 import StringControl from './StringControl'
 import TreeControl from './TreeControl'
 import DateControl from './DateControl'
+import YearMonthControl from './YearMonthControl'
 import WebWidget from './WebWidget'
 
 
@@ -60,6 +61,7 @@ export default {
             case BICst.WIDGET.YEAR:
             case BICst.WIDGET.QUARTER:
             case BICst.WIDGET.MONTH:
+                return new YearMonthControl($widget, ...props);
             case BICst.WIDGET.YMD:
                 return new DateControl($widget, ...props);
             case BICst.WIDGET.QUERY:
