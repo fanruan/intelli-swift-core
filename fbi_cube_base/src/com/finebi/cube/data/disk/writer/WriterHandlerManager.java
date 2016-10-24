@@ -1,10 +1,13 @@
 package com.finebi.cube.data.disk.writer;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.data.BICubeReleaseRecorder;
 import com.finebi.cube.data.disk.NIOHandlerManager;
 import com.finebi.cube.data.output.primitive.ICubePrimitiveWriter;
 import com.finebi.cube.location.ICubeResourceLocation;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -16,6 +19,7 @@ public class WriterHandlerManager implements NIOHandlerManager<ICubePrimitiveWri
     protected AtomicInteger countOfWriters = new AtomicInteger(0);
     protected boolean isForceReleased = false;
     ICubeResourceLocation resourceLocation = null;
+    private CopyOnWriteArrayList<String> queryRecorder = new CopyOnWriteArrayList<String>();
 
     public WriterHandlerManager(ICubePrimitiveWriter writer) {
         this.writer = writer;
@@ -36,16 +40,25 @@ public class WriterHandlerManager implements NIOHandlerManager<ICubePrimitiveWri
     }
 
     @Override
-    public void releaseHandler() {
+    public void releaseHandler(String handlerKey) {
         synchronized (this) {
-            int currentCountOfWriters = countOfWriters.decrementAndGet();
+            int currentCountOfWriters = -1;
+            if (queryRecorder.contains(handlerKey)){
+                queryRecorder.remove(handlerKey);
+                countOfWriters.decrementAndGet();
+            }else {
+                BILoggerFactory.getLogger().debug(handlerKey+" writer has been released========== "+ resourceLocation.getAbsolutePath());
+            }
+            currentCountOfWriters = countOfWriters.get();
             if (currentCountOfWriters == 0) {
                 try {
                     isForceReleased = true;
                     writer.releaseSource();
                     countOfWriters.set(0);
+                    queryRecorder.clear();
                     BILoggerFactory.getLogger().debug("=0 release writer " + resourceLocation.getAbsolutePath() + " " + countOfWriters.get());
                 } catch (Exception e) {
+                    throw BINonValueUtils.beyondControl(e);
                 } finally {
                     isForceReleased = false;
                 }
@@ -55,13 +68,17 @@ public class WriterHandlerManager implements NIOHandlerManager<ICubePrimitiveWri
             }
         }
     }
-
     @Override
-    public void forceReleaseHandler() {
+    public void registerHandlerKey(String handlerKey){
+        queryRecorder.add(handlerKey);
+    }
+    @Override
+    public void destroyHandler() {
         synchronized (this) {
             isForceReleased = true;
             writer.destoryResource();
             countOfWriters.set(0);
+            queryRecorder.clear();
             BILoggerFactory.getLogger().debug("force release writer " + resourceLocation.getAbsolutePath() + " " + countOfWriters.get());
         }
     }
@@ -72,24 +89,7 @@ public class WriterHandlerManager implements NIOHandlerManager<ICubePrimitiveWri
     }
 
     @Override
-    public void printCountOfHandler() {
-        if (countOfWriters.get() != 0) {
-            BILoggerFactory.getLogger().debug("count reader " + resourceLocation.getAbsolutePath() + " " + countOfWriters.get());
-        }
-    }
-
-    @Override
     public boolean isForceReleased() {
         return isForceReleased;
-    }
-
-    @Override
-    public void reSetHandlerValid(boolean isValid) {
-//        writer.reSetValid(isValid);
-//        writer不应该重置，因为需要调用构造方法中的文件创建方法
-    }
-
-    public void setForceReleased(boolean isForce) {
-        this.isForceReleased = isForce;
     }
 }

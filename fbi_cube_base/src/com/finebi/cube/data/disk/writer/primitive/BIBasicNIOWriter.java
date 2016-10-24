@@ -52,11 +52,11 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
 
 
     @Override
-    public void releaseHandler() {
+    public void releaseHandler(String handlerKey) {
         readWriteLock.writeLock().lock();
         try {
             if (useNioHandlerManager()) {
-                nioHandlerManager.releaseHandler();
+                nioHandlerManager.releaseHandler("default");
             } else {
                 releaseSource();
             }
@@ -104,7 +104,7 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
     @Override
     public void forceRelease() {
         if (useNioHandlerManager()) {
-            nioHandlerManager.forceReleaseHandler();
+            nioHandlerManager.destroyHandler();
         } else {
             destoryResource();
         }
@@ -179,7 +179,10 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
     public void setHandlerReleaseHelper(NIOHandlerManager releaseHelper) {
         this.nioHandlerManager = releaseHelper;
     }
-
+    @Override
+    public NIOHandlerManager getHandlerReleaseHelper(){
+        return this.nioHandlerManager;
+    }
     @Override
     public void flush() {
         //buffer.force();

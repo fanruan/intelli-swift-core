@@ -10,7 +10,7 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
  * @author Connery
  * @since 4.0
  */
-public interface ICubeIndexDataSetterService {
+public interface ICubeIndexDataSetterService extends ICubeResourceForceRelease {
 
     /**
      * 在对应位置添加索引值
@@ -29,9 +29,5 @@ public interface ICubeIndexDataSetterService {
     void addNULLIndex(int position, GroupValueIndex groupValueIndex);
 
     void buildStructure();
-
-    void forceReleaseWriter();
-
-    void forceReleaseReader();
 
 }

@@ -67,5 +67,4 @@ public interface CubeTableEntityService extends CubeTableEntityGetterService {
 
     void buildStructure();
 
-    void forceReleaseWriter();
 }
