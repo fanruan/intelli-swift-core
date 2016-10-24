@@ -638,7 +638,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                             name = BI.Utils.getFieldNameByID(fId.field_id) + "." + BI.Utils.getFieldNameByID(BI.Utils.getForeignIdFromRelation(fId.target_relation[0]));
                         }
                         if (BI.Utils.isControlWidgetByWidgetId(o.wId)) {
-                            name = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fId.field_id));
+                            name = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fId.field_id)) + '.' + name;
                         }
                         return {
                             name: name,
@@ -651,8 +651,12 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                             type: BI.Utils.getDimensionTypeByFieldID(fId.field_id)
                         }
                     }
+                    name = BI.Utils.getFieldNameByID(fId);
+                    if (BI.Utils.isControlWidgetByWidgetId(o.wId)) {
+                        name = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fId)) + '.' + name;
+                    }
                     return {
-                        name: BI.Utils.getFieldNameByID(fId),
+                        name: name,
                         _src: {
                             id: fId,
                             field_id: fId,
