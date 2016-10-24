@@ -29,7 +29,7 @@ public class BICubeDoubleDetailData extends BICubeDetailData<Double> {
     }
 
     @Override
-    protected ICubeResourceLocation setDetailType() {
+    protected ICubeResourceLocation setDetailType(boolean isIncrease) {
         return currentLocation.setDoubleTypeWrapper();
     }
     @Override

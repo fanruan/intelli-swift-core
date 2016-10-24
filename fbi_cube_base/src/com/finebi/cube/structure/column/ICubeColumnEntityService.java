@@ -50,6 +50,15 @@ public interface ICubeColumnEntityService<T> extends CubeColumnReaderService<T> 
     void addOriginalDataValue(int rowNumber, T originalValue);
 
     /**
+     * 从数据库中读取的原始数值，
+     * 添加数据库原始数据记录，
+     *
+     * @param rowNumber
+     * @param originalValue 数据库中数据值
+     */
+    void increaseAddOriginalDataValue(int rowNumber, T originalValue);
+
+    /**
      * 添加分组值和排序位置的对应关系
      *
      * @param position   排序后的位置

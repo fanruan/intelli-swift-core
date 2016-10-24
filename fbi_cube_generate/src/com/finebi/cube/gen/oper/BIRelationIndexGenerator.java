@@ -65,7 +65,6 @@ public class BIRelationIndexGenerator extends BIProcessor {
         }
         try {
             buildRelationIndex();
-
             biLogManager.infoRelation(relationColumnKeyInfo, stopwatch.elapsed(TimeUnit.SECONDS), UserControl.getInstance().getSuperManagerID());
             logger.info(BIStringUtils.append("\n    ", logRelation(), "finish building relation index ,elapse {} second"), stopwatch.elapsed(TimeUnit.SECONDS));
 

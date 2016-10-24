@@ -7,6 +7,7 @@ import com.finebi.cube.data.disk.BICubeDiskPrimitiveDiscovery;
 import com.finebi.cube.data.input.primitive.ICubeIntegerReader;
 import com.finebi.cube.data.input.primitive.ICubeLongReader;
 import com.finebi.cube.data.output.ICubeByteArrayWriter;
+import com.finebi.cube.data.output.ICubeByteArrayWriterIncreaseBuilder;
 import com.finebi.cube.data.output.primitive.ICubeByteWriter;
 import com.finebi.cube.data.output.primitive.ICubeIntegerWriter;
 import com.finebi.cube.data.output.primitive.ICubeLongWriter;
@@ -21,14 +22,20 @@ import java.io.File;
  * @author kary
  * @since 4.0
  */
-public class BIByteArrayNIOWriterIncreaseBuilder extends BIByteArrayNIOWriterBuilder {
+public class BIByteArrayNIOWriterIncreaseBuilder extends BINIOWriterBuilder<ICubeByteArrayWriter> implements ICubeByteArrayWriterIncreaseBuilder {
 
-
+    @Override
+    protected String getFragmentTag() {
+        return FRAGMENT_TAG;
+    }
 
     @Override
     protected ICubeByteArrayWriter createNIOWriter(File target, ICubeResourceLocation location) {
         try {
+
             ICubePrimitiveResourceDiscovery cubeDiscovery = BICubeDiskPrimitiveDiscovery.getInstance();
+            long value = lastPosition(cubeDiscovery, location) + lastLength(cubeDiscovery, location);
+
             /**
              * 获得内容部分的Byte类型Writer
              */
@@ -52,7 +59,7 @@ public class BIByteArrayNIOWriterIncreaseBuilder extends BIByteArrayNIOWriterBui
             ICubeIntegerWriter lengthWriter = (ICubeIntegerWriter) cubeDiscovery.getCubeWriter(lengthPath);
 
             BIByteArrayNIOIncreaseWriter writer = new BIByteArrayNIOIncreaseWriter(positionWriter, lengthWriter, contentWriter);
-            writer.setPos(lastPosition(cubeDiscovery, location) + lastLength(cubeDiscovery, location));
+            writer.setPos(value);
             return writer;
         } catch (Exception ignore) {
             throw new RuntimeException(ignore.getMessage(), ignore);

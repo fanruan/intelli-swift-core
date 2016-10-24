@@ -53,6 +53,10 @@ public class BICubeTableEntity implements CubeTableEntityService {
         }
     }
 
+    public static BIColumnKey convert(ICubeFieldSource field) {
+        return BIColumnKey.covertColumnKey(field);
+    }
+
     public void buildStructure() {
         columnManager.buildStructure();
         tableProperty.buildStructure();
@@ -84,7 +88,6 @@ public class BICubeTableEntity implements CubeTableEntityService {
         }
         columnManager = new BICubeTableColumnManager(tableKey, resourceRetrievalService, getAllFields(), discovery);
     }
-
 
     @Override
     public void recordRowCount(long rowCount) {
@@ -126,13 +129,27 @@ public class BICubeTableEntity implements CubeTableEntityService {
 
     @Override
     public void addDataValue(BIDataValue originalDataValue) throws BICubeColumnAbsentException {
+        addValue(originalDataValue, false);
+    }
+
+    @Override
+    public void increaseAddDataValue(BIDataValue originalDataValue) throws BICubeColumnAbsentException {
+        addValue(originalDataValue, true);
+    }
+
+    private void addValue(BIDataValue originalDataValue, boolean isIncrease) throws BICubeColumnAbsentException {
         int columnIndex = originalDataValue.getCol();
         int rowNumber = originalDataValue.getRow();
         Object value = originalDataValue.getValue();
+
         ICubeFieldSource field = getAllFields().get(columnIndex);
         ICubeColumnEntityService columnService = columnManager.getColumn(BIColumnKey.covertColumnKey(field));
         try {
-            columnService.addOriginalDataValue(rowNumber, value);
+            if (!isIncrease) {
+                columnService.addOriginalDataValue(rowNumber, value);
+            } else {
+                columnService.increaseAddOriginalDataValue(rowNumber, value);
+            }
         } catch (ClassCastException e) {
             throw BINonValueUtils.beyondControl(BIStringUtils.append(e.getMessage(), "Table:" + tableKey != null ? tableKey.getSourceID() : ""
                     , "Field column index:" + columnIndex
@@ -215,10 +232,6 @@ public class BICubeTableEntity implements CubeTableEntityService {
     public CubeColumnReaderService getColumnDataGetter(String columnName) throws BICubeColumnAbsentException {
         ICubeFieldSource field = getSpecificColumn(columnName);
         return getColumnDataGetter(convert(field));
-    }
-
-    public static BIColumnKey convert(ICubeFieldSource field) {
-        return BIColumnKey.covertColumnKey(field);
     }
 
     @Override

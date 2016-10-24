@@ -32,10 +32,6 @@ public class CubeUpdateUtils {
         return false;
     }
 
-    public static boolean isNeedUpdate(long userId) {
-        return getNewTables(userId).size() > 0 || getNewRelations(userId).size() > 0;
-    }
-
     /* 获取所有新增的table*/
     public static Set<BIBusinessTable> getNewTables(long userId) {
         Set<BIBusinessTable> newTables = new HashSet<BIBusinessTable>();
