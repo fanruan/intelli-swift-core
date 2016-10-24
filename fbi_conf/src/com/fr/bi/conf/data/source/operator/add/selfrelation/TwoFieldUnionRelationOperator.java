@@ -23,6 +23,7 @@ import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
+import java.sql.Types;
 import java.util.*;
 
 /**
@@ -88,7 +89,7 @@ public class TwoFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
                 while (it.hasNext()) {
                     Map.Entry<String, Integer> entry = it.next();
 //                persistentTable.addColumn(new UnionRelationPersistentField(entry.getKey(), BIDBUtils.biTypeToSql(columnType), size));
-                    persistentTable.addColumn(new UnionRelationPersistentField(s + "-" + entry.getKey(), ptable.getField(idFieldName).getSqlType(), size, ptable.getField(idFieldName).getScale()));
+                    persistentTable.addColumn(new UnionRelationPersistentField(s + "-" + entry.getKey(), Types.NVARCHAR, size, ptable.getField(idFieldName).getScale()));
                 }
             }
         }
