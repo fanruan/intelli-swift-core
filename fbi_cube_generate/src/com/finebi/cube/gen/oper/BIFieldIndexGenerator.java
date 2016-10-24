@@ -19,6 +19,7 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
+import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.utils.algorithem.BIMD5Utils;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
@@ -32,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -154,6 +156,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         int groupPosition = 0;
         logger.info(BIStringUtils.append(logFileInfo(), " start building field index"));
         int[] positionOfGroup = new int[(int) rowCount];
+        Arrays.fill(positionOfGroup, NIOConstant.INTEGER.NULL_VALUE);
         Stopwatch stopwatch = Stopwatch.createStarted();
         while (group2rowNumberIt.hasNext()) {
             Map.Entry<T, IntArray> entry = group2rowNumberIt.next();
