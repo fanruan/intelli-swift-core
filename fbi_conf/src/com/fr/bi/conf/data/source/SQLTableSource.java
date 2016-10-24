@@ -55,6 +55,7 @@ public class SQLTableSource extends ServerTableSource {
     }
 
     public void parseJSON(JSONObject jo, long userId) throws Exception {
+        super.parseJSON(jo, userId);
         if (jo.has("sql")) {
             enSQL = jo.getString("sql");
             sql = DecryptBi.decrypt(enSQL, "sh");
