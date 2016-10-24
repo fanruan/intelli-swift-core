@@ -147,7 +147,7 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
     refreshView: function (data) {
         if(data.titles) {
             this.setTitles(BI.isEmpty(data.titles) ? [{
-                text: BI.i18nText("BI-Tree_Label_Con"),
+                text: BI.i18nText("BI-Tree_Label_Con") + ":",
                 title: BI.i18nText("BI-Tree_Label_Con")
             }] : data.titles);
         }
