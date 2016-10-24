@@ -28,12 +28,13 @@ public class BINIOWriterManager extends BIBasicNIOWriterManager<ICubeWriter> {
     private BINIOWriterManager() {
         super();
         tag2Builder.put(ICubeStringWriterBuilder.FRAGMENT_TAG, new BIStringNIOWriterBuilder());
+        tag2Builder.put(ICubeStringWriterIncreaseBuilder.FRAGMENT_TAG, new BIStringNIOIncreaseWriterBuilder());
         tag2Builder.put(ICubeByteArrayReaderBuilder.FRAGMENT_TAG, new BIByteArrayNIOWriterBuilder());
         tag2Builder.put(ICubeGroupValueIndexWriterBuilder.FRAGMENT_TAG, new BIGroupValueIndexWriterBuilder());
         tag2Builder.put(ICubeByteWriterWrapperBuilder.FRAGMENT_TAG, new BICubeByteWriterWrapperBuilder());
+        tag2Builder.put(ICubeByteArrayWriterIncreaseBuilder.FRAGMENT_TAG, new BIByteArrayNIOWriterIncreaseBuilder());
         tag2Builder.put(ICubeDoubleWriterWrapperBuilder.FRAGMENT_TAG, new BICubeDoubleWriterWrapperBuilder());
         tag2Builder.put(ICubeIntegerWriterWrapperBuilder.FRAGMENT_TAG, new BICubeIntegerWriterWrapperBuilder());
         tag2Builder.put(ICubeLongWriterWrapperBuilder.FRAGMENT_TAG, new BICubeLongWriterWrapperBuilder());
-
     }
 }

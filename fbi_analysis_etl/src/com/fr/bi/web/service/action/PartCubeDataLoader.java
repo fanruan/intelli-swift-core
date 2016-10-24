@@ -44,18 +44,15 @@ public class PartCubeDataLoader implements ICubeDataLoader {
         return loader;
     }
 
-    /**
-     *
-     * @param source
-     * 这个地方螺旋分析的source会和widget里面的的过滤条件等等有关,原有的判断已经不能满足,暂时每次都更新
-     */
+   
     private void registSource(CubeTableSource source) {
         BICore core = source.fetchObjectCore();
-        sourceMap.remove(core);
-        sourceMap.put(source.fetchObjectCore(), source);
-        if (source.getType() == Constants.TABLE_TYPE.USER_ETL) {
-            for (CubeTableSource s : ((UserETLTableSource) source).getParents()) {
-                registSource(s);
+        if (!sourceMap.containsKey(core)) {
+            sourceMap.put(source.fetchObjectCore(), source);
+            if (source.getType() == Constants.TABLE_TYPE.USER_ETL) {
+                for (CubeTableSource s : ((UserETLTableSource) source).getParents()) {
+                    registSource(s);
+                }
             }
         }
     }

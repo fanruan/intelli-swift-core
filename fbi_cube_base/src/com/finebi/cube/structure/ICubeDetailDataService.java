@@ -20,6 +20,8 @@ public interface ICubeDetailDataService<T> extends Release {
      */
     void addDetailDataValue(int rowNumber, T originalValue);
 
+    void increaseAddDetailDataValue(int rowNumber, T originalValue);
+
 
     T getOriginalObjectValueByRow(int rowNumber);
 

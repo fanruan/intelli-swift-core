@@ -38,6 +38,9 @@ public abstract class AbstractTableSource implements CubeTableSource {
     @BIIgnoreField
     private transient BICore core;
 
+    //用来存中间表产生的名字
+    private String tempName;
+
     protected AbstractTableSource() {
 
     }
@@ -346,11 +349,14 @@ public abstract class AbstractTableSource implements CubeTableSource {
         }
         ja.put(stringList).put(numberList).put(dateList);
         jo.put("fields", ja);
+        jo.put("temp_name", tempName);
         return jo;
     }
 
     public void parseJSON(JSONObject jo, long userId) throws Exception {
-
+        if (jo.has("temp_name")) {
+            this.tempName = jo.getString("temp_name");
+        }
     }
 
     @Override
