@@ -34,9 +34,9 @@ public class BICubeTimeTaskCreatorManager implements BICubeTimeTaskCreatorProvid
     @Override
     public void removeAllTimeTasks(long userId) {
         try {
-            logger.info("***************timer task clear start*****************");
+            logger.info("***************timer task clearAnalysisETLCache start*****************");
             QuartzManager.removeAllJobs();
-            logger.info("***************timer task clear end*****************");
+            logger.info("***************timer task clearAnalysisETLCache end*****************");
         } catch (SchedulerException e) {
             throw BINonValueUtils.beyondControl(e);
         }

@@ -135,7 +135,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         GroupValueIndex nullIndex = buildGroupValueIndex(nullRowNumbers);
         buildPositionOfGroup(positionOfGroup);
         columnEntityService.addNULLIndex(0, nullIndex);
-//        group2rowNumber.clear();
+//        group2rowNumber.clearAnalysisETLCache();
     }
 
     public void buildTableIndexExternal() {

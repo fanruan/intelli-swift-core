@@ -711,12 +711,12 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
             removeListWriter = null;
         }
 //        if(isRemoveListReaderAvailable()){
-//            removeListReader.clear();
+//            removeListReader.clearAnalysisETLCache();
 ////            removeListReader = null;
 //        }
         parentFieldProperty.forceRelease();
         ((BICubeProperty) version).forceRelease();
-//        clear();
+//        clearAnalysisETLCache();
     }
 
     @Override

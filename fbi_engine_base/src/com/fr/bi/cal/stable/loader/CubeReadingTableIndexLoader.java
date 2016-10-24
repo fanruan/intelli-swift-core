@@ -152,7 +152,7 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
     @Override
     public void clear() {
         synchronized (CubeReadingTableIndexLoader.class) {
-            BILoggerFactory.getLogger().info("start clear childLoaderMap");
+            BILoggerFactory.getLogger().info("start clearAnalysisETLCache childLoaderMap");
             for (Map.Entry<String, ICubeDataLoader> entry : childLoaderMap.entrySet()) {
                 ICubeDataLoader loader = entry.getValue();
                 if (loader != null) {
@@ -172,7 +172,7 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
 //            for (Map.Entry<Long, ICubeDataLoader> entry : userMap.entrySet()) {
 //                ICubeDataLoader loader = entry.getValue();
 //                if (loader != null) {
-//                    loader.clear();
+//                    loader.clearAnalysisETLCache();
 //                }
 //            }
 //            lastSource = new ThreadLocal<CubeTableSource>();

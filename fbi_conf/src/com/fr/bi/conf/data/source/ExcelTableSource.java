@@ -256,7 +256,7 @@ public class ExcelTableSource extends AbstractTableSource {
 //    @Override
 //    public void readXML(XMLableReader reader) {
 //        super.readXML(reader);
-//        this.fields.clear();
+//        this.fields.clearAnalysisETLCache();
 //        this.fullFileName = reader.getAttrAsString("fullname", StringUtils.EMPTY);
 //        this.fileName = reader.getAttrAsString("tablename", StringUtils.EMPTY);
 //        final List<String> fNames = new ArrayList<String>();

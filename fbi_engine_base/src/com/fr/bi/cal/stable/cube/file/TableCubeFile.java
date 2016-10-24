@@ -399,7 +399,7 @@ public class TableCubeFile extends AbstractCubeFile {
     }
 
     /* (non-Javadoc)
-     * @see com.fr.bi.common.inter.Release#clear()
+     * @see com.fr.bi.common.inter.Release#clearAnalysisETLCache()
      */
     @Override
     public void clear() {

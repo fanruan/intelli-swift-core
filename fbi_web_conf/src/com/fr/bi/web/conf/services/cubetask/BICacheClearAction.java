@@ -25,9 +25,9 @@ public class BICacheClearAction extends AbstractBIConfigureAction {
     }
 
     private void clearCache() {
-        BILoggerFactory.getLogger().info("start clear readers");
+        BILoggerFactory.getLogger().info("start clearAnalysisETLCache readers");
         BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
         BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
-        BILoggerFactory.getLogger().info("readers clear finished");
+        BILoggerFactory.getLogger().info("readers clearAnalysisETLCache finished");
     }
 }

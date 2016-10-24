@@ -29,7 +29,7 @@ public abstract class IntListExternalMap<K> extends ExternalMap<K, IntList> {
 //        }
 //        Object[] temp = result.toArray();
 //        Arrays.sort(temp);
-//        body.clear();
+//        body.clearAnalysisETLCache();
 //        for (int i = 0; i < temp.length; i++) {
 //            body.add((Integer) temp[i]);
 //        }
