@@ -39,7 +39,7 @@ BI.ExcelViewSetting = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Cancel"),
             height: 28
         });
-        cancel.on(BI.Button.EVENT_CHANGE, function(){
+        cancel.on(BI.Button.EVENT_CHANGE, function () {
             self.fireEvent(BI.ExcelViewSetting.EVENT_CANCEL);
         });
 
@@ -48,11 +48,12 @@ BI.ExcelViewSetting = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Save"),
             height: 28
         });
-        save.on(BI.Button.EVENT_CHANGE, function(){
+        save.on(BI.Button.EVENT_CHANGE, function () {
             self.fireEvent(BI.ExcelViewSetting.EVENT_SAVE, {
                 name: self.model.getExcelName(),
                 excel: self.model.getExcelData(),
-                positions: self.tree.getMarkedFields()
+                positions: self.tree.getMarkedFields(),
+                mergeRules: self.model.getExcelMergeRules()
             });
         });
 
@@ -115,7 +116,7 @@ BI.ExcelViewSetting = BI.inherit(BI.Widget, {
         this.tree = BI.createWidget({
             type: "bi.excel_view_setting_tree",
             tables: this.model.getTables(),
-            clearOneCell: function(fieldId) {
+            clearOneCell: function (fieldId) {
                 self.model.clearOneCell(fieldId);
                 self.populate();
             }
@@ -153,7 +154,7 @@ BI.ExcelViewSetting = BI.inherit(BI.Widget, {
             type: "bi.excel_view_setting_excel",
             all_fields: this.model.getAllFields()
         });
-        this.excel.populate(this.model.getExcelData());
+        this.excel.populate(this.model.getExcelData(), this.model.getExcelMergeRules());
         this.excel.setValue(this.model.getPositions());
 
         this.excel.on(BI.ExcelViewSettingExcel.EVENT_CHANGE, function (row, col) {
@@ -196,8 +197,8 @@ BI.ExcelViewSetting = BI.inherit(BI.Widget, {
             width: 120,
             height: 28
         });
-        this.uploadButton.on(BI.UploadExcelButton.EVENT_AFTER_UPLOAD, function(files){
-            self.model.setFile(files[files.length - 1], function(){
+        this.uploadButton.on(BI.UploadExcelButton.EVENT_AFTER_UPLOAD, function (files) {
+            self.model.setFile(files[files.length - 1], function () {
                 self._refreshAfterUpload();
             });
         });
@@ -234,21 +235,21 @@ BI.ExcelViewSetting = BI.inherit(BI.Widget, {
         })
     },
 
-    _refreshAfterUpload: function(){
+    _refreshAfterUpload: function () {
         this.excelName.setText(this.model.getExcelName());
         this.uploadButton.setText(BI.i18nText("BI-Excel_Reupload"));
-        this.excel.populate(this.model.getExcelData());
+        this.excel.populate(this.model.getExcelData(), this.model.getExcelMergeRules());
         this.populate();
     },
 
-    _clearConf: function(){
+    _clearConf: function () {
         this.excelName.setText(this.model.getExcelName());
         this.uploadButton.setText(BI.i18nText("BI-Upload_Data"));
-        this.excel.populate(this.model.getExcelData());
+        this.excel.populate(this.model.getExcelData(), this.model.getExcelMergeRules());
         this.populate();
     },
 
-    populate: function(){
+    populate: function () {
         this.tree.populate(this.model.getTables());
         this.excel.setValue(this.model.getPositions());
     },
