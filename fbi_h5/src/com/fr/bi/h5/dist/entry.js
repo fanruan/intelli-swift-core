@@ -33,17 +33,17 @@ webpackJsonp([0],{
 
 	var _View2 = _interopRequireDefault(_View);
 
-	__webpack_require__(936);
+	__webpack_require__(941);
 
-	__webpack_require__(938);
+	__webpack_require__(943);
 
-	__webpack_require__(940);
+	__webpack_require__(945);
 
-	__webpack_require__(942);
+	__webpack_require__(947);
 
-	__webpack_require__(944);
+	__webpack_require__(949);
 
-	__webpack_require__(946);
+	__webpack_require__(951);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2127,19 +2127,19 @@ webpackJsonp([0],{
 
 	var _core = __webpack_require__(329);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _layout = __webpack_require__(798);
+	var _layout = __webpack_require__(801);
 
-	var _template = __webpack_require__(807);
+	var _template = __webpack_require__(810);
 
 	var TodoActions = _interopRequireWildcard(_template);
 
-	var _Main = __webpack_require__(808);
+	var _Main = __webpack_require__(811);
 
 	var _Main2 = _interopRequireDefault(_Main);
 
-	var _Layout = __webpack_require__(935);
+	var _Layout = __webpack_require__(940);
 
 	var _Layout2 = _interopRequireDefault(_Layout);
 
@@ -2286,7 +2286,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 807:
+/***/ 810:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2313,7 +2313,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 808:
+/***/ 811:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2340,15 +2340,15 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _layout = __webpack_require__(798);
+	var _layout = __webpack_require__(801);
 
-	var _Toolbar = __webpack_require__(809);
+	var _Toolbar = __webpack_require__(812);
 
 	var _Toolbar2 = _interopRequireDefault(_Toolbar);
 
-	var _LayoutComponent = __webpack_require__(909);
+	var _LayoutComponent = __webpack_require__(914);
 
 	var _LayoutComponent2 = _interopRequireDefault(_LayoutComponent);
 
@@ -2589,7 +2589,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 809:
+/***/ 812:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2616,15 +2616,15 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _layout = __webpack_require__(798);
+	var _layout = __webpack_require__(801);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
-	var _widgets = __webpack_require__(892);
+	var _widgets = __webpack_require__(895);
 
-	var _Controls = __webpack_require__(904);
+	var _Controls = __webpack_require__(908);
 
 	var _Controls2 = _interopRequireDefault(_Controls);
 
@@ -2702,7 +2702,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 892:
+/***/ 895:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2710,23 +2710,27 @@ webpackJsonp([0],{
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.DateWidget = exports.MultiTreeSelectorWidget = exports.MultiSelectorWidget = exports.TableWidget = undefined;
+	exports.YearMonthWidget = exports.DateWidget = exports.MultiTreeSelectorWidget = exports.MultiSelectorWidget = exports.TableWidget = undefined;
 
-	var _TableWidget2 = __webpack_require__(893);
+	var _TableWidget2 = __webpack_require__(896);
 
 	var _TableWidget3 = _interopRequireDefault(_TableWidget2);
 
-	var _MultiSelectorWidget2 = __webpack_require__(896);
+	var _MultiSelectorWidget2 = __webpack_require__(899);
 
 	var _MultiSelectorWidget3 = _interopRequireDefault(_MultiSelectorWidget2);
 
-	var _MultiTreeSelectorWidget2 = __webpack_require__(899);
+	var _MultiTreeSelectorWidget2 = __webpack_require__(902);
 
 	var _MultiTreeSelectorWidget3 = _interopRequireDefault(_MultiTreeSelectorWidget2);
 
-	var _DateWidget2 = __webpack_require__(903);
+	var _DateWidget2 = __webpack_require__(906);
 
 	var _DateWidget3 = _interopRequireDefault(_DateWidget2);
+
+	var _YearMonthWidget2 = __webpack_require__(907);
+
+	var _YearMonthWidget3 = _interopRequireDefault(_YearMonthWidget2);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2734,11 +2738,12 @@ webpackJsonp([0],{
 	exports.MultiSelectorWidget = _MultiSelectorWidget3.default;
 	exports.MultiTreeSelectorWidget = _MultiTreeSelectorWidget3.default;
 	exports.DateWidget = _DateWidget3.default;
+	exports.YearMonthWidget = _YearMonthWidget3.default;
 	exports.default = module.exports;
 
 /***/ },
 
-/***/ 893:
+/***/ 896:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2769,13 +2774,13 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
-	var _GroupHeader = __webpack_require__(894);
+	var _GroupHeader = __webpack_require__(897);
 
 	var _GroupHeader2 = _interopRequireDefault(_GroupHeader);
 
-	var _GroupItems = __webpack_require__(895);
+	var _GroupItems = __webpack_require__(898);
 
 	var _GroupItems2 = _interopRequireDefault(_GroupItems);
 
@@ -2912,7 +2917,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 894:
+/***/ 897:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2937,7 +2942,7 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3045,7 +3050,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 895:
+/***/ 898:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3070,7 +3075,7 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3249,7 +3254,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 896:
+/***/ 899:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3282,17 +3287,17 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _layout = __webpack_require__(798);
+	var _layout = __webpack_require__(801);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _Item = __webpack_require__(897);
+	var _Item = __webpack_require__(900);
 
 	var _Item2 = _interopRequireDefault(_Item);
 
-	var _MultiSelectorWidgetHelper = __webpack_require__(898);
+	var _MultiSelectorWidgetHelper = __webpack_require__(901);
 
 	var _MultiSelectorWidgetHelper2 = _interopRequireDefault(_MultiSelectorWidgetHelper);
 
@@ -3528,7 +3533,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 897:
+/***/ 900:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3557,11 +3562,11 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _layout = __webpack_require__(798);
+	var _layout = __webpack_require__(801);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3678,7 +3683,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 898:
+/***/ 901:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3773,7 +3778,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 899:
+/***/ 902:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3806,19 +3811,19 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _Item = __webpack_require__(900);
+	var _Item = __webpack_require__(903);
 
 	var _Item2 = _interopRequireDefault(_Item);
 
-	var _MultiTreeSelectorWidgetHelper = __webpack_require__(901);
+	var _MultiTreeSelectorWidgetHelper = __webpack_require__(904);
 
 	var _MultiTreeSelectorWidgetHelper2 = _interopRequireDefault(_MultiTreeSelectorWidgetHelper);
 
-	var _MultiTreeSelectorWidgetAsyncHelper = __webpack_require__(902);
+	var _MultiTreeSelectorWidgetAsyncHelper = __webpack_require__(905);
 
 	var _MultiTreeSelectorWidgetAsyncHelper2 = _interopRequireDefault(_MultiTreeSelectorWidgetAsyncHelper);
 
@@ -4018,7 +4023,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 900:
+/***/ 903:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4047,11 +4052,11 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _layout = __webpack_require__(798);
+	var _layout = __webpack_require__(801);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4188,7 +4193,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 901:
+/***/ 904:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4553,7 +4558,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 902:
+/***/ 905:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4566,7 +4571,7 @@ webpackJsonp([0],{
 
 	var _core = __webpack_require__(329);
 
-	var _MultiTreeSelectorWidgetHelper = __webpack_require__(901);
+	var _MultiTreeSelectorWidgetHelper = __webpack_require__(904);
 
 	var _MultiTreeSelectorWidgetHelper2 = _interopRequireDefault(_MultiTreeSelectorWidgetHelper);
 
@@ -4649,7 +4654,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 903:
+/***/ 906:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4676,13 +4681,13 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _layout = __webpack_require__(798);
+	var _layout = __webpack_require__(801);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
-	var _widgets = __webpack_require__(892);
+	var _widgets = __webpack_require__(895);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4838,7 +4843,285 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 904:
+/***/ 907:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactMixin = __webpack_require__(206);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _immutable = __webpack_require__(200);
+
+	var _immutable2 = _interopRequireDefault(_immutable);
+
+	var _core = __webpack_require__(329);
+
+	var _lib = __webpack_require__(208);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _data = __webpack_require__(780);
+
+	var _layout = __webpack_require__(801);
+
+	var _base = __webpack_require__(813);
+
+	var _widgets = __webpack_require__(895);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var PICKER_ITEM_HEIGHT = 36;
+
+	var YearMonthWidget = function (_Component) {
+	    _inherits(YearMonthWidget, _Component);
+
+	    function YearMonthWidget(props, context) {
+	        _classCallCheck(this, YearMonthWidget);
+
+	        var _this = _possibleConstructorReturn(this, (YearMonthWidget.__proto__ || Object.getPrototypeOf(YearMonthWidget)).call(this, props, context));
+
+	        _this.state = {
+	            selection: 1,
+	            year: _this.props.year,
+	            month: _this.props.month
+	        };
+	        return _this;
+	    }
+
+	    _createClass(YearMonthWidget, [{
+	        key: '_getNextState',
+	        value: function _getNextState(props) {
+	            var state = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	        }
+	    }, {
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {}
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this2 = this;
+
+	            var props = _objectWithoutProperties(this.props, []);
+	            var state = _objectWithoutProperties(this.state, []);
+
+	            var detailPicker;
+	            var year = [],
+	                month = [];
+	            for (var i = 1900; i <= 2050; i++) {
+	                year.push(_lib2.default.createElement(_lib.PickerIOS.Item, { key: i, value: i, label: '' + (i + BH.i18nText("BH-Year")) }));
+	            }
+	            for (var _i = 0; _i < 12; _i++) {
+	                month.push(_lib2.default.createElement(_lib.PickerIOS.Item, { key: _i, value: _i, label: '' + (_i + 1 + BH.i18nText("BH-Month")) }));
+	            }
+	            if (this.state.selection === 1) {
+	                detailPicker = _lib2.default.createElement(
+	                    _lib.View,
+	                    { style: styles.datepicker },
+	                    _lib2.default.createElement(_lib.View, { style: styles.highlight }),
+	                    _lib2.default.createElement(
+	                        _lib.View,
+	                        { style: styles.container },
+	                        _lib2.default.createElement(
+	                            _lib.PickerIOS,
+	                            { selectedValue: this.state.year || new Date().getFullYear(), onValueChange: function onValueChange(Y) {
+	                                    _this2.setState({ year: Y }, function () {
+	                                        var _state = _this2.state;
+	                                        var year = _state.year;
+	                                        var month = _state.month;
+
+	                                        _this2.props.onValueChange({ year: year, month: month });
+	                                    });
+	                                } },
+	                            year
+	                        )
+	                    )
+	                );
+	            } else {
+	                detailPicker = _lib2.default.createElement(
+	                    _lib.View,
+	                    { style: styles.datepicker },
+	                    _lib2.default.createElement(_lib.View, { style: styles.highlight }),
+	                    _lib2.default.createElement(
+	                        _lib.View,
+	                        { style: styles.container },
+	                        _lib2.default.createElement(
+	                            _lib.PickerIOS,
+	                            { selectedValue: this.state.month || new Date().getMonth(), onValueChange: function onValueChange(M) {
+	                                    _this2.setState({ month: M }, function () {
+	                                        var _state2 = _this2.state;
+	                                        var year = _state2.year;
+	                                        var month = _state2.month;
+
+	                                        _this2.props.onValueChange({ year: year, month: month });
+	                                    });
+	                                } },
+	                            month
+	                        )
+	                    )
+	                );
+	            }
+	            return _lib2.default.createElement(
+	                _layout.Layout,
+	                { dir: 'top', main: 'justify', style: styles.wrapper },
+	                _lib2.default.createElement(
+	                    _layout.Layout,
+	                    { cross: 'center', style: styles.button },
+	                    _lib2.default.createElement(
+	                        _layout.Layout,
+	                        null,
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            { style: styles.dateLabel },
+	                            BH.i18nText("BH-Select_Year")
+	                        ),
+	                        _lib2.default.createElement(
+	                            _base.TextButton,
+	                            { style: styles.date, onPress: function onPress() {
+	                                    _this2.setState({
+	                                        selection: 1
+	                                    });
+	                                } },
+	                            state.year ? '' + (state.year + BH.i18nText("BH-Year")) : BH.i18nText("BH-Unrestricted")
+	                        )
+	                    ),
+	                    _lib2.default.createElement(
+	                        _layout.Layout,
+	                        null,
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            { style: styles.dateLabel },
+	                            BH.i18nText("BH-Select_Month")
+	                        ),
+	                        _lib2.default.createElement(
+	                            _base.TextButton,
+	                            { style: styles.date, onPress: function onPress() {
+	                                    _this2.setState({
+	                                        selection: 2
+	                                    });
+	                                } },
+	                            state.month ? '' + (state.month + 1 + BH.i18nText("BH-Month")) : BH.i18nText("BH-Unrestricted")
+	                        )
+	                    )
+	                ),
+	                _lib2.default.createElement(
+	                    _layout.Layout,
+	                    { dir: 'top', box: 'first', style: styles.picker },
+	                    _lib2.default.createElement(
+	                        _layout.CenterLayout,
+	                        { style: styles.header },
+	                        _lib2.default.createElement(
+	                            _lib.Text,
+	                            null,
+	                            BH.i18nText("BH-Select_Date")
+	                        )
+	                    ),
+	                    detailPicker
+	                )
+	            );
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {
+	            var year = nextProps.year;
+	            var month = nextProps.month;
+
+	            this.setState({ year: year, month: month });
+	        }
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate(nextProps, nextState) {}
+	    }, {
+	        key: 'componentDidUpdate',
+	        value: function componentDidUpdate(prevProps, prevState) {}
+	    }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {}
+	    }]);
+
+	    return YearMonthWidget;
+	}(_lib.Component);
+
+	YearMonthWidget.propTypes = {};
+	YearMonthWidget.defaultProps = {
+	    onValueChange: _core.emptyFunction
+	};
+
+	_reactMixin2.default.onClass(YearMonthWidget, _core.ReactComponentWithPureRenderMixin);
+	var styles = _lib.StyleSheet.create({
+	    wrapper: {},
+
+	    dateLabel: {
+	        width: 120,
+	        paddingLeft: 30
+	    },
+
+	    button: {
+	        height: _data.Sizes.HEADER_HEIGHT
+	    },
+
+	    date: {
+	        paddingLeft: 20
+	    },
+
+	    picker: {
+	        height: 217
+	    },
+
+	    header: {
+	        paddingLeft: 20,
+	        paddingRight: 20,
+	        height: _data.Sizes.HEADER_HEIGHT,
+	        borderBottomColor: _data.Colors.BORDER,
+	        borderBottomWidth: 1 / _lib.PixelRatio.get()
+	    },
+	    datepicker: {
+	        flexDirection: 'row',
+	        justifyContent: 'center'
+	    },
+	    container: {
+	        flexDirection: 'row'
+	    },
+	    highlight: {
+	        position: 'absolute',
+	        left: 0,
+	        right: 0,
+	        height: PICKER_ITEM_HEIGHT,
+	        top: '50%',
+	        marginTop: -1 * PICKER_ITEM_HEIGHT / 2,
+	        borderTopWidth: 1,
+	        borderTopStyle: 'solid',
+	        borderTopColor: '#ddd',
+	        borderBottomWidth: 1,
+	        borderBottomStyle: 'solid',
+	        borderBottomColor: '#ddd'
+	    }
+	});
+	exports.default = YearMonthWidget;
+
+/***/ },
+
+/***/ 908:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4865,27 +5148,31 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _layout = __webpack_require__(798);
+	var _layout = __webpack_require__(801);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
-	var _widgets = __webpack_require__(892);
+	var _widgets = __webpack_require__(895);
 
-	var _MultiSelectorComponent = __webpack_require__(905);
+	var _MultiSelectorComponent = __webpack_require__(909);
 
 	var _MultiSelectorComponent2 = _interopRequireDefault(_MultiSelectorComponent);
 
-	var _MultiTreeSelectorComponent = __webpack_require__(906);
+	var _MultiTreeSelectorComponent = __webpack_require__(910);
 
 	var _MultiTreeSelectorComponent2 = _interopRequireDefault(_MultiTreeSelectorComponent);
 
-	var _DateComponent = __webpack_require__(907);
+	var _DateComponent = __webpack_require__(911);
 
 	var _DateComponent2 = _interopRequireDefault(_DateComponent);
 
-	var _Item = __webpack_require__(908);
+	var _YearMonthComponent = __webpack_require__(912);
+
+	var _YearMonthComponent2 = _interopRequireDefault(_YearMonthComponent);
+
+	var _Item = __webpack_require__(913);
 
 	var _Item2 = _interopRequireDefault(_Item);
 
@@ -4951,6 +5238,8 @@ webpackJsonp([0],{
 	                                case BICst.WIDGET.YEAR:
 	                                case BICst.WIDGET.QUARTER:
 	                                case BICst.WIDGET.MONTH:
+	                                    Component = _YearMonthComponent2.default;
+	                                    break;
 	                                case BICst.WIDGET.YMD:
 	                                    Component = _DateComponent2.default;
 	                            }
@@ -5005,7 +5294,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 905:
+/***/ 909:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5030,11 +5319,11 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _widgets = __webpack_require__(892);
+	var _widgets = __webpack_require__(895);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5116,7 +5405,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 906:
+/***/ 910:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5141,11 +5430,11 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _widgets = __webpack_require__(892);
+	var _widgets = __webpack_require__(895);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5225,7 +5514,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 907:
+/***/ 911:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5252,13 +5541,13 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _layout = __webpack_require__(798);
+	var _layout = __webpack_require__(801);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
-	var _widgets = __webpack_require__(892);
+	var _widgets = __webpack_require__(895);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5343,7 +5632,124 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 908:
+/***/ 912:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactMixin = __webpack_require__(206);
+
+	var _reactMixin2 = _interopRequireDefault(_reactMixin);
+
+	var _reactDom = __webpack_require__(34);
+
+	var _immutable = __webpack_require__(200);
+
+	var _immutable2 = _interopRequireDefault(_immutable);
+
+	var _core = __webpack_require__(329);
+
+	var _lib = __webpack_require__(208);
+
+	var _lib2 = _interopRequireDefault(_lib);
+
+	var _data = __webpack_require__(780);
+
+	var _layout = __webpack_require__(801);
+
+	var _base = __webpack_require__(813);
+
+	var _widgets = __webpack_require__(895);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var YearMonthComponent = function (_Component) {
+	    _inherits(YearMonthComponent, _Component);
+
+	    function YearMonthComponent(props, context) {
+	        _classCallCheck(this, YearMonthComponent);
+
+	        var _this = _possibleConstructorReturn(this, (YearMonthComponent.__proto__ || Object.getPrototypeOf(YearMonthComponent)).call(this, props, context));
+
+	        _this.state = {};
+	        return _this;
+	    }
+
+	    _createClass(YearMonthComponent, [{
+	        key: '_getNextState',
+	        value: function _getNextState(props) {
+	            var state = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	        }
+	    }, {
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {}
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {}
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this2 = this;
+
+	            var props = _objectWithoutProperties(this.props, []);
+	            var state = _objectWithoutProperties(this.state, []);
+
+	            var wId = props.wId;
+	            var template = _data.TemplateFactory.createTemplate(props.$template);
+	            var widget = template.getWidgetById(wId);
+	            return _lib2.default.createElement(_widgets.YearMonthWidget, { style: styles.wrapper,
+	                year: widget.getYear(),
+	                month: widget.getMonth(),
+	                onValueChange: function onValueChange(value) {
+	                    widget.setWidgetValue(value);
+	                    template.set$Widget(wId, widget.$get());
+	                    _this2.props.onValueChange(template.$get());
+	                }
+	            });
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {}
+	    }, {
+	        key: 'componentWillUpdate',
+	        value: function componentWillUpdate(nextProps, nextState) {}
+	    }, {
+	        key: 'componentDidUpdate',
+	        value: function componentDidUpdate(prevProps, prevState) {}
+	    }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {}
+	    }]);
+
+	    return YearMonthComponent;
+	}(_lib.Component);
+
+	YearMonthComponent.propTypes = {};
+	YearMonthComponent.defaultProps = {};
+
+	_reactMixin2.default.onClass(YearMonthComponent, _core.ReactComponentWithImmutableRenderMixin);
+	var styles = _lib.StyleSheet.create({
+	    wrapper: {}
+	});
+	exports.default = YearMonthComponent;
+
+/***/ },
+
+/***/ 913:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5368,13 +5774,13 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _layout = __webpack_require__(798);
+	var _layout = __webpack_require__(801);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
-	var _widgets = __webpack_require__(892);
+	var _widgets = __webpack_require__(895);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5454,7 +5860,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 909:
+/***/ 914:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5481,41 +5887,45 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _layout = __webpack_require__(798);
+	var _layout = __webpack_require__(801);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _ChartPaneComponent = __webpack_require__(910);
+	var _ChartPaneComponent = __webpack_require__(915);
 
 	var _ChartPaneComponent2 = _interopRequireDefault(_ChartPaneComponent);
 
-	var _TablePaneComponent = __webpack_require__(923);
+	var _TablePaneComponent = __webpack_require__(928);
 
 	var _TablePaneComponent2 = _interopRequireDefault(_TablePaneComponent);
 
-	var _DetailTablePaneComponent = __webpack_require__(929);
+	var _DetailTablePaneComponent = __webpack_require__(934);
 
 	var _DetailTablePaneComponent2 = _interopRequireDefault(_DetailTablePaneComponent);
 
-	var _MultiSelectorComponent = __webpack_require__(905);
+	var _MultiSelectorComponent = __webpack_require__(909);
 
 	var _MultiSelectorComponent2 = _interopRequireDefault(_MultiSelectorComponent);
 
-	var _MultiTreeSelectorComponent = __webpack_require__(906);
+	var _MultiTreeSelectorComponent = __webpack_require__(910);
 
 	var _MultiTreeSelectorComponent2 = _interopRequireDefault(_MultiTreeSelectorComponent);
 
-	var _ContentComponent = __webpack_require__(932);
+	var _ContentComponent = __webpack_require__(937);
 
 	var _ContentComponent2 = _interopRequireDefault(_ContentComponent);
 
-	var _ImageComponent = __webpack_require__(933);
+	var _ImageComponent = __webpack_require__(938);
 
 	var _ImageComponent2 = _interopRequireDefault(_ImageComponent);
 
-	var _WebCompontent = __webpack_require__(934);
+	var _YearMonthComponent = __webpack_require__(912);
+
+	var _YearMonthComponent2 = _interopRequireDefault(_YearMonthComponent);
+
+	var _WebCompontent = __webpack_require__(939);
 
 	var _WebCompontent2 = _interopRequireDefault(_WebCompontent);
 
@@ -5633,6 +6043,8 @@ webpackJsonp([0],{
 	                case BICst.WIDGET.YEAR:
 	                case BICst.WIDGET.QUARTER:
 	                case BICst.WIDGET.MONTH:
+	                    component = _lib2.default.createElement(_YearMonthComponent2.default, props);
+	                    break;
 	                case BICst.WIDGET.YMD:
 	                case BICst.WIDGET.QUERY:
 	                case BICst.WIDGET.RESET:
@@ -5681,7 +6093,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 910:
+/***/ 915:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5710,19 +6122,19 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _layout = __webpack_require__(798);
+	var _layout = __webpack_require__(801);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
-	var _widgets = __webpack_require__(892);
+	var _widgets = __webpack_require__(895);
 
-	var _ChartComponent = __webpack_require__(911);
+	var _ChartComponent = __webpack_require__(916);
 
 	var _ChartComponent2 = _interopRequireDefault(_ChartComponent);
 
-	var _SettingsComponent = __webpack_require__(912);
+	var _SettingsComponent = __webpack_require__(917);
 
 	var _SettingsComponent2 = _interopRequireDefault(_SettingsComponent);
 
@@ -5834,7 +6246,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 911:
+/***/ 916:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5861,9 +6273,9 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5958,7 +6370,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 912:
+/***/ 917:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5985,27 +6397,27 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _layout = __webpack_require__(798);
+	var _layout = __webpack_require__(801);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
-	var _widgets = __webpack_require__(892);
+	var _widgets = __webpack_require__(895);
 
-	var _SettingsComponentHelper = __webpack_require__(913);
+	var _SettingsComponentHelper = __webpack_require__(918);
 
 	var _SettingsComponentHelper2 = _interopRequireDefault(_SettingsComponentHelper);
 
-	var _DimensionComponent = __webpack_require__(914);
+	var _DimensionComponent = __webpack_require__(919);
 
 	var _DimensionComponent2 = _interopRequireDefault(_DimensionComponent);
 
-	var _TargetComponent = __webpack_require__(918);
+	var _TargetComponent = __webpack_require__(923);
 
 	var _TargetComponent2 = _interopRequireDefault(_TargetComponent);
 
-	var _DimensionSortableComponent = __webpack_require__(922);
+	var _DimensionSortableComponent = __webpack_require__(927);
 
 	var _DimensionSortableComponent2 = _interopRequireDefault(_DimensionSortableComponent);
 
@@ -6393,7 +6805,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 913:
+/***/ 918:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6408,7 +6820,7 @@ webpackJsonp([0],{
 
 	var _core = __webpack_require__(329);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -6553,7 +6965,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 914:
+/***/ 919:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6580,19 +6992,19 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _layout = __webpack_require__(798);
+	var _layout = __webpack_require__(801);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
-	var _widgets = __webpack_require__(892);
+	var _widgets = __webpack_require__(895);
 
-	var _DimensionComponentHelper = __webpack_require__(915);
+	var _DimensionComponentHelper = __webpack_require__(920);
 
 	var _DimensionComponentHelper2 = _interopRequireDefault(_DimensionComponentHelper);
 
-	var _DimensionSortComponent = __webpack_require__(916);
+	var _DimensionSortComponent = __webpack_require__(921);
 
 	var _DimensionSortComponent2 = _interopRequireDefault(_DimensionSortComponent);
 
@@ -6752,7 +7164,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 915:
+/***/ 920:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6765,7 +7177,7 @@ webpackJsonp([0],{
 
 	var _core = __webpack_require__(329);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -6815,7 +7227,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 916:
+/***/ 921:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6842,15 +7254,15 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _layout = __webpack_require__(798);
+	var _layout = __webpack_require__(801);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
-	var _widgets = __webpack_require__(892);
+	var _widgets = __webpack_require__(895);
 
-	var _DimensionSortComponentHelper = __webpack_require__(917);
+	var _DimensionSortComponentHelper = __webpack_require__(922);
 
 	var _DimensionSortComponentHelper2 = _interopRequireDefault(_DimensionSortComponentHelper);
 
@@ -6949,7 +7361,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 917:
+/***/ 922:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6962,7 +7374,7 @@ webpackJsonp([0],{
 
 	var _core = __webpack_require__(329);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -7024,7 +7436,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 918:
+/***/ 923:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7051,19 +7463,19 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _layout = __webpack_require__(798);
+	var _layout = __webpack_require__(801);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
-	var _widgets = __webpack_require__(892);
+	var _widgets = __webpack_require__(895);
 
-	var _TargetComponentHelper = __webpack_require__(919);
+	var _TargetComponentHelper = __webpack_require__(924);
 
 	var _TargetComponentHelper2 = _interopRequireDefault(_TargetComponentHelper);
 
-	var _TargetSortComponent = __webpack_require__(920);
+	var _TargetSortComponent = __webpack_require__(925);
 
 	var _TargetSortComponent2 = _interopRequireDefault(_TargetSortComponent);
 
@@ -7212,7 +7624,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 919:
+/***/ 924:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7225,7 +7637,7 @@ webpackJsonp([0],{
 
 	var _core = __webpack_require__(329);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -7275,7 +7687,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 920:
+/***/ 925:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7302,15 +7714,15 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _layout = __webpack_require__(798);
+	var _layout = __webpack_require__(801);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
-	var _widgets = __webpack_require__(892);
+	var _widgets = __webpack_require__(895);
 
-	var _TargetSortComponentHelper = __webpack_require__(921);
+	var _TargetSortComponentHelper = __webpack_require__(926);
 
 	var _TargetSortComponentHelper2 = _interopRequireDefault(_TargetSortComponentHelper);
 
@@ -7398,7 +7810,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 921:
+/***/ 926:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7411,7 +7823,7 @@ webpackJsonp([0],{
 
 	var _core = __webpack_require__(329);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -7445,7 +7857,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 922:
+/***/ 927:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7472,15 +7884,15 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _layout = __webpack_require__(798);
+	var _layout = __webpack_require__(801);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
-	var _widgets = __webpack_require__(892);
+	var _widgets = __webpack_require__(895);
 
-	var _DimensionComponentHelper = __webpack_require__(915);
+	var _DimensionComponentHelper = __webpack_require__(920);
 
 	var _DimensionComponentHelper2 = _interopRequireDefault(_DimensionComponentHelper);
 
@@ -7600,7 +8012,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 923:
+/***/ 928:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7629,19 +8041,19 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _layout = __webpack_require__(798);
+	var _layout = __webpack_require__(801);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
-	var _widgets = __webpack_require__(892);
+	var _widgets = __webpack_require__(895);
 
-	var _TableComponent = __webpack_require__(924);
+	var _TableComponent = __webpack_require__(929);
 
 	var _TableComponent2 = _interopRequireDefault(_TableComponent);
 
-	var _SettingsComponent = __webpack_require__(912);
+	var _SettingsComponent = __webpack_require__(917);
 
 	var _SettingsComponent2 = _interopRequireDefault(_SettingsComponent);
 
@@ -7753,7 +8165,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 924:
+/***/ 929:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7782,25 +8194,25 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
-	var _widgets = __webpack_require__(892);
+	var _widgets = __webpack_require__(895);
 
-	var _TableComponentHelper = __webpack_require__(925);
+	var _TableComponentHelper = __webpack_require__(930);
 
 	var _TableComponentHelper2 = _interopRequireDefault(_TableComponentHelper);
 
-	var _TableComponentWidthHelper = __webpack_require__(926);
+	var _TableComponentWidthHelper = __webpack_require__(931);
 
 	var _TableComponentWidthHelper2 = _interopRequireDefault(_TableComponentWidthHelper);
 
-	var _TableCell = __webpack_require__(927);
+	var _TableCell = __webpack_require__(932);
 
 	var _TableCell2 = _interopRequireDefault(_TableCell);
 
-	var _TableHeader = __webpack_require__(928);
+	var _TableHeader = __webpack_require__(933);
 
 	var _TableHeader2 = _interopRequireDefault(_TableHeader);
 
@@ -7947,7 +8359,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 925:
+/***/ 930:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7960,7 +8372,7 @@ webpackJsonp([0],{
 
 	var _core = __webpack_require__(329);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -8093,7 +8505,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 926:
+/***/ 931:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8249,7 +8661,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 927:
+/***/ 932:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8274,11 +8686,11 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
-	var _widgets = __webpack_require__(892);
+	var _widgets = __webpack_require__(895);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8355,7 +8767,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 928:
+/***/ 933:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8380,11 +8792,11 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
-	var _widgets = __webpack_require__(892);
+	var _widgets = __webpack_require__(895);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8457,7 +8869,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 929:
+/***/ 934:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8486,19 +8898,19 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _layout = __webpack_require__(798);
+	var _layout = __webpack_require__(801);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
-	var _widgets = __webpack_require__(892);
+	var _widgets = __webpack_require__(895);
 
-	var _DetailTableComponent = __webpack_require__(930);
+	var _DetailTableComponent = __webpack_require__(935);
 
 	var _DetailTableComponent2 = _interopRequireDefault(_DetailTableComponent);
 
-	var _SettingsComponent = __webpack_require__(912);
+	var _SettingsComponent = __webpack_require__(917);
 
 	var _SettingsComponent2 = _interopRequireDefault(_SettingsComponent);
 
@@ -8610,7 +9022,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 930:
+/***/ 935:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8639,27 +9051,27 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
-	var _layout = __webpack_require__(798);
+	var _layout = __webpack_require__(801);
 
-	var _widgets = __webpack_require__(892);
+	var _widgets = __webpack_require__(895);
 
-	var _DetailTableComponentHelper = __webpack_require__(931);
+	var _DetailTableComponentHelper = __webpack_require__(936);
 
 	var _DetailTableComponentHelper2 = _interopRequireDefault(_DetailTableComponentHelper);
 
-	var _TableComponentWidthHelper = __webpack_require__(926);
+	var _TableComponentWidthHelper = __webpack_require__(931);
 
 	var _TableComponentWidthHelper2 = _interopRequireDefault(_TableComponentWidthHelper);
 
-	var _TableCell = __webpack_require__(927);
+	var _TableCell = __webpack_require__(932);
 
 	var _TableCell2 = _interopRequireDefault(_TableCell);
 
-	var _TableHeader = __webpack_require__(928);
+	var _TableHeader = __webpack_require__(933);
 
 	var _TableHeader2 = _interopRequireDefault(_TableHeader);
 
@@ -8794,7 +9206,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 931:
+/***/ 936:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8807,7 +9219,7 @@ webpackJsonp([0],{
 
 	var _core = __webpack_require__(329);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -8876,7 +9288,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 932:
+/***/ 937:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8905,9 +9317,9 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8989,7 +9401,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 933:
+/***/ 938:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9018,15 +9430,15 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
-	var _WidgetFactory = __webpack_require__(781);
+	var _WidgetFactory = __webpack_require__(783);
 
 	var _WidgetFactory2 = _interopRequireDefault(_WidgetFactory);
 
-	var _TemplateFactory = __webpack_require__(779);
+	var _TemplateFactory = __webpack_require__(781);
 
 	var _TemplateFactory2 = _interopRequireDefault(_TemplateFactory);
 
@@ -9103,7 +9515,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 934:
+/***/ 939:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9132,9 +9544,9 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9179,18 +9591,10 @@ webpackJsonp([0],{
 	            var wId = _props.wId;
 
 	            var widget = _data.WidgetFactory.createWidget($widget, wId, _data.TemplateFactory.createTemplate(this.context.$template));
-	            return _lib2.default.createElement(
-	                _lib.View,
-	                { style: _extends({ height: this.props.height }, styles.wrapper) },
-	                _lib2.default.createElement(_lib.WebView, {
-	                    automaticallyAdjustContentInsets: false,
-	                    source: { uri: widget.getUrl() },
-	                    javaScriptEnabled: true,
-	                    domStorageEnabled: true,
-	                    decelerationRate: 'normal',
-	                    startInLoadingState: true
-	                })
-	            );
+	            return _lib2.default.createElement(_lib.WebView, {
+	                style: _extends({ height: this.props.height }, styles.wrapper),
+	                src: widget.getUrl()
+	            });
 	        }
 	    }, {
 	        key: 'componentWillReceiveProps',
@@ -9219,7 +9623,7 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 935:
+/***/ 940:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9246,9 +9650,9 @@ webpackJsonp([0],{
 
 	var _lib2 = _interopRequireDefault(_lib);
 
-	var _data = __webpack_require__(778);
+	var _data = __webpack_require__(780);
 
-	var _base = __webpack_require__(810);
+	var _base = __webpack_require__(813);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9415,16 +9819,16 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 936:
+/***/ 941:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(937);
+	var content = __webpack_require__(942);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(632)(content, {});
+	var update = __webpack_require__(633)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -9442,10 +9846,10 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 937:
+/***/ 942:
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(631)();
+	exports = module.exports = __webpack_require__(632)();
 	// imports
 
 
@@ -9457,16 +9861,16 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 938:
+/***/ 943:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(939);
+	var content = __webpack_require__(944);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(632)(content, {});
+	var update = __webpack_require__(633)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -9484,10 +9888,10 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 939:
+/***/ 944:
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(631)();
+	exports = module.exports = __webpack_require__(632)();
 	// imports
 
 
@@ -9499,16 +9903,16 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 940:
+/***/ 945:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(941);
+	var content = __webpack_require__(946);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(632)(content, {});
+	var update = __webpack_require__(633)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -9526,10 +9930,10 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 941:
+/***/ 946:
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(631)();
+	exports = module.exports = __webpack_require__(632)();
 	// imports
 
 
@@ -9541,16 +9945,16 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 942:
+/***/ 947:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(943);
+	var content = __webpack_require__(948);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(632)(content, {});
+	var update = __webpack_require__(633)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -9568,10 +9972,10 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 943:
+/***/ 948:
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(631)();
+	exports = module.exports = __webpack_require__(632)();
 	// imports
 
 
@@ -9583,16 +9987,16 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 944:
+/***/ 949:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(945);
+	var content = __webpack_require__(950);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(632)(content, {});
+	var update = __webpack_require__(633)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -9610,10 +10014,10 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 945:
+/***/ 950:
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(631)();
+	exports = module.exports = __webpack_require__(632)();
 	// imports
 
 
@@ -9625,16 +10029,16 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 946:
+/***/ 951:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(947);
+	var content = __webpack_require__(952);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(632)(content, {});
+	var update = __webpack_require__(633)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -9652,10 +10056,10 @@ webpackJsonp([0],{
 
 /***/ },
 
-/***/ 947:
+/***/ 952:
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(631)();
+	exports = module.exports = __webpack_require__(632)();
 	// imports
 
 

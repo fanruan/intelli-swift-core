@@ -2067,14 +2067,14 @@ BI.Arrangement = BI.inherit(BI.Widget, {
 
         if (l.y === y && l.x === x) return layout;
 
-        const movingUp = y && l.y > y;
+        var movingUp = y && l.y > y;
         if (typeof x === 'number') l.x = x;
         if (typeof y === 'number') l.y = y;
         l.moved = true;
 
-        let sorted = this._sortLayoutItemsByRowCol(layout);
+        var sorted = this._sortLayoutItemsByRowCol(layout);
         if (movingUp) sorted = sorted.reverse();
-        const collisions = getAllCollisions(sorted, l);
+        var collisions = getAllCollisions(sorted, l);
 
         for (var i = 0, len = collisions.length; i < len; i++) {
             var collision = collisions[i];
@@ -2125,7 +2125,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
     _moveElementAwayFromCollision: function (layout, collidesWith,
                                              itemToMove, isUserAction) {
         if (isUserAction) {
-            const fakeItem = {
+            var fakeItem = {
                 x: itemToMove.x,
                 y: itemToMove.y,
                 w: itemToMove.w,
