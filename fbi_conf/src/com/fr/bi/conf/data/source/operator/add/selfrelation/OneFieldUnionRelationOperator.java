@@ -186,7 +186,7 @@ public class OneFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
                                     if (r >= 0) {
                                         Object showOb = showGetter.getValue(r);
                                         if (showOb != null) {
-                                            res[index] = showOb.toString();
+                                            res[index] = showOb;
                                         }
                                     }
                                 }
