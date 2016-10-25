@@ -4,8 +4,10 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.data.AbstractDataModel;
 import com.fr.general.DateUtils;
 import com.fr.general.data.TableDataException;
+import com.fr.stable.ColumnRow;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sheldon on 14-8-8.
@@ -22,24 +24,26 @@ public class BIExcelDataModel extends AbstractDataModel {
     private List<Object[]> rowDataList;
     //字段类型
     private int[] columnTypes;
+    //合并规则
+    private Map<ColumnRow, ColumnRow> mergeRules;
 
-    private  String filePath;
+    private String filePath;
 
     private boolean isDataInit = false;
 
-    public BIExcelDataModel( String filePath, String[] columnNames, int[] columnTypes ) {
+    public BIExcelDataModel(String filePath, String[] columnNames, int[] columnTypes) {
         this.filePath = filePath;
         this.columnNames = columnNames;
         this.columnTypes = columnTypes;
     }
 
-    public BIExcelDataModel( String filePath ) {
+    public BIExcelDataModel(String filePath) {
         this.filePath = filePath;
     }
 
     @Override
     public int getColumnCount() throws TableDataException {
-        if(this.columnNames == null) {
+        if (this.columnNames == null) {
             initData();
         }
         return this.columnNames.length;
@@ -50,13 +54,13 @@ public class BIExcelDataModel extends AbstractDataModel {
         return this.columnNames[columnIndex];
     }
 
-    public int getColumnType( int columnIndex )  throws TableDataException  {
+    public int getColumnType(int columnIndex) throws TableDataException {
         return this.columnTypes[columnIndex];
     }
 
     @Override
     public int getRowCount() throws TableDataException {
-        if(this.rowDataList == null) {
+        if (this.rowDataList == null) {
             initData();
         }
         return this.rowDataList.size();
@@ -65,42 +69,50 @@ public class BIExcelDataModel extends AbstractDataModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) throws TableDataException {
         initData();
-        if(rowIndex > rowDataList.size() - 1 || columnIndex > rowDataList.get(rowIndex).length - 1) {
+        if (rowIndex > rowDataList.size() - 1 || columnIndex > rowDataList.get(rowIndex).length - 1) {
             return null;
         }
         return rowDataList.get(rowIndex)[columnIndex];
     }
 
     public Object getValueAt4Preview(int rowIndex, int columnIndex) throws Exception {
-        if(rowIndex > rowDataList.size() - 1 || columnIndex > rowDataList.get(rowIndex).length - 1){
+        if (rowIndex > rowDataList.size() - 1 || columnIndex > rowDataList.get(rowIndex).length - 1) {
             return null;
         }
         return rowDataList.get(rowIndex)[columnIndex];
     }
 
-    public String [] onlyGetColumnNames() throws TableDataException {
-        if(this.columnNames == null) {
+    public String[] onlyGetColumnNames() throws TableDataException {
+        if (this.columnNames == null) {
             initPartData();
         }
         return columnNames;
     }
 
-    public int [] onlyGetColumnTypes()  throws TableDataException  {
-        if(this.columnTypes == null) {
+    public int[] onlyGetColumnTypes() throws TableDataException {
+        if (this.columnTypes == null) {
             initPartData();
         }
         return columnTypes;
     }
 
-    public List<Object[]> getDataList(){
-        if(this.rowDataList == null) {
+    public List<Object[]> getDataList() {
+        if (this.rowDataList == null) {
             initData();
         }
-        return  rowDataList;
+        return rowDataList;
+    }
+
+    public Map<ColumnRow, ColumnRow> getMergeRules() {
+        if (this.mergeRules == null) {
+            initData();
+        }
+        return mergeRules;
     }
 
     /**
      * 释放
+     *
      * @throws Exception
      */
     @Override
@@ -111,11 +123,11 @@ public class BIExcelDataModel extends AbstractDataModel {
     /**
      * 初始化，全部数据
      */
-    private void initData(){
+    private void initData() {
         if (isDataInit) {
             return;
         }
-        switch (getExcelType()){
+        switch (getExcelType()) {
             case EXCEL_TYPE_CSV:
                 initExcel4CSV(false);
                 break;
@@ -132,11 +144,11 @@ public class BIExcelDataModel extends AbstractDataModel {
     /**
      * 初始化，获取部分
      */
-    private void initPartData(){
-        if (this.rowDataList != null){
+    private void initPartData() {
+        if (this.rowDataList != null) {
             return;
         }
-        switch (getExcelType()){
+        switch (getExcelType()) {
             case EXCEL_TYPE_CSV:
                 initExcel4CSV(true);
                 break;
@@ -149,11 +161,11 @@ public class BIExcelDataModel extends AbstractDataModel {
         }
     }
 
-    private int getExcelType(){
-        if(this.filePath.endsWith(".xls")){
+    private int getExcelType() {
+        if (this.filePath.endsWith(".xls")) {
             return EXCEL_TYPE_XLS;
         }
-        if(this.filePath.endsWith(".xlsx")){
+        if (this.filePath.endsWith(".xlsx")) {
             return EXCEL_TYPE_XLSX;
         }
         return EXCEL_TYPE_CSV;
@@ -162,7 +174,7 @@ public class BIExcelDataModel extends AbstractDataModel {
     /**
      * 初始化07excel
      */
-    private void initExcel4XLSX(boolean isPreview){
+    private void initExcel4XLSX(boolean isPreview) {
         long start = System.currentTimeMillis();
         try {
             Excel2007Util excel2007Util = new Excel2007Util(this.filePath, isPreview);
@@ -170,7 +182,8 @@ public class BIExcelDataModel extends AbstractDataModel {
             rowDataList = excel2007Util.getRowDataList();
             columnNames = excel2007Util.getColumnNames();
             columnTypes = excel2007Util.getColumnTypes();
-        } catch (Exception e){
+            mergeRules = excel2007Util.getMergeRules();
+        } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage());
         }
     }
@@ -178,7 +191,7 @@ public class BIExcelDataModel extends AbstractDataModel {
     /**
      * 初始化03excel
      */
-    private void initExcel4XLS(boolean isPreview){
+    private void initExcel4XLS(boolean isPreview) {
         long start = System.currentTimeMillis();
         try {
             Excel2003Util excel2003Util = new Excel2003Util(this.filePath, isPreview);
@@ -186,7 +199,8 @@ public class BIExcelDataModel extends AbstractDataModel {
             rowDataList = excel2003Util.getRowDataList();
             columnNames = excel2003Util.getColumnNames();
             columnTypes = excel2003Util.getColumnTypes();
-        }catch (Exception e){
+            mergeRules = excel2003Util.getMergeRules();
+        } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage());
         }
     }
@@ -199,7 +213,7 @@ public class BIExcelDataModel extends AbstractDataModel {
             rowDataList = excelCSVUtil.getRowDataList();
             columnNames = excelCSVUtil.getColumnNames();
             columnTypes = excelCSVUtil.getColumnTypes();
-        }catch (Exception e){
+        } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage());
         }
     }

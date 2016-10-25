@@ -15,6 +15,7 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
         BI.ExcelViewSettingModel.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.excel = [];
+        this.mergeRules = [];
         this.positions = {};
         this.excelName = "";
         var table = o.table;
@@ -29,6 +30,7 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
             this.excelName = view.name;
             this.excel = view.excel;
             this.positions = view.positions;
+            this.mergeRules = view.mergeRules;
         }
 
         this.tables = [];
@@ -116,6 +118,7 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
         this.clearRowCol();
         BI.Utils.saveFileGetExcelData(file.attach_id, function (data) {
             self.excel = [];
+            self.mergeRules = data.mergeRules;
             var row = [];
             BI.each(data.fields, function (i, fs) {
                 BI.each(fs, function (j, field) {
@@ -146,6 +149,10 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
 
     getExcelData: function () {
         return this.excel;
+    },
+
+    getExcelMergeRules: function () {
+        return this.mergeRules;
     },
 
     getAllFields: function () {
