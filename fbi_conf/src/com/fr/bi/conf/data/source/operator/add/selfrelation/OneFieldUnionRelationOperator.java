@@ -149,7 +149,7 @@ public class OneFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
 
                 for (Map.Entry<String, Integer> entry : valueIndexMap.entrySet()) {
                     if (isParent.contains(entry.getKey())) {
-                        mustDelete.add(entry.getValue());
+//                        mustDelete.add(entry.getValue());
                     }
                 }
                 List<ICubeColumnDetailGetter> gts = new ArrayList<ICubeColumnDetailGetter>();
