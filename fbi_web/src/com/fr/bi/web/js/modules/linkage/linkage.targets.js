@@ -13,7 +13,8 @@ BI.LinkageTargets = BI.inherit(BI.Widget, {
             baseCls: "bi-targets-linkage",
             model: null,
             from: "",
-            to: ""
+            to: "",
+            cids: []
         });
     },
 
@@ -24,7 +25,7 @@ BI.LinkageTargets = BI.inherit(BI.Widget, {
         var linkages = o.model.getLinkages(o.from);
         BI.each(linkages, function (j, linkage) {
             if (linkage.to === o.to) {
-                items.push(self._createOneLinkage(linkage.from))
+                items.push(self._createOneLinkage(linkage.from, linkage.cids))
             }
         });
         this.button_group = BI.createWidget({
@@ -39,33 +40,50 @@ BI.LinkageTargets = BI.inherit(BI.Widget, {
         });
     },
 
-    _createOneLinkage: function (from) {
+    // _createOneLinkage: function (from) {
+    //     var self = this, o = this.options;
+    //     var linkage = BI.createWidget({
+    //         type: "bi.linkage_target",
+    //         from: from,
+    //         to: o.to
+    //     });
+    //     linkage.on(BI.LinkageTarget.EVENT_DELETE, function () {
+    //         self.button_group.removeItems(this.getValue());
+    //         self.fireEvent(BI.LinkageTargets.EVENT_DELETE, from);
+    //     });
+    //
+    //     return linkage;
+    // },
+
+    _createOneLinkage: function (from, cIds) {
         var self = this, o = this.options;
         var linkage = BI.createWidget({
             type: "bi.linkage_target",
             from: from,
-            to: o.to
+            to: o.to,
+            cids: cIds
         });
         linkage.on(BI.LinkageTarget.EVENT_DELETE, function () {
             self.button_group.removeItems(this.getValue());
-            self.fireEvent(BI.LinkageTargets.EVENT_DELETE, from);
+            self.fireEvent(BI.LinkageTargets.EVENT_DELETE, from, cIds);
         });
 
         return linkage;
     },
 
-    addOneLinkage: function (from) {
+    addOneLinkage: function (from, cIds) {
         var o = this.options;
         var values = this.button_group.getValue();
         if (BI.deepContains(values, {
                 from: from,
-                to: o.to
+                to: o.to,
+                cids: cIds
             })) {
             return;
         }
-        var linkage = this._createOneLinkage(from);
+        var linkage = this._createOneLinkage(from, cIds);
         this.button_group.addItems([linkage]);
-        this.fireEvent(BI.LinkageTargets.EVENT_ADD, from);
+        this.fireEvent(BI.LinkageTargets.EVENT_ADD, from, cIds);
     },
 
     getValue: function () {
