@@ -15,11 +15,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * Created by wang on 2016/9/30.
  */
 public class ReaderHandlerManager implements NIOHandlerManager<ICubePrimitiveReader> {
-    ICubePrimitiveReader reader = null;
+    private ICubePrimitiveReader reader = null;
     protected AtomicInteger countOfReaders = new AtomicInteger(0);
     protected final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-    protected boolean isForceReleased = false;
-    ICubeResourceLocation resourceLocation = null;
+    protected volatile boolean isForceReleased = false;
+    private ICubeResourceLocation resourceLocation = null;
     private CopyOnWriteArrayList<String> queryRecorder = new CopyOnWriteArrayList<String>();
     public ReaderHandlerManager(ICubePrimitiveReader reader) {
         this.reader = reader;

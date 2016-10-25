@@ -15,10 +15,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 应该只能有一个线程在操作写，
  */
 public class WriterHandlerManager implements NIOHandlerManager<ICubePrimitiveWriter> {
-    ICubePrimitiveWriter writer = null;
+    private ICubePrimitiveWriter writer = null;
     protected AtomicInteger countOfWriters = new AtomicInteger(0);
-    protected boolean isForceReleased = false;
-    ICubeResourceLocation resourceLocation = null;
+    protected volatile boolean isForceReleased = false;
+    private ICubeResourceLocation resourceLocation = null;
     private CopyOnWriteArrayList<String> queryRecorder = new CopyOnWriteArrayList<String>();
 
     public WriterHandlerManager(ICubePrimitiveWriter writer) {
