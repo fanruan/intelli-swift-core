@@ -3,8 +3,10 @@ package com.fr.bi.cal.analyze.report.report.widget;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.field.BusinessFieldHelper;
 import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.annotation.BICoreField;
@@ -28,6 +30,8 @@ import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.structure.collection.map.ConcurrentCacheHashMap;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.NameObject;
@@ -132,7 +136,8 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                     throw new RuntimeException("relation illegal, incorrect foreignTable");
                 }
                 if (!BICubeConfigureCenter.getTableRelationManager().containTableRelationship(getUserId(), r)) {
-                    throw new RuntimeException("relation not exist");
+                    throw BINonValueUtils.beyondControl(BIStringUtils.append("relation not exist \n",
+                            "the relation: ", logRelation(r)));
                 }
             }
         } else {
@@ -143,6 +148,30 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                 if (!ComparatorUtils.equals(target.getStatisticElement().getTableBelongTo().getTableSource(), dimField.getTableBelongTo().getTableSource())) {
                     throw new RuntimeException("relation empty, but source different");
                 }
+            }
+        }
+    }
+
+    private String logRelation(BITableRelation relation) {
+        try {
+            return BIStringUtils.append(
+                    " Primary Table:" + BusinessTableHelper.getBusinessTable(relation.getPrimaryTable().getID()).getTableSource().getTableName(),
+                    ",primary field :" + relation.getPrimaryField().getFieldName(),
+                    ",foreign table:" + BusinessTableHelper.getBusinessTable(relation.getForeignTable().getID()).getTableSource().getTableName(),
+                    ",foreign filed:" + relation.getForeignField().getFieldName());
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(BITableRelation.class).error(e.getMessage(), e);
+            try {
+                return BIStringUtils.append("relation not exist,",
+                        "the relation:Primary Table:" + relation.getPrimaryTable().getTableName(),
+                        ",primary field :" + relation.getPrimaryField().getFieldName(),
+                        ",foreign table:" + relation.getForeignTable().getTableName(),
+                        ",foreign filed:" + relation.getForeignField().getFieldName());
+            } catch (Exception innerException) {
+                BILoggerFactory.getLogger(BITableRelation.class).error(innerException.getMessage(), innerException);
+
+                return "";
+
             }
         }
     }

@@ -72,7 +72,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             };
             switch (self.config.chart_dashboard_type) {
                 case BICst.CHART_SHAPE.HALF_DASHBOARD:
-                    setPlotOptions("pointer_semi", bands, slotValueLAbel);
+                    setPlotOptions("pointer_semi", bands, slotValueLAbel, percentageLabel);
                     break;
                 case BICst.CHART_SHAPE.PERCENT_DASHBOARD:
                     setPlotOptions("ring", bands, slotValueLAbel, percentageLabel);
@@ -100,7 +100,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                     break;
                 case BICst.CHART_SHAPE.NORMAL:
                 default:
-                    setPlotOptions("pointer", bands, slotValueLAbel);
+                    setPlotOptions("pointer", bands, slotValueLAbel,percentageLabel);
                     break;
             }
             changeMaxMinScale();

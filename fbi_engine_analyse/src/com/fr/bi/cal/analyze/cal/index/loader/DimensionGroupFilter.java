@@ -5,12 +5,13 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.cal.index.loader.nodeiterator.IteratorManager;
 import com.fr.bi.cal.analyze.cal.index.loader.nodeiterator.NormalIteratorManager;
-import com.fr.bi.cal.analyze.cal.multithread.*;
+import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
+import com.fr.bi.cal.analyze.cal.multithread.MergeSummaryCall;
+import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.cal.sssecret.*;
 import com.fr.bi.cal.analyze.cal.sssecret.sort.SortedTree;
 import com.fr.bi.cal.analyze.cal.sssecret.sort.SortedTreeBuilder;
-import com.fr.bi.cal.analyze.cal.store.GroupKey;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
@@ -369,7 +370,6 @@ public class DimensionGroupFilter {
 
     private void createFinalIndexes(GroupValueIndex[] groupValueIndexes, GroupValueIndex[][] groupValueIndexe2D) {
         for (int i = 0; i < groupValueIndexe2D.length; i++) {
-            if (!ComparatorUtils.equals(mergerInfoList.get(i).getRoot().getTableKey(), BIBusinessTable.createEmptyTable())) {
                 for (int j = 0; j < groupValueIndexe2D[i].length; j++) {
                     if (groupValueIndexes[i] == MergerInfo.ALL_SHOW) {
                         groupValueIndexes[i] = groupValueIndexe2D[i][j];
@@ -377,7 +377,6 @@ public class DimensionGroupFilter {
                         groupValueIndexes[i] = groupValueIndexes[i].AND(groupValueIndexe2D[i][j]);
                     }
                 }
-            }
         }
     }
 

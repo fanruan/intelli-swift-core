@@ -1349,7 +1349,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/selecttable/sourcetable/widget.databasetables.pane.js",
                 "com/fr/bi/web/js/modules/selecttable/sourcetable/widget.databasetables.pager.js",
                 "com/fr/bi/web/js/modules/selecttable/sourcetable/widget.databasetables.searchresult.pane.js",
+                "com/fr/bi/web/js/modules/selecttable/packagetable/widget.packagetables.mainpane.js",
                 "com/fr/bi/web/js/modules/selecttable/packagetable/widget.packagetables.pane.js",
+                "com/fr/bi/web/js/modules/selecttable/packagetable/widget.packagetables.searchresult.pane.js",
                 "com/fr/bi/web/js/modules/selecttable/etltable/widget.etltables.pane.js",
                 "com/fr/bi/web/js/modules/selecttable/etltable/widget.etlflowchart.button.js",
 
@@ -1828,6 +1830,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules4realtime/selectnumber/widget.selectnumber.js",
                 //实时报表日期选择字段
                 "com/fr/bi/web/js/modules4realtime/selectdate/widget.selectdate.js",
+                //实时报表日期选择明细表
+                "com/fr/bi/web/js/modules4realtime/selectdata4detail/widget.selectdata.js",
 
                 "com/fr/bi/web/js/modules4realtime/constant.js",
                 "com/fr/bi/web/js/modules4realtime/config.js",
