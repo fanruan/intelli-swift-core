@@ -1,7 +1,6 @@
 package com.finebi.cube.data.disk.writer;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.data.BICubeReleaseRecorder;
 import com.finebi.cube.data.disk.NIOHandlerManager;
 import com.finebi.cube.data.output.primitive.ICubePrimitiveWriter;
 import com.finebi.cube.location.ICubeResourceLocation;
@@ -76,7 +75,7 @@ public class WriterHandlerManager implements NIOHandlerManager<ICubePrimitiveWri
     public void destroyHandler() {
         synchronized (this) {
             isForceReleased = true;
-            writer.destoryResource();
+            writer.destroyResource();
             countOfWriters.set(0);
             queryRecorder.clear();
             BILoggerFactory.getLogger().debug("force release writer " + resourceLocation.getAbsolutePath() + " " + countOfWriters.get());

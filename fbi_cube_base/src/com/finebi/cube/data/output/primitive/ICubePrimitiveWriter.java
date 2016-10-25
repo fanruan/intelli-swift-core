@@ -31,9 +31,7 @@ public interface ICubePrimitiveWriter<T> extends CubeResourceRelease {
 
     boolean canWriter();
 
-    void reSetValid(boolean isValid);
-
-    void destoryResource();
+    void destroyResource();
 }
 
 
