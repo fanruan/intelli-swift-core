@@ -190,10 +190,18 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         ICubeTableService oldTi = loader.getTableIndex(tableSource);
         final ICubeColumnIndexReader getter = oldTi.loadGroup(key);
 
+        int columnIndex = 0;
+        for(Object object:deleteLists.get(0)) {
+            if(columnName.equals(object)) {
+                break;
+            }
+            columnIndex++;
+        }
+
         for (int i = 1; i < deleteLists.size(); i++) {
             Object[] objects = deleteLists.get(i);
             if (objects != null) {
-                getter.getIndex(objects[0]).Traversal(new SingleRowTraversalAction() {
+                getter.getIndex(objects[columnIndex]).Traversal(new SingleRowTraversalAction() {
                     @Override
                     public void actionPerformed(int data) {
                         sortRemovedList.add(data);
@@ -343,7 +351,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
     private void handleAddAndDelete(List<Object[]> addList, List<Object[]> deleteList) {
         if (addList.size() > 1 && deleteList.size() > 1) {
             int columnIndex = 0;
-            for (int j = 0; j < addList.size(); j++) {
+            for (int j = 0; j < addList.get(0).length; j++) {
                 if (addList.get(0)[j].equals(deleteList.get(0)[0])) {
                     columnIndex = j;
                     break;
@@ -379,7 +387,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
     private void removeFromModify(List<Object[]> modifyList, List<Object[]> list) {
         if (list.size() > 1 && modifyList.size() > 1) {
             int columnIndex = 0;
-            for (int j = 0; j < list.size(); j++) {
+            for (int j = 0; j < list.get(0).length; j++) {
                 if (list.get(0)[j].equals(modifyList.get(0)[0])) {
                     columnIndex = j;
                     break;
