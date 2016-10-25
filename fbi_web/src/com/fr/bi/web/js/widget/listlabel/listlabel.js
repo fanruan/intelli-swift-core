@@ -31,7 +31,7 @@ BI.ListLabel = BI.inherit(BI.Widget, {
         });
         this.title = BI.createWidget({
             type: "bi.label",
-            text: o.title + ":",
+            text: o.title + BI.i18nText("BI-Colon"),
             title: o.title,
             height: o.height
         });
@@ -133,10 +133,10 @@ BI.ListLabel = BI.inherit(BI.Widget, {
 
     populate: function (v) {
         if(v.title) {
-            this.title.setText(v.title + ":");
+            this.title.setText(v.title + BI.i18nText("BI-Colon"));
             this.title.setTitle(v.title);
         } else {
-            this.title.setText(BI.i18nText("BI-List_Label_Con") + ":");
+            this.title.setText(BI.i18nText("BI-List_Label_Con") + BI.i18nText("BI-Colon"));
             this.title.setTitle(BI.i18nText("BI-List_Label_Con"))
         }
         this.removeAllItems();
