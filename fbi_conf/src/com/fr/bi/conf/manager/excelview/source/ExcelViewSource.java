@@ -17,6 +17,7 @@ public class ExcelViewSource implements JSONTransform {
     private Map<String, ColumnRow> positions = new HashMap<String, ColumnRow>();
     private List<List<String>> excel;
     private String excelName;
+    private List<List<List<String>>> mergeRules;
 
     public Map<String, ColumnRow> getPositions() {
         return positions;
@@ -34,14 +35,23 @@ public class ExcelViewSource implements JSONTransform {
         this.excel = excel;
     }
 
-    public ExcelViewSource(){
+    public List<List<List<String>>> getMergeRules() {
+        return mergeRules;
+    }
+
+    public void setMergeRules(List<List<List<String>>> mergeRules) {
+        this.mergeRules = mergeRules;
+    }
+
+    public ExcelViewSource() {
 
     }
 
-    public ExcelViewSource(Map<String, ColumnRow> positions, List<List<String>> excel, String excelName) {
+    public ExcelViewSource(Map<String, ColumnRow> positions, List<List<String>> excel, String excelName, List<List<List<String>>> mergeRules) {
         this.positions = positions;
         this.excel = excel;
         this.excelName = excelName;
+        this.mergeRules = mergeRules;
     }
 
     @Override
@@ -58,22 +68,39 @@ public class ExcelViewSource implements JSONTransform {
         }
         jo.put("positions", positions);
         JSONArray excel = new JSONArray();
-        for(int i = 0; i < this.excel.size(); i++) {
+        for (int i = 0; i < this.excel.size(); i++) {
             JSONArray row = new JSONArray();
             List<String> rowList = this.excel.get(i);
-            for(int j = 0; j < rowList.size(); j++) {
+            for (int j = 0; j < rowList.size(); j++) {
                 row.put(rowList.get(j));
             }
             excel.put(row);
         }
         jo.put("excel", excel);
         jo.put("name", this.excelName);
+        if (this.mergeRules != null) {
+            JSONArray mergeRules = new JSONArray();
+            for (int i = 0; i < this.mergeRules.size(); i++) {
+                JSONArray mergeRule = new JSONArray();
+                List<List<String>> mergeRuleList = this.mergeRules.get(i);
+                for (int j = 0; j < mergeRuleList.size(); j++) {
+                    JSONArray flag = new JSONArray();
+                    List<String> flagList = mergeRuleList.get(j);
+                    for (int k = 0; k < flagList.size(); k++) {
+                        flag.put(flagList.get(k));
+                    }
+                    mergeRule.put(flag);
+                }
+                mergeRules.put(mergeRule);
+            }
+            jo.put("mergeRules", mergeRules);
+        }
         return jo;
     }
 
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
-        if(jo.has("positions")) {
+        if (jo.has("positions")) {
             JSONObject positions = jo.getJSONObject("positions");
             Iterator<String> iterator = positions.keys();
             while (iterator.hasNext()) {
@@ -83,20 +110,39 @@ public class ExcelViewSource implements JSONTransform {
             }
         }
 
-        if(jo.has("excel")) {
+        if (jo.has("excel")) {
             JSONArray excel = jo.getJSONArray("excel");
             this.excel = new ArrayList<List<String>>();
-            for(int i = 0; i < excel.length(); i++) {
+            for (int i = 0; i < excel.length(); i++) {
                 JSONArray row = excel.getJSONArray(i);
                 List<String> rowList = new ArrayList<String>();
-                for(int j = 0; j < row.length(); j++) {
+                for (int j = 0; j < row.length(); j++) {
                     rowList.add(j, row.getString(j));
                 }
                 this.excel.add(i, rowList);
             }
         }
-        if(jo.has("name")) {
+
+        if (jo.has("name")) {
             this.excelName = jo.getString("name");
+        }
+
+        if (jo.has("mergeRules")) {
+            JSONArray mergeRules = jo.getJSONArray("mergeRules");
+            this.mergeRules = new ArrayList<List<List<String>>>();
+            for (int i = 0; i < mergeRules.length(); i++) {
+                JSONArray mergeRule = mergeRules.getJSONArray(i);
+                List<List<String>> mergeRuleList = new ArrayList<List<String>>();
+                for (int j = 0; j < mergeRule.length(); j++) {
+                    JSONArray flag = mergeRule.getJSONArray(j);
+                    List<String> flagList = new ArrayList<String>();
+                    for (int k = 0; k < flag.length(); k++) {
+                        flagList.add(k, flag.getString(k));
+                    }
+                    mergeRuleList.add(j, flagList);
+                }
+                this.mergeRules.add(i, mergeRuleList);
+            }
         }
     }
 
@@ -137,7 +183,7 @@ public class ExcelViewSource implements JSONTransform {
 //    }
 
     @Override
-    public Object clone()throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 }
