@@ -79,6 +79,10 @@ public class Excel2003Util implements HSSFListener {
         return columnCount;
     }
 
+    public Map<ColumnRow, ColumnRow> getMergeRules() {
+        return mergeCells;
+    }
+
     public List<Object[]> getRowDataList() {
         //此处在外部获取的应当是数据，不包括字段名称
         return rowDataList.subList(1, rowDataList.size());
@@ -187,13 +191,7 @@ public class Excel2003Util implements HSSFListener {
             thisStr = StringUtils.EMPTY;
         }
         if (thisStr != null) {
-            if (thisStr.equals(StringUtils.EMPTY)) {
-                tempData.add(thisStr);
-            } else {
-                String mergeCellId = UUID.randomUUID().toString();
-                String tempStr = thisStr + mergeCellId;
-                tempData.add(tempStr);
-            }
+            tempData.add(thisStr);
         }
         if (thisRow > -1) {
             lastRowNumber = thisRow;
