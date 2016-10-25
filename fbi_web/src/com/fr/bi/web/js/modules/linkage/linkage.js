@@ -79,6 +79,119 @@ BI.Linkage = BI.inherit(BI.Widget, {
         return help;
     },
 
+    _createCalHelper: function (tId, cIds) {
+        var name = BI.Utils.getDimensionNameByID(tId);
+        var help = BI.createWidget({
+            type: "bi.helper",
+            data: {
+                tId: tId,
+                cIds: cIds
+            },
+            text: name
+        });
+        BI.createWidget({
+            type: "bi.absolute",
+            element: this.element,
+            items: [{el: help}]
+        });
+        return help;
+    },
+
+    _createCalculatorTargetLinkage: function (cId, pId) {
+        var cIds = pId ? BI.concat(pId, cId) : [cId];
+        var self = this;
+        var name = BI.Utils.getDimensionNameByID(cId);
+        var expression = BI.Utils.getDimensionSrcByID(cId).expression;
+        var nameLabel = BI.createWidget({
+            type: "bi.label",
+            cls: "linkage-toolbar-target-name",
+            text: name,
+            hgap: 5,
+            height: 30
+        });
+        var linkToLabel = BI.createWidget({
+            type: "bi.label",
+            hgap: 5,
+            cls: "linkage-toolbar-target-linkto",
+            text: BI.i18nText("BI-Link_To"),
+            height: 30
+        });
+        var target = BI.createWidget({
+            type: "bi.left",
+            cls: "linkage-toolbar-target",
+            rgap: 30,
+            items: [nameLabel, linkToLabel]
+        });
+
+        var items = [];
+        BI.each(expression && expression.ids, function (idx, item) {
+            if(BI.Utils.isCalculateTargetByDimensionID(item)) {
+                items.push(BI.createWidget({
+                    type: "bi.vertical",
+                    items: [BI.createWidget({
+                        type: "bi.vertical",
+                        items: [self._createCalculatorTargetLinkage(item, cIds)],
+                        cls: "linkage-toolbar-target-cal"
+                    })],
+                    vgap: 5,
+                    hgap: 5
+                }));
+            } else {
+                items.push(createChildrenLinkage(item));
+            }
+        });
+
+        var container = BI.createWidget({
+            type: "bi.vertical",
+            cls: "",
+            items: items
+        });
+
+        return BI.createWidget({
+            type: "bi.vertical",
+            items : [target, container]
+        });
+
+        function createChildrenLinkage(tId) {
+            var name = BI.Utils.getDimensionNameByID(tId);
+            var nameLabel = BI.createWidget({
+                type: "bi.label",
+                cls: "linkage-toolbar-target-name",
+                text: name,
+                hgap: 5,
+                height: 30
+            });
+            var target = BI.createWidget({
+                type: "bi.left",
+                cls: "linkage-toolbar-target linkage-toolbar-target-cal",
+                rgap: 30,
+                items: [nameLabel]
+            });
+
+            target.element.draggable({
+                cursor: BICst.cursorUrl,
+                cursorAt: {left: 0, top: 0},
+                start: function (e, ui) {
+                    self.toolbarContainer.setVisible(false);
+                },
+                drag: function (e, ui) {
+                },
+                stop: function (e, ui) {
+                    self.toolbarContainer.setVisible(true);
+                },
+                helper: function () {
+                    return self._createCalHelper(tId, cIds).element;
+                }
+            });
+            return BI.createWidget({
+                type: "bi.vertical",
+                items: [target],
+                hgap: 5,
+                vgap: 5
+            });
+        }
+    },
+
     _createTargetLinkage: function (tId) {
         var self = this;
         var name = BI.Utils.getDimensionNameByID(tId);
@@ -171,6 +284,14 @@ BI.Linkage = BI.inherit(BI.Widget, {
                         }],
                         height: 30
                     });
+                });
+                self.dragContainer.addItem(targetContainer);
+            }
+            if(BI.Utils.isCalculateTargetByDimensionID(tId)) {
+                var targetContainer = BI.createWidget({
+                    type: "bi.vertical",
+                    cls: "single-target-container",
+                    items: [self._createCalculatorTargetLinkage(tId)]
                 });
                 self.dragContainer.addItem(targetContainer);
             }

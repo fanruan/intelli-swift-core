@@ -27,6 +27,9 @@
 .bi-linkage .linkage-tool-bar .single-target-container .linkage-toolbar-target .linkage-toolbar-target-linkto {
   color: #808080;
 }
+.bi-linkage .linkage-tool-bar .single-target-container .linkage-toolbar-target-cal {
+  border: 1px solid #d4dadd;
+}
 .bi-linkage .linkage-widget {
   background: #d8f3fe;
 }
