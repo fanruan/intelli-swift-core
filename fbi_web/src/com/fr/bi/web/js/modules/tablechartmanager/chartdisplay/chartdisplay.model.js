@@ -647,6 +647,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             align: "outside",
             style: {
                 "fontFamily": "inherit",
+                "autoAdjust": true,
                 "color": "#808080",
                 "fontSize": "12px"
             },
