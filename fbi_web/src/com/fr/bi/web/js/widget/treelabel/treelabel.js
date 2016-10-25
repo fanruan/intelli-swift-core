@@ -19,7 +19,7 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         this.titles = [];
         BI.each(o.titles, function (idx, title) {
             self.titles.push({
-                text: title + ":"
+                text: title + BI.i18nText("BI-Colon")
             })
         });
         this.view = BI.createWidget({

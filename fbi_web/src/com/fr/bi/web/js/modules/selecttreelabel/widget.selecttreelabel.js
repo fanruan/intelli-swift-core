@@ -42,7 +42,7 @@ BI.SelectTreeLabel = BI.inherit(BI.Widget, {
         BI.each(dimensions, function (idx, dId) {
             var temp = BI.Utils.getDimensionNameByID(dId);
             titles.push({
-                text: temp,
+                text: temp + BI.i18nText("BI-Colon"),
                 title: temp
             })
         });

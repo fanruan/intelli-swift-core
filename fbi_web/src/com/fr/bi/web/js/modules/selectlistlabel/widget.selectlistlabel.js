@@ -39,7 +39,7 @@ BI.SelectListLabel = BI.inherit(BI.Widget, {
                     })
                 });
                 self.listLabel.populate({
-                    title: labels + ":",
+                    title: labels,
                     items: result
                 });
                 self.setValue(BI.Utils.getWidgetValueByID(o.wId));
