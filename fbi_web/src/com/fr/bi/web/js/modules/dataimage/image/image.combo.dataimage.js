@@ -29,10 +29,10 @@ BI.DataImagePane = BI.inherit(BI.Widget, {
     _createImage: function () {
         var self = this, o = this.options;
         this.imageSet = BI.createWidget({
-            type: "bi.data_label_image_set",
+            type: "bi.data_image_set",
             dId: o.dId
         });
-        this.imageSet.on(BI.DataLabelImageSet.EVENT_CHANGE, function () {
+        this.imageSet.on(BI.DataImageImageSet.EVENT_CHANGE, function () {
             self.chart.populate(self.imageSet.getValue().src);
             self.fireEvent(BI.DataImagePane.IMG_CHANGE, arguments);
         });

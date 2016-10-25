@@ -26,7 +26,7 @@ BI.DataImageStringFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         this.styleSetting = this._createStyle(o.style_setting);
         this.deleteButton = BI.createWidget({
             type: "bi.icon_button",
-            cls: "close-h-font"
+            cls: "close-h-font delete-icon"
         });
         this.deleteButton.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.AbstractDataLabelFilterItem.DELETE, self);
@@ -109,6 +109,8 @@ BI.DataImageStringFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
                 break;
             case BICst.DIMENSION_FILTER_STRING.BEGIN_WITH:
             case BICst.DIMENSION_FILTER_STRING.END_WITH:
+            case BICst.DIMENSION_FILTER_STRING.NOT_BEGIN_WITH:
+            case BICst.DIMENSION_FILTER_STRING.NOT_END_WITH:
                 this._createStringInput(initData);
                 break;
         }
