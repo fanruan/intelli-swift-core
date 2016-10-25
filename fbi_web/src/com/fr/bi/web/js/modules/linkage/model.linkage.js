@@ -133,17 +133,6 @@ BI.LinkageModel = BI.inherit(FR.OB, {
         });
         this.widgets[currentId].linkages = linkages;
     },
-    //
-    // addCalLinkage: function (tId, cIds, wId) {
-    //     var currentId = BI.Utils.getWidgetIDByDimensionID(tId);
-    //     var linkages = this.widgets[currentId].linkages || [];
-    //     linkages.push({
-    //         from: tId,
-    //         to: wId,
-    //         cids: cIds
-    //     });
-    //     this.widgets[currentId].linkages = linkages;
-    // },
 
     deleteLinkage: function (tId, wId, cIds) {
         var currentId = BI.Utils.getWidgetIDByDimensionID(tId);
@@ -152,25 +141,10 @@ BI.LinkageModel = BI.inherit(FR.OB, {
             if (BI.isArray(linkage.cids)) {
                 return BI.isEqual(linkage.from, tId) && BI.isEqual(linkage.to, wId) && BI.isEqual(linkage.cids, cIds);
             } else {
-                return BI.isEqual(linkage, {
-                    from: tId,
-                    to: wId
-                })
+                return BI.isEqual(linkage.from, tId) && BI.isEqual(linkage.to, wId);
             }
         });
     },
-
-    // deleteCalLinkage: function (tId, cIds, wId) {
-    //     var currentId = BI.Utils.getWidgetIDByDimensionID(tId);
-    //     var linkages = this.widgets[currentId].linkages || [];
-    //     BI.remove(linkages, function (i, linkage) {
-    //         return BI.isEqual(linkage, {
-    //             from: tId,
-    //             to: wId,
-    //             cids: cIds
-    //         })
-    //     });
-    // },
 
     isWidgetCanLinkageTo: function (wId) {
         var o = this.options;

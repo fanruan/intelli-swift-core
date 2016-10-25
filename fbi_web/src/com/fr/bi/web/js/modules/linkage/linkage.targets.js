@@ -40,21 +40,6 @@ BI.LinkageTargets = BI.inherit(BI.Widget, {
         });
     },
 
-    // _createOneLinkage: function (from) {
-    //     var self = this, o = this.options;
-    //     var linkage = BI.createWidget({
-    //         type: "bi.linkage_target",
-    //         from: from,
-    //         to: o.to
-    //     });
-    //     linkage.on(BI.LinkageTarget.EVENT_DELETE, function () {
-    //         self.button_group.removeItems(this.getValue());
-    //         self.fireEvent(BI.LinkageTargets.EVENT_DELETE, from);
-    //     });
-    //
-    //     return linkage;
-    // },
-
     _createOneLinkage: function (from, cIds) {
         var self = this, o = this.options;
         var linkage = BI.createWidget({
