@@ -2,8 +2,6 @@
  * Created by Fay on 2016/7/7.
  */
 BI.DataImageImageSet = BI.inherit(BI.Widget, {
-    _defaultImg: [],
-
     _imageSelect: "",
 
     _defaultConfig: function () {
