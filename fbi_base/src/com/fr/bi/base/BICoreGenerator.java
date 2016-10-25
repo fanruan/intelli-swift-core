@@ -65,6 +65,7 @@ public class BICoreGenerator implements BICoreService {
                 BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
                 continue;
             }
+            addValue(targetObject.getClass(), result);
         }
         return result;
     }
@@ -72,12 +73,12 @@ public class BICoreGenerator implements BICoreService {
     private void addValue(Object value, List<Object> result) {
         if (value != null) {
             if (BITypeUtils.isIterableObject(value)) {
-                Iterator<Object> iterator = ((Iterable)value).iterator();
+                Iterator<Object> iterator = ((Iterable) value).iterator();
                 while (iterator.hasNext()) {
                     addValue(iterator.next(), result);
                 }
-            }else if (BITypeUtils.isArrayObject(value)){
-                for (Object o : (Object[])value){
+            } else if (BITypeUtils.isArrayObject(value)) {
+                for (Object o : (Object[]) value) {
                     addValue(o, result);
                 }
             } else {
