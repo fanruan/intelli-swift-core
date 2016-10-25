@@ -299,6 +299,5 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
         while (it.hasNext()) {
             it.next().forceReleaseReader();
         }
-        columnKey2ColumnMap.clear();
     }
 }
