@@ -46,6 +46,7 @@ public class BIGetTablesOfOnePackageAction extends AbstractBIConfigureAction {
                 String tableId = tables.getJSONObject(i).getString("id");
                 CubeTableSource source = BusinessTableHelper.getTableDataSource(new BITableID(tableId));
                 JSONObject data = source.createJSON();
+                data.put("id", tableId);
                 formatTableDataFields(tableId, data);
                 tableData.put(tableId, data);
             }

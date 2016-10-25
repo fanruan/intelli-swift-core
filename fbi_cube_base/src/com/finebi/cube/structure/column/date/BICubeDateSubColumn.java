@@ -44,6 +44,10 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
         throw new UnsupportedOperationException();
     }
 
+    public void increaseAddOriginalDataValue(int rowNumber, T originalValue) {
+        throw new UnsupportedOperationException();
+    }
+
     @Override
     public void setRelationManagerService(ICubeRelationManagerService relationManagerService) {
         selfColumnEntity.setRelationManagerService(relationManagerService);

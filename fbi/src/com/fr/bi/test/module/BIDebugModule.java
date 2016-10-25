@@ -65,4 +65,10 @@ public class BIDebugModule extends AbstractModule {
     public Collection<BIPackageID> getAvailablePackID(long userId) {
         return new HashSet<BIPackageID>();
     }
+
+    @Override
+    public void clearAnalysisETLCache(long userId) {
+
+    }
+
 }

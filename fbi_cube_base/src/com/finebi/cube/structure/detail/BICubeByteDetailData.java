@@ -26,7 +26,7 @@ public class BICubeByteDetailData extends BICubeDetailData<Byte> {
     }
 
     @Override
-    protected ICubeResourceLocation setDetailType() {
+    protected ICubeResourceLocation setDetailType(boolean isIncrease) {
         return currentLocation.setByteTypeWrapper();
     }
 
