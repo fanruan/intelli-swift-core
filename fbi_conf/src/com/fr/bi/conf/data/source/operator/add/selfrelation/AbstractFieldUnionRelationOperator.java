@@ -134,7 +134,7 @@ public abstract class AbstractFieldUnionRelationOperator extends AbstractCreateT
                 it = fields.entrySet().iterator();
                 while (it.hasNext()) {
                     Map.Entry<String, Integer> entry = it.next();
-                    persistentTable.addColumn(new UnionRelationPersistentField(s + "-" + entry.getKey(), Types.NVARCHAR, entry.getValue()));
+                    persistentTable.addColumn(new UnionRelationPersistentField(s + "-" + entry.getKey(), BIDBUtils.biTypeToSql(type), entry.getValue()));
                 }
             }
         }
