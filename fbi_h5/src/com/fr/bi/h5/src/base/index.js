@@ -21,7 +21,7 @@ export Sortable from './Sortable'
 
 // export GiftedListView from './GiftedListView'
 // export SideMenu from './SideMenu'
-export Collapsible from './Accordion/Collapsible'
+export Collapsible from './Collapsible/Collapsible'
 // export Accordion from './Accordion/Accordion'
 export Animatable from './Animatable/Animatable'
 
@@ -33,8 +33,7 @@ export Collection from './Collection'
 export Table from './Table'
 
 export Overlay from './Overlay/Overlay'
-export ActionSheet from './ActionSheet/ActionSheet'
-export Dialog from './Dialog'
+export Dialog from './Dialog/Dialog'
 
 export GridLayout from './GridLayout/ReactGridLayout'
 export ResponsiveGridLayout from './GridLayout/ResponsiveReactGridLayout'

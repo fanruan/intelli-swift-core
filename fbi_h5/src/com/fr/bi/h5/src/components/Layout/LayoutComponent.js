@@ -23,6 +23,9 @@ import MultiSelectorComponent from '../MultiSelector/MultiSelectorComponent.js'
 import MultiTreeSelectorComponent from '../MultiTreeSelector/MultiTreeSelectorComponent.js'
 import ContentComponent from '../Content/ContentComponent'
 import ImageComponent from '../Image/ImageComponent'
+import YearMonthComponent from '../YearMonth/YearMonthComponent'
+import YearComponent from '../Year/YearComponent'
+import YearQuarterComponent from '../YearQuarter/YearQuarterComponent'
 import WebComponent from '../Web/WebCompontent'
 
 class LayoutComponent extends Component {
@@ -121,6 +124,8 @@ class LayoutComponent extends Component {
             case BICst.WIDGET.YEAR:
             case BICst.WIDGET.QUARTER:
             case BICst.WIDGET.MONTH:
+                component = <YearMonthComponent {...props} />;
+                break;
             case BICst.WIDGET.YMD:
             case BICst.WIDGET.QUERY:
             case BICst.WIDGET.RESET:

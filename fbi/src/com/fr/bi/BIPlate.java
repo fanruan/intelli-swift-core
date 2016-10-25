@@ -62,10 +62,7 @@ public class BIPlate extends AbstractFSPlate {
 
     @Override
     public void initData() {
-        try{
-            ((LocalEnv) FRContext.getCurrentEnv()).setBuildFilePath("bibuild.txt");
-        } catch(Throwable e){
-        }
+        FRContext.getCurrentEnv().setBuildFilePath("bibuild.txt");
         System.out.println("FINE BI :" + GeneralUtils.readBuildNO());
         initModules();
         super.initData();

@@ -1980,15 +1980,15 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         var leftPortion = Math.round(position.left / perWidth);
         var topPortion = Math.round(position.top / this._const.GRID_HEIGHT);
         var heightPortion = Math.round(position.height / this._const.GRID_HEIGHT);
-        if (leftPortion > BI.Arrangement.PORTION) {
-            leftPortion = BI.Arrangement.PORTION;
-        }
-        if (widthPortion > BI.Arrangement.PORTION) {
-            widthPortion = BI.Arrangement.PORTION;
-        }
-        if (leftPortion + widthPortion > BI.Arrangement.PORTION) {
-            leftPortion = BI.Arrangement.PORTION - widthPortion;
-        }
+        // if (leftPortion > BI.Arrangement.PORTION) {
+        //     leftPortion = BI.Arrangement.PORTION;
+        // }
+        // if (widthPortion > BI.Arrangement.PORTION) {
+        //     widthPortion = BI.Arrangement.PORTION;
+        // }
+        // if (leftPortion + widthPortion > BI.Arrangement.PORTION) {
+        //     leftPortion = BI.Arrangement.PORTION - widthPortion;
+        // }
         if (widthPortion === 0) {
             widthPortion = 1;
         }

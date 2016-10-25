@@ -46,7 +46,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
     },
 
     _hideDrill: function () {
-        if (this._doHide) {
+        if (this._doHide && this._checkUPDrillEmpty(this.options.wId)) {
             this.setVisible(false);
         }
     },

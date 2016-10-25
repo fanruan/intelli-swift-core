@@ -7,7 +7,7 @@ BI.Plugin.registerWidget("bi.detail_select_data", function (w) {
 
 BI.Plugin.registerWidget("bi.detail_detail_table_select_data", function (w) {
     if (BI.Utils.isRealTime()) {
-        w.type = "bi.detail_select_data_4_realtime";
+        w.type = "bi.detail_detail_table_select_data_4_realtime";
         return w;
     }
 });

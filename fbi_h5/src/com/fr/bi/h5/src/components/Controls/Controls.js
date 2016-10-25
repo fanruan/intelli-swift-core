@@ -36,6 +36,9 @@ import {MultiSelectorWidget} from 'widgets'
 import MultiSelectorComponent from '../MultiSelector/MultiSelectorComponent.js'
 import MultiTreeSelectorComponent from '../MultiTreeSelector/MultiTreeSelectorComponent.js'
 import DateComponent from '../Date/DateComponent'
+import YearMonthComponent from '../YearMonth/YearMonthComponent'
+import YearComponent from '../Year/YearComponent'
+import YearQuarterComponent from '../YearQuarter/YearQuarterComponent'
 
 import Item from './Item'
 
@@ -84,8 +87,14 @@ class Controls extends Component {
                             break;
                         case BICst.WIDGET.DATE:
                         case BICst.WIDGET.YEAR:
+                            Component = YearComponent;
+                            break;
                         case BICst.WIDGET.QUARTER:
+                            Component = YearQuarterComponent;
+                            break;
                         case BICst.WIDGET.MONTH:
+                            Component = YearMonthComponent;
+                            break;
                         case BICst.WIDGET.YMD:
                             Component = DateComponent;
                     }

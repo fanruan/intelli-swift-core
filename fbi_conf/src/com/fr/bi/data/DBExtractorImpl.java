@@ -53,7 +53,6 @@ public abstract class DBExtractorImpl implements DBExtractor {
             if (CubeConstant.LOG_SEPERATOR_ROW != 0 && row % CubeConstant.LOG_SEPERATOR_ROW == 0) {
                 logger.info(BIDateUtils.getCurrentDateTime() + " sql: " + trimSQL(sql) + "is executing…… " + " transported rows：" + row);
             }
-
         }
         return row;
     }

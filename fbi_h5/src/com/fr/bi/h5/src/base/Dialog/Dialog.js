@@ -1,32 +1,36 @@
+import PureRenderMixin from 'react-addons-pure-render-mixin'
 import TimerMixin from 'react-timer-mixin';
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
 import React, {
     Component,
     StyleSheet,
+    PixelRatio,
     Modal,
     View,
-    Image,
     Text,
-    TouchableHighlight,
     Animated,
     Easing,
     Dimensions,
+    TouchableWithoutFeedback
 } from 'lib';
+import {Layout} from 'layout'
+import {Colors, Sizes} from 'data'
 
-const [aWidth, aHeight] = [300, 214];
+const [aHeight] = [217];
 
-class Dialog extends Component {
+class Popup extends Component {
     constructor(props) {
         super(props);
         this.state = {
             offset: new Animated.Value(0),
-            opacity: new Animated.Value(0),
-            title: "",
-            choose1: "",
-            choose2: ""
+            opacity: new Animated.Value(0)
         };
     }
+
+    static defaultProps = {
+        buttonText: ['取消', '确定']
+    };
 
     componentDidMount() {
         this.open();
@@ -38,46 +42,48 @@ class Dialog extends Component {
                 <Modal
                     transparent={true}
                 >
-                    <Animated.View style={ [styles.mask, {
-                        opacity: this.state.opacity
-                    }] }>
-                        <Animated.View style={[styles.tip, {
-                            width: aWidth,
-                            height: aHeight,
-                            transform: [{
-                                translateY: this.state.offset.interpolate({
-                                    inputRange: [0, 1],
-                                    outputRange: [aHeight, 0]
-                                }),
-                            }]
-                        }]}>
-                            <View style={styles.tipBody}>
-                                <View style={styles.tipTitleView}>
-                                    <Text style={styles.tipTitleText}>{this.props.title}</Text>
+                    <TouchableWithoutFeedback onPress={()=> {
+                        this.close()
+                    }}>
+                        <Animated.View style={[styles.mask, {
+                            opacity: this.state.opacity
+                        }] }>
+                            <TouchableWithoutFeedback>
+                                <View style={styles.sheet}>
+                                    <Animated.View style={[styles.body, {
+                                        height: aHeight,
+                                        transform: [{
+                                            translateY: this.state.offset.interpolate({
+                                                inputRange: [0, 1],
+                                                outputRange: [aHeight, 0]
+                                            }),
+                                        }]
+                                    }]}>
+                                        <Layout dir='top' box='first' style={styles.wrapper}>
+                                            <Layout main='justify' cross='center' style={styles.header}>
+                                                <Text onPress={()=> {
+                                                    this.close(this.props.buttonText[0]);
+                                                }}>{this.props.buttonText[0]}</Text>
+                                                <Text>{this.props.title}</Text>
+                                                <Text onPress={()=> {
+                                                    this.close(this.props.buttonText[1]);
+                                                }}>{this.props.buttonText[1]}</Text>
+                                            </Layout>
+                                            <Layout box='mean'>
+                                                {this.props.children}
+                                            </Layout>
+                                        </Layout>
+                                    </Animated.View>
                                 </View>
-                                <TouchableHighlight style={styles.tipContentView} underlayColor='#f0f0f0'
-                                >
-                                    <Text style={styles.tipText}>{this.props.choose1}</Text>
-                                </TouchableHighlight>
-
-                                <TouchableHighlight style={styles.tipContentView} underlayColor='#f0f0f0'
-                                >
-                                    <Text style={styles.tipText}>{this.props.choose2}</Text>
-                                </TouchableHighlight>
-                            </View>
-                            <View style={styles.tipBottom}>
-                                <TouchableHighlight style={styles.button} underlayColor='#f0f0f0'
-                                >
-                                    <Text style={styles.buttonText}>取消</Text>
-                                </TouchableHighlight>
-                            </View>
+                            </TouchableWithoutFeedback>
                         </Animated.View>
-                    </Animated.View>
+                    </TouchableWithoutFeedback>
                 </Modal>
             </View>
         );
     }
 
+    //显示动画
     open() {
         Animated.parallel([
             Animated.timing(
@@ -99,7 +105,8 @@ class Dialog extends Component {
         ]).start();
     }
 
-    close() {
+    //隐藏动画
+    close(op) {
         Animated.parallel([
             Animated.timing(
                 this.state.opacity,
@@ -119,71 +126,44 @@ class Dialog extends Component {
             )
         ]).start((endState)=> {
             this.setState({visible: false}, ()=> {
-                this.props.onClose && this.props.onClose();
+                this.props.onClose && this.props.onClose(op);
             })
         });
     }
 }
 
 const styles = StyleSheet.create({
-    container: {},
     mask: {
         position: 'absolute',
         left: 0,
         right: 0,
         top: 0,
         bottom: 0,
-        padding: 20,
-        backgroundColor: "rgba(56,56,56,0.6)"
+        backgroundColor: 'rgba(56,56,56,0.6)'
     },
-    tip: {
-        alignItems: "center",
-        justifyContent: "space-between"
+    sheet: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: 0
     },
-    tipBody: {
-        justifyContent: "space-between",
-        alignSelf: 'stretch',
-        backgroundColor: '#fff'
+    body: {
+        backgroundColor: '#ffffff'
     },
-    tipBottom: {
-        marginTop: 10,
-        alignSelf: 'stretch',
-        backgroundColor: '#fff'
+    wrapper: {
+        height: aHeight,
+        borderTopColor: Colors.BORDER,
+        borderTopWidth: 1
     },
-    tipTitleView: {
-        height: 55,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    tipTitleText: {
-        color: "#999999",
-        fontSize: 14,
-    },
-    tipContentView: {
-        borderTopWidth: 0.5,
-        borderColor: "#f0f0f0",
-        height: 45,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    tipText: {
-        color: "#e6454a",
-        fontSize: 17,
-        textAlign: "center",
-    },
-    button: {
-        height: 45,
-        justifyContent: 'center'
-    },
-    buttonText: {
-        fontSize: 17,
-        color: "#e6454a",
-        textAlign: "center",
+    header: {
+        paddingLeft: 20,
+        paddingRight: 20,
+        height: Sizes.HEADER_HEIGHT,
+        borderBottomColor: Colors.BORDER,
+        borderBottomWidth: 1 / PixelRatio.get()
     }
 });
 
-mixin.onClass(Dialog, TimerMixin);
+mixin.onClass(Popup, TimerMixin);
 
-export default Dialog
+export default Popup

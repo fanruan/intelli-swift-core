@@ -69,7 +69,7 @@ public class CubeTaskHelper {
         ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
         ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getConf(Long.toString(userId)));
         Cube cube = new BICube(resourceRetrievalService, discovery);
-        boolean isPart = CubeUpdateUtils.isNeedUpdate(userId) && cube.isVersionAvailable();
+        boolean isPart = (CubeUpdateUtils.getNewTables(userId).size() > 0 || CubeUpdateUtils.getNewRelations(userId).size() > 0) && cube.isVersionAvailable();
         return isPart;
     }
 

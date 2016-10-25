@@ -56,8 +56,8 @@ BI.ETLFlowChartButton = BI.inherit(BI.Widget, {
             cls: "etl-table-button",
             width: this.constants.BUTTON_WIDTH,
             height: self.constants.BUTTON_HEIGHT,
-            text: tableInfo.table_name,
-            title: tableInfo.table_name
+            text: tableInfo.temp_name || tableInfo.table_name,
+            title: tableInfo.temp_name || tableInfo.table_name
         });
         this.table.on(BI.TextButton.EVENT_CHANGE, function(){
             self.fireEvent(BI.ETLFlowChartButton.EVENT_CHANGE, self.table.isSelected());

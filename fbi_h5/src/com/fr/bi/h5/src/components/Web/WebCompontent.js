@@ -32,6 +32,7 @@ import {CenterLayout, Icon, Table} from 'base'
 
 
 class WebComponent extends Component {
+
     constructor(props, context) {
         super(props, context);
         this.state = {content: ''}
@@ -52,16 +53,10 @@ class WebComponent extends Component {
     render() {
         const {$widget, wId} = this.props;
         const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(this.context.$template));
-        return <View style={{height: this.props.height, ...styles.wrapper}}>
-            <WebView
-                automaticallyAdjustContentInsets={false}
-                source={{uri: widget.getUrl()}}
-                javaScriptEnabled={true}
-                domStorageEnabled={true}
-                decelerationRate="normal"
-                startInLoadingState={true}
-            />
-        </View>
+        return <WebView
+            style={{height: this.props.height, ...styles.wrapper}}
+            src={ widget.getUrl()}
+        />
     }
 
     componentWillReceiveProps(nextProps) {
