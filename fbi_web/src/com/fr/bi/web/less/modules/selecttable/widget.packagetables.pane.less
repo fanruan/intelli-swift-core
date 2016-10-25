@@ -1,7 +1,14 @@
 @import "../../bibase";
-.bi-package-table-pane{
-  & .package-tables{
+
+.bi-package-tables-main-pane {
+  & .tables-pane {
     background: @color-bi-background-default;
     .border-radius(2px);
+  }
+  & .top-searcher {
+    border-bottom: 1px solid @color-bi-border-line;
+  }
+  & .bi-package-table-search-result-pane {
+    background: @color-bi-background-default;
   }
 }
