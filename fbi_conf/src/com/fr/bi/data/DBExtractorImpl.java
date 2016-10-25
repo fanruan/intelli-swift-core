@@ -149,6 +149,14 @@ public abstract class DBExtractorImpl implements DBExtractor {
             boolean needCharSetConvert = StringUtils.isNotBlank(originalCharSetName)
                     && StringUtils.isNotBlank(newCharSetName);
             Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
+            logger.info("runSQL tableFrom is:" + sql.getFrom());
+            if (columns.length == 0) {
+                logger.info("runSQL error : columns is empty");
+            } else {
+                for (ICubeFieldSource column : columns) {
+                    logger.info("runSQL field is:" + column.getFieldName() + " fieldType is:" + column.getFieldType() + " table is:" + column.getTableBelongTo().getTableName());
+                }
+            }
             String sqlString = BIDBUtils.createSqlString(dialect, columns);
             sql.setSelect(sqlString);
             String query = dealWithSqlCharSet(sql.toString(), connection);
