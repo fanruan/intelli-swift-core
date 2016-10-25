@@ -13,15 +13,16 @@ BI.JoinPreviewTableHeaderCell = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var merge = o.merge;
         var oFields = "";
-        if(merge.length > 1) {
-            oFields = "(" + merge.join("/") + ")";
+        if (merge.length > 1) {
+            oFields = merge.join("/");
         }
+        var value = o.text === oFields ? o.text : (o.text + "(" + oFields + ")");
         var nameLabel = BI.createWidget({
             type: "bi.text_button",
             textAlign: "left",
-            text: o.text + oFields,
-            value: o.text + oFields,
-            title: function() {
+            text: value,
+            value: value,
+            title: function () {
                 return nameLabel.getValue();
             },
             height: 30
