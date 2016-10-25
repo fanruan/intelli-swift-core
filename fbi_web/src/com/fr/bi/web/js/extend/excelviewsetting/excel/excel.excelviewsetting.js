@@ -15,7 +15,8 @@ BI.ExcelViewSettingExcel = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.ExcelViewSettingExcel.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-excel-view-setting-excel",
-            tables: []
+            tables: [],
+            mergeRules: []
         });
     },
 
@@ -43,9 +44,9 @@ BI.ExcelViewSettingExcel = BI.inherit(BI.Widget, {
                                 var o1 = row1.options;
                                 var o2 = row2.options;
                                 if (BI.isNull(o1) || BI.isNull(o2)) {
-                                    return false
+                                    return false;
                                 } else {
-                                    return o1.mergeCellId === o2.mergeCellId;
+                                    return self._checkIsMerge(o1.column, o1.row, o2.column, o2.row);
                                 }
                             }
                         });
@@ -56,6 +57,24 @@ BI.ExcelViewSettingExcel = BI.inherit(BI.Widget, {
         this.tab.setSelect(this._constants.SHOW_TIP);
     },
 
+    _checkIsMerge: function (column1, row1, column2, row2) {
+        var flag = false;
+        var mergeRules = this.options.mergeRules;
+        if (BI.isNotNull(mergeRules[0])) {
+            BI.each(mergeRules, function (i, mergeRule) {
+                if (!flag) {
+                    var start = mergeRule[0];
+                    var end = mergeRule[1];
+                    var w = BI.parseInt(end[0]) - BI.parseInt(start[0]);
+                    var h = BI.parseInt(end[1]) - BI.parseInt(start[1]);
+                    var region = new BI.Region(BI.parseInt(start[0]), BI.parseInt(start[1]), w, h);
+                    flag = region.isPointInside(column1, row1) && region.isPointInside(column2, row2);
+                }
+            });
+        }
+        return flag
+    },
+
     _formatItems: function (items) {
         var map = this.map = {};
         var store = this.store = {};//储存选中的cell
@@ -64,18 +83,11 @@ BI.ExcelViewSettingExcel = BI.inherit(BI.Widget, {
             map[i] = {};
             store[i] = {};
             return BI.map(row, function (j, cell) {
-                var mergeCellId = cell.slice(-36);
-                var text = cell.slice(0, -36);
-                if (mergeCellId === cell) {
-                    mergeCellId = NaN;
-                }
-                if(BI.isEmptyString(text)){
-                    text=cell;
-                }
                 map[i][j] = BI.createWidget({
                     type: "bi.excel_view_setting_cell",
-                    text: text,
-                    mergeCellId: mergeCellId,
+                    text: cell,
+                    row: i,
+                    column: j,
                     height: 18,
                     handler: function () {
                         //if (!this.isSelected()) {
@@ -115,11 +127,12 @@ BI.ExcelViewSettingExcel = BI.inherit(BI.Widget, {
 
     },
 
-    populate: function (items) {
+    populate: function (items, mergeRules) {
         if (BI.isEmptyArray(items)) {
             this.tab.setSelect(this._constants.SHOW_TIP);
             return;
         }
+        this.attr("mergeRules", mergeRules);
         this.tab.setSelect(this._constants.SHOW_EXCEL);
         this.table.attr("columnSize", BI.makeArray(items[0].length, ""));
         this.table.attr("mergeCols", BI.makeArray(items[0].length));
