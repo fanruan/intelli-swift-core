@@ -61,11 +61,11 @@ public class BICoreGenerator implements BICoreService {
                 Field field = it.next();
                 Object value = wrapper.getOriginalValue(field);
                 addValue(value, result);
+                addValue(it.getClass().toString(), result);
             } catch (Exception ignore) {
                 BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
                 continue;
             }
-            addValue(targetObject.getClass(), result);
         }
         return result;
     }
