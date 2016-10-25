@@ -24,6 +24,8 @@ import MultiTreeSelectorComponent from '../MultiTreeSelector/MultiTreeSelectorCo
 import ContentComponent from '../Content/ContentComponent'
 import ImageComponent from '../Image/ImageComponent'
 import YearMonthComponent from '../YearMonth/YearMonthComponent'
+import YearComponent from '../Year/YearComponent'
+import YearQuarterComponent from '../YearQuarter/YearQuarterComponent'
 import WebComponent from '../Web/WebCompontent'
 
 class LayoutComponent extends Component {
