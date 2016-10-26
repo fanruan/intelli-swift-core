@@ -1,11 +1,9 @@
 package com.finebi.cube.data.disk.reader.primitive;
 
-import com.finebi.cube.data.BICubeReleaseRecorder;
 import com.finebi.cube.data.ICubeSourceReleaseManager;
 import com.finebi.cube.data.disk.NIOHandlerManager;
 import com.finebi.cube.data.input.primitive.ICubePrimitiveReader;
 import com.finebi.cube.exception.BIResourceInvalidException;
-import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.mem.BIReleaseUtils;
@@ -116,9 +114,9 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
     }
 
     @Override
-    public void releaseHandler() {
+    public void releaseHandler(String readerHandler) {
         if (useNioHandlerManager()) {
-            nioHandlerManager.releaseHandler();
+            nioHandlerManager.releaseHandler(readerHandler);
         } else {
             releaseSource();
         }
@@ -127,7 +125,7 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
     @Override
     public void forceRelease() {
         if (useNioHandlerManager()) {
-            nioHandlerManager.forceReleaseHandler();
+            nioHandlerManager.destroyHandler();
         } else {
             destroySource();
         }
@@ -243,7 +241,10 @@ public abstract class BIBasicNIOReader implements ICubePrimitiveReader {
     public void setHandlerReleaseHelper(NIOHandlerManager releaseHelper) {
         this.nioHandlerManager = releaseHelper;
     }
-
+    @Override
+    public NIOHandlerManager getHandlerReleaseHelper(){
+        return this.nioHandlerManager;
+    }
     protected abstract void initChild(int index, MappedByteBuffer buffer);
 
     private FileChannel initFile(long fileIndex) {

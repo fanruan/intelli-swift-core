@@ -1,9 +1,6 @@
 package com.finebi.cube.structure.column;
 
-import com.finebi.cube.structure.ICubeDetailDataService;
-import com.finebi.cube.structure.ICubeIndexDataService;
-import com.finebi.cube.structure.ICubeRelationManagerService;
-import com.finebi.cube.structure.ITableKey;
+import com.finebi.cube.structure.*;
 import com.finebi.cube.structure.group.ICubeGroupDataService;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 
@@ -33,7 +30,7 @@ import java.util.Comparator;
  * @see ICubeIndexDataService 位图索引
  * @since 4.0
  */
-public interface ICubeColumnEntityService<T> extends CubeColumnReaderService<T> {
+public interface ICubeColumnEntityService<T> extends CubeColumnReaderService<T>  ,ICubeResourceForceRelease {
 
     void setRelationManagerService(ICubeRelationManagerService relationManagerService);
 
@@ -100,8 +97,4 @@ public interface ICubeColumnEntityService<T> extends CubeColumnReaderService<T> 
 
 
     void buildStructure();
-
-    void forceReleaseWriter();
-
-    void forceReleaseReader();
 }
