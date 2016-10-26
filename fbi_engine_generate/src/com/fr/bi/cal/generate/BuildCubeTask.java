@@ -4,6 +4,7 @@ import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.CubeBuild;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.data.disk.BICubeDiskPrimitiveDiscovery;
 import com.finebi.cube.exception.BIDeliverFailureException;
@@ -53,6 +54,8 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.concurrent.Future;
 
+import static com.finebi.cube.conf.BICubeConfigureCenter.getPackageManager;
+
 /**
  * This class created on 2016/4/19.
  *
@@ -97,7 +100,7 @@ public class BuildCubeTask implements CubeTask {
     @Override
     public void start() {
         BIConfigureManagerCenter.getLogManager().logStart(biUser.getUserId());
-        BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
+        getPackageManager().startBuildingCube(biUser.getUserId());
         Long t = System.currentTimeMillis();
         BILoggerFactory.getLogger().info("start copy some files");
         cubeBuild.copyFileFromOldCubes();
@@ -202,7 +205,7 @@ public class BuildCubeTask implements CubeTask {
         BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
         BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuild.getSources());
         operationManager.initialWatcher();
-
+        logBusinessTable();
         operationManager.subscribeStartMessage();
         Map<CubeTableSource, UpdateSettingSource> updateSettingSources = cubeBuild.getUpdateSettingSources();
         operationManager.setUpdateSettingSourceMap(updateSettingSources);
@@ -227,6 +230,27 @@ public class BuildCubeTask implements CubeTask {
         } catch (BIDeliverFailureException e) {
             throw BINonValueUtils.beyondControl(e);
         }
+    }
+
+    private void logBusinessTable() {
+        Integer businessTableCount = 0;
+        logger.info("***************Business Table*****************");
+        try {
+            long userID = UserControl.getInstance().getSuperManagerID();
+            for (BusinessTable table : BICubeConfigureCenter.getPackageManager().getAllTables(userID)) {
+                logger.info(BIStringUtils.append(
+                        "\n" + "       Business Table: " + (businessTableCount++),
+                        "\n" + "       Business Table Alias Name:", BICubeConfigureCenter.getAliasManager().getAliasName(table.getID().getIdentityValue(), userID),
+                        "\n" + "       Business Table ID:", table.getID().getIdentity(),
+                        "\n" + "       Corresponding  Table Source name:", table.getTableSource().getTableName(),
+                        "\n" + "       Corresponding  Table Source ID:", table.getTableSource().getSourceID()
+                ));
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        logger.info("***************Business Table*****************");
+
     }
 
     private void logTable(Set<CubeTableSource> tableSourceSet, Map<CubeTableSource, UpdateSettingSource> updateSettingSources) {

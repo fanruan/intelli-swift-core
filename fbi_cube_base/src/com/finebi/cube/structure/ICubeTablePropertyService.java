@@ -20,7 +20,7 @@ import java.util.Set;
  * @author Connery
  * @since 4.0
  */
-public interface ICubeTablePropertyService extends Release, ICubeVersion {
+public interface ICubeTablePropertyService extends Release, ICubeVersion ,ICubeResourceForceRelease {
     void recordTableStructure(List<ICubeFieldSource> fields);
 
     void recordRowCount(long rowCount);
@@ -54,8 +54,6 @@ public interface ICubeTablePropertyService extends Release, ICubeVersion {
     Set<String> getFieldNamesFromParent();
 
     void forceRelease();
-
-    void forceReleaseWriter();
 
     boolean isRemovedListAvailable();
 

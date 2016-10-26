@@ -46,6 +46,9 @@ BI.MultiSelectTrigger = BI.inherit(BI.Trigger, {
         this.searcher.on(BI.MultiSelectSearcher.EVENT_PAUSE, function () {
             self.fireEvent(BI.MultiSelectTrigger.EVENT_PAUSE);
         });
+        this.searcher.on(BI.MultiSelectSearcher.EVENT_SEARCHING, function () {
+            self.fireEvent(BI.MultiSelectTrigger.EVENT_SEARCHING, arguments);
+        });
         this.searcher.on(BI.MultiSelectSearcher.EVENT_STOP, function () {
             self.fireEvent(BI.MultiSelectTrigger.EVENT_STOP);
         });
@@ -141,6 +144,7 @@ BI.MultiSelectTrigger.EVENT_CHANGE = "EVENT_CHANGE";
 BI.MultiSelectTrigger.EVENT_START = "EVENT_START";
 BI.MultiSelectTrigger.EVENT_STOP = "EVENT_STOP";
 BI.MultiSelectTrigger.EVENT_PAUSE = "EVENT_PAUSE";
+BI.MultiSelectTrigger.EVENT_SEARCHING = "EVENT_SEARCHING";
 BI.MultiSelectTrigger.EVENT_BEFORE_COUNTER_POPUPVIEW = "EVENT_BEFORE_COUNTER_POPUPVIEW";
 
 $.shortcut('bi.multi_select_trigger', BI.MultiSelectTrigger);

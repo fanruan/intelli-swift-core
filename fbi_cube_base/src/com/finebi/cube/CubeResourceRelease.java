@@ -7,7 +7,7 @@ package com.finebi.cube;
  * @since 4.0
  */
 public interface CubeResourceRelease {
-    void releaseHandler();
+    void releaseHandler(String handlerKey);
 
     void forceRelease();
 
