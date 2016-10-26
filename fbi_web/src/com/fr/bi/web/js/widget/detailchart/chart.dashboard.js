@@ -38,7 +38,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
         config.chartType = "gauge";
         delete config.xAxis;
         delete config.yAxis;
-        if (BI.contains([self.constants.NORMAL, self.constants.HALF_DASHBOARD], self.config.chart_dashboard_type) && BI.isNull(items[0].data[0].seriesName) ) {
+        if (BI.contains([self.constants.NORMAL, self.constants.HALF_DASHBOARD], self.config.chart_dashboard_type)) {
             config.plotOptions.seriesLabel.enabled = false
         }
         config.gaugeAxis[0].labelStyle = this.config.chart_font;
