@@ -5,6 +5,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
@@ -20,6 +21,8 @@ public class StringNullFilterValue extends StringNoneValueFilterValue {
     private static final long serialVersionUID = 2782005822329326343L;
     private static String XML_TAG = "StringNullFilterValue";
 
+    @BICoreField
+    private String CLASS_TYPE = "StringNullFilterValue";
 
     @Override
     public boolean isMatchValue(String value) {
