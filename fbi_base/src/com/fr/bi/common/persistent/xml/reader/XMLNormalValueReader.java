@@ -33,7 +33,7 @@ public class XMLNormalValueReader extends XMLValueReader {
             try {
                 fieldValue = beanWrapper.getOriginalValue(fieldName);
             } catch (IllegalArgumentException e) {
-                throw BINonValueUtils.beyondControl(e.getMessage() + ",current class:" + beanWrapper.getBeanClass() + ",field:" + fieldName, e);
+                throw BINonValueUtils.beyondControl(e.getMessage() + " \ncurrent class:" + beanWrapper.getBeanClass() + ",and the field:" + fieldName + " is absent", e);
             }
             if (useFieldDefaultValue(fieldValue)) {
                 /**

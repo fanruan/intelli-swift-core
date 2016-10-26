@@ -1,8 +1,10 @@
 package com.finebi.cube.conf.pack.data;
 
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.conf.utils.BILogHelper;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.container.BISetContainer;
 import com.fr.bi.stable.constant.DBConstant;
@@ -82,6 +84,7 @@ public abstract class BIBusinessPackage<T extends BusinessTable> extends BISetCo
             this.useContent(container);
         }
     }
+
     @Override
     public boolean isNeed2BuildCube(BIBusinessPackage targetPackage) {
         if (size() == targetPackage.size()) {
@@ -175,7 +178,11 @@ public abstract class BIBusinessPackage<T extends BusinessTable> extends BISetCo
     public void parseJSON(JSONObject jo) throws Exception {
         //this.setName(jo.optString("package_name"));
         JSONArray ja = jo.optJSONArray("data");
+        BILoggerFactory.getLogger(BIBusinessPackage.class).info("*********clear package start********");
         clear();
+        BILoggerFactory.getLogger(BIBusinessPackage.class).info("*********clear package end********");
+        BILoggerFactory.getLogger(BIBusinessPackage.class).info("*********save package table start********");
+
         for (int i = 0; i < ja.length(); i++) {
             T table = createTable();
             JSONObject tableJson = ja.optJSONObject(i);
@@ -186,6 +193,22 @@ public abstract class BIBusinessPackage<T extends BusinessTable> extends BISetCo
                 table.setFields(this.parseField(tableJson.getJSONArray("fields"), table));
             }
             add(table);
+            BILoggerFactory.getLogger(BIBusinessPackage.class).info("The table " + i + ":\n" + logTable(table));
+
+        }
+        BILoggerFactory.getLogger(BIBusinessPackage.class).info("*********save package table end********");
+
+    }
+
+    private String logTable(BusinessTable table) {
+        try {
+            return BILogHelper.logBusinessTable(table) +
+                    "\n" +
+                    BILogHelper.logBusinessTableField(table, "   ");
+
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(BIBusinessPackage.class).error(e.getMessage(), e);
+            return "";
         }
     }
 
