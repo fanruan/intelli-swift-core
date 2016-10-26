@@ -1,5 +1,6 @@
 package com.finebi.cube.data.disk.reader.primitive;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.input.primitive.ICubeLongReader;
 import com.finebi.cube.data.input.primitive.ICubeLongReaderBuilder;
 import com.finebi.cube.location.ICubeResourceLocation;

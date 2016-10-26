@@ -527,6 +527,7 @@ BICst.DEFAULT_CHART_SETTING = {
         text_style: {}
     },
     line_color: "#dddddd",
+    label_color: "#666",
     enable_tick: true,
     mini_enable_tick: false,
     enable_minor_tick: true,

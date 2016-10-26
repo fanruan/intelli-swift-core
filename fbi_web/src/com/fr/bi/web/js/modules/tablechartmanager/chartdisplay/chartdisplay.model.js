@@ -359,52 +359,34 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 return obj;
             });
         }
-        if (BI.has(data, "s")) {
-            var type = BI.Utils.getWidgetTypeByID(o.wId);
-            if (type === BICst.WIDGET.PIE) {
-                var adjustData = BI.map(data.s, function (idx, value) {
-                    return {
-                        x: BI.Utils.getDimensionNameByID(targetIds[idx]),
+        if(BI.has(data, "s")){
+            return BI.map(data.s, function (idx, value) {
+                return {
+                    name: BI.Utils.getDimensionNameByID(targetIds[idx]),
+                    data: [{
+                        x: "",
                         y: (BI.isFinite(value) ? value : 0),
                         targetIds: [targetIds[idx]]
-                    };
-                });
-                var obj = {};
-                obj.data = adjustData;
-                return [obj];
-            } else {
-                return BI.map(data.s, function (idx, value) {
-                    return {
-                        name: BI.Utils.getDimensionNameByID(targetIds[idx]),
-                        data: [{
-                            x: "",
-                            y: (BI.isFinite(value) ? value : 0),
-                            targetIds: [targetIds[idx]]
-                        }]
-                    };
-                });
-            }
+                    }]
+                };
+            });
         }
         return [];
     },
 
     getToolTip: function (type) {
-        var o = this.options;
         switch (type) {
             case BICst.WIDGET.SCATTER:
-                if (this.targetIds.length < 2) {
-                    return "";
-                } else {
-                    return "function(){ return this.seriesName+'<div>(X)" + BI.Utils.getDimensionNameByID(this.targetIds[1]) + ":'+ this.x +'</div><div>(Y)"
-                        + BI.Utils.getDimensionNameByID(this.targetIds[0]) + ":'+ this.y +'</div>'}";
+                if(this.targetIds.length < 2){
+                    return [];
+                }else{
+                    return [BI.Utils.getDimensionNameByID(this.targetIds[1]), BI.Utils.getDimensionNameByID(this.targetIds[0])];
                 }
             case BICst.WIDGET.BUBBLE:
-                if (this.targetIds.length < 3) {
-                    return "";
-                } else {
-                    return "function(){ return this.seriesName+'<div>(X)" + BI.Utils.getDimensionNameByID(this.targetIds[1]) + ":'+ this.x +'</div><div>(Y)"
-                        + BI.Utils.getDimensionNameByID(this.targetIds[0]) + ":'+ this.y +'</div><div>(" + BI.i18nText("BI-Size") + ")" + BI.Utils.getDimensionNameByID(this.targetIds[2])
-                        + ":'+ this.size +'</div>'}";
+                if(this.targetIds.length < 3){
+                    return [];
+                }else{
+                    return [BI.Utils.getDimensionNameByID(this.targetIds[1]), BI.Utils.getDimensionNameByID(this.targetIds[0]), BI.Utils.getDimensionNameByID(this.targetIds[2])];
                 }
             default:
                 return "";
@@ -651,6 +633,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             align: "outside",
             style: {
                 "fontFamily": "inherit",
+                "autoAdjust": true,
                 "color": "#808080",
                 "fontSize": "12px"
             },

@@ -133,6 +133,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Chart"),
+                lgap: constant.SIMPLE_H_LGAP,
                 textAlign: "left",
                 cls: "line-title"
             }, {
@@ -231,11 +232,11 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE)
         });
 
-        this.leftLabel = BI.createWidget({
+        this.leftLabelStyle = BI.createWidget({
             type: "bi.chart_label_detailed_setting_combo"
         });
 
-        this.leftLabel.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function () {
+        this.leftLabelStyle.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE)
         });
 
@@ -318,7 +319,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.showLeftLabel]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.leftLabel]
+                    items: [this.leftLabelStyle]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Axis_Line_Color"),
@@ -362,13 +363,13 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //网格线设置
-        this.hGridLine = BI.createWidget({
+        this.showHGridLine = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Horizontal"),
             width: 65
         });
 
-        this.hGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+        this.showHGridLine.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE)
         });
 
@@ -382,13 +383,13 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE)
         });
 
-        this.vGridLine = BI.createWidget({
+        this.showVGridLine = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Vertical"),
             width: 65
         });
 
-        this.vGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+        this.showVGridLine.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE)
         });
 
@@ -463,13 +464,13 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.hGridLine]
+                    items: [this.showHGridLine]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.hGridLineColor]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.vGridLine]
+                    items: [this.showVGridLine]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.vGridLineColor]
@@ -555,6 +556,16 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.customScale.setValue(BI.Utils.getWSCustomYScale(wId));
         this.customScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
         this.separators.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
+        this.showLeftLabel.setSelected(BI.Utils.getWSShowLValueAxisLabelByID(wId));
+        this.leftLabelStyle.setValue(BI.Utils.getWSLValueAxisLabelSettingByID(wId));
+        this.leftLineColor.setValue(BI.Utils.getWSLValueAxisLineColorByID(wId));
+        this.legendSetting.setValue(BI.Utils.getWSLegendSettingByID(wId));
+        this.showHGridLine.setSelected(BI.Utils.getWSShowHGridLineByID(wId));
+        this.hGridLineColor.setValue(BI.Utils.getWSHGridLineColorByID(wId));
+        this.showVGridLine.setSelected(BI.Utils.getWSShowVGridLineByID(wId));
+        this.vGridLineColor.setValue(BI.Utils.getWSVGridLineColorByID(wId));
+        this.tooltipSetting.setValue(BI.Utils.getWSToolTipSettingByID(wId));
+        this.nullContinuity.setSelected(BI.Utils.getWSNullContinueByID(wId));
     },
 
     getValue: function () {
@@ -573,7 +584,18 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             show_data_label: this.showDataLabel.isSelected(),
             show_y_custom_scale: this.showCustomScale.isSelected(),
             custom_y_scale: this.customScale.getValue(),
-            num_separators: this.separators.isSelected()
+            num_separators: this.separators.isSelected(),
+            show_left_label: this.showLeftLabel.isSelected(),
+            left_label_style: this.leftLabelStyle.getValue(),
+            left_line_color: this.leftLineColor.getValue(),
+            chart_legend_setting: this.legendSetting.getValue(),
+            show_h_grid_line: this.showHGridLine.isSelected(),
+            h_grid_line_color: this.hGridLineColor.getValue(),
+            show_v_grid_line: this.showVGridLine.isSelected(),
+            v_grid_line_color: this.vGridLineColor.getValue(),
+            tooltip_setting: this.tooltipSetting.getValue(),
+            null_continue: this.nullContinuity.isSelected(),
+            select_linkage: this.linkageSelection.isSelected()
         }
     }
 });

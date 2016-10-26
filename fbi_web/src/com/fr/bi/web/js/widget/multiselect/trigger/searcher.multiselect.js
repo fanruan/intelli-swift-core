@@ -68,6 +68,10 @@ BI.MultiSelectSearcher = BI.inherit(BI.Widget, {
         this.searcher.on(BI.Searcher.EVENT_CHANGE, function () {
             self.fireEvent(BI.MultiSelectSearcher.EVENT_CHANGE, arguments);
         });
+        this.searcher.on(BI.Searcher.EVENT_SEARCHING, function () {
+            var keywords = this.getKeywords();
+            self.fireEvent(BI.MultiSelectSearcher.EVENT_SEARCHING, keywords);
+        });
     },
 
     adjustView: function () {
@@ -135,4 +139,5 @@ BI.MultiSelectSearcher.EVENT_CHANGE = "EVENT_CHANGE";
 BI.MultiSelectSearcher.EVENT_START = "EVENT_START";
 BI.MultiSelectSearcher.EVENT_STOP = "EVENT_STOP";
 BI.MultiSelectSearcher.EVENT_PAUSE = "EVENT_PAUSE";
+BI.MultiSelectSearcher.EVENT_SEARCHING = "EVENT_SEARCHING";
 $.shortcut('bi.multi_select_searcher', BI.MultiSelectSearcher);

@@ -379,9 +379,6 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                     }
                 })
             });
-            if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                //config.plotOptions.tooltip.formatter.valueFormat = "function(){return window.FR ? FR.contentFormat(arguments[0], '#0%') : arguments[0]}";
-            }
         }
 
         function getXYAxisUnit(numberLevelType, position) {

@@ -1330,6 +1330,14 @@ BICst.DATA_LABEL_FILTER_STRING_COMBO = [[{
     text: BI.i18nText("BI-End_With"),
     value: BICst.DIMENSION_FILTER_STRING.END_WITH,
     cls: "dot-e-font"
+}], [{
+    text: BI.i18nText("BI-Not_Begin_With"),
+    value: BICst.DIMENSION_FILTER_STRING.NOT_BEGIN_WITH,
+    cls: "dot-e-font"
+}, {
+    text: BI.i18nText("BI-Not_End_With"),
+    value: BICst.DIMENSION_FILTER_STRING.NOT_END_WITH,
+    cls: "dot-e-font"
 }]];
 
 BICst.DATA_LABEL_FILTER_RANGE_COMBO = [[{

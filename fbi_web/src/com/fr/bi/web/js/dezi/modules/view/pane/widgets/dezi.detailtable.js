@@ -269,7 +269,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
 
     _onClickDelete: function () {
         var self = this;
-        BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete") + self.model.get("name") + "?", function (v) {
+        BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete_Current_Component") + self.model.get("name") + "?", function (v) {
             if (v === true) {
                 self.model.destroy();
             }

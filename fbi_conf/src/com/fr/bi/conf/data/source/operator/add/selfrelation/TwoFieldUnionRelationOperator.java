@@ -17,12 +17,14 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
+import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
+import java.sql.Types;
 import java.util.*;
 
 /**
@@ -88,7 +90,7 @@ public class TwoFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
                 while (it.hasNext()) {
                     Map.Entry<String, Integer> entry = it.next();
 //                persistentTable.addColumn(new UnionRelationPersistentField(entry.getKey(), BIDBUtils.biTypeToSql(columnType), size));
-                    persistentTable.addColumn(new UnionRelationPersistentField(s + "-" + entry.getKey(), ptable.getField(idFieldName).getSqlType(), size, ptable.getField(idFieldName).getScale()));
+                    persistentTable.addColumn(new UnionRelationPersistentField(s + "-" + entry.getKey(), BIDBUtils.biTypeToSql(columnType), size, ptable.getField(idFieldName).getScale()));
                 }
             }
         }
@@ -127,28 +129,28 @@ public class TwoFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
                 valueIndexMap.put(ob, i);
             }
 
-            for (int i = 0; i < rowCount; i++) {
-                try {
-                    ArrayList<Number> list = new ArrayList<Number>();
-                    dealWithID(columnLength, i, list, idmap, ti, new IndexKey(idFieldName), new IndexKey(parentIdFieldName));
-                    for (int j = 1; j < list.size(); j++) {
-                        Object n = list.get(j);
-                        if (n != null) {
-                            int r = valueIndexMap.get(n);
-                            if (r >= 0) {
-                                isParent.add(n);
-                            }
-                        }
-                    }
-                } catch (StackOverflowError e) {
-                    FRContext.getLogger().error("dead circle at row:" + i, e);
-                }
-            }
-            for (Map.Entry<Object, Integer> entry : valueIndexMap.entrySet()) {
-                if (isParent.contains(entry.getKey())) {
-                    mustDelete.add(entry.getValue());
-                }
-            }
+//            for (int i = 0; i < rowCount; i++) {
+//                try {
+//                    ArrayList<Number> list = new ArrayList<Number>();
+//                    dealWithID(columnLength, i, list, idmap, ti, new IndexKey(idFieldName), new IndexKey(parentIdFieldName));
+//                    for (int j = 1; j < list.size(); j++) {
+//                        Object n = list.get(j);
+//                        if (n != null) {
+//                            int r = valueIndexMap.get(n);
+//                            if (r >= 0) {
+//                                isParent.add(n);
+//                            }
+//                        }
+//                    }
+//                } catch (StackOverflowError e) {
+//                    FRContext.getLogger().error("dead circle at row:" + i, e);
+//                }
+//            }
+//            for (Map.Entry<Object, Integer> entry : valueIndexMap.entrySet()) {
+//                if (isParent.contains(entry.getKey())) {
+//                    mustDelete.add(entry.getValue());
+//                }
+//            }
             List<ICubeColumnDetailGetter> gts = new ArrayList<ICubeColumnDetailGetter>();
             List<PersistentField> fields = source.getPersistentTable().getFieldList();
             for (PersistentField field : fields) {
@@ -182,7 +184,7 @@ public class TwoFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
                             if (r >= 0) {
                                 Object showOb = showGetter.getValue(r);
                                 if (showOb != null) {
-                                    res[index] = showOb.toString();
+                                    res[index] = showOb;
                                 }
                             }
                         }

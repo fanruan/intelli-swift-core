@@ -116,8 +116,6 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
         synchronized (this) {
             List<ICubeResourceLocation> locations = new ArrayList<ICubeResourceLocation>();
             try {
-//                locations = readerCache.getUnReleasedLocation();
-//                locations.addAll(writerCache.getUnReleasedLocation());
                 BILoggerFactory.getLogger().info("getUnReleasedLocation is not implement");
             } catch (Exception e) {
                 BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -150,21 +148,4 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
             }
         }
     }
-
-    //fortest
-    public void printCountOfHandler() {
-        synchronized (this) {
-            releasingResource = true;
-            try {
-                for (NIOResourceManager nioManager : fileResourceMap.values()) {
-                    nioManager.printCountOfHandler();
-                }
-            } catch (Exception e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
-            } finally {
-                releasingResource = false;
-            }
-        }
-    }
-
 }

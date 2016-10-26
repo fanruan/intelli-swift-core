@@ -48,8 +48,6 @@ BIDezi.NumberDimensionView = BI.inherit(BI.View, {
                 center: {el: this.editor}
             }
         });
-        var tableId = BI.Utils.getTableIdByFieldID(this.model.get("_src").field_id);
-        this.editor.setValue(BI.Utils.getTableNameByID(tableId) + "." + this.model.get("name"));
     },
 
     _createCombo: function () {

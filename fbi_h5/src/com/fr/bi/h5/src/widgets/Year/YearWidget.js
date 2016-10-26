@@ -79,9 +79,8 @@ class YearWidget extends Component {
                 <CenterLayout style={styles.header}>
                     <Text>{BH.i18nText("BH-Select_Date")}</Text>
                 </CenterLayout>
-                <View style={styles.datepicker}>
-                    <View style={styles.highlight}/>
-                    <View style={styles.container}>
+                <Layout main="center" cross="center">
+                    <Layout style={styles.highlight}/>
                         <PickerIOS selectedValue={this.state.year || new Date().getFullYear()} onValueChange={(Y)=> {
                         this.setState({year: Y}, ()=>{
                             const {year, month}=this.state;
@@ -90,8 +89,7 @@ class YearWidget extends Component {
                     }}>
                             {year}
                         </PickerIOS>
-                    </View>
-                </View>
+                </Layout>
             </Layout>
         </Layout>
     }
@@ -142,20 +140,11 @@ const styles = StyleSheet.create({
         borderBottomColor: Colors.BORDER,
         borderBottomWidth: 1 / PixelRatio.get()
     },
-    datepicker: {
-        flexDirection: 'row',
-        justifyContent: 'center'
-    },
-    container: {
-        flexDirection: 'row'
-    },
     highlight: {
         position: 'absolute',
         left: 0,
         right: 0,
         height: PICKER_ITEM_HEIGHT,
-        top: '50%',
-        marginTop: -1 * PICKER_ITEM_HEIGHT / 2,
         borderTopWidth: 1,
         borderTopStyle: 'solid',
         borderTopColor: '#ddd',
