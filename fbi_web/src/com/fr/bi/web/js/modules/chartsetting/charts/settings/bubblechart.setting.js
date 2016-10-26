@@ -967,11 +967,11 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
         this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
-        this.XAxisStyle.setValue(BI.Utils.getWSXAxisStyleByID(wId));
+        this.XAxisStyle.setValue(BI.Utils.getWSRightYAxisStyleByID(wId));
         this.numberLevellY.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
-        this.numberLevelX.setValue(BI.Utils.getWSXAxisNumLevelByID(wId));
+        this.numberLevelX.setValue(BI.Utils.getWSRightYAxisNumLevelByID(wId));
         this.LYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
-        this.XUnit.setValue(BI.Utils.getWSXAxisUnitByID(wId));
+        this.XUnit.setValue(BI.Utils.getWSRightYAxisUnitByID(wId));
         this.isShowTitleLY.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
         this.isShowTitleX.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
         this.editTitleLY.setValue(titleLY);
@@ -990,6 +990,18 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.customXScale.setVisible(BI.Utils.getWSShowXCustomScale(wId));
         this.YSeparators.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
         this.XSeparators.setSelected(BI.Utils.getWSRightNumberSeparatorsByID(wId));
+        this.showLeftLabel.setSelected(BI.Utils.getWSShowLValueAxisLabelByID(wId));
+        this.leftLabelStyle.setValue(BI.Utils.getWSLValueAxisLabelSettingByID(wId));
+        this.leftLineColor.setValue(BI.Utils.getWSLValueAxisLineColorByID(wId));
+        this.showRightLabel.setSelected(BI.Utils.getWSShowRValueAxisLabelByID(wId));
+        this.rightLabelStyle.setValue(BI.Utils.getWSRValueAxisLabelSettingByID(wId));
+        this.rightLineColor.setValue(BI.Utils.getWSRValueAxisLineColorByID(wId));
+        this.legendSetting.setValue(BI.Utils.getWSLegendSettingByID(wId));
+        this.showHGridLine.setSelected(BI.Utils.getWSShowHGridLineByID(wId));
+        this.hGridLineColor.setValue(BI.Utils.getWSHGridLineColorByID(wId));
+        this.showVGridLine.setSelected(BI.Utils.getWSShowVGridLineByID(wId));
+        this.vGridLineColor.setValue(BI.Utils.getWSVGridLineColorByID(wId));
+        this.tooltipSetting.setValue(BI.Utils.getWSToolTipSettingByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false);
@@ -1008,11 +1020,11 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             transfer_filter: this.transferFilter.isSelected(),
             chart_color: this.colorSelect.getValue()[0],
             left_y_axis_style: this.lYAxisStyle.getValue()[0],
-            x_axis_style: this.XAxisStyle.getValue()[0],
+            right_y_axis_style: this.XAxisStyle.getValue()[0],
             left_y_axis_number_level: this.numberLevellY.getValue()[0],
-            x_axis_number_level: this.numberLevelX.getValue()[0],
+            right_y_axis_number_level: this.numberLevelX.getValue()[0],
             left_y_axis_unit: this.LYUnit.getValue(),
-            x_axis_unit: this.XUnit.getValue(),
+            right_y_axis_unit: this.XUnit.getValue(),
             show_left_y_axis_title: this.isShowTitleLY.isSelected(),
             show_x_axis_title: this.isShowTitleX.isSelected(),
             left_y_axis_title: this.editTitleLY.getValue(),
@@ -1027,7 +1039,19 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             show_x_custom_scale: this.showXCustomScale.isSelected(),
             custom_x_scale: this.customXScale.getValue(),
             num_separators: this.YSeparators.isSelected(),
-            right_num_separators: this.XSeparators.isSelected()
+            right_num_separators: this.XSeparators.isSelected(),
+            show_left_label: this.showLeftLabel.isSelected(),
+            left_label_style: this.leftLabelStyle.getValue(),
+            left_line_color: this.leftLineColor.getValue(),
+            show_right_label: this.showRightLabel.isSelected(),
+            right_label_style: this.rightLabelStyle.getValue(),
+            right_line_color: this.rightLineColor.getValue(),
+            chart_legend_setting: this.legendSetting.getValue(),
+            show_h_grid_line: this.showHGridLine.isSelected(),
+            h_grid_line_color: this.hGridLineColor.getValue(),
+            show_v_grid_line: this.showVGridLine.isSelected(),
+            v_grid_line_color: this.vGridLineColor.getValue(),
+            tooltip_setting: this.tooltipSetting.getValue(),
         }
     }
 });
