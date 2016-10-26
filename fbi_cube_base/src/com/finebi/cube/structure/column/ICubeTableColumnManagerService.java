@@ -1,6 +1,7 @@
 package com.finebi.cube.structure.column;
 
 import com.finebi.cube.exception.BICubeColumnAbsentException;
+import com.finebi.cube.structure.ICubeResourceForceRelease;
 import com.finebi.cube.structure.ITableKey;
 import com.fr.bi.common.inter.Release;
 
@@ -13,7 +14,7 @@ import java.util.Set;
  * @author Connery
  * @since 4.0
  */
-public interface ICubeTableColumnManagerService extends Release {
+public interface ICubeTableColumnManagerService extends Release ,ICubeResourceForceRelease {
 
     /**
      * 依据列名获得当前表的某一列
@@ -28,7 +29,5 @@ public interface ICubeTableColumnManagerService extends Release {
     void setOwner(ITableKey owner);
 
     void buildStructure();
-
-    void forceReleaseWriter();
 
 }
