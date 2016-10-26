@@ -1,11 +1,17 @@
 package com.fr.bi.field.filtervalue.number.rangefilter;
 
+import com.fr.bi.base.annotation.BICoreField;
+
 public class NumberInRangeFilterValue extends NumberRangeFilterValue {
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = 6761227003309404043L;
 	private static String XML_TAG = "NumberInRangeFilterValue";
+
+
+	@BICoreField
+	private String CLASS_TYPE = "NumberInRangeFilterValue";
 
     public NumberInRangeFilterValue() {
     }
