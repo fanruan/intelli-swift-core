@@ -10,7 +10,7 @@ public class BINonValueUtils {
     public static void checkNull(Object... args) {
         for (int i = 0; i < args.length; i++) {
             if (args[i] == null) {
-                throw new IllegalArgumentException("the parameter :" + args.toString() + " can't be null");
+                throw new IllegalArgumentException("the parameter can't be null");
             }
         }
     }

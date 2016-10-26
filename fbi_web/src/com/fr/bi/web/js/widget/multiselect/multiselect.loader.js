@@ -56,7 +56,8 @@ BI.MultiSelectLoader = BI.inherit(BI.Widget, {
             itemsCreator: function (op, callback) {
                 var startValue = self._startValue;
                 self.storeValue && (op = BI.extend(op || {}, {
-                    selected_values: BI.isKey(startValue) ? self.storeValue.value.concat(startValue) : self.storeValue.value
+                    selected_values: BI.isKey(startValue) && self.storeValue.type === BI.Selection.Multi
+                        ? self.storeValue.value.concat(startValue) : self.storeValue.value
                 }));
                 opts.itemsCreator(op, function (ob) {
                     hasNext = ob.hasNext;
@@ -68,7 +69,7 @@ BI.MultiSelectLoader = BI.inherit(BI.Widget, {
                                 text: txt,
                                 value: v,
                                 title: txt,
-                                selected: self.storeValue.type === BI.ButtonGroup.CHOOSE_TYPE_MULTI
+                                selected: self.storeValue.type === BI.Selection.Multi
                             }
                         });
                         if (BI.isKey(self._startValue) && !self.storeValue.value.contains(self._startValue)) {
