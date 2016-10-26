@@ -957,12 +957,6 @@
                 BICst.DEFAULT_CHART_SETTING.left_y_axis_style;
         },
 
-        getWSXAxisStyleByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.x_axis_style) ? ws.x_axis_style :
-                BICst.DEFAULT_CHART_SETTING.x_axis_style;
-        },
-
         getWSRightYAxisStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.right_y_axis_style) ? ws.right_y_axis_style :
@@ -1024,12 +1018,6 @@
                 BICst.DEFAULT_CHART_SETTING.dashboard_number_level;
         },
 
-        getWSXAxisNumLevelByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.x_axis_number_level) ? ws.x_axis_number_level :
-                BICst.DEFAULT_CHART_SETTING.x_axis_number_level;
-        },
-
         getWSLeftYAxisUnitByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.left_y_axis_unit) ? ws.left_y_axis_unit :
@@ -1058,12 +1046,6 @@
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_percentage) ? ws.show_percentage :
                 BICst.DEFAULT_CHART_SETTING.percentage_not_show
-        },
-
-        getWSXAxisUnitByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.x_axis_unit) ? ws.x_axis_unit :
-                BICst.DEFAULT_CHART_SETTING.x_axis_unit;
         },
 
         getWSRightYAxisUnitByID: function (wid) {
