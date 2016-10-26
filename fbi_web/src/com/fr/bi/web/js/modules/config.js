@@ -1114,13 +1114,16 @@ BICst.AREA_CHART_STYLE_GROUP = [{
 //饼图类型
 BICst.PIE_CHART_STYLE_GROUP = [{
     cls: "pie-chart-style-normal-icon",
-    value: BICst.CHART_SHAPE.NORMAL
+    value: BICst.CHART_SHAPE.NORMAL,
+    title: BI.i18nText("BI-Pie_Chart")
 }, {
     cls: "pie-chart-style-equal-arc-rose-icon",
-    value: BICst.CHART_SHAPE.EQUAL_ARC_ROSE
+    value: BICst.CHART_SHAPE.EQUAL_ARC_ROSE,
+    title: BI.i18nText("BI-Isometric_Rose_Chart")
 }, {
     cls: "pie-chart-style-not-equal-arc-rose-icon",
-    value: BICst.CHART_SHAPE.NOT_EQUAL_ARC_ROSE
+    value: BICst.CHART_SHAPE.NOT_EQUAL_ARC_ROSE,
+    title: BI.i18nText("BI-Unequal_Rose_Chart")
 }];
 
 //雷达图类性
