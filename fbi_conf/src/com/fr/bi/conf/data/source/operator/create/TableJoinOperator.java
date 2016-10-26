@@ -242,8 +242,10 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
         while (lValueIterator.hasNext()){
             ValuesAndGVI lValuesAndGVI = lValueIterator.next();
             int result = lValuesAndGVI.compareTo(rValuesAndGVI, comparators);
-            if (result < 0 && !nullContinue){
-                index = writeOneGroup(travel, lti, rti, lLen, index, lValuesAndGVI.gvi, null);
+            if (result < 0){
+                if (!nullContinue){
+                    index = writeOneGroup(travel, lti, rti, lLen, index, lValuesAndGVI.gvi, null);
+                }
             } else if (result == 0){
                 index = writeOneGroup(travel, lti, rti, lLen, index, lValuesAndGVI.gvi, rValuesAndGVI.gvi);
                 rValuesAndGVI = rValueIterator.next();
@@ -257,11 +259,14 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
                         rTotalGvi.or(rValuesAndGVI.gvi);
                     }
                 }
-                if (lValuesAndGVI.compareTo(rValuesAndGVI, comparators) == 0){
+                result = lValuesAndGVI.compareTo(rValuesAndGVI, comparators);
+                if (result == 0){
                     index = writeOneGroup(travel, lti, rti, lLen, index, lValuesAndGVI.gvi, rValuesAndGVI.gvi);
                     rValuesAndGVI = rValueIterator.next();
-                } else {
-                    index = writeOneGroup(travel, lti, rti, lLen, index, lValuesAndGVI.gvi, null);
+                } else if(result < 0){
+                    if (!nullContinue){
+                        index = writeOneGroup(travel, lti, rti, lLen, index, lValuesAndGVI.gvi, null);
+                    }
                 }
             }
         }
@@ -356,6 +361,10 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
             for (int i = index; i < iterators.length; i ++){
                 if (i != index){
                     iterators[i] = getIterByAllCal(getters[i], valuesAndGVIs[i].gvi);
+                }
+                if (!iterators[i].hasNext() && i != 0){
+                    move(i - 1);
+                    return;
                 }
                 Map.Entry<Object, GroupValueIndex> entry = iterators[i].next();
                 Object[] values = new Object[i + 1];
