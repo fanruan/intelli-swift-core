@@ -1,5 +1,6 @@
 package com.fr.bi.field.filtervalue.date.onevaluefilter;
 
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.field.filtervalue.string.onevaluefilter.StringOneValueFilterValue;
 
 import java.text.DateFormat;
@@ -10,6 +11,10 @@ import java.util.Calendar;
  * Created by User on 2016/6/8.
  */
 public class YMDEndWithFilterValue extends StringOneValueFilterValue {
+
+    @BICoreField
+    private String CLASS_TYPE = "YMDEndWithFilterValue";
+
     DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
     Calendar calendar = Calendar.getInstance();
 
