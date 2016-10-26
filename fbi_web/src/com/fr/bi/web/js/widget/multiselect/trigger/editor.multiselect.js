@@ -65,6 +65,15 @@ BI.MultiSelectEditor = BI.inherit(BI.Widget, {
         }
     },
 
+    getKeywords: function () {
+        var val = this.editor.getLastValidValue();
+        var keywords = val.match(/[\S]+/g);
+        if (val.charAt(val.length - 1) === ' ') {
+            return keywords.concat([' ']);
+        }
+        return keywords;
+    },
+
     populate: function (items) {
 
     }
