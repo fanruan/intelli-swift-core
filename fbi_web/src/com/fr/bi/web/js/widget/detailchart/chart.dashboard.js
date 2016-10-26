@@ -64,7 +64,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                         value = BI.contentFormat(this.value, "#.##;-#.##");
                     }
 
-                    if (BI.contains([self.constants.NORMAL, self.constants.HALF_DASHBOARD], self.config.chart_dashboard_type) && BI.isNull(items[0].data[0].series)) {
+                    if (BI.contains([self.constants.NORMAL, self.constants.HALF_DASHBOARD], self.config.chart_dashboard_type) && BI.isNull(items[0].data[0].seriesName)) {
                         return'<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + value +
                             getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS) + '</div>';
                     }
