@@ -20,7 +20,7 @@ import java.util.Set;
  * @author Connery
  * @since 4.0
  */
-public interface CubeTableEntityGetterService extends Release, ICubeVersion {
+public interface CubeTableEntityGetterService extends Release, ICubeVersion ,ICubeResourceForceRelease {
 
 
     /**

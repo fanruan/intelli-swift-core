@@ -11,6 +11,8 @@ public class NIOConstant {
 
     public static long MINFILE_SIZE = 12L;
 
+    public static long SINGLE_FILE_LENGTH = 1 << 30;
+
     public static long MAX_SINGLE_FILE_PART_MOVE_ALL = PAGE_STEP + MAX_SINGLE_FILE_PART_SIZE;
 
     public static final class DOUBLE {

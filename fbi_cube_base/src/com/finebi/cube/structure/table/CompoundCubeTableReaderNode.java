@@ -227,6 +227,12 @@ public class CompoundCubeTableReaderNode implements CubeTableEntityService {
             table.forceReleaseWriter();
         }
     }
+    @Override
+    public void forceReleaseReader() {
+        for (CubeTableEntityService table : currentLevelTables) {
+            table.forceReleaseReader();
+        }
+    }
 
     @Override
     public List<ITableKey> getParentsTable() {
