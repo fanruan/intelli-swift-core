@@ -66,6 +66,7 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
         config.angleAxis = this.angleAxis;
         config.radiusAxis[0].gridLineWidth = this.config.show_h_grid_line === true ? 1 : 0;
         config.radiusAxis[0].gridLineColor = this.config.h_grid_line_color;
+        config.radiusAxis[0].lineColor = this.config.v_grid_line_color;
         config.radiusAxis[0].formatter = self.formatTickForRadar(this.config.left_y_axis_style, this.config.left_y_axis_number_level, this.config.num_separators, this.config.left_y_axis_unit);
         formatNumberLevelInYaxis(this.config.left_y_axis_number_level, self.constants.LEFT_AXIS, config.radiusAxis[0].formatter);
         config.radiusAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + title : title;
@@ -85,7 +86,6 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
         config.angleAxis[0].showLabel = this.config.show_left_label;
         config.angleAxis[0].lineColor = this.config.left_line_color;
         config.angleAxis[0].gridLineWidth = this.config.show_v_grid_line === true ? 1 : 0;
-        config.angleAxis[0].gridLineColor = this.config.v_grid_line_color;
         config.legend.style = BI.extend( this.config.chart_legend_setting, {
             fontSize:  this.config.chart_legend_setting.fontSize + "px"
         });
