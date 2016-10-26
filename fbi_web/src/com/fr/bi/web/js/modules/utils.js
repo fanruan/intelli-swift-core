@@ -1211,7 +1211,7 @@
             var labelSetting = ws.left_label_style || {};
             var wt = this.getWidgetTypeByID(wid);
             var colors = this.getWSChartColorByID(wid);
-            var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[0] : BICst.DEFAULT_CHART_SETTING.line_color;
+            var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[0] : BICst.DEFAULT_CHART_SETTING.label_color;
             labelSetting.text_style = BI.extend(chartFont, {"color": color}, labelSetting.text_style);
             labelSetting.text_direction = labelSetting.text_direction || 0;
             return labelSetting;
@@ -1238,7 +1238,7 @@
             var labelSetting = ws.right_label_style || {};
             var wt = this.getWidgetTypeByID(wid);
             var colors = this.getWSChartColorByID(wid);
-            var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[1] : BICst.DEFAULT_CHART_SETTING.line_color;
+            var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[1] : BICst.DEFAULT_CHART_SETTING.label_color;
             labelSetting.text_style = BI.extend(chartFont, {"color": color}, labelSetting.text_style);
             labelSetting.text_direction = labelSetting.text_direction || 0;
             return labelSetting;
@@ -1265,7 +1265,7 @@
             var labelSetting = ws.right2_label_style || {};
             var wt = this.getWidgetTypeByID(wid);
             var colors = this.getWSChartColorByID(wid);
-            var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[2] : BICst.DEFAULT_CHART_SETTING.line_color;
+            var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[2] : BICst.DEFAULT_CHART_SETTING.label_color;
             labelSetting.text_style = BI.extend(chartFont, {"color": color}, labelSetting.text_style);
             labelSetting.text_direction = labelSetting.text_direction || 0;
             return labelSetting;

@@ -7,3 +7,7 @@ export function updateTemplate($template) {
 export function updateWidget($widget, wId) {
     return {type: types.UPDATE_WIDGET, $widget, wId}
 }
+
+export function widgetLinkage() {
+    return {type: types.WIDGET_LINKAGE}
+}

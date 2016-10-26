@@ -78,9 +78,8 @@ class YearQuarterWidget extends Component {
             )
         }
         if(this.state.selection === 1){
-            detailPicker = <View style={styles.datepicker}>
-                <View style={styles.highlight}/>
-                <View style={styles.container}>
+            detailPicker = <Layout main='center' style={styles.detailPicker}>
+                    <Layout style={styles.highlight}/>
                     <PickerIOS selectedValue={this.state.year || new Date().getFullYear()} onValueChange={(Y)=> {
                         this.setState({year: Y}, ()=>{
                             const {year, quarter}=this.state;
@@ -89,12 +88,10 @@ class YearQuarterWidget extends Component {
                     }}>
                         {year}
                     </PickerIOS>
-                </View>
-            </View>
+            </Layout>
         }else{
-            detailPicker = <View style={styles.datepicker}>
-                <View style={styles.highlight}/>
-                <View style={styles.container}>
+            detailPicker = <Layout main='center' style={styles.detailPicker}>
+                <Layout style={styles.highlight}/>
                     <PickerIOS selectedValue={this.state.quarter || new Date().getMonth()} onValueChange={(M)=> {
                         this.setState({quarter: M}, ()=>{
                             const {year, quarter} = this.state;
@@ -103,8 +100,7 @@ class YearQuarterWidget extends Component {
                     }}>
                         {quarter}
                     </PickerIOS>
-                </View>
-            </View>
+            </Layout>
         }
         return <Layout dir='top' main='justify' style={styles.wrapper}>
             <Layout cross='center' style={styles.button}>
@@ -117,7 +113,7 @@ class YearQuarterWidget extends Component {
                 }}>{state.year ? `${state.year + BH.i18nText("BH-Year")}` : BH.i18nText("BH-Unrestricted")}</TextButton>
                 </Layout>
                 <Layout>
-                    <Text style={styles.dateLabel}>{BH.i18nText("BH-Select_Month")}</Text>
+                    <Text style={styles.dateLabel}>{BH.i18nText("BH-Select_Quarter")}</Text>
                     <TextButton style={styles.date} onPress = {()=>{
                 this.setState({
                     selection: 2
@@ -161,6 +157,10 @@ const styles = StyleSheet.create({
         paddingLeft: 30,
     },
 
+    detailPicker: {
+        position: 'relative'
+    },
+
     button: {
         height: Sizes.HEADER_HEIGHT
     },
@@ -179,13 +179,6 @@ const styles = StyleSheet.create({
         height: Sizes.HEADER_HEIGHT,
         borderBottomColor: Colors.BORDER,
         borderBottomWidth: 1 / PixelRatio.get()
-    },
-    datepicker: {
-        flexDirection: 'row',
-        justifyContent: 'center'
-    },
-    container: {
-        flexDirection: 'row'
     },
     highlight: {
         position: 'absolute',

@@ -3,15 +3,16 @@ import * as ActionTypes from '../constants/ActionTypes'
 
 const initialState = Immutable.fromJS(BH.STORE.popConfig);
 
-export default function template(state = initialState, action) {
+export default function template($template = initialState, action) {
     switch (action.type) {
         case ActionTypes.UPDATE_TEMPLATE:
             return action.$template;
-
         case ActionTypes.UPDATE_WIDGET:
-            return state.setIn(['widgets', action.wId], action.$widget);
+            return $template.setIn(['widgets', action.wId], action.$widget);
+            break;
+        case ActionTypes.WIDGET_LINKAGE:
             break;
         default:
-            return state
+            return $template
     }
 }

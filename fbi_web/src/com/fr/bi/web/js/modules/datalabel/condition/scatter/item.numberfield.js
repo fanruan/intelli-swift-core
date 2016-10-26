@@ -28,7 +28,7 @@ BI.ScatterNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
         this.styleSetting = this._createStyle(o.style_setting);
         this.deleteButton = BI.createWidget({
             type: "bi.icon_button",
-            cls: "close-h-font"
+            cls: "close-h-font delete-icon"
         });
         this.deleteButton.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.AbstractDataLabelFilterItem.DELETE, self);

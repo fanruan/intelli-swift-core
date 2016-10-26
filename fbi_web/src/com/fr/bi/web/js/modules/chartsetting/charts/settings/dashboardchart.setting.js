@@ -66,15 +66,6 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.left",
             cls: "single-line-settings",
             items: BI.createItems([{
-                type: "bi.label",
-                text: BI.i18nText("BI-Component_Widget"),
-                cls: "line-title",
-            }, {
-                type: "bi.label",
-                text: BI.i18nText("BI-Title"),
-                cls: "line-title",
-                lgap: 38
-            }, {
                 type: "bi.vertical_adapt",
                 items: [this.showTitle]
             }, {
@@ -139,7 +130,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Widget_Background_Colour"),
-                    cls: "line-title",
+                    cls: "attr-names",
                     lgap: constant.SIMPLE_H_GAP
                 }, {
                     type: "bi.vertical_adapt",
@@ -383,9 +374,9 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     height: ""
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
-                })
+                }),
+                lgap: constant.SIMPLE_H_GAP
             }],
-            lgap: constant.SIMPLE_H_GAP
         });
 
         //联动传递指标过滤条件

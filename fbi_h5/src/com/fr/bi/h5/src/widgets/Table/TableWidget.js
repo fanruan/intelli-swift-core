@@ -61,7 +61,7 @@ class TableWidget extends Component {
                     rowIndex, ...items[colIndex][rowIndex], ...props
                 }))}
                 width={columnSize[colIndex]}
-            ></Column>;
+            />;
             if (isNeedFreeze && freezeCols.indexOf(colIndex) > -1) {
                 fixColumns.push(column)
             } else {
