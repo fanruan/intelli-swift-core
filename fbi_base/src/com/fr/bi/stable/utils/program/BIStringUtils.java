@@ -1,5 +1,6 @@
 package com.fr.bi.stable.utils.program;
 
+import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 
 import java.util.Set;
@@ -25,6 +26,7 @@ public class BIStringUtils {
     public static String appendWithSpace(String... strings) {
         return StringUtils.join(" ", strings);
     }
+
     public static String append(String... strings) {
         return StringUtils.join("", strings);
     }
@@ -117,4 +119,7 @@ public class BIStringUtils {
         return "__FINE_BI_EMPTY__";
     }
 
+    public static boolean isEmptyString(String value) {
+        return ComparatorUtils.equals(value, "") || ComparatorUtils.equals(value, emptyString());
+    }
 }
