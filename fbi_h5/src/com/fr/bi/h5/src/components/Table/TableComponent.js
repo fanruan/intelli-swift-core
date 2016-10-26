@@ -101,7 +101,11 @@ class TableComponent extends Component {
                 return <TableHeader {...cell}/>
             }}
             itemsCellRenderer={({colIndex, rowIndex, ...cell}) => {
-                return <TableCell {...cell}/>
+                return <TableCell 
+                    wId={this.props.wId}
+                    $widget={this.props.$widget}
+                    {...cell}>
+                    </TableCell>
             }}
         >
         </TableWidget>
