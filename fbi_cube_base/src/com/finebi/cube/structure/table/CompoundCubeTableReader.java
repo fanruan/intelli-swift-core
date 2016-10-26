@@ -253,7 +253,13 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
             parentTable.forceReleaseWriter();
         }
     }
-
+    @Override
+    public void forceReleaseReader() {
+        hostTable.forceReleaseReader();
+        if (isParentAvailable()) {
+            parentTable.forceReleaseReader();
+        }
+    }
     @Override
     public void recordParentsTable(List<ITableKey> parents) {
         throw new UnsupportedOperationException();

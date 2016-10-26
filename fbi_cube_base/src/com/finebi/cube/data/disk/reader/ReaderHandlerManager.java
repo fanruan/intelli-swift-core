@@ -1,11 +1,13 @@
 package com.finebi.cube.data.disk.reader;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.data.BICubeReleaseRecorder;
 import com.finebi.cube.data.disk.NIOHandlerManager;
 import com.finebi.cube.data.input.primitive.ICubePrimitiveReader;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -13,12 +15,12 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * Created by wang on 2016/9/30.
  */
 public class ReaderHandlerManager implements NIOHandlerManager<ICubePrimitiveReader> {
-    ICubePrimitiveReader reader = null;
+    private ICubePrimitiveReader reader = null;
     protected AtomicInteger countOfReaders = new AtomicInteger(0);
     protected final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-    protected boolean isForceReleased = false;
-    ICubeResourceLocation resourceLocation = null;
-
+    protected volatile boolean isForceReleased = false;
+    private ICubeResourceLocation resourceLocation = null;
+    private CopyOnWriteArrayList<String> queryRecorder = new CopyOnWriteArrayList<String>();
     public ReaderHandlerManager(ICubePrimitiveReader reader) {
         this.reader = reader;
     }
@@ -43,18 +45,26 @@ public class ReaderHandlerManager implements NIOHandlerManager<ICubePrimitiveRea
     }
 
     @Override
-    public void releaseHandler() {
+    public void releaseHandler(String handlerKey) {
         try {
             readWriteLock.writeLock().lock();
-            int currentCount = countOfReaders.decrementAndGet();
+            int currentCount = -1;
+            if (queryRecorder.contains(handlerKey)) {
+                queryRecorder.remove(handlerKey);
+                countOfReaders.decrementAndGet();
+            } else {
+                BILoggerFactory.getLogger().debug(handlerKey + "reader has been released============ " + resourceLocation.getAbsolutePath());
+            }
+            currentCount = countOfReaders.get();
             if (currentCount == 0) {
                 try {
                     isForceReleased = true;
                     reader.releaseSource();
                     countOfReaders.set(0);
+                    queryRecorder.clear();
                     BILoggerFactory.getLogger().debug("count=0 release reader " + resourceLocation.getAbsolutePath() + " " + countOfReaders.get());
                 } catch (Exception e) {
-
+                    throw BINonValueUtils.beyondControl(e);
                 } finally {
                     isForceReleased = false;
                 }
@@ -72,12 +82,13 @@ public class ReaderHandlerManager implements NIOHandlerManager<ICubePrimitiveRea
     }
 
     @Override
-    public void forceReleaseHandler() {
+    public void destroyHandler() {
         try {
             readWriteLock.writeLock().lock();
             isForceReleased = true;
             reader.destroySource();
             countOfReaders.set(0);
+            queryRecorder.clear();
             BILoggerFactory.getLogger().debug("force release reader " + resourceLocation.getAbsolutePath() + " " + countOfReaders.get());
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
@@ -94,24 +105,13 @@ public class ReaderHandlerManager implements NIOHandlerManager<ICubePrimitiveRea
     }
 
     @Override
-    public void reSetHandlerValid(boolean isValid) {
-        reader.reSetValid(isValid);
+    public void registerHandlerKey(String handlerKey) {
+        queryRecorder.add(handlerKey);
     }
-
-    @Override
-    public void printCountOfHandler() {
-        if (countOfReaders.get() != 0) {
-            BILoggerFactory.getLogger().debug("count reader " + resourceLocation.getAbsolutePath() + " " + countOfReaders.get());
-        }
-    }
-
 
     @Override
     public boolean isForceReleased() {
         return isForceReleased;
     }
 
-    public void setForceReleased(boolean isForce) {
-        isForceReleased = isForce;
-    }
 }

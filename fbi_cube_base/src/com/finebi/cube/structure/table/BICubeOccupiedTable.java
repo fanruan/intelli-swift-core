@@ -212,4 +212,8 @@ public class BICubeOccupiedTable implements CubeTableEntityService {
     public void forceReleaseWriter() {
 
     }
+    @Override
+    public void forceReleaseReader(){
+
+    }
 }

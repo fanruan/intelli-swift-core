@@ -191,10 +191,18 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         ICubeTableService oldTi = loader.getTableIndex(tableSource);
         final ICubeColumnIndexReader getter = oldTi.loadGroup(key);
 
+        int columnIndex = 0;
+        for(Object object:deleteLists.get(0)) {
+            if(columnName.equals(object)) {
+                break;
+            }
+            columnIndex++;
+        }
+
         for (int i = 1; i < deleteLists.size(); i++) {
             Object[] objects = deleteLists.get(i);
             if (objects != null) {
-                getter.getIndex(objects[0]).Traversal(new SingleRowTraversalAction() {
+                getter.getIndex(objects[columnIndex]).Traversal(new SingleRowTraversalAction() {
                     @Override
                     public void actionPerformed(int data) {
                         sortRemovedList.add(data);
@@ -286,6 +294,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
 
 
     private Map<String, List<Object[]>> preHandleSQLs(ICubeFieldSource[] fields, String partDeleteSQL, String partAddSQL, String partModifySQL) {
+
         List<Object[]> addList = new ArrayList<Object[]>();
         List<Object[]> deleteList = new ArrayList<Object[]>();
         List<Object[]> modifyList = new ArrayList<Object[]>();
@@ -310,8 +319,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
 
         }
 
-
-        /*
+   /*
         * 预处理逻辑：对于同一条Key的记录
         * 1. 新增中出现n次，修改中出现n-1次，则处理后新增留一次，删除中没有该记录
         * 2. 修改中出现n次，处理后则留一次
@@ -364,8 +372,15 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
 
     private void handleAddAndDelete(List<Object[]> addList, List<Object[]> deleteList) {
         if (addList.size() > 1 && deleteList.size() > 1) {
+            int columnIndex = 0;
+            for (int j = 0; j < addList.get(0).length; j++) {
+                if (addList.get(0)[j].equals(deleteList.get(0)[0])) {
+                    columnIndex = j;
+                    break;
+                }
+            }
             for (int i = 1; i < addList.size(); i++) {
-                if (addList.get(i) != null && removeValueFromList(deleteList, addList.get(i)[0], (String) addList.get(0)[0])) {
+                if (addList.get(i) != null && removeValueFromList(deleteList, addList.get(i)[columnIndex], (String) addList.get(0)[columnIndex])) {
                     addList.set(i, null);
                 }
             }
@@ -393,9 +408,17 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
 
     private void removeFromModify(List<Object[]> modifyList, List<Object[]> list) {
         if (list.size() > 1 && modifyList.size() > 1) {
+            int columnIndex = 0;
+            for (int j = 0; j < list.get(0).length; j++) {
+                if (list.get(0)[j].equals(modifyList.get(0)[0])) {
+                    columnIndex = j;
+                    break;
+                }
+            }
+
             for (int i = 1; i < list.size(); i++) {
                 if (list.get(i) != null) {
-                    removeValueFromList(modifyList, list.get(i)[0], (String) list.get(0)[0]);
+                    removeValueFromList(modifyList, list.get(i)[columnIndex], (String) list.get(0)[columnIndex]);
                 }
             }
         }

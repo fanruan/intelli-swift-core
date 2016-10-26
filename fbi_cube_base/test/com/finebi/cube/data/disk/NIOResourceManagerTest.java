@@ -6,12 +6,109 @@ import com.finebi.cube.exception.BIBuildReaderException;
 import com.finebi.cube.exception.IllegalCubeResourceLocationException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.tools.BILocationBuildTestTool;
+import junit.framework.TestCase;
 
 /**
  * Created by wang on 2016/10/9.
  */
-public class MultThreadTest {
-    public static void main(String[] args) {
+public class NIOResourceManagerTest extends TestCase {
+    public void testReadAndRead(){
+        final ICubeResourceLocation locationR = BILocationBuildTestTool.buildWrite(BIDiskWriterReaderTest.projectPath, "writer" + 0 + "ok");
+        locationR.setStringType();
+        locationR.setReaderSourceLocation();
+        BICubeDiskDiscovery discovery = BICubeDiskDiscovery.getInstance();
+        BIStringNIOReader reader1 = null;
+        BIStringNIOReader reader2 = null;
+        String r = "";
+        try {
+            reader1 = (BIStringNIOReader) discovery.getCubeReader(locationR);
+            r = reader1.getSpecificValue(0);
+//            reader1.forceRelease();
+            reader2 = (BIStringNIOReader) discovery.getCubeReader(locationR);
+            r = reader2.getSpecificValue(0);
+            reader1.forceRelease();
+            reader2.forceRelease();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+        }
+    }
+    public void testReadAndWrite(){
+        final ICubeResourceLocation locationR = BILocationBuildTestTool.buildWrite(BIDiskWriterReaderTest.projectPath, "writer" + 0 + "ok");
+        locationR.setStringType();
+        locationR.setReaderSourceLocation();
+        final ICubeResourceLocation locationW = BILocationBuildTestTool.buildWrite(BIDiskWriterReaderTest.projectPath, "writer" + 0 + "ok");
+        locationW.setStringType();
+        locationW.setWriterSourceLocation();
+        BICubeDiskDiscovery discovery = BICubeDiskDiscovery.getInstance();
+        BIStringNIOReader reader1 = null;
+        BIStringNIOWriter writer1 = null;
+        String r = "";
+        try {
+            reader1 = (BIStringNIOReader) discovery.getCubeReader(locationR);
+            r = reader1.getSpecificValue(0);
+//            reader1.forceRelease();
+
+            writer1 = (BIStringNIOWriter) discovery.getCubeWriter(locationW);
+            writer1.recordSpecificValue(1,"b");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+        }
+    }
+    public void testWriteAndRead(){
+        final ICubeResourceLocation locationR = BILocationBuildTestTool.buildWrite(BIDiskWriterReaderTest.projectPath, "writer" + 0 + "ok");
+        locationR.setStringType();
+        locationR.setReaderSourceLocation();
+        final ICubeResourceLocation locationW = BILocationBuildTestTool.buildWrite(BIDiskWriterReaderTest.projectPath, "writer" + 0 + "ok");
+        locationW.setStringType();
+        locationW.setWriterSourceLocation();
+        BICubeDiskDiscovery discovery = BICubeDiskDiscovery.getInstance();
+        BIStringNIOReader reader1 = null;
+        BIStringNIOWriter writer1 = null;
+        String r = "";
+        try {
+            writer1 = (BIStringNIOWriter) discovery.getCubeWriter(locationW);
+            writer1.recordSpecificValue(1,"b");
+//            writer1.forceRelease();
+            reader1 = (BIStringNIOReader) discovery.getCubeReader(locationR);
+            r = reader1.getSpecificValue(0);
+//            reader1.forceRelease();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+        }
+    }
+    public void testWriteAndWrite(){
+        final ICubeResourceLocation locationW = BILocationBuildTestTool.buildWrite(BIDiskWriterReaderTest.projectPath, "writer" + 0 + "ok");
+        locationW.setStringType();
+        locationW.setReaderSourceLocation();
+        final ICubeResourceLocation locationW1 = BILocationBuildTestTool.buildWrite(BIDiskWriterReaderTest.projectPath, "writer" + 0 + "ok");
+        locationW.setStringType();
+        locationW.setWriterSourceLocation();
+        BICubeDiskDiscovery discovery = BICubeDiskDiscovery.getInstance();
+        BIStringNIOWriter writer2 = null;
+        BIStringNIOWriter writer1 = null;
+        String r = "";
+        try {
+            writer1 = (BIStringNIOWriter) discovery.getCubeWriter(locationW);
+            writer1.recordSpecificValue(1,"b");
+            writer1.forceRelease();
+            writer2 = (BIStringNIOWriter) discovery.getCubeWriter(locationW);
+            writer2.recordSpecificValue(1,"b");
+//            writer2.forceRelease();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+        }
+    }
+    public void testMultiThreadRead() {
         final ICubeResourceLocation locationR = BILocationBuildTestTool.buildWrite(BIDiskWriterReaderTest.projectPath, "writer" + 0 + "ok");
         locationR.setStringType();
         locationR.setReaderSourceLocation();
@@ -35,7 +132,8 @@ public class MultThreadTest {
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
-                    reader.clear();
+//                    reader.clear();
+                    reader.forceRelease();
                 }
             }
         };
@@ -51,6 +149,7 @@ public class MultThreadTest {
                     e.printStackTrace();
                 } finally {
                     reader.clear();
+//                    reader.forceRelease();
                 }
             }
         };
