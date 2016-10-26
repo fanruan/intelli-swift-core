@@ -15,3 +15,11 @@
 .condition-item .condition-operator-input {
   border: 1px solid #d4dadd;
 }
+.condition-item .delete-icon {
+  opacity: 0;
+  filter: alpha(opacity=0);
+}
+.condition-item:hover .delete-icon {
+  opacity: 1;
+  filter: alpha(opacity=100);
+}

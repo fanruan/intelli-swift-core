@@ -110,7 +110,8 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
     _formatConfig: function () {
         var config = {};
         config.chart_legend = BICst.CHART_LEGENDS.NOT_SHOW;
-        config.show_label = false;
+        config.show_cat_label = false;
+        config.show_left_label = false;
         config.chart_demo = true;
         config.line_width = 0;
         config.enable_tick = false;
