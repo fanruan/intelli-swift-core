@@ -66,7 +66,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
         });
         this.tabs.setSelect(1);
         this.tabs.on(BI.Tab.EVENT_CHANGE, function () {
-            if (this.getSelect() == 1) {
+            if (this.getSelect() === 1) {
                 self.layout.setHeight(self._CARDHEIGHT);
             } else {
                 self.layout.setHeight(self._constant.IMAGE_SET_HEIGHT);
@@ -156,14 +156,14 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
         this.imageSet.on(BI.DataLabelImageSet.EVENT_CHANGE, function () {
             self._style.type = BICst.DATA_LABEL_STYLE_TYPE.IMG;
             self._style.imgStyle = self.imageSet.getValue();
-            self.chart.populate(self.imageSet.getValue().src);
+            self.chart.populate(FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + self.imageSet.getValue().src);
             self.fireEvent(BI.DataLabelTab.IMG_CHANGE, arguments);
         });
         this.chart = BI.createWidget({
             type: "bi.data_label_chart",
             chartType: o.chartType
         });
-        this.chart.populate(this._style.imgStyle.src);
+        this.chart.populate(FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + this._style.imgStyle.src);
         return BI.createWidget({
                 type: "bi.vertical",
                 items: [BI.createWidget({
@@ -178,6 +178,11 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
                 tgap: 40
             }
         );
+    },
+
+    setImageSetSelected: function () {
+        this.tabs.setSelect(2);
+        this.layout.setHeight(this._constant.IMAGE_SET_HEIGHT);
     },
 
     populate: function () {

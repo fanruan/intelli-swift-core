@@ -33,7 +33,7 @@ BI.DataImagePane = BI.inherit(BI.Widget, {
             dId: o.dId
         });
         this.imageSet.on(BI.DataImageImageSet.EVENT_CHANGE, function () {
-            self.chart.populate(self.imageSet.getValue().src);
+            self.chart.populate(FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + self.imageSet.getValue().src);
             self.fireEvent(BI.DataImagePane.IMG_CHANGE, arguments);
         });
         this.chart = BI.createWidget({
@@ -52,7 +52,7 @@ BI.DataImagePane = BI.inherit(BI.Widget, {
     },
 
     populate: function (src) {
-        this.chart.populate(src);
+        this.chart.populate(FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + src);
         this.imageSet.populate();
     }
 });

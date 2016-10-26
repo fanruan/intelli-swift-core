@@ -172,6 +172,12 @@ $(function () {
             });
         },
 
+        getImageWidthAndHeight: function (src) {
+            return BI.requestSync("fr_bi_base", "get_image_size", {
+                src: src
+            });
+        },
+
         isDarkColor: function (hex) {
             if (!hex) {
                 return false;
