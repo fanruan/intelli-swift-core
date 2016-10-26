@@ -120,6 +120,6 @@ public class BIStringUtils {
     }
 
     public static boolean isEmptyString(String value) {
-        return ComparatorUtils.equals(value, "") || ComparatorUtils.equals(value, emptyString());
+        return StringUtils.isEmpty(value) || ComparatorUtils.equals(value, emptyString());
     }
 }
