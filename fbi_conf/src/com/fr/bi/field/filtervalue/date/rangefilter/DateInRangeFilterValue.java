@@ -1,5 +1,6 @@
 package com.fr.bi.field.filtervalue.date.rangefilter;
 
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.data.key.date.BIDay;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.report.key.TargetGettingKey;
@@ -12,6 +13,9 @@ public class DateInRangeFilterValue extends DateRangeFilterValue {
 	 * 
 	 */
 	private static final long serialVersionUID = 5094504485033812162L;
+
+    @BICoreField
+    private String CLASS_TYPE = "DateInRangeFilterValue";
 
 	@Override
 	public boolean dealWithNullValue() {

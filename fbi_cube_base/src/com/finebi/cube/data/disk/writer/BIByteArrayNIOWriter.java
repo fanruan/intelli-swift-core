@@ -7,10 +7,13 @@ import com.finebi.cube.data.output.ICubeByteArrayWriter;
 import com.finebi.cube.data.output.primitive.ICubeIntegerWriter;
 import com.fr.bi.stable.constant.CubeConstant;
 
+import java.util.UUID;
+
 /**
  * Created by 小灰灰 on 14-1-7.
  */
 public class BIByteArrayNIOWriter implements ICubeByteArrayWriter {
+    private final String handlerKey = UUID.randomUUID().toString();
     protected ICubeLongWriter startPositionRecorder;
 
     protected ICubeIntegerWriter lengthRecorder;
@@ -24,6 +27,9 @@ public class BIByteArrayNIOWriter implements ICubeByteArrayWriter {
         this.startPositionRecorder = startPositionRecorder;
         this.lengthRecorder = lengthRecorder;
         this.contentRecorder = contentRecorder;
+        this.startPositionRecorder.getHandlerReleaseHelper().registerHandlerKey(handlerKey);
+        this.lengthRecorder.getHandlerReleaseHelper().registerHandlerKey(handlerKey);
+        this.contentRecorder.getHandlerReleaseHelper().registerHandlerKey(handlerKey);
     }
 
     @Override
@@ -55,9 +61,9 @@ public class BIByteArrayNIOWriter implements ICubeByteArrayWriter {
 
     @Override
     public void clear() {
-        startPositionRecorder.releaseHandler();
-        lengthRecorder.releaseHandler();
-        contentRecorder.releaseHandler();
+        startPositionRecorder.releaseHandler(handlerKey);
+        lengthRecorder.releaseHandler(handlerKey);
+        contentRecorder.releaseHandler(handlerKey);
     }
 
     @Override

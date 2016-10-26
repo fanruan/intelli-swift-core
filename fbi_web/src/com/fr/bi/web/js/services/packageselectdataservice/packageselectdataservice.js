@@ -769,11 +769,6 @@ BI.PackageSelectDataService.EVENT_CLICK_ITEM = "EVENT_CLICK_ITEM";
 BI.extend(BI.PackageSelectDataService, {
     RELATION_TABLE: "__relation_table__",
 
-    //TODO 判断咨询环列关联
-    _hasSelfRelation: function (fields) {
-
-    },
-
     getAllRelativeFields: function (tableId, fields, map) {
         map = map || {};
         var newFields = [];
