@@ -173,7 +173,7 @@ $(function () {
         },
 
         getImageWidthAndHeight: function (src) {
-            return BI.requestSync("fr_bi_base", "get_image_size", {
+            return BI.requestSync("fr_bi_dezi", "get_image_size", {
                 src: src
             });
         },
