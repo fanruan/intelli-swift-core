@@ -27,7 +27,7 @@ public class BILogHelper {
                     "\n" + "       Corresponding  Table Source ID:", table.getTableSource().getSourceID()
             );
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            logger.info(e.getMessage(), e);
             return "";
         }
     }
@@ -43,7 +43,7 @@ public class BILogHelper {
             }
             return sb.toString();
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            logger.info(e.getMessage(), e);
             return "";
         }
     }
@@ -57,7 +57,7 @@ public class BILogHelper {
                     "\n" + prefix + "       Business Field ID:", field.getFieldID().getIdentity()
             );
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            logger.info(e.getMessage(), e);
             return "";
         }
 
