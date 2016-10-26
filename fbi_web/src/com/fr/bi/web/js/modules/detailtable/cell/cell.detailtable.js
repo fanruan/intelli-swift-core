@@ -21,35 +21,22 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
         var type = BI.Utils.getDimensionTypeByID(dId);
         if (this._checkHyperLinkDimension()) {
             var hyperlink = BI.Utils.getDimensionHyperLinkByID(dId);
+            var expression = BI.Func.formatAddress(hyperlink.expression);
             var item = BI.createWidget({
                 type: "bi.a",
                 cls: "hyper-link-item",
-                lgap: 5,
-                textAlign: "left",
-                text: this.options.text,
-                href: hyperlink.expression.replaceAll("\\$\\{.*\\}", this.options.text)
-            });
-
-            this._createItemWithStyle(item);
-
-        } else if (type === BICst.TARGET_TYPE.NUMBER || type === BICst.TARGET_TYPE.FORMULA) {
-            var item = BI.createWidget({
-                type: "bi.label",
-                cls: "detail-table-cell-text",
-                textAlign: "right",
-                whiteSpace: "nowrap",
+                textAlign: (type === BICst.TARGET_TYPE.NUMBER || type === BICst.TARGET_TYPE.FORMULA) ? "right" : "left",
                 height: this.options.height,
                 text: this.options.text,
-                value: this.options.value,
                 lgap: 5,
-                rgap: 5
+                rgap: 5,
+                href: expression.replaceAll("\\$\\{.*\\}", this.options.text)
             });
-            this._createItemWithStyle(item);
         } else {
             var item = BI.createWidget({
                 type: "bi.label",
                 cls: "detail-table-cell-text",
-                textAlign: "left",
+                textAlign: (type === BICst.TARGET_TYPE.NUMBER || type === BICst.TARGET_TYPE.FORMULA) ? "right" : "left",
                 whiteSpace: "nowrap",
                 height: this.options.height,
                 text: this.options.text,
@@ -57,8 +44,8 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
                 lgap: 5,
                 rgap: 5
             });
-            this._createItemWithStyle(item);
         }
+        this._createItemWithStyle(item);
     },
 
     _checkHyperLinkDimension: function () {

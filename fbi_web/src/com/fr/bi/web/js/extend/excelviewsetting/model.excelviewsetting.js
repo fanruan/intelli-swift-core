@@ -25,7 +25,7 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
         this.allFields = table.all_fields;
 
         var view = o.view;
-        if(BI.isNotNull(view)) {
+        if (BI.isNotNull(view)) {
             this.excelName = view.name;
             this.excel = view.excel;
             this.positions = view.positions;
@@ -33,8 +33,8 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
 
         this.tables = [];
         var fields = [];
-        BI.each(tableFields, function(i, fs) {
-            BI.each(fs, function(j, field) {
+        BI.each(tableFields, function (i, fs) {
+            BI.each(fs, function (j, field) {
                 fields.push({
                     field: field.field_name,
                     value: field.id
@@ -52,24 +52,24 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
         this._getALlPrimaryTables(tableId);
     },
 
-    _getALlPrimaryTables: function(tableId){
+    _getALlPrimaryTables: function (tableId) {
         var self = this;
         var foreignKeyMap = this.relations.foreignKeyMap;
-        BI.each(foreignKeyMap, function(fieldId, maps) {
-            if(BI.isNotNull(self.allFields[fieldId]) && tableId === self.allFields[fieldId].table_id) {
-                BI.each(maps, function(i, map) {
+        BI.each(foreignKeyMap, function (fieldId, maps) {
+            if (BI.isNotNull(self.allFields[fieldId]) && tableId === self.allFields[fieldId].table_id) {
+                BI.each(maps, function (i, map) {
                     var pFieldId = map.primaryKey.field_id;
                     var pTableId = self.allFields[pFieldId].table_id;
                     var pFields = [];
-                    BI.each(self.allFields, function(fId, field) {
-                        if(field.table_id === pTableId && field.field_type !== BICst.COLUMN.COUNTER) {
+                    BI.each(self.allFields, function (fId, field) {
+                        if (field.table_id === pTableId && field.field_type !== BICst.COLUMN.COUNTER) {
                             pFields.push({
                                 field: field.field_name,
                                 value: field.id
                             });
                         }
                     });
-                    if(BI.contains(BI.pluck(self.tables, "value"), pTableId)){
+                    if (BI.contains(BI.pluck(self.tables, "value"), pTableId)) {
                         return;
                     }
                     self.tables.push({
@@ -86,7 +86,7 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
     _searchFieldByRowCol: function (row, col) {
         var fieldId = null;
         BI.some(this.positions, function (id, position) {
-            if(position.row === row && position.col === col) {
+            if (position.row === row && position.col === col) {
                 fieldId = id;
                 return true;
             }
@@ -104,7 +104,7 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
         return result;
     },
 
-    setFile: function(file, callback){
+    setFile: function (file, callback) {
         var self = this;
         this.file = file;
         this.excelName = file.filename;
@@ -114,20 +114,20 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Loading")
         });
         this.clearRowCol();
-        BI.Utils.saveFileGetExcelData(file.attach_id, function(data){
+        BI.Utils.saveFileGetExcelData(file.attach_id, function (data) {
             self.excel = [];
             var row = [];
-            BI.each(data.fields, function(i, fs){
-                BI.each(fs, function(j, field){
+            BI.each(data.fields, function (i, fs) {
+                BI.each(fs, function (j, field) {
                     row.push(field.field_name);
                 });
             });
             self.excel.push(row);
-            BI.each(data.data, function(i, d){
+            BI.each(data.data, function (i, d) {
                 self.excel.push(d);
             });
             callback();
-        }, function() {
+        }, function () {
             mask.destroy();
         })
     },
@@ -140,24 +140,40 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
         this.positions[field] = {row: row, col: col};
     },
 
-    getPositions: function(){
+    _removeNoFieldPosition: function () {
+        var existFields = this._getAllFields();
+        var position = this.positions;
+        var newPosition = {};
+        BI.each(position, function (fieldId, ob) {
+            BI.some(existFields, function (i, id) {
+                if (fieldId === id) {
+                    newPosition[fieldId] = ob;
+                    return true;
+                }
+            })
+        });
+        this.positions = newPosition;
+    },
+
+    getPositions: function () {
+        this._removeNoFieldPosition();
         return this.positions;
     },
 
-    getExcelData: function(){
+    getExcelData: function () {
         return this.excel;
     },
 
-    getAllFields: function() {
+    getAllFields: function () {
         return this.allFields;
     },
 
     getTables: function () {
         var self = this;
         var tables = BI.deepClone(this.tables);
-        BI.each(tables, function(i, table) {
-            BI.each(table.fields, function(i, field) {
-                if(BI.isNotNull(self.positions[field.value])) {
+        BI.each(tables, function (i, table) {
+            BI.each(table.fields, function (i, field) {
+                if (BI.isNotNull(self.positions[field.value])) {
                     BI.extend(field, self.positions[field.value]);
                 }
             })
@@ -176,7 +192,7 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
         }
     },
 
-    getExcelName: function(){
+    getExcelName: function () {
         return this.excelName;
     },
 
@@ -185,8 +201,8 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
         this.excel = [];
         this.positions = {};
     },
-    
-    clearOneCell: function(fieldId){
+
+    clearOneCell: function (fieldId) {
         delete  this.positions[fieldId];
     }
 });

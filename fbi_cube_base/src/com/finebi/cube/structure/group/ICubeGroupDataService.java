@@ -1,6 +1,7 @@
 package com.finebi.cube.structure.group;
 
 import com.finebi.cube.exception.BIResourceInvalidException;
+import com.finebi.cube.structure.ICubeResourceForceRelease;
 import com.fr.bi.common.inter.Release;
 
 import java.util.Comparator;
@@ -12,7 +13,7 @@ import java.util.Comparator;
  * @author Connery
  * @since 4.0
  */
-public interface ICubeGroupDataService<T> extends Release {
+public interface ICubeGroupDataService<T> extends Release ,ICubeResourceForceRelease {
     /**
      * 在指定位置记录数值
      *
@@ -41,7 +42,4 @@ public interface ICubeGroupDataService<T> extends Release {
 
     void buildStructure();
 
-    void forceReleaseWriter();
-
-    void forceReleaseReader();
 }
