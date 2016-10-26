@@ -17,21 +17,13 @@ BI.Maximization4ShowChartPane = BI.inherit(BI.Widget, {
         BI.Maximization4ShowChartPane.superclass._init.apply(this, arguments);
 
         var self = this, o = this.options;
+        var type = BI.Utils.getWidgetTypeByID(o.wId);
 
         this.tools = this._createTools();
-        this._buildChartDrill();
+        this._setRefreshButtonVisible(type);
 
-        this.tableChart = BI.createWidget({
-            type: "bi.table_chart_manager",
-            wId: o.wId,
-            status: o.status
-        });
-        this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function (widget) {
-            self.fireEvent(BI.Maximization4ShowChartPane.EVENT_SET, arguments);
-        });
-        this.tableChart.on(BI.TableChartManager.EVENT_CLICK_CHART, function (obj) {
-            self._onClickChart(obj);
-        });
+        this._buildChartDrill();
+        this._createTableChart(type);
 
         this.tableChartPopupulate = BI.debounce(BI.bind(this.tableChart.populate, this.tableChart), 0);
 
@@ -55,6 +47,44 @@ BI.Maximization4ShowChartPane = BI.inherit(BI.Widget, {
                 right: 10
             }]
         })
+    },
+
+    _createTableChart: function (type) {
+        switch (type) {
+            case BICst.WIDGET.DETAIL:
+                this._createDetail();
+                break;
+            default :
+                this._createChart();
+                break;
+        }
+    },
+
+    _createDetail: function () {
+        var self = this, o = this.options;
+        this.tableChart = BI.createWidget({
+            type: "bi.detail_table",
+            wId: o.wId,
+            status: o.status
+        });
+        this.tableChart.on(BI.DetailTable.EVENT_CHANGE, function (ob) {
+            self.fireEvent(BI.Maximization4ShowChartPane.EVENT_SET, ob);
+        });
+    },
+
+    _createChart: function () {
+        var self = this, o = this.options;
+        this.tableChart = BI.createWidget({
+            type: "bi.table_chart_manager",
+            wId: o.wId,
+            status: o.status
+        });
+        this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function (widget) {
+            self.fireEvent(BI.Maximization4ShowChartPane.EVENT_SET, widget);
+        });
+        this.tableChart.on(BI.TableChartManager.EVENT_CLICK_CHART, function (obj) {
+            self._onClickChart(obj);
+        });
     },
 
     _onClickChart: function (obj) {
@@ -85,7 +115,12 @@ BI.Maximization4ShowChartPane = BI.inherit(BI.Widget, {
     _createTools: function () {
         var self = this, wId = this.options.wId;
 
-        var minimize = this._createToolsButton("BI-minimization", "widget-tools-minimization-font");
+        this.refresh = this._createToolsButton("BI-Restore", "recover-chart-font-hightlight");
+        this.refresh.on(BI.IconButton.EVENT_CHANGE, function () {
+            self.tableChart.magnify();
+        });
+
+        var minimize = this._createToolsButton("BI-minimization", "widget-tools-maximization-font");
         minimize.on(BI.IconButton.EVENT_CHANGE, function () {
             self.fireEvent(BI.Maximization4ShowChartPane.EVENT_CLOSE);
         });
@@ -100,13 +135,41 @@ BI.Maximization4ShowChartPane = BI.inherit(BI.Widget, {
             window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
                 + window.encodeURIComponent(BI.Utils.getWidgetNameByID(wId)));
         });
-
         return BI.createWidget({
             type: "bi.left",
             cls: "operator-region",
-            items: [minimize, filter, excel],
-            hgap: 3
+            items: [this.refresh, minimize, filter, excel],
+            lgap: 10
         });
+    },
+
+    _setRefreshButtonVisible: function (type) {
+        switch (type) {
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+            case BICst.WIDGET.ACCUMULATE_AREA:
+            case BICst.WIDGET.AXIS:
+            case BICst.WIDGET.LINE:
+            case BICst.WIDGET.AREA:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+            case BICst.WIDGET.COMPARE_AXIS:
+            case BICst.WIDGET.COMPARE_AREA:
+            case BICst.WIDGET.FALL_AXIS:
+            case BICst.WIDGET.RANGE_AREA:
+            case BICst.WIDGET.BAR:
+            case BICst.WIDGET.ACCUMULATE_BAR:
+            case BICst.WIDGET.COMPARE_BAR:
+            case BICst.WIDGET.COMBINE_CHART:
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+            case BICst.WIDGET.FORCE_BUBBLE:
+            case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.SCATTER:
+            case BICst.WIDGET.MAP:
+                this.refresh.setVisible(true);
+                break;
+            default:
+                this.refresh.setVisible(false);
+        }
     },
 
     _onClickFilter: function () {
