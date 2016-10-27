@@ -6,6 +6,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
+import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.location.BICubeResourceRetrieval;
@@ -293,11 +294,32 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
 
 
     private Map<String, List<Object[]>> preHandleSQLs(ICubeFieldSource[] fields, String partDeleteSQL, String partAddSQL, String partModifySQL) {
-            List<Object[]> addList = executeSQL(fields, partAddSQL);
-            List<Object[]> deleteList = executeSQL(new ICubeFieldSource[]{getCubeFieldSource(fields, getKeyName(partDeleteSQL))}, partDeleteSQL);
-            List<Object[]> modifyList = executeSQL(fields, getModifySql(fields, partModifySQL));
 
-        /*
+        List<Object[]> addList = new ArrayList<Object[]>();
+        List<Object[]> deleteList = new ArrayList<Object[]>();
+        List<Object[]> modifyList = new ArrayList<Object[]>();
+        /**
+         * 添加删除SQL或者修改SQL为空的情况。
+         */
+        if (!BIStringUtils.isEmptyString(partAddSQL)) {
+            addList = executeSQL(fields, partAddSQL);
+        } else {
+            logger.warn("The table: " + BILogHelper.logTableSource(tableSource, " ") + ", it's add sql is empty");
+        }
+        if (!BIStringUtils.isEmptyString(partDeleteSQL)) {
+            deleteList = executeSQL(new ICubeFieldSource[]{getCubeFieldSource(fields, getKeyName(partDeleteSQL))}, partDeleteSQL);
+        } else {
+            logger.warn("The table: " + BILogHelper.logTableSource(tableSource, " ") + ", it's delete sql is empty");
+
+        }
+        if (!BIStringUtils.isEmptyString(partModifySQL)) {
+            modifyList = executeSQL(fields, getModifySql(fields, partModifySQL));
+        } else {
+            logger.warn("The table: " + BILogHelper.logTableSource(tableSource, " ") + ", it's modify sql is empty");
+
+        }
+
+   /*
         * 预处理逻辑：对于同一条Key的记录
         * 1. 新增中出现n次，修改中出现n-1次，则处理后新增留一次，删除中没有该记录
         * 2. 修改中出现n次，处理后则留一次
@@ -324,9 +346,6 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
 
     private List<Object[]> executeSQL(final ICubeFieldSource[] fields, String SQL) {
         final List<Object[]> rows = new ArrayList<Object[]>();
-        if (StringUtils.isEmpty(SQL)){
-            return rows;
-        }
         Object[] objects = new Object[fields.length];
         rows.add(objects);
         for (int i = 0; i < fields.length; i++) {

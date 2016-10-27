@@ -7,6 +7,7 @@ import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.field.BusinessFieldHelper;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.conf.table.BusinessTableHelper;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
 
@@ -55,6 +56,19 @@ public class BILogHelper {
                     "\n" + prefix + "       Business Field Alias Name:", BICubeConfigureCenter.getAliasManager().getAliasName(field.getFieldID().getIdentityValue(), userID),
                     "\n" + prefix + "       Business Field Name:", field.getFieldName(),
                     "\n" + prefix + "       Business Field ID:", field.getFieldID().getIdentity()
+            );
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+            return "";
+        }
+
+    }
+
+    public static String logTableSource(CubeTableSource table, String prefix) {
+        try {
+            return BIStringUtils.append(
+                    "" + prefix + "       Table Source Name:", table.getTableName(),
+                    "" + prefix + "       Table Source ID:", table.getSourceID()
             );
         } catch (Exception e) {
             logger.info(e.getMessage(), e);
