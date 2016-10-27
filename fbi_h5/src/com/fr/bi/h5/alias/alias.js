@@ -631,11 +631,3 @@ BH._eFormat = function (text, fmt) {
     }
     return text;
 };
-
-BH.Selection = {
-    Default: -999,
-    None: -1,
-    Single: 0,
-    Multi: 1,
-    All: 2
-};
