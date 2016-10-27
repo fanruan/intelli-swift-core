@@ -57,6 +57,20 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
         });
         this.separators.setSelected(styleSettings.num_separators);
 
+        var example = BI.createWidget({
+            type: "bi.label",
+            height: 25
+        });
+
+        this.showSeparators = styleSettings.num_separators || false;
+
+        example.setText(this._switchLabel(this.showSeparators));
+
+        this.separators.on(BI.Controller.EVENT_CHANGE, function () {
+            self.showSeparators = !self.showSeparators;
+            example.setText(self._switchLabel(self.showSeparators));
+        });
+
         this.numLevel = BI.createWidget({
             type: "bi.segment",
             items: BICst.TARGET_STYLE_LEVEL_SHORT,
@@ -84,7 +98,7 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
                     cls: "style-name",
                     height: this.constants.LABEL_HEIGHT,
                     textAlign: "left"
-                }, this.format, this.separators],
+                }, this.format, this.separators, example],
                 hgap: 5
             }, {
                 type: "bi.left",
@@ -106,6 +120,10 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
             hgap: 10,
             vgap: 10
         })
+    },
+
+    _switchLabel: function(v) {
+        return v ? BI.i18nText("BI-Separators_Example") : BI.i18nText("BI-None_Separator_Example")
     },
 
     end: function(){

@@ -102,6 +102,16 @@ BI.Linkage = BI.inherit(BI.Widget, {
         var self = this;
         var name = BI.Utils.getDimensionNameByID(cId);
         var expression = BI.Utils.getDimensionSrcByID(cId).expression;
+        var icon = BI.createWidget({
+            type: "bi.center_adapt",
+            items: [{
+                type: "bi.icon",
+                width: 20
+            }],
+            width: 24,
+            height: 30,
+            cls: "calculate-target-font"
+        });
         var nameLabel = BI.createWidget({
             type: "bi.label",
             cls: "linkage-toolbar-target-name",
@@ -119,8 +129,10 @@ BI.Linkage = BI.inherit(BI.Widget, {
         var target = BI.createWidget({
             type: "bi.left",
             cls: "linkage-toolbar-target",
-            rgap: 30,
-            items: [nameLabel, linkToLabel]
+            items: [icon, {
+                el: nameLabel,
+                rgap: 30
+            }, linkToLabel]
         });
 
         var items = [];
@@ -137,7 +149,12 @@ BI.Linkage = BI.inherit(BI.Widget, {
                     hgap: 5
                 }));
             } else {
-                items.push(createChildrenLinkage(item));
+                items.push(BI.createWidget({
+                    type: "bi.vertical",
+                    items: [createChildrenLinkage(item)],
+                    vgap:5,
+                    hgap:5
+                }));
             }
         });
 
@@ -163,7 +180,7 @@ BI.Linkage = BI.inherit(BI.Widget, {
             });
             var target = BI.createWidget({
                 type: "bi.left",
-                cls: "linkage-toolbar-target linkage-toolbar-target-cal",
+                cls: "linkage-toolbar-target",
                 rgap: 30,
                 items: [nameLabel]
             });
@@ -183,12 +200,55 @@ BI.Linkage = BI.inherit(BI.Widget, {
                     return self._createCalHelper(tId, cIds).element;
                 }
             });
-            return BI.createWidget({
+
+            var targetContainer = BI.createWidget({
                 type: "bi.vertical",
                 items: [target],
-                hgap: 5,
-                vgap: 5
+                cls: "linkage-toolbar-target-cal"
             });
+
+            var linkedWIds = self.model.getLinkedWidgetsByTargetIdAndCalculateIds(tId, cIds);
+            BI.each(linkedWIds, function (i, wId) {
+                targetContainer.addItem({
+                    type: "bi.htape",
+                    items: [{
+                        el: {
+                            type: "bi.center_adapt",
+                            cls: BI.Utils.getWidgetIconClsByWidgetId(wId) + " widget-type-icon",
+                            items: [{
+                                type: "bi.icon",
+                                width: 20,
+                                height: 20
+                            }],
+                            width: 26,
+                            height: 26
+                        },
+                        width: 26
+                    }, {
+                        el: {
+                            type: "bi.label",
+                            text: BI.Utils.getWidgetNameByID(wId),
+                            height: 26,
+                            textAlign: "left"
+                        }
+                    }, {
+                        el: {
+                            type: "bi.icon_button",
+                            cls: "close-h-font",
+                            width: 20,
+                            height: 26,
+                            handler: function () {
+                                self.model.deleteLinkage(tId, wId, cIds);
+                                self._populate();
+                            }
+                        },
+                        width: 20
+                    }],
+                    height: 30
+                });
+            });
+
+            return targetContainer;
         }
     },
 
@@ -276,7 +336,7 @@ BI.Linkage = BI.inherit(BI.Widget, {
                                 width: 20,
                                 height: 26,
                                 handler: function () {
-                                    self.model.deleteLinkage(tId, wId);
+                                    self.model.deleteLinkage(tId, wId, []);
                                     self._populate();
                                 }
                             },
@@ -393,12 +453,12 @@ BI.Linkage = BI.inherit(BI.Widget, {
             from: this.options.wId,
             to: wId
         });
-        linkages.on(BI.LinkageTargets.EVENT_DELETE, function (v) {
-            self.model.deleteLinkage(v, wId);
+        linkages.on(BI.LinkageTargets.EVENT_DELETE, function (tId, cIds) {
+            self.model.deleteLinkage(tId, wId,cIds);
             self._populate();
         });
-        linkages.on(BI.LinkageTargets.EVENT_ADD, function (v) {
-            self.model.addLinkage(v, wId);
+        linkages.on(BI.LinkageTargets.EVENT_ADD, function (tId, cIds) {
+            self.model.addLinkage(tId, wId, cIds);
             self._populate();
         });
         linkages.element.droppable({
@@ -406,7 +466,8 @@ BI.Linkage = BI.inherit(BI.Widget, {
             drop: function (event, ui) {
                 var helper = ui.helper;
                 var targetId = helper.data("tId");
-                linkages.addOneLinkage(targetId);
+                var cIds = helper.data("cIds") || [];
+                linkages.addOneLinkage(targetId, cIds);
             },
             over: function (event, ui) {
                 var helperWidget = ui.helper.data().helperWidget;

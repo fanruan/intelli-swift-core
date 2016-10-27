@@ -2,14 +2,22 @@
 .condition-item {
   min-width: 560px;
   border-bottom: 1px solid @border-color-normal;
-  .condition-trigger {
+  & .condition-trigger {
     border-left: 1px solid @border-color-normal;
     border-right: 1px solid @border-color-normal;
   }
-  .trigger-icon {
+  & .trigger-icon {
     color: @color-bi-text-highlight;
   }
-  .condition-operator-input {
+  & .condition-operator-input {
     border: 1px solid @border-color-normal;
+  }
+  & .delete-icon {
+    .opacity(0)
+  }
+  &:hover {
+    & .delete-icon {
+      .opacity(1)
+    }
   }
 }

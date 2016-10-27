@@ -11,7 +11,7 @@ import com.fr.bi.common.inter.Release;
  * @author Connery
  * @since 4.0
  */
-public interface ICubeDetailDataService<T> extends Release {
+public interface ICubeDetailDataService<T> extends Release ,ICubeResourceForceRelease{
     /**
      * 记录数据源中的数据信息。
      *
@@ -33,7 +33,4 @@ public interface ICubeDetailDataService<T> extends Release {
 
     void buildStructure();
 
-    void forceReleaseWriter();
-
-    void forceReleaseReader();
 }

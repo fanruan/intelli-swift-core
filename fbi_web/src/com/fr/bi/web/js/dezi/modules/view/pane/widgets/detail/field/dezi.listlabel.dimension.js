@@ -54,10 +54,6 @@ BIDezi.ListLabelDimensionView = BI.inherit(BI.View, {
                 center: {el: this.editor}
             }
         });
-
-        var tableId = BI.Utils.getTableIdByFieldID(this.model.get("_src").field_id);
-
-        this.editor.setValue(BI.Utils.getTableNameByID(tableId) + "." + this.model.get("name"));
     },
 
     _createCombo: function () {
@@ -79,10 +75,6 @@ BIDezi.ListLabelDimensionView = BI.inherit(BI.View, {
         this.model.destroy();
     },
 
-    _reName: function () {
-        this.editor.focus();
-    },
-
     _checkDimensionName: function (name) {
         var currId = this.model.get("id");
         var widgetId = BI.Utils.getWidgetIDByDimensionID(currId);
@@ -96,4 +88,9 @@ BIDezi.ListLabelDimensionView = BI.inherit(BI.View, {
         });
         return valid;
     },
+
+    refresh: function(){
+        this.editor.setValue(this.model.get("name"));
+        this.editor.setState(this.model.get("name"));
+    }
 });

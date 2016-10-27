@@ -24,10 +24,8 @@ BI.SelectDataSingleSlider = BI.inherit(BI.Widget, {
         var dataArray = jsonData.data.c;
         var minString = dataArray[0].n;
         var maxString = dataArray[dataArray.length - 1].n;
-        var minArray = minString.split("-");
-        var maxArray = maxString.split("-");
-        var min = BI.parseFloat(minArray[0]);
-        var max = BI.parseFloat(maxArray[1]);
+        var min = BI.parseFloat(minString);
+        var max = BI.parseFloat(maxString);
         return [min, max];
     },
     getValue: function () {
@@ -55,7 +53,7 @@ BI.SelectDataSingleSlider = BI.inherit(BI.Widget, {
             BI.Utils.getWidgetDataByID(o.wId, function (jsonData) {
                 var minAndMax = self._getMinAndMaxFromData(jsonData);
                 self.widget.populate(minAndMax[0], minAndMax[1], value);
-            })
+            },{page: -1})
         }
     }
 });

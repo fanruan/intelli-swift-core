@@ -147,6 +147,9 @@ BI.SearchEditor = BI.inherit(BI.Widget, {
         }
     },
 
+    getLastValidValue: function () {
+        return this.editor.getLastValidValue();
+    },
 
     setValue: function (v) {
         this.editor.setValue(v);

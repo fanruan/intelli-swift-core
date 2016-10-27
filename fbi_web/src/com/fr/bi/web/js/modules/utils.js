@@ -957,12 +957,6 @@
                 BICst.DEFAULT_CHART_SETTING.left_y_axis_style;
         },
 
-        getWSXAxisStyleByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.x_axis_style) ? ws.x_axis_style :
-                BICst.DEFAULT_CHART_SETTING.x_axis_style;
-        },
-
         getWSRightYAxisStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.right_y_axis_style) ? ws.right_y_axis_style :
@@ -1024,12 +1018,6 @@
                 BICst.DEFAULT_CHART_SETTING.dashboard_number_level;
         },
 
-        getWSXAxisNumLevelByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.x_axis_number_level) ? ws.x_axis_number_level :
-                BICst.DEFAULT_CHART_SETTING.x_axis_number_level;
-        },
-
         getWSLeftYAxisUnitByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.left_y_axis_unit) ? ws.left_y_axis_unit :
@@ -1058,12 +1046,6 @@
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_percentage) ? ws.show_percentage :
                 BICst.DEFAULT_CHART_SETTING.percentage_not_show
-        },
-
-        getWSXAxisUnitByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.x_axis_unit) ? ws.x_axis_unit :
-                BICst.DEFAULT_CHART_SETTING.x_axis_unit;
         },
 
         getWSRightYAxisUnitByID: function (wid) {
@@ -1211,7 +1193,7 @@
             var labelSetting = ws.left_label_style || {};
             var wt = this.getWidgetTypeByID(wid);
             var colors = this.getWSChartColorByID(wid);
-            var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[0] : BICst.DEFAULT_CHART_SETTING.line_color;
+            var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[0] : BICst.DEFAULT_CHART_SETTING.label_color;
             labelSetting.text_style = BI.extend(chartFont, {"color": color}, labelSetting.text_style);
             labelSetting.text_direction = labelSetting.text_direction || 0;
             return labelSetting;
@@ -1238,7 +1220,7 @@
             var labelSetting = ws.right_label_style || {};
             var wt = this.getWidgetTypeByID(wid);
             var colors = this.getWSChartColorByID(wid);
-            var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[1] : BICst.DEFAULT_CHART_SETTING.line_color;
+            var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[1] : BICst.DEFAULT_CHART_SETTING.label_color;
             labelSetting.text_style = BI.extend(chartFont, {"color": color}, labelSetting.text_style);
             labelSetting.text_direction = labelSetting.text_direction || 0;
             return labelSetting;
@@ -1265,7 +1247,7 @@
             var labelSetting = ws.right2_label_style || {};
             var wt = this.getWidgetTypeByID(wid);
             var colors = this.getWSChartColorByID(wid);
-            var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[2] : BICst.DEFAULT_CHART_SETTING.line_color;
+            var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[2] : BICst.DEFAULT_CHART_SETTING.label_color;
             labelSetting.text_style = BI.extend(chartFont, {"color": color}, labelSetting.text_style);
             labelSetting.text_direction = labelSetting.text_direction || 0;
             return labelSetting;

@@ -115,6 +115,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             items: [{
                 type: "bi.label",
                 text: BI.i18nText("BI-Chart"),
+                textHeight: constant.SINGLE_LINE_HEIGHT,
                 textAlign: "left",
                 cls: "line-title"
             }, {

@@ -110,7 +110,8 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
     _formatConfig: function () {
         var config = {};
         config.chart_legend = BICst.CHART_LEGENDS.NOT_SHOW;
-        config.show_label = false;
+        config.show_cat_label = false;
+        config.show_left_label = false;
         config.chart_demo = true;
         config.line_width = 0;
         config.enable_tick = false;
@@ -122,11 +123,12 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
         var data = BI.deepClone(this.data);
         if (src) {
             if (this.options.showType === "data_image") {
-                data[0][0].data[0].imageHeight = 20;
-                data[0][0].data[0].imageWidth = 20;
-                data[0][0].data[0].image = src
+                var size = BI.DOM.getImageWidthAndHeight(src);
+                data[0][0].data[0].imageHeight = size.height;
+                data[0][0].data[0].imageWidth = size.width;
+                data[0][0].data[0].image = BI.Func.getCompleteImageUrl(src)
             } else {
-                var formatter = "function() { return '<div><img width=" + this._constant.ICON_WIDTH + "px height=" + this._constant.ICON_HEIGHT + "px src=" + src + "></div>'}";
+                var formatter = "function() { return '<div><img width=" + this._constant.ICON_WIDTH + "px height=" + this._constant.ICON_HEIGHT + "px src=" + BI.Func.getCompleteImageUrl(src) + "></div>'}";
                 data[0][0].data[0].dataLabels = {
                     enabled: true,
                     align: "outside",

@@ -78,23 +78,20 @@ class YearMonthWidget extends Component {
             )
         }
         if(this.state.selection === 1){
-            detailPicker = <View style={styles.datepicker}>
-                <View style={styles.highlight}/>
-                <View style={styles.container}>
-                    <PickerIOS selectedValue={this.state.year || new Date().getFullYear()} onValueChange={(Y)=> {
+            detailPicker = <Layout main="center" style={styles.detailPicker}>
+                <Layout style={styles.highlight}/>
+                <PickerIOS selectedValue={this.state.year || new Date().getFullYear()} onValueChange={(Y)=> {
                         this.setState({year: Y}, ()=>{
                             const {year, month}=this.state;
                             this.props.onValueChange({year, month});
                         });
                     }}>
-                        {year}
-                    </PickerIOS>
-                </View>
-            </View>
+                    {year}
+                </PickerIOS>
+            </Layout>
         }else{
-            detailPicker = <View style={styles.datepicker}>
-                <View style={styles.highlight}/>
-                <View style={styles.container}>
+            detailPicker = <Layout main="center" style={styles.detailPicker}>
+                <Layout style={styles.highlight}/>
                     <PickerIOS selectedValue={this.state.month || new Date().getMonth()} onValueChange={(M)=> {
                         this.setState({month: M}, ()=>{
                             const {year, month} = this.state;
@@ -103,8 +100,7 @@ class YearMonthWidget extends Component {
                     }}>
                         {month}
                     </PickerIOS>
-                </View>
-            </View>
+            </Layout>
         }
         return <Layout dir='top' main='justify' style={styles.wrapper}>
             <Layout cross='center' style={styles.button}>
@@ -161,6 +157,10 @@ const styles = StyleSheet.create({
         paddingLeft: 30,
     },
 
+    detailPicker: {
+        position: 'relative'
+    },
+
     button: {
         height: Sizes.HEADER_HEIGHT
     },
@@ -179,13 +179,6 @@ const styles = StyleSheet.create({
         height: Sizes.HEADER_HEIGHT,
         borderBottomColor: Colors.BORDER,
         borderBottomWidth: 1 / PixelRatio.get()
-    },
-    datepicker: {
-        flexDirection: 'row',
-        justifyContent: 'center'
-    },
-    container: {
-        flexDirection: 'row'
     },
     highlight: {
         position: 'absolute',

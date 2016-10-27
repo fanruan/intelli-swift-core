@@ -359,52 +359,34 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 return obj;
             });
         }
-        if (BI.has(data, "s")) {
-            var type = BI.Utils.getWidgetTypeByID(o.wId);
-            if (type === BICst.WIDGET.PIE) {
-                var adjustData = BI.map(data.s, function (idx, value) {
-                    return {
-                        x: BI.Utils.getDimensionNameByID(targetIds[idx]),
+        if(BI.has(data, "s")){
+            return BI.map(data.s, function (idx, value) {
+                return {
+                    name: BI.Utils.getDimensionNameByID(targetIds[idx]),
+                    data: [{
+                        x: "",
                         y: (BI.isFinite(value) ? value : 0),
                         targetIds: [targetIds[idx]]
-                    };
-                });
-                var obj = {};
-                obj.data = adjustData;
-                return [obj];
-            } else {
-                return BI.map(data.s, function (idx, value) {
-                    return {
-                        name: BI.Utils.getDimensionNameByID(targetIds[idx]),
-                        data: [{
-                            x: "",
-                            y: (BI.isFinite(value) ? value : 0),
-                            targetIds: [targetIds[idx]]
-                        }]
-                    };
-                });
-            }
+                    }]
+                };
+            });
         }
         return [];
     },
 
     getToolTip: function (type) {
-        var o = this.options;
         switch (type) {
             case BICst.WIDGET.SCATTER:
-                if (this.targetIds.length < 2) {
-                    return "";
-                } else {
-                    return "function(){ return this.seriesName+'<div>(X)" + BI.Utils.getDimensionNameByID(this.targetIds[1]) + ":'+ this.x +'</div><div>(Y)"
-                        + BI.Utils.getDimensionNameByID(this.targetIds[0]) + ":'+ this.y +'</div>'}";
+                if(this.targetIds.length < 2){
+                    return [];
+                }else{
+                    return [BI.Utils.getDimensionNameByID(this.targetIds[1]), BI.Utils.getDimensionNameByID(this.targetIds[0])];
                 }
             case BICst.WIDGET.BUBBLE:
-                if (this.targetIds.length < 3) {
-                    return "";
-                } else {
-                    return "function(){ return this.seriesName+'<div>(X)" + BI.Utils.getDimensionNameByID(this.targetIds[1]) + ":'+ this.x +'</div><div>(Y)"
-                        + BI.Utils.getDimensionNameByID(this.targetIds[0]) + ":'+ this.y +'</div><div>(" + BI.i18nText("BI-Size") + ")" + BI.Utils.getDimensionNameByID(this.targetIds[2])
-                        + ":'+ this.size +'</div>'}";
+                if(this.targetIds.length < 3){
+                    return [];
+                }else{
+                    return [BI.Utils.getDimensionNameByID(this.targetIds[1]), BI.Utils.getDimensionNameByID(this.targetIds[0]), BI.Utils.getDimensionNameByID(this.targetIds[2])];
                 }
             default:
                 return "";
@@ -414,6 +396,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     _setDataLabelSettingForBubbleAndScatter: function (data) {
         var self = this, o = this.options;
+        if(!BI.Utils.getWSShowDataLabelByID(o.wId)) {
+            return;
+        }
         var allSeries = BI.pluck(data, "name");
         BI.each(BI.Utils.getDatalabelByWidgetID(o.wId), function (id, dataLabel) {
             var filter = null;
@@ -447,6 +432,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     _setDataLabelSettingForAxis: function (data) {
         var self = this, o = this.options;
+        if(!BI.Utils.getWSShowDataLabelByID(o.wId)) {
+            return;
+        }
         if (BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.PIE || BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.DONUT) {
             return;
         }
@@ -651,6 +639,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             align: "outside",
             style: {
                 "fontFamily": "inherit",
+                "autoAdjust": true,
                 "color": "#808080",
                 "fontSize": "12px"
             },
@@ -664,16 +653,22 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 break;
             case BICst.DATA_LABEL_STYLE_TYPE.IMG:
                 dataLabels.useHtml = true;
-                dataLabels.formatter = "function(){return '<img width=\"20px\" height=\"20px\" src=\"" + label.style_setting.imgStyle.src + "\">';}";
+                dataLabels.formatter = "function(){return '<img width=\"20px\" height=\"20px\" src=\"" + BI.Func.getCompleteImageUrl(label.style_setting.imgStyle.src) + "\">';}";
                 break;
         }
         data.dataLabels = dataLabels;
     },
 
     _createDataImage: function (data, label) {
-        data.imageHeight = 20;
-        data.imageWidth = 20;
-        data.image = label.style_setting.src;
+        this.imageSizeMap = this.imageSizeMap || {};
+        var size = this.imageSizeMap[label.style_setting.src];
+        if(!size) {
+            size = BI.DOM.getImageWidthAndHeight(label.style_setting.src);
+        }
+        this.imageSizeMap[label.style_setting.src] = size;
+        data.imageHeight = size.height;
+        data.imageWidth = size.width;
+        data.image = BI.Func.getCompleteImageUrl(label.style_setting.src);
     },
 
     getCordon: function () {

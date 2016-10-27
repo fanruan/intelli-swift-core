@@ -12,7 +12,7 @@ BI.ExcelView = BI.inherit(BI.Single, {
             baseCls: "bi-excel-view",
             height: 25,
             tableId: "",
-            mergeRules: []
+            mergeInfos: []
         });
     },
 
@@ -35,13 +35,6 @@ BI.ExcelView = BI.inherit(BI.Single, {
             type: "bi.excel_table",
             isNeedMerge: true,
             mergeRule: function (row1, row2) {
-                // var o1 = row1.mergeCellId;
-                // var o2 = row2.mergeCellId;
-                // if (BI.isNull(o1) || BI.isNull(o2)) {
-                //     return false
-                // } else {
-                //     return o1 === o2;
-                // }
                 if (BI.isNull(row1.column) || BI.isNull(row2.column)) {
                     return false
                 } else {
@@ -102,17 +95,15 @@ BI.ExcelView = BI.inherit(BI.Single, {
 
     _checkIsMerge: function (column1, row1, column2, row2) {
         var flag = false;
-        var mergeRules = this.options.mergeRules;
-        if (BI.isNotNull(mergeRules[0])) {
-            BI.each(mergeRules, function (i, mergeRule) {
-                if (!flag) {
-                    var start = mergeRule[0];
-                    var end = mergeRule[1];
-                    var w = BI.parseInt(end[0]) - BI.parseInt(start[0]);
-                    var h = BI.parseInt(end[1]) - BI.parseInt(start[1]);
-                    var region = new BI.Region(BI.parseInt(start[0]), BI.parseInt(start[1]), w, h);
-                    flag = region.isPointInside(column1, row1) && region.isPointInside(column2, row2);
-                }
+        var mergeInfos = this.options.mergeInfos;
+        if (BI.isNotNull(mergeInfos[0])) {
+            BI.some(mergeInfos, function (i, mergeInfo) {
+                var start = mergeInfo[0];
+                var end = mergeInfo[1];
+                var w = BI.parseInt(end[0]) - BI.parseInt(start[0]);
+                var h = BI.parseInt(end[1]) - BI.parseInt(start[1]);
+                var region = new BI.Region(BI.parseInt(start[0]), BI.parseInt(start[1]), w, h);
+                return flag = region.isPointInside(column1, row1) && region.isPointInside(column2, row2);
             });
         }
         return flag
@@ -249,7 +240,7 @@ BI.ExcelView = BI.inherit(BI.Single, {
         if (BI.isNotNull(excelView) && BI.isNotEmptyObject(excelView.positions)) {
             var excel = excelView.excel;
             var positions = excelView.positions;
-            var mergeRules = excelView.mergeRules;
+            var mergeInfos = excelView.mergeInfos;
             var items = [];
             BI.each(excel, function (i, row) {
                 var item = [];
@@ -262,7 +253,7 @@ BI.ExcelView = BI.inherit(BI.Single, {
                 items[position.row][position.col].value = id;
             });
             items = this._createItems(items);
-            this.attr("mergeRules", mergeRules);
+            this.attr("mergeInfos", mergeInfos);
             this.table.attr("columnSize", BI.makeArray(items[0].length, ""));
             this.table.attr("mergeCols", BI.makeArray(items[0].length));
             this.table.populate(items);
