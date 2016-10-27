@@ -396,6 +396,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     _setDataLabelSettingForBubbleAndScatter: function (data) {
         var self = this, o = this.options;
+        if(!BI.Utils.getWSShowDataLabelByID(o.wId)) {
+            return;
+        }
         var allSeries = BI.pluck(data, "name");
         BI.each(BI.Utils.getDatalabelByWidgetID(o.wId), function (id, dataLabel) {
             var filter = null;
@@ -429,6 +432,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     _setDataLabelSettingForAxis: function (data) {
         var self = this, o = this.options;
+        if(!BI.Utils.getWSShowDataLabelByID(o.wId)) {
+            return;
+        }
         if (BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.PIE || BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.DONUT) {
             return;
         }
