@@ -2,7 +2,7 @@ if (!window.BH) {
     window.BH = {};
 }
 
-if(!window.FR){
+if (!window.FR) {
     window.FR = {
         servletURL: "${servletURL}",
         ajax: function (options) {
@@ -147,20 +147,20 @@ BH.jsonEncode = function (o) {
     }
 };
 
-BH.isObject = function(obj) {
+BH.isObject = function (obj) {
     var type = typeof obj;
     return type === 'function' || type === 'object' && !!obj;
 };
 
-BH.isWindow = function(obj){
+BH.isWindow = function (obj) {
     return obj != null && obj == obj.window;
 };
 
-BH.isPlainObject = function(obj) {
+BH.isPlainObject = function (obj) {
     return BH.isObject(obj) && !BH.isWindow(obj) && Object.getPrototypeOf(obj) == Object.prototype
 };
 
-BH.isFunction = function(obj) {
+BH.isFunction = function (obj) {
     return typeof obj == 'function' || false;
 };
 
@@ -630,4 +630,12 @@ BH._eFormat = function (text, fmt) {
         }
     }
     return text;
+};
+
+BH.Selection = {
+    Default: -999,
+    None: -1,
+    Single: 0,
+    Multi: 1,
+    All: 2
 };

@@ -1,4 +1,4 @@
-import {each} from 'core';
+import {each, deepClone} from 'core';
 import {TemplateFactory, WidgetFactory, DimensionFactory} from 'data'
 class TableComponentHelper {
     constructor(props, context) {
@@ -30,7 +30,7 @@ class TableComponentHelper {
         const dimensionIds = this.widget.getAllUsedDimensionIds();
         const targetIds = this.widget.getAllUsedTargetIds();
         var result = [];
-        const track = (node, layer)=> {
+        const track = (node, layer, pValues)=> {
             if (!node) {
                 return;
             }
@@ -44,20 +44,26 @@ class TableComponentHelper {
                     text: node.n
                 });
                 if (node.s) {
+                    pValues = deepClone(pValues || []);
+                    pValues.push({
+                        value: [node.n],
+                        dId: dimensionIds[layer]
+                    });
                     node.s.forEach((v, idx)=> {
                         if (!result[idx + 1]) {
                             result[idx + 1] = [];
                         }
                         result[idx + 1].push({
                             dId: targetIds[idx],
-                            text: v
+                            text: v,
+                            clicked: pValues
                         })
                     })
                 }
             }
             if (node.c) {
                 node.c.forEach((child)=> {
-                    track(child, layer + 1);
+                    track(child, layer + 1, pValues);
                 })
             }
             // if (!node.n) {

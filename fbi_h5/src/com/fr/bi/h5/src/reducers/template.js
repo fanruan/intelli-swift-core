@@ -9,9 +9,8 @@ export default function template($template = initialState, action) {
             return action.$template;
         case ActionTypes.UPDATE_WIDGET:
             return $template.setIn(['widgets', action.wId], action.$widget);
-            break;
         case ActionTypes.WIDGET_LINKAGE:
-            break;
+            return $template.setIn(['widgets', action.wId, 'clicked'], Immutable.fromJS(action.clicked));
         default:
             return $template
     }
