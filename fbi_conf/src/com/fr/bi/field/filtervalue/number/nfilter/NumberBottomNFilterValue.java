@@ -1,6 +1,7 @@
 package com.fr.bi.field.filtervalue.number.nfilter;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.filtervalue.NFilterValue;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.LightNode;
@@ -12,6 +13,9 @@ public class NumberBottomNFilterValue extends NumberNFilterValue implements NFil
 	 */
 	private static final long serialVersionUID = -623836848692910399L;
 	public static String XML_TAG = "NumberBottomNFilterValue";
+
+    @BICoreField
+    private String CLASS_TYPE = "NumberBottomNFilterValue";
 
     /**
      * 是否显示记录

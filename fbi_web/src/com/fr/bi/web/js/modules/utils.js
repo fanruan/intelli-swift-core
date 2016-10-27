@@ -3144,7 +3144,7 @@
             var date = BI.isNull(consultedDate) ? new Date() : consultedDate;
             var currY = date.getFullYear(), currM = date.getMonth(), currD = date.getDate();
             date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-            if (BI.isNull(type) && BI.isNotNull(v.year)) {
+            if (BI.isNull(type) && isValidDate(v.year)) {
                 return new Date(v.year, v.month, v.day).getTime();
             }
             switch (type) {
@@ -3190,6 +3190,10 @@
                     return new Date(value.year, value.month, value.day).getTime();
 
             }
+        }
+
+        function isValidDate(v){
+            return BI.isNotNull(v.year) && BI.isNotNull(v.month) && BI.isNotNull(v.day);
         }
     }
 

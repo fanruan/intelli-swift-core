@@ -229,14 +229,6 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
 
     public void clearUserBaseTableMap() {
         userBaseTableMap.clear();
-        BITargetAndDimension[] dimensionsArray = widget.getDimensions();
-        BITargetAndDimension[] targetsArray = widget.getTargets();
-        for (BITargetAndDimension dimension : dimensionsArray) {
-            dimension.refreshColumn();
-        }
-
-        for (BITargetAndDimension target : targetsArray) {
-            target.refreshColumn();
-        }
+        widget.refreshColumns();
     }
 }
