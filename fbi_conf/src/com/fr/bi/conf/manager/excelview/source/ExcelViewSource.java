@@ -17,7 +17,7 @@ public class ExcelViewSource implements JSONTransform {
     private Map<String, ColumnRow> positions = new HashMap<String, ColumnRow>();
     private List<List<String>> excel;
     private String excelName;
-    private List<List<List<String>>> mergeRules;
+    private List<List<List<String>>> mergeInfos;
 
     public Map<String, ColumnRow> getPositions() {
         return positions;
@@ -35,23 +35,23 @@ public class ExcelViewSource implements JSONTransform {
         this.excel = excel;
     }
 
-    public List<List<List<String>>> getMergeRules() {
-        return mergeRules;
+    public List<List<List<String>>> getMergeInfos() {
+        return mergeInfos;
     }
 
-    public void setMergeRules(List<List<List<String>>> mergeRules) {
-        this.mergeRules = mergeRules;
+    public void setMergeInfos(List<List<List<String>>> mergeInfos) {
+        this.mergeInfos = mergeInfos;
     }
 
     public ExcelViewSource() {
 
     }
 
-    public ExcelViewSource(Map<String, ColumnRow> positions, List<List<String>> excel, String excelName, List<List<List<String>>> mergeRules) {
+    public ExcelViewSource(Map<String, ColumnRow> positions, List<List<String>> excel, String excelName, List<List<List<String>>> mergeInfos) {
         this.positions = positions;
         this.excel = excel;
         this.excelName = excelName;
-        this.mergeRules = mergeRules;
+        this.mergeInfos = mergeInfos;
     }
 
     @Override
@@ -78,22 +78,22 @@ public class ExcelViewSource implements JSONTransform {
         }
         jo.put("excel", excel);
         jo.put("name", this.excelName);
-        if (this.mergeRules != null) {
-            JSONArray mergeRules = new JSONArray();
-            for (int i = 0; i < this.mergeRules.size(); i++) {
-                JSONArray mergeRule = new JSONArray();
-                List<List<String>> mergeRuleList = this.mergeRules.get(i);
-                for (int j = 0; j < mergeRuleList.size(); j++) {
+        if (this.mergeInfos != null) {
+            JSONArray mergeInfos = new JSONArray();
+            for (int i = 0; i < this.mergeInfos.size(); i++) {
+                JSONArray mergeInfo = new JSONArray();
+                List<List<String>> mergeInfoList = this.mergeInfos.get(i);
+                for (int j = 0; j < mergeInfoList.size(); j++) {
                     JSONArray flag = new JSONArray();
-                    List<String> flagList = mergeRuleList.get(j);
+                    List<String> flagList = mergeInfoList.get(j);
                     for (int k = 0; k < flagList.size(); k++) {
                         flag.put(flagList.get(k));
                     }
-                    mergeRule.put(flag);
+                    mergeInfo.put(flag);
                 }
-                mergeRules.put(mergeRule);
+                mergeInfos.put(mergeInfo);
             }
-            jo.put("mergeRules", mergeRules);
+            jo.put("mergeInfos", mergeInfos);
         }
         return jo;
     }
@@ -127,21 +127,21 @@ public class ExcelViewSource implements JSONTransform {
             this.excelName = jo.getString("name");
         }
 
-        if (jo.has("mergeRules")) {
-            JSONArray mergeRules = jo.getJSONArray("mergeRules");
-            this.mergeRules = new ArrayList<List<List<String>>>();
-            for (int i = 0; i < mergeRules.length(); i++) {
-                JSONArray mergeRule = mergeRules.getJSONArray(i);
-                List<List<String>> mergeRuleList = new ArrayList<List<String>>();
-                for (int j = 0; j < mergeRule.length(); j++) {
-                    JSONArray flag = mergeRule.getJSONArray(j);
+        if (jo.has("mergeInfos")) {
+            JSONArray mergeInfos = jo.getJSONArray("mergeInfos");
+            this.mergeInfos = new ArrayList<List<List<String>>>();
+            for (int i = 0; i < mergeInfos.length(); i++) {
+                JSONArray mergeInfo = mergeInfos.getJSONArray(i);
+                List<List<String>> mergeInfoList = new ArrayList<List<String>>();
+                for (int j = 0; j < mergeInfo.length(); j++) {
+                    JSONArray flag = mergeInfo.getJSONArray(j);
                     List<String> flagList = new ArrayList<String>();
                     for (int k = 0; k < flag.length(); k++) {
                         flagList.add(k, flag.getString(k));
                     }
-                    mergeRuleList.add(j, flagList);
+                    mergeInfoList.add(j, flagList);
                 }
-                this.mergeRules.add(i, mergeRuleList);
+                this.mergeInfos.add(i, mergeInfoList);
             }
         }
     }

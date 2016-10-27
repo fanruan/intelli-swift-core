@@ -4,6 +4,7 @@ package com.fr.bi.web.base;
 import com.fr.bi.web.base.fs.BIFSGetConfigAction;
 import com.fr.bi.web.base.fs.BIFSSetConfigAction;
 import com.fr.bi.web.base.image.BIFSSaveUploadImageAction;
+import com.fr.bi.web.base.image.BIFSGetImageSizeAction;
 import com.fr.bi.web.base.services.BICheckValidationOfExpressionAction;
 import com.fr.bi.web.base.services.BIGetPyAction;
 import com.fr.bi.web.base.services.BIGetTableAction;
@@ -34,7 +35,8 @@ public class Service4BIBase extends NoSessionIDService {
             new BIFSGetConfigAction(),
             new BIFSSetConfigAction(),
             new BICheckValidationOfExpressionAction(),
-            new BIFSSaveUploadImageAction()
+            new BIFSSaveUploadImageAction(),
+            new BIFSGetImageSizeAction()
     };
 
     /**
