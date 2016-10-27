@@ -56,6 +56,12 @@ BI.FilterValueFactory = {
                 case BICst.DIMENSION_FILTER_STRING.END_WITH:
                     filterValue = new BI.StringEndWithFilterValue(filter.filter_value);
                     break;
+                case BICst.DIMENSION_FILTER_STRING.NOT_BEGIN_WITH:
+                    filterValue = new BI.StringNotStartWithFilterValue(filter.filter_value);
+                    break;
+                case BICst.DIMENSION_FILTER_STRING.NOT_END_WITH:
+                    filterValue = new BI.StringNotEndWithFilterValue(filter.filter_value);
+                    break;
                 default:
                     break;
             }

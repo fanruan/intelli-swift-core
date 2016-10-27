@@ -24,7 +24,7 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
         });
     },
 
-    _formatConfig: function(config, items){
+    _formatConfig: function (config, items) {
         var self = this, o = this.options;
 
         config.colors = this.config.chart_color;
@@ -53,7 +53,7 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
 
         return [items, config];
 
-        function formatChartStyle(){
+        function formatChartStyle() {
             switch (self.config.chart_style) {
                 case BICst.CHART_STYLE.STYLE_GRADUAL:
                     return "gradual";
@@ -63,8 +63,8 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
             }
         }
 
-        function formatChartPieStyle(){
-            switch (self.config.chart_pie_type){
+        function formatChartPieStyle() {
+            switch (self.config.chart_pie_type) {
                 case BICst.CHART_SHAPE.EQUAL_ARC_ROSE:
                     config.plotOptions.roseType = "sameArc";
                     break;
@@ -84,28 +84,28 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
     },
 
     //目前饼图不会有多个系列，如果有多个就要把它们合并在一起
-    _isNeedConvert: function(items){
-        var result = BI.find(items, function(idx, item){
+    _isNeedConvert: function (items) {
+        var result = BI.find(items, function (idx, item) {
             return item.length > 1;
         });
         return BI.isNotNull(result);
     },
 
-    _formatItems: function(items){
-        if(this._isNeedConvert(items)){
+    _formatItems: function (items) {
+        if (this._isNeedConvert(items)) {
             //把每个坐标轴所有的多个系列合并成一个系列
-            return BI.map(items, function(idx, item){
+            return BI.map(items, function (idx, item) {
                 var seriesItem = [];
                 var obj = {data: [], name: ""};
                 seriesItem.push(obj);
-                BI.each(item, function(id, series){
-                    BI.each(series.data, function(i, da){
+                BI.each(item, function (id, series) {
+                    BI.each(series.data, function (i, da) {
                         obj.data.push(BI.extend({}, da, {x: series.name}));
                     });
                 });
                 return seriesItem;
             })
-        }else{
+        } else {
             return items;
         }
     },
@@ -126,9 +126,9 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
         this.options.items = items;
 
         var types = [];
-        BI.each(items, function(idx, axisItems){
+        BI.each(items, function (idx, axisItems) {
             var type = [];
-            BI.each(axisItems, function(id, item){
+            BI.each(axisItems, function (id, item) {
                 type.push(BICst.WIDGET.PIE);
             });
             types.push(type);
@@ -141,7 +141,7 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
         this.combineChart.resize();
     },
 
-    magnify: function(){
+    magnify: function () {
         this.combineChart.magnify();
     }
 });

@@ -82,7 +82,7 @@ const SortableList = SortableContainer(({viewItems, context}) => {
             body.push(<DimensionSortableComponent key={`item-${value.dId}`}
                                                   index={`${viewItem.viewId}-${index}`}
                                                   value={value} wId={context.props.wId}
-                                                  $widget={context.props.$widget}
+                                                  $widget={context.state.$widget}
                                                   collection={collection}
                                                   dId={value.dId}/>);
         });

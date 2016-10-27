@@ -131,6 +131,193 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
             }]
         });
 
+        this.numberLevelX = BI.createWidget({
+            type: "bi.segment",
+            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
+            items: BICst.TARGET_STYLE_LEVEL
+        });
+
+        this.numberLevelX.on(BI.Segment.EVENT_CHANGE, function () {
+            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
+        });
+
+        this.XUnit = BI.createWidget({
+            type: "bi.sign_editor",
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
+            cls: "unit-input",
+            watermark: BI.i18nText("BI-Custom_Input")
+        });
+
+        this.XUnit.on(BI.SignEditor.EVENT_CONFIRM, function () {
+            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
+        });
+
+        this.XAxisStyle = BI.createWidget({
+            type: "bi.segment",
+            width: constant.FORMAT_SEGMENT_WIDTH,
+            height: constant.BUTTON_HEIGHT,
+            items: BICst.TARGET_STYLE_FORMAT
+        });
+
+        this.XAxisStyle.on(BI.Segment.EVENT_CHANGE, function () {
+            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
+        });
+
+        this.XSeparators = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Separators"),
+            width: 80
+        });
+
+        this.XSeparators.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
+        });
+
+        this.isShowTitleX = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Title"),
+            width: 90
+        });
+
+        this.isShowTitleX.on(BI.Controller.EVENT_CHANGE, function () {
+            this.isSelected() ? self.editTitleX.setVisible(true) : self.editTitleX.setVisible(false);
+            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
+        });
+
+        this.editTitleX = BI.createWidget({
+            type: "bi.sign_editor",
+            width: constant.EDITOR_WIDTH,
+            height: constant.EDITOR_HEIGHT,
+            cls: "unit-input"
+        });
+
+        this.editTitleX.on(BI.SignEditor.EVENT_CONFIRM, function () {
+            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
+        });
+
+        //右轴标签
+        this.showRightLabel = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Show_Label"),
+            width: 100
+        });
+
+        this.showRightLabel.on(BI.Controller.EVENT_CHANGE, function () {
+            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE)
+        });
+
+        this.rightLabelStyle = BI.createWidget({
+            type: "bi.chart_label_detailed_setting_combo"
+        });
+
+        this.rightLabelStyle.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE)
+        });
+
+        //右轴线颜色
+        this.rightLineColor = BI.createWidget({
+            type: "bi.color_chooser",
+            width: 30,
+            height: 30
+        });
+
+        this.rightLineColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
+            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE)
+        });
+
+        //x轴刻度自定义
+        this.showXCustomScale = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Scale_Customize"),
+            width: 115
+        });
+
+        this.showXCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
+            self.customXScale.setVisible(this.isSelected());
+            if (!this.isSelected()) {
+                self.customXScale.setValue({})
+            }
+            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE)
+        });
+
+        this.customXScale = BI.createWidget({
+            type: "bi.custom_scale",
+            wId: o.wId
+        });
+
+        this.customXScale.on(BI.CustomScale.EVENT_CHANGE, function () {
+            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE)
+        });
+
+        var xAxis = BI.createWidget({
+            type: "bi.horizontal_adapt",
+            columnSize: [80],
+            cls: "single-line-settings",
+            items: [{
+                type: "bi.label",
+                textHeight: constant.SINGLE_LINE_HEIGHT,
+                textAlign: "left",
+                lgap: constant.SIMPLE_H_LGAP,
+                text: BI.i18nText("BI-X_Axis"),
+                cls: "line-title"
+            }, {
+                type: "bi.left",
+                cls: "detail-style",
+                items: BI.createItems([{
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Num_Level"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.numberLevelX]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Unit_Normal"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.XUnit]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Format"),
+                    cls: "attr-names"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.XAxisStyle]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.XSeparators]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.isShowTitleX, this.editTitleX]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.showRightLabel]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.rightLabelStyle]
+                }, {
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Axis_Line_Color"),
+                    cls: "attr-name"
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.rightLineColor]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.showXCustomScale]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.customXScale]
+                }], {
+                    height: constant.SINGLE_LINE_HEIGHT
+                }),
+                lgap: constant.SIMPLE_H_GAP
+            }]
+        });
+
         this.numberLevellY = BI.createWidget({
             type: "bi.segment",
             width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
@@ -210,11 +397,11 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE)
         });
 
-        this.leftLabel = BI.createWidget({
+        this.leftLabelStyle = BI.createWidget({
             type: "bi.chart_label_detailed_setting_combo"
         });
 
-        this.leftLabel.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function () {
+        this.leftLabelStyle.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE)
         });
 
@@ -301,7 +488,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.showLeftLabel]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.leftLabel]
+                    items: [this.leftLabelStyle]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Axis_Line_Color"),
@@ -315,193 +502,6 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.customYScale]
-                }], {
-                    height: constant.SINGLE_LINE_HEIGHT
-                }),
-                lgap: constant.SIMPLE_H_GAP
-            }]
-        });
-
-        this.numberLevelX = BI.createWidget({
-            type: "bi.segment",
-            width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_LEVEL
-        });
-
-        this.numberLevelX.on(BI.Segment.EVENT_CHANGE, function () {
-            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
-        });
-
-        this.XUnit = BI.createWidget({
-            type: "bi.sign_editor",
-            width: constant.EDITOR_WIDTH,
-            height: constant.EDITOR_HEIGHT,
-            cls: "unit-input",
-            watermark: BI.i18nText("BI-Custom_Input")
-        });
-
-        this.XUnit.on(BI.SignEditor.EVENT_CONFIRM, function () {
-            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
-        });
-
-        this.XAxisStyle = BI.createWidget({
-            type: "bi.segment",
-            width: constant.FORMAT_SEGMENT_WIDTH,
-            height: constant.BUTTON_HEIGHT,
-            items: BICst.TARGET_STYLE_FORMAT
-        });
-
-        this.XAxisStyle.on(BI.Segment.EVENT_CHANGE, function () {
-            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
-        });
-
-        this.XSeparators = BI.createWidget({
-            type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Separators"),
-            width: 80
-        });
-
-        this.XSeparators.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
-        });
-
-        this.isShowTitleX = BI.createWidget({
-            type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Show_Title"),
-            width: 90
-        });
-
-        this.isShowTitleX.on(BI.Controller.EVENT_CHANGE, function () {
-            this.isSelected() ? self.editTitleX.setVisible(true) : self.editTitleX.setVisible(false);
-            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
-        });
-
-        this.editTitleX = BI.createWidget({
-            type: "bi.sign_editor",
-            width: constant.EDITOR_WIDTH,
-            height: constant.EDITOR_HEIGHT,
-            cls: "unit-input"
-        });
-
-        this.editTitleX.on(BI.SignEditor.EVENT_CONFIRM, function () {
-            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
-        });
-
-        //右轴标签
-        this.showRightLabel = BI.createWidget({
-            type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Show_Label"),
-            width: 100
-        });
-
-        this.showRightLabel.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE)
-        });
-
-        this.rightLabel = BI.createWidget({
-            type: "bi.chart_label_detailed_setting_combo"
-        });
-
-        this.rightLabel.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function () {
-            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE)
-        });
-
-        //右轴线颜色
-        this.rightLineColor = BI.createWidget({
-            type: "bi.color_chooser",
-            width: 30,
-            height: 30
-        });
-
-        this.rightLineColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
-            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE)
-        });
-
-        //x轴刻度自定义
-        this.showXCustomScale = BI.createWidget({
-            type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Scale_Customize"),
-            width: 115
-        });
-
-        this.showXCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
-            self.customXScale.setVisible(this.isSelected());
-            if (!this.isSelected()) {
-                self.customXScale.setValue({})
-            }
-            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE)
-        });
-
-        this.customXScale = BI.createWidget({
-            type: "bi.custom_scale",
-            wId: o.wId
-        });
-
-        this.customXScale.on(BI.CustomScale.EVENT_CHANGE, function () {
-            self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE)
-        });
-
-        var xAxis = BI.createWidget({
-            type: "bi.horizontal_adapt",
-            columnSize: [80],
-            cls: "single-line-settings",
-            items: [{
-                type: "bi.label",
-                textHeight: constant.SINGLE_LINE_HEIGHT,
-                textAlign: "left",
-                lgap: constant.SIMPLE_H_LGAP,
-                text: BI.i18nText("BI-X_Axis"),
-                cls: "line-title"
-            }, {
-                type: "bi.left",
-                cls: "detail-style",
-                items: BI.createItems([{
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Num_Level"),
-                    cls: "attr-names"
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.numberLevelX]
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Unit_Normal"),
-                    cls: "attr-names"
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.XUnit]
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Format"),
-                    cls: "attr-names"
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.XAxisStyle]
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.XSeparators]
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.isShowTitleX, this.editTitleX]
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.showRightLabel]
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.rightLabel]
-                }, {
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Axis_Line_Color"),
-                    cls: "attr-name"
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.rightLineColor]
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.showXCustomScale]
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.customXScale]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -530,13 +530,13 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //网格线设置
-        this.hGridLine = BI.createWidget({
+        this.showHGridLine = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Horizontal"),
             width: 65
         });
 
-        this.hGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+        this.showHGridLine.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE)
         });
 
@@ -550,13 +550,13 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE)
         });
 
-        this.vGridLine = BI.createWidget({
+        this.showVGridLine = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Vertical"),
             width: 65
         });
 
-        this.vGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+        this.showVGridLine.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE)
         });
 
@@ -620,13 +620,13 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.hGridLine]
+                    items: [this.showHGridLine]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.hGridLineColor]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.vGridLine]
+                    items: [this.showVGridLine]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.vGridLineColor]
@@ -704,7 +704,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
         BI.createWidget({
             type: "bi.vertical",
             element: this.element,
-            items: [widgetTitle, tableStyle, lYAxis, xAxis, showElement, otherAttr, modeChange],
+            items: [widgetTitle, tableStyle, xAxis, lYAxis, showElement, otherAttr, modeChange],
             hgap: 10
         })
     },
@@ -746,11 +746,11 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.colorSelect.setValue(BI.Utils.getWSChartColorByID(wId));
         this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
-        this.XAxisStyle.setValue(BI.Utils.getWSXAxisStyleByID(wId));
+        this.XAxisStyle.setValue(BI.Utils.getWSRightYAxisStyleByID(wId));
         this.numberLevellY.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
-        this.numberLevelX.setValue(BI.Utils.getWSXAxisNumLevelByID(wId));
+        this.numberLevelX.setValue(BI.Utils.getWSRightYAxisNumLevelByID(wId));
         this.LYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
-        this.XUnit.setValue(BI.Utils.getWSXAxisUnitByID(wId));
+        this.XUnit.setValue(BI.Utils.getWSRightYAxisUnitByID(wId));
         this.isShowTitleLY.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
         this.isShowTitleX.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
         this.editTitleLY.setValue(titleLY);
@@ -767,6 +767,18 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.customXScale.setVisible(BI.Utils.getWSShowXCustomScale(wId));
         this.YSeparators.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
         this.XSeparators.setSelected(BI.Utils.getWSRightNumberSeparatorsByID(wId));
+        this.showLeftLabel.setSelected(BI.Utils.getWSShowLValueAxisLabelByID(wId));
+        this.leftLabelStyle.setValue(BI.Utils.getWSLValueAxisLabelSettingByID(wId));
+        this.leftLineColor.setValue(BI.Utils.getWSLValueAxisLineColorByID(wId));
+        this.showRightLabel.setSelected(BI.Utils.getWSShowRValueAxisLabelByID(wId));
+        this.rightLabelStyle.setValue(BI.Utils.getWSRValueAxisLabelSettingByID(wId));
+        this.rightLineColor.setValue(BI.Utils.getWSRValueAxisLineColorByID(wId));
+        this.legendSetting.setValue(BI.Utils.getWSLegendSettingByID(wId));
+        this.showHGridLine.setSelected(BI.Utils.getWSShowHGridLineByID(wId));
+        this.hGridLineColor.setValue(BI.Utils.getWSHGridLineColorByID(wId));
+        this.showVGridLine.setSelected(BI.Utils.getWSShowVGridLineByID(wId));
+        this.vGridLineColor.setValue(BI.Utils.getWSVGridLineColorByID(wId));
+        this.tooltipSetting.setValue(BI.Utils.getWSToolTipSettingByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false);
@@ -798,7 +810,19 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
             show_x_custom_scale: this.showXCustomScale.isSelected(),
             custom_x_scale: this.customXScale.getValue(),
             num_separators: this.YSeparators.isSelected(),
-            right_num_separators: this.XSeparators.isSelected()
+            right_num_separators: this.XSeparators.isSelected(),
+            show_left_label: this.showLeftLabel.isSelected(),
+            left_label_style: this.leftLabelStyle.getValue(),
+            left_line_color: this.leftLineColor.getValue(),
+            show_right_label: this.showRightLabel.isSelected(),
+            right_label_style: this.rightLabelStyle.getValue(),
+            right_line_color: this.rightLineColor.getValue(),
+            chart_legend_setting: this.legendSetting.getValue(),
+            show_h_grid_line: this.showHGridLine.isSelected(),
+            h_grid_line_color: this.hGridLineColor.getValue(),
+            show_v_grid_line: this.showVGridLine.isSelected(),
+            v_grid_line_color: this.vGridLineColor.getValue(),
+            tooltip_setting: this.tooltipSetting.getValue(),
         }
     }
 });

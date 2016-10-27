@@ -3,6 +3,8 @@ package com.finebi.cube.data.disk.reader;
 import com.finebi.cube.data.input.ICubeReader;
 import com.finebi.cube.data.input.primitive.ICubePrimitiveReader;
 
+import java.util.UUID;
+
 /**
  * This class created on 2016/3/30.
  *
@@ -10,10 +12,12 @@ import com.finebi.cube.data.input.primitive.ICubePrimitiveReader;
  * @since 4.0
  */
 public class BICubePrimitiveReaderWrapper implements ICubeReader {
+    private final String handlerKey = UUID.randomUUID().toString();
     protected ICubePrimitiveReader reader;
 
     public BICubePrimitiveReaderWrapper(ICubePrimitiveReader reader) {
         this.reader = reader;
+        this.reader.getHandlerReleaseHelper().registerHandlerKey(handlerKey);
     }
 
 
@@ -24,8 +28,7 @@ public class BICubePrimitiveReaderWrapper implements ICubeReader {
 
     @Override
     public void clear() {
-//        reader暂时全部不clear，在调用writer的时候，如果有reader再进行强制释放
-//        reader.releaseHandler();
+        reader.releaseHandler(handlerKey);
     }
 
     @Override

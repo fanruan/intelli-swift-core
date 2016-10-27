@@ -24,7 +24,7 @@ BI.DataImageNoTypeFieldFilterItem = BI.inherit(BI.Widget, {
         var left = this._buildConditionsNoType();
         this.deleteButton = BI.createWidget({
             type: "bi.icon_button",
-            cls: "close-h-font"
+            cls: "close-h-font delete-icon"
         });
         this.deleteButton.on(BI.Controller.EVENT_CHANGE, function () {
             self.destroy();

@@ -123,24 +123,26 @@ BI.LinkageModel = BI.inherit(FR.OB, {
         return this.widgets[wId].linkages || [];
     },
 
-    addLinkage: function (tId, wId) {
+    addLinkage: function (tId, wId, cIds) {
         var currentId = BI.Utils.getWidgetIDByDimensionID(tId);
         var linkages = this.widgets[currentId].linkages || [];
         linkages.push({
             from: tId,
-            to: wId
+            to: wId,
+            cids: cIds
         });
         this.widgets[currentId].linkages = linkages;
     },
 
-    deleteLinkage: function (tId, wId) {
+    deleteLinkage: function (tId, wId, cIds) {
         var currentId = BI.Utils.getWidgetIDByDimensionID(tId);
         var linkages = this.widgets[currentId].linkages || [];
         BI.remove(linkages, function (i, linkage) {
-            return BI.isEqual(linkage, {
-                from: tId,
-                to: wId
-            })
+            if (BI.isArray(linkage.cids)) {
+                return BI.isEqual(linkage.from, tId) && BI.isEqual(linkage.to, wId) && BI.isEqual(linkage.cids, cIds);
+            } else {
+                return BI.isEqual(linkage.from, tId) && BI.isEqual(linkage.to, wId);
+            }
         });
     },
 
@@ -166,7 +168,19 @@ BI.LinkageModel = BI.inherit(FR.OB, {
         var widgets = [];
         BI.each(this.widgets, function (wId, link) {
             BI.each(link.linkages, function (i, linkage) {
-                if (linkage.from === tId) {
+                if (linkage.from === tId && BI.isEmpty(linkage.cids)) {
+                    widgets.push(linkage.to);
+                }
+            })
+        });
+        return widgets;
+    },
+
+    getLinkedWidgetsByTargetIdAndCalculateIds: function (tId, cIds) {
+        var widgets = [];
+        BI.each(this.widgets, function (wId, link) {
+            BI.each(link.linkages, function (i, linkage) {
+                if (linkage.from === tId && BI.isEqual(linkage.cids, cIds)) {
                     widgets.push(linkage.to);
                 }
             })
