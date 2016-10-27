@@ -133,7 +133,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 addDateCondition(tableUpdateSetting.getPartModifySQL()));
 
           /*remove*/
-        if (StringUtils.isNotEmpty(tableUpdateSetting.getPartDeleteSQL())) {
+        if (isLegalSQL(tableUpdateSetting.getPartDeleteSQL())) {
             String columnName = getKeyName(tableUpdateSetting.getPartDeleteSQL());
             if (getCubeFieldSource(cubeFieldSources, columnName) != null) {
                 sortRemovedList = dealWithRemove(columnName,
@@ -145,13 +145,13 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         }
 
         /*add*/
-        if (StringUtils.isNotEmpty(tableUpdateSetting.getPartAddSQL())) {
+        if (isLegalSQL(tableUpdateSetting.getPartAddSQL())) {
             rowCount = dealWidthAdd(resultMap.get(ADD), rowCount);
             tableEntityService.forceReleaseWriter();
         }
 
         /*modify*/
-        if (StringUtils.isNotEmpty(tableUpdateSetting.getPartModifySQL())) {
+        if (isLegalSQL(tableUpdateSetting.getPartModifySQL())) {
             String columnName = getKeyName(tableUpdateSetting.getPartModifySQL());
             sortRemovedList = dealWithRemove(columnName,
                     resultMap.get(MODIFY), sortRemovedList, loader);
@@ -192,8 +192,8 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         final ICubeColumnIndexReader getter = oldTi.loadGroup(key);
 
         int columnIndex = 0;
-        for(Object object:deleteLists.get(0)) {
-            if(columnName.equals(object)) {
+        for (Object object : deleteLists.get(0)) {
+            if (columnName.equals(object)) {
                 break;
             }
             columnIndex++;
@@ -289,9 +289,27 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
     }
 
     private String fetchTableInfo() {
-        return BIStringUtils.append(tableSource.getTableName(), " ,", tableSource.getSourceID());
+        return BILogHelper.logTableSource(tableSource, " ");
     }
 
+    private boolean isLegalSQL(String sql) {
+        BINonValueUtils.checkNull(sql);
+        logger.info(BIStringUtils.append(BILogHelper.logTableSource(tableSource, " "), " check the sql", sql));
+        if (!BIStringUtils.isEmptyString(sql) && !BIStringUtils.isBlankString(sql)) {
+            logger.info(BIStringUtils.append(BILogHelper.logTableSource(tableSource, " "), " the sql is blank"));
+            return false;
+        } else if (!containSelect(sql)) {
+            logger.info(BIStringUtils.append(BILogHelper.logTableSource(tableSource, " "), " the sql should be used to query and must contain keyword select "));
+
+            return false;
+        }
+        return true;
+    }
+
+    private boolean containSelect(String sql) {
+        BINonValueUtils.checkNull(sql);
+        return sql.toUpperCase().contains("SELECT");
+    }
 
     private Map<String, List<Object[]>> preHandleSQLs(ICubeFieldSource[] fields, String partDeleteSQL, String partAddSQL, String partModifySQL) {
 
@@ -301,18 +319,21 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         /**
          * 添加删除SQL或者修改SQL为空的情况。
          */
-        if (!BIStringUtils.isEmptyString(partAddSQL)) {
+        if (isLegalSQL(partAddSQL)) {
+            logger.info("The table: " + BILogHelper.logTableSource(tableSource, " ") + "execute sql:#" + partAddSQL + "# to add data");
             addList = executeSQL(fields, partAddSQL);
         } else {
             logger.warn("The table: " + BILogHelper.logTableSource(tableSource, " ") + ", it's add sql is empty");
         }
-        if (!BIStringUtils.isEmptyString(partDeleteSQL)) {
+        if (isLegalSQL(partDeleteSQL)) {
+            logger.info("The table: " + BILogHelper.logTableSource(tableSource, " ") + "execute sql:#" + partAddSQL + "# to delete data");
             deleteList = executeSQL(new ICubeFieldSource[]{getCubeFieldSource(fields, getKeyName(partDeleteSQL))}, partDeleteSQL);
         } else {
             logger.warn("The table: " + BILogHelper.logTableSource(tableSource, " ") + ", it's delete sql is empty");
-
         }
-        if (!BIStringUtils.isEmptyString(partModifySQL)) {
+        if (isLegalSQL(partModifySQL)) {
+            logger.info("The table: " + BILogHelper.logTableSource(tableSource, " ") + "execute sql:#" + partAddSQL + "# to update data");
+
             modifyList = executeSQL(fields, getModifySql(fields, partModifySQL));
         } else {
             logger.warn("The table: " + BILogHelper.logTableSource(tableSource, " ") + ", it's modify sql is empty");
