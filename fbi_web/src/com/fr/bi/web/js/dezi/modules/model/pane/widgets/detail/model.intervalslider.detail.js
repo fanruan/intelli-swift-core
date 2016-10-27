@@ -64,7 +64,10 @@ BIDezi.IntervalSliderDetailModel = BI.inherit(BI.Model, {
                 dimensions[dId] = {
                     name: src.name,
                     _src: src._src,
-                    type: src.type
+                    type: src.type,
+                    group: {
+                        type: BICst.GROUP.ID_GROUP
+                    }
                     // sort: {type: BICst.SORT.ASC, target_id: dId}
                 };
                 view[BICst.REGION.DIMENSION1] = view[BICst.REGION.DIMENSION1] || [];
