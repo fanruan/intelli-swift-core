@@ -5,6 +5,7 @@
 import Immutable from 'immutable'
 import {each, invariant, isNil, find, findKey, remove, isEqual, size, keys, isNumeric, isString} from 'core';
 import {Fetch} from 'lib'
+import {Status} from 'data'
 import DimensionFactory from './Dimensions/DimensionFactory'
 
 class AbstractWidget {
@@ -383,7 +384,7 @@ class AbstractWidget {
                     var leafFilterObj = {
                         filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
                         filter_value: {
-                            type: BH.Selection.Multi,
+                            type: Status.Selection.Multi,
                             value: [value]
                         },
                         _src: dimension.getDimensionSrc()
@@ -409,7 +410,7 @@ class AbstractWidget {
                     var leafFilterObj = {
                         filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
                         filter_value: {
-                            type: value === "_*_" ? BH.Selection.All : BH.Selection.Multi,
+                            type: value === "_*_" ? Status.Selection.All : Status.Selection.Multi,
                             value: [value]
                         },
                         // _src: {field_id: self.getFieldIDByDimensionID(dimensionIds[floor])}
@@ -424,7 +425,7 @@ class AbstractWidget {
                         !isNil(fatherFilterValue) && filterObj.filter_value.push(fatherFilterValue);
                         result.push(filterObj);
                     } else {
-                        if (leafFilterObj.filter_value.type === BH.Selection.All) {
+                        if (leafFilterObj.filter_value.type === Status.Selection.All) {
                             leafFilterObj = fatherFilterValue
                         }
                         createTreeLabelFilterValue(result, child, floor + 1, dimensionIds, leafFilterObj);
@@ -480,19 +481,19 @@ class AbstractWidget {
                     });
                     return {
                         filter_type: BICst.TARGET_FILTER_STRING.NOT_BELONG_VALUE,
-                        filter_value: {type: BH.Selection.Multi, value: vs},
+                        filter_value: {type: Status.Selection.Multi, value: vs},
                         _src: {field_id: dimension.getFieldId()}
                     }
                 }
                 return {
                     filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
-                    filter_value: {type: BH.Selection.Multi, value: groupMap[v]},
+                    filter_value: {type: Status.Selection.Multi, value: groupMap[v]},
                     _src: {field_id: dimension.getFieldId()}
                 }
             }
             return {
                 filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
-                filter_value: {type: BH.Selection.Multi, value: value},
+                filter_value: {type: Status.Selection.Multi, value: value},
                 _src: {field_id: dimension.getFieldId()}
             }
         };
