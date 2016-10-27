@@ -29,7 +29,7 @@ public class BIGetImageSizeAction extends AbstractBIDeziAction {
         if (src != null) {
             JSONObject size = new JSONObject();
             try {
-                File parentFile = new File(FRContext.getCurrentEnv().getPath() + BIBaseConstant.UPLOAD_IMAGE.IMAGE_PATH + "\\" + src);
+                File parentFile = new File(FRContext.getCurrentEnv().getPath() + BIBaseConstant.UPLOAD_IMAGE.IMAGE_PATH + File.separator + src);
                 if (parentFile.exists()) {
                     BufferedImage sourceImg = ImageIO.read(new FileInputStream(parentFile));
                     size.put("width", sourceImg.getWidth());

@@ -118,6 +118,10 @@ $(function () {
                 temp = "http://" + address;
             }
             return temp;
+        },
+
+        getCompleteImageUrl: function (url) {
+            return FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + url;
         }
 
     });

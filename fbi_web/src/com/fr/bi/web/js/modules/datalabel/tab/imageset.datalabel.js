@@ -186,7 +186,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
                     self.fireEvent(BI.DataLabelImageSet.EVENT_CHANGE, arguments);
                 }
             };
-            img.src = FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + item;
+            img.src = BI.Func.getCompleteImageUrl(item);
             result.push(img);
         });
         return BI.createWidget({

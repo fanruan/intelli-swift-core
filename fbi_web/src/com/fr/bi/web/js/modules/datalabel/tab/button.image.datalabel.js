@@ -11,7 +11,7 @@ BI.DataLabelImageButton = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.img = BI.createWidget({
             type: "bi.image_button",
-            src: FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + o.src,
+            src: BI.Func.getCompleteImageUrl(o.src),
             width: o.width,
             height: o.height
         });

@@ -90,7 +90,7 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
                     self.textTrigger.setVisible(true);
                     break;
                 case BICst.DATA_LABEL_STYLE_TYPE.IMG:
-                    self.imgTrigger.setSrc(FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + style.imgStyle.src);
+                    self.imgTrigger.setSrc(BI.Func.getCompleteImageUrl(style.imgStyle.src));
                     self.imgTrigger.setVisible(true);
                     self.textTrigger.setVisible(false);
             }
@@ -104,7 +104,7 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
                 this.textTrigger.setStyle(v.textStyle);
                 break;
             case BICst.DATA_LABEL_STYLE_TYPE.IMG:
-                this.imgTrigger.setSrc(FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + v.imgStyle.src);
+                this.imgTrigger.setSrc(BI.Func.getCompleteImageUrl(v.imgStyle.src));
                 this.imgTrigger.setVisible(true);
                 this.textTrigger.setVisible(false);
         }

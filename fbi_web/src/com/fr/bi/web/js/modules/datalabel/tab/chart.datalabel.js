@@ -126,9 +126,9 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
                 var size = BI.DOM.getImageWidthAndHeight(src);
                 data[0][0].data[0].imageHeight = size.height;
                 data[0][0].data[0].imageWidth = size.width;
-                data[0][0].data[0].image = FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + src
+                data[0][0].data[0].image = BI.Func.getCompleteImageUrl(src)
             } else {
-                var formatter = "function() { return '<div><img width=" + this._constant.ICON_WIDTH + "px height=" + this._constant.ICON_HEIGHT + "px src=" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + src + "></div>'}";
+                var formatter = "function() { return '<div><img width=" + this._constant.ICON_WIDTH + "px height=" + this._constant.ICON_HEIGHT + "px src=" + BI.Func.getCompleteImageUrl(src) + "></div>'}";
                 data[0][0].data[0].dataLabels = {
                     enabled: true,
                     align: "outside",

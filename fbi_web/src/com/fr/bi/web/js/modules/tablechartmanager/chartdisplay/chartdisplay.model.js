@@ -647,7 +647,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 break;
             case BICst.DATA_LABEL_STYLE_TYPE.IMG:
                 dataLabels.useHtml = true;
-                dataLabels.formatter = "function(){return '<img width=\"20px\" height=\"20px\" src=\"" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" +  label.style_setting.imgStyle.src + "\">';}";
+                dataLabels.formatter = "function(){return '<img width=\"20px\" height=\"20px\" src=\"" + BI.Func.getCompleteImageUrl(label.style_setting.imgStyle.src) + "\">';}";
                 break;
         }
         data.dataLabels = dataLabels;
@@ -658,11 +658,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var size = this.imageSizeMap[label.style_setting.src];
         if(!size) {
             size = BI.DOM.getImageWidthAndHeight(label.style_setting.src);
-            }
-            this.imageSizeMap[label.style_setting.src] = size;
+        }
+        this.imageSizeMap[label.style_setting.src] = size;
         data.imageHeight = size.height;
         data.imageWidth = size.width;
-        data.image = FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + label.style_setting.src;
+        data.image = BI.Func.getCompleteImageUrl(label.style_setting.src);
     },
 
     getCordon: function () {
