@@ -295,12 +295,11 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
     private boolean isLegalSQL(String sql) {
         BINonValueUtils.checkNull(sql);
         logger.info(BIStringUtils.append(BILogHelper.logTableSource(tableSource, " "), " check the sql", sql));
-        if (!BIStringUtils.isEmptyString(sql) && !BIStringUtils.isBlankString(sql)) {
+        if (BIStringUtils.isEmptyString(sql) || BIStringUtils.isBlankString(sql)) {
             logger.info(BIStringUtils.append(BILogHelper.logTableSource(tableSource, " "), " the sql is blank"));
             return false;
         } else if (!containSelect(sql)) {
             logger.info(BIStringUtils.append(BILogHelper.logTableSource(tableSource, " "), " the sql should be used to query and must contain keyword select "));
-
             return false;
         }
         return true;

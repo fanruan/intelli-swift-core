@@ -11,6 +11,7 @@ import com.finebi.cube.exception.BIDeliverFailureException;
 import com.finebi.cube.gen.arrange.BICubeBuildTopicManager;
 import com.finebi.cube.gen.arrange.BICubeOperationManager;
 import com.finebi.cube.gen.mes.BICubeBuildTopicTag;
+import com.finebi.cube.gen.oper.BuildLogHelper;
 import com.finebi.cube.gen.oper.observer.BICubeFinishObserver;
 import com.finebi.cube.impl.message.BIMessage;
 import com.finebi.cube.impl.message.BIMessageTopic;
@@ -280,8 +281,8 @@ public class BuildCubeTask implements CubeTask {
         Integer countRelation = 0;
         if (relationSet != null) {
             for (BITableSourceRelation relation : relationSet) {
-                logger.info("\nRelation " + (countRelation++) + relationLog("", relation));
-                logger.info("\nRelation {}, ID:" + calculateRelationID(relation), countRelation);
+                countRelation++;
+                logger.info("\nRelation " + countRelation + ", ID:" + BuildLogHelper.calculateRelationID(relation) + "\nRelation " + (countRelation) + relationLog("", relation));
             }
         }
         logger.info("***************Relation end*****************\n");
@@ -302,41 +303,13 @@ public class BuildCubeTask implements CubeTask {
                             "\nRelation " + (countRelation++),
                             relationLog("     ", relation)));
                 }
-                logger.info("\nPath:{} ID:" + calculatePathID(path), countPath);
+                logger.info("\nPath:{} ID:" + BuildLogHelper.calculatePathID(path), countPath);
 
             }
         }
         logger.info("***************Path end*****************\n");
     }
 
-    private String calculateRelationID(BITableSourceRelation relation) {
-        BICubeRelation cubeRelation = BICubeRelationUtils.convert(relation);
-        ITableKey tableKey = cubeRelation.getPrimaryTable();
-        BICubeTablePath relationPath = new BICubeTablePath();
-        try {
-            relationPath.addRelationAtHead(cubeRelation);
-        } catch (BITablePathConfusionException e) {
-            throw BINonValueUtils.illegalArgument(relation.toString() + " the relation is so terrible");
-        }
-        return calculatePathID(tableKey, relationPath);
-    }
-
-    private String calculatePathID(BITableSourceRelationPath path) {
-
-        BICubeTablePath cubeTablePath = BICubePathUtils.convert(path);
-
-        ITableKey tableKey = null;
-        try {
-            tableKey = cubeTablePath.getFirstRelation().getPrimaryTable();
-        } catch (BITablePathEmptyException e) {
-            logger.error(e.getMessage(), e);
-        }
-        return calculatePathID(tableKey, cubeTablePath);
-    }
-
-    private String calculatePathID(ITableKey tableKey, BICubeTablePath relationPath) {
-        return BICubeResourceRetrieval.calculateTableRelationSourceID(tableKey, relationPath);
-    }
 
     private String relationLog(String prefix, BITableSourceRelation relation) {
         return BIStringUtils.append("\n",
