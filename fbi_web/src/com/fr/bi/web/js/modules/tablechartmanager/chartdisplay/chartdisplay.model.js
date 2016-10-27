@@ -654,7 +654,12 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     },
 
     _createDataImage: function (data, label) {
-        var size = BI.DOM.getImageWidthAndHeight(label.style_setting.src);
+        this.imageSizeMap = this.imageSizeMap || {};
+        var size = this.imageSizeMap[label.style_setting.src];
+        if(!size) {
+            size = BI.DOM.getImageWidthAndHeight(label.style_setting.src);
+            }
+            this.imageSizeMap[label.style_setting.src] = size;
         data.imageHeight = size.height;
         data.imageWidth = size.width;
         data.image = FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + label.style_setting.src;
