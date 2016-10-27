@@ -4,6 +4,7 @@
 package com.fr.bi.field.filtervalue.date.rangefilter;
 
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.data.key.date.BIDay;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -19,6 +20,9 @@ public class DateNotInRangeFilterValue extends DateRangeFilterValue {
 	 * 
 	 */
 	private static final long serialVersionUID = -7532680033686822207L;
+
+    @BICoreField
+    private String CLASS_TYPE = "DateNotInRangeFilterValue";
 
 	/**
      * 获取过滤后的索引

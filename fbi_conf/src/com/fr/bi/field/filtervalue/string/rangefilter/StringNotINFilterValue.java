@@ -1,6 +1,7 @@
 package com.fr.bi.field.filtervalue.string.rangefilter;
 
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.field.filtervalue.string.StringFilterValueUtils;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
@@ -17,6 +18,9 @@ public class StringNotINFilterValue extends StringRangeFilterValue {
      */
     private static final long serialVersionUID = -4232644886359223498L;
     private static String XML_TAG = "StringNotINFilterValue";
+
+    @BICoreField
+    private String CLASS_TYPE = "StringNotINFilterValue";
 
     /**
      * 获取过滤后的索引
