@@ -38,7 +38,8 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
         config.chartType = "gauge";
         delete config.xAxis;
         delete config.yAxis;
-        if (BI.contains([self.constants.NORMAL, self.constants.HALF_DASHBOARD], self.config.chart_dashboard_type)) {
+        var isDashboard = BI.contains([self.constants.NORMAL, self.constants.HALF_DASHBOARD], self.config.chart_dashboard_type);
+        if (isDashboard) {
             config.plotOptions.seriesLabel.enabled = false
         }
         config.gaugeAxis[0].labelStyle = this.config.chart_font;
@@ -67,7 +68,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                     var label = '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + value +
                         getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS) + '</div>';
 
-                    if (BI.contains([self.constants.NORMAL, self.constants.HALF_DASHBOARD], self.config.chart_dashboard_type) && BI.isNull(items[0].data[0].seriesName)) {
+                    if (isDashboard && BI.isNull(items[0].data[0].seriesName)) {
                         return label
                     }
 
