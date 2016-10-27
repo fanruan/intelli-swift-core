@@ -1,13 +1,9 @@
 package com.finebi.cube.impl.conf;
 
-import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.conf.CubePreConditionsCheck;
-import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.io.File;
-import java.util.ArrayList;
 
 /**
  * Created by kary on 2016/6/20.
@@ -26,16 +22,17 @@ public class CubePreConditionsCheckManager implements CubePreConditionsCheck {
 
     @Override
     public boolean ConnectionCheck(CubeTableSource source, long userId) {
-        boolean isSqlValid = true;
-            if (source.getType() == BIBaseConstant.TABLETYPE.DB || source.getType() == BIBaseConstant.TABLETYPE.SQL) {
-                try {
-                    source.createPreviewJSON(new ArrayList<String>(), BICubeManager.getInstance().fetchCubeLoader(userId), userId);
-                } catch (Exception e) {
-                    isSqlValid = false;
-                    BILoggerFactory.getLogger().error(e.getMessage(), e);
-                }
-            }
-        return isSqlValid;
+//        boolean isSqlValid = true;
+//            if (source.getType() == BIBaseConstant.TABLETYPE.DB || source.getType() == BIBaseConstant.TABLETYPE.SQL) {
+//                try {
+//                    source.createPreviewJSON(new ArrayList<String>(), BICubeManager.getInstance().fetchCubeLoader(userId), userId);
+//                } catch (Exception e) {
+//                    isSqlValid = false;
+//                    BILoggerFactory.getLogger().error(e.getMessage(), e);
+//                }
+//            }
+//        return isSqlValid;
+        return source.canExecute();
     }
 
     private double getDirSize(File file) {

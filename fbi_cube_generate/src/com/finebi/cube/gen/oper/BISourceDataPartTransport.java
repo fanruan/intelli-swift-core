@@ -293,9 +293,9 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
 
 
     private Map<String, List<Object[]>> preHandleSQLs(ICubeFieldSource[] fields, String partDeleteSQL, String partAddSQL, String partModifySQL) {
-        List<Object[]> addList = executeSQL(fields, partAddSQL);
-        List<Object[]> deleteList = executeSQL(new ICubeFieldSource[]{getCubeFieldSource(fields, getKeyName(partDeleteSQL))}, partDeleteSQL);
-        List<Object[]> modifyList = executeSQL(fields, getModifySql(fields, partModifySQL));
+            List<Object[]> addList = executeSQL(fields, partAddSQL);
+            List<Object[]> deleteList = executeSQL(new ICubeFieldSource[]{getCubeFieldSource(fields, getKeyName(partDeleteSQL))}, partDeleteSQL);
+            List<Object[]> modifyList = executeSQL(fields, getModifySql(fields, partModifySQL));
 
         /*
         * 预处理逻辑：对于同一条Key的记录
@@ -324,6 +324,9 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
 
     private List<Object[]> executeSQL(final ICubeFieldSource[] fields, String SQL) {
         final List<Object[]> rows = new ArrayList<Object[]>();
+        if (StringUtils.isEmpty(SQL)){
+            return rows;
+        }
         Object[] objects = new Object[fields.length];
         rows.add(objects);
         for (int i = 0; i < fields.length; i++) {

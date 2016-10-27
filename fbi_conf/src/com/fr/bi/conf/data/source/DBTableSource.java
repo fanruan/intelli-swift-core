@@ -33,6 +33,7 @@ import com.fr.data.core.db.dml.Table;
 import com.fr.data.impl.Connection;
 import com.fr.data.impl.DBTableData;
 import com.fr.data.impl.EmbeddedTableData;
+import com.fr.file.DatasourceManager;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
@@ -144,7 +145,7 @@ public class DBTableSource extends AbstractTableSource {
         return BIBaseConstant.TABLETYPE.DB;
     }
 
-    void dealWithOneData(Traversal<BIDataValue> travel,ICubeFieldSource[] fields, BIDataValue v) {
+    void dealWithOneData(Traversal<BIDataValue> travel, ICubeFieldSource[] fields, BIDataValue v) {
         if (!VT4FBI.supportBigData() && v.getRow() >= CubeConstant.LICMAXROW) {
             throw new RuntimeException(Inter.getLocText("BI-Not_Support_10w_data"));
         }
@@ -298,6 +299,11 @@ public class DBTableSource extends AbstractTableSource {
     }
 
     @Override
+    public boolean canExecute() {
+        return true;
+    }
+
+    @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append(dbName).append(".").append(tableName);
@@ -349,12 +355,7 @@ public class DBTableSource extends AbstractTableSource {
     }
 
     public Connection getConnection() {
-        return connection;
+        return DatasourceManager.getInstance().getConnection(dbName);
     }
-
-    public void setConnection(Connection connection) {
-        this.connection = connection;
-    }
-
 
 }

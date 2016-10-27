@@ -209,7 +209,7 @@ public class BuildCubeTask implements CubeTask {
         operationManager.subscribeStartMessage();
         Map<CubeTableSource, UpdateSettingSource> updateSettingSources = cubeBuild.getUpdateSettingSources();
         operationManager.setUpdateSettingSourceMap(updateSettingSources);
-        operationManager.setConnectionMap(cubeBuild.getConnections());
+//        operationManager.setConnectionMap(cubeBuild.getConnections());
         manager.registerDataSource(cubeBuild.getAllSingleSources());
         logTable(cubeBuild.getAllSingleSources(), updateSettingSources);
         manager.registerRelation(cubeBuild.getTableSourceRelationSet());

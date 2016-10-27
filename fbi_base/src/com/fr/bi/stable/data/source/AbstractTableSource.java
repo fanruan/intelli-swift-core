@@ -397,4 +397,9 @@ public abstract class AbstractTableSource implements CubeTableSource {
     public SourceFile getSourceFile() {
         return new SourceFile(fetchObjectCore().getID().getIdentityValue());
     }
+
+    @Override
+    public boolean canExecute() {
+        return true;
+    }
 }
