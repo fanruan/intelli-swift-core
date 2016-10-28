@@ -255,6 +255,15 @@ public class BICubeTableEntity implements CubeTableEntityService {
     }
 
     @Override
+    public void forceReleaseReader() {
+        if (columnManager != null) {
+            columnManager.forceReleaseReader();
+        }
+        relationManager.forceReleaseReader();
+        tableProperty.forceReleaseReader();
+    }
+
+    @Override
     public CubeRelationEntityGetterService getRelationIndexGetter(BICubeTablePath path) throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException {
         return relationManager.getRelationService(path);
     }

@@ -168,11 +168,22 @@ BI.extend(BI.Calendar, {
         return page;
     },
     getDateJSONByPage: function(v){
-        var year = BI.parseInt(v / 12);
-        var month = v % 12;
+        var months = new Date().getMonth();
+        var page = v;
+
+        //对当前page做偏移,使到当前年初或年末
+        var adjust = page >= 0 ? months - 12 : months;
+        page = page + adjust;
+
+        var year = BI.parseInt(page / 12);
+        var month = page > 0 ? (page % 12) : (12 + page % 12);
+        if((v >= 0 && page <= 0) || (v <= 0 && page >= 0)){
+        }else{
+            year = v > 0 ? (year + 1) : (year - 1);
+        }
         return {
             year: new Date().getFullYear() + year,
-            month: new Date().getMonth() + month
+            month: month
         }
     }
 });

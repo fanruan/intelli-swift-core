@@ -293,4 +293,11 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
         }
         columnKey2ColumnMap.clear();
     }
+    @Override
+    public void forceReleaseReader() {
+        Iterator<ICubeColumnEntityService> it = columnKey2ColumnMap.values().iterator();
+        while (it.hasNext()) {
+            it.next().forceReleaseReader();
+        }
+    }
 }

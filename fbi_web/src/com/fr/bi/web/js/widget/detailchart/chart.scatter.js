@@ -58,14 +58,14 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         config.xAxis = this.xAxis;
 
         config.yAxis[0].formatter = self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level, this.config.num_separators);
-        formatNumberLevelInYaxis(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
+        formatNumberLevelInYaxis(this.config.left_y_axis_number_level);
         config.yAxis[0].title.text = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + config.yAxis[0].title.text : config.yAxis[0].title.text;
         config.yAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.yAxis[0].title.rotation = this.constants.ROTATION;
 
         config.xAxis[0].formatter = self.formatTickInXYaxis(this.config.x_axis_style, this.config.x_axis_number_level, this.config.right_num_separators);
-        formatNumberLevelInXaxis(this.config.x_axis_number_level, this.constants.X_AXIS);
+        formatNumberLevelInXaxis(this.config.x_axis_number_level);
         config.xAxis[0].title.text = getXYAxisUnit(this.config.x_axis_number_level, this.constants.X_AXIS);
         config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + config.xAxis[0].title.text : config.xAxis[0].title.text;
         config.xAxis[0].title.align = "center";
@@ -173,20 +173,13 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
             })
         }
 
-        function formatNumberLevelInYaxis(type, position) {
+        function formatNumberLevelInYaxis(type) {
             var magnify = self.calcMagnify(type);
             BI.each(items, function (idx, item) {
                 BI.each(item.data, function (id, da) {
-                    if (position === item.yAxis) {
                         da.y = self.formatXYDataWithMagnify(da.y, magnify);
-                    }
                 })
             });
-            if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                config.plotOptions.tooltip.formatter.valueFormat = function () {
-                    return BI.contentFormat(arguments[0], '#0%;-#0%')
-                };
-            }
         }
 
         function getXYAxisUnit(numberLevelType, position) {

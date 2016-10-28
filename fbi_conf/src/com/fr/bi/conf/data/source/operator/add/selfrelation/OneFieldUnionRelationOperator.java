@@ -123,35 +123,35 @@ public class OneFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
                     String v = ob.toString();
                     valueIndexMap.put(v, i);
                 }
-                for (int i = 0; i < rowCount; i++) {
-                    Object ob = getter.getValue(i);
-                    if (ob == null) {
-                        continue;
-                    }
-                    String v = ob.toString();
-                    v = dealWithLayerValue(v, groupLength);
-                    if (v != null) {
-                        for (int j = 0; j < columnLength; j++) {
-                            if (v.length() >= groupLength[j]) {
-                                String result = v.substring(0, groupLength[j]);
-                                String layer = dealWithValue(result);
-                                if (valueIndexMap.get(layer) == null) {
-                                    throw BINonValueUtils.beyondControl("current layer is:" + layer + ".the parent layer is absent.please check data ");
-                                }
-                                int r = valueIndexMap.get(layer);
-                                if (r >= 0 && !ComparatorUtils.equals(v, result)) {
-                                    isParent.add(layer);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                for (Map.Entry<String, Integer> entry : valueIndexMap.entrySet()) {
-                    if (isParent.contains(entry.getKey())) {
-                        mustDelete.add(entry.getValue());
-                    }
-                }
+//                for (int i = 0; i < rowCount; i++) {
+//                    Object ob = getter.getValue(i);
+//                    if (ob == null) {
+//                        continue;
+//                    }
+//                    String v = ob.toString();
+//                    v = dealWithLayerValue(v, groupLength);
+//                    if (v != null) {
+//                        for (int j = 0; j < columnLength; j++) {
+//                            if (v.length() >= groupLength[j]) {
+//                                String result = v.substring(0, groupLength[j]);
+//                                String layer = dealWithValue(result);
+//                                if (valueIndexMap.get(layer) == null) {
+//                                    throw BINonValueUtils.beyondControl("current layer is:" + layer + ".the parent layer is absent.please check data ");
+//                                }
+//                                int r = valueIndexMap.get(layer);
+//                                if (r >= 0 && !ComparatorUtils.equals(v, result)) {
+//                                    isParent.add(layer);
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                for (Map.Entry<String, Integer> entry : valueIndexMap.entrySet()) {
+//                    if (isParent.contains(entry.getKey())) {
+//                        mustDelete.add(entry.getValue());
+//                    }
+//                }
                 List<ICubeColumnDetailGetter> gts = new ArrayList<ICubeColumnDetailGetter>();
                 List<PersistentField> fields = source.getPersistentTable().getFieldList();
                 for (PersistentField field : fields) {
@@ -186,7 +186,7 @@ public class OneFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
                                     if (r >= 0) {
                                         Object showOb = showGetter.getValue(r);
                                         if (showOb != null) {
-                                            res[index] = showOb.toString();
+                                            res[index] = showOb;
                                         }
                                     }
                                 }

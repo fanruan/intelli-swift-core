@@ -129,4 +129,8 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
         return source;
     }
 
+    public void clearUserBaseTableMap(){
+        userBaseTableMap.clear();
+    }
+
 }

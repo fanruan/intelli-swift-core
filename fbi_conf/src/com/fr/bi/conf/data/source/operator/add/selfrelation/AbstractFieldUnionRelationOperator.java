@@ -13,6 +13,7 @@ import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
 import java.security.MessageDigest;
+import java.sql.Types;
 import java.util.*;
 
 /**

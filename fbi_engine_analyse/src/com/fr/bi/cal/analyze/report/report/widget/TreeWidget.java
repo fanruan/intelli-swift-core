@@ -51,7 +51,7 @@ public class TreeWidget extends BIAbstractWidget {
     private BusinessTable target;
     protected NameObject targetSort;
     protected Map<String, DimensionFilter> targetFilterMap = new HashMap<String, DimensionFilter>();
-    protected Map<BIDimension, Map<BusinessTable, BITableRelation>> dimensionMap = new HashMap<BIDimension, Map<BusinessTable, BITableRelation>>();
+    protected Map<BIDimension, ArrayList<BITableRelation>> dimensionMap = new HashMap<BIDimension, ArrayList<BITableRelation>>();
 
 
     @Override
@@ -303,12 +303,12 @@ public class TreeWidget extends BIAbstractWidget {
             JSONObject dimensionMap = dimObject.getJSONObject("dimension_map");
             Iterator it = dimensionMap.keys();
             JSONArray relationJa = dimensionMap.optJSONObject(it.next().toString()).getJSONArray("target_relation");
-            Map<BusinessTable, BITableRelation> relationMap = new HashMap<BusinessTable, BITableRelation>();
+            ArrayList<BITableRelation> relationMap = new ArrayList<BITableRelation>();
             for (int j = 0; j < relationJa.length(); j++) {
 //                BITableRelation viewRelation = new BITableRelation();
 //                viewRelation.parseJSON(relationJa.getJSONObject(j));
                 BITableRelation tableRelation = BITableRelationHelper.getRelation(relationJa.getJSONObject(j));
-                relationMap.put(tableRelation.getForeignTable(), tableRelation);
+                relationMap.add(tableRelation);
             }
             this.dimensionMap.put(this.dimensions[i], relationMap);
         }
@@ -319,31 +319,17 @@ public class TreeWidget extends BIAbstractWidget {
     }
 
     public List<BITableRelation> getRelationList(BIDimension dimension) {
-        List<BITableRelation> tableRelationList = new ArrayList<BITableRelation>();
-        Map<BusinessTable, BITableRelation> tableRelationMap = this.dimensionMap.get(dimension);
-        Iterator<Map.Entry<BusinessTable, BITableRelation>> it = tableRelationMap.entrySet().iterator();
-        while (it.hasNext()) {
-            BITableRelation tableRelation = it.next().getValue();
-            tableRelationList.add(tableRelation);
-        }
-        Collections.reverse(tableRelationList);
-        return tableRelationList;
+        return this.dimensionMap.get(dimension);
     }
 
     public List<BITableSourceRelation> getTableSourceRelationList(BIDimension dimension, long userId) {
-        Map<BusinessTable, BITableRelation> tableRelationMap = this.dimensionMap.get(dimension);
+        ArrayList<BITableRelation> tableRelationList = this.dimensionMap.get(dimension);
         List<BITableSourceRelation> tableSourceRelationList = new ArrayList<BITableSourceRelation>();
-        Iterator<Map.Entry<BusinessTable, BITableRelation>> it = tableRelationMap.entrySet().iterator();
-        while (it.hasNext()) {
-            BITableRelation tableRelation = it.next().getValue();
-            BITableSourceRelation tableSourceRelation = BIConfUtils.convert2TableSourceRelation(tableRelation);
+        for(BITableRelation relation: tableRelationList){
+            BITableSourceRelation tableSourceRelation = BIConfUtils.convert2TableSourceRelation(relation);
             tableSourceRelationList.add(tableSourceRelation);
         }
         return tableSourceRelationList;
-    }
-
-    public Map<BusinessTable, BITableRelation> getRelationMap(BIDimension dimension) {
-        return this.dimensionMap.get(dimension);
     }
 
     @Override

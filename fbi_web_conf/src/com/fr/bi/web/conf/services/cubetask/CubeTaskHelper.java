@@ -3,13 +3,13 @@ package com.fr.bi.web.conf.services.cubetask;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeManagerProvider;
-import com.finebi.cube.conf.CubeBuild;
+import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.data.ICubeResourceDiscovery;
-import com.finebi.cube.impl.conf.CubeBuildByPart;
-import com.finebi.cube.impl.conf.CubeBuildSingleTable;
-import com.finebi.cube.impl.conf.CubeBuildComplete;
+import com.finebi.cube.impl.conf.CubeBuildStuffPart;
+import com.finebi.cube.impl.conf.CubeBuildStuffSingleTable;
+import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.relation.BITableRelation;
@@ -36,14 +36,14 @@ public class CubeTaskHelper {
 
     public static boolean CubeBuildSingleTable(long userId, BITableID hostTableId, String childTableSourceId, int updateType) {
         BILoggerFactory.getLogger().info(BIDateUtils.getCurrentDateTime() + " Cube single table update start");
-        CubeBuild cubeBuild = new CubeBuildSingleTable(new BIBusinessTable(hostTableId), childTableSourceId, userId, updateType);
+        CubeBuildStuff cubeBuild = new CubeBuildStuffSingleTable(new BIBusinessTable(hostTableId), childTableSourceId, userId, updateType);
         boolean taskAdd = cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId);
         return taskAdd;
     }
 
     public static boolean CubeBuildStaff(long userId) {
         boolean taskAddResult = false;
-        CubeBuild cubeBuild;
+        CubeBuildStuff cubeBuild;
         /*若cube不存在,全局更新*/
 /*若有新增表或者新增关联，增量更新，否则进行全量*/
         StringBuffer msg = new StringBuffer();
@@ -51,10 +51,10 @@ public class CubeTaskHelper {
             msg.append(" Cube part update start" + "\n");
             Set<BIBusinessTable> businessTables = CubeUpdateUtils.getNewTables(userId);
             Set<BITableRelation> relations = CubeUpdateUtils.getNewRelations(userId);
-            cubeBuild = new CubeBuildByPart(userId, businessTables, relations);
+            cubeBuild = new CubeBuildStuffPart(userId, businessTables, relations);
         } else {
             msg.append(" Cube all update start");
-            cubeBuild = new CubeBuildComplete(new BIUser(userId));
+            cubeBuild = new CubeBuildStuffComplete(new BIUser(userId));
             BILoggerFactory.getLogger().info(BIDateUtils.getCurrentDateTime() + " preCondition checking……");
         }
         if (preConditionsCheck(userId, cubeBuild)) {
@@ -69,11 +69,11 @@ public class CubeTaskHelper {
         ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
         ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getConf(Long.toString(userId)));
         Cube cube = new BICube(resourceRetrievalService, discovery);
-        boolean isPart = (CubeUpdateUtils.getNewRelations(userId).size() > 0 || CubeUpdateUtils.getNewRelations(userId).size() > 0) && cube.isVersionAvailable();
+        boolean isPart = (CubeUpdateUtils.getNewTables(userId).size() > 0 || CubeUpdateUtils.getNewRelations(userId).size() > 0) && cube.isVersionAvailable();
         return isPart;
     }
 
-    private static boolean preConditionsCheck(long userId, CubeBuild cubeBuild) {
+    private static boolean preConditionsCheck(long userId, CubeBuildStuff cubeBuild) {
         boolean conditionsMeet = cubeBuild.preConditionsCheck();
         if (!conditionsMeet) {
             String errorMessage = "preConditions check failed! Please check the available HD space and data connections";

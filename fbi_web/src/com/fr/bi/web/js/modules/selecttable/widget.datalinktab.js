@@ -107,11 +107,11 @@ BI.DataLinksTab = BI.inherit(BI.Widget, {
     _createPackagesCard: function (packId) {
         var self = this;
         var packagePane = BI.createWidget({
-            type: "bi.package_table_pane",
+            type: "bi.package_tables_main_pane",
             packId: packId,
             translations: this.options.translations
         });
-        packagePane.on(BI.PackageTablePane.EVENT_CHANGE, function () {
+        packagePane.on(BI.PackageTablesMainPane.EVENT_CHANGE, function () {
             self.fireEvent(BI.DataLinksTab.EVENT_CHANGE);
         });
         this.packageCards.push(packagePane);
