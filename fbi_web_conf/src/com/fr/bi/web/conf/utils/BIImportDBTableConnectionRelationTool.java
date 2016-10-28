@@ -1,4 +1,4 @@
-package com.finebi.cube.utils;
+package com.fr.bi.web.conf.utils;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
