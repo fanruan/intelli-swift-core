@@ -67,8 +67,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
 
         BI.extend(config.plotOptions, {
             large: this.config.big_data_mode,
-            shadow: this.config.bubble_style !== this.constants.NO_PROJECT,
-            tooltip
+            shadow: this.config.bubble_style !== this.constants.NO_PROJECT
         });
 
         config.colors = this.config.chart_color;

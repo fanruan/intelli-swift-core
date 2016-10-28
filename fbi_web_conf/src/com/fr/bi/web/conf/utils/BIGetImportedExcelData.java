@@ -81,10 +81,10 @@ public class BIGetImportedExcelData {
         }
 
         //合并规则
-        Map<ColumnRow, ColumnRow> mergeRules = excelDataModel.getMergeRules();
-        JSONArray mergeRuleJa = new JSONArray();
-        if (mergeRules != null) {
-            for (Map.Entry<ColumnRow, ColumnRow> m : mergeRules.entrySet()) {
+        Map<ColumnRow, ColumnRow> mergeInfo = excelDataModel.getMergeInfos();
+        JSONArray mergeInfoJa = new JSONArray();
+        if (mergeInfo != null) {
+            for (Map.Entry<ColumnRow, ColumnRow> m : mergeInfo.entrySet()) {
                 JSONArray tempJa = new JSONArray();
 
                 ColumnRow s = m.getKey();
@@ -99,7 +99,7 @@ public class BIGetImportedExcelData {
 
                 tempJa.put(startJa);
                 tempJa.put(endJa);
-                mergeRuleJa.put(tempJa);
+                mergeInfoJa.put(tempJa);
             }
         }
 
@@ -108,7 +108,7 @@ public class BIGetImportedExcelData {
         jo.put("fileName", fileName);
         jo.put("fields", fieldsJa);
         jo.put("data", dataJa);
-        jo.put("mergeRules", mergeRuleJa);
+        jo.put("mergeInfos", mergeInfoJa);
         return jo;
     }
 
