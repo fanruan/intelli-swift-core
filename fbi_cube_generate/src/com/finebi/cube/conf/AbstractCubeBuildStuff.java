@@ -32,19 +32,19 @@ import java.util.*;
 /**
  * Created by kary on 16/7/11.
  */
-public abstract class AbstractCubeBuild implements CubeBuild {
+public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
     private long userId;
-    protected Set<CubeTableSource> sources = new HashSet<CubeTableSource>();
+    protected Set<CubeTableSource> allTableSources = new HashSet<CubeTableSource>();
     private Set allBusinessTable = new HashSet<BIBusinessTable>();
     protected Set<BITableRelationPath> allRelationPathSet = new HashSet<BITableRelationPath>();
     protected Map<CubeTableSource, Map<String, ICubeFieldSource>> tableDBFieldMaps = new HashMap<CubeTableSource, Map<String, ICubeFieldSource>>();
     protected CalculateDependTool calculateDependTool;
 
-    public AbstractCubeBuild(long userId) {
+    public AbstractCubeBuildStuff(long userId) {
         this.userId = userId;
         init(userId);
-        setSources();
-        fullTableDBFields();
+        extractTableSource();
+        extractFieldSource();
     }
 
     private void init(long userId) {
@@ -108,9 +108,8 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         return spaceCheck && connectionValid;
     }
 
-    @Override
-    public Set<CubeTableSource> getSources() {
-        return this.sources;
+    public Set<CubeTableSource> getAllTableSources() {
+        return this.allTableSources;
     }
 
     public static Set<CubeTableSource> set2Set(Set<List<Set<CubeTableSource>>> set) {
@@ -170,10 +169,10 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         }
     }
 
-    public void setSources() {
+    public void extractTableSource() {
         for (Object biBusinessTable : allBusinessTable) {
             BusinessTable table = (BusinessTable) biBusinessTable;
-            sources.add(table.getTableSource());
+            allTableSources.add(table.getTableSource());
         }
     }
 
@@ -240,11 +239,11 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         return connectionMap;
     }
 
-    private void fullTableDBFields() {
-        Iterator<CubeTableSource> tableSourceIterator = sources.iterator();
+    private void extractFieldSource() {
+        Iterator<CubeTableSource> tableSourceIterator = allTableSources.iterator();
         while (tableSourceIterator.hasNext()) {
             CubeTableSource tableSource = tableSourceIterator.next();
-            Set<ICubeFieldSource> BICubeFieldSources = tableSource.getFacetFields(sources);
+            Set<ICubeFieldSource> BICubeFieldSources = tableSource.getFacetFields(allTableSources);
             Map<String, ICubeFieldSource> name2Field = new HashMap<String, ICubeFieldSource>();
             Iterator<ICubeFieldSource> it = BICubeFieldSources.iterator();
             while (it.hasNext()) {

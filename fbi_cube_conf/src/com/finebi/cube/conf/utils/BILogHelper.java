@@ -7,7 +7,10 @@ import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.field.BusinessFieldHelper;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.conf.table.BusinessTableHelper;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.exception.BITablePathConfusionException;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
 
@@ -28,7 +31,7 @@ public class BILogHelper {
                     "\n" + "       Corresponding  Table Source ID:", table.getTableSource().getSourceID()
             );
         } catch (Exception e) {
-            logger.info(e.getMessage(), e);
+            logger.debug(e.getMessage(), e);
             return "";
         }
     }
@@ -44,7 +47,7 @@ public class BILogHelper {
             }
             return sb.toString();
         } catch (Exception e) {
-            logger.info(e.getMessage(), e);
+            logger.debug(e.getMessage(), e);
             return "";
         }
     }
@@ -53,12 +56,12 @@ public class BILogHelper {
         try {
             long userID = UserControl.getInstance().getSuperManagerID();
             return BIStringUtils.append(
-                    "\n" + prefix + "       Business Field Alias Name:", BICubeConfigureCenter.getAliasManager().getAliasName(field.getFieldID().getIdentityValue(), userID),
-                    "\n" + prefix + "       Business Field Name:", field.getFieldName(),
-                    "\n" + prefix + "       Business Field ID:", field.getFieldID().getIdentity()
+                    "\n" + prefix + " Business Field Alias Name:", BICubeConfigureCenter.getAliasManager().getAliasName(field.getFieldID().getIdentityValue(), userID),
+                    "\n" + prefix + " Business Field Name:", field.getFieldName(),
+                    "\n" + prefix + " Business Field ID:", field.getFieldID().getIdentity()
             );
         } catch (Exception e) {
-            logger.info(e.getMessage(), e);
+            logger.debug(e.getMessage(), e);
             return "";
         }
 
@@ -67,13 +70,14 @@ public class BILogHelper {
     public static String logTableSource(CubeTableSource table, String prefix) {
         try {
             return BIStringUtils.append(
-                    "" + prefix + "       Table Source Name:", table.getTableName(),
-                    "" + prefix + "       Table Source ID:", table.getSourceID()
+                    "" + prefix + " Table Source Name:", table.getTableName(),
+                    "" + prefix + " Table Source ID:", table.getSourceID()
             );
         } catch (Exception e) {
-            logger.info(e.getMessage(), e);
+            logger.debug(e.getMessage(), e);
             return "";
         }
-
     }
+
+
 }

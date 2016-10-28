@@ -3,7 +3,7 @@ package com.fr.bi.cal;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeGenerationManager;
-import com.finebi.cube.impl.conf.CubeBuildRealTime;
+import com.finebi.cube.impl.conf.CubeBuildStuffRealTime;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.BuildInstantCubeTask;
 import com.fr.bi.cal.stable.engine.TempCubeTask;
@@ -25,9 +25,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class TempCubeManager implements Release {
 
     private static Map<TempCubeTask, TempCubeManager> cubeMap = new ConcurrentHashMap<TempCubeTask, TempCubeManager>();
-    private CubeBuildRealTime cubeBuildTool;
-    private CubeBuildRealTime cubeBuildToolGenerating;
-    private Queue<CubeBuildRealTime> generater;
+    private CubeBuildStuffRealTime cubeBuildTool;
+    private CubeBuildStuffRealTime cubeBuildToolGenerating;
+    private Queue<CubeBuildStuffRealTime> generater;
     private TempCubeTask task;
     private CubeThread cubeThread;
     private Release release;
@@ -39,7 +39,7 @@ public class TempCubeManager implements Release {
     public TempCubeManager(TempCubeTask task) {
         this.task = task;
         this.cubeThread = new CubeThread();
-        this.generater = new ConcurrentLinkedQueue<CubeBuildRealTime>();
+        this.generater = new ConcurrentLinkedQueue<CubeBuildStuffRealTime>();
         this.cubeThread.start();
     }
 
@@ -67,18 +67,18 @@ public class TempCubeManager implements Release {
         }
     }
 
-    public CubeBuildRealTime getCubeBuildTool() {
+    public CubeBuildStuffRealTime getCubeBuildTool() {
         if (cubeBuildTool == null) {
             cubeBuildTool = cubeBuildToolGenerating;
         }
         return cubeBuildTool;
     }
 
-    public CubeBuildRealTime getCubeBuildToolGenerating() {
+    public CubeBuildStuffRealTime getCubeBuildToolGenerating() {
         return cubeBuildToolGenerating;
     }
 
-    public boolean addLoader(CubeBuildRealTime cubeBuildTool, Release release) {
+    public boolean addLoader(CubeBuildStuffRealTime cubeBuildTool, Release release) {
         this.generater.add(cubeBuildTool);
         synchronized (cubeThread) {
             this.cubeBuildToolGenerating = cubeBuildTool;
