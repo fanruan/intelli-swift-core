@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * Created by kary on 16/5/30.
  */
-public interface CubeBuild {
+public interface CubeBuildStuff {
 
 
     Set<BITableSourceRelationPath> getBiTableSourceRelationPathSet();
@@ -22,7 +22,7 @@ public interface CubeBuild {
 
     Set<BITableSourceRelation> getTableSourceRelationSet();
 
-    Set<CubeTableSource> getSources();
+    Set<CubeTableSource> getAllTableSources();
 
     Set<List<Set<CubeTableSource>>> getDependTableResource();
 

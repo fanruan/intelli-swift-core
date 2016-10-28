@@ -2,7 +2,7 @@ package com.fr.bi.cal.generate;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.CubeBuild;
+import com.finebi.cube.conf.CubeBuildStuff;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.db.PersistentTable;
@@ -14,7 +14,7 @@ import java.util.concurrent.Future;
  * Created by roy on 16/10/10.
  */
 public class BuildInstantCubeTask extends BuildCubeTask {
-    public BuildInstantCubeTask(BIUser biUser, CubeBuild cubeBuild) {
+    public BuildInstantCubeTask(BIUser biUser, CubeBuildStuff cubeBuild) {
         super(biUser, cubeBuild);
     }
 
