@@ -1,7 +1,7 @@
 package com.fr.bi.cal.generate.timerTask.quartz;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.conf.CubeBuild;
+import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.BuildCubeTask;
@@ -28,7 +28,7 @@ public class JobTask implements Job {
         JobDataMap data = jobExecutionContext.getJobDetail().getJobDataMap();
         long userId = Long.valueOf(data.get("userId").toString());
         String jobName = data.getString("jobName");
-        CubeBuild cubeBuild = (CubeBuild) data.get("CubeBuild");
+        CubeBuildStuff cubeBuild = (CubeBuildStuff) data.get("CubeBuild");
         String message = "timerTask started!Current time is:" + new Date() + "\n Current task：" + jobName + "\nCurrent User：" + userId + "\n";
         BILoggerFactory.getLogger().info(message);
         if (!cubeBuild.preConditionsCheck()) {

@@ -122,4 +122,8 @@ public class BIStringUtils {
     public static boolean isEmptyString(String value) {
         return StringUtils.isEmpty(value) || ComparatorUtils.equals(value, emptyString());
     }
+
+    public static boolean isBlankString(String value) {
+        return StringUtils.isBlank(value);
+    }
 }

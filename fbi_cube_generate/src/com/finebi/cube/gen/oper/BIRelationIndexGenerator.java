@@ -10,12 +10,14 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.structure.*;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
+import com.finebi.cube.utils.BICubeRelationUtils;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
@@ -83,16 +85,18 @@ public class BIRelationIndexGenerator extends BIProcessor {
     private String logRelation() {
         try {
             return BIStringUtils.append(
-                    "Primary table:", relation.getPrimaryTable().getSourceID(),
-                    "Primary field:", relation.getPrimaryField().getColumnName(),
-                    "Foreign table:", relation.getForeignTable().getSourceID(),
-                    "Foreign field:", relation.getForeignField().getColumnName()
+                    " Relation ID:" + BuildLogHelper.calculateRelationID(relation),
+                    " Primary table:", relation.getPrimaryTable().getSourceID(),
+                    " Primary field:", relation.getPrimaryField().getColumnName(),
+                    " Foreign table:", relation.getForeignTable().getSourceID(),
+                    " Foreign field:", relation.getForeignField().getColumnName()
             );
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
         return "error relation";
     }
+
 
     public RelationColumnKey getRelationColumnKeyInfo() {
         BITableSourceRelation tableRelation = getTableRelation(this.relation);
