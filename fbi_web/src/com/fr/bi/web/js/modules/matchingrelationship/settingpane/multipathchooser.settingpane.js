@@ -140,7 +140,7 @@ BI.MultiPathChooser = BI.inherit(BI.Widget, {
             return BI.isEqual(value, self.pathValueMap[key]);
         });
         if (BI.isNull(key)) {
-            return this.path;
+            return [];
         }else{
             return this.pathRelationMap[key];
         }

@@ -118,6 +118,10 @@ $(function () {
                 temp = "http://" + address;
             }
             return temp;
+        },
+
+        getCompleteImageUrl: function (url) {
+            return FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + url;
         }
 
     });
@@ -169,6 +173,12 @@ $(function () {
                 images[i].onerror = function () {
                     complete()
                 };
+            });
+        },
+
+        getImageWidthAndHeight: function (src) {
+            return BI.requestSync("fr_bi_dezi", "get_image_size", {
+                src: src
             });
         },
 
