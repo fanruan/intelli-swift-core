@@ -6641,10 +6641,12 @@ define('vector/Renderer',['require','../utils/Class','../utils/BaseUtils','./Ele
         //register visual elements that respond to events
         //data can be anything like dataPoint, series, or legend item
         registerInteractiveTarget:function(data, elementWrapper){
-            this.removeInteractiveTarget(elementWrapper);
             this._targets[BaseUtils.stamp(elementWrapper.rawElement)] = elementWrapper;
             this._targets[BaseUtils.stamp(elementWrapper)] = data;
-            data && data.getEvents && data.on(data.getEvents(), data);
+            if(data){
+                data._events = null;
+                data.getEvents && data.on(data.getEvents(), data);
+            }
         },
 
         findInteractiveTarget:function(rawElement){
@@ -7017,6 +7019,7 @@ define('vector/SvgRenderer',['require','./Renderer','../utils/DomUtils','./Eleme
             pattern.image = new ElementWrapper(this.create('image'), this).addTo(pattern);
             pattern.image.attr(imageAttr);
             pattern.image.imageContent(url);
+            pattern.image._imageUrl = url;
 
             pattern.addTo(this.defs);
 
@@ -7026,7 +7029,12 @@ define('vector/SvgRenderer',['require','./Renderer','../utils/DomUtils','./Eleme
         updateImagePattern:function(imagePattern, patterAttr, imageAttr, url){
             imagePattern.attr(patterAttr);
             imagePattern.image.attr(imageAttr);
-            imagePattern.image.imageContent(url);
+
+            //避免重复请求图片
+            if(imagePattern.image._imageUrl != url){
+                imagePattern.image.imageContent(url);
+                imagePattern.image._imageUrl = url;
+            }
         },
 
         createDropShadowFilter:function(dx, dy, alpha, deviation){
@@ -15709,7 +15717,7 @@ define('chart/Bar',['require','../utils/BaseUtils','../utils/ColorUtils','../Con
                     }
 
                     var patterAttr = {
-                        'x':imageX, 'y':imageX, 'width':p.imageWidth, 'height':p.imageHeight,'patternUnits':'userSpaceOnUse'
+                        'x':imageX, 'y':imageY, 'width':p.imageWidth, 'height':p.imageHeight,'patternUnits':'userSpaceOnUse'
                     };
 
                     var imageAttr = {
@@ -22101,6 +22109,13 @@ define('chart/Gauge',['require','../Constants','../utils/BaseUtils','./Series','
                 this.remove();
                 this.backgruondPath = null;
                 this.backgruondLine = null;
+                this.ticks = this.minorTics = null;
+                this.points.forEach(function(point){
+                    if(point.graphic){
+                        point.graphic.remove();
+                        point.graphic = null;
+                    }
+                });
             }
 
             this.gaugeType = gaugeType;
