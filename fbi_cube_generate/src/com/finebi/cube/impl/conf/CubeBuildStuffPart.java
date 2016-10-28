@@ -1,9 +1,9 @@
 package com.finebi.cube.impl.conf;
 
 import com.finebi.cube.ICubeConfiguration;
-import com.finebi.cube.conf.AbstractCubeBuild;
+import com.finebi.cube.conf.AbstractCubeBuildStuff;
 import com.finebi.cube.conf.BICubeConfiguration;
-import com.finebi.cube.conf.CubeBuild;
+import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.relation.*;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
@@ -21,12 +21,12 @@ import java.util.*;
  * 表的增量更新，尽量减少依赖，最大化提升效率
  * 逻辑如下:确定新增的table及relations,设置相关依赖
  */
-public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
+public class CubeBuildStuffPart extends AbstractCubeBuildStuff implements CubeBuildStuff {
 
     private Set<CubeTableSource> allSingleSources = new HashSet<CubeTableSource>();
     private Set<BIBusinessTable> newTables;
     protected Set<CubeTableSource> newTableSources = new HashSet<CubeTableSource>();
-    private Set<BITableRelation> relationSet = new HashSet<BITableRelation>();
+    private Set<BITableRelation> newRelations = new HashSet<BITableRelation>();
     private Set<List<Set<CubeTableSource>>> dependTableResource;
     private Set<BITableSourceRelation> biTableSourceRelationSet = new HashSet<BITableSourceRelation>();
     private Set<BICubeGenerateRelation> cubeGenerateRelationSet = new HashSet<BICubeGenerateRelation>();
@@ -34,10 +34,10 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
     private Set<BICubeGenerateRelationPath> cubeGenerateRelationPathSet = new HashSet<BICubeGenerateRelationPath>();
     private long userId;
 
-    public CubeBuildByPart(long userId, Set<BIBusinessTable> newTables, Set<BITableRelation> newRelations) {
+    public CubeBuildStuffPart(long userId, Set<BIBusinessTable> newTables, Set<BITableRelation> newRelations) {
         super(userId);
         this.userId = userId;
-        this.relationSet = newRelations;
+        this.newRelations = newRelations;
         this.newTables = newTables;
         try {
             setRelations();
@@ -68,7 +68,7 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
     }
 
     private void setRelations() {
-        Iterator<BITableRelation> iterator = relationSet.iterator();
+        Iterator<BITableRelation> iterator = newRelations.iterator();
         while (iterator.hasNext()) {
             BITableRelation relation = iterator.next();
             BITableSourceRelation sourceRelation = convertRelation(relation);
@@ -85,7 +85,7 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
         for (BITableRelationPath path : allRelationPathSet) {
             try {
                 boolean containsRelation = false;
-                for (BITableRelation relation : relationSet) {
+                for (BITableRelation relation : newRelations) {
                     if (path.containsRelation(relation)) {
                         containsRelation = true;
                     }
@@ -153,7 +153,7 @@ public class CubeBuildByPart extends AbstractCubeBuild implements CubeBuild {
 
     @Override
     public Set<BITableRelation> getTableRelationSet() {
-        return this.relationSet;
+        return this.newRelations;
     }
 
     public Set<BICubeGenerateRelationPath> getCubeGenerateRelationPathSet() {
