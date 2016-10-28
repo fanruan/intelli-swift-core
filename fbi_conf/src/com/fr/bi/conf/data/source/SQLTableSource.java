@@ -1,5 +1,6 @@
 package com.fr.bi.conf.data.source;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.TableData;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.constant.BIBaseConstant;
@@ -8,7 +9,8 @@ import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.db.ServerLinkInformation;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.DecryptBi;
-import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.data.impl.Connection;
+import com.fr.file.DatasourceManager;
 import com.fr.json.JSONObject;
 
 /**
@@ -44,7 +46,7 @@ public class SQLTableSource extends ServerTableSource {
         JSONObject jo = super.createJSON();
         //为了兼容
         String sqlStr = enSQL;
-        if(enSQL == null) {
+        if (enSQL == null) {
             sqlStr = DecryptBi.encrypt(sql, "sh");
         }
         jo.put("sql", sqlStr);
@@ -97,4 +99,20 @@ public class SQLTableSource extends ServerTableSource {
     public String getTableName() {
         return this.sqlName;
     }
+
+    @Override
+    public Connection getConnection() {
+        return DatasourceManager.getInstance().getConnection(sqlConnection);
+    }
+
+    @Override
+    public boolean canExecute() throws Exception {
+        try {
+            getConnection().testConnection();
+        } catch (Exception e) {
+            return false;
+        }
+        return testSQL(getConnection(), sql);
+    }
+
 }

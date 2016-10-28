@@ -84,7 +84,7 @@ public class FieldFormulaOperator extends AbstractAddColumnOperator {
                 travel.actionPerformed(new BIDataValue(row, startCol, getValueByColumnType(value)));
             } catch (Exception e) {
                 BILoggerFactory.getLogger().error("incorrect formula");
-                BILoggerFactory.getLogger().error(BIStringUtils.append(e.getMessage(), e.getClass().toString()));
+                BILoggerFactory.getLogger().error(BIStringUtils.append(e.getMessage()+"", e.getClass().toString()));
                 BILoggerFactory.getLogger().error(BIStringUtils.append("The formula:", formula));
                 travel.actionPerformed(new BIDataValue(row, startCol, null));
             }
