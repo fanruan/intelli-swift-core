@@ -2,7 +2,7 @@ package com.fr.bi.web.conf.services;
 
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.conf.data.source.DBTableSource;
-import com.finebi.cube.utils.BIImportDBTableConnectionRelationTool;
+import com.fr.bi.web.conf.utils.BIImportDBTableConnectionRelationTool;
 import junit.framework.TestCase;
 
 import java.lang.reflect.Field;

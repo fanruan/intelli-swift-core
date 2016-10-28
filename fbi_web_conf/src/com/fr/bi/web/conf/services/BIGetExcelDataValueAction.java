@@ -19,7 +19,6 @@ public class BIGetExcelDataValueAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         String fileName = WebUtils.getHTTPRequestParameter(req, "fileName");
-
         if( StringUtils.isNotBlank(fileName) ) {
             BIGetImportedExcelData excelData = new BIGetImportedExcelData( fileName );
             WebUtils.printAsJSON(res, excelData.getFieldsAndPreviewData());
