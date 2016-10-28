@@ -177,7 +177,7 @@ BI.extend(BI.Calendar, {
 
         var year = BI.parseInt(page / 12);
         var month = page > 0 ? (page % 12) : (12 + page % 12);
-        if((v > 0 && page <= 0) || (v < 0 && page >= 0)){
+        if((v >= 0 && page <= 0) || (v <= 0 && page >= 0)){
         }else{
             year = v > 0 ? (year + 1) : (year - 1);
         }
