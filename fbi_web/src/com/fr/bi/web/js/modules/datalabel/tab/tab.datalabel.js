@@ -66,7 +66,7 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
         });
         this.tabs.setSelect(1);
         this.tabs.on(BI.Tab.EVENT_CHANGE, function () {
-            if (this.getSelect() == 1) {
+            if (this.getSelect() === 1) {
                 self.layout.setHeight(self._CARDHEIGHT);
             } else {
                 self.layout.setHeight(self._constant.IMAGE_SET_HEIGHT);
@@ -178,6 +178,11 @@ BI.DataLabelTab = BI.inherit(BI.Widget, {
                 tgap: 40
             }
         );
+    },
+
+    setImageSetSelected: function () {
+        this.tabs.setSelect(2);
+        this.layout.setHeight(this._constant.IMAGE_SET_HEIGHT);
     },
 
     populate: function () {

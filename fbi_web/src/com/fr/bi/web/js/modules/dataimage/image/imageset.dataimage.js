@@ -74,7 +74,7 @@ BI.DataImageImageSet = BI.inherit(BI.Widget, {
             var files = this.getValue();
             var file = files[files.length - 1];
             var attachId = file.attach_id, fileName = file.filename;
-            var src = FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + attachId + "_" + fileName;
+            var src = attachId + "_" + fileName;
             BI.requestAsync("fr_bi_dezi", "save_upload_image", {
                 attach_id: attachId
             }, function () {
