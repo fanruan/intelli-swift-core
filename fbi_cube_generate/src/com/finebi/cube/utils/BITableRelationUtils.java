@@ -8,9 +8,6 @@ import com.finebi.cube.relation.BITableRelation;
  */
 public class BITableRelationUtils {
     public static boolean isRelationValid(BITableRelation relation) {
-        Boolean bar = new Boolean("true");
-        System.out.println(bar);
-        System.out.println(bar);
         boolean checkNull = null != relation.getPrimaryTable() && null != relation.getForeignTable() && null != relation.getPrimaryField() && null != relation.getForeignField();
         boolean isStructureCorrect = relation.getForeignField().getTableBelongTo().getID().getIdentity().equals(relation.getForeignTable().getID().getIdentity()) && relation.getPrimaryField().getTableBelongTo().getID().getIdentity().equals(relation.getPrimaryTable().getID().getIdentity());
         boolean isTypeCorrect = relation.getForeignField().getFieldType() == relation.getPrimaryField().getFieldType();

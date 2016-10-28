@@ -98,8 +98,8 @@ public class BuildCubeTask implements CubeTask {
         return CubeTaskType.ALL;
     }
 
-    public CubeBuild getCubeBuild() {
-        return cubeBuild;
+    public CubeBuildStuff getCubeBuild() {
+        return cubeBuildStuff;
     }
 
     @Override
