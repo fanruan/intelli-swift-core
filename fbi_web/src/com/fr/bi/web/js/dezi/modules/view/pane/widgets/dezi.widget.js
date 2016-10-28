@@ -175,9 +175,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     },
 
     _onClickChart: function (obj) {
+        //这边单独set clicked，因为地图钻取是没有钻取框的，直接钻的
         if (BI.has(obj, "clicked")) {
             this.model.set(obj);
-            this._refreshTableAndFilter();
         } else {
             this.chartDrill.populate(obj);
         }
