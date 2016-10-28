@@ -98,7 +98,7 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
     public boolean preConditionsCheck() {
         boolean spaceCheck = getSpaceCheckResult();
         boolean connectionCheck = getConnectionCheck();
-        boolean sqlTest = getSqlTest();
+//        boolean sqlTest = getSqlTest();
         return spaceCheck && connectionCheck;
     }
 
