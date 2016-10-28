@@ -204,6 +204,10 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         this.maximize.on(BI.Maximization.EVENT_SET, function (widget) {
             self.model.set(widget);
         });
+        this.maximize.on(BI.Maximization.EVENT_SET_TITLE_NAME, function (name) {
+            self.model.set("name", name);
+            self.title.setValue(name);
+        });
         this.maximize.on(BI.Maximization.EVENT_CHANGE, function (type) {
             switch (type) {
                 case BICst.DASHBOARD_WIDGET_EXPAND:
@@ -215,9 +219,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                 case BICst.DASHBOARD_WIDGET_SHOW_NAME:
                     self._onClickShowName();
                     break;
-                case BICst.DASHBOARD_WIDGET_RENAME:
-                    self.title.focus();
-                    break;
+                // case BICst.DASHBOARD_WIDGET_RENAME:
+                //     // self.title.focus();
+                //     break;
                 case BICst.DASHBOARD_WIDGET_NAME_POS_LEFT:
                     self._onClickNamePosLeft();
                     break;

@@ -153,6 +153,10 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         this.maximize.on(BI.Maximization.EVENT_SET, function (widget) {
             self.model.set(widget);
         });
+        this.maximize.on(BI.Maximization.EVENT_SET_TITLE_NAME, function (name) {
+            self.model.set("name", name);
+            self.title.setValue(name);
+        });
         this.maximize.on(BI.Maximization.EVENT_CHANGE, function (type) {
             switch (type) {
                 case BICst.DASHBOARD_WIDGET_EXPAND:

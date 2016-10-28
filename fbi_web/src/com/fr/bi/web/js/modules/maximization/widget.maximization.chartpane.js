@@ -24,6 +24,7 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
 
         this._buildChartDrill();
         this._createTableChart(type);
+        this._buildWidgetTitle();
 
         this.tableChartPopupulate = BI.debounce(BI.bind(this.tableChart.populate, this.tableChart), 0);
 
@@ -37,16 +38,62 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
                 top: 45,
                 bottom: 10
             }, {
+                el: this.titleWrapper,
+                top: 0,
+                left: 0,
+                right: 0
+            }, {
                 el: this.chartDrill,
                 left: 0,
                 top: 0,
                 right: 0
             }, {
                 el: this.tools,
-                top: 0,
+                top: 10,
                 right: 10
             }]
         })
+    },
+
+    _buildWidgetTitle: function () {
+        var self = this;
+        var id = this.options.wId;
+        if (!this.title) {
+            this.title = BI.createWidget({
+                type: "bi.shelter_editor",
+                cls: BI.Utils.getWSNamePosByID(id) === BICst.DASHBOARD_WIDGET_NAME_POS_LEFT ?
+                    "dashboard-title-left" : "dashboard-title-center",
+                value: BI.Utils.getWidgetNameByID(id),
+                textAlign: "left",
+                height: 25,
+                allowBlank: false,
+                errorText: function (v) {
+                    if (BI.isNotNull(v) && BI.trim(v) !== "") {
+                        return BI.i18nText("BI-Widget_Name_Can_Not_Repeat");
+                    }
+                    return BI.i18nText("BI-Widget_Name_Can_Not_Null");
+                },
+                validationChecker: function (v) {
+                    return BI.Utils.checkWidgetNameByID(v, id);
+                }
+            });
+            this.titleWrapper = BI.createWidget({
+                type: "bi.absolute",
+                height: 35,
+                cls: "dashboard-widget-title",
+                items: [{
+                    el: this.title,
+                    left: 10,
+                    top: 10,
+                    right: 10
+                }]
+            });
+            this.title.on(BI.ShelterEditor.EVENT_CHANGE, function () {
+                self.fireEvent(BI.MaximizationChartPane.EVENT_SET_TITLE_NAME, this.getValue());
+            });
+        } else {
+            this.title.setValue(BI.Utils.getWidgetNameByID(id));
+        }
     },
 
     _createTableChart: function (type) {
@@ -120,7 +167,7 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
             self.tableChart.magnify();
         });
 
-        var minimize = this._createToolsButton("BI-minimization", "widget-tools-maximization-font");
+        var minimize = this._createToolsButton("BI-minimization", "widget-tools-minimization-font");
         minimize.on(BI.IconButton.EVENT_CHANGE, function () {
             self.fireEvent(BI.MaximizationChartPane.EVENT_CLOSE);
         });
@@ -142,13 +189,22 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
         combo.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
             switch (type) {
                 case BICst.DASHBOARD_WIDGET_EXPAND:
+                    self.fireEvent(BI.MaximizationChartPane.EVENT_CHANGE, type);
+                    break;
                 case BICst.DASHBOARD_WIDGET_SHOW_NAME:
+                    self.fireEvent(BI.MaximizationChartPane.EVENT_CHANGE, type);
+                    self._setTitleVisible();
+                    break;
                 case BICst.DASHBOARD_WIDGET_NAME_POS_LEFT:
                 case BICst.DASHBOARD_WIDGET_NAME_POS_CENTER:
                     self.fireEvent(BI.MaximizationChartPane.EVENT_CHANGE, type);
+                    self._refreshTitlePosition();
+                    break;
+                case BICst.DASHBOARD_WIDGET_RENAME:
+                    self.title.focus();
+                    //     self.fireEvent(BI.MaximizationChartPane.EVENT_CHANGE, type);
                     break;
                 case BICst.DASHBOARD_WIDGET_LINKAGE:
-                case BICst.DASHBOARD_WIDGET_RENAME:
                 case BICst.DASHBOARD_WIDGET_COPY:
                 case BICst.DASHBOARD_WIDGET_DELETE:
                     self.fireEvent(BI.MaximizationChartPane.EVENT_CHANGE, type);
@@ -226,6 +282,19 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
         this.filterPane.setVisible(!this.filterPane.isVisible());
     },
 
+    _setTitleVisible: function () {
+        var showTitle = BI.Utils.getWSShowNameByID(this.options.wId);
+        this.titleWrapper.setVisible(showTitle);
+    },
+
+    _refreshTitlePosition: function () {
+        var pos = BI.Utils.getWSNamePosByID(this.options.wId);
+        var cls = pos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER ?
+            "dashboard-title-center" : "dashboard-title-left";
+        this.title.element.removeClass("dashboard-title-left")
+            .removeClass("dashboard-title-center").addClass(cls);
+    },
+
     _refreshTableAndFilter: function () {
         BI.isNotNull(this.filterPane) && this.filterPane.populate();
         this.tableChartPopupulate();
@@ -234,8 +303,10 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
 
     populate: function () {
         this._refreshTableAndFilter();
+        this._setTitleVisible();
     }
 });
+BI.MaximizationChartPane.EVENT_SET_TITLE_NAME = "BI.MaximizationChartPane.EVENT_SET_TITLE_NAME";
 BI.MaximizationChartPane.EVENT_SET = "BI.MaximizationChartPane.EVENT_SET";
 BI.MaximizationChartPane.EVENT_CHANGE = "BI.MaximizationChartPane.EVENT_CHANGE";
 BI.MaximizationChartPane.EVENT_CLOSE = "BI.MaximizationChartPane.EVENT_CLOSE";
