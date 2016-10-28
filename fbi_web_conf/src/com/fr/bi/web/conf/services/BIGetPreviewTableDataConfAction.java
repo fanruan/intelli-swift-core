@@ -5,7 +5,7 @@ import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
-import com.finebi.cube.utils.BIWebConfUtils;
+import com.fr.bi.web.conf.utils.BIWebConfUtils;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;

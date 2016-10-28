@@ -6,7 +6,7 @@ import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.db.BIDBTableField;
-import com.finebi.cube.utils.BIImportDBTableConnectionRelationTool;
+import com.fr.bi.web.conf.utils.BIImportDBTableConnectionRelationTool;
 import com.fr.data.core.db.DBUtils;
 import com.fr.general.ComparatorUtils;
 

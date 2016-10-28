@@ -3,7 +3,7 @@ package com.fr.bi.web.conf.services;
 import com.fr.base.FRContext;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
-import com.finebi.cube.utils.BIGetImportedExcelData;
+import com.fr.bi.web.conf.utils.BIGetImportedExcelData;
 import com.fr.cache.Attachment;
 import com.fr.cache.AttachmentSource;
 import com.fr.json.JSONObject;
