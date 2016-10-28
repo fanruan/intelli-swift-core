@@ -61,6 +61,11 @@ public class BIMemDataSourceTestToolCube implements CubeTableSource {
         return set;
     }
 
+    @Override
+    public boolean canExecute() {
+        return true;
+    }
+
     private void initialStatic() {
         stringData.add("玖二");
         stringData.add("七玖");

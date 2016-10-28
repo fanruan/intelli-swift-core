@@ -399,7 +399,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
     }
 
     @Override
-    public boolean canExecute() {
+    public boolean canExecute() throws Exception{
         return true;
     }
 }

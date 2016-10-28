@@ -1,6 +1,7 @@
 package com.fr.bi.conf.data.source;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.TableData;
 import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
@@ -25,7 +26,6 @@ import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.SQLRegUtils;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.core.db.dialect.SybaseDialect;
@@ -299,11 +299,6 @@ public class DBTableSource extends AbstractTableSource {
     }
 
     @Override
-    public boolean canExecute() {
-        return true;
-    }
-
-    @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append(dbName).append(".").append(tableName);
@@ -358,4 +353,36 @@ public class DBTableSource extends AbstractTableSource {
         return DatasourceManager.getInstance().getConnection(dbName);
     }
 
+    @Override
+    public boolean canExecute() throws Exception {
+        try {
+            getConnection().testConnection();
+        } catch (Exception e) {
+            return false;
+        }
+        List<ICubeFieldSource> fields=new ArrayList<ICubeFieldSource>(getFacetFields(null));
+        return testSQL(getConnection(), getSqlString(fields));
+    }
+
+    protected String getSqlString(List<ICubeFieldSource> fields) throws Exception {
+        Connection connection = BIConnectionManager.getInstance().getConnection(dbName);
+        java.sql.Connection conn = connection.createConnection();
+        Dialect dialect = DialectFactory.generateDialect(conn);
+        Table table = new Table(BIConnectionManager.getInstance().getSchema(dbName), tableName);
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < fields.size(); i++) {
+            if (i != 0) {
+                sb.append(",");
+            }
+            sb.append(dialect.column2SQL(fields.get(i).getFieldName()));
+        }
+        String query = "SELECT " + (fields == null || fields.isEmpty() ? "*" : sb.toString()) + " FROM " + dialect.table2SQL(table);
+        return query;
+    }
+
+    protected boolean testSQL(com.fr.data.impl.Connection connection, String SQL) throws Exception {
+        SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
+        sqlStatement.setSql(SQL);
+        return DBQueryExecutor.getInstance().testSQL(sqlStatement);
+    }
 }

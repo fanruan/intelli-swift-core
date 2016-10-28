@@ -122,6 +122,6 @@ public interface CubeTableSource extends XMLable, JSONCreator, BICoreService {
 
     Set<CubeTableSource> getSourceUsedBaseSource(Set<CubeTableSource> set, Set<CubeTableSource> helper);
 
-    boolean canExecute();
+    boolean canExecute() throws Exception;
 
 }

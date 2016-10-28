@@ -56,7 +56,7 @@ public class BIConnectionTestUtils {
      * @return 是否
      * @throws Exception
      */
-    private boolean isTestLinkSuccessful(JDBCDatabaseConnection jdbcDatabaseConnection) throws Exception {
+    public boolean isTestLinkSuccessful(JDBCDatabaseConnection jdbcDatabaseConnection) throws Exception {
         try {
             jdbcDatabaseConnection.testConnection();
             return true;

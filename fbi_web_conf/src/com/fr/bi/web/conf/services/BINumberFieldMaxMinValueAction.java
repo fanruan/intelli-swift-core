@@ -9,7 +9,7 @@ import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
-import com.fr.bi.web.conf.utils.BIWebConfUtils;
+import com.finebi.cube.utils.BIWebConfUtils;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
 import com.fr.web.utils.WebUtils;
