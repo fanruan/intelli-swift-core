@@ -45,11 +45,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                 BI.each(clicked, function(dId, values) {
                     if (BI.Utils.isTargetByDimensionID(dId)) {
                         var newValues = [];
-                        BI.some(values, function(i, v) {
+                        BI.each(values, function(i, v) {
                             if (BI.Utils.isDimensionExist(v.dId)) {
                                 newValues.push(v);
-                            } else {
-                                return true;
                             }
                         });
                         if (newValues.length > 0) {
