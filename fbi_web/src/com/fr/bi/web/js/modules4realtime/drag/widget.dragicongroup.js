@@ -18,6 +18,7 @@ BI.DragIconGroup4RealTime = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.DragIconGroup4RealTime.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-drag-icon-group",
+            width: 100,
             drag: BI.emptyFn
         })
     },
@@ -28,7 +29,7 @@ BI.DragIconGroup4RealTime = BI.inherit(BI.Widget, {
         BI.each(config, function (i, cfg) {
             if (BI.isArray(cfg)) {
                 var oneGroup = self._formatConfig(cfg);
-                if(oneGroup.length > 0) {
+                if (oneGroup.length > 0) {
                     result.push(oneGroup);
                 }
                 return;

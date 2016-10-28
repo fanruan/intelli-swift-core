@@ -1,6 +1,7 @@
 package com.fr.bi.field.filtervalue.number.nonefilter;
 
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.filtervalue.NFilterValue;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -15,6 +16,9 @@ public class NumberSmallThanAvgFilterValue extends NumberNoneValueFilterValue im
 	 * 
 	 */
 	private static final long serialVersionUID = -227802887051918784L;
+
+    @BICoreField
+    private String CLASS_TYPE = "NumberSmallThanAvgFilterValue";
 
 	/**
      * 是否显示记录

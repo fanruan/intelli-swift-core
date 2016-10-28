@@ -2,6 +2,7 @@ package com.fr.bi.field.filtervalue.number.rangefilter;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 
@@ -11,6 +12,9 @@ public class NumberNotInRangeFilterValue extends NumberRangeFilterValue {
      */
     private static final long serialVersionUID = -3892255869004607182L;
     private static String XML_TAG = "NumberNotInRangeFilterValue";
+
+    @BICoreField
+    private String CLASS_TYPE = "NumberNotInRangeFilterValue";
 
     /**
      * 获取过滤后的索引

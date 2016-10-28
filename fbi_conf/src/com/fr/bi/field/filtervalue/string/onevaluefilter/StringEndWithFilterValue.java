@@ -1,11 +1,16 @@
 package com.fr.bi.field.filtervalue.string.onevaluefilter;
 
+import com.fr.bi.base.annotation.BICoreField;
+
 public class StringEndWithFilterValue extends StringOneValueFilterValue {
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = 3158079887486027107L;
 	private static String XML_TAG = "StringEndWithFilterValue";
+
+    @BICoreField
+    private String CLASS_TYPE = "StringEndWithFilterValue";
     /* (non-Javadoc)
      * @see com.fr.bi.report.data.dimension.filter.value.string.StringFilterValue#showNode(com.fr.bi.cube.engine.result.Noder)
 	 */
