@@ -39,6 +39,26 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             self._refreshTableAndFilter();
         });
         BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + wId, function () {
+            //检查一下是否有维度被删除（联动）
+            var clicked = self.model.get("clicked");
+            if (BI.isNotNull(clicked)) {
+                BI.each(clicked, function(dId, values) {
+                    if (BI.Utils.isTargetByDimensionID(dId)) {
+                        var newValues = [];
+                        BI.each(values, function(i, v) {
+                            if (BI.Utils.isDimensionExist(v.dId)) {
+                                newValues.push(v);
+                            }
+                        });
+                        if (newValues.length > 0) {
+                            clicked[dId] = newValues;
+                        } else {
+                            delete clicked[dId];
+                        }
+                    }
+                });
+            }
+            self.model.set("clicked", clicked);
             self._refreshTableAndFilter();
         });
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
