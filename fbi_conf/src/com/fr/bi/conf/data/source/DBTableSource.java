@@ -88,13 +88,6 @@ public class DBTableSource extends AbstractTableSource {
         return super.reGetBiTable();
     }
 
-    public void setUpdateSettingSource(UpdateSettingSource updateSettingSource) {
-        this.updateSettingSource = updateSettingSource;
-    }
-
-    public static void main(String[] args) {
-
-    }
 
 
     /**
