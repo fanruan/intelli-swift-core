@@ -39,7 +39,8 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
         delete config.xAxis;
         delete config.yAxis;
         var isDashboard = BI.contains([self.constants.NORMAL, self.constants.HALF_DASHBOARD], self.config.chart_dashboard_type);
-        if (isDashboard) {
+        var isMultiPointers = self.config.number_of_pointer === self.constants.MULTI_POINTER;
+        if (isDashboard && !isMultiPointers) {
             config.plotOptions.seriesLabel.enabled = false
         }
         config.gaugeAxis[0].labelStyle = this.config.chart_font;
@@ -68,7 +69,13 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                     var label = '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + value +
                         getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS) + '</div>';
 
-                    if (isDashboard && BI.isNull(items[0].data[0].seriesName)) {
+                    if (isDashboard && items[0].data.length > 1) {
+                        if (isMultiPointers) {
+                            return '<div style="text-align: center">' + this.seriesName + ':' + value +
+                                getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS) + '</div>';
+                        }
+                        return label
+                    } else if (isDashboard &&  BI.isNull(items[0].data[0].seriesName)) {
                         return label
                     }
 

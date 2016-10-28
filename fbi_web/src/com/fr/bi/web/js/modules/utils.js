@@ -2765,7 +2765,7 @@
             var date = BI.isNull(consultedDate) ? new Date() : consultedDate;
             var currY = date.getFullYear(), currM = date.getMonth(), currD = date.getDate();
             date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-            if (BI.isNull(type) && isValidDate(v.year)) {
+            if (BI.isNull(type) && isValidDate(v)) {
                 return new Date(v.year, v.month, v.day).getTime();
             }
             switch (type) {
