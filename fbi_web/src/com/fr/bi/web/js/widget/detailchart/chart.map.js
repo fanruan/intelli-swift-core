@@ -71,7 +71,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         config.dTools.enabled = true;
         config.dTools.click = function (point) {
             point = point || {};
-            var pointOption = point.pointOption || {};
+            var pointOption = point.options || {};
             self.fireEvent(BI.MapChart.EVENT_CLICK_DTOOL, pointOption);
         };
         config.chartType = "areaMap";
