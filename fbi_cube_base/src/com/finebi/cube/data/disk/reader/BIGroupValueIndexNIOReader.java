@@ -28,7 +28,7 @@ public class BIGroupValueIndexNIOReader implements ICubeGroupValueIndexReader {
 
     public BIGroupValueIndexNIOReader(ICubeByteArrayReader byteList) {
         this.byteArray = byteList;
-        cache = CacheBuilder.newBuilder()
+        cache = CacheBuilder.newBuilder().weakKeys().weakValues()
                 .weigher(new Weigher<Integer, GroupValueIndex>() {
                     @Override
                     public int weigh(Integer integer, GroupValueIndex groupValueIndex) {
