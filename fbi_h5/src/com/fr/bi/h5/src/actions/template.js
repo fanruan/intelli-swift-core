@@ -8,6 +8,6 @@ export function updateWidget($widget, wId) {
     return {type: types.UPDATE_WIDGET, $widget, wId}
 }
 
-export function widgetLinkage() {
-    return {type: types.WIDGET_LINKAGE}
+export function widgetLinkage(wId, clicked) {
+    return {type: types.WIDGET_LINKAGE, wId, clicked}
 }

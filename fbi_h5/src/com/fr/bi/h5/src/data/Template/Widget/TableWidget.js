@@ -10,6 +10,7 @@ class TableWidget extends AbstractWidget {
     }
 
     getData(options) {
+        this.getWidgetCalculationByID();
         const wi = this.createJson();
         return Fetch(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
             method: "POST",
