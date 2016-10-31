@@ -56,13 +56,110 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
         var self = this, o = this.options;
         var linkageInfo = this.model.getLinkageInfo(obj);
         var dId = linkageInfo.dId, clicked = linkageInfo.clicked;
+        if (BI.Utils.getDimensionTypeByID(dId) === BICst.TARGET_TYPE.FORMULA) {
+            // self._createMultiLinkage({
+            //     dId: dId,
+            //     clicked: clicked
+            // }, {});
+        } else {
+            BI.each(BI.Utils.getWidgetLinkageByID(o.wId), function (i, link) {
+                if (BI.contains(dId, link.from) && BI.isEmptyArray(link.cids)) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + link.to, link.from, clicked);
+                    self._send2AllChildLinkWidget(link.to, link.from, clicked);
+                }
+            });
+        }
+        this.fireEvent(BI.ChartDisplay.EVENT_CHANGE, obj);
+    },
+
+    //点击计算指标时出现的选择框  暂时先放在这里
+    _createMultiLinkage: function (obj, place) {
+        var self =this, o = this.options;
+        if (this.linkageList) {
+            this.linkageList.destroy();
+        }
+        var dId = obj.dId[0], clicked = obj.clicked;
+        var expression = BI.Utils.getDimensionSrcByID(dId).expression;
+        if(!expression) {
+            return;
+        }
+        var linkages = [];
         BI.each(BI.Utils.getWidgetLinkageByID(o.wId), function (i, link) {
-            if (BI.contains(dId, link.from)) {
-                BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + link.to, link.from, clicked);
-                self._send2AllChildLinkWidget(link.to, link.from, clicked);
+            if(dId === link.cids[0]) {
+                linkages.push(link);
             }
         });
-        this.fireEvent(BI.ChartDisplay.EVENT_CHANGE, obj);
+
+        if (linkages.length < 1) {
+            return;
+        }
+
+        if(linkages.length === 1) {
+            BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + linkages[0].to, linkages[0].from, clicked);
+            self._send2AllChildLinkWidget(linkages[0].to, linkages[0].from, clicked);
+        } else {
+            var items = [];
+            BI.each(linkages, function (idx, link) {
+                var name = "";
+                BI.each(link.cids, function (idx, cId) {
+                    name += BI.Utils.getDimensionNameByID(cId) + "-";
+                });
+                name += BI.Utils.getDimensionNameByID(link.from) + "-" + BI.i18nText("BI-Link");
+                items.push({
+                    text: name,
+                    title: name,
+                    to: link.to,
+                    from: link.from
+                })
+            });
+            this._doDestroy = true;
+            this.linkageList = BI.createWidget({
+                type: "bi.button_group",
+                items: BI.createItems(items, {
+                    type: "bi.text_button",
+                    width: 100,
+                    height: 30,
+                    handler: function () {
+                        var link = this.options;
+                        BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + link.to, link.from, clicked);
+                        self._send2AllChildLinkWidget(link.to, link.from, clicked);
+                        this.fireEvent(BI.TextButton.EVENT_CHANGE, arguments);
+                    }
+                }),
+                width: 120,
+                height: 30* items.length +10,
+                layouts: [{
+                    type: "bi.vertical"
+                }]
+            });
+            this.linkageList.on(BI.TextButton.EVENT_CHANGE, function () {
+                self.linkageList.destroy();
+            });
+            var destroyList = BI.debounce(BI.bind(function () {
+                if(self._doDestroy) {
+                    this.destroy();
+                }
+            }, this.linkageList), 3000);
+
+            this.linkageList.element.hover(function () {
+                self._doDestroy = false;
+            }, function () {
+                self._doDestroy = true;
+                destroyList();
+            });
+            destroyList();
+            BI.createWidget({
+                type: "bi.absolute",
+                element: this.element,
+                items: [{
+                    el: this.linkageList,
+                    left:0,
+                    right:0,
+                    top:0,
+                    bottom:0
+                }]
+            });
+        }
     },
 
     _onClickDrill: function (dId, value, drillId) {
@@ -94,13 +191,16 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
         //上钻
         if (BI.isNull(drillId)) {
             if (drillOperators.length !== 0) {
-                var val = drillOperators[drillOperators.length - 1].values[0].value[0];
-                while (val !== value) {
+                var val = drillOperators[drillOperators.length - 1].values[0].dId;
+                while (val !== dId) {
                     if (drillOperators.length === 0) {
                         break;
                     }
                     var obj = drillOperators.pop();
-                    val = obj.values[0].value[0];
+                    val = obj.values[0].dId;
+                }
+                if(val === dId && drillOperators.length !== 0){
+                    drillOperators.pop();
                 }
             }
         } else {

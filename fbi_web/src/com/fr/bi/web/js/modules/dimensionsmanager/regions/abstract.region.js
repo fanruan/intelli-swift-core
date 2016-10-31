@@ -106,12 +106,17 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
                     });
                 }
                 BI.each(data, function (i, dimension) {
+                    dimension.name = createDimName(dimension.name);
                     self.addDimension(dimension.dId || BI.UUID(), dimension)
                 });
                 if (data.length > 0) {
                     self.fireEvent(BI.AbstractRegion.EVENT_CHANGE);
                 }
                 BI.Broadcasts.send(BICst.BROADCAST.FIELD_DROP_PREFIX);
+
+                function createDimName (fieldName) {
+                    return BI.Func.createDistinctName(BI.Utils.getWidgetDimensionsByID(o.wId), fieldName);
+                }
             },
             over: function (event, ui) {
                 if (BI.isNull(self.forbiddenMask) || !self.forbiddenMask.isVisible()) {

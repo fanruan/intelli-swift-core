@@ -5,6 +5,7 @@
 import Immutable from 'immutable'
 import {each, invariant, isNil, find, findKey, remove, isEqual, size, keys, isNumeric, isString} from 'core';
 import {Fetch} from 'lib'
+import {Status} from 'data'
 import DimensionFactory from './Dimensions/DimensionFactory'
 
 class AbstractWidget {
@@ -178,15 +179,15 @@ class AbstractWidget {
     }
 
     getWidgetBounds() {
-        return this.$widget.get('bounds').toJS() || {};
+        return this.$widget.get('bounds') ? this.$widget.get('bounds').toJS() : {};
     }
 
     getWidgetLinkage() {
-        return this.$widget.get('linkages').toJS() || [];
+        return this.$widget.get('linkages') ? this.$widget.get('linkages').toJS() : [];
     }
 
     getWidgetView() {
-        return this.$widget.get('view').toJS() || {};
+        return this.$widget.get('view') ? this.$widget.get('view').toJS() : {};
     }
 
     getWidgetSubType() {
@@ -269,11 +270,11 @@ class AbstractWidget {
                             fType = BICst.FILTER_DATE.BELONG_DATE_RANGE;
                             var start = fValue.start, end = fValue.end;
                             fValue = {};
-                            if (BI.isNotNull(start)) {
+                            if (!isNil(start)) {
                                 start = this._parseComplexDate(start);
                                 fValue.start = start;
                             }
-                            if (BI.isNotNull(end)) {
+                            if (!isNil(end)) {
                                 end = this._parseComplexDate(end);
                                 fValue.end = end;
                             }
@@ -286,7 +287,7 @@ class AbstractWidget {
                         case BICst.WIDGET.MONTH:
                             fType = BICst.FILTER_DATE.EQUAL_TO;
                             var year = fValue.year, month = fValue.month;
-                            if (BI.isNumeric(year)) {
+                            if (isNumeric(year)) {
                                 filterValues.push({
                                     filter_type: BICst.FILTER_DATE.EQUAL_TO,
                                     filter_value: {group: BICst.GROUP.Y, values: year},
@@ -383,7 +384,7 @@ class AbstractWidget {
                     var leafFilterObj = {
                         filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
                         filter_value: {
-                            type: BI.Selection.Multi,
+                            type: Status.Selection.Multi,
                             value: [value]
                         },
                         _src: dimension.getDimensionSrc()
@@ -409,7 +410,7 @@ class AbstractWidget {
                     var leafFilterObj = {
                         filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
                         filter_value: {
-                            type: value === "_*_" ? BI.Selection.All : BI.Selection.Multi,
+                            type: value === "_*_" ? Status.Selection.All : Status.Selection.Multi,
                             value: [value]
                         },
                         // _src: {field_id: self.getFieldIDByDimensionID(dimensionIds[floor])}
@@ -424,7 +425,7 @@ class AbstractWidget {
                         !isNil(fatherFilterValue) && filterObj.filter_value.push(fatherFilterValue);
                         result.push(filterObj);
                     } else {
-                        if (leafFilterObj.filter_value.type === BI.Selection.All) {
+                        if (leafFilterObj.filter_value.type === Status.Selection.All) {
                             leafFilterObj = fatherFilterValue
                         }
                         createTreeLabelFilterValue(result, child, floor + 1, dimensionIds, leafFilterObj);
@@ -439,13 +440,171 @@ class AbstractWidget {
     }
 
     getWidgetCalculationByID() {
-        var self = this;
         var filterValues = [];
+
+        const getLinkedIds = (links) => {
+            var allWIds = this.template.getAllWidgetIds();
+            allWIds.forEach((aWid, i)=> {
+                var linkages = this.template.getWidgetLinkageByID(aWid);
+                linkages.forEach((link)=> {
+                    if (link.to === this.wid) {
+                        links.push(this.template.getWidgetIDByDimensionID(link.from));
+                        getLinkedIds(this.template.getWidgetIDByDimensionID(link.from), links);
+                    }
+                });
+            });
+        };
+
+        //对于维度的条件，很有可能是一个什么属于分组 这边处理 （没放到构造的地方处理是因为“其他”）
+        const parseStringFilter4Group = (dId, value)=> {
+            var dimension = this.template.getDimensionById(dId);
+            var group = dimension.getGroup();
+            var details = group.details;
+            var groupMap = {};
+            details && details.forEach((detail, i)=> {
+                groupMap[detail.id] = [];
+                detail.content.forEach((content, i)=> {
+                    groupMap[detail.id].push(content.value);
+                });
+            });
+            var groupNames = keys(groupMap), ungroupName = group.ungroup2OtherName;
+            if (group.ungroup2Other === BICst.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED) {
+                groupNames.push(BICst.UNGROUP_TO_OTHER);
+            }
+            // 对于drill和link 一般value的数组里只有一个值
+            var v = value[0];
+            if (groupNames.indexOf(v) > -1) {
+                if (v === ungroupName) {
+                    var vs = [];
+                    each(groupMap, (gv, gk)=> {
+                        gk !== v && (vs = vs.concat(gv));
+                    });
+                    return {
+                        filter_type: BICst.TARGET_FILTER_STRING.NOT_BELONG_VALUE,
+                        filter_value: {type: Status.Selection.Multi, value: vs},
+                        _src: {field_id: dimension.getFieldId()}
+                    }
+                }
+                return {
+                    filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
+                    filter_value: {type: Status.Selection.Multi, value: groupMap[v]},
+                    _src: {field_id: dimension.getFieldId()}
+                }
+            }
+            return {
+                filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
+                filter_value: {type: Status.Selection.Multi, value: value},
+                _src: {field_id: dimension.getFieldId()}
+            }
+        };
+
+        const parseNumberFilter4Group = (dId, v)=> {
+            var value = v[0];
+            var dimension = this.template.getDimensionById(dId);
+            var group = dimension.getGroup();
+            var groupValue = group.group_value, groupType = group.type;
+            var groupMap = {};
+            if (isNil(groupValue) && isNil(groupType)) {
+                //没有分组为自动分组 但是这个时候维度中无相关分组信息，暂时截取来做
+                var sIndex = value.indexOf("-");
+                var min = value.slice(0, sIndex), max = value.slice(sIndex + 1);
+                return {
+                    filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
+                    filter_value: {
+                        min: min,
+                        max: max,
+                        closemin: true,
+                        closemax: false
+                    },
+                    _src: {field_id: dimension.getFieldID()}
+                }
+            }
+            if (groupType === BICst.GROUP.AUTO_GROUP) {
+                //坑爹，要自己算分组名称出来
+                var groupInterval = groupValue.group_interval, max = groupValue.max, min = groupValue.min;
+                while (min < max) {
+                    var newMin = min + groupInterval;
+                    groupMap[min + "-" + newMin] = {
+                        min: min,
+                        max: newMin,
+                        closemin: true,
+                        closemax: newMin >= max
+                    };
+                    min = newMin;
+                }
+                return {
+                    filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
+                    filter_value: groupMap[value],
+                    _src: {field_id: dimension.getFieldId()}
+                };
+            }
+            if (groupType === BICst.GROUP.ID_GROUP) {
+                return {
+                    filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
+                    filter_value: {
+                        min: value,
+                        max: value,
+                        closemin: true,
+                        closemax: true
+                    },
+                    _src: {field_id: dimension.getFieldId()}
+                }
+            }
+            var groupNodes = groupValue.group_nodes, useOther = groupValue.use_other;
+            var oMin, oMax;
+            groupNodes.forEach((node, i)=> {
+                i === 0 && (oMin = node.min);
+                i === groupNodes.length - 1 && (oMax = node.max);
+                groupMap[node.id] = {
+                    min: node.min,
+                    max: node.max,
+                    closemin: node.closemin,
+                    closemax: node.closemax
+                }
+            });
+            if (!isNil(groupMap[value])) {
+                return {
+                    filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
+                    filter_value: groupMap[value],
+                    _src: {field_id: dimension.getFieldId()}
+                };
+            } else if (value === BICst.UNGROUP_TO_OTHER) {
+                return {
+                    filter_type: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
+                    filter_value: {
+                        min: oMin,
+                        max: oMax,
+                        closemin: true,
+                        closemax: true
+                    },
+                    _src: {field_id: dimension.getFieldId()}
+                };
+            }
+        };
+
+        const parseSimpleFilter = (v)=> {
+            var dId = v.dId;
+            var dimension = this.template.getDimensionById(dId);
+            var dType = dimension.getType();
+            switch (dType) {
+                case BICst.TARGET_TYPE.STRING:
+                    return parseStringFilter4Group(dId, v.value);
+                case BICst.TARGET_TYPE.NUMBER:
+                    return parseNumberFilter4Group(dId, v.value);
+                case BICst.TARGET_TYPE.DATE:
+                    var groupType = dimension.getGroupType();
+                    return {
+                        filter_type: BICst.FILTER_DATE.EQUAL_TO,
+                        filter_value: {values: v.value[0], group: groupType},
+                        _src: {field_id: dimension.getFieldId()}
+                    };
+            }
+        };
 
         //钻取条件  对于交叉表，要考虑的不仅仅是used，还有行表头与列表头之间的钻取问题
         var drill = this.getDrill();
         if (!isNil(drill) && this.getType() !== BICst.WIDGET.MAP) {
-            drill.forEach((drArray, drId)=> {
+            each(drill, (drArray, drId)=> {
                 if (drArray.length === 0) {
                     return;
                 }
@@ -485,7 +644,7 @@ class AbstractWidget {
 
         //联动 由于这个clicked现在放到了自己的属性里，直接拿就好了
         var linkages = this.getLinkageValues();
-        linkages.forEach((linkValue, cId)=> {
+        each(linkages, (linkValue, cId)=> {
             linkValue.forEach((v, i)=> {
                 var filterValue = parseSimpleFilter(v);
                 if (!isNil(filterValue)) {
@@ -531,7 +690,7 @@ class AbstractWidget {
                     drArray.forEach((drill, id)=> {
                         drArray[i].values.forEach((v, i) => {
                             var filterValue = parseSimpleFilter(v);
-                            if (!isNill(filterValue)) {
+                            if (!isNil(filterValue)) {
                                 filterValues.push(filterValue);
                             }
                         });
@@ -543,33 +702,22 @@ class AbstractWidget {
 
         //日期类型的过滤条件
         var dimensions = this.getAllDimensionAndTargetIds();
-        dimensions.forEach((dimension, dId)=> {
-            var filterValue = this.getDimensionById(dId).getFilterValue() || {};
+        dimensions.forEach((dId)=> {
+            let dimension = this.getDimensionOrTargetById(dId);
+            var filterValue = dimension.getFilterValue() || {};
             this._parseFilter(filterValue);
+            dimension.setFilterValue(filterValue);
             this.set$Dimension(dimension.$get(), dId);
         });
 
         //考虑表头上指标过滤条件的日期类型
-        var target_filter = this.getWidgetFilterValue();
-        target_filter.forEach((filter, tId)=> {
+        var target_filter = this.getWidgetFilterValue(this.wId);
+        each(target_filter, (filter, tId)=> {
             this._parseFilter(filter)
         });
         this.setWidgetFilterValue(target_filter);
         this.setWidgetFilter({filter_type: BICst.FILTER_TYPE.AND, filter_value: filterValues});
         this.setWidgetRealData(true);
-
-        function getLinkedIds(links) {
-            var allWIds = self.template.getAllWidgetIds();
-            allWIds.forEach((aWid, i)=> {
-                var linkages = self.template.getWidgetLinkageByID(aWid);
-                linkages.forEach((link, i)=> {
-                    if (link.to === self.wid) {
-                        links.push(self.template.getWidgetIDByDimensionID(link.from));
-                        getLinkedIds(self.template.getWidgetIDByDimensionID(link.from), links);
-                    }
-                });
-            });
-        }
     }
 
     getWidgetSettings() {
@@ -669,7 +817,7 @@ class AbstractWidget {
 
 
     isDimensionExist(did) {
-        return this.getAllDimensionIds().indexOf(did) > -1;
+        return this.template.getAllDimensionAndTargetIds().indexOf(did) > -1;
     }
 
     getWidgetInitTime() {
@@ -677,13 +825,13 @@ class AbstractWidget {
     }
 
     getClicked() {
-        return this.$widget.get('clicked') || {};
+        return this.$widget.get('clicked') ? this.$widget.get('clicked').toJS() : {};
     }
 
     getDrill() {
         var clicked = this.getClicked();
         var drills = {};
-        each(clicked, (dId, value)=> {
+        each(clicked, (value, dId)=> {
             if (this.isDimensionExist(dId) && this.isDimensionById(dId)) {
                 drills[dId] = value;
             }
@@ -694,7 +842,7 @@ class AbstractWidget {
     getLinkageValues() {
         var clicked = this.getClicked();
         var drills = {};
-        each(clicked, (dId, value)=> {
+        each(clicked, (value, dId)=> {
             if (this.isDimensionExist(dId) && !this.isDimensionById(dId)) {
                 drills[dId] = value;
             }
@@ -901,152 +1049,6 @@ class AbstractWidget {
             return {
                 start: start.getTime(),
                 end: end.getTime()
-            }
-        }
-
-        //对于维度的条件，很有可能是一个什么属于分组 这边处理 （没放到构造的地方处理是因为“其他”）
-        function parseStringFilter4Group(dId, value) {
-            var dimension = self.template.getDimensionById(dId);
-            var group = dimension.getGroup();
-            var details = group.details;
-            var groupMap = {};
-            details.forEach((detail, i)=> {
-                groupMap[detail.id] = [];
-                detail.content.forEach((content, i)=> {
-                    groupMap[detail.id].push(content.value);
-                });
-            })
-            var groupNames = keys(groupMap), ungroupName = group.ungroup2OtherName;
-            if (group.ungroup2Other === BICst.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED) {
-                groupNames.push(BICst.UNGROUP_TO_OTHER);
-            }
-            // 对于drill和link 一般value的数组里只有一个值
-            var v = value[0];
-            if (groupNames.contains(v)) {
-                if (v === ungroupName) {
-                    var vs = [];
-                    groupMap.forEach((gv, gk)=> {
-                        gk !== v && (vs = vs.concat(gv));
-                    })
-                    return {
-                        filter_type: BICst.TARGET_FILTER_STRING.NOT_BELONG_VALUE,
-                        filter_value: {type: BI.Selection.Multi, value: vs},
-                        _src: {field_id: dimension.getFieldId()}
-                    }
-                }
-                return {
-                    filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
-                    filter_value: {type: BI.Selection.Multi, value: groupMap[v]},
-                    _src: {field_id: dimension.getFieldId()}
-                }
-            }
-            return {
-                filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
-                filter_value: {type: BI.Selection.Multi, value: value},
-                _src: {field_id: dimension.getFieldId()}
-            }
-        }
-
-        function parseNumberFilter4Group(dId, v) {
-            var value = v[0];
-            var dimension = self.template.getDimensionById(dId);
-            var group = dimension.getGroup();
-            var groupValue = group.group_value, groupType = group.type;
-            var groupMap = {};
-            if (isNil(groupValue) && isNil(groupType)) {
-                //没有分组为自动分组 但是这个时候维度中无相关分组信息，暂时截取来做
-                var sIndex = value.indexOf("-");
-                var min = value.slice(0, sIndex), max = value.slice(sIndex + 1);
-                return {
-                    filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
-                    filter_value: {
-                        min: min,
-                        max: max,
-                        closemin: true,
-                        closemax: false
-                    },
-                    _src: {field_id: dimension.getFieldID()}
-                }
-            }
-            if (groupType === BICst.GROUP.AUTO_GROUP) {
-                //坑爹，要自己算分组名称出来
-                var groupInterval = groupValue.group_interval, max = groupValue.max, min = groupValue.min;
-                while (min < max) {
-                    var newMin = min + groupInterval;
-                    groupMap[min + "-" + newMin] = {
-                        min: min,
-                        max: newMin,
-                        closemin: true,
-                        closemax: newMin >= max
-                    };
-                    min = newMin;
-                }
-                return {
-                    filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
-                    filter_value: groupMap[value],
-                    _src: {field_id: dimension.getFieldId()}
-                };
-            }
-            if (groupType === BICst.GROUP.ID_GROUP) {
-                return {
-                    filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
-                    filter_value: {
-                        min: value,
-                        max: value,
-                        closemin: true,
-                        closemax: true
-                    },
-                    _src: {field_id: dimension.getFieldId()}
-                }
-            }
-            var groupNodes = groupValue.group_nodes, useOther = groupValue.use_other;
-            var oMin, oMax;
-            groupNodes.forEach((node, i)=> {
-                i === 0 && (oMin = node.min);
-                i === groupNodes.length - 1 && (oMax = node.max);
-                groupMap[node.id] = {
-                    min: node.min,
-                    max: node.max,
-                    closemin: node.closemin,
-                    closemax: node.closemax
-                }
-            });
-            if (!isNil(groupMap[value])) {
-                return {
-                    filter_type: BICst.TARGET_FILTER_NUMBER.BELONG_VALUE,
-                    filter_value: groupMap[value],
-                    _src: {field_id: dimension.getFieldId()}
-                };
-            } else if (value === BICst.UNGROUP_TO_OTHER) {
-                return {
-                    filter_type: BICst.TARGET_FILTER_NUMBER.NOT_BELONG_VALUE,
-                    filter_value: {
-                        min: oMin,
-                        max: oMax,
-                        closemin: true,
-                        closemax: true
-                    },
-                    _src: {field_id: dimension.getFieldId()}
-                };
-            }
-        }
-
-        function parseSimpleFilter(v) {
-            var dId = v.dId;
-            var dimension = self.template.getDimensionById(dId);
-            var dType = dimension.getType();
-            switch (dType) {
-                case BICst.TARGET_TYPE.STRING:
-                    return parseStringFilter4Group(dId, v.value);
-                case BICst.TARGET_TYPE.NUMBER:
-                    return parseNumberFilter4Group(dId, v.value);
-                case BICst.TARGET_TYPE.DATE:
-                    var groupType = dimension.getGroupType();
-                    return {
-                        filter_type: BICst.FILTER_DATE.EQUAL_TO,
-                        filter_value: {values: v.value[0], group: groupType},
-                        _src: {field_id: dimension.getFieldId()}
-                    };
             }
         }
 

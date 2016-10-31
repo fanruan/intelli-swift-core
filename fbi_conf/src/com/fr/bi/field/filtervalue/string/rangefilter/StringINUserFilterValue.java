@@ -27,6 +27,9 @@ public class StringINUserFilterValue extends StringRangeFilterValue {
     @BICoreField
     protected String fieldId;
 
+    @BICoreField
+    private String CLASS_TYPE = "StringINUserFilterValue";
+
     @Override
     public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
         addLogUserInfo();
