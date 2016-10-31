@@ -61,7 +61,7 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
         if (!this.title) {
             this.title = BI.createWidget({
                 type: "bi.shelter_editor",
-                cls:"dashboard-title-left",
+                cls: "dashboard-title-left",
                 value: BI.Utils.getWidgetNameByID(id),
                 textAlign: "left",
                 height: 25,
