@@ -233,7 +233,7 @@ BI.AxisChart = BI.inherit(BI.AbstractChart, {
             num_separators: options.num_separators || false,
             right_num_separators: options.right_num_separators || false,
             chart_font: options.chart_font || c.FONT_STYLE,
-            null_continue: options.null_continue || false
+            null_continue: true
         };
         this.options.items = items;
 
