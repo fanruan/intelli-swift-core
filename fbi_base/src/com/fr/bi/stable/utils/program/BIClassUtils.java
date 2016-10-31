@@ -48,6 +48,9 @@ public class BIClassUtils {
                 } else if ("jar".equals(protocol)) {
                     packageName = disposeJar(classes, recursive, packageName, packageDirName, url);
                 } else if ("zip".equals(protocol)) {
+                    /**
+                     * weblogic服务器实现load方法，获得jar资源会将识别成zip格式。
+                     */
                     packageName = disposeZip(classes, recursive, packageName, packageDirName, url);
                 }
             }
