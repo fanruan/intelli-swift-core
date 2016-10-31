@@ -26,11 +26,6 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.router.IRouter;
 import com.finebi.cube.structure.BICube;
-import com.finebi.cube.structure.BICubeRelation;
-import com.finebi.cube.structure.BICubeTablePath;
-import com.finebi.cube.structure.ITableKey;
-import com.finebi.cube.utils.BICubePathUtils;
-import com.finebi.cube.utils.BICubeRelationUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
 import com.fr.bi.common.factory.BIFactoryHelper;
@@ -42,8 +37,6 @@ import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
-import com.fr.bi.stable.exception.BITablePathConfusionException;
-import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
@@ -124,7 +117,12 @@ public class BuildCubeTask implements CubeTask {
                 long start = System.currentTimeMillis();
                 boolean replaceSuccess = replaceOldCubes();
                 if (replaceSuccess) {
-                    BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId());
+                    /**
+                     * 单表更新没有处理新增关联,这里单表更新逻辑需要重新整理,先简单处理一下,防止目前使用的时候分析会获取到没有生成的关联而报错
+                     */
+                    if (!cubeBuildStuff.isSingleTable()) {
+                        BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId());
+                    }
                     BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
                     BIModuleUtils.clearAnalysisETLCache(biUser.getUserId());
                     BILoggerFactory.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
