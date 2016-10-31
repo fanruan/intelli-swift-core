@@ -137,6 +137,8 @@ public class UserWidget {
                         rowList.add(0, v);
                         temp = temp.getParent();
                     }
+                    values.add(rowList);
+                    n = n.getSibling();
                 }
             }
         } catch (JSONException e) {

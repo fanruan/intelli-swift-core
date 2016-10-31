@@ -75,7 +75,7 @@ public class BuildCubeTask implements CubeTask {
         cubeConfiguration = cubeBuildStuff.getCubeConfiguration();
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         this.cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
-        retryNTimes = 1000;
+        retryNTimes = 100;
     }
 
     @Override
