@@ -102,7 +102,7 @@ BI.MultiSelectCombo = BI.inherit(BI.Single, {
             keywords = BI.initial(keywords || []);
             if (keywords.length > 0) {
                 self._joinKeywords(keywords, function () {
-                    if (last === " ") {
+                    if (BI.isEndWithBlank(last)) {
                         self.combo.setValue(self.storeValue);
                         assertShowValue();
                         self.combo.populate();

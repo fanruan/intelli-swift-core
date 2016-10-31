@@ -4,7 +4,6 @@ import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.relation.*;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.data.impl.Connection;
 
 import java.util.List;
 import java.util.Map;
@@ -13,7 +12,7 @@ import java.util.Set;
 /**
  * Created by kary on 16/5/30.
  */
-public interface CubeBuild {
+public interface CubeBuildStuff {
 
 
     Set<BITableSourceRelationPath> getBiTableSourceRelationPathSet();
@@ -22,7 +21,7 @@ public interface CubeBuild {
 
     Set<BITableSourceRelation> getTableSourceRelationSet();
 
-    Set<CubeTableSource> getSources();
+    Set<CubeTableSource> getAllTableSources();
 
     Set<List<Set<CubeTableSource>>> getDependTableResource();
 
@@ -46,7 +45,6 @@ public interface CubeBuild {
 
     Map<CubeTableSource, UpdateSettingSource> getUpdateSettingSources();
 
-    Map<CubeTableSource, Connection> getConnections();
 
    String getCubeTaskId();
 }

@@ -2,6 +2,7 @@ package com.fr.bi.field.filtervalue.number.evenfilter;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
@@ -16,6 +17,9 @@ public class NumberNotEqualFilterValue extends NumberEvenFilterValue {
 	 * 
 	 */
 	private static final long serialVersionUID = -3179573765187490573L;
+
+    @BICoreField
+    private String CLASS_TYPE = "NumberNotEqualFilterValue";
 
 	/**
      * 显示节点

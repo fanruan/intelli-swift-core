@@ -2,6 +2,7 @@ package com.fr.bi.field.filtervalue.date.evenfilter;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 
@@ -9,6 +10,9 @@ import com.fr.bi.stable.report.result.DimensionCalculator;
  * Created by 小灰灰 on 2014/6/2.
  */
 public class DateNotEqualsTargetFilterValue extends DateKeyTargetFilterValue {
+
+    @BICoreField
+    private String CLASS_TYPE = "DateNotEqualsTargetFilterValue";
 
     /**
      * 获取过滤后的索引

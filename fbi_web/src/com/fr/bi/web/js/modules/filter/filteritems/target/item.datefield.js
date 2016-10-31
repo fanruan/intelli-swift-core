@@ -178,7 +178,7 @@ BI.TargetDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             type: "bi.multidate_param_combo",
             width: this._constant.INPUT_WIDTH
         });
-        this.filterWidget.on(BI.MultiDateParamCombo.EVENT_CHANGE, function () {
+        this.filterWidget.on(BI.MultiDateParamCombo.EVENT_CONFIRM, function () {
             self._setNodeData({
                 filter_value: this.getValue()
             });

@@ -162,6 +162,11 @@ public class BIOccupiedCubeTableSource implements CubeTableSource {
     }
 
     @Override
+    public boolean canExecute() {
+        return true;
+    }
+
+    @Override
     public BICore fetchObjectCore() {
         return BIBasicCore.generateValueCore(this.hostTableSource.getSourceID());
     }

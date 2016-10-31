@@ -1,7 +1,7 @@
 package com.finebi.cube.gen.arrange;
 
-import com.finebi.cube.conf.CubePreConditionsCheck;
-import com.finebi.cube.impl.conf.CubePreConditionsCheckManager;
+import com.finebi.cube.utils.CubePreConditionsCheck;
+import com.finebi.cube.utils.CubePreConditionsCheckManager;
 import junit.framework.TestCase;
 
 import java.io.File;

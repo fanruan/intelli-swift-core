@@ -191,13 +191,16 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
         //上钻
         if (BI.isNull(drillId)) {
             if (drillOperators.length !== 0) {
-                var val = drillOperators[drillOperators.length - 1].values[0].value[0];
-                while (val !== value) {
+                var val = drillOperators[drillOperators.length - 1].values[0].dId;
+                while (val !== dId) {
                     if (drillOperators.length === 0) {
                         break;
                     }
                     var obj = drillOperators.pop();
-                    val = obj.values[0].value[0];
+                    val = obj.values[0].dId;
+                }
+                if(val === dId && drillOperators.length !== 0){
+                    drillOperators.pop();
                 }
             }
         } else {
