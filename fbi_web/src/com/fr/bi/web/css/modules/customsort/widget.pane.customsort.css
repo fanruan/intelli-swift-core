@@ -13,6 +13,9 @@
   opacity: 0.03;
   filter: alpha(opacity=3);
 }
+.bi-custom-sort-item:active {
+  cursor: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/cursor/cursor_drag_hand.cur'), auto;
+}
 .bi-sortable-holder {
   border: 1px dashed #d4dadd;
   -webkit-border-radius: 2px;
