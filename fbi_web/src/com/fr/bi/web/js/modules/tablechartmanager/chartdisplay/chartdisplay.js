@@ -57,10 +57,10 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
         var linkageInfo = this.model.getLinkageInfo(obj);
         var dId = linkageInfo.dId, clicked = linkageInfo.clicked;
         if (BI.Utils.getDimensionTypeByID(dId) === BICst.TARGET_TYPE.FORMULA) {
-            // self._createMultiLinkage({
-            //     dId: dId,
-            //     clicked: clicked
-            // }, {});
+            self._createMultiLinkage({
+                dId: dId,
+                clicked: clicked
+            }, {});
         } else {
             BI.each(BI.Utils.getWidgetLinkageByID(o.wId), function (i, link) {
                 if (BI.contains(dId, link.from) && BI.isEmptyArray(link.cids)) {
