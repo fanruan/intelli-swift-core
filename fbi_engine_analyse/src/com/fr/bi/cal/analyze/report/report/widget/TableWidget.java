@@ -264,4 +264,20 @@ public class TableWidget extends BISummaryWidget {
     public void setOperator(int operator) {
         this.operator = operator;
     }
+
+    public boolean hasVerticalPrePage() {
+        return pageSpinner[BIReportConstant.TABLE_PAGE.VERTICAL_PRE] > 0;
+    }
+
+    public boolean hasVerticalNextPage() {
+        return pageSpinner[BIReportConstant.TABLE_PAGE.VERTICAL_NEXT] > 0;
+    }
+
+    public boolean hasHorizonPrePage() {
+        return pageSpinner[BIReportConstant.TABLE_PAGE.HORIZON_PRE] > 0;
+    }
+
+    public boolean hasHorizonNextPage() {
+        return pageSpinner[BIReportConstant.TABLE_PAGE.HORIZON_NEXT] > 0;
+    }
 }
