@@ -418,6 +418,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         show_left_label: false,
                         show_right_label: false,
                         show_right2_label: false,
+                        cat_label_style: BI.Utils.getWSCatLabelStyleByID(o.wId),
                         line_width: BICst.DEFAULT_CHART_SETTING.mini_line_width,
                         enable_tick: BICst.DEFAULT_CHART_SETTING.mini_enable_tick,
                         enable_minor_tick: BICst.DEFAULT_CHART_SETTING.mini_enable_minor_tick,

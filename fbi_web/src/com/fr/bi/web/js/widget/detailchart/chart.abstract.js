@@ -139,6 +139,9 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
     },
 
     formatXYDataWithMagnify: function (number, magnify) {
+        if (BI.isNull(number)) {
+            return null
+        }
         if (!BI.isNumber(number)) {
             number = BI.parseFloat(number);
         }
@@ -349,7 +352,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             tickInterval: BI.isNumber(config.custom_y_scale.interval.scale) && config.custom_y_scale.interval.scale > 0 ?
                 config.custom_y_scale.interval.scale : null,
             formatter: this.formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators)
-        }  
+        }
     },
 
     rightAxisSetting: function (config) {
