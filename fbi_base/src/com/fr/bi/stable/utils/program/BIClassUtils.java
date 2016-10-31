@@ -1,8 +1,8 @@
 package com.fr.bi.stable.utils.program;
 
 import com.finebi.cube.common.log.BILogger;
-import com.fr.bi.stable.utils.code.BILogDelegate;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.utils.code.BILogDelegate;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -33,25 +33,22 @@ public class BIClassUtils {
         // 获取包的名字 并进行替换
         String packageName = pack;
         String packageDirName = packageName.replace('.', '/');
-        // 定义一个枚举的集合 并进行循环来处理这个目录下的things
         Enumeration<URL> dirs;
         try {
             dirs = getAggregatedClassLoader(BIClassUtils.class.getClassLoader()).getResources(
                     packageDirName);
             logger.info("get the package:" + packageDirName);
-            // 循环迭代下去
             while (dirs.hasMoreElements()) {
-                // 获取下一个元素
                 URL url = dirs.nextElement();
                 logger.info("scan the URL:" + url.toString());
 
-                // 得到协议的名称
                 String protocol = url.getProtocol();
-                // 如果是以文件的形式保存在服务器上
                 if ("file".equals(protocol)) {
-                    scanFiles(classes, recursive, packageName, url);
+                    disposeFiles(classes, recursive, packageName, url);
                 } else if ("jar".equals(protocol)) {
-                    packageName = scanJars(classes, recursive, packageName, packageDirName, url);
+                    packageName = disposeJar(classes, recursive, packageName, packageDirName, url);
+                } else if ("zip".equals(protocol)) {
+                    packageName = disposeZip(classes, recursive, packageName, packageDirName, url);
                 }
             }
         } catch (IOException e) {
@@ -61,58 +58,75 @@ public class BIClassUtils {
         return classes;
     }
 
-    private static String scanJars(Set<Class<?>> classes, boolean recursive, String packageName, String packageDirName, URL url) {
-        // 如果是jar包文件
-        // 定义一个JarFile
-//        BILoggerFactory.getLogger().info("jar type");
+    private static String disposeJar(Set<Class<?>> classes, boolean recursive, String packageName, String packageDirName, URL url) {
         JarFile jar;
         try {
-            // 获取jar
             jar = ((JarURLConnection) url.openConnection()).getJarFile();
-            // 从此jar包 得到一个枚举类
-            Enumeration<JarEntry> entries = jar.entries();
-            // 同样的进行循环迭代
-            while (entries.hasMoreElements()) {
-                // 获取jar里的一个实体 可以是目录 和一些jar包里的其他文件 如META-INF等文件
-                JarEntry entry = entries.nextElement();
-                String name = entry.getName();
-                // 如果是以/开头的
-                if (name.charAt(0) == '/') {
-                    // 获取后面的字符串
-                    name = name.substring(1);
-                }
-                // 如果前半部分和定义的包名相同
-                if (name.startsWith(packageDirName)) {
-                    int idx = name.lastIndexOf('/');
-                    // 如果以"/"结尾 是一个包
-                    if (idx != -1) {
-                        // 获取包名 把"/"替换成"."
-                        packageName = name.substring(0, idx).replace('/', '.');
-                    }
-                    // 如果可以迭代下去 并且是一个包
-                    if ((idx != -1) || recursive) {
-                        // 如果是一个.class文件 而且不是目录
-                        if (name.endsWith(".class") && !entry.isDirectory()) {
-                            // 去掉后面的".class" 获取真正的类名
-                            String className = name.substring(packageName.length() + 1, name.length() - 6);
-                            try {
-                                // 添加到classes
-                                classes.add(getAggregatedClassLoader(BIClassUtils.class.getClassLoader()).loadClass(packageName + '.' + className));
-                            } catch (ClassNotFoundException e) {
-                                BILogDelegate.errorDelegate(e.getMessage(), e);
-                            }
-                        }
-                    }
-                }
-            }
+            packageName = scanJar(classes, recursive, packageName, packageDirName, jar);
         } catch (IOException e) {
             BILogDelegate.errorDelegate(e.getMessage(), e);
         }
         return packageName;
     }
 
-    private static void scanFiles(Set<Class<?>> classes, boolean recursive, String packageName, URL url) throws UnsupportedEncodingException {
-//        BILoggerFactory.getLogger().info("file type");
+    private static String disposeZip(Set<Class<?>> classes, boolean recursive, String packageName, String packageDirName, URL url) {
+        try {
+            String[] spiltPart = URLDecoder.decode(url.getFile(), "UTF-8").split("!/" + packageName);
+            if (spiltPart.length == 1) {
+                packageName = scanJar(classes, recursive, packageName, packageDirName, new JarFile(spiltPart[0]));
+            }
+
+        } catch (IOException e) {
+            BILogDelegate.errorDelegate(e.getMessage(), e);
+        }
+        return packageName;
+    }
+
+    private static String scanJar(Set<Class<?>> classes, boolean recursive, String packageName, String packageDirName, JarFile jar) {
+        Enumeration<JarEntry> entries = jar.entries();
+        while (entries.hasMoreElements()) {
+            JarEntry entry = entries.nextElement();
+            String name = entry.getName();
+            logger.debug("scan class:" + name);
+            // 如果是以/开头的
+            if (name.charAt(0) == '/') {
+                // 获取后面的字符串
+                name = name.substring(1);
+            }
+            // 如果前半部分和定义的包名相同
+            if (name.startsWith(packageDirName)) {
+                int idx = name.lastIndexOf('/');
+                // 如果以"/"结尾 是一个包
+                if (idx != -1) {
+                    // 获取包名 把"/"替换成"."
+                    packageName = name.substring(0, idx).replace('/', '.');
+                }
+                // 如果可以迭代下去 并且是一个包
+                if ((idx != -1) || recursive) {
+                    // 如果是一个.class文件 而且不是目录
+                    if (name.endsWith(".class") && !entry.isDirectory()) {
+                        // 去掉后面的".class" 获取真正的类名
+                        String className = name.substring(packageName.length() + 1, name.length() - 6);
+                        processClass(classes, packageName, className);
+                    }
+                }
+            }
+        }
+        return packageName;
+    }
+
+    private static void processClass(Set<Class<?>> classes, String packageName, String className) {
+        try {
+            classes.add(getAggregatedClassLoader(BIClassUtils.class.getClassLoader()).loadClass(packageName + '.' + className));
+        } catch (Exception e) {
+            BILogDelegate.errorDelegate(e.getMessage(), e);
+        } catch (Error error) {
+            BILogDelegate.errorDelegate(error.getMessage(), error);
+            throw error;
+        }
+    }
+
+    private static void disposeFiles(Set<Class<?>> classes, boolean recursive, String packageName, URL url) throws UnsupportedEncodingException {
         // 获取包的物理路径
         String filePath = URLDecoder.decode(url.getFile(), "UTF-8");
         // 以文件的方式扫描整个包下的文件 并添加到集合中
@@ -149,14 +163,7 @@ public class BIClassUtils {
                 // 如果是java类文件 去掉后面的.class 只留下类名
                 String className = file.getName().substring(0,
                         file.getName().length() - 6);
-                try {
-                    // 添加到集合中去
-                    //classes.add(Class.forName(packageName + '.' + className));
-                    //经过回复同学的提醒，这里用forName有一些不好，会触发static方法，没有使用classLoader的load干净
-                    classes.add(Thread.currentThread().getContextClassLoader().loadClass(packageName + '.' + className));
-                } catch (ClassNotFoundException e) {
-                    BILogDelegate.errorDelegate(e.getMessage(), e);
-                }
+                processClass(classes, packageName, className);
             }
         }
     }
