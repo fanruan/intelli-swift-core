@@ -144,7 +144,6 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
             } catch (Exception e) {
                 BILoggerFactory.getLogger().error(e.getMessage(), e);
             } finally {
-                releasingResource = false;
             }
         }
     }
