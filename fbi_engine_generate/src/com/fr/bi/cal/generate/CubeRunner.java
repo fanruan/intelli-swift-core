@@ -3,11 +3,10 @@ package com.fr.bi.cal.generate;
 import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.CubeBuild;
+import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.CubeGenerationManager;
-import com.finebi.cube.fun.CubeConditionProvider;
-import com.finebi.cube.impl.conf.CubeBuildByPart;
-import com.finebi.cube.impl.conf.CubeBuildComplete;
+import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
+import com.finebi.cube.impl.conf.CubeBuildStuffPart;
 import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.inter.BrokenTraversal;
@@ -22,11 +21,9 @@ import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
-import com.fr.plugin.ExtraClassManager;
 
 import java.io.File;
 import java.util.Iterator;
-import java.util.Set;
 
 /**
  * Created by GUY on 2015/3/16.
@@ -41,7 +38,7 @@ public class CubeRunner {
     protected volatile Status statue = Status.UNLOAD;
     protected BIUser biUser;
     QueueThread<CubeTask> cubeThread = new QueueThread<CubeTask>();
-    private CubeBuildComplete object;
+    private CubeBuildStuffComplete object;
 
     public CubeRunner(long userId) {
         biUser = new BIUser(userId);
@@ -62,10 +59,6 @@ public class CubeRunner {
             public void actionPerformed(CubeTask cubeTask) {
                 long start = System.currentTimeMillis();
                 setStatue(Status.LOADING);
-                Set<CubeConditionProvider> set = ExtraClassManager.getInstance().getArray(CubeConditionProvider.MARK_STRING);
-                for (CubeConditionProvider provider : set) {
-                    provider.prepare(cubeTask);
-                }
                 start();
                 try {
                     cubeTask.start();
@@ -152,7 +145,7 @@ public class CubeRunner {
 
     private void generateCube() {
         setStatue(Status.LOADED);
-        CubeBuild cubeBuild = new CubeBuildByPart(biUser.getUserId(), CubeUpdateUtils.getNewTables(biUser.getUserId()), CubeUpdateUtils.getNewRelations(biUser.getUserId()));
+        CubeBuildStuff cubeBuild = new CubeBuildStuffPart(biUser.getUserId(), CubeUpdateUtils.getNewTables(biUser.getUserId()), CubeUpdateUtils.getNewRelations(biUser.getUserId()));
         CubeTask task = new BuildCubeTask(biUser, cubeBuild);
         CubeGenerationManager.getCubeManager().addTask(task, biUser.getUserId());
     }
@@ -176,9 +169,9 @@ public class CubeRunner {
     }
 
 
-    public CubeBuildComplete getCubeGeneratingObjects() {
+    public CubeBuildStuffComplete getCubeGeneratingObjects() {
         if (object == null) {
-            object = new CubeBuildComplete(biUser);
+            object = new CubeBuildStuffComplete(biUser);
             object.initialCubeStuff();
         }
         return object;

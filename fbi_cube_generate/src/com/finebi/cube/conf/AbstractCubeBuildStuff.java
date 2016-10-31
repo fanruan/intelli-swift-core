@@ -4,16 +4,19 @@ import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.impl.conf.CalculateDependManager;
-import com.finebi.cube.impl.conf.CubePreConditionsCheckManager;
+import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
+import com.finebi.cube.structure.BICube;
 import com.finebi.cube.utils.BITableRelationUtils;
+import com.finebi.cube.utils.CubePreConditionsCheck;
+import com.finebi.cube.utils.CubePreConditionsCheckManager;
+import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.data.source.DBTableSource;
-import com.fr.bi.conf.data.source.SQLTableSource;
-import com.fr.bi.conf.data.source.ServerTableSource;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIBaseConstant;
@@ -23,7 +26,8 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.data.impl.Connection;
-import com.fr.file.DatasourceManager;
+import com.fr.data.impl.JDBCDatabaseConnection;
+import com.fr.stable.ArrayUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,19 +36,19 @@ import java.util.*;
 /**
  * Created by kary on 16/7/11.
  */
-public abstract class AbstractCubeBuild implements CubeBuild {
+public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
     private long userId;
-    protected Set<CubeTableSource> sources = new HashSet<CubeTableSource>();
+    protected Set<CubeTableSource> allTableSources = new HashSet<CubeTableSource>();
     private Set allBusinessTable = new HashSet<BIBusinessTable>();
     protected Set<BITableRelationPath> allRelationPathSet = new HashSet<BITableRelationPath>();
     protected Map<CubeTableSource, Map<String, ICubeFieldSource>> tableDBFieldMaps = new HashMap<CubeTableSource, Map<String, ICubeFieldSource>>();
     protected CalculateDependTool calculateDependTool;
 
-    public AbstractCubeBuild(long userId) {
+    public AbstractCubeBuildStuff(long userId) {
         this.userId = userId;
         init(userId);
-        setSources();
-        fullTableDBFields();
+        extractTableSource();
+        extractFieldSource();
     }
 
     private void init(long userId) {
@@ -86,31 +90,20 @@ public abstract class AbstractCubeBuild implements CubeBuild {
     /**
      * edit by kary 2016-09-12
      * 新增数据连接有效性检查和SQL语句检查
-     * 连接检查现在直接调用预览模块，该模块现在在使用Hive时存在bug，等清掉那个bug再放开该检查
+     * 只对传统的关系型数据库有效
+     * 对所有用到的连接进行检查
+     * 暂时不对原SQL语句正确性进行检查，有视图的情况下太耗时了
      */
     @Override
     public boolean preConditionsCheck() {
-        CubePreConditionsCheck check = new CubePreConditionsCheckManager();
-        ICubeConfiguration conf = BICubeConfiguration.getConf(String.valueOf(userId));
-        boolean spaceCheck = check.HDSpaceCheck(new File(conf.getRootURI().getPath()));
-        boolean connectionValid = true;
-        /*暂时不对所有表做检测，有一张表连接失败即为失败*/
-//        for (CubeTableSource source : getAllSingleSources()) {
-//            boolean connectionCheck = check.ConnectionCheck(source, userId);
-//            if (!connectionCheck) {
-//                connectionValid = false;
-//                String errorMessage ="error:"+source.getTableName() + ": Connection test failed";
-//                BILoggerFactory.getLogger().error(errorMessage);
-//                BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), errorMessage, userId);
-//                break;
-//            }
-//        }
-        return spaceCheck && connectionValid;
+        boolean spaceCheck = getSpaceCheckResult();
+        boolean connectionCheck = getConnectionCheck();
+//        boolean sqlTest = getSqlTest();
+        return spaceCheck && connectionCheck;
     }
 
-    @Override
-    public Set<CubeTableSource> getSources() {
-        return this.sources;
+    public Set<CubeTableSource> getAllTableSources() {
+        return this.allTableSources;
     }
 
     public static Set<CubeTableSource> set2Set(Set<List<Set<CubeTableSource>>> set) {
@@ -170,10 +163,10 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         }
     }
 
-    public void setSources() {
+    public void extractTableSource() {
         for (Object biBusinessTable : allBusinessTable) {
             BusinessTable table = (BusinessTable) biBusinessTable;
-            sources.add(table.getTableSource());
+            allTableSources.add(table.getTableSource());
         }
     }
 
@@ -221,30 +214,11 @@ public abstract class AbstractCubeBuild implements CubeBuild {
     }
 
 
-    @Override
-    public Map<CubeTableSource, Connection> getConnections() {
-        Map<CubeTableSource, Connection> connectionMap = new HashMap<CubeTableSource, Connection>();
-        for (CubeTableSource tableSource : getAllSingleSources()) {
-            com.fr.data.impl.Connection connection = null;
-            DatasourceManager.getInstance().getNameConnectionMap();
-            if (tableSource instanceof DBTableSource) {
-                connection = DatasourceManager.getInstance().getConnection(((DBTableSource) tableSource).getDbName());
-                ((DBTableSource) tableSource).setConnection(connection);
-            }
-            if (tableSource instanceof SQLTableSource) {
-                connection = DatasourceManager.getInstance().getConnection(((SQLTableSource) tableSource).getSqlConnection());
-                ((ServerTableSource) tableSource).setConnection(connection);
-            }
-            connectionMap.put(tableSource, connection);
-        }
-        return connectionMap;
-    }
-
-    private void fullTableDBFields() {
-        Iterator<CubeTableSource> tableSourceIterator = sources.iterator();
+    private void extractFieldSource() {
+        Iterator<CubeTableSource> tableSourceIterator = allTableSources.iterator();
         while (tableSourceIterator.hasNext()) {
             CubeTableSource tableSource = tableSourceIterator.next();
-            Set<ICubeFieldSource> BICubeFieldSources = tableSource.getFacetFields(sources);
+            Set<ICubeFieldSource> BICubeFieldSources = tableSource.getFacetFields(allTableSources);
             Map<String, ICubeFieldSource> name2Field = new HashMap<String, ICubeFieldSource>();
             Iterator<ICubeFieldSource> it = BICubeFieldSources.iterator();
             while (it.hasNext()) {
@@ -260,7 +234,7 @@ public abstract class AbstractCubeBuild implements CubeBuild {
             BILoggerFactory.getLogger().error("tableSourceRelation invalid:" + relation.toString());
             return null;
         }
-        BITableSourceRelation biTableSourceRelation ;
+        BITableSourceRelation biTableSourceRelation;
         try {
             CubeTableSource primaryTable;
             CubeTableSource foreignTable;
@@ -344,5 +318,45 @@ public abstract class AbstractCubeBuild implements CubeBuild {
         }
         sourceIdMap.clear();
         return set;
+    }
+
+    private boolean getConnectionCheck() {
+        CubePreConditionsCheck check = new CubePreConditionsCheckManager();
+        Set<Connection> connectionSet = new HashSet<Connection>();
+        double[] SqlSourceTypes = {BIBaseConstant.TABLETYPE.SERVER, BIBaseConstant.TABLETYPE.DB, BIBaseConstant.TABLETYPE.SQL};
+        for (CubeTableSource tableSource : getAllSingleSources()) {
+            if (ArrayUtils.contains(SqlSourceTypes, tableSource.getType())) {
+                if (!connectionSet.contains(((DBTableSource) tableSource).getConnection())) {
+                    connectionSet.add(((DBTableSource) tableSource).getConnection());
+
+                }
+            }
+        }
+        for (Connection connection : connectionSet) {
+            if (!check.ConnectionCheck((JDBCDatabaseConnection) connection)) {
+                BILoggerFactory.getLogger().error("connection:" + ((JDBCDatabaseConnection) connection).getURL() + " failed");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean getSpaceCheckResult() {
+        CubePreConditionsCheck check = new CubePreConditionsCheckManager();
+        ICubeConfiguration conf = BICubeConfiguration.getConf(String.valueOf(userId));
+        return check.HDSpaceCheck(new File(conf.getRootURI().getPath()));
+    }
+
+    private boolean getSqlTest() {
+        BICube cube = new BICube(new BICubeResourceRetrieval(getCubeConfiguration()), BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
+        for (CubeTableSource cubeTableSource : getAllSingleSources()) {
+            CubePreConditionsCheck check = new CubePreConditionsCheckManager();
+            boolean SqlCheckResult = check.SQLCheck(cube, cubeTableSource);
+            if (!SqlCheckResult) {
+                BILoggerFactory.getLogger().error("the table:" + cubeTableSource.getTableName() + " sql test failed");
+                return false;
+            }
+        }
+        return true;
     }
 }

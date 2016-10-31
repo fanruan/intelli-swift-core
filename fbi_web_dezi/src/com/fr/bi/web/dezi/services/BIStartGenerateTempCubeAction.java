@@ -2,7 +2,7 @@ package com.fr.bi.web.dezi.services;
 
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.impl.conf.CubeBuildRealTime;
+import com.finebi.cube.impl.conf.CubeBuildStuffRealTime;
 import com.finebi.cube.location.BICubeLocation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.TempCubeManager;
@@ -60,7 +60,7 @@ public class BIStartGenerateTempCubeAction extends AbstractBIDeziAction {
             }
         });
 
-        CubeBuildRealTime cubeBuildStuff = new CubeBuildRealTime(source, new ICubeConfiguration() {
+        CubeBuildStuffRealTime cubeBuildStuff = new CubeBuildStuffRealTime(source, new ICubeConfiguration() {
             @Override
             public URI getRootURI() {
                 URI uri = null;
