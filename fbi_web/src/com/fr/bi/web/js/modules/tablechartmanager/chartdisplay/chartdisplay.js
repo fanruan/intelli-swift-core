@@ -316,6 +316,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         left_y_axis_reversed: BI.Utils.getWSLeftYAxisReversedByID(o.wId),
                         right_y_axis_reversed: BI.Utils.getWSRightYAxisReversedByID(o.wId),
                         chart_font: BI.Utils.getGSChartFont(o.wId),
+                        null_continue: BI.Utils.getWSNullContinueByID(o.wId),
                         line_width: BICst.DEFAULT_CHART_SETTING.mini_line_width,
                         show_label: BICst.DEFAULT_CHART_SETTING.mini_show_label,
                         enable_tick: BICst.DEFAULT_CHART_SETTING.mini_enable_tick,
@@ -387,6 +388,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         right_num_separators: BI.Utils.getWSRightNumberSeparatorsByID(o.wId),
                         right2_num_separators: BI.Utils.getWSRight2NumberSeparatorsByID(o.wId),
                         chart_font: BI.Utils.getGSChartFont(o.wId),
+                        null_continue: BI.Utils.getWSNullContinueByID(o.wId),
                         background_layer_info: MapConst.WMS_INFO[BI.Utils.getWSBackgroundLayerInfoByID(o.wId)]
                     }, {
                         cordon: self.model.getCordon(),
