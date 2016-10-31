@@ -3,8 +3,6 @@
 /**** custom color(自定义颜色,用于特定场景) ****/
 .bi-loading-mask {
   background-color: #ffffff;
-  opacity: 0.8;
-  filter: alpha(opacity=80);
 }
 .bi-loading-mask .loading-bar-label {
   font-size: 20px;

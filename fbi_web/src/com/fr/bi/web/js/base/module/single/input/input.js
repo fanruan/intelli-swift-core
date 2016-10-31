@@ -135,7 +135,7 @@ BI.Input = BI.inherit(BI.Single, {
         }
         this.fireEvent(BI.Input.EVENT_KEY_DOWN);
 
-        if (/(\s|\u00A0)$/.test(this.getValue())) {
+        if (BI.isEndWithBlank(this.getValue())) {
             this._pause = true;
             this.fireEvent(BI.Controller.EVENT_CHANGE, BI.Events.PAUSE, "", this);
             this.fireEvent(BI.Input.EVENT_PAUSE);
