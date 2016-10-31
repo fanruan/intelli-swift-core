@@ -3,9 +3,7 @@ package com.finebi.cube.gen.arrange;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.CubeGenerationManager;
-import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.data.disk.BICubeDiskDiscovery;
-import com.finebi.cube.data.disk.BICubeIncreaseDisDiscovery;
 import com.finebi.cube.exception.BIRegisterIsForbiddenException;
 import com.finebi.cube.exception.BITopicAbsentException;
 import com.finebi.cube.gen.mes.*;
@@ -33,14 +31,12 @@ import com.finebi.cube.utils.BICubeRelationUtils;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.conf.data.source.ExcelTableSource;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
-import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
-import com.fr.data.impl.Connection;
 import com.fr.fs.control.UserControl;
 
 import java.util.*;
@@ -63,7 +59,7 @@ public class BICubeOperationManager {
     private Map<CubeTableSource, BIOperation> tableSourceWatchers;
     private Map<CubeTableSource, Long> versionMap;
     private Map<CubeTableSource, UpdateSettingSource> updateSettingSourceMap;
-    private Map<CubeTableSource, com.fr.data.impl.Connection> connectionMap;
+//    private Map<CubeTableSource, com.fr.data.impl.Connection> connectionMap;
 
     public BICubeOperationManager(Cube cube, Set<CubeTableSource> originalTableSet) {
         this.cube = cube;
@@ -81,9 +77,9 @@ public class BICubeOperationManager {
         this.updateSettingSourceMap = updateSettingSourceMap;
     }
 
-    public void setConnectionMap(Map<CubeTableSource, Connection> connectionMap) {
-        this.connectionMap = connectionMap;
-    }
+//    public void setConnectionMap(Map<CubeTableSource, Connection> connectionMap) {
+//        this.connectionMap = connectionMap;
+//    }
 
     public void initialWatcher() {
         cubeBuildFinishOperation = generateCubeFinishOperation();
@@ -173,9 +169,13 @@ public class BICubeOperationManager {
                  */
                 CubeTableSource tableSource = sameLevelTableIt.next();
                 if (!isGenerated(tableSource)) {
+//                    BIOperation<Object> operation = new BIOperation<Object>(
+//                            tableSource.getSourceID(),
+//                            getDataTransportBuilder(cube, addConnection(tableSource), originalTableSet, parentTables, getVersion(tableSource), getUpdateSetting(tableSource)));
                     BIOperation<Object> operation = new BIOperation<Object>(
                             tableSource.getSourceID(),
-                            getDataTransportBuilder(cube, addConnection(tableSource), originalTableSet, parentTables, getVersion(tableSource), getUpdateSetting(tableSource)));
+                            getDataTransportBuilder(cube, tableSource, originalTableSet, parentTables, getVersion(tableSource), getUpdateSetting(tableSource)));
+
                     operation.setOperationTopicTag(BICubeBuildTopicTag.DATA_TRANSPORT_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.DATA_TRANSPORT_TOPIC, tableSource));
                     try {
@@ -452,26 +452,26 @@ public class BICubeOperationManager {
         }
     }
 
-    private com.fr.data.impl.Connection getConnection(CubeTableSource tableSource) {
-        if (connectionMap != null && connectionMap.containsKey(tableSource)) {
-            return connectionMap.get(tableSource);
-        } else {
-            return null;
-        }
-    }
+//    private com.fr.data.impl.Connection getConnection(CubeTableSource tableSource) {
+//        if (connectionMap != null && connectionMap.containsKey(tableSource)) {
+//            return connectionMap.get(tableSource);
+//        } else {
+//            return null;
+//        }
+//    }
 
     /*为tableSource指定connection*/
-    private CubeTableSource addConnection(CubeTableSource tableSource) {
-        Connection connection = getConnection(tableSource);
-        if (null != connection && (tableSource.getType() == BIBaseConstant.TABLETYPE.SQL || tableSource.getType() == BIBaseConstant.TABLETYPE.DB)) {
-            for (CubeTableSource source : connectionMap.keySet()) {
-                if (source.getSourceID().equals(tableSource.getSourceID())) {
-                    return source;
-                }
-            }
-        }
-        return tableSource;
-    }
+//    private CubeTableSource addConnection(CubeTableSource tableSource) {
+//        Connection connection = getConnection(tableSource);
+//        if (null != connection && (tableSource.getType() == BIBaseConstant.TABLETYPE.SQL || tableSource.getType() == BIBaseConstant.TABLETYPE.DB)) {
+//            for (CubeTableSource source : connectionMap.keySet()) {
+//                if (source.getSourceID().equals(tableSource.getSourceID())) {
+//                    return source;
+//                }
+//            }
+//        }
+//        return tableSource;
+//    }
 
 
     protected BIRelationIndexGenerator getRelationBuilder(Cube cube, BITableSourceRelation relation) {
@@ -490,7 +490,7 @@ public class BICubeOperationManager {
         CubeTask currentTask = CubeGenerationManager.getCubeManager().getGeneratingTask(UserControl.getInstance().getSuperManagerID());
 /*若没有更新设置,按默认处理
 * 首次更新均为全局更新*/
-        if (null == tableUpdateSetting || !(BITableKeyUtils.isTableExisted(tableSource,BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID()))))) {
+        if (null == tableUpdateSetting || !(BITableKeyUtils.isTableExisted(tableSource, BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID()))))) {
             return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
         }
         /*若设置为不随全局更新的话，那就不更新*/

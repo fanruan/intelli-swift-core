@@ -7,6 +7,7 @@ import com.fr.bi.cal.analyze.executor.detail.DetailExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
+import com.fr.bi.cal.analyze.report.report.widget.BISummaryWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.analyze.session.BIWeblet;
@@ -86,6 +87,10 @@ public class UserWidget {
         return true;
     }
 
+    private int getPageSize() {
+        return ((BISummaryWidget) widget).getMaxRow();
+    }
+
     private void createTableData(int end) {
         List<List> v;
         int rowCount = tempValue.size();
@@ -99,7 +104,8 @@ public class UserWidget {
                 tempValue.put(rowCount, v.get(i));
                 rowCount++;
             }
-            if (v.size() != PagingFactory.PAGE_PER_GROUP_20) {
+
+            if (v.size() != getPageSize()) {
                 maxRow = rowCount;
                 break;
             }
@@ -131,8 +137,6 @@ public class UserWidget {
                         rowList.add(0, v);
                         temp = temp.getParent();
                     }
-                    values.add(rowList);
-                    n = n.getSibling();
                 }
             }
         } catch (JSONException e) {

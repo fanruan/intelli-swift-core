@@ -91,6 +91,10 @@ public class BuildCubeTask implements CubeTask {
         return CubeTaskType.ALL;
     }
 
+    public CubeBuildStuff getCubeBuild() {
+        return cubeBuildStuff;
+    }
+
     @Override
     public void start() {
         BIConfigureManagerCenter.getLogManager().logStart(biUser.getUserId());
@@ -208,7 +212,6 @@ public class BuildCubeTask implements CubeTask {
         operationManager.subscribeStartMessage();
         Map<CubeTableSource, UpdateSettingSource> updateSettingSources = cubeBuildStuff.getUpdateSettingSources();
         operationManager.setUpdateSettingSourceMap(updateSettingSources);
-        operationManager.setConnectionMap(cubeBuildStuff.getConnections());
         manager.registerDataSource(cubeBuildStuff.getAllSingleSources());
         logTable(cubeBuildStuff.getAllSingleSources(), updateSettingSources);
         manager.registerRelation(cubeBuildStuff.getTableSourceRelationSet());
