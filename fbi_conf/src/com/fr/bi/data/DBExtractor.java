@@ -13,4 +13,6 @@ import com.fr.bi.stable.data.db.SQLStatement;
  */
 public interface DBExtractor {
     int runSQL(SQLStatement sql, ICubeFieldSource[] columns, Traversal<BIDataValue> traversal, int row);
+
+    boolean testSQL(SQLStatement sql);
 }
