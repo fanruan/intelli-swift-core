@@ -56,6 +56,9 @@ BI.Maximization = BI.inherit(BI.Widget, {
         this.chartPane.on(BI.MaximizationChartPane.EVENT_SET, function (widget) {
             self.fireEvent(BI.Maximization.EVENT_SET, widget);
         });
+        this.chartPane.on(BI.MaximizationChartPane.EVENT_SET_TITLE_NAME, function (name) {
+            self.fireEvent(BI.Maximization.EVENT_SET_TITLE_NAME, name);
+        });
         this.chartPane.on(BI.MaximizationChartPane.EVENT_CLOSE, function () {
             BI.Layers.remove(BICst.MAXIMIZATION_LAYER);
             BI.Layers.remove(BICst.MAXIMIZATION_BACKGROUND_LAYER);
@@ -80,6 +83,7 @@ BI.Maximization = BI.inherit(BI.Widget, {
         }
     }
 });
+BI.Maximization.EVENT_SET_TITLE_NAME = "BI.Maximization.EVENT_SET_TITLE_NAME";
 BI.Maximization.EVENT_SET = "BI.Maximization.EVENT_SET";
 BI.Maximization.EVENT_CHANGE = "BI.Maximization.EVENT_CHANGE";
 $.shortcut("bi.maximization", BI.Maximization);
