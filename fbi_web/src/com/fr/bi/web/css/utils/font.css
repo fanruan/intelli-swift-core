@@ -3328,6 +3328,15 @@
   content: "\e6c6";
   color: #009de3;
 }
+.widget-tools-minimization-font .b-font:before {
+  content: "\e6df";
+  color: #009de3;
+}
+.widget-tools-minimization-font.native .b-font:before,
+.widget-tools-minimization-font.disabled .b-font:before {
+  content: "\e6df";
+  color: #009de3;
+}
 .widget-tools-filter-font .b-font:before {
   content: "\e60f";
   color: #009de3;
