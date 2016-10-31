@@ -61,8 +61,7 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
         if (!this.title) {
             this.title = BI.createWidget({
                 type: "bi.shelter_editor",
-                cls: BI.Utils.getWSNamePosByID(id) === BICst.DASHBOARD_WIDGET_NAME_POS_LEFT ?
-                    "dashboard-title-left" : "dashboard-title-center",
+                cls:"dashboard-title-left",
                 value: BI.Utils.getWidgetNameByID(id),
                 textAlign: "left",
                 height: 25,
@@ -94,6 +93,7 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
         } else {
             this.title.setValue(BI.Utils.getWidgetNameByID(id));
         }
+        this._refreshTitlePosition();
     },
 
     _createTableChart: function (type) {
@@ -290,9 +290,10 @@ BI.MaximizationChartPane = BI.inherit(BI.Widget, {
     _refreshTitlePosition: function () {
         var pos = BI.Utils.getWSNamePosByID(this.options.wId);
         var cls = pos === BICst.DASHBOARD_WIDGET_NAME_POS_CENTER ?
-            "dashboard-title-center" : "dashboard-title-left";
-        this.title.element.removeClass("dashboard-title-left")
-            .removeClass("dashboard-title-center").addClass(cls);
+            "center" : "left";
+        this.title.setTextStyle({
+            "textAlign": cls
+        });
     },
 
     _refreshTableAndFilter: function () {
