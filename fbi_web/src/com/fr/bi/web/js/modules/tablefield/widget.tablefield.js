@@ -209,6 +209,16 @@ BI.TableFieldInfo = BI.inherit(BI.Widget, {
                         }
                     }
                 });
+                if(isValid === true){
+                    BI.any(self.tableInfo.fields, function(idx, catagory){
+                        return BI.any(catagory, function(id, field){
+                            if(field.field_name === v){
+                                isValid = false;
+                                return true;
+                            }
+                        })
+                    });
+                }
                 return isValid;
             }
         });
