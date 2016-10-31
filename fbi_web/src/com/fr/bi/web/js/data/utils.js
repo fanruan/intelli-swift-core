@@ -607,22 +607,19 @@ Data.Utils = {
             return {dId: dId, clicked: clicked};
         }
 
-        function getToolTip() {
+        function getToolTip () {
             switch (widget.type) {
                 case BICst.WIDGET.SCATTER:
-                    if (targetIds.length < 2) {
-                        return "";
-                    } else {
-                        return "function(){ return this.seriesName+'<div>(X)" + widget.dimensions[targetIds[1]].name + ":'+ this.x +'</div><div>(Y)"
-                            + widget.dimensions[targetIds[0]].name + ":'+ this.y +'</div>'}";
+                    if(targetIds.length < 2){
+                        return [];
+                    }else{
+                        return [widget.dimensions[targetIds[1]].name, widget.dimensions[targetIds[0]].name];
                     }
                 case BICst.WIDGET.BUBBLE:
-                    if (targetIds.length < 3) {
-                        return "";
-                    } else {
-                        return "function(){ return this.seriesName+'<div>(X)" + widget.dimensions[targetIds[1]].name + ":'+ this.x +'</div><div>(Y)"
-                            + widget.dimensions[targetIds[0]].name + ":'+ this.y +'</div><div>(" + BI.i18nText("BI-Size") + ")" + widget.dimensions[targetIds[2]].name
-                            + ":'+ this.size +'</div>'}";
+                    if(targetIds.length < 3){
+                        return [];
+                    }else{
+                        return [widget.dimensions[targetIds[1]].name, widget.dimensions[targetIds[0]].name, widget.dimensions[targetIds[2]].name];
                     }
                 default:
                     return "";
@@ -1485,7 +1482,8 @@ Data.Utils = {
             var formatterArray = [];
             BI.backEach(items, function (idx, item) {
                 if (BI.has(item, "settings")) {
-                    formatterArray.push(formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.num_level || constants.NORMAL));
+                    formatterArray.push(formatToolTipAndDataLabel(item.settings.format || constants.NORMAL, item.settings.num_level || constants.NORMAL,
+                        item.settings.unit || "", item.settings.num_separators || constants.NUM_SEPARATORS));
                 }
             });
             configs.plotOptions.tooltip.formatter = function () {
@@ -1793,6 +1791,15 @@ Data.Utils = {
             configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
             configs.chartType = "scatter";
 
+            if (BI.isNotEmptyArray(config.tooltip)) {
+                configs.plotOptions.tooltip.formatter = function () {
+                    var y = _formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators)(this.y);
+                    var x = _formatTickInXYaxis(config.x_axis_style, config.x_axis_number_level, config.right_num_separators)(this.x);
+                    return this.seriesName + '<div>(X)' + config.tooltip[0]
+                        + ':' + x + '</div><div>(Y)' + config.tooltip[1] + ':' + y + '</div>'
+                };
+            }
+
             if (configs.plotOptions.dataLabels.enabled === true) {
                 BI.each(items, function (idx, item) {
                     item.dataLabels = {
@@ -1999,6 +2006,15 @@ Data.Utils = {
             configs.xAxis[0].title.align = "center";
             configs.xAxis[0].gridLineWidth = config.show_grid_line === true ? 1 : 0;
             configs.chartType = "bubble";
+
+            if (BI.isNotEmptyArray(config.tooltip)) {
+                configs.plotOptions.tooltip.formatter = function () {
+                    var y = _formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators)(this.y);
+                    var x = _formatTickInXYaxis(config.x_axis_style, config.x_axis_number_level, config.right_num_separators)(this.x);
+                    return this.seriesName + '<div>(X)' + config.tooltip[0] + ':' + x + '</div><div>(Y)' + config.tooltip[1]
+                        + ':' + y + '</div><div>(' + BI.i18nText("BI-Size") + ')' + config.tooltip[2] + ':' + this.size + '</div>'
+                };
+            }
 
             if (configs.plotOptions.dataLabels.enabled === true) {
                 BI.each(items, function (idx, item) {
@@ -3257,6 +3273,8 @@ Data.Utils = {
             configs.chartType = "bar";
 
             _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.xAxis[0].formatter, config.chart_font);
+
+            configs.plotOptions.tooltip.formatter.valueFormat = configs.xAxis[0].formatter;
 
             return BI.extend(configs, {
                 series: items
@@ -5450,6 +5468,7 @@ Data.Utils = {
                 RIGHT_AXIS_SECOND: 2,
                 PERCENT_DASHBOARD: 10,
                 PERCENT_SCALE_SLOT: 11,
+                NUM_SEPARATORS: false
             }
         }
 
