@@ -56,5 +56,17 @@ class Target {
         this.$dimension = this.$dimension.setIn(['sort', 'type'], type);
         return this;
     }
+
+    setFilterValue(filterValue) {
+        this.$dimension = this.$dimension.setIn(['filter_value'], filterValue);
+        return this;
+    }
+
+    getFilterValue() {
+        const $filter = this.$dimension.get('filter_value');
+        if ($filter) {
+            return $filter.toJS();
+        }
+    }
 }
 export default Target
