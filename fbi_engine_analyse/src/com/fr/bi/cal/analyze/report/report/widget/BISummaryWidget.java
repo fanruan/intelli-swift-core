@@ -11,6 +11,7 @@ import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
+import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
@@ -58,7 +59,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
 
     protected ComplexExpander complexExpander = new ComplexExpander();
     private int maxCol = 7;     //单页最大列数
-    private int maxRow = 20;    //单页最大行数
+    private int maxRow = PagingFactory.PAGE_PER_GROUP_20;    //单页最大行数
     private int dimensionRelationIndex = 1;
     private int targetRelationIndex = 0;
 
