@@ -1,13 +1,14 @@
-package com.finebi.cube.impl.conf;
+package com.finebi.cube.utils;
 
-import com.finebi.cube.api.BICubeManager;
-import com.finebi.cube.conf.CubePreConditionsCheck;
-import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.stable.data.source.CubeTableSource;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.structure.Cube;
+import com.finebi.cube.structure.CubeTableEntityService;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.data.impl.JDBCDatabaseConnection;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by kary on 2016/6/20.
@@ -25,17 +26,27 @@ public class CubePreConditionsCheckManager implements CubePreConditionsCheck {
     }
 
     @Override
-    public boolean ConnectionCheck(CubeTableSource source, long userId) {
-        boolean isSqlValid = true;
-            if (source.getType() == BIBaseConstant.TABLETYPE.DB || source.getType() == BIBaseConstant.TABLETYPE.SQL) {
-                try {
-                    source.createPreviewJSON(new ArrayList<String>(), BICubeManager.getInstance().fetchCubeLoader(userId), userId);
-                } catch (Exception e) {
-                    isSqlValid = false;
-                    BILoggerFactory.getLogger().error(e.getMessage(), e);
-                }
+    public boolean SQLCheck(Cube cube, CubeTableSource tableSource) {
+            CubeTableEntityService tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
+            try {
+                return tableSource.canExecute();
+            } catch (Exception e) {
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
+                return false;
+            } finally {
+                tableEntityService.clear();
             }
-        return isSqlValid;
+        }
+
+    @Override
+    public boolean ConnectionCheck(JDBCDatabaseConnection jdbcDatabaseConnection) {
+        try {
+            jdbcDatabaseConnection.testConnection();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+
     }
 
     private double getDirSize(File file) {

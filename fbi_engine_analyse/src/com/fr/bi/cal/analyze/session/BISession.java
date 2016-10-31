@@ -45,6 +45,7 @@ import com.fr.main.workbook.ResultWorkBook;
 import com.fr.report.report.ResultReport;
 import com.fr.report.stable.fun.Actor;
 import com.fr.stable.bridge.StableFactory;
+import com.fr.stable.fun.IOFileAttrMark;
 import com.fr.stable.script.CalculatorProvider;
 import com.fr.web.core.SessionDealWith;
 import com.fr.web.core.SessionIDInfor;
