@@ -607,18 +607,18 @@ Data.Utils = {
             return {dId: dId, clicked: clicked};
         }
 
-        function getToolTip () {
+        function getToolTip() {
             switch (widget.type) {
                 case BICst.WIDGET.SCATTER:
-                    if(targetIds.length < 2){
+                    if (targetIds.length < 2) {
                         return [];
-                    }else{
+                    } else {
                         return [widget.dimensions[targetIds[1]].name, widget.dimensions[targetIds[0]].name];
                     }
                 case BICst.WIDGET.BUBBLE:
-                    if(targetIds.length < 3){
+                    if (targetIds.length < 3) {
                         return [];
-                    }else{
+                    } else {
                         return [widget.dimensions[targetIds[1]].name, widget.dimensions[targetIds[0]].name, widget.dimensions[targetIds[2]].name];
                     }
                 default:
@@ -747,8 +747,8 @@ Data.Utils = {
             right_num_separators: options.right_num_separators || false,
             right2_num_separators: options.right2_num_separators || false,
             chart_font: {
-                "fontFamily": "inherit",
-                "color": "inherit",
+                "fontFamily": "Microsoft YaHei, Hiragino Sans GB W3",
+                "color": "#1a1a1a",
                 "fontSize": "12px"
             }
         };
@@ -1166,6 +1166,16 @@ Data.Utils = {
                                 })
                             });
                             items = [result];
+                        } else if(config.number_of_pointer === constants.ONE_POINTER && items[0].length > 1) {
+                            BI.each(items[0], function (idx, item) {
+                                result.push({
+                                    data: [BI.extend(item.data[0], {
+                                        x: item.name
+                                    })],
+                                    name: BI.UUID()
+                                })
+                            });
+                            return [result]
                         }
                         if (config.number_of_pointer === constants.MULTI_POINTER && items[0].length > 1) {//多个系列
                             BI.each(items, function (idx, item) {
@@ -2159,6 +2169,9 @@ Data.Utils = {
                 "showLabel": true
             }];
 
+            var isDashboard = BI.contains([constants.NORMAL, constants.HALF_DASHBOARD], config.chart_dashboard_type);
+            var isMultiPointers = config.number_of_pointer === constants.MULTI_POINTER;
+
             formatChartDashboardStyle();
             configs.chartType = "gauge";
             delete configs.xAxis;
@@ -2168,52 +2181,64 @@ Data.Utils = {
             });
 
             function formatChartDashboardStyle() {
-                configs.gaugeAxis = gaugeAxis;
                 var bands = getBandsStyles(config.bands_styles, config.auto_custom_style);
-                var valueLabel = {
-                    formatter: configs.plotOptions.valueLabel.formatter
-                };
-
-                valueLabel.formatter.identifier = "${CATEGORY}${SERIES}${VALUE}";
-                valueLabel.style = configs.plotOptions.valueLabel.style;
                 var percentageLabel = BI.extend(configs.plotOptions.percentageLabel, {
                     enabled: config.show_percentage === BICst.PERCENTAGE.SHOW
                 });
+
+                configs.gaugeAxis = gaugeAxis;
+
                 var slotValueLAbel = {
                     formatter: function () {
-                        this.value = config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT ? BI.contentFormat(this.value, "#0.00%") :
-                            BI.contentFormat(this.value, "#.##;-#.##");
-                        if (config.chart_dashboard_type === BICst.CHART_SHAPE.VERTICAL_TUBE) {
-                            return '<div style="text-align: center">' + this.category + '</div>' + '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + this.value + '</div>';
+                        var value = this.value;
+                        if (config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && config.num_separators) {
+                            value = BI.contentFormat(this.value, "#,##0%;-#,##0%")
+                        } else if (config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && !config.num_separators) {
+                            value = BI.contentFormat(this.value, "#0.00%");
+                        } else if (!(config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) && config.num_separators) {
+                            value = BI.contentFormat(this.value, "#,###.##;-#,###.##")
                         } else {
-                            return '<div style="text-align: center">' + this.category + '</div>' + '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + this.value +
-                                getXYAxisUnit(config.dashboard_number_level, constants.DASHBOARD_AXIS) + '</div>';
+                            value = BI.contentFormat(this.value, "#.##;-#.##");
                         }
+
+                        var label = '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + value +
+                            getXYAxisUnit(config.dashboard_number_level, constants.DASHBOARD_AXIS) + '</div>';
+
+                        if (isDashboard && items[0].data.length > 1) {
+                            if (isMultiPointers) {
+                                return '<div style="text-align: center">' + this.seriesName + ':' + value +
+                                    getXYAxisUnit(config.dashboard_number_level, constants.DASHBOARD_AXIS) + '</div>';
+                            }
+                            return label
+                        } else if (isDashboard && BI.isNull(items[0].data[0].seriesName)) {
+                            return label
+                        }
+                        return '<div style="text-align: center">' + this.category + '</div>' + label;
                     },
-                    style: configs.plotOptions.valueLabel.style,
+                    style: config.chart_font,
                     useHtml: true
                 };
                 switch (config.chart_dashboard_type) {
                     case BICst.CHART_SHAPE.HALF_DASHBOARD:
-                        setPlotOptions("pointer_semi", bands, configs.plotOptions.valueLabel);
+                        setPlotOptions("pointer_semi", bands, slotValueLAbel, percentageLabel);
                         break;
                     case BICst.CHART_SHAPE.PERCENT_DASHBOARD:
                         setPlotOptions("ring", bands, slotValueLAbel, percentageLabel);
                         break;
                     case BICst.CHART_SHAPE.PERCENT_SCALE_SLOT:
-                        setPlotOptions("slot", bands, valueLabel, percentageLabel);
+                        setPlotOptions("slot", bands, slotValueLAbel, percentageLabel);
                         break;
                     case BICst.CHART_SHAPE.HORIZONTAL_TUBE:
-                        BI.extend(valueLabel, {
+                        BI.extend(slotValueLAbel, {
                             align: "bottom"
                         });
                         BI.extend(percentageLabel, {
                             align: "bottom"
                         });
-                        setPlotOptions("thermometer", bands, valueLabel, percentageLabel, "horizontal", "vertical");
+                        setPlotOptions("thermometer", bands, slotValueLAbel, percentageLabel, "horizontal", "vertical");
                         break;
                     case BICst.CHART_SHAPE.VERTICAL_TUBE:
-                        BI.extend(valueLabel, {
+                        BI.extend(slotValueLAbel, {
                             align: "left"
                         });
                         BI.extend(percentageLabel, {
@@ -2223,21 +2248,28 @@ Data.Utils = {
                         break;
                     case BICst.CHART_SHAPE.NORMAL:
                     default:
-                        setPlotOptions("pointer", bands, configs.plotOptions.valueLabel);
+                        setPlotOptions("pointer", bands, slotValueLAbel, percentageLabel);
                         break;
                 }
                 changeMaxMinScale();
                 formatNumberLevelInYaxis(config.dashboard_number_level, constants.LEFT_AXIS);
                 if (config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-                    configs.plotOptions.valueLabel.formatter.valueFormat = function () {
-                        return BI.contentFormat(arguments[0], '#0.00%');
-                    };
                     configs.gaugeAxis[0].formatter = function () {
-                        return BI.contentFormat(arguments[0], '#0.00%') + getXYAxisUnit(config.dashboard_number_level, constants.DASHBOARD_AXIS);
+                        var scaleValue = this;
+                        if (config.num_separators) {
+                            scaleValue = BI.contentFormat(scaleValue, '#,##0%;-#,##0%')
+                        } else {
+                            scaleValue = BI.contentFormat(scaleValue, '#0.00%')
+                        }
+                        return scaleValue + getXYAxisUnit(config.dashboard_number_level, constants.DASHBOARD_AXIS);
                     };
                 } else {
                     configs.gaugeAxis[0].formatter = function () {
-                        return this + getXYAxisUnit(config.dashboard_number_level, constants.DASHBOARD_AXIS);
+                        var value = this;
+                        if (config.num_separators) {
+                            value = BI.contentFormat(value, "#,###;-#,###")
+                        }
+                        return value + getXYAxisUnit(config.dashboard_number_level, constants.DASHBOARD_AXIS);
                     };
                 }
             }
@@ -2257,53 +2289,37 @@ Data.Utils = {
             }
 
             function formatNumberLevelInYaxis(type, position) {
-                var magnify = calcMagnify(type);
+                var magnify = _calcMagnify(type);
                 if (magnify > 1) {
                     BI.each(items, function (idx, item) {
                         BI.each(item.data, function (id, da) {
                             if (position === item.yAxis) {
-                                if (!BI.isNumber(da.y)) {
-                                    da.y = BI.parseFloat(da.y);
-                                }
-                                da.y = da.y || 0;
-                                da.y = da.y.div(magnify);
-                                da.y = da.y.toFixed(constants.FIX_COUNT);
-                                if (constants.MINLIMIT.sub(da.y) > 0) {
-                                    da.y = 0;
-                                }
+                                da.y = _formatXYDataWithMagnify(da.y, magnify)
                             }
                         })
                     })
                 }
+
+                configs.plotOptions.tooltip.formatter.valueFormat = function () {
+                    return BI.contentFormat(this, '#.##;-#.##') + getXYAxisUnit(type, position)
+                };
+
+                if (config.num_separators) {
+                    configs.plotOptions.tooltip.formatter.valueFormat = function () {
+                        return BI.contentFormat(arguments[0], '#,###.##;-#,###.##')
+                    };
+                }
+
                 if (type === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                     configs.plotOptions.tooltip.formatter.valueFormat = function () {
                         return BI.contentFormat(arguments[0], '#0.00%')
                     };
-                } else {
-                    configs.plotOptions.tooltip.formatter.valueFormat = function () {
-                        return BI.contentFormat(this, "#.##;-#.##") + getXYAxisUnit(type, position)
+                    if (config.num_separators) {
+                        configs.plotOptions.tooltip.formatter.valueFormat = function () {
+                            return BI.contentFormat(arguments[0], '#,##0%;-#,##0%')
+                        };
                     }
                 }
-            }
-
-            function calcMagnify(type) {
-                var magnify = 1;
-                switch (type) {
-                    case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                    case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                        magnify = 1;
-                        break;
-                    case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                        magnify = 10000;
-                        break;
-                    case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                        magnify = 1000000;
-                        break;
-                    case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                        magnify = 100000000;
-                        break;
-                }
-                return magnify;
             }
 
             function getXYAxisUnit(numberLevelType, position) {
@@ -2887,6 +2903,8 @@ Data.Utils = {
 
             _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.xAxis[0].formatter, config.chart_font);
 
+            configs.plotOptions.tooltip.formatter.valueFormat = configs.xAxis[0].formatter;
+
             configs.chartType = "bar";
             return BI.extend(configs, {
                 series: items
@@ -3080,6 +3098,8 @@ Data.Utils = {
             configs.chartType = "bar";
 
             _formatDataLabelForAxis(configs.plotOptions.dataLabels.enabled, items, configs.xAxis[0].formatter, config.chart_font);
+
+            configs.plotOptions.tooltip.formatter.valueFormat = configs.xAxis[0].formatter;
 
             return BI.extend(configs, {
                 series: items
