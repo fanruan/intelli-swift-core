@@ -44,6 +44,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         formatCordon(this.config.cordon);
         this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
+        config.plotOptions.connectNulls = this.config.null_continue;
         config.dataSheet.enabled = this.config.show_data_table;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
         config.zoom.zoomTool.enabled = this.config.show_zoom;
@@ -224,7 +225,8 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
             num_separators: options.num_separators || false,
             right_num_separators: options.right_num_separators || false,
-            chart_font: options.chart_font || c.FONT_STYLE
+            chart_font: options.chart_font || c.FONT_STYLE,
+            null_continue: options.null_continue || false
         };
         this.options.items = items;
         this.yAxis = [];
