@@ -415,6 +415,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         chart_font: BI.extend(BI.Utils.getGSChartFont(o.wId), {
                             fontSize: BI.Utils.getGSChartFont(o.wId).fontSize + "px"
                         }),
+                        null_continue: BI.Utils.getWSNullContinueByID(o.wId),
                         show_left_label: false,
                         show_right_label: false,
                         show_right2_label: false,
