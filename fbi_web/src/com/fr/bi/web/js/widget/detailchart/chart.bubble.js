@@ -44,11 +44,12 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
     },
 
     _formatConfig: function (config, items) {
-        var self = this;
-        var yUnit = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
-        var xUnit = getXYAxisUnit(this.config.x_axis_number_level, this.constants.RIGHT_AXIS);
+        var self = this, c = this.constants;
+        var yUnit = getXYAxisUnit(this.config.left_y_axis_number_level, c.LEFT_AXIS);
+        var xUnit = getXYAxisUnit(this.config.x_axis_number_level, c.RIGHT_AXIS);
 
         formatCordon();
+        formatForSize();
 
         switch (this.config.rules_display) {
             case BICst.DISPLAY_RULES.FIXED:
@@ -67,7 +68,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
 
         BI.extend(config.plotOptions, {
             large: this.config.big_data_mode,
-            shadow: this.config.bubble_style !== this.constants.NO_PROJECT
+            shadow: this.config.bubble_style !== c.NO_PROJECT
         });
 
         config.colors = this.config.chart_color;
@@ -77,12 +78,12 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.bubble.maxSize = this.config.bubble_max_size;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.dataLabels.formatter.identifier = "${X}${Y}${SIZE}";
-        config.plotOptions.shadow = this.config.bubble_style !== this.constants.NO_PROJECT;
+        config.plotOptions.shadow = this.config.bubble_style !== c.NO_PROJECT;
         config.yAxis = this.yAxis;
 
-        formatNumberLevelInYaxis(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
+        formatNumberLevelInYaxis(this.config.left_y_axis_number_level, c.LEFT_AXIS);
         config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + yUnit : yUnit;
-        config.yAxis[0].title.rotation = this.constants.ROTATION;
+        config.yAxis[0].title.rotation = c.ROTATION;
 
         BI.extend(config.yAxis[0], self.leftAxisSetting(this.config));
 
@@ -99,8 +100,11 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             config.plotOptions.tooltip.formatter = function () {
                 var y = self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level, self.config.num_separators)(this.y);
                 var x = self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level, self.config.right_num_separators)(this.x);
+                var size =  BI.contentFormat(this.size,
+                    self.formatToolTipAndDataLabel(items[0].settings.format || c.NORMAL, items[0].settings.num_level || c.NORMAL,
+                        items[0].settings.unit || "", items[0].settings.num_separators || c.NUM_SEPARATORS));
                 return this.seriesName + '<div>(X)' + self.config.tooltip[0] + ':' + x + '</div><div>(Y)' + self.config.tooltip[1]
-                    + ':' + y + '</div><div>(' + BI.i18nText("BI-Size") + ')' + self.config.tooltip[2] + ':' + this.size + '</div>'
+                    + ':' + y + '</div><div>(' + BI.i18nText("BI-Size") + ')' + self.config.tooltip[2] + ':' + size + '</div>'
             };
         }
 
@@ -125,8 +129,16 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                         }
                     }
                 };
+                if(item.settings.num_level) {
+                    item.data[0].z = item.data[0].size = self.formatXYDataWithMagnify(item.data[0].z, self.calcMagnify(item.settings.num_level))
+                }
                 item.dataLabels.formatter.XFormat = config.xAxis[0].formatter;
                 item.dataLabels.formatter.YFormat = config.yAxis[0].formatter;
+                item.dataLabels.formatter.sizeFormat = function () {
+                    return BI.contentFormat(arguments[0],
+                        self.formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.num_level || c.NORMAL,
+                            item.settings.unit || "", item.settings.num_separators || c.NUM_SEPARATORS));
+                }
             });
         }
 
@@ -148,6 +160,10 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                 default:
                     return "normal";
             }
+        }
+
+        function formatForSize() {
+
         }
 
         function formatLegend() {

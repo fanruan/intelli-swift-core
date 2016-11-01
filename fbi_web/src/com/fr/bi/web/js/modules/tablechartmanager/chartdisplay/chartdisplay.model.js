@@ -244,6 +244,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 targetIds: [targetIds[0], targetIds[1], targetIds[2]]
             }];
             obj.name = name;
+            obj.settings = BI.Utils.getDimensionSettingsByID(targetIds[2]);
             return obj;
         });
         this._setDataLabelSettingForBubbleAndScatter(objs);

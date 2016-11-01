@@ -33,7 +33,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         var formatterArray = [];
         BI.backEach(items, function (idx, item) {
             if (BI.has(item, "settings")) {
-                formatterArray.push(formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.num_level || c.NORMAL,
+                formatterArray.push(self.formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.num_level || c.NORMAL,
                     item.settings.unit || "", item.settings.num_separators || c.NUM_SEPARATORS));
             }
         });
@@ -111,54 +111,12 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                 var to = this.to;
                 if (BI.isNotEmptyArray(items) && BI.has(items[0], "settings")) {
                     var settings = items[0].settings;
-                    var legendFormat = formatToolTipAndDataLabel(settings.format || c.NORMAL, settings.num_level || c.NORMAL,
+                    var legendFormat = self.formatToolTipAndDataLabel(settings.format || c.NORMAL, settings.num_level || c.NORMAL,
                         settings.unit || "",settings.num_separators || c.NUM_SEPARATORS);
                     to = BI.contentFormat(to, legendFormat)
                 }
                 return to
             };
-        }
-
-        function formatToolTipAndDataLabel(format, numberLevel, unit, num_separators) {
-            var formatter = '#.##';
-            switch (format) {
-                case self.constants.NORMAL:
-                    formatter = '#.##';
-                    if (num_separators) formatter = '#,###.##';
-                    break;
-                case self.constants.ZERO2POINT:
-                    formatter = '#0';
-                    if (num_separators) formatter = '#,###';
-                    break;
-                case self.constants.ONE2POINT:
-                    formatter = '#0.0';
-                    if (num_separators) formatter = '#,###.0';
-                    break;
-                case self.constants.TWO2POINT:
-                    formatter = '#0.00';
-                    if (num_separators) formatter = '#,###.00';
-                    break;
-            }
-
-            switch (numberLevel) {
-                case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                    formatter += '';
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                    formatter += BI.i18nText("BI-Wan");
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                    formatter += BI.i18nText("BI-Million");
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                    formatter += BI.i18nText("BI-Yi");
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                    formatter += '%';
-                    break;
-            }
-
-            return formatter + unit;
         }
 
         function getRangeStyle(styles, change, defaultColor) {

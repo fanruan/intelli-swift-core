@@ -150,6 +150,13 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         }
     },
 
+    formatToolTipAndDataLabel: function (type, numberLevel, unit, separators) {
+        var formatter = this.formatNumberLevelAndSeparators(type, separators);
+        formatter += this.getXYAxisUnit(numberLevel, unit);
+
+        return formatter;
+    },
+
     calcMagnify: function (type) {
         var magnify = 1;
         switch (type) {
@@ -212,33 +219,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
     },
 
     formatTickInXYaxis: function (type, number_level, separators) {
-        var formatter = '#.##';
-        switch (type) {
-            case this.constants.NORMAL:
-                formatter = '#.##';
-                if (separators) {
-                    formatter = '#,###.##'
-                }
-                break;
-            case this.constants.ZERO2POINT:
-                formatter = '#0';
-                if (separators) {
-                    formatter = '#,###';
-                }
-                break;
-            case this.constants.ONE2POINT:
-                formatter = '#0.0';
-                if (separators) {
-                    formatter = '#,###.0';
-                }
-                break;
-            case this.constants.TWO2POINT:
-                formatter = '#0.00';
-                if (separators) {
-                    formatter = '#,###.00';
-                }
-                break;
-        }
+        var formatter = this.formatNumberLevelAndSeparators(type, separators);
         if (number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
             formatter += '%';
         }
@@ -249,38 +230,35 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
     },
 
     formatTickForRadar: function (type, number_level, separators, unit) {
-        var formatter = '#.##';
-        switch (type) {
-            case this.constants.NORMAL:
-                formatter = '#.##';
-                if (separators) {
-                    formatter = '#,###.##'
-                }
-                break;
-            case this.constants.ZERO2POINT:
-                formatter = '#0';
-                if (separators) {
-                    formatter = '#,###';
-                }
-                break;
-            case this.constants.ONE2POINT:
-                formatter = '#0.0';
-                if (separators) {
-                    formatter = '#,###.0';
-                }
-                break;
-            case this.constants.TWO2POINT:
-                formatter = '#0.00';
-                if (separators) {
-                    formatter = '#,###.00';
-                }
-                break;
-        }
+        var formatter = this.formatNumberLevelAndSeparators(type, separators);
         formatter += this.getXYAxisUnit(number_level, unit);
         formatter += ";-" + formatter;
         return function () {
             return BI.contentFormat(arguments[0], formatter)
         }
+    },
+
+    formatNumberLevelAndSeparators: function (type, separators) {
+        var formatter;
+        switch (type) {
+            case this.constants.NORMAL:
+                formatter = '#.##';
+                if (separators) formatter = '#,###.##';
+                break;
+            case this.constants.ZERO2POINT:
+                formatter = '#0';
+                if (separators) formatter = '#,###';
+                break;
+            case this.constants.ONE2POINT:
+                formatter = '#0.0';
+                if (separators) formatter = '#,###.0';
+                break;
+            case this.constants.TWO2POINT:
+                formatter = '#0.00';
+                if (separators) formatter = '#,###.00';
+                break;
+        }
+        return formatter
     },
 
     formatDataLabel: function (state, items, config, style) {
