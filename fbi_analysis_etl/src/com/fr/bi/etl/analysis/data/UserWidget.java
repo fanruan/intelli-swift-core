@@ -104,6 +104,7 @@ public class UserWidget {
                 tempValue.put(rowCount, v.get(i));
                 rowCount++;
             }
+
             if (v.size() != getPageSize()) {
                 maxRow = rowCount;
                 break;
@@ -121,22 +122,24 @@ public class UserWidget {
                 n = n.getFirstChild();
             }
             BIDimension[] rows = ((TableWidget) widget).getViewDimensions();
-            while (n != null) {
-                List rowList = new ArrayList();
-                Node temp = n;
-                for (TargetGettingKey key : ((TableWidget) widget).getTargetsKey()) {
-                    rowList.add(temp.getSummaryValue(key));
+            if (((TableWidget) widget).hasVerticalNextPage()) {
+                while (n != null) {
+                    List rowList = new ArrayList();
+                    Node temp = n;
+                    for (TargetGettingKey key : ((TableWidget) widget).getTargetsKey()) {
+                        rowList.add(temp.getSummaryValue(key));
+                    }
+                    int i = rows.length;
+                    while (temp.getParent() != null) {
+                        Object data = temp.getData();
+                        BIDimension dim = rows[--i];
+                        Object v = dim.getValueByType(data);
+                        rowList.add(0, v);
+                        temp = temp.getParent();
+                    }
+                    values.add(rowList);
+                    n = n.getSibling();
                 }
-                int i = rows.length;
-                while (temp.getParent() != null) {
-                    Object data = temp.getData();
-                    BIDimension dim = rows[--i];
-                    Object v = dim.getValueByType(data);
-                    rowList.add(0, v);
-                    temp = temp.getParent();
-                }
-                values.add(rowList);
-                n = n.getSibling();
             }
         } catch (JSONException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);

@@ -374,6 +374,17 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
         });
 
+        //空值连续
+        this.nullContinuity = BI.createWidget({
+            type: "bi.multi_select_item",
+            value: BI.i18nText("BI-Null_Continue"),
+            width: 90
+        });
+
+        this.nullContinuity.on(BI.Controller.EVENT_CHANGE, function() {
+            self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE)
+        });
+
         this.showElement = BI.createWidget({
             type: "bi.horizontal_adapt",
             columnSize: [80],
@@ -408,6 +419,9 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.showZoom]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.nullContinuity]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -684,6 +698,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this._invisible(!BI.Utils.getWSMinimalistByID(wId));
         this.YSeparators.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
         this.XSeparators.setSelected(BI.Utils.getWSRightNumberSeparatorsByID(wId));
+        this.nullContinuity.setSelected(BI.Utils.getWSNullContinueByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleRY.isSelected() ? this.editTitleRY.setVisible(true) : this.editTitleRY.setVisible(false);
@@ -716,7 +731,8 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             show_zoom: this.showZoom.isSelected(),
             minimalist_model: this.minimalistModel.isSelected(),
             num_separators: this.YSeparators.isSelected(),
-            right_num_separators: this.XSeparators.isSelected()
+            right_num_separators: this.XSeparators.isSelected(),
+            null_continue: this.nullContinuity.isSelected(),
         }
     },
 
