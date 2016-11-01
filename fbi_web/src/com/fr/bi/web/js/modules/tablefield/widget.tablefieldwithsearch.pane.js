@@ -71,6 +71,12 @@ BI.TableFieldWithSearchPane = FR.extend(BI.Widget, {
         table.on(BI.TableFieldInfo.EVENT_RELATION_CHANGE, function (fieldId) {
             self.fireEvent(BI.TableFieldWithSearchPane.EVENT_RELATION_CHANGE, fieldId);
         });
+        table.on(BI.TableFieldInfo.EVENT_VALID, function(){
+            self.fireEvent(BI.TableFieldWithSearchPane.EVENT_VALID);
+        });
+        table.on(BI.TableFieldInfo.EVENT_ERROR, function(){
+            self.fireEvent(BI.TableFieldWithSearchPane.EVENT_ERROR);
+        });
         table.populate(tableInfo);
         searcher.setAdapter(table);
         BI.createWidget({
@@ -86,6 +92,9 @@ BI.TableFieldWithSearchPane = FR.extend(BI.Widget, {
         })
     }
 });
+
+BI.TableFieldWithSearchPane.EVENT_VALID = "EVENT_VALID";
+BI.TableFieldWithSearchPane.EVENT_ERROR = "EVENT_ERROR";
 BI.TableFieldWithSearchPane.EVENT_USABLE_CHANGE = "EVENT_USABLE_CHANGE";
 BI.TableFieldWithSearchPane.EVENT_RELATION_CHANGE = "EVENT_RELATION_CHANGE";
 BI.TableFieldWithSearchPane.EVENT_TRANSLATION_CHANGE = "EVENT_TRANSLATION_CHANGE";
