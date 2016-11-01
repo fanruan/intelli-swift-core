@@ -1400,6 +1400,12 @@
                 BICst.DEFAULT_CHART_SETTING.background_layer_info;
         },
 
+        getWSNullContinueByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.null_continue) ? ws.null_continue :
+                BICst.DEFAULT_CHART_SETTING.null_continue;
+        },
+
         //settings  ---- end ----
 
         getWidgetSettingsByID: function (wid) {
