@@ -26,7 +26,6 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.data.impl.Connection;
-import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.stable.ArrayUtils;
 
 import java.io.File;
@@ -96,9 +95,15 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
      */
     @Override
     public boolean preConditionsCheck() {
+        BILoggerFactory.getLogger().info("***************space check start*****************");
         boolean spaceCheck = getSpaceCheckResult();
+        BILoggerFactory.getLogger().info("***************space check result: " + spaceCheck);
+        BILoggerFactory.getLogger().info("***************connection check start*****************");
         boolean connectionCheck = getConnectionCheck();
+        BILoggerFactory.getLogger().info("***************space check result: " + connectionCheck);
+//        BILoggerFactory.getLogger().info("***************table check start*****************");
 //        boolean sqlTest = getSqlTest();
+//        BILoggerFactory.getLogger().info("***************table  check result: " +sqlTest );
         return spaceCheck && connectionCheck;
     }
 
@@ -327,15 +332,12 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
         for (CubeTableSource tableSource : getAllSingleSources()) {
             if (ArrayUtils.contains(SqlSourceTypes, tableSource.getType())) {
                 if (!connectionSet.contains(((DBTableSource) tableSource).getConnection())) {
+                    if (!check.ConnectionCheck(((DBTableSource) tableSource).getConnection())) {
+                        BILoggerFactory.getLogger().error("the table:" + tableSource.getTableName() + " connection test failed");
+                        return false;
+                    }
                     connectionSet.add(((DBTableSource) tableSource).getConnection());
-
                 }
-            }
-        }
-        for (Connection connection : connectionSet) {
-            if (!check.ConnectionCheck((JDBCDatabaseConnection) connection)) {
-                BILoggerFactory.getLogger().error("connection:" + ((JDBCDatabaseConnection) connection).getURL() + " failed");
-                return false;
             }
         }
         return true;

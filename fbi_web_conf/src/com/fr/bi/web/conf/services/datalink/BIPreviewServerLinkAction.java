@@ -1,16 +1,11 @@
 package com.fr.bi.web.conf.services.datalink;
 
-import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.stable.utils.DecryptBi;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.utils.DecryptBi;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
+import com.fr.bi.web.conf.utils.BIWebSQLPreviewUtils;
 import com.fr.data.core.db.DBUtils;
-import com.fr.data.impl.DBTableData;
-import com.fr.data.impl.EmbeddedTableData;
-import com.fr.file.DatasourceManager;
 import com.fr.general.Decrypt;
-import com.fr.general.data.DataModel;
-import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 import com.fr.web.utils.WebUtils;
@@ -20,12 +15,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 
+
 /**
  * Created with IntelliJ IDEA.
  * User: Sheldon
  * Date: 13-11-1
  * Time: 下午3:55
  * describe: preview table
+ * SQL语句预览
  */
 public class BIPreviewServerLinkAction extends AbstractBIConfigureAction {
     @Override
@@ -47,46 +44,18 @@ public class BIPreviewServerLinkAction extends AbstractBIConfigureAction {
         //加密处理过
         if (StringUtils.isNotEmpty(query)) {
             query = DecryptBi.decrypt(query, "sh");
-            BILoggerFactory.getLogger().info("preview sql:"+query);
+            BILoggerFactory.getLogger().info("preview sql:" + query);
         }
-//        query = java.net.URLDecoder.decode(query , "utf-8");
         Connection conn = null;
         try {
-            com.fr.data.impl.Connection dbc = DatasourceManager.getInstance().getConnection(linkName);
-
-            DBTableData dbTableData = new DBTableData(dbc, query);
-
-            //转换成内置数据集
-            EmbeddedTableData emTableData = EmbeddedTableData.embedify(dbTableData, null, BIBaseConstant.PREVIEW_COUNT);
-            DataModel dm = emTableData.createDataModel(null);
-
-            int cols = dm.getColumnCount();
-            int rows = Math.min(dm.getRowCount(), BIBaseConstant.PREVIEW_COUNT);
-
-            JSONArray fieldJa = new JSONArray();
-            for (int i = 0; i < cols; i++) {
-                fieldJa.put(dm.getColumnName(i));
-            }
-
-            JSONArray dataJa = new JSONArray();
-            for (int i = 0; i < rows; i++) {
-
-                JSONArray oneRowJa = new JSONArray();
-                for (int j = 0; j < cols; j++) {
-                    oneRowJa.put(dm.getValueAt(i, j).toString());
-                }
-
-                dataJa.put(oneRowJa);
-            }
-
-            return new JSONObject().put("field_names", fieldJa).put("data", dataJa);
-
+            String subQuery = BIWebSQLPreviewUtils.getTableQuery(query);
+            JSONObject data = BIWebSQLPreviewUtils.getPreviewData(subQuery, linkName);
+            return data;
         } catch (Exception ignore) {
             BILoggerFactory.getLogger().info(ignore.getMessage());
         } finally {
             DBUtils.closeConnection(conn);
         }
-
         return new JSONObject();
     }
 

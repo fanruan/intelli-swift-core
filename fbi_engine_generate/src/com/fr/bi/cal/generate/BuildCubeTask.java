@@ -91,10 +91,6 @@ public class BuildCubeTask implements CubeTask {
         return CubeTaskType.ALL;
     }
 
-    public CubeBuildStuff getCubeBuild() {
-        return cubeBuildStuff;
-    }
-
     @Override
     public void start() {
         BIConfigureManagerCenter.getLogManager().logStart(biUser.getUserId());
