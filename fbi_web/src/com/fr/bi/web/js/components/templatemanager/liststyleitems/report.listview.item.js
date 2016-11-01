@@ -218,12 +218,15 @@ BI.ReportListViewItem = BI.inherit(BI.Single, {
                 width: 230
             }, {
                 el: this.blankSpace,
-                width: "fill"
+                width: 50
+            }, {
+                type: "bi.vertical_adapt",
+                hgap: 20,
+                items: [sharedButton, this.hangout, renameIcon, deleteIcon]
             }, {
                 el: {
                     type: "bi.left_right_vertical_adapt",
                     items: {
-                        left: [sharedButton, this.hangout, renameIcon, deleteIcon],
                         right: [timeText]
                     },
                     llgap: 20,
