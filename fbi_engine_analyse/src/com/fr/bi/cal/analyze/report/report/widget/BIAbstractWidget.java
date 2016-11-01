@@ -98,6 +98,16 @@ public abstract class BIAbstractWidget implements BIWidget {
     }
 
     @Override
+    public boolean showRowToTal() {
+        return true;
+    }
+
+    @Override
+    public boolean showColumnTotal() {
+        return true;
+    }
+
+    @Override
     public void refreshColumns() {
         for (BITargetAndDimension td : getTargets()){
             td.refreshColumn();

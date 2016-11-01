@@ -34,12 +34,12 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this, o = this.options;
+        var isDashboard = BI.contains([self.constants.NORMAL, self.constants.HALF_DASHBOARD], self.config.chart_dashboard_type);
+        var isMultiPointers = self.config.number_of_pointer === self.constants.MULTI_POINTER;
         formatChartDashboardStyle();
         config.chartType = "gauge";
         delete config.xAxis;
         delete config.yAxis;
-        var isDashboard = BI.contains([self.constants.NORMAL, self.constants.HALF_DASHBOARD], self.config.chart_dashboard_type);
-        var isMultiPointers = self.config.number_of_pointer === self.constants.MULTI_POINTER;
         if (isDashboard && !isMultiPointers) {
             config.plotOptions.seriesLabel.enabled = false
         }

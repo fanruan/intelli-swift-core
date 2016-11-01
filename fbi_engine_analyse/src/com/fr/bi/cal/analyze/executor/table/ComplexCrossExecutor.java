@@ -224,10 +224,10 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
                 boolean isRowTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(rowDimension);
                 if (needAllPage) {
                     if (n == i * colRegionLength) {
-                        GroupExecutor.dealWithNode(node.getLeft(), NodeExpander.ALL_EXPANDER, cbcells, startRow, 0, paging.getCurrentPage(), rowDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), maxRowDimensionLen - 1, 0, rowData);
+                        GroupExecutor.dealWithNode(node.getLeft(), NodeExpander.ALL_EXPANDER, cbcells, startRow, 0, paging.getCurrentPage(), rowDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), maxRowDimensionLen - 1, 0, rowData, widget.getChatSetting());
                     }
                     if (i == 0) {
-                        HorGroupExecutor.dealWithNode(node.getTop(), NodeExpander.ALL_EXPANDER, cbcells, 0, startColumn, colDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), maxColumnDimensionLen - 1, true, new IntList(), isRowTargetSort, rowDimension[0], widget, columnData);
+                        HorGroupExecutor.dealWithNode(node.getTop(), NodeExpander.ALL_EXPANDER, cbcells, 0, startColumn, colDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), maxColumnDimensionLen - 1, true, new IntList(), isRowTargetSort, rowDimension[0], widget, columnData, widget.getChatSetting());
                     }
                     CrossExpander expander = CrossExpander.ALL_EXPANDER;
                     dealWithNode(node.getLeft(), expander, expander.getYExpander(), cbcells, rowDimension, colDimension, startRow, startColumn, keys, maxRowDimensionLen - 1);
@@ -235,10 +235,10 @@ public class ComplexCrossExecutor extends BIComplexExecutor<NewCrossRoot> {
                 } else {
                     CrossExpander expander = complexExpander.createCrossNode(rowRegionIndex, n - i * colRegionLength);
                     if (n == i * colRegionLength) {
-                        GroupExecutor.dealWithNode(node.getLeft(), expander.getYExpander(), cbcells, startRow, 0, paging.getCurrentPage(), rowDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), maxRowDimensionLen - 1, 0, rowData);
+                        GroupExecutor.dealWithNode(node.getLeft(), expander.getYExpander(), cbcells, startRow, 0, paging.getCurrentPage(), rowDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), maxRowDimensionLen - 1, 0, rowData, widget.getChatSetting());
                     }
                     if (i == 0) {
-                        HorGroupExecutor.dealWithNode(node.getTop(), expander.getXExpander(), cbcells, 0, startColumn, colDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), maxColumnDimensionLen - 1, true, new IntList(), isRowTargetSort, rowDimension[0], widget, columnData);
+                        HorGroupExecutor.dealWithNode(node.getTop(), expander.getXExpander(), cbcells, 0, startColumn, colDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), maxColumnDimensionLen - 1, true, new IntList(), isRowTargetSort, rowDimension[0], widget, columnData, widget.getChatSetting());
                     }
                     dealWithNode(node.getLeft(), expander, expander.getYExpander(), cbcells, rowDimension, colDimension, startRow, startColumn, keys, rowDimension.length - 1);
                     startColumn += (!hasTarget ? node.getTop().getTotalLength(expander.getXExpander()) : node.getTop().getTotalLengthWithSummary(expander.getXExpander())) * (Math.max(1, keys.length));
