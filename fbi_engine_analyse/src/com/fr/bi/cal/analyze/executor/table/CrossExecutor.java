@@ -190,13 +190,7 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
             cell.setRow(row);
             cell.setRowSpan(1);
             cell.setColumnSpan(1);
-            cell.setStyle(
-
-                    pos == 0 ? (isYSummary ?
-                            BITableStyle.getInstance().getYTotalCellStyle(v, yTotal)
-                            :
-                            BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1)
-                    ) : BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1));
+            cell.setStyle((chartSetting.showRowTotal() && isYSummary) ? BITableStyle.getInstance().getYTotalCellStyle(v, yTotal) : BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1));
             List cellList = new ArrayList();
             cellList.add(cell);
             CBBoxElement cbox = new CBBoxElement(cellList);
@@ -208,17 +202,13 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
         } else {
             for (int k = 0; k < keys.length; k++) {
                 Object v = node.getSummaryValue(keys[k]);
-                CBCell cell = new CBCell(ExecutorUtils.formatExtremeSumValue(v));
+                v = ExecutorUtils.formatExtremeSumValue(v, chartSetting.getNumberLevelByTargetId(keys[k].getTargetName()));
+                CBCell cell = new CBCell(v);
                 cell.setColumn(column + (pos * keys.length) + k + widget.isOrder());
                 cell.setRow(row);
                 cell.setRowSpan(1);
                 cell.setColumnSpan(1);
-                cell.setStyle(
-                        pos == 0 ? (isYSummary ?
-                                BITableStyle.getInstance().getYTotalCellStyle(v, yTotal)
-                                :
-                                BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1)
-                        ) : BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1));
+                cell.setStyle((chartSetting.showRowTotal() && isYSummary) ? BITableStyle.getInstance().getYTotalCellStyle(v, yTotal) : BITableStyle.getInstance().getNumberCellStyle(v, cell.getRow() % 2 == 1));
                 List cellList = new ArrayList();
                 cellList.add(cell);
                 CBBoxElement cbox = new CBBoxElement(cellList);
@@ -284,6 +274,7 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
 
     private void generateTitleCell(CBCell[][] cells, boolean isColTargetSort, boolean isRowTargetSort) {
         for (int i = 0; i < colDimension.length; i++) {
+            BIAbstractDimension dimension = ((BIAbstractDimension) colDimension[i]);
             CBCell cell = new CBCell();
             cell.setColumn(0);
             cell.setRow(i);

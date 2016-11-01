@@ -50,7 +50,7 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
     static void dealWithNodeNoChild(Node node, CBCell[][] cbcells, int row, int column,
                                     BIDimension[] colColumn,
                                     BITarget[] sumColumn, TargetGettingKey[] keys,
-                                    TableWidget widget, int tempCol, BIComplexExecutData rowData) {
+                                    TableWidget widget, int tempCol, BIComplexExecutData rowData, DetailChartSetting chartSetting) {
         int columnLength = colColumn.length;
         int maxColumnLen = rowData.getMaxArrayLength();
         CBCell cell = null;
@@ -58,7 +58,8 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
         if (index == 0) {
             for (int i = 0, len = keys.length; i < len; i++) {
                 Object v = node.getSummaryValue(keys[i]);
-                cell = new CBCell(ExecutorUtils.formatExtremeSumValue(v));
+                v = ExecutorUtils.formatExtremeSumValue(v, chartSetting.getNumberLevelByTargetId(keys[i].getTargetName()));
+                cell = new CBCell(v);
                 cell.setRow(maxColumnLen + i);
                 cell.setColumn(tempCol);
                 cell.setRowSpan(1);
@@ -140,12 +141,13 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
     static void dealWithNodeNoExpander(Node node, CBCell[][] cbcells, int row, int column,
                                        BIDimension[] colColumn,
                                        BITarget[] sumColumn, TargetGettingKey[] keys,
-                                       TableWidget widget, int tempCol, BIComplexExecutData rowData) {
+                                       TableWidget widget, int tempCol, BIComplexExecutData rowData, DetailChartSetting chartSetting) {
         int columnLength = colColumn.length;
         CBCell cell = null;
         for (int i = 0, len = keys.length; i < len; i++) {
             Object v = node.getSummaryValue(keys[i]);
-            cell = new CBCell(ExecutorUtils.formatExtremeSumValue(v));
+            v = ExecutorUtils.formatExtremeSumValue(v, chartSetting.getNumberLevelByTargetId(keys[i].getTargetName()));
+            cell = new CBCell(v);
             cell.setRow(rowData.getMaxArrayLength() + i);
             cell.setColumn(tempCol);
             cell.setRowSpan(1);
@@ -329,7 +331,14 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
         CBCell cell = null;
         boolean isSortTitle = row == 0;
         for (int p = 0; p < sumColumn.length; p++) {
-            cell = new CBCell(Inter.getLocText("BI-Summary") + ":" + ((BIAbstractTarget) sumColumn[p]).getText());
+            BIAbstractTarget target = (BIAbstractTarget) sumColumn[p];
+            String dimensionName = target.getText();
+            String dId = target.getValue();
+            String levelAndUnit = ExecutorUtils.formatLevelAndUnit(chartSetting.getNumberLevelByTargetId(dId), chartSetting.getUnitByTargetId(dId));
+            if (!ComparatorUtils.equals(levelAndUnit, StringUtils.EMPTY)) {
+                dimensionName = dimensionName + "(" + levelAndUnit + ")";
+            }
+            cell = new CBCell(Inter.getLocText("BI-Summary") + ":" + dimensionName);
             cell.setRow(row);
             cell.setColumn(tempCol + p);
             int dimensionIndex = columnData.getDimensionIndexFromRow(row, columnLength);
@@ -367,7 +376,8 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
             cbcells[cell.getColumn()][cell.getRow()] = cell;
             for (int i = 0, len = keys.length; i < len; i++) {
                 Object v = node.getSummaryValue(keys[i]);
-                cell = new CBCell(ExecutorUtils.formatExtremeSumValue(v));
+                v = ExecutorUtils.formatExtremeSumValue(v, chartSetting.getNumberLevelByTargetId(keys[i].getTargetName()));
+                cell = new CBCell(v);
                 cell.setRow(columnData.getMaxArrayLength() + i);
                 cell.setColumn(tempCol + p);
                 cell.setRowSpan(1);
@@ -443,7 +453,8 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
         cbcells[cell.getColumn()][cell.getRow()] = cell;
         for (int i = 0, len = keys.length; i < len; i++) {
             Object v = node.getSummaryValue(keys[i]);
-            cell = new CBCell(ExecutorUtils.formatExtremeSumValue(v));
+            v = ExecutorUtils.formatExtremeSumValue(v, chartSetting.getNumberLevelByTargetId(keys[i].getTargetName()));
+            cell = new CBCell(v);
             cell.setRow(columnData.getMaxArrayLength() + i);
             cell.setColumn(tempCol);
             cell.setRowSpan(1);
@@ -512,7 +523,7 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
         CBCell cell = null;
         boolean isSortTitle = row == 0;
         if (isLastDimension(row, rowData)) {
-            dealWithNodeNoChild(node, cbcells, row, column, colColumn, sumColumn, keys, widget, tempCol, rowData);
+            dealWithNodeNoChild(node, cbcells, row, column, colColumn, sumColumn, keys, widget, tempCol, rowData, chartSetting);
             if (isCross) {
                 dealWithNodeIsCross(node, cbcells, row, column, colColumn, sumColumn, keys, widget, tempCol, rowData);
             }
@@ -520,7 +531,7 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
         }
         //收缩着:
         if (expander == null) {
-            dealWithNodeNoExpander(node, cbcells, row, column, colColumn, sumColumn, keys, widget, tempCol, rowData);
+            dealWithNodeNoExpander(node, cbcells, row, column, colColumn, sumColumn, keys, widget, tempCol, rowData, chartSetting);
             if (isCross) {
                 dealWithNodeNoExpanderIsCross(node, cbcells, row, column, colColumn, sumColumn, keys, isTargetSort, sortDimension, widget, tempCol, rowData);
             }
@@ -553,7 +564,8 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
         if (index == 0) {
             for (int i = 0, len = keys.length; i < len; i++) {
                 Object v = node.getSummaryValue(keys[i]);
-                cell = new CBCell(ExecutorUtils.formatExtremeSumValue(v));
+                v = ExecutorUtils.formatExtremeSumValue(v, chartSetting.getNumberLevelByTargetId(keys[i].getTargetName()));
+                cell = new CBCell(v);
                 cell.setRow(maxColumnLen + i);
                 cell.setColumn(tempCol);
                 cell.setRowSpan(1);
@@ -675,7 +687,8 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
         cbcells[cell.getColumn()][cell.getRow()] = cell;
         for (int i = 0, len = keys.length; i < len; i++) {
             Object v = node.getSummaryValue(keys[i]);
-            cell = new CBCell(ExecutorUtils.formatExtremeSumValue(v));
+            v = ExecutorUtils.formatExtremeSumValue(v, chartSetting.getNumberLevelByTargetId(keys[i].getTargetName()));
+            cell = new CBCell(v);
             cell.setRow(rowData.getMaxArrayLength() + i);
             cell.setColumn(tempCol);
             cell.setRowSpan(1);
