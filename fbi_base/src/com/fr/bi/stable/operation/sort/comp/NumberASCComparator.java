@@ -4,7 +4,7 @@ package com.fr.bi.stable.operation.sort.comp;
 /**
  * Created by roy on 16/11/1.
  */
-public class NumberASCComparatorNew extends ASCComparator {
+public class NumberASCComparator extends ASCComparator {
     @Override
     public int compare(Object o1, Object o2) {
         if (o1 == null || o2 == null) {
