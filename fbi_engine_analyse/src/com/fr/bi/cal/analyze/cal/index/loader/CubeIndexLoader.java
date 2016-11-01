@@ -442,7 +442,6 @@ public class CubeIndexLoader {
             pg = new PageIteratorGroup(rowMap, columnMap);
             session.setPageIteratorGroup(useRealData, widgetName, pg);
         }
-        DimensionGroupFilter dimensionGroupFilter = createDimensionGroupFilter(widget, usedTargets, sumTarget, rowDimension, session, new ArrayList<MergerInfo>(), false);
         if (hasAllCalCalculatorTargets(usedTargets)){
             NodeAndPageInfo leftInfo = getLeftInfo(rowDimension, sumTarget, page, useRealData, expander, widget, session, usedTargets, calculateTargets, pg);
             Map<GroupKey, IRootDimensionGroup> rowMap = new ConcurrentHashMap<GroupKey, IRootDimensionGroup>();
@@ -997,7 +996,7 @@ public class CubeIndexLoader {
         if (widget instanceof BISummaryWidget) {
             targetSort = ((BISummaryWidget) widget).getTargetSort();
         }
-        DimensionGroupFilter dimensionGroupFilter = new DimensionGroupFilter(mergerInfoList, targetFilterMap, rowDimension, usedTargets, stringTargetGettingKeyMap, session, targetSort);
+        DimensionGroupFilter dimensionGroupFilter = new DimensionGroupFilter(mergerInfoList, targetFilterMap, rowDimension, usedTargets, stringTargetGettingKeyMap, session, targetSort, isCross || widget.showRowToTal());
         dimensionGroupFilter.setShouldRecalculateIndex(isCross);
         return dimensionGroupFilter;
     }
