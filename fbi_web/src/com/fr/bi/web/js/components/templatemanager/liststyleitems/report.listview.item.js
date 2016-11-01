@@ -12,6 +12,7 @@ BI.ReportListViewItem = BI.inherit(BI.BasicButton, {
         return BI.extend(BI.ReportListViewItem.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-template-manager-file-item bi-list-item cursor-pointer",
             height: 40,
+            disableSelected: true,
             validationChecker: BI.emptyFn,
             id: null,
             value: null,
