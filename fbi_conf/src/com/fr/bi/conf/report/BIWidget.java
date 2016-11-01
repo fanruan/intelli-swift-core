@@ -64,6 +64,17 @@ public interface BIWidget extends ParseJSONWithUID, FCloneable, BICoreService {
 
     int getType();
 
+    /**
+     * 显示汇总行
+     * @return
+     */
+    boolean showRowToTal();
+
+    /**
+     * 显示汇总列
+     * @return
+     */
+    boolean showColumnTotal();
 
     void refreshColumns();
 }
