@@ -38,6 +38,13 @@ BI.SelectTreeLabel = BI.inherit(BI.Widget, {
     setValue: function (v) {
         var self = this, o = this.options;
         var dimensions = BI.Utils.getAllDimDimensionIDs(o.wId);
+        if(BI.isEmptyArray(dimensions)) {
+            return self.treeLabel.populate({
+                items: [],
+                titles: [],
+                selectedValue: v
+            });
+        }
         var titles = [];
         BI.each(dimensions, function (idx, dId) {
             var temp = BI.Utils.getDimensionNameByID(dId);

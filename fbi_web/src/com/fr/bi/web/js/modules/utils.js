@@ -2639,7 +2639,7 @@
                             filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
                             filter_value: {
                                 type: value === BICst.LIST_LABEL_TYPE.ALL ? BI.Selection.All : BI.Selection.Multi,
-                                value: [value]
+                                value: [value === BICst.LIST_LABEL_TYPE.ALL ? "" : value]
                             },
                             // _src: {field_id: self.getFieldIDByDimensionID(dimensionIds[floor])}
                             _src: self.getDimensionSrcByID(dimensionIds[floor])
