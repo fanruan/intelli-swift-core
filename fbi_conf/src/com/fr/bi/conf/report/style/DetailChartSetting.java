@@ -21,4 +21,12 @@ public class DetailChartSetting implements JSONParser {
     public JSONObject getDetailChartSetting() {
         return settings;
     }
+
+    public boolean showRowTotal() {
+        return settings.optBoolean("show_row_total", true);
+    }
+
+    public boolean showColTotal() {
+        return settings.optBoolean("show_col_total", true);
+    }
 }
