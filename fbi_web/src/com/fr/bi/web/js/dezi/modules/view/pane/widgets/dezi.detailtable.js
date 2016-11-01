@@ -199,8 +199,8 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                     self._onClickFilter();
                     break;
                 case BICst.DASHBOARD_WIDGET_EXCEL:
-                    window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
-                        + window.encodeURIComponent(self.model.get("name")));
+                    window.location = FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
+                        + window.encodeURIComponent(self.model.get("name"));
                     break;
                 case BICst.DASHBOARD_WIDGET_COPY :
                     self.model.copy();
