@@ -166,7 +166,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
             currentIndex.add(name);
             NodeExpander childEx = expander.getChildExpander(name);
             int rowSpan;
-            if (sumColumn.length == 0) {
+            if (sumColumn.length == 0 || !chartSetting.showRowTotal()) {
                 rowSpan = tempNode.getTotalLength(childEx);
             } else {
                 rowSpan = tempNode.getTotalLengthWithSummary(childEx);
