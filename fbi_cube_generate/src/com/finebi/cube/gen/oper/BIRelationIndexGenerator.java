@@ -22,7 +22,7 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.gvi.traversal.TraversalAction;
 import com.fr.bi.stable.io.newio.NIOConstant;
-import com.fr.bi.stable.operation.sort.comp.NumberASCComparator;
+import com.fr.bi.stable.operation.sort.comp.NumberASCComparatorNew;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
@@ -204,7 +204,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
                 case DBConstant.CLASS.INTEGER:
                 case DBConstant.CLASS.LONG:
                 case DBConstant.CLASS.DOUBLE:
-                    c = new NumberASCComparator();
+                    c = new NumberASCComparatorNew();
             }
             int[] reverse = new int[foreignTable.getRowCount()];
             Arrays.fill(reverse, NIOConstant.INTEGER.NULL_VALUE);
