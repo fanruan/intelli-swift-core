@@ -258,9 +258,11 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
 
         //if (BI.isNotEmptyArray(resultId) || BI.contains(op.value, BICst.LIST_LABEL_TYPE.ALL)) {
         o.itemsCreator(op, function (value) {
-            self._updateData(value.items);
-            self._updateItems(floor);
-            callback(self.items, floor);
+            if(value.items) {
+                self._updateData(value.items[0]);
+                self._updateItems(floor);
+                callback(self.items, floor);
+            }
         });
         // } else {
         //     this._updateItems(floor);

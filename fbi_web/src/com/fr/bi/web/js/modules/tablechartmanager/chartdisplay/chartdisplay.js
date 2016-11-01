@@ -57,10 +57,10 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
         var linkageInfo = this.model.getLinkageInfo(obj);
         var dId = linkageInfo.dId, clicked = linkageInfo.clicked;
         if (BI.Utils.getDimensionTypeByID(dId) === BICst.TARGET_TYPE.FORMULA) {
-            // self._createMultiLinkage({
-            //     dId: dId,
-            //     clicked: clicked
-            // }, {});
+            self._createMultiLinkage({
+                dId: dId,
+                clicked: clicked
+            }, {});
         } else {
             BI.each(BI.Utils.getWidgetLinkageByID(o.wId), function (i, link) {
                 if (BI.contains(dId, link.from) && BI.isEmptyArray(link.cids)) {
@@ -76,7 +76,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
     _createMultiLinkage: function (obj, place) {
         var self =this, o = this.options;
         if (this.linkageList) {
-            this.linkageList.destroy();
+            this.linkageList.empty();
         }
         var dId = obj.dId[0], clicked = obj.clicked;
         var expression = BI.Utils.getDimensionSrcByID(dId).expression;
@@ -133,11 +133,11 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 }]
             });
             this.linkageList.on(BI.TextButton.EVENT_CHANGE, function () {
-                self.linkageList.destroy();
+                self.linkageList.empty();
             });
             var destroyList = BI.debounce(BI.bind(function () {
                 if(self._doDestroy) {
-                    this.destroy();
+                    this.empty();
                 }
             }, this.linkageList), 3000);
 

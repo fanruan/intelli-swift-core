@@ -661,6 +661,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     },
 
     _createDataImage: function (data, label) {
+        if(!label.style_setting.src) {
+            return;
+        }
         this.imageSizeMap = this.imageSizeMap || {};
         var size = this.imageSizeMap[label.style_setting.src];
         if(!size) {
