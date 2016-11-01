@@ -10,19 +10,19 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.structure.*;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
-import com.finebi.cube.utils.BICubeRelationUtils;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
 import com.fr.bi.stable.constant.CubeConstant;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.gvi.traversal.TraversalAction;
 import com.fr.bi.stable.io.newio.NIOConstant;
+import com.fr.bi.stable.operation.sort.comp.NumberASCComparator;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
@@ -200,6 +200,12 @@ public class BIRelationIndexGenerator extends BIProcessor {
             Object foreignColumnValue = foreignColumn.getGroupObjectValue(foreignIndex);
             GroupValueIndex foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
             Comparator c = primaryColumn.getGroupComparator();
+            switch (primaryColumn.getClassType()) {
+                case DBConstant.CLASS.INTEGER:
+                case DBConstant.CLASS.LONG:
+                case DBConstant.CLASS.DOUBLE:
+                    c = new NumberASCComparator();
+            }
             int[] reverse = new int[foreignTable.getRowCount()];
             Arrays.fill(reverse, NIOConstant.INTEGER.NULL_VALUE);
             Stopwatch stopwatch = Stopwatch.createStarted();
