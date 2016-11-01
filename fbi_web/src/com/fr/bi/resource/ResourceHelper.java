@@ -2613,6 +2613,9 @@ public class ResourceHelper {
 
                 "com/fr/bi/web/js/case/logintimeout/login.timeout.js",
 
+                "com/fr/bi/web/js/case/zclip/zclip.js",
+
+
                 /**
                  * 基础类控件
                 */

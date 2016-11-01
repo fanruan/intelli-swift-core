@@ -743,8 +743,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.FORCE_BUBBLE:
                 return this._formatDataForAxis(data);
-
-            //return this._formatDataForDashBoard(data);
             case BICst.WIDGET.BUBBLE:
                 return this._formatDataForBubble(data);
             case BICst.WIDGET.SCATTER:
