@@ -47,7 +47,7 @@ public class BIWebSQLPreviewUtils {
         }
         return jo;
     }
-    public static String getTableQuery(String subQuery){
+    public static String getFinalQuery(String subQuery){
         SQLStatement sqlStatement = new SQLStatement(null);
         sqlStatement.setFrom("(\n" + subQuery + "\n) " + "t");
         return sqlStatement.toString();

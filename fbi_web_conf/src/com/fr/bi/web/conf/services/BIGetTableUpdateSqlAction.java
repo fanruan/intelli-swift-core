@@ -67,8 +67,8 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
         JSONObject jo ;
         String sql = parseSQL(stringSql, lastUpdateDate);
         BILoggerFactory.getLogger().info("preview SQL：" + sql);
-        String subQuery = BIWebSQLPreviewUtils.getTableQuery(sql);
-        jo = BIWebSQLPreviewUtils.getPreviewData(subQuery, connectionName);
+        String finalQuery = BIWebSQLPreviewUtils.getFinalQuery(sql);
+        jo = BIWebSQLPreviewUtils.getPreviewData(finalQuery, connectionName);
         jo.put("sql", sql).put("last_update_time", lastUpdateDate);
         WebUtils.printAsJSON(res, jo);
     }

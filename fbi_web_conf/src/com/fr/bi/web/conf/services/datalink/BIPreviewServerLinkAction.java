@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 
-
 /**
  * Created with IntelliJ IDEA.
  * User: Sheldon
@@ -48,8 +47,8 @@ public class BIPreviewServerLinkAction extends AbstractBIConfigureAction {
         }
         Connection conn = null;
         try {
-            String subQuery = BIWebSQLPreviewUtils.getTableQuery(query);
-            JSONObject data = BIWebSQLPreviewUtils.getPreviewData(subQuery, linkName);
+            String finalSql = BIWebSQLPreviewUtils.getFinalQuery(query);
+            JSONObject data = BIWebSQLPreviewUtils.getPreviewData(finalSql, linkName);
             return data;
         } catch (Exception ignore) {
             BILoggerFactory.getLogger().info(ignore.getMessage());
