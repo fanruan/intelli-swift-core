@@ -241,7 +241,7 @@ public class TableWidget extends BISummaryWidget {
         if (jo.has(BIJSONConstant.JSON_KEYS.EXPANDER)) {
             parsExpander(jo);
         }
-        if(jo.has("settings")){
+        if (jo.has("settings")) {
             settings = new DetailChartSetting();
             settings.parseJSON(jo);
         }
@@ -263,6 +263,10 @@ public class TableWidget extends BISummaryWidget {
         }
     }
 
+    public DetailChartSetting getChatSetting() {
+        return settings;
+    }
+
     @Override
     public int getType() {
         return BIReportConstant.WIDGET.TABLE;
@@ -272,7 +276,19 @@ public class TableWidget extends BISummaryWidget {
         this.operator = operator;
     }
 
-    public DetailChartSetting getChatSetting(){
-        return settings;
+    public boolean hasVerticalPrePage() {
+        return pageSpinner[BIReportConstant.TABLE_PAGE.VERTICAL_PRE] > 0;
+    }
+
+    public boolean hasVerticalNextPage() {
+        return pageSpinner[BIReportConstant.TABLE_PAGE.VERTICAL_NEXT] > 0;
+    }
+
+    public boolean hasHorizonPrePage() {
+        return pageSpinner[BIReportConstant.TABLE_PAGE.HORIZON_PRE] > 0;
+    }
+
+    public boolean hasHorizonNextPage() {
+        return pageSpinner[BIReportConstant.TABLE_PAGE.HORIZON_NEXT] > 0;
     }
 }
