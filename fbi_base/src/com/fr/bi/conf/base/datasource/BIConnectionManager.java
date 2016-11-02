@@ -132,8 +132,8 @@ public class BIConnectionManager extends XMLFileManager {
         DataLinkInformation dl = new DataLinkInformation();
         dl.parseJSON(linkDataJo);
         JDBCDatabaseConnection jdbcDatabaseConnection = dl.createJDBCDatabaseConnection();
-        BIConnectOptimizationUtils utils = BIConnectOptimizationUtilsFactory.getOptimizationUtils(jdbcDatabaseConnection);
-        jdbcDatabaseConnection = utils.optimizeConnection(jdbcDatabaseConnection);
+        /*BIConnectOptimizationUtils utils = BIConnectOptimizationUtilsFactory.getOptimizationUtils(jdbcDatabaseConnection);
+        jdbcDatabaseConnection = utils.optimizeConnection(jdbcDatabaseConnection);*/ //连接保存时，如果是sqlserver连接，不会再url上字段加selectMethod，当在需要数据库连接时，加上selectMethod属性
         DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
 
         if (!ComparatorUtils.equals(oldName, newName)) {

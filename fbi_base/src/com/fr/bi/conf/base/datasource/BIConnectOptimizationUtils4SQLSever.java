@@ -1,6 +1,7 @@
 package com.fr.bi.conf.base.datasource;
 
 import com.fr.data.impl.JDBCDatabaseConnection;
+import com.fr.general.ComparatorUtils;
 
 /**
  * Created by Connery on 2014/11/17.
@@ -16,10 +17,18 @@ public class BIConnectOptimizationUtils4SQLSever extends BIConnectOptimizationUt
      */
     @Override
     public JDBCDatabaseConnection optimizeConnection(JDBCDatabaseConnection connection) {
-        String url = connection.getURL();
-        String optimizedUrl = optimizeSelectMethod(url);
-        connection.setURL(optimizedUrl);
-        return connection;
+        JDBCDatabaseConnection deepCloneConnection = new JDBCDatabaseConnection();
+        ;//cube取数且为sqlserver连接，需要特殊处理
+        JDBCDatabaseConnection jdbcDatabaseConnection = (JDBCDatabaseConnection) connection;
+        deepCloneConnection.setDbcpAttr(jdbcDatabaseConnection.getDbcpAttr());
+        deepCloneConnection.setDriver(jdbcDatabaseConnection.getDriver());
+        deepCloneConnection.setEncryptPassword(jdbcDatabaseConnection.isEncryptPassword());
+        deepCloneConnection.setPassword(jdbcDatabaseConnection.getPassword());
+        deepCloneConnection.setURL(optimizeSelectMethod(jdbcDatabaseConnection.getURL()));//sqlserver连接url，如果没有有selectMethod字段，增加该字段
+        deepCloneConnection.setUser(jdbcDatabaseConnection.getUser());
+        deepCloneConnection.setNewCharsetName(jdbcDatabaseConnection.getNewCharsetName());
+        deepCloneConnection.setOriginalCharsetName(jdbcDatabaseConnection.getOriginalCharsetName());
+        return deepCloneConnection;
     }
 
     /**
