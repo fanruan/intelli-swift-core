@@ -460,12 +460,25 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         }
 
         var fields = o.fieldsCreator(tableId, isRelation);
-        if ((fields.length === 1 && BI.Utils.getFieldTypeByID(fields[0].id)) === BICst.COLUMN.COUNTER
-            || fields.length === 0) {
+        if ((fields.length === 1 && BI.Utils.getFieldTypeByID(fields[0].id)) === BICst.COLUMN.COUNTER) {
             fieldStructure.push({
                 type: "bi.label",
                 value: BI.UUID(),
                 text: BI.i18nText("BI-(Empty)"),
+                pId: tableId,
+                id: BI.UUID(),
+                wId: o.wId,
+                textAlign: "left",
+                lgap: isRelation ? c.FIELD_GAP * 2 : c.FIELD_GAP,
+                disabled: true
+            });
+            return fieldStructure;
+        }
+        if(fields.length === 0){
+            fieldStructure.push({
+                type: "bi.label",
+                value: BI.UUID(),
+                text: BI.i18nText("BI-No_Useable_Fields"),
                 pId: tableId,
                 id: BI.UUID(),
                 wId: o.wId,
