@@ -15,7 +15,7 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
     },
 
-    typeConfig: function(){
+    typeConfig: function () {
 
     },
 
@@ -23,7 +23,7 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
     },
 
-    _assertGroup:function(val){
+    _assertGroup: function (val) {
 
     },
 
@@ -31,21 +31,21 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
     },
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.AbstractDimensionCombo.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-abstract-dimension-combo"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.AbstractDimensionCombo.superclass._init.apply(this, arguments);
     },
 
-    _checkDimensionValid: function(){
+    _checkDimensionValid: function () {
         var o = this.options;
         var dimensionMap = BI.Utils.getDimensionMapByDimensionID(o.dId);
         var tIds = BI.Utils.getAllTargetDimensionIDs(BI.Utils.getWidgetIDByDimensionID(o.dId));
-        var res = BI.find(tIds, function(idx, tId){
+        var res = BI.find(tIds, function (idx, tId) {
             return !BI.has(dimensionMap, tId) && !BI.Utils.isCalculateTargetByDimensionID(tId);
         });
         return BI.isNull(res);
@@ -57,52 +57,52 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             text: BI.i18nText("BI-Lng_First"),
             value: this.typeConfig().POSITION_BY_LNG,
             cls: "dot-e-font"
-        },{
+        }, {
             text: BI.i18nText("BI-Lat_First"),
             value: this.typeConfig().POSITION_BY_LAT,
             cls: "dot-e-font"
         }];
         var o = this.options;
-        if(BI.Utils.getRegionTypeByDimensionID(o.dId) === BICst.REGION.DIMENSION2){
+        if (BI.Utils.getRegionTypeByDimensionID(o.dId) === BICst.REGION.DIMENSION2) {
             delete items[0];
         }
 
-        if(items.length > 0 && BI.isNotNull(items[items.length - 1][0])){
+        if (items.length > 0 && BI.isNotNull(items[items.length - 1][0])) {
             var fieldId = BI.Utils.getFieldIDByDimensionID(o.dId);
             var fieldName = BI.Utils.getFieldNameByID(fieldId);
-            if(BI.isNull(fieldName)){
+            if (BI.isNull(fieldName)) {
                 items[items.length - 1][0].text = items[items.length - 1][0].title = BI.i18nText("BI-Dimension_From");
-            }else{
+            } else {
                 var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldId));
-                items[items.length - 1][0].text = items[items.length - 1][0].title = BI.i18nText("BI-Dimension_From") + ": " + tableName + "."  + fieldName;
+                items[items.length - 1][0].text = items[items.length - 1][0].title = BI.i18nText("BI-Dimension_From") + ": " + tableName + "." + fieldName;
             }
         }
         return items;
     },
 
-    _rebuildItems:function(){
+    _rebuildItems: function () {
         var o = this.options;
-        if(BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId)) === BICst.WIDGET.GIS_MAP){
+        if (BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId)) === BICst.WIDGET.GIS_MAP) {
             return this.rebuildItemsForGISMAP();
         }
         var items = this.defaultItems();
         var result = this._positionAscAndDesc(items);
-        var ascend = result.ascend,descend = result.descend;
+        var ascend = result.ascend, descend = result.descend;
 
         var selectedValues = this._createValue();
 
         switch (selectedValues[0].value) {         //先更新老子的文本
             case this.typeConfig().ASCEND :
-                this._changeElText(ascend.el,BI.has(selectedValues[0], "childValue") ? BI.i18nText("BI-Ascend") + "(" + BI.Utils.getDimensionNameByID(selectedValues[0].childValue) + ")" : BI.i18nText("BI-Ascend"));
-                this._changeElText(descend.el,BI.i18nText("BI-Descend"));
+                this._changeElText(ascend.el, BI.has(selectedValues[0], "childValue") ? BI.i18nText("BI-Ascend") + "(" + BI.Utils.getDimensionNameByID(selectedValues[0].childValue) + ")" : BI.i18nText("BI-Ascend"));
+                this._changeElText(descend.el, BI.i18nText("BI-Descend"));
                 break;
             case this.typeConfig().DESCEND :
-                this._changeElText(ascend.el,BI.i18nText("BI-Ascend"));
-                this._changeElText(descend.el,BI.has(selectedValues[0], "childValue") ? BI.i18nText("BI-Descend") + "(" + BI.Utils.getDimensionNameByID(selectedValues[0].childValue) + ")" : BI.i18nText("BI-Descend"));
+                this._changeElText(ascend.el, BI.i18nText("BI-Ascend"));
+                this._changeElText(descend.el, BI.has(selectedValues[0], "childValue") ? BI.i18nText("BI-Descend") + "(" + BI.Utils.getDimensionNameByID(selectedValues[0].childValue) + ")" : BI.i18nText("BI-Descend"));
                 break;
             default :
-                this._changeElText(ascend.el,BI.i18nText("BI-Ascend"));
-                this._changeElText(descend.el,BI.i18nText("BI-Descend"));
+                this._changeElText(ascend.el, BI.i18nText("BI-Ascend"));
+                this._changeElText(descend.el, BI.i18nText("BI-Descend"));
                 break;
         }
         ascend.children = [];                //再重置儿子的属性
@@ -110,93 +110,101 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         ascend.children.push({text: BI.Utils.getDimensionNameByID(o.dId), value: o.dId, cls: "dot-e-font"});
         descend.children.push({text: BI.Utils.getDimensionNameByID(o.dId), value: o.dId, cls: "dot-e-font"});
 
-        if(BI.isNull(this.widgetId)){
+        if (BI.isNull(this.widgetId)) {
             this.widgetId = BI.Utils.getWidgetIDByDimensionID(o.dId);
         }
         var targetIds = BI.Utils.getAllTargetDimensionIDs(this.widgetId);
         var targets = [];
-        BI.each(targetIds,function(idx,tid){
+        BI.each(targetIds, function (idx, tid) {
             targets.push({id: tid, value: BI.Utils.getDimensionNameByID(tid)});
         });
 
-        BI.each(targets,function(idx,target){
+        BI.each(targets, function (idx, target) {
             ascend.children.push({text: target.value, value: target.id, cls: "dot-e-font"});
             descend.children.push({text: target.value, value: target.id, cls: "dot-e-font"});
         });
 
-        if(items.length > 0 && BI.isNotNull(items[items.length - 1][0])){
+        if (items.length > 0 && BI.isNotNull(items[items.length - 1][0])) {
             var map = BI.Utils.getDimensionMapByDimensionID(o.dId);
             var fromTextArray = [];
-            if(BI.keys(map).length === 0){
+            if (BI.size(map) > 0) {
+                BI.each(map, function (tId, obj) {
+                    var fromText = "";
+                    var name = BI.Utils.getFieldNameByID(obj._src.field_id);
+                    if (BI.isNull(name)) {
+                    } else {
+                        var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(obj._src.field_id));
+                        fromText = tableName + "." + name;
+                    }
+                    if (!BI.contains(fromTextArray, fromText)) {
+                        items[items.length - 1].push({
+                            text: fromText,
+                            tipType: "success",
+                            value: BICst.TARGET_COMBO.INFO,
+                            disabled: true
+                        });
+                        fromTextArray.push(fromText);
+                    }
+                });
+            } else {
                 var fieldId = BI.Utils.getFieldIDByDimensionID(o.dId);
                 var fieldName = BI.Utils.getFieldNameByID(fieldId);
-                if(BI.isNull(fieldName)){
+                if (BI.isNull(fieldName)) {
                     items[items.length - 1][0].text = items[items.length - 1][0].title = BI.i18nText("BI-Dimension_From");
-                }else{
                     var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldId));
-                    items[items.length - 1][0].text = items[items.length - 1][0].title = BI.i18nText("BI-Dimension_From") + ": " + tableName + "."  + fieldName;
+                    items[items.length - 1][0].text = items[items.length - 1][0].title = BI.i18nText("BI-Dimension_From") + ": " + tableName + "." + fieldName;
                 }
             }
-            BI.each(map, function(tId, obj){
-                var fromText = "";
-                var name = BI.Utils.getFieldNameByID(obj._src.field_id);
-                if(BI.isNull(name)){
-                }else{
-                    var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(obj._src.field_id));
-                    fromText = tableName + "."  + name;
-                }
-                if(!BI.contains(fromTextArray, fromText)){
-                    items[items.length - 1].push({
-                        text: fromText,
-                        tipType: "success",
-                        value: BICst.TARGET_COMBO.INFO,
-                        disabled: true
-                    });
-                    fromTextArray.push(fromText);
+            BI.each(map, function (tId, obj) {
+                var fieldName = BI.Utils.getFieldNameByID(obj._src.field_id);
+                if (BI.isNull(name)) {
+                } else {
+                    var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldId));
+                    items[items.length - 1][0].text = items[items.length - 1][0].title = BI.i18nText("BI-Dimension_From") + ": " + tableName + "." + fieldName;
                 }
             });
         }
 
-        if(!this._checkDimensionValid()){
+        if (!this._checkDimensionValid()) {
             var match = this._positionMatchingRelation(items);
             match.cls = "dimension-invalid";
         }
         return items;
     },
 
-    _changeElText:function(el,text){
+    _changeElText: function (el, text) {
         el.text = text;
         el.title = text;
     },
 
-    _positionAscAndDesc:function(items){
-        var ascend = {},descend = {};
+    _positionAscAndDesc: function (items) {
+        var ascend = {}, descend = {};
         var findCount = 0;
-        BI.any(items,function(idx,item){
-            BI.any(item,function(idx, it){
+        BI.any(items, function (idx, item) {
+            BI.any(item, function (idx, it) {
                 var itE = BI.stripEL(it);
-                if(itE.text === BI.i18nText("BI-Ascend")){
+                if (itE.text === BI.i18nText("BI-Ascend")) {
                     ascend = it;
                     findCount++;
                 }
-                if(itE.text === BI.i18nText("BI-Descend")){
+                if (itE.text === BI.i18nText("BI-Descend")) {
                     descend = it;
                     findCount++;
                 }
             });
-            if(findCount === 2){
+            if (findCount === 2) {
                 return true;
             }
         });
         return {ascend: ascend, descend: descend};
     },
 
-    _positionMatchingRelation:function(items){
+    _positionMatchingRelation: function (items) {
         var result = {};
-        BI.any(items,function(idx,item){
-            BI.any(item,function(idx, it){
+        BI.any(items, function (idx, item) {
+            BI.any(item, function (idx, it) {
                 var itE = BI.stripEL(it);
-                if(itE.text === BI.i18nText("BI-Math_Relationships")){
+                if (itE.text === BI.i18nText("BI-Math_Relationships")) {
                     result = it;
                     return true;
                 }
@@ -216,16 +224,16 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
         var result = {};
 
-        var sortValue = {},groupValue = {}, addressValue = {};
+        var sortValue = {}, groupValue = {}, addressValue = {};
 
-        switch (sort.type){
+        switch (sort.type) {
             case BICst.SORT.ASC:
                 sortValue.value = this.typeConfig().ASCEND;
                 sortValue.childValue = sort.sort_target || o.dId;
                 break;
             case BICst.SORT.DESC:
                 sortValue.value = this.typeConfig().DESCEND;
-                sortValue.childValue = sort.sort_target  || o.dId;
+                sortValue.childValue = sort.sort_target || o.dId;
                 break;
             case BICst.SORT.NONE:
                 sortValue.value = this.typeConfig().NOT_SORT;
@@ -237,7 +245,7 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 break;
         }
 
-        switch(group.type){
+        switch (group.type) {
             case BICst.GROUP.ID_GROUP:
                 groupValue.value = this.typeConfig().GROUP_BY_VALUE;
                 break;
@@ -265,7 +273,7 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 break;
         }
 
-        switch(address.type){
+        switch (address.type) {
             case BICst.GIS_POSITION_TYPE.LNG_FIRST:
                 addressValue.value = this.typeConfig().POSITION_BY_LNG;
                 break;
