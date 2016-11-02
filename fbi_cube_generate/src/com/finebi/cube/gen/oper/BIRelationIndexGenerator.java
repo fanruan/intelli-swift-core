@@ -24,6 +24,7 @@ import com.fr.bi.stable.gvi.traversal.TraversalAction;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.operation.sort.comp.ASCComparator;
 import com.fr.bi.stable.operation.sort.comp.CastDoubleASCComparator;
+import com.fr.bi.stable.operation.sort.comp.CastFloatASCComparator;
 import com.fr.bi.stable.operation.sort.comp.CastLongASCComparator;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
@@ -203,7 +204,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
             GroupValueIndex foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
             Comparator c = primaryColumn.getGroupComparator();
             if (isNumberColumn(primaryColumn.getClassType()) && isNumberColumn(foreignColumn.getClassType())) {
-                c = comparatorFormat(primaryColumn.getClassType(), foreignColumn.getClassType());
+                c = generateComparatorByType(primaryColumn.getClassType(), foreignColumn.getClassType());
             }
             int[] reverse = new int[foreignTable.getRowCount()];
             Arrays.fill(reverse, NIOConstant.INTEGER.NULL_VALUE);
@@ -351,9 +352,19 @@ public class BIRelationIndexGenerator extends BIProcessor {
         }
     }
 
-    private Comparator comparatorFormat(int primaryColumnType, int foreignColumnType) {
+    private Comparator generateComparatorByType(int primaryColumnType, int foreignColumnType) {
+        /**
+         * 效率考虑,根据数值的类型来选择比较时转换的数值对象类型
+         * 如果有Double型,优先Double类型比较,
+         * 没有Double的基础上,如果有Float就选择转成Float比较
+         * 依次类推
+         */
         if (primaryColumnType == DBConstant.CLASS.DOUBLE || foreignColumnType == DBConstant.CLASS.DOUBLE) {
             return new CastDoubleASCComparator();
+        }
+
+        if (primaryColumnType == DBConstant.CLASS.FLOAT || foreignColumnType == DBConstant.CLASS.FLOAT) {
+            return new CastFloatASCComparator();
         }
 
         if (primaryColumnType == DBConstant.CLASS.LONG || foreignColumnType == DBConstant.CLASS.LONG) {
