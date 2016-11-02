@@ -529,11 +529,11 @@ public class HorGroupExecutor extends AbstractNodeExecutor {
         //展开情况
         tempCol = dealWithNodeExpander(node, expander, cbcells, row, column, colColumn, sumColumn, keys, indexList, total, isCross, deepList, isTargetSort, sortDimension, widget, tempCol, rowData, chartSetting);
         if (isCross) {
-            if (node.needSummary() || (node.getChildLength() == 0)) {
+            if (chartSetting.showColTotal() && (node.needSummary() || (node.getChildLength() == 0))) {
                 dealWithNodeExpanderIsCross(node, cbcells, row, column, colColumn, sumColumn, keys, total, widget, tempCol, rowData, chartSetting);
             }
         } else {
-            if (node.needSummary()) {
+            if (chartSetting.showColTotal() && node.needSummary()) {
                 dealWithNodeExpanderIsCrossNo(node, cbcells, row, column, colColumn, sumColumn, keys, total, widget, tempCol, rowData, chartSetting);
             }
         }
