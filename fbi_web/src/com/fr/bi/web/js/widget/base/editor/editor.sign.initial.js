@@ -47,8 +47,9 @@ BI.SignInitialEditor = BI.inherit(BI.Single, {
             watermark: o.watermark,
             errorText: o.errorText
         });
-        this.setState(o.value);
-
+        if(BI.isNotNull(o.value)){
+            this.setState(o.value);
+        }
         this.editor.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
         });
