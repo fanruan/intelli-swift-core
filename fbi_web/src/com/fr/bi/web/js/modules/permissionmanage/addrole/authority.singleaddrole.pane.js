@@ -101,15 +101,24 @@ BI.AuthoritySingleAddRolePane = BI.inherit(BI.Widget, {
                 });
                 if (BI.isNotNull(filter)) {
                     trigger = BI.createWidget({
-                        type: "bi.text_icon_item",
-                        cls: "role-item filter-font",
-                        logic: {
-                            dynamic: true
-                        },
-                        text: roleName,
-                        height: 30,
-                        textHgap: 5
-                    });
+                        type: "bi.horizontal",
+                        cls: "role-item",
+                        items: [{
+                            type: "bi.text_button",
+                            text: roleName,
+                            height: 30,
+                            textHgap: 5
+                        }, {
+                            type: "bi.icon_button",
+                            cls: "filter-font",
+                            handler: function(){
+                                self._operatorRole(self._constants.SET_FILTER, role);
+                            },
+                            stopPropagation: true,
+                            height: 30
+                        }],
+                        hgap: 5
+                    })
                 }
                 var combo = BI.createWidget({
                     type: "bi.down_list_combo",
