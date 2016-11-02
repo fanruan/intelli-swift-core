@@ -338,6 +338,9 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                                 cls: ""
                             },
                             children: [{
+                                text: BI.i18nText("BI-Style_And_NumberLevel"),
+                                value: BICst.TARGET_COMBO.STYLE_AND_NUMBER_LEVEL
+                            },{
                                 text: BI.i18nText("BI-Data_Label"),
                                 value: BICst.TARGET_COMBO.DATA_LABEL_OTHER,
                                 warningTitle: BI.i18nText("BI-Data_Label_Donnot_Show")
@@ -376,9 +379,15 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             case BICst.WIDGET.MAP:
                 BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
                 break;
-            case BICst.WIDGET.GIS_MAP:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.PIE:
+                BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
+                item[this.constants.CordonPos][0] = {
+                        text: BI.i18nText("BI-Style_And_NumberLevel"),
+                        value: BICst.TARGET_COMBO.STYLE_AND_NUMBER_LEVEL
+                };
+                break;
+            case BICst.WIDGET.GIS_MAP:
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.FORCE_BUBBLE:

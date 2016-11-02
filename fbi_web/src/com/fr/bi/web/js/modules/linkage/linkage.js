@@ -137,7 +137,7 @@ BI.Linkage = BI.inherit(BI.Widget, {
 
         var items = [];
         BI.each(expression && expression.ids, function (idx, item) {
-            if(BI.Utils.isCalculateTargetByDimensionID(item)) {
+            if (BI.Utils.isCalculateTargetByDimensionID(item)) {
                 items.push(BI.createWidget({
                     type: "bi.vertical",
                     items: [BI.createWidget({
@@ -152,8 +152,8 @@ BI.Linkage = BI.inherit(BI.Widget, {
                 items.push(BI.createWidget({
                     type: "bi.vertical",
                     items: [createChildrenLinkage(item)],
-                    vgap:5,
-                    hgap:5
+                    vgap: 5,
+                    hgap: 5
                 }));
             }
         });
@@ -166,7 +166,7 @@ BI.Linkage = BI.inherit(BI.Widget, {
 
         return BI.createWidget({
             type: "bi.vertical",
-            items : [target, container]
+            items: [target, container]
         });
 
         function createChildrenLinkage(tId) {
@@ -347,7 +347,7 @@ BI.Linkage = BI.inherit(BI.Widget, {
                 });
                 self.dragContainer.addItem(targetContainer);
             }
-            if(BI.Utils.isCalculateTargetByDimensionID(tId)) {
+            if (BI.Utils.isCalculateTargetByDimensionID(tId)) {
                 var targetContainer = BI.createWidget({
                     type: "bi.vertical",
                     cls: "single-target-container",
@@ -454,12 +454,16 @@ BI.Linkage = BI.inherit(BI.Widget, {
             to: wId
         });
         linkages.on(BI.LinkageTargets.EVENT_DELETE, function (tId, cIds) {
-            self.model.deleteLinkage(tId, wId,cIds);
-            self._populate();
+            self.model.deleteLinkage(tId, wId, cIds);
+            BI.nextTick(function () {
+                self._populate();
+            });
         });
         linkages.on(BI.LinkageTargets.EVENT_ADD, function (tId, cIds) {
             self.model.addLinkage(tId, wId, cIds);
-            self._populate();
+            BI.nextTick(function () {
+                self._populate();
+            });
         });
         linkages.element.droppable({
             accept: ".linkage-toolbar-target",
@@ -479,7 +483,7 @@ BI.Linkage = BI.inherit(BI.Widget, {
                 });
                 helperWidget.modifyContent(helper);
             },
-            out: function(event, ui){
+            out: function (event, ui) {
                 var helperWidget = ui.helper.data().helperWidget;
                 helperWidget.populate();
             }

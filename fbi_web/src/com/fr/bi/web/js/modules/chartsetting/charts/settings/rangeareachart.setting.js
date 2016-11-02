@@ -696,6 +696,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showVGridLine.setSelected(BI.Utils.getWSShowVGridLineByID(wId));
         this.vGridLineColor.setValue(BI.Utils.getWSVGridLineColorByID(wId));
         this.tooltipSetting.setValue(BI.Utils.getWSToolTipSettingByID(wId));
+        this.nullContinuity.setSelected(BI.Utils.getWSNullContinueByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false);
@@ -738,6 +739,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             show_v_grid_line: this.showVGridLine.isSelected(),
             v_grid_line_color: this.vGridLineColor.getValue(),
             tooltip_setting: this.tooltipSetting.getValue(),
+            null_continue: this.nullContinuity.isSelected(),
         }
     }
 });

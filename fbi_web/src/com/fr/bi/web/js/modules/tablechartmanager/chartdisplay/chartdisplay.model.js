@@ -244,6 +244,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 targetIds: [targetIds[0], targetIds[1], targetIds[2]]
             }];
             obj.name = name;
+            obj.settings = BI.Utils.getDimensionSettingsByID(targetIds[2]);
             return obj;
         });
         this._setDataLabelSettingForBubbleAndScatter(objs);
@@ -660,6 +661,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     },
 
     _createDataImage: function (data, label) {
+        if(!label.style_setting.src) {
+            return;
+        }
         this.imageSizeMap = this.imageSizeMap || {};
         var size = this.imageSizeMap[label.style_setting.src];
         if(!size) {

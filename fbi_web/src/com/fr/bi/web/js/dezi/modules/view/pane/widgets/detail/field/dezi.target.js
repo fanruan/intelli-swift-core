@@ -146,6 +146,9 @@ BIDezi.TargetView = BI.inherit(BI.View, {
                         self._buildStyleSettingPane();
                     }
                     break;
+                case BICst.TARGET_COMBO.STYLE_AND_NUMBER_LEVEL:
+                    self._buildStyleSettingPane();
+                    break;
                 case BICst.TARGET_COMBO.FILTER:
                     self._buildFilterPane();
                     break;
@@ -200,6 +203,9 @@ BIDezi.TargetView = BI.inherit(BI.View, {
                         self._buildStyleSettingPane();
                     }
                     break;
+                case BICst.TARGET_COMBO.STYLE_AND_NUMBER_LEVEL:
+                    self._buildStyleSettingPane();
+                    break;
                 case BICst.TARGET_COMBO.FILTER:
                     self._buildFilterPane();
                     break;
@@ -241,6 +247,9 @@ BIDezi.TargetView = BI.inherit(BI.View, {
                     } else {
                         self._buildStyleSettingPane();
                     }
+                    break;
+                case BICst.TARGET_COMBO.STYLE_AND_NUMBER_LEVEL:
+                    self._buildStyleSettingPane();
                     break;
                 case BICst.TARGET_COMBO.CHART_TYPE:
                     self.model.set("style_of_chart", {type: s});
@@ -466,6 +475,10 @@ BIDezi.TargetView = BI.inherit(BI.View, {
         BI.Popovers.remove(id);
         switch (BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(id))) {
             case BICst.WIDGET.MAP:
+            case BICst.WIDGET.BUBBLE:
+            case BICst.WIDGET.PIE:
+            case BICst.WIDGET.DONUT:
+            case BICst.WIDGET.GIS_MAP:
                 var popup = BI.createWidget({
                     type: "bi.target_style_setting_for_map",
                     dId: this.model.get("id")
