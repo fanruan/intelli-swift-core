@@ -70,11 +70,12 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         BI.each(items, function (idx, item) {
             BI.each(item.data, function (id, da) {
                 if (position === item.yAxis) {
-                    if (!BI.isNumber(da.y)) {
+                    if (BI.isNotNull(da.y) && !BI.isNumber(da.y)) {
                         da.y = BI.parseFloat(da.y);
                     }
-                    da.y = da.y || 0;
-                    da.y = BI.contentFormat(BI.parseFloat(da.y.div(magnify).toFixed(4)), "#.####;-#.####");
+                    if (BI.isNotNull(da.y)) {
+                        da.y = BI.contentFormat(BI.parseFloat(da.y.div(magnify).toFixed(4)), "#.####;-#.####");
+                    }
                 }
             });
             if (position === item.yAxis) {
@@ -88,20 +89,23 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         var magnify = this.calcMagnify(type);
         BI.each(items, function (idx, item) {
             BI.each(item.data, function (id, da) {
-                if (!BI.isNumber(da.x)) {
+                if (BI.isNotNull(da.x) && !BI.isNumber(da.x)) {
                     da.x = BI.parseFloat(da.x);
                 }
-                da.x = da.x || 0;
-                da.x = BI.contentFormat(BI.parseFloat(da.x.div(magnify).toFixed(4)), "#.####;-#.####");
+                if (BI.isNotNull(da.x)) {
+                    da.x = BI.contentFormat(BI.parseFloat(da.x.div(magnify).toFixed(4)), "#.####;-#.####");
+                }
             });
         })
     },
 
     formatXYDataWithMagnify: function (number, magnify) {
+        if (BI.isNull(number)) {
+            return null
+        }
         if (!BI.isNumber(number)) {
             number = BI.parseFloat(number);
         }
-        number = number || 0;
         return BI.contentFormat(BI.parseFloat(number.div(magnify).toFixed(4)), "#.####;-#.####");
     },
 
