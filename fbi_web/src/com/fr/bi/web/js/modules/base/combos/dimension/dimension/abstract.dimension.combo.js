@@ -126,17 +126,17 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
         if (items.length > 0 && BI.isNotNull(items[items.length - 1][0])) {
             var map = BI.Utils.getDimensionMapByDimensionID(o.dId);
-            var fromTextArray = [];
-            if (BI.size(map) > 0) {
-                BI.each(map, function (tId, obj) {
+            if(BI.size(map) > 0){
+                var fromTextArray = [];
+                BI.each(map, function(tId, obj){
                     var fromText = "";
                     var name = BI.Utils.getFieldNameByID(obj._src.field_id);
-                    if (BI.isNull(name)) {
-                    } else {
+                    if(BI.isNull(name)){
+                    }else{
                         var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(obj._src.field_id));
-                        fromText = tableName + "." + name;
+                        fromText = tableName + "."  + name;
                     }
-                    if (!BI.contains(fromTextArray, fromText)) {
+                    if(!BI.contains(fromTextArray, fromText)){
                         items[items.length - 1].push({
                             text: fromText,
                             tipType: "success",
@@ -146,23 +146,16 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         fromTextArray.push(fromText);
                     }
                 });
-            } else {
+            }else{
                 var fieldId = BI.Utils.getFieldIDByDimensionID(o.dId);
                 var fieldName = BI.Utils.getFieldNameByID(fieldId);
-                if (BI.isNull(fieldName)) {
+                if(BI.isNull(fieldName)){
                     items[items.length - 1][0].text = items[items.length - 1][0].title = BI.i18nText("BI-Dimension_From");
+                }else{
                     var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldId));
-                    items[items.length - 1][0].text = items[items.length - 1][0].title = BI.i18nText("BI-Dimension_From") + ": " + tableName + "." + fieldName;
+                    items[items.length - 1][0].text = items[items.length - 1][0].title = BI.i18nText("BI-Dimension_From") + ": " + tableName + "."  + fieldName;
                 }
             }
-            BI.each(map, function (tId, obj) {
-                var fieldName = BI.Utils.getFieldNameByID(obj._src.field_id);
-                if (BI.isNull(name)) {
-                } else {
-                    var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldId));
-                    items[items.length - 1][0].text = items[items.length - 1][0].title = BI.i18nText("BI-Dimension_From") + ": " + tableName + "." + fieldName;
-                }
-            });
         }
 
         if (!this._checkDimensionValid()) {
