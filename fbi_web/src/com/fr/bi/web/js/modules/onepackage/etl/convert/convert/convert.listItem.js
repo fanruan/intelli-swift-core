@@ -27,7 +27,8 @@ BI.ConvertMultiSelectItem = BI.inherit(BI.Widget, {
         this.stateEditor = BI.createWidget({
             type: "bi.sign_initial_editor",
             cls: "sign-initial-editor",
-            text: o.value,
+            text: o.value[this.constants.initialValuePos],
+            value: o.value[this.constants.newValuePos],
             height: o.height,
             hgap: o.hgap,
             rgap: o.rgap
