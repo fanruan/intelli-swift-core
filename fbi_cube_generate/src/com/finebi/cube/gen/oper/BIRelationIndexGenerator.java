@@ -22,7 +22,9 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.gvi.traversal.TraversalAction;
 import com.fr.bi.stable.io.newio.NIOConstant;
-import com.fr.bi.stable.operation.sort.comp.NumberASCComparator;
+import com.fr.bi.stable.operation.sort.comp.ASCComparator;
+import com.fr.bi.stable.operation.sort.comp.CastDoubleASCComparator;
+import com.fr.bi.stable.operation.sort.comp.CastLongASCComparator;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
@@ -200,11 +202,8 @@ public class BIRelationIndexGenerator extends BIProcessor {
             Object foreignColumnValue = foreignColumn.getGroupObjectValue(foreignIndex);
             GroupValueIndex foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
             Comparator c = primaryColumn.getGroupComparator();
-            switch (primaryColumn.getClassType()) {
-                case DBConstant.CLASS.INTEGER:
-                case DBConstant.CLASS.LONG:
-                case DBConstant.CLASS.DOUBLE:
-                    c = new NumberASCComparator();
+            if (isNumberColumn(primaryColumn.getClassType()) && isNumberColumn(foreignColumn.getClassType())) {
+                c = comparatorFormat(primaryColumn.getClassType(), foreignColumn.getClassType());
             }
             int[] reverse = new int[foreignTable.getRowCount()];
             Arrays.fill(reverse, NIOConstant.INTEGER.NULL_VALUE);
@@ -350,6 +349,22 @@ public class BIRelationIndexGenerator extends BIProcessor {
         for (int i = 0; i < index.length; i++) {
             tableRelation.addReverseIndex(i, index[i]);
         }
+    }
+
+    private Comparator comparatorFormat(int primaryColumnType, int foreignColumnType) {
+        if (primaryColumnType == DBConstant.CLASS.DOUBLE || foreignColumnType == DBConstant.CLASS.DOUBLE) {
+            return new CastDoubleASCComparator();
+        }
+
+        if (primaryColumnType == DBConstant.CLASS.LONG || foreignColumnType == DBConstant.CLASS.LONG) {
+            return new CastLongASCComparator();
+        }
+
+        return new ASCComparator();
+    }
+
+    private boolean isNumberColumn(int columnType) {
+        return columnType == DBConstant.CLASS.LONG || columnType == DBConstant.CLASS.INTEGER || columnType == DBConstant.CLASS.DOUBLE;
     }
 
 }
