@@ -6,6 +6,7 @@
 BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
     _defaultConfig: function () {
         return BI.extend(BIDezi.DetailTableDetailModel.superclass._defaultConfig.apply(this, arguments), {
+            name: "",
             view: {
                 "10000": []
             },

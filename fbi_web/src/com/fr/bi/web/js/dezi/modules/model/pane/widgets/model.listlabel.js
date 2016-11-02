@@ -20,6 +20,7 @@ BIDezi.ListLabelModel = BI.inherit(BI.Model, {
         if (BI.has(changed, "value")) {
             this.tmp({
                 detail: {
+                    name: this.get("name"),
                     dimensions: this.get("dimensions"),
                     view: this.get("view"),
                     type: this.get("type"),
@@ -34,6 +35,7 @@ BIDezi.ListLabelModel = BI.inherit(BI.Model, {
     refresh: function () {
         this.tmp({
             detail: {
+                name: this.get("name"),
                 dimensions: this.get("dimensions"),
                 view: this.get("view"),
                 type: this.get("type"),

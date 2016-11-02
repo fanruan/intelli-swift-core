@@ -4,6 +4,7 @@
 BIDezi.SingleSliderDetailModel = BI.inherit(BI.Model, {
     _defaultConfig: function () {
         return BI.extend(BIDezi.SingleSliderDetailModel.superclass._defaultConfig.apply(this, arguments), {
+            name: "",
             dimensions: {},
             view: {},
             type: BICst.WIDGET.SINGLE_SLIDER,
@@ -46,7 +47,7 @@ BIDezi.SingleSliderDetailModel = BI.inherit(BI.Model, {
         if (key1 === "dimensions") {
             BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + old._src.id);
             BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + this.get("id"));
-            //È«¾ÖÎ¬¶ÈÔöÉ¾ÊÂ¼þ
+            //È«ï¿½ï¿½Î¬ï¿½ï¿½ï¿½ï¿½É¾ï¿½Â¼ï¿½
             BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
         }
     },
@@ -58,7 +59,7 @@ BIDezi.SingleSliderDetailModel = BI.inherit(BI.Model, {
             var dId = dimension.dId;
             var dimensions = this.get("dimensions");
             var view = this.get("view");
-            //Î¬¶ÈÖ¸±ê»ù±¾ÊôÐÔ
+            //Î¬ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             if (!dimensions[dId]) {
                 dimensions[dId] = {
                     name: src.name,
