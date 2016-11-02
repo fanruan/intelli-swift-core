@@ -304,20 +304,31 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     var date = new Date(BI.parseInt(name));
                     name = date.print("%Y-%X-%d");
                 }
-                var data = BI.map(left.c, function (idx, obj) {
-                    var value = obj.n, x = obj.n;
-                    if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
-                        var date = new Date(BI.parseInt(x));
-                        x = date.print("%Y-%X-%d");
-                    }
-                    return {
-                        "x": x,
+                var data = [];
+                if(BI.has(left, "c")){
+                    data = BI.map(left.c, function (idx, obj) {
+                        var value = obj.n, x = obj.n;
+                        if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
+                            var date = new Date(BI.parseInt(x));
+                            x = date.print("%Y-%X-%d");
+                        }
+                        return {
+                            "x": x,
+                            "y":BI.isNull(obj.s.c[id].s[0]) ? obj.s.c[id].s[0] : (BI.isFinite(obj.s.c[id].s[0]) ? obj.s.c[id].s[0] : 0),
+                            "value": value,
+                            seriesName: seriesName,
+                            targetIds: [targetIds[0]]
+                        };
+                    });
+                }else{
+                    data = [{
+                        "x": "",
                         "y": BI.isNull(obj.s.c[id].s[0]) ? obj.s.c[id].s[0] : (BI.isFinite(obj.s.c[id].s[0]) ? obj.s.c[id].s[0] : 0),
-                        "value": value,
+                        "value": "",
                         seriesName: seriesName,
                         targetIds: [targetIds[0]]
-                    };
-                });
+                    }]
+                }
                 var obj = {};
                 obj.data = data;
                 obj.name = name;

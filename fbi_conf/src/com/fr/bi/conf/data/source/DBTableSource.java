@@ -89,7 +89,6 @@ public class DBTableSource extends AbstractTableSource {
     }
 
 
-
     /**
      * @return
      */
@@ -229,10 +228,15 @@ public class DBTableSource extends AbstractTableSource {
         if (field == null) {
             return set;
         }
+        final boolean isStringType = field.getFieldType() == DBConstant.COLUMN.STRING;
         DBQueryExecutor.getInstance().runSQL(BIDBUtils.getDistinctSQLStatement(dbName, tableName, fieldName), new ICubeFieldSource[]{field}, new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue data) {
-                set.add(data.getValue());
+                if (isStringType && data.getValue() == null) {
+                    set.add("");
+                } else {
+                    set.add(data.getValue());
+                }
             }
         });
         return set;
@@ -353,7 +357,7 @@ public class DBTableSource extends AbstractTableSource {
         } catch (Exception e) {
             return false;
         }
-        List<ICubeFieldSource> fields=new ArrayList<ICubeFieldSource>(getFacetFields(null));
+        List<ICubeFieldSource> fields = new ArrayList<ICubeFieldSource>(getFacetFields(null));
         return testSQL(getConnection(), getSqlString(fields));
     }
 
