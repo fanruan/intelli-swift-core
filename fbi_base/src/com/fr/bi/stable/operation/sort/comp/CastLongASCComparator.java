@@ -9,8 +9,8 @@ public class CastLongASCComparator extends ASCComparator {
         if (o1 == null || o2 == null) {
             return super.compare(o1, o2);
         }
-        Long o1Long = (Long) o1;
-        Long o2Long = (Long) o2;
+        Long o1Long = ((Number) o1).longValue();
+        Long o2Long = ((Number) o2).longValue();
         return super.compare(o1Long, o2Long);
     }
 }
