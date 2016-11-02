@@ -31,7 +31,7 @@ BI.TargetFilterSelectField = BI.inherit(BI.Widget, {
                     title: BI.Utils.getTableNameByID(currentTableId),
                     value: currentTableId,
                     isParent: true,
-                    open: false
+                    open: primaryRelationTableIds.length === 0
                 });
                 BI.each(primaryRelationTableIds, function (i, tId) {
                     tablesStructure.push({
