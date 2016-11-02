@@ -31,7 +31,11 @@ BI.DetailTablePathSettingTab = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Detail_Set_Complete"),
                 value: c.SAVE_VALUE,
                 height: 30
-            }]
+            }],
+            tipType: "warning",
+            title: function(){
+                return self.tab.isEnabled() ? "123445" : BI.i18nText("BI-Relation_Only_Between_Fields")
+            }
         });
 
 

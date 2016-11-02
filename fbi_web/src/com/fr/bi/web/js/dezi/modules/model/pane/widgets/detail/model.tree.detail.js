@@ -1,6 +1,7 @@
 BIDezi.TreeDetailModel = BI.inherit(BI.Model, {
     _defaultConfig: function () {
         return BI.extend(BIDezi.TreeDetailModel.superclass._defaultConfig.apply(this, arguments), {
+            name: "",
             view: {
                 "10000": []
             },
