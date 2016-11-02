@@ -92,13 +92,15 @@ public class UserWidget {
     }
 
     private void createTableData(int end) {
-        List<List> v;
+        List<List> v = new ArrayList<List>();
         int rowCount = tempValue.size();
         while (rowCount < end) {
             if (rowCount == 0) {
                 v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH);
             } else {
-                v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.ROW_NEXT);
+                if (((TableWidget) widget).hasVerticalNextPage()) {
+                    v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.ROW_NEXT);
+                }
             }
             for (int i = 0; i < v.size(); i++) {
                 tempValue.put(rowCount, v.get(i));
@@ -122,24 +124,24 @@ public class UserWidget {
                 n = n.getFirstChild();
             }
             BIDimension[] rows = ((TableWidget) widget).getViewDimensions();
-            if (((TableWidget) widget).hasVerticalNextPage()) {
-                while (n != null) {
-                    List rowList = new ArrayList();
-                    Node temp = n;
-                    for (TargetGettingKey key : ((TableWidget) widget).getTargetsKey()) {
-                        rowList.add(temp.getSummaryValue(key));
-                    }
-                    int i = rows.length;
-                    while (temp.getParent() != null) {
-                        Object data = temp.getData();
-                        BIDimension dim = rows[--i];
-                        Object v = dim.getValueByType(data);
-                        rowList.add(0, v);
-                        temp = temp.getParent();
-                    }
-                    values.add(rowList);
-                    n = n.getSibling();
+            while (n != null) {
+                List rowList = new ArrayList();
+                Node temp = n;
+                for (TargetGettingKey key : ((TableWidget) widget).getTargetsKey()) {
+                    rowList.add(temp.getSummaryValue(key));
                 }
+                int i = rows.length;
+                while (temp.getParent() != null) {
+                    Object data = temp.getData();
+                    BIDimension dim = rows[--i];
+                    Object v = dim.getValueByType(data);
+                    rowList.add(0, v);
+                    temp = temp.getParent();
+                }
+                if (!rowList.isEmpty()) {
+                    values.add(rowList);
+                }
+                n = n.getSibling();
             }
         } catch (JSONException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
