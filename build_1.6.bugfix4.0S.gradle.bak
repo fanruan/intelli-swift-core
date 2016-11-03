@@ -201,7 +201,7 @@ task copyjar(dependsOn:'obfuse')<<{
 		//构建jdk1.6的jar包
 		jar(destfile:"${baseDir}/JAR/CN/${jarname}"){
 			zipfileset(includes:'**/*.*',excludes:'com/fr/bi/test/**',src:"JAR/tmp/1.6/${jarname}")
-			fileset(dir:"${Bi_Home}/build/master/build/JAR/CN"){
+			fileset(dir:"${BI_HOME}/build/master/build/JAR/CN"){
 				include(name:"com/**/*")
 			}
 		}	

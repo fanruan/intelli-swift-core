@@ -145,11 +145,11 @@ task addTime(dependsOn:'compressJS'){
 
 //混淆代码
 task obfuse(dependsOn:'build')<<{
-	ant.delete(dir:"tmp/1.6")
-	ant.mkdir(dir:"tmp/1.6")
+	ant.delete(dir:"JAR/tmp/1.6")
+	ant.mkdir(dir:"JAR/tmp/1.6")
 	ant.taskdef(name:'yguard',classname:'com.yworks.yguard.YGuardTask',classpath:"${BI_HOME}/lib4build/yguard.jar")
 	ant.yguard(){
-		inoutpair(in:"build/libs/${jarname}",out:"tmp/1.6/${jarname}")
+		inoutpair(in:"build/libs/${jarname}",out:"JAR/tmp/1.6/${jarname}")
 		rename(){
 		keep{
 			method(name:'void main(String[])'){
