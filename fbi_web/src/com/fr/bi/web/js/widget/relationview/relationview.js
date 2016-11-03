@@ -182,19 +182,19 @@ BI.RelationView = BI.inherit(BI.Widget, {
                 var startIndex = indexes[start], endIndex = indexes[end];
                 var top = 0, right = 1, bottom = 2, left = 3;
                 var startDirection = bottom, endDirection = top;
-                if (startIndex.j > endIndex.j) {
-                    startDirection = left;
-                    endDirection = right;
-                } else if (startIndex.j < endIndex.j) {
-                    startDirection = right;
-                    endDirection = left;
-                } else if (startIndex.i < endIndex.i) {
-                    startDirection = bottom;
-                    endDirection = top;
-                } else if (startIndex.i > endIndex.i) {
-                    startDirection = top;
-                    endDirection = bottom;
-                }
+                // if (startIndex.j > endIndex.j) {
+                //     startDirection = left;
+                //     endDirection = right;
+                // } else if (startIndex.j < endIndex.j) {
+                //     startDirection = right;
+                //     endDirection = left;
+                // } else if (startIndex.i < endIndex.i) {
+                //     startDirection = bottom;
+                //     endDirection = top;
+                // } else if (startIndex.i > endIndex.i) {
+                //     startDirection = top;
+                //     endDirection = bottom;
+                // }
                 var draw = function (i, j, direction, isForeign) {
                     var x = offsetWidths[j] + (widths[j] - views[i][j].getWidth()) / 2;
                     var y = offsetHeights[i] + (heights[i] - views[i][j].getHeight()) / 2;

@@ -205,6 +205,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
     _formatDrillItems: function (items) {
         var self = this;
         BI.each(items.series, function (idx, da) {
+            var hasArea = false;
             BI.each(da.data, function (idx, data) {
                 data.y = self.formatXYDataWithMagnify(data.y, 1);
                 if (BI.has(da, "settings")) {
@@ -217,10 +218,19 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                     data.name = data.x;
                     data.value = data.y;
                 }
+                if(BI.has(da, "type") && da.type === "areaMap"){
+                    hasArea = true;
+                }
                 if (BI.has(data, "drilldown")) {
                     self._formatDrillItems(data.drilldown);
                 }
-            })
+            });
+            if(hasArea === false){
+                items.series.push({
+                    type: "areaMap",
+                    data: []
+                });
+            }
         });
     },
 
@@ -252,7 +262,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                     if (BI.has(da, "drilldown")) {
                         self._formatDrillItems(da.drilldown);
                     }
-                })
+                });
             })
         });
         return items;

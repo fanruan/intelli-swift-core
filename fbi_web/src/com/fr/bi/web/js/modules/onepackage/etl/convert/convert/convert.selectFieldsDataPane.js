@@ -8,7 +8,9 @@ BI.ConvertSelectFieldsDataPane = BI.inherit(BI.Widget, {
     constants: {
         COMBO_HEIGHT: 24,
         itemHeight: 24,
-        triggerHeight:24
+        triggerHeight:24,
+        newValuePos: 1,
+        initialValuePos: 0
     },
 
     _defaultConfig: function(){
@@ -71,15 +73,19 @@ BI.ConvertSelectFieldsDataPane = BI.inherit(BI.Widget, {
         });
     },
 
-    _createItemsByData: function(items){
-        items = BI.map(items, function(idx,item){
+    _createItemsByData: function(items, lc_values){
+        var self = this;
+        items = BI.map(items, function(idx, item){
+            var lc_value =  BI.find(lc_values, function(idx, arr){
+                return arr[self.constants.initialValuePos] === item;
+            });
             return {
-                value: item
+                value: [item, BI.isNotNull(lc_value) ? lc_value[self.constants.newValuePos] : item],
+                selected: BI.isNull(lc_values) ? true : BI.isNotNull(lc_value)
             }
         });
         return BI.createItems(items, {
             type: "bi.convert_multi_select_item",
-            selected: true,
             height: this.constants.itemHeight
         });
     },
@@ -125,7 +131,8 @@ BI.ConvertSelectFieldsDataPane = BI.inherit(BI.Widget, {
         this.options.table = items.table;
         this.options.fields = items.fields;
         this.combo.populate(this._createItemsByFields(items.fields));
-        this.button_tree.populate(this._createItemsByData(items.data));
+        this.combo.setValue(items.lc_name);
+        this.button_tree.populate(this._createItemsByData(items.data, items.lc_values));
     }
 });
 
