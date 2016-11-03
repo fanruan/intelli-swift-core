@@ -2,6 +2,7 @@
 BIDezi.DateDetailModel = BI.inherit(BI.Model, {
     _defaultConfig: function () {
         return BI.extend(BIDezi.DateDetailModel.superclass._defaultConfig.apply(this, arguments), {
+            name: "",
             dimensions: {},
             view: {},
             type: BICst.WIDGET.YMD,

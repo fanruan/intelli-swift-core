@@ -303,7 +303,7 @@ public class BIWebUtils {
 
     private static void writeData(HttpServletRequest req, HttpServletResponse res, String templatePath, Map messageMap) throws Exception {
         Device device = WebUtils.getDevice(req);
-        boolean isCached = !StringUtils.isBlank(WebUtils.getHTTPRequestParameter(req, "isCached"));
+          boolean isCached = !StringUtils.isBlank(WebUtils.getHTTPRequestParameter(req, "isCached"));
         if (device.isMobile()) {
             if (messageMap.containsKey("message")) {
                 PrintWriter writer = WebUtils.createPrintWriter(res);

@@ -12,6 +12,7 @@ import com.fr.bi.cal.analyze.executor.table.*;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
+import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
@@ -52,6 +53,8 @@ public class TableWidget extends BISummaryWidget {
     private transient BIDimension[] usedDimension;
     @BIIgnoreField
     private transient BISummaryTarget[] usedTargets;
+
+    private DetailChartSetting settings = new DetailChartSetting();
 
     @Override
     public BIDimension[] getViewDimensions() {
@@ -238,6 +241,10 @@ public class TableWidget extends BISummaryWidget {
         if (jo.has(BIJSONConstant.JSON_KEYS.EXPANDER)) {
             parsExpander(jo);
         }
+        if (jo.has("settings")) {
+            settings = new DetailChartSetting();
+            settings.parseJSON(jo);
+        }
     }
 
     public void setComplexExpander(ComplexExpander complexExpander) {
@@ -256,6 +263,10 @@ public class TableWidget extends BISummaryWidget {
         }
     }
 
+    public DetailChartSetting getChatSetting() {
+        return settings;
+    }
+
     @Override
     public int getType() {
         return BIReportConstant.WIDGET.TABLE;
@@ -263,5 +274,21 @@ public class TableWidget extends BISummaryWidget {
 
     public void setOperator(int operator) {
         this.operator = operator;
+    }
+
+    public boolean hasVerticalPrePage() {
+        return pageSpinner[BIReportConstant.TABLE_PAGE.VERTICAL_PRE] > 0;
+    }
+
+    public boolean hasVerticalNextPage() {
+        return pageSpinner[BIReportConstant.TABLE_PAGE.VERTICAL_NEXT] > 0;
+    }
+
+    public boolean hasHorizonPrePage() {
+        return pageSpinner[BIReportConstant.TABLE_PAGE.HORIZON_PRE] > 0;
+    }
+
+    public boolean hasHorizonNextPage() {
+        return pageSpinner[BIReportConstant.TABLE_PAGE.HORIZON_NEXT] > 0;
     }
 }

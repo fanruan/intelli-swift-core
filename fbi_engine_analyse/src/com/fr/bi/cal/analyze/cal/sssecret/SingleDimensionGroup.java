@@ -156,17 +156,19 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
 
     private boolean hasSpecialGroup() {
         int groupType = column.getGroup().getType();
-        if (groupType == BIReportConstant.GROUP.CUSTOM_GROUP ||
-                groupType == BIReportConstant.GROUP.CUSTOM_NUMBER_GROUP) {
-            return true;
-        }
-        if (groupType != BIReportConstant.GROUP.NO_GROUP && groupType != BIReportConstant.GROUP.ID_GROUP) {
+        if (isCustomGroup(groupType)) {
             return true;
         }
         if (column.getSortType() == BIReportConstant.SORT.CUSTOM) {
             return true;
         }
         return false;
+    }
+
+    private boolean isCustomGroup(int groupType) {
+        return groupType == BIReportConstant.GROUP.CUSTOM_GROUP
+                || groupType == BIReportConstant.GROUP.CUSTOM_NUMBER_GROUP
+                || groupType == BIReportConstant.GROUP.AUTO_GROUP;
     }
 
 

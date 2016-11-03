@@ -52,7 +52,7 @@ public class Service4BIConfigure extends NoSessionIDService {
             new BIGetCubePathAction(),
             new BISetCubePathAction(),
             new BICheckCubePathAction(),
-            new BICheckCubeStatusAction(),
+//            new BICheckCubeStatusAction(),
             new BIGetCubeLogAction(),
 
             new BIGetFieldValueAction(),

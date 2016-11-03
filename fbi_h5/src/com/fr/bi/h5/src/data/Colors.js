@@ -4,5 +4,5 @@ export default {
     SPLIT: '#f0f0f0',
     TEXT: '#ffffff',
     HIGHLIGHT: '#007aff',
-    DISABLED: '#c4c6c6',
+    DISABLED: '#c4c6c6'
 }

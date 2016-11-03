@@ -7,7 +7,7 @@ BI.AllCountPagger = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.AllCountPagger.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "bi-all-pager",
-            width: 190,
+            width: 220,
             height: 25,
             pages: 1, //必选项
             curr: 1, //初始化当前页， pages为数字时可用，
@@ -96,7 +96,7 @@ BI.AllCountPagger = BI.inherit(BI.Widget, {
 
         var count = BI.createWidget({
             type: "bi.center_adapt",
-            columnSize: [15, 50, 19],
+            columnSize: [15, 50, 60],
             items: [{
                 type: "bi.label",
                 height: o.height,
@@ -105,15 +105,15 @@ BI.AllCountPagger = BI.inherit(BI.Widget, {
             }, this.rowCount, {
                 type: "bi.label",
                 height: o.height,
-                text: BI.i18nText("BI-Tiao"),
-                width: 19,
+                text: "条数据",//BI.i18nText("BI-Tiao_Data"),
+                width: 50,
                 textAlign: "left"
             }]
         });
         BI.createWidget({
             type: "bi.center_adapt",
             element: this.element,
-            columnSize: [84, 30, "", 36],
+            columnSize: [115, 30, "", 36],
             items: [count, this.editor, this.allPages, this.pager]
         })
     },

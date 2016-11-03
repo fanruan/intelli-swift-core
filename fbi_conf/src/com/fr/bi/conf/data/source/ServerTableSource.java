@@ -1,6 +1,7 @@
 package com.fr.bi.conf.data.source;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.TableData;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.data.DBQueryExecutor;
@@ -10,7 +11,6 @@ import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.BIServerUtils;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.code.BIPrintUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;

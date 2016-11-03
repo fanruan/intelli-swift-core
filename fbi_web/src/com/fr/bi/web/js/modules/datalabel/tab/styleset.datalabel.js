@@ -72,6 +72,11 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
             offsetStyle: "right",
             height: "100%"
         });
+        this.style.on(BI.Combo.EVENT_BEFORE_POPUPVIEW, function () {
+            if(self.imgTrigger.isVisible()) {
+                self.styleTab.setImageSetSelected();
+            }
+        });
         this.style.on(BI.Combo.EVENT_AFTER_POPUPVIEW, function () {
             self.styleTab.populate();
         });
@@ -85,7 +90,7 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
                     self.textTrigger.setVisible(true);
                     break;
                 case BICst.DATA_LABEL_STYLE_TYPE.IMG:
-                    self.imgTrigger.setSrc(style.imgStyle.src);
+                    self.imgTrigger.setSrc(BI.Func.getCompleteImageUrl(style.imgStyle.src));
                     self.imgTrigger.setVisible(true);
                     self.textTrigger.setVisible(false);
             }
@@ -99,7 +104,7 @@ BI.DataLabelStyleSet = BI.inherit(BI.Widget, {
                 this.textTrigger.setStyle(v.textStyle);
                 break;
             case BICst.DATA_LABEL_STYLE_TYPE.IMG:
-                this.imgTrigger.setSrc(v.imgStyle.src);
+                this.imgTrigger.setSrc(BI.Func.getCompleteImageUrl(v.imgStyle.src));
                 this.imgTrigger.setVisible(true);
                 this.textTrigger.setVisible(false);
         }

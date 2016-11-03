@@ -234,6 +234,8 @@ var _JS = [
 
     "widget/mvc.multifile.js",
 
+    "widget/mvc.zclip.js",
+
     <!--布局类控件-->
 
     "layout/mvc.table.js",
@@ -556,6 +558,7 @@ var _Routes = {
     "/color_picker": "ColorPickerView",
     "/color_picker_editor": "ColorPickerEditorView",
     "/multifile": "MultifileView",
+    "/zclip": "ZclipView",
 
     //布局
     "/table": "TableView",
@@ -1013,6 +1016,9 @@ _Models.widget = [{
     pId: 11,
     text: "bi.svg",
     value: "svg"
+}, {
+    text: "bi.zero_clip",
+    value: "zclip"
 }];
 _Models.layout = [{
     text: "bi.center_adapt",

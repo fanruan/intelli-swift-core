@@ -32,10 +32,10 @@
 
 /**维度/指标 下拉列表图标字体 ~begin~**/
 //删除
-.font(delete-font, @font-delete, @color-bi-text-black);
-.font-hover(delete-h-font, @font-delete, @color-bi-text-black, @color-bi-text-black);
-.font-hover-active(delete-ha-font, @font-delete, @color-bi-text-black, @color-bi-text-black, @color-bi-text-highlight);
-.font-effect(delete-e-font, @font-delete, @color-bi-text-black, @color-bi-text-black, @color-bi-text-highlight);
+.font(delete-font, @font-delete, @color-bi-text-warning);
+.font-hover(delete-h-font, @font-delete, @color-bi-text-warning, @color-bi-text-warning);
+.font-hover-active(delete-ha-font, @font-delete, @color-bi-text-warning, @color-bi-text-warning, @color-bi-text-warning);
+.font-effect(delete-e-font, @font-delete, @color-bi-text-warning, @color-bi-text-warning, @color-bi-text-warning);
 //子菜单选中
 .font(dot-font, @font-dot, @color-bi-text-black);
 .font-hover(dot-h-font, @font-dot, @color-bi-text-black, @color-bi-text-black);
@@ -98,7 +98,7 @@
 .font-hover(detail-setting-h-font, @font-cross, @color-bi-text-gray, @color-bi-text-highlight);
 .font-hover(export-to-excel-h-font, @font-cross, @color-bi-text-gray, @color-bi-text-highlight);
 .font-hover(widget-copy-h-font, @font-copy, @color-bi-text-gray, @color-bi-text-highlight);
-.font-hover(widget-delete-h-font, @font-delete, @color-bi-text-gray, @color-bi-text-highlight);
+.font-hover(widget-delete-h-font, @font-delete, @color-bi-text-warning, @color-bi-text-warning);
 
 /** dashboard组件/控件 下拉列表图标字体 ~end~**/
 
@@ -134,9 +134,9 @@
 
 //字段区域
 //TODO 向下展开的图表暂时没有(不同于普通的向下箭头，角度应该更小一点)
-.font(delete-field-font, @font-delete);
-.font-hover(delete-field-h-font, @font-delete);
-.font-hover-active(delete-field-ha-font, @font-delete);
+.font(delete-field-font, @font-delete, @color-bi-text-warning);
+.font-hover(delete-field-h-font, @font-delete, @color-bi-text-warning);
+.font-hover-active(delete-field-ha-font, @font-delete, @color-bi-text-warning);
 
 //dashboard
 .font-hover(toolbar-save-font, @font-save);
@@ -247,7 +247,7 @@
 .font-hover-active(letter-font, @font-letter);
 .font-hover-active(time-font, @font-time);
 .font(rename-font, @font-rename);
-.font(delete-template-font, @font-delete, @color-bi-text-gray);
+.font(delete-template-font, @font-delete, @color-bi-text-warning);
 .font(real-time-font, @font-real-time, @color-create-file-text);
 
 //选择表
@@ -343,7 +343,7 @@
 .font(widget-combo-show-filter-font, @font-filter);
 .font(widget-combo-export-excel-font, @font-export-excel);
 .font(widget-combo-copy, @font-copy);
-.font(widget-combo-delete, @font-delete);
+.font(widget-combo-delete, @font-delete, @color-bi-text-warning);
 
 .font(widget-combo-asc-font, @font-asc);
 .font(widget-combo-des-font, @font-des);
