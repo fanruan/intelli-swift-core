@@ -114,6 +114,7 @@ task compressJS(dependsOn:'copyFile'){
 			exclude (name:'**/cross/demo/**')
 			exclude (name:'**/test/**')
 			exclude (name:'js/widget/arrangement/arrangement.js')
+			exclude (name:'js/widget/detailchart/chart.bubble.js')
 		}
 	}
 }
