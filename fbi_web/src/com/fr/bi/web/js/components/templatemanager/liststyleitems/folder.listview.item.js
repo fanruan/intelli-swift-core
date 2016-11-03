@@ -50,9 +50,6 @@ BI.FolderListViewItem = BI.inherit(BI.BasicButton, {
             o.onRenameFolder(this.getValue());
             this.setTitle(this.getValue());
         });
-        this.editor.on(BI.ShelterEditor.EVENT_CLICK_LABEL, function(){
-            o.onClickItem.apply(self, arguments);
-        });
 
         var renameIcon = BI.createWidget({
             type: "bi.icon_button",
@@ -100,9 +97,6 @@ BI.FolderListViewItem = BI.inherit(BI.BasicButton, {
             type: "bi.text_button",
             text: "",
             height: 40
-        });
-        this.blankSpace.on(BI.TextButton.EVENT_CHANGE, function(){
-            o.onClickItem.apply(self, arguments);
         });
 
         BI.createWidget({
