@@ -6,6 +6,7 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.db.SQLStatement;
 import com.fr.bi.stable.data.db.ServerLinkInformation;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.DecryptBi;
@@ -112,7 +113,9 @@ public class SQLTableSource extends ServerTableSource {
         } catch (Exception e) {
             return false;
         }
-        return testSQL(getConnection(), sql);
+        SQLStatement sqlStatement = new SQLStatement(getConnection());
+        sqlStatement.setFrom("(\n" + sql + "\n) " + "t");
+        return testSQL(getConnection(), sqlStatement.toString());
     }
 
 }
