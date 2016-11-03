@@ -178,7 +178,7 @@ task obfuse(dependsOn:'build')<<{
 		}
 	}
 	ant.delete(file:'yguardlog.xml')
-	ant.delete(idr:"build")
+	ant.delete(dir:"build")
 }
 
 ant{

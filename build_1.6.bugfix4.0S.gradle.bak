@@ -65,6 +65,21 @@ sourceSets{
 
 
 }
+
+repositories{
+    mavenCentral()
+}
+configurations{
+	ftpAntTask
+}
+//添加ftp依赖
+dependencies {
+    ftpAntTask("org.apache.ant:ant-commons-net:1.8.4") {
+        module("commons-net:commons-net:1.4.1") {
+            dependencies "oro:oro:2.0.8:jar"
+        }
+    }
+}
 //声明外部依赖
 dependencies{
 	compile fileTree(dir:"${BI_HOME}/lib/${branchName}",include:'**/*.jar')
