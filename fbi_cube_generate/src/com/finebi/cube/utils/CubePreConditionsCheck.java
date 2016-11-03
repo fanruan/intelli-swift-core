@@ -2,7 +2,7 @@ package com.finebi.cube.utils;
 
 import com.finebi.cube.structure.Cube;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.data.impl.JDBCDatabaseConnection;
+import com.fr.data.impl.Connection;
 
 import java.io.File;
 
@@ -29,8 +29,8 @@ public interface CubePreConditionsCheck {
     /**
      * 连接是否可用
      *
-     * @param jdbcDatabaseConnection
+     * @param connection
      * @return
      */
-    boolean ConnectionCheck(JDBCDatabaseConnection jdbcDatabaseConnection);
+    boolean ConnectionCheck(Connection connection);
 }
