@@ -17,17 +17,16 @@ public class BIConnectOptimizationUtils4SQLSever extends BIConnectOptimizationUt
      */
     @Override
     public JDBCDatabaseConnection optimizeConnection(JDBCDatabaseConnection connection) {
-        JDBCDatabaseConnection deepCloneConnection = new JDBCDatabaseConnection();
-        ;//cube取数且为sqlserver连接，需要特殊处理
-        JDBCDatabaseConnection jdbcDatabaseConnection = (JDBCDatabaseConnection) connection;
-        deepCloneConnection.setDbcpAttr(jdbcDatabaseConnection.getDbcpAttr());
-        deepCloneConnection.setDriver(jdbcDatabaseConnection.getDriver());
-        deepCloneConnection.setEncryptPassword(jdbcDatabaseConnection.isEncryptPassword());
-        deepCloneConnection.setPassword(jdbcDatabaseConnection.getPassword());
-        deepCloneConnection.setURL(optimizeSelectMethod(jdbcDatabaseConnection.getURL()));//sqlserver连接url，如果没有有selectMethod字段，增加该字段
-        deepCloneConnection.setUser(jdbcDatabaseConnection.getUser());
-        deepCloneConnection.setNewCharsetName(jdbcDatabaseConnection.getNewCharsetName());
-        deepCloneConnection.setOriginalCharsetName(jdbcDatabaseConnection.getOriginalCharsetName());
+        JDBCDatabaseConnection deepCloneConnection = new JDBCDatabaseConnection();//新建deepCloneConnection的原因是不改变datasourceManager中connection属性
+        //cube取数且为sqlserver连接，需要特殊处理
+        deepCloneConnection.setDbcpAttr(connection.getDbcpAttr());
+        deepCloneConnection.setDriver(connection.getDriver());
+        deepCloneConnection.setEncryptPassword(connection.isEncryptPassword());
+        deepCloneConnection.setPassword(connection.getPassword());
+        deepCloneConnection.setURL(optimizeSelectMethod(connection.getURL()));//sqlserver连接url，如果没有有selectMethod字段，增加该字段
+        deepCloneConnection.setUser(connection.getUser());
+        deepCloneConnection.setNewCharsetName(connection.getNewCharsetName());
+        deepCloneConnection.setOriginalCharsetName(connection.getOriginalCharsetName());
         return deepCloneConnection;
     }
 
