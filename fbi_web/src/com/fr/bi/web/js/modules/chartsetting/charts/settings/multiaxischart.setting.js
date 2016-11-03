@@ -223,7 +223,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.legend_detailed_setting_combo"
         });
 
-        this.leftTitleStyle.on(BI.LegendDetailedSettingCombo, function () {
+        this.leftTitleStyle.on(BI.LegendDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
@@ -438,7 +438,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.legend_detailed_setting_combo"
         });
 
-        this.rightTitleStyle.on(BI.LegendDetailedSettingCombo, function() {
+        this.rightTitleStyle.on(BI.LegendDetailedSettingCombo.EVENT_CHANGE, function() {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
@@ -823,7 +823,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.legend_detailed_setting_combo"
         });
 
-        this.catTitleStyle.on(BI.LegendDetailedSettingCombo, function () {
+        this.catTitleStyle.on(BI.LegendDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
@@ -1277,10 +1277,10 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.rightTitleStyle.setVisible(this.isShowTitleRY.isSelected());
         this.right2TitleStyle.setVisible(this.isShowTitleRY2.isSelected());
         this.catTitleStyle.setVisible(this.isShowTitleX.isSelected());
-        this.leftLabelStyle.setVisible(this.isShowTitleLY.isSelected());
-        this.rightLabelStyle.setVisible(this.isShowTitleRY.isSelected());
-        this.right2LabelStyle.setVisible(this.isShowTitleRY2.isSelected());
-        this.catLabelStyle.setVisible(this.isShowTitleX.isSelected());
+        this.leftLabelStyle.setVisible(this.showLeftLabel.isSelected());
+        this.rightLabelStyle.setVisible(this.showRightLabel.isSelected());
+        this.right2LabelStyle.setVisible(this.showRight2Label.isSelected());
+        this.catLabelStyle.setVisible(this.showCatLabel.isSelected());
         this.hGridLineColor.setVisible(this.showHGridLine.isSelected());
         this.vGridLineColor.setVisible(this.showVGridLine.isSelected());
     },
