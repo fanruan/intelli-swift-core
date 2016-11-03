@@ -178,7 +178,7 @@ task obfuse(dependsOn:'build')<<{
 		}
 	}
 	ant.delete(file:'yguardlog.xml')
-	ant.delete(idr:"build")
+	ant.delete(dir:"build")
 }
 
 ant{
@@ -195,14 +195,15 @@ ant{
 
 task copyjar(dependsOn:'obfuse')<<{
 	ant{
-		delete(file:"${baseDir}/JAR/CN/${jarname}")
 		mkdir(dir:"${baseDir}/JAR/tmp/1.6")
-
+		mkdir(dir:"${baseDir}/JAR/CN")
 		//构建jdk1.6的jar包
 		jar(destfile:"${baseDir}/JAR/CN/${jarname}"){
-			zipfileset(includes:'**/*.*',excludes:'com/fr/bi/test/**',src:"tmp/1.6/${jarname}")
-			fileset(dir:"${baseDir}/JAR/CN")
-		}
+			zipfileset(includes:'**/*.*',excludes:'com/fr/bi/test/**',src:"JAR/tmp/1.6/${jarname}")
+			fileset(dir:"${Bi_Home}/build/master/build/JAR/CN"){
+				include(name:"com/**/*")
+			}
+		}	
 		delete(file:"${baseDir}/bi_jar/*.*")
 		copy(todir:"${baseDir}/bi_jar"){
 			fileset(file:"${baseDir}/JAR/CN/${jarname}")

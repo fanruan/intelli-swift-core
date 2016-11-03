@@ -145,11 +145,11 @@ task addTime(dependsOn:'compressJS'){
 
 //混淆代码
 task obfuse(dependsOn:'build')<<{
-	ant.delete(dir:"tmp/1.8")
-	ant.mkdir(dir:"tmp/1.8")
+	ant.delete(dir:"JAR/tmp/1.8")
+	ant.mkdir(dir:"JAR/tmp/1.8")
 	ant.taskdef(name:'yguard',classname:'com.yworks.yguard.YGuardTask',classpath:"${BI_HOME}/lib4build/yguard.jar")
 	ant.yguard(){
-		inoutpair(in:"build/libs/${jarname}",out:"tmp/1.8/${jarname}")
+		inoutpair(in:"build/libs/${jarname}",out:"JAR/tmp/1.8/${jarname}")
 		rename(){
 		keep{
 			method(name:'void main(String[])'){
@@ -178,7 +178,7 @@ task obfuse(dependsOn:'build')<<{
 		}
 	}
 	ant.delete(file:'yguardlog.xml')
-	ant.delete(idr:"build")
+	ant.delete(dir:"build")
 }
 
 ant{
@@ -195,13 +195,14 @@ ant{
 
 task copyjar(dependsOn:'obfuse')<<{
 	ant{
-		delete(file:"${baseDir}/JAR/CN/${jarname}")
 		mkdir(dir:"${baseDir}/JAR/tmp/1.8")
-
+		mkdir(dir:"${baseDir}/JAR/CN")
 		//构建jdk1.8的jar包
 		jar(destfile:"${baseDir}/JAR/CN/${jarname}"){
-			zipfileset(includes:'**/*.*',excludes:'com/fr/bi/test/**',src:"tmp/1.8/${jarname}")
-			fileset(dir:"${baseDir}/JAR/CN")
+			zipfileset(includes:'**/*.*',excludes:'com/fr/bi/test/**',src:"JAR/tmp/1.8/${jarname}")
+			fileset(dir:"${Bi_Home}/build/master/build/JAR/CN"){
+				include(name:"com/**/*")
+			}
 		}
 		delete(file:"${baseDir}/bi_jar/*.*")
 		copy(todir:"${baseDir}/bi_jar"){
