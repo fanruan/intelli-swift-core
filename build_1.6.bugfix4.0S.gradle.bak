@@ -195,6 +195,7 @@ ant{
 
 task copyjar(dependsOn:'obfuse')<<{
 	ant{
+		delete(file:"${baseDir}/JAR/CN/${jarname}")
 		mkdir(dir:"${baseDir}/JAR/tmp/1.6")
 		mkdir(dir:"${baseDir}/JAR/CN")
 		//构建jdk1.6的jar包
