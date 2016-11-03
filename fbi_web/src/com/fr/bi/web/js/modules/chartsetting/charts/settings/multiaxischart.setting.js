@@ -204,7 +204,8 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.isShowTitleLY.on(BI.Controller.EVENT_CHANGE, function () {
-            this.isSelected() ? self.editTitleLY.setVisible(true) : self.editTitleLY.setVisible(false);
+            self.editTitleLY.setVisible(this.isSelected());
+            self.leftTitleStyle.setVisible(this.isSelected());
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
@@ -218,6 +219,14 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
+        this.leftTitleStyle = BI.createWidget({
+            type: "bi.legend_detailed_setting_combo"
+        });
+
+        this.leftTitleStyle.on(BI.LegendDetailedSettingCombo, function () {
+            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
+        });
+
         //左轴标签
         this.showLeftLabel = BI.createWidget({
             type: "bi.multi_select_item",
@@ -226,6 +235,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showLeftLabel.on(BI.Controller.EVENT_CHANGE, function () {
+            self.leftLabelStyle.setVisible(this.isSelected());
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
@@ -327,6 +337,9 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.isShowTitleLY, this.editTitleLY]
                 }, {
                     type: "bi.vertical_adapt",
+                    items: [this.leftTitleStyle]
+                }, {
+                    type: "bi.vertical_adapt",
                     items: [this.showLeftLabel]
                 }, {
                     type: "bi.vertical_adapt",
@@ -405,7 +418,8 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.isShowTitleRY.on(BI.Controller.EVENT_CHANGE, function () {
-            this.isSelected() ? self.editTitleRY.setVisible(true) : self.editTitleRY.setVisible(false);
+            self.editTitleRY.setVisible(this.isSelected());
+            self.rightTitleStyle.setVisible(this.isSelected());
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
@@ -420,6 +434,14 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
+        this.rightTitleStyle = BI.createWidget({
+            type: "bi.legend_detailed_setting_combo"
+        });
+
+        this.rightTitleStyle.on(BI.LegendDetailedSettingCombo, function() {
+            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
+        });
+
         //右轴标签
         this.showRightLabel = BI.createWidget({
             type: "bi.multi_select_item",
@@ -428,6 +450,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showRightLabel.on(BI.Controller.EVENT_CHANGE, function () {
+            self.rightLabelStyle.setVisible(this.isSelected());
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
@@ -528,6 +551,9 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.isShowTitleRY, this.editTitleRY]
                 }, {
                     type: "bi.vertical_adapt",
+                    items: [this.rightTitleStyle]
+                }, {
+                    type: "bi.vertical_adapt",
                     items: [this.showRightLabel]
                 }, {
                     type: "bi.vertical_adapt",
@@ -606,7 +632,8 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.isShowTitleRY2.on(BI.Controller.EVENT_CHANGE, function () {
-            this.isSelected() ? self.editTitleRY2.setVisible(true) : self.editTitleRY2.setVisible(false);
+            self.editTitleRY2.setVisible(this.isSelected());
+            self.right2TitleStyle.setVisible(this.isSelected());
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
@@ -621,6 +648,14 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
+        this.right2TitleStyle = BI.createWidget({
+            type: "bi.legend_detailed_setting_combo"
+        });
+
+        this.right2TitleStyle.on(BI.LegendDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
+        });
+
         //右轴2标签
         this.showRight2Label = BI.createWidget({
             type: "bi.multi_select_item",
@@ -629,6 +664,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showRight2Label.on(BI.Controller.EVENT_CHANGE, function () {
+            self.right2LabelStyle.setVisible(this.isSelected());
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
@@ -730,6 +766,9 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.isShowTitleRY2, this.editTitleRY2]
                 }, {
                     type: "bi.vertical_adapt",
+                    items: [this.right2TitleStyle]
+                }, {
+                    type: "bi.vertical_adapt",
                     items: [this.showRight2Label]
                 }, {
                     type: "bi.vertical_adapt",
@@ -764,7 +803,8 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.isShowTitleX.on(BI.Controller.EVENT_CHANGE, function () {
-            this.isSelected() ? self.editTitleX.setVisible(true) : self.editTitleX.setVisible(false);
+            self.editTitleX.setVisible(this.isSelected());
+            self.catTitleStyle.setVisible(this.isSelected());
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
@@ -779,6 +819,14 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
+        this.catTitleStyle = BI.createWidget({
+            type: "bi.legend_detailed_setting_combo"
+        });
+
+        this.catTitleStyle.on(BI.LegendDetailedSettingCombo, function () {
+            self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
+        });
+
         //显示分类轴标签
         this.showCatLabel = BI.createWidget({
             type: "bi.multi_select_item",
@@ -787,6 +835,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showCatLabel.on(BI.Controller.EVENT_CHANGE, function () {
+            self.catLabelStyle.setVisible(this.isSelected());
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
@@ -826,6 +875,9 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 items: BI.createItems([{
                     type: "bi.vertical_adapt",
                     items: [this.isShowTitleX, this.editTitleX]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.catTitleStyle]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.showCatLabel]
@@ -875,6 +927,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showHGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+            self.hGridLineColor.setVisible(this.isSelected());
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
@@ -895,6 +948,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showVGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+            self.vGridLineColor.setVisible(this.isSelected());
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
@@ -1210,11 +1264,25 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.vGridLineColor.setValue(BI.Utils.getWSVGridLineColorByID(wId));
         this.nullContinuity.setSelected(BI.Utils.getWSNullContinueByID(wId));
         this.tooltipSetting.setValue(BI.Utils.getWSToolTipSettingByID(wId));
+        this.leftTitleStyle.setValue(BI.Utils.getWSLeftTitleStyleByID(wId));
+        this.rightTitleStyle.setValue(BI.Utils.getWSRightTitleStyleByID(wId));
+        this.right2TitleStyle.setValue(BI.Utils.getWSRight2TitleStyleByID(wId));
+        this.catTitleStyle.setValue(BI.Utils.getWSCatTitleStyleByID(wId));
 
-        this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
-        this.isShowTitleRY.isSelected() ? this.editTitleRY.setVisible(true) : this.editTitleRY.setVisible(false);
-        this.isShowTitleRY2.isSelected() ? this.editTitleRY2.setVisible(true) : this.editTitleRY2.setVisible(false);
-        this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false);
+        this.editTitleLY.setVisible(this.isShowTitleLY.isSelected());
+        this.editTitleRY.setVisible(this.isShowTitleRY.isSelected());
+        this.editTitleRY2.setVisible(this.isShowTitleRY2.isSelected());
+        this.editTitleX.setVisible(this.isShowTitleX.isSelected());
+        this.leftTitleStyle.setVisible(this.isShowTitleLY.isSelected());
+        this.rightTitleStyle.setVisible(this.isShowTitleRY.isSelected());
+        this.right2TitleStyle.setVisible(this.isShowTitleRY2.isSelected());
+        this.catTitleStyle.setVisible(this.isShowTitleX.isSelected());
+        this.leftLabelStyle.setVisible(this.isShowTitleLY.isSelected());
+        this.rightLabelStyle.setVisible(this.isShowTitleRY.isSelected());
+        this.right2LabelStyle.setVisible(this.isShowTitleRY2.isSelected());
+        this.catLabelStyle.setVisible(this.isShowTitleX.isSelected());
+        this.hGridLineColor.setVisible(this.showHGridLine.isSelected());
+        this.vGridLineColor.setVisible(this.showVGridLine.isSelected());
     },
 
     getValue: function () {
@@ -1279,6 +1347,10 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             v_grid_line_color: this.vGridLineColor.getValue(),
             null_continue: this.nullContinuity.isSelected(),
             tooltip_setting: this.tooltipSetting.getValue(),
+            left_title_style: this.leftTitleStyle.getValue(),
+            right_title_style: this.rightTitleStyle.getValue(),
+            right2_title_style: this.right2TitleStyle.getValue(),
+            cat_title_style: this.catTitleStyle.getValue()
         }
     }
 });
