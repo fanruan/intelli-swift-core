@@ -314,7 +314,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         }
                         return {
                             "x": x,
-                            "y":BI.isNull(obj.s.c[id].s[0]) ? obj.s.c[id].s[0] : (BI.isFinite(obj.s.c[id].s[0]) ? obj.s.c[id].s[0] : 0),
+                            "y":(BI.isNull(obj.s.c[id].s[0]) || BI.isFinite(obj.s.c[id].s[0])) ? obj.s.c[id].s[0] : 0,
                             "value": value,
                             seriesName: seriesName,
                             targetIds: [targetIds[0]]
@@ -323,7 +323,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 }else{
                     data = [{
                         "x": "",
-                        "y": BI.isNull(obj.s.c[id].s[0]) ? obj.s.c[id].s[0] : (BI.isFinite(obj.s.c[id].s[0]) ? obj.s.c[id].s[0] : 0),
+                        "y": (BI.isNull(left.s.c[id].s[0]) || BI.isFinite(left.s.c[id].s[0])) ? left.s.c[id].s[0] : 0,
                         "value": "",
                         seriesName: seriesName,
                         targetIds: [targetIds[0]]
@@ -347,7 +347,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     }
                     return {
                         x: x,
-                        y: BI.isNull(item.s[idx]) ? item.s[idx] : (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
+                        y: (BI.isNull(item.s[idx]) || BI.isFinite(item.s[idx])) ? item.s[idx] : 0,
                         value: value,
                         seriesName: BI.Utils.getDimensionNameByID(targetIds[idx]),
                         targetIds: [targetIds[idx]]
