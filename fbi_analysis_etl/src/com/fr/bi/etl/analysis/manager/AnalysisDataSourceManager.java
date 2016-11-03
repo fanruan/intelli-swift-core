@@ -63,12 +63,12 @@ public class AnalysisDataSourceManager extends BISystemDataManager<DataSourceCom
             if (!container.containsKey(key)) {
                 DataSourceCompoundService value = generateAbsentValue(key);
                 try {
-                    if(value!=null) {
+                    if (value != null) {
                         putKeyValue(key, value);
                     }
                     value.initialAll();
                 } catch (Exception e) {
-                    throw BINonValueUtils.beyondControl();
+                    throw BINonValueUtils.beyondControl(e);
                 }
             }
             if (containsKey(key)) {
