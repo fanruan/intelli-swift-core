@@ -56,13 +56,32 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
         var self = this, o = this.options;
         var linkageInfo = this.model.getLinkageInfo(obj);
         var dId = linkageInfo.dId, clicked = linkageInfo.clicked;
-        BI.each(BI.Utils.getWidgetLinkageByID(o.wId), function (i, link) {
-            if (BI.contains(dId, link.from)) {
-                BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + link.to, link.from, clicked);
-                self._send2AllChildLinkWidget(link.to, link.from, clicked);
-            }
-        });
+        if (hasFormula()) {
+             obj.getPopupItems({
+                wId: o.wId,
+                dId: dId,
+                position: obj.toolTipRect,
+                clicked: clicked
+            });
+        } else {
+            BI.each(BI.Utils.getWidgetLinkageByID(o.wId), function (i, link) {
+                if (BI.contains(dId, link.from) && BI.isEmptyArray(link.cids)) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + link.to, link.from, clicked);
+                    self._send2AllChildLinkWidget(link.to, link.from, clicked);
+                }
+            });
+        }
         this.fireEvent(BI.ChartDisplay.EVENT_CHANGE, obj);
+
+        function hasFormula() {
+            var linkages = BI.Utils.getWidgetLinkageByID(o.wId);
+            for (var i = 0; i < linkages.length; i++) {
+                if (BI.isNotEmptyArray(linkages[i].cids)) {
+                    return true;
+                }
+            }
+            return false;
+        }
     },
 
     _onClickDrill: function (dId, value, drillId) {
@@ -134,11 +153,19 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 chart.on(BI.AxisChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
                 });
+                chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + obj.to, obj.from, obj.clicked);
+                    self._send2AllChildLinkWidget(obj.to, obj.from, obj.clicked);
+                });
                 return chart;
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
                 var chart = BI.createWidget({type: "bi.multi_axis_chart"});
                 chart.on(BI.MultiAxisChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
+                });
+                chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + obj.to, obj.from, obj.clicked);
+                    self._send2AllChildLinkWidget(obj.to, obj.from, obj.clicked);
                 });
                 return chart;
             case BICst.WIDGET.ACCUMULATE_AXIS:
@@ -146,11 +173,19 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 chart.on(BI.AccumulateAxisChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
                 });
+                chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + obj.to, obj.from, obj.clicked);
+                    self._send2AllChildLinkWidget(obj.to, obj.from, obj.clicked);
+                });
                 return chart;
             case BICst.WIDGET.LINE:
                 var chart = BI.createWidget({type: "bi.line_chart"});
                 chart.on(BI.LineChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
+                });
+                chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + obj.to, obj.from, obj.clicked);
+                    self._send2AllChildLinkWidget(obj.to, obj.from, obj.clicked);
                 });
                 return chart;
             case BICst.WIDGET.AREA:
@@ -158,11 +193,19 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 chart.on(BI.AreaChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
                 });
+                chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + obj.to, obj.from, obj.clicked);
+                    self._send2AllChildLinkWidget(obj.to, obj.from, obj.clicked);
+                });
                 return chart;
             case BICst.WIDGET.ACCUMULATE_AREA:
                 var chart = BI.createWidget({type: "bi.accumulate_area_chart"});
                 chart.on(BI.AccumulateAreaChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
+                });
+                chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + obj.to, obj.from, obj.clicked);
+                    self._send2AllChildLinkWidget(obj.to, obj.from, obj.clicked);
                 });
                 return chart;
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
@@ -170,11 +213,19 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 chart.on(BI.PercentAccumulateAxisChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
                 });
+                chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + obj.to, obj.from, obj.clicked);
+                    self._send2AllChildLinkWidget(obj.to, obj.from, obj.clicked);
+                });
                 return chart;
             case BICst.WIDGET.ACCUMULATE_BAR:
                 var chart = BI.createWidget({type: "bi.accumulate_bar_chart"});
                 chart.on(BI.AccumulateBarChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
+                });
+                chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + obj.to, obj.from, obj.clicked);
+                    self._send2AllChildLinkWidget(obj.to, obj.from, obj.clicked);
                 });
                 return chart;
             case BICst.WIDGET.DONUT:
@@ -182,11 +233,19 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 chart.on(BI.DonutChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
                 });
+                chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + obj.to, obj.from, obj.clicked);
+                    self._send2AllChildLinkWidget(obj.to, obj.from, obj.clicked);
+                });
                 return chart;
             case BICst.WIDGET.RADAR:
                 var chart = BI.createWidget({type: "bi.radar_chart"});
                 chart.on(BI.RadarChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
+                });
+                chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + obj.to, obj.from, obj.clicked);
+                    self._send2AllChildLinkWidget(obj.to, obj.from, obj.clicked);
                 });
                 return chart;
             case BICst.WIDGET.ACCUMULATE_RADAR:
@@ -194,11 +253,19 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 chart.on(BI.AccumulateRadarChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
                 });
+                chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + obj.to, obj.from, obj.clicked);
+                    self._send2AllChildLinkWidget(obj.to, obj.from, obj.clicked);
+                });
                 return chart;
             case BICst.WIDGET.PIE:
                 var chart = BI.createWidget({type: "bi.pie_chart"});
                 chart.on(BI.PieChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
+                });
+                chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + obj.to, obj.from, obj.clicked);
+                    self._send2AllChildLinkWidget(obj.to, obj.from, obj.clicked);
                 });
                 return chart;
             case BICst.WIDGET.DASHBOARD:
@@ -206,11 +273,19 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 chart.on(BI.DashboardChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
                 });
+                chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + obj.to, obj.from, obj.clicked);
+                    self._send2AllChildLinkWidget(obj.to, obj.from, obj.clicked);
+                });
                 return chart;
             case BICst.WIDGET.BAR:
                 var chart = BI.createWidget({type: "bi.bar_chart"});
                 chart.on(BI.BarChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
+                });
+                chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + obj.to, obj.from, obj.clicked);
+                    self._send2AllChildLinkWidget(obj.to, obj.from, obj.clicked);
                 });
                 return chart;
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
@@ -218,11 +293,19 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 chart.on(BI.PercentAccumulateAreaChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
                 });
+                chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + obj.to, obj.from, obj.clicked);
+                    self._send2AllChildLinkWidget(obj.to, obj.from, obj.clicked);
+                });
                 return chart;
             case BICst.WIDGET.COMPARE_BAR:
                 var chart = BI.createWidget({type: "bi.compare_bar_chart"});
                 chart.on(BI.CompareBarChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
+                });
+                chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + obj.to, obj.from, obj.clicked);
+                    self._send2AllChildLinkWidget(obj.to, obj.from, obj.clicked);
                 });
                 return chart;
             case BICst.WIDGET.COMPARE_AXIS:
@@ -230,11 +313,19 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 chart.on(BI.CompareAxisChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
                 });
+                chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + obj.to, obj.from, obj.clicked);
+                    self._send2AllChildLinkWidget(obj.to, obj.from, obj.clicked);
+                });
                 return chart;
             case BICst.WIDGET.COMPARE_AREA:
                 var chart = BI.createWidget({type: "bi.compare_area_chart"});
                 chart.on(BI.CompareAreaChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
+                });
+                chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + obj.to, obj.from, obj.clicked);
+                    self._send2AllChildLinkWidget(obj.to, obj.from, obj.clicked);
                 });
                 return chart;
             case BICst.WIDGET.RANGE_AREA:
@@ -242,11 +333,19 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 chart.on(BI.RangeAreaChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
                 });
+                chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + obj.to, obj.from, obj.clicked);
+                    self._send2AllChildLinkWidget(obj.to, obj.from, obj.clicked);
+                });
                 return chart;
             case BICst.WIDGET.FALL_AXIS:
                 var chart = BI.createWidget({type: "bi.fall_axis_chart"});
                 chart.on(BI.FallAxisChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
+                });
+                chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + obj.to, obj.from, obj.clicked);
+                    self._send2AllChildLinkWidget(obj.to, obj.from, obj.clicked);
                 });
                 return chart;
             case BICst.WIDGET.BUBBLE:
@@ -254,17 +353,29 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 chart.on(BI.BubbleChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
                 });
+                chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + obj.to, obj.from, obj.clicked);
+                    self._send2AllChildLinkWidget(obj.to, obj.from, obj.clicked);
+                });
                 return chart;
             case BICst.WIDGET.FORCE_BUBBLE:
                 var chart = BI.createWidget({type: "bi.force_bubble_chart"});
                 chart.on(BI.ForceBubbleChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
                 });
+                chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + obj.to, obj.from, obj.clicked);
+                    self._send2AllChildLinkWidget(obj.to, obj.from, obj.clicked);
+                });
                 return chart;
             case BICst.WIDGET.SCATTER:
                 var chart = BI.createWidget({type: "bi.scatter_chart"});
                 chart.on(BI.ScatterChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
+                });
+                chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + obj.to, obj.from, obj.clicked);
+                    self._send2AllChildLinkWidget(obj.to, obj.from, obj.clicked);
                 });
                 return chart;
             case BICst.WIDGET.MAP:
@@ -276,11 +387,19 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 chart.on(BI.MapChart.EVENT_CLICK_DTOOL, function (obj) {
                     self._onClickDrill(obj.dId, obj.x);
                 });
+                chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + obj.to, obj.from, obj.clicked);
+                    self._send2AllChildLinkWidget(obj.to, obj.from, obj.clicked);
+                });
                 return chart;
             case BICst.WIDGET.GIS_MAP:
                 var chart = BI.createWidget({type: "bi.gis_map_chart"});
                 chart.on(BI.GISMapChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
+                });
+                chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
+                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + obj.to, obj.from, obj.clicked);
+                    self._send2AllChildLinkWidget(obj.to, obj.from, obj.clicked);
                 });
                 return chart;
         }
