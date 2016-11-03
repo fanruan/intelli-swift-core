@@ -104,7 +104,7 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
         BILoggerFactory.getLogger().info("***************table check start*****************");
         boolean sqlTest = getSqlTest();
         BILoggerFactory.getLogger().info("***************table  check result: " + sqlTest);
-        return spaceCheck;
+        return spaceCheck && connectionCheck;
     }
 
     public Set<CubeTableSource> getAllTableSources() {
