@@ -101,10 +101,10 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
         BILoggerFactory.getLogger().info("***************connection check start*****************");
         boolean connectionCheck = getConnectionCheck();
         BILoggerFactory.getLogger().info("***************connection check result: " + connectionCheck);
-//        BILoggerFactory.getLogger().info("***************table check start*****************");
-//        boolean sqlTest = getSqlTest();
-//        BILoggerFactory.getLogger().info("***************table  check result: " +sqlTest );
-        return spaceCheck && connectionCheck;
+        BILoggerFactory.getLogger().info("***************table check start*****************");
+        boolean sqlTest = getSqlTest();
+        BILoggerFactory.getLogger().info("***************table  check result: " + sqlTest);
+        return spaceCheck;
     }
 
     public Set<CubeTableSource> getAllTableSources() {
@@ -328,7 +328,7 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
     private boolean getConnectionCheck() {
         CubePreConditionsCheck check = new CubePreConditionsCheckManager();
         Set<Connection> connectionSet = new HashSet<Connection>();
-        double[] SqlSourceTypes = {BIBaseConstant.TABLETYPE.SERVER, BIBaseConstant.TABLETYPE.DB, BIBaseConstant.TABLETYPE.SQL};
+        double[] SqlSourceTypes = {BIBaseConstant.TABLETYPE.DB, BIBaseConstant.TABLETYPE.SQL};
         for (CubeTableSource tableSource : getAllSingleSources()) {
             if (ArrayUtils.contains(SqlSourceTypes, tableSource.getType())) {
                 if (!connectionSet.contains(((DBTableSource) tableSource).getConnection())) {
