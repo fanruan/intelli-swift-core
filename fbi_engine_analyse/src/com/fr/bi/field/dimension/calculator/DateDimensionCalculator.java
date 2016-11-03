@@ -42,7 +42,7 @@ public class DateDimensionCalculator extends AbstractDimensionCalculator {
         Iterator it = getter.iterator();
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry) it.next();
-            treeMap.put(getGroupDate() == BIReportConstant.GROUP.M ? (Integer) entry.getKey() + 1 : entry.getKey(), entry.getValue());
+            treeMap.put(entry.getKey(), entry.getValue());
         }
         return getSortType() != BIReportConstant.SORT.NUMBER_DESC ? treeMap.iterator() : treeMap.previousIterator();
     }
