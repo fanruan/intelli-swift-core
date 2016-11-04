@@ -91,10 +91,16 @@ class DetailTableComponent extends Component {
             header={this._tableHelper.getHeader()}
             items={items}
             headerCellRenderer={({colIndex, ...cell})=> {
-                return <TableHeader {...cell}/>
+                return <TableHeader
+                    wId={this.props.wId}
+                    $widget={this.props.$widget}
+                    {...cell}/>
             }}
             itemsCellRenderer={({colIndex, rowIndex, ...cell}) => {
-                return <TableCell {...cell}/>
+                return <TableCell
+                    wId={this.props.wId}
+                    $widget={this.props.$widget}
+                    {...cell}/>
             }}
         >
         </TableWidget>

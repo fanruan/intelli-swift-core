@@ -92,20 +92,28 @@ class TableComponent extends Component {
             /**groupHeader={[{text: 1}, {text: 2}]}
              groupItems={[{children:[{text: 'A', children: [{text: 'A1'}, {text: 'A2'}]}, {text: 'B'}]}]}**/
             groupHeaderCellRenderer={({colIndex, ...cell})=> {
-                return <TableHeader {...cell}/>
-            }}
-            groupItemsCellRenderer={({...cell})=> {
-                return <TableHeader {...cell}/>
-            }}
-            headerCellRenderer={({colIndex, ...cell})=> {
-                return <TableHeader {...cell}/>
-            }}
-            itemsCellRenderer={({colIndex, rowIndex, ...cell}) => {
-                return <TableCell 
+                return <TableHeader
                     wId={this.props.wId}
                     $widget={this.props.$widget}
-                    {...cell}>
-                    </TableCell>
+                    {...cell}/>
+            }}
+            groupItemsCellRenderer={({...cell})=> {
+                return <TableHeader
+                    wId={this.props.wId}
+                    $widget={this.props.$widget}
+                    {...cell}/>
+            }}
+            headerCellRenderer={({colIndex, ...cell})=> {
+                return <TableHeader
+                    wId={this.props.wId}
+                    $widget={this.props.$widget}
+                    {...cell}/>
+            }}
+            itemsCellRenderer={({colIndex, rowIndex, ...cell}) => {
+                return <TableCell
+                    wId={this.props.wId}
+                    $widget={this.props.$widget}
+                    {...cell} />
             }}
         >
         </TableWidget>

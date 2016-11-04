@@ -236,7 +236,7 @@ class AbstractWidget {
 
     getWidgetFilterValue(wId) {
         if (this.template.hasWidgetByWidgetId(wId)) {
-            return this.$widget.get('filter_value').toJS() || {};
+            return (this.$widget.get('filter_value') && this.$widget.get('filter_value').toJS()) || {};
         }
         return {};
     }
