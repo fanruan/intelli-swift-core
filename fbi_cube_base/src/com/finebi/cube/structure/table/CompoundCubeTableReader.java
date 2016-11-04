@@ -60,11 +60,11 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
             }
         } else {
             if (null == hostTable) {
-                BILoggerFactory.getLogger().error("hostTable null");
+                BILoggerFactory.getLogger(CompoundCubeTableReader.class).error("hostTable null");
             } else {
-                BILoggerFactory.getLogger().error("hostTable sourceId" + hostTable.tableKey.getSourceID());
+                BILoggerFactory.getLogger(CompoundCubeTableReader.class).error("hostTable sourceId" + hostTable.tableKey.getSourceID());
             }
-            throw new BICubeTableAbsentException("Please generate Cube firstly");
+            throw new BICubeTableAbsentException("Please generate Cube firstly ,The Table:"+ hostTable.tableKey.getSourceID()+" absent");
         }
         if (isParentAvailable()) {
             for (ICubeFieldSource field : parentTable.getFieldInfo()) {

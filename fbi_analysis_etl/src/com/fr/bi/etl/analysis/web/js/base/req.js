@@ -36,9 +36,15 @@ BI.ETLReq = {
             var text = BI.isNull(res.table) ? BI.i18nText('BI-Is_Delete_Table') : BI.i18nText('BI-ETL_Sure_Delete_Used_Table', res.table);
             BI.Msg.confirm(BI.i18nText("BI-Warning"), text, function (v) {
                 if (v === true) {
+                    var mask = BI.createWidget({
+                        type: "bi.etl_loading_mask",
+                        masker: 'body',
+                        text: BI.i18nText("BI-Loading")
+                    });
                     BI.requestAsync("fr_bi_analysis_etl", "delete_table", data, function () {
                         BI.Utils.afterDeleteTable(data.id);
                         callback();
+                        mask.destroy();
                     })
                 }
             })

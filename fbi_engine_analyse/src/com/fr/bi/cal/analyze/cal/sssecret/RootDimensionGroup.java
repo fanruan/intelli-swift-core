@@ -5,9 +5,7 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelationPath;
-import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
-import com.fr.bi.cal.analyze.cal.store.GroupKey;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
@@ -16,7 +14,6 @@ import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.field.dimension.calculator.StringDimensionCalculator;
 import com.fr.bi.field.filtervalue.date.evenfilter.DateKeyTargetFilterValue;
 import com.fr.bi.field.filtervalue.string.rangefilter.StringINFilterValue;
-import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.data.key.date.BIDateValue;
@@ -24,7 +21,6 @@ import com.fr.bi.stable.data.key.date.BIDateValueFactory;
 import com.fr.bi.stable.exception.BITableUnreachableException;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.structure.collection.map.lru.FIFOHashMap;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.cache.list.IntList;
 import com.fr.general.ComparatorUtils;
@@ -40,10 +36,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RootDimensionGroup implements IRootDimensionGroup {
 
     protected NoneDimensionGroup root;
-    private NoneDimensionGroup dereplicationRoot;
     protected DimensionCalculator[] cks;
     protected BISession session;
-    protected int[][] parentColumnCksIndex;
     ISingleDimensionGroup[] singleDimensionGroupCache;
     private BIWidget widget;
     private BIDimension[] dimensions;
@@ -61,24 +55,14 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         this.widget = widget;
         this.useRealData = useRealData;
         this.singleDimensionGroupCache = new ISingleDimensionGroup[cks.length];
-        initParentColumncks();
     }
 
     protected void setRoot(NoneDimensionGroup root) {
         this.root = root;
-        if (root instanceof TreeNoneDimensionGroup) {
-            this.dereplicationRoot = root;
-        } else {
-            if (!PerformancePlugManager.getInstance().useDereplication()) {
-                this.dereplicationRoot = new DereplicationNoneDimenstionGroup(root);
-            } else {
-                this.dereplicationRoot = root;
-            }
-        }
     }
 
     public NoneDimensionGroup getRoot() {
-        return dereplicationRoot;
+        return root;
     }
 
     public static int findPageIndexDichotomy(int[] shrinkPos, List<int[]> pageIndex, int start, int end) throws ArrayIndexOutOfBoundsException {
@@ -121,49 +105,6 @@ public class RootDimensionGroup implements IRootDimensionGroup {
             return;
         }
         session.setWidgetDateMap(widget.getWidgetName(), dimensions[i].getValue(), dimensions[i].toString(data), data);
-    }
-
-    private void initParentColumncks() {
-        parentColumnCksIndex = new int[this.cks.length][this.cks.length];
-        for (int i = 0; i < parentColumnCksIndex.length; i++) {
-            Arrays.fill(parentColumnCksIndex[i], -1);
-        }
-        for (int i = 1; i < this.cks.length; i++) {
-            BITableSourceRelation[] relation = cks[i].getRelationList().toArray(new BITableSourceRelation[cks[i].getRelationList().size()]);
-            for (int j = 0; j < i; j++) {
-                BITableSourceRelation[] relationBase = cks[j].getRelationList().toArray(new BITableSourceRelation[cks[j].getRelationList().size()]);
-                if (relationLarge(relationBase, relation) && cks[j] instanceof StringDimensionCalculator && (!cks[j].hasSelfGroup())) {
-                    parentColumnCksIndex[i][j] = j;
-                }
-            }
-        }
-    }
-
-    /**
-     * 获取A->B->指标  B->指标 A与B之间的关系
-     *
-     * @param relationBase B->指标
-     * @param relation     A->指标
-     * @return 是否是这样的关系
-     */
-    private boolean relationLarge(BITableSourceRelation[] relationBase,
-                                  BITableSourceRelation[] relation) {
-        if (relationBase == null || relation == null) {
-            return false;
-        }
-        if (relationBase.length > relation.length) {
-            return false;
-        }
-        int baseLen = relationBase.length;
-        int len = relation.length;
-        for (int i = 1; i < baseLen + 1; i++) {
-            BITableSourceRelation table1 = relation[len - i];
-            BITableSourceRelation table2 = relationBase[baseLen - i];
-            if (!BIConfUtils.isSameRelation(table1, table2, session.getLoader().getUserId())) {
-                return false;
-            }
-        }
-        return true;
     }
 
     @Override
@@ -220,7 +161,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         if (deep >= value.length) {
             return;
         }
-        ISingleDimensionGroup sg = (ComparatorUtils.equals(root.getTableKey(), BIBusinessTable.createEmptyTable()) && deep > 0) ? ng.createNoneTargetSingleDimensionGroup(cks, parentColumnCksIndex[deep], cks[deep], value, deep, getCKGvigetter(value, deep), useRealData) : getSingleDimensionGroupCache(value, ng, deep);
+        ISingleDimensionGroup sg = (ComparatorUtils.equals(root.getTableKey(), BIBusinessTable.createEmptyTable()) && deep > 0) ? ng.createNoneTargetSingleDimensionGroup(cks, cks[deep], value, deep, getCKGvigetter(value, deep), useRealData) : getSingleDimensionGroupCache(value, ng, deep);
         int i = sg.getChildIndexByValue(value[deep]);
         if (i == -1) {
             return;
@@ -356,9 +297,9 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     protected ISingleDimensionGroup createSingleDimensionGroup(GroupConnectionValue gv, NoneDimensionGroup ng, int deep) {
         ISingleDimensionGroup sg;
         if ((ComparatorUtils.equals(root.getTableKey(), BIBusinessTable.createEmptyTable()) && deep > 0)) {
-            sg = ng.createNoneTargetSingleDimensionGroup(cks, parentColumnCksIndex[deep], cks[deep], getParentsValuesByGv(gv, deep), deep, getCKGvigetter(gv, deep), useRealData);
+            sg = ng.createNoneTargetSingleDimensionGroup(cks, cks[deep], getParentsValuesByGv(gv, deep), deep, getCKGvigetter(gv, deep), useRealData);
         } else {
-            sg = ng.createSingleDimensionGroup(cks, parentColumnCksIndex[deep], cks[deep], getParentsValuesByGv(gv, deep), deep, useRealData);
+            sg = ng.createSingleDimensionGroup(cks, cks[deep], getParentsValuesByGv(gv, deep), deep, useRealData);
         }
         return sg;
     }
@@ -366,9 +307,9 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     protected ISingleDimensionGroup createSingleDimensionGroup(Object[] data, NoneDimensionGroup ng, int deep) {
         ISingleDimensionGroup sg;
         if ((ComparatorUtils.equals(root.getTableKey(), BITable.BI_EMPTY_TABLE()) && deep > 0)) {
-            sg = ng.createNoneTargetSingleDimensionGroup(cks, parentColumnCksIndex[deep], cks[deep], data, deep, getCKGvigetter(data, deep), useRealData);
+            sg = ng.createNoneTargetSingleDimensionGroup(cks, cks[deep], data, deep, getCKGvigetter(data, deep), useRealData);
         } else {
-            sg = ng.createSingleDimensionGroup(cks, parentColumnCksIndex[deep], cks[deep], data, deep, useRealData);
+            sg = ng.createSingleDimensionGroup(cks, cks[deep], data, deep, useRealData);
         }
         return sg;
     }
