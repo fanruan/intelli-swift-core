@@ -61,9 +61,19 @@ BI.CustomScrollTableScrollBar = BI.inherit(BI.Widget, {
         switch (o.axis) {
             case BI.Axis.Vertical:
                 this.element.width(18);
+                BI.nextTick(function () {
+                    self.element.mCustomScrollbar(BI.extend(config, {
+                        axis: "y"
+                    }));
+                });
                 break;
             case BI.Axis.Horizontal:
                 this.element.height(18);
+                BI.nextTick(function () {
+                    self.element.mCustomScrollbar(BI.extend(config, {
+                        axis: "x"
+                    }));
+                });
                 break;
         }
     },
