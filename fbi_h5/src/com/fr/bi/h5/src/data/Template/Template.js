@@ -16,7 +16,7 @@ class Template {
 
     get$DimensionById(id) {
         let $dimension;
-        some(this.getAllWidgetIds(), (wId)=> {
+        some(this.getAllWidgetIds().concat(this.getAllControlWidgetIds()), (wId)=> {
             const widget = this.getWidgetById(wId);
             if (widget.hasDimensionById(id)) {
                 $dimension = widget.get$DimensionById(id);
@@ -104,7 +104,7 @@ class Template {
         if (!isNil(this._dimension2WidgetMap[dId])) {
             return this._dimension2WidgetMap[dId];
         }
-        var widgets = this.getAllWidgetIds();
+        var widgets = this.getAllWidgetIds().concat(this.getAllControlWidgetIds());
         var wid = find(widgets, (wid)=> {
             var dims = this.getWidgetById(wid).getAllDimensionAndTargetIds();
             return find(dims, (id)=> {
@@ -123,12 +123,9 @@ class Template {
 
     getDimensionFilterValueByID(did) {
         var dimension = this.getDimensionById(did);
-        if (!isNil(dimension)) {
-            return dimension.getFilterValue() || {};
-        }
-        return {};
+        return isNil(dimension) ? {} : dimension.getFilterValue();
     }
-    
+
     getWidgetLinkageByID(wid) {
         const widget = this.getWidgetById(wid);
         return widget.getWidgetLinkage();
@@ -137,6 +134,13 @@ class Template {
     getWidgetLinkageValueByID(wid) {
         var widget = this.getWidgetById(wid);
         return widget.getLinkageValues();
+    }
+
+    getFieldIDByDimensionID(did) {
+        var dimension = this.getDimensionById(did);
+        if (!isNil(dimension)) {
+            return dimension.getFieldId();
+        }
     }
 
     set$Widget(id, $widget) {

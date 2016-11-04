@@ -222,11 +222,8 @@ class AbstractWidget {
     getControlCalculations(notcontain) {
         var self = this, filterValues = [];
         //控件
-        var widgetIds = this.template.getAllWidgetIds();
+        var widgetIds = this.template.getAllControlWidgetIds();
         widgetIds.forEach((id, i)=> {
-            if (!this.template.getWidgetById(id).isControl()) {
-                return;
-            }
             if (id === notcontain) {
                 return;
             }
@@ -413,7 +410,6 @@ class AbstractWidget {
                             type: value === "_*_" ? Status.Selection.All : Status.Selection.Multi,
                             value: [value]
                         },
-                        // _src: {field_id: self.getFieldIDByDimensionID(dimensionIds[floor])}
                         _src: dimension.getDimensionSrc()
                     };
                     if (size(child) === 0) {
@@ -439,7 +435,7 @@ class AbstractWidget {
 
     }
 
-    getWidgetCalculationByID() {
+    calculationWidget() {
         var filterValues = [];
 
         const getLinkedIds = (links) => {
@@ -516,7 +512,7 @@ class AbstractWidget {
                         closemin: true,
                         closemax: false
                     },
-                    _src: {field_id: dimension.getFieldID()}
+                    _src: {field_id: dimension.getFieldId()}
                 }
             }
             if (groupType === BICst.GROUP.AUTO_GROUP) {
@@ -722,13 +718,6 @@ class AbstractWidget {
 
     getWidgetSettings() {
         return this.$widget.get('settings').toJS();
-    }
-
-    getFieldIDByDimensionID(did) {
-        var dimension = this.getDimensionById(did);
-        if (!isNil(dimension)) {
-            return dimension.getFieldId();
-        }
     }
 
     //settings  ---- start ----
