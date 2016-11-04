@@ -3,7 +3,10 @@
 .bi-linkage {
   & .linkage-tool-bar{
     z-index: @zIndex-masker;
-    background: @color-bi-background-default;
+    & .linkage-tool-bar-mask{
+      background: @color-bi-background-default;
+      .opacity(.85);
+    }
     & .linkage-toolbar-title {
       font-size: @font-size-14;
       background-color: @color-bi-background-gray;
@@ -11,6 +14,7 @@
     }
     & .single-target-container{
       border: 1px solid @color-bi-border-normal;
+      background-color: @color-bi-background-default;
       .border-radius(2px);
       & .widget-type-icon{
         font-size: 20px;
@@ -27,18 +31,49 @@
       }
       & .linkage-toolbar-target-cal {
         border: 1px solid @color-bi-border-normal;
+        background: @color-bi-background-default;
       }
     }
   }
   & .linkage-widget{
-    background: @color-bi-background-virtual-blue;
     & .linkage-widget-title{
       font-size: @font-size-16;
     }
   }
 
+  & .linkage-widget-mask{
+    background: @color-bi-background-virtual-blue;
+    .opacity(.5)
+  }
+
+  & .linkage-widget-disabled{
+    font: @font-size-13;
+    & .linkage-widget-disabled-item{
+      background: @background-color-light;
+      border:1px solid @border-color-dark;
+      border-radius: @radius-2;
+      &.active {
+        color: @font-color-highlight;
+      }
+    }
+  }
+
+  & .linkage-widget-disabled-mask{
+    background: @color-bi-background-disabled;
+    .opacity(.8)
+  }
+
+  & .linkage-widget-self{
+    background: @color-bi-background-default;
+    border: 2px solid @border-color-outline;
+  }
+
   & .linkage-drop-helper{
     border: 1px solid @color-bi-text-success;
     color: @color-bi-text-success
+  }
+
+  & .bi-message-mask{
+    .opacity(0)
   }
 }

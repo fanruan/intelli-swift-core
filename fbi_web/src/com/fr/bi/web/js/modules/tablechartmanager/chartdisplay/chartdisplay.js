@@ -72,7 +72,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
             });
         }
         this.fireEvent(BI.ChartDisplay.EVENT_CHANGE, obj);
-        
+
         function hasFormula() {
             var linkages = BI.Utils.getWidgetLinkageByID(o.wId);
             for (var i = 0; i < linkages.length; i++) {
