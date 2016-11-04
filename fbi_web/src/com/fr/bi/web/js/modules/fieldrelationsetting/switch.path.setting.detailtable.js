@@ -1,7 +1,7 @@
 /**
  * Created by roy on 16/3/14.
  */
-BI.DetailTablePathSettingSwitch = BI.inherit(BI.Widget, {
+BI.DetailTablePathSettingSwitch = BI.inherit(BI.Single, {
     _defaultConfig: function () {
         return BI.extend(BI.DetailTablePathSettingSwitch.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "detail-table-path-setting-switch",
@@ -57,6 +57,7 @@ BI.DetailTablePathSettingSwitch = BI.inherit(BI.Widget, {
     },
 
     setEnable: function (v) {
+        BI.DetailTablePathSettingSwitch.superclass.setEnable.apply(this, arguments);
         this.itemPanes[this.options.showIndex].setEnable(v);
     },
 

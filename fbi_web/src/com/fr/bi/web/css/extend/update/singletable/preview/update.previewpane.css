@@ -23,3 +23,6 @@
 .bi-update-preview-pane .preview-content .warning-comment {
   color: #e85050;
 }
+.bi-update-preview-pane .warning-container {
+  border: 1px solid #d4dadd;
+}

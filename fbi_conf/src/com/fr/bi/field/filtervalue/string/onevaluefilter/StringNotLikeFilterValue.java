@@ -2,6 +2,7 @@ package com.fr.bi.field.filtervalue.string.onevaluefilter;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.stable.StringUtils;
@@ -13,6 +14,8 @@ public class StringNotLikeFilterValue extends StringOneValueFilterValue {
     private static final long serialVersionUID = -462082894567723171L;
     private static String XML_TAG = "StringNotLikeFilterValue";
 
+    @BICoreField
+    private String CLASS_TYPE = "StringNotLikeFilterValue";
     /**
      * 获取过滤后的索引
      *

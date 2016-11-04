@@ -37,7 +37,7 @@ import java.util.*;
  * Created by kary on 16/5/30.
  */
 
-public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild {
+public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements CubeBuildStuff {
 
     private Set<IBusinessPackageGetterService> packs;
     private Set<CubeTableSource> sources;
@@ -55,7 +55,7 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
     private CubeTableSource childTableSource;
     private String taskId;
 
-    public CubeBuildSingleTable(BusinessTable hostTable, String childTableSourceId, long userId, int updateType) {
+    public CubeBuildStuffSingleTable(BusinessTable hostTable, String childTableSourceId, long userId, int updateType) {
         super(userId);
         this.biUser = new BIUser(userId);
         this.updateType = updateType;
@@ -66,7 +66,7 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
         try {
             setTaskId(businessTable, childTableSourceId);
             setAllSources(businessTable);
-            Set<List<Set<CubeTableSource>>> depends = calculateTableSource(getSources());
+            Set<List<Set<CubeTableSource>>> depends = calculateTableSource(getAllTableSources());
             setDependTableResource(depends);
             setAllSingleSources(set2Set(depends));
             setChildTableSource(childTableSourceId);
@@ -217,9 +217,9 @@ public class CubeBuildSingleTable extends AbstractCubeBuild implements CubeBuild
     }
 
     /**
-     * @return sources
+     * @return allTableSources
      */
-    public Set<CubeTableSource> getSources() {
+    public Set<CubeTableSource> getAllTableSources() {
         return sources;
     }
 

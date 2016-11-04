@@ -2,9 +2,9 @@ package com.finebi.cube.impl.conf;
 
 
 import com.finebi.cube.ICubeConfiguration;
-import com.finebi.cube.conf.AbstractCubeBuild;
+import com.finebi.cube.conf.AbstractCubeBuildStuff;
 import com.finebi.cube.conf.BICubeConfiguration;
-import com.finebi.cube.conf.CubeBuild;
+import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.relation.*;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
@@ -18,7 +18,7 @@ import java.util.*;
  * Created by kary on 16/6/1.
  * 主要用于实时报表的生成
  */
-public class CubeBuildRealTime extends AbstractCubeBuild implements CubeBuild {
+public class CubeBuildStuffRealTime extends AbstractCubeBuildStuff implements CubeBuildStuff {
 
     private Set<CubeTableSource> allSingleSources;
     private ICubeConfiguration cubeConfiguration;
@@ -26,7 +26,7 @@ public class CubeBuildRealTime extends AbstractCubeBuild implements CubeBuild {
     Set<List<Set<CubeTableSource>>> dependTableResource;
     private String sourceId;
 
-    public CubeBuildRealTime(CubeTableSource cubeTableSource, ICubeConfiguration cubeConfiguration, long userId) {
+    public CubeBuildStuffRealTime(CubeTableSource cubeTableSource, ICubeConfiguration cubeConfiguration, long userId) {
         super(userId);
         sourceId = cubeTableSource.getSourceID();
         this.biUser = new BIUser(userId);
@@ -42,7 +42,7 @@ public class CubeBuildRealTime extends AbstractCubeBuild implements CubeBuild {
 
     }
 
-    public CubeBuildRealTime(CubeTableSource cubeTableSource, long userId) {
+    public CubeBuildStuffRealTime(CubeTableSource cubeTableSource, long userId) {
         super(userId);
         this.biUser = new BIUser(userId);
         this.cubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
@@ -82,7 +82,7 @@ public class CubeBuildRealTime extends AbstractCubeBuild implements CubeBuild {
     }
 
     @Override
-    public Set<CubeTableSource> getSources() {
+    public Set<CubeTableSource> getAllTableSources() {
         return allSingleSources;
     }
 

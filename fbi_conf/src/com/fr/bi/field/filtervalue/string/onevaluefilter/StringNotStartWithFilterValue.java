@@ -7,6 +7,7 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.sortlist.ArrayLookupHelper;
@@ -22,6 +23,9 @@ public class StringNotStartWithFilterValue extends StringOneValueFilterValue {
 	 * 
 	 */
 	private static final long serialVersionUID = -4674486222319107741L;
+
+    @BICoreField
+    private String CLASS_TYPE = "StringNotStartWithFilterValue";
     public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
         ICubeTableService ti = loader.getTableIndex(target.getTableSource());
         if (value == null || value.isEmpty()) {

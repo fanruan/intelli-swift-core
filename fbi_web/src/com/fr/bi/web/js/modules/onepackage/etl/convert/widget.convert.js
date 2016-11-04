@@ -553,20 +553,25 @@ BI.Convert = BI.inherit(BI.Widget, {
                 self.selectFieldsDataPane.populate({
                     table: tables,
                     fields: fields,
-                    data: data
-                });
-                self.selectFieldsDataPane.setValue({
+                    data: data,
                     lc_name: self.model.getLCName(),
                     lc_values: self.model.getLCValue()
                 });
-                self.initialPane.populate(fields);
                 var column = self.model.getColumns();
                 if(BI.isEmptyArray(column)){
-                    self.initialPane.setNotSelectedValue(BI.map(fields, function(idx, field){
+                    var notSelectedValues = BI.map(fields, function(idx, field){
                         return [field.field_name, self.model.getFieldNameToTransName()[field.field_name] || field.field_name]
-                    }));
+                    });
+                    self.initialPane.populate({
+                        fields: fields,
+                        notSelectedValues: notSelectedValues
+                    });
                 }else{
-                    self.initialPane.setValue(self.model.getColumns());
+                    var selectedValues = self.model.getColumns();
+                    self.initialPane.populate({
+                        fields: fields,
+                        selectedValues: selectedValues
+                    });
                 }
                 self.genFieldsPane.populate([self.initialPane.getValue(), self.selectFieldsDataPane.getValue()["lc_values"]]);
                 self.loadingMasker.destroy();

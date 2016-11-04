@@ -6,6 +6,7 @@
 BIDezi.DetailModel = BI.inherit(BI.Model, {
     _defaultConfig: function () {
         return BI.extend(BIDezi.DetailModel.superclass._defaultConfig.apply(this, arguments), {
+            name: "",
             dimensions: {},
             view: {},
             type: BICst.WIDGET.TABLE,
@@ -92,6 +93,20 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
             BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + this.get("id"));
             //全局维度增删事件
             BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
+
+            //联动到的组件检查是否应该去掉相关属性并刷新
+            var linkages = BI.Utils.getWidgetLinkageByID(this.get("id"));
+            BI.each(linkages, function(i, link) {
+                var toWid = link.to;
+                var linkageValues = BI.Utils.getLinkageValuesByID(toWid);
+                var values = linkageValues[link.from];
+                BI.some(values, function(i, v) {
+                     if (v.dId === key2) {
+                         BI.Broadcasts.send(BICst.BROADCAST.REFRESH_PREFIX + toWid);
+                         return true;
+                     }
+                });
+            });
         }
 
         function checkFilter(filter) {

@@ -124,7 +124,6 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     @Override
     public void release() {
         columnEntityService.forceReleaseWriter();
-        columnEntityService.forceReleaseReader();
         columnEntityService.clear();
     }
 

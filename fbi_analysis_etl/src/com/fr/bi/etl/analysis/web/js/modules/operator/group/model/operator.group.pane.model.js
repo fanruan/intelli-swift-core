@@ -132,7 +132,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
                     };
                 case BICst.COLUMN.DATE:
                     return {
-                        type: BICst.GROUP.M
+                        type: BICst.GROUP.YMD
                     };
             }
         };

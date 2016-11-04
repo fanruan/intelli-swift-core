@@ -1,6 +1,7 @@
 package com.fr.bi.field.filtervalue.number.evenfilter;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.LightNode;
 
@@ -13,6 +14,9 @@ public class NumberEqualFilterValue extends NumberEvenFilterValue {
 	 * 
 	 */
 	private static final long serialVersionUID = -8506484357364003247L;
+
+    @BICoreField
+    private String CLASS_TYPE = "NumberEqualFilterValue";
 
 	/**
      * 显示节点

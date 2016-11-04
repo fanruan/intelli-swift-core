@@ -25,7 +25,7 @@ public class BIExcelDataModel extends AbstractDataModel {
     //字段类型
     private int[] columnTypes;
     //合并规则
-    private Map<ColumnRow, ColumnRow> mergeRules;
+    private Map<ColumnRow, ColumnRow> mergeInfos;
 
     private String filePath;
 
@@ -103,11 +103,11 @@ public class BIExcelDataModel extends AbstractDataModel {
         return rowDataList;
     }
 
-    public Map<ColumnRow, ColumnRow> getMergeRules() {
-        if (this.mergeRules == null) {
+    public Map<ColumnRow, ColumnRow> getMergeInfos() {
+        if (this.mergeInfos == null) {
             initData();
         }
-        return mergeRules;
+        return mergeInfos;
     }
 
     /**
@@ -182,7 +182,7 @@ public class BIExcelDataModel extends AbstractDataModel {
             rowDataList = excel2007Util.getRowDataList();
             columnNames = excel2007Util.getColumnNames();
             columnTypes = excel2007Util.getColumnTypes();
-            mergeRules = excel2007Util.getMergeRules();
+            mergeInfos = excel2007Util.getMergeInfos();
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage());
         }
@@ -199,7 +199,7 @@ public class BIExcelDataModel extends AbstractDataModel {
             rowDataList = excel2003Util.getRowDataList();
             columnNames = excel2003Util.getColumnNames();
             columnTypes = excel2003Util.getColumnTypes();
-            mergeRules = excel2003Util.getMergeRules();
+            mergeInfos = excel2003Util.getMergeInfos();
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage());
         }

@@ -76,7 +76,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         if (BI.isNotEmptyArray(this.config.tooltip)) {
             config.plotOptions.tooltip.formatter = function () {
                 var y = self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level, self.config.num_separators)(this.y);
-                var x = self.formatTickInXYaxis(self.config.x_axis_style, self.config.x_axis_number_level, self.config.right_num_separators)(this.x);
+                var x = self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level, self.config.right_num_separators)(this.x);
                 return this.seriesName + '<div>(X)' + self.config.tooltip[0]
                     + ':' + x + '</div><div>(Y)' + self.config.tooltip[1] + ':' + y + '</div>'
             };
@@ -218,10 +218,10 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
             left_y_axis_title: options.left_y_axis_title || "",
             chart_color: options.chart_color || [],
             left_y_axis_style: options.left_y_axis_style || c.NORMAL,
-            x_axis_style: options.x_axis_style || c.NORMAL,
+            right_y_axis_style: options.right_y_axis_style || c.NORMAL,
             show_x_axis_title: options.show_x_axis_title || false,
             show_left_y_axis_title: options.show_left_y_axis_title || false,
-            x_axis_number_level: options.x_axis_number_level || c.NORMAL,
+            right_y_axis_number_level: options.right_y_axis_number_level || c.NORMAL,
             left_y_axis_number_level: options.left_y_axis_number_level || c.NORMAL,
             x_axis_unit: options.x_axis_unit || "",
             left_y_axis_unit: options.left_y_axis_unit || "",
