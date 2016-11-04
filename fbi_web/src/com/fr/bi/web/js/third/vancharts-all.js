@@ -13036,6 +13036,13 @@ define('chart/Point',['require','../utils/QueryUtils','../utils/BaseUtils','../u
             }
         },
 
+        getTooltipRect:function(){
+            var tooltip = this.series.vanchart.getComponent(ComponentLibrary.TOOLTIP_COMPONENT);
+            if(tooltip){
+                return tooltip._tooltipRect;
+            }
+        },
+
         getEvents: function(){
             return this.series.pointEvents ? this.series.pointEvents() :
             {
@@ -17685,7 +17692,7 @@ define('chart/Radar',['require','./Series','../utils/BaseUtils','../Constants','
                         };
 
                         tmp = [];
-                    }else{
+                    }else if(!dataPoint.isNull){
                         tmp.push([dataPoint.posX, dataPoint.posY]);
                     }
 
@@ -17735,8 +17742,8 @@ define('chart/Radar',['require','./Series','../utils/BaseUtils','../Constants','
 
                     path += toCenter ? 'M0,0' : '';
 
-                    tmp.forEach(function(pos){
-                        path += ('L' + BaseUtils.dealFloatPrecision(pos[0]) + "," + BaseUtils.dealFloatPrecision(pos[1]));
+                    tmp.forEach(function(pos, i){
+                        path += (((i || toCenter) ? 'L' : 'M') + BaseUtils.dealFloatPrecision(pos[0]) + "," + BaseUtils.dealFloatPrecision(pos[1]));
                     });
 
                     path += toCenter ? 'Z' : '';
@@ -20734,8 +20741,9 @@ define('chart/PointerGauge',['require','../Constants','../utils/BaseUtils','../u
         },
 
         getAttrs:function(p){
-            var scale = this._getScale(), series = p.series;
-            return {'d':series._getArrowPath(scale(p.y))};
+            return {'d':p.series._getArrowPath(
+                BaseUtils.getValueInDomain(p.y, p.series._getScale().domain())
+            )};
         },
 
         getPointGraphicKey:function(){
@@ -20748,8 +20756,8 @@ define('chart/PointerGauge',['require','../Constants','../utils/BaseUtils','../u
 
         createAnimation:function(dom, point){
             var series = point.series, scale = series._getScale();
-            var lastAngle = dom._current_ || scale(scale.domain()[0]);
-            dom._current_ = scale(point.y);
+            var lastAngle = dom._current_ || scale.domain()[0];
+            dom._current_ = BaseUtils.getValueInDomain(point.y, scale.domain());
             d3.select(dom).transition()
                 .duration(series.ANIMATION_TIME).ease(series.EASE_TYPE)
                 .attrTween('d', function(){
@@ -20768,7 +20776,8 @@ define('chart/PointerGauge',['require','../Constants','../utils/BaseUtils','../u
             d3.select(dom).remove()
         },
 
-        _getArrowPath:function(initRadian){
+        _getArrowPath:function(y){
+            var initRadian = this._getScale()(y);
             var radius = this.radius;
             var p0 = this._getArcPoint(0.9 * radius, initRadian);
             var p1 = this._getArcPoint(0.02 * radius, initRadian + Math.PI/2);
@@ -23323,6 +23332,9 @@ define('component/Tooltip',['require','./Base','../utils/BaseUtils','../Constant
                 //优先从地图那边取数据点提示的位置
                 var pos = seriesChart.getTooltipPos(point, tooltipDim, event);
                 this._show(pos, opt, tooltipText);
+
+                //for bi
+                this._tooltipRect = BaseUtils.makeBounds(pos, tooltipDim);
             }
         },
 
@@ -27302,8 +27314,6 @@ define('utils/ExportUtils',['require','./BaseUtils'],function(require) {
 
     window.URL = (window.URL || window.webkitURL);
 
-    var body = document.body;
-
     var prefix = {
         xmlns: "http://www.w3.org/2000/xmlns/",
         xlink: "http://www.w3.org/1999/xlink",
@@ -27360,7 +27370,7 @@ define('utils/ExportUtils',['require','./BaseUtils'],function(require) {
         var url = window.URL.createObjectURL(new Blob(source, { "type" : "text\/xml" }));
 
         var a = document.createElement("a");
-        body.appendChild(a);
+        document.body.appendChild(a);
         a.setAttribute("class", "svg-export");
         a.setAttribute("download", fileName + ".svg");
         a.setAttribute("href", url);
@@ -27378,7 +27388,7 @@ define('utils/ExportUtils',['require','./BaseUtils'],function(require) {
         a.style.display = "none";
         a.appendChild(img);
         img.setAttribute('src', url);
-        body.appendChild(a);
+        document.body.appendChild(a);
         a.setAttribute("target","_blank");
         a.setAttribute("href", url);
         a.setAttribute("download", 'export.png');
@@ -29451,6 +29461,7 @@ define('component/AngleAxis',['require','./Base','./CategoryAxis','../utils/Base
                 }
 
             }
+            return true;
         },
 
         _getCateLabelBounds:function(radius, cateTick, testBounds){
@@ -29561,7 +29572,7 @@ define('component/AngleAxis',['require','./Base','./CategoryAxis','../utils/Base
 
             var tmpBounds = [
                 - testBounds.y,
-                testBounds.width - testBounds.x,
+                testBounds.width + testBounds.x,
                 testBounds.height + testBounds.y,
                 - testBounds.x
             ];
