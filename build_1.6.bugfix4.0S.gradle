@@ -1,0 +1,229 @@
+apply plugin:'java'
+tasks.withType(JavaCompile){
+	options.encoding = 'UTF-8'
+}
+//sourceCompatibility=1.5
+//BI工程的根目录
+def BI_HOME='../../'
+def baseDir='.'
+def jarname='fr-bi-server-4.0.jar'
+//指定生成的jar包版本
+version='4.0'
+//获取什么分支名
+FileTree files =fileTree(dir:'./',include:'build.*.gradle')
+def buildDir=files[0].path.substring(0,files[0].path.lastIndexOf ('\\'))
+def branchName=buildDir.substring(buildDir.lastIndexOf ('\\')+1)
+
+jar{
+//指定生成jar包的名称
+	baseName='fr-bi-server'
+}
+def list=[
+		"fbi/src",
+		"fbi_base/src",
+		"fbi_engine_finereport/src",
+		"fbi_conf/src", 
+		"fbi_engine_base/src",
+		"fbi_engine_generate/src",
+		"fbi_engine_analyse/src",
+		"fbi_engine_cache/src",
+		"fbi_cluster/src",
+		"fbi_web/src",
+		"fbi_web_base/src",
+		"fbi_web_conf/src",
+		"fbi_web_dezi/src",
+		"fbi_web_report/src",
+		"fbi_analysis_etl/src",
+		"fbi_cube_base/src",
+		"fbi_cube_conf/src",
+		"fbi_cube_generate/src"
+	]
+
+//指定源码所在位置：
+sourceSets{
+	main.java.srcDirs=list
+	instrumentTest.java.srcDirs=[
+		//"fbi/test",
+		"fbi_base/test",
+		//"fbi_engine_finereport/test",
+		"fbi_conf/test", 
+		"fbi_engine_base/Test",
+		"fbi_engine_generate/test",
+		"fbi_engine_analyse/test",
+		//"fbi_engine_cache/test",
+		"fbi_cluster/test",
+		"fbi_web/test",
+		//"fbi_web_base/test",
+		"fbi_web_conf/test",
+		//"fbi_web_dezi/test",
+		//"fbi_web_report/test",
+		"fbi_analysis_etl/test",
+		"fbi_cube_base/test",
+		"fbi_cube_conf/test",
+		"fbi_cube_generate/test"
+	]
+
+
+}
+
+repositories{
+    mavenCentral()
+}
+configurations{
+	ftpAntTask
+}
+//添加ftp依赖
+dependencies {
+    ftpAntTask("org.apache.ant:ant-commons-net:1.8.4") {
+        module("commons-net:commons-net:1.4.1") {
+            dependencies "oro:oro:2.0.8:jar"
+        }
+    }
+}
+//声明外部依赖
+dependencies{
+	compile fileTree(dir:"${BI_HOME}/lib/${branchName}",include:'**/*.jar')
+	testCompile 'junit:junit:4.12'
+}
+//指明无法编译文件所在路径
+def dataContent ={def dir ->
+		copySpec{
+			from ("${dir}"){
+				exclude '**/.setting/**',
+				'.classpath',
+				'.project',
+				'**/*.java',
+				'**/*.db',
+				'**/*.g',
+				'**/package.html',
+				'**/*.less',
+				'**/cross/demo/**'
+			}
+		}
+}
+
+//将非.java文件复制到classes文件夹下 参与打包
+task copyFile(type:Copy,dependsOn:compileJava){
+	list.each{ def srcDir->
+		copy{
+			with dataContent.call("${srcDir}") 
+			into ('build/classes/main')
+		}
+	}
+}
+//压缩js
+task compressJS(dependsOn:'copyFile'){
+	ant.taskdef(name:'yuicompress',classname:'com.yahoo.platform.yui.compressor.YUICompressTask',onerror:'report'){
+		classpath{
+			pathelement(path:"${BI_HOME}/lib4build/YUIAnt.jar")
+			pathelement(path:"${BI_HOME}/lib4build/yuicompressor-2.4.6.jar")
+			
+		}
+	}
+	ant.yuicompress(linebreak:"500",warn:"false", munge:"yes",preserveallsemicolons:"false", charset:"utf-8",encoding:"utf-8",outputfolder:'build/classes/main/com/fr/bi/web'){
+		fileset(dir:'build/classes/main/com/fr/bi/web'){
+			include (name:'**/*.js')
+			include (name:'**/*.css')
+			exclude (name:'**/js/template/*.js')
+			exclude (name:'**/js/third/*.js')
+			exclude (name:'**/cross/demo/**')
+			exclude (name:'**/test/**')
+			exclude (name:'js/widget/arrangement/arrangement.js')
+			exclude (name:'js/widget/detailchart/chart.bubble.js')
+		}
+	}
+}
+//添加打包时间
+task addTime(dependsOn:'compressJS'){
+	def date = new Date()
+	def formattedDate = date.format('yyyy.MM.dd.HH.mm.ss.S')
+	File file =file(new File('build/classes/main/bibuild.txt'))
+	FileWriter fw=new FileWriter(file)
+	fw.write(formattedDate)
+	fw.close()		
+}
+
+//混淆代码
+task obfuse(dependsOn:'build')<<{
+	ant.delete(dir:"JAR/tmp/1.6")
+	ant.mkdir(dir:"JAR/tmp/1.6")
+	ant.taskdef(name:'yguard',classname:'com.yworks.yguard.YGuardTask',classpath:"${BI_HOME}/lib4build/yguard.jar")
+	ant.yguard(){
+		inoutpair(in:"build/libs/${jarname}",out:"JAR/tmp/1.6/${jarname}")
+		rename(){
+		keep{
+			method(name:'void main(String[])'){
+				patternset(id:'datapatternset'){
+					include (name:'**.*')
+				}
+			}
+			method(name:'void readObject(java.io.ObjectInputStream)'){
+				patternset(refid:'datapatternset')
+			}
+			method(name:'void writeObject(java.io.ObjectOutputStream)'){
+				patternset(refid:'datapatternset')				
+			}
+			field(name:'serialVersionUID'){
+				patternset(refid:'datapatternset')				
+			}
+			'class'(methods:'private',fields:'private'){
+				patternset{
+					include(name:'**.*')
+					exclude(name:'com.fr.report.core.cal.**.*')
+					exclude(name:'com.fr.base.core.util.vt.**.*')
+					exclude(name:'com.fr.web.core.service.**.*')
+				}
+			}
+		}
+		}
+	}
+	ant.delete(file:'yguardlog.xml')
+	ant.delete(dir:"build")
+}
+
+ant{
+	taskdef(name: 'ftp',
+                classname: 'org.apache.tools.ant.taskdefs.optional.net.FTP',
+               classpath: configurations.ftpAntTask.asPath)
+	echo('ftp target is 192.168.5.86')
+	//jar包上传到ftp
+	fileset(id:'ftp.upload.fileset.jar',dir:'bi_jar_zip'){
+		include(name:'**/**')
+	}
+
+}
+
+task copyjar(dependsOn:'obfuse')<<{
+	ant{
+		delete(file:"${baseDir}/JAR/CN/${jarname}")
+		mkdir(dir:"${baseDir}/JAR/tmp/1.6")
+		mkdir(dir:"${baseDir}/JAR/CN")
+		//构建jdk1.6的jar包
+		jar(destfile:"${baseDir}/JAR/CN/${jarname}"){
+			zipfileset(includes:'**/*.*',excludes:'com/fr/bi/test/**',src:"JAR/tmp/1.6/${jarname}")
+			fileset(dir:"${BI_HOME}/build/master/build/JAR/CN"){
+				include(name:"com/**/*")
+			}
+		}	
+		delete(file:"${baseDir}/bi_jar/*.*")
+		copy(todir:"${baseDir}/bi_jar"){
+			fileset(file:"${baseDir}/JAR/CN/${jarname}")
+			fileset(dir:"${baseDir}/../../lib/${branchName}/report",includes:"fr-*.jar")
+		}
+		zip(destfile:"${baseDir}/bi_jar_zip/BI4.0jar_jdk1.6.zip"){
+			zipfileset(dir:"${baseDir}/bi_jar")
+		}
+		delete(file:"${baseDir}/JAR/CN/${jarname}")
+		delete(dir:"${baseDir}/JAR/tmp")
+	}	
+}
+
+//上传exe文件到ftp上
+//上传生成的jar包到ftp上
+task ftp_uploadjar(dependsOn:copyjar)<<{
+	ant{
+		ftp(server:'192.168.5.86',userid:'fr',password:'ilovejava',remotedir:'finebi/bugfix4.0S',action:'put'){
+			fileset(refid:'ftp.upload.fileset.jar')
+		}
+	}
+}
