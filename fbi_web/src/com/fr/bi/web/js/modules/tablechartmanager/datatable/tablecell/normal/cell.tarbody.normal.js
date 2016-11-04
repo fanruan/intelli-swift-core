@@ -204,13 +204,13 @@ BI.extend(BI.TargetBodyNormalCell, {
         }
         switch (numLevel) {
             case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                return BI.contentFormat(BI.parseFloat(text.div(10000).toFixed(2)), "#.##;-#.##");
+                return text.div(10000);
             case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                return BI.contentFormat(BI.parseFloat(text.div(1000000).toFixed(2)), "#.##;-#.##");
+                return text.div(1000000);
             case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                return BI.contentFormat(BI.parseFloat(text.div(100000000).toFixed(2)), "#.##;-#.##");
+                return text.div(100000000);
             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                return BI.contentFormat(text * 100, "#.##;-#.##");
+                return text * 100;
             default:
                 return text;
         }

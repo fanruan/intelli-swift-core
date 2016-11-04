@@ -75,7 +75,7 @@ public class BuildCubeTask implements CubeTask {
         cubeConfiguration = cubeBuildStuff.getCubeConfiguration();
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         this.cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
-        retryNTimes = 1000;
+        retryNTimes = 100;
     }
 
     @Override
@@ -89,10 +89,6 @@ public class BuildCubeTask implements CubeTask {
             return CubeTaskType.SINGLE;
         }
         return CubeTaskType.ALL;
-    }
-
-    public CubeBuildStuff getCubeBuild() {
-        return cubeBuildStuff;
     }
 
     @Override
@@ -121,7 +117,12 @@ public class BuildCubeTask implements CubeTask {
                 long start = System.currentTimeMillis();
                 boolean replaceSuccess = replaceOldCubes();
                 if (replaceSuccess) {
-                    BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId());
+                    /**
+                     * 单表更新没有处理新增关联,这里单表更新逻辑需要重新整理,先简单处理一下,防止目前使用的时候分析会获取到没有生成的关联而报错
+                     */
+                    if (!cubeBuildStuff.isSingleTable()) {
+                        BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId());
+                    }
                     BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
                     BIModuleUtils.clearAnalysisETLCache(biUser.getUserId());
                     BILoggerFactory.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));

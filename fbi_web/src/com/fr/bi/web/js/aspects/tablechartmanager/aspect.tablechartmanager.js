@@ -129,7 +129,7 @@ BI.TableChartManagerAspect = function () {
                 !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "radar-text-tip-background" : "radar-tip-background");
                 break;
             case BICst.WIDGET.DONUT:
-                !(dim1Size > 0 && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "donut-text-tip-background" : "donut-tip-background");
+                !((dim1Size > 0|| dim2Size > 0) && (tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "donut-text-tip-background" : "donut-tip-background");
                 break;
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
                 !((tar1Size > 0 || tar2Size > 0 || tar3Size > 0)) && (cls = status === BICst.WIDGET_STATUS.EDIT ? "combine-m-text-tip-background" : "combine-m-tip-background");

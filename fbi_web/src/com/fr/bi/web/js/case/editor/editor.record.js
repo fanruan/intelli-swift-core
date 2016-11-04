@@ -79,7 +79,7 @@ BI.RecordEditor = BI.inherit(BI.Single, {
             self.fireEvent(BI.RecordEditor.EVENT_SPACE, arguments);
         });
         this.editor.on(BI.Editor.EVENT_CONFIRM, function(){
-            self.setValue(self.getValue());
+            self.setState(self.getValue());
             self.editor.isValid() && self.editor.setValue("");
             self.fireEvent(BI.RecordEditor.EVENT_CONFIRM, arguments);
         });
@@ -184,7 +184,7 @@ BI.RecordEditor = BI.inherit(BI.Single, {
     },
 
     setState: function(v){
-        BI.StateEditor.superclass.setValue.apply(this, arguments);
+        BI.RecordEditor.superclass.setValue.apply(this, arguments);
         v =  BI.isArray(v) ? v : (v == "" ? [] : [v]);
         var contents = this.contents = [];
         BI.each(v, function(i, lb){
