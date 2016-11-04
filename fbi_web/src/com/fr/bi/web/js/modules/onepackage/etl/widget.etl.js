@@ -418,6 +418,9 @@ BI.ETL = BI.inherit(BI.Widget, {
             },
             validationChecker: function (v) {
                 return self.model.isValidTableTranName(v);
+            },
+            quitChecker: function(){
+                return false;
             }
         });
         tableName.on(BI.SignEditor.EVENT_CHANGE, function () {

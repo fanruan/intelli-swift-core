@@ -23,10 +23,7 @@ class Dimension {
     }
 
     getSortTarget() {
-        const $sort = this.$dimension.get('sort');
-        if ($sort) {
-            return $sort.get('sort_target');
-        }
+        return this.$dimension.getIn(['sort', 'sort_target']);
     }
 
     getSortTargetName() {
@@ -41,14 +38,7 @@ class Dimension {
     }
 
     getSortType() {
-        const $sort = this.$dimension.get('sort');
-        if ($sort) {
-            const type = $sort.get('type');
-            if (!isNil(type)) {
-                return type;
-            }
-        }
-        return BICst.SORT.ASC;
+        return this.$dimension.getIn(['sort', 'type']) || BICst.SORT.ASC;
     }
 
     setUsed(b) {
@@ -67,20 +57,12 @@ class Dimension {
     }
 
     getGroupType() {
-        const $group = this.$dimension.get('group');
-        if ($group) {
-            const type = $group.get('type');
-            if (!isNil(type)) {
-                return type;
-            }
-        }
+        return this.$dimension.getIn(['group', 'type']);
     }
 
     getGroup() {
         const $group = this.$dimension.get('group');
-        if ($group) {
-            return $group.toJS();
-        }
+        return isNil($group) ? {} : $group.toJS();
     }
 
     setFilterValue(filterValue) {
@@ -90,26 +72,16 @@ class Dimension {
 
     getFilterValue() {
         const $filter = this.$dimension.get('filter_value');
-        if ($filter) {
-            return $filter.toJS();
-        }
+        return isNil($filter) ? {} : $filter.toJS();
     }
 
     getFieldId() {
-        const $src = this.$dimension.get('_src');
-        if ($src) {
-            const field_id = $src.get('field_id');
-            if (!isNil(field_id)) {
-                return field_id;
-            }
-        }
+        return this.$dimension.getIn(['_src', 'field_id']);
     }
 
     getDimensionSrc() {
         const $src = this.$dimension.get('_src');
-        if ($src) {
-            return $src.toJS();
-        }
+        return isNil($src) ? {} : $src.toJS();
     }
 }
 export default Dimension

@@ -133,7 +133,6 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                 if (BI.isNotNull(da.x)) {
                     da.x = BI.contentFormat(BI.parseFloat(da.x.div(magnify).toFixed(4)), "#.####;-#.####");
                 }
-
             });
         })
     },

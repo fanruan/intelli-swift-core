@@ -220,6 +220,9 @@ BI.TableFieldInfo = BI.inherit(BI.Widget, {
                     });
                 }
                 return isValid;
+            },
+            quitChecker: function(){
+                return false;
             }
         });
         transName.on(BI.SignEditor.EVENT_ERROR, function(){

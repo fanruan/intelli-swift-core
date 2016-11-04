@@ -50,7 +50,7 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
                 text = BICst.FULL_QUARTER_NAMES[text - 1];
             }
             if (dGroup.type === BICst.GROUP.M) {
-                text = BICst.FULL_MONTH_NAMES[text - 1];
+                text = BICst.FULL_MONTH_NAMES[text];
             }
             if (dGroup.type === BICst.GROUP.W) {
                 text = BICst.FULL_WEEK_NAMES[text - 1];

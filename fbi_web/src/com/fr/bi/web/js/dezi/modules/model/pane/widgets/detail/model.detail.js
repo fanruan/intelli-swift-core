@@ -437,6 +437,18 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                 var view = changed.view, preView = prev.view;
                 var dimensions = BI.deepClone(this.get("dimensions"));
                 //region1、2中的维度增加的时候，先看原先中是否有已勾选了的，如果有将拖入的used设置为false
+                //region2中的维度增加的时候，如果指标有多个勾选，也要将拖入的used设置为false
+                var usedTargetCount = 0;
+                var hasMultiTarget = BI.isNotNull(BI.find(view, function(region, dims){
+                    if(region >= BICst.REGION.TARGET1){
+                        BI.each(dims, function (i, dId) {
+                            if(BI.Utils.isDimensionUsable(dId)){
+                                usedTargetCount ++;
+                            }
+                        });
+                    }
+                    return usedTargetCount > 1;
+                }));
                 BI.each(view, function (region, dims) {
                     if (region < BICst.REGION.TARGET1) {
                         var adds = [], isPreSelect = false;
@@ -449,7 +461,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                             BI.each(preView[region], function (i, dId) {
                                 BI.Utils.isDimensionUsable(dId) && (isPreSelect = true);
                             });
-                            if (isPreSelect === true) {
+                            if (isPreSelect === true || (region === BICst.REGION.DIMENSION2 && hasMultiTarget)) {
                                 BI.each(adds, function(i, add){
                                     dimensions[add].used = false;
                                 });
