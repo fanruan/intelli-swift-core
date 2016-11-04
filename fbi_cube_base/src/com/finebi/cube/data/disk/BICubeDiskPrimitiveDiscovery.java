@@ -112,11 +112,24 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
         }
     }
 
-    public List<ICubeResourceLocation> getUnReleasedLocation() {
+    private boolean isAvailable(NIOHandlerManager nioHandler) {
+        return nioHandler != null;
+    }
+
+    public List<String> getUnReleasedLocation() {
         synchronized (this) {
-            List<ICubeResourceLocation> locations = new ArrayList<ICubeResourceLocation>();
+            List<String> locations = new ArrayList<String>();
             try {
-                BILoggerFactory.getLogger().info("getUnReleasedLocation is not implement");
+                for (Map.Entry<String, NIOResourceManager> entry : fileResourceMap.entrySet()) {
+                    NIOHandlerManager reader = entry.getValue().getReaderHandlerManager();
+                    if (isAvailable(reader)&& (!reader.isHandlerEmpty())) {
+                        locations.add(entry.getKey() + "-reader");
+                    }
+                    NIOHandlerManager writer = entry.getValue().getWriterHandlerManager();
+                    if (isAvailable(writer) && !writer.isHandlerEmpty()) {
+                        locations.add(entry.getKey() + "-writer");
+                    }
+                }
             } catch (Exception e) {
                 BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
@@ -130,7 +143,15 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
 
     public void finishRelease() {
         synchronized (this) {
-            releasingResource = false;
+            try {
+                for (NIOResourceManager nioManager : fileResourceMap.values()) {
+                    nioManager.reValidReader();
+                }
+            } catch (Exception e) {
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
+            } finally {
+                releasingResource = false;
+            }
         }
     }
 
