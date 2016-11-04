@@ -14,6 +14,7 @@ import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
 import com.fr.bi.stable.constant.CubeConstant;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GVIFactory;
@@ -21,6 +22,10 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.gvi.traversal.TraversalAction;
 import com.fr.bi.stable.io.newio.NIOConstant;
+import com.fr.bi.stable.operation.sort.comp.ASCComparator;
+import com.fr.bi.stable.operation.sort.comp.CastDoubleASCComparator;
+import com.fr.bi.stable.operation.sort.comp.CastFloatASCComparator;
+import com.fr.bi.stable.operation.sort.comp.CastLongASCComparator;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
@@ -83,16 +88,18 @@ public class BIRelationIndexGenerator extends BIProcessor {
     private String logRelation() {
         try {
             return BIStringUtils.append(
-                    "Primary table:", relation.getPrimaryTable().getSourceID(),
-                    "Primary field:", relation.getPrimaryField().getColumnName(),
-                    "Foreign table:", relation.getForeignTable().getSourceID(),
-                    "Foreign field:", relation.getForeignField().getColumnName()
+                    " Relation ID:" + BuildLogHelper.calculateRelationID(relation),
+                    " Primary table:", relation.getPrimaryTable().getSourceID(),
+                    " Primary field:", relation.getPrimaryField().getColumnName(),
+                    " Foreign table:", relation.getForeignTable().getSourceID(),
+                    " Foreign field:", relation.getForeignField().getColumnName()
             );
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
         return "error relation";
     }
+
 
     public RelationColumnKey getRelationColumnKeyInfo() {
         BITableSourceRelation tableRelation = getTableRelation(this.relation);
@@ -196,6 +203,9 @@ public class BIRelationIndexGenerator extends BIProcessor {
             Object foreignColumnValue = foreignColumn.getGroupObjectValue(foreignIndex);
             GroupValueIndex foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
             Comparator c = primaryColumn.getGroupComparator();
+            if (isNumberColumn(primaryColumn.getClassType()) && isNumberColumn(foreignColumn.getClassType())) {
+                c = generateComparatorByType(primaryColumn.getClassType(), foreignColumn.getClassType());
+            }
             int[] reverse = new int[foreignTable.getRowCount()];
             Arrays.fill(reverse, NIOConstant.INTEGER.NULL_VALUE);
             Stopwatch stopwatch = Stopwatch.createStarted();
@@ -340,6 +350,32 @@ public class BIRelationIndexGenerator extends BIProcessor {
         for (int i = 0; i < index.length; i++) {
             tableRelation.addReverseIndex(i, index[i]);
         }
+    }
+
+    private Comparator generateComparatorByType(int primaryColumnType, int foreignColumnType) {
+        /**
+         * 效率考虑,根据数值的类型来选择比较时转换的数值对象类型
+         * 如果有Double型,优先Double类型比较,
+         * 没有Double的基础上,如果有Float就选择转成Float比较
+         * 依次类推
+         */
+        if (primaryColumnType == DBConstant.CLASS.DOUBLE || foreignColumnType == DBConstant.CLASS.DOUBLE) {
+            return new CastDoubleASCComparator();
+        }
+
+        if (primaryColumnType == DBConstant.CLASS.FLOAT || foreignColumnType == DBConstant.CLASS.FLOAT) {
+            return new CastFloatASCComparator();
+        }
+
+        if (primaryColumnType == DBConstant.CLASS.LONG || foreignColumnType == DBConstant.CLASS.LONG) {
+            return new CastLongASCComparator();
+        }
+
+        return new ASCComparator();
+    }
+
+    private boolean isNumberColumn(int columnType) {
+        return columnType == DBConstant.CLASS.LONG || columnType == DBConstant.CLASS.INTEGER || columnType == DBConstant.CLASS.DOUBLE;
     }
 
 }

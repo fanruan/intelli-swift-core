@@ -558,4 +558,25 @@ public class BIReportConstant {
         }
     }
 
+    public static final class TARGET_STYLE {
+        public static final class FORMAT {
+            public static final int NORMAL = 1;
+            public static final int ZERO2POINT = 2;
+            public static final int ONE2POINT = 3;
+            public static final int TWO2POINT = 4;
+        }
+        public static final class NUM_LEVEL {
+            public static final int NORMAL = 1;
+            public static final int TEN_THOUSAND = 2;
+            public static final int MILLION = 3;
+            public static final int YI = 4;
+            public static final int PERCENT = 5;
+        }
+        public static final class ICON_STYLE {
+            public static final int NONE = 1;
+            public static final int POINT = 2;
+            public static final int ARROW = 3;
+        }
+    }
+
 }

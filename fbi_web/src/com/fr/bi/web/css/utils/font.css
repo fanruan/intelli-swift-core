@@ -314,57 +314,57 @@
 /**维度/指标 下拉列表图标字体 ~begin~**/
 .delete-font .b-font:before {
   content: "\e605";
-  color: #1a1a1a;
+  color: #e85050;
 }
 .delete-font.native .b-font:before,
 .delete-font.disabled .b-font:before {
   content: "\e605";
-  color: #1a1a1a;
+  color: #e85050;
 }
 .delete-h-font .b-font:before {
   content: "\e605";
-  color: #1a1a1a;
+  color: #e85050;
 }
 .delete-h-font:hover .b-font:before,
 .delete-h-font:focus .b-font:before,
 .delete-h-font.hover .b-font:before {
   content: "\e605";
-  color: #1a1a1a;
+  color: #e85050;
 }
 .delete-h-font.native .b-font:before,
 .delete-h-font.disabled .b-font:before {
   content: "\e605";
-  color: #1a1a1a;
+  color: #e85050;
 }
 .delete-ha-font .b-font:before {
   content: "\e605";
-  color: #1a1a1a;
+  color: #e85050;
 }
 .delete-ha-font:hover .b-font:before,
 .delete-ha-font:focus .b-font:before,
 .delete-ha-font.hover .b-font:before {
   content: "\e605";
-  color: #1a1a1a;
+  color: #e85050;
 }
 .delete-ha-font:active .b-font:before,
 .delete-ha-font.active .b-font:before {
   content: "\e605";
-  color: #009de3;
+  color: #e85050;
 }
 .delete-ha-font.native .b-font:before,
 .delete-ha-font.disabled .b-font:before {
   content: "\e605";
-  color: #1a1a1a;
+  color: #e85050;
 }
 .delete-e-font .b-font:before {
   content: "\e605";
-  color: #1a1a1a;
+  color: #e85050;
 }
 .delete-e-font:hover .b-font:before,
 .delete-e-font:focus .b-font:before,
 .delete-e-font.hover .b-font:before {
   content: "\e605";
-  color: #1a1a1a;
+  color: #e85050;
 }
 .delete-e-font.active .b-font:before {
   content: "\e605";
@@ -372,12 +372,12 @@
 }
 .delete-e-font:active .b-font:before {
   content: "\e605";
-  color: #009de3;
+  color: #e85050;
 }
 .delete-e-font.native .b-font:before,
 .delete-e-font.disabled .b-font:before {
   content: "\e605";
-  color: #1a1a1a;
+  color: #e85050;
 }
 .dot-font .b-font:before {
   content: "\e606";
@@ -1021,18 +1021,18 @@
 }
 .widget-delete-h-font .b-font:before {
   content: "\e605";
-  color: #808080;
+  color: #e85050;
 }
 .widget-delete-h-font:hover .b-font:before,
 .widget-delete-h-font:focus .b-font:before,
 .widget-delete-h-font.hover .b-font:before {
   content: "\e605";
-  color: #009de3;
+  color: #e85050;
 }
 .widget-delete-h-font.native .b-font:before,
 .widget-delete-h-font.disabled .b-font:before {
   content: "\e605";
-  color: #808080;
+  color: #e85050;
 }
 /** dashboard组件/控件 下拉列表图标字体 ~end~**/
 .tree-node-triangle-expand-font .b-font:before {
@@ -1284,16 +1284,16 @@
 }
 .delete-field-font .b-font:before {
   content: "\e605";
-  color: #808080;
+  color: #e85050;
 }
 .delete-field-font.native .b-font:before,
 .delete-field-font.disabled .b-font:before {
   content: "\e605";
-  color: #808080;
+  color: #e85050;
 }
 .delete-field-h-font .b-font:before {
   content: "\e605";
-  color: #808080;
+  color: #e85050;
 }
 .delete-field-h-font:hover .b-font:before,
 .delete-field-h-font:focus .b-font:before,
@@ -1304,11 +1304,11 @@
 .delete-field-h-font.native .b-font:before,
 .delete-field-h-font.disabled .b-font:before {
   content: "\e605";
-  color: #808080;
+  color: #e85050;
 }
 .delete-field-ha-font .b-font:before {
   content: "\e605";
-  color: #808080;
+  color: #e85050;
 }
 .delete-field-ha-font:hover .b-font:before,
 .delete-field-ha-font:focus .b-font:before,
@@ -1324,7 +1324,7 @@
 .delete-field-ha-font.native .b-font:before,
 .delete-field-ha-font.disabled .b-font:before {
   content: "\e605";
-  color: #808080;
+  color: #e85050;
 }
 .toolbar-save-font .b-font:before {
   content: "\e617";
@@ -2655,12 +2655,12 @@
 }
 .delete-template-font .b-font:before {
   content: "\e605";
-  color: #808080;
+  color: #e85050;
 }
 .delete-template-font.native .b-font:before,
 .delete-template-font.disabled .b-font:before {
   content: "\e605";
-  color: #808080;
+  color: #e85050;
 }
 .real-time-font .b-font:before {
   content: "\e6af";
@@ -3329,12 +3329,12 @@
   color: #009de3;
 }
 .widget-tools-minimization-font .b-font:before {
-  content: "\e689";
+  content: "\e6df";
   color: #009de3;
 }
 .widget-tools-minimization-font.native .b-font:before,
 .widget-tools-minimization-font.disabled .b-font:before {
-  content: "\e689";
+  content: "\e6df";
   color: #009de3;
 }
 .widget-tools-filter-font .b-font:before {
@@ -3447,12 +3447,12 @@
 }
 .widget-combo-delete .b-font:before {
   content: "\e605";
-  color: #808080;
+  color: #e85050;
 }
 .widget-combo-delete.native .b-font:before,
 .widget-combo-delete.disabled .b-font:before {
   content: "\e605";
-  color: #808080;
+  color: #e85050;
 }
 .widget-combo-asc-font .b-font:before {
   content: "\e63f";

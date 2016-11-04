@@ -22,14 +22,6 @@ BI.ScatterFilterSelectField = BI.inherit(BI.Widget, {
             isDefaultInit: true,
             tablesCreator: function () {
                 return [{
-                    id: self._constant.DIMENSION_FIELD,
-                    type: "bi.dimension_select_data_level0_node",
-                    text: BI.i18nText("BI-Dimension"),
-                    value: BI.i18nText("BI-Dimension"),
-                    isParent: true,
-                    fontType: BI.DimensionSelectDataLevel0Node.SERIES,
-                    open: true
-                }, {
                     id: BICst.DATACOLUMN.XANDY,
                     type: "bi.select_data_level0_item",
                     text: BI.i18nText("BI-Uppercase_X_Axis") + BI.i18nText("BI-And") + BI.i18nText("BI-Uppercase_Y_Axis"),
@@ -53,6 +45,14 @@ BI.ScatterFilterSelectField = BI.inherit(BI.Widget, {
                     fieldType: BICst.DATACOLUMN.Y,
                     value: BICst.DATACOLUMN.Y,
                     isParent: false
+                }, {
+                    id: self._constant.DIMENSION_FIELD,
+                    type: "bi.dimension_select_data_level0_node",
+                    text: BI.i18nText("BI-Dimension"),
+                    value: BI.i18nText("BI-Dimension"),
+                    isParent: true,
+                    fontType: BI.DimensionSelectDataLevel0Node.SERIES,
+                    open: true
                 }]
             },
             fieldsCreator: function () {

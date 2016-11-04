@@ -143,7 +143,46 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
     },
 
     _createTools: function () {
-        var self = this;
+        var self = this, wId = this.model.get("id");
+
+        this.maximize = BI.createWidget({
+            type: "bi.maximization",
+            wId: wId,
+            status: BICst.WIDGET_STATUS.EDIT
+        });
+        this.maximize.on(BI.Maximization.EVENT_SET, function (widget) {
+            self.model.set(widget);
+        });
+        this.maximize.on(BI.Maximization.EVENT_SET_TITLE_NAME, function (name) {
+            self.model.set("name", name);
+            self.title.setValue(name);
+        });
+        this.maximize.on(BI.Maximization.EVENT_CHANGE, function (type) {
+            switch (type) {
+                case BICst.DASHBOARD_WIDGET_EXPAND:
+                    self._expandWidget();
+                    break;
+                case BICst.DASHBOARD_WIDGET_SHOW_NAME:
+                    self._onClickShowName();
+                    break;
+                case BICst.DASHBOARD_WIDGET_RENAME:
+                    self.title.focus();
+                    break;
+                case BICst.DASHBOARD_WIDGET_NAME_POS_LEFT:
+                    self._onClickNamePosLeft();
+                    break;
+                case BICst.DASHBOARD_WIDGET_NAME_POS_CENTER:
+                    self._onClickNamePosCenter();
+                    break;
+                case BICst.DASHBOARD_WIDGET_COPY:
+                    self.model.copy();
+                    break;
+                case BICst.DASHBOARD_WIDGET_DELETE:
+                    self._onClickDelete();
+                    break;
+            }
+        });
+
         var filter = BI.createWidget({
             type: "bi.icon_button",
             width: this._constants.TOOL_ICON_WIDTH,
@@ -168,49 +207,36 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
 
         var combo = BI.createWidget({
             type: "bi.widget_combo",
-            wId: this.model.get("id")
+            wId: wId
         });
         combo.on(BI.WidgetCombo.EVENT_CHANGE, function (type) {
             switch (type) {
                 case BICst.DASHBOARD_WIDGET_EXPAND:
                     self._expandWidget();
                 case BICst.DASHBOARD_WIDGET_SHOW_NAME:
-                    var settings = self.model.get("settings");
-                    settings.show_name = !BI.Utils.getWSShowNameByID(self.model.get("id"));
-                    self.model.set("settings", settings);
-                    self._refreshLayout();
+                    self._onClickShowName();
                     break;
                 case BICst.DASHBOARD_WIDGET_RENAME:
                     self.title.focus();
                     break;
                 case BICst.DASHBOARD_WIDGET_NAME_POS_LEFT:
-                    var settings = self.model.get("settings");
-                    settings.name_pos = BICst.DASHBOARD_WIDGET_NAME_POS_LEFT;
-                    self.model.set("settings", settings);
-                    self._refreshTitlePosition();
+                    self._onClickNamePosLeft();
                     break;
                 case BICst.DASHBOARD_WIDGET_NAME_POS_CENTER:
-                    var settings = self.model.get("settings");
-                    settings.name_pos = BICst.DASHBOARD_WIDGET_NAME_POS_CENTER;
-                    self.model.set("settings", settings);
-                    self._refreshTitlePosition();
+                    self._onClickNamePosCenter();
                     break;
                 case BICst.DASHBOARD_WIDGET_FILTER:
                     self._onClickFilter();
                     break;
                 case BICst.DASHBOARD_WIDGET_EXCEL:
-                    window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
-                        + window.encodeURIComponent(self.model.get("name")));
+                    window.location = FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
+                        + window.encodeURIComponent(self.model.get("name"));
                     break;
                 case BICst.DASHBOARD_WIDGET_COPY :
                     self.model.copy();
                     break;
                 case BICst.DASHBOARD_WIDGET_DELETE :
-                    BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete_Current_Component") + self.model.get("name") + "?", function (v) {
-                        if (v === true) {
-                            self.model.destroy();
-                        }
-                    });
+                    self._onClickDelete();
                     break;
             }
         });
@@ -218,10 +244,40 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         this.tools = BI.createWidget({
             type: "bi.left",
             cls: "operator-region",
-            items: [filter, expand, combo],
+            items: [this.maximize, filter, expand, combo],
             lgap: 10
         });
         this.tools.setVisible(false);
+    },
+
+    _onClickShowName: function () {
+        var settings = this.model.get("settings");
+        settings.show_name = !BI.Utils.getWSShowNameByID(this.model.get("id"));
+        this.model.set("settings", settings);
+        this._refreshLayout();
+    },
+
+    _onClickNamePosLeft: function () {
+        var settings = this.model.get("settings");
+        settings.name_pos = BICst.DASHBOARD_WIDGET_NAME_POS_LEFT;
+        this.model.set("settings", settings);
+        this._refreshTitlePosition();
+    },
+
+    _onClickNamePosCenter: function () {
+        var settings = this.model.get("settings");
+        settings.name_pos = BICst.DASHBOARD_WIDGET_NAME_POS_CENTER;
+        this.model.set("settings", settings);
+        this._refreshTitlePosition();
+    },
+
+    _onClickDelete: function () {
+        var self = this;
+        BI.Msg.confirm("", BI.i18nText("BI-Sure_Delete_Current_Component") + self.model.get("name") + "?", function (v) {
+            if (v === true) {
+                self.model.destroy();
+            }
+        });
     },
 
     _onClickFilter: function () {
@@ -334,10 +390,12 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         }
         if (BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();
+            this.maximize.populate();
         }
         if (BI.has(changed, "dimensions") ||
             BI.has(changed, "sort_sequence")) {
             this.tablePopulate();
+            this.maximize.populate();
         }
         if (BI.has(changed, "settings") && (changed.settings.title_detail !== prev.settings.title_detail)) {
             this._refreshWidgetTitle()

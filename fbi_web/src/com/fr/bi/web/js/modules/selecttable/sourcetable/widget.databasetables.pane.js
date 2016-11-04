@@ -84,7 +84,7 @@ BI.DatabaseTablesPane = BI.inherit(BI.LoadingPane, {
                     right: 0
                 });
             } else {
-                var text = BI.i18nText("BI-No_Usable_Table");
+                var text = BI.i18nText("BI-Server_Data_Set_Null");
                 //未设置模式
                 if(BI.isEmptyString(result.schema)) {
                     text = BI.i18nText("BI-Schema_Not_Set");

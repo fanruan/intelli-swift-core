@@ -5,6 +5,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.stable.StringUtils;
@@ -17,6 +18,8 @@ public class StringNotNullFilterValue extends StringNoneValueFilterValue {
     private static String XML_TAG = "StringNotNullFilterValue";
 
 
+    @BICoreField
+    private String CLASS_TYPE = "StringNotNullFilterValue";
     /**
      * 获取过滤后的索引
      *

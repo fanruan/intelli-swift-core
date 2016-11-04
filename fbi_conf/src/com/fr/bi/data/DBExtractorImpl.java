@@ -149,6 +149,14 @@ public abstract class DBExtractorImpl implements DBExtractor {
             boolean needCharSetConvert = StringUtils.isNotBlank(originalCharSetName)
                     && StringUtils.isNotBlank(newCharSetName);
             Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
+            logger.info("runSQL tableFrom is:" + sql.getFrom());
+            if (columns.length == 0) {
+                logger.info("runSQL error : columns is empty");
+            } else {
+                for (ICubeFieldSource column : columns) {
+                    logger.info("runSQL field is:" + column.getFieldName() + " fieldType is:" + column.getFieldType() + " table is:" + column.getTableBelongTo().getTableName());
+                }
+            }
             String sqlString = BIDBUtils.createSqlString(dialect, columns);
             sql.setSelect(sqlString);
             String query = dealWithSqlCharSet(sql.toString(), connection);
@@ -187,6 +195,37 @@ public abstract class DBExtractorImpl implements DBExtractor {
             }
         }
         return sql;
+    }
+
+    @Override
+    public boolean testSQL(SQLStatement sql) {
+        boolean result = true;
+        com.fr.data.impl.Connection connection = sql.getConn();
+        Connection conn = null;
+        Statement stmt = null;
+        try {
+            conn = sql.getSqlConn();
+            Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
+            String query = dealWithSqlCharSet(sql.toString(), connection);
+            stmt = createStatement(conn, dialect);
+            try {
+                result = stmt.execute(query);
+            } catch (Exception e) {
+                DBUtils.closeStatement(stmt);
+                sql.setSelect("");
+                query = dealWithSqlCharSet(sql.toString(), connection);
+                stmt = createStatement(conn, dialect);
+                result = stmt.execute(query);
+            }
+        } catch (Throwable e) {
+            logger.error("sql: " + sql.toString() + " test failed!");
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            result = false;
+        } finally {
+            DBUtils.closeStatement(stmt);
+            DBUtils.closeConnection(conn);
+        }
+        return result;
     }
 
     public abstract Statement createStatement(Connection conn, Dialect dialect) throws SQLException;

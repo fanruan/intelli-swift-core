@@ -244,6 +244,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 targetIds: [targetIds[0], targetIds[1], targetIds[2]]
             }];
             obj.name = name;
+            obj.settings = BI.Utils.getDimensionSettingsByID(targetIds[2]);
             return obj;
         });
         this._setDataLabelSettingForBubbleAndScatter(objs);
@@ -315,20 +316,31 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     var date = new Date(BI.parseInt(name));
                     name = date.print("%Y-%X-%d");
                 }
-                var data = BI.map(left.c, function (idx, obj) {
-                    var value = obj.n, x = obj.n;
-                    if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
-                        var date = new Date(BI.parseInt(x));
-                        x = date.print("%Y-%X-%d");
-                    }
-                    return {
-                        "x": x,
+                var data = [];
+                if(BI.has(left, "c")){
+                    data = BI.map(left.c, function (idx, obj) {
+                        var value = obj.n, x = obj.n;
+                        if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
+                            var date = new Date(BI.parseInt(x));
+                            x = date.print("%Y-%X-%d");
+                        }
+                        return {
+                            "x": x,
+                            "y": BI.isNull(obj.s.c[id].s[0]) ? obj.s.c[id].s[0] : (BI.isFinite(obj.s.c[id].s[0]) ? obj.s.c[id].s[0] : 0),
+                            "value": value,
+                            seriesName: seriesName,
+                            targetIds: [targetIds[0]]
+                        };
+                    });
+                }else{
+                    data = [{
+                        "x": "",
                         "y": BI.isNull(obj.s.c[id].s[0]) ? obj.s.c[id].s[0] : (BI.isFinite(obj.s.c[id].s[0]) ? obj.s.c[id].s[0] : 0),
-                        "value": value,
+                        "value": "",
                         seriesName: seriesName,
                         targetIds: [targetIds[0]]
-                    };
-                });
+                    }]
+                }
                 var obj = {};
                 obj.data = data;
                 obj.name = name;
@@ -396,6 +408,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     _setDataLabelSettingForBubbleAndScatter: function (data) {
         var self = this, o = this.options;
+        if(!BI.Utils.getWSShowDataLabelByID(o.wId)) {
+            return;
+        }
         var allSeries = BI.pluck(data, "name");
         BI.each(BI.Utils.getDatalabelByWidgetID(o.wId), function (id, dataLabel) {
             var filter = null;
@@ -429,6 +444,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     _setDataLabelSettingForAxis: function (data) {
         var self = this, o = this.options;
+        if(!BI.Utils.getWSShowDataLabelByID(o.wId)) {
+            return;
+        }
         if (BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.PIE || BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.DONUT) {
             return;
         }
@@ -647,16 +665,25 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 break;
             case BICst.DATA_LABEL_STYLE_TYPE.IMG:
                 dataLabels.useHtml = true;
-                dataLabels.formatter = "function(){return '<img width=\"20px\" height=\"20px\" src=\"" + label.style_setting.imgStyle.src + "\">';}";
+                dataLabels.formatter = "function(){return '<img width=\"20px\" height=\"20px\" src=\"" + BI.Func.getCompleteImageUrl(label.style_setting.imgStyle.src) + "\">';}";
                 break;
         }
         data.dataLabels = dataLabels;
     },
 
     _createDataImage: function (data, label) {
-        data.imageHeight = 20;
-        data.imageWidth = 20;
-        data.image = label.style_setting.src;
+        if(!label.style_setting.src) {
+            return;
+        }
+        this.imageSizeMap = this.imageSizeMap || {};
+        var size = this.imageSizeMap[label.style_setting.src];
+        if(!size) {
+            size = BI.DOM.getImageWidthAndHeight(label.style_setting.src);
+        }
+        this.imageSizeMap[label.style_setting.src] = size;
+        data.imageHeight = size.height;
+        data.imageWidth = size.width;
+        data.image = BI.Func.getCompleteImageUrl(label.style_setting.src);
     },
 
     getCordon: function () {
@@ -731,8 +758,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.FORCE_BUBBLE:
                 return this._formatDataForAxis(data);
-
-            //return this._formatDataForDashBoard(data);
             case BICst.WIDGET.BUBBLE:
                 return this._formatDataForBubble(data);
             case BICst.WIDGET.SCATTER:
