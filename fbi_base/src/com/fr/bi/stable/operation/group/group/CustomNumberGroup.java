@@ -50,13 +50,13 @@ public class CustomNumberGroup extends AbstractGroup {
             for (int i = 0; i < groups.length; i++) {
                 if (groups[i].contains(key) && !groups[i].isOtherGroup()) {
                     find = true;
-                    newMapArray[i] = GVIUtils.OR(newMapArray[i], gvi);
+                    newMapArray[i] = newMapArray[i].or(gvi);
                 }else{
                     if(groups[i].isOtherGroup() && !find){
                         find = true;
                         if(groupNames.contains(groups[i].getValue())){
                             int index = groupNames.indexOf(groups[i].getValue());
-                            newMapArray[index] = GVIUtils.OR(newMapArray[index], gvi);
+                            newMapArray[index] = newMapArray[index].or(gvi);
                         }else{
                             otherGroup.put(groups[i].getValue(), GVIUtils.OR(otherGroup.get(groups[i].getValue()), gvi));
                         }
