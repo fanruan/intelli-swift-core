@@ -1,21 +1,8 @@
 import {isNil} from 'core'
-class Target {
+import DimensionOrTarget from './DimensionOrTarget'
+class Target extends DimensionOrTarget{
     constructor($dimension, dId, widget) {
-        this.$dimension = $dimension;
-        this.dId = dId;
-        this.widget = widget;
-    }
-
-    $get() {
-        return this.$dimension;
-    }
-
-    getName() {
-        return this.$dimension.get('name');
-    }
-
-    isUsed() {
-        return this.$dimension.get('used');
+        super($dimension, dId, widget);
     }
 
     getSortTarget() {
@@ -37,9 +24,9 @@ class Target {
         return this.$dimension.getIn(['sort', 'type']) || BICst.SORT.ASC;
     }
 
-    setUsed(b) {
-        this.$dimension = this.$dimension.set('used', !!b);
-        return this;
+    getFilterValue() {
+        const $filter = this.$dimension.get('filter_value');
+        return isNil($filter) ? {} : $filter.toJS();
     }
 
     setSortType(type) {
@@ -50,20 +37,6 @@ class Target {
     setFilterValue(filterValue) {
         this.$dimension = this.$dimension.setIn(['filter_value'], filterValue);
         return this;
-    }
-
-    getFilterValue() {
-        const $filter = this.$dimension.get('filter_value');
-        return isNil($filter) ? {} : $filter.toJS();
-    }
-
-    getFieldId() {
-        return this.$dimension.getIn(['_src', 'field_id']);
-    }
-
-    getDimensionSrc() {
-        const $src = this.$dimension.get('_src');
-        return isNil($src) ? {} : $src.toJS();
     }
 }
 export default Target;

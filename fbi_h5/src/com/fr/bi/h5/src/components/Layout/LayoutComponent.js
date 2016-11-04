@@ -47,7 +47,7 @@ class LayoutComponent extends Component {
         const {...props} = this.props;
         const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.template = TemplateFactory.createTemplate(props.$template);
-        const rows = this.template.getAllWidgetIds();
+        const rows = this.template.getAllStatisticWidgetIds();
         return <ViewPagerAndroid
             style={styles.viewPager}
             initialPage={0}
@@ -71,10 +71,11 @@ class LayoutComponent extends Component {
     }
 
     _renderRow(wId, sectionID, rowID) {
-        const $widget = this.template.get$WidgetById(wId);
+        const $widget = this.template.get$WidgetByWidgetId(wId);
         const type = WidgetFactory.createWidget($widget, wId, this.template).getType();
         const props = {
             $widget,
+            $template: this.template.$get(),
             wId,
             width: this.props.width - 40,
             height: 270

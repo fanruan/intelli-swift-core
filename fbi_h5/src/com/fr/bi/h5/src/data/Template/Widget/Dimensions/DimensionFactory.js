@@ -1,11 +1,10 @@
 import Dimension from './Dimension'
 import Target from './Target'
 export default {
-    createDimension: (...props)=> {
-        return new Dimension(...props);
-    },
-
-    createTarget: (...props)=> {
-        return new Target(...props)
+    createDimension: ($dimension, dId, widget)=> {
+        if (widget.isDimDimensionByDimensionId(dId)) {
+            return new Dimension($dimension, dId, widget);
+        }
+        return new Target($dimension, dId, widget);
     }
 };

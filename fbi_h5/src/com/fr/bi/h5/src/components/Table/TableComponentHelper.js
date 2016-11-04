@@ -13,22 +13,22 @@ class TableComponentHelper {
 
 
     getHeader() {
-        const ids = this.widget.getAllUsedTargetIds();
+        const ids = this.widget.getAllUsedTargetDimensionIds();
         const result = [{
             text: '行表头'
         }];
         ids.forEach((id)=> {
-            const $$dim = this.widget.get$DimensionOrTargetById(id);
+            const $$dim = this.widget.get$DimensionByDimensionId(id);
             result.push({
-                text: DimensionFactory.createDimension($$dim).getName()
+                text: DimensionFactory.createDimension($$dim, id, this.widget).getName()
             })
         });
         return result;
     }
 
     getItems() {
-        const dimensionIds = this.widget.getAllUsedDimensionIds();
-        const targetIds = this.widget.getAllUsedTargetIds();
+        const dimensionIds = this.widget.getAllUsedDimDimensionIds();
+        const targetIds = this.widget.getAllUsedTargetDimensionIds();
         var result = [];
         const track = (node, layer, pValues)=> {
             if (!node) {
@@ -94,7 +94,7 @@ class TableComponentHelper {
         const result = [];
         const ids = this.widget.getRowDimensionIds();
         each(ids, (id)=> {
-            const dimension = DimensionFactory.createDimension(this.widget.get$DimensionById(id));
+            const dimension = DimensionFactory.createDimension(this.widget.get$DimensionByDimensionId(id));
             result.push({
                 text: dimension.getName()
             });

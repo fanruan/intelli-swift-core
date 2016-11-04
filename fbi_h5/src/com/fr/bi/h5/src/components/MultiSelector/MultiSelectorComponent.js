@@ -52,7 +52,7 @@ class MultiSelectorComponent extends Component {
         const {...props} = this.props;
         const wId = props.wId;
         const template = TemplateFactory.createTemplate(props.$template);
-        const widget = template.getWidgetById(wId);
+        const widget = template.getWidgetByWidgetId(wId);
         return <MultiSelectorWidget
             style={styles.wrapper}
             type={widget.getSelectType()}

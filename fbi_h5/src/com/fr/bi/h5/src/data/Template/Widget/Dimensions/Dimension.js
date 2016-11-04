@@ -1,25 +1,8 @@
 import {isNil} from 'core'
-class Dimension {
+import DimensionOrTarget from './DimensionOrTarget'
+class Dimension extends DimensionOrTarget{
     constructor($dimension, dId, widget) {
-        this.$dimension = $dimension;
-        this.dId = dId;
-        this.widget = widget;
-    }
-
-    $get() {
-        return this.$dimension;
-    }
-
-    getType() {
-        return this.$dimension.get('type');
-    }
-
-    getName() {
-        return this.$dimension.get('name');
-    }
-
-    isUsed() {
-        return this.$dimension.get('used');
+        super($dimension, dId, widget);
     }
 
     getSortTarget() {
@@ -41,21 +24,6 @@ class Dimension {
         return this.$dimension.getIn(['sort', 'type']) || BICst.SORT.ASC;
     }
 
-    setUsed(b) {
-        this.$dimension = this.$dimension.set('used', !!b);
-        return this;
-    }
-
-    setSortType(type) {
-        this.$dimension = this.$dimension.setIn(['sort', 'type'], type);
-        return this;
-    }
-
-    setSortTarget(dId) {
-        this.$dimension = this.$dimension.setIn(['sort', 'sort_target'], dId);
-        return this;
-    }
-
     getGroupType() {
         return this.$dimension.getIn(['group', 'type']);
     }
@@ -75,13 +43,14 @@ class Dimension {
         return isNil($filter) ? {} : $filter.toJS();
     }
 
-    getFieldId() {
-        return this.$dimension.getIn(['_src', 'field_id']);
+    setSortType(type) {
+        this.$dimension = this.$dimension.setIn(['sort', 'type'], type);
+        return this;
     }
 
-    getDimensionSrc() {
-        const $src = this.$dimension.get('_src');
-        return isNil($src) ? {} : $src.toJS();
+    setSortTarget(dId) {
+        this.$dimension = this.$dimension.setIn(['sort', 'sort_target'], dId);
+        return this;
     }
 }
 export default Dimension

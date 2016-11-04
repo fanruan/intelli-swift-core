@@ -66,7 +66,7 @@ const SortableList = SortableContainer(({viewItems, context}) => {
     each(viewItems, (items, viewId)=> {
         const viewItem = context._helper.getViewItemByViewId(viewId);
         let header = dimensionHeader, body = dimensionBody, collection = 0;
-        if (!context._helper.isDimensionByViewId(viewId)) {
+        if (!context._helper.isDimensionRegionByViewId(viewId)) {
             header = targetHeader;
             body = targetBody;
             collection = 1;

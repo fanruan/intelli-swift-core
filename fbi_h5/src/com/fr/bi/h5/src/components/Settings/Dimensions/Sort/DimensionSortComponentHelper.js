@@ -19,8 +19,8 @@ export default class DimensionSortComponentHelper {
     getSortTargetItems() {
         const name = this.dimension.getName();
         const result = [{value: this.dId, label: name}];
-        each(this.widget.getAllTargetIds(), (dId)=> {
-            const name = this.widget.getTargetById(dId).getName();
+        each(this.widget.getAllTargetDimensionIds(), (dId)=> {
+            const name = this.widget.getTargetDimensionById(dId).getName();
             result.push({
                 value: dId,
                 label: name

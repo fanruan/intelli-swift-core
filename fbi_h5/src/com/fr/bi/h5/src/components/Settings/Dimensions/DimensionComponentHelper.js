@@ -5,7 +5,7 @@ export default class DimensionComponentHelper {
         this.widget = WidgetFactory.createWidget(props.$widget, props.wId, TemplateFactory.createTemplate(context.$template));
         this.wId = props.wId;
         this.dId = props.dId;
-        this.dimension = this.widget.getDimensionOrTargetById(this.dId);
+        this.dimension = this.widget.getDimensionByDimensionId(this.dId);
     }
 
     isUsed() {
