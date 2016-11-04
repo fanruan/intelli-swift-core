@@ -320,22 +320,24 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 if(BI.has(left, "c")){
                     data = BI.map(left.c, function (idx, obj) {
                         var value = obj.n, x = obj.n;
+                        var seriesValue = obj.s.c[id].s[0];
                         if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
                             var date = new Date(BI.parseInt(x));
                             x = date.print("%Y-%X-%d");
                         }
                         return {
                             "x": x,
-                            "y": BI.isNull(obj.s.c[id].s[0]) ? obj.s.c[id].s[0] : (BI.isFinite(obj.s.c[id].s[0]) ? obj.s.c[id].s[0] : 0),
+                            "y":(BI.isNull(seriesValue) || BI.isFinite(seriesValue)) ? seriesValue : 0,
                             "value": value,
                             seriesName: seriesName,
                             targetIds: [targetIds[0]]
                         };
                     });
                 }else{
+                    var leftSeriesValue = left.s.c[id].s[0];
                     data = [{
                         "x": "",
-                        "y": BI.isNull(obj.s.c[id].s[0]) ? obj.s.c[id].s[0] : (BI.isFinite(obj.s.c[id].s[0]) ? obj.s.c[id].s[0] : 0),
+                        "y": (BI.isNull(leftSeriesValue) || BI.isFinite(leftSeriesValue)) ? leftSeriesValue : 0,
                         "value": "",
                         seriesName: seriesName,
                         targetIds: [targetIds[0]]
@@ -353,13 +355,14 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             return BI.map(columnSizeArray, function (idx, value) {
                 var adjustData = BI.map(data.c, function (id, item) {
                     var value = item.n, x = item.n;
+                    var seriesValue = item.s[idx];
                     if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
                         var date = new Date(BI.parseInt(x));
                         x = date.print("%Y-%X-%d");
                     }
                     return {
                         x: x,
-                        y: BI.isNull(item.s[idx]) ? item.s[idx] : (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
+                        y: (BI.isNull(seriesValue) || BI.isFinite(seriesValue)) ? seriesValue : 0,
                         value: value,
                         seriesName: BI.Utils.getDimensionNameByID(targetIds[idx]),
                         targetIds: [targetIds[idx]]
