@@ -6641,10 +6641,12 @@ define('vector/Renderer',['require','../utils/Class','../utils/BaseUtils','./Ele
         //register visual elements that respond to events
         //data can be anything like dataPoint, series, or legend item
         registerInteractiveTarget:function(data, elementWrapper){
-            this.removeInteractiveTarget(elementWrapper);
             this._targets[BaseUtils.stamp(elementWrapper.rawElement)] = elementWrapper;
             this._targets[BaseUtils.stamp(elementWrapper)] = data;
-            data && data.getEvents && data.on(data.getEvents(), data);
+            if(data){
+                data._events = null;
+                data.getEvents && data.on(data.getEvents(), data);
+            }
         },
 
         findInteractiveTarget:function(rawElement){
@@ -7017,6 +7019,7 @@ define('vector/SvgRenderer',['require','./Renderer','../utils/DomUtils','./Eleme
             pattern.image = new ElementWrapper(this.create('image'), this).addTo(pattern);
             pattern.image.attr(imageAttr);
             pattern.image.imageContent(url);
+            pattern.image._imageUrl = url;
 
             pattern.addTo(this.defs);
 
@@ -7026,7 +7029,12 @@ define('vector/SvgRenderer',['require','./Renderer','../utils/DomUtils','./Eleme
         updateImagePattern:function(imagePattern, patterAttr, imageAttr, url){
             imagePattern.attr(patterAttr);
             imagePattern.image.attr(imageAttr);
-            imagePattern.image.imageContent(url);
+
+            //避免重复请求图片
+            if(imagePattern.image._imageUrl != url){
+                imagePattern.image.imageContent(url);
+                imagePattern.image._imageUrl = url;
+            }
         },
 
         createDropShadowFilter:function(dx, dy, alpha, deviation){
@@ -8333,7 +8341,6 @@ define('theme/options',['require','../Constants','../utils/QueryUtils','../utils
     function bubblePlotOptionsFun() {
         return {
             large: false,
-            force: false,
             displayNegative: true,
             shadow: true,
             minSize: 12,
@@ -8346,6 +8353,28 @@ define('theme/options',['require','../Constants','../utils/QueryUtils','../utils
             dataLabels: {
                 "formatter": {
                     "identifier": "${X}${Y}${SIZE}"
+                },
+                "enabled": false,
+                "align": "inside"
+            }
+        }
+    }
+
+    function forceBubblePlotOptionsFun() {
+        return {
+            large: false,
+            displayNegative: true,
+            shadow: true,
+            minSize: 12,
+            maxSize: 60,
+            sizeBy: 'area',
+            opacity: 1.0,
+
+            tooltip: normalTooltipFun(),
+
+            dataLabels: {
+                "formatter": {
+                    "identifier": "{SERIES}"
                 },
                 "enabled": false,
                 "align": "inside"
@@ -8563,6 +8592,15 @@ define('theme/options',['require','../Constants','../utils/QueryUtils','../utils
             plotOptions: {
 
                 bubble: bubblePlotOptionsFun()
+
+            }
+
+        };
+
+        options[Constants.FORCE_BUBBLE_CHART] = {
+            plotOptions: {
+
+                forceBubble: forceBubblePlotOptionsFun()
 
             }
 
@@ -9085,6 +9123,14 @@ define('theme/config',['require','../Constants','../utils/QueryUtils','./options
 
             plotOptions: Options[Constants.BUBBLE_CHART].plotOptions.bubble
 
+        };
+
+        config[Constants.FORCE_BUBBLE_CHART] = {
+            zoom: xyZoomFun(),
+
+            rangeLegend: disabledRangeLegendFun(),
+
+            plotOptions: Options[Constants.FORCE_BUBBLE_CHART].plotOptions.forceBubble
         };
 
         config[Constants.MULTIPIE_CHART] = {
@@ -10739,11 +10785,11 @@ define('VanChartMap',['require','./VanChart','./utils/BaseUtils','./utils/PathUt
     var ColorUtils = require('./utils/ColorUtils');
 
     function labelFilter(point){
-        return point && point.dataLabels && point.labelContent && point.labelPos;
+        return point && point.dataLabels && point.dataLabels.enabled && point.labelContent && point.labelPos;
     }
 
     function validLabelFilter(point){
-        return point && point.dataLabels && point.labelContent;
+        return point && point.dataLabels && point.dataLabels.enabled && point.labelContent;
     }
 
     function areaKeyFunc(point){
@@ -11402,7 +11448,7 @@ define('VanChartMap',['require','./VanChart','./utils/BaseUtils','./utils/PathUt
             var manager = new BoundsManager();
 
             pointsText.forEach(function(point){
-                if(point.dataLabels && point.feature && point.feature.properties.center){
+                if(point.dataLabels && point.dataLabels.enabled && point.feature && point.feature.properties.center){
                     var labelBounds = vanchart._getTextBounds(point);
                     point.labelPos = labelBounds;
                     manager.addBounds(labelBounds);
@@ -11410,7 +11456,7 @@ define('VanChartMap',['require','./VanChart','./utils/BaseUtils','./utils/PathUt
             });
 
             pointsText.forEach(function(point){
-                if(point.dataLabels && ((point.feature && !point.feature.properties.center) || point.lnglat)){
+                if(point.dataLabels && point.dataLabels.enabled && ((point.feature && !point.feature.properties.center) || point.lnglat)){
                     var labelBounds = vanchart._getTextBounds(point);
                     if(!manager.isOverlapped(labelBounds)){
                         point.labelPos = labelBounds;
@@ -12990,6 +13036,13 @@ define('chart/Point',['require','../utils/QueryUtils','../utils/BaseUtils','../u
             }
         },
 
+        getTooltipRect:function(){
+            var tooltip = this.series.vanchart.getComponent(ComponentLibrary.TOOLTIP_COMPONENT);
+            if(tooltip){
+                return tooltip._tooltipRect;
+            }
+        },
+
         getEvents: function(){
             return this.series.pointEvents ? this.series.pointEvents() :
             {
@@ -13991,7 +14044,7 @@ define('chart/Series',['require','../utils/BaseUtils','../utils/QueryUtils','../
 
             if(hasValue && label.indexOf(PERCENT) != -1){
                 content += (style ? '<span>' : Constants.TOOLTIP_VALUE_STYLE) + valueString + '  ' + percentString + '</span>';
-            }else if(hasValue != -1){
+            }else if(hasValue){
                 content += (style ? '<span>' : Constants.TOOLTIP_VALUE_STYLE) + valueString + '</span>';
             }else if(label.indexOf(PERCENT) != -1){
                 content += (style ? '<span>' : Constants.TOOLTIP_VALUE_STYLE) + percentString +'</span>';
@@ -15671,7 +15724,7 @@ define('chart/Bar',['require','../utils/BaseUtils','../utils/ColorUtils','../Con
                     }
 
                     var patterAttr = {
-                        'x':imageX, 'y':imageX, 'width':p.imageWidth, 'height':p.imageHeight,'patternUnits':'userSpaceOnUse'
+                        'x':imageX, 'y':imageY, 'width':p.imageWidth, 'height':p.imageHeight,'patternUnits':'userSpaceOnUse'
                     };
 
                     var imageAttr = {
@@ -20688,8 +20741,9 @@ define('chart/PointerGauge',['require','../Constants','../utils/BaseUtils','../u
         },
 
         getAttrs:function(p){
-            var scale = this._getScale(), series = p.series;
-            return {'d':series._getArrowPath(scale(p.y))};
+            return {'d':p.series._getArrowPath(
+                BaseUtils.getValueInDomain(p.y, p.series._getScale().domain())
+            )};
         },
 
         getPointGraphicKey:function(){
@@ -20702,8 +20756,8 @@ define('chart/PointerGauge',['require','../Constants','../utils/BaseUtils','../u
 
         createAnimation:function(dom, point){
             var series = point.series, scale = series._getScale();
-            var lastAngle = dom._current_ || scale(scale.domain()[0]);
-            dom._current_ = scale(point.y);
+            var lastAngle = dom._current_ || scale.domain()[0];
+            dom._current_ = BaseUtils.getValueInDomain(point.y, scale.domain());
             d3.select(dom).transition()
                 .duration(series.ANIMATION_TIME).ease(series.EASE_TYPE)
                 .attrTween('d', function(){
@@ -20722,7 +20776,8 @@ define('chart/PointerGauge',['require','../Constants','../utils/BaseUtils','../u
             d3.select(dom).remove()
         },
 
-        _getArrowPath:function(initRadian){
+        _getArrowPath:function(y){
+            var initRadian = this._getScale()(y);
             var radius = this.radius;
             var p0 = this._getArcPoint(0.9 * radius, initRadian);
             var p1 = this._getArcPoint(0.02 * radius, initRadian + Math.PI/2);
@@ -22063,6 +22118,13 @@ define('chart/Gauge',['require','../Constants','../utils/BaseUtils','./Series','
                 this.remove();
                 this.backgruondPath = null;
                 this.backgruondLine = null;
+                this.ticks = this.minorTics = null;
+                this.points.forEach(function(point){
+                    if(point.graphic){
+                        point.graphic.remove();
+                        point.graphic = null;
+                    }
+                });
             }
 
             this.gaugeType = gaugeType;
@@ -23270,6 +23332,9 @@ define('component/Tooltip',['require','./Base','../utils/BaseUtils','../Constant
                 //优先从地图那边取数据点提示的位置
                 var pos = seriesChart.getTooltipPos(point, tooltipDim, event);
                 this._show(pos, opt, tooltipText);
+
+                //for bi
+                this._tooltipRect = BaseUtils.makeBounds(pos, tooltipDim);
             }
         },
 
@@ -23427,6 +23492,7 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
 
             var isHorizontal = this.isHorizontal(), isReversed = this.isAxisReversed(), vanchart = this.vanchart;
             var chartWidth = vanchart.width, chartHeight = vanchart.height, plotBounds = vanchart.getPlotBounds();
+            var rotation = this.options.labelRotation % 90;
             var startSize = 0, endSize = 0;
 
             if(this.tickData && this.tickData.length > 1){
@@ -23439,12 +23505,21 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
                     t_e = this.tickData[this.tickData.length - 1].tickDim;
                 }
                 startSize = isHorizontal ? t_s.width : t_s.height;
-                endSize = isHorizontal ? t_e.width : t_e.height
+                endSize = isHorizontal ? t_e.width : t_e.height;
+
+                if (rotation <= -15) { // [/]
+                    endSize = 0;
+                } else if (rotation >= 15) { // [\]
+                    startSize = 0;
+                } else {
+                    startSize /= 2;
+                    endSize /= 2;
+                }
             }
 
             //标签与四周保证有个边距
-            startSize = Math.round(startSize/2) + PADDING;
-            endSize = Math.round(endSize/2) + PADDING;
+            startSize = Math.round(startSize) + PADDING;
+            endSize = Math.round(endSize) + PADDING;
 
             if (isHorizontal) {
                 startSize = Math.max(startSize - plotBounds.x, 0);
@@ -23787,12 +23862,11 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
 
         getTickHeight:function(){
 
-            if(this.options.labelStyle){
+            if(this.options.labelStyle && this.options.showLabel){
                 return BaseUtils.getTextHeight(this.options.labelStyle);
             }
 
             return 0;
-
         },
 
         getMinorTickData:function(){
@@ -28104,12 +28178,11 @@ define('component/IntervalRangeLegend',['require','./Base','../utils/BaseUtils',
             for(var chartType in series) {
                 var chartSeries = series[chartType];
                 for (i = 0, len = chartSeries.length; i < len; i++) {
-                    var sery = chartSeries[i];
+                    var sery = chartSeries[i], valueKey = sery.getTargetKey();
                     var pointS = sery.points;
                     pointS.forEach(function (point) {
 
-                        //todo 这个指标的含义
-                        var size = BaseUtils.hasDefined(point.size) ? point.size : point.value;
+                        var size = point[valueKey];
 
                         var item = self._getPointItem(size);
                         if (item) {
@@ -29390,6 +29463,7 @@ define('component/AngleAxis',['require','./Base','./CategoryAxis','../utils/Base
                 }
 
             }
+            return true;
         },
 
         _getCateLabelBounds:function(radius, cateTick, testBounds){
@@ -29500,7 +29574,7 @@ define('component/AngleAxis',['require','./Base','./CategoryAxis','../utils/Base
 
             var tmpBounds = [
                 - testBounds.y,
-                testBounds.width - testBounds.x,
+                testBounds.width + testBounds.x,
                 testBounds.height + testBounds.y,
                 - testBounds.x
             ];
@@ -31369,8 +31443,47 @@ define('component/DrillTools',['require','./Base','../utils/BaseUtils','../utils
         onTap:function(ev){
             var target = this._findDrillTarget(ev);
             if(target){
-                this.vanchart.drillUp(target.datum())
+                var iconData = target.datum();
+                if(this.options.click){
+                    var dataPoint = this.findDataPointByName(iconData.geo.geoName);
+                    if(dataPoint){
+                        this.options.click(dataPoint);
+                    }
+                }
+
+                this.vanchart.drillUp(iconData);
             }
+        },
+
+        findDataPointByName:function(name){
+            for(var i = 0, len = this.iconData.length; i < len; i++){
+                if(this.iconData[i].geo.geoName == name){
+                    break;
+                }
+            }
+
+            var currentIconData = this.iconData[i];
+            var nextIconData = this.iconData[i + 1];
+
+            if(currentIconData && nextIconData){
+                var series = currentIconData.series, point;
+                name = nextIconData.geo.geoName;
+                Object.keys(series).forEach(function(mapType){
+                    if(!point){
+                        var mapSeries = series[mapType];
+                        for(var j = 0; j < mapSeries.length; j++){
+                            for(var k = 0; k < mapSeries[j].points.length; k++){
+                                var p = mapSeries[j].points[k];
+                                if(p.drilldown && p.drilldown.geo.name == name){
+                                    point = p;
+                                }
+                            }
+                        }
+                    }
+                })
+            }
+
+            return point;
         },
 
         onMouseOver:function(ev){
