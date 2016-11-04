@@ -531,3 +531,28 @@
   _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/complex-region-left.png');
   _background: none;
 }
+.unknow-n-and-n-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/multipath/unknowNandN.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/multipath/unknowNandN.png');
+  _background: none;
+}
+.multi-n-and-n-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/multipath/multiNandN.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/multipath/multiNandN.png');
+  _background: none;
+}
+.one-n-and-n-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/multipath/oneNandN.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/multipath/oneNandN.png');
+  _background: none;
+}
+.multi-path-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/multipath/multiPath.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/multipath/multiPath.png');
+  _background: none;
+}
+.tree-n-and-n-background {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/multipath/treeNandN.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/multipath/treeNandN.png');
+  _background: none;
+}
