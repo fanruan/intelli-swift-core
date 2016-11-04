@@ -1,5 +1,6 @@
 package com.finebi.cube.gen.mes;
 
+import com.finebi.cube.gen.oper.BIRelationIDUtils;
 import com.finebi.cube.impl.router.fragment.BIFragmentID;
 import com.finebi.cube.impl.router.fragment.BIFragmentTag;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -7,8 +8,6 @@ import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.router.fragment.IFragmentTag;
 import com.finebi.cube.router.topic.ITopicTag;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.exception.BITablePathConfusionException;
-import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 /**
  * This class created on 2016/4/12.
@@ -22,17 +21,17 @@ public class BIFragmentUtils {
     }
 
     public static IFragmentTag generateFragment(ITopicTag targetTopic, BITableSourceRelationPath relationPath) {
-        return generateFragment(targetTopic, relationPath.getSourceID());
+        return generateFragment(targetTopic, getPathID(relationPath));
+    }
+    private static String getPathID(BITableSourceRelationPath relationPath){
+      return   BIRelationIDUtils.calculatePathID(relationPath);
     }
 
+    private static String getRelationID(BITableSourceRelation relation){
+        return   BIRelationIDUtils.calculateRelationID(relation);
+    }
     public static IFragmentTag generateFragment(ITopicTag targetTopic, BITableSourceRelation relation) {
-        BITableSourceRelationPath relationPath = new BITableSourceRelationPath();
-        try {
-            relationPath.addRelationAtHead(relation);
-            return generateFragment(targetTopic, relationPath.getSourceID());
-        } catch (BITablePathConfusionException e) {
-            throw BINonValueUtils.beyondControl(e.getMessage(), e);
-        }
+            return generateFragment(targetTopic,getRelationID( relation));
     }
 
     public static IFragmentTag generateFragment(ITopicTag targetTopic, String fragmentID) {

@@ -1,5 +1,6 @@
 package com.fr.bi.etl.analysis.manager;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BISystemDataManager;
 import com.finebi.cube.conf.datasource.DataSourceCompoundService;
 import com.finebi.cube.conf.field.BusinessField;
@@ -68,7 +69,8 @@ public class AnalysisDataSourceManager extends BISystemDataManager<DataSourceCom
                     }
                     value.initialAll();
                 } catch (Exception e) {
-                    throw BINonValueUtils.beyondControl(e);
+//                    throw BINonValueUtils.beyondControl(e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
             }
             if (containsKey(key)) {
