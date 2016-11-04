@@ -19,10 +19,7 @@ class Target {
     }
 
     getSortTarget() {
-        const $sort = this.$dimension.get('sort');
-        if ($sort) {
-            return $sort.get('sort_target');
-        }
+        return this.$dimension.getIn(['sort', 'sort_target']);
     }
 
     getSortTargetName() {
@@ -37,14 +34,7 @@ class Target {
     }
 
     getSortType() {
-        const $sort = this.$dimension.get('sort');
-        if ($sort) {
-            const type = $sort.get('type');
-            if (!isNil(type)) {
-                return type;
-            }
-        }
-        return BICst.SORT.ASC;
+        return this.$dimension.getIn(['sort', 'type']) || BICst.SORT.ASC;
     }
 
     setUsed(b) {
@@ -56,5 +46,24 @@ class Target {
         this.$dimension = this.$dimension.setIn(['sort', 'type'], type);
         return this;
     }
+
+    setFilterValue(filterValue) {
+        this.$dimension = this.$dimension.setIn(['filter_value'], filterValue);
+        return this;
+    }
+
+    getFilterValue() {
+        const $filter = this.$dimension.get('filter_value');
+        return isNil($filter) ? {} : $filter.toJS();
+    }
+
+    getFieldId() {
+        return this.$dimension.getIn(['_src', 'field_id']);
+    }
+
+    getDimensionSrc() {
+        const $src = this.$dimension.get('_src');
+        return isNil($src) ? {} : $src.toJS();
+    }
 }
-export default Target
+export default Target;

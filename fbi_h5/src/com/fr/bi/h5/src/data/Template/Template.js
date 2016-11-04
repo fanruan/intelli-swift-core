@@ -16,7 +16,7 @@ class Template {
 
     get$DimensionById(id) {
         let $dimension;
-        some(this.getAllWidgetIds(), (wId)=> {
+        some(this.getAllWidgetIds().concat(this.getAllControlWidgetIds()), (wId)=> {
             const widget = this.getWidgetById(wId);
             if (widget.hasDimensionById(id)) {
                 $dimension = widget.get$DimensionById(id);
@@ -36,6 +36,15 @@ class Template {
 
     getTargetById(id) {
         return DimensionFactory.createTarget(this.get$DimensionById(id), id, this.getWidgetById(this.getWidgetIDByDimensionID(id)));
+    }
+
+    getAllDimensionAndTargetIds() {
+        let ids = [];
+        const allWIds = this.getAllWidgetIds();
+        allWIds.forEach((wid)=> {
+            ids = ids.concat(this.getWidgetById(wid).getAllDimensionAndTargetIds());
+        });
+        return ids;
     }
 
     getAllWidgetIds() {
@@ -85,20 +94,20 @@ class Template {
     }
 
     isWidgetExistByID(wid) {
-        return this.getAllWidgetIDs().contains(wid);
+        return this.getAllWidgetIds().indexOf(wid) > -1;
     }
 
     getWidgetIDByDimensionID(dId) {
         if (!this._dimension2WidgetMap) {
             this._dimension2WidgetMap = {};
         }
-        if (BI.isNotNull(this._dimension2WidgetMap[dId])) {
+        if (!isNil(this._dimension2WidgetMap[dId])) {
             return this._dimension2WidgetMap[dId];
         }
-        var widgets = this.getAllWidgetIds();
-        var wid = find(widgets, function (wid) {
-            var dims = this.getWidgetById(wid).getAllDimensionIds();
-            return find(dims, function (id) {
+        var widgets = this.getAllWidgetIds().concat(this.getAllControlWidgetIds());
+        var wid = find(widgets, (wid)=> {
+            var dims = this.getWidgetById(wid).getAllDimensionAndTargetIds();
+            return find(dims, (id)=> {
                 return dId == id;
             })
         });
@@ -114,15 +123,24 @@ class Template {
 
     getDimensionFilterValueByID(did) {
         var dimension = this.getDimensionById(did);
-        if (!isNil(dimension)) {
-            return dimension.getFilterValue() || {};
-        }
-        return {};
+        return isNil(dimension) ? {} : dimension.getFilterValue();
     }
 
     getWidgetLinkageByID(wid) {
+        const widget = this.getWidgetById(wid);
+        return widget.getWidgetLinkage();
+    }
+
+    getWidgetLinkageValueByID(wid) {
         var widget = this.getWidgetById(wid);
         return widget.getLinkageValues();
+    }
+
+    getFieldIDByDimensionID(did) {
+        var dimension = this.getDimensionById(did);
+        if (!isNil(dimension)) {
+            return dimension.getFieldId();
+        }
     }
 
     set$Widget(id, $widget) {
