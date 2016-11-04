@@ -202,6 +202,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showLeftLabel.on(BI.Controller.EVENT_CHANGE, function () {
+            self.leftLabelStyle.setVisible(this.isSelected());
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
 
@@ -342,6 +343,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showHGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+            self.hGridLineColor.setVisible(this.isSelected());
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
 
@@ -364,6 +366,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showVGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+            self.vGridLineColor.setVisible(this.isSelected());
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
 
@@ -529,6 +532,7 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.lYAxisStyle.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
         this.separators.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
         this.showLeftLabel.setSelected(BI.Utils.getWSShowLValueAxisLabelByID(wId));
+        this.leftLabelStyle.setVisible(this.showLeftLabel.isSelected());
         this.leftLabelStyle.setValue(BI.Utils.getWSLValueAxisLabelSettingByID(wId));
         this.leftLineColor.setValue(BI.Utils.getWSLValueAxisLineColorByID(wId));
         this.showCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
@@ -538,8 +542,10 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.legendSetting.setValue(BI.Utils.getWSLegendSettingByID(wId));
         this.showHGridLine.setSelected(BI.Utils.getWSShowHGridLineByID(wId));
+        this.hGridLineColor.setVisible(this.showHGridLine.isSelected());
         this.hGridLineColor.setValue(BI.Utils.getWSHGridLineColorByID(wId));
         this.showVGridLine.setSelected(BI.Utils.getWSShowVGridLineByID(wId));
+        this.vGridLineColor.setVisible(this.showVGridLine.isSelected());
         this.vGridLineColor.setValue(BI.Utils.getWSVGridLineColorByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
         this.tooltipSetting.setValue(BI.Utils.getWSToolTipSettingByID(wId));

@@ -59,15 +59,6 @@ BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
             type: "bi.left",
             cls: "single-line-settings",
             items: BI.createItems([{
-                type: "bi.label",
-                text: BI.i18nText("BI-Component_Widget"),
-                cls: "line-title",
-            }, {
-                type: "bi.label",
-                text: BI.i18nText("BI-Title"),
-                cls: "line-title",
-                lgap: 38
-            }, {
                 type: "bi.vertical_adapt",
                 items: [this.showTitle]
             }, {
@@ -119,7 +110,7 @@ BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
         var tableStyle = BI.createWidget({
             type: "bi.horizontal_adapt",
-            columnSize: [100],
+            columnSize: [80],
             cls: "single-line-settings",
             items: [{
                 type: "bi.label",
@@ -153,9 +144,9 @@ BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.widgetBackground]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
-                })
-            }],
-            lgap: constant.SIMPLE_H_GAP
+                }),
+                lgap: constant.SIMPLE_H_GAP
+            }]
         });
 
         //图例
