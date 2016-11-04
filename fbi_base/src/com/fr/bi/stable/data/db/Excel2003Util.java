@@ -79,7 +79,7 @@ public class Excel2003Util implements HSSFListener {
         return columnCount;
     }
 
-    public Map<ColumnRow, ColumnRow> getMergeRules() {
+    public Map<ColumnRow, ColumnRow> getMergeInfos() {
         return mergeCells;
     }
 
@@ -339,9 +339,9 @@ public class Excel2003Util implements HSSFListener {
             Pattern p = Pattern.compile(regEx);
             Matcher m = p.matcher(firstRow[i].toString());
             columnNames[i] = m.replaceAll(StringUtils.EMPTY).trim();
-//            if (ComparatorUtils.equals(StringUtils.EMPTY, columnNames[i])) {
-//                columnNames[i] = Inter.getLocText("BI-Field") + (i + 1);
-//            }
+            if (ComparatorUtils.equals(StringUtils.EMPTY, columnNames[i])) {
+                columnNames[i] = Inter.getLocText("BI-Field") + (i + 1);
+            }
         }
     }
 

@@ -12,19 +12,13 @@ import com.finebi.cube.structure.CubeTableEntityService;
 import com.finebi.cube.structure.table.CubeSourceHelper;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.common.factory.BIFactoryHelper;
-import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
-import com.fr.data.impl.DBTableData;
-import com.fr.data.impl.EmbeddedTableData;
-import com.fr.file.DatasourceManager;
+import com.fr.bi.web.conf.utils.BIWebSQLPreviewUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.general.DateUtils;
-import com.fr.general.data.DataModel;
-import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
-import com.fr.stable.StringUtils;
 import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +29,7 @@ import java.util.regex.Pattern;
 
 /**
  * Created by sheldon on 14-6-9.
+ * 增量更新SQL语句预览展示
  */
 public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
     @Override
@@ -51,16 +46,13 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
         Date lastUpdateDate = new Date();
         long threeDaysAgo = lastUpdateDate.getTime() - 24 * 3600 * 1000 * 3;
         lastUpdateDate.setTime(threeDaysAgo);
-//        String tableId = (String) table.get("id");
-//        ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
-//        ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
-//        CubeTableSource tableSource = null;
-//        Cube cube = new BICube(resourceRetrievalService, discovery);
-//        for (BusinessTable businessTable : BICubeConfigureCenter.getPackageManager().getAllTables(UserControl.getInstance().getSuperManagerID())) {
-//            if (businessTable.getID().getIdentity().equals(tableId)) {
-//                tableSource = businessTable.getTableSource();
-//            }
-//        }
+        //预览时不一定已经生成table，所以无法使用table类型来判断
+        String connectionName;
+        if (!table.toMap().get("connection_name").equals(DBConstant.CONNECTION.SQL_CONNECTION)) {
+            connectionName = table.getString("connection_name");
+        } else {
+            connectionName = table.getString("dataLinkName");
+        }
         CubeTableSource tableSource = CubeSourceHelper.getSource(new BITableKey((String) table.get("md5")));
         if (null != tableSource) {
             ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
@@ -72,50 +64,16 @@ public class BIGetTableUpdateSqlAction extends AbstractBIConfigureAction {
                 tableEntityService.clear();
             }
         }
+        JSONObject jo ;
         String sql = parseSQL(stringSql, lastUpdateDate);
-        JSONObject jo = new JSONObject();
-        jo.put("sql", sql);
-        jo.put("last_update_time", lastUpdateDate);
         BILoggerFactory.getLogger().info("preview SQL：" + sql);
-        if (StringUtils.isNotEmpty(sql)) {
-            //预览时不一定已经生成table，所以无法使用table类型来判断
-            String connectionName = null;
-            if (!table.toMap().get("connection_name").equals(DBConstant.CONNECTION.SQL_CONNECTION)) {
-                connectionName = table.getString("connection_name");
-            } else {
-                connectionName = table.getString("dataLinkName");
-            }
-            com.fr.data.impl.Connection dbc = DatasourceManager.getInstance().getConnection(connectionName);
-            DBTableData dbTableData = new DBTableData(dbc, sql);
-            try {
-                DataModel dm;
-                //转换成内置数据集
-                EmbeddedTableData emTableData = EmbeddedTableData.embedify(dbTableData, null, BIBaseConstant.PREVIEW_COUNT);
-                dm = emTableData.createDataModel(null);
-                int cols = dm.getColumnCount();
-                int rows = dm.getRowCount();
-                JSONArray fieldNameArray = new JSONArray();
-                JSONArray dataArray = new JSONArray();
-                for (int i = 0; i < cols; i++) {
-                    fieldNameArray.put(dm.getColumnName(i));
-                }
-                for (int i = 0; i < rows; i++) {
-                    JSONArray oneRow = new JSONArray();
-                    for (int j = 0; j < cols; j++) {
-                        oneRow.put(dm.getValueAt(i, j));
-                    }
-                    dataArray.put(oneRow);
-                }
-
-                jo.put("field_names", fieldNameArray);
-                jo.put("data", dataArray);
-            } catch (Exception e) {
-                BILoggerFactory.getLogger().error(e.getMessage());
-                jo.put("error", e.getMessage());
-            }
-        }
+        String finalQuery = BIWebSQLPreviewUtils.getFinalQuery(sql);
+        jo = BIWebSQLPreviewUtils.getPreviewData(finalQuery, connectionName);
+        jo.put("sql", sql).put("last_update_time", lastUpdateDate);
         WebUtils.printAsJSON(res, jo);
     }
+
+
 
     private String parseSQL(String sql, Date lastDate) {
         //替换上次更新时间

@@ -5,6 +5,7 @@ import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TreeLabelWidget;
 import com.fr.bi.cal.analyze.report.report.widget.tree.GetTreeTreeNodeExecutor;
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -68,6 +69,9 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
 
     private void getAllData(ArrayList<JSONArray> result, String[] values, String id, int floor) throws JSONException {
         List<String> vl;
+        if(values.length > 0 && "_*_".equals(values[0])) {
+            values = new String[0];
+        }
         vl = createData(values, floors, 1);
         if (!vl.isEmpty()) {
             if (result.size() > floor) {
@@ -94,6 +98,9 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
     private void concatArray(JSONArray arr1, JSONArray arr2)
             throws JSONException {
         for (int i = 0; i < arr2.length(); i++) {
+            if(arr1.length() >= BIReportConstant.TREE_LABEL.TREE_LABEL_ITEM_COUNT_NUM) {
+                return ;
+            }
             arr1.put(arr2.get(i));
         }
     }

@@ -162,7 +162,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
             return;
         }
         for (BITargetAndDimension dim : widget.getViewDimensions()) {
-            if (dim.createTableKey() != null && dim.createTableKey().getTableSource() != null) {
+            if (dim.getStatisticElement()!= null && dim.createTableKey() != null && dim.createTableKey().getTableSource() != null) {
                 CubeTableSource source = dim.createTableKey().getTableSource();
                 if (source.getType() == Constants.TABLE_TYPE.BASE || source.getType() == Constants.TABLE_TYPE.ETL) {
                     ((AnalysisCubeTableSource) source).getSourceUsedAnalysisETLSource(set);
@@ -170,7 +170,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
             }
         }
         for (BITargetAndDimension target : widget.getViewTargets()) {
-            if (target.createTableKey() != null && target.createTableKey().getTableSource() != null) {
+            if (target.getStatisticElement() != null && target.createTableKey() != null && target.createTableKey().getTableSource() != null) {
                 CubeTableSource source = target.createTableKey().getTableSource();
                 if (source.getType() == Constants.TABLE_TYPE.BASE || source.getType() == Constants.TABLE_TYPE.ETL) {
                     ((AnalysisCubeTableSource) source).getSourceUsedAnalysisETLSource(set);
@@ -229,14 +229,6 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
 
     public void clearUserBaseTableMap() {
         userBaseTableMap.clear();
-        BITargetAndDimension[] dimensionsArray = widget.getDimensions();
-        BITargetAndDimension[] targetsArray = widget.getTargets();
-        for (BITargetAndDimension dimension : dimensionsArray) {
-            dimension.refreshColumn();
-        }
-
-        for (BITargetAndDimension target : targetsArray) {
-            target.refreshColumn();
-        }
+        widget.refreshColumns();
     }
 }

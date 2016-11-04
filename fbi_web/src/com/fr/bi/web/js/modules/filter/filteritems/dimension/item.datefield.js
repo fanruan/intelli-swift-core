@@ -29,6 +29,7 @@ BI.DimensionDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
     _init: function () {
         BI.DimensionDateFieldFilterItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
+
         var left = this._buildConditions();
         this.deleteButton = BI.createWidget({
             type: "bi.icon_button",
@@ -55,7 +56,6 @@ BI.DimensionDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
                 }
             }]
         });
-
     },
 
     populate: function (items, keyword, context) {
@@ -93,7 +93,6 @@ BI.DimensionDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             case BICst.GROUP.M:
             case BICst.GROUP.W:
             case BICst.GROUP.S:
-                o.filter_type === BICst.DIMENSION_FILTER_DATE.BELONG_VALUE && (o.filter_type = BICst.DIMENSION_FILTER_STRING.BELONG_VALUE);
                 items = BICst.DIMENSION_FILTER_STRING_COMBO;
                 break;
             case BICst.GROUP.YMD:
@@ -116,6 +115,7 @@ BI.DimensionDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         });
         this._refreshFilterWidget(o.filter_type, o.filter_value);
         return [this.fieldButton, this.filterType, this.filterWidgetContainer];
+
     },
 
     _refreshFilterWidget: function (filterType, initData) {

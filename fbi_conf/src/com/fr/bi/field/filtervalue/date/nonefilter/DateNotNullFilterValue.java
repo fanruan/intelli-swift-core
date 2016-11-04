@@ -2,6 +2,7 @@ package com.fr.bi.field.filtervalue.date.nonefilter;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 
@@ -12,6 +13,9 @@ public class DateNotNullFilterValue extends DateNullFilterValue {
      *
      */
     private static final long serialVersionUID = 4639231565765338327L;
+
+    @BICoreField
+    private String CLASS_TYPE = "DateNotNullFilterValue";
 
     /**
      * 获取过滤后的索引

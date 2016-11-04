@@ -1432,6 +1432,12 @@
                 BICst.DEFAULT_CHART_SETTING.background_layer_info;
         },
 
+        getWSNullContinueByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.null_continue) ? ws.null_continue :
+                BICst.DEFAULT_CHART_SETTING.null_continue;
+        },
+
         //settings  ---- end ----
 
         getWidgetSettingsByID: function (wid) {
@@ -2671,7 +2677,7 @@
                             filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
                             filter_value: {
                                 type: value === BICst.LIST_LABEL_TYPE.ALL ? BI.Selection.All : BI.Selection.Multi,
-                                value: [value]
+                                value: [value === BICst.LIST_LABEL_TYPE.ALL ? "" : value]
                             },
                             // _src: {field_id: self.getFieldIDByDimensionID(dimensionIds[floor])}
                             _src: self.getDimensionSrcByID(dimensionIds[floor])
@@ -3176,7 +3182,7 @@
             var date = BI.isNull(consultedDate) ? new Date() : consultedDate;
             var currY = date.getFullYear(), currM = date.getMonth(), currD = date.getDate();
             date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-            if (BI.isNull(type) && BI.isNotNull(v.year)) {
+            if (BI.isNull(type) && isValidDate(v)) {
                 return new Date(v.year, v.month, v.day).getTime();
             }
             switch (type) {
@@ -3222,6 +3228,10 @@
                     return new Date(value.year, value.month, value.day).getTime();
 
             }
+        }
+
+        function isValidDate(v){
+            return BI.isNotNull(v.year) && BI.isNotNull(v.month) && BI.isNotNull(v.day);
         }
     }
 

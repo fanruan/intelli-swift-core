@@ -726,13 +726,14 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.tooltipSetting.setValue(BI.Utils.getWSToolTipSettingByID(wId));
         this.leftTitleStyle.setValue(BI.Utils.getWSLeftTitleStyleByID(wId));
         this.catTitleStyle.setValue(BI.Utils.getWSCatTitleStyleByID(wId));
+        this.nullContinuity.setSelected(BI.Utils.getWSNullContinueByID(wId));
 
         this.editTitleLY.setVisible(this.isShowTitleLY.isSelected());
         this.editTitleX.setVisible(this.isShowTitleX.isSelected());
         this.leftTitleStyle.setVisible(this.isShowTitleLY.isSelected());
         this.catTitleStyle.setVisible(this.isShowTitleX.isSelected());
         this.leftLabelStyle.setVisible(this.showLeftLabel.isSelected());
-        this.catLabelStyle.setVisible(this.showCatLabel.isSelected())
+        this.catLabelStyle.setVisible(this.showCatLabel.isSelected());
     },
 
     getValue: function () {
@@ -773,7 +774,8 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             v_grid_line_color: this.vGridLineColor.getValue(),
             tooltip_setting: this.tooltipSetting.getValue(),
             left_title_style: this.leftTitleStyle.getValue(),
-            cat_title_style: this.catTitleStyle.getValue()
+            cat_title_style: this.catTitleStyle.getValue(),
+            null_continue: this.nullContinuity.isSelected(),
         }
     }
 });

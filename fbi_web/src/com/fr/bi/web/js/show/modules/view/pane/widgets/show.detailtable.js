@@ -101,8 +101,8 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
                 textAlign: "left",
                 height: 25,
                 allowBlank: false,
-                errorText: function(v) {
-                    if(BI.isNotNull(v) && BI.trim(v) !== "") {
+                errorText: function (v) {
+                    if (BI.isNotNull(v) && BI.trim(v) !== "") {
                         return BI.i18nText("BI-Widget_Name_Can_Not_Repeat");
                     }
                     return BI.i18nText("BI-Widget_Name_Can_Not_Null");
@@ -131,7 +131,17 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
     },
 
     _createTools: function () {
-        var self = this;
+        var self = this, wId = this.model.get("id");
+
+        this.maximize = BI.createWidget({
+            type: "bi.maximization_4show",
+            wId: wId,
+            status: BICst.WIDGET_STATUS.SHOW
+        });
+        this.maximize.on(BI.Maximization4Show.EVENT_SET, function (widget) {
+            self.model.set(widget);
+        });
+
         var expand = BI.createWidget({
             type: "bi.icon_button",
             width: this._constants.TOOL_ICON_WIDTH,
@@ -183,14 +193,14 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
             height: this._constants.TOOL_ICON_HEIGHT
         });
         excel.on(BI.IconButton.EVENT_CHANGE, function () {
-            window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
-                + window.encodeURIComponent(self.model.get("name")));
+            window.location = FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
+                + window.encodeURIComponent(self.model.get("name"));
         });
 
         this.tools = BI.createWidget({
             type: "bi.left",
             cls: "operator-region",
-            items: [filterIcon, expand, excel],
+            items: [this.maximize, filterIcon, expand, excel],
             hgap: 3
         });
         this.tools.setVisible(false);
@@ -268,10 +278,12 @@ BIShow.DetailTableView = BI.inherit(BI.View, {
         }
         if (BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();
+            this.maximize.populate();
         }
         if (BI.has(changed, "dimensions") ||
             BI.has(changed, "sort_sequence")) {
             this.tablePopulate();
+            this.maximize.populate();
         }
         if (BI.has(changed, "settings") && (changed.settings.title_detail !== prev.settings.title_detail)) {
             this._refreshWidgetTitle()

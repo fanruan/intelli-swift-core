@@ -3,7 +3,6 @@ package com.fr.bi.web.conf.services;
 import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.stable.data.db.BIDBTableField;
 import com.fr.bi.web.conf.utils.BIImportDBTableConnectionRelationTool;
-
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.HashSet;

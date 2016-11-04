@@ -418,10 +418,19 @@ BI.ETL = BI.inherit(BI.Widget, {
             },
             validationChecker: function (v) {
                 return self.model.isValidTableTranName(v);
+            },
+            quitChecker: function(){
+                return false;
             }
         });
         tableName.on(BI.SignEditor.EVENT_CHANGE, function () {
             self.model.setTranName(tableName.getValue());
+        });
+        tableName.on(BI.SignEditor.EVENT_ERROR, function () {
+            self.saveButton.setEnable(false);
+        });
+        tableName.on(BI.SignEditor.EVENT_VALID, function () {
+            self.saveButton.setEnable(true);
         });
         tableName.setValue(this.model.getTranName());
 
@@ -489,6 +498,12 @@ BI.ETL = BI.inherit(BI.Widget, {
                 all_fields: this.model.getAllFields(),
                 isFinal: this.model.getAllTables().length === 1
             }
+        });
+        tableInfo.on(BI.TableFieldWithSearchPane.EVENT_VALID, function(){
+            self.saveButton.setEnable(true);
+        });
+        tableInfo.on(BI.TableFieldWithSearchPane.EVENT_ERROR, function(){
+           self.saveButton.setEnable(false);
         });
         tableInfo.on(BI.TableFieldWithSearchPane.EVENT_RELATION_CHANGE, function (fieldId) {
             BI.Popovers.remove(fieldId);

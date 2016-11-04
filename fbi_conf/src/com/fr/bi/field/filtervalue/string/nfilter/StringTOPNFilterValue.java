@@ -5,6 +5,7 @@ package com.fr.bi.field.filtervalue.string.nfilter;
 
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.filtervalue.NFilterValue;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.LightNode;
@@ -12,6 +13,9 @@ import com.fr.bi.stable.report.result.LightNode;
 
 public class StringTOPNFilterValue extends StringNFilterValue implements NFilterValue{
     private static String XML_TAG = "StringTOPNFilterValue";
+
+    @BICoreField
+    private String CLASS_TYPE = "StringTOPNFilterValue";
 
     /**
      * 是否显示记录

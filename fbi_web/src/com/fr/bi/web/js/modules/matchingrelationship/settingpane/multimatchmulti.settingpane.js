@@ -29,6 +29,7 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
             var paths = self._packageValueByValue(this.getValue());
             self.lpath = paths.lpath;
             self.rpath = paths.rpath;
+            self.fireEvent(BI.MultiMatchMultiPathChooser.EVENT_PATH_CHANGE, self.lpath.length !== 0 && self.rpath.length !== 0);
         });
         this.lpath = [];
         this.rpath = [];
@@ -72,7 +73,7 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
                     type: "bi.label",
                     textAlign: "left",
                     lgap: 20,
-                    text: BI.i18nText("BI-Tip_Only_One_Path_Between_Dimension_Target"),
+                    text: BI.i18nText("BI-Tip_Only_One_Path_Between_Dimension_Target_And_Combine_Table"),
                     cls: "one-path-label"
                 });
             case this.constants.MorePath:
@@ -132,13 +133,15 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
                 }
             });
             //左右两侧路径上的value值可能相同，相同的话要改一下
-            var leftValues = BI.pluck(joinRegion[idx], "value");
-            BI.each(p, function(id, obj){
-                if(BI.contains(leftValues, obj.value) && obj.text !== BI.i18nText("BI-Primary_Key")){
-                    obj.value = BI.UUID();
-                    obj.region = BI.UUID();
-                }
-            });
+            BI.each(joinRegion, function(j, region){
+                var leftValues = BI.pluck(region, "value");
+                BI.each(p, function(id, obj){
+                    if(BI.contains(leftValues, obj.value) && obj.text !== BI.i18nText("BI-Primary_Key")){
+                        obj.value = BI.UUID();
+                        obj.region = BI.UUID();
+                    }
+                });
+            })
             self.pathValueMap[pId] = BI.pluck(p, "value");
             self.pathRelationMap[pId] = path;
             return p;
@@ -236,8 +239,8 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
             return BI.isNotNull(lkey) && BI.isNotNull(rkey);
         });
         var result = {};
-        result.lpath = this.pathRelationMap[lkey] || this.lpath;
-        result.rpath = this.pathRelationMap[rkey] || this.rpath;
+        result.lpath = this.pathRelationMap[lkey] || [];
+        result.rpath = this.pathRelationMap[rkey] || [];
         return result;
     },
 

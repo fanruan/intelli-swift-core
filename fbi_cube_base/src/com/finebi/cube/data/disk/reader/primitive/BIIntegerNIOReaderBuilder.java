@@ -1,6 +1,5 @@
 package com.finebi.cube.data.disk.reader.primitive;
 
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.input.primitive.ICubeIntegerReader;
 import com.finebi.cube.data.input.primitive.ICubeIntegerReaderBuilder;
 import com.finebi.cube.location.ICubeResourceLocation;
@@ -21,6 +20,6 @@ public class BIIntegerNIOReaderBuilder extends BIPrimitiveNIOReaderBuilder<ICube
 
     @Override
     protected ICubeIntegerReader createNIOReader(File target, ICubeResourceLocation targetLocation) {
-        return new BIIntegerNIOReader(target);
+        return isSingleFile(target) ? new BIIntegerSingleFileNIOReader(target) : new BIIntegerNIOReader(target);
     }
 }

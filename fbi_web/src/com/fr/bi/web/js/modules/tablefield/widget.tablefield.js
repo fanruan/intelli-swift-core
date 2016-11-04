@@ -209,9 +209,28 @@ BI.TableFieldInfo = BI.inherit(BI.Widget, {
                         }
                     }
                 });
+                if(isValid === true){
+                    BI.any(self.tableInfo.fields, function(idx, catagory){
+                        return BI.any(catagory, function(id, field){
+                            if(field.field_name === v){
+                                isValid = false;
+                                return true;
+                            }
+                        })
+                    });
+                }
                 return isValid;
+            },
+            quitChecker: function(){
+                return false;
             }
         });
+        transName.on(BI.SignEditor.EVENT_ERROR, function(){
+            self.fireEvent(BI.TableFieldInfo.EVENT_ERROR);
+        });
+        transName.on(BI.SignEditor.EVENT_VALID, function(){
+            self.fireEvent(BI.TableFieldInfo.EVENT_VALID);
+        })
         transName.on(BI.SignEditor.EVENT_CHANGE, function () {
             transName.setTitle(transName.getValue());
             self.translations[fieldId] = transName.getValue();
@@ -324,6 +343,8 @@ BI.TableFieldInfo = BI.inherit(BI.Widget, {
         return this.usedFields;
     }
 });
+BI.TableFieldInfo.EVENT_VALID = "EVENT_VALID";
+BI.TableFieldInfo.EVENT_ERROR = "EVENT_ERROR";
 BI.TableFieldInfo.EVENT_USABLE_CHANGE = "EVENT_USABLE_CHANGE";
 BI.TableFieldInfo.EVENT_RELATION_CHANGE = "EVENT_RELATION_CHANGE";
 BI.TableFieldInfo.EVENT_TRANSLATION_CHANGE = "EVENT_TRANSLATION_CHANGE";

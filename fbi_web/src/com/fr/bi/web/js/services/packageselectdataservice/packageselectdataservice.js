@@ -337,7 +337,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     pId: tableId,
                     wId: o.wId,
                     type: "bi.detail_select_data_level0_item",
-                    isPrimaryKey: BI.contains(self.primaryFieldIds, fid),
+                    //isPrimaryKey: BI.contains(self.primaryFieldIds, fid),
                     layer: 1,
                     fieldType: BI.Utils.getFieldTypeByID(fid),
                     text: fieldName,
@@ -405,7 +405,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 pId: tableId,
                 wId: o.wId,
                 type: isRelation ? "bi.detail_select_data_level2_item" : "bi.detail_select_data_level1_item",
-                isPrimaryKey: BI.contains(self.primaryFieldIds, fid),
+                //isPrimaryKey: BI.contains(self.primaryFieldIds, fid),
                 layer: isRelation ? 3 : 2,
                 fieldType: BI.Utils.getFieldTypeByID(fid),
                 text: fieldName,
@@ -460,12 +460,25 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         }
 
         var fields = o.fieldsCreator(tableId, isRelation);
-        if ((fields.length === 1 && BI.Utils.getFieldTypeByID(fields[0].id)) === BICst.COLUMN.COUNTER
-            || fields.length === 0) {
+        if ((fields.length === 1 && BI.Utils.getFieldTypeByID(fields[0].id)) === BICst.COLUMN.COUNTER) {
             fieldStructure.push({
                 type: "bi.label",
                 value: BI.UUID(),
                 text: BI.i18nText("BI-(Empty)"),
+                pId: tableId,
+                id: BI.UUID(),
+                wId: o.wId,
+                textAlign: "left",
+                lgap: isRelation ? c.FIELD_GAP * 2 : c.FIELD_GAP,
+                disabled: true
+            });
+            return fieldStructure;
+        }
+        if(fields.length === 0){
+            fieldStructure.push({
+                type: "bi.label",
+                value: BI.UUID(),
+                text: BI.i18nText("BI-No_Useable_Fields"),
                 pId: tableId,
                 id: BI.UUID(),
                 wId: o.wId,
@@ -531,7 +544,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                     wId: o.wId,
                     type: isRelation ? "bi.detail_select_data_level1_item" : "bi.detail_select_data_level0_item",
                     layer: isRelation ? 2 : 1,
-                    isPrimaryKey: BI.contains(self.primaryFieldIds, fid),
+                    //isPrimaryKey: BI.contains(self.primaryFieldIds, fid),
                     fieldType: BI.Utils.getFieldTypeByID(fid),
                     text: fieldName,
                     title: self._getTitleByFieldId(fid),

@@ -38,6 +38,11 @@ class TableCell extends Component {
         super(props, context);
     }
 
+    static contextTypes = {
+        $template: React.PropTypes.object,
+        actions: React.PropTypes.object
+    };
+
     static propTypes = {};
 
     static defaultProps = {
@@ -66,36 +71,36 @@ class TableCell extends Component {
         const {$widget, wId, ...props} = this.props, {...state} = this.state;
         const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(this.context.$template));
         const dId = props.dId;
-        const linkStyle = [];
+        const linkedWidgets = [];
         if (!widget.isDimensionById(dId)) {
             const linkage = widget.getWidgetLinkage();
-            const linkedWidgets = [];
             linkage.forEach((link)=> {
                 if (link.from === dId) {
                     linkedWidgets.push(link.to);
                 }
             });
-            if (linkedWidgets.length > 0) {
-                linkStyle.push(styles.linkage);
-            }
         }
 
         return <Layout flex cross={'center'} style={[{width: this.props.width, height: this.props.height}, {
             paddingLeft: props.layer * 30 + 4
         }]}>
-            {this._renderContent(props.text, linkStyle)}
+            {this._renderContent(linkedWidgets)}
         </Layout>
     }
 
-    _renderContent(text, style) {
-        if (style.length > 0) {
+    _renderContent(linkedWidgets) {
+        if (linkedWidgets.length > 0) {
             return <TextLink onPress={()=> {
-                console.log(text);
-            }} style={style} numberOfLines={2}>{text}</TextLink>
+                linkedWidgets.forEach((toWid)=>{
+                    let clicked = {};
+                    clicked[this.props.dId] = this.props.clicked;
+                    this.context.actions.widgetLinkage(toWid, clicked);
+                });
+            }} style={styles.linkage} numberOfLines={2}>{this.props.text}</TextLink>
         } else {
             return <Text
                 numberOfLines={2}
-            >{text}</Text>
+            >{this.props.text}</Text>
         }
     }
 
@@ -106,4 +111,4 @@ const styles = StyleSheet.create({
         borderBottom: '1px solid #d4dadd'
     }
 });
-export default TableCell
+export default TableCell;

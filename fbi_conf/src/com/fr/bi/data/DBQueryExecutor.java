@@ -26,7 +26,7 @@ public class DBQueryExecutor {
     }
 
     private void initialExtractor() {
-    DRIEVER_EXTRACOTR.put("org.apache.hive.jdbc.HiveDriver",new HiveExtractor());
+        DRIEVER_EXTRACOTR.put("org.apache.hive.jdbc.HiveDriver", new HiveExtractor());
     }
 
     public static DBQueryExecutor getInstance() {
@@ -52,6 +52,14 @@ public class DBQueryExecutor {
             return DRIEVER_EXTRACOTR.get(sql.getConn().getDriver()).runSQL(sql, columns, traversal, row);
         } else {
             return defaultExtractor.runSQL(sql, columns, traversal, row);
+        }
+    }
+
+    public boolean testSQL(SQLStatement sql) {
+        if (DRIEVER_EXTRACOTR.containsKey(sql.getConn().getDriver())) {
+            return true;
+        } else {
+            return defaultExtractor.testSQL(sql);
         }
     }
 }

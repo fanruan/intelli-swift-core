@@ -6,12 +6,13 @@
  * @class BI.ReportListViewItem
  * @extends BI.Single
  */
-BI.ReportListViewItem = BI.inherit(BI.Single, {
+BI.ReportListViewItem = BI.inherit(BI.BasicButton, {
 
     _defaultConfig: function () {
         return BI.extend(BI.ReportListViewItem.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-template-manager-file-item bi-list-item",
+            baseCls: "bi-template-manager-file-item bi-list-item cursor-pointer",
             height: 40,
+            disableSelected: true,
             validationChecker: BI.emptyFn,
             id: null,
             value: null,
@@ -24,7 +25,8 @@ BI.ReportListViewItem = BI.inherit(BI.Single, {
         var self = this, o = this.options;
         this.status = o.status;
         this.checkbox = BI.createWidget({
-            type: "bi.checkbox"
+            type: "bi.checkbox",
+            stopPropagation: true
         });
         this.checkbox.on(BI.Controller.EVENT_CHANGE, function () {
             arguments[2] = self;
@@ -47,9 +49,6 @@ BI.ReportListViewItem = BI.inherit(BI.Single, {
         this.editor.on(BI.ShelterEditor.EVENT_CONFIRM, function () {
             o.onRenameReport(this.getValue());
             this.setTitle(this.getValue());
-        });
-        this.editor.on(BI.ShelterEditor.EVENT_CLICK_LABEL, function () {
-            o.onClickReport.apply(self, arguments);
         });
 
         if (o.isAdmin === false) {
@@ -105,7 +104,8 @@ BI.ReportListViewItem = BI.inherit(BI.Single, {
                 title: BI.i18nText("BI-Cancel_Shared_Users"),
                 width: 16,
                 height: 16,
-                invisible: true
+                invisible: true,
+                stopPropagation: true
             });
             sharedButton.on(BI.IconButton.EVENT_CHANGE, function(){
                 var id = BI.UUID();
@@ -177,9 +177,6 @@ BI.ReportListViewItem = BI.inherit(BI.Single, {
             text: "",
             height: 40
         });
-        this.blankSpace.on(BI.TextButton.EVENT_CHANGE, function () {
-            o.onClickReport.apply(self, arguments);
-        });
 
         BI.createWidget({
             type: "bi.htape",
@@ -218,12 +215,15 @@ BI.ReportListViewItem = BI.inherit(BI.Single, {
                 width: 230
             }, {
                 el: this.blankSpace,
-                width: "fill"
+                width: 50
+            }, {
+                type: "bi.vertical_adapt",
+                hgap: 20,
+                items: [sharedButton, this.hangout, renameIcon, deleteIcon]
             }, {
                 el: {
                     type: "bi.left_right_vertical_adapt",
                     items: {
-                        left: [sharedButton, this.hangout, renameIcon, deleteIcon],
                         right: [timeText]
                     },
                     llgap: 20,
@@ -232,6 +232,12 @@ BI.ReportListViewItem = BI.inherit(BI.Single, {
                 width: 320
             }]
         });
+    },
+
+    doClick: function(){
+        var self = this, o = this.options;
+        BI.ReportListViewItem.superclass.doClick.apply(this, arguments);
+        o.onClickReport.apply(self, arguments);
     },
 
     _onClickHangout: function () {

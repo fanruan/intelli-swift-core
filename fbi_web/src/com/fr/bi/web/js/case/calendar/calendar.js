@@ -171,16 +171,14 @@ BI.extend(BI.Calendar, {
         var months = new Date().getMonth();
         var page = v;
 
-        //对当前page做偏移,使到当前年初或年末
-        var adjust = page >= 0 ? months - 12 : months;
-        page = page + adjust;
+        //对当前page做偏移,使到当前年初
+        page = page + months;
 
         var year = BI.parseInt(page / 12);
-        var month = page > 0 ? (page % 12) : (12 + page % 12);
-        if((v > 0 && page <= 0) || (v < 0 && page >= 0)){
-        }else{
-            year = v > 0 ? (year + 1) : (year - 1);
+        if(page < 0 && page % 12 !== 0){
+            year--;
         }
+        var month = page >= 0 ? (page % 12) : ((12 + page % 12) % 12);
         return {
             year: new Date().getFullYear() + year,
             month: month

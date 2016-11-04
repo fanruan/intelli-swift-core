@@ -67,7 +67,7 @@ public class Excel2007Util {
             processFirstSheetFromBI();
         }
         // 处理一下单元格合并
-        //mergeCell();
+        mergeCell();
 
         // 遍历一下所有的格子
         dealWithSomething();
@@ -108,7 +108,7 @@ public class Excel2007Util {
         return rowDataList;
     }
 
-    public Map<ColumnRow, ColumnRow> getMergeRules() {
+    public Map<ColumnRow, ColumnRow> getMergeInfos() {
         return mergeCells;
     }
 
@@ -187,11 +187,11 @@ public class Excel2007Util {
                     Matcher m = p.matcher(cName);
                     cName = m.replaceAll(StringUtils.EMPTY).trim();
                     columnNames[j] = cName;
-//                    if (ComparatorUtils.equals(StringUtils.EMPTY, cName)) {
-//                        columnNames[j] = Inter.getLocText("BI-Field");
-//                    }
+                    if (ComparatorUtils.equals(StringUtils.EMPTY, cName)) {
+                        columnNames[j] = Inter.getLocText("BI-Field");
+                    }
                 }
-                //createDistinctColumnNames();
+                createDistinctColumnNames();
             } else if (i == 1) {
                 columnTypes = new int[columnCount];
                 for (int j = 0; j < columnCount; j++) {
@@ -471,7 +471,6 @@ public class Excel2007Util {
                         tempData.add(StringUtils.EMPTY);
                     }
                 }
-//                String mergeCellId = UUID.randomUUID().toString();
                 tempData.add(cellValue);
 
                 if (thisColumn > -1) {
