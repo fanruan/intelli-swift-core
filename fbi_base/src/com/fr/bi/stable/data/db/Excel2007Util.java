@@ -108,7 +108,7 @@ public class Excel2007Util {
         return rowDataList;
     }
 
-    public Map<ColumnRow, ColumnRow> getMergeRules() {
+    public Map<ColumnRow, ColumnRow> getMergeInfos() {
         return mergeCells;
     }
 

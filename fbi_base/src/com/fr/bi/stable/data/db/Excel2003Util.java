@@ -79,7 +79,7 @@ public class Excel2003Util implements HSSFListener {
         return columnCount;
     }
 
-    public Map<ColumnRow, ColumnRow> getMergeRules() {
+    public Map<ColumnRow, ColumnRow> getMergeInfos() {
         return mergeCells;
     }
 

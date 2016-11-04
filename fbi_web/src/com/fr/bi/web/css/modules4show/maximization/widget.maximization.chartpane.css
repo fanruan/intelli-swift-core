@@ -10,3 +10,10 @@
 .bi-maximization-4show-chart-pane .dashboard-title-detail {
   font-size: 16px;
 }
+.bi-maximization-4show-chart-pane .dashboard-title-left .shelter-editor-text {
+  cursor: default;
+}
+.bi-maximization-4show-chart-pane .dashboard-title-left .shelter-editor-text .bi-text {
+  text-align: left;
+  font-size: 14px;
+}

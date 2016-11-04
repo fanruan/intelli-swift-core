@@ -38,6 +38,15 @@ class Template {
         return DimensionFactory.createTarget(this.get$DimensionById(id), id, this.getWidgetById(this.getWidgetIDByDimensionID(id)));
     }
 
+    getAllDimensionAndTargetIds() {
+        let ids = [];
+        const allWIds = this.getAllWidgetIds();
+        allWIds.forEach((wid)=> {
+            ids = ids.concat(this.getWidgetById(wid).getAllDimensionAndTargetIds());
+        });
+        return ids;
+    }
+
     getAllWidgetIds() {
         const res = [];
         this.$template.get('widgets').forEach(($widget, wId)=> {
@@ -85,20 +94,20 @@ class Template {
     }
 
     isWidgetExistByID(wid) {
-        return this.getAllWidgetIDs().contains(wid);
+        return this.getAllWidgetIds().indexOf(wid) > -1;
     }
 
     getWidgetIDByDimensionID(dId) {
         if (!this._dimension2WidgetMap) {
             this._dimension2WidgetMap = {};
         }
-        if (BI.isNotNull(this._dimension2WidgetMap[dId])) {
+        if (!isNil(this._dimension2WidgetMap[dId])) {
             return this._dimension2WidgetMap[dId];
         }
         var widgets = this.getAllWidgetIds();
-        var wid = find(widgets, function (wid) {
-            var dims = this.getWidgetById(wid).getAllDimensionIds();
-            return find(dims, function (id) {
+        var wid = find(widgets, (wid)=> {
+            var dims = this.getWidgetById(wid).getAllDimensionAndTargetIds();
+            return find(dims, (id)=> {
                 return dId == id;
             })
         });
@@ -119,8 +128,13 @@ class Template {
         }
         return {};
     }
-
+    
     getWidgetLinkageByID(wid) {
+        const widget = this.getWidgetById(wid);
+        return widget.getWidgetLinkage();
+    }
+
+    getWidgetLinkageValueByID(wid) {
         var widget = this.getWidgetById(wid);
         return widget.getLinkageValues();
     }

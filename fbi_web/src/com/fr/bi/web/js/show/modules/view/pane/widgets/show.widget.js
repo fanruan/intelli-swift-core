@@ -26,7 +26,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
             var allFromIds = BI.Utils.getAllLinkageFromIdsByID(BI.Utils.getWidgetIDByDimensionID(dId));
             //这条链上所有的其他clicked都应当被清掉
             BI.each(clicked, function (cid, click) {
-                if (allFromIds.contains(cid)) {
+                if (allFromIds.contains(cid) || BI.Utils.isDimensionByDimensionID(cid)) {
                     delete clicked[cid];
                 }
             });
@@ -228,8 +228,8 @@ BIShow.WidgetView = BI.inherit(BI.View, {
             height: this._constants.TOOL_ICON_HEIGHT
         });
         excel.on(BI.IconButton.EVENT_CHANGE, function () {
-            window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
-                + window.encodeURIComponent(self.model.get("name")));
+            window.location = FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
+                + window.encodeURIComponent(self.model.get("name"));
         });
 
         this.tools = BI.createWidget({

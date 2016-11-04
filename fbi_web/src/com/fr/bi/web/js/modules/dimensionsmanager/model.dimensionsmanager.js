@@ -56,6 +56,7 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
         // 1、各个类型不受切换影响；2、表格不受影响；
         // 3、图表的分类或系列最多只能有一个显示；4、当图表的used指标多于1的时候，系列不可用也不勾选
         // 5、对比柱状/面积/条形图,范围面积,多值轴组合,瀑布,气泡,力学,散点,漏斗这些个图指标区域是单选的
+        // 6、对于饼/圆环/仪表盘图，指标区域多选的话，分类或系列不能有勾选
         var dimensions = BI.Utils.getWidgetDimensionsByID(wId);
 
         //处理切换后的

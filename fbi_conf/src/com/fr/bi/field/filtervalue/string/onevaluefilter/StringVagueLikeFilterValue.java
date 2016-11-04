@@ -1,5 +1,6 @@
 package com.fr.bi.field.filtervalue.string.onevaluefilter;
 
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.utils.program.BIPhoneticismUtils;
 
 /**
@@ -10,6 +11,9 @@ public class StringVagueLikeFilterValue  extends StringOneValueFilterValue  {
 
     private static final long serialVersionUID = 8800780063479152525L;
     private static String XML_TAG = "StringVagueLikeFilterValue";
+
+    @BICoreField
+    private String CLASS_TYPE = "StringVagueLikeFilterValue";
 
     @Override
     public boolean isMatchValue(String key) {

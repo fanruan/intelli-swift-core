@@ -52,6 +52,14 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
             });
         });
 
+        this.tipLabel = BI.createWidget({
+            type: "bi.label",
+            cls: "setting-tip-label",
+            text: BI.i18nText("BI-Please_Select_Path_Between_Target_And_Dimension"),
+            height: this.constants.labelHeight,
+            rgap: 15
+        });
+
         this.tab = BI.createWidget({
             type: "bi.tab",
             height: 200,
@@ -93,13 +101,7 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
             }, {
                 el: {
                     type: "bi.left",
-                    items: [{
-                        type: "bi.label",
-                        cls: "setting-tip-label",
-                        text: BI.i18nText("BI-Please_Select_Path_Between_Target_And_Dimension"),
-                        height: this.constants.labelHeight,
-                        rgap: 15
-                    }, {
+                    items: [this.tipLabel, {
                         type: "bi.icon_button",
                         height: this.constants.labelHeight,
                         cls: "path-set-doubt"
@@ -121,6 +123,7 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
         var self = this;
         switch (v) {
             case this.constants.Multi_Path:
+                this.tipLabel.setText(BI.i18nText("BI-Please_Select_Dimenison_And_Target_Relation_Below"));
                 var multiPathChooser = BI.createWidget({
                     type: "bi.multi_path_chooser",
                     height: 200
@@ -130,6 +133,7 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
                 });
                 return multiPathChooser;
             case this.constants.Multi_Match_Multi:
+                this.tipLabel.setText(BI.i18nText("BI-Please_Select_Path_Between_Target_And_Dimension"));
                 var multiMatchMultiPathChooser = BI.createWidget({
                     type: "bi.multi_match_multi_path_chooser",
                     height: 200

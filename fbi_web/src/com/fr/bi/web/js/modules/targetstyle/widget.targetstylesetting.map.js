@@ -55,7 +55,6 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
             value: BI.i18nText("BI-Separators"),
             width: 80
         });
-        this.separators.setSelected(styleSettings.num_separators);
 
         var example = BI.createWidget({
             type: "bi.label",
@@ -63,6 +62,8 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
         });
 
         this.showSeparators = styleSettings.num_separators || false;
+
+        this.separators.setSelected(this.showSeparators);
 
         example.setText(this._switchLabel(this.showSeparators));
 

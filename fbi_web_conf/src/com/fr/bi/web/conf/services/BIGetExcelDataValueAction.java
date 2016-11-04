@@ -4,6 +4,7 @@ import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.bi.web.conf.utils.BIGetImportedExcelData;
 import com.fr.stable.StringUtils;
 import com.fr.web.utils.WebUtils;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,7 +19,6 @@ public class BIGetExcelDataValueAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         String fileName = WebUtils.getHTTPRequestParameter(req, "fileName");
-
         if( StringUtils.isNotBlank(fileName) ) {
             BIGetImportedExcelData excelData = new BIGetImportedExcelData( fileName );
             WebUtils.printAsJSON(res, excelData.getFieldsAndPreviewData());

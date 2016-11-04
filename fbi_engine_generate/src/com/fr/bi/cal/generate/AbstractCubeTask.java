@@ -1,8 +1,8 @@
 package com.fr.bi.cal.generate;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.CubeBuild;
-import com.finebi.cube.impl.conf.CubeBuildComplete;
+import com.finebi.cube.conf.CubeBuildStuff;
+import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.index.IndexGenerator;
 import com.fr.bi.cal.generate.relation.RelationGenerator;
@@ -28,7 +28,7 @@ public abstract class AbstractCubeTask implements CubeTask {
 
     private Date end;
     protected BIUser biUser;
-    private CubeBuild cubeBuild;
+    private CubeBuildStuff cubeBuild;
     
 
     public AbstractCubeTask(long userId) {
@@ -53,7 +53,7 @@ public abstract class AbstractCubeTask implements CubeTask {
     @Override
     public void start() {
         start = new Date();
-        cubeBuild =new CubeBuildComplete(biUser);
+        cubeBuild =new CubeBuildStuffComplete(biUser);
         BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
         BIConfigureManagerCenter.getLogManager().logStart(getUserId());
     }

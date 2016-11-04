@@ -78,7 +78,13 @@ BIDezi.SingleSliderDetailView = BI.inherit(BI.View, {
     },
     _buildNorth: function () {
         var self = this;
-
+        this.title = BI.createWidget({
+            type: "bi.label",
+            textAlign: "left",
+            height: 22,
+            width: 400,
+            text: this.model.get("name")
+        });
         var complete = BI.createWidget({
             type: "bi.button",
             height: 25,
@@ -93,6 +99,7 @@ BIDezi.SingleSliderDetailView = BI.inherit(BI.View, {
         return BI.createWidget({
             type: "bi.left_right_vertical_adapt",
             items: {
+                left: [this.title],
                 right: [complete]
             },
             lhgap: this.constants.DETAIL_PANE_HORIZONTAL_GAP,
@@ -118,7 +125,6 @@ BIDezi.SingleSliderDetailView = BI.inherit(BI.View, {
     },
     _buildCenter: function () {
         var combo = this._createCombo();
-
         var top = BI.createWidget({
             type: "bi.vtape",
             cls: "widget-top-wrapper",
