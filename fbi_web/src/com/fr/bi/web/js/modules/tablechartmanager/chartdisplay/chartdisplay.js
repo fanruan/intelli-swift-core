@@ -72,7 +72,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
             });
         }
         this.fireEvent(BI.ChartDisplay.EVENT_CHANGE, obj);
-
+        
         function hasFormula() {
             var linkages = BI.Utils.getWidgetLinkageByID(o.wId);
             for (var i = 0; i < linkages.length; i++) {
@@ -113,13 +113,16 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
         //上钻
         if (BI.isNull(drillId)) {
             if (drillOperators.length !== 0) {
-                var val = drillOperators[drillOperators.length - 1].values[0].value[0];
-                while (val !== value) {
+                var val = drillOperators[drillOperators.length - 1].values[0].dId;
+                while (val !== dId) {
                     if (drillOperators.length === 0) {
                         break;
                     }
                     var obj = drillOperators.pop();
-                    val = obj.values[0].value[0];
+                    val = obj.values[0].dId;
+                }
+                if(val === dId && drillOperators.length !== 0){
+                    drillOperators.pop();
                 }
             }
         } else {
@@ -434,9 +437,11 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         chart_font: BI.extend(BI.Utils.getGSChartFont(o.wId), {
                             fontSize: BI.Utils.getGSChartFont(o.wId).fontSize + "px"
                         }),
+                        null_continue: BI.Utils.getWSNullContinueByID(o.wId),
                         show_left_label: false,
                         show_right_label: false,
                         show_right2_label: false,
+                        cat_label_style: BI.Utils.getWSCatLabelStyleByID(o.wId),
                         line_width: BICst.DEFAULT_CHART_SETTING.mini_line_width,
                         enable_tick: BICst.DEFAULT_CHART_SETTING.mini_enable_tick,
                         enable_minor_tick: BICst.DEFAULT_CHART_SETTING.mini_enable_minor_tick,

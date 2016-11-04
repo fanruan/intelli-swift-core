@@ -2,6 +2,7 @@
 BIDezi.YearMonthDetailModel = BI.inherit(BI.Model, {
     _defaultConfig: function () {
         return BI.extend(BIDezi.YearMonthDetailModel.superclass._defaultConfig.apply(this, arguments), {
+            name: "",
             dimensions: {},
             view: {},
             type: BICst.WIDGET.MONTH,

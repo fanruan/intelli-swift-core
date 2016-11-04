@@ -68,7 +68,7 @@ BI.Table = BI.inherit(BI.Widget, {
         this.topLeftBodyItems = {};
         var table = this._table();
         var colgroup = this._createColGroup(this.columnLeft, this.topLeftColGroupTds);
-        var body = this._body();
+        var body = this.topLeftBody = this._body();
         body.element.append(this._createHeaderCells(this.topLeftItems, this.columnLeft, this.mergeLeft, this.topLeftBodyTds, this.topLeftBodyItems));
         BI.createWidget({
             type: "bi.adaptive",
@@ -100,7 +100,7 @@ BI.Table = BI.inherit(BI.Widget, {
         this.topRightBodyItems = {};
         var table = this._table();
         var colgroup = this._createColGroup(this.columnRight, this.topRightColGroupTds);
-        var body = this._body();
+        var body = this.topRightBody = this._body();
         body.element.append(this._createHeaderCells(this.topRightItems, this.columnRight, this.mergeRight, this.topRightBodyTds, this.topRightBodyItems, this.columnLeft.length));
         BI.createWidget({
             type: "bi.adaptive",
@@ -132,7 +132,7 @@ BI.Table = BI.inherit(BI.Widget, {
         this.bottomLeftBodyItems = {};
         var table = this._table();
         var colgroup = this._createColGroup(this.columnLeft, this.bottomLeftColGroupTds);
-        var body = this._body();
+        var body = this.bottomLeftBody = this._body();
         body.element.append(this._createCells(this.bottomLeftItems, this.columnLeft, this.mergeLeft, this.bottomLeftBodyTds, this.bottomLeftBodyItems));
         BI.createWidget({
             type: "bi.adaptive",
@@ -164,7 +164,7 @@ BI.Table = BI.inherit(BI.Widget, {
         this.bottomRightBodyItems = {};
         var table = this._table();
         var colgroup = this._createColGroup(this.columnRight, this.bottomRightColGroupTds);
-        var body = this._body();
+        var body = this.bottomRightBody = this._body();
         body.element.append(this._createCells(this.bottomRightItems, this.columnRight, this.mergeRight, this.bottomRightBodyTds, this.bottomRightBodyItems, this.columnLeft.length));
         BI.createWidget({
             type: "bi.adaptive",

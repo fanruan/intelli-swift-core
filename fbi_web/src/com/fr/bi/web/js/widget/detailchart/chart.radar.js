@@ -85,11 +85,11 @@ BI.RadarChart = BI.inherit(BI.AbstractChart, {
         config.angleAxis[0].lineColor = this.config.left_line_color;
         config.angleAxis[0].gridLineWidth = this.config.show_v_grid_line === true ? 1 : 0;
 
-        config.radiusAxis[0].title.style  = this.config.chart_font;
-        config.angleAxis[0].title.style  = this.config.chart_font;
+        config.radiusAxis[0].title.style = this.config.chart_font;
+        config.angleAxis[0].title.style = this.config.chart_font;
 
-        config.legend.style = BI.extend( this.config.chart_legend_setting, {
-            fontSize:  this.config.chart_legend_setting.fontSize + "px"
+        config.legend.style = BI.extend(this.config.chart_legend_setting, {
+            fontSize: this.config.chart_legend_setting.fontSize + "px"
         });
 
         return [items, config];
@@ -173,7 +173,7 @@ BI.RadarChart = BI.inherit(BI.AbstractChart, {
             num_separators: options.num_separators || false,
             chart_font: options.chart_font || c.FONT_STYLE,
             show_left_label: BI.isNull(options.show_left_label) ? true : options.show_left_label,
-            left_label_style: options.left_label_style ||  c.LEFT_LABEL_STYLE,
+            left_label_style: options.left_label_style || c.LEFT_LABEL_STYLE,
             left_line_color: options.left_line_color || "",
             chart_legend_setting: options.chart_legend_setting || {},
             show_h_grid_line: BI.isNull(options.show_h_grid_line) ? true : options.show_h_grid_line,

@@ -77,6 +77,13 @@ BIDezi.TreeDetailView = BI.inherit(BI.View, {
 
     _buildNorth: function () {
         var self = this;
+        this.title = BI.createWidget({
+            type: "bi.label",
+            textAlign: "left",
+            height: 22,
+            width: 400,
+            text: this.model.get("name")
+        });
         var shrink = BI.createWidget({
             type: "bi.button",
             height: 25,
@@ -89,6 +96,7 @@ BIDezi.TreeDetailView = BI.inherit(BI.View, {
         return BI.createWidget({
             type: "bi.left_right_vertical_adapt",
             items: {
+                left: [this.title],
                 right: [shrink]
             },
             lhgap: this.constants.DETAIL_PANE_HORIZONTAL_GAP,

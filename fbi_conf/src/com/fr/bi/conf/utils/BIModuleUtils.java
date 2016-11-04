@@ -2,6 +2,7 @@ package com.fr.bi.conf.utils;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BIAliasManagerProvider;
 import com.finebi.cube.conf.BIDataSourceManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
@@ -175,7 +176,11 @@ public class BIModuleUtils {
 
     public static void clearAnalysisETLCache(long userId) {
         for (BIModule module : BIModuleManager.getModules()) {
-            module.clearAnalysisETLCache(userId);
+            try {
+                module.clearAnalysisETLCache(userId);
+            } catch (Exception e) {
+                BILoggerFactory.getLogger(BIModuleUtils.class).warn(e.getMessage(), e);
+            }
         }
     }
 }

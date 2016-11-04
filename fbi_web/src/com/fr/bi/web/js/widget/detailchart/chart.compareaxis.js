@@ -67,6 +67,7 @@ BI.CompareAxisChart = BI.inherit(BI.AbstractChart, {
                     axis.title.rotation = self.constants.ROTATION;
                     axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + unit : unit;
                     BI.extend(axis, self.leftAxisSetting(self.config));
+                    axis.reverse = false;
                     formatNumberLevelInYaxis(self.config.left_y_axis_number_level, idx, axis.formatter);
                     break;
                 case self.constants.RIGHT_AXIS:
@@ -74,6 +75,7 @@ BI.CompareAxisChart = BI.inherit(BI.AbstractChart, {
                     axis.title.rotation = self.constants.ROTATION;
                     axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + unit : unit;
                     BI.extend(axis, self.rightAxisSetting(self.config));
+                    axis.reverse = true;
                     formatNumberLevelInYaxis(self.config.right_y_axis_number_level, idx, axis.formatter);
                     break;
             }

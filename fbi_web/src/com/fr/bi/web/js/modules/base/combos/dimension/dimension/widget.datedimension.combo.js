@@ -5,8 +5,8 @@
  */
 BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
 
-    config : {
-        ASCEND : BICst.DIMENSION_DATE_COMBO.ASCEND,
+    config: {
+        ASCEND: BICst.DIMENSION_DATE_COMBO.ASCEND,
         DESCEND: BICst.DIMENSION_DATE_COMBO.DESCEND,
         DATE: BICst.DIMENSION_DATE_COMBO.DATE,
         YEAR: BICst.DIMENSION_DATE_COMBO.YEAR,
@@ -22,19 +22,19 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
     defaultItems: function () {
         return [
             [{
-                el:{
+                el: {
                     text: BI.i18nText("BI-Ascend"),
                     value: BICst.DIMENSION_DATE_COMBO.ASCEND,
                     iconCls1: ""
                 },
-                children:[]
+                children: []
             }, {
-                el:{
+                el: {
                     text: BI.i18nText("BI-Descend"),
                     value: BICst.DIMENSION_DATE_COMBO.DESCEND,
                     iconCls1: ""
                 },
-                children:[]
+                children: []
             }],
             [{
                 text: BI.i18nText("BI-Date"),
@@ -97,7 +97,7 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
         ]
     },
 
-    typeConfig: function(){
+    typeConfig: function () {
         return this.config;
     },
 
@@ -108,15 +108,15 @@ BI.DimensionDateCombo = BI.inherit(BI.AbstractDimensionCombo, {
         return val;
     },
 
-    _assertGroup:function(val){
+    _assertGroup: function (val) {
         val || (val = {});
         val.type || (val.type = BICst.GROUP.NO_GROUP);
         return val;
     },
 
-    _assertAddress: function(val){
+    _assertAddress: function (val) {
         val || (val = {});
-        if(BI.isNull(val.type)){
+        if (BI.isNull(val.type)) {
             val.type = BICst.GIS_POSITION_TYPE.LNG_FIRST
         }
         return val;

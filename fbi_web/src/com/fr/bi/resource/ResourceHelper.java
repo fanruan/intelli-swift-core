@@ -704,6 +704,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/dimensionsmanager/regions/complex/region.dimension.complex.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regions/complex/region.wrapper.complex.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regions/complex/region.empty.complex.css",
+                "com/fr/bi/web/css/modules/dimensionsmanager/regions/map/region.point.map.main.css",
+                "com/fr/bi/web/css/modules/dimensionsmanager/regions/map/region.point.map.sub.css",
+                "com/fr/bi/web/css/modules/dimensionsmanager/regions/map/region.point.map.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regions/region.target.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/dimensionsmanager.css",
@@ -1064,6 +1067,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/dimensionsmanager/regions/complex/region.dimension.complex.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regions/complex/region.wrapper.complex.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regions/complex/region.empty.complex.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regions/map/region.point.map.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regions/map/region.point.map.sub.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regions/map/region.point.map.main.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/model.dimensionsmanager.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/dimensionsmanager.js",
@@ -2607,6 +2613,9 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/case/chart/factory.charts.js",
 
                 "com/fr/bi/web/js/case/logintimeout/login.timeout.js",
+
+                "com/fr/bi/web/js/case/zclip/zclip.js",
+
 
                 /**
                  * 基础类控件
