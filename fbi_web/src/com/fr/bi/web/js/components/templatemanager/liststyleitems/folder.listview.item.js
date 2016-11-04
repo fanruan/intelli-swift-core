@@ -4,7 +4,7 @@
  * @class BI.FolderListViewItem
  * @extends BI.Single
  */
-BI.FolderListViewItem = BI.inherit(BI.Single, {
+BI.FolderListViewItem = BI.inherit(BI.BasicButton, {
 
     constants: {
         minGap: 10,
@@ -12,8 +12,9 @@ BI.FolderListViewItem = BI.inherit(BI.Single, {
     },
     _defaultConfig: function () {
         return BI.extend(BI.FolderListViewItem.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-template-manager-folder-item bi-list-item",
+            baseCls: "bi-template-manager-folder-item bi-list-item cursor-pointer",
             height: 40,
+            disableSelected: true,
             validationChecker: BI.emptyFn,
             id: null,
             value: null
@@ -24,7 +25,8 @@ BI.FolderListViewItem = BI.inherit(BI.Single, {
         BI.FolderListViewItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.checkbox = BI.createWidget({
-            type: "bi.checkbox"
+            type: "bi.checkbox",
+            stopPropagation: true
         });
         this.checkbox.on(BI.Controller.EVENT_CHANGE, function () {
             arguments[2] = self;
@@ -47,9 +49,6 @@ BI.FolderListViewItem = BI.inherit(BI.Single, {
         this.editor.on(BI.ShelterEditor.EVENT_CONFIRM, function () {
             o.onRenameFolder(this.getValue());
             this.setTitle(this.getValue());
-        });
-        this.editor.on(BI.ShelterEditor.EVENT_CLICK_LABEL, function(){
-            o.onClickItem.apply(self, arguments);
         });
 
         var renameIcon = BI.createWidget({
@@ -99,9 +98,6 @@ BI.FolderListViewItem = BI.inherit(BI.Single, {
             text: "",
             height: 40
         });
-        this.blankSpace.on(BI.TextButton.EVENT_CHANGE, function(){
-            o.onClickItem.apply(self, arguments);
-        });
 
         BI.createWidget({
             type: "bi.htape",
@@ -132,12 +128,15 @@ BI.FolderListViewItem = BI.inherit(BI.Single, {
                 width: 230
             }, {
                 el: this.blankSpace,
-                width: "fill"
+                width: 50
+            }, {
+                type: "bi.vertical_adapt",
+                hgap: 20,
+                items: [renameIcon, deleteIcon]
             }, {
                 el: {
                     type: "bi.left_right_vertical_adapt",
                     items: {
-                        left: [renameIcon, deleteIcon],
                         right: [timeText]
                     },
                     llgap: 20,
@@ -146,6 +145,12 @@ BI.FolderListViewItem = BI.inherit(BI.Single, {
                 width: 320
             }]
         });
+    },
+
+    doClick: function(){
+        var self = this, o = this.options;
+        BI.FolderListViewItem.superclass.doClick.apply(this, arguments);
+        o.onClickItem.apply(self, arguments);
     },
 
     isSelected: function () {
