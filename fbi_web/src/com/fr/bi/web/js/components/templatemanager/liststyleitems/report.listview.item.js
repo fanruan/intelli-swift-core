@@ -50,9 +50,6 @@ BI.ReportListViewItem = BI.inherit(BI.BasicButton, {
             o.onRenameReport(this.getValue());
             this.setTitle(this.getValue());
         });
-        this.editor.on(BI.ShelterEditor.EVENT_CLICK_LABEL, function () {
-            o.onClickReport.apply(self, arguments);
-        });
 
         if (o.isAdmin === false) {
             var markCls = "report-apply-hangout-ing-font";
@@ -179,9 +176,6 @@ BI.ReportListViewItem = BI.inherit(BI.BasicButton, {
             type: "bi.text_button",
             text: "",
             height: 40
-        });
-        this.blankSpace.on(BI.TextButton.EVENT_CHANGE, function () {
-            o.onClickReport.apply(self, arguments);
         });
 
         BI.createWidget({

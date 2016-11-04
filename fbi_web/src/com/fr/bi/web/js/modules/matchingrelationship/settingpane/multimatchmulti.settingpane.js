@@ -73,7 +73,7 @@ BI.MultiMatchMultiPathChooser = BI.inherit(BI.Widget, {
                     type: "bi.label",
                     textAlign: "left",
                     lgap: 20,
-                    text: BI.i18nText("BI-Tip_Only_One_Path_Between_Dimension_Target"),
+                    text: BI.i18nText("BI-Tip_Only_One_Path_Between_Dimension_Target_And_Combine_Table"),
                     cls: "one-path-label"
                 });
             case this.constants.MorePath:

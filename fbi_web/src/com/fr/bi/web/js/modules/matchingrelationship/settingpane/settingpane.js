@@ -18,7 +18,19 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
         combineComboPosition: 2,
         Multi_Path: 1,
         Multi_Match_Multi: 2,
-        No_Select_Dimension: 3
+        No_Select_Dimension: 3,
+
+        Multi_N_And_N: 2,
+        One_N_And_N: 3,
+        UnKnowNandN: 4,
+        Multi_Path_HEIGHT: 100,
+        Multi_N_And_N_HEIGHT: 185,
+        One_N_And_N_HEIGHT: 145,
+        UnKnowNandN_HEIGHT: 145,
+
+        NORMAL_COLOR: "#fff5c1",
+        TRIANGLE_WIDTH: 16,
+        TRIANGLE_HEIGHT: 10,
     },
 
     _defaultConfig: function () {
@@ -68,6 +80,15 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
 
         this.tab.setSelect(this.constants.Multi_Path);
 
+        this.tipTab = BI.createWidget({
+            type: "bi.tab",
+            height: this.constants.labelHeight,
+            width: 25,
+            cardCreator: BI.bind(this._createTipTabs, this)
+        });
+
+        this.tipTab.setSelect(this.constants.Multi_Path);
+
         this.emptyItem = BI.createWidget({
             type: "bi.default",
             items: []
@@ -101,11 +122,7 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
             }, {
                 el: {
                     type: "bi.left",
-                    items: [this.tipLabel, {
-                        type: "bi.icon_button",
-                        height: this.constants.labelHeight,
-                        cls: "path-set-doubt"
-                    }]
+                    items: [this.tipLabel, this.tipTab]
                 },
                 height: this.constants.labelHeight
             }, {
@@ -117,6 +134,68 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
                 items: [this.tab]
             }]
         });
+    },
+
+    _createTipTabs: function(v){
+        var self = this;
+        switch (v) {
+            case this.constants.Multi_N_And_N:
+                return createComboObj("multi-n-and-n-background", this.constants.Multi_N_And_N_HEIGHT);
+            case this.constants.One_N_And_N:
+                return createComboObj("one-n-and-n-background", this.constants.One_N_And_N_HEIGHT);
+            case this.constants.Multi_Path:
+                return createComboObj("multi-path-background", this.constants.Multi_Path_HEIGHT);
+            case this.constants.UnKnowNandN:
+                return createComboObj("unknow-n-and-n-background", this.constants.UnKnowNandN_HEIGHT);
+        }
+
+        function createComboObj(cls, height){
+            var triangle = BI.createWidget({
+                type: "bi.svg",
+                width: self.constants.TRIANGLE_WIDTH,
+                height: self.constants.TRIANGLE_HEIGHT
+            });
+
+            triangle.path("M8,0L0,10L16,10").attr({
+                "stroke": self.constants.NORMAL_COLOR,
+                "fill": self.constants.NORMAL_COLOR
+            });
+            var popup = BI.createWidget({
+                type: "bi.layout",
+                cls: cls + " path-doubt",
+                width: 200,
+                height: height
+            });
+            return BI.createWidget({
+                type: "bi.combo",
+                cls: "tip-combo",
+                el: {
+                    type: "bi.icon_button",
+                    height: self.constants.labelHeight,
+                    cls: "path-set-doubt"
+                },
+                popup: {
+                    el: {
+                        type: "bi.absolute",
+                        element: popup,
+                        items: [{
+                            el: {
+                                type: "bi.horizontal_auto",
+                                items:[triangle]
+                            },
+                            left: 0,
+                            right: 0,
+                            top: -5
+                        }]
+                    },
+                    width: 202,
+                    height: height
+                },
+                isNeedAdjustHeight: false,
+                isNeedAdjustWidth: false,
+                offsetStyle:"center"
+            })
+        }
     },
 
     _createTabs: function (v) {
@@ -139,6 +218,7 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
                     height: 200
                 });
                 multiMatchMultiPathChooser.on(BI.MultiMatchMultiPathChooser.EVENT_PATH_CHANGE, function(v){
+                    self.tipTab.setSelect(v ? self.constants.One_N_And_N : self.constants.Multi_N_And_N);
                     self.fireEvent(BI.SetRelationPane.EVENT_PATH_PANE_CHANGE, v);
                 });
                 return multiMatchMultiPathChooser;
@@ -207,8 +287,10 @@ BI.SetRelationPane = BI.inherit(BI.Widget, {
             this.selectCombineTableCombo.setValue();
             combineCombo.height = 35;
             this.tab.setSelect(this.constants.Multi_Match_Multi);
+            this.tipTab.setSelect(this.constants.UnKnowNandN);
         }else{
             combineCombo.height = 0;
+            this.tipTab.setSelect(this.constants.Multi_Path);
             this.tab.setSelect(this.constants.Multi_Path);
         }
         this.layout.resize();
