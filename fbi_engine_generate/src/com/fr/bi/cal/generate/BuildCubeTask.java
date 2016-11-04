@@ -170,11 +170,10 @@ public class BuildCubeTask implements CubeTask {
                     break;
                 }
                 BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
-                for (ICubeResourceLocation location : BICubeDiskPrimitiveDiscovery.getInstance().getUnReleasedLocation()) {
-                    BILoggerFactory.getLogger().error("error: the filePath is : " + location.getBaseLocation() + location.getChildLocation());
-                }
                 replaceSuccess = cubeBuildStuff.replaceOldCubes();
-                BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
+                for (String location : BICubeDiskPrimitiveDiscovery.getInstance().getUnReleasedLocation()) {
+                    BILoggerFactory.getLogger().error("error: the filePath is : " + location);
+                }
                 CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).clear();
                 if (!replaceSuccess) {
                     logger.error("cube replace failed after " + i + " times try!It will try again in 5s");
