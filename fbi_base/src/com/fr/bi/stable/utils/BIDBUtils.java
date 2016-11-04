@@ -58,7 +58,7 @@ public class BIDBUtils {
 
         }
     }
-    
+
     public static int classTypeToSql(int classType) {
         switch (classType) {
             case DBConstant.CLASS.INTEGER: {
@@ -249,7 +249,7 @@ public class BIDBUtils {
             for (int i = 0, cols = columns.length; i < cols; i++) {
                 int columnSize = columns[i].getColumnSize();
                 PersistentField column;
-                if(columnSize == 0) {
+                if (columnSize == 0) {
                     column = new PersistentField(columns[i].getColumnName(), columns[i].getColumnType(), columns[i].getColumnSize());
                 } else {
                     column = new PersistentField(columns[i].getColumnName(), null, columns[i].getColumnType(), columns[i].getColumnSize(), columns[i].getScale());
@@ -458,13 +458,15 @@ public class BIDBUtils {
             Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
             Table table = new Table(BIConnectionManager.getInstance().getSchema(dbName), tableName);
             sql.setFrom(dialect.table2SQL(table));
-
+            sql.setSchema(table.getSchema());
+            sql.setTableName(table.getName());
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
         return sql;
     }
-    public static SQLStatement getSQLStatementByConditions(String dbName, String tableName,String where) {
+
+    public static SQLStatement getSQLStatementByConditions(String dbName, String tableName, String where) {
         com.fr.data.impl.Connection connection = BIConnectionManager.getInstance().getConnection(dbName);
         SQLStatement sql = new SQLStatement(connection);
         try {
@@ -479,6 +481,7 @@ public class BIDBUtils {
         }
         return sql;
     }
+
     public static SQLStatement getDistinctSQLStatement(String dbName, String tableName, String fieldName) {
         com.fr.data.impl.Connection connection = BIConnectionManager.getInstance().getConnection(dbName);
         SqlSettedStatement sql = new SqlSettedStatement(connection);

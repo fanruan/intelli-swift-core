@@ -1,5 +1,6 @@
 package com.finebi.cube.gen.arrange;
 
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.CubeGenerationManager;
@@ -48,6 +49,7 @@ import java.util.*;
  * @since 4.0
  */
 public class BICubeOperationManager {
+    private static BILogger logger = BILoggerFactory.getLogger(BICubeOperationManager.class);
     private Cube cube;
     private BIOperation<Object> cubeBuildFinishOperation;
     private BIOperation<Object> pathBuildFinishWatcher;
@@ -364,7 +366,7 @@ public class BICubeOperationManager {
             while (it.hasNext()) {
                 BICubeGenerateRelation relation = it.next();
                 try {
-                    String sourceID = new BITableSourceRelationPath(relation.getRelation()).getSourceID();
+                    String sourceID = BIRelationIDUtils.calculateRelationID( relation.getRelation());
                     BIOperation<Object> operation = new BIOperation<Object>(
                             sourceID,
                             getRelationBuilder(cube, relation.getRelation()));
@@ -375,6 +377,7 @@ public class BICubeOperationManager {
                             operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.DATA_SOURCE_TOPIC, cubeTableSource.getSourceID()));
                         }
                     } else {
+                        logger.warn("The relation:"+ sourceID+" subscribe start message!!!");
                         operation.subscribe(BICubeBuildTopicTag.START_BUILD_CUBE);
                     }
                     pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
@@ -411,14 +414,14 @@ public class BICubeOperationManager {
         for (BICubeGenerateRelationPath path : relationPathSet) {
             if (null != path && null != path.getBiTableSourceRelationPath() && path.getDependRelationPathSet().size() != 0) {
                 try {
-                    String sourceID = path.getBiTableSourceRelationPath().getSourceID();
+                    String sourceID =BIRelationIDUtils.calculatePathID(path.getBiTableSourceRelationPath());
                     BIOperation<Object> operation = new BIOperation<Object>(
                             sourceID,
                             getTablePathBuilder(cube, path.getBiTableSourceRelationPath()));
                     operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
                     for (BITableSourceRelationPath biTableSourceRelationPath : path.getDependRelationPathSet()) {
-                        operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, biTableSourceRelationPath.getSourceID()));
+                        operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, BIRelationIDUtils.calculatePathID( biTableSourceRelationPath)));
                     }
                     pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
                 } catch (Exception e) {

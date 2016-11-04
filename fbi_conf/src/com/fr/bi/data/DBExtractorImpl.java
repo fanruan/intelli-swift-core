@@ -16,10 +16,12 @@ import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
-import com.fr.data.core.db.dialect.OracleDialect;
+import com.fr.data.core.db.dialect.SybaseDialect;
+import com.fr.data.core.db.dml.Table;
 import com.fr.general.DateUtils;
 import com.fr.stable.StringUtils;
 
+import javax.transaction.NotSupportedException;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -162,7 +164,7 @@ public abstract class DBExtractorImpl implements DBExtractor {
             String sqlString = BIDBUtils.createSqlString(dialect, columns);
             sql.setSelect(sqlString);
             String queryString = dealWithSqlCharSet(sql.toString(), connection);
-            String query = getDeployModeSql(queryString, dialect);
+            String query = getDeployModeSql(queryString, dialect, sql);
             BILoggerFactory.getLogger().info("Start Query sql:" + query);
             stmt = createStatement(conn, dialect);
             try {
@@ -233,19 +235,17 @@ public abstract class DBExtractorImpl implements DBExtractor {
 
     public abstract Statement createStatement(Connection conn, Dialect dialect) throws SQLException;
 
-    private String getDeployModeSql(String sql, Dialect dialect) {
+    private String getDeployModeSql(String sql, Dialect dialect, SQLStatement sqlStatement) {
         int selectColumnSize = PerformancePlugManager.getInstance().getDeployModeSelectSize();
-        if (selectColumnSize < 0) {
-            return sql;
-        } else {
-            if (dialect instanceof OracleDialect) {
-                return "SELECT * FROM (\n" +
-                        "" + sql + "\n) T WHERE ROWNUM<=" + selectColumnSize;
-            } else {
-                return "SELECT * FROM (\n" +
-                        "" + sql + "\n) T LIMIT 0," + selectColumnSize;
+        if (selectColumnSize > 0) {
+            Table table = new Table(sqlStatement.getSchema(), sqlStatement.getTableName());
+            try {
+                return dialect instanceof SybaseDialect ? "SELECT *  FROM " + dialect.table2SQL(table) : dialect.getTopNRowSql(selectColumnSize, table);
+            } catch (NotSupportedException e) {
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
+        return sql;
     }
 
 

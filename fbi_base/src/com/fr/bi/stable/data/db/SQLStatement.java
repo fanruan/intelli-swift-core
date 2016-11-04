@@ -12,6 +12,10 @@ public class SQLStatement {
 
     private String select;
 
+    private String schema;
+
+    private String tableName;
+
     private String from;
 
     private String where;
@@ -63,6 +67,23 @@ public class SQLStatement {
 
     public void setWhere(String where) {
         this.where = where;
+    }
+
+
+    public String getSchema() {
+        return schema;
+    }
+
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
     }
 
     @Override
