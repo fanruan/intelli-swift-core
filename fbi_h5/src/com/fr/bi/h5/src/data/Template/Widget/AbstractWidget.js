@@ -15,6 +15,10 @@ class AbstractWidget {
         this.template = template;
     }
 
+    forceUpdate() {
+        this.$widget = this.$widget.set('tag', !this.$widget.get('tag'));
+    }
+
     //get
 
     createJson() {

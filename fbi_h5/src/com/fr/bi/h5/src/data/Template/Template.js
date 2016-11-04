@@ -6,6 +6,18 @@ class Template {
         this.$template = template;
     }
 
+    forceUpdateAllWidgets(exceptWidgetIds = []) {
+        const wIds = this.getAllWidgetIds();
+        each(wIds, (wId)=> {
+            if (exceptWidgetIds.indexOf(wId) > -1) {
+                return;
+            }
+            const widget = this.getWidgetByWidgetId(wId);
+            widget.forceUpdate();
+            this.set$Widget(wId, widget.$get());
+        });
+    }
+
     //get
 
     $get() {

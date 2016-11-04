@@ -89,7 +89,7 @@ class Main extends Component {
                                 const prevRoute = navState.routeStack[navState.presentedIndex - 1];
                                 if (route.$template) {
                                     prevRoute.$template = route.$template;
-                                    self.context.actions.updateTemplate(route.$template);
+                                    self.context.actions.query(route.$template);
                                     navigator.replacePreviousAndPop(prevRoute);
                                 } else {
                                     navigator.pop();
@@ -98,7 +98,7 @@ class Main extends Component {
                             underlayColor={Colors.PRESS}
                             style={styles.navBarRightButton}>
                             <Text style={[styles.navBarText, styles.navBarButtonText]}>
-                                查询
+                                {'查询'}
                             </Text>
                         </TouchableHighlight>
                     );

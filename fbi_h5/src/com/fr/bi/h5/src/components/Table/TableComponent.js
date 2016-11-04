@@ -42,12 +42,12 @@ class TableComponent extends Component {
     }
 
     componentDidMount() {
-        this._fetchData(this.props);
+        this._fetchData(this.props, this.context);
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (!immutableShallowEqual(nextProps, this.props)) {
-            this._fetchData(nextProps);
+    componentWillReceiveProps(nextProps, nextContext) {
+        if (!immutableShallowEqual(nextProps, this.props) || !immutableShallowEqual(nextContext, this.context)) {
+            this._fetchData(nextProps, nextContext);
             this._changed = true;
         }
     }
@@ -64,9 +64,9 @@ class TableComponent extends Component {
 
     }
 
-    _fetchData(props) {
+    _fetchData(props, context) {
         const {$widget, wId} = props;
-        const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(this.context.$template));
+        const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(context.$template));
         console.log(widget.$get().toJS());
         return widget.getData().then((data)=> {
             this.setState({data: data});
