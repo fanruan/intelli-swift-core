@@ -401,3 +401,6 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
     magnify: function () {
     }
 });
+
+BI.AbstractChart.EVENT_CHANGE = "EVENT_CHANGE";
+BI.AbstractChart.EVENT_ITEM_CLICK = "EVENT_ITEM_CLICK";

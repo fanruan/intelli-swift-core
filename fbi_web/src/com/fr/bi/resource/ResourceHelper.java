@@ -1904,6 +1904,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/base/combination/expander/condition.expander.css",
                 "com/fr/bi/web/css/base/colorpicker/button.colorpicker.css",
                 "com/fr/bi/web/css/base/colorpicker/colorpicker.css",
+                "com/fr/bi/web/css/base/chart/chart.combine.css",
                 "com/fr/bi/web/css/base/colorpicker/editor.colorpicker.css",
                 "com/fr/bi/web/css/base/pager/pager.css",
                 "com/fr/bi/web/css/base/pager/pager.number.css",

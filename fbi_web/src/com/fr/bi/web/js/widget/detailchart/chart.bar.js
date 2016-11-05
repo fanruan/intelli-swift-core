@@ -46,6 +46,9 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
             obj.y = tmp;
             self.fireEvent(BI.BarChart.EVENT_CHANGE, obj);
         });
+        this.combineChart.on(BI.CombineChart.EVENT_ITEM_CLICK, function (obj) {
+            self.fireEvent(BI.AbstractChart.EVENT_ITEM_CLICK, obj)
+        });
     },
 
     _formatConfig: function (config, items) {
