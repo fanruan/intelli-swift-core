@@ -16,7 +16,6 @@
     clear: both;
   }
 }
-/****添加计算宽度的--运算符直接需要space****/
 .calc( @expression) {
   /*Firefox*/
   width: -moz-calc(@expression);
@@ -24,39 +23,4 @@
   width: -webkit-calc(@expression);
   /*Standard */
   width: calc(@expression);
-}
-
-.float-left(@left:0px){
-  position: relative;
-  float:left;
-  left:@left;
-}
-
-.float-right(@right:0px){
-  position: relative;
-  float:right;
-  right: @right;
-}
-.size(@width, @height){
-  width: @width;
-  height: @height;
-}
-.full-size(){
-  .size(100%,100%);
-}
-.absolute-full-size(@top:0px, @right:0px, @bottom:0px, @left:0px){
-  position: absolute;
-  left: @left;
-  right: @right;
-  bottom: @bottom;
-  top: @top;
-}
-.inline-block(){
-  display:inline-block;
-  *display:inline;
-  *zoom:1;
-}
-.line-height(@height){
-  height: @height;
-  line-height: @height;
 }
