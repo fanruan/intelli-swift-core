@@ -51,7 +51,9 @@ BI.ETLModel = BI.inherit(FR.OB, {
         BI.each(fields, function (i, fs) {
             BI.each(fs, function (j, field) {
                 field.id = self._getCurrentFieldIdByFieldInfo(field);
-                field.is_usable = BI.isNotNull(self.allFields[field.id]) ? self.allFields[field.id].is_usable : true;
+                field.is_usable = BI.isNotNull(self.allFields[field.id]) ?
+                    (BI.isNotNull(self.allFields[field.id].is_usable) ?
+                        self.allFields[field.id].is_usable : true) : true;
                 field.table_id = self.id;
                 self.allFields[field.id] = field;
             })
