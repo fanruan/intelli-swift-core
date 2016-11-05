@@ -20,6 +20,7 @@ BIDezi.Model = BI.inherit(BI.Model, {
         Data.SharingPool.put("reportId", this.get('reportId'));
         Data.SharingPool.put("sessionID", this.get('sessionID'));
         Data.SharingPool.put("hideTop", this.get('hideTop'));
+        Data.SharingPool.put("plateConfig", this.get('plateConfig'));
         this._initSessionBeater();
         this.request = BI.debounce(BI.bind(this.update, this), 100);
     },

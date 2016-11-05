@@ -81,6 +81,8 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title : "";
         BI.extend(config.xAxis[0], self.catSetting(this.config));
 
+        config.chartType = "area";
+
         //为了给数据标签加个%,还要遍历所有的系列，唉
         self.formatDataLabel(config.plotOptions.dataLabels.enabled, items, config, this.config.chart_font);
 

@@ -58,7 +58,7 @@
         },
 
         getDefaultChartConfig: function () {
-            return Data.BufferPool.getDefaultChartConfig();
+            return Data.SharingPool.cat("plateConfig");
         },
 
         getAllGroupedPackagesTreeJSON: function () {
