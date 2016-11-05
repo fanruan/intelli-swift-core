@@ -32,6 +32,9 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
         this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
             self.fireEvent(BI.AreaChart.EVENT_CHANGE, obj);
         });
+        this.combineChart.on(BI.CombineChart.EVENT_ITEM_CLICK, function (obj) {
+            self.fireEvent(BI.AbstractChart.EVENT_ITEM_CLICK, obj)
+        });
     },
 
     _formatConfig: function (config, items) {

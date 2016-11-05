@@ -103,8 +103,8 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         }
         var linkedWidgets = [];
         BI.each(linkage, function (i, link) {
-            if (link.from === dId) {
-                linkedWidgets.push(link.to);
+            if ((link.from === dId && BI.isEmptyArray(link.cids)) || (link.cids[0] === dId && BI.Utils.getDimensionTypeByID(dId) === BICst.TARGET_TYPE.FORMULA)) {
+                linkedWidgets.push(link);
             }
         });
 
@@ -134,14 +134,59 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 cls: "target-linkage-label",
                 rgap: 5
             });
-            textButton.on(BI.TextButton.EVENT_CHANGE, function () {
-                //这个clicked应该放到子widget中保存起来
-                BI.each(linkedWidgets, function (i, linkWid) {
-                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + linkWid, dId, clicked);
-                    self._send2AllChildLinkWidget(linkWid);
+            var linkages = [];
+            BI.each(linkedWidgets, function (idx, linkage) {
+                var name = BI.i18nText("BI-An");
+                BI.each(linkage.cids, function (i, cid) {
+                    name += BI.Utils.getDimensionNameByID(cid) + "-";
                 });
+                name += BI.Utils.getDimensionNameByID(linkage.from);
+                linkages.push({
+                    text: name,
+                    title: name,
+                    from: linkage.from,
+                    to: linkage.to
+                })
             });
-            return textButton;
+
+            if (linkages.length === 1) {
+                textButton.on(BI.TextButton.EVENT_CHANGE, function () {
+                    //这个clicked应该放到子widget中保存起来
+                    BI.each(linkedWidgets, function (i, linkWid) {
+                        BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + linkWid.to, linkWid.from, clicked);
+                        self._send2AllChildLinkWidget(linkWid.to);
+                    });
+                });
+                return textButton;
+            }
+
+            var combo = BI.createWidget({
+                type: "bi.combo",
+                el: textButton,
+                direction: "right",
+                isNeedAdjustWidth: false,
+                popup: {
+                    el: BI.createWidget({
+                        type: "bi.vertical",
+                        cls: "bi-linkage-list",
+                        items: BI.createItems(linkages, {
+                            type: "bi.text_button",
+                            cls: "bi-linkage-list-item",
+                            height: 30,
+                            textAlign: "left",
+                            handler: function () {
+                                var link = this.options;
+                                BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + link.to, link.from, clicked);
+                                self._send2AllChildLinkWidget(link.to, link.from, clicked);
+                                combo.hideView();
+                            },
+                            lgap: 10
+                        }),
+                        width: 164
+                    })
+                }
+            });
+            return combo;
         }
     },
 

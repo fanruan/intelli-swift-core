@@ -16,3 +16,11 @@
   -o-user-select: initial;
   user-select: initial;
 }
+.bi-target-body-normal-cell .bi-linkage-list {
+  background-color: #ffffff;
+  border: 1px solid #eaeaea;
+  z-index: 1000000000;
+}
+.bi-target-body-normal-cell .bi-linkage-list .bi-linkage-list-item:hover {
+  background-color: #f4f4f4;
+}
