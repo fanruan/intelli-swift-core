@@ -17,8 +17,7 @@ import React, {
 import {Colors, Sizes, TemplateFactory} from 'data'
 import {Layout} from 'layout'
 
-
-const {width, height} = Dimensions.get('window');
+import LayoutComponent from './Layout/LayoutContainer'
 
 class MainContainer extends Component {
     static contextTypes = {
@@ -38,70 +37,10 @@ class MainContainer extends Component {
         return {
 
             LeftButton (route, navigator, index, navState) {
-                if (index === 0) {
-                    return null;
-                }
-
-                return (
-                    <TouchableHighlight
-                        onPress={() => navigator.pop()}
-                        underlayColor={Colors.PRESS}
-                        style={styles.navBarLeftButton}>
-                        <Text style={[styles.navBarText, styles.navBarButtonText]}>
-                            返回
-                        </Text>
-                    </TouchableHighlight>
-                );
+                return null;
             },
 
             RightButton (route, navigator, index, navState) {
-                if (index === 0) {
-                    return null;
-                }
-
-                if (route.name === 'widget') {
-                    return (
-                        <TouchableHighlight
-                            onPress={() => {
-                                const prevRoute = navState.routeStack[navState.presentedIndex - 1];
-                                if (route.$template) {
-                                    prevRoute.$template = route.$template;
-                                    navigator.replacePreviousAndPop(prevRoute);
-                                } else {
-                                    navigator.pop();
-                                }
-                            }}
-                            underlayColor={Colors.PRESS}
-                            style={styles.navBarRightButton}>
-                            <Text style={[styles.navBarText, styles.navBarButtonText]}>
-                                确定
-                            </Text>
-                        </TouchableHighlight>
-                    );
-                }
-
-                if (route.name === 'list') {
-                    return (
-                        <TouchableHighlight
-                            onPress={() => {
-                                const prevRoute = navState.routeStack[navState.presentedIndex - 1];
-                                if (route.$template) {
-                                    prevRoute.$template = route.$template;
-                                    self.context.actions.query(route.$template);
-                                    navigator.replacePreviousAndPop(prevRoute);
-                                } else {
-                                    navigator.pop();
-                                }
-                            }}
-                            underlayColor={Colors.PRESS}
-                            style={styles.navBarRightButton}>
-                            <Text style={[styles.navBarText, styles.navBarButtonText]}>
-                                {'查询'}
-                            </Text>
-                        </TouchableHighlight>
-                    );
-                }
-
                 return null;
             },
 
@@ -117,32 +56,10 @@ class MainContainer extends Component {
 
     renderScene(route, navigationOperations, onComponentRef) {
         const {...props} = this.props;
-        const {name, Component, title, onValueChange, ...others} = route;
+        const {name} = route;
         if (name === 'index') {
-            if (this.template.hasControlWidget()) {
-                return <Layout flex dir='top' box='last'>
-                    <LayoutComponent width={width} height={height - 50 - Sizes.ITEM_HEIGHT} {...props}
-                                     navigator={navigationOperations}/>
-
-                    <Toolbar {...props} navigator={navigationOperations}>
-
-                    </Toolbar>
-                </Layout>
-            }
-            return <LayoutComponent width={width} height={height} {...props}/>;
+            return <LayoutComponent width={props.width} height={props.height} {...props}/>;
         }
-        return (
-            <Layout flex box='mean'>
-                <Component
-                    width={width} height={height - 50}
-                    {...others}
-                    onValueChange={$template=> {
-                        route.$template = $template;
-                    }}
-                    navigator={navigationOperations}
-                />
-            </Layout>
-        );
     }
 
     render() {
