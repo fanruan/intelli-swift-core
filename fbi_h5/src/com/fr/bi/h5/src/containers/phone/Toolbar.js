@@ -32,7 +32,7 @@ import {IconButton, Table, AutoSizer} from 'base'
 
 import {MultiSelectorWidget} from 'widgets'
 
-import Controls from './Controls/Controls'
+import Controls from './../../components/Controls/Controls'
 
 
 class Toolbar extends Component {

@@ -10,18 +10,22 @@ import React, {
     View,
     ListView,
     Fetch,
+    Dimensions,
     TouchableBounce,
     TouchableHighlight,
     TouchableOpacity,
     TouchableWithoutFeedback
 } from 'lib';
 
-import {ReactComponentWithImmutableRenderMixin} from 'core';
+import {ReactComponentWithImmutableRenderMixin, UserAgent} from 'core';
 import {Template} from 'data';
 import {Layout} from 'layout';
 import * as TodoActions from '../actions/template';
 
-import Main from '../components/Main.js'
+import MainContainer4Phone from './phone/MainContainer.js'
+import MainContainer4Pad from './pad/MainContainer.js'
+
+const {width, height} = Dimensions.get('window');
 
 //import PanResponderDemo from '../examples/base/2/PanResponder/PanResponder'
 //import ViewDemo from '../examples/base/2/View/View'
@@ -62,7 +66,7 @@ import Main from '../components/Main.js'
 //import UIExplorerApp from '../examples/UIExplorer/UIExplorerApp.web'
 // import Game2048 from '../examples/2048/Game2048'
 
-import LayoutDemo from '../examples/base/Layout'
+// import LayoutDemo from '../examples/base/Layout'
 
 
 class App extends Component {
@@ -99,14 +103,35 @@ class App extends Component {
     }
 
     render() {
-        return (
-            <View>
+        let isPad = false;
+        if (UserAgent.mobile()) {
+            if (UserAgent.ipad()) {
+                isPad = true;
+            }
+            if (UserAgent.android()) {
+                var size = window.getComputedStyle(document.body, ':after').getPropertyValue('content');
+                if (size.indexOf('smallscreen') != -1) {
+                    isPad = true;
+                }
+            }
+            if (isPad) {
+                return <View>
+                    <Layout flex box='mean'>
+                        <MainContainer4Pad width={width} height={height} $template={this.props.$template}/>
+                    </Layout>
+                    <Portal />
+                </View>
+
+            }
+            return <View>
                 <Layout flex box='mean'>
-                    <Main $template={this.props.$template}/>
+                    <MainContainer4Phone width={width} height={height} $template={this.props.$template}/>
                 </Layout>
                 <Portal />
             </View>
-        )
+
+        }
+        return null;
     }
 }
 

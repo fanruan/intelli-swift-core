@@ -18,11 +18,9 @@ import {Colors, Sizes, TemplateFactory} from 'data'
 import {Layout} from 'layout'
 
 import Toolbar from './Toolbar'
-import LayoutComponent from './Layout/LayoutComponent'
+import LayoutComponent from './Layout/LayoutContainer'
 
-const {width, height} = Dimensions.get('window');
-
-class Main extends Component {
+class MainContainer extends Component {
     static contextTypes = {
         actions: React.PropTypes.object,
         $template: React.PropTypes.object
@@ -123,7 +121,7 @@ class Main extends Component {
         if (name === 'index') {
             if (this.template.hasControlWidget()) {
                 return <Layout flex dir='top' box='last'>
-                    <LayoutComponent width={width} height={height - 50 - Sizes.ITEM_HEIGHT} {...props}
+                    <LayoutComponent width={props.width} height={props.height - 50 - Sizes.ITEM_HEIGHT} {...props}
                                      navigator={navigationOperations}/>
 
                     <Toolbar {...props} navigator={navigationOperations}>
@@ -131,12 +129,12 @@ class Main extends Component {
                     </Toolbar>
                 </Layout>
             }
-            return <LayoutComponent width={width} height={height} {...props}/>;
+            return <LayoutComponent width={props.width} height={props.height} {...props}/>;
         }
         return (
             <Layout flex box='mean'>
                 <Component
-                    width={width} height={height - 50}
+                    width={props.width} height={props.height - 50}
                     {...others}
                     onValueChange={$template=> {
                         route.$template = $template;
@@ -195,7 +193,7 @@ class Main extends Component {
 
     }
 }
-mixin.onClass(Main, ReactComponentWithImmutableRenderMixin);
+mixin.onClass(MainContainer, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         paddingTop: 50
@@ -226,4 +224,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Main
+export default MainContainer

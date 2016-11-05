@@ -16,19 +16,19 @@ import {Layout} from 'layout'
 import {AutoSizer} from 'base'
 import {Colors, TemplateFactory, WidgetFactory} from 'data'
 
-import ChartPaneComponent from '../Chart/ChartPaneComponent.js'
-import TablePaneComponent from '../Table/TablePaneComponent.js'
-import DetailTablePaneComponent from '../DetailTable/DetailTablePaneComponent.js'
-import MultiSelectorComponent from '../MultiSelector/MultiSelectorComponent.js'
-import MultiTreeSelectorComponent from '../MultiTreeSelector/MultiTreeSelectorComponent.js'
-import ContentComponent from '../Content/ContentComponent'
-import ImageComponent from '../Image/ImageComponent'
-import YearMonthComponent from '../YearMonth/YearMonthComponent'
-import YearComponent from '../Year/YearComponent'
-import YearQuarterComponent from '../YearQuarter/YearQuarterComponent'
-import WebComponent from '../Web/WebCompontent'
+import ChartPaneComponent from '../../../components/Chart/ChartPaneComponent.js'
+import TablePaneComponent from '../../../components/Table/TablePaneComponent.js'
+import DetailTablePaneComponent from '../../../components/DetailTable/DetailTablePaneComponent.js'
+import MultiSelectorComponent from '../../../components/MultiSelector/MultiSelectorComponent.js'
+import MultiTreeSelectorComponent from '../../../components/MultiTreeSelector/MultiTreeSelectorComponent.js'
+import ContentComponent from '../../../components/Content/ContentComponent'
+import ImageComponent from '../../../components/Image/ImageComponent'
+import YearMonthComponent from '../../../components/YearMonth/YearMonthComponent'
+import YearComponent from '../../../components/Year/YearComponent'
+import YearQuarterComponent from '../../../components/YearQuarter/YearQuarterComponent'
+import WebComponent from '../../../components/Web/WebCompontent'
 
-class LayoutComponent extends Component {
+class LayoutContainer extends Component {
     static propTypes = {};
 
     constructor(props, context) {
@@ -154,7 +154,7 @@ class LayoutComponent extends Component {
         </Layout>
     }
 }
-mixin.onClass(LayoutComponent, ReactComponentWithImmutableRenderMixin);
+mixin.onClass(LayoutContainer, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         padding: 20
@@ -163,4 +163,4 @@ const styles = StyleSheet.create({
         flex: 1
     }
 });
-export default LayoutComponent
+export default LayoutContainer

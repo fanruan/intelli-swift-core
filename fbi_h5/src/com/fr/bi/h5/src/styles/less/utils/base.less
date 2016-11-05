@@ -47,6 +47,13 @@ body {
   outline: 0 none;
 }
 
+@media all and (min-width: 768px) {
+  body:after {
+    content: 'smallscreen';
+    display: none;
+  }
+}
+
 *, *:before, *:after{
   box-sizing: border-box;
 }
