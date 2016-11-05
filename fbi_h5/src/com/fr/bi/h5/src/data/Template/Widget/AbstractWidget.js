@@ -30,14 +30,7 @@ class AbstractWidget {
     }
 
     getAllDimensionIds() {
-        const result = [];
-        const keys = this.$widget.get('dimensions').keys();
-        let next = keys.next();
-        while (!next.done) {
-            result.push(next.value);
-            next = keys.next();
-        }
-        return result;
+        return this.getAllDimDimensionIds().concat(this.getAllTargetDimensionIds());
     }
 
     getAllDimDimensionIds() {
