@@ -130,7 +130,11 @@ public class BITableStyle {
     }
 
     public Style getNumberCellStyle(Object cellValue, boolean isOdd, boolean isHyberLink) {
-        Style style = cellValue == null ? (isOdd ? noneValueOddStyle : noneValueStyle) : (isOdd ? numberOddStyle : numberStyle);
+        if (cellValue == null || ComparatorUtils.equals(cellValue, 0)) {
+            return isOdd ? noneValueOddStyle : noneValueStyle;
+        }
+        String v = GeneralUtils.objectToString(cellValue);
+        Style style = v.contains(".") ? (isOdd ? numberOddStyle : numberStyle) : (isOdd ? integerNumberOddStyle : integerNumberStyle);
         style = isHyberLink ? style.deriveFRFont(style.getFRFont().applyUnderline(Constants.LINE_THIN).applyForeground(Color.blue)) : style;
         return style;
     }
