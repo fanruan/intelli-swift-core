@@ -46,7 +46,7 @@ class TableComponent extends Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        if (!immutableShallowEqual(nextProps, this.props) || !immutableShallowEqual(nextContext, this.context)) {
+        if (!immutableShallowEqual({$widget: nextProps.$widget}, {$widget: this.props.$widget})) {
             this._fetchData(nextProps, nextContext);
             this._changed = true;
         }
@@ -67,7 +67,6 @@ class TableComponent extends Component {
     _fetchData(props, context) {
         const {$widget, wId} = props;
         const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(context.$template));
-        console.log(widget.$get().toJS());
         return widget.getData().then((data)=> {
             this.setState({data: data});
         });

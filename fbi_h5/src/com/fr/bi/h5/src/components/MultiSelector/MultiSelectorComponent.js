@@ -1,7 +1,7 @@
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
 
-import {ReactComponentWithImmutableRenderMixin, requestAnimationFrame, emptyFunction} from 'core'
+import {ReactComponentWithImmutableRenderMixin, requestAnimationFrame, emptyFunction, immutableShallowEqual} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -40,8 +40,15 @@ class MultiSelectorComponent extends Component {
 
     }
 
-    componentWillReceiveProps() {
+    componentWillReceiveProps(nextProps, nextContext) {
 
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        if (immutableShallowEqual({$widget: nextProps.$widget}, {$widget: this.props.$widget})) {
+            return false;
+        }
+        return true;
     }
 
     componentWillUpdate() {
@@ -71,7 +78,7 @@ class MultiSelectorComponent extends Component {
         </MultiSelectorWidget>
     }
 }
-mixin.onClass(MultiSelectorComponent, ReactComponentWithImmutableRenderMixin);
+// mixin.onClass(MultiSelectorComponent, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         backgroundColor: '#fff'

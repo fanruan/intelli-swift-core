@@ -106,11 +106,6 @@ class SettingsComponent extends Component {
 
     static propTypes = {};
 
-    static defaultProps = {
-        onReturn: emptyFunction,
-        onComplete: emptyFunction
-    };
-
     state = {
         $widget: this.props.$widget,
         collapsed: {},
@@ -216,7 +211,7 @@ class SettingsComponent extends Component {
     _renderUnSortableContainer() {
         const array = [];
         each(this._helper.getViewItems(), (viewItem)=> {
-            array.push(<Header viewItem={viewItem} onPress={()=> {
+            array.push(<Header key={viewItem.viewId} viewItem={viewItem} onPress={()=> {
                 const collapsed = clone(this.state.collapsed);
                 collapsed[viewItem.viewId] = !collapsed[viewItem.viewId];
                 this.setState({
@@ -233,7 +228,9 @@ class SettingsComponent extends Component {
         </ScrollView>;
     }
 
-    _renderDialog() {
+    render() {
+        const {...props} = this.props, {...state} = this.state;
+        this._helper = new SettingsComponentHelper(state, this.context);
         return <Layout dir='top' box='first'>
             <View style={{height: 100}}>
                 <TextButton onPress={()=> {
@@ -246,22 +243,10 @@ class SettingsComponent extends Component {
         </Layout>;
     }
 
-    render() {
-        const {...props} = this.props, {...state} = this.state;
-        this._helper = new SettingsComponentHelper(state, this.context);
-        return <Overlay ref='overlay' onClose={(tag)=> {
-            if (tag === true) {
-                const {$widget} = this.state, {wId} = this.props;
-                this.props.onComplete({$widget, wId});
-            } else {
-                this.props.onReturn();
-            }
-        }}>
-            <Layout dir='top' box='first' style={styles.wrapper}>
-                {this._renderHeader()}
-                {this._renderDialog()}
-            </Layout>
-        </Overlay>
+    getValue() {
+        return {
+            $widget: this.state.$widget
+        }
     }
 
     componentWillUpdate(nextProps, nextState) {
@@ -279,14 +264,7 @@ class SettingsComponent extends Component {
 }
 mixin.onClass(SettingsComponent, ReactComponentWithPureRenderMixin);
 const styles = StyleSheet.create({
-    wrapper: {
-        position: 'absolute',
-        backgroundColor: '#ffffff',
-        left: 10,
-        right: 10,
-        top: 30,
-        bottom: 10
-    },
+    wrapper: {},
     header: {
         paddingLeft: 20,
         paddingRight: 20,

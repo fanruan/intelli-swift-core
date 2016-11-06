@@ -20,7 +20,7 @@ import {TableWidget} from 'widgets';
 
 import TableComponent from './TableComponent';
 
-import SettingsComponent from '../Settings/SettingsComponent'
+import SettingsPaneComponent from '../Settings/SettingsPaneComponent'
 
 
 class TablePaneComponent extends Component {
@@ -51,7 +51,7 @@ class TablePaneComponent extends Component {
         return <Layout main='justify' cross='center' style={styles.header}>
             <Text>{widget.getName()}</Text>
             <IconLink className='setting-font' onPress={()=> {
-                Portal.showModal('TableComponent', <SettingsComponent
+                Portal.showModal('TableComponent', <SettingsPaneComponent
                     key={'TableComponent'}
                     $widget={this.props.$widget}
                     wId={this.props.wId}

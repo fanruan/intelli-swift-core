@@ -49,7 +49,7 @@ class DetailTableComponent extends Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        if (!immutableShallowEqual(nextProps, this.props) || !immutableShallowEqual(nextContext, this.context)) {
+        if (!immutableShallowEqual({$widget: nextProps.$widget}, {$widget: this.props.$widget})) {
             this._fetchData(nextProps, nextContext);
             this._changed = true;
         }
