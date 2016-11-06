@@ -1292,6 +1292,38 @@
             return legendSetting;
         },
 
+        getWSLeftTitleStyleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var chartFont = this.getGSChartFont();
+            var titleStyle = ws.left_title_style || {};
+            titleStyle = BI.extend(chartFont, titleStyle);
+            return titleStyle;
+        },
+
+        getWSRightTitleStyleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var chartFont = this.getGSChartFont();
+            var titleStyle = ws.right_title_style || {};
+            titleStyle = BI.extend(chartFont, titleStyle);
+            return titleStyle;
+        },
+
+        getWSRight2TitleStyleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var chartFont = this.getGSChartFont();
+            var titleStyle = ws.right2_title_style || {};
+            titleStyle = BI.extend(chartFont, titleStyle);
+            return titleStyle;
+        },
+
+        getWSCatTitleStyleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var chartFont = this.getGSChartFont();
+            var titleStyle = ws.right_title_style || {};
+            titleStyle = BI.extend(chartFont, titleStyle);
+            return titleStyle;
+        },
+
         getWSShowHGridLineByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_h_grid_line) ? ws.show_h_grid_line :

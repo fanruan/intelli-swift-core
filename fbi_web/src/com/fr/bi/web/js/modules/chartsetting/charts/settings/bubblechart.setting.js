@@ -366,7 +366,8 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.isShowTitleX.on(BI.Controller.EVENT_CHANGE, function () {
-            this.isSelected() ? self.editTitleX.setVisible(true) : self.editTitleX.setVisible(false);
+            self.editTitleX.setVisible(this.isSelected());
+            self.catTitleStyle.setVisible(this.isSelected());
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
@@ -381,6 +382,14 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
+        this.catTitleStyle = BI.createWidget({
+            type: "bi.legend_detailed_setting_combo"
+        });
+
+        this.catTitleStyle.on(BI.LegendDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+        });
+
         //右轴标签
         this.showRightLabel = BI.createWidget({
             type: "bi.multi_select_item",
@@ -389,6 +398,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showRightLabel.on(BI.Controller.EVENT_CHANGE, function () {
+            self.rightLabelStyle.setVisible(this.isSelected());
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
         });
 
@@ -482,6 +492,9 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.isShowTitleX, this.editTitleX]
                 }, {
                     type: "bi.vertical_adapt",
+                    items: [this.catTitleStyle]
+                }, {
+                    type: "bi.vertical_adapt",
                     items: [this.showRightLabel]
                 }, {
                     type: "bi.vertical_adapt",
@@ -561,7 +574,8 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.isShowTitleLY.on(BI.Controller.EVENT_CHANGE, function () {
-            this.isSelected() ? self.editTitleLY.setVisible(true) : self.editTitleLY.setVisible(false);
+            self.editTitleLY.setVisible(this.isSelected());
+            self.leftTitleStyle.setVisible(this.isSelected());
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
@@ -575,6 +589,14 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE);
         });
 
+        this.leftTitleStyle = BI.createWidget({
+            type: "bi.legend_detailed_setting_combo"
+        });
+
+        this.leftTitleStyle.on(BI.LegendDetailedSettingCombo.EVENT_CHANGE, function() {
+            self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
+        });
+
         //左轴标签
         this.showLeftLabel = BI.createWidget({
             type: "bi.multi_select_item",
@@ -583,6 +605,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showLeftLabel.on(BI.Controller.EVENT_CHANGE, function () {
+            self.leftLabelStyle.setVisible(this.isSelected());
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
         });
 
@@ -676,6 +699,9 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.isShowTitleLY, this.editTitleLY]
                 }, {
                     type: "bi.vertical_adapt",
+                    items: [this.leftTitleStyle]
+                }, {
+                    type: "bi.vertical_adapt",
                     items: [this.showLeftLabel]
                 }, {
                     type: "bi.vertical_adapt",
@@ -728,6 +754,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showHGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+            self.hGridLineColor.setVisible(this.isSelected());
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
         });
 
@@ -748,6 +775,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showVGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+            self.vGridLineColor.setVisible(this.isSelected());
             self.fireEvent(BI.BubbleChartSetting.EVENT_CHANGE)
         });
 
@@ -1002,9 +1030,15 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showVGridLine.setSelected(BI.Utils.getWSShowVGridLineByID(wId));
         this.vGridLineColor.setValue(BI.Utils.getWSVGridLineColorByID(wId));
         this.tooltipSetting.setValue(BI.Utils.getWSToolTipSettingByID(wId));
+        this.leftTitleStyle.setValue(BI.Utils.getWSLeftTitleStyleByID(wId));
+        this.catTitleStyle.setValue(BI.Utils.getWSCatTitleStyleByID(wId));
 
-        this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
-        this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false);
+        this.editTitleLY.setVisible(this.isShowTitleLY.isSelected());
+        this.editTitleX.setVisible(this.isShowTitleX.isSelected());
+        this.catTitleStyle.setVisible(this.isShowTitleX.isSelected());
+        this.leftTitleStyle.setVisible(this.isShowTitleLY.isSelected());
+        this.hGridLineColor.setVisible(this.showHGridLine.isSelected());
+        this.vGridLineColor.setVisible(this.showVGridLine.isSelected())
     },
 
     getValue: function () {
@@ -1052,6 +1086,8 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             show_v_grid_line: this.showVGridLine.isSelected(),
             v_grid_line_color: this.vGridLineColor.getValue(),
             tooltip_setting: this.tooltipSetting.getValue(),
+            cat_title_style: this.catTitleStyle.getValue(),
+            left_title_style: this.leftTitleStyle.getValue()
         }
     }
 });

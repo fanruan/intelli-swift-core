@@ -204,7 +204,8 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.isShowTitleLY.on(BI.Controller.EVENT_CHANGE, function () {
-            this.isSelected() ? self.editTitleLY.setVisible(true) : self.editTitleLY.setVisible(false);
+            self.editTitleLY.setVisible(this.isSelected());
+            self.leftTitleStyle.setVisible(this.isSelected());
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
@@ -219,6 +220,14 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
+        this.leftTitleStyle = BI.createWidget({
+            type: "bi.legend_detailed_setting_combo"
+        });
+
+        this.leftTitleStyle.on(BI.LegendDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+        });
+
         //左轴标签
         this.showLeftLabel = BI.createWidget({
             type: "bi.multi_select_item",
@@ -227,6 +236,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showLeftLabel.on(BI.Controller.EVENT_CHANGE, function () {
+            self.leftLabelStyle.setVisible(this.isSelected());
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
 
@@ -328,6 +338,9 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.isShowTitleLY, this.editTitleLY]
                 }, {
                     type: "bi.vertical_adapt",
+                    items: [this.leftTitleStyle]
+                }, {
+                    type: "bi.vertical_adapt",
                     items: [this.showLeftLabel]
                 }, {
                     type: "bi.vertical_adapt",
@@ -411,7 +424,8 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.isShowTitleRY.on(BI.Controller.EVENT_CHANGE, function () {
-            this.isSelected() ? self.editTitleRY.setVisible(true) : self.editTitleRY.setVisible(false);
+            self.editTitleRY.setVisible(this.isSelected());
+            self.rightTitleStyle.setVisible(this.isSelected());
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
@@ -427,6 +441,14 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
+        this.rightTitleStyle = BI.createWidget({
+            type: "bi.legend_detailed_setting_combo"
+        });
+
+        this.rightTitleStyle.on(BI.LegendDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+        });
+
         //右轴标签
         this.showRightLabel = BI.createWidget({
             type: "bi.multi_select_item",
@@ -435,6 +457,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showRightLabel.on(BI.Controller.EVENT_CHANGE, function () {
+            self.rightLabelStyle.setVisible(this.isSelected());
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
 
@@ -469,26 +492,26 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //右轴刻度自定义
-        this.showXCustomScale = BI.createWidget({
+        this.showRCustomScale = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Scale_Customize"),
             width: 115
         });
 
-        this.showXCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
-            self.customXScale.setVisible(this.isSelected());
+        this.showRCustomScale.on(BI.Controller.EVENT_CHANGE, function () {
+            self.customRScale.setVisible(this.isSelected());
             if (!this.isSelected()) {
-                self.customXScale.setValue({})
+                self.customRScale.setValue({})
             }
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
 
-        this.customXScale = BI.createWidget({
+        this.customRScale = BI.createWidget({
             type: "bi.custom_scale",
             wId: o.wId
         });
 
-        this.customXScale.on(BI.CustomScale.EVENT_CHANGE, function () {
+        this.customRScale.on(BI.CustomScale.EVENT_CHANGE, function () {
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
 
@@ -536,6 +559,9 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.isShowTitleRY, this.editTitleRY]
                 }, {
                     type: "bi.vertical_adapt",
+                    items: [this.rightTitleStyle]
+                }, {
+                    type: "bi.vertical_adapt",
                     items: [this.showRightLabel]
                 }, {
                     type: "bi.vertical_adapt",
@@ -552,10 +578,10 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.reversedRY]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.showXCustomScale]
+                    items: [this.showRCustomScale]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.customXScale]
+                    items: [this.customRScale]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -570,7 +596,8 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.isShowTitleX.on(BI.Controller.EVENT_CHANGE, function () {
-            this.isSelected() ? self.editTitleX.setVisible(true) : self.editTitleX.setVisible(false);
+            self.editTitleX.setVisible(this.isSelected());
+            self.catTitleStyle.setVisible(this.isSelected());
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
@@ -585,6 +612,14 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
+        this.catTitleStyle = BI.createWidget({
+            type: "bi.legend_detailed_setting_combo"
+        });
+
+        this.catTitleStyle.on(BI.LegendDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
+        });
+
         //显示分类轴标签
         this.showCatLabel = BI.createWidget({
             type: "bi.multi_select_item",
@@ -593,6 +628,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showCatLabel.on(BI.Controller.EVENT_CHANGE, function () {
+            self.catLabelStyle.setVisible(this.isSelected());
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
 
@@ -636,6 +672,9 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.editTitleX]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.catTitleStyle]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.showCatLabel]
@@ -685,6 +724,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showHGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+            self.hGridLineColor.setVisible(this.isSelected());
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
 
@@ -705,6 +745,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showVGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+            self.vGridLineColor.setVisible(this.isSelected());
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
 
@@ -846,7 +887,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             width: 150
         });
 
-        this.linkageSelection.on(BI.Controller.EVENT_CHANGE, function() {
+        this.linkageSelection.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
 
@@ -968,32 +1009,43 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showZoom.setSelected(BI.Utils.getWSShowZoomByID(wId));
         this.minimalistModel.setSelected(BI.Utils.getWSMinimalistByID(wId));
         this._invisible(!BI.Utils.getWSMinimalistByID(wId));
-        this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
-        this.isShowTitleRY.isSelected() ? this.editTitleRY.setVisible(true) : this.editTitleRY.setVisible(false);
-        this.isShowTitleX.isSelected() ? this.editTitleX.setVisible(true) : this.editTitleX.setVisible(false);
+        this.editTitleLY.setVisible(this.isShowTitleLY.isSelected());
+        this.leftTitleStyle.setVisible(this.isShowTitleLY.isSelected());
+        this.editTitleRY.setVisible(this.isShowTitleRY.isSelected());
+        this.rightTitleStyle.setVisible(this.isShowTitleRY.isSelected());
+        this.editTitleX.setVisible(this.isShowTitleX.isSelected());
+        this.catTitleStyle.setVisible(this.isShowTitleX.isSelected());
         this.showYCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
         this.customYScale.setValue(BI.Utils.getWSCustomYScale(wId));
         this.customYScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
-        this.showXCustomScale.setSelected(BI.Utils.getWSShowXCustomScale(wId));
-        this.customXScale.setValue(BI.Utils.getWSCustomXScale(wId));
-        this.customXScale.setVisible(BI.Utils.getWSShowXCustomScale(wId));
+        this.showRCustomScale.setSelected(BI.Utils.getWSShowXCustomScale(wId));
+        this.customRScale.setValue(BI.Utils.getWSCustomXScale(wId));
+        this.customRScale.setVisible(BI.Utils.getWSShowXCustomScale(wId));
         this.separatorsLeft.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
         this.separatorsRight.setSelected(BI.Utils.getWSRightNumberSeparatorsByID(wId));
         this.showLeftLabel.setSelected(BI.Utils.getWSShowLValueAxisLabelByID(wId));
+        this.leftLabelStyle.setVisible(this.showLeftLabel.isSelected());
         this.leftLabelStyle.setValue(BI.Utils.getWSLValueAxisLabelSettingByID(wId));
         this.leftLineColor.setValue(BI.Utils.getWSLValueAxisLineColorByID(wId));
         this.showRightLabel.setSelected(BI.Utils.getWSShowRValueAxisLabelByID(wId));
+        this.rightLabelStyle.setVisible(this.showRightLabel.isSelected());
         this.rightLabelStyle.setValue(BI.Utils.getWSRValueAxisLabelSettingByID(wId));
         this.rightLineColor.setValue(BI.Utils.getWSRValueAxisLineColorByID(wId));
         this.showCatLabel.setSelected(BI.Utils.getWSShowCatLabelByID(wId));
+        this.catLabelStyle.setVisible(this.showCatLabel.isSelected());
         this.catLabelStyle.setValue(BI.Utils.getWSCatLabelStyleByID(wId));
         this.catLineColor.setValue(BI.Utils.getWSCatLineColorByID(wId));
         this.legendSetting.setValue(BI.Utils.getWSLegendSettingByID(wId));
         this.showHGridLine.setSelected(BI.Utils.getWSShowHGridLineByID(wId));
+        this.hGridLineColor.setVisible(this.showHGridLine.isSelected());
         this.hGridLineColor.setValue(BI.Utils.getWSHGridLineColorByID(wId));
         this.showVGridLine.setSelected(BI.Utils.getWSShowVGridLineByID(wId));
+        this.vGridLineColor.setVisible(this.showVGridLine.isSelected());
         this.vGridLineColor.setValue(BI.Utils.getWSVGridLineColorByID(wId));
         this.tooltipSetting.setValue(BI.Utils.getWSToolTipSettingByID(wId));
+        this.leftTitleStyle.setValue(BI.Utils.getWSLeftTitleStyleByID(wId));
+        this.rightTitleStyle.setValue(BI.Utils.getWSRightTitleStyleByID(wId));
+        this.catTitleStyle.setValue(BI.Utils.getWSCatTitleStyleByID(wId))
     },
 
     getValue: function () {
@@ -1026,8 +1078,8 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             minimalist_model: this.minimalistModel.isSelected(),
             show_y_custom_scale: this.showYCustomScale.isSelected(),
             custom_y_scale: this.customYScale.getValue(),
-            show_x_custom_scale: this.showXCustomScale.isSelected(),
-            custom_x_scale: this.customXScale.getValue(),
+            show_x_custom_scale: this.showRCustomScale.isSelected(),
+            custom_x_scale: this.customRScale.getValue(),
             num_separators: this.separatorsLeft.isSelected(),
             right_num_separators: this.separatorsRight.isSelected(),
             show_left_label: this.showLeftLabel.isSelected(),
@@ -1045,6 +1097,9 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             show_v_grid_line: this.showVGridLine.isSelected(),
             v_grid_line_color: this.vGridLineColor.getValue(),
             tooltip_setting: this.tooltipSetting.getValue(),
+            left_title_style: this.leftTitleStyle.getValue(),
+            right_title_style: this.rightTitleStyle.getValue(),
+            cat_title_style: this.catTitleStyle.getValue()
         }
     }
 });
