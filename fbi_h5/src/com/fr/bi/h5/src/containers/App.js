@@ -26,6 +26,7 @@ import MainContainer4Phone from './phone/vertical/MainContainer.js'
 import MainContainer4Pad from './pad/vertical/MainContainer.js'
 import MainContainerHorizontal4Phone from './phone/horizontal/MainContainerHorizontal.js'
 import MainContainerHorizontal4Pad from './pad/horizontal/MainContainerHorizontal.js'
+import MainContainerWeb from './web/MainContainer'
 
 const {width, height} = Dimensions.get('window');
 
@@ -154,7 +155,13 @@ class App extends Component {
             </View>;
         }
 
-        return null;
+        return <View>
+            <Layout flex box='mean'>
+                <MainContainerWeb width={width} height={height}
+                           $template={this.props.$template}/>
+            </Layout>
+            <Portal />
+        </View>;
     }
 
     componentWillUnmount() {

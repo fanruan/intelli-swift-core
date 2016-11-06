@@ -29,7 +29,6 @@ class MainContainerHorizontal extends Component {
 
     constructor(props, context) {
         super(props, context);
-        this.template = TemplateFactory.createTemplate(props.$template);
     }
 
     navigationBarRouteMapper() {
@@ -64,6 +63,7 @@ class MainContainerHorizontal extends Component {
 
     render() {
         const initialRoute = {name: 'index', title: '首页'};
+        this.template = TemplateFactory.createTemplate(this.props.$template);
         return (
             <Navigator
                 style={styles.wrapper}
