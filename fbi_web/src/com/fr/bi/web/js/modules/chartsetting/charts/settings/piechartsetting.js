@@ -209,7 +209,7 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Widget_Background_Colour"),
-                    cls: "line-title",
+                    cls: "attr-names",
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.widgetBackground]

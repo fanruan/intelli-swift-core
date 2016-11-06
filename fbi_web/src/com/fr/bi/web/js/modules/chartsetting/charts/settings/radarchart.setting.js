@@ -229,6 +229,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showLeftLabel.on(BI.Controller.EVENT_CHANGE, function () {
+            self.leftLabelStyle.setVisible(this.isSelected());
             self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE)
         });
 
@@ -370,6 +371,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showHGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+            self.hGridLineColor.setVisible(this.isSelected());
             self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE)
         });
 
@@ -390,6 +392,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showVGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+            self.vGridLineColor.setVisible(this.isSelected());
             self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE)
         });
 
@@ -566,6 +569,10 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.vGridLineColor.setValue(BI.Utils.getWSVGridLineColorByID(wId));
         this.tooltipSetting.setValue(BI.Utils.getWSToolTipSettingByID(wId));
         this.nullContinuity.setSelected(BI.Utils.getWSNullContinueByID(wId));
+
+        this.leftLabelStyle.setVisible(this.showLeftLabel.isSelected());
+        this.hGridLineColor.setVisible(this.showHGridLine.isSelected());
+        this.vGridLineColor.setVisible(this.showVGridLine.isSelected())
     },
 
     getValue: function () {

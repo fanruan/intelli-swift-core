@@ -17692,7 +17692,7 @@ define('chart/Radar',['require','./Series','../utils/BaseUtils','../Constants','
                         };
 
                         tmp = [];
-                    }else{
+                    }else if(!dataPoint.isNull){
                         tmp.push([dataPoint.posX, dataPoint.posY]);
                     }
 
@@ -17742,8 +17742,8 @@ define('chart/Radar',['require','./Series','../utils/BaseUtils','../Constants','
 
                     path += toCenter ? 'M0,0' : '';
 
-                    tmp.forEach(function(pos){
-                        path += ('L' + BaseUtils.dealFloatPrecision(pos[0]) + "," + BaseUtils.dealFloatPrecision(pos[1]));
+                    tmp.forEach(function(pos, i){
+                        path += (((i || toCenter) ? 'L' : 'M') + BaseUtils.dealFloatPrecision(pos[0]) + "," + BaseUtils.dealFloatPrecision(pos[1]));
                     });
 
                     path += toCenter ? 'Z' : '';
@@ -27314,8 +27314,6 @@ define('utils/ExportUtils',['require','./BaseUtils'],function(require) {
 
     window.URL = (window.URL || window.webkitURL);
 
-    var body = document.body;
-
     var prefix = {
         xmlns: "http://www.w3.org/2000/xmlns/",
         xlink: "http://www.w3.org/1999/xlink",
@@ -27372,7 +27370,7 @@ define('utils/ExportUtils',['require','./BaseUtils'],function(require) {
         var url = window.URL.createObjectURL(new Blob(source, { "type" : "text\/xml" }));
 
         var a = document.createElement("a");
-        body.appendChild(a);
+        document.body.appendChild(a);
         a.setAttribute("class", "svg-export");
         a.setAttribute("download", fileName + ".svg");
         a.setAttribute("href", url);
@@ -27390,7 +27388,7 @@ define('utils/ExportUtils',['require','./BaseUtils'],function(require) {
         a.style.display = "none";
         a.appendChild(img);
         img.setAttribute('src', url);
-        body.appendChild(a);
+        document.body.appendChild(a);
         a.setAttribute("target","_blank");
         a.setAttribute("href", url);
         a.setAttribute("download", 'export.png');
