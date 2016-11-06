@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
+import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.analyze.cal.result.NewDiskBaseRootNodeChild;
 import com.fr.bi.cal.analyze.cal.result.NewRootNodeChild;
@@ -7,8 +8,6 @@ import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.exception.TerminateExecutorException;
 import com.fr.bi.field.dimension.calculator.CombinationDateDimensionCalculator;
 import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.stable.data.Table;
-import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.stable.StringUtils;
@@ -21,12 +20,12 @@ public class ReverseSingleDimensionGroup extends SingleDimensionGroup {
     private long childsSize = 0;
     private Boolean generatedResult = false;
 
-    protected ReverseSingleDimensionGroup(BusinessTable tableKey, DimensionCalculator[] pcolumns, int[] pckindex, DimensionCalculator column, Object[] data, int ckIndex, GroupValueIndex gvi, ICubeDataLoader loader, boolean useRealData) {
-        super(tableKey, pcolumns, pckindex, column, data, ckIndex, gvi, loader, useRealData, BIBaseConstant.PART_DATA_GROUP_LIMIT);
+    protected ReverseSingleDimensionGroup(BusinessTable tableKey, DimensionCalculator[] pcolumns, DimensionCalculator column, Object[] data, int ckIndex, GroupValueIndex gvi, ICubeDataLoader loader, boolean useRealData) {
+        super(tableKey, pcolumns, column, data, ckIndex, gvi, loader, useRealData, BIBaseConstant.PART_DATA_GROUP_LIMIT);
     }
 
-    public static SingleDimensionGroup createDimensionGroup(final BusinessTable tableKey, final DimensionCalculator[] pcolumns, final int[] pckindex, final DimensionCalculator column, final Object[] data, final int ckIndex, final GroupValueIndex gvi, final ICubeDataLoader loader , final boolean useRealData) {
-        return new ReverseSingleDimensionGroup(tableKey, pcolumns, pckindex, column, data, ckIndex, gvi, loader, useRealData);
+    public static SingleDimensionGroup createDimensionGroup(final BusinessTable tableKey, final DimensionCalculator[] pcolumns, final DimensionCalculator column, final Object[] data, final int ckIndex, final GroupValueIndex gvi, final ICubeDataLoader loader , final boolean useRealData) {
+        return new ReverseSingleDimensionGroup(tableKey, pcolumns, column, data, ckIndex, gvi, loader, useRealData);
     }
 
     @Override

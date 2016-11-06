@@ -54,7 +54,7 @@ class WebComponent extends Component {
         const {$widget, wId} = this.props;
         const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(this.context.$template));
         return <WebView
-            style={{height: this.props.height, ...styles.wrapper}}
+            style={{height: this.props.height, width: this.props.width}}
             src={ widget.getUrl()}
         />
     }
@@ -77,9 +77,4 @@ class WebComponent extends Component {
 
 }
 mixin.onClass(WebComponent, ReactComponentWithPureRenderMixin);
-const styles = StyleSheet.create({
-    wrapper: {
-        flex: 1
-    }
-});
 export default WebComponent;

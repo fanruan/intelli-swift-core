@@ -18,12 +18,12 @@ import {Layout} from 'layout'
 import {Table, Dialog, IconLink} from 'base'
 import {TableWidget} from 'widgets';
 
-import TableComponent from './TableComponent';
+import ChartComponent from '../../../../components/Chart/ChartComponent';
 
-import SettingsComponent from '../Settings/SettingsComponent'
+import SettingsContainer from '../Settings/SettingsContainer'
 
 
-class TablePaneComponent extends Component {
+class ChartPaneComponent extends Component {
     static contextTypes = {
         $template: React.PropTypes.object,
         actions: React.PropTypes.object
@@ -51,17 +51,17 @@ class TablePaneComponent extends Component {
         return <Layout main='justify' cross='center' style={styles.header}>
             <Text>{widget.getName()}</Text>
             <IconLink className='setting-font' onPress={()=> {
-                Portal.showModal('TableComponent', <SettingsComponent
-                    key={'TableComponent'}
+                Portal.showModal('ChartComponent', <SettingsContainer
+                    key={'ChartComponent'}
                     $widget={this.props.$widget}
                     wId={this.props.wId}
                     height={0}
                     onComplete={(opt)=> {
-                        Portal.closeModal('TableComponent');
+                        Portal.closeModal('ChartComponent');
                         this.context.actions.updateWidget(opt.$widget, opt.wId);
                     }}
                     onReturn={()=> {
-                        Portal.closeModal('TableComponent');
+                        Portal.closeModal('ChartComponent');
                     }}
                 />);
             }}/>
@@ -70,19 +70,19 @@ class TablePaneComponent extends Component {
 
     render() {
         const {width, height, $widget, wId} = this.props;
-        return <Layout dir='top' box='fist'>
+        return <Layout dir='top' box='first'>
             {this._renderHeader()}
-            <TableComponent
+            <ChartComponent
                 width={width}
                 height={height - Sizes.HEADER_HEIGHT}
                 $widget={$widget}
                 wId={wId}
             >
-            </TableComponent>
+            </ChartComponent>
         </Layout>
     }
 }
-mixin.onClass(TablePaneComponent, ReactComponentWithImmutableRenderMixin);
+mixin.onClass(ChartPaneComponent, ReactComponentWithImmutableRenderMixin);
 
 const styles = StyleSheet.create({
     wrapper: {
@@ -94,4 +94,4 @@ const styles = StyleSheet.create({
         height: Sizes.HEADER_HEIGHT
     }
 });
-export default TablePaneComponent
+export default ChartPaneComponent

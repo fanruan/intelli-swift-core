@@ -464,7 +464,8 @@ public class BIDBUtils {
             Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
             Table table = new Table(BIConnectionManager.getInstance().getSchema(dbName), tableName);
             sql.setFrom(dialect.table2SQL(table));
-
+            sql.setSchema(table.getSchema());
+            sql.setTableName(table.getName());
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }

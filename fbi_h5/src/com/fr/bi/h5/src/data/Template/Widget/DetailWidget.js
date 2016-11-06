@@ -11,6 +11,7 @@ class DetailWidget extends AbstractWidget {
     }
 
     getData(options) {
+        this.calculationWidget();
         const wi = this.createJson();
         return Fetch(BH.servletURL + '?op=fr_bi_dezi&cmd=widget_setting', {
             method: "POST",

@@ -10,18 +10,40 @@ import React, {
     View,
     ListView,
     Fetch,
+    Dimensions,
     TouchableBounce,
     TouchableHighlight,
     TouchableOpacity,
     TouchableWithoutFeedback
 } from 'lib';
 
-import {ReactComponentWithImmutableRenderMixin} from 'core';
+import {ReactComponentWithImmutableRenderMixin, UserAgent} from 'core';
 import {Template} from 'data';
 import {Layout} from 'layout';
 import * as TodoActions from '../actions/template';
 
-import Main from '../components/Main.js'
+import MainContainer4Phone from './phone/vertical/MainContainer.js'
+import MainContainer4Pad from './pad/vertical/MainContainer.js'
+import MainContainerHorizontal4Phone from './phone/horizontal/MainContainerHorizontal.js'
+import MainContainerHorizontal4Pad from './pad/horizontal/MainContainerHorizontal.js'
+import MainContainerWeb from './web/MainContainer'
+
+const {width, height} = Dimensions.get('window');
+
+let isMobile = false;
+let isPad = false;
+if (UserAgent.mobile()) {
+    isMobile = true;
+    if (UserAgent.ipad()) {
+        isPad = true;
+    }
+    if (UserAgent.android()) {
+        var size = window.getComputedStyle(document.body, ':after').getPropertyValue('content');
+        if (size.indexOf('smallscreen') != -1) {
+            isPad = true;
+        }
+    }
+}
 
 //import PanResponderDemo from '../examples/base/2/PanResponder/PanResponder'
 //import ViewDemo from '../examples/base/2/View/View'
@@ -62,7 +84,7 @@ import Main from '../components/Main.js'
 //import UIExplorerApp from '../examples/UIExplorer/UIExplorerApp.web'
 // import Game2048 from '../examples/2048/Game2048'
 
-import LayoutDemo from '../examples/base/Layout'
+// import LayoutDemo from '../examples/base/Layout'
 
 
 class App extends Component {
@@ -83,6 +105,11 @@ class App extends Component {
         super(props, context);
     }
 
+    state = {
+        width,
+        height
+    };
+
     componentDidMount() {
         setInterval(() => {
             Fetch(BH.servletURL + '?op=fr_bi_dezi&cmd=update_session', {
@@ -96,17 +123,50 @@ class App extends Component {
                 body: JSON.stringify({_t: new Date(), sessionID: BH.sessionID})
             });
         };
+        const resize = ()=> {
+            Dimensions.update();
+            const {width, height} = Dimensions.get('window')
+            this.setState({
+                width,
+                height
+            })
+        };
+        window.addEventListener("onorientationchange", resize, false);
+        window.addEventListener("resize", resize, false);
     }
 
     render() {
-        return (
-            <View>
+        const {width, height} = this.state;
+        let Component = MainContainer4Phone;
+        if (isMobile) {
+            if (isPad) {
+                Component = width > height ? MainContainerHorizontal4Pad : MainContainer4Pad;
+            } else {
+                Component = width > height ? MainContainerHorizontal4Phone : MainContainer4Phone;
+            }
+        }
+        if (isMobile) {
+            return <View>
                 <Layout flex box='mean'>
-                    <Main $template={this.props.$template}/>
+                    <Component width={width} height={height}
+                               $template={this.props.$template}/>
                 </Layout>
                 <Portal />
-            </View>
-        )
+            </View>;
+        }
+
+        return <View>
+            <Layout flex box='mean'>
+                <MainContainerWeb width={width} height={height}
+                           $template={this.props.$template}/>
+            </Layout>
+            <Portal />
+        </View>;
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("onorientationchange");
+        window.removeEventListener("resize");
     }
 }
 
@@ -132,8 +192,11 @@ function mapStateToProps(state) {
     };
     return props;
 }
+
 function mapDispatchToProps(dispatch) {
     const actionMap = {actions: bindActionCreators(TodoActions, dispatch)};
     return actionMap;
 }
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+
+export default
+connect(mapStateToProps, mapDispatchToProps)(App);

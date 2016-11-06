@@ -18,11 +18,9 @@ import {Colors, Sizes, TemplateFactory} from 'data'
 import {Layout} from 'layout'
 
 import Toolbar from './Toolbar'
-import LayoutComponent from './Layout/LayoutComponent'
+import LayoutContainer from './Layout/LayoutContainer'
 
-const {width, height} = Dimensions.get('window');
-
-class Main extends Component {
+class MainContainer extends Component {
     static contextTypes = {
         actions: React.PropTypes.object,
         $template: React.PropTypes.object
@@ -32,7 +30,6 @@ class Main extends Component {
 
     constructor(props, context) {
         super(props, context);
-        this.template = TemplateFactory.createTemplate(props.$template);
     }
 
     navigationBarRouteMapper() {
@@ -89,7 +86,7 @@ class Main extends Component {
                                 const prevRoute = navState.routeStack[navState.presentedIndex - 1];
                                 if (route.$template) {
                                     prevRoute.$template = route.$template;
-                                    self.context.actions.updateTemplate(route.$template);
+                                    self.context.actions.query(route.$template);
                                     navigator.replacePreviousAndPop(prevRoute);
                                 } else {
                                     navigator.pop();
@@ -98,7 +95,7 @@ class Main extends Component {
                             underlayColor={Colors.PRESS}
                             style={styles.navBarRightButton}>
                             <Text style={[styles.navBarText, styles.navBarButtonText]}>
-                                查询
+                                {'查询'}
                             </Text>
                         </TouchableHighlight>
                     );
@@ -123,7 +120,7 @@ class Main extends Component {
         if (name === 'index') {
             if (this.template.hasControlWidget()) {
                 return <Layout flex dir='top' box='last'>
-                    <LayoutComponent width={width} height={height - 50 - Sizes.ITEM_HEIGHT} {...props}
+                    <LayoutContainer {...props} width={props.width} height={props.height - 50 - Sizes.ITEM_HEIGHT}
                                      navigator={navigationOperations}/>
 
                     <Toolbar {...props} navigator={navigationOperations}>
@@ -131,12 +128,12 @@ class Main extends Component {
                     </Toolbar>
                 </Layout>
             }
-            return <LayoutComponent width={width} height={height} {...props}/>;
+            return <LayoutComponent {...props} width={props.width} height={props.height - 50}/>;
         }
         return (
             <Layout flex box='mean'>
                 <Component
-                    width={width} height={height - 50}
+                    width={props.width} height={props.height - 50}
                     {...others}
                     onValueChange={$template=> {
                         route.$template = $template;
@@ -149,6 +146,7 @@ class Main extends Component {
 
     render() {
         const initialRoute = {name: 'index', title: '首页'};
+        this.template = TemplateFactory.createTemplate(this.props.$template);
         return (
             <Navigator
                 style={styles.wrapper}
@@ -195,7 +193,7 @@ class Main extends Component {
 
     }
 }
-mixin.onClass(Main, ReactComponentWithImmutableRenderMixin);
+mixin.onClass(MainContainer, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         paddingTop: 50
@@ -226,4 +224,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Main
+export default MainContainer

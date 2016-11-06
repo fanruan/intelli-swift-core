@@ -15,114 +15,49 @@ class AbstractWidget {
         this.template = template;
     }
 
-    $get() {
-        return this.$widget;
+    forceUpdate() {
+        this.$widget = this.$widget.set('tag', !this.$widget.get('tag'));
     }
 
-    isControl() {
-        return false;
-    }
-
-    isDimensionByViewId(viewId) {
-        return parseInt(viewId, 10) < BICst.REGION.TARGET1;
-    }
-
-    isDimensionById(id) {
-        const dimensionIds = this.getAllDimensionIds();
-        return dimensionIds.indexOf(id) > -1;
-    }
-
-    isTargetById(id) {
-        const targetIds = this.getAllTargetIds();
-        return targetIds.indexOf(id) > -1;
-    }
+    //get
 
     createJson() {
         return this.$widget.toJS();
     }
 
-    isFreeze() {
-        const isFreeze = this.$widget.getIn(['settings', 'freeze_dim']);
-        return isNil(isFreeze) ? true : isFreeze;
-    }
-
-    hasDimensionById(dId) {
-        return !isNil(this.$widget.getIn(['dimensions', dId]))
-    }
-
-    get$DimensionById(id) {
-        invariant(this.isDimensionById(id), id + "不是维度id");
-        return this.$widget.getIn(['dimensions', id]);
-    }
-
-    get$TargetById(id) {
-        invariant(this.isTargetById(id), id + "不是指标id");
-        return this.$widget.getIn(['dimensions', id])
-    }
-
-    get$DimensionOrTargetById(id) {
-        if (this.isDimensionById(id)) {
-            return this.get$DimensionById(id);
-        }
-        return this.get$TargetById(id);
-    }
-
-    getDimensionById(id) {
-        return DimensionFactory.createDimension(this.get$DimensionById(id), id, this);
-    }
-
-    getTargetById(id) {
-        return DimensionFactory.createTarget(this.get$TargetById(id), id, this);
-    }
-
-    getDimensionOrTargetById(id) {
-        if (this.isDimensionById(id)) {
-            return DimensionFactory.createDimension(this.get$DimensionById(id), id, this);
-        }
-        return DimensionFactory.createTarget(this.get$TargetById(id), id, this);
+    $get() {
+        return this.$widget;
     }
 
     getAllDimensionIds() {
-        if (this._dimensionIds) {
-            return this._dimensionIds;
+        return this.getAllDimDimensionIds().concat(this.getAllTargetDimensionIds());
+    }
+
+    getAllDimDimensionIds() {
+        if (this._dimDimensionIds) {
+            return this._dimDimensionIds;
         }
         let result = [];
-        this.$widget.get('view').forEach(($id, key)=> {
-            if (parseInt(key) < BICst.REGION.TARGET1) {
-                result = result.concat($id.toArray());
+        each(this.getWidgetView(), ($id, key)=> {
+            if (parseInt(key, 10) < BICst.REGION.TARGET1) {
+                result = result.concat($id);
             }
         });
-        this._dimensionIds = result;
+        this._dimDimensionIds = result;
         return result;
     }
 
-    getAllTargetIds() {
-        if (this._targetIds) {
-            return this._targetIds;
+    getAllTargetDimensionIds() {
+        if (this._targetDimensionIds) {
+            return this._targetDimensionIds;
         }
         let result = [];
-        this.$widget.get('view').forEach(($id, key)=> {
-            if (parseInt(key) >= BICst.REGION.TARGET1) {
-                result = result.concat($id.toArray());
+        each(this.getWidgetView(), ($id, key)=> {
+            if (parseInt(key, 10) >= BICst.REGION.TARGET1) {
+                result = result.concat($id);
             }
         });
-        this._targetIds = result;
-        return result;
-    }
-
-    getAllDimensionAndTargetIds() {
-        return this.getAllDimensionIds().concat(this.getAllTargetIds());
-    }
-
-    getAllUsedDimensionAndTargetIds() {
-        const ids = this.getAllDimensionAndTargetIds();
-        const result = [];
-        ids.forEach((id)=> {
-            const $dim = this.get$DimensionOrTargetById(id);
-            if (DimensionFactory.createDimension($dim, id, this).isUsed()) {
-                result.push(id);
-            }
-        });
+        this._targetDimensionIds = result;
         return result;
     }
 
@@ -130,7 +65,7 @@ class AbstractWidget {
         const ids = this.getAllDimensionIds();
         const result = [];
         ids.forEach((id)=> {
-            const $dim = this.get$DimensionById(id);
+            const $dim = this.get$DimensionByDimensionId(id);
             if (DimensionFactory.createDimension($dim, id, this).isUsed()) {
                 result.push(id);
             }
@@ -138,12 +73,24 @@ class AbstractWidget {
         return result;
     }
 
-    getAllUsedTargetIds() {
-        const ids = this.getAllTargetIds();
+    getAllUsedDimDimensionIds() {
+        const ids = this.getAllDimDimensionIds();
         const result = [];
         ids.forEach((id)=> {
-            const $dim = this.get$TargetById(id);
-            if (DimensionFactory.createTarget($dim, id, this).isUsed()) {
+            const $dim = this.get$DimensionByDimensionId(id);
+            if (DimensionFactory.createDimension($dim, id, this).isUsed()) {
+                result.push(id);
+            }
+        });
+        return result;
+    }
+
+    getAllUsedTargetDimensionIds() {
+        const ids = this.getAllTargetDimensionIds();
+        const result = [];
+        ids.forEach((id)=> {
+            const $dim = this.get$DimensionByDimensionId(id);
+            if (DimensionFactory.createDimension($dim, id, this).isUsed()) {
                 result.push(id);
             }
         });
@@ -152,7 +99,7 @@ class AbstractWidget {
 
     getRowDimensionIds() {
         let result = [];
-        this.$widget.get('view').forEach(($id, key)=> {
+        each(this.getWidgetView(), ($id, key)=> {
             if (parseInt(key) === BICst.REGION.DIMENSION1) {
                 result = result.concat($id.toArray());
             }
@@ -162,13 +109,41 @@ class AbstractWidget {
 
     getColDimensionIds() {
         let result = [];
-        this.$widget.get('view').forEach(($id, key)=> {
+        each(this.getWidgetView(), ($id, key)=> {
             if (parseInt(key) === BICst.REGION.DIMENSION2) {
                 result = result.concat($id.toArray());
             }
         });
         return result;
     }
+
+    getDimensionByDimensionId(dId) {
+        return DimensionFactory.createDimension(this.get$DimensionByDimensionId(dId), dId, this);
+    }
+
+    getDimDimensionByDimensionId(dId) {
+        return DimensionFactory.createDimension(this.get$DimDimensionByDimensionId(dId), dId, this);
+    }
+
+    getTargetDimensionByDimensionId(dId) {
+        return DimensionFactory.createDimension(this.get$TargetDimensionByDimensionId(dId), dId, this);
+    }
+
+
+    get$DimensionByDimensionId(dId) {
+        return this.$widget.getIn(['dimensions', dId]);
+    }
+
+    get$DimDimensionByDimensionId(dId) {
+        invariant(this.isDimDimensionByDimensionId(dId), dId + "不是维度id");
+        return this.$widget.getIn(['dimensions', dId]);
+    }
+
+    get$TargetDimensionByDimensionId(dId) {
+        invariant(this.isTargetDimensionByDimensionId(dId), dId + "不是指标id");
+        return this.$widget.getIn(['dimensions', dId])
+    }
+
 
     getType() {
         return this.$widget.get('type');
@@ -207,16 +182,140 @@ class AbstractWidget {
 
 
     getWidgetValue() {
-        return this.$widget.get('value').toJS();
+        if (this.$widget.get('value')) {
+            return this.$widget.get('value').toJS();
+        }
+        return {};
     }
 
-    getRegionTypeByDimensionID(dId) {
+    getWidgetSettings() {
+        return this.$widget.get('settings').toJS();
+    }
+
+    getRegionTypeByDimensionId(dId) {
         var view = this.getWidgetView();
         return findKey(view, function (regionType, dIds) {
             if (dIds.indexOf(dId) > -1) {
                 return true;
             }
         });
+    }
+
+    getWidgetInitTime() {
+        return this.$widget.get('init_time') || new Date().getTime();
+    }
+
+    getClicked() {
+        return this.$widget.get('clicked') ? this.$widget.get('clicked').toJS() : {};
+    }
+
+    getDrill() {
+        var clicked = this.getClicked();
+        var drills = {};
+        each(clicked, (value, dId)=> {
+            if (this.hasDimensionByDimensionId(dId) && this.isDimDimensionByDimensionId(dId)) {
+                drills[dId] = value;
+            }
+        });
+        return drills;
+    }
+
+    getLinkageValues() {
+        var clicked = this.getClicked();
+        var drills = {};
+        each(clicked, (value, dId)=> {
+            if (this.template.hasDimensionByDimensionId(dId) && !this.template.isDimDimensionByDimensionId(dId)) {
+                drills[dId] = value;
+            }
+        });
+        return drills;
+    }
+
+    getWidgetFilterValue(wId) {
+        if (this.template.hasWidgetByWidgetId(wId)) {
+            return (this.$widget.get('filter_value') && this.$widget.get('filter_value').toJS()) || {};
+        }
+        return {};
+    }
+
+    //settings  ---- start ----
+
+    getWSTableForm() {
+        var ws = this.getWidgetSettings();
+        return isNil(ws.table_form) ? ws.table_form :
+            BICst.DEFAULT_CHART_SETTING.table_form;
+    }
+
+    getWSThemeColor() {
+        var ws = this.getWidgetSettings();
+        return isNil(ws.theme_color) ? ws.theme_color :
+            BICst.DEFAULT_CHART_SETTING.theme_color;
+    }
+
+    getWSTableStyle() {
+        var ws = this.getWidgetSettings();
+        return isNil(ws.table_style) ? ws.table_style :
+            BICst.DEFAULT_CHART_SETTING.table_style;
+    }
+
+    getWSTransferFilter() {
+        var ws = this.getWidgetSettings();
+        return isNil(ws.transfer_filter) ? ws.transfer_filter :
+            BICst.DEFAULT_CHART_SETTING.transfer_filter;
+    }
+
+    getWSShowNumber() {
+        var ws = this.getWidgetSettings();
+        return isNil(ws.show_number) ? ws.show_number :
+            BICst.DEFAULT_CHART_SETTING.show_number;
+    }
+
+    getWSShowRowTotal() {
+        var ws = this.getWidgetSettings();
+        return isNil(ws.show_row_total) ? ws.show_row_total :
+            BICst.DEFAULT_CHART_SETTING.show_row_total;
+    }
+
+    getWSShowColTotal() {
+        var ws = this.getWidgetSettings();
+        return isNil(ws.show_col_total) ? ws.show_col_total :
+            BICst.DEFAULT_CHART_SETTING.show_col_total;
+    }
+
+    getWSOpenRowNode() {
+        var ws = this.getWidgetSettings();
+        return isNil(ws.open_row_node) ? ws.open_row_node :
+            BICst.DEFAULT_CHART_SETTING.open_row_node;
+    }
+
+    getWSOpenColNode() {
+        var ws = this.getWidgetSettings();
+        return isNil(ws.open_col_node) ? ws.open_col_node :
+            BICst.DEFAULT_CHART_SETTING.open_col_node;
+    }
+
+    getWSMaxRow() {
+        var ws = this.getWidgetSettings();
+        return isNil(ws.max_row) ? ws.max_row :
+            BICst.DEFAULT_CHART_SETTING.max_row;
+    }
+
+    getWSMaxCol() {
+        var ws = this.getWidgetSettings();
+        return isNil(ws.max_col) ? ws.max_col :
+            BICst.DEFAULT_CHART_SETTING.max_col;
+    }
+
+    getWSFreezeDim() {
+        var ws = this.getWidgetSettings();
+        return isNil(ws.freeze_dim) ? ws.freeze_dim :
+            BICst.DEFAULT_CHART_SETTING.freeze_dim;
+    }
+
+    getWSFreezeFirstColumnById() {
+        var ws = this.getWidgetSettings();
+        return isNil(ws.freeze_first_column) ? ws.freeze_first_column :
+            BICst.DEFAULT_CHART_SETTING.freeze_first_column;
     }
 
     getControlCalculations(notcontain) {
@@ -229,15 +328,15 @@ class AbstractWidget {
             }
             //去掉自身和在自身之后创建的控件
             if (!isNil(notcontain) && this.template.isControlWidgetByWidgetId(notcontain)
-                && this.template.getWidgetInitTimeByID(id) > this.template.getWidgetInitTimeByID(notcontain)) {
+                && this.template.getWidgetInitTimeByWidgetId(id) > this.template.getWidgetInitTimeByWidgetId(notcontain)) {
                 return;
             }
-            var widget = this.template.getWidgetById(id);
+            var widget = this.template.getWidgetByWidgetId(id);
             var value = widget.getWidgetValue();
             if (!isNil(value)) {
-                var dimensionIds = widget.getAllDimensionAndTargetIds();
+                var dimensionIds = widget.getAllDimensionIds();
                 dimensionIds.forEach((dimId, i) => {
-                    var dimension = self.template.getDimensionById(dimId);
+                    var dimension = self.template.getDimensionByDimensionId(dimId);
                     var fValue = value, fType = "";
                     if (isNil(fValue) || (isString(value) && value.length === 0 ) || size(value) === 0) {
                         return;
@@ -376,8 +475,8 @@ class AbstractWidget {
         return filterValues;
 
         function createTreeFilterValue(result, v, floor, dimensionIds, fatherFilterValue) {
-            var dimension = self.template.getDimensionById(dimensionIds[floor]);
-            v.forEach((child, value)=> {
+            var dimension = self.template.getDimensionByDimensionId(dimensionIds[floor]);
+            each(v, (child, value)=> {
                     var leafFilterObj = {
                         filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
                         filter_value: {
@@ -402,8 +501,8 @@ class AbstractWidget {
         }
 
         function createTreeLabelFilterValue(result, v, floor, dimensionIds, fatherFilterValue) {
-            var dimension = self.template.getDimensionById(dimensionIds[floor]);
-            v.forEach((child, value)=> {
+            var dimension = self.template.getDimensionByDimensionId(dimensionIds[floor]);
+            each(v, (child, value)=> {
                     var leafFilterObj = {
                         filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
                         filter_value: {
@@ -441,11 +540,11 @@ class AbstractWidget {
         const getLinkedIds = (links) => {
             var allWIds = this.template.getAllWidgetIds();
             allWIds.forEach((aWid, i)=> {
-                var linkages = this.template.getWidgetLinkageByID(aWid);
+                var linkages = this.template.getWidgetLinkageByWidgetId(aWid);
                 linkages.forEach((link)=> {
                     if (link.to === this.wid) {
-                        links.push(this.template.getWidgetIDByDimensionID(link.from));
-                        getLinkedIds(this.template.getWidgetIDByDimensionID(link.from), links);
+                        links.push(this.template.getWidgetIdByDimensionId(link.from));
+                        getLinkedIds(this.template.getWidgetIdByDimensionId(link.from), links);
                     }
                 });
             });
@@ -453,7 +552,7 @@ class AbstractWidget {
 
         //对于维度的条件，很有可能是一个什么属于分组 这边处理 （没放到构造的地方处理是因为“其他”）
         const parseStringFilter4Group = (dId, value)=> {
-            var dimension = this.template.getDimensionById(dId);
+            var dimension = this.template.getDimensionByDimensionId(dId);
             var group = dimension.getGroup();
             var details = group.details;
             var groupMap = {};
@@ -496,7 +595,7 @@ class AbstractWidget {
 
         const parseNumberFilter4Group = (dId, v)=> {
             var value = v[0];
-            var dimension = this.template.getDimensionById(dId);
+            var dimension = this.template.getDimensionByDimensionId(dId);
             var group = dimension.getGroup();
             var groupValue = group.group_value, groupType = group.type;
             var groupMap = {};
@@ -580,7 +679,7 @@ class AbstractWidget {
 
         const parseSimpleFilter = (v)=> {
             var dId = v.dId;
-            var dimension = this.template.getDimensionById(dId);
+            var dimension = this.template.getDimensionByDimensionId(dId);
             var dType = dimension.getType();
             switch (dType) {
                 case BICst.TARGET_TYPE.STRING:
@@ -604,17 +703,17 @@ class AbstractWidget {
                 if (drArray.length === 0) {
                     return;
                 }
-                var dimension = this.getDimensionById(drId);
+                var dimension = this.getDimensionByDimensionId(drId);
                 !isNil(dimension) && dimension.setUsed(false);
                 this.set$Dimension(dimension.$get(), drId);
                 drArray.forEach((drill, i)=> {
-                    var dimension = this.getDimensionById(drill.dId);
+                    var dimension = this.getDimensionByDimensionId(drill.dId);
                     if (!isNil(dimension)) {
                         dimension.setUsed(i === drArray.length - 1);
                         this.set$Dimension(dimension.$get(), drill.dId);
-                        var drillRegionType = this.getRegionTypeByDimensionID(drId);
+                        var drillRegionType = this.getRegionTypeByDimensionId(drId);
                         //从原来的region中pop出来
-                        var tempRegionType = this.getRegionTypeByDimensionID(drill.dId);
+                        var tempRegionType = this.getRegionTypeByDimensionId(drill.dId);
                         var view = this.getWidgetView();
                         var dIndex = view[drillRegionType].indexOf(drId);
                         remove(view[tempRegionType], function (s) {
@@ -635,7 +734,7 @@ class AbstractWidget {
 
         //所有控件过滤条件（考虑有查询按钮的情况）
         filterValues = filterValues.concat(
-            this.template.isQueryControlExist() && !this.isControl() ?
+            this.template.hasQueryControlWidget() && !this.isControl() ?
                 this.$widget.get("control_filters") : this.getControlCalculations());
 
         //联动 由于这个clicked现在放到了自己的属性里，直接拿就好了
@@ -647,10 +746,11 @@ class AbstractWidget {
                     filterValues.push(filterValue);
                 }
             });
-            var transferFilter = this.template.getWSTransferFilterById(this.template.getWidgetIDByDimensionID(cId));
+            var transferFilter = this.template.getWSTransferFilterByWidgetId(this.template.getWidgetIdByDimensionId(cId));
             if (transferFilter === true) {
-                this.template.getWidgetIDByDimensionID(cId).getDimensionById(cId);
-                var tarFilter = this.template.getDimensionFilterValueByID(cId);
+                var wId = this.template.getWidgetIdByDimensionId(cId);
+                this.template.getWidgetByWidgetId(wId).getDimensionByDimensionId(cId);
+                var tarFilter = this.template.getDimensionFilterValueByDimensionId(cId);
                 if (!isNil(tarFilter)) {
                     this._parseFilter(tarFilter);
                     if (!isNil(tarFilter) && size(tarFilter) === 0) {
@@ -667,9 +767,9 @@ class AbstractWidget {
         allLinksWIds.forEach((lId, i)=> {
             var lLinkages = this.getLinkageValues();
             lLinkages.forEach((linkValue, cId)=> {
-                var lTransferFilter = this.template.getWSTransferFilterById(this.template.getWidgetIDByDimensionID(cId));
+                var lTransferFilter = this.template.getWSTransferFilterByWidgetId(this.template.getWidgetIdByDimensionId(cId));
                 if (lTransferFilter === true) {
-                    var lTarFilter = this.template.getDimensionFilterValueByID(cId);
+                    var lTarFilter = this.template.getDimensionFilterValueByDimensionId(cId);
                     if (!isNil(lTarFilter)) {
                         this._parseFilter(lTarFilter);
                         filterValues.push(lTarFilter);
@@ -697,9 +797,9 @@ class AbstractWidget {
 
 
         //日期类型的过滤条件
-        var dimensions = this.getAllDimensionAndTargetIds();
+        var dimensions = this.getAllDimensionIds();
         dimensions.forEach((dId)=> {
-            let dimension = this.getDimensionOrTargetById(dId);
+            let dimension = this.getDimensionByDimensionId(dId);
             var filterValue = dimension.getFilterValue() || {};
             this._parseFilter(filterValue);
             dimension.setFilterValue(filterValue);
@@ -716,135 +816,50 @@ class AbstractWidget {
         this.setWidgetRealData(true);
     }
 
-    getWidgetSettings() {
-        return this.$widget.get('settings').toJS();
-    }
+    //is
 
-    //settings  ---- start ----
-
-    getWSTableForm() {
-        var ws = this.getWidgetSettings();
-        return isNil(ws.table_form) ? ws.table_form :
-            BICst.DEFAULT_CHART_SETTING.table_form;
-    }
-
-    getWSThemeColor() {
-        var ws = this.getWidgetSettings();
-        return isNil(ws.theme_color) ? ws.theme_color :
-            BICst.DEFAULT_CHART_SETTING.theme_color;
-    }
-
-    getWSTableStyle() {
-        var ws = this.getWidgetSettings();
-        return isNil(ws.table_style) ? ws.table_style :
-            BICst.DEFAULT_CHART_SETTING.table_style;
-    }
-
-    getWSTransferFilter() {
-        var ws = this.getWidgetSettings();
-        return isNil(ws.transfer_filter) ? ws.transfer_filter :
-            BICst.DEFAULT_CHART_SETTING.transfer_filter;
-    }
-
-    getWSShowNumber() {
-        var ws = this.getWidgetSettings();
-        return isNil(ws.show_number) ? ws.show_number :
-            BICst.DEFAULT_CHART_SETTING.show_number;
-    }
-
-    getWSShowRowTotal() {
-        var ws = this.getWidgetSettings();
-        return isNil(ws.show_row_total) ? ws.show_row_total :
-            BICst.DEFAULT_CHART_SETTING.show_row_total;
-    }
-
-    getWSShowColTotal() {
-        var ws = this.getWidgetSettings();
-        return isNil(ws.show_col_total) ? ws.show_col_total :
-            BICst.DEFAULT_CHART_SETTING.show_col_total;
-    }
-
-    getWSOpenRowNode() {
-        var ws = this.getWidgetSettings();
-        return isNil(ws.open_row_node) ? ws.open_row_node :
-            BICst.DEFAULT_CHART_SETTING.open_row_node;
-    }
-
-    getWSOpenColNode() {
-        var ws = this.getWidgetSettings();
-        return isNil(ws.open_col_node) ? ws.open_col_node :
-            BICst.DEFAULT_CHART_SETTING.open_col_node;
-    }
-
-    getWSMaxRow() {
-        var ws = this.getWidgetSettings();
-        return isNil(ws.max_row) ? ws.max_row :
-            BICst.DEFAULT_CHART_SETTING.max_row;
-    }
-
-    getWSMaxCol() {
-        var ws = this.getWidgetSettings();
-        return isNil(ws.max_col) ? ws.max_col :
-            BICst.DEFAULT_CHART_SETTING.max_col;
-    }
-
-    getWSFreezeDim() {
-        var ws = this.getWidgetSettings();
-        return isNil(ws.freeze_dim) ? ws.freeze_dim :
-            BICst.DEFAULT_CHART_SETTING.freeze_dim;
-    }
-
-    getWSFreezeFirstColumnById() {
-        var ws = this.getWidgetSettings();
-        return isNil(ws.freeze_first_column) ? ws.freeze_first_column :
-            BICst.DEFAULT_CHART_SETTING.freeze_first_column;
+    isControl() {
+        return false;
     }
 
     isShowWidgetRealData() {
         return this.$widget.get('real_data');
     }
 
-
-    isDimensionExist(did) {
-        return this.template.getAllDimensionAndTargetIds().indexOf(did) > -1;
+    isDimensionRegionByViewId(viewId) {
+        return parseInt(viewId, 10) < BICst.REGION.TARGET1;
     }
 
-    getWidgetInitTime() {
-        return this.$widget.get('init_time') || new Date().getTime();
+    isDimDimensionByDimensionId(dId) {
+        const dimensionIds = this.getAllDimDimensionIds();
+        return dimensionIds.indexOf(dId) > -1;
     }
 
-    getClicked() {
-        return this.$widget.get('clicked') ? this.$widget.get('clicked').toJS() : {};
+    isTargetDimensionByDimensionId(id) {
+        const targetIds = this.getAllTargetDimensionIds();
+        return targetIds.indexOf(id) > -1;
     }
 
-    getDrill() {
-        var clicked = this.getClicked();
-        var drills = {};
-        each(clicked, (value, dId)=> {
-            if (this.isDimensionExist(dId) && this.isDimensionById(dId)) {
-                drills[dId] = value;
-            }
-        });
-        return drills;
+    isFreeze() {
+        const isFreeze = this.$widget.getIn(['settings', 'freeze_dim']);
+        return isNil(isFreeze) ? true : isFreeze;
     }
 
-    getLinkageValues() {
-        var clicked = this.getClicked();
-        var drills = {};
-        each(clicked, (value, dId)=> {
-            if (this.isDimensionExist(dId) && !this.isDimensionById(dId)) {
-                drills[dId] = value;
-            }
-        });
-        return drills;
+    //has
+
+    hasDimensionByDimensionId(dId) {
+        return !isNil(this.$widget.getIn(['dimensions', dId]))
     }
 
-    getWidgetFilterValue(wid) {
-        if (this.template.isWidgetExistByID(wid)) {
-            return this.$widget.get('filter_value').toJS() || {};
-        }
-        return {};
+    hasDimDimensionByDimensionId(dId) {
+        return this.getAllDimDimensionIds().indexOf(dId) > -1;
     }
+
+    hasTargetDimensionByDimensionId(dId) {
+        return this.getAllTargetDimensionIds().indexOf(dId) > -1;
+    }
+
+    //set
 
     setWidgetValue(value) {
         this.$widget = this.$widget.set('value', Immutable.fromJS(value));
@@ -910,8 +925,8 @@ class AbstractWidget {
         }
         if (filterType === BICst.FILTER_DATE.BELONG_WIDGET_VALUE || filterType === BICst.FILTER_DATE.NOT_BELONG_WIDGET_VALUE) {
             var filterWId = filterValue.wId, filterValueType = filterValue.filter_value.type;
-            var wValue = this.template.getWidgetById(filterWId).getWidgetValue();
-            if (!this.template.isWidgetExistByID(filterWId) || isNil(wValue)) {
+            var wValue = this.template.getWidgetByWidgetId(filterWId).getWidgetValue();
+            if (!this.template.hasWidgetByWidgetId(filterWId) || isNil(wValue)) {
                 return;
             }
             switch (filterValueType) {
@@ -1044,10 +1059,10 @@ class AbstractWidget {
         //获取日期控件的值
         function getDateControlValue(wid) {
             var self = this;
-            if (!self.template.isWidgetExistByID(wid)) {
+            if (!self.template.hasWidgetByWidgetId(wid)) {
                 return null;
             }
-            var widget = self.template.getWidgetById(wid);
+            var widget = self.template.getWidgetByWidgetId(wid);
             var widgetType = widget.getType();
             var wValue = widget.getWidgetValue();
             var date = null;
@@ -1096,7 +1111,7 @@ class AbstractWidget {
             var paramdate;
             var wWid = widgetInfo.wId, se = widgetInfo.startOrEnd;
             if (!isNil(wWid) && !isNil(se)) {
-                var wWValue = self.template.getWidgetById(wWid).getWidgetValue();
+                var wWValue = self.template.getWidgetByWidgetId(wWid).getWidgetValue();
                 if (isNil(wWValue) || size(wWValue) === 0) {
                     return;
                 }
@@ -1107,10 +1122,10 @@ class AbstractWidget {
                     paramdate = parseComplexDateCommon(wWValue.end);
                 }
             } else {
-                if (isNil(widgetInfo.wId) || isNil(self.template.getWidgetById(widgetInfo.wId).getWidgetValue())) {
+                if (isNil(widgetInfo.wId) || isNil(self.template.getWidgetByWidgetId(widgetInfo.wId).getWidgetValue())) {
                     return;
                 }
-                paramdate = parseComplexDateCommon(self.template.getWidgetById(widgetInfo.wId).getWidgetValue());
+                paramdate = parseComplexDateCommon(self.template.getWidgetByWidgetId(widgetInfo.wId).getWidgetValue());
             }
             if (!isNil(paramdate)) {
                 return parseComplexDateCommon(offset, new Date(paramdate));

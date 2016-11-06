@@ -673,7 +673,7 @@ var Table = React.createClass({
 
         var firstRowIndex = (oldState && oldState.firstRowIndex) || 0;
         var firstRowOffset = (oldState && oldState.firstRowOffset) || 0;
-        var offsetX = (oldState && oldState.offsetX) || 0, offsetWidth = (oldState && oldState.offsetWidth) || props.width;
+        var offsetX = (oldState && oldState.offsetX) || 0, offsetWidth = props.width;
         var scrollX, scrollY;
         if (oldState && props.overflowX !== 'hidden') {
             scrollX = oldState.scrollX;

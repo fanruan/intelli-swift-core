@@ -57,7 +57,7 @@ class DateComponent extends Component {
         const {...props} = this.props, {...state} = this.state;
         const wId = props.wId;
         const template = TemplateFactory.createTemplate(props.$template);
-        const widget = template.getWidgetById(wId);
+        const widget = template.getWidgetByWidgetId(wId);
         return <DateWidget style={styles.wrapper}
                            year={widget.getYear()}
                            month={widget.getMonth()}

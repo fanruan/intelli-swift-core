@@ -79,12 +79,12 @@ class MultiTreeSelectorWidget extends Component {
 
     componentWillReceiveProps(nextProps) {
         this.setState(this._getNextState({
-                ...this.props, ...this.state
-            }
-            ,
+                ...this.props, ...this.state, times: 0
+            },
             nextProps
-        ))
-        ;
+        ), ()=> {
+            this._fetchData();
+        });
     }
 
     componentWillUpdate() {

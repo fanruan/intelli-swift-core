@@ -24,12 +24,12 @@ export default class SettingsComponentHelper {
         }
     }
 
-    isDimensionByViewId(viewId) {
-        return this.widget.isDimensionByViewId(viewId);
+    isDimensionRegionByViewId(viewId) {
+        return this.widget.isDimensionRegionByViewId(viewId);
     }
 
     isDimensionByDimensionId(dId) {
-        return this.widget.isDimensionById(dId);
+        return this.widget.isDimDimensionByDimensionId(dId);
     }
 
     getAllDimensionItems() {
@@ -43,7 +43,7 @@ export default class SettingsComponentHelper {
     getDimensionsItems(viewId) {
         const result = [];
         each(this._getDimensionIds(viewId), (dId)=> {
-            const dim = this.widget.getDimensionOrTargetById(dId);
+            const dim = this.widget.getDimensionByDimensionId(dId);
             result.push({
                 text: dim.getName(),
                 viewId: viewId,

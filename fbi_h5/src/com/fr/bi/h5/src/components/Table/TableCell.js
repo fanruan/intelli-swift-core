@@ -72,7 +72,7 @@ class TableCell extends Component {
         const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(this.context.$template));
         const dId = props.dId;
         const linkedWidgets = [];
-        if (!widget.isDimensionById(dId)) {
+        if (!widget.isDimDimensionByDimensionId(dId)) {
             const linkage = widget.getWidgetLinkage();
             linkage.forEach((link)=> {
                 if (link.from === dId) {

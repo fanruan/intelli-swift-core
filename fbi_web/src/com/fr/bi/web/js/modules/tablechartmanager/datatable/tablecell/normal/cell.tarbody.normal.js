@@ -103,7 +103,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         }
         var linkedWidgets = [];
         BI.each(linkage, function (i, link) {
-            if ((link.from === dId && BI.isEmptyArray(link.cids)) || (link.cids[0] === dId && BI.Utils.getDimensionTypeByID(dId) === BICst.TARGET_TYPE.FORMULA)) {
+            if ((link.from === dId && BI.isEmptyArray(link.cids)) || (link.cids && link.cids[0] === dId && BI.Utils.getDimensionTypeByID(dId) === BICst.TARGET_TYPE.FORMULA)) {
                 linkedWidgets.push(link);
             }
         });

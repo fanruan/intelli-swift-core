@@ -16,19 +16,21 @@ import {Layout} from 'layout'
 import {AutoSizer} from 'base'
 import {Colors, TemplateFactory, WidgetFactory} from 'data'
 
-import ChartPaneComponent from '../Chart/ChartPaneComponent.js'
-import TablePaneComponent from '../Table/TablePaneComponent.js'
-import DetailTablePaneComponent from '../DetailTable/DetailTablePaneComponent.js'
-import MultiSelectorComponent from '../MultiSelector/MultiSelectorComponent.js'
-import MultiTreeSelectorComponent from '../MultiTreeSelector/MultiTreeSelectorComponent.js'
-import ContentComponent from '../Content/ContentComponent'
-import ImageComponent from '../Image/ImageComponent'
-import YearMonthComponent from '../YearMonth/YearMonthComponent'
-import YearComponent from '../Year/YearComponent'
-import YearQuarterComponent from '../YearQuarter/YearQuarterComponent'
-import WebComponent from '../Web/WebCompontent'
+import ChartPaneComponent from '../../common/Chart/ChartContainer.js'
+import TablePaneComponent from '../../common/Table/TableContainer.js'
+import DetailTablePaneComponent from '../../common/DetailTable/DetailTableContainer.js'
+import MultiSelectorComponent from '../../../../components/MultiSelector/MultiSelectorComponent.js'
+import MultiTreeSelectorComponent from '../../../../components/MultiTreeSelector/MultiTreeSelectorComponent.js'
+import ContentComponent from '../../../../components/Content/ContentComponent'
+import ImageComponent from '../../../../components/Image/ImageComponent'
+import YearMonthComponent from '../../../../components/YearMonth/YearMonthComponent'
+import YearComponent from '../../../../components/Year/YearComponent'
+import YearQuarterComponent from '../../../../components/YearQuarter/YearQuarterComponent'
+import WebComponent from '../../../../components/Web/WebCompontent'
 
-class LayoutComponent extends Component {
+import LayoutContainerHelper from './LayoutContainerHelper'
+
+class LayoutContainer extends Component {
     static propTypes = {};
 
     constructor(props, context) {
@@ -46,8 +48,9 @@ class LayoutComponent extends Component {
     render() {
         const {...props} = this.props;
         const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        this.template = TemplateFactory.createTemplate(props.$template);
-        const rows = this.template.getAllWidgetIds();
+        this._helper = new LayoutContainerHelper(props);
+
+        const rows = this._helper.getAllSortedStatisticWidgetIds();
         return <ViewPagerAndroid
             style={styles.viewPager}
             initialPage={0}
@@ -57,7 +60,7 @@ class LayoutComponent extends Component {
             {[<ListView
                 key={1}
                 {...props}
-                initialListSize={Math.ceil(props.height / 310) + 1}
+                initialListSize={Math.floor(props.height / 310) + 1}
                 dataSource={ds.cloneWithRows(rows)}
                 renderRow={this._renderRow.bind(this)}
             />]}
@@ -71,12 +74,13 @@ class LayoutComponent extends Component {
     }
 
     _renderRow(wId, sectionID, rowID) {
-        const $widget = this.template.get$WidgetById(wId);
-        const type = WidgetFactory.createWidget($widget, wId, this.template).getType();
+        const $widget = this._helper.get$WidgetByWidgetId(wId);
+        const type = this._helper.getWidgetTypeByWidgetId(wId);
         const props = {
             $widget,
+            $template: this._helper.get$Template(),
             wId,
-            width: this.props.width - 40,
+            width: this.props.width - 20,
             height: 270
         };
         let component = null;
@@ -153,13 +157,13 @@ class LayoutComponent extends Component {
         </Layout>
     }
 }
-mixin.onClass(LayoutComponent, ReactComponentWithImmutableRenderMixin);
+mixin.onClass(LayoutContainer, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
-        padding: 20
+        padding: 10
     },
     viewPager: {
         flex: 1
     }
 });
-export default LayoutComponent
+export default LayoutContainer
