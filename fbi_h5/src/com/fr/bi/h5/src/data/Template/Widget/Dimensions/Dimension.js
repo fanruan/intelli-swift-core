@@ -14,7 +14,7 @@ class Dimension extends DimensionOrTarget{
         if ($sort) {
             const sort_target = $sort.get('sort_target');
             if (sort_target) {
-                return this.widget.getDimensionOrTargetById(sort_target).getName();
+                return this.widget.getDimensionByDimensionId(sort_target).getName();
             }
         }
         return this.getName();

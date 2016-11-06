@@ -28,6 +28,8 @@ import YearComponent from '../../../../components/Year/YearComponent'
 import YearQuarterComponent from '../../../../components/YearQuarter/YearQuarterComponent'
 import WebComponent from '../../../../components/Web/WebCompontent'
 
+import LayoutContainerHelper from './LayoutContainerHelper'
+
 class LayoutContainer extends Component {
     static contextTypes = {
         actions: React.PropTypes.object,
@@ -50,8 +52,9 @@ class LayoutContainer extends Component {
     render() {
         const {...props} = this.props;
         const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        this.template = TemplateFactory.createTemplate(props.$template);
-        const rows = this.template.getAllWidgetIds();
+        this._helper = new LayoutContainerHelper(props);
+
+        const rows = this._helper.getAllSortedStatisticWidgetIds();
         return <ListView
             contentContainerStyle={styles.list}
             {...props}
@@ -63,12 +66,12 @@ class LayoutContainer extends Component {
     }
 
     _renderRow(wId, sectionID, rowID) {
-        const $widget = this.template.get$WidgetByWidgetId(wId);
-        const type = WidgetFactory.createWidget($widget, wId, this.template).getType();
+        const $widget = this._helper.get$WidgetByWidgetId(wId);
+        const type = this._helper.getWidgetTypeByWidgetId(wId);
         const width = this.props.width / 2 - 20, height = 270;
         const props = {
             $widget,
-            $template: this.template.$get(),
+            $template: this._helper.get$Template(),
             wId,
             width: width,
             height: height,

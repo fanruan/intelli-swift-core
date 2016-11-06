@@ -123,9 +123,11 @@ class App extends Component {
             });
         };
         const resize = ()=> {
+            Dimensions.update();
+            const {width, height} = Dimensions.get('window')
             this.setState({
-                width: document.documentElement.clientWidth,
-                height: document.documentElement.clientHeight
+                width,
+                height
             })
         };
         window.addEventListener("onorientationchange", resize, false);

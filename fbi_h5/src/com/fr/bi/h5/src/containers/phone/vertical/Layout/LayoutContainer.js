@@ -28,6 +28,8 @@ import YearComponent from '../../../../components/Year/YearComponent'
 import YearQuarterComponent from '../../../../components/YearQuarter/YearQuarterComponent'
 import WebComponent from '../../../../components/Web/WebCompontent'
 
+import LayoutContainerHelper from './LayoutContainerHelper'
+
 class LayoutContainer extends Component {
     static propTypes = {};
 
@@ -46,8 +48,9 @@ class LayoutContainer extends Component {
     render() {
         const {...props} = this.props;
         const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        this.template = TemplateFactory.createTemplate(props.$template);
-        const rows = this.template.getAllStatisticWidgetIds();
+        this._helper = new LayoutContainerHelper(props);
+
+        const rows = this._helper.getAllSortedStatisticWidgetIds();
         return <ViewPagerAndroid
             style={styles.viewPager}
             initialPage={0}
@@ -71,11 +74,11 @@ class LayoutContainer extends Component {
     }
 
     _renderRow(wId, sectionID, rowID) {
-        const $widget = this.template.get$WidgetByWidgetId(wId);
-        const type = WidgetFactory.createWidget($widget, wId, this.template).getType();
+        const $widget = this._helper.get$WidgetByWidgetId(wId);
+        const type = this._helper.getWidgetTypeByWidgetId(wId);
         const props = {
             $widget,
-            $template: this.template.$get(),
+            $template: this._helper.get$Template(),
             wId,
             width: this.props.width - 20,
             height: 270
