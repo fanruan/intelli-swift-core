@@ -85,7 +85,7 @@ class DetailTableComponent extends Component {
 
         return <TableWidget
             width={width}
-            height={height - Sizes.HEADER_HEIGHT}
+            height={height}
             freezeCols={this._tableHelper.isFreeze() ? [0] : []}
             columnSize={this._widthHelper.getWidth()}
             header={this._tableHelper.getHeader()}

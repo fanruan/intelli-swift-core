@@ -16,17 +16,17 @@ import {Layout} from 'layout'
 import {AutoSizer} from 'base'
 import {Colors, TemplateFactory, WidgetFactory} from 'data'
 
-import ChartPaneComponent from '../../../components/Chart/ChartPaneComponent.js'
-import TablePaneComponent from '../../../components/Table/TablePaneComponent.js'
-import DetailTablePaneComponent from '../../../components/DetailTable/DetailTablePaneComponent.js'
-import MultiSelectorComponent from '../../../components/MultiSelector/MultiSelectorComponent.js'
-import MultiTreeSelectorComponent from '../../../components/MultiTreeSelector/MultiTreeSelectorComponent.js'
-import ContentComponent from '../../../components/Content/ContentComponent'
-import ImageComponent from '../../../components/Image/ImageComponent'
-import YearMonthComponent from '../../../components/YearMonth/YearMonthComponent'
-import YearComponent from '../../../components/Year/YearComponent'
-import YearQuarterComponent from '../../../components/YearQuarter/YearQuarterComponent'
-import WebComponent from '../../../components/Web/WebCompontent'
+import ChartPaneComponent from '../../../../components/Chart/ChartPaneComponent.js'
+import TablePaneComponent from '../../../../components/Table/TablePaneComponent.js'
+import DetailTablePaneComponent from '../../../../components/DetailTable/DetailTablePaneComponent.js'
+import MultiSelectorComponent from '../../../../components/MultiSelector/MultiSelectorComponent.js'
+import MultiTreeSelectorComponent from '../../../../components/MultiTreeSelector/MultiTreeSelectorComponent.js'
+import ContentComponent from '../../../../components/Content/ContentComponent'
+import ImageComponent from '../../../../components/Image/ImageComponent'
+import YearMonthComponent from '../../../../components/YearMonth/YearMonthComponent'
+import YearComponent from '../../../../components/Year/YearComponent'
+import YearQuarterComponent from '../../../../components/YearQuarter/YearQuarterComponent'
+import WebComponent from '../../../../components/Web/WebCompontent'
 
 class LayoutContainer extends Component {
     static propTypes = {};
@@ -77,7 +77,7 @@ class LayoutContainer extends Component {
             $widget,
             $template: this.template.$get(),
             wId,
-            width: this.props.width - 40,
+            width: this.props.width - 20,
             height: 270
         };
         let component = null;
@@ -157,7 +157,7 @@ class LayoutContainer extends Component {
 mixin.onClass(LayoutContainer, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
-        padding: 20
+        padding: 10
     },
     viewPager: {
         flex: 1

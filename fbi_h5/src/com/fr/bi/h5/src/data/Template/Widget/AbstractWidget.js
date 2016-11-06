@@ -53,7 +53,7 @@ class AbstractWidget {
         }
         let result = [];
         each(this.getWidgetView(), ($id, key)=> {
-            if (parseInt(key) >= BICst.REGION.TARGET1) {
+            if (parseInt(key, 10) >= BICst.REGION.TARGET1) {
                 result = result.concat($id);
             }
         });

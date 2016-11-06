@@ -16,17 +16,17 @@ import {Layout} from 'layout'
 import {AutoSizer} from 'base'
 import {Colors, TemplateFactory, WidgetFactory} from 'data'
 
-import ChartPaneComponent from '../../../components/Chart/ChartPaneComponent.js'
-import TablePaneComponent from '../../../components/Table/TablePaneComponent.js'
-import DetailTablePaneComponent from '../../../components/DetailTable/DetailTablePaneComponent.js'
-import MultiSelectorComponent from '../../../components/MultiSelector/MultiSelectorComponent.js'
-import MultiTreeSelectorComponent from '../../../components/MultiTreeSelector/MultiTreeSelectorComponent.js'
-import ContentComponent from '../../../components/Content/ContentComponent'
-import ImageComponent from '../../../components/Image/ImageComponent'
-import YearMonthComponent from '../../../components/YearMonth/YearMonthComponent'
-import YearComponent from '../../../components/Year/YearComponent'
-import YearQuarterComponent from '../../../components/YearQuarter/YearQuarterComponent'
-import WebComponent from '../../../components/Web/WebCompontent'
+import ChartPaneComponent from '../../../../components/Chart/ChartPaneComponent.js'
+import TablePaneComponent from '../../../../components/Table/TablePaneComponent.js'
+import DetailTablePaneComponent from '../../../../components/DetailTable/DetailTablePaneComponent.js'
+import MultiSelectorComponent from '../../../../components/MultiSelector/MultiSelectorComponent.js'
+import MultiTreeSelectorComponent from '../../../../components/MultiTreeSelector/MultiTreeSelectorComponent.js'
+import ContentComponent from '../../../../components/Content/ContentComponent'
+import ImageComponent from '../../../../components/Image/ImageComponent'
+import YearMonthComponent from '../../../../components/YearMonth/YearMonthComponent'
+import YearComponent from '../../../../components/Year/YearComponent'
+import YearQuarterComponent from '../../../../components/YearQuarter/YearQuarterComponent'
+import WebComponent from '../../../../components/Web/WebCompontent'
 
 class LayoutContainer extends Component {
     static contextTypes = {
@@ -53,9 +53,10 @@ class LayoutContainer extends Component {
         this.template = TemplateFactory.createTemplate(props.$template);
         const rows = this.template.getAllWidgetIds();
         return <ListView
-            key={1}
+            contentContainerStyle={styles.list}
             {...props}
-            initialListSize={Math.ceil(props.height / 310) + 1}
+            pageSize={2}
+            initialListSize={(Math.ceil(props.height / 310) + 1) * 2}
             dataSource={ds.cloneWithRows(rows)}
             renderRow={this._renderRow.bind(this)}
         />;
@@ -64,12 +65,13 @@ class LayoutContainer extends Component {
     _renderRow(wId, sectionID, rowID) {
         const $widget = this.template.get$WidgetByWidgetId(wId);
         const type = WidgetFactory.createWidget($widget, wId, this.template).getType();
+        const width = this.props.width / 2 - 20, height = 270;
         const props = {
             $widget,
             $template: this.template.$get(),
             wId,
-            width: this.props.width - 40,
-            height: 270,
+            width: width,
+            height: height,
             onValueChange: ($template)=> {
                 this.context.actions.query($template)
             }
@@ -143,7 +145,7 @@ class LayoutContainer extends Component {
             default:
                 break;
         }
-        return <Layout flex box='mean' style={styles.wrapper}>
+        return <Layout flex box='mean' style={[styles.wrapper, {width: this.props.width / 2, height}]}>
             {component}
         </Layout>
     }
@@ -151,7 +153,12 @@ class LayoutContainer extends Component {
 mixin.onClass(LayoutContainer, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
-        padding: 20
+        padding: 10
+    },
+    list: {
+        justifyContent: 'space-around',
+        flexDirection: 'row',
+        flexWrap: 'wrap'
     },
     viewPager: {
         flex: 1

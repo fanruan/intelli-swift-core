@@ -24,6 +24,14 @@ class Template {
         return this.$template;
     }
 
+    getLayoutType() {
+        return this.$template.get('layoutType') || BICst.DASHBOARD_LAYOUT_GRID
+    }
+
+    getLayoutRatio() {
+        return (this.$template.get('layoutRatio') && this.$template.get('layoutRatio').toJS()) || {x: 1, y: 1};
+    }
+
     getAllWidgetIds() {
         const res = [];
         this.$template.get('widgets').forEach(($widget, wId)=> {
@@ -52,14 +60,37 @@ class Template {
         return res;
     }
 
+    //widget属性
     getWidgetByWidgetId(id) {
         return WidgetFactory.createWidget(this.get$WidgetByWidgetId(id), id, this);
     }
 
-    getDimensionByDimensionId(dId) {
-        return DimensionFactory.createDimension(this.get$DimensionByDimensionId(dId), dId, this.getWidgetByWidgetId(this.getWidgetIdByDimensionId(dId)));
+    getWidgetInitTimeByWidgetId(wId) {
+        var widget = this.template.getWidgetByWidgetId(wId);
+        return widget.getWidgetInitTime() || new Date().getTime();
     }
 
+    getWidgetLinkageByWidgetId(wid) {
+        const widget = this.getWidgetByWidgetId(wid);
+        return widget.getWidgetLinkage();
+    }
+
+    getWidgetLinkageValueByWidgetId(wid) {
+        var widget = this.getWidgetByWidgetId(wid);
+        return widget.getLinkageValues();
+    }
+
+    getWSTransferFilterByWidgetId(wid) {
+        var ws = this.getWidgetByWidgetId(wid).getWidgetSettings();
+        return isNil(ws.transfer_filter) ? ws.transfer_filter :
+            BICst.DEFAULT_CHART_SETTING.transfer_filter;
+    }
+
+    get$WidgetByWidgetId(id) {
+        return this.$template.getIn(['widgets', id]);
+    }
+
+    //dimensions属性
     getAllDimensionIds() {
         let ids = [];
         const allWIds = this.getAllWidgetIds();
@@ -67,27 +98,6 @@ class Template {
             ids = ids.concat(this.getWidgetByWidgetId(wid).getAllDimensionIds());
         });
         return ids;
-    }
-
-    get$WidgetByWidgetId(id) {
-        return this.$template.getIn(['widgets', id]);
-    }
-
-    get$DimensionByDimensionId(id) {
-        let $dimension = null;
-        some(this.getAllWidgetIds(), (wId)=> {
-            const widget = this.getWidgetByWidgetId(wId);
-            if (widget.hasDimensionByDimensionId(id)) {
-                $dimension = widget.get$DimensionByDimensionId(id);
-                return true;
-            }
-        });
-        return $dimension;
-    }
-
-    getWidgetInitTimeByWidgetId(wId) {
-        var widget = this.template.getWidgetByWidgetId(wId);
-        return widget.getWidgetInitTime() || new Date().getTime();
     }
 
     getWidgetIdByDimensionId(dId) {
@@ -108,25 +118,25 @@ class Template {
         return wid;
     }
 
-    getWSTransferFilterByWidgetId(wid) {
-        var ws = this.getWidgetByWidgetId(wid).getWidgetSettings();
-        return isNil(ws.transfer_filter) ? ws.transfer_filter :
-            BICst.DEFAULT_CHART_SETTING.transfer_filter;
+    getDimensionByDimensionId(dId) {
+        return DimensionFactory.createDimension(this.get$DimensionByDimensionId(dId), dId, this.getWidgetByWidgetId(this.getWidgetIdByDimensionId(dId)));
+    }
+
+    get$DimensionByDimensionId(id) {
+        let $dimension = null;
+        some(this.getAllWidgetIds(), (wId)=> {
+            const widget = this.getWidgetByWidgetId(wId);
+            if (widget.hasDimensionByDimensionId(id)) {
+                $dimension = widget.get$DimensionByDimensionId(id);
+                return true;
+            }
+        });
+        return $dimension;
     }
 
     getDimensionFilterValueByDimensionId(did) {
         var dimension = this.getDimensionByDimensionId(did);
         return isNil(dimension) ? {} : dimension.getFilterValue();
-    }
-
-    getWidgetLinkageByWidgetId(wid) {
-        const widget = this.getWidgetByWidgetId(wid);
-        return widget.getWidgetLinkage();
-    }
-
-    getWidgetLinkageValueByWidgetId(wid) {
-        var widget = this.getWidgetByWidgetId(wid);
-        return widget.getLinkageValues();
     }
 
     getFieldIdByDimensionId(dId) {

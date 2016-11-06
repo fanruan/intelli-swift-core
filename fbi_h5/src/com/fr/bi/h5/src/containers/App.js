@@ -22,8 +22,10 @@ import {Template} from 'data';
 import {Layout} from 'layout';
 import * as TodoActions from '../actions/template';
 
-import MainContainer4Phone from './phone/MainContainer.js'
-import MainContainer4Pad from './pad/MainContainer.js'
+import MainContainer4Phone from './phone/vertical/MainContainer.js'
+import MainContainer4Pad from './pad/vertical/MainContainer.js'
+import MainContainerHorizontal4Phone from './phone/horizontal/MainContainerHorizontal.js'
+import MainContainerHorizontal4Pad from './pad/horizontal/MainContainerHorizontal.js'
 
 const {width, height} = Dimensions.get('window');
 
@@ -131,21 +133,20 @@ class App extends Component {
     }
 
     render() {
+        const {width, height} = this.state;
+        let Component = MainContainer4Phone;
         if (isMobile) {
             if (isPad) {
-                return <View>
-                    <Layout flex box='mean'>
-                        <MainContainer4Pad width={this.state.width} height={this.state.height}
-                                           $template={this.props.$template}/>
-                    </Layout>
-                    <Portal />
-                </View>
-
+                Component = width > height ? MainContainerHorizontal4Pad : MainContainer4Pad;
+            } else {
+                Component = width > height ? MainContainerHorizontal4Phone : MainContainer4Phone;
             }
+        }
+        if (isMobile) {
             return <View>
                 <Layout flex box='mean'>
-                    <MainContainer4Phone width={this.state.width} height={this.state.height}
-                                         $template={this.props.$template}/>
+                    <Component width={width} height={height}
+                               $template={this.props.$template}/>
                 </Layout>
                 <Portal />
             </View>;
