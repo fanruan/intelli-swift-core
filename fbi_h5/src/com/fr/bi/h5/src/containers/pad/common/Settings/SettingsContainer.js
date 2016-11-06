@@ -75,7 +75,7 @@ class SettingsContainer extends Component {
     render() {
         const {...props} = this.props;
         return <Dialog ref='overlay' title={'维度指标配置'} direction={'right'} onClose={(tag)=> {
-            if (tag === true) {
+            if (tag === '确定') {
                 const {$widget} = this.refs['SettingsComponent'].getValue(), {wId} = this.props;
                 this.props.onComplete({$widget, wId});
             } else {

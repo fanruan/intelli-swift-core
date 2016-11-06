@@ -113,7 +113,7 @@ class Popup extends Component {
                                             <Text onPress={()=> {
                                                 this.close(this.props.buttonText[0]);
                                             }}>{this.props.buttonText[0]}</Text>
-                                            <Text>{this.props.title}</Text>
+                                            <Text numberOfLines={1}>{this.props.title}</Text>
                                             <Text onPress={()=> {
                                                 this.close(this.props.buttonText[1]);
                                             }}>{this.props.buttonText[1]}</Text>
