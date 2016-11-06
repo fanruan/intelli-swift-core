@@ -27,6 +27,21 @@ import MainContainer4Pad from './pad/MainContainer.js'
 
 const {width, height} = Dimensions.get('window');
 
+let isMobile = false;
+let isPad = false;
+if (UserAgent.mobile()) {
+    isMobile = true;
+    if (UserAgent.ipad()) {
+        isPad = true;
+    }
+    if (UserAgent.android()) {
+        var size = window.getComputedStyle(document.body, ':after').getPropertyValue('content');
+        if (size.indexOf('smallscreen') != -1) {
+            isPad = true;
+        }
+    }
+}
+
 //import PanResponderDemo from '../examples/base/2/PanResponder/PanResponder'
 //import ViewDemo from '../examples/base/2/View/View'
 //import ScrollViewDemo from '../examples/base/2/ScrollView/ScrollView'
@@ -87,6 +102,11 @@ class App extends Component {
         super(props, context);
     }
 
+    state = {
+        width,
+        height
+    };
+
     componentDidMount() {
         setInterval(() => {
             Fetch(BH.servletURL + '?op=fr_bi_dezi&cmd=update_session', {
@@ -100,24 +120,23 @@ class App extends Component {
                 body: JSON.stringify({_t: new Date(), sessionID: BH.sessionID})
             });
         };
+        const resize = ()=> {
+            this.setState({
+                width: document.documentElement.clientWidth,
+                height: document.documentElement.clientHeight
+            })
+        };
+        window.addEventListener("onorientationchange", resize, false);
+        window.addEventListener("resize", resize, false);
     }
 
     render() {
-        let isPad = false;
-        if (UserAgent.mobile()) {
-            if (UserAgent.ipad()) {
-                isPad = true;
-            }
-            if (UserAgent.android()) {
-                var size = window.getComputedStyle(document.body, ':after').getPropertyValue('content');
-                if (size.indexOf('smallscreen') != -1) {
-                    isPad = true;
-                }
-            }
+        if (isMobile) {
             if (isPad) {
                 return <View>
                     <Layout flex box='mean'>
-                        <MainContainer4Pad width={width} height={height} $template={this.props.$template}/>
+                        <MainContainer4Pad width={this.state.width} height={this.state.height}
+                                           $template={this.props.$template}/>
                     </Layout>
                     <Portal />
                 </View>
@@ -125,13 +144,19 @@ class App extends Component {
             }
             return <View>
                 <Layout flex box='mean'>
-                    <MainContainer4Phone width={width} height={height} $template={this.props.$template}/>
+                    <MainContainer4Phone width={this.state.width} height={this.state.height}
+                                         $template={this.props.$template}/>
                 </Layout>
                 <Portal />
-            </View>
-
+            </View>;
         }
+
         return null;
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("onorientationchange");
+        window.removeEventListener("resize");
     }
 }
 
@@ -157,8 +182,11 @@ function mapStateToProps(state) {
     };
     return props;
 }
+
 function mapDispatchToProps(dispatch) {
     const actionMap = {actions: bindActionCreators(TodoActions, dispatch)};
     return actionMap;
 }
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+
+export default
+connect(mapStateToProps, mapDispatchToProps)(App);

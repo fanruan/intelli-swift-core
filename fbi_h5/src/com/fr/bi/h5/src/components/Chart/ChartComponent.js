@@ -28,6 +28,10 @@ class ChartComponent extends Component {
         super(props, context);
     }
 
+    state = {
+        data: {}
+    };
+
     componentWillMount() {
 
     }
@@ -36,7 +40,10 @@ class ChartComponent extends Component {
         const {$widget, wId} = props;
         const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(context.$template));
         widget.getData().then((data)=> {
-            this.chart.setOptions(data);
+            this.setState({data}, ()=> {
+                this.chart.setOptions(data);
+                this.chart.resize();
+            });
         });
     }
 
