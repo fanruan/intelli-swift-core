@@ -83,6 +83,7 @@ class DimensionComponent extends Component {
                             title={`"${this._helper.getSortTargetName()}"排序`}
                             align={props.contentWidth ? 'right' : ''}
                             contentWidth={props.contentWidth}
+                            shadow={false}
                             onClose={(tag)=> {
                                 if (tag === '取消') {
 

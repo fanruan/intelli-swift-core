@@ -17,7 +17,7 @@ import React, {
 import {Colors, Sizes, TemplateFactory} from 'data'
 import {Layout} from 'layout'
 
-import LayoutComponent from './Layout/LayoutContainer'
+import LayoutContainer from './Layout/LayoutContainer'
 import Toolbar from './Toolbar'
 
 class MainContainerHorizontal extends Component {
@@ -120,7 +120,7 @@ class MainContainerHorizontal extends Component {
         if (name === 'index') {
             if (this.template.hasControlWidget()) {
                 return <Layout flex dir='top' box='last'>
-                    <LayoutComponent width={props.width} height={props.height - 50 - Sizes.ITEM_HEIGHT} {...props}
+                    <LayoutContainer {...props} width={props.width} height={props.height - 50 - Sizes.ITEM_HEIGHT}
                                      navigator={navigationOperations}/>
 
                     <Toolbar {...props} navigator={navigationOperations}>
@@ -128,7 +128,7 @@ class MainContainerHorizontal extends Component {
                     </Toolbar>
                 </Layout>
             }
-            return <LayoutComponent width={props.width} height={props.height} {...props}/>;
+            return <LayoutContainer {...props} width={props.width} height={props.height-50}/>;
         }
         return (
             <Layout flex box='mean'>

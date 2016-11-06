@@ -31,6 +31,7 @@ class Popup extends Component {
 
     static defaultProps = {
         buttonText: ['取消', '确定'],
+        shadow: true,
         direction: 'bottom',
         align: '',
         // contentHeight: aHeight,
@@ -42,7 +43,7 @@ class Popup extends Component {
     }
 
     render() {
-        const {direction, align, contentWidth, contentHeight} = this.props;
+        const {direction, align, shadow, contentWidth, contentHeight} = this.props;
         return <View style={styles.container}>
             <Modal
                 transparent={true}
@@ -52,7 +53,7 @@ class Popup extends Component {
                 }}>
                     <Animated.View style={[styles.opacityContainer, {
                         opacity: this.state.opacity
-                    }] }>
+                    }, sc([styles.shadow, shadow === true])] }>
                         <TouchableWithoutFeedback>
                             <View style={[styles.sheet,
                                 sc([styles.topSheet, direction === 'top' && align === ''],
@@ -110,11 +111,15 @@ class Popup extends Component {
                                                 [styles.bottomLeftWrapper, direction === 'bottom' && align === 'left'],
                                                 [styles.bottomRightWrapper, direction === 'bottom' && align === 'right'])]}>
                                         <Layout main='justify' cross='center' style={styles.header}>
-                                            <Text onPress={()=> {
+                                            <Text style={{
+                                                minWidth: 40
+                                            }} onPress={()=> {
                                                 this.close(this.props.buttonText[0]);
                                             }}>{this.props.buttonText[0]}</Text>
                                             <Text numberOfLines={1}>{this.props.title}</Text>
-                                            <Text onPress={()=> {
+                                            <Text style={{
+                                                minWidth: 40
+                                            }} onPress={()=> {
                                                 this.close(this.props.buttonText[1]);
                                             }}>{this.props.buttonText[1]}</Text>
                                         </Layout>
@@ -181,12 +186,7 @@ class Popup extends Component {
 }
 
 const styles = StyleSheet.create({
-    mask: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
+    shadow: {
         backgroundColor: 'rgba(56,56,56,0.6)'
     },
     opacityContainer: {

@@ -17,7 +17,7 @@ import React, {
 import {Colors, Sizes, TemplateFactory} from 'data'
 import {Layout} from 'layout'
 
-import LayoutComponent from './Layout/LayoutContainer'
+import LayoutContainer from './Layout/LayoutContainer'
 
 class MainContainer extends Component {
     static contextTypes = {
@@ -57,7 +57,7 @@ class MainContainer extends Component {
         const {...props} = this.props;
         const {name} = route;
         if (name === 'index') {
-            return <LayoutComponent width={props.width} height={props.height} {...props}/>;
+            return <LayoutContainer {...props} width={props.width} height={props.height - 50}/>;
         }
     }
 

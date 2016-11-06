@@ -10,6 +10,10 @@ export default class LayoutContainerLayoutHelper {
         this.layoutRatio = this.getLayoutRatio();
         const size = this._getContainerSize();
         this.widthRatio = (this.width / this.layoutRatio.x) / size.width;
+        this.heightRatio = 1;
+        if (this.layoutType === BICst.DASHBOARD_LAYOUT_ADAPT && size.height < this.height) {
+            this.heightRatio = (this.height / this.layoutRatio.y) / size.height;
+        }
     }
 
     _getContainerSize() {
@@ -41,8 +45,8 @@ export default class LayoutContainerLayoutHelper {
     getWidgetLayoutByWidgetId(wId) {
         const bounds = this.getWidgetBoundsByWidgetId(wId);
         return {
-            top: bounds.top,
-            height: bounds.height,
+            top: bounds.top * this.heightRatio,
+            height: bounds.height * this.heightRatio,
             left: bounds.left * this.widthRatio,
             width: bounds.width * this.widthRatio
         }

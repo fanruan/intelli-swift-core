@@ -18,7 +18,7 @@ import {Colors, Sizes, TemplateFactory} from 'data'
 import {Layout} from 'layout'
 
 import Toolbar from './Toolbar'
-import LayoutComponent from './Layout/LayoutContainer'
+import LayoutContainer from './Layout/LayoutContainer'
 
 class MainContainer extends Component {
     static contextTypes = {
@@ -120,7 +120,7 @@ class MainContainer extends Component {
         if (name === 'index') {
             if (this.template.hasControlWidget()) {
                 return <Layout flex dir='top' box='last'>
-                    <LayoutComponent width={props.width} height={props.height - 50 - Sizes.ITEM_HEIGHT} {...props}
+                    <LayoutContainer {...props} width={props.width} height={props.height - 50 - Sizes.ITEM_HEIGHT}
                                      navigator={navigationOperations}/>
 
                     <Toolbar {...props} navigator={navigationOperations}>
@@ -128,7 +128,7 @@ class MainContainer extends Component {
                     </Toolbar>
                 </Layout>
             }
-            return <LayoutComponent width={props.width} height={props.height} {...props}/>;
+            return <LayoutComponent {...props} width={props.width} height={props.height - 50}/>;
         }
         return (
             <Layout flex box='mean'>

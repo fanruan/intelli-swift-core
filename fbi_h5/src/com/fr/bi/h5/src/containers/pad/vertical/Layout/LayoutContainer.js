@@ -59,7 +59,7 @@ class LayoutContainer extends Component {
             contentContainerStyle={styles.list}
             {...props}
             pageSize={2}
-            initialListSize={(Math.ceil(props.height / 310) + 1) * 2}
+            initialListSize={(Math.floor(props.height / 310) + 1) * 2}
             dataSource={ds.cloneWithRows(rows)}
             renderRow={this._renderRow.bind(this)}
         />;

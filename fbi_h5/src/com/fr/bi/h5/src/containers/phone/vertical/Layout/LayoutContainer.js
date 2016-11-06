@@ -60,7 +60,7 @@ class LayoutContainer extends Component {
             {[<ListView
                 key={1}
                 {...props}
-                initialListSize={Math.ceil(props.height / 310) + 1}
+                initialListSize={Math.floor(props.height / 310) + 1}
                 dataSource={ds.cloneWithRows(rows)}
                 renderRow={this._renderRow.bind(this)}
             />]}

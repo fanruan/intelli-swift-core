@@ -25,7 +25,7 @@ class Template {
     }
 
     getLayoutType() {
-        return this.$template.get('layoutType') || BICst.DASHBOARD_LAYOUT_GRID
+        return isNil(this.$template.get('layoutType')) ? BICst.DASHBOARD_LAYOUT_GRID : this.$template.get('layoutType');
     }
 
     getLayoutRatio() {

@@ -64,6 +64,9 @@ textarea {
   outline: none;
   border: 1px solid #cccccc;
 }
+textarea {
+  resize: none;
+}
 ul,
 ol {
   margin: 0;
