@@ -18,12 +18,12 @@ import {Layout} from 'layout'
 import {Table, Dialog, IconLink} from 'base'
 import {TableWidget} from 'widgets';
 
-import DetailTableComponent from './DetailTableComponent';
+import ChartComponent from '../../../../components/Chart/ChartComponent';
 
-import SettingsPaneComponent from '../Settings/SettingsPaneComponent'
+import SettingsContainer from '../Settings/SettingsContainer'
 
 
-class DetailTablePaneComponent extends Component {
+class ChartPaneComponent extends Component {
     static contextTypes = {
         $template: React.PropTypes.object,
         actions: React.PropTypes.object
@@ -48,20 +48,20 @@ class DetailTablePaneComponent extends Component {
     _renderHeader() {
         const {$widget, wId} = this.props;
         const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(this.context.$template));
-        return <Layout main='justify' cross='center' height={Sizes.HEADER_HEIGHT} style={styles.header}>
+        return <Layout main='justify' cross='center' style={styles.header}>
             <Text>{widget.getName()}</Text>
             <IconLink className='setting-font' onPress={()=> {
-                Portal.showModal('DetailTableComponent', <SettingsPaneComponent
-                    key={'DetailTableComponent'}
+                Portal.showModal('ChartComponent', <SettingsContainer
+                    key={'ChartComponent'}
                     $widget={this.props.$widget}
                     wId={this.props.wId}
                     height={0}
                     onComplete={(opt)=> {
-                        Portal.closeModal('DetailTableComponent');
+                        Portal.closeModal('ChartComponent');
                         this.context.actions.updateWidget(opt.$widget, opt.wId);
                     }}
                     onReturn={()=> {
-                        Portal.closeModal('DetailTableComponent');
+                        Portal.closeModal('ChartComponent');
                     }}
                 />);
             }}/>
@@ -72,17 +72,17 @@ class DetailTablePaneComponent extends Component {
         const {width, height, $widget, wId} = this.props;
         return <Layout dir='top' box='first'>
             {this._renderHeader()}
-            <DetailTableComponent
+            <ChartComponent
                 width={width}
                 height={height - Sizes.HEADER_HEIGHT}
                 $widget={$widget}
                 wId={wId}
             >
-            </DetailTableComponent>
+            </ChartComponent>
         </Layout>
     }
 }
-mixin.onClass(DetailTablePaneComponent, ReactComponentWithImmutableRenderMixin);
+mixin.onClass(ChartPaneComponent, ReactComponentWithImmutableRenderMixin);
 
 const styles = StyleSheet.create({
     wrapper: {
@@ -94,4 +94,4 @@ const styles = StyleSheet.create({
         height: Sizes.HEADER_HEIGHT
     }
 });
-export default DetailTablePaneComponent
+export default ChartPaneComponent

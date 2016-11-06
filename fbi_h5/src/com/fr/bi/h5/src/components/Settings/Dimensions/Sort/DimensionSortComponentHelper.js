@@ -5,7 +5,7 @@ export default class DimensionSortComponentHelper {
     constructor(props, context) {
         this.widget = WidgetFactory.createWidget(props.$widget, props.wId);
         this.dId = props.dId;
-        this.dimension = this.widget.getDimensionOrTargetById(props.dId);
+        this.dimension = this.widget.getDimensionByDimensionId(props.dId);
     }
 
     getSortType() {
@@ -20,7 +20,7 @@ export default class DimensionSortComponentHelper {
         const name = this.dimension.getName();
         const result = [{value: this.dId, label: name}];
         each(this.widget.getAllTargetDimensionIds(), (dId)=> {
-            const name = this.widget.getTargetDimensionById(dId).getName();
+            const name = this.widget.getDimensionByDimensionId(dId).getName();
             result.push({
                 value: dId,
                 label: name

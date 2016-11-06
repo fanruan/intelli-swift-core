@@ -37,9 +37,9 @@ import {
     Collapsible
 } from 'base'
 
-import SettingsComponent from './SettingsComponent'
+import SettingsComponent from '../../../../components/Settings/SettingsComponent'
 
-class SettingsPaneComponent extends Component {
+class SettingsContainer extends Component {
     static contextTypes = {
         actions: React.PropTypes.object
     };
@@ -115,7 +115,7 @@ class SettingsPaneComponent extends Component {
     }
 
 }
-mixin.onClass(SettingsPaneComponent, ReactComponentWithPureRenderMixin);
+mixin.onClass(SettingsContainer, ReactComponentWithPureRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         position: 'absolute',
@@ -155,4 +155,4 @@ const styles = StyleSheet.create({
         height: 20
     }
 });
-export default SettingsPaneComponent
+export default SettingsContainer

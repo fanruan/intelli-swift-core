@@ -130,20 +130,6 @@ class SettingsComponent extends Component {
         })
     }
 
-    _renderHeader() {
-        const {$widget, wId} = this.props;
-        const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(this.context.$template));
-        return <Layout main='justify' cross='center' style={styles.header}>
-            <TextLink onPress={()=> {
-                this.refs['overlay'].close();
-            }} style={styles.back}>{'返回'}</TextLink>
-            <Text style={styles.name}>{widget.getName()}</Text>
-            <TextLink onPress={()=> {
-                this.refs['overlay'].close(true);
-            }} style={styles.complete}>{'完成'}</TextLink>
-        </Layout>
-    }
-
     _onSortEnd = ({oldIndex, newIndex,}) => {
         const $widget = this._helper.doMove(oldIndex, newIndex);
         this.setState({
@@ -174,6 +160,7 @@ class SettingsComponent extends Component {
             if (this._helper.isDimensionByDimensionId(value.dId)) {
                 return <DimensionComponent key={index} value={value} wId={this.props.wId}
                                            $widget={this.state.$widget}
+                                           contentWidth={this.props.contentWidth}
                                            dId={value.dId} onValueChange={($widget)=> {
                     this.setState({
                         $widget: $widget

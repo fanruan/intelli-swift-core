@@ -18,12 +18,12 @@ import {Layout} from 'layout'
 import {Table, Dialog, IconLink} from 'base'
 import {TableWidget} from 'widgets';
 
-import TableComponent from './TableComponent';
+import TableComponent from '../../../../components/Table/TableComponent';
 
-import SettingsPaneComponent from '../Settings/SettingsPaneComponent'
+import SettingsContainer from '../Settings/SettingsContainer'
 
 
-class TablePaneComponent extends Component {
+class TableContainer extends Component {
     static contextTypes = {
         $template: React.PropTypes.object,
         actions: React.PropTypes.object
@@ -51,7 +51,7 @@ class TablePaneComponent extends Component {
         return <Layout main='justify' cross='center' style={styles.header}>
             <Text>{widget.getName()}</Text>
             <IconLink className='setting-font' onPress={()=> {
-                Portal.showModal('TableComponent', <SettingsPaneComponent
+                Portal.showModal('TableComponent', <SettingsContainer
                     key={'TableComponent'}
                     $widget={this.props.$widget}
                     wId={this.props.wId}
@@ -82,7 +82,7 @@ class TablePaneComponent extends Component {
         </Layout>
     }
 }
-mixin.onClass(TablePaneComponent, ReactComponentWithImmutableRenderMixin);
+mixin.onClass(TableContainer, ReactComponentWithImmutableRenderMixin);
 
 const styles = StyleSheet.create({
     wrapper: {
@@ -94,4 +94,4 @@ const styles = StyleSheet.create({
         height: Sizes.HEADER_HEIGHT
     }
 });
-export default TablePaneComponent
+export default TableContainer

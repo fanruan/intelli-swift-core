@@ -63,7 +63,7 @@ class DimensionComponent extends Component {
     render() {
         const {...props} = this.props, {...state} = this.state;
         this._helper = new DimensionComponentHelper(props, this.context);
-        return <Button onPress={()=> {
+        return <Button ref='mySelf' onPress={()=> {
             this.props.onValueChange(this._helper.switchSelect());
         }}>
             <Layout main='justify' box='mean' style={styles.wrapper}>
@@ -81,6 +81,8 @@ class DimensionComponent extends Component {
                         Portal.showModal('DimensionSort', <Dialog
                             key={'DimensionSort'}
                             title={`"${this._helper.getSortTargetName()}"排序`}
+                            align={props.contentWidth ? 'right' : ''}
+                            contentWidth={props.contentWidth}
                             onClose={(tag)=> {
                                 if (tag === '取消') {
 
