@@ -13,7 +13,7 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
 
     _init: function () {
         BI.CompareBarChart.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
         this.xAxis = [{
             type: "value",
             title: {
@@ -37,6 +37,7 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
             xAxis: this.xAxis,
+            popupItemsGetter: o.popupItemsGetter,
             formatConfig: BI.bind(this._formatConfig, this),
             element: this.element
         });
@@ -66,8 +67,8 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
 
         BI.extend(config.yAxis[0], self.catSetting(this.config));
 
-        config.legend.style = BI.extend( this.config.chart_legend_setting, {
-            fontSize:  this.config.chart_legend_setting.fontSize + "px"
+        config.legend.style = BI.extend(this.config.chart_legend_setting, {
+            fontSize: this.config.chart_legend_setting.fontSize + "px"
         });
 
         self.formatNumberLevelInXaxis(items, this.config.left_y_axis_number_level);
@@ -224,10 +225,10 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
             num_separators: options.num_separators || false,
             chart_font: options.chart_font || c.FONT_STYLE,
             show_left_label: BI.isNull(options.show_left_label) ? true : options.show_left_label,
-            left_label_style: options.left_label_style ||  c.LEFT_LABEL_STYLE,
+            left_label_style: options.left_label_style || c.LEFT_LABEL_STYLE,
             left_line_color: options.left_line_color || "",
             show_cat_label: BI.isNull(options.show_cat_label) ? true : options.show_cat_label,
-            cat_label_style: options.cat_label_style ||  c.CAT_LABEL_STYLE,
+            cat_label_style: options.cat_label_style || c.CAT_LABEL_STYLE,
             cat_line_color: options.cat_line_color || "",
             chart_legend_setting: options.chart_legend_setting || {},
             show_h_grid_line: BI.isNull(options.show_h_grid_line) ? true : options.show_h_grid_line,

@@ -13,7 +13,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
 
     _init: function () {
         BI.AccumulateAreaChart.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
 
         this.xAxis = [{
             type: "category",
@@ -27,6 +27,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
             xAxis: this.xAxis,
+            popupItemsGetter: o.popupItemsGetter,
             formatConfig: BI.bind(this._formatConfig, this),
             element: this.element
         });
@@ -52,8 +53,8 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.connectNulls = this.config.null_continue;
         self.formatZoom(config, this.config.show_zoom);
         config.plotOptions.connectNulls = this.config.null_continue;
-        config.legend.style = BI.extend( this.config.chart_legend_setting, {
-            fontSize:  this.config.chart_legend_setting.fontSize + "px"
+        config.legend.style = BI.extend(this.config.chart_legend_setting, {
+            fontSize: this.config.chart_legend_setting.fontSize + "px"
         });
 
         config.yAxis = this.yAxis;
@@ -128,7 +129,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style" : self.config.chart_font,
+                                "style": self.config.chart_font,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -153,7 +154,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style" : self.config.chart_font,
+                                "style": self.config.chart_font,
                                 "text": t.text,
                                 "align": "left"
                             }
