@@ -54,11 +54,11 @@ class ContentComponent extends Component {
         const style = widget.getStyle();
         return <TextInput
             style={{height: this.props.height, ...styles.wrapper, ...style}}
-            ref="content"
-            autoCapitalize="none"
-            multiline="true"
+            ref='content'
+            autoCapitalize='none'
+            multiline={true}
             value={widget.getContent()}
-            editable="true"
+            editable={false}
         />
     }
 

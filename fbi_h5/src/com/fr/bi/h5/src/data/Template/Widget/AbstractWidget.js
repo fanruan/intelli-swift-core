@@ -38,9 +38,9 @@ class AbstractWidget {
             return this._dimDimensionIds;
         }
         let result = [];
-        this.$widget.get('view').forEach(($id, key)=> {
+        each(this.getWidgetView(), ($id, key)=> {
             if (parseInt(key, 10) < BICst.REGION.TARGET1) {
-                result = result.concat($id.toArray());
+                result = result.concat($id);
             }
         });
         this._dimDimensionIds = result;
@@ -52,9 +52,9 @@ class AbstractWidget {
             return this._targetDimensionIds;
         }
         let result = [];
-        this.$widget.get('view').forEach(($id, key)=> {
+        each(this.getWidgetView(), ($id, key)=> {
             if (parseInt(key) >= BICst.REGION.TARGET1) {
-                result = result.concat($id.toArray());
+                result = result.concat($id);
             }
         });
         this._targetDimensionIds = result;
@@ -99,7 +99,7 @@ class AbstractWidget {
 
     getRowDimensionIds() {
         let result = [];
-        this.$widget.get('view').forEach(($id, key)=> {
+        each(this.getWidgetView(), ($id, key)=> {
             if (parseInt(key) === BICst.REGION.DIMENSION1) {
                 result = result.concat($id.toArray());
             }
@@ -109,7 +109,7 @@ class AbstractWidget {
 
     getColDimensionIds() {
         let result = [];
-        this.$widget.get('view').forEach(($id, key)=> {
+        each(this.getWidgetView(), ($id, key)=> {
             if (parseInt(key) === BICst.REGION.DIMENSION2) {
                 result = result.concat($id.toArray());
             }
