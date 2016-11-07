@@ -85,7 +85,7 @@ dependencies {
 }
 //声明外部依赖
 dependencies{
-	compile fileTree(dir:"${BI_HOME}/lib/${branchName}",include:'**/*.jar',exclude:"direct/*.jar")
+	compile fileTree(dir:"${BI_HOME}/lib/bugfix%2F4.0",include:'**/*.jar',exclude:"direct/*.jar")
 	testCompile 'junit:junit:4.12'
 }
 //指明无法编译文件所在路径
