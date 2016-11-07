@@ -84,7 +84,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         var lineItem = [];
         var otherItem = [];
         BI.each(items, function (idx, item) {
-            item.color = [config.yAxis[idx].labelStyle.color];
+            item.color = [config.yAxis[idx].lineColor];
             if (item.type === "line") {
                 lineItem.push(item);
             } else {
