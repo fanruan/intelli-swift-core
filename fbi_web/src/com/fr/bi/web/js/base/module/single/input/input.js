@@ -21,6 +21,7 @@ BI.Input = BI.inherit(BI.Single, {
         BI.Input.superclass._init.apply(this, arguments);
         var self = this;
         var ctrlKey = false;
+        var inputEventValid = false;
         var _keydown = BI.debounce(function (keyCode) {
             self.onKeyDown(keyCode, ctrlKey);
             self._keydown_ = false;
@@ -29,14 +30,18 @@ BI.Input = BI.inherit(BI.Single, {
         this._blurDebounce = BI.debounce(BI.bind(this._blur, this), BI.EVENT_RESPONSE_TIME, true);
         this.element
             .keydown(function (e) {
+                inputEventValid = false;
                 ctrlKey = e.ctrlKey;
                 self.fireEvent(BI.Input.EVENT_QUICK_DOWN);
             })
             .keyup(function (e) {
-                self._keydown_ = true;
-                _keydown(e.keyCode);
+                if (!inputEventValid) {
+                    self._keydown_ = true;
+                    _keydown(e.keyCode);
+                }
             })
             .on("input propertychange", function (e) {
+                inputEventValid = true;
                 self._keydown_ = true;
                 _keydown(e.keyCode);
             })

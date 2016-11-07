@@ -13,6 +13,12 @@
   -o-transition: all 0ms ease;
   transition: all 0ms ease;
 }
+.bi-fit-widget .fit-widget-draggable {
+  cursor: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/cursor/cursor_hand.cur'), auto;
+}
+.bi-fit-widget .fit-widget-draggable:active {
+  cursor: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/cursor/cursor_drag_hand.cur'), auto;
+}
 .bi-fit-widget .fit-widget-drag-bar {
   background: #d4dadd;
 }

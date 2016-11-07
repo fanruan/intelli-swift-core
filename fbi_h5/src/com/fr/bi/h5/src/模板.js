@@ -37,7 +37,14 @@ import React, {
 
 import {Colors, Sizes, TemplateFactory, WidgetFactory, DimensionFactory} from 'data'
 
-import {Layout, CenterLayout, HorizontalCenterLayout, VerticalCenterLayout} from 'layout';
+import {
+    Layout,
+    HorizontalLayout,
+    VerticalLayout,
+    CenterLayout,
+    HorizontalCenterLayout,
+    VerticalCenterLayout
+} from 'layout';
 
 import {Button, TextButton, IconButton, Table} from 'base'
 
