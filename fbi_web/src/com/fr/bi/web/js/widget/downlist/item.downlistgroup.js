@@ -25,25 +25,17 @@ BI.DownListGroupItem = BI.inherit(BI.BasicButton, {
         })
 
         this.icon1 = BI.createWidget({
-            type: "bi.center_adapt",
+            type: "bi.icon_button",
             cls: o.iconCls1,
             width: 25,
-            items: [{
-                el: {
-                    type: "bi.icon"
-                }
-            }]
+            forceNotSelected: true
         })
 
         this.icon2 = BI.createWidget({
-            type: "bi.center_adapt",
+            type: "bi.icon_button",
             cls: o.iconCls2,
             width: 25,
-            items: [{
-                el: {
-                    type: "bi.icon"
-                }
-            }]
+            forceNotSelected: true
         })
 
         var blank = BI.createWidget({
@@ -114,8 +106,17 @@ BI.DownListGroupItem = BI.inherit(BI.BasicButton, {
         this.text.unRedMark.apply(this.text, arguments);
     },
 
-    setValue: function () {
-
+    setValue: function (v) {
+        var self = this, o = this.options;
+        v = BI.isArray(v) ? v : [v];
+        BI.find(v, function(idx, value){
+            if(BI.contains(o.childValues, value)){
+                self.icon1.setSelected(true);
+                return true;
+            }else{
+                self.icon1.setSelected(false);
+            }
+        })
     }
 });
 BI.DownListGroupItem.EVENT_CHANGE = "EVENT_CHANGE";

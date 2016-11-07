@@ -104,14 +104,14 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 el: {
                     text: BI.i18nText("BI-Ascend"),
                     value: BICst.DIMENSION_NUMBER_COMBO.ASCEND,
-                    iconCls1: ""
+                    iconCls1: "dot-e-font"
                 },
                 children: []
             }, {
                 el: {
                     text: BI.i18nText("BI-Descend"),
                     value: BICst.DIMENSION_NUMBER_COMBO.DESCEND,
-                    iconCls1: ""
+                    iconCls1: "dot-e-font"
                 },
                 children: []
             }, {
