@@ -155,12 +155,19 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                     name += BI.Utils.getDimensionNameByID(cid) + "-";
                 });
                 name += BI.Utils.getDimensionNameByID(linkage.from);
-                linkages.push({
+                var temp = {
                     text: name,
                     title: name,
                     from: linkage.from,
-                    to: linkage.to
-                })
+                    to: linkage.to,
+                    cids: linkage.cids
+                };
+                var containsItem = containsLinkage(linkages, temp);
+                if (BI.isEmptyObject(containsItem)) {
+                    linkages.push(temp);
+                } else {
+                    BI.isArray(containsItem.to) ? containsItem.to.push(temp.to) : containsItem.to = [containsItem.to, temp.to];
+                }
             });
 
             var combo = BI.createWidget({
@@ -179,8 +186,10 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                             textAlign: "left",
                             handler: function () {
                                 var link = this.options;
-                                BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + link.to, link.from, clicked);
-                                self._send2AllChildLinkWidget(link.to, link.from, clicked);
+                                BI.each(BI.isArray(link.to) ? link.to : [link.to], function (idx, to) {
+                                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + to, link.from, clicked);
+                                    self._send2AllChildLinkWidget(to, link.from, clicked);
+                                });
                                 combo.hideView();
                             },
                             lgap: 10
@@ -190,6 +199,15 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 }
             });
             return combo;
+
+            function containsLinkage(list, item) {
+                for (var i = 0; i < list.length; i++) {
+                    if (list[i].from === item.from && BI.isEqual(list[i].cids, item.cids)) {
+                        return list[i];
+                    }
+                }
+                return {};
+            }
         }
     },
 

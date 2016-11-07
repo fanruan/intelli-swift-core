@@ -186,5 +186,19 @@ BI.LinkageModel = BI.inherit(FR.OB, {
             })
         });
         return widgets;
+    },
+
+    getExistLinkageByWidgetId: function (from, to, parents, result) {
+        var self = this, childIds = this._initChildren(from);
+        if(BI.isNotEmptyArray(childIds)) {
+            BI.each(childIds, function (idx, cId) {
+                if(cId === to) {
+                    result.push(BI.concat(parents, [from, to]));
+                } else {
+                    self.getExistLinkageByWidgetId(cId, to, BI.concat(parents, from), result);
+                }
+            })
+
+        }
     }
 });

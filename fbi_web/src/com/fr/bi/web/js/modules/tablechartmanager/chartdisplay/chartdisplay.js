@@ -147,18 +147,35 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                                 name += BI.Utils.getDimensionNameByID(cId) + "-";
                             });
                             name += BI.Utils.getDimensionNameByID(link.from) + BI.i18nText("BI-Link");
-                            linkages.push({
+                            var temp = {
                                 text: name,
                                 title: name,
                                 to: link.to,
-                                from: link.from
-                            });
+                                from: link.from,
+                                cids: link.cids
+                            };
+                            var containsItem = containsLinkage(linkages, temp);
+                            if (BI.isEmptyObject(containsItem)) {
+                                linkages.push(temp);
+                            } else {
+                                BI.isArray(containsItem.to) ? containsItem.to.push(temp.to) : containsItem.to = [containsItem.to, temp.to];
+                            }
                         }
                     });
                 }
             });
             return linkages;
         };
+
+        function containsLinkage(list, item) {
+            for (var i = 0; i < list.length; i++) {
+                if (list[i].from === item.from && BI.isEqual(list[i].cids, item.cids)) {
+                    return list[i];
+                }
+            }
+            return {};
+        }
+
         switch (v) {
             case BICst.WIDGET.AXIS:
             case BICst.WIDGET.COMBINE_CHART:
@@ -325,13 +342,20 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
 
         if (chart) {
             chart.on(BI.AbstractChart.EVENT_ITEM_CLICK, function (obj) {
-                var linkInfo = self.model.getLinkageInfo(obj);
-                BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + obj.to, obj.from, linkInfo.clicked);
-                self._send2AllChildLinkWidget(obj.to, obj.from, linkInfo.clicked);
+                self._sendLinkWidget(obj);
             });
         }
         return chart;
     },
+
+    _sendLinkWidget: function (obj) {
+        var self = this, linkageInfo = this.model.getLinkageInfo(obj);
+        BI.each(BI.isArray(obj.to) ? obj.to : [obj.to], function (idx, to) {
+            BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + to, obj.from, linkageInfo.clicked);
+            self._send2AllChildLinkWidget(to, obj.from, obj.clicked);
+        });
+    },
+
 
     populate: function () {
         var self = this, o = this.options;
