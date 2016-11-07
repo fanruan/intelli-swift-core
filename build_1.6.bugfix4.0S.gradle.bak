@@ -111,11 +111,9 @@ task copyFile(type:Copy,dependsOn:compileJava){
 	//删除test文件夹
 	ant{
 		echo('--------------------------------delete test---------------------------')
-		delete(dir:"."){
-			fileset(dir:'.'){
-				include(name:'**/test/**')
-			}
-		}
+		delete(dir:"fbi/src/com/fr/bi/test")
+
+
 	}
 	list.each{ def srcDir->
 		copy{
