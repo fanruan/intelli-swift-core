@@ -2,6 +2,7 @@ package com.finebi.cube.data.disk.reader;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.BICubeReleaseRecorder;
+import com.finebi.cube.data.disk.BICubeDiskPrimitiveDiscovery;
 import com.finebi.cube.data.disk.NIOHandlerManager;
 import com.finebi.cube.data.input.primitive.ICubePrimitiveReader;
 import com.finebi.cube.location.ICubeResourceLocation;
@@ -21,6 +22,7 @@ public class ReaderHandlerManager implements NIOHandlerManager<ICubePrimitiveRea
     protected volatile boolean isForceReleased = false;
     private ICubeResourceLocation resourceLocation = null;
     private CopyOnWriteArrayList<String> queryRecorder = new CopyOnWriteArrayList<String>();
+
     public ReaderHandlerManager(ICubePrimitiveReader reader) {
         this.reader = reader;
     }
@@ -93,9 +95,15 @@ public class ReaderHandlerManager implements NIOHandlerManager<ICubePrimitiveRea
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
         } finally {
-            isForceReleased = false;
-            reader.reSetValid(true);
-            readWriteLock.writeLock().unlock();
+            try {
+                if (!BICubeDiskPrimitiveDiscovery.getInstance().isReleasingResource()) {
+                    reValidHandler();
+                }
+            } catch (Exception e) {
+                throw BINonValueUtils.beyondControl(e);
+            }finally {
+                readWriteLock.writeLock().unlock();
+            }
         }
     }
 
@@ -114,4 +122,9 @@ public class ReaderHandlerManager implements NIOHandlerManager<ICubePrimitiveRea
         return isForceReleased;
     }
 
+    @Override
+    public void reValidHandler() {
+        isForceReleased = false;
+        reader.reSetValid(true);
+    }
 }

@@ -42,7 +42,7 @@ public class BICheckGenerateCubeAction extends AbstractBIConfigureAction {
             } else {
                 jo.put("isGenerated", false);
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             jo.put("isGenerated", false);
             BILoggerFactory.getLogger().error(e.getMessage());
         }

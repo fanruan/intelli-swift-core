@@ -237,7 +237,7 @@ public abstract class DBExtractorImpl implements DBExtractor {
 
     private String getDeployModeSql(String sql, Dialect dialect, SQLStatement sqlStatement) {
         int selectColumnSize = PerformancePlugManager.getInstance().getDeployModeSelectSize();
-        if (selectColumnSize > 0) {
+        if (selectColumnSize > 0 && sqlStatement.getTableName() != null) {
             Table table = new Table(sqlStatement.getSchema(), sqlStatement.getTableName());
             try {
                 return dialect instanceof SybaseDialect ? "SELECT *  FROM " + dialect.table2SQL(table) : dialect.getTopNRowSql(selectColumnSize, table);

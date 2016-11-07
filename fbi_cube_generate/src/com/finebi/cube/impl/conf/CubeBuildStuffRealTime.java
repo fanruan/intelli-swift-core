@@ -66,13 +66,13 @@ public class CubeBuildStuffRealTime extends AbstractCubeBuildStuff implements Cu
     }
 
 
-    public Set<BITableSourceRelationPath> getBiTableSourceRelationPathSet() {
+    public Set<BITableSourceRelationPath> getTableSourceRelationPathSet() {
         return new HashSet<BITableSourceRelationPath>();
     }
 
 
     @Override
-    public Set<CubeTableSource> getAllSingleSources() {
+    public Set<CubeTableSource> getSingleSourceLayers() {
         return allSingleSources;
     }
 
@@ -82,7 +82,7 @@ public class CubeBuildStuffRealTime extends AbstractCubeBuildStuff implements Cu
     }
 
     @Override
-    public Set<CubeTableSource> getAllTableSources() {
+    public Set<CubeTableSource> getTableSources() {
         return allSingleSources;
     }
 
