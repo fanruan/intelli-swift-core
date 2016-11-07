@@ -67,6 +67,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
     },
 
     _createPopup: function (items, rect, opt) {
+        var self = this;
         var combo = BI.createWidget({
             type: "bi.combo",
             direction: "bottom",
@@ -76,15 +77,17 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                     cls: "bi-linkage-list",
                     items: BI.map(items, function (i, item) {
                         return {
-                            type: "bi.text_button",
-                            cls: "bi-linkage-list-item",
-                            textAlign: "left",
-                            height: 30,
-                            handler: function () {
-                                self.fireEvent(BI.CombineChart.EVENT_ITEM_CLICK, BI.extend({}, item, opt));
-                                combo.destroy();
-                            },
-                            lgap: 10
+                            el: BI.extend({
+                                type: "bi.text_button",
+                                cls: "bi-linkage-list-item",
+                                textAlign: "left",
+                                height: 30,
+                                handler: function () {
+                                    self.fireEvent(BI.CombineChart.EVENT_ITEM_CLICK, BI.extend({}, item, opt));
+                                    combo.destroy();
+                                },
+                                lgap: 10
+                            }, item)
                         }
                     }),
                     width: rect.width
