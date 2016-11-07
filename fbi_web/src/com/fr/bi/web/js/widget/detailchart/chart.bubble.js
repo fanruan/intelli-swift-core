@@ -13,7 +13,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
 
     _init: function () {
         BI.BubbleChart.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
         this.xAxis = [{
             type: "value",
             title: {
@@ -49,8 +49,6 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this, c = this.constants;
-        var yUnit = getXYAxisUnit(this.config.left_y_axis_number_level, c.LEFT_AXIS);
-        var xUnit = getXYAxisUnit(this.config.x_axis_number_level, c.RIGHT_AXIS);
 
         formatCordon();
         formatForSize();
@@ -86,16 +84,13 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         config.yAxis = this.yAxis;
 
         formatNumberLevelInYaxis(this.config.left_y_axis_number_level, c.LEFT_AXIS);
-        config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + yUnit : yUnit;
-        config.yAxis[0].title.rotation = c.ROTATION;
 
         BI.extend(config.yAxis[0], self.leftAxisSetting(this.config));
 
         self.formatNumberLevelInXaxis(items, this.config.right_y_axis_number_level);
-        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + xUnit : xUnit;
-        config.xAxis[0].title.align = "center";
 
         BI.extend(config.xAxis[0], self.rightAxisSetting(this.config));
+        config.xAxis[0].title.rotation = 0;
         config.xAxis[0].gridLineColor = this.config.v_grid_line_color;
 
         config.chartType = "bubble";
@@ -149,10 +144,6 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         config.legend.style = BI.extend( this.config.chart_legend_setting, {
             fontSize:  this.config.chart_legend_setting.fontSize + "px"
         });
-
-        //全局样式图表文字
-        config.yAxis[0].title.style = this.config.chart_font;
-        config.xAxis[0].title.style = this.config.chart_font;
 
         return [items, config];
 
@@ -391,31 +382,6 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                 })
             });
         }
-
-        function getXYAxisUnit(numberLevelType, position) {
-            var unit = "";
-            switch (numberLevelType) {
-                case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                    unit = "";
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                    unit = BI.i18nText("BI-Wan");
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                    unit = BI.i18nText("BI-Million");
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                    unit = BI.i18nText("BI-Yi");
-                    break;
-            }
-            if (position === self.constants.RIGHT_AXIS) {
-                self.config.right_y_axis_unit !== "" && (unit = unit + self.config.right_y_axis_unit)
-            }
-            if (position === self.constants.LEFT_AXIS) {
-                self.config.left_y_axis_unit !== "" && (unit = unit + self.config.left_y_axis_unit)
-            }
-            return unit === "" ? unit : "(" + unit + ")";
-        }
     },
 
     _formatItems: function (items) {
@@ -438,13 +404,13 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             chart_color: options.chart_color || [],
             left_y_axis_style: options.left_y_axis_style || c.NORMAL,
             right_y_axis_style: options.right_y_axis_style || c.NORMAL,
-            show_x_axis_title: options.show_x_axis_title || false,
+            show_right_y_axis_title: options.show_right_y_axis_title || false,
             show_left_y_axis_title: options.show_left_y_axis_title || false,
             right_y_axis_number_level: options.right_y_axis_number_level || c.NORMAL,
             left_y_axis_number_level: options.left_y_axis_number_level || c.NORMAL,
-            right_y_axis_unit: options.x_axis_unit || "",
+            right_y_axis_unit: options.right_y_axis_unit || "",
             left_y_axis_unit: options.left_y_axis_unit || "",
-            x_axis_title: options.x_axis_title || "",
+            right_y_axis_title: options.right_y_axis_title || "",
             chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
             show_data_label: options.show_data_label || false,
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
@@ -477,6 +443,8 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             show_v_grid_line: BI.isNull(options.show_v_grid_line) ? true : options.show_v_grid_line,
             v_grid_line_color: options.v_grid_line_color || "",
             tooltip_setting: options.tooltip_setting || {},
+            left_title_style: options.left_title_style || {},
+            right_title_style: options.right_title_style || {}
         };
         this.options.items = items;
         var types = [];

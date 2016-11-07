@@ -589,14 +589,14 @@ BI.FallAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.showZoom]
-                }, {
+                }/*, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Tooltip"),
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.tooltipSetting]
-                }], {
+                }*/], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
                 lgap: constant.SIMPLE_H_GAP

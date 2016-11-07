@@ -206,4 +206,19 @@ public class BIOccupiedCubeTableSource implements CubeTableSource {
         return new HashSet<ICubeFieldSource>();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BIOccupiedCubeTableSource)) return false;
+
+        BIOccupiedCubeTableSource that = (BIOccupiedCubeTableSource) o;
+
+        return !(hostTableSource != null ? !hostTableSource.equals(that.hostTableSource) : that.hostTableSource != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return hostTableSource != null ? hostTableSource.hashCode() : 0;
+    }
 }

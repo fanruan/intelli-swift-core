@@ -1319,7 +1319,7 @@
         getWSCatTitleStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             var chartFont = this.getGSChartFont();
-            var titleStyle = ws.right_title_style || {};
+            var titleStyle = ws.cat_title_style || {};
             titleStyle = BI.extend(chartFont, titleStyle);
             return titleStyle;
         },
