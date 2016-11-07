@@ -12,6 +12,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             xAxis: [{type: "category"}],
             yAxis: [{type: "value"}],
             types: [[], []],
+            popupItemsGetter: BI.emptyFn,
             formatConfig: function (config) {
                 return config;
             }
@@ -56,59 +57,16 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         config.plotOptions.click = function () {
             var data = this.options;
             data.toolTipRect = this.getTooltipRect();
-            data.getPopupItems = BI.bind(self.getPopupItems, self);
+            var items = o.popupItemsGetter(data);
+            if (items && items.length > 0) {
+                self._createPopup(items, data.toolTipRect, data);
+            }
             self.fireEvent(BI.CombineChart.EVENT_CHANGE, data);
         };
         return [result, config];
     },
 
-    getPopupItems: function (obj) {
-        var self = this, position = obj.position, clicked = obj.clicked, linkages = [];
-        BI.each(obj.dId, function (idx, dId) {
-            if (BI.Utils.getDimensionTypeByID(dId) === BICst.TARGET_TYPE.FORMULA) {
-                var expression = BI.Utils.getDimensionSrcByID(dId).expression;
-                if (!expression) {
-                    return;
-                }
-                BI.each(BI.Utils.getWidgetLinkageByID(obj.wId), function (i, link) {
-                    if (dId === link.cids[0]) {
-                        var name = BI.i18nText("BI-An");
-                        BI.each(link.cids, function (idx, cId) {
-                            name += BI.Utils.getDimensionNameByID(cId) + "-";
-                        });
-                        name += BI.Utils.getDimensionNameByID(link.from) + BI.i18nText("BI-Link");
-                        linkages.push({
-                            text: name,
-                            title: name,
-                            to: link.to,
-                            from: link.from
-                        });
-                    }
-                });
-            } else {
-                BI.each(BI.Utils.getWidgetLinkageByID(obj.wId), function (i, link) {
-                    if (dId === link.from && BI.isEmptyArray(link.cids)) {
-                        var name = BI.i18nText("BI-An") + BI.Utils.getDimensionNameByID(link.from) + BI.i18nText("BI-Link");
-                        linkages.push({
-                            text: name,
-                            title: name,
-                            to: link.to,
-                            from: link.from
-                        });
-                    }
-                });
-            }
-        });
-        if(linkages.length === 0) {
-            return;
-        }
-        if(linkages.length === 1) {
-            return this.fireEvent(BI.CombineChart.EVENT_ITEM_CLICK, {
-                to: linkages[0].to,
-                from: linkages[0].from,
-                clicked: clicked
-            });
-        }
+    _createPopup: function (items, rect, opt) {
         var combo = BI.createWidget({
             type: "bi.combo",
             direction: "bottom",
@@ -116,22 +74,20 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                 el: BI.createWidget({
                     type: "bi.vertical",
                     cls: "bi-linkage-list",
-                    items: BI.createItems(linkages, {
-                        type: "bi.text_button",
-                        cls: "bi-linkage-list-item",
-                        textAlign: "left",
-                        height: 30,
-                        handler: function () {
-                            self.fireEvent(BI.CombineChart.EVENT_ITEM_CLICK, {
-                                to: this.options.to,
-                                from: this.options.from,
-                                clicked: clicked
-                            });
-                            combo.destroy();
-                        },
-                        lgap: 10
+                    items: BI.map(items, function (i, item) {
+                        return {
+                            type: "bi.text_button",
+                            cls: "bi-linkage-list-item",
+                            textAlign: "left",
+                            height: 30,
+                            handler: function () {
+                                self.fireEvent(BI.CombineChart.EVENT_ITEM_CLICK, BI.extend({}, item, opt));
+                                combo.destroy();
+                            },
+                            lgap: 10
+                        }
                     }),
-                    width: position.width
+                    width: rect.width
                 })
             },
             width: 0
@@ -141,8 +97,8 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             element: this.element,
             items: [{
                 el: combo,
-                top: position.y,
-                left: position.x
+                top: rect.y,
+                left: rect.x
             }]
         });
         combo.showView();

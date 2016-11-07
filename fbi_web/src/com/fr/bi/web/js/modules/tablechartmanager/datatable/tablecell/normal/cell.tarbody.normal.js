@@ -101,10 +101,12 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
             var widgetId = BI.Utils.getWidgetIDByDimensionID(dId);
             var linkage = BI.Utils.getWidgetLinkageByID(widgetId);
         }
-        var linkedWidgets = [];
+        var linkedWidgets = [], linkedFrom = [];
         BI.each(linkage, function (i, link) {
-            if ((link.from === dId && BI.isEmptyArray(link.cids)) || (link.cids && link.cids[0] === dId && BI.Utils.getDimensionTypeByID(dId) === BICst.TARGET_TYPE.FORMULA)) {
+            if (link.from === dId && BI.isEmpty(link.cids)) {
                 linkedWidgets.push(link);
+            } else if (link.cids && link.cids.contains(dId)) {
+                linkedFrom.push(link);
             }
         });
 
@@ -114,7 +116,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
             text += "%";
         }
 
-        if (BI.isEmptyArray(linkedWidgets)) {
+        if (BI.isEmptyArray(linkedWidgets) && BI.isEmptyArray(linkedFrom)) {
             return BI.createWidget({
                 type: "bi.label",
                 text: text,
@@ -134,8 +136,20 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 cls: "target-linkage-label",
                 rgap: 5
             });
+            //一般指标或只有一个指标联动的计算指标
+            if (linkedFrom.length <= 1) {
+                textButton.on(BI.TextButton.EVENT_CHANGE, function () {
+                    //这个clicked应该放到子widget中保存起来
+                    BI.each(linkedWidgets.concat(linkedFrom), function (i, linkWid) {
+                        BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + linkWid.to, linkWid.from, clicked);
+                        self._send2AllChildLinkWidget(linkWid.to);
+                    });
+                });
+                return textButton;
+            }
+            //计算指标
             var linkages = [];
-            BI.each(linkedWidgets, function (idx, linkage) {
+            BI.each(linkedFrom, function (idx, linkage) {
                 var name = BI.i18nText("BI-An");
                 BI.each(linkage.cids, function (i, cid) {
                     name += BI.Utils.getDimensionNameByID(cid) + "-";
@@ -148,17 +162,6 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                     to: linkage.to
                 })
             });
-
-            if (linkages.length === 1) {
-                textButton.on(BI.TextButton.EVENT_CHANGE, function () {
-                    //这个clicked应该放到子widget中保存起来
-                    BI.each(linkedWidgets, function (i, linkWid) {
-                        BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + linkWid.to, linkWid.from, clicked);
-                        self._send2AllChildLinkWidget(linkWid.to);
-                    });
-                });
-                return textButton;
-            }
 
             var combo = BI.createWidget({
                 type: "bi.combo",

@@ -37,6 +37,7 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
 
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
+            popupItemsGetter: o.popupItemsGetter,
             formatConfig: BI.bind(this._formatConfig, this),
             element: this.element
         });

@@ -128,7 +128,7 @@ class MainContainer extends Component {
                     </Toolbar>
                 </Layout>
             }
-            return <LayoutComponent {...props} width={props.width} height={props.height - 50}/>;
+            return <LayoutContainer {...props} width={props.width} height={props.height - 50}/>;
         }
         return (
             <Layout flex box='mean'>
