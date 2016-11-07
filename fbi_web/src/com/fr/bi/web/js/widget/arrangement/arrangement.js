@@ -367,10 +367,10 @@ BI.Arrangement = BI.inherit(BI.Widget, {
     },
 
     //获取间接相关联的区域,即调整name区域后需要附带调整的所有相关区域(包括自身)
-    _getInDirectRelativeRegions: function (name, direcion) {
+    _getInDirectRelativeRegions: function (name, direction) {
         var self = this, dict = ["top", "left", "right", "bottom"];
         var result = {};
-        direcion || (direcion = dict);
+        direction || (direction = dict);
         function recursion(regions, dir, store, cache) {
             BI.each(regions, function (i, region) {
                 if (cache[region.id]) {
@@ -385,28 +385,28 @@ BI.Arrangement = BI.inherit(BI.Widget, {
             })
         }
 
-        if (direcion.contains("top")) {
+        if (direction.contains("top")) {
             var store = {}, cache = {};
             recursion([this.regions[name]], dict.indexOf("top"), store, cache);
             store["top"] = BI.sortBy(store["top"], "left");
             store["bottom"] = BI.sortBy(store["bottom"], "left");
             result["top"] = store;
         }
-        if (direcion.contains("bottom")) {
+        if (direction.contains("bottom")) {
             var store = {}, cache = {};
             recursion([this.regions[name]], dict.indexOf("bottom"), store, cache);
             store["top"] = BI.sortBy(store["top"], "left");
             store["bottom"] = BI.sortBy(store["bottom"], "left");
             result["bottom"] = store;
         }
-        if (direcion.contains("left")) {
+        if (direction.contains("left")) {
             var store = {}, cache = {};
             recursion([this.regions[name]], dict.indexOf("left"), store, cache);
             store["left"] = BI.sortBy(store["left"], "top");
             store["right"] = BI.sortBy(store["right"], "top");
             result["left"] = store;
         }
-        if (direcion.contains("right")) {
+        if (direction.contains("right")) {
             var store = {}, cache = {};
             recursion([this.regions[name]], dict.indexOf("right"), store, cache);
             store["left"] = BI.sortBy(store["left"], "top");
@@ -2662,7 +2662,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                         this._applyRegion();
                     }
                     this.resize();
-                } else {
+                // } else {
                     this.relayout();
                 }
                 break;
