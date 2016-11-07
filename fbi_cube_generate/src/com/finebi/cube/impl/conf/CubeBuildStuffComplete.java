@@ -110,7 +110,7 @@ public class CubeBuildStuffComplete extends AbstractCubeBuildStuff implements Se
         this.tableSourceRelationSet = removeDuplicateRelations(convertRelations(this.tableRelationSet));
     }
 
-    public Set<BITableSourceRelationPath> getBiTableSourceRelationPathSet() {
+    public Set<BITableSourceRelationPath> getTableSourceRelationPathSet() {
         return relationPaths;
     }
 
@@ -152,7 +152,7 @@ public class CubeBuildStuffComplete extends AbstractCubeBuildStuff implements Se
     }
 
     @Override
-    public Set<CubeTableSource> getAllSingleSources() {
+    public Set<CubeTableSource> getSingleSourceLayers() {
         BIConfigureManagerCenter.getLogManager().cubeTableSourceSet(allSingleSources, biUser.getUserId());
         return allSingleSources;
     }
@@ -235,7 +235,7 @@ public class CubeBuildStuffComplete extends AbstractCubeBuildStuff implements Se
 
     public void initialCubeStuff() {
         try {
-            Set<List<Set<CubeTableSource>>> depends = calculateTableSource(getAllTableSources());
+            Set<List<Set<CubeTableSource>>> depends = calculateTableSource(getTableSources());
             setDependTableResource(depends);
             setAllSingleSources(set2Set(depends));
             setTableRelationSet(BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(biUser.getUserId()));
@@ -254,10 +254,10 @@ public class CubeBuildStuffComplete extends AbstractCubeBuildStuff implements Se
         CalculateDependTool cal = new CalculateDependManager();
         cubeGenerateRelationSet = new HashSet<BICubeGenerateRelation>();
         for (BITableSourceRelation biTableSourceRelation : this.getTableSourceRelationSet()) {
-            this.cubeGenerateRelationSet.add(cal.calRelations(biTableSourceRelation, this.getAllTableSources()));
+            this.cubeGenerateRelationSet.add(cal.calRelations(biTableSourceRelation, this.getTableSources()));
         }
         cubeGenerateRelationPathSet = new HashSet<BICubeGenerateRelationPath>();
-        cubeGenerateRelationPathSet = cal.calRelationPath(this.getBiTableSourceRelationPathSet(), this.tableSourceRelationSet);
+        cubeGenerateRelationPathSet = cal.calRelationPath(this.getTableSourceRelationPathSet(), this.tableSourceRelationSet);
     }
 
 }
