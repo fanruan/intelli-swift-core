@@ -2,10 +2,10 @@ package com.fr.bi.stable.utils.program;
 
 import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.base.FRContext;
 import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.utils.code.BILogDelegate;
 import com.fr.general.ComparatorUtils;
-import sun.tools.jar.resources.jar;
 
 import java.io.*;
 import java.net.JarURLConnection;
@@ -14,7 +14,6 @@ import java.net.URLDecoder;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.zip.ZipFile;
 
 /**
  * Created by Connery on 2015/12/8.
@@ -97,12 +96,11 @@ public class BIClassUtils {
     }
 
     private static Set<Class<?>> getReSourceManual(boolean recursive, String packageName, String packageDirName) throws Exception {
-        Enumeration<URL> dirs =
-                getAggregatedClassLoader(BIClassUtils.class.getClassLoader()).getResources("/WEB-INF");
-        if (dirs.hasMoreElements()) {
-            URL url = dirs.nextElement();
-            logger.info("scan the URL:" + url.toString());
-            File webInfFile = new File(URLDecoder.decode(url.getFile(), "UTF-8"));
+
+        String webInfoPath = FRContext.getCurrentEnv().getPath();
+        logger.info("scan the path:" + webInfoPath);
+        File webInfFile = new File(webInfoPath);
+        if (webInfFile.exists()) {
             File[] childFiles = webInfFile.listFiles(new FilenameFilter() {
                 @Override
                 public boolean accept(File dir, String name) {
@@ -117,7 +115,8 @@ public class BIClassUtils {
                 throw new FileNotFoundException("The folder :" + webInfFile.getPath() + "lib not found");
             }
         } else {
-            throw new FileNotFoundException("The basic WEB-INF not found");
+            logger.warn("The basic WEB-INF not found", new FileNotFoundException());
+            return new HashSet<Class<?>>();
         }
     }
 
