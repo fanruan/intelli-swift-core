@@ -23,6 +23,7 @@ def list=[
 		"fbi_base/src",
 		"fbi_engine_finereport/src",
 		"fbi_conf/src", 
+		"fbi_h5/src",
 		"fbi_engine_base/src",
 		"fbi_engine_generate/src",
 		"fbi_engine_analyse/src",
@@ -81,7 +82,7 @@ dependencies {
 }
 //声明外部依赖
 dependencies{
-	compile fileTree(dir:"${BI_HOME}/lib/${branchName}",include:'**/*.jar')
+	compile fileTree(dir:"${BI_HOME}/lib/${branchName}",include:'**/*.jar',exclude:"")
 	testCompile 'junit:junit:4.12'
 }
 //指明无法编译文件所在路径
