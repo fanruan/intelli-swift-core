@@ -351,7 +351,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
     },
 
     rightAxisSetting: function (config) {
-        var title = this.getXYAxisUnit(config.right_y_axis_number_level, config.right_y_axis_title);
+        var unit = this.getXYAxisUnit(config.right_y_axis_number_level, config.right_y_axis_unit);
         return BI.extend({
             lineWidth: config.line_width,
             lineColor: config.right_line_color,
@@ -373,7 +373,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             formatter: this.formatTickInXYaxis(config.right_y_axis_style, config.right_y_axis_number_level, config.right_num_separators)
         }, {
             title: {
-                text: config.show_right_y_axis_title ? self.config.right_y_axis_title + title : title,
+                text: config.show_right_y_axis_title ? config.right_y_axis_title + unit : unit,
                 rotation: this.constants.ROTATION,
                 style: BI.extend(config.right_title_style, {
                     fontSize: config.right_title_style.fontSize + "px"

@@ -322,6 +322,9 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
             v_grid_line_color: options.v_grid_line_color || "",
             tooltip_setting: options.tooltip_setting || {},
             null_continue: options.null_continue || false,
+            left_title_style: options.left_title_style || {},
+            right_title_style: options.right_title_style || {},
+            cat_title_style: options.cat_title_style || {}
         };
         this.options.items = items;
 
