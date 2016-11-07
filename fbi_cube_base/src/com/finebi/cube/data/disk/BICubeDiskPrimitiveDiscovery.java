@@ -30,6 +30,12 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
     private Map<String, NIOResourceManager> fileResourceMap;
     private boolean releasingResource = false;
 
+    public boolean isReleasingResource() {
+        synchronized (this){
+            return releasingResource;
+        }
+    }
+
     public static synchronized BICubeDiskPrimitiveDiscovery getInstance() {
         if (instance != null) {
             return instance;
