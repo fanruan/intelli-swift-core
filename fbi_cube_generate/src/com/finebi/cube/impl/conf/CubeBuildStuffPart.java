@@ -52,9 +52,9 @@ public class CubeBuildStuffPart extends AbstractCubeBuildStuff implements CubeBu
 
     private void calculateRelationDepends() {
         for (BITableSourceRelation biTableSourceRelation : this.getTableSourceRelationSet()) {
-            this.cubeGenerateRelationSet.add(calculateDependTool.calRelations(biTableSourceRelation, this.getAllSingleSources()));
+            this.cubeGenerateRelationSet.add(calculateDependTool.calRelations(biTableSourceRelation, this.getSingleSourceLayers()));
         }
-        cubeGenerateRelationPathSet = calculateDependTool.calRelationPath(this.getBiTableSourceRelationPathSet(), this.biTableSourceRelationSet);
+        cubeGenerateRelationPathSet = calculateDependTool.calRelationPath(this.getTableSourceRelationPathSet(), this.biTableSourceRelationSet);
     }
 
     protected void setResourcesAndDepends() throws BITableAbsentException {
@@ -131,13 +131,13 @@ public class CubeBuildStuffPart extends AbstractCubeBuildStuff implements CubeBu
         return updateSettingSourceMap;
     }
 
-    public Set<BITableSourceRelationPath> getBiTableSourceRelationPathSet() {
+    public Set<BITableSourceRelationPath> getTableSourceRelationPathSet() {
         return biTableSourceRelationPathSet;
     }
 
 
     @Override
-    public Set<CubeTableSource> getAllSingleSources() {
+    public Set<CubeTableSource> getSingleSourceLayers() {
         return allSingleSources;
     }
 

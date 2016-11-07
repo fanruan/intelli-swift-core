@@ -93,14 +93,6 @@ def dataContent ={def dir ->
 
 //将非.java文件复制到classes文件夹下 参与打包
 task copyFile(type:Copy,dependsOn:compileJava){
-	//删除test文件夹
-	ant{
-		echo('--------------------------------delete test---------------------------')
-		delete(defaultexcludes:'false'){
-			fileset(dir:'.',includes:'**/test/')
-
-		}
-	}
 	list.each{ def srcDir->
 		copy{
 			with dataContent.call("${srcDir}") 

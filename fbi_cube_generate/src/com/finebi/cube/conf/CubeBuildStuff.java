@@ -15,13 +15,13 @@ import java.util.Set;
 public interface CubeBuildStuff {
 
 
-    Set<BITableSourceRelationPath> getBiTableSourceRelationPathSet();
+    Set<BITableSourceRelationPath> getTableSourceRelationPathSet();
 
-    Set<CubeTableSource> getAllSingleSources();
+    Set<CubeTableSource> getSingleSourceLayers();
 
     Set<BITableSourceRelation> getTableSourceRelationSet();
 
-    Set<CubeTableSource> getAllTableSources();
+    Set<CubeTableSource> getTableSources();
 
     Set<List<Set<CubeTableSource>>> getDependTableResource();
 

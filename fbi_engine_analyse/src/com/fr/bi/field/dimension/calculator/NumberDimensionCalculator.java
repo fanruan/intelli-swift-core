@@ -19,6 +19,7 @@ import java.util.Map;
  * Created by 小灰灰 on 2015/6/30.
  */
 public class NumberDimensionCalculator extends AbstractDimensionCalculator {
+    private transient ICubeColumnIndexReader customMap;
     public NumberDimensionCalculator(BIDimension dimension, BusinessField column, List<BITableSourceRelation> relations) {
         super(dimension, column, relations);
     }
@@ -29,24 +30,42 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
 
     @Override
     public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useRealData, int groupLimit) {
-        ICubeColumnIndexReader getter = loader.getTableIndex(field.getTableBelongTo().getTableSource()).loadGroup(dimension.createKey(field), getRelationList(), useRealData, groupLimit);
-        getter = dimension.getGroup().createGroupedMap(getter);
-        Comparator comparator;
-        if(getSortType() == BIReportConstant.SORT.NONE || getSortType() == BIReportConstant.SORT.CUSTOM){
-            return dimension.getSort().createGroupedMap(getter).iterator();
+        if (isNoGroup() && !isCustomSort()){
+            return super.createValueMapIterator(table, loader, useRealData, groupLimit);
         }
-        if(getGroup().getType() == BIReportConstant.GROUP.ID_GROUP){
-            comparator = ComparatorFacotry.getComparator(BIReportConstant.SORT.NUMBER_ASC);
-        }else{
-            comparator = ComparatorFacotry.getComparator(BIReportConstant.SORT.ASC);
+        if (customMap == null){
+            initCustomMap(loader, useRealData, groupLimit);
         }
-        CubeTreeMap treeMap = new CubeTreeMap(comparator);
-        Iterator it = getter.iterator();
-        while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
-            treeMap.put(entry.getKey(), entry.getValue());
+        if (isCustomSort()){
+            return customMap.iterator();
         }
-        return getSortType() != BIReportConstant.SORT.NUMBER_DESC ? treeMap.iterator() : treeMap.previousIterator();
+        return getSortType() != BIReportConstant.SORT.NUMBER_DESC ? customMap.iterator() : customMap.previousIterator();
+
     }
 
+    private void initCustomMap(ICubeDataLoader loader, boolean useRealData, int groupLimit) {
+        ICubeColumnIndexReader getter = loader.getTableIndex(field.getTableBelongTo().getTableSource()).loadGroup(dimension.createKey(field), getRelationList(), useRealData, groupLimit);
+        getter = dimension.getGroup().createGroupedMap(getter);
+        if(isCustomSort()){
+            customMap =  dimension.getSort().createGroupedMap(getter);
+        } else {
+            Comparator comparator;
+            if(getGroup().getType() == BIReportConstant.GROUP.ID_GROUP){
+                comparator = ComparatorFacotry.getComparator(BIReportConstant.SORT.NUMBER_ASC);
+            }else{
+                comparator = ComparatorFacotry.getComparator(BIReportConstant.SORT.ASC);
+            }
+            CubeTreeMap treeMap = new CubeTreeMap(comparator);
+            Iterator it = getter.iterator();
+            while (it.hasNext()) {
+                Map.Entry entry = (Map.Entry) it.next();
+                treeMap.put(entry.getKey(), entry.getValue());
+            }
+            customMap = treeMap;
+        }
+    }
+
+    public boolean isCustomSort() {
+        return getSortType() == BIReportConstant.SORT.CUSTOM;
+    }
 }
