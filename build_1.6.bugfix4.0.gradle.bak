@@ -2,7 +2,8 @@ apply plugin:'java'
 tasks.withType(JavaCompile){
 	options.encoding = 'UTF-8'
 }
-//sourceCompatibility=1.5
+ant.delete(dir:'build')
+sourceCompatibility=1.6
 //BI工程的根目录
 def BI_HOME='../../'
 def jarname='fr-bi-server-4.0.jar'
@@ -22,7 +23,7 @@ def list=[
 		"fbi_base/src",
 		"fbi_engine_finereport/src",
 		"fbi_conf/src", 
-		"fbi_h5/src",
+		"fbi_conf/src",
 		"fbi_engine_base/src",
 		"fbi_engine_generate/src",
 		"fbi_engine_analyse/src",
@@ -128,11 +129,11 @@ task addTime(dependsOn:'compressJS'){
 
 //混淆代码
 task obfuse(dependsOn:'build')<<{
-	ant.delete(dir:"${BI_HOME}/build/${branchName}/build/JAR/tmp/1.8")
-	ant.mkdir(dir:"${BI_HOME}/build/${branchName}/build/JAR/tmp/1.8")
+	ant.delete(dir:"${BI_HOME}/build/${branchName}/build/JAR/tmp/1.6")
+	ant.mkdir(dir:"${BI_HOME}/build/${branchName}/build/JAR/tmp/1.6")
 	ant.taskdef(name:'yguard',classname:'com.yworks.yguard.YGuardTask',classpath:"${BI_HOME}/lib4build/yguard.jar")
 	ant.yguard(){
-		inoutpair(in:"build/libs/${jarname}",out:"${BI_HOME}/build/${branchName}/build/JAR/tmp/1.8/${jarname}")
+		inoutpair(in:"build/libs/${jarname}",out:"${BI_HOME}/build/${branchName}/build/JAR/tmp/1.6/${jarname}")
 		rename(){
 		keep{
 			method(name:'void main(String[])'){
