@@ -1,18 +1,21 @@
 package com.fr.bi.stable.gvi;
 
-import java.io.DataInput;
 import java.io.IOException;
 
 /**
- * Created by 小灰灰 on 2016/11/3.
+ * Created by 小灰灰 on 2016/11/7.
  */
-public class RoaringBitMapDataInput implements DataInput{
-    private static final String UNSUPPORTED = "RoaringBitMapDataInput Not Support";
+public class ByteArrayDataInput implements BIByteDataInput {
+    private static final String UNSUPPORTED = "ByteArrayDataInput Not Support";
     private int index = 0;
     private byte[] data;
 
-    public RoaringBitMapDataInput(byte[] data) {
+    public ByteArrayDataInput(byte[] data) {
         this.data = data;
+    }
+
+    public long size(){
+        return data.length;
     }
 
     @Override
@@ -108,3 +111,4 @@ public class RoaringBitMapDataInput implements DataInput{
         throw new RuntimeException(UNSUPPORTED);
     }
 }
+

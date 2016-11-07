@@ -117,8 +117,6 @@ public class IDGroupValueIndex extends AbstractGroupValueIndex {
         out.writeInt(id);
     }
 
-    //pony 这个调用太频繁，不要通过stream初始化，直接判断下第一个byte走createGroupValueIndex
-    @Deprecated
     @Override
     public void readFields(DataInput in) throws IOException {
         id = in.readInt();
@@ -182,13 +180,6 @@ public class IDGroupValueIndex extends AbstractGroupValueIndex {
     @Override
     public IDGroupValueIndex clone() {
         return new IDGroupValueIndex(id);
-    }
-
-    protected static GroupValueIndex createGroupValueIndex(byte[] b) {
-        return new IDGroupValueIndex((((b[1]) << 24) |
-                ((b[2] & 0xff) << 16) |
-                ((b[3] & 0xff) <<  8) |
-                ((b[4] & 0xff)      )));
     }
 
     @Override

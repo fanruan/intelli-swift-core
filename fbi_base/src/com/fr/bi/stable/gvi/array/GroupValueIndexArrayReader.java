@@ -1,6 +1,7 @@
 package com.fr.bi.stable.gvi.array;
 
 import com.fr.bi.common.inter.ValueCreator;
+import com.fr.bi.stable.gvi.ByteArrayDataInput;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.newio.NIOReader;
@@ -25,7 +26,7 @@ public class GroupValueIndexArrayReader implements NIOReader<GroupValueIndex>, I
             @Override
             public GroupValueIndex createNewObject() {
                 byte[] b = byteList.get(row);
-                GroupValueIndex result = GVIFactory.createGroupValueIndexByBytes(b);
+                GroupValueIndex result = GVIFactory.createGroupValueIndexByDataInput(new ByteArrayDataInput(b));
                 return result;
             }
         });
