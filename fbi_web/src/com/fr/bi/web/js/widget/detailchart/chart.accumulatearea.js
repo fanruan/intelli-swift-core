@@ -59,27 +59,18 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
 
         config.yAxis = this.yAxis;
         BI.each(config.yAxis, function (idx, axis) {
-            var unit = "";
             switch (axis.axisIndex) {
                 case self.constants.LEFT_AXIS:
-                    unit = self.getXYAxisUnit(self.config.left_y_axis_number_level, self.config.left_y_axis_unit);
-                    axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + unit : unit;
-                    axis.title.rotation = self.constants.ROTATION;
                     BI.extend(axis, self.leftAxisSetting(self.config));
                     self.formatNumberLevelInYaxis(config, items, self.config.left_y_axis_number_level, idx, axis.formatter, self.config.num_separators);
                     break;
                 case self.constants.RIGHT_AXIS:
-                    unit = self.getXYAxisUnit(self.config.right_y_axis_number_level, self.config.right_y_axis_unit);
-                    axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + unit : unit;
-                    axis.title.rotation = self.constants.ROTATION;
                     BI.extend(axis, self.rightAxisSetting(self.config));
                     self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_number_level, idx, axis.formatter, self.config.right_num_separators);
                     break;
             }
         });
 
-        config.xAxis[0].title.align = "center";
-        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title : "";
         BI.extend(config.xAxis[0], self.catSetting(this.config));
 
         config.chartType = "area";
@@ -228,6 +219,9 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
             show_v_grid_line: BI.isNull(options.show_v_grid_line) ? true : options.show_v_grid_line,
             v_grid_line_color: options.v_grid_line_color || "",
             tooltip_setting: options.tooltip_setting || {},
+            left_title_style: options.left_title_style || {},
+            right_title_style: options.right_title_style || {},
+            cat_title_style: options.cat_title_style || {}
         };
         this.options.items = items;
         this.yAxis = [];

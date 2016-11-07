@@ -51,8 +51,6 @@ BI.AccumulateBarChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this;
-        var unit = getXYAxisUnit(this.config.x_axis_number_level, this.constants.LEFT_AXIS);
-        var xTitle = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.X_AXIS);
         config.colors = this.config.chart_color;
         config.plotOptions.style = formatChartStyle();
         formatCordon();
@@ -62,14 +60,13 @@ BI.AccumulateBarChart = BI.inherit(BI.AbstractChart, {
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
 
         config.yAxis = this.yAxis;
-        config.yAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + unit : unit;
-        config.yAxis[0].title.rotation = this.constants.ROTATION;
         BI.extend(config.yAxis[0], self.catSetting(this.config));
+        config.yAxis[0].title.rotation = 90;
 
         self.formatNumberLevelInXaxis(items, this.config.left_y_axis_number_level);
-        config.xAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + xTitle : xTitle;
-        config.xAxis[0].title.align = "center";
         BI.extend(config.xAxis[0], self.leftAxisSetting(this.config));
+        //条形图的值轴的标题是0度
+        config.xAxis[0].title.rotation = 0;
         config.chartType = "bar";
 
         config.legend.style = BI.extend( this.config.chart_legend_setting, {
@@ -139,34 +136,6 @@ BI.AccumulateBarChart = BI.inherit(BI.AbstractChart, {
                 }
             })
         }
-
-        function getXYAxisUnit(numberLevelType, position) {
-            var unit = "";
-            switch (numberLevelType) {
-                case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                    unit = "";
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                    unit = BI.i18nText("BI-Wan");
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                    unit = BI.i18nText("BI-Million");
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                    unit = BI.i18nText("BI-Yi");
-                    break;
-            }
-            if (position === self.constants.X_AXIS) {
-                self.config.left_y_axis_unit !== "" && (unit = unit + self.config.left_y_axis_unit)
-            }
-            if (position === self.constants.LEFT_AXIS) {
-                self.config.x_axis_unit !== "" && (unit = unit + self.config.x_axis_unit)
-            }
-            if (position === self.constants.RIGHT_AXIS) {
-                self.config.right_y_axis_unit !== "" && (unit = unit + self.config.right_y_axis_unit)
-            }
-            return unit === "" ? unit : "(" + unit + ")";
-        }
     },
 
     _formatItems: function (items) {
@@ -228,6 +197,8 @@ BI.AccumulateBarChart = BI.inherit(BI.AbstractChart, {
             show_v_grid_line: BI.isNull(options.show_v_grid_line) ? true : options.show_v_grid_line,
             v_grid_line_color: options.v_grid_line_color || "",
             tooltip_setting: options.tooltip_setting || {},
+            left_title_style: options.left_title_style || {},
+            cat_title_style: options.cat_title_style || {}
         };
         this.options.items = items;
         var types = [];
