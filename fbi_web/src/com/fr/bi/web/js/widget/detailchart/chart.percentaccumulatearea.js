@@ -13,7 +13,7 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.AbstractChart, {
 
     _init: function () {
         BI.PercentAccumulateAreaChart.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
         this.xAxis = [{
             type: "category",
             title: {
@@ -35,11 +35,15 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
             xAxis: this.xAxis,
+            popupItemsGetter: o.popupItemsGetter,
             formatConfig: BI.bind(this._formatConfig, this),
             element: this.element
         });
         this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
             self.fireEvent(BI.PercentAccumulateAreaChart.EVENT_CHANGE, obj);
+        });
+        this.combineChart.on(BI.CombineChart.EVENT_ITEM_CLICK, function (obj) {
+            self.fireEvent(BI.AbstractChart.EVENT_ITEM_CLICK, obj)
         });
     },
 
@@ -64,8 +68,8 @@ BI.PercentAccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title : "";
         BI.extend(config.xAxis[0], self.catSetting(this.config));
 
-        config.legend.style = BI.extend( this.config.chart_legend_setting, {
-            fontSize:  this.config.chart_legend_setting.fontSize + "px"
+        config.legend.style = BI.extend(this.config.chart_legend_setting, {
+            fontSize: this.config.chart_legend_setting.fontSize + "px"
         });
 
         config.chartType = "area";

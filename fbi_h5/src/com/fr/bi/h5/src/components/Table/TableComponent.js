@@ -42,12 +42,12 @@ class TableComponent extends Component {
     }
 
     componentDidMount() {
-        this._fetchData(this.props);
+        this._fetchData(this.props, this.context);
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (!immutableShallowEqual(nextProps, this.props)) {
-            this._fetchData(nextProps);
+    componentWillReceiveProps(nextProps, nextContext) {
+        if (!immutableShallowEqual({$widget: nextProps.$widget}, {$widget: this.props.$widget})) {
+            this._fetchData(nextProps, nextContext);
             this._changed = true;
         }
     }
@@ -64,10 +64,9 @@ class TableComponent extends Component {
 
     }
 
-    _fetchData(props) {
+    _fetchData(props, context) {
         const {$widget, wId} = props;
-        const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(this.context.$template));
-        console.log(widget.$get().toJS());
+        const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(context.$template));
         return widget.getData().then((data)=> {
             this.setState({data: data});
         });
@@ -92,20 +91,28 @@ class TableComponent extends Component {
             /**groupHeader={[{text: 1}, {text: 2}]}
              groupItems={[{children:[{text: 'A', children: [{text: 'A1'}, {text: 'A2'}]}, {text: 'B'}]}]}**/
             groupHeaderCellRenderer={({colIndex, ...cell})=> {
-                return <TableHeader {...cell}/>
-            }}
-            groupItemsCellRenderer={({...cell})=> {
-                return <TableHeader {...cell}/>
-            }}
-            headerCellRenderer={({colIndex, ...cell})=> {
-                return <TableHeader {...cell}/>
-            }}
-            itemsCellRenderer={({colIndex, rowIndex, ...cell}) => {
-                return <TableCell 
+                return <TableHeader
                     wId={this.props.wId}
                     $widget={this.props.$widget}
-                    {...cell}>
-                    </TableCell>
+                    {...cell}/>
+            }}
+            groupItemsCellRenderer={({...cell})=> {
+                return <TableHeader
+                    wId={this.props.wId}
+                    $widget={this.props.$widget}
+                    {...cell}/>
+            }}
+            headerCellRenderer={({colIndex, ...cell})=> {
+                return <TableHeader
+                    wId={this.props.wId}
+                    $widget={this.props.$widget}
+                    {...cell}/>
+            }}
+            itemsCellRenderer={({colIndex, rowIndex, ...cell}) => {
+                return <TableCell
+                    wId={this.props.wId}
+                    $widget={this.props.$widget}
+                    {...cell} />
             }}
         >
         </TableWidget>

@@ -66,7 +66,7 @@ const SortableList = SortableContainer(({viewItems, context}) => {
     each(viewItems, (items, viewId)=> {
         const viewItem = context._helper.getViewItemByViewId(viewId);
         let header = dimensionHeader, body = dimensionBody, collection = 0;
-        if (!context._helper.isDimensionByViewId(viewId)) {
+        if (!context._helper.isDimensionRegionByViewId(viewId)) {
             header = targetHeader;
             body = targetBody;
             collection = 1;
@@ -106,11 +106,6 @@ class SettingsComponent extends Component {
 
     static propTypes = {};
 
-    static defaultProps = {
-        onReturn: emptyFunction,
-        onComplete: emptyFunction
-    };
-
     state = {
         $widget: this.props.$widget,
         collapsed: {},
@@ -133,20 +128,6 @@ class SettingsComponent extends Component {
         this.setState({
             $widget: nextProps.$widget
         })
-    }
-
-    _renderHeader() {
-        const {$widget, wId} = this.props;
-        const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(this.context.$template));
-        return <Layout main='justify' cross='center' style={styles.header}>
-            <TextLink onPress={()=> {
-                this.refs['overlay'].close();
-            }} style={styles.back}>{'返回'}</TextLink>
-            <Text style={styles.name}>{widget.getName()}</Text>
-            <TextLink onPress={()=> {
-                this.refs['overlay'].close(true);
-            }} style={styles.complete}>{'完成'}</TextLink>
-        </Layout>
     }
 
     _onSortEnd = ({oldIndex, newIndex,}) => {
@@ -179,6 +160,7 @@ class SettingsComponent extends Component {
             if (this._helper.isDimensionByDimensionId(value.dId)) {
                 return <DimensionComponent key={index} value={value} wId={this.props.wId}
                                            $widget={this.state.$widget}
+                                           contentWidth={this.props.contentWidth}
                                            dId={value.dId} onValueChange={($widget)=> {
                     this.setState({
                         $widget: $widget
@@ -216,7 +198,7 @@ class SettingsComponent extends Component {
     _renderUnSortableContainer() {
         const array = [];
         each(this._helper.getViewItems(), (viewItem)=> {
-            array.push(<Header viewItem={viewItem} onPress={()=> {
+            array.push(<Header key={viewItem.viewId} viewItem={viewItem} onPress={()=> {
                 const collapsed = clone(this.state.collapsed);
                 collapsed[viewItem.viewId] = !collapsed[viewItem.viewId];
                 this.setState({
@@ -233,7 +215,9 @@ class SettingsComponent extends Component {
         </ScrollView>;
     }
 
-    _renderDialog() {
+    render() {
+        const {...props} = this.props, {...state} = this.state;
+        this._helper = new SettingsComponentHelper(state, this.context);
         return <Layout dir='top' box='first'>
             <View style={{height: 100}}>
                 <TextButton onPress={()=> {
@@ -246,22 +230,10 @@ class SettingsComponent extends Component {
         </Layout>;
     }
 
-    render() {
-        const {...props} = this.props, {...state} = this.state;
-        this._helper = new SettingsComponentHelper(state, this.context);
-        return <Overlay ref='overlay' onClose={(tag)=> {
-            if (tag === true) {
-                const {$widget} = this.state, {wId} = this.props;
-                this.props.onComplete({$widget, wId});
-            } else {
-                this.props.onReturn();
-            }
-        }}>
-            <Layout dir='top' box='first' style={styles.wrapper}>
-                {this._renderHeader()}
-                {this._renderDialog()}
-            </Layout>
-        </Overlay>
+    getValue() {
+        return {
+            $widget: this.state.$widget
+        }
     }
 
     componentWillUpdate(nextProps, nextState) {
@@ -279,14 +251,7 @@ class SettingsComponent extends Component {
 }
 mixin.onClass(SettingsComponent, ReactComponentWithPureRenderMixin);
 const styles = StyleSheet.create({
-    wrapper: {
-        position: 'absolute',
-        backgroundColor: '#ffffff',
-        left: 10,
-        right: 10,
-        top: 30,
-        bottom: 10
-    },
+    wrapper: {},
     header: {
         paddingLeft: 20,
         paddingRight: 20,

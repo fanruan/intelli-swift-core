@@ -161,7 +161,7 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
             }
             discardSummary = !left.needSummary() || keys.length == 0;
         }
-        if (discardSummary) {
+        if ((left.getChildLength() > 0 && !chartSetting.showRowTotal()) || discardSummary) {
             return pos;
         }
         //pos如果不为0说明是汇总的格子

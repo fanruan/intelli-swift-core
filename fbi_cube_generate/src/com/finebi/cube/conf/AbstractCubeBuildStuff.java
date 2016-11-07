@@ -77,7 +77,7 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
 
     @Override
     public Map<CubeTableSource, Long> getVersions() {
-        Set<CubeTableSource> allTable = getAllSingleSources();
+        Set<CubeTableSource> allTable = getSingleSourceLayers();
         Map<CubeTableSource, Long> result = new HashMap<CubeTableSource, Long>();
         Long version = System.currentTimeMillis();
         for (CubeTableSource table : allTable) {
@@ -101,13 +101,13 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
         BILoggerFactory.getLogger().info("***************connection check start*****************");
         boolean connectionCheck = getConnectionCheck();
         BILoggerFactory.getLogger().info("***************connection check result: " + connectionCheck);
-        BILoggerFactory.getLogger().info("***************table check start*****************");
-        boolean sqlTest = getSqlTest();
-        BILoggerFactory.getLogger().info("***************table  check result: " + sqlTest);
+//        BILoggerFactory.getLogger().info("***************table check start*****************");
+//        boolean sqlTest = getSqlTest();
+//        BILoggerFactory.getLogger().info("***************table  check result: " + sqlTest);
         return spaceCheck && connectionCheck;
     }
 
-    public Set<CubeTableSource> getAllTableSources() {
+    public Set<CubeTableSource> getTableSources() {
         return this.allTableSources;
     }
 
@@ -329,7 +329,7 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
         CubePreConditionsCheck check = new CubePreConditionsCheckManager();
         Set<Connection> connectionSet = new HashSet<Connection>();
         double[] SqlSourceTypes = {BIBaseConstant.TABLETYPE.DB, BIBaseConstant.TABLETYPE.SQL};
-        for (CubeTableSource tableSource : getAllSingleSources()) {
+        for (CubeTableSource tableSource : getSingleSourceLayers()) {
             if (ArrayUtils.contains(SqlSourceTypes, tableSource.getType())) {
                 if (!connectionSet.contains(((DBTableSource) tableSource).getConnection())) {
                     if (!check.ConnectionCheck(((DBTableSource) tableSource).getConnection())) {
@@ -351,7 +351,7 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
 
     private boolean getSqlTest() {
         BICube cube = new BICube(new BICubeResourceRetrieval(getCubeConfiguration()), BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
-        for (CubeTableSource cubeTableSource : getAllSingleSources()) {
+        for (CubeTableSource cubeTableSource : getSingleSourceLayers()) {
             CubePreConditionsCheck check = new CubePreConditionsCheckManager();
             boolean SqlCheckResult = check.SQLCheck(cube, cubeTableSource);
             if (!SqlCheckResult) {

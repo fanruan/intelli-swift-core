@@ -18,7 +18,6 @@ import dismissKeyboard from '../Utilties/dismissKeyboard.web';
 import { Mixin as NativeMethodsMixin } from '../Utilties/NativeMethodsMixin.web';
 import mixin from 'react-mixin';
 
-const deviceSize = Dimensions.get('window');
 const VIEWPAGER_REF = 'viewpager';
 
 class ViewPager extends React.Component {
@@ -66,7 +65,7 @@ class ViewPager extends React.Component {
 
   state = {
     selectedPage: this.props.initialPage,
-    pageWidth: deviceSize.width,
+    pageWidth: Dimensions.get('window').width,
     pageCount: this.props.children.length,
     offsetLeft: new Animated.Value(0)
   }
@@ -108,7 +107,7 @@ class ViewPager extends React.Component {
     // will handle positioning of elements, so it's not important to offset
     // them correctly.
     return React.Children.map(this.props.children, function(child) {
-      let style = assign({}, child.props.style, {width: deviceSize.width});
+      let style = assign({}, child.props.style, {width: Dimensions.get('window').width});
       let newProps = {
         style: style,
         collapsable: false

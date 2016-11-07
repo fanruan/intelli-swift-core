@@ -51,10 +51,10 @@ class ImageComponent extends Component {
         const {$widget, wId} = this.props;
         const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(this.context.$template));
         return <Image
-            style={{height: this.props.height, ...styles.wrapper}}
-            source={widget.getSrc()}
+            style={{height: this.props.height, width: this.props.width}}
+            source={widget.getImageSrc()}
             resizeMode={widget.getSizeMode()}
-        />
+        />;
     }
 
     componentWillReceiveProps(nextProps) {
@@ -75,9 +75,4 @@ class ImageComponent extends Component {
 
 }
 mixin.onClass(ImageComponent, ReactComponentWithPureRenderMixin);
-const styles = StyleSheet.create({
-    wrapper: {
-        flex: 1
-    }
-});
 export default ImageComponent

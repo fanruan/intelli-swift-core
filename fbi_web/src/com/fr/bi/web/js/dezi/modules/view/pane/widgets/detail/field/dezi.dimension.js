@@ -42,7 +42,8 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
             self.model.set("used", self.usedCheck.isSelected());
         });
         this.usedRadio = BI.createWidget({
-            type: "bi.radio"
+            type: "bi.radio",
+            tipType: "success"
         });
         this.usedRadio.on(BI.Radio.EVENT_CHANGE, function () {
             self.model.set("used", self.usedRadio.isSelected());
@@ -176,7 +177,6 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         function formatDisabledTitle(v){
             self.usedCheck.setTitle(v);
             self.usedRadio.setTitle(v);
-            self.editor.setTitle(v);
         }
     },
 

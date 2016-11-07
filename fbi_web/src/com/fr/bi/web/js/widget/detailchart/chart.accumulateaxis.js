@@ -13,7 +13,7 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
 
     _init: function () {
         BI.AccumulateAxisChart.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
         this.xAxis = [{
             type: "category",
             title: {
@@ -25,11 +25,15 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
             xAxis: this.xAxis,
+            popupItemsGetter: o.popupItemsGetter,
             formatConfig: BI.bind(this._formatConfig, this),
             element: this.element
         });
         this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
             self.fireEvent(BI.AccumulateAxisChart.EVENT_CHANGE, obj);
+        });
+        this.combineChart.on(BI.CombineChart.EVENT_ITEM_CLICK, function (obj) {
+            self.fireEvent(BI.AbstractChart.EVENT_ITEM_CLICK, obj)
         });
     },
 
@@ -48,26 +52,20 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
         BI.each(config.yAxis, function (idx, axis) {
             switch (axis.axisIndex) {
                 case self.constants.LEFT_AXIS:
-                    axis.title.text = getTitleText(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS, self.config.show_left_y_axis_title, self.config.left_y_axis_title);
-                    axis.title.rotation = self.constants.ROTATION;
                     BI.extend(axis, self.leftAxisSetting(self.config));
                     self.formatNumberLevelInYaxis(config, items, self.config.left_y_axis_number_level, idx, axis.formatter);
                     break;
                 case self.constants.RIGHT_AXIS:
-                    axis.title.text = getTitleText(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS, self.config.show_right_y_axis_title, self.config.right_y_axis_title);
-                    axis.title.rotation = self.constants.ROTATION;
                     BI.extend(axis, self.rightAxisSetting(self.config));
                     self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_number_level, idx, axis.formatter);
                     break;
             }
         });
 
-        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title : "";
-        config.xAxis[0].title.align = "center";
         BI.extend(config.xAxis[0], self.catSetting(this.config));
 
-        config.legend.style = BI.extend( this.config.chart_legend_setting, {
-            fontSize:  this.config.chart_legend_setting.fontSize + "px"
+        config.legend.style = BI.extend(this.config.chart_legend_setting, {
+            fontSize: this.config.chart_legend_setting.fontSize + "px"
         });
 
         config.chartType = "column";
@@ -89,7 +87,7 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style" : self.config.chart_font,
+                                "style": self.config.chart_font,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -114,7 +112,7 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style" : self.config.chart_font,
+                                "style": self.config.chart_font,
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -132,38 +130,6 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
                 default:
                     return "normal";
             }
-        }
-
-        function getTitleText(numberLevelType, position, show, title) {
-            var unit = "";
-
-            switch (numberLevelType) {
-                case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                    unit = "";
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                    unit = BI.i18nText("BI-Wan");
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                    unit = BI.i18nText("BI-Million");
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                    unit = BI.i18nText("BI-Yi");
-                    break;
-            }
-            if (position === self.constants.X_AXIS) {
-                self.config.x_axis_unit !== "" && (unit = unit + self.config.x_axis_unit)
-            }
-            if (position === self.constants.LEFT_AXIS) {
-                self.config.left_y_axis_unit !== "" && (unit = unit + self.config.left_y_axis_unit)
-            }
-            if (position === self.constants.RIGHT_AXIS) {
-                self.config.right_y_axis_unit !== "" && (unit = unit + self.config.right_y_axis_unit)
-            }
-
-            unit = unit === "" ? unit : "(" + unit + ")";
-
-            return show === true ? title + unit : unit;
         }
     },
 
@@ -214,13 +180,13 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
             right_num_separators: options.right_num_separators || false,
             chart_font: options.chart_font || c.FONT_STYLE,
             show_left_label: BI.isNull(options.show_left_label) ? true : options.show_left_label,
-            left_label_style: options.left_label_style ||  c.LEFT_LABEL_STYLE,
+            left_label_style: options.left_label_style || c.LEFT_LABEL_STYLE,
             left_line_color: options.left_line_color || "",
             show_right_label: BI.isNull(options.show_right_label) ? true : options.show_right_label,
             right_label_style: options.right_label_style || c.RIGHT_LABEL_STYLE,
             right_line_color: options.right_line_color || "",
             show_cat_label: BI.isNull(options.show_cat_label) ? true : options.show_cat_label,
-            cat_label_style: options.cat_label_style ||  c.CAT_LABEL_STYLE,
+            cat_label_style: options.cat_label_style || c.CAT_LABEL_STYLE,
             cat_line_color: options.cat_line_color || "",
             chart_legend_setting: options.chart_legend_setting || {},
             show_h_grid_line: BI.isNull(options.show_h_grid_line) ? true : options.show_h_grid_line,
@@ -228,6 +194,9 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
             show_v_grid_line: BI.isNull(options.show_v_grid_line) ? true : options.show_v_grid_line,
             v_grid_line_color: options.v_grid_line_color || "",
             tooltip_setting: options.tooltip_setting || {},
+            left_title_style: options.left_title_style || {},
+            right_title_style: options.right_title_style || {},
+            cat_title_style: options.cat_title_style || {}
         };
         this.options.items = items;
         this.yAxis = [];

@@ -13,7 +13,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
 
     _init: function () {
         BI.AccumulateAreaChart.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
 
         this.xAxis = [{
             type: "category",
@@ -27,11 +27,15 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
             xAxis: this.xAxis,
+            popupItemsGetter: o.popupItemsGetter,
             formatConfig: BI.bind(this._formatConfig, this),
             element: this.element
         });
         this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
             self.fireEvent(BI.AccumulateAreaChart.EVENT_CHANGE, obj);
+        });
+        this.combineChart.on(BI.CombineChart.EVENT_ITEM_CLICK, function (obj) {
+            self.fireEvent(BI.AbstractChart.EVENT_ITEM_CLICK, obj)
         });
     },
 
@@ -49,34 +53,27 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.connectNulls = this.config.null_continue;
         self.formatZoom(config, this.config.show_zoom);
         config.plotOptions.connectNulls = this.config.null_continue;
-        config.legend.style = BI.extend( this.config.chart_legend_setting, {
-            fontSize:  this.config.chart_legend_setting.fontSize + "px"
+        config.legend.style = BI.extend(this.config.chart_legend_setting, {
+            fontSize: this.config.chart_legend_setting.fontSize + "px"
         });
 
         config.yAxis = this.yAxis;
         BI.each(config.yAxis, function (idx, axis) {
-            var unit = "";
             switch (axis.axisIndex) {
                 case self.constants.LEFT_AXIS:
-                    unit = self.getXYAxisUnit(self.config.left_y_axis_number_level, self.config.left_y_axis_unit);
-                    axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + unit : unit;
-                    axis.title.rotation = self.constants.ROTATION;
                     BI.extend(axis, self.leftAxisSetting(self.config));
                     self.formatNumberLevelInYaxis(config, items, self.config.left_y_axis_number_level, idx, axis.formatter, self.config.num_separators);
                     break;
                 case self.constants.RIGHT_AXIS:
-                    unit = self.getXYAxisUnit(self.config.right_y_axis_number_level, self.config.right_y_axis_unit);
-                    axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + unit : unit;
-                    axis.title.rotation = self.constants.ROTATION;
                     BI.extend(axis, self.rightAxisSetting(self.config));
                     self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_number_level, idx, axis.formatter, self.config.right_num_separators);
                     break;
             }
         });
 
-        config.xAxis[0].title.align = "center";
-        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title : "";
         BI.extend(config.xAxis[0], self.catSetting(this.config));
+
+        config.chartType = "area";
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
         self.formatDataLabel(config.plotOptions.dataLabels.enabled, items, config, this.config.chart_font);
@@ -123,7 +120,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style" : self.config.chart_font,
+                                "style": self.config.chart_font,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -148,7 +145,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style" : self.config.chart_font,
+                                "style": self.config.chart_font,
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -222,6 +219,9 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
             show_v_grid_line: BI.isNull(options.show_v_grid_line) ? true : options.show_v_grid_line,
             v_grid_line_color: options.v_grid_line_color || "",
             tooltip_setting: options.tooltip_setting || {},
+            left_title_style: options.left_title_style || {},
+            right_title_style: options.right_title_style || {},
+            cat_title_style: options.cat_title_style || {}
         };
         this.options.items = items;
         this.yAxis = [];

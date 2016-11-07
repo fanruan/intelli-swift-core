@@ -58,7 +58,7 @@
         },
 
         getDefaultChartConfig: function () {
-            return Data.BufferPool.getDefaultChartConfig();
+            return Data.SharingPool.cat("plateConfig");
         },
 
         getAllGroupedPackagesTreeJSON: function () {
@@ -1290,6 +1290,38 @@
             var legendSetting = ws.chart_legend_setting || {};
             legendSetting = BI.extend(chartFont, legendSetting);
             return legendSetting;
+        },
+
+        getWSLeftTitleStyleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var chartFont = this.getGSChartFont();
+            var titleStyle = ws.left_title_style || {};
+            titleStyle = BI.extend(chartFont, titleStyle);
+            return titleStyle;
+        },
+
+        getWSRightTitleStyleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var chartFont = this.getGSChartFont();
+            var titleStyle = ws.right_title_style || {};
+            titleStyle = BI.extend(chartFont, titleStyle);
+            return titleStyle;
+        },
+
+        getWSRight2TitleStyleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var chartFont = this.getGSChartFont();
+            var titleStyle = ws.right2_title_style || {};
+            titleStyle = BI.extend(chartFont, titleStyle);
+            return titleStyle;
+        },
+
+        getWSCatTitleStyleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var chartFont = this.getGSChartFont();
+            var titleStyle = ws.cat_title_style || {};
+            titleStyle = BI.extend(chartFont, titleStyle);
+            return titleStyle;
         },
 
         getWSShowHGridLineByID: function (wid) {
@@ -2615,7 +2647,7 @@
 
             function createTreeFilterValue(result, v, floor, dimensionIds, fatherFilterValue) {
                 BI.each(v, function (value, child) {
-                        var leafFilterObj = {
+                        var leafFilterObj = [{
                             filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
                             filter_value: {
                                 type: BI.Selection.Multi,
@@ -2623,16 +2655,19 @@
                             },
                             // _src: {field_id: self.getFieldIDByDimensionID(dimensionIds[floor])}
                             _src: self.getDimensionSrcByID(dimensionIds[floor])
-                        };
+                        }];
                         if (BI.isEmptyObject(child)) {
                             var filterObj = {
                                 filter_type: BICst.FILTER_TYPE.AND,
                                 filter_value: []
                             };
-                            filterObj.filter_value.push(leafFilterObj);
-                            BI.isNotNull(fatherFilterValue) && filterObj.filter_value.push(fatherFilterValue);
+                            filterObj.filter_value = BI.concat(filterObj.filter_value, leafFilterObj);
+                            BI.isNotNull(fatherFilterValue) && (filterObj.filter_value = BI.concat(filterObj.filter_value, fatherFilterValue));
                             result.push(filterObj);
                         } else {
+                            if(fatherFilterValue) {
+                                leafFilterObj = BI.concat(leafFilterObj, fatherFilterValue);
+                            }
                             createTreeFilterValue(result, child, floor + 1, dimensionIds, leafFilterObj);
                         }
                     }
@@ -2641,7 +2676,7 @@
 
             function createTreeLabelFilterValue(result, v, floor, dimensionIds, fatherFilterValue) {
                 BI.each(v, function (value, child) {
-                        var leafFilterObj = {
+                        var leafFilterObj = [{
                             filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
                             filter_value: {
                                 type: value === BICst.LIST_LABEL_TYPE.ALL ? BI.Selection.All : BI.Selection.Multi,
@@ -2649,18 +2684,21 @@
                             },
                             // _src: {field_id: self.getFieldIDByDimensionID(dimensionIds[floor])}
                             _src: self.getDimensionSrcByID(dimensionIds[floor])
-                        };
+                        }];
                         if (BI.isEmptyObject(child)) {
                             var filterObj = {
                                 filter_type: BICst.FILTER_TYPE.AND,
                                 filter_value: []
                             };
-                            filterObj.filter_value.push(leafFilterObj);
-                            BI.isNotNull(fatherFilterValue) && filterObj.filter_value.push(fatherFilterValue);
+                            filterObj.filter_value = BI.concat(filterObj.filter_value, leafFilterObj);
+                            BI.isNotNull(fatherFilterValue) && (filterObj.filter_value = BI.concat(filterObj.filter_value, fatherFilterValue));
                             result.push(filterObj);
                         } else {
-                            if (leafFilterObj.filter_value.type === BI.Selection.All) {
-                                leafFilterObj = fatherFilterValue
+                            if(leafFilterObj[0].filter_value.type === BI.Selection.All) {
+                                leafFilterObj = [];
+                            }
+                            if(fatherFilterValue) {
+                                leafFilterObj = BI.concat(leafFilterObj, fatherFilterValue);
                             }
                             createTreeLabelFilterValue(result, child, floor + 1, dimensionIds, leafFilterObj);
                         }

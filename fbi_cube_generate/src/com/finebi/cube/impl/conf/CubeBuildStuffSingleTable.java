@@ -66,7 +66,7 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
         try {
             setTaskId(businessTable, childTableSourceId);
             setAllSources(businessTable);
-            Set<List<Set<CubeTableSource>>> depends = calculateTableSource(getAllTableSources());
+            Set<List<Set<CubeTableSource>>> depends = calculateTableSource(getTableSources());
             setDependTableResource(depends);
             setAllSingleSources(set2Set(depends));
             setChildTableSource(childTableSourceId);
@@ -82,7 +82,7 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
 
     private void setChildTableSource(String childTableSourceId) {
         if (null != childTableSourceId) {
-            for (CubeTableSource source : this.getAllSingleSources()) {
+            for (CubeTableSource source : this.getSingleSourceLayers()) {
                 if (ComparatorUtils.equals(source.getSourceID(), childTableSourceId)) {
                     this.childTableSource = source;
                 }
@@ -219,12 +219,12 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
     /**
      * @return allTableSources
      */
-    public Set<CubeTableSource> getAllTableSources() {
+    public Set<CubeTableSource> getTableSources() {
         return sources;
     }
 
 
-    public Set<BITableSourceRelationPath> getBiTableSourceRelationPathSet() {
+    public Set<BITableSourceRelationPath> getTableSourceRelationPathSet() {
         return biTableSourceRelationPathSet;
     }
 
@@ -233,7 +233,7 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
     }
 
     @Override
-    public Set<CubeTableSource> getAllSingleSources() {
+    public Set<CubeTableSource> getSingleSourceLayers() {
         return allSingleSources;
     }
 
@@ -285,7 +285,7 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
         if (null == childTableSource) {
             return map;
         }
-        for (CubeTableSource source : this.getAllSingleSources()) {
+        for (CubeTableSource source : this.getSingleSourceLayers()) {
             UpdateSettingSource updateSettingSource = BIConfigureManagerCenter.getUpdateFrequencyManager().getTableUpdateSetting(source.getSourceID(), biUser.getUserId());
             if (null == updateSettingSource) {
                 updateSettingSource = new UpdateSettingSource();

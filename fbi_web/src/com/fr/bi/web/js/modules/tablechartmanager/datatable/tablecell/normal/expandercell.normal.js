@@ -50,7 +50,7 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
                 text = BICst.FULL_QUARTER_NAMES[text - 1];
             }
             if (dGroup.type === BICst.GROUP.M) {
-                text = BICst.FULL_MONTH_NAMES[text - 1];
+                text = BICst.FULL_MONTH_NAMES[text];
             }
             if (dGroup.type === BICst.GROUP.W) {
                 text = BICst.FULL_WEEK_NAMES[text - 1];
@@ -181,12 +181,6 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
             });
             drillCombo.on(BI.DownListCombo.EVENT_CHANGE, function (v) {
                 drillCallback(v);
-            });
-            drillCombo.setVisible(false);
-            this.element.hover(function () {
-                drillCombo.setVisible(true);
-            }, function () {
-                drillCombo.setVisible(false);
             });
             return drillCombo;
         }

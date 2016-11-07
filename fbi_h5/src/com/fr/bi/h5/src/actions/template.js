@@ -11,3 +11,7 @@ export function updateWidget($widget, wId) {
 export function widgetLinkage(wId, clicked) {
     return {type: types.WIDGET_LINKAGE, wId, clicked}
 }
+
+export function query($template, exceptWidgetIds) {
+    return {type: types.QUERY, $template, exceptWidgetIds}
+}

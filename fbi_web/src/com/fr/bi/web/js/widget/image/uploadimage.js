@@ -48,14 +48,15 @@ BI.UploadImage = BI.inherit(BI.Widget, {
             var files = this.getValue();
             var file = files[files.length - 1];
             var attachId = file.attach_id, fileName = file.filename;
-            var src = FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + attachId + "_" + fileName;
+            var imageId = attachId + "_" + fileName;
             BI.requestAsync("fr_bi_dezi", "save_upload_image", {
                 attach_id: attachId
             }, function (res) {
-                self.img.setSrc(src);
+                self.img.setValue(imageId);
+                self.img.setSrc(BI.UploadImage.getImageSrc(imageId));
                 self._check();
                 self._setSize("auto", "auto");
-                self.fireEvent(BI.UploadImage.EVENT_CHANGE, src);
+                self.fireEvent(BI.UploadImage.EVENT_CHANGE, imageId);
             })
         });
 
@@ -168,7 +169,7 @@ BI.UploadImage = BI.inherit(BI.Widget, {
     },
 
     _check: function () {
-        var f = BI.isNotEmptyString(this.img.getSrc());
+        var f = BI.isNotEmptyString(this.img.getValue());
         this.label.setVisible(!f);
         this.img.visible(f);
     },
@@ -210,7 +211,7 @@ BI.UploadImage = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
-        return {href: this.href.getValue(), size: this.size.getValue(), src: this.img.getSrc()}
+        return {href: this.href.getValue(), size: this.size.getValue(), src: this.img.getValue()}
     },
 
     setValue: function (v) {
@@ -221,13 +222,22 @@ BI.UploadImage = BI.inherit(BI.Widget, {
         }
         this.href.setValue(v.href);
         this.size.setValue(v.size);
-        this.img.setSrc(v.src);
+        this.img.setValue(v.src);
+        if (BI.isNotEmptyString(v.src)) {
+            this.img.setSrc(BI.UploadImage.getImageSrc(v.src));
+        }
         this._check();
         this._sizeChange(v.size)
     },
 
     resize: function () {
         this._sizeChange(this.size.getValue());
+    }
+});
+
+BI.extend(BI.UploadImage, {
+    getImageSrc: function (src) {
+        return FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + src;
     }
 });
 

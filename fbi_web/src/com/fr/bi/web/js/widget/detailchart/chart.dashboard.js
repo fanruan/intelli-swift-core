@@ -14,7 +14,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
 
     _init: function () {
         BI.DashboardChart.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
         this.gaugeAxis = [{
             "minorTickColor": "rgb(226,226,226)",
             "tickColor": "rgb(186,186,186)",
@@ -24,11 +24,15 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
         }];
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
+            popupItemsGetter: o.popupItemsGetter,
             formatConfig: BI.bind(this._formatConfig, this),
             element: this.element
         });
         this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
             self.fireEvent(BI.DashboardChart.EVENT_CHANGE, obj);
+        });
+        this.combineChart.on(BI.CombineChart.EVENT_ITEM_CLICK, function (obj) {
+            self.fireEvent(BI.AbstractChart.EVENT_ITEM_CLICK, obj)
         });
     },
 
@@ -75,7 +79,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                                 getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS) + '</div>';
                         }
                         return label
-                    } else if (isDashboard &&  BI.isNull(items[0].data[0].seriesName)) {
+                    } else if (isDashboard && BI.isNull(items[0].data[0].seriesName)) {
                         return label
                     }
 
@@ -297,7 +301,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                     })
                 });
                 return [result];
-            } else if(this.config.number_of_pointer === c.ONE_POINTER && items[0].length > 1) {
+            } else if (this.config.number_of_pointer === c.ONE_POINTER && items[0].length > 1) {
                 BI.each(items[0], function (idx, item) {
                     result.push({
                         data: [BI.extend(item.data[0], {

@@ -18,6 +18,9 @@ EditorView = BI.inherit(BI.View, {
             width: 200,
             height: 30
         });
+        editor1.on(BI.Editor.EVENT_ENTER, function () {
+            editor1.blur();
+        });
         var editor2 = BI.createWidget({
             type: "bi.editor",
             cls: "mvc-border",

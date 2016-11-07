@@ -37,6 +37,7 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
             xAxis: this.xAxis,
+            popupItemsGetter: o.popupItemsGetter,
             formatConfig: BI.bind(this._formatConfig, this),
             element: this.element
         });
@@ -45,6 +46,9 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
             obj.x = obj.y;
             obj.y = tmp;
             self.fireEvent(BI.BarChart.EVENT_CHANGE, obj);
+        });
+        this.combineChart.on(BI.CombineChart.EVENT_ITEM_CLICK, function (obj) {
+            self.fireEvent(BI.AbstractChart.EVENT_ITEM_CLICK, obj)
         });
     },
 
@@ -58,13 +62,12 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
 
         //分类轴
         config.yAxis = this.yAxis;
-        config.yAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title : "";
-        config.yAxis[0].title.rotation = this.constants.ROTATION;
         if (this.config.chart_demo) {
             config.yAxis[0].showLabel = this.config.show_label;
         }
 
         BI.extend(config.yAxis[0], self.catSetting(this.config));
+        config.yAxis[0].title.rotation = 90;
 
         config.legend.style = BI.extend( this.config.chart_legend_setting, {
             fontSize:  this.config.chart_legend_setting.fontSize + "px"
@@ -72,9 +75,8 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
 
         //值轴
         self.formatNumberLevelInXaxis(items, this.config.left_y_axis_number_level);
-        config.xAxis[0].title.text = getXAxisTitle(this.config.left_y_axis_number_level, this.constants.X_AXIS);
-        config.xAxis[0].title.align = "center";
         BI.extend(config.xAxis[0], self.leftAxisSetting(self.config));
+        config.xAxis[0].title.rotation = 0;
         config.chartType = "bar";
 
         this.formatDataLabelForAxis(config.plotOptions.dataLabels.enabled, items, config.xAxis[0].formatter, this.config.chart_font);
@@ -221,6 +223,8 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
             show_v_grid_line: BI.isNull(options.show_v_grid_line) ? true : options.show_v_grid_line,
             v_grid_line_color: options.v_grid_line_color || "",
             tooltip_setting: options.tooltip_setting || {},
+            left_title_style: options.left_title_style || {},
+            cat_title_style: options.cat_title_style || {}
         };
         this.options.items = items;
         var types = [];

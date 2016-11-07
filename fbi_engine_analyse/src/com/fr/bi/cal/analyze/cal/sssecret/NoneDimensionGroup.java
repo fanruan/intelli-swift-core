@@ -98,24 +98,24 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
     }
 
 
-    public ISingleDimensionGroup createSingleDimensionGroup(DimensionCalculator[] pck, int[] pckindex, DimensionCalculator ck, Object[] data, int ckIndex, boolean useRealData) {
+    public ISingleDimensionGroup createSingleDimensionGroup(DimensionCalculator[] pck, DimensionCalculator ck, Object[] data, int ckIndex, boolean useRealData) {
         if(ckIndex == 0){
             pck = null;
         }
         if (ck instanceof CombinationDimensionCalculator || ck instanceof CombinationDateDimensionCalculator) {
-            return ReverseSingleDimensionGroup.createDimensionGroup(tableKey, pck, pckindex, ck, data, ckIndex, node.getGroupValueIndex(), loader, useRealData);
+            return ReverseSingleDimensionGroup.createDimensionGroup(tableKey, pck, ck, data, ckIndex, node.getGroupValueIndex(), loader, useRealData);
         }
-        return SingleDimensionGroup.createDimensionGroup(tableKey, pck, pckindex, ck, data, ckIndex, node.getGroupValueIndex(), loader, useRealData);
+        return SingleDimensionGroup.createDimensionGroup(tableKey, pck, ck, data, ckIndex, node.getGroupValueIndex(), loader, useRealData);
     }
 
-    public ISingleDimensionGroup createNoneTargetSingleDimensionGroup(DimensionCalculator[] pck, int[] pckindex, DimensionCalculator ck, Object[] data, int ckIndex, GroupValueIndex gvi, boolean useRealData) {
+    public ISingleDimensionGroup createNoneTargetSingleDimensionGroup(DimensionCalculator[] pck, DimensionCalculator ck, Object[] data, int ckIndex, GroupValueIndex gvi, boolean useRealData) {
         if(ckIndex == 0){
             pck = null;
         }
         if (ck instanceof CombinationDimensionCalculator || ck instanceof CombinationDateDimensionCalculator) {
-            return ReverseSingleDimensionGroup.createDimensionGroup(tableKey, pck, pckindex, ck, data, ckIndex, gvi, loader, useRealData);
+            return ReverseSingleDimensionGroup.createDimensionGroup(tableKey, pck, ck, data, ckIndex, gvi, loader, useRealData);
         }
-        return SingleDimensionGroup.createDimensionGroup(tableKey, pck, pckindex, ck, data, ckIndex, gvi, loader, useRealData);
+        return SingleDimensionGroup.createDimensionGroup(tableKey, pck, ck, data, ckIndex, gvi, loader, useRealData);
     }
 
 

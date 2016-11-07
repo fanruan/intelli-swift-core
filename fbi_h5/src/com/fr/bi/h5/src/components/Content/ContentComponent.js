@@ -53,12 +53,12 @@ class ContentComponent extends Component {
         const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(this.context.$template));
         const style = widget.getStyle();
         return <TextInput
-            style={{height: this.props.height, ...styles.wrapper, ...style}}
-            ref="content"
-            autoCapitalize="none"
-            multiline="true"
+            style={{height: this.props.height, width: this.props.width, ...style}}
+            ref='content'
+            autoCapitalize='none'
+            multiline={true}
             value={widget.getContent()}
-            editable="true"
+            editable={false}
         />
     }
 
@@ -80,9 +80,4 @@ class ContentComponent extends Component {
 
 }
 mixin.onClass(ContentComponent, ReactComponentWithPureRenderMixin);
-const styles = StyleSheet.create({
-    wrapper: {
-        flex: 1
-    }
-});
 export default ContentComponent

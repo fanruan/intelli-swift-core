@@ -6,48 +6,41 @@ class Template {
         this.$template = template;
     }
 
+    forceUpdateAllWidgets(exceptWidgetIds = []) {
+        const wIds = this.getAllWidgetIds();
+        each(wIds, (wId)=> {
+            if (exceptWidgetIds.indexOf(wId) > -1) {
+                return;
+            }
+            const widget = this.getWidgetByWidgetId(wId);
+            widget.forceUpdate();
+            this.set$Widget(wId, widget.$get());
+        });
+    }
+
+    //get
+
     $get() {
         return this.$template;
     }
 
-    get$WidgetById(id) {
-        return this.$template.getIn(['widgets', id]);
+    getLayoutType() {
+        return isNil(this.$template.get('layoutType')) ? BICst.DASHBOARD_LAYOUT_GRID : this.$template.get('layoutType');
     }
 
-    get$DimensionById(id) {
-        let $dimension;
-        some(this.getAllWidgetIds().concat(this.getAllControlWidgetIds()), (wId)=> {
-            const widget = this.getWidgetById(wId);
-            if (widget.hasDimensionById(id)) {
-                $dimension = widget.get$DimensionById(id);
-                return true;
-            }
-        });
-        return $dimension;
-    }
-
-    getWidgetById(id) {
-        return WidgetFactory.createWidget(this.get$WidgetById(id), id, this);
-    }
-
-    getDimensionById(id) {
-        return DimensionFactory.createDimension(this.get$DimensionById(id), id, this.getWidgetById(this.getWidgetIDByDimensionID(id)));
-    }
-
-    getTargetById(id) {
-        return DimensionFactory.createTarget(this.get$DimensionById(id), id, this.getWidgetById(this.getWidgetIDByDimensionID(id)));
-    }
-
-    getAllDimensionAndTargetIds() {
-        let ids = [];
-        const allWIds = this.getAllWidgetIds();
-        allWIds.forEach((wid)=> {
-            ids = ids.concat(this.getWidgetById(wid).getAllDimensionAndTargetIds());
-        });
-        return ids;
+    getLayoutRatio() {
+        return (this.$template.get('layoutRatio') && this.$template.get('layoutRatio').toJS()) || {x: 1, y: 1};
     }
 
     getAllWidgetIds() {
+        const res = [];
+        this.$template.get('widgets').forEach(($widget, wId)=> {
+            res.push(wId);
+        });
+        return res;
+    }
+
+    getAllStatisticWidgetIds() {
         const res = [];
         this.$template.get('widgets').forEach(($widget, wId)=> {
             if (!WidgetFactory.createWidget($widget, wId, this).isControl()) {
@@ -67,17 +60,101 @@ class Template {
         return res;
     }
 
+    //widget属性
+    getWidgetByWidgetId(id) {
+        return WidgetFactory.createWidget(this.get$WidgetByWidgetId(id), id, this);
+    }
+
+    getWidgetInitTimeByWidgetId(wId) {
+        var widget = this.template.getWidgetByWidgetId(wId);
+        return widget.getWidgetInitTime() || new Date().getTime();
+    }
+
+    getWidgetLinkageByWidgetId(wid) {
+        const widget = this.getWidgetByWidgetId(wid);
+        return widget.getWidgetLinkage();
+    }
+
+    getWidgetLinkageValueByWidgetId(wid) {
+        var widget = this.getWidgetByWidgetId(wid);
+        return widget.getLinkageValues();
+    }
+
+    getWSTransferFilterByWidgetId(wid) {
+        var ws = this.getWidgetByWidgetId(wid).getWidgetSettings();
+        return isNil(ws.transfer_filter) ? ws.transfer_filter :
+            BICst.DEFAULT_CHART_SETTING.transfer_filter;
+    }
+
+    get$WidgetByWidgetId(id) {
+        return this.$template.getIn(['widgets', id]);
+    }
+
+    //dimensions属性
+    getAllDimensionIds() {
+        let ids = [];
+        const allWIds = this.getAllWidgetIds();
+        allWIds.forEach((wid)=> {
+            ids = ids.concat(this.getWidgetByWidgetId(wid).getAllDimensionIds());
+        });
+        return ids;
+    }
+
+    getWidgetIdByDimensionId(dId) {
+        if (!this._dimension2WidgetMap) {
+            this._dimension2WidgetMap = {};
+        }
+        if (!isNil(this._dimension2WidgetMap[dId])) {
+            return this._dimension2WidgetMap[dId];
+        }
+        var widgets = this.getAllWidgetIds();
+        var wid = find(widgets, (wid)=> {
+            var dims = this.getWidgetByWidgetId(wid).getAllDimensionIds();
+            return find(dims, (id)=> {
+                return dId == id;
+            })
+        });
+        this._dimension2WidgetMap[dId] = wid;
+        return wid;
+    }
+
+    getDimensionByDimensionId(dId) {
+        return DimensionFactory.createDimension(this.get$DimensionByDimensionId(dId), dId, this.getWidgetByWidgetId(this.getWidgetIdByDimensionId(dId)));
+    }
+
+    get$DimensionByDimensionId(id) {
+        let $dimension = null;
+        some(this.getAllWidgetIds(), (wId)=> {
+            const widget = this.getWidgetByWidgetId(wId);
+            if (widget.hasDimensionByDimensionId(id)) {
+                $dimension = widget.get$DimensionByDimensionId(id);
+                return true;
+            }
+        });
+        return $dimension;
+    }
+
+    getDimensionFilterValueByDimensionId(did) {
+        var dimension = this.getDimensionByDimensionId(did);
+        return isNil(dimension) ? {} : dimension.getFilterValue();
+    }
+
+    getFieldIdByDimensionId(dId) {
+        var dimension = this.getDimensionByDimensionId(dId);
+        if (!isNil(dimension)) {
+            return dimension.getFieldId();
+        }
+    }
+
+    //has
+
     hasControlWidget() {
         return this.$template.get('widgets').some(($widget, wId)=> {
             return WidgetFactory.createWidget($widget, wId, this).isControl();
         });
     }
 
-    isControlWidgetByWidgetId(wid) {
-        return this.getWidgetById(wid).isControl();
-    }
-
-    isQueryControlExist() {
+    hasQueryControlWidget() {
         var isQueryExist = false;
         this.$template.get('widgets').some(($widget, wId)=> {
             const control = WidgetFactory.createWidget($widget, wId, this);
@@ -88,60 +165,29 @@ class Template {
         return isQueryExist;
     }
 
-    getWidgetInitTimeByID(wid) {
-        var widget = this.template.getWidgetById(wid);
-        return widget.getWidgetInitTime() || new Date().getTime();
+    hasWidgetByWidgetId(wId) {
+        return this.getAllWidgetIds().indexOf(wId) > -1;
     }
 
-    isWidgetExistByID(wid) {
-        return this.getAllWidgetIds().indexOf(wid) > -1;
+    hasDimensionByDimensionId(dId) {
+        return !isNil(this.getWidgetIdByDimensionId(dId));
     }
 
-    getWidgetIDByDimensionID(dId) {
-        if (!this._dimension2WidgetMap) {
-            this._dimension2WidgetMap = {};
+    //is
+
+    isControlWidgetByWidgetId(wId) {
+        return this.getWidgetByWidgetId(wId).isControl();
+    }
+
+    isDimDimensionByDimensionId(dId) {
+        if (this.hasDimensionByDimensionId(dId)) {
+            const wId = this.getWidgetIdByDimensionId(dId);
+            return this.getWidgetByWidgetId(wId).isDimDimensionByDimensionId(dId);
         }
-        if (!isNil(this._dimension2WidgetMap[dId])) {
-            return this._dimension2WidgetMap[dId];
-        }
-        var widgets = this.getAllWidgetIds().concat(this.getAllControlWidgetIds());
-        var wid = find(widgets, (wid)=> {
-            var dims = this.getWidgetById(wid).getAllDimensionAndTargetIds();
-            return find(dims, (id)=> {
-                return dId == id;
-            })
-        });
-        this._dimension2WidgetMap[dId] = wid;
-        return wid;
+        return false;
     }
 
-    getWSTransferFilterById(wid) {
-        var ws = this.getWidgetById(wid).getWidgetSettings();
-        return isNil(ws.transfer_filter) ? ws.transfer_filter :
-            BICst.DEFAULT_CHART_SETTING.transfer_filter;
-    }
-
-    getDimensionFilterValueByID(did) {
-        var dimension = this.getDimensionById(did);
-        return isNil(dimension) ? {} : dimension.getFilterValue();
-    }
-
-    getWidgetLinkageByID(wid) {
-        const widget = this.getWidgetById(wid);
-        return widget.getWidgetLinkage();
-    }
-
-    getWidgetLinkageValueByID(wid) {
-        var widget = this.getWidgetById(wid);
-        return widget.getLinkageValues();
-    }
-
-    getFieldIDByDimensionID(did) {
-        var dimension = this.getDimensionById(did);
-        if (!isNil(dimension)) {
-            return dimension.getFieldId();
-        }
-    }
+    //set
 
     set$Widget(id, $widget) {
         this.$template = this.$template.setIn(['widgets', id], $widget);
