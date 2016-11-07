@@ -53,27 +53,18 @@ BI.LineChart = BI.inherit(BI.AbstractChart, {
 
         config.yAxis = this.yAxis;
         BI.each(config.yAxis, function (idx, axis) {
-            var title = "";
             switch (axis.axisIndex) {
                 case self.constants.LEFT_AXIS:
-                    axis.title.rotation = self.constants.ROTATION;
-                    title = getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
-                    axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + title : title;
                     BI.extend(axis, self.leftAxisSetting(self.config));
                     self.formatNumberLevelInYaxis(config, items, self.config.left_y_axis_number_level, idx, axis.formatter);
                     break;
                 case self.constants.RIGHT_AXIS:
-                    title = getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
-                    axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + title : title;
-                    axis.title.rotation = self.constants.ROTATION;
                     BI.extend(axis, self.rightAxisSetting(self.config));
                     self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_number_level, idx, axis.formatter);
                     break;
             }
         });
 
-        config.xAxis[0].title.align = "center";
-        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title : "";
         BI.extend(config.xAxis[0], self.catSetting(this.config));
 
         config.legend.style = BI.extend( this.config.chart_legend_setting, {
@@ -161,34 +152,6 @@ BI.LineChart = BI.inherit(BI.AbstractChart, {
                     break;
             }
         }
-
-        function getXYAxisUnit(numberLevelType, position) {
-            var unit = "";
-            switch (numberLevelType) {
-                case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                    unit = "";
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                    unit = BI.i18nText("BI-Wan");
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                    unit = BI.i18nText("BI-Million");
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                    unit = BI.i18nText("BI-Yi");
-                    break;
-            }
-            if (position === self.constants.X_AXIS) {
-                self.config.x_axis_unit !== "" && (unit = unit + self.config.x_axis_unit)
-            }
-            if (position === self.constants.LEFT_AXIS) {
-                self.config.left_y_axis_unit !== "" && (unit = unit + self.config.left_y_axis_unit)
-            }
-            if (position === self.constants.RIGHT_AXIS) {
-                self.config.right_y_axis_unit !== "" && (unit = unit + self.config.right_y_axis_unit)
-            }
-            return unit === "" ? unit : "(" + unit + ")";
-        }
     },
 
     populate: function (items, options) {
@@ -246,6 +209,9 @@ BI.LineChart = BI.inherit(BI.AbstractChart, {
             v_grid_line_color: options.v_grid_line_color || "",
             tooltip_setting: options.tooltip_setting || {},
             null_continue: options.null_continue || false,
+            left_title_style: options.left_title_style || {},
+            right_title_style: options.right_title_style || {},
+            cat_title_style: options.cat_title_style || {}
         };
         this.options.items = items;
 

@@ -51,8 +51,6 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this, o = this.options;
-        var yTitle = getXYAxisUnit(this.config.x_axis_number_level, this.constants.LEFT_AXIS);
-        var xTitle = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.X_AXIS);
         config.colors = this.config.chart_color;
         config.plotOptions.style = formatChartStyle();
         formatCordon();
@@ -62,20 +60,18 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
 
         config.yAxis = this.yAxis;
-        config.yAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + yTitle : yTitle;
-        config.yAxis[0].title.rotation = this.constants.ROTATION;
 
         BI.extend(config.yAxis[0], self.catSetting(this.config));
+        config.yAxis[0].title.rotation = 90;
 
         config.legend.style = BI.extend(this.config.chart_legend_setting, {
             fontSize: this.config.chart_legend_setting.fontSize + "px"
         });
 
         self.formatNumberLevelInXaxis(items, this.config.left_y_axis_number_level);
-        config.xAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + xTitle : xTitle;
-        config.xAxis[0].title.align = "center";
 
         BI.extend(config.xAxis[0], self.leftAxisSetting(self.config));
+        config.xAxis[0].title.rotation = 0;
 
         config.chartType = "bar";
         //为了给数据标签加个%,还要遍历所有的系列，唉
@@ -236,6 +232,8 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
             show_v_grid_line: BI.isNull(options.show_v_grid_line) ? true : options.show_v_grid_line,
             v_grid_line_color: options.v_grid_line_color || "",
             tooltip_setting: options.tooltip_setting || {},
+            left_title_style: options.left_title_style || {},
+            cat_title_style: options.cat_title_style || {}
         };
         this.options.items = this._formatItems(items);
         var types = [];
