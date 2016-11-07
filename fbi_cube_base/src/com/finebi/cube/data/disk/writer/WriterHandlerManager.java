@@ -91,4 +91,9 @@ public class WriterHandlerManager implements NIOHandlerManager<ICubePrimitiveWri
     public boolean isForceReleased() {
         return isForceReleased;
     }
+
+    @Override
+    public void reValidHandler() {
+
+    }
 }

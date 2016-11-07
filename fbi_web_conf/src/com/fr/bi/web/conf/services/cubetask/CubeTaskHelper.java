@@ -7,9 +7,9 @@ import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.data.ICubeResourceDiscovery;
-import com.finebi.cube.impl.conf.CubeBuildStuffPart;
-import com.finebi.cube.impl.conf.CubeBuildStuffSingleTable;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
+import com.finebi.cube.impl.conf.CubeBuildStuffIncreased;
+import com.finebi.cube.impl.conf.CubeBuildStuffSingleTable;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.relation.BITableRelation;
@@ -51,7 +51,7 @@ public class CubeTaskHelper {
             msg.append(" Cube part update start" + "\n");
             Set<BIBusinessTable> businessTables = CubeUpdateUtils.getNewTables(userId);
             Set<BITableRelation> relations = CubeUpdateUtils.getNewRelations(userId);
-            cubeBuild = new CubeBuildStuffPart(userId, businessTables, relations);
+            cubeBuild = new CubeBuildStuffIncreased(userId, businessTables, relations);
         } else {
             msg.append(" Cube all update start");
             cubeBuild = new CubeBuildStuffComplete(new BIUser(userId));

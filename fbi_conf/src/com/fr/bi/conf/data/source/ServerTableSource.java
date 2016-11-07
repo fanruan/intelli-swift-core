@@ -5,6 +5,7 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.TableData;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.data.DBQueryExecutor;
+import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.constant.DBConstant;
@@ -14,6 +15,8 @@ import com.fr.bi.stable.utils.BIServerUtils;
 import com.fr.bi.stable.utils.code.BIPrintUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
+import com.fr.data.core.db.dialect.MySQLDialect;
+import com.fr.data.core.db.dialect.OracleDialect;
 import com.fr.data.impl.DBTableData;
 import com.fr.file.DatasourceManager;
 import com.fr.general.data.DataModel;
@@ -196,8 +199,7 @@ public class ServerTableSource extends DBTableSource {
     }
 
     private long writeDBSimpleIndex(final Traversal<BIDataValue> travel, final com.fr.data.impl.Connection connect, String query, final ICubeFieldSource[] fields) {
-        SQLStatement sql = new SQLStatement(connect);
-        sql.setFrom("(\n" + query + "\n) " + "t");
+        SQLStatement sql = generateSQL(query, connect);
         return DBQueryExecutor.getInstance().runSQL(sql, fields, new Traversal<BIDataValue>() {
             @Override
             public void actionPerformed(BIDataValue v) {
@@ -208,5 +210,30 @@ public class ServerTableSource extends DBTableSource {
                 }
             }
         });
+    }
+
+    private SQLStatement generateSQL(String query, final com.fr.data.impl.Connection connect) {
+        int selectColumnSize = PerformancePlugManager.getInstance().getDeployModeSelectSize();
+        SQLStatement sql = new SQLStatement(connect);
+        if (selectColumnSize > 0) {
+            try {
+                Dialect dialect = DialectFactory.generateDialect(sql.getSqlConn(), connect.getDriver());
+                if (dialect instanceof OracleDialect) {
+                    sql.setFrom("(\n" + query + "\n) " + "t WHERE ROWNUM<" + selectColumnSize);
+                } else if (dialect instanceof MySQLDialect) {
+                    sql.setFrom("(\n" + query + "\n) " + "t LIMIT 0," + selectColumnSize);
+                }
+                return sql;
+            } catch (Exception e) {
+                BILoggerFactory.getLogger(this.getClass()).warn(e.getMessage() + "The deploy sql has problem", e);
+                sql.setFrom("(\n" + query + "\n) " + "t");
+                return sql;
+            }
+        } else {
+            sql.setFrom("(\n" + query + "\n) " + "t");
+            return sql;
+        }
+
+
     }
 }

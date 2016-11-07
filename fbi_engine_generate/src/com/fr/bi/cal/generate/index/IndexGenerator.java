@@ -95,7 +95,7 @@ public class IndexGenerator implements CubeGenerator, java.util.concurrent.Calla
         try {
             BIRecord log = BIConfigureManagerCenter.getLogManager().getBILog(biUser.getUserId());
             AbstractIndexGenerator generator = new BeforeIndexGenerator(cube, source,
-                    CubeGenerationManager.getCubeManager().getGeneratingObject(biUser.getUserId()).getAllTableSources(), log);
+                    CubeGenerationManager.getCubeManager().getGeneratingObject(biUser.getUserId()).getTableSources(), log);
             BIConfigureManagerCenter.getLogManager().infoTable(source.getPersistentTable(), 0, biUser.getUserId());
             BIConfigureManagerCenter.getLogManager().infoTableReading(source.getPersistentTable(), 0, biUser.getUserId());
             generator.generateCube();
@@ -111,7 +111,7 @@ public class IndexGenerator implements CubeGenerator, java.util.concurrent.Calla
     }
 
     protected AbstractIndexGenerator createSimpleIndexGenerator() {
-        return new SimpleIndexGenerator(cube, source, CubeGenerationManager.getCubeManager().getGeneratingObject(biUser.getUserId()).getAllTableSources(), version, BIConfigureManagerCenter.getLogManager().getBILog(biUser.getUserId()), CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()));
+        return new SimpleIndexGenerator(cube, source, CubeGenerationManager.getCubeManager().getGeneratingObject(biUser.getUserId()).getTableSources(), version, BIConfigureManagerCenter.getLogManager().getBILog(biUser.getUserId()), CubeGeneratingTableIndexLoader.getInstance(biUser.getUserId()));
     }
 
     public void generateIndex() {

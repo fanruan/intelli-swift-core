@@ -1,8 +1,8 @@
 package com.finebi.cube.conf;
 
 import com.finebi.cube.conf.relation.BISystemTableRelationManager;
-import com.finebi.cube.impl.conf.CubeBuildStuffPart;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
+import com.finebi.cube.impl.conf.CubeBuildStuffIncreased;
 import com.finebi.cube.impl.conf.CubeBuildStuffRealTime;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.base.cube.BISystemCubeConfManager;
@@ -33,19 +33,19 @@ public class CubeBuildbyCompleteTest extends TestCase {
     }
 
     public void testIncremental() {
-        CubeBuildStuff cubeBuildManager = new CubeBuildStuffPart(-999,null,null);
-        assertTrue(cubeBuildManager.getAllSingleSources().size() == 0);
+        CubeBuildStuff cubeBuildManager = new CubeBuildStuffIncreased(-999,null,null);
+        assertTrue(cubeBuildManager.getSingleSourceLayers().size() == 0);
         assertTrue(cubeBuildManager.getDependTableResource().size() == 0);
-        assertTrue(cubeBuildManager.getBiTableSourceRelationPathSet().size() == 0);
+        assertTrue(cubeBuildManager.getTableSourceRelationPathSet().size() == 0);
         assertTrue(cubeBuildManager.getTableRelationSet().size() == 0);
         assertTrue(!cubeBuildManager.getVersions().isEmpty());
     }
 
     public void testAll() {
         CubeBuildStuff cubeBuildManager = new CubeBuildStuffComplete(new BIUser(-999));
-        assertTrue(cubeBuildManager.getAllSingleSources().size() == 0);
+        assertTrue(cubeBuildManager.getSingleSourceLayers().size() == 0);
         assertTrue(cubeBuildManager.getDependTableResource().size() == 0);
-        assertTrue(cubeBuildManager.getBiTableSourceRelationPathSet().size() == 0);
+        assertTrue(cubeBuildManager.getTableSourceRelationPathSet().size() == 0);
         assertTrue(cubeBuildManager.getTableRelationSet().size() == 0);
         assertTrue(!cubeBuildManager.getVersions().isEmpty());
     }

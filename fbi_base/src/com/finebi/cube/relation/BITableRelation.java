@@ -1,11 +1,8 @@
 package com.finebi.cube.relation;
 
-import com.finebi.cube.common.log.BILogger;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.common.factory.BIFactoryHelper;
-import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
@@ -69,8 +66,6 @@ public class BITableRelation extends BIBasicRelation<BusinessTable, BusinessFiel
             return false;
         }
         return !(foreignTable.getTableSource() != null ? !ComparatorUtils.equals(foreignTable.getTableSource(), that.foreignTable.getTableSource()) : that.foreignTable.getTableSource() != null);
-
-
     }
 //    @Override
 //    public boolean equals(Object o) {
