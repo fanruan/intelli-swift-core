@@ -49,8 +49,6 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this, c = this.constants;
-        var yUnit = getXYAxisUnit(this.config.left_y_axis_number_level, c.LEFT_AXIS);
-        var xUnit = getXYAxisUnit(this.config.x_axis_number_level, c.RIGHT_AXIS);
 
         formatCordon();
         formatForSize();
@@ -86,14 +84,10 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         config.yAxis = this.yAxis;
 
         formatNumberLevelInYaxis(this.config.left_y_axis_number_level, c.LEFT_AXIS);
-        config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + yUnit : yUnit;
-        config.yAxis[0].title.rotation = c.ROTATION;
 
         BI.extend(config.yAxis[0], self.leftAxisSetting(this.config));
 
         self.formatNumberLevelInXaxis(items, this.config.right_y_axis_number_level);
-        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + xUnit : xUnit;
-        config.xAxis[0].title.align = "center";
 
         BI.extend(config.xAxis[0], self.rightAxisSetting(this.config));
         config.xAxis[0].gridLineColor = this.config.v_grid_line_color;
