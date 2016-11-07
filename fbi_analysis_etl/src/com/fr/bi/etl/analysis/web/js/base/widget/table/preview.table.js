@@ -52,9 +52,9 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
             width: 200,
             cls: o.baseCls + "-null-label",
             text: BI.i18nText("BI-Add_Fields_First")
-        })
+        });
         this.card = BI.createWidget({
-            type: "bi.card",
+            type: "bi.tab",
             element: this.element,
             defaultShowName: this._constant.nullCard,
             items: [{
@@ -377,12 +377,12 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
     },
     _showCard: function () {
         if (this.options.operator === ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR) {
-            this.card.showCardByName(this._constant.errorCard)
+            this.card.setSelect(this._constant.errorCard)
         } else if (this.options.header.length === 0) {
-            this.label.setText(this._getNullText())
-            this.card.showCardByName(this._constant.nullCard)
+            this.label.setText(this._getNullText());
+            this.card.setSelect(this._constant.nullCard)
         } else {
-            this.card.showCardByName(this._constant.tableCard)
+            this.card.setSelect(this._constant.tableCard);
             return true;
         }
         return false;
