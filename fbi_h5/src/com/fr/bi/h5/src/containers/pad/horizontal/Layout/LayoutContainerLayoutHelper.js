@@ -8,12 +8,28 @@ export default class LayoutContainerLayoutHelper {
         this.wIds = this.template.getAllWidgetIds();
         this.layoutType = this.getLayoutType();
         this.layoutRatio = this.getLayoutRatio();
-        const size = this._getContainerSize();
-        this.widthRatio = (this.width / this.layoutRatio.x) / size.width;
-        this.heightRatio = 1;
-        if (this.layoutType === BICst.DASHBOARD_LAYOUT_ADAPT && size.height < this.height) {
-            this.heightRatio = (this.height / this.layoutRatio.y) / size.height;
+        this.contentSize = this._getContainerSize();
+        this.widthRatio = (this.width * this.layoutRatio.x) / this.contentSize.width;
+        this.lastWidgetIds = this._getLastWidgetIds();
+        this.maxHeight = this.contentSize.height;
+        if (this.layoutType === BICst.DASHBOARD_LAYOUT_ADAPT) {
+            this.maxHeight = this.height * this.layoutRatio.y;
         }
+    }
+
+    _isEqual(num1, num2) {
+        return Math.abs(num1 - num2) < 2;
+    }
+
+    _getLastWidgetIds() {
+        const result = [];
+        each(this.wIds, (wId)=> {
+            const bounds = this.getWidgetBoundsByWidgetId(wId);
+            if (this._isEqual(bounds.top + bounds.height, this.contentSize.height)) {
+                result.push(wId);
+            }
+        });
+        return result;
     }
 
     _getContainerSize() {
@@ -45,8 +61,8 @@ export default class LayoutContainerLayoutHelper {
     getWidgetLayoutByWidgetId(wId) {
         const bounds = this.getWidgetBoundsByWidgetId(wId);
         return {
-            top: bounds.top * this.heightRatio,
-            height: bounds.height * this.heightRatio,
+            top: bounds.top,
+            height: this.lastWidgetIds.indexOf(wId) > -1 ? this.maxHeight - bounds.top : bounds.height,
             left: bounds.left * this.widthRatio,
             width: bounds.width * this.widthRatio
         }

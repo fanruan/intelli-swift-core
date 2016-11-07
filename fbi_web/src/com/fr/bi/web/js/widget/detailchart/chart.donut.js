@@ -13,9 +13,10 @@ BI.DonutChart = BI.inherit(BI.AbstractChart, {
 
     _init: function () {
         BI.DonutChart.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
+            popupItemsGetter: o.popupItemsGetter,
             formatConfig: BI.bind(this._formatConfig, this),
             element: this.element
         });
@@ -27,7 +28,7 @@ BI.DonutChart = BI.inherit(BI.AbstractChart, {
         });
     },
 
-    _formatConfig: function(config, items){
+    _formatConfig: function (config, items) {
         var self = this;
 
         config.colors = this.config.chart_color;
@@ -54,7 +55,7 @@ BI.DonutChart = BI.inherit(BI.AbstractChart, {
         config.legend.style = this.config.chart_font;
         return [items, config];
 
-        function formatChartStyle(){
+        function formatChartStyle() {
             switch (self.config.chart_style) {
                 case BICst.CHART_STYLE.STYLE_GRADUAL:
                     return "gradual";
@@ -79,9 +80,9 @@ BI.DonutChart = BI.inherit(BI.AbstractChart, {
         this.options.items = items;
 
         var types = [];
-        BI.each(items, function(idx, axisItems){
+        BI.each(items, function (idx, axisItems) {
             var type = [];
-            BI.each(axisItems, function(id, item){
+            BI.each(axisItems, function (id, item) {
                 type.push(BICst.WIDGET.DONUT);
             });
             types.push(type);
@@ -94,7 +95,7 @@ BI.DonutChart = BI.inherit(BI.AbstractChart, {
         this.combineChart.resize();
     },
 
-    magnify: function(){
+    magnify: function () {
         this.combineChart.magnify();
     }
 });

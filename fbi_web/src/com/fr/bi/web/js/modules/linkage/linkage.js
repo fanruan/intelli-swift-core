@@ -657,6 +657,7 @@ BI.Linkage = BI.inherit(BI.Widget, {
 
         return BI.createWidget({
             type: "bi.center_adapt",
+            scrolly: true,
             cls: "linkage-widget-disabled",
             items: [content]
         });
