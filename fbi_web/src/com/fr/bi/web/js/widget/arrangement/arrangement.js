@@ -1905,6 +1905,14 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         });
     },
 
+    getClientWidth: function () {
+        return this.scrollContainer.element[0].clientWidth;
+    },
+
+    getClientHeight: function () {
+        return this.scrollContainer.element[0].clientHeight;
+    },
+
     _applyContainer: function () {
         //先掩藏后显示能够明确滚动条是否出现
         this.scrollContainer.element.css("overflow", "hidden");
@@ -1971,7 +1979,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
 
     //Grid
     _getOneWidthPortion: function () {
-        return this.scrollContainer.element.width() / BI.Arrangement.PORTION;
+        return this.getClientWidth() / BI.Arrangement.PORTION;
     },
 
     _getGridPositionAndSize: function (position) {
@@ -2263,7 +2271,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
 
     getLayoutRatio: function () {
         var occupied = this._getRegionOccupied();
-        var width = this.scrollContainer.element[0].clientWidth, height = this.scrollContainer.element[0].clientHeight;
+        var width = this.getClientWidth(), height = this.getClientHeight();
         return {
             x: BI.parseFloat(BI.contentFormat((occupied.left + occupied.width) / width, "#.##;-#.##")),
             y: BI.parseFloat(BI.contentFormat((occupied.top + occupied.height) / height, "#.##;-#.##"))
@@ -2647,7 +2655,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         switch (this.getLayoutType()) {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
                 if (this._isArrangeFine()) {
-                    var width = this.scrollContainer.element[0].clientWidth;
+                    var width = this.getClientWidth();
                     var xRatio = (ratio.x || 1) * width / (occupied.left + occupied.width);
                     //var yRatio = ratio.y * height / (occupied.top + occupied.height);
                     var regions = this._cloneRegion();
@@ -2662,7 +2670,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                         this._applyRegion();
                     }
                     this.resize();
-                // } else {
+                    // } else {
                     this.relayout();
                 }
                 break;
@@ -2670,7 +2678,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
                 break;
             case BI.Arrangement.LAYOUT_TYPE.GRID:
                 if (this._isArrangeFine()) {
-                    var width = this.scrollContainer.element[0].clientWidth;
+                    var width = this.getClientWidth();
                     var xRatio = (ratio.x || 1) * width / (occupied.left + occupied.width);
                     var regions = this._cloneRegion();
                     BI.each(regions, function (i, region) {
@@ -2697,7 +2705,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         switch (o.layoutType) {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
                 if (this._isArrangeFine()) {
-                    var width = this.scrollContainer.element[0].clientWidth, height = this.scrollContainer.element[0].clientHeight;
+                    var width = this.getClientWidth(), height = this.getClientHeight();
                     var isHeightAdjust = height > occupied.top + occupied.height;
                     var regions = this._cloneRegion();
                     BI.each(regions, function (i, region) {
@@ -2763,7 +2771,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         switch (o.layoutType) {
             case BI.Arrangement.LAYOUT_TYPE.ADAPTIVE:
                 if (!this._isArrangeFine()) {
-                    var width = this.scrollContainer.element[0].clientWidth, height = this.scrollContainer.element[0].scrollHeight;
+                    var width = this.getClientWidth(), height = this.getClientHeight();
                     var clone = BI.toArray(this._cloneRegion());
                     clone.sort(function (r1, r2) {
                         if (self._isEqual(r1.top, r2.top)) {
@@ -2810,7 +2818,7 @@ BI.Arrangement = BI.inherit(BI.Widget, {
             case BI.Arrangement.LAYOUT_TYPE.FREE:
                 break;
             case BI.Arrangement.LAYOUT_TYPE.GRID:
-                var width = this.scrollContainer.element[0].clientWidth, height = this.scrollContainer.element[0].scrollHeight;
+                var width = this.getClientWidth(), height = this.getClientHeight();
                 var regions = this._cloneRegion();
                 var clone = BI.toArray(regions);
                 clone.sort(function (r1, r2) {
