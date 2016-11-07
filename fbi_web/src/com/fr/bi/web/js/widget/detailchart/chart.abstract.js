@@ -303,16 +303,16 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             gridLineColor: config.v_grid_line_color,
             gridLineWidth: config.show_v_grid_line === true ? 1 : 0,
             showLabel: config.show_cat_label,
-            labelRotation: config.cat_label_style.text_direction,
-            labelStyle: BI.extend(config.cat_label_style.text_style, {
-                fontSize: config.cat_label_style.text_style.fontSize + "px"
+            labelRotation: config.cat_label_style && config.cat_label_style.text_direction,
+            labelStyle: BI.extend({}, config.cat_label_style && config.cat_label_style.text_style, {
+                fontSize: config.cat_label_style && config.cat_label_style.text_style && config.cat_label_style.text_style.fontSize + "px"
             }),
         }, {
             title: {
                 align: "center",
                 text: config.show_x_axis_title ? config.x_axis_title : "",
-                style:  BI.extend(config.cat_title_style, {
-                    fontSize: config.cat_title_style.fontSize + "px"
+                style: BI.extend({}, config.cat_title_style, {
+                    fontSize: config.cat_title_style && config.cat_title_style.fontSize + "px"
                 })
             }
         })
@@ -327,10 +327,10 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             gridLineWidth: config.show_h_grid_line === true ? 1 : 0,
             gridLineColor: config.h_grid_line_color,
             showLabel: config.show_left_label,
-            labelStyle: BI.extend(config.left_label_style.text_style, {
-                fontSize: config.left_label_style.text_style.fontSize + "px"
+            labelStyle: BI.extend({}, config.left_label_style && config.left_label_style.text_style, {
+                fontSize: config.left_label_style && config.left_label_style.text_style && config.left_label_style.text_style.fontSize + "px"
             }),
-            labelRotation: config.left_label_style.text_direction,
+            labelRotation: config.left_label_style && config.left_label_style.text_direction,
             enableTick: config.enable_tick,
             reversed: config.left_y_axis_reversed,
             enableMinorTick: config.enable_minor_tick,
@@ -343,8 +343,8 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             title: {
                 text: config.show_left_y_axis_title ? config.left_y_axis_title + title : title,
                 rotation: this.constants.ROTATION,
-                style: BI.extend(config.left_title_style, {
-                    fontSize: config.left_title_style.fontSize + "px"
+                style: BI.extend({}, config.left_title_style, {
+                    fontSize: config.left_title_style && config.left_title_style.fontSize + "px"
                 })
             }
         })
@@ -359,8 +359,8 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             gridLineWidth: config.show_h_grid_line === true ? 1 : 0,
             gridLineColor: config.h_grid_line_color,
             showLabel: config.show_right_label,
-            labelStyle: BI.extend(config.right_label_style.text_style, {
-                fontSize: config.right_label_style.text_style.fontSize + "px"
+            labelStyle: BI.extend({}, config.right_label_style && config.right_label_style.text_style, {
+                fontSize: config.right_label_style && config.right_label_style.text_style && config.right_label_style.text_style.fontSize + "px"
             }),
             labelRotation: config.right_label_style.text_direction,
             reversed: config.right_y_axis_reversed,
@@ -375,8 +375,8 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             title: {
                 text: config.show_right_y_axis_title ? config.right_y_axis_title + unit : unit,
                 rotation: this.constants.ROTATION,
-                style: BI.extend(config.right_title_style, {
-                    fontSize: config.right_title_style.fontSize + "px"
+                style: BI.extend({}, config.right_title_style, {
+                    fontSize: config.right_title_style && config.right_title_style.fontSize + "px"
                 })
             }
         })
@@ -390,10 +390,10 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             gridLineWidth: config.show_h_grid_line === true ? 1 : 0,
             gridLineColor: config.h_grid_line_color,
             showLabel: config.show_right2_label,
-            labelStyle: BI.extend(config.right2_label_style.text_style, {
-                fontSize: config.right2_label_style.text_style.fontSize + "px"
+            labelStyle: BI.extend({}, config.right2_label_style.text_style, {
+                fontSize: config.right2_label_style && config.right2_label_style.text_style && config.right2_label_style.text_style.fontSize + "px"
             }),
-            labelRotation: config.right2_label_style.text_direction,
+            labelRotation: config.right2_label_style && config.right2_label_style.text_direction,
             reversed: config.right_y_axis_second_reversed,
             enableTick: config.enable_tick,
             enableMinorTick: config.enable_minor_tick,
@@ -403,9 +403,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                 config.custom_z_scale.interval.scale : null,
             formatter: this.formatTickInXYaxis(config.right_y_axis_second_style, config.right_y_axis_second_number_level, config.right2_num_separators)
         }, {
-            title: {
-
-            }
+            title: {}
         })
     },
 
