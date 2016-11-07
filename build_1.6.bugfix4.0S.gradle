@@ -98,7 +98,8 @@ def dataContent ={def dir ->
 				'**/*.g',
 				'**/package.html',
 				'**/*.less',
-				'**/cross/demo/**'
+				'**/cross/demo/**',
+				'**/test/**'
 			}
 		}
 }

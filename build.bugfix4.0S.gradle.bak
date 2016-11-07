@@ -82,7 +82,7 @@ dependencies {
 }
 //声明外部依赖
 dependencies{
-	compile fileTree(dir:"${BI_HOME}/lib/${branchName}",include:'**/*.jar',exclude:"")
+	compile fileTree(dir:"${BI_HOME}/lib/${branchName}",include:'**/*.jar',exclude:"direct/*.jar")
 	testCompile 'junit:junit:4.12'
 }
 //指明无法编译文件所在路径
@@ -98,6 +98,7 @@ def dataContent ={def dir ->
 				'**/package.html',
 				'**/*.less',
 				'**/cross/demo/**'
+				'**/test/**'
 			}
 		}
 }
