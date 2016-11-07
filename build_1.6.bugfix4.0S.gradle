@@ -14,7 +14,7 @@ FileTree files =fileTree(dir:'./',include:'build.*.gradle')
 def buildDir=files[0].path.substring(0,files[0].path.lastIndexOf ('\\'))
 def branchName=buildDir.substring(buildDir.lastIndexOf ('\\')+1)
 ant{
-	delete(dir:"**/test/**")
+	delete(dir:"com/fr/bi/test/")
 }
 jar{
 //指定生成jar包的名称
@@ -108,6 +108,13 @@ def dataContent ={def dir ->
 
 //将非.java文件复制到classes文件夹下 参与打包
 task copyFile(type:Copy,dependsOn:compileJava){
+	//删除test文件夹
+	ant{
+		echo('--------------------------------delete test---------------------------')
+		delete(defaultexcludes:'false'){
+			fileset(dir:'.',includes:'**/test/')
+		}
+	}
 	list.each{ def srcDir->
 		copy{
 			with dataContent.call("${srcDir}") 
