@@ -99,11 +99,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         if (config.dataSheet) {
             config.dataSheet.style = this.config.chart_font;
         }
-        config.xAxis[0].title.style = this.config.chart_font;
         config.plotOptions.dataLabels.style = this.config.chart_font;
-        BI.each(config.yAxis, function (idx, axis) {
-            axis.title.style = self.config.chart_font;
-        });
 
         return [BI.concat(otherItem, lineItem), config];
     },
@@ -174,39 +170,6 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
                 });
             }
         })
-    },
-
-    getXYAxisUnit: function (numberLevelType, position) {
-        var unit = "";
-        switch (numberLevelType) {
-            case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                unit = "";
-                break;
-            case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                unit = BI.i18nText("BI-Wan");
-                break;
-            case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                unit = BI.i18nText("BI-Million");
-                break;
-            case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                unit = BI.i18nText("BI-Yi");
-                break;
-            default:
-                break;
-        }
-        if (position === this.constants.X_AXIS) {
-            this.config.x_axis_unit !== "" && (unit = unit + this.config.x_axis_unit)
-        }
-        if (position === this.constants.LEFT_AXIS) {
-            this.config.left_y_axis_unit !== "" && (unit = unit + this.config.left_y_axis_unit)
-        }
-        if (position === this.constants.RIGHT_AXIS) {
-            this.config.right_y_axis_unit !== "" && (unit = unit + this.config.right_y_axis_unit)
-        }
-        if (position === this.constants.RIGHT_AXIS_SECOND) {
-            this.config.right_y_axis_second_unit !== "" && (unit = unit + this.config.right_y_axis_second_unit)
-        }
-        return unit === "" ? unit : "(" + unit + ")";
     },
 
     populate: function (items, options, types) {
