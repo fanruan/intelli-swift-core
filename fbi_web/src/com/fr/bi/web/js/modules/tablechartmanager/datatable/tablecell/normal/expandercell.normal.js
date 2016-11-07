@@ -182,12 +182,6 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
             drillCombo.on(BI.DownListCombo.EVENT_CHANGE, function (v) {
                 drillCallback(v);
             });
-            drillCombo.setVisible(false);
-            this.element.hover(function () {
-                drillCombo.setVisible(true);
-            }, function () {
-                drillCombo.setVisible(false);
-            });
             return drillCombo;
         }
     }
