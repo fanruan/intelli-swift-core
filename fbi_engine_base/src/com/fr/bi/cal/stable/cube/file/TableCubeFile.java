@@ -21,6 +21,7 @@ import com.fr.bi.stable.engine.index.BITableCubeFile;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.file.ColumnFile;
 import com.fr.bi.stable.file.IndexFile;
+import com.fr.bi.stable.gvi.ByteArrayDataInput;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.GroupValueIndexArrayReader;
@@ -251,7 +252,7 @@ public class TableCubeFile extends AbstractCubeFile {
 
     @Override
     public GroupValueIndex getNullGroupValueIndex(BIKey key, SingleUserNIOReadManager manager) {
-        return GVIFactory.createGroupValueIndexByBytes(getColumnFile(key).createNullIndexReader(key, manager).get(0));
+        return GVIFactory.createGroupValueIndexByDataInput(new ByteArrayDataInput(getColumnFile(key).createNullIndexReader(key, manager).get(0)));
     }
 
     @Override

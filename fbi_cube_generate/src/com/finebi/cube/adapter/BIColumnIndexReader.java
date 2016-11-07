@@ -27,9 +27,11 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
     private ICubeIndexDataGetterService indexDataGetterService;
     private CSet<Map.Entry<T, GroupValueIndex>> ascSet = new CSet<Map.Entry<T, GroupValueIndex>>(true);
     private CSet<Map.Entry<T, GroupValueIndex>> descSet = new CSet<Map.Entry<T, GroupValueIndex>>(false);
+    private int size;
 
     public BIColumnIndexReader(CubeColumnReaderService<T> columnReaderService, List<BITableSourceRelation> relationList) {
         this.columnReaderService = columnReaderService;
+        this.size = columnReaderService.sizeOfGroup();
         if (isRelationIndex(relationList)) {
             path = BICubePathUtils.convert(relationList);
             try {
@@ -148,7 +150,7 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
 
 
     public int size() {
-        return columnReaderService.sizeOfGroup();
+        return size;
     }
 
     @Override
