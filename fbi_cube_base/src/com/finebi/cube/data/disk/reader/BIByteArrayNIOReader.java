@@ -8,6 +8,7 @@ import com.finebi.cube.data.input.primitive.ICubeLongReader;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.constant.CubeConstant;
+import com.fr.bi.stable.gvi.BIByteDataInput;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 
 import java.util.UUID;
@@ -54,6 +55,24 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
             b[i] = contentReader.getSpecificValue(start + i);
         }
         return isNull(b) ? null : b;
+    }
+
+    public BIByteDataInput getByteStream(int row) throws BIResourceInvalidException{
+        long start;
+        int size;
+        try {
+            start = positionReader.getSpecificValue(row);
+            size = lengthReader.getSpecificValue(row);
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().info(BIStringUtils.append(
+                    e.getMessage(),
+                    "\n" + "retry again!"
+            ));
+            releaseBuffers();
+            start = positionReader.getSpecificValue(row);
+            size = lengthReader.getSpecificValue(row);
+        }
+        return new ByteStreamDataInput(contentReader, start, size);
     }
 
     private void releaseBuffers() {

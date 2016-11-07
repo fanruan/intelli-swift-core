@@ -122,7 +122,7 @@ public interface GroupValueIndex extends java.io.Serializable, ParseBytes {
      * @param in 数据流
      * @throws IOException
      */
-    public void readFields(DataInput in) throws IOException;
+    void readFields(DataInput in) throws IOException;
 
 	GroupValueIndex or(GroupValueIndex index);
 
