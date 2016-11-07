@@ -45,12 +45,12 @@ class DetailTableComponent extends Component {
     }
 
     componentDidMount() {
-        this._fetchData(this.props);
+        this._fetchData(this.props, this.context);
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (!immutableShallowEqual(nextProps, this.props)) {
-            this._fetchData(nextProps);
+    componentWillReceiveProps(nextProps, nextContext) {
+        if (!immutableShallowEqual({$widget: nextProps.$widget}, {$widget: this.props.$widget})) {
+            this._fetchData(nextProps, nextContext);
             this._changed = true;
         }
     }
@@ -67,9 +67,9 @@ class DetailTableComponent extends Component {
 
     }
 
-    _fetchData(props) {
+    _fetchData(props, context) {
         const {$widget, wId} = props;
-        const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(this.context.$template));
+        const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(context.$template));
         return widget.getData().then((data)=> {
             this.setState({data: data});
         });
@@ -85,16 +85,22 @@ class DetailTableComponent extends Component {
 
         return <TableWidget
             width={width}
-            height={height - Sizes.HEADER_HEIGHT}
+            height={height}
             freezeCols={this._tableHelper.isFreeze() ? [0] : []}
             columnSize={this._widthHelper.getWidth()}
             header={this._tableHelper.getHeader()}
             items={items}
             headerCellRenderer={({colIndex, ...cell})=> {
-                return <TableHeader {...cell}/>
+                return <TableHeader
+                    wId={this.props.wId}
+                    $widget={this.props.$widget}
+                    {...cell}/>
             }}
             itemsCellRenderer={({colIndex, rowIndex, ...cell}) => {
-                return <TableCell {...cell}/>
+                return <TableCell
+                    wId={this.props.wId}
+                    $widget={this.props.$widget}
+                    {...cell}/>
             }}
         >
         </TableWidget>

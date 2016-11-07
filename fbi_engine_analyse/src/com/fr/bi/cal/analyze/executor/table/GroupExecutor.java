@@ -318,8 +318,12 @@ public class GroupExecutor extends AbstractNodeExecutor {
         int tempRow = row;
         tempRow = dealWithExpanNodeChildren(node, expander, cbcells, row, column, page,
                 rowColumn, sumColumn, keys, indexList, total, hasNumber, tempRow, rowData, chartSetting);
-        dealWithExpanSumNode(node, expander, cbcells, row, column,
-                rowColumn, sumColumn, keys, indexList, total, hasNumber, tempRow, rowData, chartSetting);
+        if (chartSetting.showRowTotal() && judgeNode(node, sumColumn)) {
+            dealWithExpanSumNode(node, expander, cbcells, row, column,
+                    rowColumn, sumColumn, keys, indexList, total, hasNumber, tempRow, rowData, chartSetting);
+        } else {
+            tempRow++;
+        }
     }
 
     static void dealWithNode(Node node, NodeExpander expander, CBCell[][] cbcells, int row, int column, int page,
@@ -433,7 +437,7 @@ public class GroupExecutor extends AbstractNodeExecutor {
         CBCell cell = null;
         for (int i = 0, len = node.getChildLength(); i < len; i++) {
             tempNode = node.getChild(i);
-            int rowSpan = (sumColumn.length == 0 || !chartSetting.showColTotal()) ? tempNode.getTotalLength() : tempNode.getTotalLengthWithSummary();
+            int rowSpan = (sumColumn.length == 0 || !chartSetting.showRowTotal()) ? tempNode.getTotalLength() : tempNode.getTotalLengthWithSummary();
             BIDimension rd = rowColumn[column];
             String text = rd.toString(tempNode.getData());
             if (rd.getGroup().getType() == BIReportConstant.GROUP.YMD && text != null) {
@@ -601,6 +605,8 @@ public class GroupExecutor extends AbstractNodeExecutor {
         if (chartSetting.showRowTotal() && judgeNode(node, sumColumn)) {
             dealWidthNodeSummary(node, cbcells, row, column,
                     rowColumn, sumColumn, keys, total, hasNumber, tempRow, rowData, chartSetting);
+        } else {
+            tempRow++;
         }
     }
 
@@ -650,12 +656,13 @@ public class GroupExecutor extends AbstractNodeExecutor {
         int rowLength = usedDimensions.length;
         int summaryLength = usedSumTarget.length;
         int columnLen = rowLength + summaryLength;
+        DetailChartSetting chartSetting = widget.getChatSetting();
         TargetGettingKey[] keys = new TargetGettingKey[summaryLength];
         for (int i = 0; i < summaryLength; i++) {
             keys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(), usedSumTarget[i].getValue());
         }
         //导出就全部展开吧
-        int rowLen = paging.isAllPage() ? tree.getTotalLengthWithSummary() : tree.getTotalLengthWithSummary(expander.getYExpander());
+        int rowLen = chartSetting.showRowTotal() ? tree.getTotalLengthWithSummary() : tree.getTotalLength();
         //+1是标题
         CBCell[][] cbcells;
         boolean useTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(usedDimensions);

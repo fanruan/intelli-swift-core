@@ -13,7 +13,7 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
 
     _init: function () {
         BI.CompareAreaChart.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
         this.xAxis = [{
             type: "category",
             title: {
@@ -26,11 +26,15 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
             xAxis: this.xAxis,
+            popupItemsGetter: o.popupItemsGetter,
             formatConfig: BI.bind(this._formatConfig, this),
             element: this.element
         });
         this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
             self.fireEvent(BI.CompareAreaChart.EVENT_CHANGE, obj);
+        });
+        this.combineChart.on(BI.CombineChart.EVENT_ITEM_CLICK, function (obj) {
+            self.fireEvent(BI.AbstractChart.EVENT_ITEM_CLICK, obj)
         });
     },
 
@@ -75,11 +79,12 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
         config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title : "";
         BI.extend(config.xAxis[0], self.catSetting(this.config));
 
-        config.legend.style = BI.extend( this.config.chart_legend_setting, {
-            fontSize:  this.config.chart_legend_setting.fontSize + "px"
+        config.legend.style = BI.extend(this.config.chart_legend_setting, {
+            fontSize: this.config.chart_legend_setting.fontSize + "px"
         });
 
         config.plotOptions.connectNulls = this.config.null_continue;
+        config.chartType = "area";
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
         this.formatDataLabel(config.plotOptions.dataLabels.enabled, items, config, this.config.chart_font);
@@ -302,13 +307,13 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
             right_num_separators: options.right_num_separators || false,
             chart_font: options.chart_font || c.FONT_STYLE,
             show_left_label: BI.isNull(options.show_left_label) ? true : options.show_left_label,
-            left_label_style: options.left_label_style ||  c.LEFT_LABEL_STYLE,
+            left_label_style: options.left_label_style || c.LEFT_LABEL_STYLE,
             left_line_color: options.left_line_color || "",
             show_right_label: BI.isNull(options.show_right_label) ? true : options.show_right_label,
-            right_label_style: options.right_label_style ||  c.RIGHT_LABEL_STYLE,
+            right_label_style: options.right_label_style || c.RIGHT_LABEL_STYLE,
             right_line_color: options.right_line_color || "",
             show_cat_label: BI.isNull(options.show_cat_label) ? true : options.show_cat_label,
-            cat_label_style: options.cat_label_style ||  c.CAT_LABEL_STYLE,
+            cat_label_style: options.cat_label_style || c.CAT_LABEL_STYLE,
             cat_line_color: options.cat_line_color || "",
             chart_legend_setting: options.chart_legend_setting || {},
             show_h_grid_line: BI.isNull(options.show_h_grid_line) ? true : options.show_h_grid_line,

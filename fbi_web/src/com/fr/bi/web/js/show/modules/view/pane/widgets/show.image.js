@@ -81,7 +81,10 @@ BIShow.ImageWidgetView = BI.inherit(BI.View, {
     },
 
     refresh: function () {
-        this.img.setSrc(this.model.get("src"));
+        var src = this.model.get("src");
+        if (BI.isNotEmptyString(src)) {
+            this.img.setSrc(BI.UploadImage.getImageSrc(src))
+        }
         this._sizeChange(this.model.get("size"));
         if (BI.isNotEmptyString(this.model.get("href"))) {
             this.img.setValid(true)

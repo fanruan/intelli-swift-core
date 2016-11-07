@@ -57,7 +57,7 @@ class YearComponent extends Component {
         const {...props} = this.props, {...state} = this.state;
         const wId = props.wId;
         const template = TemplateFactory.createTemplate(props.$template);
-        const widget = template.getWidgetById(wId);
+        const widget = template.getWidgetByWidgetId(wId);
         return <YearWidget style={styles.wrapper}
                                 year={widget.getYear()}
                                 onValueChange={(value)=> {

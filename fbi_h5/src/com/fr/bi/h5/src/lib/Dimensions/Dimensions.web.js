@@ -7,36 +7,55 @@
 'use strict';
 
 let dimensions = {
-  // Not map to real window size, because that map to screen size in native env.
-  window: {
-    width: document.documentElement.clientWidth,
-    height: document.documentElement.clientHeight,
-    scale: window.devicePixelRatio || 1
-  },
-  modalFullscreenView: {
-    width: screen.width,
-    height: screen.height
-  }
+    // Not map to real window size, because that map to screen size in native env.
+    window: {
+        width: document.documentElement.clientWidth,
+        height: document.documentElement.clientHeight,
+        scale: window.devicePixelRatio || 1
+    },
+    modalFullscreenView: {
+        width: screen.width,
+        height: screen.height
+    }
 };
 
 class Dimensions {
 
-  /**
-   * Initial dimensions are set before `runApplication` is called so they should
-   * be available before any other require's are run, but may be updated later.
-   *
-   * Note: Although dimensions are available immediately, they may change (e.g
-   * due to device rotation) so any rendering logic or styles that depend on
-   * these constants should try to call this function on every render, rather
-   * than caching the value (for example, using inline styles rather than
-   * setting a value in a `StyleSheet`).
-   *
-   * @param {string} dim Name of dimension as defined when calling `set`.
-   * @returns {Object?} Value for the dimension.
-   */
-  static get(dim:string):Object {
-    return dimensions[dim];
-  }
+    /**
+     * Initial dimensions are set before `runApplication` is called so they should
+     * be available before any other require's are run, but may be updated later.
+     *
+     * Note: Although dimensions are available immediately, they may change (e.g
+     * due to device rotation) so any rendering logic or styles that depend on
+     * these constants should try to call this function on every render, rather
+     * than caching the value (for example, using inline styles rather than
+     * setting a value in a `StyleSheet`).
+     *
+     * @param {string} dim Name of dimension as defined when calling `set`.
+     * @returns {Object?} Value for the dimension.
+     */
+    static get(dim) {
+        return dimensions[dim];
+    }
+
+    static set(dim, size) {
+        dimensions[dim] = {...dimensions[dim], ...size};
+    }
+
+    static update() {
+        dimensions = {
+            // Not map to real window size, because that map to screen size in native env.
+            window: {
+                width: document.documentElement.clientWidth,
+                height: document.documentElement.clientHeight,
+                scale: window.devicePixelRatio || 1
+            },
+            modalFullscreenView: {
+                width: screen.width,
+                height: screen.height
+            }
+        };
+    }
 }
 
 export default Dimensions;

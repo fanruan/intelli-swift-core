@@ -79,7 +79,8 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
 
     _defaultConfig: function () {
         return BI.extend(BI.AbstractChart.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-abstract-chart"
+            baseCls: "bi-abstract-chart",
+            popupItemsGetter: BI.emptyFn
         })
     },
 
@@ -427,3 +428,6 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
     magnify: function () {
     }
 });
+
+BI.AbstractChart.EVENT_CHANGE = "EVENT_CHANGE";
+BI.AbstractChart.EVENT_ITEM_CLICK = "EVENT_ITEM_CLICK";

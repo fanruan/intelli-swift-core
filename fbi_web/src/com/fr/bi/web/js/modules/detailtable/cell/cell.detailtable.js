@@ -23,14 +23,16 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
             var hyperlink = BI.Utils.getDimensionHyperLinkByID(dId);
             var expression = BI.Func.formatAddress(hyperlink.expression);
             var item = BI.createWidget({
-                type: "bi.a",
+                type: "bi.text_button",
                 cls: "hyper-link-item",
                 textAlign: (type === BICst.TARGET_TYPE.NUMBER || type === BICst.TARGET_TYPE.FORMULA) ? "right" : "left",
-                height: this.options.height,
-                text: this.options.text,
+                height: o.height,
+                text: o.text,
                 lgap: 5,
-                rgap: 5,
-                href: expression.replaceAll("\\$\\{.*\\}", this.options.text)
+                rgap: 5
+            });
+            item.on(BI.TextButton.EVENT_CHANGE, function() {
+                window.open(expression.replaceAll("\\$\\{.*\\}", o.text));
             });
         } else {
             var item = BI.createWidget({

@@ -5,7 +5,7 @@ export default class TargetSortComponentHelper {
     constructor(props, context) {
         this.widget = WidgetFactory.createWidget(props.$widget, props.wId);
         this.dId = props.dId;
-        this.dimension = this.widget.getDimensionOrTargetById(props.dId);
+        this.dimension = this.widget.getDimensionByDimensionId(props.dId);
     }
 
     getSortType() {

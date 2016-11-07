@@ -47,7 +47,14 @@ body {
   outline: 0 none;
 }
 
-*, *:before, *:after{
+@media all and (min-width: 768px) {
+  body:after {
+    content: 'smallscreen';
+    display: none;
+  }
+}
+
+*, *:before, *:after {
   box-sizing: border-box;
 }
 
@@ -66,6 +73,10 @@ textarea {
   padding: 0;
   outline: none;
   border: 1px solid #cccccc;
+}
+
+textarea {
+  resize: none;
 }
 
 ul,
@@ -89,6 +100,10 @@ i {
   -moz-osx-font-smoothing: grayscale;
 }
 
-a,img,button,input,textarea,*{-webkit-tap-highlight-color:rgba(255,255,255,0);}
+a, img, button, input, textarea, * {
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+}
 
-input,textarea{-webkit-appearance:none;}
+input, textarea {
+  -webkit-appearance: none;
+}

@@ -2,10 +2,11 @@
  * ImageWidget
  * Created by Young's on 2016/10/12.
  */
+import {isNotEmptyString} from 'core'
 import {Image} from 'lib'
 import AbstractWidget from './AbstractWidget'
 
-class ImageWidget extends AbstractWidget{
+class ImageWidget extends AbstractWidget {
     constructor($widget, ...props) {
         super($widget, ...props);
     }
@@ -24,8 +25,12 @@ class ImageWidget extends AbstractWidget{
         }
     }
 
-    getSrc() {
-        return this.$widget.get('src');
+    getImageSrc() {
+        const src = this.$widget.get('src');
+        if (isNotEmptyString(src)) {
+            return BH.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + src;
+        }
+        return '';
     }
 
     getHref() {

@@ -28,26 +28,33 @@ class ChartComponent extends Component {
         super(props, context);
     }
 
+    state = {
+        data: {}
+    };
+
     componentWillMount() {
 
     }
 
-    _fetchData(props) {
+    _fetchData(props, context) {
         const {$widget, wId} = props;
-        const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(this.context.$template));
+        const widget = WidgetFactory.createWidget($widget, wId, TemplateFactory.createTemplate(context.$template));
         widget.getData().then((data)=> {
-            this.chart.setOptions(data);
+            this.setState({data}, ()=> {
+                this.chart.setOptions(data);
+                this.chart.resize();
+            });
         });
     }
 
     componentDidMount() {
         this.chart = VanCharts.init(ReactDOM.findDOMNode(this.refs.chart));
-        this._fetchData(this.props);
+        this._fetchData(this.props, this.context);
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (!immutableShallowEqual(nextProps, this.props)) {
-            this._fetchData(nextProps);
+    componentWillReceiveProps(nextProps, nextContext) {
+        if (!immutableShallowEqual({$widget: nextProps.$widget}, {$widget: this.props.$widget})) {
+            this._fetchData(nextProps, nextContext);
             this._changed = true;
         }
     }

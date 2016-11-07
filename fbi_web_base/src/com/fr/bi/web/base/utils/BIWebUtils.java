@@ -1,6 +1,7 @@
 package com.fr.bi.web.base.utils;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.fr.base.ChartPreStyleServerManager;
 import com.fr.base.ConfigManager;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.analyze.base.CubeIndexManager;
@@ -15,6 +16,7 @@ import com.fr.bi.stable.constant.Status;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.conf.BISystemEnvUtils;
 import com.fr.bi.web.base.operation.BIOperationRecord;
+import com.fr.chart.base.ChartPreStyle;
 import com.fr.fs.base.entity.User;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
@@ -34,10 +36,10 @@ import com.fr.web.utils.WebUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.awt.*;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 import java.util.logging.Level;
 
 
@@ -202,6 +204,7 @@ public class BIWebUtils {
         String edit = WebUtils.getHTTPRequestParameter(req, "edit");
         String show = WebUtils.getHTTPRequestParameter(req, "show");
         String hideTop = WebUtils.getHTTPRequestParameter(req, "hideTop");
+        JSONObject plateConfig = getPlateConfig();
         map.put("userId", userId);
         map.put("edit", edit == null ? "null" : edit);
         map.put("show", show == null ? "null" : show);
@@ -210,6 +213,7 @@ public class BIWebUtils {
         map.put("reportName", reportName);
         map.put("reg", VT4FBI.toJSONObject());
         map.put("description", node.getDescription());
+        map.put("plateConfig", plateConfig);
         //cube版本号 和 权限版本号
         map.put("__version__", BIConfigureManagerCenter.getCubeConfManager().getPackageLastModify() + ""
                 + BIConfigureManagerCenter.getAuthorityManager().getAuthVersion() + "" + userId);
@@ -321,5 +325,55 @@ public class BIWebUtils {
         } else {
             WebUtils.writeOutTemplate(templatePath, res, messageMap);
         }
+    }
+
+    private static JSONObject getPlateConfig() throws JSONException {
+        JSONObject jo = new JSONObject();
+
+        jo.put("chartStyle", FBIConfig.getInstance().getChartStyleAttr().getChartStyle());
+//        jo.put("defaultStyle", FBIConfig.getInstance().getChartStyleAttr().getDefaultStyle());
+        String defaultColor = ChartPreStyleServerManager.getInstance().getCurrentStyle();
+        jo.put("defaultColor", defaultColor);
+
+        JSONArray ja = new JSONArray();
+        Iterator<String> it = ChartPreStyleServerManager.getInstance().names();
+        while (it.hasNext()) {
+            String name = it.next();
+            ChartPreStyle style = (ChartPreStyle) ChartPreStyleServerManager.getInstance().getPreStyle(name);
+            java.util.List colorList = style.getAttrFillStyle().getColorList();
+
+            Iterator itColor = colorList.iterator();
+            List colorArray = new ArrayList();
+            while (itColor.hasNext()) {
+                Color color = (Color) itColor.next();
+                colorArray.add(toHexEncoding(color));
+            }
+            JSONObject nameJo = new JSONObject();
+            nameJo.put("text", name).put("value", name).put("colors", colorArray);
+            ja.put(nameJo);
+        }
+        jo.put("styleList", ja);
+        return jo;
+    }
+
+    //Color转换为16进制显示
+    private static String toHexEncoding(Color color) {
+        String R, G, B;
+        StringBuffer sb = new StringBuffer();
+
+        R = Integer.toHexString(color.getRed());
+        G = Integer.toHexString(color.getGreen());
+        B = Integer.toHexString(color.getBlue());
+
+        R = R.length() == 1 ? "0" + R : R;
+        G = G.length() == 1 ? "0" + G : G;
+        B = B.length() == 1 ? "0" + B : B;
+
+        sb.append("#");
+        sb.append(R);
+        sb.append(G);
+        sb.append(B);
+
+        return sb.toString();
     }
 }

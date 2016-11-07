@@ -1,7 +1,7 @@
 import mixin from 'react-mixin'
 import ReactDOM from 'react-dom'
 
-import {ReactComponentWithImmutableRenderMixin, requestAnimationFrame, emptyFunction} from 'core'
+import {ReactComponentWithImmutableRenderMixin, requestAnimationFrame, emptyFunction, immutableShallowEqual} from 'core'
 import React, {
     Component,
     StyleSheet,
@@ -42,6 +42,13 @@ class MultiTreeSelectorComponent extends Component {
 
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        if (immutableShallowEqual({$widget: nextProps.$widget}, {$widget: this.props.$widget})) {
+            return false;
+        }
+        return true;
+    }
+
     componentWillUpdate() {
 
     }
@@ -50,7 +57,7 @@ class MultiTreeSelectorComponent extends Component {
         const {...props} = this.props;
         const wId = props.wId;
         const template = TemplateFactory.createTemplate(props.$template);
-        const widget = template.getWidgetById(wId);
+        const widget = template.getWidgetByWidgetId(wId);
         return <MultiTreeSelectorWidget
             style={styles.wrapper}
             floors={widget.getTreeFloors()}
@@ -69,7 +76,7 @@ class MultiTreeSelectorComponent extends Component {
         </MultiTreeSelectorWidget>
     }
 }
-mixin.onClass(MultiTreeSelectorComponent, ReactComponentWithImmutableRenderMixin);
+// mixin.onClass(MultiTreeSelectorComponent, ReactComponentWithImmutableRenderMixin);
 const styles = StyleSheet.create({
     wrapper: {
         backgroundColor: '#fff'

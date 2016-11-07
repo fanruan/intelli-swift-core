@@ -58,7 +58,7 @@
         },
 
         getDefaultChartConfig: function () {
-            return Data.BufferPool.getDefaultChartConfig();
+            return Data.SharingPool.cat("plateConfig");
         },
 
         getAllGroupedPackagesTreeJSON: function () {
@@ -2647,7 +2647,7 @@
 
             function createTreeFilterValue(result, v, floor, dimensionIds, fatherFilterValue) {
                 BI.each(v, function (value, child) {
-                        var leafFilterObj = {
+                        var leafFilterObj = [{
                             filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
                             filter_value: {
                                 type: BI.Selection.Multi,
@@ -2655,16 +2655,19 @@
                             },
                             // _src: {field_id: self.getFieldIDByDimensionID(dimensionIds[floor])}
                             _src: self.getDimensionSrcByID(dimensionIds[floor])
-                        };
+                        }];
                         if (BI.isEmptyObject(child)) {
                             var filterObj = {
                                 filter_type: BICst.FILTER_TYPE.AND,
                                 filter_value: []
                             };
-                            filterObj.filter_value.push(leafFilterObj);
-                            BI.isNotNull(fatherFilterValue) && filterObj.filter_value.push(fatherFilterValue);
+                            filterObj.filter_value = BI.concat(filterObj.filter_value, leafFilterObj);
+                            BI.isNotNull(fatherFilterValue) && (filterObj.filter_value = BI.concat(filterObj.filter_value, fatherFilterValue));
                             result.push(filterObj);
                         } else {
+                            if(fatherFilterValue) {
+                                leafFilterObj = BI.concat(leafFilterObj, fatherFilterValue);
+                            }
                             createTreeFilterValue(result, child, floor + 1, dimensionIds, leafFilterObj);
                         }
                     }
@@ -2673,7 +2676,7 @@
 
             function createTreeLabelFilterValue(result, v, floor, dimensionIds, fatherFilterValue) {
                 BI.each(v, function (value, child) {
-                        var leafFilterObj = {
+                        var leafFilterObj = [{
                             filter_type: BICst.TARGET_FILTER_STRING.BELONG_VALUE,
                             filter_value: {
                                 type: value === BICst.LIST_LABEL_TYPE.ALL ? BI.Selection.All : BI.Selection.Multi,
@@ -2681,18 +2684,21 @@
                             },
                             // _src: {field_id: self.getFieldIDByDimensionID(dimensionIds[floor])}
                             _src: self.getDimensionSrcByID(dimensionIds[floor])
-                        };
+                        }];
                         if (BI.isEmptyObject(child)) {
                             var filterObj = {
                                 filter_type: BICst.FILTER_TYPE.AND,
                                 filter_value: []
                             };
-                            filterObj.filter_value.push(leafFilterObj);
-                            BI.isNotNull(fatherFilterValue) && filterObj.filter_value.push(fatherFilterValue);
+                            filterObj.filter_value = BI.concat(filterObj.filter_value, leafFilterObj);
+                            BI.isNotNull(fatherFilterValue) && (filterObj.filter_value = BI.concat(filterObj.filter_value, fatherFilterValue));
                             result.push(filterObj);
                         } else {
-                            if (leafFilterObj.filter_value.type === BI.Selection.All) {
-                                leafFilterObj = fatherFilterValue
+                            if(leafFilterObj[0].filter_value.type === BI.Selection.All) {
+                                leafFilterObj = [];
+                            }
+                            if(fatherFilterValue) {
+                                leafFilterObj = BI.concat(leafFilterObj, fatherFilterValue);
                             }
                             createTreeLabelFilterValue(result, child, floor + 1, dimensionIds, leafFilterObj);
                         }

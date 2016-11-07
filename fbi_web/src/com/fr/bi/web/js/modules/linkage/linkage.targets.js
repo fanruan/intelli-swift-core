@@ -34,7 +34,7 @@ BI.LinkageTargets = BI.inherit(BI.Widget, {
             items: items,
             layouts: [{
                 type: "bi.vertical",
-                hgap: 20,
+                hgap: 10,
                 tgap: 10
             }]
         });
