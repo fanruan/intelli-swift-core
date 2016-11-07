@@ -295,7 +295,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
     },
 
     catSetting: function (config) {
-        return {
+        return BI.extend({
             enableTick: config.enable_tick,
             lineWidth: config.line_width,
             lineColor: config.cat_line_color,
@@ -306,11 +306,20 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             labelStyle: BI.extend(config.cat_label_style.text_style, {
                 fontSize: config.cat_label_style.text_style.fontSize + "px"
             }),
-        }
+        }, {
+            title: {
+                align: "center",
+                text: config.show_x_axis_title ? config.x_axis_title : "",
+                style:  BI.extend(config.cat_title_style, {
+                    fontSize: config.cat_title_style.fontSize + "px"
+                })
+            }
+        })
     },
 
     leftAxisSetting: function (config) {
-        return {
+        var title = this.getXYAxisUnit(config.left_y_axis_number_level, config.left_y_axis_unit);
+        return BI.extend({
             lineWidth: config.line_width,
             lineColor: config.left_line_color,
             tickColor: config.left_line_color,
@@ -329,11 +338,20 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             tickInterval: BI.isNumber(config.custom_y_scale.interval.scale) && config.custom_y_scale.interval.scale > 0 ?
                 config.custom_y_scale.interval.scale : null,
             formatter: this.formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators)
-        }
+        }, {
+            title: {
+                text: config.show_left_y_axis_title ? config.left_y_axis_title + title : title,
+                rotation: this.constants.ROTATION,
+                style: BI.extend(config.left_title_style, {
+                    fontSize: config.left_title_style.fontSize + "px"
+                })
+            }
+        })
     },
 
     rightAxisSetting: function (config) {
-        return {
+        var title = this.getXYAxisUnit(config.right_y_axis_number_level, config.right_y_axis_title);
+        return BI.extend({
             lineWidth: config.line_width,
             lineColor: config.right_line_color,
             tickColor: config.right_line_color,
@@ -352,11 +370,19 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             tickInterval: BI.isNumber(config.custom_x_scale.interval.scale) && config.custom_x_scale.interval.scale > 0 ?
                 config.custom_x_scale.interval.scale : null,
             formatter: this.formatTickInXYaxis(config.right_y_axis_style, config.right_y_axis_number_level, config.right_num_separators)
-        }
+        }, {
+            title: {
+                text: config.show_right_y_axis_title ? self.config.right_y_axis_title + title : title,
+                rotation: this.constants.ROTATION,
+                style: BI.extend(config.right_title_style, {
+                    fontSize: config.right_title_style.fontSize + "px"
+                })
+            }
+        })
     },
 
     right2AxisSetting: function (config) {
-        return {
+        return BI.extend({
             lineWidth: config.line_width,
             lineColor: config.right2_line_color,
             tickColor: config.right2_line_color,
@@ -375,17 +401,17 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             tickInterval: BI.isNumber(config.custom_z_scale.interval.scale) && config.custom_z_scale.interval.scale > 0 ?
                 config.custom_z_scale.interval.scale : null,
             formatter: this.formatTickInXYaxis(config.right_y_axis_second_style, config.right_y_axis_second_number_level, config.right2_num_separators)
-        }
+        }, {
+            title: {
+
+            }
+        })
     },
 
     setFontStyle: function (fontStyle, config) {
         if (config.dataSheet) {
             config.dataSheet.style = fontStyle;
         }
-        config.xAxis[0].title.style = fontStyle;
-        BI.each(config.yAxis, function (idx, axis) {
-            axis.title.style = fontStyle;
-        })
     },
 
     _formatItems: function (items) {
