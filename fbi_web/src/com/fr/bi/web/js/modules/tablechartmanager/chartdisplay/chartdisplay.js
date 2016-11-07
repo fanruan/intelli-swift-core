@@ -550,7 +550,11 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         show_cat_label: BI.Utils.getWSShowCatLabelByID(o.wId),
                         cat_label_style: BI.Utils.getWSCatLabelStyleByID(o.wId),
                         cat_line_color: BI.Utils.getWSCatLineColorByID(o.wId),
-                        background_layer_info: MapConst.WMS_INFO[BI.Utils.getWSBackgroundLayerInfoByID(o.wId)]
+                        background_layer_info: MapConst.WMS_INFO[BI.Utils.getWSBackgroundLayerInfoByID(o.wId)],
+                        left_title_style: BI.Utils.getWSLeftTitleStyleByID(o.wId),
+                        right_title_style: BI.Utils.getWSRightTitleStyleByID(o.wId),
+                        right2_title_style: BI.Utils.getWSRight2TitleStyleByID(o.wId),
+                        cat_title_style: BI.Utils.getWSCatTitleStyleByID(o.wId)
                     }, {
                         cordon: self.model.getCordon(),
                         tooltip: self.model.getToolTip(type),
