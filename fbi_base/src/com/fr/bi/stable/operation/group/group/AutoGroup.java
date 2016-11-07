@@ -10,6 +10,7 @@ import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.GeneralUtils;
 import com.fr.json.JSONObject;
+import com.fr.stable.StableUtils;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -200,7 +201,7 @@ public class AutoGroup extends AbstractGroup {
         double genMax = maxV * magnify;
         this.start = genMin;
         if(!hasInterval){
-            return (genMax - genMin) / 5;
+            return Double.parseDouble(StableUtils.convertNumberStringToString((genMax - genMin) / 5));
         }else{
             return this.interval;
         }
