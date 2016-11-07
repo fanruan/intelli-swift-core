@@ -481,16 +481,16 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
                 }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.nullContinuity]
+                }/*, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Tooltip"),
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.tooltipSetting]
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.nullContinuity]
-                }], {
+                }*/], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
                 lgap: constant.SIMPLE_H_GAP
@@ -526,7 +526,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Interactive_Attr"),
                     cls: "line-title"
-                }, this.transferFilter, this.linkageSelection]
+                }, this.transferFilter/*, this.linkageSelection*/]
             },
             height: constant.SINGLE_LINE_HEIGHT,
             lhgap: constant.SIMPLE_H_GAP
