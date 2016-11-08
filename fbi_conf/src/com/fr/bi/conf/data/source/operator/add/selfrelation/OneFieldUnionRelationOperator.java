@@ -10,7 +10,6 @@ import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
-import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -182,8 +181,8 @@ public class OneFieldUnionRelationOperator extends AbstractFieldUnionRelationOpe
                                 if (v.length() >= groupLength[j]) {
                                     String result = v.substring(0, groupLength[j]);
                                     String layer = dealWithValue(result);
-                                    int r = valueIndexMap.get(layer);
-                                    if (r >= 0) {
+                                    Integer r = valueIndexMap.get(layer);
+                                    if (r != null && r >= 0) {
                                         Object showOb = showGetter.getValue(r);
                                         if (showOb != null) {
                                             res[index] = showOb;
