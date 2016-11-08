@@ -215,7 +215,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
                 dId: drillId,
                 values: [{
                     dId: dId,
-                    value: [value]
+                    value: [BI.Utils.getClickedValue4Group(value, dId)]
                 }]
             });
         }
