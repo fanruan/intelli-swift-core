@@ -26,7 +26,8 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
                     return BI.map(tIds, function (i, id) {
                         return {
                             id: id,
-                            type: "bi.detail_detail_select_data_level1_node"
+                            type: "bi.detail_detail_select_data_level1_node",
+                            warningTitle: BI.i18nText("BI-Added_Data_Unavailable")
                         }
                     })
                 }
@@ -34,7 +35,8 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
                 return BI.map(ids, function (i, id) {
                     return {
                         id: id,
-                        type: "bi.detail_detail_select_data_level0_node"
+                        type: "bi.detail_detail_select_data_level0_node",
+                        warningTitle: BI.i18nText("BI-Added_Data_Unavailable")
                     }
                 })
             },

@@ -2,6 +2,7 @@ package com.fr.bi.stable.operation.group.group;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.AbstractGroup;
 import com.fr.bi.stable.structure.collection.map.CubeLinkedHashMap;
@@ -9,6 +10,7 @@ import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.GeneralUtils;
 import com.fr.json.JSONObject;
+import com.fr.stable.StableUtils;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -45,7 +47,9 @@ public class AutoGroup extends AbstractGroup {
         if (!hasInterval) {
             interval = initGroup(tiMin, tiMax);
         }
+        int groupSize = (int) Math.ceil((tiMax - start) / interval);
         CubeLinkedHashMap resultMap = new CubeLinkedHashMap();
+        CubeLinkedHashMap indexMap = new CubeLinkedHashMap();
         Iterator<Map.Entry<Number, GroupValueIndex>> it = baseMap.iterator();
         while (it.hasNext()) {
             Map.Entry<Number, GroupValueIndex> entry = it.next();
@@ -55,18 +59,29 @@ public class AutoGroup extends AbstractGroup {
             }
             double key = k.doubleValue();
             GroupValueIndex gvi = entry.getValue();
-            String groupName = getAutoGroupName(key, interval);
-            GroupValueIndex g = (GroupValueIndex) resultMap.get(groupName);
-            resultMap.put(groupName, gvi.OR(g));
+            int index = getAutoGroupIndex(key, interval, groupSize);
+            if (indexMap.containsKey(index)){
+                ((GroupValueIndex)indexMap.get(index)).or(gvi);
+            } else {
+                String groupName = getAutoGroupName(index, interval);
+                GroupValueIndex g = GVIFactory.createAllEmptyIndexGVI();
+                g.or(gvi);
+                resultMap.put(groupName, g);
+                indexMap.put(index, g);
+            }
         }
         return resultMap;
     }
 
-    private String getAutoGroupName(double value, double interval) {
+    private int getAutoGroupIndex(double value, double interval, int groupSize) {
         int index = (int) ((value - start) / interval);
-        if(value == start + interval * 5){
-            return nFormat.format(start + interval * (index - 1)) + "-" + nFormat.format(start + interval * index);
+        if(value == start + interval * groupSize){
+            return index - 1;
         }
+        return index;
+    }
+
+    private String getAutoGroupName(int index, double interval) {
         return nFormat.format(start + interval * index) + "-" + nFormat.format(start + interval * (index + 1));
     }
 
@@ -186,7 +201,7 @@ public class AutoGroup extends AbstractGroup {
         double genMax = maxV * magnify;
         this.start = genMin;
         if(!hasInterval){
-            return (genMax - genMin) / 5;
+            return Double.parseDouble(StableUtils.convertNumberStringToString((genMax - genMin) / 5));
         }else{
             return this.interval;
         }

@@ -23,6 +23,7 @@ BI.TargetRegion = BI.inherit(BI.AbstractRegion, {
             type: "bi.text_button",
             height: 25,
             disabled: BI.isEmptyArray(BI.Utils.getAllTargetDimensionIDs(this.options.wId)),
+            warningTitle: BI.i18nText("BI-There_Is_No_Target_for_Contruct_Calculate_Target"),
             value: BI.i18nText("BI-Add_Cal_Target")
         });
 
@@ -198,10 +199,8 @@ BI.TargetRegion = BI.inherit(BI.AbstractRegion, {
         BI.TargetRegion.superclass.populate.apply(this, arguments);
         if(BI.isEmptyArray(BI.Utils.getAllTargetDimensionIDs(this.options.wId))){
             this.calculateAddButton.setEnable(false);
-            this.calculateAddButton.setTitle(BI.i18nText("BI-There_Is_No_Target_for_Contruct_Calculate_Target"));
         }else{
             this.calculateAddButton.setEnable(true);
-            this.calculateAddButton.setTitle("");
         }
     }
 });

@@ -169,7 +169,7 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
         return dimension.getSort().createGroupedMap(getter).iterator();
     }
 
-    private boolean isNoGroup() {
+    protected boolean isNoGroup() {
         return getGroup().getType() == BIReportConstant.GROUP.NO_GROUP || getGroup().getType() == BIReportConstant.GROUP.ID_GROUP;
     }
 

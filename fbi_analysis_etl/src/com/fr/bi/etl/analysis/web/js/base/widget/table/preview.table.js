@@ -47,7 +47,12 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
         });
 
         this._initDrag();
-
+        this.label = BI.createWidget({
+            type: "bi.label",
+            width: 200,
+            cls: o.baseCls + "-null-label",
+            text: BI.i18nText("BI-Add_Fields_First")
+        });
         this.card = BI.createWidget({
             type: "bi.tab",
             element: this.element,
@@ -55,35 +60,27 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
             cardCreator: function (v) {
                 switch (v) {
                     case self._constant.nullCard:
-                        self.label = BI.createWidget({
-                            type: "bi.label",
-                            width: 200,
-                            cls: o.baseCls + "-null-label",
-                            text: BI.i18nText("BI-Add_Fields_First")
-                        });
                         return BI.createWidget({
                             type: "bi.center_adapt",
-                            items: [{
-                                el: self.label
-                            }]
+                            items: [self.label]
                         });
                     case self._constant.tableCard:
                         return self.table;
                     case self._constant.errorCard:
                         return BI.createWidget({
-                            type: "bi.center_layout",
+                            type: "bi.center_adapt",
                             items: [{
                                 type: "bi.label",
                                 width: 200,
-                                whiteSpace: "normal",
                                 cls: o.baseCls + "-null-label warning",
                                 text: BI.i18nText("BI-Current_Tab_Error")
                             }]
                         });
+
                 }
             }
         });
-        this._showCard();
+        this._showCard()
     },
 
     _initDrag: function () {
@@ -381,10 +378,10 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
     },
     _showCard: function () {
         if (this.options.operator === ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR) {
-            this.card.setSelect(this._constant.errorCard);
+            this.card.setSelect(this._constant.errorCard)
         } else if (this.options.header.length === 0) {
             this.label.setText(this._getNullText());
-            this.card.setSelect(this._constant.nullCard);
+            this.card.setSelect(this._constant.nullCard)
         } else {
             this.card.setSelect(this._constant.tableCard);
             return true;
