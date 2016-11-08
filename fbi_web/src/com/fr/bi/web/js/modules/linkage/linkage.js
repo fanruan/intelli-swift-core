@@ -500,15 +500,6 @@ BI.Linkage = BI.inherit(BI.Widget, {
 
     _createWidget: function (wId) {
         if (this.model.isWidgetCanLinkageTo(wId)) {
-            var name = BI.Utils.getWidgetNameByID(wId);
-            // var title = BI.createWidget({
-            //     type: "bi.label",
-            //     lgap: 10,
-            //     textAlign: "left",
-            //     text: name,
-            //     cls: "linkage-widget-title",
-            //     height: 32
-            // });
             var mask = BI.createWidget({
                 type: "bi.absolute",
                 cls: "linkage-widget-mask",
@@ -550,6 +541,23 @@ BI.Linkage = BI.inherit(BI.Widget, {
                     type: "bi.absolute",
                     cls: "linkage-widget-self"
                 });
+            } else if (BI.Utils.isControlWidgetByWidgetId(wId) || BI.Utils.isRealTimeControlWidgetByWidgetId(wId)) {
+                var mask = BI.createWidget({
+                    type: "bi.absolute",
+                    cls: "linkage-widget-control",
+                    width: "100%",
+                    height: "100%"
+                });
+                var widget = BI.createWidget({
+                    type: "bi.absolute",
+                    items: [{
+                        el: mask,
+                        left: 0,
+                        top: 0,
+                        right: 0,
+                        bottom: 0
+                    }]
+                });
             } else {
                 var mask = BI.createWidget({
                     type: "bi.absolute",
@@ -557,14 +565,15 @@ BI.Linkage = BI.inherit(BI.Widget, {
                     width: "100%",
                     height: "100%"
                 });
-                var content = this._createExistLinkagePanel();
+                var content = this._createExistLinkagePanel(wId);
                 var widget = BI.createWidget({
                     type: "bi.absolute",
                     items: [{
                         el: mask,
                         left: 0,
                         top: 0,
-                        right: 0
+                        right: 0,
+                        bottom: 0
                     }, {
                         el: content,
                         left: 0,
@@ -589,70 +598,93 @@ BI.Linkage = BI.inherit(BI.Widget, {
         return this.store[wId];
     },
 
-    _createExistLinkagePanel: function () {
+    _createExistLinkagePanel: function (wId) {
+        var linkageList = [], result = [];
+        this.model.getExistLinkageByWidgetId(wId, this.options.wId, [], linkageList);
+
+        BI.each(linkageList, function (idx, linkages) {
+            var temp = [];
+            BI.each(linkages, function (i, link) {
+                switch(i) {
+                    case 0:
+                        temp.push({
+                            el: {
+                                type: "bi.label",
+                                cls: "linkage-widget-disabled-item active",
+                                text: BI.Utils.getWidgetNameByID(link),
+                                title: BI.Utils.getWidgetNameByID(link),
+                                width: 200,
+                                height: 30
+                            },
+                            tgap: 20
+                        });
+                        temp.push({
+                            el: {
+                                type: "bi.icon_button",
+                                cls: "down-arrow",
+                                invalid: false,
+                                iconWidth: 16,
+                                iconHeight: 16,
+                                width: 16,
+                                height: 16
+                            },
+                            tgap: 2,
+                            bgap: 2
+                        });
+                        break;
+                    case linkages.length - 1:
+                        temp.push({
+                            el: {
+                                type: "bi.label",
+                                cls: "linkage-widget-disabled-item active",
+                                text: BI.Utils.getWidgetNameByID(link),
+                                title: BI.Utils.getWidgetNameByID(link),
+                                width: 200,
+                                height: 30
+                            }
+                        });
+                        break;
+                    default:
+                        temp.push({
+                            el: {
+                                type: "bi.label",
+                                cls: "linkage-widget-disabled-item",
+                                text: BI.Utils.getWidgetNameByID(link),
+                                title: BI.Utils.getWidgetNameByID(link),
+                                width: 200,
+                                height: 30
+                            }
+                        });
+                        temp.push({
+                            el: {
+                                type: "bi.icon_button",
+                                cls: "down-arrow",
+                                invalid: false,
+                                iconWidth: 16,
+                                iconHeight: 16,
+                                width: 16,
+                                height: 16
+                            },
+                            tgap: 2,
+                            bgap: 2
+                        });
+                }
+            });
+            result.push(BI.createWidget({
+                type: "bi.horizontal_auto",
+                items: temp
+            }));
+        });
+
         var tip = BI.createWidget({
             type: "bi.label",
             cls: "linkage-widget-disabled-title",
             text: BI.i18nText("BI-Already-Has-Linkage")
         });
 
-        var labelA = BI.createWidget({
-            type: "bi.label",
-            cls: "linkage-widget-disabled-item active",
-            text: BI.i18nText("BI-Widget") + "A",
-            title: BI.i18nText("BI-Widget") + "A",
-            width: 200,
-            height: 30
-        });
-        var labelB = BI.createWidget({
-            type: "bi.label",
-            cls: "linkage-widget-disabled-item",
-            text: BI.i18nText("BI-Widget") + "B",
-            title: BI.i18nText("BI-Widget") + "B",
-            width: 200,
-            height: 30
-        });
-        var labelC = BI.createWidget({
-            type: "bi.label",
-            cls: "linkage-widget-disabled-item active",
-            text: BI.i18nText("BI-Widget") + "C",
-            title: BI.i18nText("BI-Widget") + "C",
-            width: 200,
-            height: 30
-        });
-
-        var icon = BI.createWidget({
-            type: "bi.icon_button",
-            cls: "down-arrow",
-            iconWidth: 16,
-            iconHeight: 16,
-            width: 16,
-            height: 16
-        });
-
-        var icon2 = BI.createWidget({
-            type: "bi.icon_button",
-            cls: "down-arrow",
-            iconWidth: 16,
-            iconHeight: 16,
-            width: 16,
-            height: 16
-        });
-
         var content = BI.createWidget({
             type: "bi.horizontal_auto",
-            items: [tip, {
-                el: labelA,
-                tgap: 20
-            }, {
-                el: icon,
-                tgap: 2,
-                bgap: 2
-            }, labelB, {
-                el: icon2,
-                tgap: 2,
-                bgap: 2
-            }, labelC]
+            items: BI.concat([tip], result)
         });
 
         return BI.createWidget({

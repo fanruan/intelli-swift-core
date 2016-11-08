@@ -32,7 +32,7 @@ public class BIReportHangout2PlateAction extends ActionNoSessionCMD {
         try {
             long createBy = reportJO.getLong("createBy");
             BIReportNode reportNode = BIDAOUtils.findByID(reportJO.getLong("reportId"), createBy);
-            if (ComparatorUtils.equals(reportNode.getStatus(), BIReportConstant.REPORT_STATUS.APPLYING)) {
+            if (ComparatorUtils.equals(userId, createBy) || ComparatorUtils.equals(reportNode.getStatus(), BIReportConstant.REPORT_STATUS.APPLYING)) {
                 reportNode.setStatus(BIReportConstant.REPORT_STATUS.HANGOUT);
                 BIDAOUtils.saveOrUpDate(reportNode, createBy);
             } else {

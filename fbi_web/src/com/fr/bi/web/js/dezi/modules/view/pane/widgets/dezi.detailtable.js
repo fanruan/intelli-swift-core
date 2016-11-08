@@ -44,7 +44,6 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         });
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
             self.model.set("clicked", {});
-            self._refreshTableAndFilter();
         });
 
         //全局样式的修改
@@ -400,10 +399,13 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
             this.maximize.populate();
         }
         if (BI.has(changed, "settings") && (changed.settings.title_detail !== prev.settings.title_detail)) {
-            this._refreshWidgetTitle()
+            this._refreshWidgetTitle();
         }
         if (BI.has(changed, "settings") && (changed.settings.widget_bg !== prev.settings.widget_bg)) {
-            this._refreshWidgetBG()
+            this._refreshWidgetBG();
+        }
+        if (BI.has(changed, "clicked")) {
+            this._refreshTableAndFilter();
         }
         if (BI.has(changed, "clicked")) {
             this._refreshTableAndFilter();

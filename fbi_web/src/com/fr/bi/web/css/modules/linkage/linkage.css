@@ -64,6 +64,11 @@
   background: #ffffff;
   border: 2px solid #009de3;
 }
+.bi-linkage .linkage-widget-control {
+  background: #f4f4f4;
+  opacity: 0.8;
+  filter: alpha(opacity=80);
+}
 .bi-linkage .linkage-drop-helper {
   border: 1px solid #0c6d23;
   color: #0c6d23;
