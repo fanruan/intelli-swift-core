@@ -49,7 +49,6 @@ BI.PercentAccumulateAxisChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this, o = this.options;
-        var yTitle = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         config.colors = this.config.chart_color;
         config.plotOptions.style = formatChartStyle();
         formatCordon();
@@ -60,13 +59,9 @@ BI.PercentAccumulateAxisChart = BI.inherit(BI.AbstractChart, {
         this.formatZoom(config, this.config.show_zoom);
 
         config.yAxis = this.yAxis;
-        config.yAxis[0].title.rotation = this.constants.ROTATION;
-        config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + yTitle : yTitle;
         BI.extend(config.yAxis[0], self.leftAxisSetting(self.config));
         self.formatNumberLevelInYaxis(config, items, this.config.left_y_axis_number_level, this.constants.LEFT_AXIS, config.yAxis[0].formatter);
 
-        config.xAxis[0].title.align = "center";
-        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title : "";
         BI.extend(config.xAxis[0], self.catSetting(this.config));
 
         config.legend.style = BI.extend( this.config.chart_legend_setting, {
@@ -213,6 +208,8 @@ BI.PercentAccumulateAxisChart = BI.inherit(BI.AbstractChart, {
             show_v_grid_line: BI.isNull(options.show_v_grid_line) ? true : options.show_v_grid_line,
             v_grid_line_color: options.v_grid_line_color || "",
             tooltip_setting: options.tooltip_setting || {},
+            left_title_style: options.left_title_style || {},
+            cat_title_style: options.cat_title_style || {}
         };
         this.options.items = items;
 

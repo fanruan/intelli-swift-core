@@ -52,20 +52,15 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
 
         config.yAxis = this.yAxis;
         BI.each(config.yAxis, function (idx, axis) {
-            var title = "";
             switch (axis.axisIndex) {
                 case self.constants.LEFT_AXIS:
-                    title = getXYAxisUnit(self.config.left_y_axis_number_level, self.constants.LEFT_AXIS);
-                    axis.title.rotation = self.constants.ROTATION;
-                    axis.title.text = self.config.show_left_y_axis_title === true ? self.config.left_y_axis_title + title : title;
                     BI.extend(axis, self.leftAxisSetting(self.config));
+                    axis.reversed = false;
                     formatNumberLevelInYaxis(self.config.left_y_axis_number_level, idx, axis.formatter);
                     break;
                 case self.constants.RIGHT_AXIS:
-                    title = getXYAxisUnit(self.config.right_y_axis_number_level, self.constants.RIGHT_AXIS);
-                    axis.title.rotation = self.constants.ROTATION;
-                    axis.title.text = self.config.show_right_y_axis_title === true ? self.config.right_y_axis_title + title : title;
                     BI.extend(axis, self.rightAxisSetting(self.config));
+                    axis.reversed = true;
                     formatNumberLevelInYaxis(self.config.right_y_axis_number_level, idx, axis.formatter);
                     break;
             }
@@ -75,8 +70,6 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
             axis.tickInterval = BI.parseFloat((BI.parseFloat(axis.max).sub(BI.parseFloat(axis.min)))).div(5);
         });
 
-        config.xAxis[0].title.align = "center";
-        config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title : "";
         BI.extend(config.xAxis[0], self.catSetting(this.config));
 
         config.legend.style = BI.extend(this.config.chart_legend_setting, {

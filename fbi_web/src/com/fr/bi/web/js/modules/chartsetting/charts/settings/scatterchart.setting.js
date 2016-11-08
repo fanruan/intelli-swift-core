@@ -189,11 +189,11 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE);
         });
 
-        this.catTitleStyle = BI.createWidget({
+        this.rightTitleStyle = BI.createWidget({
             type: "bi.legend_detailed_setting_combo"
         });
 
-        this.catTitleStyle.on(BI.LegendDetailedSettingCombo.EVENT_CHANGE, function () {
+        this.rightTitleStyle.on(BI.LegendDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE)
         });
 
@@ -295,7 +295,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.isShowTitleX, this.editTitleX]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.catTitleStyle]
+                    items: [this.rightTitleStyle]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.showRightLabel]
@@ -737,7 +737,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
         var view = BI.Utils.getWidgetViewByID(wId);
         var titleLY = BI.Utils.getWSLeftYAxisTitleByID(wId);
-        var titleX = BI.Utils.getWSXAxisTitleByID(wId);
+        var titleX = BI.Utils.getWSRightYAxisTitleByID(wId);
         if (titleLY === "") {
             BI.any(view[BICst.REGION.TARGET1], function (idx, dId) {
                 if (BI.Utils.isDimensionUsable(dId)) {
@@ -770,7 +770,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.LYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
         this.XUnit.setValue(BI.Utils.getWSRightYAxisUnitByID(wId));
         this.isShowTitleLY.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
-        this.isShowTitleX.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
+        this.isShowTitleX.setSelected(BI.Utils.getWSShowRightYAxisTitleByID(wId));
         this.editTitleLY.setValue(titleLY);
         this.editTitleX.setValue(titleX);
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
@@ -798,12 +798,12 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.vGridLineColor.setValue(BI.Utils.getWSVGridLineColorByID(wId));
         this.tooltipSetting.setValue(BI.Utils.getWSToolTipSettingByID(wId));
         this.leftTitleStyle.setValue(BI.Utils.getWSLeftTitleStyleByID(wId));
-        this.catTitleStyle.setValue(BI.Utils.getWSCatTitleStyleByID(wId));
+        this.rightTitleStyle.setValue(BI.Utils.getWSRightTitleStyleByID(wId));
 
         this.editTitleLY.setVisible(this.isShowTitleLY.isSelected());
         this.editTitleX.setVisible(this.isShowTitleX.isSelected());
         this.leftTitleStyle.setVisible(this.isShowTitleLY.isSelected());
-        this.catTitleStyle.setVisible(this.isShowTitleX.isSelected());
+        this.rightTitleStyle.setVisible(this.isShowTitleX.isSelected());
         this.leftLabelStyle.setVisible(this.showLeftLabel.isSelected());
         this.rightLabelStyle.setVisible(this.showRightLabel.isSelected())
     },
@@ -821,11 +821,11 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
             left_y_axis_number_level: this.numberLevellY.getValue()[0],
             right_y_axis_number_level: this.numberLevelX.getValue()[0],
             left_y_axis_unit: this.LYUnit.getValue(),
-            x_axis_unit: this.XUnit.getValue(),
+            right_y_axis_unit: this.XUnit.getValue(),
             show_left_y_axis_title: this.isShowTitleLY.isSelected(),
-            show_x_axis_title: this.isShowTitleX.isSelected(),
+            show_right_y_axis_title: this.isShowTitleX.isSelected(),
             left_y_axis_title: this.editTitleLY.getValue(),
-            x_axis_title: this.editTitleX.getValue(),
+            right_y_axis_title: this.editTitleX.getValue(),
             chart_legend: this.legend.getValue()[0],
             show_data_label: this.showDataLabel.isSelected(),
             big_data_mode: this.bigDataMode.isSelected(),
@@ -847,7 +847,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
             show_v_grid_line: this.showVGridLine.isSelected(),
             v_grid_line_color: this.vGridLineColor.getValue(),
             tooltip_setting: this.tooltipSetting.getValue(),
-            cat_title_style: this.catTitleStyle.getValue(),
+            right_title_style: this.rightTitleStyle.getValue(),
             left_title_style: this.leftTitleStyle.getValue()
         }
     }
