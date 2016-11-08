@@ -241,22 +241,21 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var floor = op.floor;
         var ids = op.id;
-        var resultId = [];
-        if (BI.isArray(ids)) {
-            BI.each(ids, function (idx, id) {
-                if (self.itemsMap[id] && self.itemsMap[id].clicked !== true) {
-                    resultId.push(id);
-                    self.itemsMap[id].clicked = true;   //表示已获取某ID下的数据
-                }
-            });
-        } else {
-            if (self.itemsMap[ids] && self.itemsMap[ids].clicked !== true) {
-                resultId.push(ids);
-                self.itemsMap[ids].clicked = true;
-            }
-        }
+        // var resultId = [];
+        // if (BI.isArray(ids)) {
+        //     BI.each(ids, function (idx, id) {
+        //         if (self.itemsMap[id] && self.itemsMap[id].clicked !== true) {
+        //             resultId.push(id);
+        //             self.itemsMap[id].clicked = true;   //表示已获取某ID下的数据
+        //         }
+        //     });
+        // } else {
+        //     if (self.itemsMap[ids] && self.itemsMap[ids].clicked !== true) {
+        //         resultId.push(ids);
+        //         self.itemsMap[ids].clicked = true;
+        //     }
+        // }
 
-        //if (BI.isNotEmptyArray(resultId) || BI.contains(op.value, BICst.LIST_LABEL_TYPE.ALL)) {
         o.itemsCreator(op, function (value) {
             if(value.items) {
                 self._updateData(value.items[0]);
@@ -264,10 +263,6 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
                 callback(self.items, floor);
             }
         });
-        // } else {
-        //     this._updateItems(floor);
-        //     callback(this.items, floor);
-        // }
     },
 
     populate: function (v) {

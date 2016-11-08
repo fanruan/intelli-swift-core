@@ -19,77 +19,55 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.container = BI.createWidget();
         this.items = [];
-        this.title = BI.createWidget();
         this._initView();
-
     },
 
     _initView: function () {
         var self = this, o = this.options;
-        o.itemsCreator({}, function (v) {
-            var items = v.items || [], titles = BI.isEmptyArray(o.titles) ? v.titles || [] : o.titles;
-            BI.each(items, function (idx, item) {
-                var temp = BI.createWidget({
-                    type: "bi.list_label",
-                    items: item,
-                    showTitle: false
-                });
-                temp.on(BI.ListLabel.EVENT_CHANGE, function (value, id) {
-                    self._changeView({
-                        floor: idx,
-                        value: value,
-                        id: id,
-                        type: 1
-                    });
-                    self.fireEvent(BI.TreeLabelView.EVENT_CHANGE, arguments);
-                });
-                self.items.push(temp);
-            });
-            self.title = BI.createWidget({
-                type: "bi.button_group",
-                items: BI.createItems(titles, {
-                    type: "bi.label",
-                    height: self._constant.LIST_LABEL_HEIGHT,
-                    width: o.titleWidth
-                }),
-                height: self._constant.LIST_LABEL_HEIGHT * titles.length,
-                layouts: [{
-                    type: "bi.vertical"
-                }]
-            });
-            BI.createWidget({
-                type: "bi.vertical",
-                element: self.container,
-                items: self.items
-            });
-            self.right = BI.createWidget({
-                type: "bi.button_group",
-                cls: "list-label-group",
-                items: [self.container],
-                height: self._constant.LIST_LABEL_HEIGHT * self.items.length,
-                layouts: [{
-                    type: "bi.horizontal"
-                }]
-            });
-            BI.createWidget({
-                type: "bi.absolute",
-                items: [{
-                    el: self.title,
-                    left:0,
-                    right:0,
-                    top:0,
-                    bottom:0,
-                    width: 60
-                }, {
-                    el: self.right,
-                    left: 65,
-                    right:0,
-                    top:0,
-                    bottom:0
-                }],
-                element: self.element
-            })
-        })
+        this.title = BI.createWidget({
+            type: "bi.button_group",
+            items: BI.createItems(o.titles, {
+                type: "bi.label",
+                height: self._constant.LIST_LABEL_HEIGHT,
+                width: o.titleWidth
+            }),
+            height: self._constant.LIST_LABEL_HEIGHT * o.titles.length,
+            layouts: [{
+                type: "bi.vertical"
+            }]
+        });
+        BI.createWidget({
+            type: "bi.vertical",
+            element: self.container,
+            items: self.items
+        });
+        this.right = BI.createWidget({
+            type: "bi.button_group",
+            cls: "list-label-group",
+            items: [self.container],
+            height: self._constant.LIST_LABEL_HEIGHT * self.items.length,
+            layouts: [{
+                type: "bi.horizontal"
+            }]
+        });
+        BI.createWidget({
+            type: "bi.absolute",
+            items: [{
+                el: this.title,
+                left:0,
+                right:0,
+                top:0,
+                bottom:0,
+                width: 60
+            }, {
+                el: this.right,
+                left: 65,
+                right:0,
+                top:0,
+                bottom:0
+            }],
+            element: self.element
+        });
     },
 
     _changeView: function (op) {
