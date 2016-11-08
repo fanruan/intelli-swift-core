@@ -16,7 +16,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         var self = this, o = this.options, constant = BI.AbstractChartSetting;
 
         //显示组件标题
-        this.showTitle = BI.createWidget({
+        this.showName = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Chart_Title"),
             cls: "attr-names",
@@ -24,24 +24,24 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                 dynamic: true
             }
         });
-        this.showTitle.on(BI.Controller.EVENT_CHANGE, function () {
+        this.showName.on(BI.Controller.EVENT_CHANGE, function () {
             self.widgetTitle.setVisible(this.isSelected());
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
         //组件标题
-        this.title = BI.createWidget({
+        this.widgetName = BI.createWidget({
             type: "bi.sign_editor",
             cls: "title-input",
             width: 120
         });
 
-        this.title.on(BI.SignEditor.EVENT_CHANGE, function () {
+        this.widgetName.on(BI.SignEditor.EVENT_CHANGE, function () {
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
 
         //详细设置
-        this.titleDetailSettting = BI.createWidget({
+        this.widgetNameStyle = BI.createWidget({
             type: "bi.show_title_detailed_setting_combo"
         });
 

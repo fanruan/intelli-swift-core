@@ -725,17 +725,17 @@
         //settings  ---- start ----
         getWSTitleDetailSettingByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.title_detail) ? ws.title_detail :
+            return BI.isNotNull(ws.widgetNameStyle) ? ws.widgetNameStyle :
             {};
         },
 
         getWSWidgetBGByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             var wbg = this.getGSWidgetBackground(wid);
-            if (BI.isNull(ws.widget_bg)) {
+            if (BI.isNull(ws.widgetBG)) {
                 return wbg ? wbg : {}
             }
-            return ws.widget_bg
+            return ws.widgetBG
         },
 
         getWSTableFormByID: function (wid) {
@@ -836,14 +836,14 @@
 
         getWSTransferFilterByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.transfer_filter) ? ws.transfer_filter :
-                BICst.DEFAULT_CHART_SETTING.transfer_filter;
+            return BI.isNotNull(ws.transferFilter) ? ws.transferFilter :
+                BICst.DEFAULT_CHART_SETTING.transferFilter;
         },
 
         getWSShowNameByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_name) ? ws.show_name :
-                BICst.DEFAULT_CHART_SETTING.show_name;
+            return BI.isNotNull(ws.showName) ? ws.showName :
+                BICst.DEFAULT_CHART_SETTING.showName;
         },
 
         getWSNamePosByID: function (wid) {
@@ -857,12 +857,6 @@
         getWSColumnSizeByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.column_size) ? ws.column_size : [];
-        },
-
-        getWSNullContinueByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.null_continue) ? ws.null_continue :
-                BICst.DEFAULT_CHART_SETTING.null_continue;
         },
 
         getWSChartColorByID: function (wid) {
@@ -886,10 +880,10 @@
 
             var gs = this.getGlobalStyle();
             var ws = this.getWidgetSettingsByID(wid);
-            return ws.chart_color
+            return ws.chartColor
                 || gs.chartColor
                 || getDefaultColor()
-                || BICst.DEFAULT_CHART_SETTING.chart_color;
+                || BICst.DEFAULT_CHART_SETTING.chartColor;
         },
 
         getWSChartStyleByID: function (wid) {
@@ -929,8 +923,8 @@
 
         getWSChartRadarTypeByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.chart_radar_type) ? ws.chart_radar_type :
-                BICst.DEFAULT_CHART_SETTING.chart_radar_type;
+            return BI.isNotNull(ws.radarChartType) ? ws.radarChartType :
+                BICst.DEFAULT_CHART_SETTING.radarChartType;
         },
 
         getWSChartDashboardTypeByID: function (wid) {
@@ -953,8 +947,8 @@
 
         getWSLeftYAxisStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.left_y_axis_style) ? ws.left_y_axis_style :
-                BICst.DEFAULT_CHART_SETTING.left_y_axis_style;
+            return BI.isNotNull(ws.leftYNumberFormat) ? ws.leftYNumberFormat :
+                BICst.DEFAULT_CHART_SETTING.leftYNumberFormat;
         },
 
         getWSRightYAxisStyleByID: function (wid) {
@@ -983,8 +977,8 @@
 
         getWSLeftYAxisNumLevelByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.left_y_axis_number_level) ? ws.left_y_axis_number_level :
-                BICst.DEFAULT_CHART_SETTING.left_y_axis_number_level;
+            return BI.isNotNull(ws.leftYNumberLevel) ? ws.leftYNumberLevel :
+                BICst.DEFAULT_CHART_SETTING.leftYNumberLevel;
         },
 
         getWSNumberOfPointerByID: function (wid) {
@@ -1020,8 +1014,8 @@
 
         getWSLeftYAxisUnitByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.left_y_axis_unit) ? ws.left_y_axis_unit :
-                BICst.DEFAULT_CHART_SETTING.left_y_axis_unit;
+            return BI.isNotNull(ws.leftYUnit) ? ws.leftYUnit :
+                BICst.DEFAULT_CHART_SETTING.leftYUnit;
         },
 
         getWSDashboardUnitByID: function (wid) {
@@ -1128,14 +1122,14 @@
 
         getWSChartLegendByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.chart_legend) ? ws.chart_legend :
-                BICst.DEFAULT_CHART_SETTING.chart_legend;
+            return BI.isNotNull(ws.legend) ? ws.legend :
+                BICst.DEFAULT_CHART_SETTING.legend;
         },
 
         getWSShowDataLabelByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_data_label) ? ws.show_data_label :
-                BICst.DEFAULT_CHART_SETTING.show_data_label;
+            return BI.isNotNull(ws.showDataLabel) ? ws.showDataLabel :
+                BICst.DEFAULT_CHART_SETTING.showDataLabel;
         },
 
         getWSShowDataTableByID: function (wid) {
@@ -1165,8 +1159,8 @@
 
         getWSNumberSeparatorsByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.num_separators) ? ws.num_separators :
-                BICst.DEFAULT_CHART_SETTING.num_separators;
+            return BI.isNotNull(ws.leftYSeparator) ? ws.leftYSeparator :
+                BICst.DEFAULT_CHART_SETTING.leftYSeparator;
         },
 
         getWSRightNumberSeparatorsByID: function (wid) {
@@ -1183,19 +1177,19 @@
 
         getWSShowLValueAxisLabelByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_left_label) ? ws.show_left_label :
-                BICst.DEFAULT_CHART_SETTING.show_left_label
+            return BI.isNotNull(ws.leftYShowLabel) ? ws.leftYShowLabel :
+                BICst.DEFAULT_CHART_SETTING.leftYShowLabel
         },
 
         getWSLValueAxisLabelSettingByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             var chartFont = this.getGSChartFont();
-            var labelSetting = ws.left_label_style || {};
+            var labelSetting = ws.leftYLabelStyle || {};
             var wt = this.getWidgetTypeByID(wid);
             var colors = this.getWSChartColorByID(wid);
             var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[0] : BICst.DEFAULT_CHART_SETTING.label_color;
-            labelSetting.text_style = BI.extend(chartFont, {"color": color}, labelSetting.text_style);
-            labelSetting.text_direction = labelSetting.text_direction || 0;
+            labelSetting.textStyle = BI.extend(chartFont, {"color": color}, labelSetting.textStyle);
+            labelSetting.textDirection = labelSetting.textDirection || 0;
             return labelSetting;
         },
 
@@ -1203,8 +1197,8 @@
             var ws = this.getWidgetSettingsByID(wid);
             var wt = this.getWidgetTypeByID(wid);
             var colors = this.getWSChartColorByID(wid);
-            var lineColor = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[0] : BICst.DEFAULT_CHART_SETTING.line_color;
-            return BI.isNotNull(ws.left_line_color) ? ws.left_line_color :
+            var lineColor = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[0] : BICst.DEFAULT_CHART_SETTING.lineColor;
+            return BI.isNotNull(ws.leftYLineColor) ? ws.leftYLineColor :
                 lineColor
         },
 
@@ -1287,9 +1281,9 @@
         getWSLegendSettingByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             var chartFont = this.getGSChartFont();
-            var legendSetting = ws.chart_legend_setting || {};
-            legendSetting = BI.extend(chartFont, legendSetting);
-            return legendSetting;
+            var legendStyle = ws.legendStyle || {};
+            legendStyle = BI.extend(chartFont, legendStyle);
+            return legendStyle;
         },
 
         getWSLeftTitleStyleByID: function (wid) {
@@ -1326,38 +1320,38 @@
 
         getWSShowHGridLineByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_h_grid_line) ? ws.show_h_grid_line :
-                BICst.DEFAULT_CHART_SETTING.show_h_grid_line
+            return BI.isNotNull(ws.showHGridLine) ? ws.showHGridLine :
+                BICst.DEFAULT_CHART_SETTING.showHGridLine
         },
 
         getWSHGridLineColorByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.h_grid_line_color) ? ws.h_grid_line_color :
-                BICst.DEFAULT_CHART_SETTING.line_color
+            return BI.isNotNull(ws.hGridLineColor) ? ws.hGridLineColor :
+                BICst.DEFAULT_CHART_SETTING.lineColor
         },
 
         getWSShowVGridLineByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_v_grid_line) ? ws.show_v_grid_line :
-                BICst.DEFAULT_CHART_SETTING.show_v_grid_line
+            return BI.isNotNull(ws.showVGridLine) ? ws.showVGridLine :
+                BICst.DEFAULT_CHART_SETTING.showVGridLine
         },
 
         getWSVGridLineColorByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.v_grid_line_color) ? ws.v_grid_line_color :
-                BICst.DEFAULT_CHART_SETTING.line_color
+            return BI.isNotNull(ws.vGridLineColor) ? ws.vGridLineColor :
+                BICst.DEFAULT_CHART_SETTING.lineColor
         },
 
         getWSToolTipSettingByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.tooltip_setting) ? ws.tooltip_setting :
+            return BI.isNotNull(ws.tooltipStyle) ? ws.tooltipStyle :
             {}
         },
 
         getWSLinkageSelectionByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.select_linkage) ? ws.select_linkage :
-                BICst.DEFAULT_CHART_SETTING.select_linkage
+            return BI.isNotNull(ws.linkageSelection) ? ws.linkageSelection :
+                BICst.DEFAULT_CHART_SETTING.linkageSelection
         },
 
         getWSMinimalistByID: function (wid) {
@@ -1381,31 +1375,31 @@
         getWSCustomXScale: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.custom_x_scale) ? ws.custom_x_scale :
-                BICst.DEFAULT_CHART_SETTING.custom_scale
+                BICst.DEFAULT_CHART_SETTING.customScale
         },
 
         getWSShowYCustomScale: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_y_custom_scale) ? ws.show_y_custom_scale :
-                BICst.DEFAULT_CHART_SETTING.show_y_custom_scale;
+            return BI.isNotNull(ws.leftYShowCustomScale) ? ws.leftYShowCustomScale :
+                BICst.DEFAULT_CHART_SETTING.leftYShowCustomScale;
         },
 
         getWSCustomYScale: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.custom_y_scale) ? ws.custom_y_scale :
-                BICst.DEFAULT_CHART_SETTING.custom_scale
+            return BI.isNotNull(ws.leftYCustomScale) ? ws.leftYCustomScale :
+                BICst.DEFAULT_CHART_SETTING.customScale
         },
 
         getWSShowZCustomScale: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_z_custom_scale) ? ws.show_z_custom_scale :
-                BICst.DEFAULT_CHART_SETTING.show_z_custom_scale;
+                BICst.DEFAULT_CHART_SETTING.customScale;
         },
 
         getWSCustomZScale: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.custom_z_scale) ? ws.custom_z_scale :
-                BICst.DEFAULT_CHART_SETTING.custom_scale
+                BICst.DEFAULT_CHART_SETTING.customScale
         },
 
         getWSShowZoomByID: function (wid) {
@@ -1434,8 +1428,8 @@
 
         getWSNullContinueByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.null_continue) ? ws.null_continue :
-                BICst.DEFAULT_CHART_SETTING.null_continue;
+            return BI.isNotNull(ws.nullContinuity) ? ws.nullContinuity :
+                BICst.DEFAULT_CHART_SETTING.nullContinuity;
         },
 
         //settings  ---- end ----
