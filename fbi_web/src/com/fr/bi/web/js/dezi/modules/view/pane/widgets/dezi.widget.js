@@ -61,7 +61,6 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                 });
             }
             self.model.set("clicked", clicked);
-            self._refreshTableAndFilter();
         });
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
             self.model.set("clicked", {});
@@ -70,10 +69,6 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
             self._refreshGlobalStyle(globalStyle);
         });
-    },
-
-    _onClickChart: function (obj) {
-        this.chartDrill.populate(obj);
     },
 
     _onClickLinkage: function () {
