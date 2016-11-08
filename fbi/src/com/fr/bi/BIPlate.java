@@ -1,6 +1,7 @@
 package com.fr.bi;
 
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
@@ -13,6 +14,7 @@ import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.utils.BIModuleManager;
+import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.fs.BISharedReportNode;
 import com.fr.bi.fs.BITableMapper;
 import com.fr.bi.fs.entry.BIReportEntry;
@@ -21,7 +23,6 @@ import com.fr.bi.fs.entry.EntryConstants;
 import com.fr.bi.module.BICoreModule;
 import com.fr.bi.module.BIModule;
 import com.fr.bi.resource.ResourceHelper;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BIClassUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.data.core.db.DBUtils;
@@ -52,6 +53,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.reflect.Modifier;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Types;
 import java.util.*;
 
@@ -86,6 +88,9 @@ public class BIPlate extends AbstractFSPlate {
         BIConfigureManagerCenter.getLogManager().logEnd(UserControl.getInstance().getSuperManagerID());
         addBITableColumn4NewConnection();
         addSharedTableColumn4NewConnection();
+
+        //兼容FR工程中可能存在BID这一列的情况
+        dropColumnBID();
     }
 
     public void loadMemoryData() {
@@ -179,8 +184,22 @@ public class BIPlate extends AbstractFSPlate {
                 }
             }
 
-            FRContext.getLogger().error("Add" + tableName + "Column Action Failed!");
-            FRContext.getLogger().error(e.getMessage(), e);
+            FRContext.getLogger().info("Add" + tableName + "Column Action Failed!");
+            FRContext.getLogger().info(e.getMessage());
+        } finally {
+            DBUtils.closeConnection(cn);
+        }
+    }
+
+    private static void dropColumnBID() {
+        Connection cn = null;
+        String tableName = "FR_T_" + DAOUtils.getClassNameWithOutPath(BIReportNode.class);
+        try {
+            cn = PlatformDB.getDB().createConnection();
+            Statement st = cn.createStatement();
+            st.execute("ALTER TABLE " + tableName + " DROP BID ");
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().info(e.getMessage());
         } finally {
             DBUtils.closeConnection(cn);
         }
