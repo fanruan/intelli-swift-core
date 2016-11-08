@@ -25,7 +25,7 @@ public class BIDateDimension extends BIAbstractDimension {
             return StringUtils.EMPTY;
         }
         if (group.getType() == BIReportConstant.GROUP.M) {
-            return String.valueOf(((Number)v).intValue() + 1);
+            return String.valueOf(((Number)v).intValue());
         }
         return v.toString();
     }
