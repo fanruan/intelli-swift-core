@@ -68,15 +68,6 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
     _onClickDrill: function (dId, value, drillId) {
         var wId = this.options.wId;
         var drillMap = BI.Utils.getDrillByID(wId);
-        var drilledIds = [];
-        BI.each(drillMap, function (drId, ds) {
-            BI.each(ds, function (i, drs) {
-                drilledIds.push(drs.dId);
-            });
-        });
-        if (BI.contains(drilledIds, dId)) {
-            return;
-        }
         if (BI.isNull(dId)) {
             this.fireEvent(BI.ChartDisplay.EVENT_CHANGE, {clicked: BI.extend(BI.Utils.getLinkageValuesByID(wId), {})});
             return;
