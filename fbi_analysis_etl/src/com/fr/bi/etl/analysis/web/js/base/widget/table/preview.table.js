@@ -56,35 +56,27 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
         this.card = BI.createWidget({
             type: "bi.tab",
             element: this.element,
-            defaultShowName: this._constant.nullCard,
-            cardCreator: function(v) {
+            defaultShowIndex: this._constant.nullCard,
+            cardCreator: function (v) {
                 switch (v) {
                     case self._constant.nullCard:
-                        self.label = BI.createWidget({
-                            type: "bi.label",
-                            width: 200,
-                            cls: o.baseCls + "-null-label",
-                            text: BI.i18nText("BI-Add_Fields_First")
-                        });
                         return BI.createWidget({
                             type: "bi.center_adapt",
-                            items: [{
-                                el: self.label
-                            }]
+                            items: [self.label]
                         });
                     case self._constant.tableCard:
                         return self.table;
                     case self._constant.errorCard:
                         return BI.createWidget({
-                            type: "bi.center_layout",
+                            type: "bi.center_adapt",
                             items: [{
                                 type: "bi.label",
                                 width: 200,
-                                whiteSpace: "normal",
                                 cls: o.baseCls + "-null-label warning",
                                 text: BI.i18nText("BI-Current_Tab_Error")
                             }]
                         });
+
                 }
             }
         });
