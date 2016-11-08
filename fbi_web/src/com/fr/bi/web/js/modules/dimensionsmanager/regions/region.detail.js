@@ -42,7 +42,8 @@ BI.DetailRegion = BI.inherit(BI.AbstractRegion, {
             type: "bi.text_button",
             height: 25,
             disabled: true,
-            value: BI.i18nText("BI-Add_Cal_Target")
+            value: BI.i18nText("BI-Add_Cal_Target"),
+            warningTitle: BI.i18nText("BI-There_Is_No_Target_for_Contruct_Calculate_Target")
         });
 
         this.calculateAddButton.on(BI.TextButton.EVENT_CHANGE, function () {
