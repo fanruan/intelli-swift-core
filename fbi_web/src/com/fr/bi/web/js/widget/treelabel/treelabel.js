@@ -25,10 +25,10 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         this.view = BI.createWidget({
             type: "bi.tree_label_view",
             element: this.element,
-            itemsCreator: BI.bind(this._itemsCreator, this),
             titles: this.titles
         });
-        this.view.on(BI.TreeLabelView.EVENT_CHANGE, function () {
+        this.view.on(BI.TreeLabelView.EVENT_CHANGE, function (op) {
+            self._itemsCreator(op, BI.bind(self.view._updateView, self.view));
             self.fireEvent(BI.TreeLabel.EVENT_CHANGE, arguments);
         })
     },
@@ -240,7 +240,7 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
     _updateLabelView: function (op, callback) {
         var self = this, o = this.options;
         var floor = op.floor;
-        var ids = op.id;
+        // var ids = op.id;
         // var resultId = [];
         // if (BI.isArray(ids)) {
         //     BI.each(ids, function (idx, id) {

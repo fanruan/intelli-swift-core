@@ -11,7 +11,6 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
         return BI.extend(BI.TreeLabelView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-tree-label-view",
             titleWidth: 60,
-            itemsCreator: BI.emptyFn,
             titles: [],
             items: []
         })
@@ -83,7 +82,7 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
         options.floor = op.floor;
         options.value = op.value;
         options.selectedValues = this.getValue();
-        this.options.itemsCreator(options, BI.bind(this._updateView, this));
+        this.fireEvent(BI.TreeLabelView.EVENT_CHANGE, options);
     },
 
     _updateView: function (items, floor) {
@@ -183,7 +182,6 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
                     id: id,
                     type: 1
                 });
-                self.fireEvent(BI.TreeLabelView.EVENT_CHANGE, arguments);
             });
             self.items.push(temp);
         });
