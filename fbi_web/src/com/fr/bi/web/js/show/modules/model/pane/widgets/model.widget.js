@@ -23,7 +23,7 @@ BIShow.WidgetModel = BI.inherit(BI.Model, {
             var dids = BI.keys(dimensions);
             var linkages = this.get("linkages");
             BI.remove(linkages, function (i, linkage) {
-                return !dids.contains(linkage.from);
+                return !dids.contains(linkage.from) || !dids.contains(linkage.cids[0]);
             });
             this.refresh();
             this.set("linkages", linkages);
