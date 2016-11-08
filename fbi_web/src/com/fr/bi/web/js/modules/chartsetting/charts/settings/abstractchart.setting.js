@@ -1,5 +1,5 @@
 /**
- * 第一个值轴y——leftY***;第二个值轴y--right1Y***;第三个值轴y--right2Y***;分类轴x——catX***(category)
+ * 第一个值轴y——leftY***;第二个值轴y--rightY***;第三个值轴y--rightY2***;分类轴x——cat***(category)
  * 气泡图 散点图 的x轴作为值轴使用第二个值轴的命名模板
  * 图表样式设置
  * Created by AstronautOO7 on 2016/8/1.

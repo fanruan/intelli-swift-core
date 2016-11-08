@@ -336,13 +336,13 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //显示横向网格线
-        this.showHGridLine = BI.createWidget({
+        this.hShowGridLine = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Horizontal"),
             width: 60
         });
 
-        this.showHGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+        this.hShowGridLine.on(BI.Controller.EVENT_CHANGE, function () {
             self.hGridLineColor.setVisible(this.isSelected());
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
@@ -359,13 +359,13 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //显示纵向网格线
-        this.showVGridLine = BI.createWidget({
+        this.vShowGridLine = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Vertical"),
             width: 60
         });
 
-        this.showVGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+        this.vShowGridLine.on(BI.Controller.EVENT_CHANGE, function () {
             self.vGridLineColor.setVisible(this.isSelected());
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE)
         });
@@ -442,13 +442,13 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.showHGridLine]
+                    items: [this.hShowGridLine]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.hGridLineColor]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.showVGridLine]
+                    items: [this.vShowGridLine]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.vGridLineColor]
@@ -541,11 +541,11 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.legendStyle.setValue(BI.Utils.getWSLegendSettingByID(wId));
-        this.showHGridLine.setSelected(BI.Utils.getWSShowHGridLineByID(wId));
-        this.hGridLineColor.setVisible(this.showHGridLine.isSelected());
+        this.hShowGridLine.setSelected(BI.Utils.getWSShowHGridLineByID(wId));
+        this.hGridLineColor.setVisible(this.hShowGridLine.isSelected());
         this.hGridLineColor.setValue(BI.Utils.getWSHGridLineColorByID(wId));
-        this.showVGridLine.setSelected(BI.Utils.getWSShowVGridLineByID(wId));
-        this.vGridLineColor.setVisible(this.showVGridLine.isSelected());
+        this.vShowGridLine.setSelected(BI.Utils.getWSShowVGridLineByID(wId));
+        this.vGridLineColor.setVisible(this.vShowGridLine.isSelected());
         this.vGridLineColor.setValue(BI.Utils.getWSVGridLineColorByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
         this.tooltipStyle.setValue(BI.Utils.getWSToolTipSettingByID(wId));
@@ -577,9 +577,9 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
             legend: this.legend.getValue()[0],
             legendStyle: this.legendStyle.getValue(),
-            showHGridLine: this.showHGridLine.isSelected(),
+            hShowGridLine: this.hShowGridLine.isSelected(),
             hGridLineColor: this.hGridLineColor.getValue(),
-            showVGridLine: this.showVGridLine.isSelected(),
+            vShowGridLine: this.vShowGridLine.isSelected(),
             vGridLineColor: this.vGridLineColor.getValue(),
             showDataLabel: this.showDataLabel.isSelected(),
             tooltipStyle: this.tooltipStyle.getValue(),
