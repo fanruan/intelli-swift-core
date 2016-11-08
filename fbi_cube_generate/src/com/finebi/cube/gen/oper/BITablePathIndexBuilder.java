@@ -64,7 +64,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
 
     @Override
     public void release() {
-
+        cube.clear();
     }
 
     private String logPath() {

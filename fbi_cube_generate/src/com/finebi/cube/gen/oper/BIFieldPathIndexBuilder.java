@@ -43,7 +43,7 @@ public class BIFieldPathIndexBuilder extends BITablePathIndexBuilder {
 
     @Override
     public void release() {
-
+        cube.clear();
     }
 
     private void buildFieldPathIndex() {
@@ -66,14 +66,15 @@ public class BIFieldPathIndexBuilder extends BITablePathIndexBuilder {
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
         } finally {
-//            if (primaryColumnReader != null) {
-//                primaryColumnReader.clear();
-//            }
-//            if (tablePathReader != null) {
-//                tablePathReader.clear();
-//            }
+            if (primaryColumnReader != null) {
+                primaryColumnReader.clear();
+            }
+            if (tablePathReader != null) {
+                tablePathReader.clear();
+            }
             if (targetPathEntity != null) {
                 targetPathEntity.forceReleaseWriter();
+                targetPathEntity.clear();
             }
         }
     }
