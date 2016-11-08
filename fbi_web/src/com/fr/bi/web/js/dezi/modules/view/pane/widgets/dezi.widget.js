@@ -44,10 +44,10 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             //检查一下是否有维度被删除（联动）
             var clicked = self.model.get("clicked");
             if (BI.isNotNull(clicked)) {
-                BI.each(clicked, function(dId, values) {
+                BI.each(clicked, function (dId, values) {
                     if (BI.Utils.isTargetByDimensionID(dId)) {
                         var newValues = [];
-                        BI.each(values, function(i, v) {
+                        BI.each(values, function (i, v) {
                             if (BI.Utils.isDimensionExist(v.dId)) {
                                 newValues.push(v);
                             }
@@ -70,10 +70,6 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
             self._refreshGlobalStyle(globalStyle);
         });
-    },
-
-    _onClickChart: function (obj) {
-        this.chartDrill.populate(obj);
     },
 
     _onClickLinkage: function () {
@@ -202,13 +198,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         this.chartDrill.populate();
     },
 
-    _onClickChart: function (obj) {
-        //这边单独set clicked，因为地图钻取是没有钻取框的，直接钻的
-        if (BI.has(obj, "clicked")) {
-            this.model.set(obj);
-        } else {
-            this.chartDrill.populate(obj);
-        }
+    _onClickChart: function () {
+        this.chartDrill.populate();
     },
 
     _createTools: function () {

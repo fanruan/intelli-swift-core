@@ -37,7 +37,9 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
             } else {
                 clicked[dId] = v;
             }
-            self.model.set("clicked", clicked);
+            self.model.set("clicked", clicked, {
+                notrefresh: true
+            });
             self._refreshTableAndFilter();
         });
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
@@ -402,6 +404,9 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         }
         if (BI.has(changed, "settings") && (changed.settings.widget_bg !== prev.settings.widget_bg)) {
             this._refreshWidgetBG()
+        }
+        if (BI.has(changed, "clicked")) {
+            this._refreshTableAndFilter();
         }
     },
 
