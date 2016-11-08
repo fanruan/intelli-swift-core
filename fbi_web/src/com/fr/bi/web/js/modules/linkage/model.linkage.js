@@ -113,8 +113,8 @@ BI.LinkageModel = BI.inherit(FR.OB, {
     },
 
     _isRelationsIntersect: function (relation1, relation2) {
-        var all1 = relation1.parents.concat(relation1.current);
-        var all2 = relation2.children.concat(relation2.parents).concat(relation2.current);
+        var all1 = [relation1.current];
+        var all2 = relation2.children.concat(relation2.current);
         var intersection = BI.intersection(all1, all2);
         return intersection.length > 0;
     },
