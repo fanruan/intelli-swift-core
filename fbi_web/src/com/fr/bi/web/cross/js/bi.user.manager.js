@@ -111,12 +111,12 @@ FS.BIUSERMGR = {
     },
 
     _createUserLimitTip: function( mode ) {
-
+        var authLimit = this.getAuthLimitByMode(mode);
+        authLimit === -1 && (authLimit = BI.i18nText("BI-Unrestricted"));
+        var value = mode === Consts.BIEDIT ? BI.i18nText("BI-Current_Lic_Support_Edit_User", authLimit) : BI.i18nText("BI-Current_Lic_Support_View_User", authLimit);
         return {
             type: "label",
-            value: FR.i18nText("FS-Mobile_User_Limit_Tip_Left")
-            + " " + this.getAuthLimitByMode( mode ) + " "
-            + (mode===1 ? BI.i18nText("BI-User_With_Edit_Privilege") : BI.i18nText("BI-User_With_View_Privilege")),
+            value: value,
             x: 0,
             y: 0,
             width: 800,
@@ -278,7 +278,7 @@ FS.BIUSERMGR = {
         moveLeftButton.setEnable(Boolean(enableLeft));
         enableRight &= unauthorizedList.getSelectedIndex() !== undefined;
         enableRight &= unauthorizedList.getItemLength() !== 0;
-        enableRight &= authorizedList.getItemLength() < this.getAuthLimitByMode( mode );
+        enableRight &= this.getAuthLimitByMode(mode) === -1 || (authorizedList.getItemLength() < this.getAuthLimitByMode(mode));
         moveRightButton.setEnable(Boolean(enableRight));
     },
 
