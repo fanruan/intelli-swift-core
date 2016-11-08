@@ -80,13 +80,13 @@ public class CrossExecutor extends BITableExecutor<NewCrossRoot> {
         generateTitleCell(cbcells, isColTargetSort, isRowTargetSort);
         if (ExecutorCommonUtils.isAllPage(paging.getOprator())) {
             GroupExecutor.dealWithNode(node.getLeft(), NodeExpander.ALL_EXPANDER, cbcells, colDimension.length + 1, 0, paging.getOprator(), rowDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), rowDimension.length - 1, widget.isOrder(), new BIComplexExecutData(rowDimension), widget.getChatSetting());
-            HorGroupExecutor.dealWithNode(node.getTop(), NodeExpander.ALL_EXPANDER, cbcells, 0, rowDimension.length + widget.isOrder(), colDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), colDimension.length - 1, true, new IntList(), isRowTargetSort, rowDimension.length > 0 ? rowDimension[0] : null, widget, new BIComplexExecutData(colDimension), widget.getChatSetting());
+            HorGroupExecutor.dealWithNode(node.getTop(), NodeExpander.ALL_EXPANDER, cbcells, 0, rowDimension.length + widget.isOrder(), colDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), colDimension.length - 1, true, new IntList(), isRowTargetSort, rowDimension[0], widget, new BIComplexExecutData(colDimension), widget.getChatSetting());
             if (hasLeftChild(node)) {
                 dealWithNode(node.getLeft(), new NodeAllExpander(rowDimension.length - 1), cbcells, colDimension.length + 1, rowDimension.length, keys, rowDimension.length - 1, widget.getChatSetting());
             }
         } else {
             GroupExecutor.dealWithNode(node.getLeft(), expander.getYExpander(), cbcells, colDimension.length + 1, 0, paging.getCurrentPage(), rowDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), rowDimension.length - 1, widget.isOrder(), new BIComplexExecutData(rowDimension), widget.getChatSetting());
-            HorGroupExecutor.dealWithNode(node.getTop(), expander.getXExpander(), cbcells, 0, rowDimension.length + widget.isOrder(), colDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), colDimension.length - 1, true, new IntList(), isRowTargetSort, rowDimension.length > 0 ? rowDimension[0] : null, widget, new BIComplexExecutData(colDimension), widget.getChatSetting());
+            HorGroupExecutor.dealWithNode(node.getTop(), expander.getXExpander(), cbcells, 0, rowDimension.length + widget.isOrder(), colDimension, usedSumTarget, new TargetGettingKey[]{}, new ArrayList<String>(), colDimension.length - 1, true, new IntList(), isRowTargetSort, rowDimension[0], widget, new BIComplexExecutData(colDimension), widget.getChatSetting());
             if (hasLeftChild(node)) {
                 dealWithNode(node.getLeft(), expander.getYExpander(), cbcells, colDimension.length + 1, rowDimension.length, keys, rowDimension.length - 1, widget.getChatSetting());
             }
