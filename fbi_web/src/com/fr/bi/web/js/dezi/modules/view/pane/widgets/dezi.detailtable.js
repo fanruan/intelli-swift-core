@@ -407,6 +407,9 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         if (BI.has(changed, "clicked")) {
             this._refreshTableAndFilter();
         }
+        if (BI.has(changed, "clicked")) {
+            this._refreshTableAndFilter();
+        }
     },
 
     local: function () {

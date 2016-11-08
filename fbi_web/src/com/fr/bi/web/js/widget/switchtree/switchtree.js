@@ -42,13 +42,20 @@ BI.SwitchTree = BI.inherit(BI.Widget, {
             case BI.SwitchTree.SelectType.MultiSelect:
                 this.tree = BI.createWidget({
                     type: "bi.simple_tree",
-                    items: BI.deepClone(o.items)
+                    items: this._removeIsParent(BI.deepClone(o.items))
                 });
                 this.tree.on(BI.SimpleTreeView.EVENT_CHANGE, function () {
                     self.fireEvent(BI.SwitchTree.EVENT_CHANGE, arguments);
                 });
                 return this.tree;
         }
+    },
+
+    _removeIsParent: function(items) {
+        BI.each(items, function(i, item) {
+            BI.isNotNull(item.isParent) && delete item.isParent;
+        });
+        return items;
     },
 
     switchSelect: function () {
@@ -92,7 +99,7 @@ BI.SwitchTree = BI.inherit(BI.Widget, {
             this.levelTree.populate(BI.deepClone(items));
         }
         if (BI.isNotNull(this.tree)) {
-            this.tree.populate(BI.deepClone(items));
+            this.tree.populate(this._removeIsParent(BI.deepClone(items)));
         }
     }
 });
