@@ -10,7 +10,10 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.TreeLabelView.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-tree-label-view",
-            titleWidth: 60
+            titleWidth: 60,
+            itemsCreator: BI.emptyFn,
+            titles: [],
+            items: []
         })
     },
 
@@ -28,24 +31,24 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
             type: "bi.button_group",
             items: BI.createItems(o.titles, {
                 type: "bi.label",
-                height: self._constant.LIST_LABEL_HEIGHT,
+                height: this._constant.LIST_LABEL_HEIGHT,
                 width: o.titleWidth
             }),
-            height: self._constant.LIST_LABEL_HEIGHT * o.titles.length,
+            height: this._constant.LIST_LABEL_HEIGHT * o.titles.length,
             layouts: [{
                 type: "bi.vertical"
             }]
         });
         BI.createWidget({
             type: "bi.vertical",
-            element: self.container,
-            items: self.items
+            element: this.container,
+            items: this.items
         });
         this.right = BI.createWidget({
             type: "bi.button_group",
             cls: "list-label-group",
-            items: [self.container],
-            height: self._constant.LIST_LABEL_HEIGHT * self.items.length,
+            items: [this.container],
+            height: this._constant.LIST_LABEL_HEIGHT * this.items.length,
             layouts: [{
                 type: "bi.horizontal"
             }]
@@ -66,7 +69,7 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
                 top:0,
                 bottom:0
             }],
-            element: self.element
+            element: this.element
         });
     },
 
