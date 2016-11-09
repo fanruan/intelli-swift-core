@@ -63,14 +63,16 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 self._send2AllChildLinkWidget(link.to, link.from, clicked);
             }
         });
-        this.fireEvent(BI.ChartDisplay.EVENT_CHANGE, obj);
+
+        BI.Broadcasts.send(BICst.BROADCAST.CHART_CLICK_PREFIX + o.wId, obj);
+        this.fireEvent(BI.ChartDisplay.EVENT_CHANGE, {});
     },
 
     _onClickDrill: function (dId, value, drillId) {
         var wId = this.options.wId;
         var drillMap = BI.Utils.getDrillByID(wId);
         if (BI.isNull(dId)) {
-            this.fireEvent(BI.ChartDisplay.EVENT_SET, {clicked: BI.extend(BI.Utils.getLinkageValuesByID(wId), {})});
+            this.fireEvent(BI.ChartDisplay.EVENT_CHANGE, {clicked: BI.extend(BI.Utils.getLinkageValuesByID(wId), {})});
             return;
         }
         //value 存当前的过滤条件——因为每一次钻取都要带上所有父节点的值
@@ -108,7 +110,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
             });
         }
         drillMap[rootId] = drillOperators;
-        this.fireEvent(BI.ChartDisplay.EVENT_SET, {clicked: BI.extend(BI.Utils.getLinkageValuesByID(wId), drillMap)});
+        this.fireEvent(BI.ChartDisplay.EVENT_CHANGE, {clicked: BI.extend(BI.Utils.getLinkageValuesByID(wId), drillMap)});
     },
 
     _send2AllChildLinkWidget: function (wid, dId, clicked) {
@@ -522,5 +524,4 @@ BI.extend(BI.ChartDisplay, {
     ]
 });
 BI.ChartDisplay.EVENT_CHANGE = "EVENT_CHANGE";
-BI.ChartDisplay.EVENT_SET = "EVENT_SET";
 $.shortcut('bi.chart_display', BI.ChartDisplay);

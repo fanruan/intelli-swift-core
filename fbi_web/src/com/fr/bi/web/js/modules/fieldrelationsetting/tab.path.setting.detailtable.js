@@ -34,7 +34,7 @@ BI.DetailTablePathSettingTab = BI.inherit(BI.Widget, {
             }],
             tipType: "warning",
             title: function(){
-                return self.tab.isEnabled() ? "123445" : BI.i18nText("BI-Relation_Only_Between_Fields")
+                return self.tab.isEnabled() ? "" : BI.i18nText("BI-Relation_Only_Between_Fields")
             }
         });
 
@@ -60,6 +60,7 @@ BI.DetailTablePathSettingTab = BI.inherit(BI.Widget, {
             }
         });
 
+        o.choosePath = self._getPathRelation(this.tabWidget.getValue());
 
         this.tabWidget.on(BI.Tab.EVENT_CHANGE, function (value) {
             self.setValue(value);

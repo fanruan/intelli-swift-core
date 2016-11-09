@@ -1515,6 +1515,16 @@
             }
             return clicked;
         },
+        
+        //获取组件中所有维度当前钻取到的维度的信息
+        getCurrentDrillInfo: function(wid){
+            var drillMap = BI.Utils.getDrillByID(wid);
+            var map = {};
+            BI.each(drillMap, function (drId, ds) {
+                map[drId] = ds[ds.length - 1];
+            });
+            return map;
+        },
 
         getWidgetFilterValueByID: function (wid) {
             if (this.isWidgetExistByID(wid)) {
@@ -2725,7 +2735,7 @@
                             // _src: {field_id: self.getFieldIDByDimensionID(dimensionIds[floor])}
                             _src: self.getDimensionSrcByID(dimensionIds[floor])
                         }];
-                        if (BI.isEmptyObject(child)) {
+                        if (BI.isEmptyObject(child) === true) {
                             var filterObj = {
                                 filter_type: BICst.FILTER_TYPE.AND,
                                 filter_value: []

@@ -197,10 +197,6 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         this.chartDrill.populate();
     },
 
-    _onClickChart: function () {
-        this.chartDrill.populate();
-    },
-
     _createTools: function () {
         var self = this, wId = this.model.get("id");
 
@@ -346,9 +342,6 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
 
         this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function (widget) {
             self.model.set(widget);
-        });
-        this.tableChart.on(BI.TableChartManager.EVENT_CLICK_CHART, function (obj) {
-            self._onClickChart(obj);
         });
 
         this.widget = BI.createWidget({
