@@ -154,7 +154,12 @@ BIShow.WidgetView = BI.inherit(BI.View, {
     },
 
     _onClickChart: function (obj) {
-        this.chartDrill.populate(obj);
+        //TODO 先与dezi.widget.js统一一下,等bugfix4.0s整理完成后合并
+        if (BI.has(obj, "clicked")) {
+            this.model.set(obj);
+        } else {
+            this.chartDrill.populate(obj);
+        }
     },
 
     _createTools: function () {
