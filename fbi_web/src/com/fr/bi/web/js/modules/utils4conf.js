@@ -265,8 +265,8 @@ BI.extend(BI.Utils, {
     },
 
     //fuck you
-    getConfNumberFieldMaxMinValue: function (table, fieldName, fieldType, callback, complete) {
-        Data.Req.reqNumberFieldMaxMinValue(table, fieldName, fieldType,
+    getConfNumberFieldMaxMinValue: function (table, fieldName, callback, complete) {
+        Data.Req.reqNumberFieldMaxMinValue(table, fieldName,
             function (res) {
                 callback(res);
             }, complete)
