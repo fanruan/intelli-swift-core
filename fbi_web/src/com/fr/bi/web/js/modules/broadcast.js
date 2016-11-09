@@ -26,5 +26,7 @@ BICst.BROADCAST = {
     
     DATA_LABEL_PREFIX: "data_label_", //数据标签(气泡图/散点图) + wId
     
-    IMAGE_CHANGE_PREFIX: "image_change_" //数据标签和图片填充 + wId
+    IMAGE_CHANGE_PREFIX: "image_change_", //数据标签和图片填充 + wId
+
+    CHART_DRILL_PREFIX: "chart_drill_" //图表钻取框事件
 };
