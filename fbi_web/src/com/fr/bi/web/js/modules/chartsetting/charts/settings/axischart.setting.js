@@ -982,7 +982,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             });
         }
         this.showName.setSelected(BI.Utils.getWSShowNameByID(wId));
-        this.widgetName.setVisible(BI.Utils.getWSShowNameByID(wId));
+        this.widgetTitle.setVisible(BI.Utils.getWSShowNameByID(wId));
         this.widgetName.setValue(BI.Utils.getWidgetNameByID(wId));
         this.widgetNameStyle.setValue(BI.Utils.getWSTitleDetailSettingByID(wId));
 
