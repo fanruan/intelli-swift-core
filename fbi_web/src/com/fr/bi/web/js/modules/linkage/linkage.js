@@ -622,7 +622,7 @@ BI.Linkage = BI.inherit(BI.Widget, {
                             el: {
                                 type: "bi.icon_button",
                                 cls: "down-arrow",
-                                invalid: false,
+                                invalid: true,
                                 iconWidth: 16,
                                 iconHeight: 16,
                                 width: 16,
