@@ -317,7 +317,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
 
     private GroupValueIndex filterRemovedIndexs(GroupValueIndex pGroupValueIndex) {
         BICubeTableAdapter tableAdapter = new BICubeTableAdapter(this.cube, getTableRelation(relation).getPrimaryTable());
-        pGroupValueIndex.AND(tableAdapter.getAllShowIndex());
+        pGroupValueIndex = pGroupValueIndex.AND(tableAdapter.getAllShowIndex());
         tableAdapter.clear();
         return pGroupValueIndex;
     }
