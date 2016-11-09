@@ -113,11 +113,11 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
             this.upDrill.setEnable(false);
         }
         if (BI.isEmptyArray(downChildren) || this.options.disableDownButton) {
-            this.downDrill.setEnable(false);
-            this.downTrigger.setEnable(false);
         } else {
             this.downDrill.populate([downChildren]);
         }
+        this.downDrill.setEnable(false);
+        this.downTrigger.setEnable(false);
     }
 });
 BI.ChartDrillCell.EVENT_DRILL_DOWN = "EVENT_DRILL_DOWN";
