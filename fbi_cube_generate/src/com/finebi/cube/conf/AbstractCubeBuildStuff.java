@@ -98,13 +98,14 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
         BILoggerFactory.getLogger().info("***************space check start*****************");
         boolean spaceCheck = getSpaceCheckResult();
         BILoggerFactory.getLogger().info("***************space check result: " + spaceCheck);
-        BILoggerFactory.getLogger().info("***************connection check start*****************");
-        boolean connectionCheck = getConnectionCheck();
-        BILoggerFactory.getLogger().info("***************connection check result: " + connectionCheck);
+//        BILoggerFactory.getLogger().info("***************connection check start*****************");
+//        boolean connectionCheck = getConnectionCheck();
+//        BILoggerFactory.getLogger().info("***************connection check result: " + connectionCheck);
 //        BILoggerFactory.getLogger().info("***************table check start*****************");
 //        boolean sqlTest = getSqlTest();
 //        BILoggerFactory.getLogger().info("***************table  check result: " + sqlTest);
-        return spaceCheck && connectionCheck;
+//        return spaceCheck && connectionCheck;
+        return spaceCheck;
     }
 
     public Set<CubeTableSource> getTableSources() {

@@ -262,11 +262,6 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
     }
 
     @Override
-    public boolean preConditionsCheck() {
-        return true;
-    }
-
-    @Override
     public boolean isSingleTable() {
         return true;
     }
