@@ -446,12 +446,12 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     @Override
     public void recordLastExecuteTime(long time) {
-        getLastExecuteTimeWriter().recordSpecificValue(0,time);
+        getLastExecuteTimeWriter().recordSpecificValue(0, time);
     }
 
     @Override
     public void recordCurrentExecuteTime() {
-        getCurrentExecuteTimeWriter().recordSpecificValue(0,System.currentTimeMillis());
+        getCurrentExecuteTimeWriter().recordSpecificValue(0, System.currentTimeMillis());
     }
 
     @Override
@@ -483,8 +483,11 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     @Override
     public IntArray getRemovedList() {
-        ICubeIntegerReaderWrapper removedListReader = getRemovedListReader();
         IntArray removedList = new IntArray();
+        if (!isRemovedListAvailable()) {
+            return removedList;
+        }
+        ICubeIntegerReaderWrapper removedListReader = getRemovedListReader();
         int i = 0;
         try {
             if (removedListReader.getSpecificValue(0) < 0) {
@@ -692,7 +695,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         }
         if (isCurrentExecuteTimeReaderAvailable()) {
             currentExecuteTimeReader.forceRelease();
-            currentExecuteTimeReader  =null;
+            currentExecuteTimeReader = null;
         }
         if (isCurrentExecuteTimeWriterAvailable()) {
             currentExecuteTimeWriter.forceRelease();
@@ -710,7 +713,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
             removeListWriter.clear();
             removeListWriter = null;
         }
-        if(isRemoveListReaderAvailable()){
+        if (isRemoveListReaderAvailable()) {
             removeListReader.clear();
             removeListReader = null;
         }
@@ -754,6 +757,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
             version = null;
         }
     }
+
     @Override
     public void forceReleaseReader() {
         if (isFieldReaderAvailable()) {

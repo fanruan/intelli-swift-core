@@ -1,5 +1,6 @@
 package com.finebi.cube.gen.oper;
 
+import com.finebi.cube.adapter.BICubeTableAdapter;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
@@ -218,6 +219,10 @@ public class BIRelationIndexGenerator extends BIProcessor {
                  * value值在主表的索引
                  */
                 GroupValueIndex pGroupValueIndex = primaryColumn.getBitmapIndex(index);
+                /**
+                 * 过滤掉removeList里面记录的索引
+                 */
+                pGroupValueIndex = filterRemovedIndexs(pGroupValueIndex);
                 int result = c.compare(primaryColumnValue, foreignColumnValue);
                 /**
                  * 小于0说明主表的id在子表找不到，大于0说明子表的id在主表找不到
@@ -308,6 +313,13 @@ public class BIRelationIndexGenerator extends BIProcessor {
 
         }
 
+    }
+
+    private GroupValueIndex filterRemovedIndexs(GroupValueIndex pGroupValueIndex) {
+        BICubeTableAdapter tableAdapter = new BICubeTableAdapter(this.cube, getTableRelation(relation).getPrimaryTable());
+        pGroupValueIndex.AND(tableAdapter.getAllShowIndex());
+        tableAdapter.clear();
+        return pGroupValueIndex;
     }
 
     private void matchRelation(BICubeRelationEntity tableRelation, GroupValueIndex foreignGroupValueIndex, int[] reverse, GroupValueIndex pGroupValueIndex) {
