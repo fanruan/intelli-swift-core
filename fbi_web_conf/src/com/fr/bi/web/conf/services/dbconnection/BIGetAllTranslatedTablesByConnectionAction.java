@@ -43,10 +43,12 @@ public class BIGetAllTranslatedTablesByConnectionAction extends
             table.put("value", names.next());
             groupArray.put(table);
         }
-        groupJo.put("group", groupArray);
-        tablesJa.put(groupJo);
-        jo.put("tables", tablesJa);
-        ja.put(jo);
+        if (groupArray.length() > 0) {
+            groupJo.put("group", groupArray);
+            tablesJa.put(groupJo);
+            jo.put("tables", tablesJa);
+            ja.put(jo);
+        }
     }
 
     @Override
