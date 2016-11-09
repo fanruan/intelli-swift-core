@@ -19,11 +19,13 @@ import java.util.*;
  * Created by 小灰灰 on 2015/8/21.
  */
 public class BIUserAuthorAttr implements XMLable {
+    public static final int NO_LIMIT = -1;
+
     public static final String XML_TAG = "UserAuthorAttr";
     public static final String EDIT_AUTH_TAG = "biEditAuth";
     public static final String VIEW_AUTH_TAG = "biViewAuth";
     public static final String MOBILE_AUTH_TAG = "biMobileAuth";
-    public static final int DEFAULT_MOBILE_USER_AUTH_LIMIT = 0;
+    public static final int DEFAULT_MOBILE_USER_AUTH_LIMIT = NO_LIMIT;
     public final static int EDIT = 1;
     public final static int VIEW = 2;
     public final static int MOBILE = 3;
@@ -45,7 +47,7 @@ public class BIUserAuthorAttr implements XMLable {
 //        BI_MOBILE
 //        BI_MAKER
 //        BI_USER=50
-//        0 代码不限制
+//        -1 无限制
         if (licJo.has("BI_USER")) {
             biViewUserLimit = Math.max(DEFAULT_MOBILE_USER_AUTH_LIMIT, licJo.optInt("BI_USER"));
         }
@@ -136,8 +138,8 @@ public class BIUserAuthorAttr implements XMLable {
                         }
                         JSONObject userJo = getBIAuthUserJoByMode(mode);
                         if (StringUtils.isNotEmpty(userName)) {
-                            //等于0代表不限制
-                            if (getBIAuthUserLimitByMode(mode) == 0 || userJo.length() < getBIAuthUserLimitByMode(mode)) {
+                            //等于-1代表不限制
+                            if (getBIAuthUserLimitByMode(mode) == NO_LIMIT || userJo.length() < getBIAuthUserLimitByMode(mode)) {
                                 userJo.put(userName, fullName);
                             }
                         }

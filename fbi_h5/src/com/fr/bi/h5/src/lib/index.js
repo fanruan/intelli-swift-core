@@ -44,6 +44,7 @@ export TouchableOpacity from './Touchable/TouchableOpacity.web';
 export TouchableWithoutFeedback from './Touchable/TouchableWithoutFeedback.web';
 export TouchableBounce from './Touchable/TouchableBounce.web';
 export RefreshControl from './RefreshControl/RefreshControl.web';
+export StatusBar from './StatusBar/StatusBar.web';
 export View from './View/View.web';
 export ViewPagerAndroid from './ViewPager/ViewPager.web';
 export ViewPager from './ViewPager/ViewPager.web';

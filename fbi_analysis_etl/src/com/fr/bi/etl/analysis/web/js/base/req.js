@@ -78,7 +78,7 @@ BI.ETLReq = {
 
     reqPreviewTable: function (data, callback) {
         data.sessionID = Data.SharingPool.get("sessionID");
-        if (data.table && data.table[ETLCst.ITEMS]) {
+        if (data[ETLCst.ITEMS] && data[ETLCst.ITEMS].length > 0 && data[ETLCst.ITEMS][0].operator) {
             data[ETLCst.ITEMS][0].operator.sessionID = Data.SharingPool.get("sessionID");
         }
         if (data[ETLCst.ITEMS][0][ETLCst.FIELDS].length === 0) {
