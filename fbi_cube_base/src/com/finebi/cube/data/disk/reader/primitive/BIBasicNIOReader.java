@@ -26,7 +26,6 @@ public abstract class BIBasicNIOReader extends BIAbstractBaseNIOReader {
         super(cacheFile);
     }
 
-
     public BIBasicNIOReader(String cacheFilePath) {
         this(new File(cacheFilePath));
     }
@@ -48,7 +47,6 @@ public abstract class BIBasicNIOReader extends BIAbstractBaseNIOReader {
         } else {
             throw new BIResourceInvalidException();
         }
-
     }
 
     protected int getIndex(long filePosition) {

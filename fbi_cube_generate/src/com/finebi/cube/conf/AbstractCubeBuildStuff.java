@@ -2,8 +2,6 @@ package com.finebi.cube.conf;
 
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.conf.table.BIBusinessTable;
-import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.impl.conf.CalculateDependManager;
 import com.finebi.cube.location.BICubeResourceRetrieval;
@@ -38,20 +36,19 @@ import java.util.*;
 public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
     private long userId;
     protected Set<CubeTableSource> allTableSources = new HashSet<CubeTableSource>();
-    private Set allBusinessTable = new HashSet<BIBusinessTable>();
     protected Set<BITableRelationPath> allRelationPathSet = new HashSet<BITableRelationPath>();
     protected Map<CubeTableSource, Map<String, ICubeFieldSource>> tableDBFieldMaps = new HashMap<CubeTableSource, Map<String, ICubeFieldSource>>();
     protected CalculateDependTool calculateDependTool;
+    protected BISystemConfigHelper configHelper;
 
     public AbstractCubeBuildStuff(long userId) {
         this.userId = userId;
+        configHelper = new BISystemConfigHelper(userId);
+        allTableSources.addAll(configHelper.extractTableSource(configHelper.getSystemBusinessTables()));
         init(userId);
-        extractTableSource();
-        extractFieldSource();
     }
 
     private void init(long userId) {
-        allBusinessTable = BICubeConfigureCenter.getPackageManager().getAllTables(userId);
         calculateDependTool = new CalculateDependManager();
         try {
             allRelationPathSet = BICubeConfigureCenter.getTableRelationManager().getAllTablePath(userId);
@@ -107,7 +104,7 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
         return spaceCheck && connectionCheck;
     }
 
-    public Set<CubeTableSource> getTableSources() {
+    public Set<CubeTableSource> getSystemTableSources() {
         return this.allTableSources;
     }
 
@@ -168,12 +165,6 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
         }
     }
 
-    public void extractTableSource() {
-        for (Object biBusinessTable : allBusinessTable) {
-            BusinessTable table = (BusinessTable) biBusinessTable;
-            allTableSources.add(table.getTableSource());
-        }
-    }
 
     protected UpdateSettingSource setUpdateTypes(CubeTableSource source) {
         switch (source.getType()) {
@@ -199,7 +190,6 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
                     }
                 }
             }
-
         }
         if (needUpdate) {
             updateSettingSource.setUpdateType(DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
@@ -219,58 +209,8 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
     }
 
 
-    private void extractFieldSource() {
-        Iterator<CubeTableSource> tableSourceIterator = allTableSources.iterator();
-        while (tableSourceIterator.hasNext()) {
-            CubeTableSource tableSource = tableSourceIterator.next();
-            Set<ICubeFieldSource> BICubeFieldSources = tableSource.getFacetFields(allTableSources);
-            Map<String, ICubeFieldSource> name2Field = new HashMap<String, ICubeFieldSource>();
-            Iterator<ICubeFieldSource> it = BICubeFieldSources.iterator();
-            while (it.hasNext()) {
-                ICubeFieldSource field = it.next();
-                name2Field.put(field.getFieldName(), field);
-            }
-            tableDBFieldMaps.put(tableSource, name2Field);
-        }
-    }
-
-    protected BITableSourceRelation convertRelation(BITableRelation relation) {
-        if (!isTableRelationValid(relation)) {
-            BILoggerFactory.getLogger().error("tableSourceRelation invalid:" + relation.toString());
-            return null;
-        }
-        BITableSourceRelation biTableSourceRelation;
-        try {
-            CubeTableSource primaryTable;
-            CubeTableSource foreignTable;
-            primaryTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getPrimaryField().getTableBelongTo());
-            foreignTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getForeignField().getTableBelongTo());
-            ICubeFieldSource primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
-            ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
-            biTableSourceRelation = new BITableSourceRelation(
-                    primaryField,
-                    foreignField,
-                    primaryTable,
-                    foreignTable
-            );
-            primaryField.setTableBelongTo(primaryTable);
-            foreignField.setTableBelongTo(foreignTable);
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
-            return null;
-        }
-        return biTableSourceRelation;
-    }
-
-
-    protected boolean isTableRelationValid(BITableRelation relation) {
-        boolean relationValid = BITableRelationUtils.isRelationValid(relation);
-        boolean isStructureValid = allBusinessTable.contains(relation.getPrimaryTable()) && allBusinessTable.contains(relation.getForeignTable());
-        return isStructureValid && relationValid;
-    }
-
     protected boolean isTableRelationAvailable(BITableRelation relation, ICubeConfiguration cubeConfiguration) {
-        if (isTableRelationValid(relation)) {
+        if (configHelper.isTableRelationValid(relation)) {
             return BITableRelationUtils.isRelationAvailable(relation, cubeConfiguration);
         } else {
             return false;
@@ -278,15 +218,7 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
     }
 
     protected BITableSourceRelationPath convertPath(BITableRelationPath path) throws BITablePathConfusionException {
-        BITableSourceRelationPath tableSourceRelationPath = new BITableSourceRelationPath();
-        for (BITableRelation biTableRelation : path.getAllRelations()) {
-            BITableSourceRelation biTableSourceRelation = convertRelation(biTableRelation);
-            if (null == biTableSourceRelation) {
-                return null;
-            }
-            tableSourceRelationPath.addRelationAtTail(biTableSourceRelation);
-        }
-        return tableSourceRelationPath;
+        return configHelper.convertPath(path);
     }
 
     protected Set<BITableSourceRelation> removeDuplicateRelations(Set<BITableSourceRelation> tableRelations) {

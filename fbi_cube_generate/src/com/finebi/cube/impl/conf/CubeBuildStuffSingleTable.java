@@ -66,7 +66,7 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
         try {
             setTaskId(businessTable, childTableSourceId);
             setAllSources(businessTable);
-            Set<List<Set<CubeTableSource>>> depends = calculateTableSource(getTableSources());
+            Set<List<Set<CubeTableSource>>> depends = calculateTableSource(getSystemTableSources());
             setDependTableResource(depends);
             setAllSingleSources(set2Set(depends));
             setChildTableSource(childTableSourceId);
@@ -126,7 +126,7 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
         for (BITableRelation tableRelation : inUseRelations) {
             if (isTableRelationAvailable(tableRelation, cubeConfiguration)) {
                 BITableRelation tempTableRelation = new BITableRelation(tableRelation.getPrimaryField(), tableRelation.getForeignField());
-                BITableSourceRelation convertRelation = convertRelation(tempTableRelation);
+                BITableSourceRelation convertRelation = configHelper.convertRelation(tempTableRelation);
                 if (null != convertRelation) {
                     this.biTableSourceRelationSet.add(convertRelation);
                     Set<CubeTableSource> dependTableSourceSet = new HashSet<CubeTableSource>();
@@ -219,7 +219,7 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
     /**
      * @return allTableSources
      */
-    public Set<CubeTableSource> getTableSources() {
+    public Set<CubeTableSource> getSystemTableSources() {
         return sources;
     }
 
@@ -244,11 +244,6 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
 
     public Set<List<Set<CubeTableSource>>> getDependTableResource() {
         return dependTableResource;
-    }
-
-    @Override
-    public Set<BITableRelation> getTableRelationSet() {
-        return inUseRelations;
     }
 
     @Override
@@ -277,6 +272,7 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
 
     /***
      * 单表更新ETL时，除了选中的表外，其他基础表不作更新
+     *
      * @return
      */
     @Override

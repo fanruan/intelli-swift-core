@@ -284,6 +284,15 @@ public class BICubeTableEntity implements CubeTableEntityService {
     }
 
     @Override
+    public boolean relationExists(BICubeTablePath path) {
+        try {
+            return relationManager.relationExists(path);
+        } catch (IllegalRelationPathException e) {
+            throw BINonValueUtils.illegalArgument(path.toString() + " the path is so terrible");
+        }
+    }
+
+    @Override
     public boolean isRowCountAvailable() {
         return tableProperty.isRowCountAvailable();
     }

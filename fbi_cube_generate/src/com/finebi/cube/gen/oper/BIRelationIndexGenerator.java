@@ -273,6 +273,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
             nullIndex.or(foreignGroupValueIndex);
             buildReverseIndex(tableRelation, reverse);
             tableRelation.addRelationNULLIndex(0, nullIndex);
+            tableRelation.addVersion(System.currentTimeMillis());
         } catch (Exception e) {
             try {
                 logger.error("error relation :" + relation.toString() + " the exception is:" + "relation information used as listed:" + relation.getPrimaryTable().getSourceID() + "." + relation.getPrimaryField().getColumnName() + " to " + relation.getForeignTable().getSourceID() + "." + relation.getForeignField().getColumnName());
