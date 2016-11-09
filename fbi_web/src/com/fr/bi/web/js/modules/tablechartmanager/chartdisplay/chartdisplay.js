@@ -126,11 +126,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
             var linkages = [];
             var linkInfo = self.model.getLinkageInfo(obj);
             BI.each(linkInfo.dId, function (idx, dId) {
-                if (BI.Utils.getDimensionTypeByID(dId) === BICst.TARGET_TYPE.FORMULA) {
-                    var expression = BI.Utils.getDimensionSrcByID(dId).expression;
-                    if (!expression) {
-                        return;
-                    }
+                if (BI.Utils.isCalculateTargetByDimensionID(dId)) {
                     BI.each(BI.Utils.getWidgetLinkageByID(o.wId), function (i, link) {
                         if (dId === link.cids[0]) {
                             var name = BI.i18nText("BI-An");
