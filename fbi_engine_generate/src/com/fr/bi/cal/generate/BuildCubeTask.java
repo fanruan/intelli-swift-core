@@ -331,6 +331,7 @@ public class BuildCubeTask implements CubeTask {
         return null;
     }
 
+
     @Override
     public boolean equals(Object obj) {
         return this.getTaskId().equals(((BuildCubeTask) obj).getTaskId());
