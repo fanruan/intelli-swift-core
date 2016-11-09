@@ -28,5 +28,5 @@ BICst.BROADCAST = {
     
     IMAGE_CHANGE_PREFIX: "image_change_", //数据标签和图片填充 + wId
 
-    CHART_DRILL_PREFIX: "chart_drill_" //图表钻取框事件
+    CHART_CLICK_PREFIX: "chart_click_" //图表钻取框事件
 };

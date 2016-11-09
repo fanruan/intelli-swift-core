@@ -64,7 +64,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
             }
         });
 
-        BI.Broadcasts.send(BICst.BROADCAST.CHART_DRILL_PREFIX + o.wId, obj);
+        BI.Broadcasts.send(BICst.BROADCAST.CHART_CLICK_PREFIX + o.wId, obj);
         this.fireEvent(BI.ChartDisplay.EVENT_CHANGE, {});
     },
 

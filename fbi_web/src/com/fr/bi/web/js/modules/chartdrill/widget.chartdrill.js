@@ -34,7 +34,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         this._doHide = true;
         this._debounce2Hide = BI.debounce(BI.bind(this._hideDrill, this), 3000);
 
-        BI.Broadcasts.on(BICst.BROADCAST.CHART_DRILL_PREFIX + wId, function(obj){
+        BI.Broadcasts.on(BICst.BROADCAST.CHART_CLICK_PREFIX + wId, function(obj){
             self._populate(obj);
         });
 
@@ -105,12 +105,13 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         return showDrill;
     },
 
-    _checkUPDrillEmpty: function (wid) {
-        var wType = BI.Utils.getWidgetTypeByID(wid);
+    _checkUPDrillEmpty: function () {
+        var wId = this.options.wId;
+        var wType = BI.Utils.getWidgetTypeByID(wId);
         if (wType < 5 || wType === BICst.WIDGET.MAP) {
             return false
         }
-        var drillMap = BI.Utils.getDrillByID(wid);
+        var drillMap = BI.Utils.getDrillByID(wId);
         var upDrillID = null, dId = null;
         BI.each(drillMap, function (drId, ds) {
             var rType = BI.Utils.getRegionTypeByDimensionID(drId);
@@ -171,44 +172,6 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
 
     populate: function () {
         var self = this, wId = this.options.wId;
-        var showDrill = this._canChartDrillShow();
-        var isUPDrillEmpty = this._checkUPDrillEmpty(wId);
-        //this.setVisible(showDrill && (!this._checkUPDrillEmpty(wId) || BI.isNotNull(obj)));
-        this.setVisible(true);
-
-        //if (showDrill === false || (BI.isNull(obj) && this._checkUPDrillEmpty(wId))) {
-        if (false) {
-            this.pushButton.setPushDown();
-            return;
-        }
-
-        this.pushButton.setPushUp();
-
-        //if (BI.isNull(obj) && !this._checkUPDrillEmpty(wId)) {
-        if (false) {
-            this.wrapper.empty();
-            var drillDownMap = BI.Utils.getDrillByID(wId);
-            var drillUpID;
-
-            BI.each(drillDownMap, function (drId, drValue) {
-                drillUpID = drValue[drValue.length - 1].dId;
-            });
-
-            var drill = BI.createWidget({
-                type: "bi.chart_drill_cell",
-                dId: drillUpID,
-                value: BI.i18nText("BI-Unchosen"),
-                disableDownButton: true
-            });
-            drill.on(BI.ChartDrillCell.EVENT_DRILL_UP, function () {
-                self._onClickDrill(drillUpID);
-            });
-            this.wrapper.addItem(drill);
-            this.wrapper.element.width(190);
-            this.wrapper.setVisible(true);
-            this._onClickPush(false);
-            return;
-        }
 
         var dims = BI.Utils.getAllUsableDimDimensionIDs(wId);
         var classification = null, series = null;
@@ -266,7 +229,6 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             width += 190;
         }
         this.wrapper.element.width(width);
-        this.wrapper.setVisible(true);
         this._debounce2Hide();
     },
 });
