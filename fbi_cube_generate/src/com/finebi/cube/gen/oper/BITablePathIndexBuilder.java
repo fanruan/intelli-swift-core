@@ -18,7 +18,6 @@ import com.fr.bi.conf.report.widget.RelationColumnKey;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -126,6 +125,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
                 GroupValueIndex nullIndex = appearPrimaryValue.NOT(reverse.length);
                 buildReverseIndex(targetPathEntity, reverse);
                 targetPathEntity.addRelationNULLIndex(0, nullIndex);
+                targetPathEntity.addVersion(System.currentTimeMillis());
                 long costTime = System.currentTimeMillis() - t;
                 try {
                     biLogManager.infoRelation(columnKeyInfo, costTime, UserControl.getInstance().getSuperManagerID());

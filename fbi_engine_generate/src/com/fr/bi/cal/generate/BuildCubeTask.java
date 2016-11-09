@@ -202,7 +202,7 @@ public class BuildCubeTask implements CubeTask {
     @Override
     public void run() {
         BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
-        BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuildStuff.getTableSources());
+        BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuildStuff.getSystemTableSources());
         operationManager.initialWatcher();
         logBusinessTable();
         operationManager.subscribeStartMessage();

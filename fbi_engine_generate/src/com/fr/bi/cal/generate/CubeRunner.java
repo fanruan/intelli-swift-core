@@ -3,12 +3,7 @@ package com.fr.bi.cal.generate;
 import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.CubeBuildStuff;
-import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
-
-import com.finebi.cube.impl.conf.CubeBuildStuffIncreased;
-import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.inter.BrokenTraversal;
 import com.fr.bi.common.inter.Traversal;
@@ -145,10 +140,10 @@ public class CubeRunner {
     }
 
     private void generateCube() {
-        setStatue(Status.LOADED);
-        CubeBuildStuff cubeBuild = new CubeBuildStuffIncreased(biUser.getUserId(), CubeUpdateUtils.getNewTables(biUser.getUserId()), CubeUpdateUtils.getNewRelations(biUser.getUserId()));
-        CubeTask task = new BuildCubeTask(biUser, cubeBuild);
-        CubeGenerationManager.getCubeManager().addTask(task, biUser.getUserId());
+//        setStatue(Status.LOADED);
+//        CubeBuildStuff cubeBuild = new CubeBuildStuffIncreased(biUser.getUserId(), CubeUpdateUtils.getCubeAbsentTables(biUser.getUserId()), CubeUpdateUtils.getCubeAbsentRelations(biUser.getUserId()));
+//        CubeTask task = new BuildCubeTask(biUser, cubeBuild);
+//        CubeGenerationManager.getCubeManager().addTask(task, biUser.getUserId());
     }
 
     private void start() {

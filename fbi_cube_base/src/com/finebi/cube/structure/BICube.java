@@ -1,5 +1,7 @@
 package com.finebi.cube.structure;
 
+import com.finebi.cube.common.log.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.*;
 import com.finebi.cube.location.ICubeResourceLocation;
@@ -11,6 +13,7 @@ import com.finebi.cube.structure.table.BICubeTableEntity;
 import com.finebi.cube.structure.table.CompoundCubeTableReader;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
+import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.Map;
@@ -23,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 4.0
  */
 public class BICube implements Cube {
+    private static BILogger logger = BILoggerFactory.getLogger(BICube.class);
     private ICubeResourceRetrievalService resourceRetrievalService;
     private ICubeResourceDiscovery discovery;
     private BICubeVersion cubeVersion;
@@ -100,6 +104,41 @@ public class BICube implements Cube {
             e.printStackTrace();
             return false;
         } catch (BICubeTableAbsentException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean exist(ITableKey tableKey, BICubeRelation relation) {
+        BICubeTablePath relationPath = new BICubeTablePath();
+        try {
+            relationPath.addRelationAtHead(relation);
+        } catch (BITablePathConfusionException e) {
+            throw BINonValueUtils.illegalArgument(relation.toString() + " the relation is so terrible");
+        }
+        return exist(tableKey, relationPath);
+    }
+
+    @Override
+    public boolean exist(ITableKey tableKey, BICubeTablePath relationPath) {
+        if (exist(tableKey)) {
+            try {
+                ICubeResourceLocation location = resourceRetrievalService.retrieveResource(tableKey, relationPath);
+                if (isResourceExist(location)) {
+                    CubeTableEntityGetterService tableEntityGetterService = getCubeTable(tableKey);
+                    boolean result = tableEntityGetterService.relationExists(relationPath);
+                    tableEntityGetterService.clear();
+                    return result;
+                }
+                return false;
+            } catch (BICubeResourceAbsentException e) {
+                logger.warn(e.getMessage(), e);
+                return false;
+            } catch (BITablePathEmptyException e) {
+                logger.warn(e.getMessage(), e);
+                return false;
+            }
+        } else {
             return false;
         }
     }

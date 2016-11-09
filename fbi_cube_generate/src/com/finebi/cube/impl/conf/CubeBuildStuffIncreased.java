@@ -6,7 +6,6 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.AbstractCubeBuildStuff;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.CubeBuildStuff;
-import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.gen.oper.BIRelationIDUtils;
 import com.finebi.cube.gen.oper.BuildLogHelper;
 import com.finebi.cube.relation.*;
@@ -27,8 +26,6 @@ import java.util.*;
 public class CubeBuildStuffIncreased extends AbstractCubeBuildStuff implements CubeBuildStuff {
     private static BILogger logger = BILoggerFactory.getLogger(CubeBuildStuffIncreased.class);
     private long userId;
-    private Set<BIBusinessTable> newlyAddedTables;
-    private Set<BITableRelation> newlyAddedRelations;
     private Set<CubeTableSource> tableInConstruction;
     private Set<CubeTableSource> tableLayers;
     private Set<BITableSourceRelation> relationInConstruction;
@@ -37,59 +34,109 @@ public class CubeBuildStuffIncreased extends AbstractCubeBuildStuff implements C
     private Set<BITableSourceRelationPath> pathInConstruction;
     private Set<BICubeGenerateRelationPath> pathDepends;
 
-    public CubeBuildStuffIncreased(long userId, Set<BIBusinessTable> newlyAddedTables, Set<BITableRelation> newlyAddedRelations) {
+    public CubeBuildStuffIncreased(long userId, Set<CubeTableSource> absentTables, Set<BITableSourceRelation> absentRelations, Set<BITableSourceRelationPath> absentPaths) {
         super(userId);
         this.userId = userId;
-        this.newlyAddedRelations = new HashSet<BITableRelation>(newlyAddedRelations);
-        this.newlyAddedTables = new HashSet<BIBusinessTable>(newlyAddedTables);
-        this.relationInConstruction = generateRelationNeedBuild(this.newlyAddedRelations);
-        this.tableInConstruction = extractTableSourceInNewlyTable(this.newlyAddedTables);
-        this.tableInConstruction.addAll(extractTableSourceInRelation(this.relationInConstruction));
-        this.relationDepends = calculateRelationDepends(relationInConstruction);
+        initialStuffInConstruction(absentTables, absentRelations, absentPaths);
+        filter();
+        calculateDepends(this.tableInConstruction, this.relationInConstruction, this.pathInConstruction);
+    }
+
+    private void initialStuffInConstruction(Set<CubeTableSource> absentTables, Set<BITableSourceRelation> absentRelations, Set<BITableSourceRelationPath> absentPaths) {
+        this.tableInConstruction = new HashSet<CubeTableSource>(absentTables);
+        this.relationInConstruction = new HashSet<BITableSourceRelation>(absentRelations);
+        this.pathInConstruction = new HashSet<BITableSourceRelationPath>(absentPaths);
+        filter();
+        calculateRelevantStuff(this.tableInConstruction);
+    }
+
+    private void filter() {
+        filterPath();
+        filterRelation();
+        filterTable();
+    }
+
+    private void calculateRelevantStuff(Set<CubeTableSource> tableInConstruction) {
+        this.relationInConstruction.addAll(calculateRelevantRelation(tableInConstruction));
+        this.pathInConstruction.addAll(calculateRelevantPath(this.relationInConstruction));
+    }
+
+    private void filterTable() {
+        Set<CubeTableSource> result = filterDuplicateTable(this.tableInConstruction);
+        this.tableInConstruction.clear();
+        this.tableInConstruction.addAll(result);
+    }
+
+    private void filterRelation() {
+        Set<BITableSourceRelation> result = filterDuplicateRelation(this.relationInConstruction);
+        this.relationInConstruction.clear();
+        this.relationInConstruction.addAll(result);
+    }
+
+    private void filterPath() {
+        Set<BITableSourceRelationPath> result = filterDuplicateRelationPath(this.pathInConstruction);
+        this.pathInConstruction.clear();
+        this.pathInConstruction.addAll(result);
+    }
+
+    private void calculateDepends(Set<CubeTableSource> tableInConstruction, Set<BITableSourceRelation> relationInConstruction, Set<BITableSourceRelationPath> pathInConstruction) {
         this.tableSourceLayerDepends = calculateSourceLayerDepends(tableInConstruction);
         this.tableLayers = calculateSourceLayers(tableSourceLayerDepends);
-        this.pathInConstruction = generatePathNeedBuild(this.newlyAddedRelations, this.allRelationPathSet);
-        this.pathDepends = calculatePathDepends(this.pathInConstruction, this.relationInConstruction);
+        this.relationDepends = calculateRelationDepends(relationInConstruction, tableInConstruction);
+        this.pathDepends = calculatePathDepends(pathInConstruction, relationInConstruction);
     }
+
+    private Set<BITableSourceRelation> calculateRelevantRelation(Set<CubeTableSource> tableInConstruction) {
+        Set<String> tableID = new HashSet<String>();
+        Set<BITableSourceRelation> relationsAboutTable = new HashSet<BITableSourceRelation>();
+        for (CubeTableSource tableSource : tableInConstruction) {
+            tableID.add(tableSource.getSourceID());
+        }
+        for (BITableRelation relation : configHelper.getSystemTableRelations()) {
+            if (tableID.contains(relation.getPrimaryTable().getTableSource().getSourceID())) {
+                relationsAboutTable.add(configHelper.convertRelation(relation));
+            } else if (tableID.contains(relation.getForeignTable().getTableSource().getSourceID())) {
+                relationsAboutTable.add(configHelper.convertRelation(relation));
+            }
+        }
+        return relationsAboutTable;
+    }
+
+    private Set<BITableSourceRelationPath> calculateRelevantPath(Set<BITableSourceRelation> relationInConstruction) {
+        Set<String> relationIDs = new HashSet<String>();
+        Set<BITableSourceRelationPath> pathsAboutRelation = new HashSet<BITableSourceRelationPath>();
+        for (BITableSourceRelation relation : relationInConstruction) {
+            relationIDs.add(BIRelationIDUtils.calculateRelationID(relation));
+        }
+        for (BITableRelationPath path : configHelper.getSystemTablePaths()) {
+            /**
+             * 等于1的path，实际就是relation了。这部分在relation地方处理了。
+             */
+            if (path.size() >= 2) {
+                BITableSourceRelationPath sourceRelationPath = configHelper.convertPath(path);
+                for (BITableSourceRelation relation : sourceRelationPath.getAllRelations()) {
+                    if (relationIDs.contains(BIRelationIDUtils.calculateRelationID(relation))) {
+                        pathsAboutRelation.add(sourceRelationPath);
+                        break;
+                    }
+                }
+            }
+
+        }
+        return pathsAboutRelation;
+    }
+
 
     private Set<BICubeGenerateRelationPath> calculatePathDepends(Set<BITableSourceRelationPath> pathInConstruction, Set<BITableSourceRelation> relationInConstruction) {
         return calculateDependTool.calRelationPath(pathInConstruction, relationInConstruction);
     }
 
-    private Set<BITableSourceRelationPath> generatePathNeedBuild(Set<BITableRelation> newlyAddedRelations, Set<BITableRelationPath> allRelationPathSet) {
-        return filterDuplicateRelationPath(extractPath(newlyAddedRelations, allRelationPathSet));
-    }
 
-    private Set<BITableSourceRelationPath> extractPath(Set<BITableRelation> newlyAddedRelations, Set<BITableRelationPath> allRelationPathSet) {
-        Set<BITableSourceRelationPath> sourcePathNeedBuild = new HashSet<BITableSourceRelationPath>();
-        for (BITableRelationPath path : allRelationPathSet) {
-            try {
-                boolean containsRelation = false;
-                for (BITableRelation relation : newlyAddedRelations) {
-                    if (path.containsRelation(relation)) {
-                        containsRelation = true;
-                        break;
-                    }
-                }
-                if (containsRelation) {
-                    BITableSourceRelationPath relationPath = convertPath(path);
-                    if (null != relationPath) {
-                        sourcePathNeedBuild.add(relationPath);
-                    }
-                }
-            } catch (Exception e) {
-                logger.warn(e.getMessage(), e);
-                continue;
-            }
-        }
-        return sourcePathNeedBuild;
-    }
-
-    private Set<BITableSourceRelationPath> filterDuplicateRelationPath(Set<BITableSourceRelationPath> sourcePathNeedBuild) {
+    private Set<BITableSourceRelationPath> filterDuplicateRelationPath(Set<BITableSourceRelationPath> pathInConstruction) {
         logger.info("filter duplicate path");
         Set<BITableSourceRelationPath> result = new HashSet<BITableSourceRelationPath>();
         Set<String> pathIDs = new HashSet<String>();
-        for (BITableSourceRelationPath path : sourcePathNeedBuild) {
+        for (BITableSourceRelationPath path : pathInConstruction) {
             try {
                 String pathID = BIRelationIDUtils.calculatePathID(path);
                 if (!pathIDs.contains(pathID)) {
@@ -114,10 +161,10 @@ public class CubeBuildStuffIncreased extends AbstractCubeBuildStuff implements C
         return calculateTableSource(tableSourcesNeedBuild);
     }
 
-    private Set<BICubeGenerateRelation> calculateRelationDepends(Set<BITableSourceRelation> sourceRelationNeedBuild) {
+    private Set<BICubeGenerateRelation> calculateRelationDepends(Set<BITableSourceRelation> relationInConstruction, Set<CubeTableSource> tableInConsturction) {
         Set<BICubeGenerateRelation> relationDepends = new HashSet<BICubeGenerateRelation>();
-        for (BITableSourceRelation biTableSourceRelation : sourceRelationNeedBuild) {
-            BICubeGenerateRelation generateRelation = calculateDependTool.calRelations(biTableSourceRelation, this.getTableSources());
+        for (BITableSourceRelation biTableSourceRelation : relationInConstruction) {
+            BICubeGenerateRelation generateRelation = calculateDependTool.calRelations(biTableSourceRelation, tableInConsturction);
             checkRelationDepend(generateRelation);
             relationDepends.add(generateRelation);
         }
@@ -147,53 +194,23 @@ public class CubeBuildStuffIncreased extends AbstractCubeBuildStuff implements C
         }
     }
 
-    protected Set<CubeTableSource> extractTableSourceInRelation(Set<BITableSourceRelation> sourceRelationNeedBuild) {
-        Set<CubeTableSource> tableSourcesInRelation = new HashSet<CubeTableSource>();
-        Iterator<BITableSourceRelation> iterator = sourceRelationNeedBuild.iterator();
-        while (iterator.hasNext()) {
-            BITableSourceRelation relation = iterator.next();
-            tableSourcesInRelation.add(relation.getForeignTable());
-            tableSourcesInRelation.add(relation.getPrimaryTable());
-        }
-        return tableSourcesInRelation;
-    }
 
-    protected Set<CubeTableSource> extractTableSourceInNewlyTable(Set<BIBusinessTable> newlyAddedTables) {
-        Set<CubeTableSource> tableSourcesNeedBuild = new HashSet<CubeTableSource>();
-        for (BIBusinessTable biBusinessTable : newlyAddedTables) {
-            tableSourcesNeedBuild.add(biBusinessTable.getTableSource());
-        }
-        return tableSourcesNeedBuild;
-    }
-
-    private Set<BITableSourceRelation> generateRelationNeedBuild(Set<BITableRelation> newlyAddedRelations) {
-        return filterDuplicateRelation(extractTableSourceRelation(newlyAddedRelations));
-    }
-
-    private Set<BITableSourceRelation> extractTableSourceRelation(Set<BITableRelation> newlyAddedRelations) {
-        Iterator<BITableRelation> iterator = newlyAddedRelations.iterator();
-        Set<BITableSourceRelation> relationNeedBuild = new HashSet<BITableSourceRelation>();
-        while (iterator.hasNext()) {
-            BITableRelation relation = iterator.next();
-            BITableSourceRelation sourceRelation = convertRelation(relation);
-            if (null != sourceRelation) {
-                relationNeedBuild.add(sourceRelation);
+    protected Set<CubeTableSource> filterDuplicateTable(Set<CubeTableSource> tableInConstruction) {
+        logger.info("filter duplicate table");
+        Set<CubeTableSource> result = new HashSet<CubeTableSource>();
+        Set<String> relationID = new HashSet<String>();
+        for (CubeTableSource tableSource : tableInConstruction) {
+            logger.debug(BuildLogHelper.tableLogContent("", tableSource));
+            String id = tableSource.getSourceID();
+            if (!relationID.contains(id)) {
+                result.add(tableSource);
+                relationID.add(id);
+            } else {
+                logger.info("The table source id has present:\n" + BuildLogHelper.tableLogContent("", tableSource));
             }
-        }
-        return relationNeedBuild;
-    }
 
-    private void extractTablesInRelation() {
-        Iterator<BITableRelation> iterator = newlyAddedRelations.iterator();
-        while (iterator.hasNext()) {
-            BITableRelation relation = iterator.next();
-            BITableSourceRelation sourceRelation = convertRelation(relation);
-            if (null != sourceRelation) {
-                tableInConstruction.add(sourceRelation.getForeignTable());
-                tableInConstruction.add(sourceRelation.getPrimaryTable());
-                relationInConstruction.add(sourceRelation);
-            }
         }
+        return result;
     }
 
     protected Set<BITableSourceRelation> filterDuplicateRelation(Set<BITableSourceRelation> relations) {
@@ -201,7 +218,7 @@ public class CubeBuildStuffIncreased extends AbstractCubeBuildStuff implements C
         Set<BITableSourceRelation> result = new HashSet<BITableSourceRelation>();
         Set<String> relationID = new HashSet<String>();
         for (BITableSourceRelation relation : relations) {
-            logger.info(BuildLogHelper.relationLogContent("", relation));
+            logger.debug(BuildLogHelper.relationLogContent("", relation));
             String id = BIRelationIDUtils.calculateRelationID(relation);
             if (!relationID.contains(id)) {
                 result.add(relation);
@@ -234,10 +251,6 @@ public class CubeBuildStuffIncreased extends AbstractCubeBuildStuff implements C
         return this.tableSourceLayerDepends;
     }
 
-    @Override
-    public Set<BITableRelation> getTableRelationSet() {
-        return this.newlyAddedRelations;
-    }
 
     @Override
     public Set<BICubeGenerateRelationPath> getCubeGenerateRelationPathSet() {

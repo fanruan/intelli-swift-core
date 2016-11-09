@@ -293,6 +293,11 @@ public class CompoundCubeTableReaderNode implements CubeTableEntityService {
     }
 
     @Override
+    public boolean relationExists(BICubeTablePath path) {
+        return masterTable.relationExists(path);
+    }
+
+    @Override
     public void buildStructure() {
         throw new UnsupportedOperationException();
     }
