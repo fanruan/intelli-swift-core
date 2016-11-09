@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Created by twome on 2016/11/8.
  */
-public class BISetThreadPoolSize extends AbstractBIConfigureAction {
+public class BISetThreadPoolSizeAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         String size = WebUtils.getHTTPRequestParameter(req, "value");
