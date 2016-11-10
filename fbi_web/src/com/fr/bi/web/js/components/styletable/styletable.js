@@ -291,7 +291,7 @@ BI.StyleTable = BI.inherit(BI.Widget, {
                 $bottomLeftSumLast.css({"background": color, "color": fontColor});
                 $bottomRightSumLast.css({"background": color, "color": fontColor});
                 $sequenceSumLast.css({"background": color, "color": fontColor});
-                $sequenceHeader.css({"background": "none", "color": this._const.dark});
+                $sequenceHeader.css({"background": "none", "color": "inherit"});
 
                 //color
                 // $topLeft.css("color", this._const.dark);
