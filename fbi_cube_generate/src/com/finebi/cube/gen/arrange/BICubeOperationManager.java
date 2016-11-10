@@ -377,18 +377,13 @@ public class BICubeOperationManager {
                             operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.DATA_SOURCE_TOPIC, cubeTableSource.getSourceID()));
                         }
                     } else {
-                        logger.warn("The relation:"+ sourceID+" subscribe start message!!!");
                         operation.subscribe(BICubeBuildTopicTag.START_BUILD_CUBE);
                     }
                     pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
                 } catch (Exception e) {
                     try {
-                        BILoggerFactory.getLogger().info("the relation info listed");
-                        BILoggerFactory.getLogger().info(relation.getRelation().toString());
-                        BILoggerFactory.getLogger().info("the tables this relation depends listed");
-                        for (CubeTableSource source : relation.getDependTableSourceSet()) {
-                            BILoggerFactory.getLogger().info(source.getTableName() + " " + source.getSourceID());
-                        }
+                        BILoggerFactory.getLogger().info("the relation build failed ");
+                        BILoggerFactory.getLogger().info(BuildLogHelper.relationLogContent(relation.getRelation()));
                     } catch (Exception e1) {
                         BILoggerFactory.getLogger().error(e1.getMessage(), e1);
                     }
@@ -429,13 +424,8 @@ public class BICubeOperationManager {
                                 operation.subscribe(BICubeBuildTopicTag.START_BUILD_CUBE);
                             }
                     } catch (Exception e) {
-                        BILoggerFactory.getLogger().error("the child path this path contained listed");
-                        for (BITableSourceRelationPath sourceRelationPath : path.getDependRelationPathSet()) {
-                            BILoggerFactory.getLogger().error(sourceRelationPath.getSourceID());
-                            for (BITableSourceRelation relation : sourceRelationPath.getAllRelations()) {
-                                BILoggerFactory.getLogger().error("primaryTable:" + relation.getPrimaryTable().getTableName() + " to foreignTable:" + relation.getForeignTable().getTableName());
-                            }
-                        }
+                        BILoggerFactory.getLogger().info("the path build failed ");
+                        BILoggerFactory.getLogger().error(BuildLogHelper.pathLogContent(path.getBiTableSourceRelationPath()));
                         throw BINonValueUtils.beyondControl(e.getMessage(), e);
                     }
             }
