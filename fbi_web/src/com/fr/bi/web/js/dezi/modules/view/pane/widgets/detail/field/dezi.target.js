@@ -464,7 +464,7 @@ BIDezi.TargetView = BI.inherit(BI.View, {
             dId: this.model.get("id")
         });
         popup.on(BI.DataLabelPopup.EVENT_CHANGE, function (v) {
-            BI.Broadcasts.send(BICst.BROADCAST.DATA_LABEL_PREFIX+BI.Utils.getWidgetIDByDimensionID(id), v);
+            BI.Broadcasts.send(BICst.BROADCAST.FILTER_LIST_PREFIX+BI.Utils.getWidgetIDByDimensionID(id), v);
         });
         BI.Popovers.create(id, popup).open(id);
         popup.populate();

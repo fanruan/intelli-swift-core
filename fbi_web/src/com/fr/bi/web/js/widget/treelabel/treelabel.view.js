@@ -73,19 +73,17 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
     },
 
     _changeView: function (op) {
-        if (op.floor === this.items.length - 1) {
-            return;
-        }
         var options = {};
         options.id = op.id;
         options.type = op.type;
         options.floor = op.floor;
         options.value = op.value;
         options.selectedValues = this.getValue();
+        options.selectedIds = this.getSelectedIds();
         this.fireEvent(BI.TreeLabelView.EVENT_CHANGE, options);
     },
 
-    _updateView: function (items, floor) {
+    updateView: function (items, floor) {
         var self = this;
         var updateList = this.items.slice(floor + 1);
         var values = items.slice(floor + 1);
@@ -136,30 +134,6 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
         }
     },
 
-    getSelectedButtons: function () {
-        var result = [];
-        BI.each(this.items, function (idx, item) {
-            result.push(item.getSelectedButtons());
-        });
-        return result;
-    },
-
-    getAllButtons: function () {
-        var result = [];
-        BI.each(this.items, function (idx, item) {
-            result.push(item.getAllButtons().slice(1))
-        });
-        return result;
-    },
-
-    getValue: function () {
-        var result = [];
-        BI.each(this.items, function (idx, item) {
-            result.push(item.getValue());
-        });
-        return result;
-    },
-
     setItems: function (items) {
         var self =this;
         var length = this.right.getAllButtons().length;
@@ -208,11 +182,6 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
         this.title.setHeight(titles.length * this._constant.LIST_LABEL_HEIGHT);
     },
 
-    changeValue: function (v) {
-        BI.each(this.items, function (idx, item) {
-            item.changeValue(v[idx] || []);
-        });
-    },
 
     setValue: function (v) {
         var value = [];
@@ -235,6 +204,30 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
                 value.push(valueTemp);
             }
         });
+    },
+
+    getSelectedButtons: function () {
+        var result = [];
+        BI.each(this.items, function (idx, item) {
+            result.push(item.getSelectedButtons());
+        });
+        return result;
+    },
+
+    getSelectedIds: function () {
+        var result = [];
+        BI.each(this.items, function (idx, item) {
+            result.push(item.getSelectedIds());
+        });
+        return result;
+    },
+
+    getValue: function () {
+        var result = [];
+        BI.each(this.items, function (idx, item) {
+            result.push(item.getValue());
+        });
+        return result;
     }
 });
 BI.TreeLabelView.EVENT_CHANGE = "BI.TreeLabelView.EVENT_CHANGE";

@@ -28,9 +28,69 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
             titles: this.titles
         });
         this.view.on(BI.TreeLabelView.EVENT_CHANGE, function (op) {
-            self._itemsCreator(op, BI.bind(self.view._updateView, self.view));
+            if (op.floor === self.items.length - 1) {
+                self.fireEvent(BI.TreeLabel.EVENT_CHANGE, arguments);
+                return;
+            }
+            var selectedIds = op.selectedIds;
+            op.parentValues = [];
+            if (op.floor === 0) {
+                op.parentValues = [{
+                    id: BI.isNull(op.id) ? null : op.id,
+                    value: op.value === BICst.LIST_LABEL_TYPE.ALL ? [] : [op.value]
+                }]
+            } else {
+                if (!op.id) {
+                    BI.each(selectedIds[op.floor], function (idx, id) {
+                        op.parentValues.push({
+                            id: id,
+                            value: getCombineValue(id, selectedIds[op.floor - 1])
+                        });
+                    });
+                    op.floor = op.floor - 1;
+                } else {
+                    op.id = BI.isArray(op.id) ? op.id : [op.id];
+                    if (op.floor >= 1) {
+                        BI.each(selectedIds[op.floor - 1], function (idx, id) {
+                            var tempForId = getChildId(id, op.id);
+                            if(tempForId){
+                                op.parentValues.push({
+                                    id: tempForId,
+                                    value: [self.itemsMap[id].value, op.value]
+                                });
+                            }
+                        });
+                        op.floor = op.floor - 1;
+                    }
+                }
+            }
+            self._itemsCreator(op, BI.bind(self.view.updateView, self.view));
             self.fireEvent(BI.TreeLabel.EVENT_CHANGE, arguments);
-        })
+        });
+
+        function getChildId(id, children) {
+            if (!id || !children) {
+                return "";
+            }
+            for (var i = 0; i < children.length; i++) {
+                if (children[i].indexOf(id) === 0) {
+                    return children[i];
+                }
+            }
+            return "";
+        }
+
+        function getCombineValue(id, parents) {
+            if (!id || !parents) {
+                return [];
+            }
+            for (var i = 0; i < parents.length; i++) {
+                if (id.indexOf(parents[i]) === 0) {
+                    return [self.itemsMap[parents[i]].value, self.itemsMap[id].value];
+                }
+            }
+            return [];
+        }
     },
 
     _initData: function (items) {
@@ -158,24 +218,6 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
             result.push(temp);
         }
         this.items = BI.concat(this.items.slice(0, floor + 1), result);
-        // BI.each(this.items, function (idx, items) {
-        //     // var selected = [], unselected = [];
-        //     // BI.each(items, function (i, item) {
-        //     //     if(BI.contains(values[idx], item.value)) {
-        //     //         selected.push(item);
-        //     //     } else {
-        //     //         unselected.push(item);
-        //     //     }
-        //     // });
-        //     // self.items[idx] = BI.concat(selected, unselected);
-        //     if(items.length >= 40) {
-        //         items.sort(function (a, b) {
-        //             var flagA = BI.contains(values[idx], a.value);
-        //             var flagB = BI.contains(values[idx], b.value);
-        //             return flagB - flagA;
-        //         })
-        //     }
-        // });
         return result;
 
         function contains(array, item) {
@@ -257,11 +299,11 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
         // }
 
         o.itemsCreator(op, function (value) {
-            if(value.items) {
-                self._updateData(value.items[0]);
-                self._updateItems(floor);
-                callback(self.items, floor);
-            }
+            BI.each(value.items || [], function (idx, items) {
+                self._updateData(items);
+            });
+            self._updateItems(floor);
+            callback(self.items, floor);
         });
     },
 

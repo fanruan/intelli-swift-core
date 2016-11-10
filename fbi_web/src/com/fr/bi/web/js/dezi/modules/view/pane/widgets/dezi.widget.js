@@ -60,7 +60,10 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     }
                 });
             }
-            self.model.set("clicked", clicked);
+            self.model.set("clicked", clicked, {
+                notrefresh: true
+            });
+            self._refreshTableAndFilter();
         });
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
             self.model.set("clicked", {});
