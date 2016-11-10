@@ -69,7 +69,8 @@ public class BICubeTableEntity implements CubeTableEntityService {
              * 否则简单的clear的话只是通知不再引用句柄。
              * 实际资源没有被close掉。
              */
-            tableProperty.forceRelease();
+//            tableProperty.forceRelease();
+            tableProperty.clear();
         }
         tableProperty = new BICubeTableProperty(currentLocation, discovery);
 

@@ -467,13 +467,16 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     @Override
     public List<ITableKey> getParentsTable() {
         initialParentsTable();
+        resetParentReader();
         return parentTable;
     }
 
     @Override
     public int getRowCount() {
         try {
-            return Integer.parseInt(String.valueOf(getRowCountReader().getSpecificValue(0)));
+            String rowCount = String.valueOf(getRowCountReader().getSpecificValue(0));
+            resetRowCountReader();
+            return Integer.parseInt(rowCount);
         } catch (BIResourceInvalidException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             BINonValueUtils.beyondControl(e.getMessage(), e);
@@ -535,17 +538,22 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     @Override
     public List<ICubeFieldSource> getFieldInfo() {
         initialField();
+        resetFieldReader();
         return tableFields;
     }
 
     @Override
     public Boolean isPropertyExist() {
-        return getFieldInfoReader().canRead();
+        boolean isPropertyExist = getFieldInfoReader().canRead();
+        resetFieldReader();
+        return isPropertyExist;
     }
 
     @Override
     public Boolean isRowCountAvailable() {
-        return getRowCountReader().canRead();
+        boolean isRowCountAvailable = getRowCountReader().canRead();
+        resetRowCountReader();
+        return isRowCountAvailable;
     }
 
     @Override
@@ -556,7 +564,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     protected void resetFieldReader() {
         if (isFieldReaderAvailable()) {
             fieldInfoReader.clear();
-//            fieldInfoReader = null;
+            fieldInfoReader = null;
         }
     }
 
@@ -581,7 +589,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     protected void resetRowCountReader() {
         if (isRowCountReaderAvailable()) {
             rowCountReader.clear();
-//            rowCountReader = null;
+            rowCountReader = null;
         }
     }
 
@@ -623,14 +631,14 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     protected void resetParentReader() {
         if (isParentReaderAvailable()) {
             parentsReader.clear();
-//            parentsReader = null;
+            parentsReader = null;
         }
     }
 
     protected void resetRemoveListReader() {
         if (isRemoveListReaderAvailable()) {
             removeListReader.clear();
-//            removeListReader = null;
+            removeListReader = null;
         }
     }
 
@@ -715,7 +723,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
             removeListReader = null;
         }
         parentFieldProperty.forceRelease();
-        ((BICubeProperty) version).forceRelease();
+        version.forceRelease();
 //        clear();
     }
 
@@ -792,17 +800,23 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
 
     @Override
     public boolean isRemovedListAvailable() {
-        return getRemovedListReader().canRead();
+        boolean isRemovedListAvailable = getRemovedListReader().canRead();
+        resetRemoveListReader();
+        return isRemovedListAvailable;
     }
 
     @Override
     public boolean isLastExecuteTimeAvailable() {
-        return getLastExecuteTimeReader().canRead();
+        boolean isLastExecuteTimeAvailable = getLastExecuteTimeReader().canRead();
+        resetLastExecuteTimeReader();
+        return isLastExecuteTimeAvailable;
     }
 
     @Override
     public boolean isCurrentExecuteTimeAvailable() {
-        return getCurrentExecuteTimeReader().canRead();
+        boolean isCurrentExecuteTimeAvailable = getCurrentExecuteTimeReader().canRead();
+        resetCurrentExecuteTimeReader();
+        return isCurrentExecuteTimeAvailable;
     }
 
     @Override

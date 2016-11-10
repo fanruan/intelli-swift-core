@@ -206,14 +206,14 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
     protected void resetGroupReader() {
         if (isGroupReaderAvailable()) {
             groupReader.clear();
-//            groupReader = null;
+            groupReader = null;
         }
     }
 
     protected void resetLengthReader() {
         if (isLengthReaderAvailable()) {
             groupLengthReader.clear();
-//            groupLengthReader = null;
+            groupLengthReader = null;
         }
     }
 
