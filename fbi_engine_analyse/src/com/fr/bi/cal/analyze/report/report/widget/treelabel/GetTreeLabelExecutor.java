@@ -20,8 +20,7 @@ import java.util.Map;
  * Created by fay on 2016/10/17.
  */
 public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
-    private String id;
-    private String parentValuesString;
+    private String parentValues;
     private int floors = 0;
 
     public GetTreeLabelExecutor(TreeLabelWidget widget, Paging paging, BISession session) {
@@ -30,35 +29,25 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
 
     public void parseJSON(JSONObject jo) throws JSONException {
         super.parseJSON(jo);
-        if(jo.has("parent_values")) {
-            parentValuesString = jo.getString("parent_values");
-        }
-        if(jo.has("floors")) {
+        if (jo.has("floors")) {
             floors = jo.getInt("floors");
         }
-        if(jo.has("id")) {
-            id = jo.getString("id");
+        if (jo.has("parentValues")) {
+            parentValues = jo.getString("parentValues");
         }
     }
 
     public JSONObject getResultJSON() throws JSONException {
-        String[] values = new String[0];
-        JSONArray parentValues = null;
-        if (parentValuesString != null) {
-            parentValues = new JSONArray(parentValuesString);
-            values = BIJsonUtils.jsonArray2StringArray(parentValues);
-        }
+        String id;
+        String[] values;
         ArrayList<JSONArray> vl = new ArrayList<JSONArray>();
-        if(id != null) {
-            getAllData(vl, values, id, 0);
-        } else {
-            getAllData(vl, values, null, 0);
-        }
-
-
-        //如果结果为空，直接返回
-        if (vl.size() == 0) {
-            return new JSONObject();
+        if (parentValues != null) {
+            JSONArray pvalues = new JSONArray(parentValues);
+            for (int i = 0; i < pvalues.length(); i++) {
+                id = pvalues.getJSONObject(i).getString("id");
+                values = BIJsonUtils.jsonArray2StringArray(new JSONArray(pvalues.getJSONObject(i).getString("value")));
+                getAllData(vl, values, id, 0);
+            }
         }
 
         JSONObject jo = new JSONObject();
@@ -68,11 +57,7 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
     }
 
     private void getAllData(ArrayList<JSONArray> result, String[] values, String id, int floor) throws JSONException {
-        List<String> vl;
-        if(values.length > 0 && "_*_".equals(values[0])) {
-            values = new String[0];
-        }
-        vl = createData(values, floors, 1);
+        List<String> vl = createData(values, floors, 1);
         if (!vl.isEmpty()) {
             if (result.size() > floor) {
                 concatArray(result.get(floor), createJSONArrayForTree(vl, id));
@@ -80,16 +65,16 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
                 result.add(new JSONArray());
                 concatArray(result.get(floor), createJSONArrayForTree(vl, id));
             }
-            for (int i = 0;i<vl.size();i++) {
-                String[] val = { vl.get(i) };
+            for (int i = 0; i < vl.size(); i++) {
+                String[] val = {vl.get(i)};
                 String temp;
                 if (id == null) {
-                    temp = "_" + (i+1);
+                    temp = "_" + (i + 1);
                 } else {
-                    temp  = id+ "_" +(i+1);
+                    temp = id + "_" + (i + 1);
                 }
-                if(values.length < widget.getViewDimensions().length - 1 - floors) {
-                    getAllData(result, ArrayUtils.addAll(values, val), temp, floor+1);
+                if (values.length < widget.getViewDimensions().length - 1 - floors) {
+                        getAllData(result, ArrayUtils.addAll(values, val), temp, floor + 1);
                 }
             }
         }
@@ -98,9 +83,6 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
     private void concatArray(JSONArray arr1, JSONArray arr2)
             throws JSONException {
         for (int i = 0; i < arr2.length(); i++) {
-            if(arr1.length() >= BIReportConstant.TREE_LABEL.TREE_LABEL_ITEM_COUNT_NUM) {
-                return ;
-            }
             arr1.put(arr2.get(i));
         }
     }

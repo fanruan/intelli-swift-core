@@ -131,6 +131,23 @@ BI.ListLabel = BI.inherit(BI.Widget, {
         return this.container.getAllButtons();
     },
 
+    getSelectedIds: function () {
+        var selectedButtons = this.getSelectedButtons();
+        var ids = [];
+        if(selectedButtons.length === 1 && selectedButtons[0].getValue() === BICst.LIST_LABEL_TYPE.ALL) {
+            BI.each(this.getAllButtons(), function (idx, button) {
+                var id = button.options.id;
+                id && (ids = BI.union(ids, BI.isArray(id) ? id : [id]));
+            })
+        } else {
+            BI.each(selectedButtons, function (idx, button) {
+                var id = button.options.id;
+                id && (ids = BI.union(ids, BI.isArray(id) ? id : [id]));
+            });
+        }
+        return ids;
+    },
+
     populate: function (v) {
         if(v.title) {
             this.title.setText(v.title + BI.i18nText("BI-Colon"));
@@ -143,9 +160,6 @@ BI.ListLabel = BI.inherit(BI.Widget, {
         this.addItems(v.items);
     },
 
-    changeValue: function (v) {
-        this.container.changeValue(v);
-    },
 
     setValue: function (v) {
         this.container.setValue(v);

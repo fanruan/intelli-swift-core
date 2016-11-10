@@ -29,8 +29,8 @@ public class AbstractTreeLabelExecutor extends TreeLabelExecutor {
     }
 
     public void parseJSON(JSONObject jo) throws JSONException {
-        if(jo.has("selected_values")) {
-            selectedValuesString = jo.getString("selected_values");
+        if(jo.has("selectedValues")) {
+            selectedValuesString = jo.getString("selectedValues");
         }
     }
 

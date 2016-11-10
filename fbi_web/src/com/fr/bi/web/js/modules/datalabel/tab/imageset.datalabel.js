@@ -148,11 +148,11 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
                     });
                     button.on(BI.DataLabelImageButton.DELETE_IMAGE, function () {
                         self.refreshImg();
-                        BI.Broadcasts.send(BICst.BROADCAST.IMAGE_CHANGE_PREFIX + self.wId, self._img);
+                        BI.Broadcasts.send(BICst.BROADCAST.IMAGE_LIST_PREFIX + self.wId, self._img);
                     });
                     self.imageGroup.prependItems([button]);
                     self.refreshImg();
-                    BI.Broadcasts.send(BICst.BROADCAST.IMAGE_CHANGE_PREFIX + self.wId, self._img);
+                    BI.Broadcasts.send(BICst.BROADCAST.IMAGE_LIST_PREFIX + self.wId, self._img);
                 }
             });
         });
@@ -230,7 +230,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
             });
             button.on(BI.DataLabelImageButton.DELETE_IMAGE, function () {
                 self.refreshImg();
-                BI.Broadcasts.send(BICst.BROADCAST.IMAGE_CHANGE_PREFIX + self.wId, self._img);
+                BI.Broadcasts.send(BICst.BROADCAST.IMAGE_LIST_PREFIX + self.wId, self._img);
             });
             result.push(button)
         });
