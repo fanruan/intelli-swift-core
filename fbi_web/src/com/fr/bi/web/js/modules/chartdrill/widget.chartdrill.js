@@ -155,7 +155,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
     populate: function () {
         var self = this, wId = this.options.wId;
 
-        this.setVisible(!self._checkUPDrillEmpty());
+        this.setVisible(self._canChartDrillShow() && !self._checkUPDrillEmpty());
         var currentDrilldIds = [];
         //看一下钻取
         var drillList = BI.Utils.getDrillList(wId);
