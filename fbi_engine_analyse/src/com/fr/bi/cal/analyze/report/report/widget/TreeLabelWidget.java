@@ -39,12 +39,9 @@ import java.util.*;
 public class TreeLabelWidget extends BIAbstractWidget{
     private int page = -1;
     private int data_type = BIReportConstant.TREE.TREE_REQ_TYPE.INIT_DATA;
-    private String id;
-    private int times;
-    private String check_state;
     private int floors;
-    private String parent_values;
-    private String selected_values;
+    private String parentValues;
+    private String selectedValues;
     private String[] viewData;
     private BIDimension[] dimensions;
     private BusinessTable target;
@@ -106,22 +103,6 @@ public class TreeLabelWidget extends BIAbstractWidget{
             case BIReportConstant.TREE.TREE_REQ_TYPE.INIT_DATA:
                 resultJo = getInitDataJSON((BISession) session);
                 break;
-//            case BIReportConstant.TREE.TREE_REQ_TYPE.DISPLAY_DATA:
-//                resultJo = getDisplayDataJSON((BISession) session);
-//                break;
-//            case BIReportConstant.TREE.TREE_REQ_TYPE.SEARCH_DATA:
-//                try {
-//                    resultJo = getSearchDataJSON((BISession) session);
-//                } catch (Exception e) {
-//                    BILoggerFactory.getLogger().error(e.getMessage(), e);
-//                }
-//                break;
-//            case BIReportConstant.TREE.TREE_REQ_TYPE.SELECTED_DATA:
-//                resultJo = getSelectedDataJSON((BISession) session);
-//                break;
-//            case BIReportConstant.TREE.TREE_REQ_TYPE.ADJUST_DATA:
-//                resultJo = getAdjustDataJSON((BISession) session);
-//                break;
         }
         return resultJo;
     }
@@ -144,23 +125,14 @@ public class TreeLabelWidget extends BIAbstractWidget{
             if (treeJo.has("type")) {
                 data_type = treeJo.getInt("type");
             }
-            if (treeJo.has("id")) {
-                id = treeJo.getString("id");
-            }
-            if (treeJo.has("times")) {
-                times = treeJo.getInt("times");
-            }
-            if (treeJo.has("check_state")) {
-                check_state = treeJo.getString("check_state");
-            }
             if (treeJo.has("floors")) {
                 floors = treeJo.getInt("floors");
             }
-            if (treeJo.has("parent_values")) {
-                parent_values = treeJo.getString("parent_values");
+            if (treeJo.has("parentValues")) {
+                parentValues = treeJo.getString("parentValues");
             }
-            if (treeJo.has("selected_values")) {
-                selected_values = treeJo.getString("selected_values");
+            if (treeJo.has("selectedValues")) {
+                selectedValues = treeJo.getString("selectedValues");
             }
         }
 
@@ -173,64 +145,12 @@ public class TreeLabelWidget extends BIAbstractWidget{
         paging.setCurrentPage(page);
         GetTreeLabelExecutor executor = new GetTreeLabelExecutor(this, paging, session);
         JSONObject jo = new JSONObject();
-        jo.put("id", id);
         jo.put("floors", floors);
-        jo.put("parent_values", parent_values);
-        jo.put("selected_values", selected_values);
+        jo.put("parentValues", parentValues);
+        jo.put("selectedValues", selectedValues);
         executor.parseJSON(jo);
         return executor.getResultJSON();
     }
-
-//    private JSONObject getSearchDataJSON(BISession session) throws Exception {
-//        Paging paging = PagingFactory.createPaging(BIExcutorConstant.PAGINGTYPE.NONE);
-//        paging.setCurrentPage(page);
-//        GetSearchTreeNodeExecutor executor = new GetSearchTreeNodeExecutor(this, paging, session);
-//        JSONObject jo = new JSONObject();
-//        jo.put("floors", floors);
-//        jo.put("keyword", keyword);
-//        jo.put("last_search_value", last_search_value);
-//        jo.put("selected_values", selected_values);
-//        executor.parseJSON(jo);
-//        return executor.getResultJSON();
-//    }
-//
-//    private JSONObject getDisplayDataJSON(BISession session) throws JSONException {
-//        Paging paging = PagingFactory.createPaging(BIExcutorConstant.PAGINGTYPE.NONE);
-//        paging.setCurrentPage(page);
-//        GetDisplayTreeNodeExecutor executor = new GetDisplayTreeNodeExecutor(this, paging, session);
-//        JSONObject jo = new JSONObject();
-//        jo.put("floors", floors);
-//        jo.put("selected_values", selected_values);
-//        executor.parseJSON(jo);
-//        return executor.getResultJSON();
-//    }
-//
-//    private JSONObject getSelectedDataJSON(BISession session) throws JSONException {
-//        Paging paging = PagingFactory.createPaging(BIExcutorConstant.PAGINGTYPE.NONE);
-//        paging.setCurrentPage(page);
-//        GetTreeSelectTreeNodeExecutor executor = new GetTreeSelectTreeNodeExecutor(this, paging, session);
-//        JSONObject jo = new JSONObject();
-//        jo.put("floors", floors);
-//        jo.put("not_selected_value", not_selected_value);
-//        jo.put("keyword", keyword);
-//        jo.put("selected_values", selected_values);
-//        jo.put("parent_values", parent_values);
-//        executor.parseJSON(jo);
-//        return executor.getResultJSON();
-//
-//    }
-//
-//    private JSONObject getAdjustDataJSON(BISession session) throws JSONException {
-//        Paging paging = PagingFactory.createPaging(BIExcutorConstant.PAGINGTYPE.NONE);
-//        paging.setCurrentPage(page);
-//        AdjustTreeDataStructureExecutorTree executor = new AdjustTreeDataStructureExecutorTree(this, paging, session);
-//        JSONObject jo = new JSONObject();
-//        jo.put("floors", floors);
-//        jo.put("selected_values", selected_values);
-//        executor.parseJSON(jo);
-//        return executor.getResultJSON();
-//    }
-//
 
     private void parseSortFilter(JSONObject jo, long userId) throws Exception {
         if (jo.has("sort")) {

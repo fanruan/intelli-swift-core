@@ -24,9 +24,9 @@ BICst.BROADCAST = {
     FIELD_DRAG_START: "__filed_drag_start__",   //字段拖动开始，用于通知region状态改变
     FIELD_DRAG_STOP: "__field_drag_stop__",     //字段拖动结束，用于通知region状态改变
     
-    DATA_LABEL_PREFIX: "data_label_", //数据标签(气泡图/散点图) + wId
-    
-    IMAGE_CHANGE_PREFIX: "image_change_", //数据标签和图片填充 + wId
+    FILTER_LIST_PREFIX: "filter_list_", //过滤条件变化 + wId
+
+    IMAGE_LIST_PREFIX: "image_list_", //图片列表变化 + wId
 
     CHART_CLICK_PREFIX: "chart_click_" //图表钻取框事件
 };
