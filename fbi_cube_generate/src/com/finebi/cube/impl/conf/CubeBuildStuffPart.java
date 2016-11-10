@@ -82,25 +82,25 @@ public class CubeBuildStuffPart extends AbstractCubeBuildStuff implements CubeBu
     }
 
     private void setRelationPath() {
-        for (BITableRelationPath path : allRelationPathSet) {
-            try {
-                boolean containsRelation = false;
-                for (BITableRelation relation : newRelations) {
-                    if (path.containsRelation(relation)) {
-                        containsRelation = true;
-                    }
-                }
-                if (containsRelation) {
-                    BITableSourceRelationPath relationPath = convertPath(path);
-                    if (null != relationPath) {
-                        biTableSourceRelationPathSet.add(relationPath);
-                    }
-                }
-            } catch (Exception e) {
-                continue;
-            }
-        }
-        biTableSourceRelationPathSet = removeDuplicateRelationPaths(biTableSourceRelationPathSet);
+//        for (BITableRelationPath path : allRelationPathSet) {
+//            try {
+//                boolean containsRelation = false;
+//                for (BITableRelation relation : newRelations) {
+//                    if (path.containsRelation(relation)) {
+//                        containsRelation = true;
+//                    }
+//                }
+//                if (containsRelation) {
+//                    BITableSourceRelationPath relationPath = convertPath(path);
+//                    if (null != relationPath) {
+//                        biTableSourceRelationPathSet.add(relationPath);
+//                    }
+//                }
+//            } catch (Exception e) {
+//                continue;
+//            }
+//        }
+//        biTableSourceRelationPathSet = removeDuplicateRelationPaths(biTableSourceRelationPathSet);
     }
 
     @Override
