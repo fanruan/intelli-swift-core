@@ -154,6 +154,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
     populate: function () {
         var self = this, wId = this.options.wId;
 
+        this.setVisible(!self._checkUPDrillEmpty());
         var currentDrilldIds = [];
         //看一下钻取
         var drillList = BI.Utils.getDrillList(wId);
@@ -173,7 +174,6 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
                 dId: dId
             });
             drill.on(BI.ChartDrillCell.EVENT_DRILL_UP, function (v) {
-                self.setVisible(!self._checkUPDrillEmpty());
                 self.fireEvent(BI.ChartDrill.EVENT_CHANGE, v);
             });
             drill.on(BI.ChartDrillCell.EVENT_DRILL_DOWN, function (v) {
