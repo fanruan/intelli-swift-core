@@ -53,7 +53,7 @@ public class StringReadMappedList implements NIOReader<String> {
     public void clear() {
         if (byteNIOReader != null) {
             byteNIOReader.clear();
-//            byteNIOReader = null;
+            byteNIOReader = null;
         }
     }
 

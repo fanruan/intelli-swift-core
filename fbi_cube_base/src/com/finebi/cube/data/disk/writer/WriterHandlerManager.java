@@ -52,14 +52,14 @@ public class WriterHandlerManager implements NIOHandlerManager<ICubePrimitiveWri
             if (currentCountOfWriters == 0) {
                 try {
                     isForceReleased = true;
-                    writer.releaseSource();
+                    writer.destroyResource();
                     countOfWriters.set(0);
                     queryRecorder.clear();
                     BILoggerFactory.getLogger().debug("=0 release writer " + resourceLocation.getAbsolutePath() + " " + countOfWriters.get());
                 } catch (Exception e) {
                     throw BINonValueUtils.beyondControl(e);
                 } finally {
-                    isForceReleased = false;
+//                    isForceReleased = false;
                 }
             } else if (currentCountOfWriters < 0) {
                 countOfWriters.set(0);
