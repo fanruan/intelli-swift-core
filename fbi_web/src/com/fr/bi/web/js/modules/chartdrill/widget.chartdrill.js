@@ -46,6 +46,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
                 self.pushButton.setPushUp();
             }
             self.setVisible(showDrill);
+            self.wrapper.setVisible(showDrill);
             BI.each(self.wrapper.getAllButtons(), function(idx, drill){
                 drill.setValue(obj);
                 drill.populate();
@@ -179,6 +180,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
             drill.on(BI.ChartDrillCell.EVENT_DRILL_DOWN, function (v) {
                 self.fireEvent(BI.ChartDrill.EVENT_CHANGE, v);
             });
+            drill.populate();
             self.wrapper.addItems([drill]);
             width += 190;
         });

@@ -180,6 +180,8 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
             this.downDrill.setEnable(false);
             this.downTrigger.setEnable(false);
         } else {
+            this.downDrill.setEnable(true);
+            this.downTrigger.setEnable(true);
             this.downDrill.populate([downChildren]);
         }
     }
