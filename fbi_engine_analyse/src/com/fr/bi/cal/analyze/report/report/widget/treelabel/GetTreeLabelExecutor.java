@@ -80,15 +80,11 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
         }
     }
 
-    private Boolean concatArray(JSONArray arr1, JSONArray arr2)
+    private void concatArray(JSONArray arr1, JSONArray arr2)
             throws JSONException {
         for (int i = 0; i < arr2.length(); i++) {
-            if (arr1.length() >= BIReportConstant.TREE_LABEL.TREE_LABEL_ITEM_COUNT_NUM) {
-                return true;
-            }
             arr1.put(arr2.get(i));
         }
-        return false;
     }
 
     private JSONArray createJSONArrayForTree(List<String> list, String id) {
