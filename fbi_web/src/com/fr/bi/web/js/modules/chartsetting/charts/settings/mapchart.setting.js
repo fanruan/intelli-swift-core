@@ -16,7 +16,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
         var self = this, constant = BI.AbstractChartSetting;
 
         //显示组件标题
-        this.showTitle = BI.createWidget({
+        this.showName = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Chart_Title"),
             cls: "attr-names",
@@ -24,42 +24,42 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
                 dynamic: true
             }
         });
-        this.showTitle.on(BI.Controller.EVENT_CHANGE, function () {
+        this.showName.on(BI.Controller.EVENT_CHANGE, function () {
             self.widgetTitle.setVisible(this.isSelected());
             self.fireEvent(BI.MapSetting.EVENT_CHANGE);
         });
 
         //组件标题
-        this.title = BI.createWidget({
+        this.widgetName = BI.createWidget({
             type: "bi.sign_editor",
             cls: "title-input",
             width: 120
         });
 
-        this.title.on(BI.SignEditor.EVENT_CHANGE, function () {
+        this.widgetName.on(BI.SignEditor.EVENT_CHANGE, function () {
             self.fireEvent(BI.MapSetting.EVENT_CHANGE)
         });
 
         //详细设置
-        this.titleDetailSettting = BI.createWidget({
+        this.widgetNameStyle = BI.createWidget({
             type: "bi.show_title_detailed_setting_combo"
         });
 
-        this.titleDetailSettting.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
+        this.widgetNameStyle.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.MapSetting.EVENT_CHANGE)
         });
 
         this.widgetTitle = BI.createWidget({
             type: "bi.left",
-            items: [this.title, this.titleDetailSettting],
+            items: [this.widgetName, this.widgetNameStyle],
             hgap: constant.SIMPLE_H_GAP
         });
 
         //组件背景
-        this.widgetBackground = BI.createWidget({
+        this.widgetBG = BI.createWidget({
             type: "bi.global_style_index_background"
         });
-        this.widgetBackground.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
+        this.widgetBG.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
             self.fireEvent(BI.MapSetting.EVENT_CHANGE);
         });
 
@@ -68,7 +68,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "single-line-settings",
             items: BI.createItems([{
                 type: "bi.vertical_adapt",
-                items: [this.showTitle]
+                items: [this.showName]
             }, {
                 type: "bi.vertical_adapt",
                 items: [this.widgetTitle]
@@ -78,7 +78,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
                 cls: "line-title",
             },{
                 type: "bi.vertical_adapt",
-                items: [this.widgetBackground]
+                items: [this.widgetBG]
             }], {
                 height: constant.SINGLE_LINE_HEIGHT
             }),
@@ -86,13 +86,13 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //主题颜色
-        this.colorChooser = BI.createWidget({
+        this.chartColor = BI.createWidget({
             type: "bi.color_chooser",
             width: constant.BUTTON_HEIGHT,
             height: constant.BUTTON_HEIGHT
         });
 
-        this.colorChooser.on(BI.ColorChooser.EVENT_CHANGE, function () {
+        this.chartColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
             self.fireEvent(BI.MapSetting.EVENT_CHANGE);
         });
 
@@ -117,7 +117,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.colorChooser]
+                    items: [this.chartColor]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -154,12 +154,12 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.MapSetting.EVENT_CHANGE)
         });
 
-        this.conditions = BI.createWidget({
+        this.fixedConditions = BI.createWidget({
             type: "bi.chart_add_condition_group",
             width: "100%"
         });
 
-        this.conditions.on(BI.ChartAddConditionGroup.EVENT_CHANGE, function () {
+        this.fixedConditions.on(BI.ChartAddConditionGroup.EVENT_CHANGE, function () {
             self.fireEvent(BI.MapSetting.EVENT_CHANGE)
         });
 
@@ -172,7 +172,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
             }, {
                 type: "bi.vertical_adapt",
                 items: [this.addConditionButton]
-            }, this.conditions], {
+            }, this.fixedConditions], {
                 height: constant.SINGLE_LINE_HEIGHT
             }),
             lgap: constant.SIMPLE_H_GAP
@@ -314,11 +314,11 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
         switch (v) {
             case BICst.SCALE_SETTING.AUTO:
                 this.addConditionButton.setVisible(false);
-                this.conditions.setVisible(false);
+                this.fixedConditions.setVisible(false);
                 break;
             case BICst.SCALE_SETTING.CUSTOM:
                 this.addConditionButton.setVisible(true);
-                this.conditions.setVisible(true);
+                this.fixedConditions.setVisible(true);
                 break;
         }
     },
@@ -329,35 +329,35 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
         var styleSettings = BI.Utils.getDimensionSettingsByID(targetIDs[0]);
         switch (styleSettings.num_level) {
             case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                this.conditions.setNumTip("");
+                this.fixedConditions.setNumTip("");
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                this.conditions.setNumTip(BI.i18nText("BI-Wan"));
+                this.fixedConditions.setNumTip(BI.i18nText("BI-Wan"));
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                this.conditions.setNumTip(BI.i18nText("BI-Million"));
+                this.fixedConditions.setNumTip(BI.i18nText("BI-Million"));
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                this.conditions.setNumTip(BI.i18nText("BI-Yi"));
+                this.fixedConditions.setNumTip(BI.i18nText("BI-Yi"));
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                this.conditions.setNumTip(BI.i18nText("%"));
+                this.fixedConditions.setNumTip(BI.i18nText("%"));
                 break;
         }
     },
 
     populate: function () {
         var wId = this.options.wId;
-        this.showTitle.setSelected(BI.Utils.getWSShowNameByID(wId));
+        this.showName.setSelected(BI.Utils.getWSShowNameByID(wId));
         this.widgetTitle.setVisible(BI.Utils.getWSShowNameByID(wId));
-        this.title.setValue(BI.Utils.getWidgetNameByID(wId));
-        this.titleDetailSettting.setValue(BI.Utils.getWSTitleDetailSettingByID(wId));
-        this.widgetBackground.setValue(BI.Utils.getWSWidgetBGByID(wId));
-        this.colorChooser.setValue(BI.Utils.getWSThemeColorByID(wId));
+        this.widgetName.setValue(BI.Utils.getWidgetNameByID(wId));
+        this.widgetNameStyle.setValue(BI.Utils.getWSTitleDetailSettingByID(wId));
+
+        this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
+        this.chartColor.setValue(BI.Utils.getWSThemeColorByID(wId));
         this.styleRadio.setValue(BI.Utils.getWSScaleByID(wId));
         this._doClickButton(BI.Utils.getWSScaleByID(wId));
-        this.conditions.setValue(BI.Utils.getWSMapStylesByID(wId));
-        this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
+        this.fixedConditions.setValue(BI.Utils.getWSMapStylesByID(wId));
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
         this.isShowBackgroundLayer.setSelected(BI.Utils.getWSShowBackgroundByID(wId));
@@ -381,22 +381,26 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
         });
         this.selectLayerCombo.populate(items);
         this.selectLayerCombo.setValue(BI.Utils.getWSBackgroundLayerInfoByID(wId));
+
+        this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
     },
 
     getValue: function () {
         return {
-            show_name: this.showTitle.isSelected(),
-            widget_title: this.title.getValue(),
-            title_detail: this.titleDetailSettting.getValue(),
-            widget_bg: this.widgetBackground.getValue(),
-            theme_color: this.colorChooser.getValue(),
-            auto_custom: this.styleRadio.getValue()[0],
-            map_styles: this.conditions.getValue(),
-            transfer_filter: this.transferFilter.isSelected(),
-            chart_legend: this.legend.getValue()[0],
-            show_data_label: this.showDataLabel.isSelected(),
-            show_background_layer: this.isShowBackgroundLayer.isSelected(),
-            background_layer_info: this.selectLayerCombo.getValue()[0]
+            showName: this.showName.isSelected(),
+            widgetName: this.widgetName.getValue(),
+            widgetNameStyle: this.widgetNameStyle.getValue(),
+
+            widgetBG: this.widgetBG.getValue(),
+            chartColor: this.chartColor.getValue(),
+            styleRadio: this.styleRadio.getValue()[0],
+            fixedConditions: this.fixedConditions.getValue(),
+            legend: this.legend.getValue()[0],
+            showDataLabel: this.showDataLabel.isSelected(),
+            isShowBackgroundLayer: this.isShowBackgroundLayer.isSelected(),
+            selectLayerCombo: this.selectLayerCombo.getValue()[0],
+
+            transferFilter: this.transferFilter.isSelected(),
         }
     }
 });

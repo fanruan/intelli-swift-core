@@ -23,7 +23,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
         var self = this, constant = BI.AbstractChartSetting;
 
         //显示组件标题
-        this.showTitle = BI.createWidget({
+        this.showName = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Chart_Title"),
             cls: "attr-names",
@@ -31,34 +31,34 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 dynamic: true
             }
         });
-        this.showTitle.on(BI.Controller.EVENT_CHANGE, function () {
+        this.showName.on(BI.Controller.EVENT_CHANGE, function () {
             self.widgetTitle.setVisible(this.isSelected());
             self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE);
         });
 
         //组件标题
-        this.title = BI.createWidget({
+        this.widgetName = BI.createWidget({
             type: "bi.sign_editor",
             cls: "title-input",
             width: 120
         });
 
-        this.title.on(BI.SignEditor.EVENT_CHANGE, function () {
+        this.widgetName.on(BI.SignEditor.EVENT_CHANGE, function () {
             self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE)
         });
 
         //详细设置
-        this.titleDetailSettting = BI.createWidget({
+        this.widgetNameStyle = BI.createWidget({
             type: "bi.show_title_detailed_setting_combo"
         });
 
-        this.titleDetailSettting.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
+        this.widgetNameStyle.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE)
         });
 
         this.widgetTitle = BI.createWidget({
             type: "bi.left",
-            items: [this.title, this.titleDetailSettting],
+            items: [this.widgetName, this.widgetNameStyle],
             hgap: constant.SIMPLE_H_GAP
         });
 
@@ -67,7 +67,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "single-line-settings",
             items: BI.createItems([{
                 type: "bi.vertical_adapt",
-                items: [this.showTitle]
+                items: [this.showName]
             }, {
                 type: "bi.vertical_adapt",
                 items: [this.widgetTitle]
@@ -77,7 +77,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             hgap: constant.SIMPLE_H_GAP
         });
 
-        this.chartTypeGroup = BI.createWidget({
+        this.dashboardChartType = BI.createWidget({
             type: "bi.button_group",
             items: BI.createItems(BICst.DASHBOARD_CHART_STYLE_GROUP, {
                 type: "bi.icon_button",
@@ -92,16 +92,16 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 height: constant.SINGLE_LINE_HEIGHT
             }]
         });
-        this.chartTypeGroup.on(BI.ButtonGroup.EVENT_CHANGE, function (v) {
+        this.dashboardChartType.on(BI.ButtonGroup.EVENT_CHANGE, function (v) {
             self._showPointer(v);
             self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE);
         });
 
         //组件背景
-        this.widgetBackground = BI.createWidget({
+        this.widgetBG = BI.createWidget({
             type: "bi.global_style_index_background"
         });
-        this.widgetBackground.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
+        this.widgetBG.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
             self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE);
         });
 
@@ -125,7 +125,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: this._constant.SIMPLE_H_GAP2
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.chartTypeGroup],
+                    items: [this.dashboardChartType],
                     lgap: constant.SIMPLE_H_GAP
                 }, {
                     type: "bi.label",
@@ -134,7 +134,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     lgap: constant.SIMPLE_H_GAP
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.widgetBackground],
+                    items: [this.widgetBG],
                     lgap: constant.SIMPLE_H_GAP
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
@@ -143,18 +143,18 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //数量级和单位
-        this.numberLevellY = BI.createWidget({
+        this.leftYNumberLevel = BI.createWidget({
             type: "bi.segment",
             width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
             height: constant.BUTTON_HEIGHT,
             items: BICst.TARGET_STYLE_LEVEL
         });
 
-        this.numberLevellY.on(BI.Segment.EVENT_CHANGE, function () {
+        this.leftYNumberLevel.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE);
         });
 
-        this.LYUnit = BI.createWidget({
+        this.leftYUnit = BI.createWidget({
             type: "bi.sign_editor",
             width: constant.EDITOR_WIDTH,
             height: constant.EDITOR_HEIGHT,
@@ -162,29 +162,29 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             watermark: BI.i18nText("BI-Custom_Input")
         });
 
-        this.LYUnit.on(BI.SignEditor.EVENT_CONFIRM, function () {
+        this.leftYUnit.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE);
         });
 
-        this.lYAxisStyle = BI.createWidget({
+        this.leftYNumberFormat = BI.createWidget({
             type: "bi.segment",
             width: constant.FORMAT_SEGMENT_WIDTH,
             height: constant.BUTTON_HEIGHT,
             items: BICst.TARGET_STYLE_FORMAT
         });
 
-        this.lYAxisStyle.on(BI.Segment.EVENT_CHANGE, function () {
+        this.leftYNumberFormat.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE);
         });
 
         //千分符
-        this.separators = BI.createWidget({
+        this.leftYSeparator = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Separators"),
             width: 80
         });
 
-        this.separators.on(BI.Controller.EVENT_CHANGE, function () {
+        this.leftYSeparator.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE);
         });
 
@@ -246,15 +246,15 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.addConditionButton.on(BI.Button.EVENT_CHANGE, function () {
-            self.conditions.addItem();
+            self.dashboardConditions.addItem();
             self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE);
         });
 
-        this.conditions = BI.createWidget({
+        this.dashboardConditions = BI.createWidget({
             type: "bi.chart_add_condition_group"
         });
 
-        this.conditions.on(BI.ChartAddConditionGroup.EVENT_CHANGE, function () {
+        this.dashboardConditions.on(BI.ChartAddConditionGroup.EVENT_CHANGE, function () {
             self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE);
         });
 
@@ -350,17 +350,17 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.numberLevellY]
+                    items: [this.leftYNumberLevel]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Unit_Normal"),
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.LYUnit]
+                    items: [this.leftYUnit]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.separators]
+                    items: [this.leftYSeparator]
                 }, this.dashboardScale, {
                     type: "bi.vertical_adapt",
                     items: [this.scale]
@@ -369,7 +369,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.addConditionButton]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.conditions],
+                    items: [this.dashboardConditions],
                     width: "100%",
                     height: ""
                 }], {
@@ -416,11 +416,11 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
         switch (v) {
             case BICst.SCALE_SETTING.AUTO:
                 this.addConditionButton.setVisible(false);
-                this.conditions.setVisible(false);
+                this.dashboardConditions.setVisible(false);
                 break;
             case BICst.SCALE_SETTING.CUSTOM:
                 this.addConditionButton.setVisible(true);
-                this.conditions.setVisible(true);
+                this.dashboardConditions.setVisible(true);
                 break;
         }
     },
@@ -444,44 +444,49 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     populate: function () {
         var wId = this.options.wId;
-        this.showTitle.setSelected(BI.Utils.getWSShowNameByID(wId));
+        this.showName.setSelected(BI.Utils.getWSShowNameByID(wId));
         this.widgetTitle.setVisible(BI.Utils.getWSShowNameByID(wId));
-        this.title.setValue(BI.Utils.getWidgetNameByID(wId));
-        this.titleDetailSettting.setValue(BI.Utils.getWSTitleDetailSettingByID(wId));
-        this.widgetBackground.setValue(BI.Utils.getWSWidgetBGByID(wId));
-        this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
-        this.chartTypeGroup.setValue(BI.Utils.getWSChartDashboardTypeByID(wId));
+        this.widgetName.setValue(BI.Utils.getWidgetNameByID(wId));
+        this.widgetNameStyle.setValue(BI.Utils.getWSTitleDetailSettingByID(wId));
+
+        this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
+        this.dashboardChartType.setValue(BI.Utils.getWSChartDashboardTypeByID(wId));
         this.pointer.setValue(BI.Utils.getWSNumberOfPointerByID(wId));
         this._showPointer(BI.Utils.getWSChartDashboardTypeByID(wId));
         this.scale.setValue(BI.Utils.getWSScaleByID(wId));
         this._doClickButton(BI.Utils.getWSScaleByID(wId));
-        this.conditions.setValue(BI.Utils.getWSDashboardStylesByID(wId));
-        this.numberLevellY.setValue(BI.Utils.getWSDashboardNumLevelByID(wId));
-        this.LYUnit.setValue(BI.Utils.getWSDashboardUnitByID(wId));
+        this.dashboardConditions.setValue(BI.Utils.getWSDashboardStylesByID(wId));
         this.minScale.setValue(BI.Utils.getWSMinScaleByID(wId));
         this.maxScale.setValue(BI.Utils.getWSMaxScaleByID(wId));
         this.percentage.setValue(BI.Utils.getWSShowPercentageByID(wId));
-        this.separators.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
 
+        this.leftYNumberLevel.setValue(BI.Utils.getWSDashboardNumLevelByID(wId));
+        this.leftYUnit.setValue(BI.Utils.getWSDashboardUnitByID(wId));
+        this.leftYSeparator.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
+
+        this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
     },
 
     getValue: function () {
         return {
-            show_name: this.showTitle.isSelected(),
-            widget_title: this.title.getValue(),
-            title_detail: this.titleDetailSettting.getValue(),
-            widget_bg: this.widgetBackground.getValue(),
-            transfer_filter: this.transferFilter.isSelected(),
-            chart_dashboard_type: this.chartTypeGroup.getValue()[0],
-            number_of_pointer: this.pointer.getValue()[0],
-            dashboard_number_level: this.numberLevellY.getValue()[0],
-            auto_custom: this.scale.getValue()[0],
-            style_conditions: this.conditions.getValue(),
-            dashboard_unit: this.LYUnit.getValue(),
-            min_scale: this.minScale.getValue(),
-            max_scale: this.maxScale.getValue(),
-            show_percentage: this.percentage.getValue()[0],
-            num_separators: this.separators.isSelected()
+            showName: this.showName.isSelected(),
+            widgetName: this.widgetName.getValue(),
+            widgetNameStyle: this.widgetNameStyle.getValue(),
+
+            widgetBG: this.widgetBG.getValue(),
+            dashboardChartType: this.dashboardChartType.getValue()[0],
+            pointer: this.pointer.getValue()[0],
+            scale: this.scale.getValue()[0],
+            dashboardConditions: this.dashboardConditions.getValue(),
+            minScale: this.minScale.getValue(),
+            maxScale: this.maxScale.getValue(),
+            percentage: this.percentage.getValue()[0],
+
+            leftYNumberLevel: this.leftYNumberLevel.getValue()[0],
+            leftYUnit: this.leftYUnit.getValue(),
+            leftYSeparator: this.leftYSeparator.isSelected(),
+
+            transferFilter: this.transferFilter.isSelected(),
         }
     }
 });

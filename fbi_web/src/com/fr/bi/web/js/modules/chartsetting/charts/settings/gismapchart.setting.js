@@ -16,7 +16,7 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
         var self = this, constant = BI.AbstractChartSetting;
 
         //显示组件标题
-        this.showTitle = BI.createWidget({
+        this.showName = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Chart_Title"),
             cls: "attr-names",
@@ -24,42 +24,42 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
                 dynamic: true
             }
         });
-        this.showTitle.on(BI.Controller.EVENT_CHANGE, function () {
+        this.showName.on(BI.Controller.EVENT_CHANGE, function () {
             self.widgetTitle.setVisible(this.isSelected());
             self.fireEvent(BI.GISMapSetting.EVENT_CHANGE);
         });
 
         //组件标题
-        this.title = BI.createWidget({
+        this.widgetName = BI.createWidget({
             type: "bi.sign_editor",
             cls: "title-input",
             width: 120
         });
 
-        this.title.on(BI.SignEditor.EVENT_CHANGE, function () {
+        this.widgetName.on(BI.SignEditor.EVENT_CHANGE, function () {
             self.fireEvent(BI.GISMapSetting.EVENT_CHANGE)
         });
 
         //详细设置
-        this.titleDetailSettting = BI.createWidget({
+        this.widgetNameStyle = BI.createWidget({
             type: "bi.show_title_detailed_setting_combo"
         });
 
-        this.titleDetailSettting.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
+        this.widgetNameStyle.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.GISMapSetting.EVENT_CHANGE)
         });
 
         this.widgetTitle = BI.createWidget({
             type: "bi.left",
-            items: [this.title, this.titleDetailSettting],
+            items: [this.widgetName, this.widgetNameStyle],
             hgap: constant.SIMPLE_H_GAP
         });
 
         //组件背景
-        this.widgetBackground = BI.createWidget({
+        this.widgetBG = BI.createWidget({
             type: "bi.global_style_index_background"
         });
-        this.widgetBackground.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
+        this.widgetBG.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
             self.fireEvent(BI.GISMapSetting.EVENT_CHANGE);
         });
 
@@ -68,7 +68,7 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "single-line-settings",
             items: BI.createItems([{
                 type: "bi.vertical_adapt",
-                items: [this.showTitle]
+                items: [this.showName]
             }, {
                 type: "bi.vertical_adapt",
                 items: [this.widgetTitle]
@@ -78,7 +78,7 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
                 cls: "line-title",
             },{
                 type: "bi.vertical_adapt",
-                items: [this.widgetBackground]
+                items: [this.widgetBG]
             }], {
                 height: constant.SINGLE_LINE_HEIGHT
             }),
@@ -154,23 +154,27 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
 
     populate: function(){
         var wId = this.options.wId;
-        this.showTitle.setSelected(BI.Utils.getWSShowNameByID(wId));
+        this.showName.setSelected(BI.Utils.getWSShowNameByID(wId));
         this.widgetTitle.setVisible(BI.Utils.getWSShowNameByID(wId));
-        this.title.setValue(BI.Utils.getWidgetNameByID(wId));
-        this.titleDetailSettting.setValue(BI.Utils.getWSTitleDetailSettingByID(wId));
-        this.widgetBackground.setValue(BI.Utils.getWSWidgetBGByID(wId));
-        this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
+        this.widgetName.setValue(BI.Utils.getWidgetNameByID(wId));
+        this.widgetNameStyle.setValue(BI.Utils.getWSTitleDetailSettingByID(wId));
+
+        this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
+
+        this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
     },
 
     getValue: function(){
         return {
-            show_name: this.showTitle.isSelected(),
-            widget_title: this.title.getValue(),
-            title_detail: this.titleDetailSettting.getValue(),
-            widget_bg: this.widgetBackground.getValue(),
-            transfer_filter: this.transferFilter.isSelected(),
-            show_data_label: this.showDataLabel.isSelected()
+            showName: this.showName.isSelected(),
+            widgetName: this.widgetName.getValue(),
+            widgetNameStyle: this.widgetNameStyle.getValue(),
+
+            widgetBG: this.widgetBG.getValue(),
+            showDataLabel: this.showDataLabel.isSelected(),
+
+            transferFilter: this.transferFilter.isSelected(),
         }
     }
 });

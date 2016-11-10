@@ -1059,7 +1059,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             widgetBG: this.widgetBG.getValue(),
             displayRules: this.displayRules.getValue()[0],
             bubbleStyle: this.bubbleStyle.getValue()[0],
-            fixedCondition: this.fixedConditions.getValue(),
+            fixedConditions: this.fixedConditions.getValue(),
             gradientConditions: this.gradientConditions.getValue(),
             bubbleSizeFrom: this.bubbleSizeFrom.getValue(),
             bubbleSizeTo: this.bubbleSizeTo.getValue(),
@@ -1098,7 +1098,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
             vShowGridLine: this.vShowGridLine.isSelected(),
             vGridLineColor: this.vGridLineColor.getValue(),
             tooltipStyle: this.tooltipStyle.getValue(),
-            
+
             transferFilter: this.transferFilter.isSelected(),
 
             bigDataMode: this.bigDataMode.isSelected(),

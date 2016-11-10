@@ -16,7 +16,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         var self = this, o = this.options, constant = BI.AbstractChartSetting;
 
         //显示组件标题
-        this.showTitle = BI.createWidget({
+        this.showName = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Chart_Title"),
             cls: "attr-names",
@@ -24,34 +24,34 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 dynamic: true
             }
         });
-        this.showTitle.on(BI.Controller.EVENT_CHANGE, function () {
+        this.showName.on(BI.Controller.EVENT_CHANGE, function () {
             self.widgetTitle.setVisible(this.isSelected());
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
         //组件标题
-        this.title = BI.createWidget({
+        this.widgetName = BI.createWidget({
             type: "bi.sign_editor",
             cls: "title-input",
             width: 120
         });
 
-        this.title.on(BI.SignEditor.EVENT_CHANGE, function () {
+        this.widgetName.on(BI.SignEditor.EVENT_CHANGE, function () {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
         //详细设置
-        this.titleDetailSettting = BI.createWidget({
+        this.widgetNameStyle = BI.createWidget({
             type: "bi.show_title_detailed_setting_combo"
         });
 
-        this.titleDetailSettting.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
+        this.widgetNameStyle.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
         this.widgetTitle = BI.createWidget({
             type: "bi.left",
-            items: [this.title, this.titleDetailSettting],
+            items: [this.widgetName, this.widgetNameStyle],
             hgap: constant.SIMPLE_H_GAP
         });
 
@@ -60,7 +60,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "single-line-settings",
             items: BI.createItems([{
                 type: "bi.vertical_adapt",
-                items: [this.showTitle]
+                items: [this.showName]
             }, {
                 type: "bi.vertical_adapt",
                 items: [this.widgetTitle]
@@ -70,18 +70,18 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             hgap: constant.SIMPLE_H_GAP
         });
 
-        this.colorSelect = BI.createWidget({
+        this.chartColor = BI.createWidget({
             type: "bi.chart_setting_select_color_combo",
             width: 130
         });
-        this.colorSelect.populate();
+        this.chartColor.populate();
 
-        this.colorSelect.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function () {
+        this.chartColor.on(BI.ChartSettingSelectColorCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
         //风格——1、2、3
-        this.chartSyleGroup = BI.createWidget({
+        this.chartSyle = BI.createWidget({
             type: "bi.button_group",
             items: BI.createItems(BICst.AXIS_STYLE_GROUP, {
                 type: "bi.icon_button",
@@ -96,15 +96,15 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 height: constant.SINGLE_LINE_HEIGHT
             }]
         });
-        this.chartSyleGroup.on(BI.ButtonGroup.EVENT_CHANGE, function () {
+        this.chartSyle.on(BI.ButtonGroup.EVENT_CHANGE, function () {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
         //组件背景
-        this.widgetBackground = BI.createWidget({
+        this.widgetBG = BI.createWidget({
             type: "bi.global_style_index_background"
         });
-        this.widgetBackground.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
+        this.widgetBG.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
@@ -127,21 +127,21 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.colorSelect]
+                    items: [this.chartColor]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Table_Style"),
                     cls: "attr-names",
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.chartSyleGroup]
+                    items: [this.chartSyle]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Widget_Background_Colour"),
                     cls: "attr-names",
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.widgetBackground]
+                    items: [this.widgetBG]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -150,19 +150,19 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //数量级
-        this.numberLevellY = BI.createWidget({
+        this.leftYNumberLevel = BI.createWidget({
             type: "bi.segment",
             width: constant.NUMBER_LEVEL_SEGMENT_WIDTH,
             height: constant.BUTTON_HEIGHT,
             items: BICst.TARGET_STYLE_LEVEL
         });
 
-        this.numberLevellY.on(BI.Segment.EVENT_CHANGE, function () {
+        this.leftYNumberLevel.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
         //单位
-        this.LYUnit = BI.createWidget({
+        this.leftYUnit = BI.createWidget({
             type: "bi.sign_editor",
             width: constant.EDITOR_WIDTH,
             height: constant.EDITOR_HEIGHT,
@@ -170,91 +170,91 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             watermark: BI.i18nText("BI-Custom_Input")
         });
 
-        this.LYUnit.on(BI.SignEditor.EVENT_CONFIRM, function () {
+        this.leftYUnit.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
-        this.lYAxisStyle = BI.createWidget({
+        this.leftYNumberFormat = BI.createWidget({
             type: "bi.segment",
             width: constant.FORMAT_SEGMENT_WIDTH,
             height: constant.BUTTON_HEIGHT,
             items: BICst.TARGET_STYLE_FORMAT
         });
 
-        this.lYAxisStyle.on(BI.Segment.EVENT_CHANGE, function () {
+        this.leftYNumberFormat.on(BI.Segment.EVENT_CHANGE, function () {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
         //千分符
-        this.separatorsLeft = BI.createWidget({
+        this.leftYSeparator = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Separators"),
             width: 80
         });
 
-        this.separatorsLeft.on(BI.Controller.EVENT_CHANGE, function () {
+        this.leftYSeparator.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
         //显示标题
-        this.isShowTitleLY = BI.createWidget({
+        this.leftYShowTitle = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Title"),
             width: 90
         });
 
-        this.isShowTitleLY.on(BI.Controller.EVENT_CHANGE, function () {
-            self.editTitleLY.setVisible(this.isSelected());
-            self.leftTitleStyle.setVisible(this.isSelected());
+        this.leftYShowTitle.on(BI.Controller.EVENT_CHANGE, function () {
+            self.leftYTitle.setVisible(this.isSelected());
+            self.leftYTitleStyle.setVisible(this.isSelected());
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
-        this.editTitleLY = BI.createWidget({
+        this.leftYTitle = BI.createWidget({
             type: "bi.sign_editor",
             width: constant.EDITOR_WIDTH,
             height: constant.EDITOR_HEIGHT,
             cls: "unit-input"
         });
-        this.editTitleLY.on(BI.SignEditor.EVENT_CONFIRM, function () {
+        this.leftYTitle.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE);
         });
 
-        this.leftTitleStyle = BI.createWidget({
+        this.leftYTitleStyle = BI.createWidget({
             type: "bi.legend_detailed_setting_combo"
         });
 
-        this.leftTitleStyle.on(BI.LegendDetailedSettingCombo.EVENT_CHANGE, function () {
+        this.leftYTitleStyle.on(BI.LegendDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
         //左轴标签
-        this.showLeftLabel = BI.createWidget({
+        this.leftYShowLabel = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Label"),
             width: 100
         });
 
-        this.showLeftLabel.on(BI.Controller.EVENT_CHANGE, function () {
-            self.leftLabelStyle.setVisible(this.isSelected());
+        this.leftYShowLabel.on(BI.Controller.EVENT_CHANGE, function () {
+            self.leftYLabelStyle.setVisible(this.isSelected());
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
-        this.leftLabelStyle = BI.createWidget({
+        this.leftYLabelStyle = BI.createWidget({
             type: "bi.chart_label_detailed_setting_combo"
         });
 
-        this.leftLabelStyle.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function () {
+        this.leftYLabelStyle.on(BI.ChartLabelDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 
         //左轴线颜色
-        this.leftLineColor = BI.createWidget({
+        this.leftYLineColor = BI.createWidget({
             type: "bi.color_chooser",
             width: 30,
             height: 30
         });
 
-        this.leftLineColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
+        this.leftYLineColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
             self.fireEvent(BI.MultiAxisChartSetting.EVENT_CHANGE)
         });
 

@@ -717,13 +717,13 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         //网格线设置
-        this.showHGridLine = BI.createWidget({
+        this.hShowGridLine = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Horizontal"),
             width: 65
         });
 
-        this.showHGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+        this.hShowGridLine.on(BI.Controller.EVENT_CHANGE, function () {
             self.hGridLineColor.setVisible(this.isSelected());
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
@@ -738,13 +738,13 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
 
-        this.showVGridLine = BI.createWidget({
+        this.vShowGridLine = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Vertical"),
             width: 65
         });
 
-        this.showVGridLine.on(BI.Controller.EVENT_CHANGE, function () {
+        this.vShowGridLine.on(BI.Controller.EVENT_CHANGE, function () {
             self.vGridLineColor.setVisible(this.isSelected());
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
@@ -837,13 +837,13 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.showHGridLine]
+                    items: [this.hShowGridLine]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.hGridLineColor]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.showVGridLine]
+                    items: [this.vShowGridLine]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.vGridLineColor]
@@ -1041,11 +1041,11 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
         this.showDataTable.setSelected(BI.Utils.getWSShowDataTableByID(wId));
         this.showZoom.setSelected(BI.Utils.getWSShowZoomByID(wId));
-        this.showHGridLine.setSelected(BI.Utils.getWSShowHGridLineByID(wId));
-        this.hGridLineColor.setVisible(this.showHGridLine.isSelected());
+        this.hShowGridLine.setSelected(BI.Utils.getWSShowHGridLineByID(wId));
+        this.hGridLineColor.setVisible(this.hShowGridLine.isSelected());
         this.hGridLineColor.setValue(BI.Utils.getWSHGridLineColorByID(wId));
-        this.showVGridLine.setSelected(BI.Utils.getWSShowVGridLineByID(wId));
-        this.vGridLineColor.setVisible(this.showVGridLine.isSelected());
+        this.vShowGridLine.setSelected(BI.Utils.getWSShowVGridLineByID(wId));
+        this.vGridLineColor.setVisible(this.vShowGridLine.isSelected());
         this.vGridLineColor.setValue(BI.Utils.getWSVGridLineColorByID(wId));
         this.tooltipStyle.setValue(BI.Utils.getWSToolTipSettingByID(wId));
 
@@ -1105,9 +1105,9 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             showDataLabel: this.showDataLabel.isSelected(),
             showDataTable: this.showDataTable.isSelected(),
             showZoom: this.showZoom.isSelected(),
-            showHGridLine: this.showHGridLine.isSelected(),
+            hShowGridLine: this.hShowGridLine.isSelected(),
             hGridLineColor: this.hGridLineColor.getValue(),
-            showVGridLine: this.showVGridLine.isSelected(),
+            vShowGridLine: this.vShowGridLine.isSelected(),
             vGridLineColor: this.vGridLineColor.getValue(),
             tooltipStyle: this.tooltipStyle.getValue(),
 
