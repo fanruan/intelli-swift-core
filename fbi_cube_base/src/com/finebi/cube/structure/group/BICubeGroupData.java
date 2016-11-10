@@ -133,9 +133,10 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
 
     public void buildStructure() {
 //        initialGroupLengthReader();
-//        initialGroupLengthWriter();
+        initialGroupLengthWriter();
 //        initialGroupReader();
-//        initialGroupWriter();
+        initialGroupWriter();
+        forceReleaseWriter();
     }
 
     protected boolean isGroupReaderAvailable() {

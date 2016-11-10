@@ -59,7 +59,7 @@ public class WriterHandlerManager implements NIOHandlerManager<ICubePrimitiveWri
                 } catch (Exception e) {
                     throw BINonValueUtils.beyondControl(e);
                 } finally {
-                    isForceReleased = false;
+//                    isForceReleased = false;
                 }
             } else if (currentCountOfWriters < 0) {
                 countOfWriters.set(0);

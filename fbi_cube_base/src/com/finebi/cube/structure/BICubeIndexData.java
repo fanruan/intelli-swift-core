@@ -128,8 +128,9 @@ public class BICubeIndexData implements ICubeIndexDataService {
 
     public void buildStructure() {
 //        initNullReader();
-//        initNullWriter();
-//        initIndexWriter();
+        initNullWriter();
+        initIndexWriter();
+        forceReleaseWriter();
 //        initIndexReader();
     }
 
