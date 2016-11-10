@@ -2,6 +2,7 @@ package com.fr.bi.field.dimension.calculator;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelationPath;
@@ -17,10 +18,8 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
-import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -100,11 +99,6 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
     }
 
     @Override
-    public boolean hasSelfGroup() {
-        return dimension.getGroup().isNullGroup();
-    }
-
-    @Override
     public List<BITableSourceRelation> getRelationList() {
         return relations;
     }
@@ -175,17 +169,6 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
 
     private CubeTableSource getTableSourceFromField() {
         return field.getTableBelongTo().getTableSource();
-    }
-
-    @Override
-    public int getBaseTableValueCount(Object value, ICubeDataLoader loader) {
-        GroupValueIndex[] gvis = loader.getTableIndex(getTableSourceFromField()).getIndexes(dimension.createKey(field), new Object[]{value});
-        if (gvis != null) {
-            if (gvis[0] != null) {
-                return (int) gvis[0].getRowsCountWithData();
-            }
-        }
-        return 0;
     }
 
     @Override
