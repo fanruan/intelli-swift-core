@@ -366,7 +366,7 @@ public class BICubeOperationManager {
             while (it.hasNext()) {
                 BICubeGenerateRelation relation = it.next();
                 try {
-                    String sourceID = BIRelationIDUtils.calculateRelationID( relation.getRelation());
+                    String sourceID = BIRelationIDUtils.calculateRelationID(relation.getRelation());
                     BIOperation<Object> operation = new BIOperation<Object>(
                             sourceID,
                             getRelationBuilder(cube, relation.getRelation()));
@@ -381,12 +381,8 @@ public class BICubeOperationManager {
                     }
                     pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
                 } catch (Exception e) {
-                    try {
-                        BILoggerFactory.getLogger().info("the relation build failed ");
-                        BILoggerFactory.getLogger().info(BuildLogHelper.relationLogContent(relation.getRelation()));
-                    } catch (Exception e1) {
-                        BILoggerFactory.getLogger().error(e1.getMessage(), e1);
-                    }
+                    BILoggerFactory.getLogger().info("the relation build failed ");
+                    BILoggerFactory.getLogger().info(BuildLogHelper.relationLogContent(relation.getRelation()));
                     throw BINonValueUtils.beyondControl(e.getMessage(), e);
                 }
             }
@@ -407,28 +403,27 @@ public class BICubeOperationManager {
     * */
     public void generateTableRelationPath(Set<BICubeGenerateRelationPath> relationPathSet) {
         for (BICubeGenerateRelationPath path : relationPathSet) {
-                    try {
-                        String sourceID = BIRelationIDUtils.calculatePathID(path.getBiTableSourceRelationPath());
-                        BIOperation<Object> operation = new BIOperation<Object>(
-                                sourceID,
-                                getTablePathBuilder(cube, path.getBiTableSourceRelationPath()));
-                        operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
-                        operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-                        if (path.getDependRelationPathSet().size() != 0) {
-                            for (BITableSourceRelationPath biTableSourceRelationPath : path.getDependRelationPathSet()) {
-                                operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, BIRelationIDUtils.calculatePathID(biTableSourceRelationPath)));
-                            }
-                            pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-                        }
-                            else {
-                                operation.subscribe(BICubeBuildTopicTag.START_BUILD_CUBE);
-                            }
-                    } catch (Exception e) {
-                        BILoggerFactory.getLogger().info("the path build failed ");
-                        BILoggerFactory.getLogger().error(BuildLogHelper.pathLogContent(path.getBiTableSourceRelationPath()));
-                        throw BINonValueUtils.beyondControl(e.getMessage(), e);
+            try {
+                String sourceID = BIRelationIDUtils.calculatePathID(path.getBiTableSourceRelationPath());
+                BIOperation<Object> operation = new BIOperation<Object>(
+                        sourceID,
+                        getTablePathBuilder(cube, path.getBiTableSourceRelationPath()));
+                operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
+                operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
+                if (path.getDependRelationPathSet().size() != 0) {
+                    for (BITableSourceRelationPath biTableSourceRelationPath : path.getDependRelationPathSet()) {
+                        operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, BIRelationIDUtils.calculatePathID(biTableSourceRelationPath)));
                     }
+                    pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
+                } else {
+                    operation.subscribe(BICubeBuildTopicTag.START_BUILD_CUBE);
+                }
+            } catch (Exception e) {
+                BILoggerFactory.getLogger().info("the path build failed");
+                BILoggerFactory.getLogger().error(BuildLogHelper.pathLogContent(path.getBiTableSourceRelationPath()));
+                throw BINonValueUtils.beyondControl(e.getMessage(), e);
             }
+        }
         subscribePathFinish();
     }
 
