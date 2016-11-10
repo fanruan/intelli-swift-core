@@ -1476,12 +1476,15 @@
             return drills;
         },
 
-        //获取组件中所有维度当前钻取到的维度的信息
-        getCurrentDrillInfo: function(wid){
+        //获取组件中所有维度的钻取链A->B->C
+        getDrillList: function(wid){
             var drillMap = BI.Utils.getDrillByID(wid);
             var map = {};
             BI.each(drillMap, function (drId, ds) {
-                map[drId] = ds[ds.length - 1];
+                map[drId] = [];
+                BI.each(ds, function(idx, obj){
+                    map[drId].push(obj.dId)
+                });
             });
             return map;
         },

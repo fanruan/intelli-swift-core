@@ -28,7 +28,7 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
             height: 25
         });
         this.upDrill.on(BI.IconTextItem.EVENT_CHANGE, function () {
-            self.fireEvent(BI.ChartDrillCell.EVENT_DRILL_UP);
+            self.fireEvent(BI.ChartDrillCell.EVENT_DRILL, self._onClickDrill(o.dId, o.value));
         });
 
         this.downTrigger = BI.createWidget({
@@ -42,7 +42,16 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
             el: this.downTrigger
         });
         this.downDrill.on(BI.DownListCombo.EVENT_CHANGE, function (v) {
-            self.fireEvent(BI.ChartDrillCell.EVENT_DRILL_DOWN, v);
+            self.fireEvent(BI.ChartDrillCell.EVENT_DRILL, self._onClickDrill(o.dId, o.value, v));
+        });
+
+        this.label = BI.createWidget({
+            type: "bi.label",
+            text: text,
+            title: text,
+            cls: "dimension-name",
+            height: 23,
+            hgap: 2
         });
         this._initStatus();
 
@@ -54,14 +63,7 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
                 el: this.upDrill,
                 width: 60
             }, {
-                el: {
-                    type: "bi.label",
-                    text: text,
-                    title: text,
-                    cls: "dimension-name",
-                    height: 23,
-                    hgap: 2
-                },
+                el: this.label,
                 width: "fill"
             }, {
                 el: this.downDrill,
@@ -70,12 +72,68 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
         });
     },
 
+    _onClickDrill: function (dId, value, drillId) {
+        var wId = BI.Utils.getWidgetIDByDimensionID(this.options.dId);
+        var drillMap = BI.Utils.getDrillByID(wId);
+        //value 存当前的过滤条件——因为每一次钻取都要带上所有父节点的值
+        //当前钻取的根节点
+        var rootId = dId;
+        BI.each(drillMap, function (drId, ds) {
+            if (dId === drId || (ds.length > 0 && ds[ds.length - 1].dId === dId)) {
+                rootId = drId;
+            }
+        });
+
+        var drillOperators = drillMap[rootId] || [];
+        //上钻
+        if (BI.isNull(drillId)) {
+            drillOperators.pop();
+        } else {
+            drillOperators.push({
+                dId: drillId,
+                values: [{
+                    dId: dId,
+                    value: [value]
+                }]
+            });
+        }
+        drillMap[rootId] = drillOperators;
+        return {clicked: BI.extend(BI.Utils.getLinkageValuesByID(wId), drillMap)};
+    },
+
     _formatDate: function (d) {
         if (BI.isNull(d) || !BI.isNumeric(d)) {
             return d || "";
         }
         var date = new Date(BI.parseInt(d));
         return date.print("%Y-%X-%d")
+    },
+
+    _checkUPDrillEmpty: function () {
+        var wId = BI.Utils.getWidgetIDByDimensionID(this.options.wId);
+        var wType = BI.Utils.getWidgetTypeByID(wId);
+        if (wType < 5 || wType === BICst.WIDGET.MAP) {
+            return false
+        }
+        var drillMap = BI.Utils.getDrillByID(wId);
+        var upDrillID = null, dId = null;
+        BI.each(drillMap, function (drId, ds) {
+            var rType = BI.Utils.getRegionTypeByDimensionID(drId);
+            if (rType === BICst.REGION.DIMENSION1 && ds.length > 0) {
+                dId = ds[ds.length - 1].dId;
+            }
+            if (rType === BICst.REGION.DIMENSION2 && ds.length > 0) {
+                dId = ds[ds.length - 1].dId;
+            }
+            if (ds.length > 0 && (dId === drId || ds[ds.length - 1].dId === dId)) {
+                if (ds.length > 1) {
+                    upDrillID = ds[ds.length - 2].dId
+                } else {
+                    upDrillID = drId;
+                }
+            }
+        });
+        return BI.isNull(upDrillID)
     },
 
     _initStatus: function () {
@@ -113,13 +171,20 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
             this.upDrill.setEnable(false);
         }
         if (BI.isEmptyArray(downChildren) || this.options.disableDownButton) {
+            this.downDrill.setEnable(false);
+            this.downTrigger.setEnable(false);
         } else {
             this.downDrill.populate([downChildren]);
         }
-        this.downDrill.setEnable(false);
-        this.downTrigger.setEnable(false);
+    },
+
+    setValue: function(value){
+        this.label.setValue(value);
+    },
+
+    populate: function(){
+        this.downDrill.populate();
     }
 });
-BI.ChartDrillCell.EVENT_DRILL_DOWN = "EVENT_DRILL_DOWN";
-BI.ChartDrillCell.EVENT_DRILL_UP = "EVENT_DRILL_UP";
+BI.ChartDrillCell.EVENT_DRILL = "EVENT_DRILL";
 $.shortcut("bi.chart_drill_cell", BI.ChartDrillCell);

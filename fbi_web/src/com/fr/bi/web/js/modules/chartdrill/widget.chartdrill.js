@@ -105,94 +105,37 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         return showDrill;
     },
 
-    _checkUPDrillEmpty: function () {
-        var wId = this.options.wId;
-        var wType = BI.Utils.getWidgetTypeByID(wId);
-        if (wType < 5 || wType === BICst.WIDGET.MAP) {
-            return false
-        }
-        var drillMap = BI.Utils.getDrillByID(wId);
-        var upDrillID = null, dId = null;
-        BI.each(drillMap, function (drId, ds) {
-            var rType = BI.Utils.getRegionTypeByDimensionID(drId);
-            if (rType === BICst.REGION.DIMENSION1 && ds.length > 0) {
-                dId = ds[ds.length - 1].dId;
-            }
-            if (rType === BICst.REGION.DIMENSION2 && ds.length > 0) {
-                dId = ds[ds.length - 1].dId;
-            }
-            if (ds.length > 0 && (dId === drId || ds[ds.length - 1].dId === dId)) {
-                if (ds.length > 1) {
-                    upDrillID = ds[ds.length - 2].dId
-                } else {
-                    upDrillID = drId;
-                }
-            }
-        });
-        return BI.isNull(upDrillID)
-    },
+
 
     _onClickPush: function (isVisible) {
         this.wrapper.setVisible(isVisible);
         isVisible ? this.pushButton.setPushUp() : this.pushButton.setPushDown();
     },
 
-    _onClickDrill: function (dId, value, drillId) {
-        var wId = this.options.wId;
-        var drillMap = BI.Utils.getDrillByID(wId);
-        //value 存当前的过滤条件——因为每一次钻取都要带上所有父节点的值
-        //当前钻取的根节点
-        var rootId = dId;
-        BI.each(drillMap, function (drId, ds) {
-            if (dId === drId || (ds.length > 0 && ds[ds.length - 1].dId === dId)) {
-                rootId = drId;
-            }
-        });
-
-        var drillOperators = drillMap[rootId] || [];
-        //上钻
-        if (BI.isNull(drillId)) {
-            drillOperators.pop();
-        } else {
-            drillOperators.push({
-                dId: drillId,
-                values: [{
-                    dId: dId,
-                    value: [value]
-                }]
-            });
-        }
-        drillMap[rootId] = drillOperators;
-        this.fireEvent(BI.ChartDrill.EVENT_CHANGE, {clicked: BI.extend(BI.Utils.getLinkageValuesByID(wId), drillMap)});
-    },
-
-    populate: function (obj) {
+    populate: function () {
         var self = this, wId = this.options.wId;
 
         this.pushButton.setPushUp();
-        this.setVisible(true);
 
-        var classification = null;
-        var series = null;
         var currentDrilldIds = [];
         //看一下钻取
-        var currentDrilldIds = BI.pluck(BI.Utils.getCurrentDrillInfo(wId), "dId");
+        var drillList = BI.Utils.getDrillList(wId);
         BI.each(BI.Utils.getAllUsableDimDimensionIDs(wId), function (i, dim) {
-            currentDrilldIds.pushDistinct(dim);
+            if(BI.has(drillList, dim)){
+                currentDrilldIds.push(drillList[drillList.length - 1]);
+            }else{
+                currentDrilldIds.push(dim);
+            }
         });
         var width = 0;
         this.wrapper.empty();
         BI.each(currentDrilldIds, function(idx, dId){
             var drill = BI.createWidget({
                 type: "bi.chart_drill_cell",
-                dId: dId,
-                value: ""
+                dId: dId
             });
-            drill.on(BI.ChartDrillCell.EVENT_DRILL_UP, function () {
-                //self._onClickDrill(classification);
-            });
-            drill.on(BI.ChartDrillCell.EVENT_DRILL_DOWN, function (drillId) {
-                //self._onClickDrill(classification, drillId);
+            drill.on(BI.ChartDrillCell.EVENT_DRILL, function (v) {
+                self.fireEvent(BI.ChartDrill.EVENT_CHANGE, v);
             });
             self.wrapper.addItem(drill);
             width += 190;
