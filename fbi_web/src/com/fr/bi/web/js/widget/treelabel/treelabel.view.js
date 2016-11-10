@@ -73,9 +73,6 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
     },
 
     _changeView: function (op) {
-        if (op.floor === this.items.length - 1) {
-            return;
-        }
         var options = {};
         options.id = op.id;
         options.type = op.type;

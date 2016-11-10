@@ -28,6 +28,10 @@ BI.TreeLabel = BI.inherit(BI.Widget, {
             titles: this.titles
         });
         this.view.on(BI.TreeLabelView.EVENT_CHANGE, function (op) {
+            if (op.floor === self.items.length - 1) {
+                self.fireEvent(BI.TreeLabel.EVENT_CHANGE, arguments);
+                return;
+            }
             var selectedIds = op.selectedIds;
             op.parentValues = [];
             if (op.floor === 0) {
