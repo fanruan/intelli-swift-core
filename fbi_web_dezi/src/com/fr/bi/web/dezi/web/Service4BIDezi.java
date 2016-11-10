@@ -33,9 +33,6 @@ public class Service4BIDezi implements Service {
 
     static {
         redirectSet.add(BIInitDeziPaneAction.CMD);
-        redirectSet.add(BIExcelExportAction.CMD);
-        redirectSet.add(BIWidgetSettingAction.CMD);
-        redirectSet.add(BIChartSettingAction.CMD);
     }
 
     private static AbstractBIDeziAction[] actions = {

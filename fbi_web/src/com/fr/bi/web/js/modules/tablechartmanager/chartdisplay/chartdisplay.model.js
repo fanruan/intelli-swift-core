@@ -455,10 +455,10 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         }
         var hasSeries = this._checkSeriesExist();
         var allSeries = BI.pluck(data, "name");
-        var cataArrayMap = {};  //ÂÄºÊåâÂàÜÁ±ªÂàÜÁªÑ
-        var seriesArrayMap = {}; //ÂÄºÊåâÁ≥ªÂàóÂàÜÁªÑ
-        var allValueArray = []; //ÊâÄÊúâÂÄº
-        var filterClassifyArrays = [];//‰∏∫ËøáÊª§Ëá™Ë∫´Êó∂ËåÉÂõ¥‰∏∫ÂàÜÁ±ªÊâÄÁî®
+        var cataArrayMap = {};  //÷µ∞¥∑÷¿‡∑÷◊È
+        var seriesArrayMap = {}; //÷µ∞¥œµ¡–∑÷◊È
+        var allValueArray = []; //À˘”–÷µ
+        var filterClassifyArrays = [];//Œ™π˝¬À◊‘…Ì ±∑∂ŒßŒ™∑÷¿‡À˘”√
         BI.each(data, function (idx, da) {
             seriesArrayMap[da.name] = [];
             BI.each(da.data, function (id, obj) {
@@ -475,12 +475,12 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 var filter = BI.FilterFactory.parseFilter(dataLabel);
                 BI.any(data, function (idx, series) {
                     if (hasSeries === true) {
-                        //ÊúâÁ≥ªÂàó
-                        //ÂàÜÁ±ª
+                        //”–œµ¡–
+                        //∑÷¿‡
                         if (BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1) {
                             formatDataLabelForClassify(series, filter, BI.pluck(series.data, "x"), dataLabel);
                         }
-                        //Á≥ªÂàó
+                        //œµ¡–
                         if (BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION2) {
                             var filterArray = filter.getFilterResult(allSeries);
                             if (BI.contains(filterArray, series.name)) {
@@ -489,13 +489,13 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                                 });
                             }
                         }
-                        //Ëá™Ë∫´
+                        //◊‘…Ì
                         if (BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) >= BICst.REGION.TARGET1) {
-                            //ËåÉÂõ¥‰∏∫ÂÖ®Á≥ªÂàó
+                            //∑∂ŒßŒ™»´œµ¡–
                             if (dataLabel.filter_range === BICst.DATA_LABEL_RANGE.ALL) {
                                 formatDataLabelForSelf(series, filter, allValueArray, dataLabel);
                             }
-                            //ËåÉÂõ¥‰∏∫ÂàÜÁ±ª Ê±ÇÂπ≥ÂùáÂíåÁ¨¨nÂêçÊúâÂ∑ÆÂºÇ
+                            //∑∂ŒßŒ™∑÷¿‡ «Û∆Ωæ˘∫Õµ⁄n√˚”–≤Ó“Ï
                             if (dataLabel.filter_range === BICst.DATA_LABEL_RANGE.Classification) {
                                 BI.each(series.data, function (id, da) {
                                     if (idx === 0) {
@@ -506,19 +506,19 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                                     }
                                 });
                             }
-                            //ËåÉÂõ¥‰∏∫Á≥ªÂàó Ê±ÇÂπ≥ÂùáÂíåÁ¨¨nÂêçÊúâÂ∑ÆÂºÇ
+                            //∑∂ŒßŒ™œµ¡– «Û∆Ωæ˘∫Õµ⁄n√˚”–≤Ó“Ï
                             if (dataLabel.filter_range === BICst.DATA_LABEL_RANGE.Series) {
                                 formatDataLabelForSelf(series, filter, seriesArrayMap[series.name], dataLabel);
                             }
                         }
                     } else {
-                        //ÂΩìÂâçÊåáÊ†áÊâÄÂú®Á≥ªÂàó
+                        //µ±«∞÷∏±ÍÀ˘‘⁄œµ¡–
                         if (series.name === BI.Utils.getDimensionNameByID(dId)) {
-                            //ÂàÜÁ±ª
+                            //∑÷¿‡
                             if (BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1) {
                                 formatDataLabelForClassify(series, filter, BI.pluck(series.data, "x"), dataLabel);
                             }
-                            //ÊåáÊ†áËá™Ë∫´
+                            //÷∏±Í◊‘…Ì
                             if (BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) >= BICst.REGION.TARGET1) {
                                 formatDataLabelForSelf(series, filter, seriesArrayMap[series.name], dataLabel);
                             }
@@ -558,9 +558,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         }
         var hasSeries = this._checkSeriesExist();
         var allSeries = BI.pluck(data, "name");
-        var cataArrayMap = {};  //ÂÄºÊåâÂàÜÁ±ªÂàÜÁªÑ
-        var seriesArrayMap = {}; //ÂÄºÊåâÁ≥ªÂàóÂàÜÁªÑ
-        var allValueArray = []; //ÊâÄÊúâÂÄº
+        var cataArrayMap = {};  //÷µ∞¥∑÷¿‡∑÷◊È
+        var seriesArrayMap = {}; //÷µ∞¥œµ¡–∑÷◊È
+        var allValueArray = []; //À˘”–÷µ
         BI.each(data, function (idx, da) {
             seriesArrayMap[da.name] = [];
             BI.each(da.data, function (id, obj) {
@@ -577,12 +577,12 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 var filter = BI.FilterFactory.parseFilter(dataImage);
                 BI.any(data, function (idx, series) {
                     if (hasSeries === true) {
-                        //ÊúâÁ≥ªÂàó
-                        //ÂàÜÁ±ª
+                        //”–œµ¡–
+                        //∑÷¿‡
                         if (BI.has(dataImage, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataImage.target_id) === BICst.REGION.DIMENSION1) {
                             formatDataImageForClassify(series, filter, BI.pluck(series.data, "x"), dataImage);
                         }
-                        //Á≥ªÂàó
+                        //œµ¡–
                         if (BI.has(dataImage, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataImage.target_id) === BICst.REGION.DIMENSION2) {
                             var filterArray = filter.getFilterResult(allSeries);
                             if (BI.contains(filterArray, series.name)) {
@@ -591,20 +591,20 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                                 });
                             }
                         }
-                        //Ëá™Ë∫´
+                        //◊‘…Ì
                         if (BI.has(dataImage, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataImage.target_id) >= BICst.REGION.TARGET1) {
                             BI.each(series.data, function (id, da) {
                                 self._createDataImage(da, dataImage);
                             })
                         }
                     } else {
-                        //ÂΩìÂâçÊåáÊ†áÊâÄÂú®Á≥ªÂàó
+                        //µ±«∞÷∏±ÍÀ˘‘⁄œµ¡–
                         if (series.name === BI.Utils.getDimensionNameByID(dId)) {
-                            //ÂàÜÁ±ª
+                            //∑÷¿‡
                             if (BI.has(dataImage, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataImage.target_id) === BICst.REGION.DIMENSION1) {
                                 formatDataImageForClassify(series, filter, BI.pluck(series.data, "x"), dataImage);
                             }
-                            //ÊåáÊ†áËá™Ë∫´
+                            //÷∏±Í◊‘…Ì
                             if (BI.has(dataImage, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataImage.target_id) >= BICst.REGION.TARGET1) {
                                 BI.each(series.data, function (id, da) {
                                     self._createDataImage(da, dataImage);
@@ -809,46 +809,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         });
     },
 
-    //clicked ‰∏≠ÁöÑÂÄºÔºåÂ¶ÇÊûúÊòØÂàÜÁªÑÂêç‰ΩøÁî®ÂàÜÁªÑÂØπÂ∫îÁöÑid
-    _parseClickedValue4Group: function (v, dId) {
-        var group = BI.Utils.getDimensionGroupByID(dId);
-        var fieldType = BI.Utils.getFieldTypeByDimensionID(dId);
-        var clicked = v;
-
-        if (BI.isNotNull(group)) {
-            if (fieldType === BICst.COLUMN.STRING) {
-                var details = group.details,
-                    ungroup2Other = group.ungroup2Other,
-                    ungroup2OtherName = group.ungroup2OtherName;
-                if (ungroup2Other === BICst.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED &&
-                    ungroup2OtherName === v) {
-                    clicked = BICst.UNGROUP_TO_OTHER;
-                }
-                BI.some(details, function (i, detail) {
-                    if (detail.value === v) {
-                        clicked = detail.id;
-                        return true;
-                    }
-                });
-            } else if (fieldType === BICst.COLUMN.NUMBER) {
-                var groupValue = group.group_value, groupType = group.type;
-                if (groupType === BICst.GROUP.CUSTOM_NUMBER_GROUP) {
-                    var groupNodes = groupValue.group_nodes, useOther = groupValue.use_other;
-                    if (useOther === v) {
-                        clicked = BICst.UNGROUP_TO_OTHER;
-                    }
-                    BI.some(groupNodes, function (i, node) {
-                        if (node.group_name === v) {
-                            clicked = node.id;
-                            return true;
-                        }
-                    });
-                }
-            }
-        }
-        return clicked;
-    },
-
     _calculateValue: function (data, type) {
         var calculateValue = {};
         switch (type) {
@@ -1032,7 +992,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 dId = obj.targetIds;
                 clicked = [{
                     dId: clickeddId,
-                    value: [this._parseClickedValue4Group(obj.seriesName, clickeddId)]
+                    value: [BI.Utils.getClickedValue4Group(obj.seriesName, clickeddId)]
                 }];
                 break;
             case BICst.WIDGET.MAP:
@@ -1040,19 +1000,19 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 dId = obj.targetIds;
                 clicked = [{
                     dId: clickeddId,
-                    value: [this._parseClickedValue4Group(obj.x, clickeddId)]
+                    value: [BI.Utils.getClickedValue4Group(obj.x, clickeddId)]
                 }];
                 break;
             default:
                 dId = obj.targetIds;
                 clicked = [{
                     dId: clickeddId,
-                    value: [this._parseClickedValue4Group(obj.value || obj.x, clickeddId)]
+                    value: [BI.Utils.getClickedValue4Group(obj.value || obj.x, clickeddId)]
                 }];
                 if (BI.isNotNull(this.seriesDid)) {
                     clicked.push({
                         dId: obj.dId || this.crossDimIds[0],
-                        value: [this._parseClickedValue4Group(obj.seriesName, obj.dId || this.crossDimIds[0])]
+                        value: [BI.Utils.getClickedValue4Group(obj.seriesName, obj.dId || this.crossDimIds[0])]
                     })
                 }
                 break;

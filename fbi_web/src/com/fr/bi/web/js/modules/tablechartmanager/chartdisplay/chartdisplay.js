@@ -128,11 +128,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
             var linkages = [];
             var linkInfo = self.model.getLinkageInfo(obj);
             BI.each(linkInfo.dId, function (idx, dId) {
-                if (BI.Utils.getDimensionTypeByID(dId) === BICst.TARGET_TYPE.FORMULA) {
-                    var expression = BI.Utils.getDimensionSrcByID(dId).expression;
-                    if (!expression) {
-                        return;
-                    }
+                if (BI.Utils.isCalculateTargetByDimensionID(dId)) {
                     BI.each(BI.Utils.getWidgetLinkageByID(o.wId), function (i, link) {
                         if (dId === link.cids[0]) {
                             var name = BI.i18nText("BI-An");
@@ -175,7 +171,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
             if(v === BICst.WIDGET.MAP){
                 chart.on(BI.MapChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
-                    self._onClickDrill(obj.dId, obj.x, obj.drillDid);
+                    BI.isNotNull(obj.drillDid) && self._onClickDrill(obj.dId, obj.x, obj.drillDid);
                 });
                 chart.on(BI.MapChart.EVENT_CLICK_DTOOL, function (obj) {
                     self._onClickDrill(obj.dId, obj.x);

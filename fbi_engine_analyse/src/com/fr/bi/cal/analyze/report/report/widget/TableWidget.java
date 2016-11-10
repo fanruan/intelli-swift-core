@@ -133,12 +133,11 @@ public class TableWidget extends BISummaryWidget {
     public BIEngineExecutor getExecutor(BISession session) {
         boolean calculateTarget = targetSort != null || !targetFilterMap.isEmpty();
         CrossExpander expander = new CrossExpander(complexExpander.getXExpander(0), complexExpander.getYExpander(0));
+        boolean hasTarget = calculateTarget || getViewTargets().length > 0;
         if (this.table_type == BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE) {
-            boolean hasTarget = calculateTarget || getViewTargets().length > 0;
             return createComplexExecutor(session, hasTarget, complexExpander, expander);
         } else {
-
-            return createNormalExecutor(session, calculateTarget, getViewDimensions(), getViewTopDimensions(), expander);
+            return createNormalExecutor(session, hasTarget, getViewDimensions(), getViewTopDimensions(), expander);
         }
     }
 
@@ -186,7 +185,7 @@ public class TableWidget extends BISummaryWidget {
         boolean b2 = usedRows.length >= 0 && usedColumn.length == 0;
         boolean b3 = usedRows.length >= 0 && usedColumn.length == 0 && summaryLen == 0;
         if (b0) {
-            executor = new HorGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
+            executor = new HorGroupExecutor(this, usedColumn, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
         } else if (b1) {
             executor = new HorGroupNoneTargetExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
         } else if (b2) {
