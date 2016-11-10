@@ -123,8 +123,8 @@ public class Excel2007Util {
                     int mergedColCount = e.getColumn() - s.getColumn();
                     for (int i = 0; i < mergedColCount; i++) {
                         Object[] tempArray = tempRowDataList.get(e.getRow());
-                        if (tempArray.length < e.getColumn() - 1) {
-                            Object[] tArray = new Object[e.getColumn() - 1];
+                        if (tempArray.length < e.getColumn() + 1) {
+                            Object[] tArray = new Object[e.getColumn() + 1];
                             for (int k = 0; k < tempArray.length; k++) {
                                 tArray[k] = tempArray[k];
                             }
