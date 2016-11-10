@@ -95,13 +95,14 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
         BILoggerFactory.getLogger().info("***************space check start*****************");
         boolean spaceCheck = getSpaceCheckResult();
         BILoggerFactory.getLogger().info("***************space check result: " + spaceCheck);
-        BILoggerFactory.getLogger().info("***************connection check start*****************");
-        boolean connectionCheck = getConnectionCheck();
-        BILoggerFactory.getLogger().info("***************connection check result: " + connectionCheck);
+//        BILoggerFactory.getLogger().info("***************connection check start*****************");
+//        boolean connectionCheck = getConnectionCheck();
+//        BILoggerFactory.getLogger().info("***************connection check result: " + connectionCheck);
 //        BILoggerFactory.getLogger().info("***************table check start*****************");
 //        boolean sqlTest = getSqlTest();
 //        BILoggerFactory.getLogger().info("***************table  check result: " + sqlTest);
-        return spaceCheck && connectionCheck;
+//        return spaceCheck && connectionCheck;
+        return spaceCheck;
     }
 
     public Set<CubeTableSource> getSystemTableSources() {
@@ -125,7 +126,13 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
         return false;
     }
 
-
+    /**
+     * rename advanced to temp
+     * rename tCube to advanced
+     * delete temp
+     *
+     * @return
+     */
     @Override
     public boolean replaceOldCubes() {
         ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(userId));
@@ -135,10 +142,14 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
         String tCubePath = tempConf.getRootURI().getPath();
         String tempFolderPath = advancedTempConf.getRootURI().getPath();
         try {
-            if (new File(tempFolderPath).exists()) {
-                BIFileUtils.delete(new File(tempFolderPath));
-            }
-            if (new File(advancedPath).exists() && !new File(tempFolderPath).exists()) {
+            if (new File(advancedPath).exists()) {
+                if (new File(tempFolderPath).exists()) {
+                    boolean tempFolderDelete = BIFileUtils.delete(new File(tempFolderPath));
+                    if (!tempFolderDelete) {
+                        BILoggerFactory.getLogger().error("delete tempFolder failed");
+                        return false;
+                    }
+                }
                 boolean renameFolder = BIFileUtils.renameFolder(new File(advancedPath), new File(tempFolderPath));
                 if (!renameFolder) {
                     BILoggerFactory.getLogger().error("rename Advanced to tempFolder failed");
@@ -152,6 +163,7 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
                     return false;
                 }
             }
+            //tCube替换（重命名）成功后删除tempFolder
             if (new File(tempFolderPath).exists()) {
                 boolean deleteTempFolder = BIFileUtils.delete(new File(tempFolderPath));
                 if (!deleteTempFolder) {

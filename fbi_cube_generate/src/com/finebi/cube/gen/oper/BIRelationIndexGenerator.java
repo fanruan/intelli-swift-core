@@ -1,5 +1,6 @@
 package com.finebi.cube.gen.oper;
 
+import com.finebi.cube.adapter.BICubeTableAdapter;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
@@ -170,6 +171,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
         ICubeColumnEntityService primaryColumn = null;
         ICubeColumnEntityService foreignColumn = null;
         BICubeRelationEntity tableRelation = null;
+        BICubeTableAdapter pTableAdapter = null;
         try {
             BIColumnKey primaryKey = relation.getPrimaryField();
             BIColumnKey foreignKey = relation.getForeignField();
@@ -177,6 +179,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
             ITableKey foreignTableKey = relation.getForeignTable();
             primaryTable = cube.getCubeTable(primaryTableKey);
             foreignTable = cube.getCubeTable(foreignTableKey);
+            pTableAdapter = new BICubeTableAdapter(this.cube, getTableRelation(relation).getPrimaryTable());
             /**
              * 关联的主字段对象
              */
@@ -209,6 +212,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
             int[] reverse = new int[foreignTable.getRowCount()];
             Arrays.fill(reverse, NIOConstant.INTEGER.NULL_VALUE);
             Stopwatch stopwatch = Stopwatch.createStarted();
+            GroupValueIndex allShowIndex = pTableAdapter.getAllShowIndex();
             for (int index = 0; index < primaryGroupSize; index++) {
                 /**
                  * 关联主字段的value值
@@ -218,6 +222,10 @@ public class BIRelationIndexGenerator extends BIProcessor {
                  * value值在主表的索引
                  */
                 GroupValueIndex pGroupValueIndex = primaryColumn.getBitmapIndex(index);
+                /**
+                 * 过滤掉removeList里面记录的索引
+                 */
+                pGroupValueIndex = pGroupValueIndex.AND(allShowIndex);
                 int result = c.compare(primaryColumnValue, foreignColumnValue);
                 /**
                  * 小于0说明主表的id在子表找不到，大于0说明子表的id在主表找不到
@@ -306,7 +314,9 @@ public class BIRelationIndexGenerator extends BIProcessor {
             if (cube != null) {
                 cube.clear();
             }
-
+            if (null != pTableAdapter) {
+                pTableAdapter.clear();
+            }
         }
 
     }
