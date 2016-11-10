@@ -232,6 +232,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Save"),
             title: BI.i18nText("BI-Save"),
             height: this.constants.ETL_PANE_BUTTON_HEIGHT,
+            warningTitle: BI.i18nText("BI-Correct_The_Errors_Red"),
             handler: function () {
                 self.fireEvent(BI.ETL.EVENT_SAVE, self.model.getValue());
             }
@@ -500,7 +501,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             }
         });
         tableInfo.on(BI.TableFieldWithSearchPane.EVENT_VALID, function(){
-            self.saveButton.setEnable(true);
+            self.saveButton.setEnable(tableName.isValid());
         });
         tableInfo.on(BI.TableFieldWithSearchPane.EVENT_ERROR, function(){
            self.saveButton.setEnable(false);
