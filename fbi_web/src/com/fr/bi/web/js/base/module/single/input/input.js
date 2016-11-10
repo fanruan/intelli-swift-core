@@ -35,7 +35,7 @@ BI.Input = BI.inherit(BI.Single, {
                 self.fireEvent(BI.Input.EVENT_QUICK_DOWN);
             })
             .keyup(function (e) {
-                if (!inputEventValid) {
+                if (!(inputEventValid && e.keyCode === FR.keyCode.ENTER)) {
                     self._keydown_ = true;
                     _keydown(e.keyCode);
                 }
