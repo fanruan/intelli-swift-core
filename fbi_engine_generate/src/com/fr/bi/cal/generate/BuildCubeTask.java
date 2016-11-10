@@ -132,9 +132,16 @@ public class BuildCubeTask implements CubeTask {
                     BILoggerFactory.getLogger().error(message);
                 }
             } else {
-                message = "Cube build failed ,the Cube files will not be replaced ";
-                BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), message, biUser.getUserId());
-                BILoggerFactory.getLogger().error(message);
+                try {
+                    BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
+                    message = "Cube build failed ,the Cube files will not be replaced ";
+                    BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), message, biUser.getUserId());
+                    BILoggerFactory.getLogger().error(message);
+                }catch (Exception e){
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
+                }finally {
+                    BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
+                }
             }
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
