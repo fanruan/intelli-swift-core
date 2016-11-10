@@ -412,31 +412,34 @@ public class BICubeOperationManager {
     * */
     public void generateTableRelationPath(Set<BICubeGenerateRelationPath> relationPathSet) {
         for (BICubeGenerateRelationPath path : relationPathSet) {
-            if (null != path && null != path.getBiTableSourceRelationPath() && path.getDependRelationPathSet().size() != 0) {
-                try {
-                    String sourceID =BIRelationIDUtils.calculatePathID(path.getBiTableSourceRelationPath());
-                    BIOperation<Object> operation = new BIOperation<Object>(
-                            sourceID,
-                            getTablePathBuilder(cube, path.getBiTableSourceRelationPath()));
-                    operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
-                    operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-                    for (BITableSourceRelationPath biTableSourceRelationPath : path.getDependRelationPathSet()) {
-                        operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, BIRelationIDUtils.calculatePathID( biTableSourceRelationPath)));
-                    }
-                    pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-                } catch (Exception e) {
-                    BILoggerFactory.getLogger().error("the child path this path contained listed");
-                    for (BITableSourceRelationPath sourceRelationPath : path.getDependRelationPathSet()) {
-                        BILoggerFactory.getLogger().error(sourceRelationPath.getSourceID());
-                        for (BITableSourceRelation relation : sourceRelationPath.getAllRelations()) {
-                            BILoggerFactory.getLogger().error("primaryTable:" + relation.getPrimaryTable().getTableName() + " to foreignTable:" + relation.getForeignTable().getTableName());
+                    try {
+                        String sourceID = BIRelationIDUtils.calculatePathID(path.getBiTableSourceRelationPath());
+                        BIOperation<Object> operation = new BIOperation<Object>(
+                                sourceID,
+                                getTablePathBuilder(cube, path.getBiTableSourceRelationPath()));
+                        operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
+                        operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
+                        if (path.getDependRelationPathSet().size() != 0) {
+                            for (BITableSourceRelationPath biTableSourceRelationPath : path.getDependRelationPathSet()) {
+                                operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, BIRelationIDUtils.calculatePathID(biTableSourceRelationPath)));
+                            }
+                            pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
                         }
+                            else {
+                                operation.subscribe(BICubeBuildTopicTag.START_BUILD_CUBE);
+                            }
+                    } catch (Exception e) {
+                        BILoggerFactory.getLogger().error("the child path this path contained listed");
+                        for (BITableSourceRelationPath sourceRelationPath : path.getDependRelationPathSet()) {
+                            BILoggerFactory.getLogger().error(sourceRelationPath.getSourceID());
+                            for (BITableSourceRelation relation : sourceRelationPath.getAllRelations()) {
+                                BILoggerFactory.getLogger().error("primaryTable:" + relation.getPrimaryTable().getTableName() + " to foreignTable:" + relation.getForeignTable().getTableName());
+                            }
+                        }
+                        throw BINonValueUtils.beyondControl(e.getMessage(), e);
                     }
-                    throw BINonValueUtils.beyondControl(e.getMessage(), e);
-                }
             }
-            subscribePathFinish();
-        }
+        subscribePathFinish();
     }
 
     long getVersion(CubeTableSource tableSource) {
