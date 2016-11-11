@@ -233,6 +233,11 @@ BI.RangeAreaChart = BI.inherit(BI.AbstractChart, {
             left_title_style: options.left_title_style || {},
             cat_title_style: options.cat_title_style || {}
         };
+        BI.each(items, function (idx, axisItems) {
+            BI.each(axisItems, function (i, item) {
+                self.defaultFormatDataLabel(item.data);
+            })
+        });
         this.options.items = items;
 
         var types = [];
