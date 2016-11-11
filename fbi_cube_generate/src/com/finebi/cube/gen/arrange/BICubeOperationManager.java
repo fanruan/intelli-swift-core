@@ -438,8 +438,9 @@ public class BICubeOperationManager {
                 }
                 throw BINonValueUtils.beyondControl(e.getMessage(), e);
             }
+            subscribePathFinish();
         }
-        subscribePathFinish();
+
     }
 
     long getVersion(CubeTableSource tableSource) {
