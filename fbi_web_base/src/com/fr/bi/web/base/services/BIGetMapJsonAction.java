@@ -5,7 +5,6 @@ import com.fr.base.FRContext;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.web.base.AbstractBIBaseAction;
 import com.fr.stable.CodeUtils;
-import com.fr.web.core.ActionNoSessionCMD;
 import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
