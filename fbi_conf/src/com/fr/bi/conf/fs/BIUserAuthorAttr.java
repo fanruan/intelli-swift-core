@@ -29,10 +29,10 @@ public class BIUserAuthorAttr implements XMLable {
     public final static int EDIT = 1;
     public final static int VIEW = 2;
     public final static int MOBILE = 3;
-    private static long biEditUserLimit = 0;
-    private static long biViewUserLimit = 0;
-    private static long biMobileUserLimit = 0;
-    private static long fsMobileUserLimit = 0;
+    private static long biEditUserLimit = NO_LIMIT;
+    private static long biViewUserLimit = NO_LIMIT;
+    private static long biMobileUserLimit = NO_LIMIT;
+    private static long fsMobileUserLimit = NO_LIMIT;
     //bi编辑用户名单
     private JSONObject biEditUserJo = new JSONObject();
     //bi查看用户名单
@@ -143,7 +143,6 @@ public class BIUserAuthorAttr implements XMLable {
                                 userJo.put(userName, fullName);
                             }
                         }
-
                     } catch (JSONException e) {
                         FRContext.getLogger().error(e.getMessage());
                     }
