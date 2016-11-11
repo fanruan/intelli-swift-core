@@ -21,6 +21,8 @@ import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.message.IMessageTopic;
+import com.finebi.cube.relation.BICubeGenerateRelation;
+import com.finebi.cube.relation.BICubeGenerateRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.router.IRouter;
@@ -226,7 +228,9 @@ public class BuildCubeTask implements CubeTask {
         operationManager.setVersionMap(cubeBuildStuff.getVersions());
         operationManager.generateDataSource(cubeBuildStuff.getDependTableResource());
         operationManager.generateRelationBuilder(cubeBuildStuff.getCubeGenerateRelationSet());
+        logRelationDepend(cubeBuildStuff.getCubeGenerateRelationSet());
         operationManager.generateTableRelationPath(cubeBuildStuff.getCubeGenerateRelationPathSet());
+        logPathDepend(cubeBuildStuff.getCubeGenerateRelationPathSet());
         IRouter router = BIFactoryHelper.getObject(IRouter.class);
         try {
             BIConfigureManagerCenter.getLogManager().relationPathSet(cubeBuildStuff.getTableSourceRelationPathSet(), biUser.getUserId());
@@ -292,6 +296,7 @@ public class BuildCubeTask implements CubeTask {
 
     }
 
+
     private void logPath(Set<BITableSourceRelationPath> relationPathSet) {
         logger.info("***************Path*****************");
 
@@ -306,6 +311,49 @@ public class BuildCubeTask implements CubeTask {
         logger.info("***************Path end*****************\n");
     }
 
+    private void logPathDepend(Set<BICubeGenerateRelationPath> relationPathSet) {
+        logger.info("***************Path depend*****************");
+
+        if (relationPathSet != null) {
+            Integer countPath = 0;
+            for (BICubeGenerateRelationPath path : relationPathSet) {
+                countPath++;
+                StringBuffer sb = new StringBuffer();
+                Iterator<BITableSourceRelationPath> it = path.getDependRelationPathSet().iterator();
+                sb.append("\nPath depend:" + countPath + ":\nTarget:\n" + BuildLogHelper.pathLogContent(path.getBiTableSourceRelationPath()))
+                        .append("\n").append("Depend:\n");
+                int countDepend = 0;
+                while (it.hasNext()) {
+                    BITableSourceRelationPath dependPath = it.next();
+                    sb.append("\n").append("relation ").append(countDepend).append("\n").append(BuildLogHelper.pathLogContent(dependPath));
+                }
+                logger.info(sb.toString());
+            }
+        }
+        logger.info("***************Path depend end*****************\n");
+    }
+
+    private void logRelationDepend(Set<BICubeGenerateRelation> relationDependSet) {
+        logger.info("***************Relation depend*****************");
+        Integer countRelation = 0;
+        if (relationDependSet != null) {
+            for (BICubeGenerateRelation relationDepend : relationDependSet) {
+                countRelation++;
+                StringBuffer sb = new StringBuffer();
+                sb.append("\nRelation depend" + countRelation + "\n Target:\n" + BuildLogHelper.relationLogContent("", relationDepend.getRelation()))
+                        .append("\n").append("Depend:\n");
+                int countDepend = 0;
+                Iterator<CubeTableSource> it = relationDepend.getDependTableSourceSet().iterator();
+                while (it.hasNext()) {
+                    CubeTableSource dependTable = it.next();
+                    sb.append("\n").append("tabel ").append(countDepend).append("\n").append(BuildLogHelper.tableLogContent(dependTable));
+                }
+                logger.info(sb.toString());
+            }
+        }
+        logger.info("***************Relation depend end*****************\n");
+
+    }
 
     private Set<BITableSourceRelationPath> filterPath(Set<BITableSourceRelationPath> paths) {
         Iterator<BITableSourceRelationPath> iterator = paths.iterator();

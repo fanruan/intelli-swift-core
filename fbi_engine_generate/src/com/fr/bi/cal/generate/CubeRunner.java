@@ -98,7 +98,7 @@ public class CubeRunner {
         Iterator<CubeTask> iterator = cubeThread.iterator();
         while (iterator.hasNext()) {
             CubeTask task = iterator.next();
-            if (task.getTaskId().equals(t.getTaskId())) {
+            if (ComparatorUtils.equals(task.getTaskId(), t.getTaskId())) {
                 return true;
             }
         }
@@ -122,7 +122,7 @@ public class CubeRunner {
     }
 
     public void addTask(CubeTask task) {
-            cubeThread.add(task);
+        cubeThread.add(task);
     }
 
     public void removeTask(String taskId) {
