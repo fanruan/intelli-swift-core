@@ -709,36 +709,36 @@ BI.FallAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.leftYTitle.setValue(titleLY);
         this.leftYTitle.setVisible(this.leftYShowTitle.isSelected());
         this.leftYTitleStyle.setVisible(this.leftYShowTitle.isSelected());
-        this.leftYTitleStyle.setValue(BI.Utils.getWSLeftTitleStyleByID(wId));
+        this.leftYTitleStyle.setValue(BI.Utils.getWSChartLeftYTitleStyleByID(wId));
         this.leftYShowCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
-        this.leftYCustomScale.setValue(BI.Utils.getWSCustomYScale(wId));
+        this.leftYCustomScale.setValue(BI.Utils.getWSChartLeftYCustomScale(wId));
         this.leftYCustomScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
-        this.leftYSeparator.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
-        this.leftYShowLabel.setSelected(BI.Utils.getWSShowLValueAxisLabelByID(wId));
+        this.leftYSeparator.setSelected(BI.Utils.getWSLeftYNumberSeparatorByID(wId));
+        this.leftYShowLabel.setSelected(BI.Utils.getWSChartLeftYShowLabelByID(wId));
         this.leftYLabelStyle.setVisible(this.leftYShowLabel.isSelected());
-        this.leftYLabelStyle.setValue(BI.Utils.getWSLValueAxisLabelSettingByID(wId));
-        this.leftYLineColor.setValue(BI.Utils.getWSLValueAxisLineColorByID(wId));
+        this.leftYLabelStyle.setValue(BI.Utils.getWSChartLeftYLabelStyleByID(wId));
+        this.leftYLineColor.setValue(BI.Utils.getWSChartLeftYLineColorByID(wId));
 
         this.catShowTitle.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
         this.catTitle.setValue(titleX);
         this.catTitle.setVisible(this.catShowTitle.isSelected());
         this.catTitleStyle.setVisible(this.catShowTitle.isSelected());
-        this.catShowLabel.setSelected(BI.Utils.getWSShowCatLabelByID(wId));
+        this.catShowLabel.setSelected(BI.Utils.getWSChartCatShowLabelByID(wId));
         this.catLabelStyle.setVisible(this.catShowLabel.isSelected());
-        this.catLabelStyle.setValue(BI.Utils.getWSCatLabelStyleByID(wId));
-        this.catLineColor.setValue(BI.Utils.getWSCatLineColorByID(wId));
-        this.catTitleStyle.setValue(BI.Utils.getWSCatTitleStyleByID(wId));
+        this.catLabelStyle.setValue(BI.Utils.getWSChartCatLabelStyleByID(wId));
+        this.catLineColor.setValue(BI.Utils.getWSChartCatLineColorByID(wId));
+        this.catTitleStyle.setValue(BI.Utils.getWSChartCatTitleStyleByID(wId));
 
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
         this.showDataTable.setSelected(BI.Utils.getWSShowDataTableByID(wId));
         this.showZoom.setSelected(BI.Utils.getWSShowZoomByID(wId));
-        this.hShowGridLine.setSelected(BI.Utils.getWSShowHGridLineByID(wId));
+        this.hShowGridLine.setSelected(BI.Utils.getWSChartHShowGridLineByID(wId));
         this.hGridLineColor.setVisible(this.hShowGridLine.isSelected());
-        this.hGridLineColor.setValue(BI.Utils.getWSHGridLineColorByID(wId));
-        this.vShowGridLine.setSelected(BI.Utils.getWSShowVGridLineByID(wId));
+        this.hGridLineColor.setValue(BI.Utils.getWSChartHGridLineColorByID(wId));
+        this.vShowGridLine.setSelected(BI.Utils.getWSChartVShowGridLineByID(wId));
         this.vGridLineColor.setVisible(this.vShowGridLine.isSelected());
-        this.vGridLineColor.setValue(BI.Utils.getWSVGridLineColorByID(wId));
-        this.tooltipStyle.setValue(BI.Utils.getWSToolTipSettingByID(wId));
+        this.vGridLineColor.setValue(BI.Utils.getWSChartVGridLineColorByID(wId));
+        this.tooltipStyle.setValue(BI.Utils.getWSChartToolTipStyleByID(wId));
 
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
 

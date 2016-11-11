@@ -105,7 +105,7 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var dataLable = BI.Utils.getWSShowDataLabelByID(wId);
         var minimalist = BI.Utils.getWSMinimalistByID(wId);
         var e = BI.Utils.getExpressionByDimensionID(o.dId);
-        var bigDataMode = BI.Utils.getWSBigDataModelByID(wId);
+        var bigDataMode = BI.Utils.getWSChartBigDataModeByID(wId);
         var ids = e.ids;
         BI.each(ids, function (idx, id) {
             //这边的dimensionId不一定能拿到fieldId,计算指标没有fieldId

@@ -524,31 +524,31 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.widgetTitle.setVisible(BI.Utils.getWSShowNameByID(wId));
 
         this.chartColor.setValue(BI.Utils.getWSChartColorByID(wId));
-        this.radarChartType.setValue(BI.Utils.getWSChartRadarTypeByID(wId));
+        this.radarChartType.setValue(BI.Utils.getWSRadarChartTypeByID(wId));
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
 
         this.leftYNumberLevel.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
         this.leftYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
         this.leftYNumberFormat.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
-        this.leftYSeparator.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
-        this.leftYShowLabel.setSelected(BI.Utils.getWSShowLValueAxisLabelByID(wId));
+        this.leftYSeparator.setSelected(BI.Utils.getWSLeftYNumberSeparatorByID(wId));
+        this.leftYShowLabel.setSelected(BI.Utils.getWSChartLeftYShowLabelByID(wId));
         this.leftYLabelStyle.setVisible(this.leftYShowLabel.isSelected());
-        this.leftYLabelStyle.setValue(BI.Utils.getWSLValueAxisLabelSettingByID(wId));
-        this.leftYLineColor.setValue(BI.Utils.getWSLValueAxisLineColorByID(wId));
+        this.leftYLabelStyle.setValue(BI.Utils.getWSChartLeftYLabelStyleByID(wId));
+        this.leftYLineColor.setValue(BI.Utils.getWSChartLeftYLineColorByID(wId));
         this.leftYShowCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
-        this.leftYCustomScale.setValue(BI.Utils.getWSCustomYScale(wId));
+        this.leftYCustomScale.setValue(BI.Utils.getWSChartLeftYCustomScale(wId));
         this.leftYCustomScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
 
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
-        this.legendStyle.setValue(BI.Utils.getWSLegendSettingByID(wId));
-        this.hShowGridLine.setSelected(BI.Utils.getWSShowHGridLineByID(wId));
+        this.legendStyle.setValue(BI.Utils.getWSChartLegendStyleByID(wId));
+        this.hShowGridLine.setSelected(BI.Utils.getWSChartHShowGridLineByID(wId));
         this.hGridLineColor.setVisible(this.hShowGridLine.isSelected());
-        this.hGridLineColor.setValue(BI.Utils.getWSHGridLineColorByID(wId));
-        this.vShowGridLine.setSelected(BI.Utils.getWSShowVGridLineByID(wId));
+        this.hGridLineColor.setValue(BI.Utils.getWSChartHGridLineColorByID(wId));
+        this.vShowGridLine.setSelected(BI.Utils.getWSChartVShowGridLineByID(wId));
         this.vGridLineColor.setVisible(this.vShowGridLine.isSelected());
-        this.vGridLineColor.setValue(BI.Utils.getWSVGridLineColorByID(wId));
+        this.vGridLineColor.setValue(BI.Utils.getWSChartVGridLineColorByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
-        this.tooltipStyle.setValue(BI.Utils.getWSToolTipSettingByID(wId));
+        this.tooltipStyle.setValue(BI.Utils.getWSChartToolTipStyleByID(wId));
         this.nullContinuity.setSelected(BI.Utils.getWSNullContinueByID(wId));
 
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));

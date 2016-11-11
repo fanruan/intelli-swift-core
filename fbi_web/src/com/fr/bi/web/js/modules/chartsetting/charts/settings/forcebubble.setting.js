@@ -91,7 +91,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.addConditionButton.on(BI.Button.EVENT_CHANGE, function () {
-            self.fixedConditions.addItem();
+            self.fixedStyle.addItem();
             self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE)
         });
 
@@ -101,11 +101,11 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
             height: constant.SINGLE_LINE_HEIGHT
         });
 
-        this.fixedConditions = BI.createWidget({
+        this.fixedStyle = BI.createWidget({
             type: "bi.chart_add_condition_group"
         });
 
-        this.fixedConditions.on(BI.ChartAddConditionGroup.EVENT_CHANGE, function () {
+        this.fixedStyle.on(BI.ChartAddConditionGroup.EVENT_CHANGE, function () {
             self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE)
         });
 
@@ -123,15 +123,15 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
             tgap: 10,
             bgap: 10,
             hgap: 5,
-            items: [this.colorSetting, this.fixedConditions],
+            items: [this.colorSetting, this.fixedStyle],
             width: "100%"
         });
 
-        this.gradientConditions = BI.createWidget({
+        this.gradientStyle = BI.createWidget({
             type: "bi.chart_add_gradient_condition_group"
         });
 
-        this.gradientConditions.on(BI.ChartAddGradientConditionGroup.EVENT_CHANGE, function () {
+        this.gradientStyle.on(BI.ChartAddGradientConditionGroup.EVENT_CHANGE, function () {
             self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE)
         });
 
@@ -142,7 +142,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.addGradientButton.on(BI.Button.EVENT_CHANGE, function () {
-            self.gradientConditions.addItem();
+            self.gradientStyle.addItem();
             self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE)
         });
 
@@ -166,7 +166,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
             tgap: 10,
             bgap: 10,
             hgap: 5,
-            items: [this.gradientSetting, this.gradientConditions],
+            items: [this.gradientSetting, this.gradientStyle],
             width: "100%"
         });
 
@@ -462,13 +462,13 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
         this.displayRules.setValue(BI.Utils.getWSShowRulesByID(wId));
         this._colorSettingChange(BI.Utils.getWSShowRulesByID(wId));
-        this.fixedConditions.setValue(BI.Utils.getWSBubbleFixedColorsByID(wId));
-        this.gradientConditions.setValue(BI.Utils.getWSBubbleGradientsByID(wId));
+        this.fixedStyle.setValue(BI.Utils.getWSChartBubbleFixedStyleByID(wId));
+        this.gradientStyle.setValue(BI.Utils.getWSChartBubbleGradientStyleByID(wId));
         this.chartColor.setValue(BI.Utils.getWSChartColorByID(wId));
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
-        this.bubbleSizeFrom.setValue(BI.Utils.getWSMinBubbleSizeByID(wId));
+        this.bubbleSizeFrom.setValue(BI.Utils.getWSChartBubbleSizeFromByID(wId));
         this.bubbleSizeTo.setValue(BI.Utils.getWSMaxBubbleSizeByID(wId));
-        this.bubbleStyle.setValue(BI.Utils.getWSBubbleStyleByID(wId));
+        this.bubbleStyle.setValue(BI.Utils.getWSChartBubbleStyleByID(wId));
 
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
     },
@@ -481,8 +481,8 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
 
             widgetBG: this.widgetBG.getValue(),
             displayRules: this.displayRules.getValue()[0],
-            fixedConditions: this.fixedConditions.getValue(),
-            gradientConditions: this.gradientConditions.getValue(),
+            fixedStyle: this.fixedStyle.getValue(),
+            gradientStyle: this.gradientStyle.getValue(),
             chartColor: this.chartColor.getValue()[0],
             legend: this.legend.getValue()[0],
             bubbleSizeFrom: this.bubbleSizeFrom.getValue(),

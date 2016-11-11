@@ -114,7 +114,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
         var dataLable = BI.Utils.getWSShowDataLabelByID(wId);
         var minimalist = BI.Utils.getWSMinimalistByID(wId);
-        var bigDataMode = BI.Utils.getWSBigDataModelByID(wId);
+        var bigDataMode = BI.Utils.getWSChartBigDataModeByID(wId);
         children.push({
             text: BI.i18nText("BI-Total_Row_Count"),
             value: BI.Utils.getCountFieldIDsOfTableID(tableId)[0],

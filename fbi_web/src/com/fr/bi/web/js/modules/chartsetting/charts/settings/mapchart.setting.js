@@ -154,12 +154,12 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.MapSetting.EVENT_CHANGE)
         });
 
-        this.fixedConditions = BI.createWidget({
+        this.mapStyles = BI.createWidget({
             type: "bi.chart_add_condition_group",
             width: "100%"
         });
 
-        this.fixedConditions.on(BI.ChartAddConditionGroup.EVENT_CHANGE, function () {
+        this.mapStyles.on(BI.ChartAddConditionGroup.EVENT_CHANGE, function () {
             self.fireEvent(BI.MapSetting.EVENT_CHANGE)
         });
 
@@ -172,7 +172,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
             }, {
                 type: "bi.vertical_adapt",
                 items: [this.addConditionButton]
-            }, this.fixedConditions], {
+            }, this.mapStyles], {
                 height: constant.SINGLE_LINE_HEIGHT
             }),
             lgap: constant.SIMPLE_H_GAP
@@ -224,16 +224,16 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.isShowBackgroundLayer.on(BI.Controller.EVENT_CHANGE, function () {
-            this.isSelected() ? self.selectLayerCombo.setVisible(true) : self.selectLayerCombo.setVisible(false);
+            this.isSelected() ? self.backgroundLayerInfo.setVisible(true) : self.backgroundLayerInfo.setVisible(false);
             self.fireEvent(BI.MapSetting.EVENT_CHANGE);
         });
 
-        this.selectLayerCombo = BI.createWidget({
+        this.backgroundLayerInfo = BI.createWidget({
             type: "bi.text_value_combo",
             width: constant.COMBO_WIDTH,
             height: constant.EDITOR_HEIGHT
         });
-        this.selectLayerCombo.on(BI.TextValueCombo.EVENT_CHANGE, function () {
+        this.backgroundLayerInfo.on(BI.TextValueCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.MapSetting.EVENT_CHANGE);
         });
 
@@ -267,7 +267,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.isShowBackgroundLayer]
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.selectLayerCombo]
+                    items: [this.backgroundLayerInfo]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -314,11 +314,11 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
         switch (v) {
             case BICst.SCALE_SETTING.AUTO:
                 this.addConditionButton.setVisible(false);
-                this.fixedConditions.setVisible(false);
+                this.mapStyles.setVisible(false);
                 break;
             case BICst.SCALE_SETTING.CUSTOM:
                 this.addConditionButton.setVisible(true);
-                this.fixedConditions.setVisible(true);
+                this.mapStyles.setVisible(true);
                 break;
         }
     },
@@ -329,19 +329,19 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
         var styleSettings = BI.Utils.getDimensionSettingsByID(targetIDs[0]);
         switch (styleSettings.num_level) {
             case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                this.fixedConditions.setNumTip("");
+                this.mapStyles.setNumTip("");
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                this.fixedConditions.setNumTip(BI.i18nText("BI-Wan"));
+                this.mapStyles.setNumTip(BI.i18nText("BI-Wan"));
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                this.fixedConditions.setNumTip(BI.i18nText("BI-Million"));
+                this.mapStyles.setNumTip(BI.i18nText("BI-Million"));
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                this.fixedConditions.setNumTip(BI.i18nText("BI-Yi"));
+                this.mapStyles.setNumTip(BI.i18nText("BI-Yi"));
                 break;
             case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                this.fixedConditions.setNumTip(BI.i18nText("%"));
+                this.mapStyles.setNumTip(BI.i18nText("%"));
                 break;
         }
     },
@@ -357,11 +357,11 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
         this.chartColor.setValue(BI.Utils.getWSThemeColorByID(wId));
         this.styleRadio.setValue(BI.Utils.getWSScaleByID(wId));
         this._doClickButton(BI.Utils.getWSScaleByID(wId));
-        this.fixedConditions.setValue(BI.Utils.getWSMapStylesByID(wId));
+        this.mapStyles.setValue(BI.Utils.getWSChartMapStylesByID(wId));
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
         this.isShowBackgroundLayer.setSelected(BI.Utils.getWSShowBackgroundByID(wId));
-        this.isShowBackgroundLayer.isSelected() ? this.selectLayerCombo.setVisible(true) : this.selectLayerCombo.setVisible(false);
+        this.isShowBackgroundLayer.isSelected() ? this.backgroundLayerInfo.setVisible(true) : this.backgroundLayerInfo.setVisible(false);
         this._setNumberLevel();
         var items = BI.map(MapConst.WMS_INFO, function (name, obj) {
             if (obj.type === BICst.TILELAYER_SERVER) {
@@ -379,8 +379,8 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
                 }
             }
         });
-        this.selectLayerCombo.populate(items);
-        this.selectLayerCombo.setValue(BI.Utils.getWSBackgroundLayerInfoByID(wId));
+        this.backgroundLayerInfo.populate(items);
+        this.backgroundLayerInfo.setValue(BI.Utils.getWSChartMapBackgroundLayerInfoByID(wId));
 
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
     },
@@ -394,11 +394,11 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
             widgetBG: this.widgetBG.getValue(),
             chartColor: this.chartColor.getValue(),
             styleRadio: this.styleRadio.getValue()[0],
-            fixedConditions: this.fixedConditions.getValue(),
+            mapStyles: this.mapStyles.getValue(),
             legend: this.legend.getValue()[0],
             showDataLabel: this.showDataLabel.isSelected(),
             isShowBackgroundLayer: this.isShowBackgroundLayer.isSelected(),
-            selectLayerCombo: this.selectLayerCombo.getValue()[0],
+            backgroundLayerInfo: this.backgroundLayerInfo.getValue()[0],
 
             transferFilter: this.transferFilter.isSelected(),
         }

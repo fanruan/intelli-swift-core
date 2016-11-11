@@ -706,32 +706,32 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.leftYShowTitle.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
         this.leftYTitle.setValue(titleLY);
         this.leftYShowCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
-        this.leftYCustomScale.setValue(BI.Utils.getWSCustomYScale(wId));
-        this.leftYSeparator.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
-        this.leftYShowLabel.setSelected(BI.Utils.getWSShowLValueAxisLabelByID(wId));
-        this.leftYLabelStyle.setValue(BI.Utils.getWSLValueAxisLabelSettingByID(wId));
-        this.leftYLineColor.setValue(BI.Utils.getWSLValueAxisLineColorByID(wId));
+        this.leftYCustomScale.setValue(BI.Utils.getWSChartLeftYCustomScale(wId));
+        this.leftYSeparator.setSelected(BI.Utils.getWSLeftYNumberSeparatorByID(wId));
+        this.leftYShowLabel.setSelected(BI.Utils.getWSChartLeftYShowLabelByID(wId));
+        this.leftYLabelStyle.setValue(BI.Utils.getWSChartLeftYLabelStyleByID(wId));
+        this.leftYLineColor.setValue(BI.Utils.getWSChartLeftYLineColorByID(wId));
         this.leftYTitle.setVisible(this.leftYShowTitle.isSelected());
         this.leftYTitleStyle.setVisible(this.leftYShowTitle.isSelected());
-        this.leftYTitleStyle.setValue(BI.Utils.getWSLeftTitleStyleByID(wId));
+        this.leftYTitleStyle.setValue(BI.Utils.getWSChartLeftYTitleStyleByID(wId));
         this.leftYLabelStyle.setVisible(this.leftYShowLabel.isSelected());
 
-        this.catShowLabel.setSelected(BI.Utils.getWSShowCatLabelByID(wId));
-        this.catLabelStyle.setValue(BI.Utils.getWSCatLabelStyleByID(wId));
-        this.catLineColor.setValue(BI.Utils.getWSCatLineColorByID(wId));
+        this.catShowLabel.setSelected(BI.Utils.getWSChartCatShowLabelByID(wId));
+        this.catLabelStyle.setValue(BI.Utils.getWSChartCatLabelStyleByID(wId));
+        this.catLineColor.setValue(BI.Utils.getWSChartCatLineColorByID(wId));
         this.catShowTitle.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
         this.catTitle.setValue(titleX);
-        this.catTitleStyle.setValue(BI.Utils.getWSCatTitleStyleByID(wId));
+        this.catTitleStyle.setValue(BI.Utils.getWSChartCatTitleStyleByID(wId));
         this.catTitle.setVisible(this.catShowTitle.isSelected());
         this.catTitleStyle.setVisible(this.catShowTitle.isSelected());
         this.catLabelStyle.setVisible(this.catShowLabel.isSelected());
 
         this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
-        this.hShowGridLine.setSelected(BI.Utils.getWSShowHGridLineByID(wId));
-        this.hGridLineColor.setValue(BI.Utils.getWSHGridLineColorByID(wId));
-        this.vShowGridLine.setSelected(BI.Utils.getWSShowVGridLineByID(wId));
-        this.vGridLineColor.setValue(BI.Utils.getWSVGridLineColorByID(wId));
-        this.tooltipStyle.setValue(BI.Utils.getWSToolTipSettingByID(wId));
+        this.hShowGridLine.setSelected(BI.Utils.getWSChartHShowGridLineByID(wId));
+        this.hGridLineColor.setValue(BI.Utils.getWSChartHGridLineColorByID(wId));
+        this.vShowGridLine.setSelected(BI.Utils.getWSChartVShowGridLineByID(wId));
+        this.vGridLineColor.setValue(BI.Utils.getWSChartVGridLineColorByID(wId));
+        this.tooltipStyle.setValue(BI.Utils.getWSChartToolTipStyleByID(wId));
         this.nullContinuity.setSelected(BI.Utils.getWSNullContinueByID(wId));
 
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
