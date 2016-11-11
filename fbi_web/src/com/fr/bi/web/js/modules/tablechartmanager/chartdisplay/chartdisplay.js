@@ -265,7 +265,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 var chart = BI.createWidget({type: "bi.map_chart"});
                 chart.on(BI.MapChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
-                    self._onClickDrill(obj.dId, obj.x, obj.drillDid);
+                    BI.isNotNull(obj.drillDid) && self._onClickDrill(obj.dId, obj.x, obj.drillDid);
                 });
                 chart.on(BI.MapChart.EVENT_CLICK_DTOOL, function (obj) {
                     self._onClickDrill(obj.dId, obj.x);

@@ -540,27 +540,30 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         BI.each(view[BICst.REGION.DIMENSION2], function (i, dId) {
             BI.Utils.isDimensionUsable(dId) && (self.crossDimIds.push(dId));
         });
-        BI.each(drill, function (drId, drArray) {
-            if (drArray.length !== 0) {
-                var dIndex = self.dimIds.indexOf(drId), cIndex = self.crossDimIds.indexOf(drId);
-                BI.remove(self.dimIds, drId);
-                BI.remove(self.crossDimIds, drId);
-                BI.each(drArray, function (i, dr) {
-                    var tempDrId = dr.dId;
-                    if (i === drArray.length - 1) {
-                        if (BI.Utils.getRegionTypeByDimensionID(drId) === BICst.REGION.DIMENSION1) {
-                            self.dimIds.splice(dIndex, 0, tempDrId);
+        if(BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.MAP){
+            //地图不需要调整dimIds
+        }else{
+            BI.each(drill, function (drId, drArray) {
+                if (drArray.length !== 0) {
+                    var dIndex = self.dimIds.indexOf(drId), cIndex = self.crossDimIds.indexOf(drId);
+                    BI.remove(self.dimIds, drId);
+                    BI.remove(self.crossDimIds, drId);
+                    BI.each(drArray, function (i, dr) {
+                        var tempDrId = dr.dId;
+                        if (i === drArray.length - 1) {
+                            if (BI.Utils.getRegionTypeByDimensionID(drId) === BICst.REGION.DIMENSION1) {
+                                self.dimIds.splice(dIndex, 0, tempDrId);
+                            } else {
+                                self.crossDimIds.splice(cIndex, 0, tempDrId);
+                            }
                         } else {
-                            self.crossDimIds.splice(cIndex, 0, tempDrId);
+                            BI.remove(self.dimIds, tempDrId);
+                            BI.remove(self.crossDimIds, tempDrId);
                         }
-                    } else {
-                        BI.remove(self.dimIds, tempDrId);
-                        BI.remove(self.crossDimIds, tempDrId);
-                    }
-                });
-            }
-        });
-        
+                    });
+                }
+            });
+        }
     },
 
     getWidgetData: function(type, callback){
