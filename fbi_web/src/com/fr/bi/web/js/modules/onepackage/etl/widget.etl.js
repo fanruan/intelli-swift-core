@@ -212,6 +212,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             type: "bi.button",
             level: "ignore",
             text: BI.i18nText("BI-Update_Setup"),
+            warningTitle: BI.bind(this._getWarningTitle, this),
             height: this.constants.ETL_PANE_BUTTON_HEIGHT
         });
         this.updateSetButton.on(BI.Button.EVENT_CHANGE, function () {
@@ -221,6 +222,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             type: "bi.button",
             level: "ignore",
             text: BI.i18nText("BI-Display_Data_In_Actual"),
+            warningTitle: BI.bind(this._getWarningTitle, this),
             height: this.constants.ETL_PANE_BUTTON_HEIGHT
         });
         this.excelViewButton.on(BI.Button.EVENT_CHANGE, function () {
@@ -232,7 +234,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Save"),
             title: BI.i18nText("BI-Save"),
             height: this.constants.ETL_PANE_BUTTON_HEIGHT,
-            warningTitle: BI.i18nText("BI-Correct_The_Errors_Red"),
+            warningTitle: BI.bind(this._getWarningTitle, this),
             handler: function () {
                 self.fireEvent(BI.ETL.EVENT_SAVE, self.model.getValue());
             }
@@ -1328,7 +1330,19 @@ BI.ETL = BI.inherit(BI.Widget, {
 
         this.updateSetButton.setWarningTitle(warningTitle);
         this.excelViewButton.setWarningTitle(warningTitle);
-        this.saveButton.setWarningTitle(warningTitle);
+    },
+
+    _getWarningTitle: function(){
+        var allTables = this.model.getAllTables();
+        if(allTables.length === 0){
+            return BI.i18nText("BI-Etl_Table_On_The_Right_Cannot_Be_Null")
+        }else{
+            if(allTables.length > 1){
+                return BI.i18nText("BI-Final_Table_Only_Be_One")
+            }else{
+                return BI.i18nText("BI-Correct_The_Errors_Red")
+            }
+        }
     },
 
     getValue: function () {
