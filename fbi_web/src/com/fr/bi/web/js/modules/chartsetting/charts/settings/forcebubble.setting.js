@@ -460,14 +460,14 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
         this.widgetNameStyle.setValue(BI.Utils.getWSTitleDetailSettingByID(wId));
 
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
-        this.displayRules.setValue(BI.Utils.getWSShowRulesByID(wId));
-        this._colorSettingChange(BI.Utils.getWSShowRulesByID(wId));
+        this.displayRules.setValue(BI.Utils.getWSChartDisplayRulesByID(wId));
+        this._colorSettingChange(BI.Utils.getWSChartDisplayRulesByID(wId));
         this.fixedStyle.setValue(BI.Utils.getWSChartBubbleFixedStyleByID(wId));
         this.gradientStyle.setValue(BI.Utils.getWSChartBubbleGradientStyleByID(wId));
         this.chartColor.setValue(BI.Utils.getWSChartColorByID(wId));
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.bubbleSizeFrom.setValue(BI.Utils.getWSChartBubbleSizeFromByID(wId));
-        this.bubbleSizeTo.setValue(BI.Utils.getWSMaxBubbleSizeByID(wId));
+        this.bubbleSizeTo.setValue(BI.Utils.getWSChartBubbleSizeToByID(wId));
         this.bubbleStyle.setValue(BI.Utils.getWSChartBubbleStyleByID(wId));
 
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));

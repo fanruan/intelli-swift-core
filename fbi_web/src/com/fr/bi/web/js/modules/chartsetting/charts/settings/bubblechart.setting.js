@@ -964,7 +964,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
     populate: function () {
         var wId = this.options.wId;
         var view = BI.Utils.getWidgetViewByID(wId);
-        var titleLY = BI.Utils.getWSLeftYAxisTitleByID(wId), titleX = BI.Utils.getWSRightYAxisTitleByID(wId);
+        var titleLY = BI.Utils.getWSChartLeftYTitleByID(wId), titleX = BI.Utils.getWSChartRightY2TitleByID(wId);
         if (titleLY === "") {
             BI.any(view[BICst.REGION.TARGET1], function (idx, dId) {
                 if (BI.Utils.isDimensionUsable(dId)) {
@@ -990,19 +990,19 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.chartColor.setValue(BI.Utils.getWSChartColorByID(wId));
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
-        this.displayRules.setValue(BI.Utils.getWSShowRulesByID(wId));
-        this._colorSettingChange(BI.Utils.getWSShowRulesByID(wId));
+        this.displayRules.setValue(BI.Utils.getWSChartDisplayRulesByID(wId));
+        this._colorSettingChange(BI.Utils.getWSChartDisplayRulesByID(wId));
         this.fixedStyle.setValue(BI.Utils.getWSChartBubbleFixedStyleByID(wId));
         this.gradientStyle.setValue(BI.Utils.getWSChartBubbleGradientStyleByID(wId));
-        this.bubbleStyle.setValue(BI.Utils.getWSBubbleStyleByID(wId));
+        this.bubbleStyle.setValue(BI.Utils.getWSChartBubbleStyleByID(wId));
         this.bubbleSizeFrom.setValue(BI.Utils.getWSChartBubbleSizeFromByID(wId));
         this.bubbleSizeTo.setValue(BI.Utils.getWSChartBubbleSizeToByID(wId));
 
         //x轴
-        this.rightYNumberFormat.setValue(BI.Utils.getWSRightYAxisStyleByID(wId));
-        this.rightYNumberLevel.setValue(BI.Utils.getWSRightYAxisNumLevelByID(wId));
-        this.rightYUnit.setValue(BI.Utils.getWSRightYAxisUnitByID(wId));
-        this.rightYShowTitle.setSelected(BI.Utils.getWSShowRightYAxisTitleByID(wId));
+        this.rightYNumberFormat.setValue(BI.Utils.getWSChartRightYNumberFormatByID(wId));
+        this.rightYNumberLevel.setValue(BI.Utils.getWSChartRightYNumberLevelByID(wId));
+        this.rightYUnit.setValue(BI.Utils.getWSChartRightYUnitByID(wId));
+        this.rightYShowTitle.setSelected(BI.Utils.getWSChartRightYShowTitleByID(wId));
         this.rightYTitle.setValue(titleX);
         this.rightYShowCustomScale.setSelected(BI.Utils.getWSShowXCustomScale(wId));
         this.rightYCustomScale.setValue(BI.Utils.getWSChartLeftYCustomScale(wId));
@@ -1016,10 +1016,10 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.rightYTitleStyle.setVisible(this.rightYShowTitle.isSelected());
 
         //y轴
-        this.leftYNumberFormat.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
-        this.leftYNumberLevel.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
+        this.leftYNumberFormat.setValue(BI.Utils.getWSChartLeftYNumberFormatByID(wId));
+        this.leftYNumberLevel.setValue(BI.Utils.getWSChartLeftYNumberLevelByID(wId));
         this.leftYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
-        this.leftYShowTitle.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
+        this.leftYShowTitle.setSelected(BI.Utils.getWSChartLeftYShowTitleByID(wId));
         this.leftYTitle.setValue(titleLY);
         this.leftYShowCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
         this.leftYCustomScale.setValue(BI.Utils.getWSChartLeftYCustomScale(wId));
@@ -1033,7 +1033,7 @@ BI.BubbleChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.leftYTitleStyle.setVisible(this.leftYShowTitle.isSelected());
 
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
-        this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
+        this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
         this.legendStyle.setValue(BI.Utils.getWSChartLegendStyleByID(wId));
         this.hShowGridLine.setSelected(BI.Utils.getWSChartHShowGridLineByID(wId));
         this.hGridLineColor.setValue(BI.Utils.getWSChartHGridLineColorByID(wId));

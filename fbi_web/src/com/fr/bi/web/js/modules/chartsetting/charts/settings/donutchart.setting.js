@@ -285,7 +285,7 @@ BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.chartColor.setValue(BI.Utils.getWSChartColorByID(wId));
         this.chartStyle.setValue(BI.Utils.getWSChartStyleByID(wId));
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
-        this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
+        this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
     },
 
     getValue: function () {

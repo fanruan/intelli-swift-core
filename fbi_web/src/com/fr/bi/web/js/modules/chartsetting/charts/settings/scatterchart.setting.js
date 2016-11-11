@@ -736,8 +736,8 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
         var wId = this.options.wId;
 
         var view = BI.Utils.getWidgetViewByID(wId);
-        var titleLY = BI.Utils.getWSLeftYAxisTitleByID(wId);
-        var titleX = BI.Utils.getWSRightYAxisTitleByID(wId);
+        var titleLY = BI.Utils.getWSChartLeftYTitleByID(wId);
+        var titleX = BI.Utils.getWSChartRightY2TitleByID(wId);
         if (titleLY === "") {
             BI.any(view[BICst.REGION.TARGET1], function (idx, dId) {
                 if (BI.Utils.isDimensionUsable(dId)) {
@@ -765,10 +765,10 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
 
         //x轴
-        this.rightYNumberFormat.setValue(BI.Utils.getWSRightYAxisStyleByID(wId));
-        this.rightYNumberLevel.setValue(BI.Utils.getWSRightYAxisNumLevelByID(wId));
-        this.rightYUnit.setValue(BI.Utils.getWSRightYAxisUnitByID(wId));
-        this.rightYShowTitle.setSelected(BI.Utils.getWSShowRightYAxisTitleByID(wId));
+        this.rightYNumberFormat.setValue(BI.Utils.getWSChartRightYNumberFormatByID(wId));
+        this.rightYNumberLevel.setValue(BI.Utils.getWSChartRightYNumberLevelByID(wId));
+        this.rightYUnit.setValue(BI.Utils.getWSChartRightYUnitByID(wId));
+        this.rightYShowTitle.setSelected(BI.Utils.getWSChartRightYShowTitleByID(wId));
         this.rightYTitle.setValue(titleX);
         this.rightYShowCustomScale.setSelected(BI.Utils.getWSShowXCustomScale(wId));
         this.rightYCustomScale.setValue(BI.Utils.getWSChartLeftYCustomScale(wId));
@@ -782,10 +782,10 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.rightYTitleStyle.setVisible(this.rightYShowTitle.isSelected());
 
         //y轴
-        this.leftYNumberFormat.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
-        this.leftYNumberLevel.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
+        this.leftYNumberFormat.setValue(BI.Utils.getWSChartLeftYNumberFormatByID(wId));
+        this.leftYNumberLevel.setValue(BI.Utils.getWSChartLeftYNumberLevelByID(wId));
         this.leftYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
-        this.leftYShowTitle.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
+        this.leftYShowTitle.setSelected(BI.Utils.getWSChartLeftYShowTitleByID(wId));
         this.leftYTitle.setValue(titleLY);
         this.leftYShowCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
         this.leftYCustomScale.setValue(BI.Utils.getWSChartLeftYCustomScale(wId));

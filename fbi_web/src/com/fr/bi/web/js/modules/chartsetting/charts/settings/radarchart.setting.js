@@ -546,15 +546,14 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.widgetTitle.setVisible(BI.Utils.getWSShowNameByID(wId));
         this.widgetName.setValue(BI.Utils.getWidgetNameByID(wId));
         this.widgetNameStyle.setValue(BI.Utils.getWSTitleDetailSettingByID(wId));
+
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
-        this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.chartColor.setValue(BI.Utils.getWSChartColorByID(wId));
         this.chartStyle.setValue(BI.Utils.getWSChartStyleByID(wId));
-        this.pieChartType.setValue(BI.Utils.getWSChartRadarTypeByID(wId));
-        this.leftYNumberFormat.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
-        this.leftYNumberLevel.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
-        this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
-        this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
+        this.pieChartType.setValue(BI.Utils.getWSPieChartTypeByID(wId));
+
+        this.leftYNumberFormat.setValue(BI.Utils.getWSChartLeftYNumberFormatByID(wId));
+        this.leftYNumberLevel.setValue(BI.Utils.getWSChartLeftYNumberLevelByID(wId));
         this.leftYShowCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
         this.leftYCustomScale.setValue(BI.Utils.getWSChartLeftYCustomScale(wId));
         this.leftYCustomScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
@@ -562,17 +561,22 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.leftYShowLabel.setSelected(BI.Utils.getWSChartLeftYShowLabelByID(wId));
         this.leftYLabelStyle.setValue(BI.Utils.getWSChartLeftYLabelStyleByID(wId));
         this.leftYLineColor.setValue(BI.Utils.getWSChartLeftYLineColorByID(wId));
+        this.leftYLabelStyle.setVisible(this.leftYShowLabel.isSelected());
+
+        this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.legendStyle.setValue(BI.Utils.getWSChartLegendStyleByID(wId));
+        this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
         this.hShowGridLine.setSelected(BI.Utils.getWSChartHShowGridLineByID(wId));
         this.hGridLineColor.setValue(BI.Utils.getWSChartHGridLineColorByID(wId));
         this.vShowGridLine.setSelected(BI.Utils.getWSChartVShowGridLineByID(wId));
         this.vGridLineColor.setValue(BI.Utils.getWSChartVGridLineColorByID(wId));
         this.tooltipStyle.setValue(BI.Utils.getWSChartToolTipStyleByID(wId));
-        this.nullContinuity.setSelected(BI.Utils.getWSNullContinueByID(wId));
-
-        this.leftYLabelStyle.setVisible(this.leftYShowLabel.isSelected());
+        this.nullContinuity.setSelected(BI.Utils.getWSNullContinuityByID(wId));
         this.hGridLineColor.setVisible(this.hShowGridLine.isSelected());
-        this.vGridLineColor.setVisible(this.vShowGridLine.isSelected())
+        this.vGridLineColor.setVisible(this.vShowGridLine.isSelected());
+
+        this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
+
     },
 
     getValue: function () {
@@ -580,29 +584,33 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             showName: this.showName.isSelected(),
             widgetName: this.widgetName.getValue(),
             widgetNameStyle: this.widgetNameStyle.getValue(),
+
             widgetBG: this.widgetBG.getValue(),
-            transferFilter: this.transferFilter.isSelected(),
             chartColor: this.chartColor.getValue()[0],
             chartStyle: this.chartStyle.getValue()[0],
             pieChartType: this.pieChartType.getValue()[0],
+
             leftYNumberFormat: this.leftYNumberFormat.getValue()[0],
             leftYNumberLevel: this.leftYNumberLevel.getValue()[0],
-            legend: this.legend.getValue()[0],
-            showDataLabel: this.showDataLabel.isSelected(),
             leftYShowCustomScale: this.leftYShowCustomScale.isSelected(),
             leftYCustomScale: this.leftYCustomScale.getValue(),
             leftYSeparator: this.leftYSeparator.isSelected(),
             leftYShowLabel: this.leftYShowLabel.isSelected(),
             leftYLabelStyle: this.leftYLabelStyle.getValue(),
             leftYLineColor: this.leftYLineColor.getValue(),
+
+            legend: this.legend.getValue()[0],
             legendStyle: this.legendStyle.getValue(),
+            showDataLabel: this.showDataLabel.isSelected(),
             hShowGridLine: this.hShowGridLine.isSelected(),
             hGridLineColor: this.hGridLineColor.getValue(),
             vShowGridLine: this.vShowGridLine.isSelected(),
             vGridLineColor: this.vGridLineColor.getValue(),
             tooltipStyle: this.tooltipStyle.getValue(),
             nullContinuity: this.nullContinuity.isSelected(),
-            linkageSelection: this.linkageSelection.isSelected()
+            linkageSelection: this.linkageSelection.isSelected(),
+
+            transferFilter: this.transferFilter.isSelected(),
         }
     }
 });

@@ -220,7 +220,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE)
         });
 
-        this.scale = BI.createWidget({
+        this.styleRadio = BI.createWidget({
             type: "bi.button_group",
             items: BI.createItems(BICst.CHART_SCALE_SETTING, {
                 type: "bi.single_select_radio_item",
@@ -233,7 +233,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             }]
         });
 
-        this.scale.on(BI.ButtonGroup.EVENT_CHANGE, function (v) {
+        this.styleRadio.on(BI.ButtonGroup.EVENT_CHANGE, function (v) {
             self._doClickButton(v);
             self.fireEvent(BI.DashboardChartSetting.EVENT_CHANGE)
         });
@@ -363,7 +363,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     items: [this.leftYSeparator]
                 }, this.dashboardScale, {
                     type: "bi.vertical_adapt",
-                    items: [this.scale]
+                    items: [this.styleRadio]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.addConditionButton]
@@ -453,9 +453,9 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.dashboardChartType.setValue(BI.Utils.getWSDashboardChartTypeByID(wId));
         this.dashboardPointer.setValue(BI.Utils.getWSChartDashboardPointerByID(wId));
         this._showPointer(BI.Utils.getWSDashboardChartTypeByID(wId));
-        this.scale.setValue(BI.Utils.getWSScaleByID(wId));
-        this._doClickButton(BI.Utils.getWSScaleByID(wId));
-        this.dashboardStyles.setValue(BI.Utils.getWSDashboardStylesByID(wId));
+        this.styleRadio.setValue(BI.Utils.getWSChartStyleRadioByID(wId));
+        this._doClickButton(BI.Utils.getWSChartStyleRadioByID(wId));
+        this.dashboardStyles.setValue(BI.Utils.getWSChartDashboardStylesByID(wId));
         this.minScale.setValue(BI.Utils.getWSChartMinScaleByID(wId));
         this.maxScale.setValue(BI.Utils.getWSChartMaxScaleByID(wId));
         this.showPercentage.setValue(BI.Utils.getWSChartShowPercentageByID(wId));
@@ -476,7 +476,7 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             widgetBG: this.widgetBG.getValue(),
             dashboardChartType: this.dashboardChartType.getValue()[0],
             dashboardPointer: this.dashboardPointer.getValue()[0],
-            scale: this.scale.getValue()[0],
+            styleRadio: this.styleRadio.getValue()[0],
             dashboardStyles: this.dashboardStyles.getValue(),
             minScale: this.minScale.getValue(),
             maxScale: this.maxScale.getValue(),

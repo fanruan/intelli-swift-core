@@ -527,9 +527,9 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.radarChartType.setValue(BI.Utils.getWSRadarChartTypeByID(wId));
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
 
-        this.leftYNumberLevel.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
+        this.leftYNumberLevel.setValue(BI.Utils.getWSChartLeftYNumberLevelByID(wId));
         this.leftYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
-        this.leftYNumberFormat.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
+        this.leftYNumberFormat.setValue(BI.Utils.getWSChartLeftYNumberFormatByID(wId));
         this.leftYSeparator.setSelected(BI.Utils.getWSLeftYNumberSeparatorByID(wId));
         this.leftYShowLabel.setSelected(BI.Utils.getWSChartLeftYShowLabelByID(wId));
         this.leftYLabelStyle.setVisible(this.leftYShowLabel.isSelected());
@@ -547,9 +547,9 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.vShowGridLine.setSelected(BI.Utils.getWSChartVShowGridLineByID(wId));
         this.vGridLineColor.setVisible(this.vShowGridLine.isSelected());
         this.vGridLineColor.setValue(BI.Utils.getWSChartVGridLineColorByID(wId));
-        this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
+        this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
         this.tooltipStyle.setValue(BI.Utils.getWSChartToolTipStyleByID(wId));
-        this.nullContinuity.setSelected(BI.Utils.getWSNullContinueByID(wId));
+        this.nullContinuity.setSelected(BI.Utils.getWSNullContinuityByID(wId));
 
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.linkageSelection.setSelected(BI.Utils.getWSLinkageSelectionByID(wId));

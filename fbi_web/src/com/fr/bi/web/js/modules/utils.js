@@ -1358,7 +1358,7 @@
                 BICst.DEFAULT_CHART_SETTING.rightYShowCustomScale;
         },
 
-        getWSChartLeftYCustomScale: function (wid) {
+        getWSChartRightYCustomScale: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.rightYCustomScale) ? ws.rightYCustomScale :
                 BICst.DEFAULT_CHART_SETTING.customScale

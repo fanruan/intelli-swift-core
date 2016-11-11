@@ -993,9 +993,9 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
         var wId = this.options.wId;
 
         var view = BI.Utils.getWidgetViewByID(wId);
-        var titleLY = BI.Utils.getWSLeftYAxisTitleByID(wId);
-        var titleX = BI.Utils.getWSXAxisTitleByID(wId);
-        var titleRY = BI.Utils.getWSRightYAxisTitleByID(wId);
+        var titleLY = BI.Utils.getWSChartLeftYTitleByID(wId);
+        var titleX = BI.Utils.getWSChartCatTitleByID(wId);
+        var titleRY = BI.Utils.getWSChartRightY2TitleByID(wId);
         if (titleLY === "") {
             BI.any(view[BICst.REGION.TARGET1], function (idx, dId) {
                 if (BI.Utils.isDimensionUsable(dId)) {
@@ -1033,12 +1033,12 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
         this.lineAreaChartType.setValue(BI.Utils.getWSLineAreaChartTypeByID(wId));
 
-        this.leftYNumberLevel.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
+        this.leftYNumberLevel.setValue(BI.Utils.getWSChartLeftYNumberLevelByID(wId));
         this.leftYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
-        this.leftYNumberFormat.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
-        this.leftYShowTitle.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
+        this.leftYNumberFormat.setValue(BI.Utils.getWSChartLeftYNumberFormatByID(wId));
+        this.leftYShowTitle.setSelected(BI.Utils.getWSChartLeftYShowTitleByID(wId));
         this.leftYTitle.setValue(titleLY);
-        this.leftYReverse.setSelected(BI.Utils.getWSLeftYAxisReversedByID(wId));
+        this.leftYReverse.setSelected(BI.Utils.getWSChartLeftYReverseByID(wId));
         this.leftYTitle.setVisible(this.leftYShowTitle.isSelected());
         this.leftYTitleStyle.setVisible(this.leftYShowTitle.isSelected());
         this.leftYTitleStyle.setValue(BI.Utils.getWSChartLeftYTitleStyleByID(wId));
@@ -1051,12 +1051,12 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.leftYLabelStyle.setValue(BI.Utils.getWSChartLeftYLabelStyleByID(wId));
         this.leftYLineColor.setValue(BI.Utils.getWSChartLeftYLineColorByID(wId));
 
-        this.rightYNumberFormat.setValue(BI.Utils.getWSRightYAxisStyleByID(wId));
-        this.rightYNumberLevel.setValue(BI.Utils.getWSRightYAxisNumLevelByID(wId));
-        this.rightYUnit.setValue(BI.Utils.getWSRightYAxisUnitByID(wId));
-        this.rightYShowTitle.setSelected(BI.Utils.getWSShowRightYAxisTitleByID(wId));
+        this.rightYNumberFormat.setValue(BI.Utils.getWSChartRightYNumberFormatByID(wId));
+        this.rightYNumberLevel.setValue(BI.Utils.getWSChartRightYNumberLevelByID(wId));
+        this.rightYUnit.setValue(BI.Utils.getWSChartRightYUnitByID(wId));
+        this.rightYShowTitle.setSelected(BI.Utils.getWSChartRightYShowTitleByID(wId));
         this.rightYTitle.setValue(titleRY);
-        this.rightYReverse.setSelected(BI.Utils.getWSRightYAxisReversedByID(wId));
+        this.rightYReverse.setSelected(BI.Utils.getWSChartRightYReverseByID(wId));
         this.rightYTitle.setVisible(this.rightYShowTitle.isSelected());
         this.rightYTitleStyle.setVisible(this.rightYShowTitle.isSelected());
         this.rightYTitleStyle.setValue(BI.Utils.getWSChartRightYTitleStyleByID(wId));
@@ -1069,7 +1069,7 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.rightYLabelStyle.setValue(BI.Utils.getWSRightYLabelStyleByID(wId));
         this.rightYLineColor.setValue(BI.Utils.getWSRightYLineColorByID(wId));
 
-        this.catShowTitle.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
+        this.catShowTitle.setSelected(BI.Utils.getWSChartCatShowTitleByID(wId));
         this.catTitle.setValue(titleX);
         this.catTitle.setVisible(this.catShowTitle.isSelected());
         this.catTitleStyle.setVisible(this.catShowTitle.isSelected());
@@ -1081,9 +1081,9 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.legendStyle.setValue(BI.Utils.getWSChartLegendStyleByID(wId));
-        this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
-        this.showDataTable.setSelected(BI.Utils.getWSShowDataTableByID(wId));
-        this.showZoom.setSelected(BI.Utils.getWSShowZoomByID(wId));
+        this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
+        this.showDataTable.setSelected(BI.Utils.getWSChartShowDataTableByID(wId));
+        this.showZoom.setSelected(BI.Utils.getWSChartShowZoomByID(wId));
         this.hShowGridLine.setSelected(BI.Utils.getWSChartHShowGridLineByID(wId));
         this.hGridLineColor.setVisible(this.hShowGridLine.isSelected());
         this.hGridLineColor.setValue(BI.Utils.getWSChartHGridLineColorByID(wId));
@@ -1091,7 +1091,7 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.vGridLineColor.setVisible(this.vShowGridLine.isSelected());
         this.vGridLineColor.setValue(BI.Utils.getWSChartVGridLineColorByID(wId));
         this.tooltipStyle.setValue(BI.Utils.getWSChartToolTipStyleByID(wId));
-        this.nullContinuity.setSelected(BI.Utils.getWSNullContinueByID(wId));
+        this.nullContinuity.setSelected(BI.Utils.getWSNullContinuityByID(wId));
 
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
 

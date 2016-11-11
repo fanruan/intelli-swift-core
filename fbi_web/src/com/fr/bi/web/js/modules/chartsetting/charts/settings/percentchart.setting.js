@@ -711,8 +711,8 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         var wId = this.options.wId;
 
         var view = BI.Utils.getWidgetViewByID(wId);
-        var titleLY = BI.Utils.getWSLeftYAxisTitleByID(wId);
-        var titleX = BI.Utils.getWSXAxisTitleByID(wId);
+        var titleLY = BI.Utils.getWSChartLeftYTitleByID(wId);
+        var titleX = BI.Utils.getWSChartCatTitleByID(wId);
         if (titleLY === "") {
             BI.any(view[BICst.REGION.TARGET1], function (idx, dId) {
                 if (BI.Utils.isDimensionUsable(dId)) {
@@ -735,22 +735,15 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.widgetTitle.setVisible(BI.Utils.getWSShowNameByID(wId));
         this.widgetName.setValue(BI.Utils.getWidgetNameByID(wId));
         this.widgetNameStyle.setValue(BI.Utils.getWSTitleDetailSettingByID(wId));
+
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
-        this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.chartColor.setValue(BI.Utils.getWSChartColorByID(wId));
         this.chartStyle.setValue(BI.Utils.getWSChartStyleByID(wId));
-        this.leftYNumberFormat.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
+
+        this.leftYNumberFormat.setValue(BI.Utils.getWSChartLeftYNumberFormatByID(wId));
         this.leftYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
-        this.leftYShowTitle.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
-        this.catShowTitle.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
+        this.leftYShowTitle.setSelected(BI.Utils.getWSChartLeftYShowTitleByID(wId));
         this.leftYTitle.setValue(titleLY);
-        this.catTitle.setValue(titleX);
-        this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
-        this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
-        this.showDataTable.setSelected(BI.Utils.getWSShowDataTableByID(wId));
-        this.showZoom.setSelected(BI.Utils.getWSShowZoomByID(wId));
-        this.miniModel.setSelected(BI.Utils.getWSMinimalistByID(wId));
-        this._invisible(!BI.Utils.getWSMinimalistByID(wId));
         this.leftYShowCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
         this.leftYCustomScale.setValue(BI.Utils.getWSChartLeftYCustomScale(wId));
         this.leftYCustomScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
@@ -758,26 +751,38 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.leftYShowLabel.setSelected(BI.Utils.getWSChartLeftYShowLabelByID(wId));
         this.leftYLabelStyle.setValue(BI.Utils.getWSChartLeftYLabelStyleByID(wId));
         this.leftYLineColor.setValue(BI.Utils.getWSChartLeftYLineColorByID(wId));
+        this.leftYTitleStyle.setValue(BI.Utils.getWSChartLeftYTitleStyleByID(wId));
+        this.leftYTitle.setVisible(this.leftYShowTitle.isSelected());
+        this.leftYTitleStyle.setVisible(this.leftYShowTitle.isSelected());
+        this.leftYLabelStyle.setVisible(this.leftYShowLabel.isSelected());
+
+        this.catShowTitle.setSelected(BI.Utils.getWSChartCatShowTitleByID(wId));
+        this.catTitle.setValue(titleX);
         this.catShowLabel.setSelected(BI.Utils.getWSChartCatShowLabelByID(wId));
         this.catLabelStyle.setValue(BI.Utils.getWSChartCatLabelStyleByID(wId));
         this.catLineColor.setValue(BI.Utils.getWSChartCatLineColorByID(wId));
+        this.catTitleStyle.setValue(BI.Utils.getWSChartCatTitleStyleByID(wId));
+        this.catTitle.setVisible(this.catShowTitle.isSelected());
+        this.catTitleStyle.setVisible(this.catShowTitle.isSelected());
+        this.catLabelStyle.setVisible(this.catShowLabel.isSelected());
+
+        this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
+        this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
+        this.showDataTable.setSelected(BI.Utils.getWSChartShowDataTableByID(wId));
+        this.showZoom.setSelected(BI.Utils.getWSChartShowZoomByID(wId));
         this.legendStyle.setValue(BI.Utils.getWSChartLegendStyleByID(wId));
         this.hShowGridLine.setSelected(BI.Utils.getWSChartHShowGridLineByID(wId));
         this.hGridLineColor.setValue(BI.Utils.getWSChartHGridLineColorByID(wId));
         this.vShowGridLine.setSelected(BI.Utils.getWSChartVShowGridLineByID(wId));
         this.vGridLineColor.setValue(BI.Utils.getWSChartVGridLineColorByID(wId));
         this.tooltipStyle.setValue(BI.Utils.getWSChartToolTipStyleByID(wId));
-        this.leftYTitleStyle.setValue(BI.Utils.getWSChartLeftYTitleStyleByID(wId));
-        this.catTitleStyle.setValue(BI.Utils.getWSChartCatTitleStyleByID(wId));
-
-        this.leftYTitle.setVisible(this.leftYShowTitle.isSelected());
-        this.catTitle.setVisible(this.catShowTitle.isSelected());
-        this.leftYTitleStyle.setVisible(this.leftYShowTitle.isSelected());
-        this.catTitleStyle.setVisible(this.catShowTitle.isSelected());
-        this.leftYLabelStyle.setVisible(this.leftYShowLabel.isSelected());
-        this.catLabelStyle.setVisible(this.catShowLabel.isSelected());
         this.hGridLineColor.setVisible(this.hShowGridLine.isSelected());
-        this.vGridLineColor.setVisible(this.vShowGridLine.isSelected())
+        this.vGridLineColor.setVisible(this.vShowGridLine.isSelected());
+
+        this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
+
+        this.miniModel.setSelected(BI.Utils.getWSMinimalistByID(wId));
+        this._invisible(!BI.Utils.getWSMinimalistByID(wId));
     },
 
     getValue: function () {

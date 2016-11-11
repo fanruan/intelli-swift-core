@@ -673,8 +673,8 @@ BI.FallAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         var wId = this.options.wId;
 
         var view = BI.Utils.getWidgetViewByID(wId);
-        var titleLY = BI.Utils.getWSLeftYAxisTitleByID(wId);
-        var titleX = BI.Utils.getWSXAxisTitleByID(wId);
+        var titleLY = BI.Utils.getWSChartLeftYTitleByID(wId);
+        var titleX = BI.Utils.getWSChartCatTitleByID(wId);
         if (titleLY === "") {
             BI.any(view[BICst.REGION.TARGET1], function (idx, dId) {
                 if (BI.Utils.isDimensionUsable(dId)) {
@@ -702,10 +702,10 @@ BI.FallAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.chartStyle.setValue(BI.Utils.getWSChartStyleByID(wId));
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
 
-        this.leftYNumberLevel.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
+        this.leftYNumberLevel.setValue(BI.Utils.getWSChartLeftYNumberLevelByID(wId));
         this.leftYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
-        this.leftYNumberFormat.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
-        this.leftYShowTitle.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
+        this.leftYNumberFormat.setValue(BI.Utils.getWSChartLeftYNumberFormatByID(wId));
+        this.leftYShowTitle.setSelected(BI.Utils.getWSChartLeftYShowTitleByID(wId));
         this.leftYTitle.setValue(titleLY);
         this.leftYTitle.setVisible(this.leftYShowTitle.isSelected());
         this.leftYTitleStyle.setVisible(this.leftYShowTitle.isSelected());
@@ -719,7 +719,7 @@ BI.FallAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.leftYLabelStyle.setValue(BI.Utils.getWSChartLeftYLabelStyleByID(wId));
         this.leftYLineColor.setValue(BI.Utils.getWSChartLeftYLineColorByID(wId));
 
-        this.catShowTitle.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
+        this.catShowTitle.setSelected(BI.Utils.getWSChartCatShowTitleByID(wId));
         this.catTitle.setValue(titleX);
         this.catTitle.setVisible(this.catShowTitle.isSelected());
         this.catTitleStyle.setVisible(this.catShowTitle.isSelected());
@@ -729,9 +729,9 @@ BI.FallAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.catLineColor.setValue(BI.Utils.getWSChartCatLineColorByID(wId));
         this.catTitleStyle.setValue(BI.Utils.getWSChartCatTitleStyleByID(wId));
 
-        this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
-        this.showDataTable.setSelected(BI.Utils.getWSShowDataTableByID(wId));
-        this.showZoom.setSelected(BI.Utils.getWSShowZoomByID(wId));
+        this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
+        this.showDataTable.setSelected(BI.Utils.getWSChartShowDataTableByID(wId));
+        this.showZoom.setSelected(BI.Utils.getWSChartShowZoomByID(wId));
         this.hShowGridLine.setSelected(BI.Utils.getWSChartHShowGridLineByID(wId));
         this.hGridLineColor.setVisible(this.hShowGridLine.isSelected());
         this.hGridLineColor.setValue(BI.Utils.getWSChartHGridLineColorByID(wId));

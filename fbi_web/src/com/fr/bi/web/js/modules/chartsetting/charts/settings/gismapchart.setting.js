@@ -160,7 +160,7 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
         this.widgetNameStyle.setValue(BI.Utils.getWSTitleDetailSettingByID(wId));
 
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
-        this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
+        this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
 
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
     },

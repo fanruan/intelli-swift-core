@@ -112,7 +112,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         });
         var children = [];
         var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
-        var dataLable = BI.Utils.getWSShowDataLabelByID(wId);
+        var dataLable = BI.Utils.getWSChartShowDataLabelByID(wId);
         var minimalist = BI.Utils.getWSMinimalistByID(wId);
         var bigDataMode = BI.Utils.getWSChartBigDataModeByID(wId);
         children.push({

@@ -348,7 +348,7 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.totalAngle.setValue(BI.Utils.getWSChartTotalAngleByID(wId));
         this.innerRadius.setValue(BI.Utils.getWSChartInnerRadiusByID(wId));
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
-        this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
+        this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
 
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
     },

@@ -355,11 +355,11 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
         this.chartColor.setValue(BI.Utils.getWSThemeColorByID(wId));
-        this.styleRadio.setValue(BI.Utils.getWSScaleByID(wId));
-        this._doClickButton(BI.Utils.getWSScaleByID(wId));
+        this.styleRadio.setValue(BI.Utils.getWSChartStyleRadioByID(wId));
+        this._doClickButton(BI.Utils.getWSChartStyleRadioByID(wId));
         this.mapStyles.setValue(BI.Utils.getWSChartMapStylesByID(wId));
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
-        this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
+        this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
         this.isShowBackgroundLayer.setSelected(BI.Utils.getWSShowBackgroundByID(wId));
         this.isShowBackgroundLayer.isSelected() ? this.backgroundLayerInfo.setVisible(true) : this.backgroundLayerInfo.setVisible(false);
         this._setNumberLevel();

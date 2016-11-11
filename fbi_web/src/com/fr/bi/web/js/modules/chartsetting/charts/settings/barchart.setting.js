@@ -685,7 +685,7 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         var wId = this.options.wId;
         var view = BI.Utils.getWidgetViewByID(wId);
 
-        var titleLY = BI.Utils.getWSLeftYAxisTitleByID(wId), titleX = BI.Utils.getWSXAxisTitleByID(wId);
+        var titleLY = BI.Utils.getWSChartLeftYTitleByID(wId), titleX = BI.Utils.getWSChartCatTitleByID(wId);
         if (titleLY === "") {
             BI.any(view[BICst.REGION.TARGET1], function (idx, dId) {
                 if (BI.Utils.isDimensionUsable(dId)) {
@@ -713,10 +713,10 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.chartStyle.setValue(BI.Utils.getWSChartStyleByID(wId));
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
 
-        this.leftYNumberFormat.setValue(BI.Utils.getWSLeftYAxisStyleByID(wId));
+        this.leftYNumberFormat.setValue(BI.Utils.getWSChartLeftYNumberFormatByID(wId));
         this.leftYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
-        this.leftYShowTitle.setSelected(BI.Utils.getWSShowLeftYAxisTitleByID(wId));
-        this.leftYNumberLevel.setValue(BI.Utils.getWSLeftYAxisNumLevelByID(wId));
+        this.leftYShowTitle.setSelected(BI.Utils.getWSChartLeftYShowTitleByID(wId));
+        this.leftYNumberLevel.setValue(BI.Utils.getWSChartLeftYNumberLevelByID(wId));
         this.leftYTitle.setValue(titleLY);
         this.leftYShowCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
         this.leftYCustomScale.setValue(BI.Utils.getWSChartLeftYCustomScale(wId));
@@ -731,7 +731,7 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.leftYTitle.setVisible(this.leftYShowTitle.isSelected());
 
         this.catTitle.setValue(titleX);
-        this.catShowTitle.setSelected(BI.Utils.getWSShowXAxisTitleByID(wId));
+        this.catShowTitle.setSelected(BI.Utils.getWSChartCatShowTitleByID(wId));
         this.catShowLabel.setSelected(BI.Utils.getWSChartCatShowLabelByID(wId));
         this.catLabelStyle.setValue(BI.Utils.getWSChartCatLabelStyleByID(wId));
         this.catLineColor.setValue(BI.Utils.getWSChartCatLineColorByID(wId));
@@ -742,7 +742,7 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.legendStyle.setValue(BI.Utils.getWSChartLegendStyleByID(wId));
-        this.showDataLabel.setSelected(BI.Utils.getWSShowDataLabelByID(wId));
+        this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
         this.hShowGridLine.setSelected(BI.Utils.getWSChartHShowGridLineByID(wId));
         this.hGridLineColor.setValue(BI.Utils.getWSChartHGridLineColorByID(wId));
         this.vShowGridLine.setSelected(BI.Utils.getWSChartVShowGridLineByID(wId));
