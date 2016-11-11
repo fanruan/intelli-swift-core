@@ -43,7 +43,7 @@ BI.DetailRegion = BI.inherit(BI.AbstractRegion, {
             height: 25,
             disabled: true,
             value: BI.i18nText("BI-Add_Cal_Target"),
-            warningTitle: BI.i18nText("BI-There_Is_No_Target_for_Contruct_Calculate_Target")
+            warningTitle: BI.i18nText("BI-There_Is_No_Target_for_Contruct_Calculate_Number_Target")
         });
 
         this.calculateAddButton.on(BI.TextButton.EVENT_CHANGE, function () {
@@ -190,7 +190,7 @@ BI.DetailRegion = BI.inherit(BI.AbstractRegion, {
 
         if(!checkAddCalcTargetValid()){
             this.calculateAddButton.setEnable(false);
-            this.calculateAddButton.setTitle(BI.i18nText("BI-There_Is_No_Target_for_Contruct_Calculate_Target"));
+            this.calculateAddButton.setTitle(BI.i18nText("BI-There_Is_No_Target_for_Contruct_Calculate_Number_Target"));
         }else{
             this.calculateAddButton.setEnable(true);
             this.calculateAddButton.setTitle("");
