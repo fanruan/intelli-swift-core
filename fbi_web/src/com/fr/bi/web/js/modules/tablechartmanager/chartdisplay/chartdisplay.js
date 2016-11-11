@@ -417,7 +417,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         leftYLineColor: BI.Utils.getWSChartLeftYLineColorByID(o.wId),
                         leftYSeparator: BI.Utils.getWSLeftYNumberSeparatorByID(o.wId),
                         leftYTitleStyle: BI.Utils.getWSChartLeftYTitleStyleByID(o.wId),
-                        leftYCustomScale: BI.Utils.getWSChartLeftYCustomScale(o.wId),
+                        leftYCustomScale: BI.Utils.getWSChartLeftYCustomScaleByID(o.wId),
                         //y右值轴
                         rightYNumberFormat: BI.Utils.getWSChartRightYNumberFormatByID(o.wId),
                         rightYNumberLevel: BI.Utils.getWSChartRightYNumberLevelByID(o.wId),
@@ -427,7 +427,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         rightYTitleStyle: BI.Utils.getWSChartRightYTitleStyleByID(o.wId),
                         rightYTitle: BI.Utils.getWSChartRightYTitleByID(o.wId),
                         rightYSeparator: BI.Utils.getWSRightYNumberSeparatorByID(o.wId),
-                        rightYCustomScale: BI.Utils.getWSChartRightYCustomScale(o.wId),
+                        rightYCustomScale: BI.Utils.getWSChartRightYCustomScaleByID(o.wId),
                         rightYShowLabel: BI.Utils.getWSRightYShowLabelByID(o.wId),
                         rightYLabelStyle: BI.Utils.getWSRightYLabelStyleByID(o.wId),
                         rightYLineColor: BI.Utils.getWSRightYLineColorByID(o.wId),
@@ -443,13 +443,14 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         rightY2LabelStyle: BI.Utils.getWSRightY2LabelStyleByID(o.wId),
                         rightY2LineColor: BI.Utils.getWSRightY2LineColorByID(o.wId),
                         rightY2TitleStyle: BI.Utils.getWSChartRightY2TitleStyleByID(o.wId),
+                        rightY2CustomScale: BI.Utils.getWSRightY2ShowCustomScaleByID(o.wId),
                         //分类轴
                         catShowTitle: BI.Utils.getWSChartCatShowTitleByID(o.wId),
                         catTitle: BI.Utils.getWSChartCatTitleByID(o.wId),
+                        catTitleStyle: BI.Utils.getWSChartCatTitleStyleByID(o.wId),
                         catShowLabel: BI.Utils.getWSChartCatShowLabelByID(o.wId),
                         catLabelStyle: BI.Utils.getWSChartCatLabelStyleByID(o.wId),
                         catLineColor: BI.Utils.getWSChartCatLineColorByID(o.wId),
-                        catTitleStyle: BI.Utils.getWSChartCatTitleStyleByID(o.wId),
                         //其他元素
                         legend: BI.Utils.getWSChartLegendByID(o.wId),
                         legendStyle: BI.Utils.getWSChartLegendStyleByID(o.wId),

@@ -1214,9 +1214,9 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.leftYShowTitle.setSelected(BI.Utils.getWSChartLeftYShowTitleByID(wId));
         this.leftYTitle.setValue(titleLY);
         this.leftYReverse.setSelected(BI.Utils.getWSChartLeftYReverseByID(wId));
-        this.leftYShowCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
-        this.leftYCustomScale.setValue(BI.Utils.getWSChartLeftYCustomScale(wId));
-        this.leftYCustomScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
+        this.leftYShowCustomScale.setSelected(BI.Utils.getWSChartLeftYShowCustomScaleByID(wId));
+        this.leftYCustomScale.setValue(BI.Utils.getWSChartLeftYCustomScaleByID(wId));
+        this.leftYCustomScale.setVisible(BI.Utils.getWSChartLeftYShowCustomScaleByID(wId));
         this.leftYSeparator.setSelected(BI.Utils.getWSLeftYNumberSeparatorByID(wId));
         this.leftYShowLabel.setSelected(BI.Utils.getWSChartLeftYShowLabelByID(wId));
         this.leftYLabelStyle.setValue(BI.Utils.getWSChartLeftYLabelStyleByID(wId));
@@ -1232,9 +1232,9 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.rightYShowTitle.setSelected(BI.Utils.getWSChartRightYShowTitleByID(wId));
         this.rightYTitle.setValue(titleRY);
         this.rightYReverse.setSelected(BI.Utils.getWSChartRightYReverseByID(wId));
-        this.rightYShowCustomScale.setSelected(BI.Utils.getWSShowXCustomScale(wId));
-        this.rightYCustomScale.setValue(BI.Utils.getWSChartLeftYCustomScale(wId));
-        this.rightYCustomScale.setVisible(BI.Utils.getWSShowXCustomScale(wId));
+        this.rightYShowCustomScale.setSelected(BI.Utils.getWSChartRightYShowCustomScaleByID(wId));
+        this.rightYCustomScale.setValue(BI.Utils.getWSChartLeftYCustomScaleByID(wId));
+        this.rightYCustomScale.setVisible(BI.Utils.getWSChartRightYShowCustomScaleByID(wId));
         this.rightYSeparator.setSelected(BI.Utils.getWSRightYNumberSeparatorByID(wId));
         this.rightYShowLabel.setSelected(BI.Utils.getWSRightYShowLabelByID(wId));
         this.rightYLabelStyle.setValue(BI.Utils.getWSRightYLabelStyleByID(wId));
@@ -1250,9 +1250,9 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.rightY2ShowTitle.setSelected(BI.Utils.getWSChartRightY2ShowTitleByID(wId));
         this.rightY2Title.setValue(titleRY2);
         this.rightY2Reverse.setSelected(BI.Utils.getWSChartRightY2ReverseByID(wId));
-        this.rightY2ShowCustomScale.setSelected(BI.Utils.getWSShowZCustomScale(wId));
+        this.rightY2ShowCustomScale.setSelected(BI.Utils.getWSChartRightY2ShowCustomScaleByID(wId));
         this.rightY2CustomScale.setValue(BI.Utils.getWSCustomZScale(wId));
-        this.rightY2CustomScale.setVisible(BI.Utils.getWSShowZCustomScale(wId));
+        this.rightY2CustomScale.setVisible(BI.Utils.getWSChartRightY2ShowCustomScaleByID(wId));
         this.rightY2Separator.setSelected(BI.Utils.getWSRightY2NumberSeparatorByID(wId));
         this.rightY2ShowLabel.setSelected(BI.Utils.getWSRightY2ShowLabelByID(wId));
         this.rightY2LabelStyle.setValue(BI.Utils.getWSRightY2LabelStyleByID(wId));

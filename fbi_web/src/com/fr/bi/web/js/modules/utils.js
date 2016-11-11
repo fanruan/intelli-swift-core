@@ -1352,40 +1352,40 @@
                 BICst.DEFAULT_CHART_SETTING.big_data_mode
         },
 
-        getWSShowXCustomScale: function (wid) {
+        getWSChartRightYShowCustomScaleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.rightYShowCustomScale) ? ws.rightYShowCustomScale :
                 BICst.DEFAULT_CHART_SETTING.rightYShowCustomScale;
         },
 
-        getWSChartRightYCustomScale: function (wid) {
+        getWSChartRightYCustomScaleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.rightYCustomScale) ? ws.rightYCustomScale :
                 BICst.DEFAULT_CHART_SETTING.customScale
         },
 
-        getWSShowYCustomScale: function (wid) {
+        getWSChartLeftYShowCustomScaleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.leftYShowCustomScale) ? ws.leftYShowCustomScale :
                 BICst.DEFAULT_CHART_SETTING.leftYShowCustomScale;
         },
 
-        getWSChartLeftYCustomScale: function (wid) {
+        getWSChartLeftYCustomScaleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.leftYCustomScale) ? ws.leftYCustomScale :
                 BICst.DEFAULT_CHART_SETTING.customScale
         },
 
-        getWSShowZCustomScale: function (wid) {
+        getWSRightY2ShowCustomScaleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_z_custom_scale) ? ws.show_z_custom_scale :
                 BICst.DEFAULT_CHART_SETTING.customScale;
         },
 
-        getWSCustomZScale: function (wid) {
+        getWSChartRightY2ShowCustomScaleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.custom_z_scale) ? ws.custom_z_scale :
-                BICst.DEFAULT_CHART_SETTING.customScale
+            return BI.isNotNull(ws.rightY2ShowCustomScale) ? ws.rightY2ShowCustomScale :
+                BICst.DEFAULT_CHART_SETTING.rightY2ShowCustomScale
         },
 
         getWSChartShowZoomByID: function (wid) {

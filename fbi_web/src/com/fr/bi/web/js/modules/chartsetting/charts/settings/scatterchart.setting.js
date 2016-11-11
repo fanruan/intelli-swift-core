@@ -770,9 +770,9 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.rightYUnit.setValue(BI.Utils.getWSChartRightYUnitByID(wId));
         this.rightYShowTitle.setSelected(BI.Utils.getWSChartRightYShowTitleByID(wId));
         this.rightYTitle.setValue(titleX);
-        this.rightYShowCustomScale.setSelected(BI.Utils.getWSShowXCustomScale(wId));
-        this.rightYCustomScale.setValue(BI.Utils.getWSChartLeftYCustomScale(wId));
-        this.rightYCustomScale.setVisible(BI.Utils.getWSShowXCustomScale(wId));
+        this.rightYShowCustomScale.setSelected(BI.Utils.getWSChartRightYShowCustomScaleByID(wId));
+        this.rightYCustomScale.setValue(BI.Utils.getWSChartLeftYCustomScaleByID(wId));
+        this.rightYCustomScale.setVisible(BI.Utils.getWSChartRightYShowCustomScaleByID(wId));
         this.rightYSeparator.setSelected(BI.Utils.getWSRightYNumberSeparatorByID(wId));
         this.rightYShowLabel.setSelected(BI.Utils.getWSRightYShowLabelByID(wId));
         this.rightYLabelStyle.setValue(BI.Utils.getWSRightYLabelStyleByID(wId));
@@ -787,9 +787,9 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.leftYUnit.setValue(BI.Utils.getWSLeftYAxisUnitByID(wId));
         this.leftYShowTitle.setSelected(BI.Utils.getWSChartLeftYShowTitleByID(wId));
         this.leftYTitle.setValue(titleLY);
-        this.leftYShowCustomScale.setSelected(BI.Utils.getWSShowYCustomScale(wId));
-        this.leftYCustomScale.setValue(BI.Utils.getWSChartLeftYCustomScale(wId));
-        this.leftYCustomScale.setVisible(BI.Utils.getWSShowYCustomScale(wId));
+        this.leftYShowCustomScale.setSelected(BI.Utils.getWSChartLeftYShowCustomScaleByID(wId));
+        this.leftYCustomScale.setValue(BI.Utils.getWSChartLeftYCustomScaleByID(wId));
+        this.leftYCustomScale.setVisible(BI.Utils.getWSChartLeftYShowCustomScaleByID(wId));
         this.leftYSeparator.setSelected(BI.Utils.getWSLeftYNumberSeparatorByID(wId));
         this.leftYShowLabel.setSelected(BI.Utils.getWSChartLeftYShowLabelByID(wId));
         this.leftYLabelStyle.setValue(BI.Utils.getWSChartLeftYLabelStyleByID(wId));
