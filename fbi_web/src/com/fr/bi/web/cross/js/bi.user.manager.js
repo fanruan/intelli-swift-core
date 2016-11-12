@@ -10,6 +10,9 @@ var Consts = {
     BIVIEW: 2,
     BIMOBILE: 3,
 
+    NO_LIMIT: -1,
+    ZERO_LIMIT: 0,
+
     reportCoverConfigPanelWD: "reportCoverConfigPanel",
     userLimitConfigPanelWD: "userLimitConfigPanel",
     userLimitConfigTableWD: "userLimitConfigTable",
@@ -82,16 +85,20 @@ FS.BIUSERMGR = {
      * 用户管理
      */
     userLimitTabConfig : function( mode ){
-        var self = this;
         var title = mode === Consts.BIEDIT ? BI.i18nText("BI-BI_Edit_User") : (mode === Consts.BIVIEW ? BI.i18nText("BI-BI_View_User") : BI.i18nText("BI-BI_Move_User"));
+        var items = [this._createUserLimitTip(mode)];
+        if (this.getAuthLimitByMode(mode) !== Consts.NO_LIMIT &&
+            this.getAuthLimitByMode(mode) !== Consts.ZERO_LIMIT) {
+            items.push(this._createUserPanel(false, mode));
+            items.push(this._createUserAuthButtons(mode));
+            items.push(this._createUserPanel(true, mode));
+        }
         return {
             title : FR.i18nText(title),
             content : {
                 type : 'panel',
                 widgetName: Consts.userLimitConfigPanelWD+mode,
                 doSize : true,
-//                width : self.renderEl.width(),
-//                height : self.renderEl.height() - 70,
                 width: 883,
                 height: 600 - 70,
                 closeAfterAction: false,
@@ -99,12 +106,7 @@ FS.BIUSERMGR = {
                     type : 'absolute',
                     widgetName: Consts.userLimitConfigTableWD+mode,
                     scrollable: true,
-                    items: [
-                        self._createUserLimitTip(mode),
-                        self._createUserPanel(false, mode),
-                        self._createUserAuthButtons(mode),
-                        self._createUserPanel(true, mode)
-                    ]
+                    items: items
                 }
             }
         }
