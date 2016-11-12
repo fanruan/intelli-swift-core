@@ -281,19 +281,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
     populate: function (items, options) {
         options || (options = {});
         var self = this, c = this.constants;
-        this.config = {
-            chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
-            show_data_label: options.show_data_label || false,
-            geo: options.geo,
-            initDrillPath: options.initDrillPath || [],
-            tooltip: options.tooltip || "",
-            theme_color: options.theme_color || "#65bce7",
-            map_styles: options.map_styles || [],
-            auto_custom: options.auto_custom || c.AUTO_CUSTOM,
-            show_background_layer: options.show_background_layer || false,
-            background_layer_info: options.background_layer_info,
-            chart_font: options.chart_font || c.FONT_STYLE
-        };
+        this.config = self.getChartConfig(options);
         this.options.items = items;
 
         var types = [];

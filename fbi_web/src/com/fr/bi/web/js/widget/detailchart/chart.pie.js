@@ -117,16 +117,7 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
     populate: function (items, options) {
         options || (options = {});
         var self = this, c = this.constants;
-        this.config = {
-            chart_color: options.chart_color || [],
-            chart_style: options.chart_style || c.NORMAL,
-            chart_pie_type: options.chart_pie_type || c.NORMAL,
-            chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
-            show_data_label: options.show_data_label || false,
-            chart_inner_radius: options.chart_inner_radius || 0,
-            chart_total_angle: options.chart_total_angle || BICst.PIE_ANGLES.TOTAL,
-            chart_font: options.chart_font || c.FONT_STYLE
-        };
+        this.config = self.getChartConfig(options);
         this.options.items = items;
 
         var types = [];

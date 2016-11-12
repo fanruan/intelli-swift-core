@@ -242,17 +242,7 @@ BI.ForceBubbleChart = BI.inherit(BI.AbstractChart, {
     populate: function (items, options) {
         options || (options = {});
         var self = this, c = this.constants;
-        this.config = {
-            chart_color: options.chart_color || [],
-            chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
-            bubble_style: options.bubble_style || c.NO_PROJECT,
-            rules_display: options.rules_display || c.RULE_DISPLAY,
-            fixed_colors: options.fixed_colors || [],
-            gradient_colors: options.gradient_colors || [],
-            bubble_min_size: options.bubble_min_size || c.BUBBLE_MIN_SIZE,
-            bubble_max_size: options.bubble_max_size || c.BUBBLE_MAX_SIZE,
-	     chart_font: options.chart_font || c.FONT_STYLE
-        };
+        this.config = self.getChartConfig(options);
         this.options.items = items;
 
         var types = [];

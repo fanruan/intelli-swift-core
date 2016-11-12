@@ -43,7 +43,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         var self = this;
 
         config.colors = this.config.chart_color;
-        config.plotOptions.style = formatChartStyle(this.config.chart_style);
+        config.plotOptions.style = formatChartStyle(this.config.chartStyle);
         formatChartLineStyle(this.config.chart_line_type);
         formatCordon(this.config.cordon);
         self.formatChartLegend(config, this.config.chart_legend);
@@ -75,7 +75,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
 
         config.chartType = "area";
 
-        //为了给数据标签加个%,还要遍历所有的系列，唉
+        //为了给数据标签加个%,还要遍历所有的系列
         self.formatDataLabel(config.plotOptions.dataLabels.enabled, items, config, this.config.chart_font);
 
         //全局样式的图表文字

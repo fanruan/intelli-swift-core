@@ -348,19 +348,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
     populate: function (items, options) {
         options || (options = {});
         var self = this, c = this.constants, o = this.options;
-        this.config = {
-            dashboard_number_level: options.dashboard_number_level || c.NORMAL,
-            dashboard_unit: options.dashboard_unit || "",
-            chart_dashboard_type: options.chart_dashboard_type || c.NORMAL,
-            number_of_pointer: options.number_of_pointer || c.ONE_POINTER,
-            bands_styles: options.style_conditions || [],
-            auto_custom_style: options.auto_custom || c.AUTO,
-            min_scale: options.min_scale,
-            max_scale: options.max_scale,
-            show_percentage: options.show_percentage || c.NOT_SHOW,
-            num_separators: options.num_separators || false,
-            chart_font: options.chart_font || c.FONT_STYLE
-        };
+        this.config = self.getChartConfig(options);
         o.items = this._formatItems(items);
         var types = [];
         BI.each(o.items, function (idx, axisItems) {
