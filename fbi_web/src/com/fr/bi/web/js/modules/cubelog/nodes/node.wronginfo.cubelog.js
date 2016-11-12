@@ -10,7 +10,7 @@ BI.CubeLogWrongInfoNode = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.CubeLogWrongInfoNode.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-cube-log-wrong-info-node",
-            text: "报错信息:",
+            text: BI.i18nText("BI-Error_Infor"),
             count: 2,
             id: "",
             pId: "",
@@ -28,7 +28,7 @@ BI.CubeLogWrongInfoNode = BI.inherit(BI.Widget, {
             id: o.id,
             pId: o.pId,
             open: o.open,
-            text: o.text + "共" + o.count + "个",
+            text: o.text + BI.i18nText("BI-Total_Count", o.count),
             value: o.value,
             keyword: o.count + ""
         });

@@ -515,8 +515,8 @@
   z-index: 2;
 }
 .data-miss-background {
-  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/data_miss.png') no-repeat center center;
-  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/data_miss.png');
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/no_data.png') no-repeat center center;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/no_data.png');
   _background: none;
   background-color: #ffffff;
   z-index: 2;
