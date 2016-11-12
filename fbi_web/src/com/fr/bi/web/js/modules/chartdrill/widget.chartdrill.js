@@ -38,16 +38,16 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         this._doHide = true;
         this._debounce2Hide = BI.debounce(BI.bind(this._hideDrill, this), 3000);
 
-        BI.Broadcasts.on(BICst.BROADCAST.CHART_CLICK_PREFIX + wId, function(obj){
+        BI.Broadcasts.on(BICst.BROADCAST.CHART_CLICK_PREFIX + wId, function (obj) {
             var showDrill = self._canChartDrillShow();
-            if(showDrill === false){
+            if (showDrill === false) {
                 self.pushButton.setPushDown();
-            }else{
+            } else {
                 self.pushButton.setPushUp();
             }
             self.setVisible(showDrill);
             self.wrapper.setVisible(showDrill);
-            BI.each(self.wrapper.getAllButtons(), function(idx, drill){
+            BI.each(self.wrapper.getAllButtons(), function (idx, drill) {
                 drill.setValue(obj);
                 drill.populate();
             });
@@ -161,16 +161,16 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         //看一下钻取
         var drillList = BI.Utils.getDrillList(wId);
         BI.each(BI.Utils.getAllUsableDimDimensionIDs(wId), function (i, dim) {
-            if(BI.has(drillList, dim) && BI.isNotEmptyArray(drillList[dim])){
+            if (BI.has(drillList, dim) && BI.isNotEmptyArray(drillList[dim])) {
                 var arr = drillList[dim];
                 currentDrilldIds.push(arr[arr.length - 1]);
-            }else{
+            } else {
                 currentDrilldIds.push(dim);
             }
         });
         var width = 0;
-        this.wrapper.populate();
-        BI.each(currentDrilldIds, function(idx, dId){
+        var items = [];
+        BI.each(currentDrilldIds, function (idx, dId) {
             var drill = BI.createWidget({
                 type: "bi.chart_drill_cell",
                 dId: dId
@@ -182,15 +182,16 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
                 self.fireEvent(BI.ChartDrill.EVENT_CHANGE, v);
             });
             drill.populate();
-            self.wrapper.addItems([drill]);
+            items.push(drill);
             width += 190;
         });
+        this.wrapper.populate(items);
         this.wrapper.element.width(width);
         this.wrapper.setVisible(true);
 
         //如果已经下钻过了
         if (!this._checkUPDrillEmpty(wId)) {
-            BI.each(this.wrapper.getAllButtons(), function(idx, drill){
+            BI.each(this.wrapper.getAllButtons(), function (idx, drill) {
                 drill.setValue(BI.i18nText("BI-Unchosen"));
                 drill.setDrillDownEnabled(false);
             });
