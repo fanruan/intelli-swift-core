@@ -327,7 +327,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
         var wId = this.options.wId;
         var targetIDs = BI.Utils.getAllUsableTargetDimensionIDs(wId);
         var styleSettings = BI.Utils.getDimensionSettingsByID(targetIDs[0]);
-        switch (styleSettings.num_level) {
+        switch (styleSettings.numLevel) {
             case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
                 this.mapStyles.setNumTip("");
                 break;

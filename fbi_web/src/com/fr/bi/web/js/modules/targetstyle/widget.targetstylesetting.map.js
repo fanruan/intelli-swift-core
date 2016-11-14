@@ -39,7 +39,7 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
         if(BI.isEmptyObject(styleSettings)) {
             styleSettings = {
                 format: BICst.TARGET_STYLE.FORMAT.NORMAL,
-                num_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL
+                numLevel: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL
             }
         }
 
@@ -61,7 +61,7 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
             height: 25
         });
 
-        this.showSeparators = styleSettings.num_separators || false;
+        this.showSeparators = styleSettings.numSeparators || false;
 
         this.separators.setSelected(this.showSeparators);
 
@@ -77,7 +77,7 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
             items: BICst.TARGET_STYLE_LEVEL_SHORT,
             width: 230
         });
-        this.numLevel.setValue(styleSettings.num_level);
+        this.numLevel.setValue(styleSettings.numLevel);
 
         this.unit = BI.createWidget({
             type: "bi.sign_editor",

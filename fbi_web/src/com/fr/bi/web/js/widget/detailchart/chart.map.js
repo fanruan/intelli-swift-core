@@ -37,8 +37,8 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         var formatterArray = [];
         BI.backEach(items, function (idx, item) {
             if (BI.has(item, "settings")) {
-                formatterArray.push(self.formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.num_level || c.NORMAL,
-                    item.settings.unit || "", item.settings.num_separators || c.NUM_SEPARATORS));
+                formatterArray.push(self.formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.numLevel || c.NORMAL,
+                    item.settings.unit || "", item.settings.numSeparators || c.NUM_SEPARATORS));
             }
         });
         config.plotOptions.tooltip.formatter = function () {
@@ -115,8 +115,8 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                 var to = this.to;
                 if (BI.isNotEmptyArray(items) && BI.has(items[0], "settings")) {
                     var settings = items[0].settings;
-                    var legendFormat = self.formatToolTipAndDataLabel(settings.format || c.NORMAL, settings.num_level || c.NORMAL,
-                        settings.unit || "",settings.num_separators || c.NUM_SEPARATORS);
+                    var legendFormat = self.formatToolTipAndDataLabel(settings.format || c.NORMAL, settings.numLevel || c.NORMAL,
+                        settings.unit || "",settings.numSeparators || c.NUM_SEPARATORS);
                     to = BI.contentFormat(to, legendFormat)
                 }
                 return to
@@ -213,7 +213,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
             BI.each(da.data, function (idx, data) {
                 data.y = self.formatXYDataWithMagnify(data.y, 1);
                 if (BI.has(da, "settings")) {
-                    data.y = self._formatNumberLevel(da.settings.num_level || self.constants.NORMAL, data.y);
+                    data.y = self._formatNumberLevel(da.settings.numLevel || self.constants.NORMAL, data.y);
                 }
                 if (BI.has(da, "type") && da.type == "bubble") {
                     data.name = data.x;
@@ -247,7 +247,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                 BI.each(it.data, function (i, da) {
                     da.y = self.formatXYDataWithMagnify(da.y, 1);
                     if (BI.has(it, "settings")) {
-                        da.y = self._formatNumberLevel(it.settings.num_level || self.constants.NORMAL, da.y);
+                        da.y = self._formatNumberLevel(it.settings.numLevel || self.constants.NORMAL, da.y);
                     }
                     if ((BI.isNull(self.max) || BI.parseFloat(da.y) > BI.parseFloat(self.max)) && id === 0) {
 

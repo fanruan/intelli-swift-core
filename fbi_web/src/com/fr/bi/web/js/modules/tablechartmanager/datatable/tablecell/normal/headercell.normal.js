@@ -36,7 +36,7 @@ BI.NormalHeaderCell = BI.inherit(BI.Widget, {
             });
         }
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
-        var st = this._getNumLevelByLevel(styleSettings.num_level) + (styleSettings.unit || "");
+        var st = this._getNumLevelByLevel(styleSettings.numLevel) + (styleSettings.unit || "");
         if (BI.isNotEmptyString(st)) {
             name = name + "(" + st + ")";
         }

@@ -88,9 +88,9 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
         var type = BI.Utils.getDimensionTypeByID(dId);
 
-        var format = styleSettings.format, numLevel = styleSettings.num_level,
-            iconStyle = styleSettings.icon_style, mark = styleSettings.mark,
-            num_separators = styleSettings.num_separators;
+        var format = styleSettings.format, numLevel = styleSettings.numLevel,
+            iconStyle = styleSettings.iconStyle, mark = styleSettings.mark,
+            numSeparators = styleSettings.numSeparators;
         text = BI.TargetBodyNormalCell.parseNumByLevel(text, numLevel);
 
         if (text === Infinity) {
@@ -116,10 +116,10 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
         });
 
         if (type === BICst.TARGET_TYPE.NUMBER || type === BICst.TARGET_TYPE.FORMULA) {
-            text = BI.TargetBodyNormalCell.parseFloatByDot(text, format, num_separators);
+            text = BI.TargetBodyNormalCell.parseFloatByDot(text, format, numSeparators);
         }
 
-        if (BI.Utils.getDimensionSettingsByID(dId).num_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+        if (BI.Utils.getDimensionSettingsByID(dId).numLevel === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
             text += "%";
         }
 

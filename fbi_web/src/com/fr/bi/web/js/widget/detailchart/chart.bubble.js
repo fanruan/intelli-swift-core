@@ -99,8 +99,8 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                 var y = self.formatTickInXYaxis(self.config.leftYNumberFormat, self.config.leftYNumberLevel, self.config.leftYSeparator)(this.y);
                 var x = self.formatTickInXYaxis(self.config.rightYNumberFormat, self.config.rightYNumberLevel, self.config.rightYSeparator)(this.x);
                 var size =  BI.contentFormat(this.size,
-                    self.formatToolTipAndDataLabel(items[0].settings.format || c.NORMAL, items[0].settings.num_level || c.NORMAL,
-                        items[0].settings.unit || "", items[0].settings.num_separators || c.NUM_SEPARATORS));
+                    self.formatToolTipAndDataLabel(items[0].settings.format || c.NORMAL, items[0].settings.numLevel || c.NORMAL,
+                        items[0].settings.unit || "", items[0].settings.numSeparators || c.NUM_SEPARATORS));
                 return this.seriesName + '<div>(X)' + self.config.tooltip[0] + ':' + x + '</div><div>(Y)' + self.config.tooltip[1]
                     + ':' + y + '</div><div>(' + BI.i18nText("BI-Size") + ')' + self.config.tooltip[2] + ':' + size + '</div>'
             };
@@ -127,15 +127,15 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                         }
                     }
                 };
-                if(item.settings.num_level) {
+                if(item.settings.numLevel) {
                     item.data[0].z = item.data[0].size = self.formatXYDataWithMagnify(item.data[0].z, self.calcMagnify(item.settings.num_level))
                 }
                 item.dataLabels.formatter.XFormat = config.xAxis[0].formatter;
                 item.dataLabels.formatter.YFormat = config.yAxis[0].formatter;
                 item.dataLabels.formatter.sizeFormat = function () {
                     return BI.contentFormat(arguments[0],
-                        self.formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.num_level || c.NORMAL,
-                            item.settings.unit || "", item.settings.num_separators || c.NUM_SEPARATORS));
+                        self.formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.numLevel || c.NORMAL,
+                            item.settings.unit || "", item.settings.numSeparators || c.NUM_SEPARATORS));
                 }
             });
         }
