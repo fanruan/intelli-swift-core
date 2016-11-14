@@ -74,7 +74,6 @@ public abstract class BISourceDataTransport extends BIProcessor {
     }
 
     private List<ITableKey> getParents(CubeTableSource tableSource) {
-
         if (parents == null) {
             parents = new ArrayList<ITableKey>();
             if (!tableSource.isIndependent()) {
