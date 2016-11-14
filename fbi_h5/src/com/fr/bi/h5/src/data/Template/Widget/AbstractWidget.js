@@ -242,80 +242,80 @@ class AbstractWidget {
 
     getWSTableForm() {
         var ws = this.getWidgetSettings();
-        return isNil(ws.tableFormGroup) ? ws.tableFormGroup :
-            BICst.DEFAULT_CHART_SETTING.tableFormGroup;
+        return isNil(ws.table_form) ? ws.table_form :
+            BICst.DEFAULT_CHART_SETTING.table_form;
     }
 
     getWSThemeColor() {
         var ws = this.getWidgetSettings();
-        return isNil(ws.themeColor) ? ws.themeColor :
-            BICst.DEFAULT_CHART_SETTING.themeColor;
+        return isNil(ws.theme_color) ? ws.theme_color :
+            BICst.DEFAULT_CHART_SETTING.theme_color;
     }
 
     getWSTableStyle() {
         var ws = this.getWidgetSettings();
-        return isNil(ws.tableStyleGroup) ? ws.tableStyleGroup :
-            BICst.DEFAULT_CHART_SETTING.tableStyleGroup;
+        return isNil(ws.table_style) ? ws.table_style :
+            BICst.DEFAULT_CHART_SETTING.table_style;
     }
 
     getWSTransferFilter() {
         var ws = this.getWidgetSettings();
-        return isNil(ws.transferFilter) ? ws.transferFilter :
-            BICst.DEFAULT_CHART_SETTING.transferFilter;
+        return isNil(ws.transfer_filter) ? ws.transfer_filter :
+            BICst.DEFAULT_CHART_SETTING.transfer_filter;
     }
 
     getWSShowNumber() {
         var ws = this.getWidgetSettings();
-        return isNil(ws.showNumber) ? ws.showNumber :
-            BICst.DEFAULT_CHART_SETTING.showNumber;
+        return isNil(ws.show_number) ? ws.show_number :
+            BICst.DEFAULT_CHART_SETTING.show_number;
     }
 
     getWSShowRowTotal() {
         var ws = this.getWidgetSettings();
-        return isNil(ws.showRowTotal) ? ws.showRowTotal :
-            BICst.DEFAULT_CHART_SETTING.showRowTotal;
+        return isNil(ws.show_row_total) ? ws.show_row_total :
+            BICst.DEFAULT_CHART_SETTING.show_row_total;
     }
 
     getWSShowColTotal() {
         var ws = this.getWidgetSettings();
-        return isNil(ws.showColTotal) ? ws.showColTotal :
-            BICst.DEFAULT_CHART_SETTING.showColTotal;
+        return isNil(ws.show_col_total) ? ws.show_col_total :
+            BICst.DEFAULT_CHART_SETTING.show_col_total;
     }
 
     getWSOpenRowNode() {
         var ws = this.getWidgetSettings();
-        return isNil(ws.openRowNode) ? ws.openRowNode :
-            BICst.DEFAULT_CHART_SETTING.openRowNode;
+        return isNil(ws.open_row_node) ? ws.open_row_node :
+            BICst.DEFAULT_CHART_SETTING.open_row_node;
     }
 
     getWSOpenColNode() {
         var ws = this.getWidgetSettings();
-        return isNil(ws.openColNode) ? ws.openColNode :
-            BICst.DEFAULT_CHART_SETTING.openColNode;
+        return isNil(ws.open_col_node) ? ws.open_col_node :
+            BICst.DEFAULT_CHART_SETTING.open_col_node;
     }
 
     getWSMaxRow() {
         var ws = this.getWidgetSettings();
-        return isNil(ws.maxRow) ? ws.maxRow :
-            BICst.DEFAULT_CHART_SETTING.maxRow;
+        return isNil(ws.max_row) ? ws.max_row :
+            BICst.DEFAULT_CHART_SETTING.max_row;
     }
 
     getWSMaxCol() {
         var ws = this.getWidgetSettings();
-        return isNil(ws.maxCol) ? ws.maxCol :
-            BICst.DEFAULT_CHART_SETTING.maxCol;
+        return isNil(ws.max_col) ? ws.max_col :
+            BICst.DEFAULT_CHART_SETTING.max_col;
     }
 
     getWSFreezeDim() {
         var ws = this.getWidgetSettings();
-        return isNil(ws.freezeDim) ? ws.freezeDim :
-            BICst.DEFAULT_CHART_SETTING.freezeDim;
+        return isNil(ws.freeze_dim) ? ws.freeze_dim :
+            BICst.DEFAULT_CHART_SETTING.freeze_dim;
     }
 
     getWSFreezeFirstColumnById() {
         var ws = this.getWidgetSettings();
-        return isNil(ws.freezeFirstColumn) ? ws.freezeFirstColumn :
-            BICst.DEFAULT_CHART_SETTING.freezeFirstColumn;
+        return isNil(ws.freeze_first_column) ? ws.freeze_first_column :
+            BICst.DEFAULT_CHART_SETTING.freeze_first_column;
     }
 
     getControlCalculations(notcontain) {
