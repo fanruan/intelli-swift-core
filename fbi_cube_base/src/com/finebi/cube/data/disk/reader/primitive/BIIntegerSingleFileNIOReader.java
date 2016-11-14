@@ -12,6 +12,7 @@ import java.nio.MappedByteBuffer;
  */
 public class BIIntegerSingleFileNIOReader extends BIBaseSingleFileNIOReader implements ICubeIntegerReader {
     private IntBuffer intBuffer ;
+    private IntBuffer fakeBuffer;
 
     public BIIntegerSingleFileNIOReader(File cacheFile) {
         super(cacheFile);
@@ -31,6 +32,11 @@ public class BIIntegerSingleFileNIOReader extends BIBaseSingleFileNIOReader impl
         }
     }
 
+    protected void setBufferInValid() {
+        fakeBuffer = intBuffer;
+        intBuffer = null;
+    }
+
     @Override
     protected void releaseChild() {
         readWriteLock.writeLock().lock();
@@ -38,6 +44,10 @@ public class BIIntegerSingleFileNIOReader extends BIBaseSingleFileNIOReader impl
             if (intBuffer != null) {
                 intBuffer.clear();
                 intBuffer = null;
+            }
+            if (fakeBuffer != null){
+                fakeBuffer.clear();
+                fakeBuffer = null;
             }
         } finally {
             readWriteLock.writeLock().unlock();

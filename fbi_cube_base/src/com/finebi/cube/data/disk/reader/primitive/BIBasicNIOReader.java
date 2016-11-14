@@ -100,6 +100,11 @@ public abstract class BIBasicNIOReader extends BIAbstractBaseNIOReader {
         releaseChannel();
     }
 
+    @Override
+    protected void setBufferInValid() {
+
+    }
+
     public void releaseBuffer() {
         for (Entry<Integer, MappedByteBuffer> entry : buffers.entrySet()) {
             BIReleaseUtils.doClean(entry.getValue());
