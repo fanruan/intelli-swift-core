@@ -5,6 +5,7 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.impl.pubsub.BIProcessor;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -252,25 +253,21 @@ public class BIRelationIndexGenerator extends BIProcessor {
                 } else if (result == 0) {
                     matchRelation(tableRelation, foreignGroupValueIndex, reverse, pGroupValueIndex);
                     foreignIndex++;
-                    foreignColumnValue = foreignColumn.getGroupObjectValue(foreignIndex);
-                    foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
+                    foreignColumnValue = getForeignColumnValue(foreignIndex, foreignGroupSize, foreignColumn);
+                    foreignGroupValueIndex = getForeignColumnIndex(foreignIndex, foreignGroupSize, foreignColumn);
                 } else {
                     while (foreignIndex < foreignGroupSize && c.compare(primaryColumnValue, foreignColumnValue) > 0) {
                         nullIndex.or(foreignGroupValueIndex);
                         foreignIndex++;
-                        if (foreignIndex == foreignGroupSize) {
-                            foreignColumnValue = null;
-                            foreignGroupValueIndex = null;
-                        } else {
-                            foreignColumnValue = foreignColumn.getGroupObjectValue(foreignIndex);
-                            foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
-                        }
+
+                        foreignColumnValue = getForeignColumnValue(foreignIndex, foreignGroupSize, foreignColumn);
+                        foreignGroupValueIndex = getForeignColumnIndex(foreignIndex, foreignGroupSize, foreignColumn);
                     }
                     if (c.compare(primaryColumnValue, foreignColumnValue) == 0) {
                         matchRelation(tableRelation, foreignGroupValueIndex, reverse, pGroupValueIndex);
                         foreignIndex++;
-                        foreignColumnValue = foreignColumn.getGroupObjectValue(foreignIndex);
-                        foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
+                        foreignColumnValue = getForeignColumnValue(foreignIndex, foreignGroupSize, foreignColumn);
+                        foreignGroupValueIndex = getForeignColumnIndex(foreignIndex, foreignGroupSize, foreignColumn);
                     } else {
                         pGroupValueIndex.Traversal(new SingleRowTraversalAction() {
                             @Override
@@ -330,6 +327,26 @@ public class BIRelationIndexGenerator extends BIProcessor {
             }
         }
 
+    }
+
+    private Object getForeignColumnValue(int foreignIndex, int foreignGroupSize, ICubeColumnEntityService foreignColumn) {
+        if (foreignIndex == foreignGroupSize) {
+            return null;
+        } else {
+            return foreignColumn.getGroupObjectValue(foreignIndex);
+        }
+    }
+
+    private GroupValueIndex getForeignColumnIndex(int foreignIndex, int foreignGroupSize, ICubeColumnEntityService foreignColumn) {
+        if (foreignIndex == foreignGroupSize) {
+            return null;
+        } else {
+            try {
+                return foreignColumn.getBitmapIndex(foreignIndex);
+            } catch (BICubeIndexException e) {
+                throw BINonValueUtils.beyondControl(e);
+            }
+        }
     }
 
     private void matchRelation(BICubeRelationEntity tableRelation, GroupValueIndex foreignGroupValueIndex, int[] reverse, GroupValueIndex pGroupValueIndex) {

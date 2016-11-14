@@ -4,7 +4,6 @@ import com.finebi.cube.data.input.primitive.ICubeLongReader;
 import com.finebi.cube.exception.BIResourceInvalidException;
 
 import java.io.File;
-import java.nio.Buffer;
 import java.nio.LongBuffer;
 import java.nio.MappedByteBuffer;
 
