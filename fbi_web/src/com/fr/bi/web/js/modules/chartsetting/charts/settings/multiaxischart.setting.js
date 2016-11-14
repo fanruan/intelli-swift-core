@@ -1161,8 +1161,8 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         var view = BI.Utils.getWidgetViewByID(wId);
         var titleLY = BI.Utils.getWSChartLeftYTitleByID(wId);
         var titleX = BI.Utils.getWSChartCatTitleByID(wId);
-        var titleRY = BI.Utils.getWSChartRightY2TitleByID(wId);
-        var titleRY2 = BI.Utils.getWSRightYAxis2TitleByID(wId);
+        var titleRY = BI.Utils.getWSChartRightYTitleByID(wId);
+        var titleRY2 = BI.Utils.getWSChartRightY2TitleByID(wId);
         if (titleLY === "") {
             BI.any(view[BICst.REGION.TARGET1], function (idx, dId) {
                 if (BI.Utils.isDimensionUsable(dId)) {
