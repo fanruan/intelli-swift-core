@@ -86,4 +86,5 @@ public interface Cube extends ICubeVersion {
 
     boolean exist(ITableKey tableKey, BICubeTablePath relationPath);
 
+    boolean exist(ITableKey tableKey, BIColumnKey field, BICubeTablePath relationPath);
 }

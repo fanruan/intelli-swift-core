@@ -64,6 +64,7 @@ public class BIFieldPathIndexBuilder extends BITablePathIndexBuilder {
                 appearPrimaryValue.or(resultGroupValueIndex);
             }
             targetPathEntity.addRelationNULLIndex(0, appearPrimaryValue.NOT(getJuniorTableRowCount()));
+            targetPathEntity.addVersion(System.currentTimeMillis());
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
         } finally {

@@ -91,12 +91,12 @@ public class BIPackageConfigManager implements Release {
     public void setStartBuildCube() throws BIStatusChaosException {
         try {
             synchronized (currentPackageManager) {
-//                if (isFree()) {
+                if (isFree()) {
                     buildingCubePackages = currentPackageManager.clonePackageContainer();
-//                    setBusy();
-//                } else {
-//                    throw new BIStatusChaosException("Please check current status of building cube,here happened a fatal problem");
-//                }
+                    setBusy();
+                } else {
+                    throw new BIStatusChaosException("Please check current status of building cube,here happened a fatal problem");
+                }
             }
         } catch (CloneNotSupportedException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -125,31 +125,21 @@ public class BIPackageConfigManager implements Release {
 
     public void setEndBuildCube() throws BIStatusChaosException {
         synchronized (analysisPackageManager) {
-            /**
-             *free的注释说明： 不需要通过配置来控制是否生成。
-             */
-//            if (!isFree()) {
-            analysisPackageManager.parsePackageContainer(buildingCubePackages);
-            buildingCubePackages.clearPackages();
-//                setFree();
-//
-//            } else {
-//                throw new BIStatusChaosException("Please check current status of building cube,here happened a fatal problem");
-//            }
+            setEndBuildCube(new HashSet<CubeTableSource>());
         }
     }
 
     public void setEndBuildCube(Set<CubeTableSource> absentTable) throws BIStatusChaosException {
         synchronized (analysisPackageManager) {
-//            if (!isFree()) {
-            analysisPackageManager.parsePackageContainer(buildingCubePackages);
-            buildingCubePackages.clearPackages();
-            analysisPackageManager.removeTable(absentTable);
-//                setFree();
-//
-//            } else {
-//                throw new BIStatusChaosException("Please check current status of building cube,here happened a fatal problem");
-//            }
+            if (!isFree()) {
+                analysisPackageManager.parsePackageContainer(buildingCubePackages);
+                buildingCubePackages.clearPackages();
+                analysisPackageManager.removeTable(absentTable);
+                setFree();
+
+            } else {
+                throw new BIStatusChaosException("Please check current status of building cube,here happened a fatal problem");
+            }
         }
     }
 
