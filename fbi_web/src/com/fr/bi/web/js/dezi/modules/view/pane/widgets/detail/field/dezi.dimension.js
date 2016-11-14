@@ -138,7 +138,7 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         var dimensionMap = this.model.get("dimension_map");
         var tIds = BI.Utils.getAllTargetDimensionIDs(BI.Utils.getWidgetIDByDimensionID(dId));
         var res = BI.find(tIds, function(idx, tId){
-            return BI.Utils.isCalculateTargetByDimensionID(tId) || !checkDimAndTarRelationValidInCurrentPaths(dId, tId);
+            return !BI.Utils.isCalculateTargetByDimensionID(tId) && !checkDimAndTarRelationValidInCurrentPaths(dId, tId);
         });
         if(BI.isNull(res)){
             this.editor.element.removeClass("dimension-invalid");
