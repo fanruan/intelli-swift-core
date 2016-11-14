@@ -462,7 +462,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     _refreshWidgetTitle: function () {
         var id = this.model.get("id");
         var titleSetting = this.model.get("settings").widgetNameStyle || {};
-        this.title.setTextStyle(titleSetting.widgetNameStyle.titleWordStyle || {});
+        this.title.setTextStyle(titleSetting.titleWordStyle || {});
 
         this.titleWrapper.element.css({"background": this._getBackground(titleSetting.titleBG)});
     },
