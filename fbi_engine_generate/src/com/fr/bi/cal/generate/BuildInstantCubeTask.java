@@ -1,11 +1,11 @@
 package com.fr.bi.cal.generate;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.CubeBuildStuff;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.db.PersistentTable;
+import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.general.DateUtils;
 
 import java.util.concurrent.Future;
@@ -32,8 +32,8 @@ public class BuildInstantCubeTask extends BuildCubeTask {
             if (cubeBuildSucceed) {
                 cube.addVersion(System.currentTimeMillis());
                 long start = System.currentTimeMillis();
-                BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), getGeneratedRelation());
-                BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
+//                BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId());
+//                BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
                 BILoggerFactory.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
 
             } else {
@@ -46,5 +46,10 @@ public class BuildInstantCubeTask extends BuildCubeTask {
         } finally {
 
         }
+    }
+
+    @Override
+    public CubeTaskType getTaskType() {
+        return CubeTaskType.INSTANT;
     }
 }

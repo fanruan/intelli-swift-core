@@ -439,6 +439,7 @@ public class BICubeOperationManager {
             }
             subscribePathFinish();
         }
+
     }
 
     long getVersion(CubeTableSource tableSource) {
