@@ -191,7 +191,7 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
                 type: "bi.label",
                 text: BI.i18nText("BI-Table_Style"),
                 cls: "attr-names"
-            }, this.tableSyleGroup, {
+            }, this.tableStyleGroup, {
                 type: "bi.vertical_adapt",
                 items: [this.customTableStyle],
                 cls: "attr-names"
