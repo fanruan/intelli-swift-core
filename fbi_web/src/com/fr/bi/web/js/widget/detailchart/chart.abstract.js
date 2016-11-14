@@ -502,6 +502,8 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             backgroundLayerInfo: MapConst.WMS_INFO[options.backgroundLayerInfo],
             transferFilter: options.transferFilter,
             bigDataMode: options.bigDataMode,
+            geo: options.geo,
+            initDrillPath: options.initDrillPath || [],
         }
     },
     
