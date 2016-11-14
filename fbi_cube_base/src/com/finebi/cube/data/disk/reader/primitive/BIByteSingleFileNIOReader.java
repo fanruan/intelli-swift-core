@@ -12,7 +12,7 @@ import java.nio.MappedByteBuffer;
  */
 public class BIByteSingleFileNIOReader extends BIBaseSingleFileNIOReader implements ICubeByteReader {
     private ByteBuffer byteBuffer ;
-
+    private ByteBuffer fakeBuffer;
     public BIByteSingleFileNIOReader(File cacheFile) {
         super(cacheFile);
     }
@@ -32,12 +32,22 @@ public class BIByteSingleFileNIOReader extends BIBaseSingleFileNIOReader impleme
     }
 
     @Override
+    protected void setBufferInValid() {
+        fakeBuffer = byteBuffer;
+        byteBuffer = null;
+    }
+
+    @Override
     protected void releaseChild() {
         readWriteLock.writeLock().lock();
         try {
             if(byteBuffer!=null) {
                 byteBuffer.clear();
                 byteBuffer = null;
+            }
+            if (fakeBuffer != null) {
+                fakeBuffer.clear();
+                fakeBuffer = null;
             }
         } finally {
             readWriteLock.writeLock().unlock();

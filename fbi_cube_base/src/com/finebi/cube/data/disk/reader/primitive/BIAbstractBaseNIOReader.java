@@ -71,6 +71,7 @@ public abstract class BIAbstractBaseNIOReader implements ICubePrimitiveReader {
             }
             //先改变isValid状态再判断canClear
             isValid = false;
+            setBufferInValid();
             try {
                 //但愿10ms能 执行完get方法否则可能导致jvm崩溃
                 //锁太浪费资源了，10ms目前并没有遇到问题
@@ -87,6 +88,8 @@ public abstract class BIAbstractBaseNIOReader implements ICubePrimitiveReader {
         }
     }
 
+    protected abstract void setBufferInValid();
+
     @Override
     public void reSetValid(boolean isValid) {
         this.isValid = isValid;
@@ -100,6 +103,7 @@ public abstract class BIAbstractBaseNIOReader implements ICubePrimitiveReader {
             }
             //先改变isValid状态再判断canClear
             isValid = false;
+            setBufferInValid();
             try {
                 //但愿10ms能 执行完get方法否则可能导致jvm崩溃
                 //锁太浪费资源了，10ms目前并没有遇到问题

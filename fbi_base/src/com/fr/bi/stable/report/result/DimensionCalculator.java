@@ -50,11 +50,6 @@ public interface DimensionCalculator extends FCloneable {
 
     Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useReallData, int groupLimit);
 
-    int getBaseTableValueCount(Object value, ICubeDataLoader loader);
-
-    boolean hasSelfGroup();
-
     IGroup getGroup();
-
 
 }

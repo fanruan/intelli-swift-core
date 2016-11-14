@@ -58,7 +58,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
         var dId = linkageInfo.dId, clicked = linkageInfo.clicked;
 
         BI.each(BI.Utils.getWidgetLinkageByID(o.wId), function (i, link) {
-            if (BI.contains(dId, link.from) && BI.isEmptyArray(link.cids)) {
+            if (BI.contains(dId, link.from) && BI.isEmpty(link.cids)) {
                 BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + link.to, link.from, clicked);
                 self._send2AllChildLinkWidget(link.to, link.from, clicked);
             }
@@ -129,7 +129,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
             BI.each(linkInfo.dId, function (idx, dId) {
                 if (BI.Utils.isCalculateTargetByDimensionID(dId)) {
                     BI.each(BI.Utils.getWidgetLinkageByID(o.wId), function (i, link) {
-                        if (dId === link.cids[0]) {
+                        if (link.cids && dId === link.cids[0]) {
                             var name = BI.i18nText("BI-An");
                             BI.each(link.cids, function (idx, cId) {
                                 name += BI.Utils.getDimensionNameByID(cId) + "-";
@@ -165,9 +165,9 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
         }
 
         var chart;
-        if(BI.has(BICst.INIT_CHART_MAP, v)){
+        if (BI.has(BICst.INIT_CHART_MAP, v)) {
             chart = BI.createWidget({type: BICst.INIT_CHART_MAP[v].type, popupItemsGetter: popupItemsGetter});
-            if(v === BICst.WIDGET.MAP){
+            if (v === BICst.WIDGET.MAP) {
                 chart.on(BI.MapChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
                     BI.isNotNull(obj.drillDid) && self._onClickDrill(obj.dId, obj.x, obj.drillDid);
@@ -175,9 +175,9 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 chart.on(BI.MapChart.EVENT_CLICK_DTOOL, function (obj) {
                     self._onClickDrill(obj.dId, obj.x);
                 });
-            }else{
-                BI.each(BICst.INIT_CHART_MAP[v].events, function(idx, v){
-                    chart.on(v, function(obj){
+            } else {
+                BI.each(BICst.INIT_CHART_MAP[v].events, function (idx, v) {
+                    chart.on(v, function (obj) {
                         self._doChartItemClick(obj);
                     })
                 })

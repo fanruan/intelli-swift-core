@@ -28,7 +28,6 @@ import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.SQLRegUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
-import com.fr.data.core.db.dialect.SybaseDialect;
 import com.fr.data.core.db.dml.Table;
 import com.fr.data.impl.Connection;
 import com.fr.data.impl.DBTableData;
@@ -247,7 +246,7 @@ public class DBTableSource extends AbstractTableSource {
         java.sql.Connection conn = connection.createConnection();
         Dialect dialect = DialectFactory.generateDialect(conn);
         Table table = new Table(BIConnectionManager.getInstance().getSchema(dbName), tableName);
-        String query = dialect instanceof SybaseDialect ? "SELECT *  FROM " + dialect.table2SQL(table) : dialect.getTopNRowSql(BIBaseConstant.PREVIEW_COUNT, table);
+        String query = "SELECT *  FROM " + dialect.table2SQL(table);
         return new DBTableData(connection, query);
     }
 

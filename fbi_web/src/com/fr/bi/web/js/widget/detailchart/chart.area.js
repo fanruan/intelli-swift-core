@@ -247,12 +247,14 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
             right_title_style: options.right_title_style || {},
             cat_title_style: options.cat_title_style || {}
         };
+
         this.options.items = items;
 
         var types = [];
         BI.each(items, function (idx, axisItems) {
             var type = [];
             BI.each(axisItems, function (id, item) {
+                self.defaultFormatDataLabel(item.data);
                 type.push(BICst.WIDGET.AREA);
             });
             types.push(type);

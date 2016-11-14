@@ -295,6 +295,36 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         }
     },
 
+    defaultFormatDataLabel: function (items) {
+        BI.each(items, function (idx, item) {
+            if (item.dataLabels) {
+                var styleSetting = item.dataLabels.styleSetting || {};
+                item.dataLabels.formatter = {
+                    identifier: "${VALUE}"
+                };
+                item.dataLabels.enabled = true;
+                item.dataLabels.autoAdjust = true;
+                item.dataLabels.align = "outside";
+                item.dataLabels.style = {
+                    "fontFamily": "inherit",
+                    "color": "#808080",
+                    "fontSize": "12px"
+                };
+                switch (styleSetting.type) {
+                    case BICst.DATA_LABEL_STYLE_TYPE.TEXT:
+                        item.dataLabels.style = BI.clone(styleSetting.textStyle);
+                        item.dataLabels.style.overflow = "visible";
+                        item.dataLabels.style.fontSize += "px";
+                        break;
+                    case BICst.DATA_LABEL_STYLE_TYPE.IMG:
+                        item.dataLabels.useHtml = true;
+                        item.dataLabels.formatter = "function(){return '<img width=\"20px\" height=\"20px\" src=\"" + BI.Func.getCompleteImageUrl(styleSetting.imgStyle.src) + "\">';}";
+                        break;
+                }
+            }
+        })
+    },
+
     catSetting: function (config) {
         return BI.extend({
             enableTick: config.enable_tick,
