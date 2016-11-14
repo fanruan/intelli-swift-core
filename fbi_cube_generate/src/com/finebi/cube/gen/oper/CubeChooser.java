@@ -110,6 +110,12 @@ public class CubeChooser implements Cube {
     }
 
     @Override
+    public boolean exist(ITableKey tableKey, BIColumnKey field, BICubeTablePath relationPath) {
+        throw new UnsupportedOperationException();
+
+    }
+
+    @Override
     public Boolean isVersionAvailable() {
         throw new UnsupportedOperationException();
 

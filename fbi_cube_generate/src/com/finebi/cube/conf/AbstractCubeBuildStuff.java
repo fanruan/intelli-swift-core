@@ -22,6 +22,7 @@ import com.fr.data.impl.Connection;
 import com.fr.stable.ArrayUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -119,54 +120,56 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
      */
     @Override
     public boolean replaceOldCubes() {
-//        ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(userId));
-//        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(userId));
-//        ICubeConfiguration advancedTempConf = BICubeConfiguration.getAdvancedTempConf(Long.toString(userId));
-//        String advancedPath = advancedConf.getRootURI().getPath();
-//        String tCubePath = tempConf.getRootURI().getPath();
-//        String tempFolderPath = advancedTempConf.getRootURI().getPath();
-//        try {
-//            if (new File(advancedPath).exists()) {
-//                if (new File(tempFolderPath).exists()) {
-//                    boolean tempFolderDelete = BIFileUtils.delete(new File(tempFolderPath));
-//                    if (!tempFolderDelete) {
-//                        BILoggerFactory.getLogger().error("delete tempFolder failed");
-//                        return false;
-//                    }
-//                }
-//                boolean renameFolder = BIFileUtils.renameFolder(new File(advancedPath), new File(tempFolderPath));
-//                if (!renameFolder) {
-//                    BILoggerFactory.getLogger().error("rename Advanced to tempFolder failed");
-//                    return false;
-//                }
-//            }
-//            if (new File(tCubePath).exists()) {
-//                boolean renameFolder = BIFileUtils.renameFolder(new File(tCubePath), new File(advancedPath));
-//                if (!renameFolder) {
-//                    BILoggerFactory.getLogger().error("rename tCube to Advanced failed");
-//                    return false;
-//                }
-//            }
-//            //tCube替换（重命名）成功后删除tempFolder
-//            if (new File(tempFolderPath).exists()) {
-//                boolean deleteTempFolder = BIFileUtils.delete(new File(tempFolderPath));
-//                if (!deleteTempFolder) {
-//                    BILoggerFactory.getLogger().error("delete tempFolder failed ");
-//                }
-//            }
-//            return true;
-//        } catch (IOException e) {
-//            BILoggerFactory.getLogger().error(e.getMessage(), e);
-//            return false;
-//        }
-        ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(userId));
-        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(userId));
+        ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(userId));
+        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(userId));
+        ICubeConfiguration advancedTempConf = BICubeConfiguration.getAdvancedTempConf(Long.toString(userId));
+        String advancedPath = advancedConf.getRootURI().getPath();
+        String tCubePath = tempConf.getRootURI().getPath();
+        String tempFolderPath = advancedTempConf.getRootURI().getPath();
         try {
-            BIFileUtils.moveFile(tempConf.getRootURI().getPath().toString(), advancedConf.getRootURI().getPath().toString());
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            if (new File(advancedPath).exists()) {
+                if (new File(tempFolderPath).exists()) {
+                    boolean tempFolderDelete = BIFileUtils.delete(new File(tempFolderPath));
+                    if (!tempFolderDelete) {
+                        BILoggerFactory.getLogger().error("delete tempFolder failed");
+                        return false;
+                    }
+                }
+                boolean renameFolder = BIFileUtils.renameFolder(new File(advancedPath), new File(tempFolderPath));
+                if (!renameFolder) {
+                    BILoggerFactory.getLogger().error("rename Advanced to tempFolder failed");
+                    return false;
+                }
+            }
+            if (new File(tCubePath).exists()) {
+                boolean renameFolder = BIFileUtils.renameFolder(new File(tCubePath), new File(advancedPath));
+                if (!renameFolder) {
+                    BILoggerFactory.getLogger().error("rename tCube to Advanced failed");
+                    return false;
+                }
+            }
+            //tCube替换（重命名）成功后删除tempFolder
+            if (new File(tempFolderPath).exists()) {
+                boolean deleteTempFolder = BIFileUtils.delete(new File(tempFolderPath));
+                if (!deleteTempFolder) {
+                    BILoggerFactory.getLogger().error("delete tempFolder failed ");
+                }
+            }
+            return true;
+        } catch (IOException e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            return false;
         }
-        return true;
+
+
+//        ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(userId));
+//        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(userId));
+//        try {
+//            BIFileUtils.moveFile(tempConf.getRootURI().getPath().toString(), advancedConf.getRootURI().getPath().toString());
+//        } catch (Exception e) {
+//            BILoggerFactory.getLogger().error(e.getMessage());
+//        }
+//        return true;
     }
 
 

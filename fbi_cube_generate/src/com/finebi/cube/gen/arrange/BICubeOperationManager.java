@@ -426,6 +426,7 @@ public class BICubeOperationManager {
                     pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
                 } else {
                     operation.subscribe(BICubeBuildTopicTag.START_BUILD_CUBE);
+                    pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
                 }
             } catch (Exception e) {
                 BILoggerFactory.getLogger().error("the child path this path contained listed");
