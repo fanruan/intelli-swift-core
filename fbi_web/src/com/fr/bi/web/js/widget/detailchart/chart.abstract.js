@@ -530,7 +530,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             vGridLineColor: options.vGridLineColor,
             tooltipStyle: options.tooltipStyle,
             chartFont: BI.extend({}, options.chartFont, {
-                fontSize: options.chartFont.fontSize + "px"
+                fontSize: options.chartFont && options.chartFont.fontSize + "px"
             }),
             nullContinuity: options.nullContinuity,
             backgroundLayerInfo: MapConst.WMS_INFO[options.backgroundLayerInfo],

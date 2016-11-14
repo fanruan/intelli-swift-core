@@ -1179,7 +1179,7 @@
         getWSChartLeftYLineColorByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.leftYLineColor) ? ws.leftYLineColor :
-                lineColor
+                BICst.DEFAULT_CHART_SETTING.lineColor
         },
 
         getWSRightYShowLabelByID: function (wid) {
@@ -1192,7 +1192,7 @@
             var ws = this.getWidgetSettingsByID(wid);
             var chartFont = this.getGSChartFont();
             var labelSetting = ws.rightYLabelStyle || {};
-            labelSetting.textStyle = BI.extend(chartFont, labelSetting.text_style);
+            labelSetting.textStyle = BI.extend(chartFont, labelSetting.textStyle);
             labelSetting.textDirection = labelSetting.textDirection || 0;
             return labelSetting;
         },
@@ -1200,7 +1200,7 @@
         getWSRightYLineColorByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.rightYLineColor) ? ws.rightYLineColor :
-                lineColor
+                BICst.DEFAULT_CHART_SETTING.lineColor
         },
 
         getWSRightY2ShowLabelByID: function (wid) {
@@ -1213,7 +1213,6 @@
             var ws = this.getWidgetSettingsByID(wid);
             var chartFont = this.getGSChartFont();
             var labelSetting = ws.rightY2LabelStyle || {};
-            var colors = this.getWSChartColorByID(wid);
             labelSetting.textStyle = BI.extend(chartFont, labelSetting.textStyle);
             labelSetting.textDirection = labelSetting.textDirection || 0;
             return labelSetting;
@@ -1222,7 +1221,7 @@
         getWSRightY2LineColorByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.rightY2LineColor) ? ws.rightY2LineColor :
-                lineColor
+                BICst.DEFAULT_CHART_SETTING.lineColor
         },
 
         getWSChartCatShowLabelByID: function (wid) {
