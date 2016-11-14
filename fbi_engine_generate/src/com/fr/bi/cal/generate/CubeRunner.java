@@ -4,6 +4,7 @@ import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
+import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.inter.BrokenTraversal;
 import com.fr.bi.common.inter.Traversal;
@@ -154,7 +155,7 @@ public class CubeRunner {
         BILoggerFactory.getLogger().info("start persist data!");
         long t = System.currentTimeMillis();
         try {
-            BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
+
             BILoggerFactory.getLogger().info("persist data finished! time cost: " + DateUtils.timeCostFrom(t));
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);

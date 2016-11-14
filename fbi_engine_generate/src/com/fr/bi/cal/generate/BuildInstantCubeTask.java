@@ -32,7 +32,7 @@ public class BuildInstantCubeTask extends BuildCubeTask {
             if (cubeBuildSucceed) {
                 cube.addVersion(System.currentTimeMillis());
                 long start = System.currentTimeMillis();
-                BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId());
+                BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), getGeneratedRelation());
                 BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
                 BILoggerFactory.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
 
