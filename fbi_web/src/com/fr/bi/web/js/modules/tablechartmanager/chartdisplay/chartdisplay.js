@@ -293,7 +293,8 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         rightY2LabelStyle: BI.Utils.getWSRightY2LabelStyleByID(o.wId),
                         rightY2LineColor: BI.Utils.getWSRightY2LineColorByID(o.wId),
                         rightY2TitleStyle: BI.Utils.getWSChartRightY2TitleStyleByID(o.wId),
-                        rightY2CustomScale: BI.Utils.getWSRightY2ShowCustomScaleByID(o.wId),
+                        rightY2CustomScale: BI.Utils.getWSChartRightY2CustomScaleByID(o.wId),
+                        rightY2ShowCustomScale: BI.Utils.getWSChartRightY2ShowCustomScaleByID(o.wId),
                         //分类轴
                         catShowTitle: BI.Utils.getWSChartCatShowTitleByID(o.wId),
                         catTitle: BI.Utils.getWSChartCatTitleByID(o.wId),
