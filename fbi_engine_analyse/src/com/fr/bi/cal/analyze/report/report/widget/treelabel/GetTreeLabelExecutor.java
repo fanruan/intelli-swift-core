@@ -43,6 +43,7 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
         ArrayList<JSONArray> vl = new ArrayList<JSONArray>();
         if (parentValues != null) {
             JSONArray pvalues = new JSONArray(parentValues);
+            createCalculator();
             for (int i = 0; i < pvalues.length(); i++) {
                 id = pvalues.getJSONObject(i).getString("id");
                 values = BIJsonUtils.jsonArray2StringArray(new JSONArray(pvalues.getJSONObject(i).getString("value")));
@@ -57,6 +58,9 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
     }
 
     private void getAllData(ArrayList<JSONArray> result, String[] values, String id, int floor) throws JSONException {
+        if (floors < result.size() && result.get(floors).length() >= BIReportConstant.TREE_LABEL.TREE_LABEL_ITEM_COUNT_NUM) {
+            return;
+        }
         List<String> vl = createData(values, floors, 1);
         if (!vl.isEmpty()) {
             if (result.size() > floor) {
@@ -74,7 +78,7 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
                     temp = id + "_" + (i + 1);
                 }
                 if (values.length < widget.getViewDimensions().length - 1 - floors) {
-                        getAllData(result, ArrayUtils.addAll(values, val), temp, floor + 1);
+                    getAllData(result, ArrayUtils.addAll(values, val), temp, floor + 1);
                 }
             }
         }
