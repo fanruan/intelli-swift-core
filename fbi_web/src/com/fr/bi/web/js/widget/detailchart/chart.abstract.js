@@ -464,6 +464,8 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             rightY2LabelStyle: options.rightY2LabelStyle,
             rightY2LineColor: options.rightY2LineColor,
             rightY2TitleStyle: options.rightY2TitleStyle,
+            rightY2CustomScale: options.rightY2CustomScale,
+            rightY2ShowCustomScale: options.rightY2ShowCustomScale,
             //分类轴
             catShowTitle: options.catShowTitle,
             catTitle: options.catTitle,
