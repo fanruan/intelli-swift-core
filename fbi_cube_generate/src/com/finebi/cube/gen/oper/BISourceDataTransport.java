@@ -10,6 +10,7 @@ import com.finebi.cube.structure.Cube;
 import com.finebi.cube.structure.CubeTableEntityService;
 import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.utils.BITableKeyUtils;
+import com.fr.bi.conf.data.source.BIOccupiedCubeTableSource;
 import com.fr.bi.conf.data.source.ETLTableSource;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -47,18 +48,7 @@ public abstract class BISourceDataTransport extends BIProcessor {
         this.cube = cube;
         tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
         this.version = version;
-//        initialParents(parentTableSource);
     }
-
-
-//    private void initialParents(Set<CubeTableSource> parentTableSource) {
-//        if (parentTableSource != null) {
-//            for (CubeTableSource tableSource : parentTableSource) {
-//                parents.add(new BITableKey(tableSource));
-//            }
-//        }
-//    }
-
 
     @Override
     public void release() {
@@ -90,6 +80,11 @@ public abstract class BISourceDataTransport extends BIProcessor {
                 if (tableSource instanceof ETLTableSource) {
                     ETLTableSource etlTableSource = (ETLTableSource) tableSource;
                     for (CubeTableSource parent : etlTableSource.getParents()) {
+                        parents.add(new BITableKey(parent));
+                    }
+                } else if (tableSource instanceof BIOccupiedCubeTableSource) {
+                    BIOccupiedCubeTableSource ocTableSource = (BIOccupiedCubeTableSource) tableSource;
+                    for (CubeTableSource parent : ocTableSource.getParents()) {
                         parents.add(new BITableKey(parent));
                     }
                 }
