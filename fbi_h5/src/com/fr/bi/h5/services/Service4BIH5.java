@@ -25,8 +25,8 @@ public class Service4BIH5 implements Service {
 
 
     private static ActionCMD[] actions = {
-        new EmbResourceService(),
-        new H5InitAction()
+            new EmbResourceService(),
+            new H5InitAction()
     };
 
     @Override
@@ -49,16 +49,17 @@ public class Service4BIH5 implements Service {
         FSContext.initData();
         res.setHeader("Pragma", "No-cache");
         res.setHeader("Cache-Control", "no-cache, no-store");
+        res.setHeader("Access-Control-Allow-Origin", "*");
         res.setDateHeader("Expires", -10);
 
-        PrivilegeVote vote = getFSVote(req, res);
-        FSAuthentication authentication = FSAuthenticationManager.exAuth4FineServer(req);
+//        PrivilegeVote vote = getFSVote(req, res);
+//        FSAuthentication authentication = FSAuthenticationManager.exAuth4FineServer(req);
 
-        if (!vote.isPermitted() && (authentication == null || !authentication.isRoot())) {
-            vote.action(req, res);
-        } else {
-            WebActionsDispatcher.dealForActionCMD(req, res, sessionID, actions);
-        }
+//        if (!vote.isPermitted() && (authentication == null || !authentication.isRoot())) {
+//            vote.action(req, res);
+//        } else {
+        WebActionsDispatcher.dealForActionCMD(req, res, sessionID, actions);
+//        }
     }
 
     private PrivilegeVote getFSVote(HttpServletRequest req, HttpServletResponse res) throws Exception {
