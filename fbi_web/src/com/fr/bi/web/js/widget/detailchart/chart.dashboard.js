@@ -38,8 +38,8 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this, o = this.options;
-        var isDashboard = BI.contains([self.constants.NORMAL, self.constants.HALF_DASHBOARD], self.config.chart_dashboard_type);
-        var isMultiPointers = self.config.number_of_pointer === self.constants.MULTI_POINTER;
+        var isDashboard = BI.contains([self.constants.NORMAL, self.constants.HALF_DASHBOARD], self.config.dashboardChartType);
+        var isMultiPointers = self.config.dashboardPointer === self.constants.MULTI_POINTER;
         formatChartDashboardStyle();
         config.chartType = "gauge";
         delete config.xAxis;
@@ -47,36 +47,36 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
         if (isDashboard && !isMultiPointers) {
             config.plotOptions.seriesLabel.enabled = false
         }
-        config.gaugeAxis[0].labelStyle = this.config.chart_font;
+        config.gaugeAxis[0].labelStyle = this.config.chartFont;
         return [items, config];
 
         function formatChartDashboardStyle() {
-            var bands = getBandsStyles(self.config.bands_styles, self.config.auto_custom_style);
+            var bands = getBandsStyles(self.config.dashboardStyles, self.config.styleRadio);
             var percentageLabel = BI.extend(config.plotOptions.percentageLabel, {
-                enabled: self.config.show_percentage === BICst.PERCENTAGE.SHOW
+                enabled: self.config.showPercentage === BICst.PERCENTAGE.SHOW
             });
 
             config.gaugeAxis = self.gaugeAxis;
             var slotValueLAbel = {
                 formatter: function () {
                     var value = this.value;
-                    if (self.config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && self.config.num_separators) {
+                    if (self.config.leftYNumberLevel === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && self.config.leftYSeparator) {
                         value = BI.contentFormat(this.value, "#,##0%;-#,##0%")
-                    } else if (self.config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && !self.config.num_separators) {
+                    } else if (self.config.leftYNumberLevel === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && !self.config.leftYSeparator) {
                         value = BI.contentFormat(this.value, "#0.00%");
-                    } else if (!(self.config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) && self.config.num_separators) {
+                    } else if (!(self.config.leftYNumberLevel === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) && self.config.leftYSeparator) {
                         value = BI.contentFormat(this.value, "#,###.##;-#,###.##")
                     } else {
                         value = BI.contentFormat(this.value, "#.##;-#.##");
                     }
 
                     var label = '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + value +
-                        getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS) + '</div>';
+                        getXYAxisUnit(self.config.leftYNumberLevel, self.constants.DASHBOARD_AXIS) + '</div>';
 
                     if (isDashboard && items[0].data.length > 1) {
                         if (isMultiPointers) {
                             return '<div style="text-align: center">' + this.seriesName + ':' + value +
-                                getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS) + '</div>';
+                                getXYAxisUnit(self.config.leftYNumberLevel, self.constants.DASHBOARD_AXIS) + '</div>';
                         }
                         return label
                     } else if (isDashboard && BI.isNull(items[0].data[0].seriesName)) {
@@ -85,10 +85,10 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
 
                     return '<div style="text-align: center">' + this.category + '</div>' + label;
                 },
-                style: self.config.chart_font,
+                style: self.config.chartFont,
                 useHtml: true
             };
-            switch (self.config.chart_dashboard_type) {
+            switch (self.config.dashboardChartType) {
                 case BICst.CHART_SHAPE.HALF_DASHBOARD:
                     setPlotOptions("pointer_semi", bands, slotValueLAbel, percentageLabel);
                     break;
@@ -122,24 +122,24 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                     break;
             }
             changeMaxMinScale();
-            formatNumberLevelInYaxis(self.config.dashboard_number_level, self.constants.LEFT_AXIS);
-            if (self.config.dashboard_number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+            formatNumberLevelInYaxis(self.config.leftYNumberLevel, self.constants.LEFT_AXIS);
+            if (self.config.leftYNumberLevel === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
                 config.gaugeAxis[0].formatter = function () {
                     var scaleValue = this;
-                    if (self.config.num_separators) {
+                    if (self.config.leftYSeparator) {
                         scaleValue = BI.contentFormat(scaleValue, '#,##0%;-#,##0%')
                     } else {
                         scaleValue = BI.contentFormat(scaleValue, '#0.00%')
                     }
-                    return scaleValue + getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
+                    return scaleValue + getXYAxisUnit(self.config.leftYNumberLevel, self.constants.DASHBOARD_AXIS);
                 };
             } else {
                 config.gaugeAxis[0].formatter = function () {
                     var value = this;
-                    if (self.config.num_separators) {
+                    if (self.config.leftYSeparator) {
                         value = BI.contentFormat(value, "#,###;-#,###")
                     }
-                    return value + getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS);
+                    return value + getXYAxisUnit(self.config.leftYNumberLevel, self.constants.DASHBOARD_AXIS);
                 };
             }
         }
@@ -172,7 +172,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                 return BI.contentFormat(this, '#.##;-#.##') + getXYAxisUnit(type, position)
             };
 
-            if (self.config.num_separators) {
+            if (self.config.leftYSeparator) {
                 config.plotOptions.tooltip.formatter.valueFormat = function () {
                     return BI.contentFormat(arguments[0], '#,###.##;-#,###.##')
                 };
@@ -182,7 +182,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                 config.plotOptions.tooltip.formatter.valueFormat = function () {
                     return BI.contentFormat(arguments[0], '#0.00%')
                 };
-                if (self.config.num_separators) {
+                if (self.config.leftYSeparator) {
                     config.plotOptions.tooltip.formatter.valueFormat = function () {
                         return BI.contentFormat(arguments[0], '#,##0%;-#,##0%')
                     };
@@ -207,7 +207,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                     break;
             }
             if (position === self.constants.DASHBOARD_AXIS) {
-                self.config.dashboard_unit !== "" && (unit = unit + self.config.dashboard_unit)
+                self.config.leftYUnit !== "" && (unit = unit + self.config.leftYUnit)
             }
             return unit;
         }
@@ -289,9 +289,9 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             return [];
         }
         var c = this.constants;
-        if (this.config.chart_dashboard_type === c.NORMAL || this.config.chart_dashboard_type === c.HALF_DASHBOARD) {
+        if (this.config.dashboardChartType === c.NORMAL || this.config.dashboardChartType === c.HALF_DASHBOARD) {
             var result = [];
-            if (this.config.number_of_pointer === c.ONE_POINTER && items[0].length === 1) {//单个系列
+            if (this.config.dashboardPointer === c.ONE_POINTER && items[0].length === 1) {//单个系列
                 BI.each(items[0][0].data, function (idx, da) {
                     result.push({
                         data: [BI.extend({}, da, {
@@ -301,7 +301,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                     })
                 });
                 return [result];
-            } else if (this.config.number_of_pointer === c.ONE_POINTER && items[0].length > 1) {
+            } else if (this.config.dashboardPointer === c.ONE_POINTER && items[0].length > 1) {
                 BI.each(items[0], function (idx, item) {
                     result.push({
                         data: [BI.extend(item.data[0], {
@@ -312,7 +312,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                 });
                 return [result]
             }
-            if (this.config.number_of_pointer === c.MULTI_POINTER && items[0].length > 1) {//多个系列
+            if (this.config.dashboardPointer === c.MULTI_POINTER && items[0].length > 1) {//多个系列
                 BI.each(items, function (idx, item) {
                     BI.each(item, function (id, it) {
                         var data = it.data[0];

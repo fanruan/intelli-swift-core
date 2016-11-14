@@ -49,37 +49,37 @@ BI.PercentAccumulateAxisChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this, o = this.options;
-        config.colors = this.config.chart_color;
+        config.colors = this.config.chartColor;
         config.plotOptions.style = formatChartStyle();
         formatCordon();
-        this.formatChartLegend(config, this.config.chart_legend);
-        config.plotOptions.dataLabels.enabled = this.config.show_data_label;
-        config.dataSheet.enabled = this.config.show_data_table;
+        this.formatChartLegend(config, this.config.legend);
+        config.plotOptions.dataLabels.enabled = this.config.showDataLabel;
+        config.dataSheet.enabled = this.config.showDataTable;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
-        this.formatZoom(config, this.config.show_zoom);
+        this.formatZoom(config, this.config.showZoom);
 
         config.yAxis = this.yAxis;
         BI.extend(config.yAxis[0], self.leftAxisSetting(self.config));
-        self.formatNumberLevelInYaxis(config, items, this.config.left_y_axis_number_level, this.constants.LEFT_AXIS, config.yAxis[0].formatter);
+        self.formatNumberLevelInYaxis(config, items, this.config.leftYNumberLevel, this.constants.LEFT_AXIS, config.yAxis[0].formatter);
 
         BI.extend(config.xAxis[0], self.catSetting(this.config));
 
-        config.legend.style = BI.extend( this.config.chart_legend_setting, {
-            fontSize:  this.config.chart_legend_setting.fontSize + "px"
+        config.legend.style = BI.extend( this.config.legendStyle, {
+            fontSize:  this.config.legendStyle.fontSize + "px"
         });
 
         config.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${PERCENT}";
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        this.formatDataLabelForAxis(config.plotOptions.dataLabels.enabled, items, config.yAxis[0].formatter, this.config.chart_font);
+        this.formatDataLabelForAxis(config.plotOptions.dataLabels.enabled, items, config.yAxis[0].formatter, this.config.chartFont);
 
         //全局样式的图表文字
-        this.setFontStyle(this.config.chart_font, config);
+        this.setFontStyle(this.config.chartFont, config);
 
         return [items, config];
 
         function formatChartStyle() {
-            switch (self.config.chart_style) {
+            switch (self.config.chartStyle) {
                 case BICst.CHART_STYLE.STYLE_GRADUAL:
                     return "gradual";
                 case BICst.CHART_STYLE.STYLE_NORMAL:
@@ -91,13 +91,13 @@ BI.PercentAccumulateAxisChart = BI.inherit(BI.AbstractChart, {
         function formatCordon() {
             BI.each(self.config.cordon, function (idx, cor) {
                 if (idx === 0 && self.xAxis.length > 0) {
-                    var magnify = self.calcMagnify(self.config.x_axis_number_level);
+                    var magnify = self.calcMagnify(1);
                     self.xAxis[0].plotLines = BI.map(cor, function (i, t) {
                         return BI.extend(t, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.config.chart_font,
+                                "style": self.config.chartFont,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -108,13 +108,13 @@ BI.PercentAccumulateAxisChart = BI.inherit(BI.AbstractChart, {
                     var magnify = 1;
                     switch (idx - 1) {
                         case self.constants.LEFT_AXIS:
-                            magnify = self.calcMagnify(self.config.left_y_axis_number_level);
+                            magnify = self.calcMagnify(self.config.leftYNumberLevel);
                             break;
                         case self.constants.RIGHT_AXIS:
-                            magnify = self.calcMagnify(self.config.right_y_axis_number_level);
+                            magnify = self.calcMagnify(self.config.rightYNumberLevel);
                             break;
                         case self.constants.RIGHT_AXIS_SECOND:
-                            magnify = self.calcMagnify(self.config.right_y_axis_second_number_level);
+                            magnify = self.calcMagnify(self.config.rightY2NumberLevel);
                             break;
                     }
                     self.yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
@@ -122,7 +122,7 @@ BI.PercentAccumulateAxisChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.config.chart_font,
+                                "style": self.config.chartFont,
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -130,31 +130,6 @@ BI.PercentAccumulateAxisChart = BI.inherit(BI.AbstractChart, {
                     });
                 }
             })
-        }
-
-        function getXYAxisUnit(numberLevelType, position) {
-            var unit = "";
-            switch (numberLevelType) {
-                case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
-                    unit = "";
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                    unit = BI.i18nText("BI-Wan");
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
-                    unit = BI.i18nText("BI-Million");
-                    break;
-                case BICst.TARGET_STYLE.NUM_LEVEL.YI:
-                    unit = BI.i18nText("BI-Yi");
-                    break;
-            }
-            if (position === self.constants.X_AXIS) {
-                self.config.x_axis_unit !== "" && (unit = unit + self.config.x_axis_unit)
-            }
-            if (position === self.constants.LEFT_AXIS) {
-                self.config.left_y_axis_unit !== "" && (unit = unit + self.config.left_y_axis_unit)
-            }
-            return unit === "" ? unit : "(" + unit + ")";
         }
     },
 

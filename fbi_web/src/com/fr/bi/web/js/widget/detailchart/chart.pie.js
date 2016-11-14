@@ -31,13 +31,13 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
     _formatConfig: function (config, items) {
         var self = this, o = this.options;
 
-        config.colors = this.config.chart_color;
+        config.colors = this.config.chartColor;
         config.plotOptions.style = formatChartStyle();
         formatChartPieStyle();
 
-        this.formatChartLegend(config, this.config.chart_legend);
+        this.formatChartLegend(config, this.config.legend);
 
-        config.plotOptions.dataLabels.enabled = this.config.show_data_label;
+        config.plotOptions.dataLabels.enabled = this.config.showDataLabel;
         config.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${VALUE}${PERCENT}";
 
         config.chartType = "pie";
@@ -46,19 +46,19 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.dataLabels.align = "outside";
         config.plotOptions.dataLabels.connectorWidth = "outside";
         config.plotOptions.dataLabels.formatter.identifier = "${VALUE}${PERCENT}";
-        config.plotOptions.dataLabels.style = this.config.chart_font;
+        config.plotOptions.dataLabels.style = this.config.chartFont;
         BI.each(items, function (idx, item) {
             BI.each(item.data, function (id, da) {
                 da.y = self.formatXYDataWithMagnify(da.y, 1);
             })
         });
 
-        config.legend.style = this.config.chart_font;
+        config.legend.style = this.config.chartFont;
 
         return [items, config];
 
         function formatChartStyle() {
-            switch (self.config.chart_style) {
+            switch (self.config.chartStyle) {
                 case BICst.CHART_STYLE.STYLE_GRADUAL:
                     return "gradual";
                 case BICst.CHART_STYLE.STYLE_NORMAL:
@@ -68,7 +68,7 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
         }
 
         function formatChartPieStyle() {
-            switch (self.config.chart_pie_type) {
+            switch (self.config.pieChartType) {
                 case BICst.CHART_SHAPE.EQUAL_ARC_ROSE:
                     config.plotOptions.roseType = "sameArc";
                     break;
@@ -80,9 +80,9 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
                     delete config.plotOptions.roseType;
                     break;
             }
-            config.plotOptions.innerRadius = self.config.chart_inner_radius + "%";
+            config.plotOptions.innerRadius = self.config.innerRadius + "%";
             config.plotOptions.startAngle = 270;
-            config.plotOptions.endAngle = (270 + self.config.chart_total_angle) % 360;
+            config.plotOptions.endAngle = (270 + self.config.totalAngle) % 360;
         }
 
     },

@@ -50,25 +50,25 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
     _formatConfig: function (config, items) {
         var self = this, o = this.options;
 
-        config.colors = this.config.chart_color;
+        config.colors = this.config.chartColor;
         config.plotOptions.style = formatChartStyle();
         formatCordon();
         config.legend.enabled = false;
-        config.plotOptions.dataLabels.enabled = this.config.show_data_label;
-        config.dataSheet.enabled = this.config.show_data_table;
+        config.plotOptions.dataLabels.enabled = this.config.showDataLabel;
+        config.dataSheet.enabled = this.config.showDataTable;
         if (config.dataSheet.enabled === true) {
             config.xAxis[0].showLabel = false;
         }
-        this.formatZoom(config, this.config.show_zoom);
+        this.formatZoom(config, this.config.showZoom);
 
         config.yAxis = this.yAxis;
         BI.extend(config.xAxis[0], self.catSetting(this.config));
-        formatNumberLevelInYaxis(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS, config.yAxis[0].formatter);
+        formatNumberLevelInYaxis(this.config.leftYNumberLevel, this.constants.LEFT_AXIS, config.yAxis[0].formatter);
 
         BI.extend(config.yAxis[0], self.leftAxisSetting(self.config));
 
-        config.legend.style = BI.extend(this.config.chart_legend_setting, {
-            fontSize: this.config.chart_legend_setting.fontSize + "px"
+        config.legend.style = BI.extend(this.config.legendStyle, {
+            fontSize: this.config.legendStyle.fontSize + "px"
         });
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
@@ -79,7 +79,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
                     return;
                 }
                 item.dataLabels = {
-                    "style": self.config.chart_font,
+                    "style": self.config.chartFont,
                     "align": "outside",
                     "autoAdjust": true,
                     enabled: true,
@@ -92,12 +92,12 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
         }
 
         //全局样式的图表文字
-        this.setFontStyle(this.config.chart_font, config);
+        this.setFontStyle(this.config.chartFont, config);
 
         return [items, config];
 
         function formatChartStyle() {
-            switch (self.config.chart_style) {
+            switch (self.config.chartStyle) {
                 case BICst.CHART_STYLE.STYLE_GRADUAL:
                     return "gradual";
                 case BICst.CHART_STYLE.STYLE_NORMAL:
@@ -109,7 +109,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
         function formatCordon() {
             BI.each(self.config.cordon, function (idx, cor) {
                 if (idx === 0 && self.xAxis.length > 0) {
-                    var magnify = self.calcMagnify(self.config.x_axis_number_level);
+                    var magnify = self.calcMagnify(1);
                     self.xAxis[0].plotLines = BI.map(cor, function (i, t) {
                         return BI.extend(t, {
                             value: t.value.div(magnify),
@@ -126,13 +126,13 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
                     var magnify = 1;
                     switch (idx - 1) {
                         case self.constants.LEFT_AXIS:
-                            magnify = self.calcMagnify(self.config.left_y_axis_number_level);
+                            magnify = self.calcMagnify(self.config.leftYNumberLevel);
                             break;
                         case self.constants.RIGHT_AXIS:
-                            magnify = self.calcMagnify(self.config.right_y_axis_number_level);
+                            magnify = self.calcMagnify(self.config.rightYNumberLevel);
                             break;
                         case self.constants.RIGHT_AXIS_SECOND:
-                            magnify = self.calcMagnify(self.config.right_y_axis_second_number_level);
+                            magnify = self.calcMagnify(self.config.rightY2NumberLevel);
                             break;
                     }
                     self.yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
@@ -140,7 +140,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.config.chart_font,
+                                "style": self.config.chartFont,
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -170,7 +170,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
         }
         items = items[0];
         var tables = [], sum = 0;
-        var colors = this.config.chart_color || [];
+        var colors = this.config.chartColor || [];
         if (BI.isEmptyArray(colors)) {
             colors = ["rgb(152, 118, 170)", "rgb(0, 157, 227)"];
         }

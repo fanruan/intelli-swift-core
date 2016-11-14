@@ -51,52 +51,52 @@ BI.RadarChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this;
-        var title = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
+        var title = getXYAxisUnit(this.config.rightYNumberLevel, this.constants.LEFT_AXIS);
 
-        config.colors = this.config.chart_color;
+        config.colors = this.config.chartColor;
         config.plotOptions.style = formatChartStyle();
         formatChartRadarStyle();
-        this.formatChartLegend(config, this.config.chart_legend);
-        config.plotOptions.dataLabels.enabled = this.config.show_data_label;
+        this.formatChartLegend(config, this.config.legend);
+        config.plotOptions.dataLabels.enabled = this.config.showDataLabel;
 
         config.radiusAxis = this.radiusAxis;
         config.angleAxis = this.angleAxis;
-        config.radiusAxis[0].formatter = self.formatTickInXYaxis(this.config.left_y_axis_style, this.config.left_y_axis_number_level, this.config.num_separators);
-        formatNumberLevelInYaxis(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS, config.radiusAxis[0].formatter);
-        config.radiusAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + title : title;
-        config.radiusAxis[0].gridLineWidth = this.config.show_h_grid_line === true ? 1 : 0;
-        config.radiusAxis[0].gridLineColor = this.config.h_grid_line_color;
-        config.radiusAxis[0].lineColor = this.config.v_grid_line_color;
-        config.radiusAxis[0].min = this.config.custom_y_scale.minScale.scale || null;
-        config.radiusAxis[0].max = this.config.custom_y_scale.maxScale.scale || null;
-        config.radiusAxis[0].tickInterval = BI.isNumber(self.config.custom_y_scale.interval.scale) && self.config.custom_y_scale.interval.scale > 0 ?
-            self.config.custom_y_scale.interval.scale : null;
+        config.radiusAxis[0].formatter = self.formatTickInXYaxis(this.config.leftYNumberFormat, this.config.leftYNumberLevel, this.config.leftYSeparator);
+        formatNumberLevelInYaxis(this.config.leftYNumberLevel, this.constants.LEFT_AXIS, config.radiusAxis[0].formatter);
+        config.radiusAxis[0].title.text = this.config.leftYShowTitle === true ? this.config.leftYTitle + title : title;
+        config.radiusAxis[0].gridLineWidth = this.config.hShowGridLine === true ? 1 : 0;
+        config.radiusAxis[0].gridLineColor = this.config.hGridLineColor;
+        config.radiusAxis[0].lineColor = this.config.vShowGridLine;
+        config.radiusAxis[0].min = this.config.leftYCustomScale.minScale.scale || null;
+        config.radiusAxis[0].max = this.config.leftYCustomScale.maxScale.scale || null;
+        config.radiusAxis[0].tickInterval = BI.isNumber(self.config.leftYCustomScale.interval.scale) && self.config.leftYCustomScale.interval.scale > 0 ?
+            self.config.leftYCustomScale.interval.scale : null;
         config.chartType = "radar";
-        config.plotOptions.connectNulls = this.config.null_continue;
+        config.plotOptions.connectNulls = this.config.nullContinuity;
         delete config.xAxis;
         delete config.yAxis;
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        this.formatDataLabelForAxis(config.plotOptions.dataLabels.enabled, items, config.radiusAxis[0].formatter, this.config.chart_font);
+        this.formatDataLabelForAxis(config.plotOptions.dataLabels.enabled, items, config.radiusAxis[0].formatter, this.config.chartFont);
 
-        config.angleAxis[0].labelStyle = BI.extend(this.config.left_label_style.text_style, {
-            fontSize: this.config.left_label_style.text_style.fontSize + "px"
+        config.angleAxis[0].labelStyle = BI.extend(this.config.leftYLabelStyle.textStyle, {
+            fontSize: this.config.leftYLabelStyle.textStyle.fontSize + "px"
         });
 
-        config.angleAxis[0].showLabel = this.config.show_left_label;
-        config.angleAxis[0].lineColor = this.config.left_line_color;
-        config.angleAxis[0].gridLineWidth = this.config.show_v_grid_line === true ? 1 : 0;
+        config.angleAxis[0].showLabel = this.config.leftYShowLabel;
+        config.angleAxis[0].lineColor = this.config.leftYLineColor;
+        config.angleAxis[0].gridLineWidth = this.config.vShowGridLine === true ? 1 : 0;
 
-        config.radiusAxis[0].title.style = this.config.chart_font;
-        config.angleAxis[0].title.style = this.config.chart_font;
+        config.radiusAxis[0].title.style = this.config.chartFont;
+        config.angleAxis[0].title.style = this.config.chartFont;
 
-        config.legend.style = BI.extend(this.config.chart_legend_setting, {
-            fontSize: this.config.chart_legend_setting.fontSize + "px"
+        config.legend.style = BI.extend(this.config.legendStyle, {
+            fontSize: this.config.legendStyle.fontSize + "px"
         });
 
         return [items, config];
 
         function formatChartStyle() {
-            switch (self.config.chart_style) {
+            switch (self.config.chartStyle) {
                 case BICst.CHART_STYLE.STYLE_GRADUAL:
                     return "gradual";
                 case BICst.CHART_STYLE.STYLE_NORMAL:
@@ -106,7 +106,7 @@ BI.RadarChart = BI.inherit(BI.AbstractChart, {
         }
 
         function formatChartRadarStyle() {
-            switch (self.config.chart_radar_type) {
+            switch (self.config.radarChartType) {
                 case BICst.CHART_SHAPE.POLYGON:
                     config.plotOptions.shape = "polygon";
                     break;

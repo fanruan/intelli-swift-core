@@ -49,33 +49,33 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this;
-        config.colors = this.config.chart_color;
+        config.colors = this.config.chartColor;
         config.plotOptions.style = formatChartStyle();
         config.plotOptions.marker = {"symbol": "circle", "radius": 4.5, "enabled": true};
         formatCordon();
-        this.formatChartLegend(config, this.config.chart_legend);
-        config.plotOptions.dataLabels.enabled = this.config.show_data_label;
+        this.formatChartLegend(config, this.config.legend);
+        config.plotOptions.dataLabels.enabled = this.config.showDataLabel;
         config.plotOptions.dataLabels.formatter.identifier = "${X}${Y}";
 
         config.yAxis = this.yAxis;
         config.xAxis = this.xAxis;
 
-        formatNumberLevelInYaxis(this.config.left_y_axis_number_level);
+        formatNumberLevelInYaxis(this.config.leftYNumberLevel);
 
         BI.extend(config.yAxis[0], self.leftAxisSetting(this.config));
         config.yAxis[0].title.rotation = 90;
 
-        formatNumberLevelInXaxis(this.config.x_axis_number_level);
+        formatNumberLevelInXaxis(this.config.rightYNumberLevel);
         BI.extend(config.xAxis[0], self.rightAxisSetting(this.config));
         config.xAxis[0].title.rotation = 0;
-        config.xAxis[0].gridLineColor = this.config.v_grid_line_color;
+        config.xAxis[0].gridLineColor = this.config.vGridLineColor;
 
         config.chartType = "scatter";
 
         if (BI.isNotEmptyArray(this.config.tooltip)) {
             config.plotOptions.tooltip.formatter = function () {
-                var y = self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level, self.config.num_separators)(this.y);
-                var x = self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level, self.config.right_num_separators)(this.x);
+                var y = self.formatTickInXYaxis(self.config.leftYNumberFormat, self.config.leftYNumberLevel, self.config.leftYSeparator)(this.y);
+                var x = self.formatTickInXYaxis(self.config.rightYNumberFormat, self.config.rightYNumberLevel, self.config.rightYSeparator)(this.x);
                 return this.seriesName + '<div>(X)' + self.config.tooltip[0]
                     + ':' + x + '</div><div>(Y)' + self.config.tooltip[1] + ':' + y + '</div>'
             };
@@ -84,7 +84,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         if (config.plotOptions.dataLabels.enabled === true) {
             BI.each(items, function (idx, item) {
                 item.dataLabels = {
-                    "style": self.config.chart_font,
+                    "style": self.config.chartFont,
                     "align": "outside",
                     "autoAdjust": true,
                     enabled: true,
@@ -106,7 +106,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         return [items, config];
 
         function formatChartStyle() {
-            switch (self.config.chart_style) {
+            switch (self.config.chartStyle) {
                 case BICst.CHART_STYLE.STYLE_GRADUAL:
                     return "gradual";
                 case BICst.CHART_STYLE.STYLE_NORMAL:
@@ -118,13 +118,13 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         function formatCordon() {
             BI.each(self.config.cordon, function (idx, cor) {
                 if (idx === 0 && self.xAxis.length > 0) {
-                    var magnify = self.calcMagnify(self.config.x_axis_number_level);
+                    var magnify = self.calcMagnify(1);
                     self.xAxis[0].plotLines = BI.map(cor, function (i, t) {
                         return BI.extend(t, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.config.chart_font,
+                                "style": self.config.chartFont,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -135,13 +135,13 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
                     var magnify = 1;
                     switch (idx - 1) {
                         case self.constants.LEFT_AXIS:
-                            magnify = self.calcMagnify(self.config.left_y_axis_number_level);
+                            magnify = self.calcMagnify(self.config.leftYNumberLevel);
                             break;
                         case self.constants.RIGHT_AXIS:
-                            magnify = self.calcMagnify(self.config.right_y_axis_number_level);
+                            magnify = self.calcMagnify(self.config.rightYNumberLevel);
                             break;
                         case self.constants.RIGHT_AXIS_SECOND:
-                            magnify = self.calcMagnify(self.config.right_y_axis_second_number_level);
+                            magnify = self.calcMagnify(self.config.rightY2NumberLevel);
                             break;
                     }
                     self.yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
@@ -149,7 +149,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.config.chart_font,
+                                "style": self.config.chartFont,
                                 "text": t.text,
                                 "align": "left"
                             }

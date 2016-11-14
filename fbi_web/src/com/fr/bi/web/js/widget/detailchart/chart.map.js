@@ -32,7 +32,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         var self = this, c = this.constants;
         formatRangeLegend();
         delete config.legend;
-        config.plotOptions.dataLabels.enabled = this.config.show_data_label;
+        config.plotOptions.dataLabels.enabled = this.config.showDataLabel;
         config.plotOptions.tooltip.shared = true;
         var formatterArray = [];
         BI.backEach(items, function (idx, item) {
@@ -52,7 +52,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.dataLabels.formatter.valueFormat = function () {
             return BI.contentFormat(arguments[0], formatterArray[0]);
         };
-        config.plotOptions.dataLabels.style = this.config.chart_font;
+        config.plotOptions.dataLabels.style = this.config.chartFont;
 
         config.plotOptions.bubble.dataLabels = config.plotOptions.dataLabels;
         config.plotOptions.bubble.dataLabels.formatter.identifier = "${SIZE}";
@@ -60,13 +60,13 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.bubble.tooltip = config.plotOptions.tooltip;
 
         config.geo = this.config.geo;
-        if (this.config.show_background_layer === true && BI.isNotNull(this.config.background_layer_info)) {
-            if (this.config.background_layer_info.type === BICst.WMS_SERVER) {
+        if (this.config.isShowBackgroundLayer === true && BI.isNotNull(this.config.backgroundLayerInfo)) {
+            if (this.config.backgroundLayerInfo.type === BICst.WMS_SERVER) {
                 config.geo.tileLayer = false;
-                config.geo.wmsUrl = this.config.background_layer_info.url;
-                config.geo.wmsLayer = this.config.background_layer_info.wmsLayer
+                config.geo.wmsUrl = this.config.backgroundLayerInfo.url;
+                config.geo.wmsLayer = this.config.backgroundLayerInfo.wmsLayer
             } else {
-                config.geo.tileLayer = this.config.background_layer_info.url;
+                config.geo.tileLayer = this.config.backgroundLayerInfo.url;
             }
         }
         if (this.config.initDrillPath.length > 1) {
@@ -96,7 +96,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
 
         function formatRangeLegend() {
             config.rangeLegend.enabled = true;
-            switch (self.config.chart_legend) {
+            switch (self.config.legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     config.rangeLegend.visible = true;
                     config.rangeLegend.position = "bottom";
@@ -110,7 +110,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                     break;
             }
             config.rangeLegend.continuous = false;
-            config.rangeLegend.range = getRangeStyle(self.config.map_styles, self.config.auto_custom, self.config.theme_color);
+            config.rangeLegend.range = getRangeStyle(self.config.mapStyles, self.config.styleRadio, self.config.themeColor);
             config.rangeLegend.formatter = function () {
                 var to = this.to;
                 if (BI.isNotEmptyArray(items) && BI.has(items[0], "settings")) {

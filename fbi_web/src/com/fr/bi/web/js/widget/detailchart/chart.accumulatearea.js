@@ -42,19 +42,18 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
     _formatConfig: function (config, items) {
         var self = this;
 
-        config.colors = this.config.chart_color;
+        config.colors = this.config.chartColor;
         config.plotOptions.style = formatChartStyle(this.config.chartStyle);
-        formatChartLineStyle(this.config.chart_line_type);
+        formatChartLineStyle(this.config.lienAreaChartType);
         formatCordon(this.config.cordon);
-        self.formatChartLegend(config, this.config.chart_legend);
-        config.plotOptions.dataLabels.enabled = this.config.show_data_label;
-        config.dataSheet.enabled = this.config.show_data_table;
+        self.formatChartLegend(config, this.config.legend);
+        config.plotOptions.dataLabels.enabled = this.config.showDataLabel;
+        config.dataSheet.enabled = this.config.showDataTable;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
-        config.plotOptions.connectNulls = this.config.null_continue;
-        self.formatZoom(config, this.config.show_zoom);
-        config.plotOptions.connectNulls = this.config.null_continue;
-        config.legend.style = BI.extend(this.config.chart_legend_setting, {
-            fontSize: this.config.chart_legend_setting.fontSize + "px"
+        config.plotOptions.connectNulls = this.config.nullContinuity;
+        self.formatZoom(config, this.config.showZoom);
+        config.legend.style = BI.extend(this.config.legendStyle, {
+            fontSize: this.config.legendStyle.fontSize + "px"
         });
 
         config.yAxis = this.yAxis;
@@ -62,11 +61,11 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
             switch (axis.axisIndex) {
                 case self.constants.LEFT_AXIS:
                     BI.extend(axis, self.leftAxisSetting(self.config));
-                    self.formatNumberLevelInYaxis(config, items, self.config.left_y_axis_number_level, idx, axis.formatter, self.config.num_separators);
+                    self.formatNumberLevelInYaxis(config, items, self.config.leftYNumberLevel, idx, axis.formatter, self.config.leftYSeparator);
                     break;
                 case self.constants.RIGHT_AXIS:
                     BI.extend(axis, self.rightAxisSetting(self.config));
-                    self.formatNumberLevelInYaxis(config, items, self.config.right_y_axis_number_level, idx, axis.formatter, self.config.right_num_separators);
+                    self.formatNumberLevelInYaxis(config, items, self.config.rightYNumberLevel, idx, axis.formatter, self.config.rightYSeparator);
                     break;
             }
         });
@@ -76,10 +75,10 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         config.chartType = "area";
 
         //为了给数据标签加个%,还要遍历所有的系列
-        self.formatDataLabel(config.plotOptions.dataLabels.enabled, items, config, this.config.chart_font);
+        self.formatDataLabel(config.plotOptions.dataLabels.enabled, items, config, this.config.chartFont);
 
         //全局样式的图表文字
-        self.setFontStyle(this.config.chart_font, config);
+        self.setFontStyle(this.config.chartFont, config);
 
         return [items, config];
 
@@ -114,13 +113,14 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         function formatCordon(cordon) {
             BI.each(cordon, function (idx, cor) {
                 if (idx === 0 && self.xAxis.length > 0) {
-                    var magnify = self.calcMagnify(self.config.x_axis_number_level);
+                    //x轴拖指标没有number level，以后可能回家
+                    var magnify = self.calcMagnify(1);
                     self.xAxis[0].plotLines = BI.map(cor, function (i, t) {
                         return BI.extend(t, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.config.chart_font,
+                                "style": self.config.chartFont,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -131,13 +131,13 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
                     var magnify = 1;
                     switch (idx - 1) {
                         case self.constants.LEFT_AXIS:
-                            magnify = self.calcMagnify(self.config.left_y_axis_number_level);
+                            magnify = self.calcMagnify(self.config.leftYNumberLevel);
                             break;
                         case self.constants.RIGHT_AXIS:
-                            magnify = self.calcMagnify(self.config.right_y_axis_number_level);
+                            magnify = self.calcMagnify(self.config.rightYNumberLevel);
                             break;
                         case self.constants.RIGHT_AXIS_SECOND:
-                            magnify = self.calcMagnify(self.config.right_y_axis_second_number_level);
+                            magnify = self.calcMagnify(self.config.rightY2NumberLevel);
                             break;
                     }
                     self.yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
@@ -145,7 +145,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.config.chart_font,
+                                "style": self.config.chartFont,
                                 "text": t.text,
                                 "align": "left"
                             }

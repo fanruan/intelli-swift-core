@@ -40,13 +40,13 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this;
-        config.colors = this.config.chart_color;
+        config.colors = this.config.chartColor;
         config.plotOptions.style = formatChartStyle();
         formatChartLineStyle();
         formatCordon();
-        this.formatChartLegend(config, this.config.chart_legend);
-        config.plotOptions.dataLabels.enabled = this.config.show_data_label;
-        config.dataSheet.enabled = this.config.show_data_table;
+        this.formatChartLegend(config, this.config.legend);
+        config.plotOptions.dataLabels.enabled = this.config.showDataLabel;
+        config.dataSheet.enabled = this.config.showDataTable;
         config.xAxis[0].showLabel = !config.dataSheet.enabled;
         this.formatZoom(config, this.config.show_zoom);
 
@@ -56,12 +56,12 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
                 case self.constants.LEFT_AXIS:
                     BI.extend(axis, self.leftAxisSetting(self.config));
                     axis.reversed = false;
-                    formatNumberLevelInYaxis(self.config.left_y_axis_number_level, idx, axis.formatter);
+                    formatNumberLevelInYaxis(self.config.leftYNumberLevel, idx, axis.formatter);
                     break;
                 case self.constants.RIGHT_AXIS:
                     BI.extend(axis, self.rightAxisSetting(self.config));
                     axis.reversed = true;
-                    formatNumberLevelInYaxis(self.config.right_y_axis_number_level, idx, axis.formatter);
+                    formatNumberLevelInYaxis(self.config.rightYNumberLevel, idx, axis.formatter);
                     break;
             }
             var res = _calculateValueNiceDomain(0, self.maxes[axis.axisIndex]);
@@ -72,18 +72,18 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
 
         BI.extend(config.xAxis[0], self.catSetting(this.config));
 
-        config.legend.style = BI.extend(this.config.chart_legend_setting, {
-            fontSize: this.config.chart_legend_setting.fontSize + "px"
+        config.legend.style = BI.extend(this.config.legendStyle, {
+            fontSize: this.config.legendStyle.fontSize + "px"
         });
 
-        config.plotOptions.connectNulls = this.config.null_continue;
+        config.plotOptions.connectNulls = this.config.nullContinuity;
         config.chartType = "area";
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        this.formatDataLabel(config.plotOptions.dataLabels.enabled, items, config, this.config.chart_font);
+        this.formatDataLabel(config.plotOptions.dataLabels.enabled, items, config, this.config.chartFont);
 
         //全局样式的图表文字
-        this.setFontStyle(this.config.chart_font, config);
+        this.setFontStyle(this.config.chartFont, config);
 
         return [items, config];
 
@@ -118,7 +118,7 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
         }
 
         function formatChartStyle() {
-            switch (self.config.chart_style) {
+            switch (self.config.chartStyle) {
                 case BICst.CHART_STYLE.STYLE_GRADUAL:
                     return "gradual";
                 case BICst.CHART_STYLE.STYLE_NORMAL:
@@ -130,13 +130,13 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
         function formatCordon() {
             BI.each(self.config.cordon, function (idx, cor) {
                 if (idx === 0 && self.xAxis.length > 0) {
-                    var magnify = self.calcMagnify(self.config.x_axis_number_level);
+                    var magnify = self.calcMagnify(1);
                     self.xAxis[0].plotLines = BI.map(cor, function (i, t) {
                         return BI.extend(t, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.config.chart_font,
+                                "style": self.config.chartFont,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -147,13 +147,13 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
                     var magnify = 1;
                     switch (idx - 1) {
                         case self.constants.LEFT_AXIS:
-                            magnify = self.calcMagnify(self.config.left_y_axis_number_level);
+                            magnify = self.calcMagnify(self.config.leftYNumberLevel);
                             break;
                         case self.constants.RIGHT_AXIS:
-                            magnify = self.calcMagnify(self.config.right_y_axis_number_level);
+                            magnify = self.calcMagnify(self.config.rightYNumberLevel);
                             break;
                         case self.constants.RIGHT_AXIS_SECOND:
-                            magnify = self.calcMagnify(self.config.right_y_axis_second_number_level);
+                            magnify = self.calcMagnify(self.config.rightY2NumberLevel);
                             break;
                     }
                     self.yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
@@ -161,7 +161,7 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.config.chart_font,
+                                "style": self.config.chartFont,
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -172,7 +172,7 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
         }
 
         function formatChartLineStyle() {
-            switch (self.config.chart_line_type) {
+            switch (self.config.lienAreaChartType) {
                 case BICst.CHART_SHAPE.RIGHT_ANGLE:
                     config.plotOptions.area = {
                         curve: false,

@@ -53,7 +53,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         formatCordon();
         formatForSize();
 
-        switch (this.config.rules_display) {
+        switch (this.config.displayRules) {
             case BICst.DISPLAY_RULES.FIXED:
                 delete config.legend;
                 formatFixedLegend();
@@ -69,36 +69,35 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         }
 
         BI.extend(config.plotOptions, {
-            large: this.config.big_data_mode,
-            shadow: this.config.bubble_style !== c.NO_PROJECT
+            large: this.config.bigDataMode,
+            shadow: this.config.bubbleStyle !== c.NO_PROJECT
         });
 
-        config.colors = this.config.chart_color;
+        config.colors = this.config.chartColor;
         config.style = formatChartStyle();
         config.plotOptions.tooltip.formatter = this.config.tooltip;
-        config.plotOptions.bubble.minSize = this.config.bubble_min_size;
-        config.plotOptions.bubble.maxSize = this.config.bubble_max_size;
-        config.plotOptions.dataLabels.enabled = this.config.show_data_label;
+        config.plotOptions.bubble.minSize = this.config.bubbleSizeFrom;
+        config.plotOptions.bubble.maxSize = this.config.bubbleSizeTo;
+        config.plotOptions.dataLabels.enabled = this.config.showDataLabel;
         config.plotOptions.dataLabels.formatter.identifier = "${X}${Y}${SIZE}";
-        config.plotOptions.shadow = this.config.bubble_style !== c.NO_PROJECT;
         config.yAxis = this.yAxis;
 
-        formatNumberLevelInYaxis(this.config.left_y_axis_number_level, c.LEFT_AXIS);
+        formatNumberLevelInYaxis(this.config.leftYNumberLevel, c.LEFT_AXIS);
 
         BI.extend(config.yAxis[0], self.leftAxisSetting(this.config));
 
-        self.formatNumberLevelInXaxis(items, this.config.right_y_axis_number_level);
+        self.formatNumberLevelInXaxis(items, this.config.rightYNumberLevel);
 
         BI.extend(config.xAxis[0], self.rightAxisSetting(this.config));
         config.xAxis[0].title.rotation = 0;
-        config.xAxis[0].gridLineColor = this.config.v_grid_line_color;
+        config.xAxis[0].gridLineColor = this.config.vGridLineColor;
 
         config.chartType = "bubble";
 
         if (BI.isNotEmptyArray(this.config.tooltip)) {
             config.plotOptions.tooltip.formatter = function () {
-                var y = self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level, self.config.num_separators)(this.y);
-                var x = self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level, self.config.right_num_separators)(this.x);
+                var y = self.formatTickInXYaxis(self.config.leftYNumberFormat, self.config.leftYNumberLevel, self.config.leftYSeparator)(this.y);
+                var x = self.formatTickInXYaxis(self.config.rightYNumberFormat, self.config.rightYNumberLevel, self.config.rightYSeparator)(this.x);
                 var size =  BI.contentFormat(this.size,
                     self.formatToolTipAndDataLabel(items[0].settings.format || c.NORMAL, items[0].settings.num_level || c.NORMAL,
                         items[0].settings.unit || "", items[0].settings.num_separators || c.NUM_SEPARATORS));
@@ -111,7 +110,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         if (config.plotOptions.dataLabels.enabled === true) {
             BI.each(items, function (idx, item) {
                 item.dataLabels = {
-                    "style" : self.config.chart_font,
+                    "style" : self.config.chartFont,
                     "align": "outside",
                     "autoAdjust": true,
                     enabled: true,
@@ -141,14 +140,14 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             });
         }
 
-        config.legend.style = BI.extend( this.config.chart_legend_setting, {
-            fontSize:  this.config.chart_legend_setting.fontSize + "px"
+        config.legend.style = BI.extend( this.config.legendStyle, {
+            fontSize:  this.config.legendStyle.fontSize + "px"
         });
 
         return [items, config];
 
         function formatChartStyle() {
-            switch (self.config.chart_style) {
+            switch (self.config.chartStyle) {
                 case BICst.CHART_STYLE.STYLE_GRADUAL:
                     return "gradual";
                 case BICst.CHART_STYLE.STYLE_NORMAL:
@@ -157,12 +156,8 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             }
         }
 
-        function formatForSize() {
-
-        }
-
         function formatLegend() {
-            switch (self.config.chart_legend) {
+            switch (self.config.legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     config.legend.enabled = true;
                     config.legend.position = "bottom";
@@ -193,7 +188,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                 }
             });
 
-            BI.each(self.config.fixed_colors, function (idx, item) {
+            BI.each(self.config.fixedStyle, function (idx, item) {
                 if(idx == 0 && min < item.range.min){
                     range.push({
                         from: min,
@@ -208,7 +203,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                     color: item.color
                 });
 
-                if(idx == (self.config.fixed_colors.length-1) && max > item.range.max){
+                if(idx == (self.config.fixedStyle.length-1) && max > item.range.max){
                    range.push({
                        from: item.range.max,
                        to: max,
@@ -219,7 +214,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
 
             config.rangeLegend.range = range;
 
-            switch (self.config.chart_legend) {
+            switch (self.config.legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     config.rangeLegend.position = "bottom";
                     break;
@@ -250,7 +245,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             config.rangeLegend.range.min = min;
             config.rangeLegend.range.max = max;
 
-            BI.each(self.config.gradient_colors, function (idx, item) {
+            BI.each(self.config.gradientStyle, function (idx, item) {
                 var minProp = (item.range.min - min) / (max - min);
                 var maxProp = (item.range.max - min) / (max - min);
 
@@ -274,7 +269,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                 config.rangeLegend.range.color = color;
             }
 
-            switch (self.config.chart_legend) {
+            switch (self.config.legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     config.rangeLegend.position = "bottom";
                     break;
@@ -331,13 +326,13 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         function formatCordon() {
             BI.each(self.config.cordon, function (idx, cor) {
                 if (idx === 0 && self.xAxis.length > 0) {
-                    var magnify = self.calcMagnify(self.config.x_axis_number_level);
+                    var magnify = self.calcMagnify(1);
                     self.xAxis[0].plotLines = BI.map(cor, function (i, t) {
                         return BI.extend(t, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style" : self.config.chart_font,
+                                "style" : self.config.chartFont,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -348,13 +343,13 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                     var magnify = 1;
                     switch (idx - 1) {
                         case self.constants.LEFT_AXIS:
-                            magnify = self.calcMagnify(self.config.left_y_axis_number_level);
+                            magnify = self.calcMagnify(self.config.leftYNumberLevel);
                             break;
                         case self.constants.RIGHT_AXIS:
-                            magnify = self.calcMagnify(self.config.right_y_axis_number_level);
+                            magnify = self.calcMagnify(self.config.rightYNumberLevel);
                             break;
                         case self.constants.RIGHT_AXIS_SECOND:
-                            magnify = self.calcMagnify(self.config.right_y_axis_second_number_level);
+                            magnify = self.calcMagnify(self.config.rightY2NumberLevel);
                             break;
                     }
                     self.yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
@@ -362,7 +357,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style" : self.config.chart_font,
+                                "style" : self.config.chartFont,
                                 "text": t.text,
                                 "align": "left"
                             }
