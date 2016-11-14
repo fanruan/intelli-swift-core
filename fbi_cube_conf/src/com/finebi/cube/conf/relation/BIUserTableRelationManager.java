@@ -177,7 +177,7 @@ public class BIUserTableRelationManager implements Release {
         boolean foreignResult = ComparatorUtils.equals(relationOne.getForeignTable().getSourceID(), relationTwo.getForeignTable().getSourceID());
         boolean primaryFieldResult = ComparatorUtils.equals(relationOne.getPrimaryField(), relationTwo.getPrimaryField());
         boolean foreignFieldResult = ComparatorUtils.equals(relationOne.getForeignField(), relationTwo.getForeignField());
-        return primaryResult & foreignResult & primaryFieldResult & foreignFieldResult;
+        return primaryResult && foreignResult && primaryFieldResult && foreignFieldResult;
     }
 
 
