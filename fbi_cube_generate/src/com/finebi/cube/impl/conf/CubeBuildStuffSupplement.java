@@ -1,13 +1,16 @@
 package com.finebi.cube.impl.conf;
 
+import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
+import com.fr.bi.stable.utils.file.BIFileUtils;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -73,5 +76,24 @@ public class CubeBuildStuffSupplement extends CubeBuildSpecific {
     @Override
     public String getCubeTaskId() {
         return DBConstant.GLOBAL_UPDATE_TYPE.PART_UPDATE;
+    }
+    /**
+     * rename advanced to temp
+     * rename tCube to advanced
+     * delete temp
+     *
+     * @return
+     */
+    @Override
+    public boolean replaceOldCubes() {
+
+        ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(userId));
+        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(userId));
+        try {
+            BIFileUtils.moveFile(tempConf.getRootURI().getPath().toString(), advancedConf.getRootURI().getPath().toString());
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage());
+        }
+        return true;
     }
 }

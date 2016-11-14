@@ -143,6 +143,52 @@ public class BICube implements Cube {
         }
     }
 
+    @Override
+    public boolean exist(ITableKey tableKey, BIColumnKey field, BICubeTablePath relationPath) {
+        CubeColumnReaderService columnReaderService = null;
+        CubeRelationEntityGetterService basicTableRelation = null;
+        CubeRelationEntityGetterService fieldRelation = null;
+        try {
+            columnReaderService = getCubeColumn(tableKey, field);
+            basicTableRelation = getCubeRelation(tableKey, relationPath);
+
+            if (exist(tableKey, relationPath)) {
+                /**
+                 * 如果基础关联存在，那么需要判断版本。字段版本，必须晚于基础关联版本
+                 */
+                long basicRelationVersion = basicTableRelation.getCubeVersion();
+                if (columnReaderService.existRelationPath(relationPath)) {
+                    fieldRelation = columnReaderService.getRelationIndexGetter(relationPath);
+                    long fieldRelationVersion = fieldRelation.getCubeVersion();
+                    if (basicRelationVersion > fieldRelationVersion) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                } else {
+                    return false;
+                }
+            } else {
+                /**
+                 * 如果基础关联不存在，那么就依据字段关联自身。
+                 */
+                return columnReaderService.existRelationPath(relationPath);
+            }
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e);
+        } finally {
+            if (columnReaderService != null) {
+                columnReaderService.clear();
+            }
+            if (basicTableRelation != null) {
+                basicTableRelation.clear();
+            }
+            if (fieldRelation != null) {
+                fieldRelation.clear();
+            }
+        }
+    }
+
     private boolean isResourceExist(ICubeResourceLocation location) {
         return discovery.isResourceExist(location);
     }
