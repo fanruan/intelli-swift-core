@@ -9,3 +9,15 @@
   color: #808080;
   font-size: 16px;
 }
+.bi-table-chart-manager .widget-tip-pane {
+  z-index: 2;
+  background: #ffffff;
+}
+.bi-table-chart-manager .widget-tip-pane .empty-widget-tip {
+  font-size: 14px;
+  color: #c4c6c6;
+}
+.bi-table-chart-manager .widget-tip-pane .contact-admin-tip {
+  font-size: 16px;
+  color: #c4c6c6;
+}

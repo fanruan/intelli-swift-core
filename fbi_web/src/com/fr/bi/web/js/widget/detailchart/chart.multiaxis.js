@@ -176,7 +176,6 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         var self = this, c = this.constants;
         this.config = self.getChartConfig(options);
         this.options.items = items;
-
         this.yAxis = [];
         BI.each(types, function (idx, type) {
             if (BI.isEmptyArray(type)) {

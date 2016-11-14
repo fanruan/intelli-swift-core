@@ -120,7 +120,7 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
     },
 
     populate: function (src) {
-        var data = BI.deepClone(this.data);
+        var data = BI.clone(this.data);
         if (src) {
             if (this.options.showType === "data_image") {
                 var size = BI.DOM.getImageWidthAndHeight(src);
@@ -128,12 +128,15 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
                 data[0][0].data[0].imageWidth = size.width;
                 data[0][0].data[0].image = BI.Func.getCompleteImageUrl(src)
             } else {
-                var formatter = "function() { return '<div><img width=" + this._constant.ICON_WIDTH + "px height=" + this._constant.ICON_HEIGHT + "px src=" + BI.Func.getCompleteImageUrl(src) + "></div>'}";
                 data[0][0].data[0].dataLabels = {
                     enabled: true,
                     align: "outside",
-                    useHtml: true,
-                    formatter: formatter
+                    styleSetting: {
+                        type: BICst.DATA_LABEL_STYLE_TYPE.IMG,
+                        imgStyle: {
+                            src: src
+                        }
+                    }
                 };
             }
         }

@@ -1450,6 +1450,59 @@
             return drills;
         },
 
+        //根据text dId 获取clicked 处理分组的情况
+        getClickedValue4Group: function(v, dId) {
+            var group = this.getDimensionGroupByID(dId);
+            var fieldType = this.getFieldTypeByDimensionID(dId);
+            var clicked = v;
+
+            if (BI.isNotNull(group)) {
+                if (fieldType === BICst.COLUMN.STRING) {
+                    var details = group.details,
+                        ungroup2Other = group.ungroup2Other,
+                        ungroup2OtherName = group.ungroup2OtherName;
+                    if (ungroup2Other === BICst.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED &&
+                        ungroup2OtherName === v) {
+                        clicked = BICst.UNGROUP_TO_OTHER;
+                    }
+                    BI.some(details, function (i, detail) {
+                        if (detail.value === v) {
+                            clicked = detail.id;
+                            return true;
+                        }
+                    });
+                } else if (fieldType === BICst.COLUMN.NUMBER) {
+                    var groupValue = group.group_value, groupType = group.type;
+                    if (groupType === BICst.GROUP.CUSTOM_NUMBER_GROUP) {
+                        var groupNodes = groupValue.group_nodes, useOther = groupValue.use_other;
+                        if (useOther === v) {
+                            clicked = BICst.UNGROUP_TO_OTHER;
+                        }
+                        BI.some(groupNodes, function (i, node) {
+                            if (node.group_name === v) {
+                                clicked = node.id;
+                                return true;
+                            }
+                        });
+                    }
+                }
+            }
+            return clicked;
+        },
+
+        //获取组件中所有维度的钻取链A->B->C
+        getDrillList: function(wid){
+            var drillMap = BI.Utils.getDrillByID(wid);
+            var map = {};
+            BI.each(drillMap, function (drId, ds) {
+                map[drId] = [];
+                BI.each(ds, function(idx, obj){
+                    map[drId].push(obj.dId)
+                });
+            });
+            return map;
+        },
+
         getWidgetFilterValueByID: function (wid) {
             if (this.isWidgetExistByID(wid)) {
                 return Data.SharingPool.get("widgets", wid, "filter_value") || {};
@@ -2659,7 +2712,7 @@
                             // _src: {field_id: self.getFieldIDByDimensionID(dimensionIds[floor])}
                             _src: self.getDimensionSrcByID(dimensionIds[floor])
                         }];
-                        if (BI.isEmptyObject(child)) {
+                        if (BI.isEmptyObject(child) === true) {
                             var filterObj = {
                                 filter_type: BICst.FILTER_TYPE.AND,
                                 filter_value: []

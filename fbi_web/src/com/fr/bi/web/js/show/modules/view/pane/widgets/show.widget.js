@@ -60,10 +60,6 @@ BIShow.WidgetView = BI.inherit(BI.View, {
         this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function (widget) {
             self.model.set(widget);
         });
-        this.tableChart.on(BI.TableChartManager.EVENT_CLICK_CHART, function (obj) {
-            self._onClickChart(obj);
-        });
-
         this.widget = BI.createWidget({
             type: "bi.absolute",
             element: vessel,
@@ -152,7 +148,12 @@ BIShow.WidgetView = BI.inherit(BI.View, {
     },
 
     _onClickChart: function (obj) {
-        this.chartDrill.populate(obj);
+        //TODO 先与dezi.widget.js统一一下,等bugfix4.0s整理完成后合并
+        if (BI.has(obj, "clicked")) {
+            this.model.set(obj);
+        } else {
+            this.chartDrill.populate(obj);
+        }
     },
 
     _createTools: function () {

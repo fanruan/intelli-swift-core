@@ -29,7 +29,7 @@ public class BIDeleteAnalysisETLTableAction extends AbstractAnalysisETLAction{
                 BIAnalysisETLManagerCenter.getAliasManagerProvider().persistData(userId);
                 BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userId);
             }
-        }.run();
+        }.start();
 
     }
 

@@ -391,6 +391,16 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         return items;
     },
 
+    _formatDataLabel: function (items) {
+        BI.each(items, function (idx, item) {
+            if (item.dataLabels) {
+                item.dataLabels.formatter = {
+                    identifier: item.dataLabels.formatterConf.x + item.dataLabels.formatterConf.y + item.dataLabels.formatterConf.z
+                };
+            }
+        })
+    },
+
     populate: function (items, options) {
         options || (options = {});
         var self = this, c = this.constants;
@@ -400,6 +410,8 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         BI.each(items, function (idx, axisItems) {
             var type = [];
             BI.each(axisItems, function (id, item) {
+                self.defaultFormatDataLabel(item.data);
+                self._formatDataLabel(item.data);
                 type.push(BICst.WIDGET.BUBBLE);
             });
             types.push(type);

@@ -679,6 +679,9 @@ class AbstractWidget {
 
         const parseSimpleFilter = (v)=> {
             var dId = v.dId;
+            if (!dId) {
+                return;
+            }
             var dimension = this.template.getDimensionByDimensionId(dId);
             var dType = dimension.getType();
             switch (dType) {

@@ -18,12 +18,12 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
     _init: function () {
         BIDezi.DetailModel.superclass._init.apply(this, arguments);
         var self = this;
-        BI.Broadcasts.on(BICst.BROADCAST.DATA_LABEL_PREFIX+this.get("id"), function (v) {
+        BI.Broadcasts.on(BICst.BROADCAST.FILTER_LIST_PREFIX+this.get("id"), function (v) {
             self.set("settings", BI.extend(self.get("settings"),{
                 data_label: v
             }));
         });
-        BI.Broadcasts.on(BICst.BROADCAST.IMAGE_CHANGE_PREFIX+this.get("id"), function (v) {
+        BI.Broadcasts.on(BICst.BROADCAST.IMAGE_LIST_PREFIX+this.get("id"), function (v) {
             self.set("settings", BI.extend(self.get("settings"),{
                 images: v
             }));

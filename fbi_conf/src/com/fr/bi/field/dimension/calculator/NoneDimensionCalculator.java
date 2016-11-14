@@ -99,16 +99,6 @@ public class NoneDimensionCalculator implements DimensionCalculator {
     }
 
     @Override
-    public int getBaseTableValueCount(Object value, ICubeDataLoader loader) {
-        return 0;
-    }
-
-    @Override
-    public boolean hasSelfGroup() {
-        return false;
-    }
-
-    @Override
     public IGroup getGroup() {
         return null;
     }

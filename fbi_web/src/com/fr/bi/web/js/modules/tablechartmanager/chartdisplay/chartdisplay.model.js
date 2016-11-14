@@ -631,47 +631,17 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     },
 
     _createDataLabel: function (data, label) {
-        var formatter = "";
-        var chartType = BI.Utils.getWidgetTypeByID(this.options.wId);
         var x = label.style_setting.showLabels[0] ? "${X}": "";
         var y = label.style_setting.showLabels[1] ? "${Y}" : "";
         var z = label.style_setting.showLabels[2] ? "${SIZE}" : "";
-        if (chartType === BICst.WIDGET.BUBBLE) {
-            formatter = {
-                identifier: x + y + z
-            };
-        } else if (chartType === BICst.WIDGET.SCATTER) {
-            formatter = {
-                identifier: x + y
-            };
-        } else {
-            formatter = {
-                identifier: "${VALUE}"
-            };
-        }
-        var dataLabels = {
-            enabled: true,
-            align: "outside",
-            style: {
-                "fontFamily": "inherit",
-                "autoAdjust": true,
-                "color": "#808080",
-                "fontSize": "12px"
+        data.dataLabels = {
+            formatterConf: {
+                x: x,
+                y: y,
+                z: z
             },
-            formatter: formatter
+            styleSetting: label.style_setting
         };
-        switch (label.style_setting.type) {
-            case BICst.DATA_LABEL_STYLE_TYPE.TEXT:
-                dataLabels.style = BI.deepClone(label.style_setting.textStyle);
-                dataLabels.style.overflow = "visible";
-                dataLabels.style.fontSize += "px";
-                break;
-            case BICst.DATA_LABEL_STYLE_TYPE.IMG:
-                dataLabels.useHtml = true;
-                dataLabels.formatter = "function(){return '<img width=\"20px\" height=\"20px\" src=\"" + BI.Func.getCompleteImageUrl(label.style_setting.imgStyle.src) + "\">';}";
-                break;
-        }
-        data.dataLabels = dataLabels;
     },
 
     _createDataImage: function (data, label) {
@@ -723,7 +693,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         }
         if (type === BICst.WIDGET.COMPARE_BAR) {
             var negativeAxis = BI.isNull(cordon[BICst.REGION.TARGET1]) ? [] : cordon[BICst.REGION.TARGET1];
-            var positiveAxis = BI.isNull(cordon[BICst.REGION.TARGET2]) ? [] : cordon[BICst.REGION.TARGET2]
+            var positiveAxis = BI.isNull(cordon[BICst.REGION.TARGET2]) ? [] : cordon[BICst.REGION.TARGET2];
             result.push(BI.concat(negativeAxis, positiveAxis));
             result.push(BI.isNull(cordon[BICst.REGION.DIMENSION1]) ? [] : cordon[BICst.REGION.DIMENSION1]);
             return result;
@@ -807,46 +777,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 });
             }
         });
-    },
-
-    //clicked 中的值，如果是分组名使用分组对应的id
-    _parseClickedValue4Group: function (v, dId) {
-        var group = BI.Utils.getDimensionGroupByID(dId);
-        var fieldType = BI.Utils.getFieldTypeByDimensionID(dId);
-        var clicked = v;
-
-        if (BI.isNotNull(group)) {
-            if (fieldType === BICst.COLUMN.STRING) {
-                var details = group.details,
-                    ungroup2Other = group.ungroup2Other,
-                    ungroup2OtherName = group.ungroup2OtherName;
-                if (ungroup2Other === BICst.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED &&
-                    ungroup2OtherName === v) {
-                    clicked = BICst.UNGROUP_TO_OTHER;
-                }
-                BI.some(details, function (i, detail) {
-                    if (detail.value === v) {
-                        clicked = detail.id;
-                        return true;
-                    }
-                });
-            } else if (fieldType === BICst.COLUMN.NUMBER) {
-                var groupValue = group.group_value, groupType = group.type;
-                if (groupType === BICst.GROUP.CUSTOM_NUMBER_GROUP) {
-                    var groupNodes = groupValue.group_nodes, useOther = groupValue.use_other;
-                    if (useOther === v) {
-                        clicked = BICst.UNGROUP_TO_OTHER;
-                    }
-                    BI.some(groupNodes, function (i, node) {
-                        if (node.group_name === v) {
-                            clicked = node.id;
-                            return true;
-                        }
-                    });
-                }
-            }
-        }
-        return clicked;
     },
 
     _calculateValue: function (data, type) {
@@ -1032,7 +962,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 dId = obj.targetIds;
                 clicked = [{
                     dId: clickeddId,
-                    value: [this._parseClickedValue4Group(obj.seriesName, clickeddId)]
+                    value: [BI.Utils.getClickedValue4Group(obj.seriesName, clickeddId)]
                 }];
                 break;
             case BICst.WIDGET.MAP:
@@ -1040,19 +970,19 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 dId = obj.targetIds;
                 clicked = [{
                     dId: clickeddId,
-                    value: [this._parseClickedValue4Group(obj.x, clickeddId)]
+                    value: [BI.Utils.getClickedValue4Group(obj.x, clickeddId)]
                 }];
                 break;
             default:
                 dId = obj.targetIds;
                 clicked = [{
                     dId: clickeddId,
-                    value: [this._parseClickedValue4Group(obj.value || obj.x, clickeddId)]
+                    value: [BI.Utils.getClickedValue4Group(obj.value || obj.x, clickeddId)]
                 }];
                 if (BI.isNotNull(this.seriesDid)) {
                     clicked.push({
                         dId: obj.dId || this.crossDimIds[0],
-                        value: [this._parseClickedValue4Group(obj.seriesName, obj.dId || this.crossDimIds[0])]
+                        value: [BI.Utils.getClickedValue4Group(obj.seriesName, obj.dId || this.crossDimIds[0])]
                     })
                 }
                 break;

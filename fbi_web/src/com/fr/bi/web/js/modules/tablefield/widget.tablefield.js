@@ -122,6 +122,7 @@ BI.TableFieldInfo = BI.inherit(BI.Widget, {
         this.usedFields = this._getUsedFieldsFromTableInfo(this.tableInfo);
         this.translations = this.tableInfo.translations;
         this.isUsableArray = [];
+        this.transNames = [];
         var sortedFields = this._sortFields();
         BI.each(sortedFields, function (i, field) {
             var fieldType = field.field_type, typeCls = "chart-string-font";
@@ -229,7 +230,12 @@ BI.TableFieldInfo = BI.inherit(BI.Widget, {
             self.fireEvent(BI.TableFieldInfo.EVENT_ERROR);
         });
         transName.on(BI.SignEditor.EVENT_VALID, function(){
-            self.fireEvent(BI.TableFieldInfo.EVENT_VALID);
+            var res = BI.any(self.transNames, function(idx, editor){
+                return editor.isValid() === false;
+            });
+            if(res === false){
+                self.fireEvent(BI.TableFieldInfo.EVENT_VALID);
+            }
         })
         transName.on(BI.SignEditor.EVENT_CHANGE, function () {
             transName.setTitle(transName.getValue());
@@ -240,6 +246,7 @@ BI.TableFieldInfo = BI.inherit(BI.Widget, {
             delete self.translations[fieldId];
             self.fireEvent(BI.TableFieldInfo.EVENT_TRANSLATION_CHANGE, self.translations);
         });
+        this.transNames.push(transName);
         return BI.createWidget({
             type: "bi.center_adapt",
             items: [transName]

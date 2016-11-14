@@ -17,9 +17,8 @@ BI.SelectTreeLabel = BI.inherit(BI.Widget, {
             element: this.element,
             itemsCreator: function (op, callback) {
                 var data = {};
-                data.id = op.id;
                 data.floors = op.floor;
-                data.parent_values = [op.value];
+                data.parentValues = op.parentValues;
                 if(BI.isEmptyObject(op)) {
                     callback({});
                 } else {
@@ -55,8 +54,11 @@ BI.SelectTreeLabel = BI.inherit(BI.Widget, {
         });
         var data = {};
         data.floors = 0;
-        data.selected_values = v;
-        data.parent_values = [];
+        data.selectedValues = v;
+        data.parentValues = [{
+            id: "",
+            value: []
+        }];
         BI.Utils.getWidgetDataByID(o.wId, function (jsonData) {
             self.treeLabel.populate({
                 items: jsonData.items,

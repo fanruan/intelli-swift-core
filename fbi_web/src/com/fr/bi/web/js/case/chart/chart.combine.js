@@ -58,7 +58,10 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             var data = this.options;
             data.toolTipRect = this.getTooltipRect();
             var items = o.popupItemsGetter(data);
-            if (items && items.length > 0) {
+            if(items && items.length === 1) {
+                self.fireEvent(BI.CombineChart.EVENT_ITEM_CLICK, BI.extend({}, items[0], data));
+            }
+            if (items && items.length > 1) {
                 self._createPopup(items, data.toolTipRect, data);
             }
             self.fireEvent(BI.CombineChart.EVENT_CHANGE, data);

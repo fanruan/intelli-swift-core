@@ -26,12 +26,17 @@ public class BIGetUserEditAuthAction extends ActionNoSessionCMD {
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
-        JSONArray ja = FBIConfig.getInstance().getUserAuthorAttr().getUserAuthJaByMode(BIUserAuthorAttr.EDIT, StringUtils.EMPTY);
         JSONObject result = new JSONObject();
-        for (int i = 0; i < ja.length(); i++) {
-            JSONObject jo = ja.getJSONObject(i);
-            if (ComparatorUtils.equals(jo.getString("username"), UserControl.getInstance().getUser(userId).getUsername())) {
-                result.put("result", true);
+        if (ComparatorUtils.equals(userId, UserControl.getInstance().getSuperManagerID()) ||
+                ComparatorUtils.equals(FBIConfig.getInstance().getUserAuthorAttr().getBIAuthUserLimitByMode(BIUserAuthorAttr.EDIT), BIUserAuthorAttr.NO_LIMIT)) {
+            result.put("result", true);
+        } else {
+            JSONArray ja = FBIConfig.getInstance().getUserAuthorAttr().getUserAuthJaByMode(BIUserAuthorAttr.EDIT, StringUtils.EMPTY);
+            for (int i = 0; i < ja.length(); i++) {
+                JSONObject jo = ja.getJSONObject(i);
+                if (ComparatorUtils.equals(jo.getString("username"), UserControl.getInstance().getUser(userId).getUsername())) {
+                    result.put("result", true);
+                }
             }
         }
         WebUtils.printAsJSON(res, result);

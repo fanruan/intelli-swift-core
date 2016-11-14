@@ -13,10 +13,14 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         var self = this, wId = this.options.wId;
 
         this.wrapper = BI.createWidget({
-            type: "bi.left",
+            type: "bi.button_group",
             cls: "drill-wrapper",
-            hgap: 5,
-            vgap: 5
+            layouts: [{
+                type: "bi.left",
+                cls: "drill-wrapper",
+                hgap: 5,
+                vgap: 5
+            }]
         });
         this.wrapper.element.hover(function () {
             self._doHide = false;
@@ -33,6 +37,23 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
 
         this._doHide = true;
         this._debounce2Hide = BI.debounce(BI.bind(this._hideDrill, this), 3000);
+
+        BI.Broadcasts.on(BICst.BROADCAST.CHART_CLICK_PREFIX + wId, function (obj) {
+            var showDrill = self._canChartDrillShow();
+            if (showDrill === false) {
+                self.pushButton.setPushDown();
+            } else {
+                self.pushButton.setPushUp();
+            }
+            self.setVisible(showDrill);
+            self.wrapper.setVisible(showDrill);
+            BI.each(self.wrapper.getAllButtons(), function (idx, drill) {
+                drill.setValue(obj);
+                drill.populate();
+            });
+            self._doHide = true;
+            self._debounce2Hide();
+        });
 
         BI.createWidget({
             type: "bi.horizontal_auto",
@@ -101,12 +122,14 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         return showDrill;
     },
 
-    _checkUPDrillEmpty: function (wid) {
-        var wType = BI.Utils.getWidgetTypeByID(wid);
-        if (wType < 5 || wType === BICst.WIDGET.MAP) {
-            return false
-        }
-        var drillMap = BI.Utils.getDrillByID(wid);
+    _onClickPush: function (isVisible) {
+        this.wrapper.setVisible(isVisible);
+        isVisible ? this.pushButton.setPushUp() : this.pushButton.setPushDown();
+    },
+
+    _checkUPDrillEmpty: function () {
+        var wId = this.options.wId;
+        var drillMap = BI.Utils.getDrillByID(wId);
         var upDrillID = null, dId = null;
         BI.each(drillMap, function (drId, ds) {
             var rType = BI.Utils.getRegionTypeByDimensionID(drId);
@@ -127,147 +150,69 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         return BI.isNull(upDrillID)
     },
 
-    _onClickPush: function (isVisible) {
-        this.wrapper.setVisible(isVisible);
-        isVisible ? this.pushButton.setPushUp() : this.pushButton.setPushDown();
-    },
-
-    _onClickDrill: function (dId, value, drillId) {
-        var wId = this.options.wId;
-        var drillMap = BI.Utils.getDrillByID(wId);
-        //value 存当前的过滤条件——因为每一次钻取都要带上所有父节点的值
-        //当前钻取的根节点
-        var rootId = dId;
-        BI.each(drillMap, function (drId, ds) {
-            if (dId === drId || (ds.length > 0 && ds[ds.length - 1].dId === dId)) {
-                rootId = drId;
-            }
-        });
-
-        var drillOperators = drillMap[rootId] || [];
-        //上钻
-        if (BI.isNull(drillId)) {
-            drillOperators.pop();
-        } else {
-            drillOperators.push({
-                dId: drillId,
-                values: [{
-                    dId: dId,
-                    value: [value]
-                }]
-            });
-        }
-        drillMap[rootId] = drillOperators;
-        this.fireEvent(BI.ChartDrill.EVENT_CHANGE, {clicked: BI.extend(BI.Utils.getLinkageValuesByID(wId), drillMap)});
-    },
-
-    populate: function (obj) {
+    populate: function () {
         var self = this, wId = this.options.wId;
-        var showDrill = this._canChartDrillShow();
-        this.setVisible(showDrill && (!this._checkUPDrillEmpty(wId) || BI.isNotNull(obj)));
-
-        if (showDrill === false || (BI.isNull(obj) && this._checkUPDrillEmpty(wId))) {
-            this.pushButton.setPushDown();
+        var wType = BI.Utils.getWidgetTypeByID(wId);
+        if (wType === BICst.WIDGET.TABLE ||
+            wType === BICst.WIDGET.CROSS_TABLE ||
+            wType === BICst.WIDGET.COMPLEX_TABLE ||
+            wType === BICst.WIDGET.DETAIL ||
+            wType === BICst.WIDGET.MAP) {
+            this.setVisible(false);
             return;
         }
 
-        this.pushButton.setPushUp();
-
-        if (BI.isNull(obj) && !this._checkUPDrillEmpty(wId)) {
-            this.wrapper.empty();
-            var drillDownMap = BI.Utils.getDrillByID(wId);
-            var drillUpID;
-
-            BI.each(drillDownMap, function (drId, drValue) {
-                drillUpID = drValue[drValue.length - 1].dId;
-            });
-
+        this.setVisible(self._canChartDrillShow() && !self._checkUPDrillEmpty());
+        var currentDrilldIds = [];
+        //看一下钻取
+        var drillList = BI.Utils.getDrillList(wId);
+        BI.each(BI.Utils.getAllUsableDimDimensionIDs(wId), function (i, dim) {
+            if (BI.has(drillList, dim) && BI.isNotEmptyArray(drillList[dim])) {
+                var arr = drillList[dim];
+                currentDrilldIds.push(arr[arr.length - 1]);
+            } else {
+                currentDrilldIds.push(dim);
+            }
+        });
+        var width = 0;
+        var items = [];
+        BI.each(currentDrilldIds, function (idx, dId) {
             var drill = BI.createWidget({
                 type: "bi.chart_drill_cell",
-                dId: drillUpID,
-                value: BI.i18nText("BI-Unchosen"),
-                disableDownButton: true
+                dId: dId
             });
-            drill.on(BI.ChartDrillCell.EVENT_DRILL_UP, function () {
-                self._onClickDrill(drillUpID);
+            drill.on(BI.ChartDrillCell.EVENT_DRILL_UP, function (v) {
+                self.fireEvent(BI.ChartDrill.EVENT_CHANGE, v);
             });
-            this.wrapper.addItem(drill);
-            this.wrapper.element.width(190);
-            this.wrapper.setVisible(true);
+            drill.on(BI.ChartDrillCell.EVENT_DRILL_DOWN, function (v) {
+                self.fireEvent(BI.ChartDrill.EVENT_CHANGE, v);
+            });
+            drill.populate();
+            items.push(drill);
+            width += 190;
+        });
+        this.wrapper.populate(items);
+        this.wrapper.element.width(width);
+        this.wrapper.setVisible(true);
+
+        //如果已经下钻过了
+        if (!this._checkUPDrillEmpty(wId)) {
+            BI.each(this.wrapper.getAllButtons(), function (idx, drill) {
+                drill.setValue(BI.i18nText("BI-Unchosen"));
+                drill.setDrillDownEnabled(false);
+            });
             this._onClickPush(false);
             return;
         }
 
-        var dims = BI.Utils.getAllUsableDimDimensionIDs(wId);
-        var classification = null, series = null;
-        BI.each(dims, function (i, dim) {
-            if (BI.Utils.getRegionTypeByDimensionID(dim) === BICst.REGION.DIMENSION1) {
-                classification = dim;
-            }
-            if (BI.Utils.getRegionTypeByDimensionID(dim) === BICst.REGION.DIMENSION2) {
-                series = dim;
-            }
-        });
-
-        //看一下钻取
-        var drillMap = BI.Utils.getDrillByID(wId);
-        BI.each(drillMap, function (drId, ds) {
-            var rType = BI.Utils.getRegionTypeByDimensionID(drId);
-            if (rType === BICst.REGION.DIMENSION1 && ds.length > 0) {
-                classification = ds[ds.length - 1].dId;
-            }
-            if (rType === BICst.REGION.DIMENSION2 && ds.length > 0) {
-                series = ds[ds.length - 1].dId;
-            }
-        });
-
-        this.wrapper.empty();
-        var width = 0;
-        if (BI.isNotNull(classification)) {
-            var wType = BI.Utils.getWidgetTypeByID(wId);
-            var value = obj.x;
-            switch (wType) {
-                case BICst.WIDGET.BUBBLE:
-                case BICst.WIDGET.SCATTER:
-                    value = obj.seriesName;
-                    break;
-                default:
-                    value = obj.value || obj.x;
-                    break;
-            }
-            var cDrill = BI.createWidget({
-                type: "bi.chart_drill_cell",
-                dId: classification,
-                value: value
-            });
-            cDrill.on(BI.ChartDrillCell.EVENT_DRILL_UP, function () {
-                self._onClickDrill(classification, value);
-            });
-            cDrill.on(BI.ChartDrillCell.EVENT_DRILL_DOWN, function (drillId) {
-                self._onClickDrill(classification, value, drillId);
-            });
-            this.wrapper.addItem(cDrill);
-            width += 190;
-        }
-        if (BI.isNotNull(series)) {
-            var sDrill = BI.createWidget({
-                type: "bi.chart_drill_cell",
-                dId: series,
-                value: obj.seriesName
-            });
-            sDrill.on(BI.ChartDrillCell.EVENT_DRILL_UP, function () {
-                self._onClickDrill(series, obj.seriesName);
-            });
-            sDrill.on(BI.ChartDrillCell.EVENT_DRILL_DOWN, function (drillId) {
-                self._onClickDrill(series, obj.seriesName, drillId);
-            });
-            this.wrapper.addItem(sDrill);
-            width += 190;
-        }
-        this.wrapper.element.width(width);
-        this.wrapper.setVisible(true);
         this._debounce2Hide();
-    },
+    }
 });
+
+BI.extend(BI.ChartDrill, {
+    REQ_GET_DATA_LENGTH: 0,
+    REQ_GET_ALL_DATA: -1
+});
+
 BI.ChartDrill.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.chart_drill", BI.ChartDrill);

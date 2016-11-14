@@ -60,7 +60,10 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     }
                 });
             }
-            self.model.set("clicked", clicked);
+            self.model.set("clicked", clicked, {
+                notrefresh: true
+            });
+            self._refreshTableAndFilter();
         });
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
             self.model.set("clicked", {});
@@ -194,10 +197,6 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         this.chartDrill.on(BI.ChartDrill.EVENT_CHANGE, function (widget) {
             self.model.set(widget);
         });
-        this.chartDrill.populate();
-    },
-
-    _onClickChart: function () {
         this.chartDrill.populate();
     },
 
@@ -346,9 +345,6 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
 
         this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function (widget) {
             self.model.set(widget);
-        });
-        this.tableChart.on(BI.TableChartManager.EVENT_CLICK_CHART, function (obj) {
-            self._onClickChart(obj);
         });
 
         this.widget = BI.createWidget({

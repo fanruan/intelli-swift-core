@@ -178,6 +178,16 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         }
     },
 
+    _formatDataLabel: function (items) {
+        BI.each(items, function (idx, item) {
+            if (item.dataLabels) {
+                item.dataLabels.formatter = {
+                    identifier: item.dataLabels.formatterConf.x + item.dataLabels.formatterConf.y
+                };
+            }
+        })
+    },
+
     populate: function (items, options) {
         options || (options = {});
         var self = this, c = this.constants;
@@ -187,6 +197,8 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         BI.each(items, function (idx, axisItems) {
             var type = [];
             BI.each(axisItems, function (id, item) {
+                self.defaultFormatDataLabel(item.data);
+                self._formatDataLabel(item.data);
                 type.push(BICst.WIDGET.SCATTER);
             });
             types.push(type);

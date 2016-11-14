@@ -316,9 +316,11 @@ BI.PathChooser = BI.inherit(BI.Widget, {
                     var index2 = BI.indexOf(regions, child.get("region"));
                     //交换区域
                     if (index1 > index2) {
-                        var t = regions[index1];
-                        regions[index1] = regions[index2];
-                        regions[index2] = t;
+                        var t = regions[index2];
+                        for(var j =index2; j < index1; j++){
+                            regions[j] = regions[j+1];
+                        }
+                        regions[index1] = t;
                     }
                 } else {
                     regions.push(child.get("region"));
