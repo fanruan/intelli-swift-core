@@ -48,11 +48,13 @@ import java.util.concurrent.TimeUnit;
  */
 public class BIRelationIndexGenerator extends BIProcessor {
     protected Cube cube;
+    protected CubeChooser cubeChooser;
     protected BICubeRelation relation;
     private static final Logger logger = LoggerFactory.getLogger(BIRelationIndexGenerator.class);
 
-    public BIRelationIndexGenerator(Cube cube, BICubeRelation relation) {
+    public BIRelationIndexGenerator(Cube cube, Cube integrityCube, BICubeRelation relation) {
         this.cube = cube;
+        this.cubeChooser = new CubeChooser(cube, integrityCube);
         this.relation = relation;
     }
 
@@ -165,6 +167,15 @@ public class BIRelationIndexGenerator extends BIProcessor {
         cube.clear();
     }
 
+
+    private GroupValueIndex getTableShowIndex(CubeTableEntityGetterService table) {
+        if (null != table.getRemovedList() && table.getRemovedList().size != 0) {
+            return GVIFactory.createGroupValueIndexBySimpleIndex(table.getRemovedList()).NOT(table.getRowCount());
+        } else {
+            return GVIFactory.createAllShowIndexGVI(table.getRowCount());
+        }
+    }
+
     private void buildRelationIndex() {
         CubeTableEntityGetterService primaryTable = null;
         CubeTableEntityGetterService foreignTable = null;
@@ -177,17 +188,18 @@ public class BIRelationIndexGenerator extends BIProcessor {
             BIColumnKey foreignKey = relation.getForeignField();
             ITableKey primaryTableKey = relation.getPrimaryTable();
             ITableKey foreignTableKey = relation.getForeignTable();
-            primaryTable = cube.getCubeTable(primaryTableKey);
-            foreignTable = cube.getCubeTable(foreignTableKey);
-            pTableAdapter = new BICubeTableAdapter(this.cube, getTableRelation(relation).getPrimaryTable());
+            primaryTable = cubeChooser.getCubeTable(primaryTableKey);
+            foreignTable = cubeChooser.getCubeTable(foreignTableKey);
+
+
             /**
              * 关联的主字段对象
              */
-            primaryColumn = (ICubeColumnEntityService) cube.getCubeColumn(primaryTableKey, primaryKey);
+            primaryColumn = (ICubeColumnEntityService) primaryTable.getColumnDataGetter(primaryKey);
             /**
              * 关联的子字段对象
              */
-            foreignColumn = (ICubeColumnEntityService) cube.getCubeColumn(foreignTableKey, foreignKey);
+            foreignColumn = (ICubeColumnEntityService) foreignTable.getColumnDataGetter(foreignKey);
             /**
              * 表间关联对象
              */
@@ -212,7 +224,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
             int[] reverse = new int[foreignTable.getRowCount()];
             Arrays.fill(reverse, NIOConstant.INTEGER.NULL_VALUE);
             Stopwatch stopwatch = Stopwatch.createStarted();
-            GroupValueIndex allShowIndex = pTableAdapter.getAllShowIndex();
+            GroupValueIndex allShowIndex = getTableShowIndex(primaryTable);
             for (int index = 0; index < primaryGroupSize; index++) {
                 /**
                  * 关联主字段的value值

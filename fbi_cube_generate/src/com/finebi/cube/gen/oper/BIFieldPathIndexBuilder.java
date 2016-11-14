@@ -31,7 +31,7 @@ public class BIFieldPathIndexBuilder extends BITablePathIndexBuilder {
     }
 
     public BIFieldPathIndexBuilder(Cube cube, BIColumnKey columnKey, BICubeTablePath relationPath) {
-        super(cube, relationPath);
+        super(cube, null, relationPath);
         this.field = columnKey;
     }
 
@@ -44,6 +44,7 @@ public class BIFieldPathIndexBuilder extends BITablePathIndexBuilder {
     @Override
     public void release() {
         cube.clear();
+        cubeChooser.clear();
     }
 
     private void buildFieldPathIndex() {
@@ -82,7 +83,7 @@ public class BIFieldPathIndexBuilder extends BITablePathIndexBuilder {
 
     private CubeColumnReaderService buildPrimaryColumnReader() throws BITablePathEmptyException, BICubeColumnAbsentException {
         ITableKey primaryTableKey = relationPath.getFirstRelation().getPrimaryTable();
-        return cube.getCubeColumn(primaryTableKey, field);
+        return cubeChooser.getCubeColumn(primaryTableKey, field);
     }
 
 
@@ -91,14 +92,14 @@ public class BIFieldPathIndexBuilder extends BITablePathIndexBuilder {
         BICubeTablePath frontRelation = new BICubeTablePath();
         frontRelation.copyFrom(relationPath);
         ITableKey firstPrimaryKey = relationPath.getFirstRelation().getPrimaryTable();
-        return (ICubeRelationEntityService) cube.getCubeColumn(firstPrimaryKey, field).getRelationIndexGetter(frontRelation);
+        return (ICubeRelationEntityService) cubeChooser.getCubeColumn(firstPrimaryKey, field).getRelationIndexGetter(frontRelation);
     }
 
     private CubeRelationEntityGetterService buildTableRelationPathReader() throws
             BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException, BITablePathEmptyException {
         ITableKey firstPrimaryKey = relationPath.getFirstRelation().getPrimaryTable();
         BICubeTablePath tableRelationPath = buildTableRelationPath();
-        return cube.getCubeRelation(firstPrimaryKey, tableRelationPath);
+        return cubeChooser.getCubeRelation(firstPrimaryKey, tableRelationPath);
     }
 
     private BICubeTablePath buildTableRelationPath() throws BITablePathEmptyException {

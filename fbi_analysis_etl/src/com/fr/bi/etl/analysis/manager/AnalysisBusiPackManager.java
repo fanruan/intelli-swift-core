@@ -14,6 +14,7 @@ import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.BITableID;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -93,6 +94,16 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     @Override
     public void addPackage(long userId, BIBusinessPackage biBusinessPackage) throws BIPackageDuplicateException {
+
+    }
+
+    @Override
+    public void finishGenerateCubes(long userId, Set<CubeTableSource> absentTables) {
+
+    }
+
+    @Override
+    public void endBuildingCube(long userId, Set<CubeTableSource> absentTable) {
 
     }
 

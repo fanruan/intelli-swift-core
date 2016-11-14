@@ -309,58 +309,6 @@ public class CubeBuildStuffSpecificTable extends CubeBuildSpecific {
 
 
     @Override
-    public boolean copyFileFromOldCubes() {
-        try {
-            ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(userId));
-            ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(userId));
-            BICubeResourceRetrieval tempResourceRetrieval = new BICubeResourceRetrieval(tempConf);
-            BICubeResourceRetrieval advancedResourceRetrieval = new BICubeResourceRetrieval(advancedConf);
-            if (new File(tempConf.getRootURI().getPath()).exists()) {
-                BIFileUtils.delete(new File(tempConf.getRootURI().getPath()));
-            }
-            new File(tempConf.getRootURI().getPath()).mkdirs();
-            Set<CubeTableSource> tableSet = choseTables();
-            for (CubeTableSource source : tableSet) {
-                copyTableFile(tempResourceRetrieval, advancedResourceRetrieval, source);
-            }
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
-        }
-        return true;
-    }
-
-    private Set<CubeTableSource> choseTables() {
-        Set<CubeTableSource> tables = new HashSet<CubeTableSource>();
-        tables.addAll(tableInConstruction);
-        for (BITableSourceRelation relation : relationInConstruction) {
-            tables.add(relation.getForeignTable());
-            tables.add(relation.getPrimaryTable());
-        }
-        for (BITableSourceRelationPath path : pathInConstruction) {
-            try {
-                for (BITableSourceRelation relation : path.getAllRelations()) {
-                    tables.add(relation.getForeignTable());
-                    tables.add(relation.getPrimaryTable());
-                }
-                tables.add(path.getLastRelation().getForeignTable());
-            } catch (BITablePathEmptyException e) {
-                logger.error(e.getMessage(), e);
-                continue;
-            }
-        }
-        tables = set2Set(calculateTableSource(tables));
-        return filterDuplicateTable(tables);
-    }
-
-    private void copyTableFile(ICubeResourceRetrievalService tempResourceRetrieval, ICubeResourceRetrievalService advancedResourceRetrieval, CubeTableSource source) throws BICubeResourceAbsentException, BITablePathEmptyException, IOException {
-        ICubeResourceLocation from = advancedResourceRetrieval.retrieveResource(new BITableKey(source));
-        ICubeResourceLocation to = tempResourceRetrieval.retrieveResource(new BITableKey(source));
-        if (new File(from.getAbsolutePath()).exists()) {
-            BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
-        }
-    }
-
-    @Override
     public boolean replaceOldCubes() {
         ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(userId));
         ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(userId));

@@ -1,14 +1,25 @@
 package com.finebi.cube.impl.conf;
 
+import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.AbstractCubeBuildStuff;
+import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.CubeBuildStuff;
+import com.finebi.cube.exception.BICubeResourceAbsentException;
 import com.finebi.cube.gen.oper.BIRelationIDUtils;
 import com.finebi.cube.gen.oper.BuildLogHelper;
+import com.finebi.cube.location.BICubeResourceRetrieval;
+import com.finebi.cube.location.ICubeResourceLocation;
+import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.relation.*;
+import com.finebi.cube.structure.BITableKey;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.exception.BITablePathEmptyException;
+import com.fr.bi.stable.utils.file.BIFileUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -148,7 +159,6 @@ public abstract class CubeBuildSpecific extends AbstractCubeBuildStuff implement
     }
 
 
-
     protected Set<BICubeGenerateRelationPath> calculatePathDepends(Set<BITableSourceRelationPath> pathInConstruction, Set<BITableSourceRelation> relationInConstruction) {
         return calculateDependTool.calRelationPath(pathInConstruction, relationInConstruction);
     }
@@ -245,5 +255,57 @@ public abstract class CubeBuildSpecific extends AbstractCubeBuildStuff implement
     @Override
     public Set<BICubeGenerateRelation> getCubeGenerateRelationSet() {
         return this.relationDepends;
+    }
+
+    protected void copyTableFile(ICubeResourceRetrievalService tempResourceRetrieval, ICubeResourceRetrievalService advancedResourceRetrieval, CubeTableSource source) throws BICubeResourceAbsentException, BITablePathEmptyException, IOException {
+        ICubeResourceLocation from = advancedResourceRetrieval.retrieveResource(new BITableKey(source));
+        ICubeResourceLocation to = tempResourceRetrieval.retrieveResource(new BITableKey(source));
+        if (new File(from.getAbsolutePath()).exists()) {
+            BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
+        }
+    }
+
+    protected Set<CubeTableSource> choseTables() {
+        Set<CubeTableSource> tables = new HashSet<CubeTableSource>();
+        tables.addAll(tableInConstruction);
+        for (BITableSourceRelation relation : relationInConstruction) {
+            tables.add(relation.getForeignTable());
+            tables.add(relation.getPrimaryTable());
+        }
+        for (BITableSourceRelationPath path : pathInConstruction) {
+            try {
+                for (BITableSourceRelation relation : path.getAllRelations()) {
+                    tables.add(relation.getForeignTable());
+                    tables.add(relation.getPrimaryTable());
+                }
+                tables.add(path.getLastRelation().getForeignTable());
+            } catch (BITablePathEmptyException e) {
+                logger.error(e.getMessage(), e);
+                continue;
+            }
+        }
+        tables = set2Set(calculateTableSource(tables));
+        return filterDuplicateTable(tables);
+    }
+
+    @Override
+    public boolean copyFileFromOldCubes() {
+        try {
+            ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(userId));
+            ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(userId));
+            BICubeResourceRetrieval tempResourceRetrieval = new BICubeResourceRetrieval(tempConf);
+            BICubeResourceRetrieval advancedResourceRetrieval = new BICubeResourceRetrieval(advancedConf);
+            if (new File(tempConf.getRootURI().getPath()).exists()) {
+                BIFileUtils.delete(new File(tempConf.getRootURI().getPath()));
+            }
+            new File(tempConf.getRootURI().getPath()).mkdirs();
+            Set<CubeTableSource> tableSet = choseTables();
+            for (CubeTableSource source : tableSet) {
+                copyTableFile(tempResourceRetrieval, advancedResourceRetrieval, source);
+            }
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage());
+        }
+        return true;
     }
 }
