@@ -348,10 +348,10 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Axis_Line_Color"),
                     cls: "attr-name"
-                }, {
+                },/* {
                     type: "bi.vertical_adapt",
                     items: [this.leftYLineColor]
-                }, {
+                }, */{
                     type: "bi.vertical_adapt",
                     items: [this.leftYReverse]
                 }, {
@@ -562,10 +562,10 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Axis_Line_Color"),
                     cls: "attr-name"
-                }, {
+                }, /*{
                     type: "bi.vertical_adapt",
                     items: [this.rightYLineColor]
-                }, {
+                }, */{
                     type: "bi.vertical_adapt",
                     items: [this.rightYReverse]
                 }, {
@@ -777,10 +777,10 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Axis_Line_Color"),
                     cls: "attr-name"
-                }, {
+                }, /*{
                     type: "bi.vertical_adapt",
                     items: [this.rightY2LineColor]
-                }, {
+                }, */{
                     type: "bi.vertical_adapt",
                     items: [this.rightY2Reverse]
                 }, {
