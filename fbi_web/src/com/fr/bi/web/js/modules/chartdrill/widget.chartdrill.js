@@ -51,6 +51,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
                 drill.setValue(obj);
                 drill.populate();
             });
+            self._debounce2Hide();
         });
 
         BI.createWidget({

@@ -88,9 +88,6 @@ BI.Maximization4ShowChartPane = BI.inherit(BI.Widget, {
         this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function (widget) {
             self.fireEvent(BI.Maximization4ShowChartPane.EVENT_SET, widget);
         });
-        this.tableChart.on(BI.TableChartManager.EVENT_CLICK_CHART, function (obj) {
-            self._onClickChart(obj);
-        });
     },
 
     _onClickChart: function (obj) {
