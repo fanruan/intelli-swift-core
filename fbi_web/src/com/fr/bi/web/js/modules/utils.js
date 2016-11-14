@@ -1376,9 +1376,9 @@
                 BICst.DEFAULT_CHART_SETTING.customScale
         },
 
-        getWSRightY2ShowCustomScaleByID: function (wid) {
+        getWSChartRightY2CustomScaleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_z_custom_scale) ? ws.show_z_custom_scale :
+            return BI.isNotNull(ws.rightY2CustomScale) ? ws.rightY2CustomScale :
                 BICst.DEFAULT_CHART_SETTING.customScale;
         },
 
