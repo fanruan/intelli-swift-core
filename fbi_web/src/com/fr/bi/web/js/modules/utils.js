@@ -3068,8 +3068,14 @@
                         if (!self.isCalculateTargetByDimensionID(tId)) {
                             //维度和某个指标之间没有设置路径
                             if (!BI.has(dimensionMap, tId)) {
-                                valid = false;
-                                return true;
+                                var fieldId = BI.Utils.getFieldIDByDimensionID(dId);
+                                var paths = BI.Utils.getPathsFromFieldAToFieldB(fieldId, BI.Utils.getFieldIDByDimensionID(tId))
+                                if(paths.length === 1){
+                                    widget.dimensions[dId].dimension_map[tId] = {_src: {field_id: fieldId}, target_relation: paths};
+                                }else{
+                                    valid = false;
+                                    return true;
+                                }
                             } else {
                                 var targetRelation = dimensionMap[tId].target_relation;
                                 BI.any(targetRelation, function (id, path) {

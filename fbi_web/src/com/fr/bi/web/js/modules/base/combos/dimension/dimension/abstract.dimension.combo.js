@@ -46,9 +46,32 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var dimensionMap = BI.Utils.getDimensionMapByDimensionID(o.dId);
         var tIds = BI.Utils.getAllTargetDimensionIDs(BI.Utils.getWidgetIDByDimensionID(o.dId));
         var res = BI.find(tIds, function (idx, tId) {
-            return !BI.has(dimensionMap, tId) && !BI.Utils.isCalculateTargetByDimensionID(tId);
+            return BI.Utils.isCalculateTargetByDimensionID(tId) || !checkDimAndTarRelationValidInCurrentPaths(o.dId, tId);
         });
         return BI.isNull(res);
+
+        function checkDimAndTarRelationValidInCurrentPaths(dId, tId){
+            var valid = true;
+            if(BI.has(dimensionMap, tId)){
+                var targetRelation = dimensionMap[tId].target_relation;
+                BI.any(targetRelation, function (id, path) {
+                    var pId = BI.Utils.getFirstRelationPrimaryIdFromRelations(path);
+                    var fId = BI.Utils.getLastRelationForeignIdFromRelations(path);
+                    var paths = BI.Utils.getPathsFromFieldAToFieldB(pId, fId);
+                    if (!BI.deepContains(paths, path)) {
+                        if (paths.length === 1) {
+                        } else {
+                            valid = false;
+                            return true;
+                        }
+                    }
+                })
+            }else{
+                var paths = BI.Utils.getPathsFromFieldAToFieldB(BI.Utils.getFieldIDByDimensionID(dId), BI.Utils.getFieldIDByDimensionID(tId))
+                valid = paths.length === 1;
+            }
+            return valid;
+        }
     },
 
     rebuildItemsForGISMAP: function () {
