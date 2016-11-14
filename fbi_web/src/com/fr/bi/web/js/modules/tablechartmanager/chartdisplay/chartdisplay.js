@@ -405,7 +405,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         totalAngle: BI.Utils.getWSChartTotalAngleByID(o.wId),
                         dashboardPointer: BI.Utils.getWSChartDashboardPointerByID(o.wId),
                         dashboardStyles: BI.Utils.getWSChartDashboardStylesByID(o.wId),
-                        //y左值轴
+                        //左值轴y
                         leftYNumberFormat: BI.Utils.getWSChartLeftYNumberFormatByID(o.wId),
                         leftYUnit: BI.Utils.getWSLeftYAxisUnitByID(o.wId),
                         leftYNumberLevel: BI.Utils.getWSChartLeftYNumberLevelByID(o.wId),
@@ -418,7 +418,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         leftYSeparator: BI.Utils.getWSLeftYNumberSeparatorByID(o.wId),
                         leftYTitleStyle: BI.Utils.getWSChartLeftYTitleStyleByID(o.wId),
                         leftYCustomScale: BI.Utils.getWSChartLeftYCustomScaleByID(o.wId),
-                        //y右值轴
+                        //右值轴y
                         rightYNumberFormat: BI.Utils.getWSChartRightYNumberFormatByID(o.wId),
                         rightYNumberLevel: BI.Utils.getWSChartRightYNumberLevelByID(o.wId),
                         rightYUnit: BI.Utils.getWSChartRightYUnitByID(o.wId),
@@ -431,7 +431,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         rightYShowLabel: BI.Utils.getWSRightYShowLabelByID(o.wId),
                         rightYLabelStyle: BI.Utils.getWSRightYLabelStyleByID(o.wId),
                         rightYLineColor: BI.Utils.getWSRightYLineColorByID(o.wId),
-                        //y2右值轴
+                        //右值轴y2
                         rightY2NumberFormat: BI.Utils.getWSChartRightY2NumberFormatByID(o.wId),
                         rightY2NumberLevel: BI.Utils.getWSChartRightY2NumberLevelByID(o.wId),
                         rightY2Unit: BI.Utils.getWSChartRightYAxis2UnitByID(o.wId),
