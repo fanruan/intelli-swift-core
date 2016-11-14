@@ -31,18 +31,18 @@ BI.DonutChart = BI.inherit(BI.AbstractChart, {
     _formatConfig: function (config, items) {
         var self = this;
 
-        config.colors = this.config.chart_color;
+        config.colors = this.config.chartColor;
         config.plotOptions.style = formatChartStyle();
 
-        this.formatChartLegend(config, this.config.chart_legend);
+        this.formatChartLegend(config, this.config.legend);
 
-        config.plotOptions.dataLabels.enabled = this.config.show_data_label;
+        config.plotOptions.dataLabels.enabled = this.config.showDataLabel;
 
         config.plotOptions.innerRadius = "50.0%";
         config.chartType = "pie";
         config.plotOptions.dataLabels.align = "outside";
         config.plotOptions.dataLabels.connectorWidth = "outside";
-        config.plotOptions.dataLabels.style = this.config.chart_font;
+        config.plotOptions.dataLabels.style = this.config.chartFont;
         config.plotOptions.dataLabels.formatter.identifier = "${VALUE}${PERCENT}";
         delete config.xAxis;
         delete config.yAxis;
@@ -52,11 +52,11 @@ BI.DonutChart = BI.inherit(BI.AbstractChart, {
             })
         });
 
-        config.legend.style = this.config.chart_font;
+        config.legend.style = this.config.chartFont;
         return [items, config];
 
         function formatChartStyle() {
-            switch (self.config.chart_style) {
+            switch (self.config.chartStyle) {
                 case BICst.CHART_STYLE.STYLE_GRADUAL:
                     return "gradual";
                 case BICst.CHART_STYLE.STYLE_NORMAL:
@@ -70,13 +70,7 @@ BI.DonutChart = BI.inherit(BI.AbstractChart, {
     populate: function (items, options) {
         options || (options = {});
         var self = this, c = this.constants;
-        this.config = {
-            chart_color: options.chart_color || [],
-            chart_style: options.chart_style || c.NORMAL,
-            chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
-            show_data_label: options.show_data_label || false,
-            chart_font: options.chart_font || c.FONT_STYLE
-        };
+        this.config = self.getChartConfig(options);
         this.options.items = items;
 
         var types = [];

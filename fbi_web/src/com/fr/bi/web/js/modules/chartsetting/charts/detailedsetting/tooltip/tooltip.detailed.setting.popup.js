@@ -116,23 +116,23 @@ BI.TooltipDetailedSettingPopup = BI.inherit(BI.Widget, {
 
     getValue: function() {
         return {
-            show_target: this.showTargets.isSelected(),
-            show_category_name: this.categoryName.isSelected(),
-            show_series_name: this.seriesName.isSelected(),
-            show_value: this.showValue.isSelected(),
-            show_percentage: this.showPercentage.isSelected(),
-            text_style: this.textStyle.getValue()
+            showTarget: this.showTargets.isSelected(),
+            showCategoryName: this.categoryName.isSelected(),
+            showSeriesName: this.seriesName.isSelected(),
+            showValue: this.showValue.isSelected(),
+            showPercentage: this.showPercentage.isSelected(),
+            textStyle: this.textStyle.getValue()
         }
     },
 
     setValue: function(v) {
         v || (v = {});
-        this.showTargets.setSelected(v.show_target);
-        this.categoryName.setSelected(v.show_category_name);
-        this.seriesName.setSelected(v.show_series_name);
-        this.showValue.setSelected(v.show_value);
-        this.showPercentage.setSelected(v.show_percentage);
-        this.textStyle.setValue(v.text_style)
+        this.showTargets.setSelected(v.showTarget);
+        this.categoryName.setSelected(v.showCategoryName);
+        this.seriesName.setSelected(v.showSeriesName);
+        this.showValue.setSelected(v.showValue);
+        this.showPercentage.setSelected(v.showPercentage);
+        this.textStyle.setValue(v.textStyle)
     }
 
 });

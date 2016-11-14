@@ -32,13 +32,13 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         var self = this, c = this.constants;
         formatRangeLegend();
         delete config.legend;
-        config.plotOptions.dataLabels.enabled = this.config.show_data_label;
+        config.plotOptions.dataLabels.enabled = this.config.showDataLabel;
         config.plotOptions.tooltip.shared = true;
         var formatterArray = [];
         BI.backEach(items, function (idx, item) {
             if (BI.has(item, "settings")) {
-                formatterArray.push(self.formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.num_level || c.NORMAL,
-                    item.settings.unit || "", item.settings.num_separators || c.NUM_SEPARATORS));
+                formatterArray.push(self.formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.numLevel || c.NORMAL,
+                    item.settings.unit || "", item.settings.numSeparators || c.NUM_SEPARATORS));
             }
         });
         config.plotOptions.tooltip.formatter = function () {
@@ -52,7 +52,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.dataLabels.formatter.valueFormat = function () {
             return BI.contentFormat(arguments[0], formatterArray[0]);
         };
-        config.plotOptions.dataLabels.style = this.config.chart_font;
+        config.plotOptions.dataLabels.style = this.config.chartFont;
 
         config.plotOptions.bubble.dataLabels = config.plotOptions.dataLabels;
         config.plotOptions.bubble.dataLabels.formatter.identifier = "${SIZE}";
@@ -60,13 +60,13 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.bubble.tooltip = config.plotOptions.tooltip;
 
         config.geo = this.config.geo;
-        if (this.config.show_background_layer === true && BI.isNotNull(this.config.background_layer_info)) {
-            if (this.config.background_layer_info.type === BICst.WMS_SERVER) {
+        if (this.config.isShowBackgroundLayer === true && BI.isNotNull(this.config.backgroundLayerInfo)) {
+            if (this.config.backgroundLayerInfo.type === BICst.WMS_SERVER) {
                 config.geo.tileLayer = false;
-                config.geo.wmsUrl = this.config.background_layer_info.url;
-                config.geo.wmsLayer = this.config.background_layer_info.wmsLayer
+                config.geo.wmsUrl = this.config.backgroundLayerInfo.url;
+                config.geo.wmsLayer = this.config.backgroundLayerInfo.wmsLayer
             } else {
-                config.geo.tileLayer = this.config.background_layer_info.url;
+                config.geo.tileLayer = this.config.backgroundLayerInfo.url;
             }
         }
         if (this.config.initDrillPath.length > 1) {
@@ -96,7 +96,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
 
         function formatRangeLegend() {
             config.rangeLegend.enabled = true;
-            switch (self.config.chart_legend) {
+            switch (self.config.legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     config.rangeLegend.visible = true;
                     config.rangeLegend.position = "bottom";
@@ -110,13 +110,13 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                     break;
             }
             config.rangeLegend.continuous = false;
-            config.rangeLegend.range = getRangeStyle(self.config.map_styles, self.config.auto_custom, self.config.theme_color);
+            config.rangeLegend.range = getRangeStyle(self.config.mapStyles, self.config.styleRadio, self.config.themeColor);
             config.rangeLegend.formatter = function () {
                 var to = this.to;
                 if (BI.isNotEmptyArray(items) && BI.has(items[0], "settings")) {
                     var settings = items[0].settings;
-                    var legendFormat = self.formatToolTipAndDataLabel(settings.format || c.NORMAL, settings.num_level || c.NORMAL,
-                        settings.unit || "",settings.num_separators || c.NUM_SEPARATORS);
+                    var legendFormat = self.formatToolTipAndDataLabel(settings.format || c.NORMAL, settings.numLevel || c.NORMAL,
+                        settings.unit || "",settings.numSeparators || c.NUM_SEPARATORS);
                     to = BI.contentFormat(to, legendFormat)
                 }
                 return to
@@ -213,7 +213,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
             BI.each(da.data, function (idx, data) {
                 data.y = self.formatXYDataWithMagnify(data.y, 1);
                 if (BI.has(da, "settings")) {
-                    data.y = self._formatNumberLevel(da.settings.num_level || self.constants.NORMAL, data.y);
+                    data.y = self._formatNumberLevel(da.settings.numLevel || self.constants.NORMAL, data.y);
                 }
                 if (BI.has(da, "type") && da.type == "bubble") {
                     data.name = data.x;
@@ -247,7 +247,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                 BI.each(it.data, function (i, da) {
                     da.y = self.formatXYDataWithMagnify(da.y, 1);
                     if (BI.has(it, "settings")) {
-                        da.y = self._formatNumberLevel(it.settings.num_level || self.constants.NORMAL, da.y);
+                        da.y = self._formatNumberLevel(it.settings.numLevel || self.constants.NORMAL, da.y);
                     }
                     if ((BI.isNull(self.max) || BI.parseFloat(da.y) > BI.parseFloat(self.max)) && id === 0) {
 
@@ -281,19 +281,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
     populate: function (items, options) {
         options || (options = {});
         var self = this, c = this.constants;
-        this.config = {
-            chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
-            show_data_label: options.show_data_label || false,
-            geo: options.geo,
-            initDrillPath: options.initDrillPath || [],
-            tooltip: options.tooltip || "",
-            theme_color: options.theme_color || "#65bce7",
-            map_styles: options.map_styles || [],
-            auto_custom: options.auto_custom || c.AUTO_CUSTOM,
-            show_background_layer: options.show_background_layer || false,
-            background_layer_info: options.background_layer_info,
-            chart_font: options.chart_font || c.FONT_STYLE
-        };
+        this.config = self.getChartConfig(options);
         this.options.items = items;
 
         var types = [];

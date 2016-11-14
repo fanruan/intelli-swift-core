@@ -35,7 +35,7 @@ BI.IconMarkCombo = BI.inherit(BI.Widget, {
         popup.on(BI.IconMarkPopup.EVENT_CHANGE, function(){
             self.combo.hideView();
         });
-        this.combo.setValue([o.icon_style]);
+        this.combo.setValue([o.iconStyle]);
         this.combo.on(BI.Combo.EVENT_CHANGE, function(){
             self.fireEvent(BI.IconMarkCombo.EVENT_CHANGE);
         });

@@ -15,9 +15,9 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
         var text = o.text;
         var iconCls = "", color = "";
-        var format = styleSettings.format, numLevel = styleSettings.num_level, num_separators = styleSettings.num_separators;
+        var format = styleSettings.format, numLevel = styleSettings.numLevel, num_separators = styleSettings.num_separators;
         text = BI.TargetBodyNormalCell.parseNumByLevel(text, numLevel);
-        var iconStyle = styleSettings.icon_style, mark = styleSettings.mark;
+        var iconStyle = styleSettings.iconStyle, mark = styleSettings.mark;
         iconCls = this._getIconByStyleAndMark(text, iconStyle, mark);
         var conditions = styleSettings.conditions;
         BI.some(conditions, function (i, co) {
@@ -112,7 +112,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
 
         if (text === Infinity) {
             text = "N/0";
-        } else if (BI.Utils.getDimensionSettingsByID(dId).num_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && BI.isNotNull(text)) {
+        } else if (BI.Utils.getDimensionSettingsByID(dId).numLevel === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && BI.isNotNull(text)) {
             text += "%";
         }
 

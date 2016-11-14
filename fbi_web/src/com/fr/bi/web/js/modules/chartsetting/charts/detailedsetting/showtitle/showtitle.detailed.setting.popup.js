@@ -76,15 +76,15 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
 
     getValue: function() {
         return {
-            detail_background: this.titleColour.getValue(),
-            detail_style: this.titleWordStyle.getValue()
+            titleColour: this.titleColour.getValue(),
+            titleWordStyle: this.titleWordStyle.getValue()
         }
     },
 
     setValue: function(v) {
         v || (v = {});
-        this.titleColour.setValue(v.detail_background);
-        this.titleWordStyle.setValue(v.detail_style)
+        this.titleColour.setValue(v.titleColour);
+        this.titleWordStyle.setValue(v.titleWordStyle)
     }
 
 });

@@ -31,9 +31,9 @@ BI.ForceBubbleChart = BI.inherit(BI.AbstractChart, {
     _formatConfig: function (config, items) {
         var self = this, o = this.options;
         config.chartType = 'forceBubble';
-        config.colors = this.config.chart_color;
+        config.colors = this.config.chartColor;
 
-        switch (this.config.rules_display) {
+        switch (this.config.displayRules) {
             case BICst.DISPLAY_RULES.FIXED:
                 delete config.legend;
                 formatFixedLegend();
@@ -49,12 +49,12 @@ BI.ForceBubbleChart = BI.inherit(BI.AbstractChart, {
         }
 
         config.plotOptions.force = true;
-        config.plotOptions.shadow = this.config.bubble_style !== this.constants.NO_PROJECT;
-        config.plotOptions.bubble.minSize = this.config.bubble_min_size;
-        config.plotOptions.bubble.maxSize = this.config.bubble_max_size;
+        config.plotOptions.shadow = this.config.bubbleStyle !== this.constants.NO_PROJECT;
+        config.plotOptions.bubble.minSize = this.config.bubbleSizeFrom;
+        config.plotOptions.bubble.maxSize = this.config.bubbleSizeTo;
         config.plotOptions.dataLabels.enabled = true;
         config.plotOptions.dataLabels.align = "inside";
-        config.plotOptions.dataLabels.style = this.config.chart_font;
+        config.plotOptions.dataLabels.style = this.config.chartFont;
         config.plotOptions.dataLabels.formatter.identifier = "${CATEGORY}${VALUE}";
         delete config.xAxis;
         delete config.yAxis;
@@ -63,11 +63,11 @@ BI.ForceBubbleChart = BI.inherit(BI.AbstractChart, {
                 da.y = self.formatXYDataWithMagnify(da.y, 1);
             })
         });
-        config.legend.style = this.config.chart_font;
+        config.legend.style = this.config.chartFont;
         return [items, config];
 
         function formatLegend() {
-            switch (self.config.chart_legend) {
+            switch (self.config.legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     config.legend.enabled = true;
                     config.legend.position = "bottom";
@@ -98,7 +98,7 @@ BI.ForceBubbleChart = BI.inherit(BI.AbstractChart, {
                 }
             });
 
-            BI.each(self.config.fixed_colors, function (idx, item) {
+            BI.each(self.config.fixedStyle, function (idx, item) {
                 if (idx == 0 && min < item.range.min) {
                     range.push({
                         from: min,
@@ -113,7 +113,7 @@ BI.ForceBubbleChart = BI.inherit(BI.AbstractChart, {
                     color: item.color
                 });
 
-                if (idx == (self.config.fixed_colors.length - 1) && max > item.range.max) {
+                if (idx == (self.config.fixedStyle.length - 1) && max > item.range.max) {
                     range.push({
                         from: item.range.max,
                         to: max,
@@ -124,7 +124,7 @@ BI.ForceBubbleChart = BI.inherit(BI.AbstractChart, {
 
             config.rangeLegend.range = range;
 
-            switch (self.config.chart_legend) {
+            switch (self.config.legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     config.rangeLegend.position = "bottom";
                     break;
@@ -155,7 +155,7 @@ BI.ForceBubbleChart = BI.inherit(BI.AbstractChart, {
             config.rangeLegend.range.min = min;
             config.rangeLegend.range.max = max;
 
-            BI.each(self.config.gradient_colors, function (idx, item) {
+            BI.each(self.config.gradientStyle, function (idx, item) {
                 var minProp = (item.range.min - min) / (max - min);
                 var maxProp = (item.range.max - min) / (max - min);
 
@@ -174,7 +174,7 @@ BI.ForceBubbleChart = BI.inherit(BI.AbstractChart, {
                 color.push([minProp, item.color_range.from_color]);
                 color.push([maxProp, item.color_range.to_color]);
 
-                if(idx == self.config.gradient_colors.length - 1 && maxProp < 1) {
+                if(idx == self.config.gradientStyle.length - 1 && maxProp < 1) {
                     color.push([1, item.color_range.to_color])
                 }
             });
@@ -183,7 +183,7 @@ BI.ForceBubbleChart = BI.inherit(BI.AbstractChart, {
                 config.rangeLegend.range.color = color;
             }
 
-            switch (self.config.chart_legend) {
+            switch (self.config.legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     config.rangeLegend.position = "bottom";
                     break;
@@ -242,17 +242,7 @@ BI.ForceBubbleChart = BI.inherit(BI.AbstractChart, {
     populate: function (items, options) {
         options || (options = {});
         var self = this, c = this.constants;
-        this.config = {
-            chart_color: options.chart_color || [],
-            chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
-            bubble_style: options.bubble_style || c.NO_PROJECT,
-            rules_display: options.rules_display || c.RULE_DISPLAY,
-            fixed_colors: options.fixed_colors || [],
-            gradient_colors: options.gradient_colors || [],
-            bubble_min_size: options.bubble_min_size || c.BUBBLE_MIN_SIZE,
-            bubble_max_size: options.bubble_max_size || c.BUBBLE_MAX_SIZE,
-	     chart_font: options.chart_font || c.FONT_STYLE
-        };
+        this.config = self.getChartConfig(options);
         this.options.items = items;
 
         var types = [];

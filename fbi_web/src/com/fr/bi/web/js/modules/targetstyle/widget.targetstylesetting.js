@@ -42,9 +42,9 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
         if(BI.isEmptyObject(styleSettings)) {
             styleSettings = {
                 format: BICst.TARGET_STYLE.FORMAT.NORMAL,
-                num_level: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
+                numLevel: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
                 unit: "",
-                icon_style: BICst.TARGET_STYLE.ICON_STYLE.NONE,
+                iconStyle: BICst.TARGET_STYLE.ICON_STYLE.NONE,
                 mark: 0,
                 conditions: []
             }
@@ -68,7 +68,7 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
             height: 25
         });
 
-        this.showSeparators = styleSettings.num_separators || false;
+        this.showSeparators = styleSettings.numSeparators || false;
 
         this.separators.setSelected(this.showSeparators);
 
@@ -84,7 +84,7 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
             items: BICst.TARGET_STYLE_LEVEL,
             width: 275
         });
-        this.numLevel.setValue(styleSettings.num_level);
+        this.numLevel.setValue(styleSettings.numLevel);
         this.numLevel.on(BI.Segment.EVENT_CHANGE, function(){
             BI.isNotNull(self.mark) && self.mark.setLevel(this.getValue()[0]);
             self.conditions.setNumLevel(this.getValue()[0]);
@@ -100,7 +100,7 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
 
         this.iconStyle = BI.createWidget({
             type: "bi.icon_mark_combo",
-            icon_style: styleSettings.icon_style,
+            iconStyle: styleSettings.iconStyle,
             height: this.constants.EDITOR_HEIGHT,
             cls: "icon-mark-combo",
             width: 275
@@ -129,19 +129,19 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
                         return self.mark = BI.createWidget({
                             type: "bi.icon_mark_style_setting",
                             mark: styleSettings.mark,
-                            num_level: self.numLevel.getValue()[0]
+                            numLevel: self.numLevel.getValue()[0]
                         });
                 }
             },
             height: this.constants.LABEL_HEIGHT
         });
-        markTab.setSelect(styleSettings.icon_style === BICst.TARGET_STYLE.ICON_STYLE.NONE ?
+        markTab.setSelect(styleSettings.iconStyle === BICst.TARGET_STYLE.ICON_STYLE.NONE ?
                             this.constants.HIDE_MARK : this.constants.SHOW_MARK);
 
         this.conditions = BI.createWidget({
             type: "bi.target_condition_style_setting",
             conditions: styleSettings.conditions,
-            numLevel: styleSettings.num_level
+            numLevel: styleSettings.numLevel
         });
 
         BI.createWidget({
@@ -204,12 +204,12 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
     getValue: function(){
         return {
             format: this.format.getValue()[0],
-            num_level: this.numLevel.getValue()[0],
+            numLevel: this.numLevel.getValue()[0],
             unit: this.unit.getValue(),
-            icon_style: this.iconStyle.getValue()[0],
+            iconStyle: this.iconStyle.getValue()[0],
             mark: BI.isNotNull(this.mark) ? this.mark.getValue() : 0,
             conditions: this.conditions.getValue(),
-            num_separators: this.separators.isSelected()
+            numSeparators: this.separators.isSelected()
         }
     }
 });
