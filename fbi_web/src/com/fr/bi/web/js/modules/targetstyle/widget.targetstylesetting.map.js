@@ -134,8 +134,8 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
     getValue: function(){
         return {
             format: this.format.getValue()[0],
-            num_level: this.numLevel.getValue()[0],
-            num_separators: this.separators.isSelected(),
+            numLevel: this.numLevel.getValue()[0],
+            numSeparators: this.separators.isSelected(),
             unit: this.unit.getValue()
         }
     }

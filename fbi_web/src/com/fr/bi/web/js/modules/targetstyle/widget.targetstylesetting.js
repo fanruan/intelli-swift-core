@@ -204,12 +204,12 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
     getValue: function(){
         return {
             format: this.format.getValue()[0],
-            num_level: this.numLevel.getValue()[0],
+            numLevel: this.numLevel.getValue()[0],
             unit: this.unit.getValue(),
-            icon_style: this.iconStyle.getValue()[0],
+            iconStyle: this.iconStyle.getValue()[0],
             mark: BI.isNotNull(this.mark) ? this.mark.getValue() : 0,
             conditions: this.conditions.getValue(),
-            num_separators: this.separators.isSelected()
+            numSeparators: this.separators.isSelected()
         }
     }
 });

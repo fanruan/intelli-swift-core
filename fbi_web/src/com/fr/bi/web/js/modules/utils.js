@@ -740,8 +740,8 @@
 
         getWSTableFormByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.table_form) ? ws.table_form :
-                BICst.DEFAULT_CHART_SETTING.table_form;
+            return BI.isNotNull(ws.tableFormGroup) ? ws.tableFormGroup :
+                BICst.DEFAULT_CHART_SETTING.tableFormGroup;
         },
 
         getWSThemeColorByID: function (wid) {
@@ -752,68 +752,68 @@
 
         getWSTableStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.table_style) ? ws.table_style :
-                BICst.DEFAULT_CHART_SETTING.table_style;
+            return BI.isNotNull(ws.tableStyleGroup) ? ws.tableStyleGroup :
+                BICst.DEFAULT_CHART_SETTING.tableStyleGroup;
         },
 
         getWSShowNumberByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_number) ? ws.show_number :
-                BICst.DEFAULT_CHART_SETTING.show_number;
+            return BI.isNotNull(ws.showNumber) ? ws.showNumber :
+                BICst.DEFAULT_CHART_SETTING.showNumber;
         },
 
         getWSShowRowTotalByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_row_total) ? ws.show_row_total :
-                BICst.DEFAULT_CHART_SETTING.show_row_total;
+            return BI.isNotNull(ws.showRowTotal) ? ws.showRowTotal :
+                BICst.DEFAULT_CHART_SETTING.showRowTotal;
         },
 
         getWSShowColTotalByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_col_total) ? ws.show_col_total :
-                BICst.DEFAULT_CHART_SETTING.show_col_total;
+            return BI.isNotNull(ws.showColTotal) ? ws.showColTotal :
+                BICst.DEFAULT_CHART_SETTING.showColTotal;
         },
 
         getWSOpenRowNodeByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.open_row_node) ? ws.open_row_node :
-                BICst.DEFAULT_CHART_SETTING.open_row_node;
+            return BI.isNotNull(ws.openRowNode) ? ws.openRowNode :
+                BICst.DEFAULT_CHART_SETTING.openRowNode;
         },
 
         getWSOpenColNodeByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.open_col_node) ? ws.open_col_node :
-                BICst.DEFAULT_CHART_SETTING.open_col_node;
+            return BI.isNotNull(ws.openColNode) ? ws.openColNode :
+                BICst.DEFAULT_CHART_SETTING.openColNode;
         },
 
         getWSMaxRowByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.max_row) ? ws.max_row :
-                BICst.DEFAULT_CHART_SETTING.max_row;
+            return BI.isNotNull(ws.maxRow) ? ws.maxRow :
+                BICst.DEFAULT_CHART_SETTING.maxRow;
         },
 
         getWSMaxColByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.max_col) ? ws.max_col :
-                BICst.DEFAULT_CHART_SETTING.max_col;
+            return BI.isNotNull(ws.maxCol) ? ws.maxCol :
+                BICst.DEFAULT_CHART_SETTING.maxCol;
         },
 
         getWSFreezeDimByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.freeze_dim) ? ws.freeze_dim :
-                BICst.DEFAULT_CHART_SETTING.freeze_dim;
+            return BI.isNotNull(ws.freezeDim) ? ws.freezeDim :
+                BICst.DEFAULT_CHART_SETTING.freezeDim;
         },
 
         getWSFreezeFirstColumnById: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.freeze_first_column) ? ws.freeze_first_column :
-                BICst.DEFAULT_CHART_SETTING.freeze_first_column;
+            return BI.isNotNull(ws.freezeFirstColumn) ? ws.freezeFirstColumn :
+                BICst.DEFAULT_CHART_SETTING.freezeFirstColumn;
         },
 
         getWSChartDisplayRulesByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.rules_display) ? ws.rules_display :
-                BICst.DEFAULT_CHART_SETTING.bubble_display;
+            return BI.isNotNull(ws.displayRules) ? ws.displayRules :
+                BICst.DEFAULT_CHART_SETTING.displayRules;
         },
 
         getWSChartBubbleFixedStyleByID: function (wid) {
