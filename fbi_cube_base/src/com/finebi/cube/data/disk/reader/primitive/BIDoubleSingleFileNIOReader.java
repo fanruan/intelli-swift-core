@@ -4,7 +4,6 @@ import com.finebi.cube.data.input.primitive.ICubeDoubleReader;
 import com.finebi.cube.exception.BIResourceInvalidException;
 
 import java.io.File;
-import java.nio.Buffer;
 import java.nio.DoubleBuffer;
 import java.nio.MappedByteBuffer;
 
@@ -13,6 +12,7 @@ import java.nio.MappedByteBuffer;
  */
 public class BIDoubleSingleFileNIOReader extends BIBaseSingleFileNIOReader implements ICubeDoubleReader {
     private DoubleBuffer doubleBuffer ;
+    private DoubleBuffer fakeBuffer;
 
     public BIDoubleSingleFileNIOReader(File cacheFile) {
         super(cacheFile);
@@ -32,6 +32,11 @@ public class BIDoubleSingleFileNIOReader extends BIBaseSingleFileNIOReader imple
         }
     }
 
+    protected void setBufferInValid() {
+        fakeBuffer = doubleBuffer;
+        doubleBuffer = null;
+    }
+
     @Override
     protected void releaseChild() {
         readWriteLock.writeLock().lock();
@@ -39,6 +44,10 @@ public class BIDoubleSingleFileNIOReader extends BIBaseSingleFileNIOReader imple
             if (doubleBuffer != null) {
                 doubleBuffer.clear();
                 doubleBuffer = null;
+            }
+            if (fakeBuffer != null){
+                fakeBuffer.clear();
+                fakeBuffer = null;
             }
         } finally {
             readWriteLock.writeLock().unlock();
