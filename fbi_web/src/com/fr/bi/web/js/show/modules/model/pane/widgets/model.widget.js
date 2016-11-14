@@ -20,26 +20,7 @@ BIShow.WidgetModel = BI.inherit(BI.Model, {
         //维度或指标改变时需要调节联动设置
         if (BI.has(changed, "dimensions")) {
             var dimensions = this.cat("dimensions");
-            var dids = BI.keys(dimensions);
-            var linkages = this.get("linkages");
-            BI.remove(linkages, function (i, linkage) {
-                return !dids.contains(linkage.from) || !dids.contains(linkage.cids[0]);
-            });
             this.refresh();
-            this.set("linkages", linkages);
-        }
-        if (BI.has(changed, "linkages")) {
-            //找到所有被删除掉的linkages，通知到相关的组件
-            BI.each(pre.linkages, function (i, preLink) {
-                var found = BI.some(changed.linkages, function (j, link) {
-                    if (link.from === preLink.from && link.to === preLink.to) {
-                        return true;
-                    }
-                });
-                if (found === false && BI.Utils.isWidgetExistByID(preLink.to)) {
-                    BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + preLink.to, preLink.from);
-                }
-            });
         }
         if (BI.has(changed, "filter_value")) {
             this.refresh();

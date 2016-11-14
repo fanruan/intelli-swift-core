@@ -9,6 +9,7 @@ import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.FinalInt;
+import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.analyze.cal.Executor.Executor;
 import com.fr.bi.cal.analyze.cal.Executor.ILazyExecutorOperation;
 import com.fr.bi.cal.analyze.cal.result.*;
@@ -173,9 +174,27 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         return ComparatorUtils.equals(tableKey, BIBusinessTable.createEmptyTable()) ? column.getField().getTableBelongTo() : tableKey;
     }
 
+    private CubeTableSource getSource(){
+        //多对多
+        if (column.getDirectToDimensionRelationList().size() > 0) {
+            ICubeFieldSource primaryField = column.getDirectToDimensionRelationList().get(0).getPrimaryField();
+            return  primaryField.getTableBelongTo();
+        }
+        return column.getField().getTableBelongTo().getTableSource();
+    }
+
+    private BIKey createKey(){
+        //多对多
+        if (column.getDirectToDimensionRelationList().size() > 0) {
+            ICubeFieldSource primaryField = column.getDirectToDimensionRelationList().get(0).getPrimaryField();
+            return new IndexKey(primaryField.getFieldName());
+        }
+        return column.createKey();
+    }
+
     private Iterator getIterByAllCal(int wholeRowCount, int currentRowCount) {
-        ICubeTableService ti = getLoader().getTableIndex(column.getField().getTableBelongTo().getTableSource());
-        ICubeValueEntryGetter getter = ti.getValueEntryGetter(column.createKey(), column.getRelationList());
+        ICubeTableService ti = getLoader().getTableIndex(getSource());
+        ICubeValueEntryGetter getter = ti.getValueEntryGetter(createKey(), column.getRelationList());
         SortTool tool = SortToolUtils.getSortTool(getter.getGroupSize(), currentRowCount);
         switch (tool) {
             case INT_ARRAY:
