@@ -53,9 +53,6 @@ public class TimerRunner {
     private List<TimerTaskSchedule> getTimerTaskSchedules() {
         Map<String, UpdateSettingSource> allTimeTaskMap = BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSettings(biUser.getUserId());
         List<TimerTaskSchedule> allSchedules = TimerScheduleAdapter.convertSchedule(this.biUser.getUserId(), allTimeTaskMap);
-        for (TimerTaskSchedule taskSchedule : allSchedules) {
-
-        }
         return allSchedules;
     }
 }
