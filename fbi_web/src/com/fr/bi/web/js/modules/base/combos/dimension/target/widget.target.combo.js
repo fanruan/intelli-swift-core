@@ -141,8 +141,8 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var wType = BI.Utils.getWidgetTypeByID(wId);
         var view = BI.Utils.getWidgetViewByID(wId);
         var minimalist = BI.Utils.getWSMinimalistByID(wId);
-        var dataLable = BI.Utils.getWSShowDataLabelByID(wId);
-        var bigDataMode = BI.Utils.getWSBigDataModelByID(wId);
+        var dataLable = BI.Utils.getWSChartShowDataLabelByID(wId);
+        var bigDataMode = BI.Utils.getWSChartBigDataModeByID(wId);
         var result = BI.find(view[BICst.REGION.TARGET2], function (idx, did) {
             return did === o.dId;
         });

@@ -49,33 +49,33 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this;
-        config.colors = this.config.chart_color;
+        config.colors = this.config.chartColor;
         config.plotOptions.style = formatChartStyle();
         config.plotOptions.marker = {"symbol": "circle", "radius": 4.5, "enabled": true};
         formatCordon();
-        this.formatChartLegend(config, this.config.chart_legend);
-        config.plotOptions.dataLabels.enabled = this.config.show_data_label;
+        this.formatChartLegend(config, this.config.legend);
+        config.plotOptions.dataLabels.enabled = this.config.showDataLabel;
         config.plotOptions.dataLabels.formatter.identifier = "${X}${Y}";
 
         config.yAxis = this.yAxis;
         config.xAxis = this.xAxis;
 
-        formatNumberLevelInYaxis(this.config.left_y_axis_number_level);
+        formatNumberLevelInYaxis(this.config.leftYNumberLevel);
 
         BI.extend(config.yAxis[0], self.leftAxisSetting(this.config));
         config.yAxis[0].title.rotation = 90;
 
-        formatNumberLevelInXaxis(this.config.x_axis_number_level);
+        formatNumberLevelInXaxis(this.config.rightYNumberLevel);
         BI.extend(config.xAxis[0], self.rightAxisSetting(this.config));
         config.xAxis[0].title.rotation = 0;
-        config.xAxis[0].gridLineColor = this.config.v_grid_line_color;
+        config.xAxis[0].gridLineColor = this.config.vGridLineColor;
 
         config.chartType = "scatter";
 
         if (BI.isNotEmptyArray(this.config.tooltip)) {
             config.plotOptions.tooltip.formatter = function () {
-                var y = self.formatTickInXYaxis(self.config.left_y_axis_style, self.config.left_y_axis_number_level, self.config.num_separators)(this.y);
-                var x = self.formatTickInXYaxis(self.config.right_y_axis_style, self.config.right_y_axis_number_level, self.config.right_num_separators)(this.x);
+                var y = self.formatTickInXYaxis(self.config.leftYNumberFormat, self.config.leftYNumberLevel, self.config.leftYSeparator)(this.y);
+                var x = self.formatTickInXYaxis(self.config.rightYNumberFormat, self.config.rightYNumberLevel, self.config.rightYSeparator)(this.x);
                 return this.seriesName + '<div>(X)' + self.config.tooltip[0]
                     + ':' + x + '</div><div>(Y)' + self.config.tooltip[1] + ':' + y + '</div>'
             };
@@ -84,7 +84,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         if (config.plotOptions.dataLabels.enabled === true) {
             BI.each(items, function (idx, item) {
                 item.dataLabels = {
-                    "style": self.config.chart_font,
+                    "style": self.config.chartFont,
                     "align": "outside",
                     "autoAdjust": true,
                     enabled: true,
@@ -106,7 +106,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         return [items, config];
 
         function formatChartStyle() {
-            switch (self.config.chart_style) {
+            switch (self.config.chartStyle) {
                 case BICst.CHART_STYLE.STYLE_GRADUAL:
                     return "gradual";
                 case BICst.CHART_STYLE.STYLE_NORMAL:
@@ -118,13 +118,13 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         function formatCordon() {
             BI.each(self.config.cordon, function (idx, cor) {
                 if (idx === 0 && self.xAxis.length > 0) {
-                    var magnify = self.calcMagnify(self.config.x_axis_number_level);
+                    var magnify = self.calcMagnify(1);
                     self.xAxis[0].plotLines = BI.map(cor, function (i, t) {
                         return BI.extend(t, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.config.chart_font,
+                                "style": self.config.chartFont,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -135,13 +135,13 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
                     var magnify = 1;
                     switch (idx - 1) {
                         case self.constants.LEFT_AXIS:
-                            magnify = self.calcMagnify(self.config.left_y_axis_number_level);
+                            magnify = self.calcMagnify(self.config.leftYNumberLevel);
                             break;
                         case self.constants.RIGHT_AXIS:
-                            magnify = self.calcMagnify(self.config.right_y_axis_number_level);
+                            magnify = self.calcMagnify(self.config.rightYNumberLevel);
                             break;
                         case self.constants.RIGHT_AXIS_SECOND:
-                            magnify = self.calcMagnify(self.config.right_y_axis_second_number_level);
+                            magnify = self.calcMagnify(self.config.rightY2NumberLevel);
                             break;
                     }
                     self.yAxis[idx - 1].plotLines = BI.map(cor, function (i, t) {
@@ -149,7 +149,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style": self.config.chart_font,
+                                "style": self.config.chartFont,
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -191,48 +191,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
     populate: function (items, options) {
         options || (options = {});
         var self = this, c = this.constants;
-        this.config = {
-            left_y_axis_title: options.left_y_axis_title || "",
-            chart_color: options.chart_color || [],
-            left_y_axis_style: options.left_y_axis_style || c.NORMAL,
-            right_y_axis_style: options.right_y_axis_style || c.NORMAL,
-            show_right_y_axis_title: options.show_right_y_axis_title || false,
-            show_left_y_axis_title: options.show_left_y_axis_title || false,
-            right_y_axis_number_level: options.right_y_axis_number_level || c.NORMAL,
-            left_y_axis_number_level: options.left_y_axis_number_level || c.NORMAL,
-            right_y_axis_unit: options.right_y_axis_unit || "",
-            left_y_axis_unit: options.left_y_axis_unit || "",
-            right_y_axis_title: options.right_y_axis_title || "",
-            chart_legend: options.chart_legend || c.LEGEND_BOTTOM,
-            show_data_label: options.show_data_label || false,
-            show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
-            cordon: options.cordon || [],
-            tooltip: options.tooltip || [],
-            custom_y_scale: options.custom_y_scale || c.CUSTOM_SCALE,
-            custom_x_scale: options.custom_x_scale || c.CUSTOM_SCALE,
-            show_label: BI.isNull(options.show_label) ? true : options.show_label,
-            big_data_mode: options.big_data_mode || false,
-            line_width: options.line_width || 0,
-            enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
-            enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
-            num_separators: options.num_separators || false,
-            right_num_separators: options.right_num_separators || false,
-            chart_font: options.chart_font || c.FONT_STYLE,
-            show_left_label: BI.isNull(options.show_left_label) ? true : options.show_left_label,
-            left_label_style: options.left_label_style || c.LEFT_LABEL_STYLE,
-            left_line_color: options.left_line_color || "",
-            show_right_label: BI.isNull(options.show_right_label) ? true : options.show_right_label,
-            right_label_style: options.right_label_style || c.RIGHT_LABEL_STYLE,
-            right_line_color: options.right_line_color || "",
-            chart_legend_setting: options.chart_legend_setting || {},
-            show_h_grid_line: BI.isNull(options.show_h_grid_line) ? true : options.show_h_grid_line,
-            h_grid_line_color: options.h_grid_line_color || "",
-            show_v_grid_line: BI.isNull(options.show_v_grid_line) ? true : options.show_v_grid_line,
-            v_grid_line_color: options.v_grid_line_color || "",
-            tooltip_setting: options.tooltip_setting || {},
-            left_title_style: options.left_title_style || {},
-            right_title_style: options.right_title_style || {}
-        };
+        this.config = self.getChartConfig(options);
         this.options.items = items;
         var types = [];
         BI.each(items, function (idx, axisItems) {

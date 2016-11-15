@@ -135,25 +135,25 @@ BI.TableDetailedSettingPopup = BI.inherit(BI.Widget, {
 
     getValue: function() {
         return {
-            table_name_style: this.tableName.getValue(),
-            table_name_color: this.nameColor.getValue(),
-            table_value_style: this.tableValue.getValue(),
-            bgc_interval: this.bgColorInterval.getSelect(),
-            table_value_color: this.valueColor.getValue(),
-            table_value_interval_color: this.intervalValueColor.getValue(),
-            table_line: this.tableLine.getValue()
+            tableNameStyle: this.tableName.getValue(),
+            tableNameColor: this.nameColor.getValue(),
+            tableValueStyle: this.tableValue.getValue(),
+            bGColorInterval: this.bgColorInterval.getSelect(),
+            tableValueColor: this.valueColor.getValue(),
+            tableValueIntervalColor: this.intervalValueColor.getValue(),
+            tableLine: this.tableLine.getValue()
         }
     },
 
     setValue: function(v) {
         v || (v = {});
-        this.tableName.setValue(v.table_name_style);
-        this.nameColor.setValue(v.table_name_color);
-        this.tableValue.setValue(v.table_value_style);
-        this.bgColorInterval.setSelected(v.bgc_interval);
-        this.valueColor.setValue(v.table_value_color);
-        this.intervalValueColor.setValue(v.table_value_interval_color);
-        this.tableLine.setValue(v.table_line)
+        this.tableName.setValue(v.tableNameStyle);
+        this.nameColor.setValue(v.tableNameColor);
+        this.tableValue.setValue(v.tableValueStyle);
+        this.bgColorInterval.setSelected(v.bGColorInterval);
+        this.valueColor.setValue(v.tableValueColor);
+        this.intervalValueColor.setValue(v.tableValueIntervalColor);
+        this.tableLine.setValue(v.tableLine)
     }
 
 });

@@ -109,10 +109,10 @@ BI.CordonPane = BI.inherit(BI.Widget, {
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
                 if(regionType === BICst.REGION.TARGET1){
-                    this.numberLevel = BI.Utils.getWSLeftYAxisNumLevelByID(wId);
+                    this.numberLevel = BI.Utils.getWSChartLeftYNumberLevelByID(wId);
                 }
                 if(regionType === BICst.REGION.TARGET2){
-                    this.numberLevel = BI.Utils.getWSRightYAxisNumLevelByID(wId);
+                    this.numberLevel = BI.Utils.getWSChartRightYNumberLevelByID(wId);
                 }
                 if(regionType === BICst.REGION.TARGET3){
                     this.numberLevel = BI.Utils.getWSRightYAxis2NumLevelByID(wId);
@@ -128,7 +128,7 @@ BI.CordonPane = BI.inherit(BI.Widget, {
             case BICst.WIDGET.SCATTER:
             case BICst.WIDGET.BUBBLE:
                 if(regionType === BICst.REGION.TARGET1){
-                    this.numberLevel = BI.Utils.getWSLeftYAxisNumLevelByID(wId);
+                    this.numberLevel = BI.Utils.getWSChartLeftYNumberLevelByID(wId);
                 }
                 if(regionType === BICst.REGION.TARGET2){
                     this.numberLevel = BI.Utils.getWSXAxisNumLevelByID(wId);

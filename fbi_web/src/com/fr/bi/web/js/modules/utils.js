@@ -725,125 +725,125 @@
         //settings  ---- start ----
         getWSTitleDetailSettingByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.title_detail) ? ws.title_detail :
+            return BI.isNotNull(ws.widgetNameStyle) ? ws.widgetNameStyle :
             {};
         },
 
         getWSWidgetBGByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             var wbg = this.getGSWidgetBackground(wid);
-            if (BI.isNull(ws.widget_bg)) {
+            if (BI.isNull(ws.widgetBG)) {
                 return wbg ? wbg : {}
             }
-            return ws.widget_bg
+            return ws.widgetBG
         },
 
         getWSTableFormByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.table_form) ? ws.table_form :
-                BICst.DEFAULT_CHART_SETTING.table_form;
+            return BI.isNotNull(ws.tableFormGroup) ? ws.tableFormGroup :
+                BICst.DEFAULT_CHART_SETTING.tableFormGroup;
         },
 
         getWSThemeColorByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.theme_color) ? ws.theme_color :
-                BICst.DEFAULT_CHART_SETTING.theme_color;
+            return BI.isNotNull(ws.themeColor) ? ws.themeColor :
+                BICst.DEFAULT_CHART_SETTING.themeColor;
         },
 
         getWSTableStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.table_style) ? ws.table_style :
-                BICst.DEFAULT_CHART_SETTING.table_style;
+            return BI.isNotNull(ws.tableStyleGroup) ? ws.tableStyleGroup :
+                BICst.DEFAULT_CHART_SETTING.tableStyleGroup;
         },
 
         getWSShowNumberByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_number) ? ws.show_number :
-                BICst.DEFAULT_CHART_SETTING.show_number;
+            return BI.isNotNull(ws.showNumber) ? ws.showNumber :
+                BICst.DEFAULT_CHART_SETTING.showNumber;
         },
 
         getWSShowRowTotalByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_row_total) ? ws.show_row_total :
-                BICst.DEFAULT_CHART_SETTING.show_row_total;
+            return BI.isNotNull(ws.showRowTotal) ? ws.showRowTotal :
+                BICst.DEFAULT_CHART_SETTING.showRowTotal;
         },
 
         getWSShowColTotalByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_col_total) ? ws.show_col_total :
-                BICst.DEFAULT_CHART_SETTING.show_col_total;
+            return BI.isNotNull(ws.showColTotal) ? ws.showColTotal :
+                BICst.DEFAULT_CHART_SETTING.showColTotal;
         },
 
         getWSOpenRowNodeByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.open_row_node) ? ws.open_row_node :
-                BICst.DEFAULT_CHART_SETTING.open_row_node;
+            return BI.isNotNull(ws.openRowNode) ? ws.openRowNode :
+                BICst.DEFAULT_CHART_SETTING.openRowNode;
         },
 
         getWSOpenColNodeByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.open_col_node) ? ws.open_col_node :
-                BICst.DEFAULT_CHART_SETTING.open_col_node;
+            return BI.isNotNull(ws.openColNode) ? ws.openColNode :
+                BICst.DEFAULT_CHART_SETTING.openColNode;
         },
 
         getWSMaxRowByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.max_row) ? ws.max_row :
-                BICst.DEFAULT_CHART_SETTING.max_row;
+            return BI.isNotNull(ws.maxRow) ? ws.maxRow :
+                BICst.DEFAULT_CHART_SETTING.maxRow;
         },
 
         getWSMaxColByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.max_col) ? ws.max_col :
-                BICst.DEFAULT_CHART_SETTING.max_col;
+            return BI.isNotNull(ws.maxCol) ? ws.maxCol :
+                BICst.DEFAULT_CHART_SETTING.maxCol;
         },
 
         getWSFreezeDimByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.freeze_dim) ? ws.freeze_dim :
-                BICst.DEFAULT_CHART_SETTING.freeze_dim;
+            return BI.isNotNull(ws.freezeDim) ? ws.freezeDim :
+                BICst.DEFAULT_CHART_SETTING.freezeDim;
         },
 
         getWSFreezeFirstColumnById: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.freeze_first_column) ? ws.freeze_first_column :
-                BICst.DEFAULT_CHART_SETTING.freeze_first_column;
+            return BI.isNotNull(ws.freezeFirstColumn) ? ws.freezeFirstColumn :
+                BICst.DEFAULT_CHART_SETTING.freezeFirstColumn;
         },
 
-        getWSShowRulesByID: function (wid) {
+        getWSChartDisplayRulesByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.rules_display) ? ws.rules_display :
-                BICst.DEFAULT_CHART_SETTING.bubble_display;
+            return BI.isNotNull(ws.displayRules) ? ws.displayRules :
+                BICst.DEFAULT_CHART_SETTING.displayRules;
         },
 
-        getWSBubbleFixedColorsByID: function (wid) {
+        getWSChartBubbleFixedStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.fixed_colors) ? ws.fixed_colors :
+            return BI.isNotNull(ws.fixedStyle) ? ws.fixedStyle :
                 BICst.DASHBOARD_STYLE_CONDITIONS
         },
 
-        getWSBubbleGradientsByID: function (wid) {
+        getWSChartBubbleGradientStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.gradient_colors) ? ws.gradient_colors :
                 BICst.BUBBLE_GRADIENT_COLOR
         },
 
-        getWSBubbleStyleByID: function (wid) {
+        getWSChartBubbleStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.bubble_style) ? ws.bubble_style :
-                BICst.DEFAULT_CHART_SETTING.bubble_style;
+            return BI.isNotNull(ws.bubbleStyle) ? ws.bubbleStyle :
+                BICst.DEFAULT_CHART_SETTING.bubbleStyle;
         },
 
         getWSTransferFilterByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.transfer_filter) ? ws.transfer_filter :
-                BICst.DEFAULT_CHART_SETTING.transfer_filter;
+            return BI.isNotNull(ws.transferFilter) ? ws.transferFilter :
+                BICst.DEFAULT_CHART_SETTING.transferFilter;
         },
 
         getWSShowNameByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_name) ? ws.show_name :
-                BICst.DEFAULT_CHART_SETTING.show_name;
+            return BI.isNotNull(ws.showName) ? ws.showName :
+                BICst.DEFAULT_CHART_SETTING.showName;
         },
 
         getWSNamePosByID: function (wid) {
@@ -857,12 +857,6 @@
         getWSColumnSizeByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.column_size) ? ws.column_size : [];
-        },
-
-        getWSNullContinueByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.null_continue) ? ws.null_continue :
-                BICst.DEFAULT_CHART_SETTING.null_continue;
         },
 
         getWSChartColorByID: function (wid) {
@@ -886,10 +880,10 @@
 
             var gs = this.getGlobalStyle();
             var ws = this.getWidgetSettingsByID(wid);
-            return ws.chart_color
+            return ws.chartColor
                 || gs.chartColor
                 || getDefaultColor()
-                || BICst.DEFAULT_CHART_SETTING.chart_color;
+                || BICst.DEFAULT_CHART_SETTING.chartColor;
         },
 
         getWSChartStyleByID: function (wid) {
@@ -902,8 +896,8 @@
 
             var ws = this.getWidgetSettingsByID(wid);
             var chartStyle;
-            if (BI.isNotNull(ws.chart_style)) {
-                return ws.chart_style;
+            if (BI.isNotNull(ws.chartStyle)) {
+                return ws.chartStyle;
             }
             var gs = this.getGlobalStyle();
             if (BI.isNotNull(gs.chartStyle)) {
@@ -912,116 +906,109 @@
             if (BI.isNotNull(chartStyle = getChartStyle())) {
                 return chartStyle;
             }
-            return BICst.DEFAULT_CHART_SETTING.chart_style;
+            return BICst.DEFAULT_CHART_SETTING.chartStyle;
         },
 
-        getWSChartLineTypeByID: function (wid) {
+        getWSLineAreaChartTypeByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.chart_line_type) ? ws.chart_line_type :
-                BICst.DEFAULT_CHART_SETTING.chart_line_type;
+            return BI.isNotNull(ws.lineAreaChartType) ? ws.lineAreaChartType :
+                BICst.DEFAULT_CHART_SETTING.lineAreaChartType;
         },
 
-        getWSChartPieTypeByID: function (wid) {
+        getWSPieChartTypeByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.chart_pie_type) ? ws.chart_pie_type :
-                BICst.DEFAULT_CHART_SETTING.chart_pie_type;
+            return BI.isNotNull(ws.pieChartType) ? ws.pieChartType :
+                BICst.DEFAULT_CHART_SETTING.pieChartType;
         },
 
-        getWSChartRadarTypeByID: function (wid) {
+        getWSRadarChartTypeByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.chart_radar_type) ? ws.chart_radar_type :
-                BICst.DEFAULT_CHART_SETTING.chart_radar_type;
+            return BI.isNotNull(ws.radarChartType) ? ws.radarChartType :
+                BICst.DEFAULT_CHART_SETTING.radarChartType;
         },
 
-        getWSChartDashboardTypeByID: function (wid) {
+        getWSDashboardChartTypeByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.chart_dashboard_type) ? ws.chart_dashboard_type :
-                BICst.DEFAULT_CHART_SETTING.chart_dashboard_type;
+            return BI.isNotNull(ws.dashboardChartType) ? ws.dashboardChartType :
+                BICst.DEFAULT_CHART_SETTING.dashboardChartType;
         },
 
         getWSChartTotalAngleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.chart_total_angle) ? ws.chart_total_angle :
-                BICst.DEFAULT_CHART_SETTING.chart_total_angle;
+            return BI.isNotNull(ws.totalAngle) ? ws.totalAngle :
+                BICst.DEFAULT_CHART_SETTING.totalAngle;
         },
 
         getWSChartInnerRadiusByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.chart_inner_radius) ? ws.chart_inner_radius :
-                BICst.DEFAULT_CHART_SETTING.chart_inner_radius;
+            return BI.isNotNull(ws.innerRadius) ? ws.innerRadius :
+                BICst.DEFAULT_CHART_SETTING.innerRadius;
         },
 
-        getWSLeftYAxisStyleByID: function (wid) {
+        getWSChartLeftYNumberFormatByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.left_y_axis_style) ? ws.left_y_axis_style :
-                BICst.DEFAULT_CHART_SETTING.left_y_axis_style;
+            return BI.isNotNull(ws.leftYNumberFormat) ? ws.leftYNumberFormat :
+                BICst.DEFAULT_CHART_SETTING.leftYNumberFormat;
         },
 
-        getWSRightYAxisStyleByID: function (wid) {
+        getWSChartRightYNumberFormatByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.right_y_axis_style) ? ws.right_y_axis_style :
-                BICst.DEFAULT_CHART_SETTING.right_y_axis_style;
+            return BI.isNotNull(ws.rightYNumberFormat) ? ws.rightYNumberFormat :
+                BICst.DEFAULT_CHART_SETTING.rightYNumberFormat;
         },
 
-        getWSRightYAxis2StyleByID: function (wid) {
+        getWSChartRightY2NumberFormatByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.right_y_axis_second_style) ? ws.right_y_axis_second_style :
-                BICst.DEFAULT_CHART_SETTING.right_y_axis_second_style;
+            return BI.isNotNull(ws.rightY2NumberFormat) ? ws.rightY2NumberFormat :
+                BICst.DEFAULT_CHART_SETTING.rightY2NumberFormat;
         },
 
-        getWSRightYAxisNumLevelByID: function (wid) {
+        getWSChartRightYNumberLevelByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.right_y_axis_number_level) ? ws.right_y_axis_number_level :
-                BICst.DEFAULT_CHART_SETTING.right_y_axis_number_level;
+            return BI.isNotNull(ws.rightYNumberLevel) ? ws.rightYNumberLevel :
+                BICst.DEFAULT_CHART_SETTING.rightYNumberLevel;
         },
 
-        getWSRightYAxis2NumLevelByID: function (wid) {
+        getWSChartRightY2NumberLevelByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.right_y_axis_second_number_level) ? ws.right_y_axis_second_number_level :
-                BICst.DEFAULT_CHART_SETTING.right_y_axis_second_number_level;
+            return BI.isNotNull(ws.rightY2NumberLevel) ? ws.rightY2NumberLevel :
+                BICst.DEFAULT_CHART_SETTING.rightY2NumberLevel;
         },
 
-        getWSLeftYAxisNumLevelByID: function (wid) {
+        getWSChartLeftYNumberLevelByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.left_y_axis_number_level) ? ws.left_y_axis_number_level :
-                BICst.DEFAULT_CHART_SETTING.left_y_axis_number_level;
+            return BI.isNotNull(ws.leftYNumberLevel) ? ws.leftYNumberLevel :
+                BICst.DEFAULT_CHART_SETTING.leftYNumberLevel;
         },
 
-        getWSNumberOfPointerByID: function (wid) {
+        getWSChartDashboardPointerByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.number_of_pointer) ? ws.number_of_pointer :
+            return BI.isNotNull(ws.dashboardPointer) ? ws.dashboardPointer :
                 BICst.POINTER.ONE;
         },
 
-        getWSScaleByID: function (wid) {
+        getWSChartStyleRadioByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.auto_custom) ? ws.auto_custom :
+            return BI.isNotNull(ws.styleRadio) ? ws.styleRadio :
                 BICst.SCALE_SETTING.AUTO
         },
 
-        getWSDashboardStylesByID: function (wid) {
+        getWSChartDashboardStylesByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.style_conditions) ? ws.style_conditions :
-                BICst.DASHBOARD_STYLE_CONDITIONS
+            return BI.isNotNull(ws.dashboardStyles) ? ws.dashboardStyles :
+                BICst.dashboardStyles
         },
 
-        getWSMapStylesByID: function (wid) {
+        getWSChartMapStylesByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.map_styles) ? ws.map_styles :
+            return BI.isNotNull(ws.mapStyles) ? ws.mapStyles :
                 BICst.MAP_STYLE_CONDITIONS
-        },
-
-
-        getWSDashboardNumLevelByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.dashboard_number_level) ? ws.dashboard_number_level :
-                BICst.DEFAULT_CHART_SETTING.dashboard_number_level;
         },
 
         getWSLeftYAxisUnitByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.left_y_axis_unit) ? ws.left_y_axis_unit :
-                BICst.DEFAULT_CHART_SETTING.left_y_axis_unit;
+            return BI.isNotNull(ws.leftYUnit) ? ws.leftYUnit :
+                BICst.DEFAULT_CHART_SETTING.leftYUnit;
         },
 
         getWSDashboardUnitByID: function (wid) {
@@ -1030,412 +1017,381 @@
                 BICst.DEFAULT_CHART_SETTING.dashboard_unit;
         },
 
-        getWSMinScaleByID: function (wid) {
+        getWSChartMinScaleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.min_scale) ? ws.min_scale :
-                BICst.DEFAULT_CHART_SETTING.min_scale
+            return BI.isNotNull(ws.minScale) ? ws.minScale :
+                BICst.DEFAULT_CHART_SETTING.minScale
         },
 
-        getWSMaxScaleByID: function (wid) {
+        getWSChartMaxScaleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.max_scale) ? ws.max_scale :
-                BICst.DEFAULT_CHART_SETTING.max_scale
+            return BI.isNotNull(ws.maxScale) ? ws.maxScale :
+                BICst.DEFAULT_CHART_SETTING.maxScale
         },
 
-        getWSShowPercentageByID: function (wid) {
+        getWSChartShowPercentageByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.show_percentage) ? ws.show_percentage :
                 BICst.DEFAULT_CHART_SETTING.percentage_not_show
         },
 
-        getWSRightYAxisUnitByID: function (wid) {
+        getWSChartRightYUnitByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.right_y_axis_unit) ? ws.right_y_axis_unit :
-                BICst.DEFAULT_CHART_SETTING.right_y_axis_unit;
+            return BI.isNotNull(ws.rightYUnit) ? ws.rightYUnit :
+                BICst.DEFAULT_CHART_SETTING.rightYUnit;
         },
 
-        getWSRightYAxis2UnitByID: function (wid) {
+        getWSChartRightYAxis2UnitByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.right_y_axis_second_unit) ? ws.right_y_axis_second_unit :
-                BICst.DEFAULT_CHART_SETTING.right_y_axis_second_unit;
+            return BI.isNotNull(ws.rightY2Unit) ? ws.rightY2Unit :
+                BICst.DEFAULT_CHART_SETTING.rightY2Unit;
         },
 
-        getWSShowLeftYAxisTitleByID: function (wid) {
+        getWSChartLeftYShowTitleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_left_y_axis_title) ? ws.show_left_y_axis_title :
-                BICst.DEFAULT_CHART_SETTING.show_left_y_axis_title;
+            return BI.isNotNull(ws.leftYShowTitle) ? ws.leftYShowTitle :
+                BICst.DEFAULT_CHART_SETTING.leftYShowTitle;
         },
 
-        getWSShowRightYAxisTitleByID: function (wid) {
+        getWSChartRightYShowTitleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_right_y_axis_title) ? ws.show_right_y_axis_title :
-                BICst.DEFAULT_CHART_SETTING.show_right_y_axis_title;
+            return BI.isNotNull(ws.rightYShowTitle) ? ws.rightYShowTitle :
+                BICst.DEFAULT_CHART_SETTING.rightYShowTitle;
         },
 
-        getWSShowRightYAxis2TitleByID: function (wid) {
+        getWSChartRightY2ShowTitleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_right_y_axis_second_title) ? ws.show_right_y_axis_second_title :
-                BICst.DEFAULT_CHART_SETTING.show_right_y_axis_second_title;
+            return BI.isNotNull(ws.rightYShowTitle) ? ws.rightYShowTitle :
+                BICst.DEFAULT_CHART_SETTING.rightYShowTitle;
         },
 
-        getWSLeftYAxisTitleByID: function (wid) {
+        getWSChartLeftYTitleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.left_y_axis_title) ? ws.left_y_axis_title :
-                BICst.DEFAULT_CHART_SETTING.left_y_axis_title;
+            return BI.isNotNull(ws.leftYTitle) ? ws.leftYTitle :
+                BICst.DEFAULT_CHART_SETTING.leftYTitle;
         },
 
-        getWSRightYAxisTitleByID: function (wid) {
+        getWSChartRightYTitleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.right_y_axis_title) ? ws.right_y_axis_title :
-                BICst.DEFAULT_CHART_SETTING.right_y_axis_title;
+            return BI.isNotNull(ws.rightYTitle) ? ws.rightYTitle :
+                BICst.DEFAULT_CHART_SETTING.rightYTitle;
         },
 
-        getWSRightYAxis2TitleByID: function (wid) {
+        getWSChartRightY2TitleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.right_y_axis_second_title) ? ws.right_y_axis_second_title :
-                BICst.DEFAULT_CHART_SETTING.right_y_axis_second_title;
+            return BI.isNotNull(ws.rightY2Title) ? ws.rightY2Title :
+                BICst.DEFAULT_CHART_SETTING.rightY2Title;
         },
 
-        getWSShowXAxisTitleByID: function (wid) {
+        getWSChartCatShowTitleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_x_axis_title) ? ws.show_x_axis_title :
-                BICst.DEFAULT_CHART_SETTING.show_x_axis_title;
+            return BI.isNotNull(ws.catShowTitle) ? ws.catShowTitle :
+                BICst.DEFAULT_CHART_SETTING.catShowTitle;
         },
 
-        getWSXAxisTitleByID: function (wid) {
+        getWSChartCatTitleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.x_axis_title) ? ws.x_axis_title :
-                BICst.DEFAULT_CHART_SETTING.x_axis_title;
+            return BI.isNotNull(ws.catTitle) ? ws.catTitle :
+                BICst.DEFAULT_CHART_SETTING.catTitle;
         },
 
-        getWSLeftYAxisReversedByID: function (wid) {
+        getWSChartLeftYReverseByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.left_y_axis_reversed) ? ws.left_y_axis_reversed :
-                BICst.DEFAULT_CHART_SETTING.left_y_axis_reversed;
+            return BI.isNotNull(ws.leftYReverse) ? ws.leftYReverse :
+                BICst.DEFAULT_CHART_SETTING.leftYReverse;
         },
 
-        getWSRightYAxisReversedByID: function (wid) {
+        getWSChartRightYReverseByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.right_y_axis_reversed) ? ws.right_y_axis_reversed :
-                BICst.DEFAULT_CHART_SETTING.right_y_axis_reversed;
+            return BI.isNotNull(ws.rightYReverse) ? ws.rightYReverse :
+                BICst.DEFAULT_CHART_SETTING.rightYReverse;
         },
 
-        getWSRightYAxis2ReversedByID: function (wid) {
+        getWSChartRightY2ReverseByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.right_y_axis_second_reversed) ? ws.right_y_axis_second_reversed :
-                BICst.DEFAULT_CHART_SETTING.right_y_axis_second_reversed;
+            return BI.isNotNull(ws.rightY2Reverse) ? ws.rightY2Reverse :
+                BICst.DEFAULT_CHART_SETTING.rightY2Reverse;
         },
 
         getWSChartLegendByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.chart_legend) ? ws.chart_legend :
-                BICst.DEFAULT_CHART_SETTING.chart_legend;
+            return BI.isNotNull(ws.legend) ? ws.legend :
+                BICst.DEFAULT_CHART_SETTING.legend;
         },
 
-        getWSShowDataLabelByID: function (wid) {
+        getWSChartShowDataLabelByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_data_label) ? ws.show_data_label :
-                BICst.DEFAULT_CHART_SETTING.show_data_label;
+            return BI.isNotNull(ws.showDataLabel) ? ws.showDataLabel :
+                BICst.DEFAULT_CHART_SETTING.showDataLabel;
         },
 
-        getWSShowDataTableByID: function (wid) {
+        getWSChartShowDataTableByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_data_table) ? ws.show_data_table :
-                BICst.DEFAULT_CHART_SETTING.show_data_table;
+            return BI.isNotNull(ws.showDataTable) ? ws.showDataTable :
+                BICst.DEFAULT_CHART_SETTING.showDataTable;
         },
 
-        getWSShowGridLineByID: function (wid) {
+        getWSChartBubbleSizeFromByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_grid_line) ? ws.show_grid_line :
-                BICst.DEFAULT_CHART_SETTING.show_grid_line;
+            return BI.isNotNull(ws.bubbleSizeFrom) ? ws.bubbleSizeFrom :
+                BICst.DEFAULT_CHART_SETTING.bubbleSizeFrom
         },
 
-
-        getWSMinBubbleSizeByID: function (wid) {
+        getWSChartBubbleSizeToByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.bubble_min_size) ? ws.bubble_min_size :
-                BICst.DEFAULT_CHART_SETTING.bubble_min_size
+            return BI.isNotNull(ws.bubbleSizeTo) ? ws.bubbleSizeTo :
+                BICst.DEFAULT_CHART_SETTING.bubbleSizeTo
         },
 
-        getWSMaxBubbleSizeByID: function (wid) {
+        getWSLeftYNumberSeparatorByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.bubble_max_size) ? ws.bubble_max_size :
-                BICst.DEFAULT_CHART_SETTING.bubble_max_size
+            return BI.isNotNull(ws.leftYSeparator) ? ws.leftYSeparator :
+                BICst.DEFAULT_CHART_SETTING.leftYSeparator;
         },
 
-        getWSNumberSeparatorsByID: function (wid) {
+        getWSRightYNumberSeparatorByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.num_separators) ? ws.num_separators :
-                BICst.DEFAULT_CHART_SETTING.num_separators;
+            return BI.isNotNull(ws.rightYSeparator) ? ws.rightYSeparator :
+                BICst.DEFAULT_CHART_SETTING.rightYSeparator;
         },
 
-        getWSRightNumberSeparatorsByID: function (wid) {
+        getWSRightY2NumberSeparatorByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.right_num_separators) ? ws.right_num_separators :
-                BICst.DEFAULT_CHART_SETTING.right_num_separators;
+            return BI.isNotNull(ws.rightY2Separator) ? ws.rightY2Separator :
+                BICst.DEFAULT_CHART_SETTING.rightY2Separator;
         },
 
-        getWSRight2NumberSeparatorsByID: function (wid) {
+        getWSChartLeftYShowLabelByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.right2_num_separators) ? ws.right2_num_separators :
-                BICst.DEFAULT_CHART_SETTING.right_num_separators;
+            return BI.isNotNull(ws.leftYShowLabel) ? ws.leftYShowLabel :
+                BICst.DEFAULT_CHART_SETTING.leftYShowLabel
         },
 
-        getWSShowLValueAxisLabelByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_left_label) ? ws.show_left_label :
-                BICst.DEFAULT_CHART_SETTING.show_left_label
-        },
-
-        getWSLValueAxisLabelSettingByID: function (wid) {
+        getWSChartLeftYLabelStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             var chartFont = this.getGSChartFont();
-            var labelSetting = ws.left_label_style || {};
-            var wt = this.getWidgetTypeByID(wid);
-            var colors = this.getWSChartColorByID(wid);
-            var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[0] : BICst.DEFAULT_CHART_SETTING.label_color;
-            labelSetting.text_style = BI.extend(chartFont, {"color": color}, labelSetting.text_style);
-            labelSetting.text_direction = labelSetting.text_direction || 0;
+            var labelSetting = ws.leftYLabelStyle || {};
+            labelSetting.textStyle = BI.extend(chartFont, labelSetting.textStyle);
+            labelSetting.textDirection = labelSetting.textDirection || 0;
             return labelSetting;
         },
 
-        getWSLValueAxisLineColorByID: function (wid) {
+        getWSChartLeftYLineColorByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            var wt = this.getWidgetTypeByID(wid);
-            var colors = this.getWSChartColorByID(wid);
-            var lineColor = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[0] : BICst.DEFAULT_CHART_SETTING.line_color;
-            return BI.isNotNull(ws.left_line_color) ? ws.left_line_color :
-                lineColor
+            return BI.isNotNull(ws.leftYLineColor) ? ws.leftYLineColor :
+                BICst.DEFAULT_CHART_SETTING.lineColor
         },
 
-        getWSShowRValueAxisLabelByID: function (wid) {
+        getWSRightYShowLabelByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_right_label) ? ws.show_right_label :
-                BICst.DEFAULT_CHART_SETTING.show_left_label
+            return BI.isNotNull(ws.rightYShowLabel) ? ws.rightYShowLabel :
+                BICst.DEFAULT_CHART_SETTING.rightYShowLabel
         },
 
-        getWSRValueAxisLabelSettingByID: function (wid) {
+        getWSRightYLabelStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             var chartFont = this.getGSChartFont();
-            var labelSetting = ws.right_label_style || {};
-            var wt = this.getWidgetTypeByID(wid);
-            var colors = this.getWSChartColorByID(wid);
-            var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[1] : BICst.DEFAULT_CHART_SETTING.label_color;
-            labelSetting.text_style = BI.extend(chartFont, {"color": color}, labelSetting.text_style);
-            labelSetting.text_direction = labelSetting.text_direction || 0;
+            var labelSetting = ws.rightYLabelStyle || {};
+            labelSetting.textStyle = BI.extend(chartFont, labelSetting.textStyle);
+            labelSetting.textDirection = labelSetting.textDirection || 0;
             return labelSetting;
         },
 
-        getWSRValueAxisLineColorByID: function (wid) {
+        getWSRightYLineColorByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            var wt = this.getWidgetTypeByID(wid);
-            var colors = this.getWSChartColorByID(wid);
-            var lineColor = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[1] : BICst.DEFAULT_CHART_SETTING.line_color;
-            return BI.isNotNull(ws.right_line_color) ? ws.right_line_color :
-                lineColor
+            return BI.isNotNull(ws.rightYLineColor) ? ws.rightYLineColor :
+                BICst.DEFAULT_CHART_SETTING.lineColor
         },
 
-        getWSShowR2ValueAxisLabelByID: function (wid) {
+        getWSRightY2ShowLabelByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_right2_label) ? ws.show_right2_label :
-                BICst.DEFAULT_CHART_SETTING.show_left_label
+            return BI.isNotNull(ws.right2YShowLabel) ? ws.right2YShowLabel :
+                BICst.DEFAULT_CHART_SETTING.right2YShowLabel
         },
 
-        getWSR2ValueAxisLabelSettingByID: function (wid) {
+        getWSRightY2LabelStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             var chartFont = this.getGSChartFont();
-            var labelSetting = ws.right2_label_style || {};
-            var wt = this.getWidgetTypeByID(wid);
-            var colors = this.getWSChartColorByID(wid);
-            var color = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[2] : BICst.DEFAULT_CHART_SETTING.label_color;
-            labelSetting.text_style = BI.extend(chartFont, {"color": color}, labelSetting.text_style);
-            labelSetting.text_direction = labelSetting.text_direction || 0;
+            var labelSetting = ws.rightY2LabelStyle || {};
+            labelSetting.textStyle = BI.extend(chartFont, labelSetting.textStyle);
+            labelSetting.textDirection = labelSetting.textDirection || 0;
             return labelSetting;
         },
 
-        getWSR2ValueAxisLineColorByID: function (wid) {
+        getWSRightY2LineColorByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            var wt = this.getWidgetTypeByID(wid);
-            var colors = this.getWSChartColorByID(wid);
-            var lineColor = (wt === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART) ? colors[1] : BICst.DEFAULT_CHART_SETTING.line_color;
-            return BI.isNotNull(ws.right2_line_color) ? ws.right2_line_color :
-                lineColor
+            return BI.isNotNull(ws.rightY2LineColor) ? ws.rightY2LineColor :
+                BICst.DEFAULT_CHART_SETTING.lineColor
         },
 
-        getWSShowCatLabelByID: function (wid) {
+        getWSChartCatShowLabelByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_cat_label) ? ws.show_cat_label :
-                BICst.DEFAULT_CHART_SETTING.show_cat_label
+            return BI.isNotNull(ws.catShowLabel) ? ws.catShowLabel :
+                BICst.DEFAULT_CHART_SETTING.catShowLabel
         },
 
-        getWSCatLabelStyleByID: function (wid) {
+        getWSChartCatLabelStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             var chartFont = this.getGSChartFont();
-            var labelSetting = ws.cat_label_style || {};
-            labelSetting.text_style = BI.extend(chartFont, labelSetting.text_style);
-            labelSetting.text_direction = labelSetting.text_direction || 0;
+            var labelSetting = ws.catLabelStyle || {};
+            labelSetting.textStyle = BI.extend(chartFont, labelSetting.textStyle);
+            labelSetting.textDirection = labelSetting.textDirection || 0;
             return labelSetting;
 
         },
 
-        getWSCatLineColorByID: function (wid) {
+        getWSChartCatLineColorByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.cat_line_color) ? ws.cat_line_color :
-                BICst.DEFAULT_CHART_SETTING.line_color
+            return BI.isNotNull(ws.catLineColor) ? ws.catLineColor :
+                BICst.DEFAULT_CHART_SETTING.lineColor
         },
 
-        getWSLegendSettingByID: function (wid) {
+        getWSChartLegendStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             var chartFont = this.getGSChartFont();
-            var legendSetting = ws.chart_legend_setting || {};
-            legendSetting = BI.extend(chartFont, legendSetting);
-            return legendSetting;
+            var legendStyle = ws.legendStyle || {};
+            legendStyle = BI.extend(chartFont, legendStyle);
+            return legendStyle;
         },
 
-        getWSLeftTitleStyleByID: function (wid) {
+        getWSChartLeftYTitleStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             var chartFont = this.getGSChartFont();
-            var titleStyle = ws.left_title_style || {};
+            var titleStyle = ws.leftYTitleStyle || {};
             titleStyle = BI.extend(chartFont, titleStyle);
             return titleStyle;
         },
 
-        getWSRightTitleStyleByID: function (wid) {
+        getWSChartRightYTitleStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             var chartFont = this.getGSChartFont();
-            var titleStyle = ws.right_title_style || {};
+            var titleStyle = ws.rightYTitleStyle || {};
             titleStyle = BI.extend(chartFont, titleStyle);
             return titleStyle;
         },
 
-        getWSRight2TitleStyleByID: function (wid) {
+        getWSChartRightY2TitleStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             var chartFont = this.getGSChartFont();
-            var titleStyle = ws.right2_title_style || {};
+            var titleStyle = ws.rightY2TitleStyle || {};
             titleStyle = BI.extend(chartFont, titleStyle);
             return titleStyle;
         },
 
-        getWSCatTitleStyleByID: function (wid) {
+        getWSChartCatTitleStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             var chartFont = this.getGSChartFont();
-            var titleStyle = ws.cat_title_style || {};
+            var titleStyle = ws.catTitleStyle || {};
             titleStyle = BI.extend(chartFont, titleStyle);
             return titleStyle;
         },
 
-        getWSShowHGridLineByID: function (wid) {
+        getWSChartHShowGridLineByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_h_grid_line) ? ws.show_h_grid_line :
-                BICst.DEFAULT_CHART_SETTING.show_h_grid_line
+            return BI.isNotNull(ws.hShowGridLine) ? ws.hShowGridLine :
+                BICst.DEFAULT_CHART_SETTING.hShowGridLine
         },
 
-        getWSHGridLineColorByID: function (wid) {
+        getWSChartHGridLineColorByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.h_grid_line_color) ? ws.h_grid_line_color :
-                BICst.DEFAULT_CHART_SETTING.line_color
+            return BI.isNotNull(ws.hGridLineColor) ? ws.hGridLineColor :
+                BICst.DEFAULT_CHART_SETTING.lineColor
         },
 
-        getWSShowVGridLineByID: function (wid) {
+        getWSChartVShowGridLineByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_v_grid_line) ? ws.show_v_grid_line :
-                BICst.DEFAULT_CHART_SETTING.show_v_grid_line
+            return BI.isNotNull(ws.vShowGridLine) ? ws.vShowGridLine :
+                BICst.DEFAULT_CHART_SETTING.vShowGridLine
         },
 
-        getWSVGridLineColorByID: function (wid) {
+        getWSChartVGridLineColorByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.v_grid_line_color) ? ws.v_grid_line_color :
-                BICst.DEFAULT_CHART_SETTING.line_color
+            return BI.isNotNull(ws.vGridLineColor) ? ws.vGridLineColor :
+                BICst.DEFAULT_CHART_SETTING.lineColor
         },
 
-        getWSToolTipSettingByID: function (wid) {
+        getWSChartToolTipStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.tooltip_setting) ? ws.tooltip_setting :
+            return BI.isNotNull(ws.tooltipStyle) ? ws.tooltipStyle :
             {}
         },
 
         getWSLinkageSelectionByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.select_linkage) ? ws.select_linkage :
-                BICst.DEFAULT_CHART_SETTING.select_linkage
+            return BI.isNotNull(ws.linkageSelection) ? ws.linkageSelection :
+                BICst.DEFAULT_CHART_SETTING.linkageSelection
         },
 
         getWSMinimalistByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.minimalist_model) ? ws.minimalist_model :
-                BICst.DEFAULT_CHART_SETTING.minimalist_model
+            return BI.isNotNull(ws.miniModel) ? ws.miniModel :
+                BICst.DEFAULT_CHART_SETTING.miniModel
         },
 
-        getWSBigDataModelByID: function (wid) {
+        getWSChartBigDataModeByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.big_data_mode) ? ws.big_data_mode :
                 BICst.DEFAULT_CHART_SETTING.big_data_mode
         },
 
-        getWSShowXCustomScale: function (wid) {
+        getWSChartRightYShowCustomScaleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_x_custom_scale) ? ws.show_x_custom_scale :
-                BICst.DEFAULT_CHART_SETTING.show_x_custom_scale;
+            return BI.isNotNull(ws.rightYShowCustomScale) ? ws.rightYShowCustomScale :
+                BICst.DEFAULT_CHART_SETTING.rightYShowCustomScale;
         },
 
-        getWSCustomXScale: function (wid) {
+        getWSChartRightYCustomScaleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.custom_x_scale) ? ws.custom_x_scale :
-                BICst.DEFAULT_CHART_SETTING.custom_scale
+            return BI.isNotNull(ws.rightYCustomScale) ? ws.rightYCustomScale :
+                BICst.DEFAULT_CHART_SETTING.customScale
         },
 
-        getWSShowYCustomScale: function (wid) {
+        getWSChartLeftYShowCustomScaleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_y_custom_scale) ? ws.show_y_custom_scale :
-                BICst.DEFAULT_CHART_SETTING.show_y_custom_scale;
+            return BI.isNotNull(ws.leftYShowCustomScale) ? ws.leftYShowCustomScale :
+                BICst.DEFAULT_CHART_SETTING.leftYShowCustomScale;
         },
 
-        getWSCustomYScale: function (wid) {
+        getWSChartLeftYCustomScaleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.custom_y_scale) ? ws.custom_y_scale :
-                BICst.DEFAULT_CHART_SETTING.custom_scale
+            return BI.isNotNull(ws.leftYCustomScale) ? ws.leftYCustomScale :
+                BICst.DEFAULT_CHART_SETTING.customScale
         },
 
-        getWSShowZCustomScale: function (wid) {
+        getWSChartRightY2CustomScaleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_z_custom_scale) ? ws.show_z_custom_scale :
-                BICst.DEFAULT_CHART_SETTING.show_z_custom_scale;
+            return BI.isNotNull(ws.rightY2CustomScale) ? ws.rightY2CustomScale :
+                BICst.DEFAULT_CHART_SETTING.customScale;
         },
 
-        getWSCustomZScale: function (wid) {
+        getWSChartRightY2ShowCustomScaleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.custom_z_scale) ? ws.custom_z_scale :
-                BICst.DEFAULT_CHART_SETTING.custom_scale
+            return BI.isNotNull(ws.rightY2ShowCustomScale) ? ws.rightY2ShowCustomScale :
+                BICst.DEFAULT_CHART_SETTING.rightY2ShowCustomScale
         },
 
-        getWSShowZoomByID: function (wid) {
+        getWSChartShowZoomByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_zoom) ? ws.show_zoom :
-                BICst.DEFAULT_CHART_SETTING.show_zoom;
-        },
-
-        getWSTextDirectionByID: function (wid) {
-            var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.text_direction) ? ws.text_direction :
-                BICst.DEFAULT_CHART_SETTING.text_direction;
+            return BI.isNotNull(ws.showZoom) ? ws.showZoom :
+                BICst.DEFAULT_CHART_SETTING.showZoom;
         },
 
         getWSShowBackgroundByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.show_background_layer) ? ws.show_background_layer :
-                BICst.DEFAULT_CHART_SETTING.show_background_layer;
+            return BI.isNotNull(ws.isShowBackgroundLayer) ? ws.isShowBackgroundLayer :
+                BICst.DEFAULT_CHART_SETTING.isShowBackgroundLayer;
         },
 
-        getWSBackgroundLayerInfoByID: function (wid) {
+        getWSChartMapBackgroundLayerInfoByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.background_layer_info) ? ws.background_layer_info :
-                BICst.DEFAULT_CHART_SETTING.background_layer_info;
+            return BI.isNotNull(ws.backgroundLayerInfo) ? ws.backgroundLayerInfo :
+                BICst.DEFAULT_CHART_SETTING.backgroundLayerInfo;
         },
 
-        getWSNullContinueByID: function (wid) {
+        getWSNullContinuityByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.null_continue) ? ws.null_continue :
-                BICst.DEFAULT_CHART_SETTING.null_continue;
+            return BI.isNotNull(ws.nullContinuity) ? ws.nullContinuity :
+                BICst.DEFAULT_CHART_SETTING.nullContinuity;
         },
 
         //settings  ---- end ----
@@ -3068,8 +3024,14 @@
                         if (!self.isCalculateTargetByDimensionID(tId)) {
                             //维度和某个指标之间没有设置路径
                             if (!BI.has(dimensionMap, tId)) {
-                                valid = false;
-                                return true;
+                                var fieldId = BI.Utils.getFieldIDByDimensionID(dId);
+                                var paths = BI.Utils.getPathsFromFieldAToFieldB(fieldId, BI.Utils.getFieldIDByDimensionID(tId))
+                                if(paths.length === 1){
+                                    widget.dimensions[dId].dimension_map[tId] = {_src: {field_id: fieldId}, target_relation: paths};
+                                }else{
+                                    valid = false;
+                                    return true;
+                                }
                             } else {
                                 var targetRelation = dimensionMap[tId].target_relation;
                                 BI.any(targetRelation, function (id, path) {

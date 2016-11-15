@@ -89,7 +89,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
     },
 
     formatZoom: function (config, show_zoom) {
-        config.zoom.zoomTool.enabled = this.config.show_zoom;
+        config.zoom.zoomTool.enabled = this.config.showZoom;
         if (show_zoom === true) {
             delete config.dataSheet;
             config.zoom.zoomType = "";
@@ -177,8 +177,8 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         return magnify;
     },
 
-    formatChartLegend: function (config, chart_legend) {
-        switch (chart_legend) {
+    formatChartLegend: function (config, chartLegend) {
+        switch (chartLegend) {
             case BICst.CHART_LEGENDS.BOTTOM:
                 config.legend.enabled = true;
                 config.legend.position = "bottom";
@@ -196,7 +196,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         }
     },
 
-    getXYAxisUnit: function (numberLevelType, axis_unit) {
+    getXYAxisUnit: function (numberLevelType, axisUnit) {
         var unit = "";
         switch (numberLevelType) {
             case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
@@ -215,12 +215,12 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                 unit += '%';
                 break;
         }
-        return (BI.isEmptyString(unit) && BI.isEmptyString(axis_unit)) ? unit : (unit + axis_unit);
+        return (BI.isEmptyString(unit) && BI.isEmptyString(axisUnit)) ? unit : (unit + axisUnit);
     },
 
-    formatTickInXYaxis: function (type, number_level, separators) {
+    formatTickInXYaxis: function (type, numberLevel, separators) {
         var formatter = this.formatNumberLevelAndSeparators(type, separators);
-        if (number_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+        if (numberLevel === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
             formatter += '%';
         }
         formatter += ";-" + formatter;
@@ -229,9 +229,9 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         }
     },
 
-    formatTickForRadar: function (type, number_level, separators, unit) {
+    formatTickForRadar: function (type, numberLevel, separators, unit) {
         var formatter = this.formatNumberLevelAndSeparators(type, separators);
-        formatter += this.getXYAxisUnit(number_level, unit);
+        formatter += this.getXYAxisUnit(numberLevel, unit);
         formatter += ";-" + formatter;
         return function () {
             return BI.contentFormat(arguments[0], formatter)
@@ -327,123 +327,220 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
 
     catSetting: function (config) {
         return BI.extend({
-            enableTick: config.enable_tick,
-            lineWidth: config.line_width,
-            lineColor: config.cat_line_color,
-            gridLineColor: config.v_grid_line_color,
-            gridLineWidth: config.show_v_grid_line === true ? 1 : 0,
-            showLabel: config.show_cat_label,
-            labelRotation: config.cat_label_style && config.cat_label_style.text_direction,
-            labelStyle: BI.extend({}, config.cat_label_style && config.cat_label_style.text_style, {
-                fontSize: config.cat_label_style && config.cat_label_style.text_style && config.cat_label_style.text_style.fontSize + "px"
+            enableTick: config.enableTick,
+            lineWidth: config.lineWidth,
+            lineColor: config.catLineColor,
+            gridLineColor: config.vGridLineColor,
+            gridLineWidth: config.vShowGridLine === true ? 1 : 0,
+            showLabel: config.catShowLabel,
+            labelRotation: config.catLabelStyle && config.catLabelStyle.textDirection,
+            labelStyle: BI.extend({}, config.catLabelStyle && config.catLabelStyle.textStyle, {
+                fontSize: config.catLabelStyle && config.catLabelStyle.textStyle && config.catLabelStyle.textStyle.fontSize + "px"
             }),
         }, {
             title: {
                 align: "center",
-                text: config.show_x_axis_title ? config.x_axis_title : "",
-                style: BI.extend({}, config.cat_title_style, {
-                    fontSize: config.cat_title_style && config.cat_title_style.fontSize + "px"
+                text: config.catShowTitle ? config.catShowTitle : "",
+                style: BI.extend({}, config.catTitleStyle, {
+                    fontSize: config.catTitleStyle && config.catTitleStyle.fontSize + "px"
                 })
             }
         })
     },
 
     leftAxisSetting: function (config) {
-        var title = this.getXYAxisUnit(config.left_y_axis_number_level, config.left_y_axis_unit);
+        var title = this.getXYAxisUnit(config.leftYNumberLevel, config.leftYUnit);
         return BI.extend({
-            lineWidth: config.line_width,
-            lineColor: config.left_line_color,
-            tickColor: config.left_line_color,
-            gridLineWidth: config.show_h_grid_line === true ? 1 : 0,
-            gridLineColor: config.h_grid_line_color,
-            showLabel: config.show_left_label,
-            labelStyle: BI.extend({}, config.left_label_style && config.left_label_style.text_style, {
-                fontSize: config.left_label_style && config.left_label_style.text_style && config.left_label_style.text_style.fontSize + "px"
+            lineWidth: config.lineWidth,
+            lineColor: config.leftYLineColor,
+            tickColor: config.leftYLineColor,
+            gridLineWidth: config.hShowGridLine === true ? 1 : 0,
+            gridLineColor: config.hGridLineColor,
+            showLabel: config.leftYShowLabel,
+            labelStyle: BI.extend({}, config.leftYLabelStyle && config.leftYLabelStyle.textStyle, {
+                fontSize: config.leftYLabelStyle && config.leftYLabelStyle.textStyle && config.leftYLabelStyle.textStyle.fontSize + "px"
             }),
-            labelRotation: config.left_label_style && config.left_label_style.text_direction,
-            enableTick: config.enable_tick,
-            reversed: config.left_y_axis_reversed,
-            enableMinorTick: config.enable_minor_tick,
-            min: config.custom_y_scale.minScale.scale || null,
-            max: config.custom_y_scale.maxScale.scale || null,
-            tickInterval: BI.isNumber(config.custom_y_scale.interval.scale) && config.custom_y_scale.interval.scale > 0 ?
-                config.custom_y_scale.interval.scale : null,
-            formatter: this.formatTickInXYaxis(config.left_y_axis_style, config.left_y_axis_number_level, config.num_separators)
+            labelRotation: config.leftYLabelStyle && config.leftYLabelStyle.textDirection,
+            enableTick: config.enableTick,
+            reversed: config.leftYReverse,
+            enableMinorTick: config.enableMinorTick,
+            min: config.leftYCustomScale.minScale.scale || null,
+            max: config.leftYCustomScale.maxScale.scale || null,
+            tickInterval: BI.isNumber(config.leftYCustomScale.interval.scale) && config.leftYCustomScale.interval.scale > 0 ?
+                config.leftYCustomScale.interval.scale : null,
+            formatter: this.formatTickInXYaxis(config.leftYNumberFormat, config.leftYNumberLevel, config.leftYSeparator)
         }, {
             title: {
-                text: config.show_left_y_axis_title ? config.left_y_axis_title + title : title,
+                text: config.leftYShowTitle ? config.leftYTitle + title : title,
                 rotation: this.constants.ROTATION,
-                style: BI.extend({}, config.left_title_style, {
-                    fontSize: config.left_title_style && config.left_title_style.fontSize + "px"
+                style: BI.extend({}, config.leftYTitleStyle, {
+                    fontSize: config.leftYTitleStyle && config.leftYTitleStyle.fontSize + "px"
                 })
             }
         })
     },
 
     rightAxisSetting: function (config) {
-        var unit = this.getXYAxisUnit(config.right_y_axis_number_level, config.right_y_axis_unit);
+        var unit = this.getXYAxisUnit(config.rightYNumberLevel, config.rightYUnit);
         return BI.extend({
-            lineWidth: config.line_width,
-            lineColor: config.right_line_color,
-            tickColor: config.right_line_color,
-            gridLineWidth: config.show_h_grid_line === true ? 1 : 0,
-            gridLineColor: config.h_grid_line_color,
-            showLabel: config.show_right_label,
-            labelStyle: BI.extend({}, config.right_label_style && config.right_label_style.text_style, {
-                fontSize: config.right_label_style && config.right_label_style.text_style && config.right_label_style.text_style.fontSize + "px"
+            lineWidth: config.lineWidth,
+            lineColor: config.rightYLineColor,
+            tickColor: config.rightYLineColor,
+            gridLineWidth: config.hShowGridLine === true ? 1 : 0,
+            gridLineColor: config.hGridLineColor,
+            showLabel: config.rightYShowLabel,
+            labelStyle: BI.extend({}, config.rightYLabelStyle && config.rightYLabelStyle.textStyle, {
+                fontSize: config.rightYLabelStyle && config.rightYLabelStyle.textStyle && config.rightYLabelStyle.textStyle.fontSize + "px"
             }),
-            labelRotation: config.right_label_style.text_direction,
-            reversed: config.right_y_axis_reversed,
-            enableTick: config.enable_tick,
-            enableMinorTick: config.enable_minor_tick,
-            min: config.custom_x_scale.minScale.scale || null,
-            max: config.custom_x_scale.maxScale.scale || null,
-            tickInterval: BI.isNumber(config.custom_x_scale.interval.scale) && config.custom_x_scale.interval.scale > 0 ?
-                config.custom_x_scale.interval.scale : null,
-            formatter: this.formatTickInXYaxis(config.right_y_axis_style, config.right_y_axis_number_level, config.right_num_separators)
+            labelRotation: config.rightYLabelStyle.textDirection,
+            reversed: config.rightYReverse,
+            enableTick: config.enableTick,
+            enableMinorTick: config.enableMinorTick,
+            min: config.rightYCustomScale.minScale.scale || null,
+            max: config.rightYCustomScale.maxScale.scale || null,
+            tickInterval: BI.isNumber(config.rightYCustomScale.interval.scale) && config.rightYCustomScale.interval.scale > 0 ?
+                config.rightYCustomScale.interval.scale : null,
+            formatter: this.formatTickInXYaxis(config.rightYNumberFormat, config.rightYNumberLevel, config.rightYSeparator)
         }, {
             title: {
-                text: config.show_right_y_axis_title ? config.right_y_axis_title + unit : unit,
+                text: config.rightYShowTitle ? config.rightYTitle + unit : unit,
                 rotation: this.constants.ROTATION,
-                style: BI.extend({}, config.right_title_style, {
-                    fontSize: config.right_title_style && config.right_title_style.fontSize + "px"
+                style: BI.extend({}, config.rightYTitleStyle, {
+                    fontSize: config.rightYTitleStyle && config.rightYTitleStyle.fontSize + "px"
                 })
             }
         })
     },
 
     right2AxisSetting: function (config) {
-        var unit = this.getXYAxisUnit(config.right_y_axis_second_number_level, config.right_y_axis_second_unit);
+        var unit = this.getXYAxisUnit(config.rightY2NumberLevel, config.rightY2Unit);
         return BI.extend({
-            lineWidth: config.line_width,
-            lineColor: config.right2_line_color,
-            tickColor: config.right2_line_color,
-            gridLineWidth: config.show_h_grid_line === true ? 1 : 0,
-            gridLineColor: config.h_grid_line_color,
-            showLabel: config.show_right2_label,
-            labelStyle: BI.extend({}, config.right2_label_style.text_style, {
-                fontSize: config.right2_label_style && config.right2_label_style.text_style && config.right2_label_style.text_style.fontSize + "px"
+            lineWidth: config.lineWidth,
+            lineColor: config.rightY2LineColor,
+            tickColor: config.rightY2LineColor,
+            gridLineWidth: config.hShowGridLine === true ? 1 : 0,
+            gridLineColor: config.hGridLineColor,
+            showLabel: config.rightY2ShowLabel,
+            labelStyle: BI.extend({}, config.rightY2LabelStyle.textStyle, {
+                fontSize: config.rightY2LabelStyle && config.rightY2LabelStyle.text_style && config.rightY2LabelStyle.textStyle.fontSize + "px"
             }),
-            labelRotation: config.right2_label_style && config.right2_label_style.text_direction,
-            reversed: config.right_y_axis_second_reversed,
-            enableTick: config.enable_tick,
-            enableMinorTick: config.enable_minor_tick,
-            min: config.custom_z_scale.minScale.scale || null,
-            max: config.custom_z_scale.maxScale.scale || null,
-            tickInterval: BI.isNumber(config.custom_z_scale.interval.scale) && config.custom_z_scale.interval.scale > 0 ?
-                config.custom_z_scale.interval.scale : null,
-            formatter: this.formatTickInXYaxis(config.right_y_axis_second_style, config.right_y_axis_second_number_level, config.right2_num_separators)
+            labelRotation: config.rightY2LabelStyle && config.rightY2LabelStyle.textDirection,
+            reversed: config.rightY2Reverse,
+            enableTick: config.enableTick,
+            enableMinorTick: config.enableMinorTick,
+            min: config.rightY2CustomScale.minScale.scale || null,
+            max: config.rightY2CustomScale.maxScale.scale || null,
+            tickInterval: BI.isNumber(config.rightY2CustomScale.interval.scale) && config.rightY2CustomScale.interval.scale > 0 ?
+                config.rightY2CustomScale.interval.scale : null,
+            formatter: this.formatTickInXYaxis(config.rightY2NumberFormat, config.rightY2NumberLevel, config.rightY2Separator)
         }, {
             title: {
-                text: config.show_right_y_axis_second_title ? config.right_y_axis_second_title + unit : unit,
+                text: config.rightY2ShowTitle ? config.rightY2Title + unit : unit,
                 rotation: this.constants.ROTATION,
-                style: BI.extend({}, config.right2_title_style, {
-                    fontSize: config.right2_title_style && config.right2_title_style.fontSize + "px"
+                style: BI.extend({}, config.rightY2TitleStyle, {
+                    fontSize: config.rightY2TitleStyle && config.rightY2TitleStyle.fontSize + "px"
                 })
             }
         })
     },
 
+    getChartConfig: function (options) {
+        var c = this.constants;
+        return {
+            chartColor: options.chartColor || [],
+            chartStyle: options.chartStyle || c.STYLE_NORMAL,
+            lienAreaChartType: options.lienAreaChartType || c.NORMAL,
+            pieChartType: options.pieChartType || c.NORMAL,
+            radarChartType: options.radarChartType || c.NORMAL,
+            dashboardChartType: options.dashboardChartType || c.NORMAL,
+            innerRadius: options.innerRadius || 0,
+            totalAngle: options.totalAngle || BICst.PIE_ANGLES.TOTAL,
+            dashboardPointer: options.dashboardPointer || c.ONE_POINTER,
+            dashboardStyles: options.dashboardStyles || [],
+            //y左值轴
+            leftYNumberFormat: options.leftYNumberFormat || c.NORMAL,
+            leftYUnit: options.leftYUnit || '',
+            leftYNumberLevel: options.leftYNumberLevel || c.NORMAL,
+            leftYShowTitle: options.leftYShowTitle,
+            leftYTitle: options.leftYTitle,
+            leftYReverse: options.leftYReverse,
+            leftYShowLabel: options.leftYShowLabel,
+            leftYLabelStyle: options.leftYLabelStyle,
+            leftYLineColor: options.leftYLineColor,
+            leftYSeparator: options.leftYSeparator,
+            leftYTitleStyle: options.leftYTitleStyle,
+            leftYCustomScale: options.leftYCustomScale,
+            //y右值轴
+            rightYNumberFormat: options.rightYNumberFormat,
+            rightYNumberLevel: options.rightYNumberLevel,
+            rightYUnit: options.rightYUnit,
+            rightYReverse: options.rightYReverse,
+            rightYShowTitle: options.rightYShowTitle,
+            rightYTitleStyle: options.rightYTitleStyle,
+            rightYTitle: options.rightYTitle,
+            rightYSeparator: options.rightYSeparator,
+            rightYCustomScale: options.rightYCustomScale,
+            rightYShowLabel: options.rightYShowLabel,
+            rightYLabelStyle: options.rightYLabelStyle,
+            rightYLineColor: options.rightYLineColor,
+            //y2右值轴
+            rightY2NumberFormat: options.rightY2NumberFormat,
+            rightY2NumberLevel: options.rightY2NumberLevel,
+            rightY2Unit: options.rightY2Unit,
+            rightY2ShowTitle: options.rightY2ShowTitle,
+            rightY2Title: options.rightY2Title,
+            rightY2Reverse: options.rightY2Reverse,
+            rightY2Separator: options.rightY2Separator,
+            rightY2ShowLabel: options.rightY2ShowLabel,
+            rightY2LabelStyle: options.rightY2LabelStyle,
+            rightY2LineColor: options.rightY2LineColor,
+            rightY2TitleStyle: options.rightY2TitleStyle,
+            rightY2CustomScale: options.rightY2CustomScale,
+            rightY2ShowCustomScale: options.rightY2ShowCustomScale,
+            //分类轴
+            catShowTitle: options.catShowTitle,
+            catTitle: options.catTitle,
+            catShowLabel: options.catShowLabel,
+            catLabelStyle: options.catLabelStyle,
+            catLineColor: options.catLineColor,
+            catTitleStyle: options.catTitleStyle,
+            //其他元素
+            lineWidth: options.lineWidth || 1,
+            legend: options.legend,
+            legendStyle: options.legendStyle,
+            showDataLabel: options.showDataLabel,
+            showDataTable: options.showDataTable,
+            showZoom: options.showZoom,
+            styleRadio: options.styleRadio,
+            themeColor: options.themeColor,
+            mapStyles: options.mapStyles,
+            displayRules: options.displayRules,
+            bubbleStyle: options.bubbleStyle,
+            maxScale: options.maxScale,
+            minScale: options.minScale,
+            showPercentage: options.showPercentage,
+            bubbleSizeFrom: options.bubbleSizeFrom,
+            bubbleSizeTo: options.bubbleSizeTo,
+            gradientStyle: options.gradientStyle,
+            fixedStyle: options.fixedStyle,
+            isShowBackgroundLayer: options.isShowBackgroundLayer,
+            hShowGridLine: options.hShowGridLine,
+            hGridLineColor: options.hGridLineColor,
+            vShowGridLine: options.vShowGridLine,
+            vGridLineColor: options.vGridLineColor,
+            tooltipStyle: options.tooltipStyle,
+            chartFont: BI.extend({}, options.chartFont, {
+                fontSize: options.chartFont && options.chartFont.fontSize + "px"
+            }),
+            nullContinuity: options.nullContinuity,
+            backgroundLayerInfo: MapConst.WMS_INFO[options.backgroundLayerInfo],
+            transferFilter: options.transferFilter,
+            bigDataMode: options.bigDataMode,
+            geo: options.geo,
+            initDrillPath: options.initDrillPath || [],
+        }
+    },
+    
     setFontStyle: function (fontStyle, config) {
         if (config.dataSheet) {
             config.dataSheet.style = fontStyle;

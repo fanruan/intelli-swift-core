@@ -4,13 +4,13 @@
  */
 BI.LegendDetailedSettingPopup = BI.inherit(BI.Widget, {
 
-    _defaultConfig: function() {
+    _defaultConfig: function () {
         return BI.extend(BI.LegendDetailedSettingPopup.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-detailed-setting bi-legend-detailed-setting-popup"
         })
     },
 
-    _init: function() {
+    _init: function () {
         BI.LegendDetailedSettingPopup.superclass._init.apply(this, arguments);
         var self = this;
 
@@ -49,11 +49,11 @@ BI.LegendDetailedSettingPopup = BI.inherit(BI.Widget, {
         }
     },
 
-      getValue: function() {
+    getValue: function () {
         return this.textStyle.getValue()
     },
 
-    setValue: function(v) {
+    setValue: function (v) {
         v || (v = {});
         this.textStyle.setValue(v)
     }

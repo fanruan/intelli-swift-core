@@ -28,7 +28,7 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
 
         //显示组件标题
-        this.showTitle = BI.createWidget({
+        this.showName = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Show_Chart_Title"),
             cls: "attr-names",
@@ -36,42 +36,42 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
                 dynamic: true
             }
         });
-        this.showTitle.on(BI.Controller.EVENT_CHANGE, function () {
+        this.showName.on(BI.Controller.EVENT_CHANGE, function () {
             self.widgetTitle.setVisible(this.isSelected());
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
         //组件标题
-        this.title = BI.createWidget({
+        this.widgetName = BI.createWidget({
             type: "bi.sign_editor",
             cls: "title-input",
             width: 120
         });
 
-        this.title.on(BI.SignEditor.EVENT_CHANGE, function () {
+        this.widgetName.on(BI.SignEditor.EVENT_CHANGE, function () {
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
 
         //详细设置
-        this.titleDetailSettting = BI.createWidget({
+        this.widgetNameStyle = BI.createWidget({
             type: "bi.show_title_detailed_setting_combo"
         });
 
-        this.titleDetailSettting.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
+        this.widgetNameStyle.on(BI.ShowTitleDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE)
         });
 
         this.widgetTitle = BI.createWidget({
             type: "bi.left",
-            items: [this.title, this.titleDetailSettting],
+            items: [this.widgetName, this.widgetNameStyle],
             hgap: this.constant.SIMPLE_H_GAP
         });
 
         //组件背景
-        this.widgetBackground = BI.createWidget({
+        this.widgetBG = BI.createWidget({
             type: "bi.global_style_index_background"
         });
-        this.widgetBackground.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
+        this.widgetBG.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
             self.fireEvent(BI.AxisChartsSetting.EVENT_CHANGE);
         });
 
@@ -80,7 +80,7 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
             cls: "single-line-settings",
             items: BI.createItems([{
                 type: "bi.vertical_adapt",
-                items: [this.showTitle]
+                items: [this.showName]
             }, {
                 type: "bi.vertical_adapt",
                 items: [this.widgetTitle]
@@ -90,7 +90,7 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
                 cls: "attr-names",
             }, {
                 type: "bi.vertical_adapt",
-                items: [this.widgetBackground]
+                items: [this.widgetBG]
             }], {
                 height: 58
             }),
@@ -98,12 +98,12 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
         });
 
         //主题颜色
-        this.colorSelector = BI.createWidget({
+        this.themeColor = BI.createWidget({
             type: "bi.color_chooser",
             width: this.constant.BUTTON_HEIGHT,
             height: this.constant.BUTTON_HEIGHT
         });
-        this.colorSelector.on(BI.ColorChooser.EVENT_CHANGE, function () {
+        this.themeColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
             self.fireEvent(BI.DetailTableSetting.EVENT_CHANGE);
         });
         //风格——1、2、3
@@ -160,7 +160,7 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Theme_Color"),
                     cls: "attr-names"
-                }, this.colorSelector, {
+                }, this.themeColor, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Table_Style"),
                     cls: "attr-names"
@@ -276,13 +276,13 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
 
     populate: function () {
         var wId = this.options.wId;
-        this.showTitle.setSelected(BI.Utils.getWSShowNameByID(wId));
-        this.title.setValue(BI.Utils.getWidgetNameByID(wId));
-        this.titleDetailSettting.setValue(BI.Utils.getWSTitleDetailSettingByID(wId));
+        this.showName.setSelected(BI.Utils.getWSShowNameByID(wId));
+        this.widgetName.setValue(BI.Utils.getWidgetNameByID(wId));
+        this.widgetNameStyle.setValue(BI.Utils.getWSTitleDetailSettingByID(wId));
         this.widgetTitle.setVisible(BI.Utils.getWSShowNameByID(wId));
-        this.widgetBackground.setValue(BI.Utils.getWSWidgetBGByID(wId));
+        this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
 
-        this.colorSelector.setValue(BI.Utils.getWSThemeColorByID(wId));
+        this.themeColor.setValue(BI.Utils.getWSThemeColorByID(wId));
         this.tableSyleGroup.setValue(BI.Utils.getWSTableStyleByID(wId));
         this.showNumber.setSelected(BI.Utils.getWSShowNumberByID(wId));
         this.freezeFirstColumn.setSelected(BI.Utils.getWSFreezeFirstColumnById(wId));
@@ -290,29 +290,17 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
 
     getValue: function () {
         return {
-            show_name: this.showTitle.isSelected(),
-            widget_title: this.title.getValue(),
-            title_detail: this.titleDetailSettting.getValue(),
-            widget_bg: this.widgetBackground.getValue(),
+            showName: this.showName.isSelected(),
+            widgetName: this.widgetName.getValue(),
+            widgetNameStyle: this.widgetNameStyle.getValue(),
+            widgetBG: this.widgetBG.getValue(),
 
-            theme_color: this.colorSelector.getValue(),
-            table_style: this.tableSyleGroup.getValue()[0],
-            show_number: this.showNumber.isSelected(),
-            freeze_first_column: this.freezeFirstColumn.isSelected()
+            themeColor: this.themeColor.getValue(),
+            tableStyleGroup: this.tableSyleGroup.getValue()[0],
+            showNumber: this.showNumber.isSelected(),
+            freezeFirstColumn: this.freezeFirstColumn.isSelected()
         }
     },
-
-    setValue: function (v) {
-        this.showTitle.setSelected(v.show_name);
-        this.title.setValue(v.widget_title);
-        this.titleDetailSettting.setValue(v.title_detail);
-        this.widgetBackground.setValue(v.widget_bg);
-
-        this.colorSelector.setValue(v.theme_color);
-        this.tableSyleGroup.setValue(v.table_style);
-        this.showNumber.setSelected(v.show_number);
-        this.freezeFirstColumn.setSelected(v.freeze_first_column);
-    }
 });
 BI.DetailTableSetting.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.detail_table_setting", BI.DetailTableSetting);

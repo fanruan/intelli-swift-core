@@ -129,6 +129,11 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
 
     _checkUPDrillEmpty: function () {
         var wId = this.options.wId;
+        var wType = BI.Utils.getWidgetTypeByID(wId);
+        if (wType === BICst.WIDGET.TABLE || wType === BICst.WIDGET.CROSS_TABLE ||
+            wType === BICst.WIDGET.COMPLEX_TABLE || wType === BICst.WIDGET.DETAIL || wType === BICst.WIDGET.MAP) {
+            return false
+        }
         var drillMap = BI.Utils.getDrillByID(wId);
         var upDrillID = null, dId = null;
         BI.each(drillMap, function (drId, ds) {
