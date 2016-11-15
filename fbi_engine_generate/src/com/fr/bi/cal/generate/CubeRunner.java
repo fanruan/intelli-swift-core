@@ -159,6 +159,7 @@ public class CubeRunner {
                 BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
                 BICubeConfigureCenter.getPackageManager().persistData(biUser.getUserId());
                 BICubeConfigureCenter.getDataSourceManager().persistData(biUser.getUserId());
+                BICubeConfigureCenter.getPackageManager().endBuildingCube(biUser.getUserId());
             }
             BILoggerFactory.getLogger().info("meta data finished! time cost: " + DateUtils.timeCostFrom(t));
         } catch (Exception e) {
