@@ -101,6 +101,7 @@
 .report-hangout-ing-mark-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe64b;'); }
 .chart-bar-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe620;'); }
 .chart-date-normal-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe61b;'); }
+.page-right-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe6cd;'); }
 .target-style-less-dot-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe6a2;'); }
 .table-no-sort-filter-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe66b;'); }
 .report-cancel-share-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe6b5;'); }
@@ -112,6 +113,7 @@
 .rename-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe687;'); }
 .target-style-more-arrow-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe6a0;'); }
 .widget-combo-des-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe63a;'); }
+.img-global-style-upload-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe6cb;'); }
 .edit-set-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe634;'); }
 .excel-field-type-number-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe61f;'); }
 .folder-list-view i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe694;'); }
@@ -148,6 +150,7 @@
 .primary-key-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe67d;;'); }
 .img-size-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe68b;'); }
 .chart-type-h-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe613;'); }
+.drag-helper-active-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe6dd;'); }
 .text-color-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe69c;'); }
 .close-h-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe600;'); }
 .check-mark-ha-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe611;'); }
@@ -155,6 +158,7 @@
 .tables-relation-view-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe684;'); }
 .detail-table-popup-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe6ac;'); }
 .sortable-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe63b;'); }
+.drag-helper-forbidden-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe6dc;'); }
 .text-align-right-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe651;'); }
 .excel-upload-tip-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe69e;'); }
 .widget-date-h-change-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe660;'); }
@@ -202,6 +206,7 @@
 .widget-tools-export-excel-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe635;'); }
 .data-config-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe693;'); }
 .widget-combo-rename-edit-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe670;'); }
+.page-pagination-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe6a2;'); }
 .folder-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe65c;'); }
 .check-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe611;'); }
 .chart-radar-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe614;'); }
@@ -210,6 +215,7 @@
 .select-data-field-string-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe642;'); }
 .data-link-copy-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe610;'); }
 .filter-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe60f;'); }
+.toolbar-global-style-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe6ca;'); }
 .copy-h-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe610;'); }
 .chart-string-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe622;'); }
 .widget-date-pre-h-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe62e;'); }
@@ -222,6 +228,7 @@
 .dimension-from-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe612;'); }
 .tables-tile-view-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe685;'); }
 .table-descending-no-filter-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe666;'); }
+.page-left-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe6cc;'); }
 .select-group-field-number-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe641;'); }
 .widget-combo-pull-down-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe6ab;'); }
 .delete-field-ha-font i{ *zoom: expression( this.runtimeStyle['zoom'] = '1',this.innerHTML = '&#xe605;'); }

@@ -91,7 +91,9 @@ public class SingleUserBIRecord implements BIRecord {
      */
     @Override
     public void recordToErrorTable(IPersistentTable table, String text) {
-        tableLogMap.put(table, new BITableErrorLog(table, text, userId));
+        if (null != table && !tableLogMap.containsKey(table)) {
+            tableLogMap.put(table, new BITableErrorLog(table, text, userId));
+        }
     }
 
     /**
@@ -103,7 +105,9 @@ public class SingleUserBIRecord implements BIRecord {
      */
     @Override
     public void recordToInfoTable(IPersistentTable table, long seconds, int percent) {
-        tableLogMap.put(table, new BITableRunningLog(table, seconds, percent, userId));
+        if (null != table) {
+            tableLogMap.put(table, new BITableRunningLog(table, seconds, percent, userId));
+        }
     }
 
     /**
@@ -210,7 +214,7 @@ public class SingleUserBIRecord implements BIRecord {
      */
     @Override
     public void errorRelation(RelationColumnKey ck, String text) {
-        if (null != ck) {
+        if (null != ck && !connectionLogMap.containsKey(ck)) {
             connectionLogMap.put(ck, new BIConnectionErrorLog(ck, text, userId));
         }
     }
@@ -285,13 +289,13 @@ public class SingleUserBIRecord implements BIRecord {
             public int compare(BITableLog o1, BITableLog o2) {
                 if (o1.isRunning()) {
                     if (o2.isRunning()) {
-                        return Long.compare(o1.getTotalTime(), o2.getTotalTime());
+                        return (o1.getTotalTime() < o2.getTotalTime()) ? -1 : ((o1.getTotalTime() == o2.getTotalTime()) ? 0 : 1);
                     }
                     return -1;
                 } else if (o2.isRunning()) {
                     return 1;
                 } else {
-                    return Long.compare(o1.getTotalTime(), o2.getTotalTime());
+                    return (o1.getTotalTime() < o2.getTotalTime()) ? -1 : ((o1.getTotalTime() == o2.getTotalTime()) ? 0 : 1);
                 }
             }
         });
@@ -303,13 +307,13 @@ public class SingleUserBIRecord implements BIRecord {
             public int compare(BIConnectionLog o1, BIConnectionLog o2) {
                 if (o1.isRunning()) {
                     if (o2.isRunning()) {
-                        return Long.compare(o1.getTime(), o2.getTime());
+                        return (o1.getTime() < o2.getTime()) ? -1 : ((o1.getTime() == o2.getTime()) ? 0 : 1);
                     }
                     return -1;
                 } else if (o2.isRunning()) {
                     return 1;
                 } else {
-                    return Long.compare(o1.getTime(), o2.getTime());
+                    return (o1.getTime() < o2.getTime()) ? -1 : ((o1.getTime() == o2.getTime()) ? 0 : 1);
                 }
             }
         });

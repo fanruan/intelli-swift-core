@@ -9,7 +9,7 @@ import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.data.AnalysisETLSourceFactory;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -64,7 +64,7 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
         try{
             BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().checkTableIndex((AnalysisCubeTableSource) source, new BIUser(userId));
         } catch (Exception e){
-            BILogger.getLogger().error("etl update failed");
+            BILoggerFactory.getLogger().error("etl update failed");
         }
         BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
         JSONObject result = new JSONObject();

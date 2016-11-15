@@ -13,7 +13,7 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.engine.index.key.IndexKey;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -37,6 +37,9 @@ public abstract class AbstractTableSource implements CubeTableSource {
     protected transient PersistentTable dbTable;
     @BIIgnoreField
     private transient BICore core;
+
+    //用来存中间表产生的名字
+    private String tempName;
 
     protected AbstractTableSource() {
 
@@ -64,7 +67,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
                     try {
                         core = new BICoreGenerator(this).fetchObjectCore();
                     } catch (Exception e) {
-                        BILogger.getLogger().error(e.getMessage(), e);
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
                         core = BIBasicCore.EMPTY_CORE;
                     }
                 }
@@ -233,7 +236,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
         try {
             this.fields = getFieldFromPersistentTable();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return this.fields;
     }
@@ -312,7 +315,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
         try {
             return super.clone();
         } catch (CloneNotSupportedException e) {
-            BILogger.getLogger().info(e.getMessage());
+            BILoggerFactory.getLogger().info(e.getMessage());
         }
         return null;
     }
@@ -346,11 +349,14 @@ public abstract class AbstractTableSource implements CubeTableSource {
         }
         ja.put(stringList).put(numberList).put(dateList);
         jo.put("fields", ja);
+        jo.put("temp_name", tempName);
         return jo;
     }
 
     public void parseJSON(JSONObject jo, long userId) throws Exception {
-
+        if (jo.has("temp_name")) {
+            this.tempName = jo.getString("temp_name");
+        }
     }
 
     @Override
@@ -390,5 +396,10 @@ public abstract class AbstractTableSource implements CubeTableSource {
     @Override
     public SourceFile getSourceFile() {
         return new SourceFile(fetchObjectCore().getID().getIdentityValue());
+    }
+
+    @Override
+    public boolean canExecute() throws Exception{
+        return true;
     }
 }

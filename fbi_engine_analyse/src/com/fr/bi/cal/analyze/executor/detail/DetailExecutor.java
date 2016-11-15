@@ -14,7 +14,7 @@ import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.data.db.BIRowValue;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -126,7 +126,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
             }
         };
         travel(action, gvi);
-        BILogger.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
+        BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
         return jo;
     }
 

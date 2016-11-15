@@ -57,7 +57,6 @@ public class BICubeRelationEntity implements ICubeRelationEntityService {
     @Override
     public GroupValueIndex getBitmapIndex(int position) throws BICubeIndexException {
         return indexDataService.getBitmapIndex(position);
-
     }
 
     @Override
@@ -80,6 +79,13 @@ public class BICubeRelationEntity implements ICubeRelationEntityService {
     }
 
     @Override
+    public void forceReleaseReader() {
+        indexDataService.forceReleaseReader();
+        reverseRelationService.forceReleaseReader();
+        version.forceReleaseReader();
+    }
+
+    @Override
     public boolean isEmpty() {
         return indexDataService.isEmpty();
     }
@@ -91,7 +97,6 @@ public class BICubeRelationEntity implements ICubeRelationEntityService {
     @Override
     public void addVersion(long version) {
         this.version.addVersion(version);
-        this.version.forceRelease();
     }
 
     @Override
@@ -107,6 +112,11 @@ public class BICubeRelationEntity implements ICubeRelationEntityService {
     @Override
     public int getReverseIndex(int row) throws BIResourceInvalidException {
         return reverseRelationService.getReverseRow(row);
+    }
+
+    @Override
+    public boolean isDataAvailable() {
+        return isVersionAvailable();
     }
 }
 

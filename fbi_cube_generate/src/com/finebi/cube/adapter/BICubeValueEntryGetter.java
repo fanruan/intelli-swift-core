@@ -12,7 +12,7 @@ import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.structure.object.CubeValueEntry;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.List;
@@ -58,7 +58,7 @@ public class BICubeValueEntryGetter<T> implements ICubeValueEntryGetter {
             int groupRow  = getPositionOfGroupByRow(row);
             return getGroupValueIndex(groupRow);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return GVIFactory.createAllEmptyIndexGVI();
     }
@@ -81,7 +81,7 @@ public class BICubeValueEntryGetter<T> implements ICubeValueEntryGetter {
             gvi = getGroupValueIndex(groupRow);
             value = getGroupValue(groupRow);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return new CubeValueEntry(value, gvi, groupRow);
     }
@@ -94,7 +94,7 @@ public class BICubeValueEntryGetter<T> implements ICubeValueEntryGetter {
             gvi = getGroupValueIndex(row);
             value = getGroupValue(row);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return new CubeValueEntry(value, gvi, row);
     }
@@ -106,7 +106,7 @@ public class BICubeValueEntryGetter<T> implements ICubeValueEntryGetter {
             int reverseRow = getReverseRow(row);
             groupRow = reverseRow == NIOConstant.INTEGER.NULL_VALUE ? NIOConstant.INTEGER.NULL_VALUE : columnReaderService.getPositionOfGroupByRow(reverseRow);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return groupRow;
     }

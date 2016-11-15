@@ -7,16 +7,16 @@ import com.fr.json.JSONTransform;
  * Created by kary on 16/5/9.
  */
 public class BIPackageAuthority implements JSONTransform {
-    private int roleId;
+    private String roleName;
     private int roleType;
     private JSONObject filter;
 
-    public int getRoleId() {
-        return roleId;
+    public String getRoleName() {
+        return roleName;
     }
 
-    public void setRoleId(int roleId) {
-        this.roleId = roleId;
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
     }
 
     public int getRoleType() {
@@ -38,7 +38,7 @@ public class BIPackageAuthority implements JSONTransform {
     @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = new JSONObject();
-        jo.put("role_id", roleId);
+        jo.put("role_id", roleName);
         jo.put("role_type", roleType);
         jo.put("filter", filter);
         return jo;
@@ -47,7 +47,7 @@ public class BIPackageAuthority implements JSONTransform {
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
         if (jo.has("role_id")) {
-            this.roleId = jo.getInt("role_id");
+            this.roleName = jo.getString("role_id");
         }
         if (jo.has("role_type")) {
             this.roleType = jo.getInt("role_type");

@@ -1,9 +1,10 @@
 package com.finebi.cube.gen.arrange;
 
+import com.finebi.cube.common.log.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.CubeGenerationManager;
-import com.finebi.cube.data.ICubeResourceDiscovery;
-import com.finebi.cube.data.disk.BICubeIncreaseDisDiscovery;
+import com.finebi.cube.data.disk.BICubeDiskDiscovery;
 import com.finebi.cube.exception.BIRegisterIsForbiddenException;
 import com.finebi.cube.exception.BITopicAbsentException;
 import com.finebi.cube.gen.mes.*;
@@ -29,18 +30,14 @@ import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.finebi.cube.utils.BICubeRelationUtils;
 import com.finebi.cube.utils.BITableKeyUtils;
-import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.data.source.ExcelTableSource;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
-import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
-import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
-import com.fr.data.impl.Connection;
 import com.fr.fs.control.UserControl;
 
 import java.util.*;
@@ -52,7 +49,9 @@ import java.util.*;
  * @since 4.0
  */
 public class BICubeOperationManager {
+    private static BILogger logger = BILoggerFactory.getLogger(BICubeOperationManager.class);
     private Cube cube;
+    private Cube integrityCube;
     private BIOperation<Object> cubeBuildFinishOperation;
     private BIOperation<Object> pathBuildFinishWatcher;
     private BIDataSourceBuildFinishWatcher dataSourceBuildFinishWatcher;
@@ -63,10 +62,11 @@ public class BICubeOperationManager {
     private Map<CubeTableSource, BIOperation> tableSourceWatchers;
     private Map<CubeTableSource, Long> versionMap;
     private Map<CubeTableSource, UpdateSettingSource> updateSettingSourceMap;
-    private Map<CubeTableSource, com.fr.data.impl.Connection> connectionMap;
+//    private Map<CubeTableSource, com.fr.data.impl.Connection> connectionMap;
 
-    public BICubeOperationManager(Cube cube, Set<CubeTableSource> originalTableSet) {
+    public BICubeOperationManager(Cube cube, Cube integrityCube, Set<CubeTableSource> originalTableSet) {
         this.cube = cube;
+        this.integrityCube = integrityCube;
         registeredTransportTable = new HashSet<CubeTableSource>();
         registeredFieldIndex = new HashSet<CubeTableSource>();
         this.originalTableSet = originalTableSet;
@@ -81,9 +81,9 @@ public class BICubeOperationManager {
         this.updateSettingSourceMap = updateSettingSourceMap;
     }
 
-    public void setConnectionMap(Map<CubeTableSource, Connection> connectionMap) {
-        this.connectionMap = connectionMap;
-    }
+//    public void setConnectionMap(Map<CubeTableSource, Connection> connectionMap) {
+//        this.connectionMap = connectionMap;
+//    }
 
     public void initialWatcher() {
         cubeBuildFinishOperation = generateCubeFinishOperation();
@@ -146,18 +146,40 @@ public class BICubeOperationManager {
         }
     }
 
+    /**
+     * 设置一个表队列
+     *
+     * @param tableSourceSet 一条有先后关系的表层级。
+     *                       例如：
+     *                       a
+     *                       b,c
+     *                       d
+     *                       e
+     *                       由5张表组成的层级关系。b,c设成前，a表必须生成好。
+     *                       d表生成前，bc表需要生成好。
+     */
     private void generateSingleTransport(List<Set<CubeTableSource>> tableSourceSet) {
         Iterator<Set<CubeTableSource>> it = tableSourceSet.iterator();
         Set<CubeTableSource> parentTables = null;
         while (it.hasNext()) {
             Set<CubeTableSource> sameLevelTable = it.next();
             Iterator<CubeTableSource> sameLevelTableIt = sameLevelTable.iterator();
+            /**
+             * 遍历当期层级的表
+             */
             while (sameLevelTableIt.hasNext()) {
+                /**
+                 * 当期层级的表
+                 */
                 CubeTableSource tableSource = sameLevelTableIt.next();
                 if (!isGenerated(tableSource)) {
+//                    BIOperation<Object> operation = new BIOperation<Object>(
+//                            tableSource.getSourceID(),
+//                            getDataTransportBuilder(cube, addConnection(tableSource), originalTableSet, parentTables, getVersion(tableSource), getUpdateSetting(tableSource)));
                     BIOperation<Object> operation = new BIOperation<Object>(
                             tableSource.getSourceID(),
-                            getDataTransportBuilder(cube, addConnection(tableSource), originalTableSet, parentTables, getVersion(tableSource), getUpdateSetting(tableSource)));
+                            getDataTransportBuilder(cube, tableSource, originalTableSet, parentTables, getVersion(tableSource), getUpdateSetting(tableSource)));
+
                     operation.setOperationTopicTag(BICubeBuildTopicTag.DATA_TRANSPORT_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.DATA_TRANSPORT_TOPIC, tableSource));
                     try {
@@ -181,7 +203,10 @@ public class BICubeOperationManager {
                     }
                 }
             }
-            parentTables = sameLevelTable;
+            if (parentTables == null) {
+                parentTables = new HashSet<CubeTableSource>();
+            }
+            parentTables.addAll(sameLevelTable);
         }
     }
 
@@ -243,7 +268,6 @@ public class BICubeOperationManager {
                             addGeneratedFieldIndex(tableSource);
                         }
                     }
-
                 }
             }
         }
@@ -257,7 +281,6 @@ public class BICubeOperationManager {
             throw BINonValueUtils.beyondControl(e);
         }
     }
-
 
     private void generateDataSourceFinishBuilder(Set<List<Set<CubeTableSource>>> tableSourceSet) {
         Iterator<List<Set<CubeTableSource>>> it = tableSourceSet.iterator();
@@ -343,10 +366,10 @@ public class BICubeOperationManager {
             while (it.hasNext()) {
                 BICubeGenerateRelation relation = it.next();
                 try {
-                    String sourceID = new BITableSourceRelationPath(relation.getRelation()).getSourceID();
+                    String sourceID = BIRelationIDUtils.calculateRelationID(relation.getRelation());
                     BIOperation<Object> operation = new BIOperation<Object>(
                             sourceID,
-                            getRelationBuilder(cube, relation.getRelation()));
+                            getRelationBuilder(cube, integrityCube, relation.getRelation()));
                     operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
                     operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
                     if (null != relation.getDependTableSourceSet() && relation.getDependTableSourceSet().size() != 0) {
@@ -354,19 +377,20 @@ public class BICubeOperationManager {
                             operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.DATA_SOURCE_TOPIC, cubeTableSource.getSourceID()));
                         }
                     } else {
+                        logger.warn("The relation:" + sourceID + " subscribe start message!!!");
                         operation.subscribe(BICubeBuildTopicTag.START_BUILD_CUBE);
                     }
                     pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
                 } catch (Exception e) {
                     try {
-                        BILogger.getLogger().info("the relation info listed");
-                        BILogger.getLogger().info(relation.getRelation().toString());
-                        BILogger.getLogger().info("the tables this relation depends listed");
+                        BILoggerFactory.getLogger().info("the relation info listed");
+                        BILoggerFactory.getLogger().info(relation.getRelation().toString());
+                        BILoggerFactory.getLogger().info("the tables this relation depends listed");
                         for (CubeTableSource source : relation.getDependTableSourceSet()) {
-                            BILogger.getLogger().info(source.getTableName() + " " + source.getSourceID());
+                            BILoggerFactory.getLogger().info(source.getTableName() + " " + source.getSourceID());
                         }
                     } catch (Exception e1) {
-                        BILogger.getLogger().error(e1.getMessage(), e1);
+                        BILoggerFactory.getLogger().error(e1.getMessage(), e1);
                     }
                     throw BINonValueUtils.beyondControl(e.getMessage(), e);
                 }
@@ -388,31 +412,35 @@ public class BICubeOperationManager {
     * */
     public void generateTableRelationPath(Set<BICubeGenerateRelationPath> relationPathSet) {
         for (BICubeGenerateRelationPath path : relationPathSet) {
-            if (null != path && null != path.getBiTableSourceRelationPath() && path.getDependRelationPathSet().size() != 0) {
-                try {
-                    String sourceID = path.getBiTableSourceRelationPath().getSourceID();
-                    BIOperation<Object> operation = new BIOperation<Object>(
-                            sourceID,
-                            getTablePathBuilder(cube, path.getBiTableSourceRelationPath()));
-                    operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
-                    operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
+            try {
+                String sourceID = BIRelationIDUtils.calculatePathID(path.getBiTableSourceRelationPath());
+                BIOperation<Object> operation = new BIOperation<Object>(
+                        sourceID,
+                        getTablePathBuilder(cube, integrityCube, path.getBiTableSourceRelationPath()));
+                operation.setOperationTopicTag(BICubeBuildTopicTag.PATH_TOPIC);
+                operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
+                if (path.getDependRelationPathSet().size() != 0) {
                     for (BITableSourceRelationPath biTableSourceRelationPath : path.getDependRelationPathSet()) {
-                        operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, biTableSourceRelationPath.getSourceID()));
+                        operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, BIRelationIDUtils.calculatePathID(biTableSourceRelationPath)));
                     }
                     pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
-                } catch (Exception e) {
-                    BILogger.getLogger().error("the child path this path contained listed");
-                    for (BITableSourceRelationPath sourceRelationPath : path.getDependRelationPathSet()) {
-                        BILogger.getLogger().error(sourceRelationPath.getSourceID());
-                        for (BITableSourceRelation relation : sourceRelationPath.getAllRelations()) {
-                            BILogger.getLogger().error("primaryTable:" + relation.getPrimaryTable().getTableName() + " to foreignTable:" + relation.getForeignTable().getTableName());
-                        }
-                    }
-                    throw BINonValueUtils.beyondControl(e.getMessage(), e);
+                } else {
+                    operation.subscribe(BICubeBuildTopicTag.START_BUILD_CUBE);
+                    pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
                 }
+            } catch (Exception e) {
+                BILoggerFactory.getLogger().error("the child path this path contained listed");
+                for (BITableSourceRelationPath sourceRelationPath : path.getDependRelationPathSet()) {
+                    BILoggerFactory.getLogger().error(sourceRelationPath.getSourceID());
+                    for (BITableSourceRelation relation : sourceRelationPath.getAllRelations()) {
+                        BILoggerFactory.getLogger().error("primaryTable:" + relation.getPrimaryTable().getTableName() + " to foreignTable:" + relation.getForeignTable().getTableName());
+                    }
+                }
+                throw BINonValueUtils.beyondControl(e.getMessage(), e);
             }
             subscribePathFinish();
         }
+
     }
 
     long getVersion(CubeTableSource tableSource) {
@@ -431,29 +459,30 @@ public class BICubeOperationManager {
         }
     }
 
-    private com.fr.data.impl.Connection getConnection(CubeTableSource tableSource) {
-        if (connectionMap != null && connectionMap.containsKey(tableSource)) {
-            return connectionMap.get(tableSource);
-        } else {
-            return null;
-        }
-    }
+//    private com.fr.data.impl.Connection getConnection(CubeTableSource tableSource) {
+//        if (connectionMap != null && connectionMap.containsKey(tableSource)) {
+//            return connectionMap.get(tableSource);
+//        } else {
+//            return null;
+//        }
+//    }
 
     /*为tableSource指定connection*/
-    private CubeTableSource addConnection(CubeTableSource tableSource) {
-        Connection connection = getConnection(tableSource);
-        if (null != connection && (tableSource.getType() == BIBaseConstant.TABLETYPE.SQL || tableSource.getType() == BIBaseConstant.TABLETYPE.DB)) {
-            for (CubeTableSource source : connectionMap.keySet()) {
-                if (source.getSourceID().equals(tableSource.getSourceID())) {
-                    return source;
-                }
-            }
-        }
-        return tableSource;
-    }
+//    private CubeTableSource addConnection(CubeTableSource tableSource) {
+//        Connection connection = getConnection(tableSource);
+//        if (null != connection && (tableSource.getType() == BIBaseConstant.TABLETYPE.SQL || tableSource.getType() == BIBaseConstant.TABLETYPE.DB)) {
+//            for (CubeTableSource source : connectionMap.keySet()) {
+//                if (source.getSourceID().equals(tableSource.getSourceID())) {
+//                    return source;
+//                }
+//            }
+//        }
+//        return tableSource;
+//    }
 
-    protected BIRelationIndexGenerator getRelationBuilder(Cube cube, BITableSourceRelation relation) {
-        return new BIRelationIndexGenerator(cube, BICubeRelationUtils.convert(relation));
+
+    protected BIRelationIndexGenerator getRelationBuilder(Cube cube, Cube integrityCube, BITableSourceRelation relation) {
+        return new BIRelationIndexGenerator(cube, integrityCube, BICubeRelationUtils.convert(relation));
     }
 
     protected BIFieldIndexGenerator getFieldIndexBuilder(Cube cube, CubeTableSource tableSource, ICubeFieldSource BICubeFieldSource, BIColumnKey targetColumnKey) {
@@ -468,10 +497,7 @@ public class BICubeOperationManager {
         CubeTask currentTask = CubeGenerationManager.getCubeManager().getGeneratingTask(UserControl.getInstance().getSuperManagerID());
 /*若没有更新设置,按默认处理
 * 首次更新均为全局更新*/
-        ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
-        ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
-        Cube advancedCube = new BICube(resourceRetrievalService, discovery);
-        if (null == tableUpdateSetting || !(advancedCube.getCubeTableWriter(BITableKeyUtils.convert(tableSource)).isVersionAvailable() && advancedCube.getCubeTableWriter(BITableKeyUtils.convert(tableSource)).isCubeLastTimeAvailable())) {
+        if (null == tableUpdateSetting || !(BITableKeyUtils.isTableExisted(tableSource, BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID()))))) {
             return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
         }
         /*若设置为不随全局更新的话，那就不更新*/
@@ -484,8 +510,8 @@ public class BICubeOperationManager {
                 }
                 /*增量更新现在暂时只适用于SQL语句，其他数据集是不能用的*/
                 case DBConstant.SINGLE_TABLE_UPDATE_TYPE.PART: {
-                    discovery = BICubeIncreaseDisDiscovery.getInstance();
-                    resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
+                    BICubeDiskDiscovery discovery = BICubeDiskDiscovery.getInstance();
+                    ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
                     cube = new BICube(resourceRetrievalService, discovery);
                     if (tableSource instanceof ExcelTableSource) {
                         return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
@@ -502,8 +528,8 @@ public class BICubeOperationManager {
         }
     }
 
-    protected BITablePathIndexBuilder getTablePathBuilder(Cube cube, BITableSourceRelationPath tablePath) {
-        return new BITablePathIndexBuilder(cube, BICubePathUtils.convert(tablePath));
+    protected BITablePathIndexBuilder getTablePathBuilder(Cube cube, Cube integrityCube, BITableSourceRelationPath tablePath) {
+        return new BITablePathIndexBuilder(cube, integrityCube, BICubePathUtils.convert(tablePath));
     }
 
     protected BIFieldPathIndexBuilder getFieldPathBuilder(Cube cube, ICubeFieldSource field, BITableSourceRelationPath tablePath) {

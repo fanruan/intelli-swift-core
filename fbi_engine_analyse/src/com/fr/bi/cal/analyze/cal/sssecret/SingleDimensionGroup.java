@@ -9,12 +9,11 @@ import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.FinalInt;
+import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.analyze.cal.Executor.Executor;
 import com.fr.bi.cal.analyze.cal.Executor.ILazyExecutorOperation;
 import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.cal.sssecret.sort.SortedNode;
-import com.fr.bi.cal.analyze.cal.store.GroupKey;
-import com.fr.bi.cal.analyze.cal.store.UserRightColumnKey;
 import com.fr.bi.cal.analyze.exception.TerminateExecutorException;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -52,8 +51,6 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
     protected DimensionCalculator column;
     protected transient DimensionCalculator[] pcolumns;
 
-    protected transient int[] pckindex;
-
     protected transient Object[] data;
 
     protected transient int ckIndex;
@@ -68,12 +65,11 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
      * @param column 维度
      * @param gvi    获取实际过滤条件的对象
      */
-    protected SingleDimensionGroup(BusinessTable tableKey, DimensionCalculator[] pcolumns, int[] pckindex, DimensionCalculator column, Object[] data, int ckIndex, GroupValueIndex gvi, ICubeDataLoader loader, boolean useRealData, int demoGroupLimit) {
+    protected SingleDimensionGroup(BusinessTable tableKey, DimensionCalculator[] pcolumns, DimensionCalculator column, Object[] data, int ckIndex, GroupValueIndex gvi, ICubeDataLoader loader, boolean useRealData, int demoGroupLimit) {
         this.loader = loader;
         this.tableKey = tableKey;
         this.pcolumns = pcolumns;
         this.column = column;
-        this.pckindex = pckindex;
         this.ckIndex = ckIndex;
         this.data = data;
         this.useRealData = useRealData;
@@ -85,7 +81,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         }
     }
 
-    public static SingleDimensionGroup createDimensionGroup(final BusinessTable tableKey, final DimensionCalculator[] pcolumns, final int[] pckindex, final DimensionCalculator column, final Object[] data, final int ckIndex, final GroupValueIndex gvi, final ICubeDataLoader loader, boolean useRealData) {
+    public static SingleDimensionGroup createDimensionGroup(final BusinessTable tableKey, final DimensionCalculator[] pcolumns, final DimensionCalculator column, final Object[] data, final int ckIndex, final GroupValueIndex gvi, final ICubeDataLoader loader, boolean useRealData) {
         BusinessTable target = ComparatorUtils.equals(tableKey, BIBusinessTable.createEmptyTable()) ? column.getField().getTableBelongTo() : tableKey;
         long rowCount = loader.getTableIndex(target.getTableSource()).getRowCount();
         int groupLimit = 10;
@@ -97,11 +93,11 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         }
         final boolean urd = useRealData;
         final int count = Math.min(Math.max(BIBaseConstant.PART_DATA_GROUP_LIMIT, groupLimit), BIBaseConstant.PART_DATA_GROUP_MAX_LIMIT);
-        return new SingleDimensionGroup(tableKey, pcolumns, pckindex, column, data, ckIndex, gvi, loader, urd, count);
+        return new SingleDimensionGroup(tableKey, pcolumns, column, data, ckIndex, gvi, loader, urd, count);
     }
 
-    public static ISingleDimensionGroup createSortDimensionGroup(final BusinessTable tableKey, final DimensionCalculator[] pcolumns, final int[] pckindex, final DimensionCalculator column, final Object[] data, final int ckIndex, final GroupValueIndex gvi, final ICubeDataLoader loader, SortedNode sortedNode, boolean useRealData) {
-        SingleDimensionGroup singleDimensionGroup = createDimensionGroup(tableKey, pcolumns, pckindex, column, data, ckIndex, gvi, loader, useRealData);
+    public static ISingleDimensionGroup createSortDimensionGroup(final BusinessTable tableKey, final DimensionCalculator[] pcolumns, final DimensionCalculator column, final Object[] data, final int ckIndex, final GroupValueIndex gvi, final ICubeDataLoader loader, SortedNode sortedNode, boolean useRealData) {
+        SingleDimensionGroup singleDimensionGroup = createDimensionGroup(tableKey, pcolumns, column, data, ckIndex, gvi, loader, useRealData);
         return new SortedSingleDimensionGroup(singleDimensionGroup, sortedNode);
     }
 
@@ -158,11 +154,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
 
     private boolean hasSpecialGroup() {
         int groupType = column.getGroup().getType();
-        if (groupType == BIReportConstant.GROUP.CUSTOM_GROUP ||
-                groupType == BIReportConstant.GROUP.CUSTOM_NUMBER_GROUP) {
-            return true;
-        }
-        if (groupType != BIReportConstant.GROUP.NO_GROUP && groupType != BIReportConstant.GROUP.ID_GROUP) {
+        if (isCustomGroup(groupType)) {
             return true;
         }
         if (column.getSortType() == BIReportConstant.SORT.CUSTOM) {
@@ -171,14 +163,38 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         return false;
     }
 
+    private boolean isCustomGroup(int groupType) {
+        return groupType == BIReportConstant.GROUP.CUSTOM_GROUP
+                || groupType == BIReportConstant.GROUP.CUSTOM_NUMBER_GROUP
+                || groupType == BIReportConstant.GROUP.AUTO_GROUP;
+    }
+
 
     private BusinessTable getRealTableKey4Calculate() {
         return ComparatorUtils.equals(tableKey, BIBusinessTable.createEmptyTable()) ? column.getField().getTableBelongTo() : tableKey;
     }
 
+    private CubeTableSource getSource(){
+        //多对多
+        if (column.getDirectToDimensionRelationList().size() > 0) {
+            ICubeFieldSource primaryField = column.getDirectToDimensionRelationList().get(0).getPrimaryField();
+            return  primaryField.getTableBelongTo();
+        }
+        return column.getField().getTableBelongTo().getTableSource();
+    }
+
+    private BIKey createKey(){
+        //多对多
+        if (column.getDirectToDimensionRelationList().size() > 0) {
+            ICubeFieldSource primaryField = column.getDirectToDimensionRelationList().get(0).getPrimaryField();
+            return new IndexKey(primaryField.getFieldName());
+        }
+        return column.createKey();
+    }
+
     private Iterator getIterByAllCal(int wholeRowCount, int currentRowCount) {
-        ICubeTableService ti = getLoader().getTableIndex(column.getField().getTableBelongTo().getTableSource());
-        ICubeValueEntryGetter getter = ti.getValueEntryGetter(column.createKey(), column.getRelationList());
+        ICubeTableService ti = getLoader().getTableIndex(getSource());
+        ICubeValueEntryGetter getter = ti.getValueEntryGetter(createKey(), column.getRelationList());
         SortTool tool = SortToolUtils.getSortTool(getter.getGroupSize(), currentRowCount);
         switch (tool) {
             case INT_ARRAY:
@@ -422,8 +438,11 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
     private NewRootNodeChild getCurrentNodeChild(Entry entry) {
         Object keyValue = entry.getKey();
         GroupValueIndex gvi = (GroupValueIndex) entry.getValue();
+        int keyValueSetSize = 0;
+        boolean isForeignTableToForeignTable = false;
         //多对多
         if (column.getDirectToDimensionRelationList().size() > 0) {
+            isForeignTableToForeignTable = true;
             //默认第一个位置放的是主表
             CubeTableSource primaryTableSource = column.getDirectToDimensionRelationList().get(0).getPrimaryTable();
             ICubeFieldSource primaryFieldSource = column.getDirectToDimensionRelationList().get(0).getPrimaryField();
@@ -437,6 +456,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
                 }
             });
             String[] keyValueArray = keyValueSet.toArray(new String[keyValueSet.size()]);
+            keyValueSetSize = keyValueSet.size();
             String keyValueString = StringUtils.EMPTY;
             for (int i = 0; i < keyValueArray.length; i++) {
                 if (i == keyValueArray.length - 1) {
@@ -447,9 +467,14 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
             }
             keyValue = keyValueString;
         }
-
         NewDiskBaseRootNodeChild childNode = new NewDiskBaseRootNodeChild(column, keyValue);
-        childNode.setGroupValueIndex(root.getGroupValueIndex().AND(gvi));
+        if (isForeignTableToForeignTable) {
+            if (keyValueSetSize > 0) {
+                childNode.setGroupValueIndex(root.getGroupValueIndex().AND(gvi));
+            }
+        } else {
+            childNode.setGroupValueIndex(root.getGroupValueIndex().AND(gvi));
+        }
         return childNode;
     }
 

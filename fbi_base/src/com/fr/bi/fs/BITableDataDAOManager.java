@@ -1,7 +1,7 @@
 package com.fr.bi.fs;
 
 import com.fr.base.FRContext;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
 import com.fr.data.impl.EmbeddedTableData;
 import com.fr.file.XMLFileManager;
@@ -239,7 +239,7 @@ public class BITableDataDAOManager extends XMLFileManager {
                             users.add(user);
                         }
                     } catch (Exception e) {
-                        BILogger.getLogger().error(e.getMessage(), e);
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
                     }
                 }
             }
@@ -272,7 +272,7 @@ public class BITableDataDAOManager extends XMLFileManager {
                 writeTableDataBISharedReportMap(getTdBISharedReport_idEntrySet());
                 FRContext.getCurrentEnv().writeResource(BITableDataDAOManager.getInstance());
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }

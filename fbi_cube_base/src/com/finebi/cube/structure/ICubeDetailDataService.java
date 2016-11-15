@@ -11,7 +11,7 @@ import com.fr.bi.common.inter.Release;
  * @author Connery
  * @since 4.0
  */
-public interface ICubeDetailDataService<T> extends Release {
+public interface ICubeDetailDataService<T> extends Release ,ICubeResourceForceRelease{
     /**
      * 记录数据源中的数据信息。
      *
@@ -19,6 +19,8 @@ public interface ICubeDetailDataService<T> extends Release {
      * @param originalValue 数据值
      */
     void addDetailDataValue(int rowNumber, T originalValue);
+
+    void increaseAddDetailDataValue(int rowNumber, T originalValue);
 
 
     T getOriginalObjectValueByRow(int rowNumber);
@@ -30,7 +32,5 @@ public interface ICubeDetailDataService<T> extends Release {
     void recordVersion(CubeVersion version);
 
     void buildStructure();
-
-    void forceReleaseWriter();
 
 }

@@ -85,6 +85,8 @@ public class ParentFieldProperty extends BICubeProperty<BIStringNIOReader, BIStr
             }
         } catch (BIResourceInvalidException e) {
             throw BINonValueUtils.beyondControl(e);
+        }finally {
+            resetReader();
         }
     }
 

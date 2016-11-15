@@ -1,6 +1,6 @@
 package com.fr.bi.stable.dbdealer;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.sql.ResultSet;
@@ -21,7 +21,7 @@ public class StringDealerWithCharSet extends StringDealer {
             try {
                 return new String(value.getBytes(originalCharSetName), newCharSetName);
             } catch (UnsupportedEncodingException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
         return value;

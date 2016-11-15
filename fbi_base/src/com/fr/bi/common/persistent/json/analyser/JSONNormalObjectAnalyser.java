@@ -1,6 +1,6 @@
 package com.fr.bi.common.persistent.json.analyser;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BITypeUtils;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -42,7 +42,7 @@ public class JSONNormalObjectAnalyser extends JSONObjectAnalyser {
                     analyserWrapper.setOriginalValue(fieldName, fieldValue);
                 }
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
         return analyserWrapper.getBean();

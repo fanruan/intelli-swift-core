@@ -1,5 +1,8 @@
 package com.finebi.cube.conf.relation;
 
+import com.finebi.cube.common.log.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.BISystemConfigHelper;
 import com.finebi.cube.conf.relation.path.BITableContainer;
 import com.finebi.cube.conf.relation.path.BITableRelationshipManager;
 import com.finebi.cube.conf.relation.path.BITableRelationshipService;
@@ -8,14 +11,15 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITablePair;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.factory.IFactoryService;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.exception.*;
-import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.fs.control.UserControl;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 
 import java.util.HashSet;
@@ -27,7 +31,7 @@ import java.util.Set;
  */
 @BIMandatedObject(factory = IFactoryService.CONF_XML, implement = BIUserTableRelationManager.class)
 public class BIUserTableRelationManager implements Release {
-
+    private static BILogger logger = BILoggerFactory.getLogger(BIUserTableRelationManager.class);
     /**
      *
      */
@@ -141,25 +145,74 @@ public class BIUserTableRelationManager implements Release {
     }
 
 
-    public void finishGenerateCubes() {
+    public void finishGenerateCubes(Set<BITableSourceRelation> absentRelations) {
         synchronized (oldAnalyserHandler) {
+            reduceDeletedRelation();
             oldAnalyserHandler.clear();
-            analysisTableRelationShipService.clear();
+            BISystemConfigHelper helper = new BISystemConfigHelper();
             for (BITableRelation relation : currentAnalyserHandler.getRelationContainer().getContainer()) {
-                try {
-                    oldAnalyserHandler.addRelation(relation);
-
-                } catch (BIRelationDuplicateException e) {
-                    BILogger.getLogger().error(e.getMessage());
+                if (!checkRelationBelongTo(helper.convertRelation(relation), absentRelations)) {
+                    try {
+                        oldAnalyserHandler.addRelation(relation);
+                    } catch (BIRelationDuplicateException e) {
+                        BILoggerFactory.getLogger().error(e.getMessage());
+                    }
                 }
             }
-            analysisTableRelationShipService = new BITableRelationshipManager(oldAnalyserHandler);
-            for (BITableRelation relation : currentAnalyserHandler.getRelationContainer().getContainer()) {
-                analysisTableRelationShipService.addBITableRelation(relation);
-            }
+            updateRelationShip();
         }
     }
 
+    private boolean checkRelationBelongTo(BITableSourceRelation relation, Set<BITableSourceRelation> addSourceRelations) {
+        for (BITableSourceRelation addedRelation : addSourceRelations) {
+            if (checkRelation(addedRelation, relation)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkRelation(BITableSourceRelation relationOne, BITableSourceRelation relationTwo) {
+        boolean primaryResult = ComparatorUtils.equals(relationOne.getPrimaryTable().getSourceID(), relationTwo.getPrimaryTable().getSourceID());
+        boolean foreignResult = ComparatorUtils.equals(relationOne.getForeignTable().getSourceID(), relationTwo.getForeignTable().getSourceID());
+        boolean primaryFieldResult = ComparatorUtils.equals(relationOne.getPrimaryField(), relationTwo.getPrimaryField());
+        boolean foreignFieldResult = ComparatorUtils.equals(relationOne.getForeignField(), relationTwo.getForeignField());
+        return primaryResult && foreignResult && primaryFieldResult && foreignFieldResult;
+    }
+
+
+    public void reduceDeletedRelation() {
+        synchronized (oldAnalyserHandler) {
+            Set<BITableRelation> oldRelation = new HashSet<BITableRelation>(oldAnalyserHandler.getRelationContainer().getContainer());
+            for (BITableRelation relation : oldRelation) {
+                if (!currentAnalyserHandler.contain(relation)) {
+                    try {
+                        oldAnalyserHandler.removeRelation(relation);
+                    } catch (BIRelationAbsentException e) {
+                        logger.warn(e.getMessage(), e);
+                    } catch (BITableAbsentException e) {
+                        logger.warn(e.getMessage(), e);
+                    }
+                }
+            }
+            updateRelationShip();
+        }
+    }
+
+    public void updateRelationShip() {
+        Set<BITableRelation> relations = new HashSet<BITableRelation>(oldAnalyserHandler.getRelationContainer().getContainer());
+        analysisTableRelationShipService.clear();
+        oldAnalyserHandler.clear();
+        analysisTableRelationShipService = new BITableRelationshipManager(oldAnalyserHandler);
+        for (BITableRelation relation : relations) {
+            try {
+                oldAnalyserHandler.addRelation(relation);
+                analysisTableRelationShipService.addBITableRelation(relation);
+            } catch (BIRelationDuplicateException e) {
+                BILoggerFactory.getLogger(BIUserTableRelationManager.class).error(e.getMessage(), e);
+            }
+        }
+    }
 
     public JSONObject createBasicRelationsJSON() {
         return null;

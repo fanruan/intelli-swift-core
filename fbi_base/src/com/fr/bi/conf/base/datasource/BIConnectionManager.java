@@ -3,7 +3,7 @@ package com.fr.bi.conf.base.datasource;
 import com.fr.base.FRContext;
 import com.fr.bi.stable.data.db.DataLinkInformation;
 import com.fr.bi.stable.utils.BIDBUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.data.core.DataCoreUtils;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
@@ -132,8 +132,8 @@ public class BIConnectionManager extends XMLFileManager {
         DataLinkInformation dl = new DataLinkInformation();
         dl.parseJSON(linkDataJo);
         JDBCDatabaseConnection jdbcDatabaseConnection = dl.createJDBCDatabaseConnection();
-        BIConnectOptimizationUtils utils = BIConnectOptimizationUtilsFactory.getOptimizationUtils(jdbcDatabaseConnection);
-        jdbcDatabaseConnection = utils.optimizeConnection(jdbcDatabaseConnection);
+        /*BIConnectOptimizationUtils utils = BIConnectOptimizationUtilsFactory.getOptimizationUtils(jdbcDatabaseConnection);
+        jdbcDatabaseConnection = utils.optimizeConnection(jdbcDatabaseConnection);*/ //连接保存时，如果是sqlserver连接，不会再url上字段加selectMethod，当在需要数据库连接时，加上selectMethod属性
         DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
 
         if (!ComparatorUtils.equals(oldName, newName)) {
@@ -147,7 +147,7 @@ public class BIConnectionManager extends XMLFileManager {
             FRContext.getCurrentEnv().writeResource(datasourceManager);
             FRContext.getCurrentEnv().writeResource(this);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -170,13 +170,13 @@ public class BIConnectionManager extends XMLFileManager {
             FRContext.getCurrentEnv().writeResource(datasourceManager);
             FRContext.getCurrentEnv().writeResource(this);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
     private boolean testConnection(Connection c) {
         try {
-            c.testConnection();
+//            c.testConnection();
             return true;
         } catch (Exception e) {
             return false;
@@ -254,7 +254,7 @@ public class BIConnectionManager extends XMLFileManager {
                 Dialect dialcet = DialectFactory.generateDialect(conn, c.getDriver());
                 return dialcet instanceof OracleDialect || dialcet instanceof MSSQLDialect;
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             } finally {
                 DBUtils.closeConnection(conn);
             }

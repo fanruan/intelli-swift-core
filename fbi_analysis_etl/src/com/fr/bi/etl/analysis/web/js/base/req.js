@@ -2,41 +2,49 @@
  * Created by 小灰灰 on 2016/4/11.
  */
 BI.ETLReq = {
-    reqSaveTable: function(data, callback){
+    reqSaveTable: function (data, callback) {
         data.sessionID = Data.SharingPool.get("sessionID");
-        data.table[ETLCst.ITEMS][0].operator.sessionID = Data.SharingPool.get("sessionID");
-        BI.requestAsync("fr_bi_analysis_etl", "save_table", data, function(res){
+        if (data.table && data.table[ETLCst.ITEMS]) {
+            data.table[ETLCst.ITEMS][0].operator.sessionID = Data.SharingPool.get("sessionID");
+        }
+        BI.requestAsync("fr_bi_analysis_etl", "save_table", data, function (res) {
             BI.Utils.afterSaveTable(res);
             callback();
         })
     },
 
-    reqRenameTable: function(data, callback){
+    reqRenameTable: function (data, callback) {
         var d = BI.deepClone(data);
         data.sessionID = Data.SharingPool.get("sessionID");
-        BI.requestAsync("fr_bi_analysis_etl", "rename_table", data, function(){
+        BI.requestAsync("fr_bi_analysis_etl", "rename_table", data, function () {
             BI.Utils.afterReNameTable(d.id, d.name, d.describe);
             callback();
         })
     },
 
-    reqDeleteTable: function(data, callback){
+    reqDeleteTable: function (data, callback) {
         data.sessionID = Data.SharingPool.get("sessionID");
         var mask = BI.createWidget({
             type: "bi.etl_loading_mask",
             masker: 'body',
             text: BI.i18nText("BI-Loading")
         });
-        BI.requestAsync("fr_bi_analysis_etl", "get_used_tables", data, function(res){
-            if(mask != null) {
+        BI.requestAsync("fr_bi_analysis_etl", "get_used_tables", data, function (res) {
+            if (mask != null) {
                 mask.destroy()
             }
             var text = BI.isNull(res.table) ? BI.i18nText('BI-Is_Delete_Table') : BI.i18nText('BI-ETL_Sure_Delete_Used_Table', res.table);
             BI.Msg.confirm(BI.i18nText("BI-Warning"), text, function (v) {
-                if(v === true) {
-                    BI.requestAsync("fr_bi_analysis_etl", "delete_table", data, function(){
+                if (v === true) {
+                    var mask = BI.createWidget({
+                        type: "bi.etl_loading_mask",
+                        masker: 'body',
+                        text: BI.i18nText("BI-Loading")
+                    });
+                    BI.requestAsync("fr_bi_analysis_etl", "delete_table", data, function () {
                         BI.Utils.afterDeleteTable(data.id);
                         callback();
+                        mask.destroy();
                     })
                 }
             })
@@ -45,20 +53,20 @@ BI.ETLReq = {
 
     },
 
-    reqEditTable: function(data, callback){
+    reqEditTable: function (data, callback) {
         data.sessionID = Data.SharingPool.get("sessionID");
         var mask = BI.createWidget({
             type: "bi.etl_loading_mask",
             masker: 'body',
             text: BI.i18nText("BI-Loading")
         });
-        BI.requestAsync("fr_bi_analysis_etl", "edit_table", data, function(res){
-            if(mask != null) {
+        BI.requestAsync("fr_bi_analysis_etl", "edit_table", data, function (res) {
+            if (mask != null) {
                 mask.destroy()
             }
-            if(res['used']){
+            if (res['used']) {
                 BI.Msg.confirm(BI.i18nText("BI-Warning"), BI.i18nText("BI-ETL_Table_Edit_Warning"), function (v) {
-                    if(v === true) {
+                    if (v === true) {
                         callback(res);
                     }
                 })
@@ -68,12 +76,14 @@ BI.ETLReq = {
         })
     },
 
-    reqPreviewTable: function(data, callback){
+    reqPreviewTable: function (data, callback) {
         data.sessionID = Data.SharingPool.get("sessionID");
-        data[ETLCst.ITEMS][0].operator.sessionID = Data.SharingPool.get("sessionID");
-        if(data[ETLCst.ITEMS][0][ETLCst.FIELDS].length === 0){
+        if (data[ETLCst.ITEMS] && data[ETLCst.ITEMS].length > 0 && data[ETLCst.ITEMS][0].operator) {
+            data[ETLCst.ITEMS][0].operator.sessionID = Data.SharingPool.get("sessionID");
+        }
+        if (data[ETLCst.ITEMS][0][ETLCst.FIELDS].length === 0) {
             callback({
-                value:[]
+                value: []
             });
             return;
         }

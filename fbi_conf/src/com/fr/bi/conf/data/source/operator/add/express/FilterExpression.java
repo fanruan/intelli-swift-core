@@ -15,7 +15,7 @@ import com.fr.bi.conf.report.widget.field.filtervalue.FilterValue;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.utils.DateUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
 
@@ -71,7 +71,7 @@ public class FilterExpression<T> implements Expression {
         try {
             return new BICoreGenerator(this).fetchObjectCore();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return BIBasicCore.EMPTY_CORE;
     }
@@ -92,7 +92,7 @@ public class FilterExpression<T> implements Expression {
             try {
                 tValue = columnType == DBConstant.COLUMN.DATE ? DateUtils.parse((String) value).getTime() : value;
             } catch (ParseException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
         return tValue;

@@ -2,7 +2,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.newstyle;
 
 import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -470,13 +470,13 @@ public abstract class BIAbstractChartSetting implements BIChartSetting {
             m += s1.split(".")[1].length();
         }
         catch(Exception e){
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
         try{
             m += s2.split(".")[1].length();
         }
         catch(Exception e){
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
         return Double.parseDouble(s1.replace(".","")) * Double.parseDouble(s2.replace(".","")) / Math.pow(10,m);
     }

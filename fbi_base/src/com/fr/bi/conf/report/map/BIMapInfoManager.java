@@ -1,6 +1,6 @@
 package com.fr.bi.conf.report.map;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.GeneralContext;
 import com.fr.json.JSONException;
 import com.fr.stable.CodeUtils;
@@ -57,7 +57,7 @@ public class BIMapInfoManager {
             editFileNames(innerMapPath, "map", "map", "MAP_", 0, true);
             editFileNames(customMapPath, "image", "image", "MAP_", 0, false);
         } catch (JSONException e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
     }
 
@@ -85,12 +85,12 @@ public class BIMapInfoManager {
             if(isInner){
                 innerMapName.put(fileName, prev + currentName);
                 innerMapTypeName.put(prev + currentName, fileName);
-                innerMapPath.put(prev + currentName, "?op=fr_bi&cmd=get_map_json&file_path=" + CodeUtils.cjkEncode(currentName) + ".json");
+                innerMapPath.put(prev + currentName, "?op=fr_bi_base&cmd=get_map_json&file_path=" + CodeUtils.cjkEncode(currentName) + ".json");
                 innerMapLayer.put(prev + currentName, layer);
             }else{
                 customMapName.put(fileName, prev + currentName);
                 customMapTypeName.put(prev + currentName, fileName);
-                customMapPath.put(prev + currentName, "?op=fr_bi&cmd=get_map_json&file_path=" + CodeUtils.cjkEncode(currentName) + ".json");
+                customMapPath.put(prev + currentName, "?op=fr_bi_base&cmd=get_map_json&file_path=" + CodeUtils.cjkEncode(currentName) + ".json");
                 customMapLayer.put(prev + currentName, layer);
             }
             children.add(prev + currentName);

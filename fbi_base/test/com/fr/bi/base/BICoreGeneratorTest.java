@@ -1,6 +1,6 @@
 package com.fr.bi.base;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import junit.framework.TestCase;
 
@@ -29,7 +29,7 @@ public class BICoreGeneratorTest extends TestCase {
             assertEquals(generator.fetchObjectCore().getID().getIdentityValue(), generator2.fetchObjectCore().getID().getIdentityValue());
             assertTrue(!ComparatorUtils.equals(generator.fetchObjectCore().getID().getIdentityValue(), generator3.fetchObjectCore().getID().getIdentityValue()));
         } catch (Exception ignore) {
-            BILogger.getLogger().error(ignore.getMessage(), ignore);
+            BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
         }
     }
 
@@ -44,7 +44,7 @@ public class BICoreGeneratorTest extends TestCase {
             generator.addAdditionalAttribute("a");
             assertTrue(ComparatorUtils.equals(generator.fetchObjectCore().getID().getIdentityValue(), generator3.fetchObjectCore().getID().getIdentityValue()));
         } catch (Exception ignore) {
-            BILogger.getLogger().error(ignore.getMessage(), ignore);
+            BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
         }
     }
 
@@ -64,20 +64,22 @@ public class BICoreGeneratorTest extends TestCase {
             generator3 = new BICoreGenerator(test3);
             assertTrue(ComparatorUtils.equals(generator.fetchObjectCore().getID().getIdentityValue(), generator3.fetchObjectCore().getID().getIdentityValue()));
         } catch (Exception ignore) {
-            BILogger.getLogger().error(ignore.getMessage(), ignore);
+            BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
         }
     }
+
     public void testCoreValue() {
         try {
-            BICore core= new BIBasicCore();
+            BICore core = new BIBasicCore();
             core.registerAttribute("BIdemo");
             core.registerAttribute("银行_产品表");
             System.out.println(core.getIDValue());
-            BICore core2= new BIBasicCore();
+            BICore core2 = new BIBasicCore();
             core2.registerAttribute("BIdemo");
             core2.registerAttribute("银行_用户表");
             System.out.println(core2.getIDValue());
         } catch (Exception ignore) {
-            BILogger.getLogger().error(ignore.getMessage(), ignore);
+            BILoggerFactory.getLogger().error(ignore.getMessage(), ignore);
         }
-    }}
+    }
+}

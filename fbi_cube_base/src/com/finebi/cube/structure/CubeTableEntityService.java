@@ -28,7 +28,9 @@ public interface CubeTableEntityService extends CubeTableEntityGetterService {
 
     void recordRowCount(long rowCount);
 
-    void recordLastTime();
+    void recordLastExecuteTime(long time);
+
+    void recordCurrentExecuteTime();
 
     void recordRemovedLine(TreeSet<Integer> removedLine);
 
@@ -38,6 +40,8 @@ public interface CubeTableEntityService extends CubeTableEntityGetterService {
      * @param originalDataValue
      */
     void addDataValue(BIDataValue originalDataValue) throws BICubeColumnAbsentException;
+
+    void increaseAddDataValue(BIDataValue originalDataValue) throws BICubeColumnAbsentException;
 
     boolean checkRelationVersion(List<BITableSourceRelation> relations,
                                  int relation_version);
@@ -63,5 +67,4 @@ public interface CubeTableEntityService extends CubeTableEntityGetterService {
 
     void buildStructure();
 
-    void forceReleaseWriter();
 }

@@ -8,9 +8,10 @@ import com.finebi.cube.conf.relation.relation.IRelationContainer;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.exception.*;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
@@ -133,7 +134,7 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
             try {
                 manager.registerTableRelation(it.next());
             } catch (BIRelationDuplicateException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
                 continue;
             }
         }
@@ -152,9 +153,9 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
     }
 
     @Override
-    public void finishGenerateCubes(long userId) {
+    public void finishGenerateCubes(long userId,Set<BITableSourceRelation> absentRelation) {
         userId = UserControl.getInstance().getSuperManagerID();
-        getUserGroupConfigManager(userId).finishGenerateCubes();
+        getUserGroupConfigManager(userId).finishGenerateCubes(absentRelation);
     }
 
     @Override
@@ -287,7 +288,7 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
                 return pathIterator.next();
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }
@@ -302,7 +303,7 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
                 return pathIterator.next();
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }
@@ -332,7 +333,7 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
                         relation.put(f.getID().getIdentity(), createPathJSON(path));
                     }
                 } catch (Exception e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
             }
         }

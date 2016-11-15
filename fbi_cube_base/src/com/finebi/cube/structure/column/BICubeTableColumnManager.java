@@ -11,7 +11,7 @@ import com.finebi.cube.structure.column.date.*;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.*;
@@ -101,7 +101,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
                         break;
                 }
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
                 continue;
 
             }
@@ -292,5 +292,12 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
             it.next().forceReleaseWriter();
         }
         columnKey2ColumnMap.clear();
+    }
+    @Override
+    public void forceReleaseReader() {
+        Iterator<ICubeColumnEntityService> it = columnKey2ColumnMap.values().iterator();
+        while (it.hasNext()) {
+            it.next().forceReleaseReader();
+        }
     }
 }

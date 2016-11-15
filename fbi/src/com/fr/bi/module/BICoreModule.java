@@ -28,7 +28,7 @@ import com.fr.bi.fs.*;
 import com.fr.bi.resource.ResourceConstants;
 import com.fr.bi.resource.ResourceHelper;
 import com.fr.bi.stable.utils.BIDBUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.base.Service4BIBase;
 import com.fr.bi.web.conf.Service4BIConfigure;
 import com.fr.bi.web.dezi.mobile.Service4BIMobile;
@@ -233,7 +233,7 @@ public class BICoreModule extends AbstractModule {
                 MemoryConnection.getConnectionMap().clear();
                 FRContext.getCurrentEnv().writeResource(DatasourceManager.getInstance());
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }
@@ -245,7 +245,7 @@ public class BICoreModule extends AbstractModule {
                 ClusterManager.getInstance().initClusterEnv();
                 ClusterAdapter.registerBIClusterManagerInterface(ClusterManager.getInstance());
             } catch (Exception ex) {
-                BILogger.getLogger().error(ex.getMessage(), ex);
+                BILoggerFactory.getLogger().error(ex.getMessage(), ex);
             }
         } else {
             ClusterAdapter.registerBIClusterManagerInterface(EmptyClusterManager.getInstance());
@@ -267,7 +267,7 @@ public class BICoreModule extends AbstractModule {
             try {
                 cn.setAutoCommit(false);
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
             if (shouldAddTableColumn(cn, BITableMapper.BI_REPORT_NODE.TABLE_NAME, column.getName())) {
                 Dialect dialect = DialectFactory.generateDialect(cn, PlatformDB.getDB().getDriver());
@@ -338,7 +338,7 @@ public class BICoreModule extends AbstractModule {
             cn = PlatformDB.getDB().createConnection();
             ps = cn.prepareStatement("DROP TABLE " + DialectFactory.generateDialect(cn).column2SQL(tableName));
             ps.execute();
-            BILogger.getLogger().info("Table " + tableName + " has been deleted successfully");
+            BILoggerFactory.getLogger().info("Table " + tableName + " has been deleted successfully");
             cn.commit();
         } catch (Exception e) {
             //BILogger.getLogger().error(e.getMessage(), e);
@@ -394,6 +394,11 @@ public class BICoreModule extends AbstractModule {
     @Override
     public Collection<BIPackageID> getAvailablePackID(long userId) {
         return BIConfigureManagerCenter.getAuthorityManager().getAuthPackagesByUser(userId);
+    }
+
+    @Override
+    public void clearAnalysisETLCache(long userId) {
+
     }
 
     private void registerSystemManager() {

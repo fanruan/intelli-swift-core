@@ -3,85 +3,109 @@ package com.finebi.cube.utils;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.conf.BISystemConfigHelper;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.data.ICubeResourceDiscovery;
-import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.relation.BITableRelation;
-import com.finebi.cube.structure.BICube;
-import com.finebi.cube.structure.BITableKey;
-import com.finebi.cube.structure.ITableKey;
-import com.fr.bi.common.factory.BIFactoryHelper;
+import com.finebi.cube.relation.BITableRelationPath;
+import com.finebi.cube.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.data.source.ETLTableSource;
 import com.fr.bi.conf.data.source.SQLTableSource;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.exception.BIRelationAbsentException;
-import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.utils.file.BIFileUtils;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by kary on 16/7/14.
  */
 public class CubeUpdateUtils {
-    private static boolean forceCheck = false;
 
     /*是否需要更新cube*/
     public static boolean cubeStatusCheck(long userId) {
-//        return isNeedUpdate(userId)&&forceCheck;
         return false;
     }
 
-    private static boolean isNeedUpdate(long userId) {
-        return getNewTables(userId).size() > 0 || getNewRelations(userId).size() > 0;
-    }
-
-    /* 获取所有新增的table*/
-    public static Set<BIBusinessTable> getNewTables(long userId) {
-        Set<BIBusinessTable> newTables = new HashSet<BIBusinessTable>();
-        for (BusinessTable businessTable : BICubeConfigureCenter.getPackageManager().getAllTables(userId)) {
-            if (!tableExisted(businessTable.getTableSource(), userId)) {
-                newTables.add((BIBusinessTable) businessTable);
-            }
-        }
-        return newTables;
-    }
-
-    /* 获取所有新增的relation*/
-    public static Set<BITableRelation> getNewRelations(long userId) {
-        Set<BITableRelation> currentRelations = BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(userId);
-        Set<BITableRelation> newRelationSet = new HashSet<BITableRelation>();
-        for (BITableRelation relation : currentRelations) {
-            try {
-                if (!BICubeConfigureCenter.getTableRelationManager().isRelationGenerated(userId, relation)) {
-                    newRelationSet.add(relation);
-                }
-            } catch (BITableAbsentException e) {
-                e.printStackTrace();
-            } catch (BIRelationAbsentException e) {
-                e.printStackTrace();
-            }
-        }
-        return newRelationSet;
-    }
-
-
-    private static boolean tableExisted(CubeTableSource source, long userId) {
+    /**
+     * 获得配置部分存在，但是在cube中缺少的表
+     *
+     * @param userId 用户ID
+     * @return 缺失的表
+     */
+    public static Set<CubeTableSource> getCubeAbsentTables(long userId) {
+        Set<CubeTableSource> absentTables = new HashSet<CubeTableSource>();
         ICubeConfiguration cubeConfiguration = BICubeConfiguration.getConf(Long.toString(userId));
-        BICube iCube = new BICube(new BICubeResourceRetrieval(cubeConfiguration), BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
-        ITableKey iTableKey = new BITableKey(source);
-        return iCube.exist(iTableKey);
+        for (BusinessTable businessTable : BICubeConfigureCenter.getPackageManager().getAllTables(userId)) {
+            CubeTableSource source = businessTable.getTableSource();
+            Set<CubeTableSource> tableLayers = toSet(source.createGenerateTablesList());
+            for (CubeTableSource layer : tableLayers) {
+                if (!BITableKeyUtils.isTableExisted(layer, cubeConfiguration)) {
+                    absentTables.add(businessTable.getTableSource());
+                    break;
+                }
+            }
+        }
+        return absentTables;
     }
 
-    public static void setForceCheck(boolean forceCheck) {
-        com.finebi.cube.utils.CubeUpdateUtils.forceCheck = forceCheck;
+    private static Set<CubeTableSource> toSet(List<Set<CubeTableSource>> tableLayerTree) {
+        Set<CubeTableSource> tableLayers = new HashSet<CubeTableSource>();
+        for (Set<CubeTableSource> value : tableLayerTree) {
+            tableLayers.addAll(value);
+        }
+        return tableLayers;
+    }
+
+    /**
+     * 获得配置部分存在，但是在cube中缺少的关联
+     *
+     * @param userId 用户ID
+     * @return 缺少的关联
+     */
+    public static Set<BITableSourceRelation> getCubeAbsentRelations(long userId) {
+        Set<BITableRelation> currentRelations = BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(userId);
+        ICubeConfiguration cubeConfiguration = BICubeConfiguration.getConf(Long.toString(userId));
+        Set<BITableSourceRelation> absentRelations = new HashSet<BITableSourceRelation>();
+        BISystemConfigHelper converter = new BISystemConfigHelper();
+        converter.prepare(userId);
+        for (BITableRelation relation : currentRelations) {
+            BITableSourceRelation sourceRelation = converter.convertRelation(relation);
+            if (!BICubeRelationUtils.isRelationExisted(sourceRelation, cubeConfiguration)) {
+                absentRelations.add(sourceRelation);
+            }
+        }
+        return absentRelations;
+    }
+
+    /**
+     * 获得配置部分存在，但是在cube中缺少的路径
+     *
+     * @param userId 用户ID
+     * @return 缺少的路径
+     */
+    public static Set<BITableSourceRelationPath> getCubeAbsentPaths(long userId) {
+        try {
+            Set<BITableRelationPath> paths = BICubeConfigureCenter.getTableRelationManager().getAllTablePath(userId);
+            ICubeConfiguration cubeConfiguration = BICubeConfiguration.getConf(Long.toString(userId));
+            Set<BITableSourceRelationPath> absentPaths = new HashSet<BITableSourceRelationPath>();
+            BISystemConfigHelper converter = new BISystemConfigHelper();
+            converter.prepare(userId);
+            for (BITableRelationPath path : paths) {
+                if (path.size() >= 2) {
+                    BITableSourceRelationPath sourcePath = converter.convertPath(path);
+                    if (!BICubePathUtils.isPathExisted(sourcePath, cubeConfiguration)) {
+                        absentPaths.add(sourcePath);
+                    }
+                }
+            }
+            return absentPaths;
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
     }
 
     public static Map recordTableAndRelationInfo(long userId) {

@@ -2,6 +2,7 @@ package com.fr.bi.stable.operation.group.group;
 
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.AbstractGroup;
@@ -89,8 +90,11 @@ public class CustomGroup extends AbstractGroup {
         Set[] set = createConfigGroupMap();
         Iterator iter = baseMap.iterator();
         int len = groups.length;
-        GroupValueIndex otherGVi = null;
+        GroupValueIndex otherGVi = GVIFactory.createAllEmptyIndexGVI();
         GroupValueIndex[] newMapArray = new GroupValueIndex[len];
+        for(int i = 0; i < newMapArray.length; i++){
+            newMapArray[i] = GVIFactory.createAllEmptyIndexGVI();
+        }
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
             Object key = entry.getKey();
@@ -102,12 +106,12 @@ public class CustomGroup extends AbstractGroup {
             for (int i = 0; i < len; i++) {
                 if (set[i].contains(key.toString())) {
                     contains = true;
-                    newMapArray[i] = GVIUtils.OR(newMapArray[i], gvi);
+                    newMapArray[i] =newMapArray[i].or(gvi);
                 }
             }
             if (!contains) {
                 if (ungroup2Other == BIReportConstant.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED) {
-                    otherGVi = GVIUtils.OR(otherGVi, gvi);
+                    otherGVi = otherGVi.or(gvi);
                 } else {
                     String name = key.toString();
                     ungroupMap.put(name, GVIUtils.OR((GroupValueIndex) newMap.get(name), gvi));
@@ -118,7 +122,7 @@ public class CustomGroup extends AbstractGroup {
             newMap.put(groups[i].getValue(), newMapArray[i]);
         }
         newMap.putAll(ungroupMap);
-        if (otherGVi != null) {
+        if (!otherGVi.isAllEmpty()) {
             newMap.put(ungroup2OtherName, otherGVi);
         }
         return newMap;

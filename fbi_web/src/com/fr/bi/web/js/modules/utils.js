@@ -58,7 +58,7 @@
         },
 
         getDefaultChartConfig: function () {
-            return Data.BufferPool.getDefaultChartConfig();
+            return Data.SharingPool.cat("plateConfig");
         },
 
         getAllGroupedPackagesTreeJSON: function () {
@@ -1127,6 +1127,12 @@
                 BICst.DEFAULT_CHART_SETTING.background_layer_info;
         },
 
+        getWSNullContinueByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.null_continue) ? ws.null_continue :
+                BICst.DEFAULT_CHART_SETTING.null_continue;
+        },
+
         //settings  ---- end ----
 
         getWidgetSettingsByID: function (wid) {
@@ -1163,6 +1169,46 @@
                 }
             });
             return drills;
+        },
+
+        //根据text dId 获取clicked 处理分组的情况
+        getClickedValue4Group: function(v, dId) {
+            var group = this.getDimensionGroupByID(dId);
+            var fieldType = this.getFieldTypeByDimensionID(dId);
+            var clicked = v;
+
+            if (BI.isNotNull(group)) {
+                if (fieldType === BICst.COLUMN.STRING) {
+                    var details = group.details,
+                        ungroup2Other = group.ungroup2Other,
+                        ungroup2OtherName = group.ungroup2OtherName;
+                    if (ungroup2Other === BICst.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED &&
+                        ungroup2OtherName === v) {
+                        clicked = BICst.UNGROUP_TO_OTHER;
+                    }
+                    BI.some(details, function (i, detail) {
+                        if (detail.value === v) {
+                            clicked = detail.id;
+                            return true;
+                        }
+                    });
+                } else if (fieldType === BICst.COLUMN.NUMBER) {
+                    var groupValue = group.group_value, groupType = group.type;
+                    if (groupType === BICst.GROUP.CUSTOM_NUMBER_GROUP) {
+                        var groupNodes = groupValue.group_nodes, useOther = groupValue.use_other;
+                        if (useOther === v) {
+                            clicked = BICst.UNGROUP_TO_OTHER;
+                        }
+                        BI.some(groupNodes, function (i, node) {
+                            if (node.group_name === v) {
+                                clicked = node.id;
+                                return true;
+                            }
+                        });
+                    }
+                }
+            }
+            return clicked;
         },
 
         getWidgetFilterValueByID: function (wid) {
@@ -2452,11 +2498,11 @@
                             var tempRegionType = self.getRegionTypeByDimensionID(drill.dId);
                             var dIndex = widget.view[drillRegionType].indexOf(drId);
                             BI.remove(widget.view[tempRegionType], drill.dId);
-                            if (drillRegionType === tempRegionType) {
+                            // if (drillRegionType === tempRegionType) {
                                 widget.view[drillRegionType].splice(dIndex, 0, drill.dId);
-                            } else {
-                                widget.view[drillRegionType].push(drill.dId);
-                            }
+                            // } else {
+                            //     widget.view[drillRegionType].push(drill.dId);
+                            // }
                         }
                         BI.each(drArray[i].values, function (i, v) {
                             var filterValue = parseSimpleFilter(v);
@@ -2569,8 +2615,62 @@
                 parseFilter(filter)
             });
 
+            //标红维度的处理
+            var dIds = this.getAllDimDimensionIDs(wid);
+            BI.each(dIds, function(idx, dId){
+                var dimensionMap = self.getDimensionMapByDimensionID(dId);
+                var valid = true;
+                //树控件和明细表
+                if(widget.type === BICst.WIDGET.DETAIL || widget.type === BICst.WIDGET.TREE){
+                    BI.each(dimensionMap, function(tableId, obj){
+                        var targetRelation = obj.target_relation;
+                        var pId = self.getFirstRelationPrimaryIdFromRelations(targetRelation);
+                        var fId = self.getLastRelationForeignIdFromRelations(targetRelation);
+                        var paths = self.getPathsFromFieldAToFieldB(pId, fId);
+                        if(!BI.deepContains(paths, targetRelation)){
+                            //维度和某个指标之间设置了路径但是路径在配置处被删了
+                            if(paths.length >= 1){
+                                widget.dimensions[dId].dimension_map[tableId].target_relation = paths[0];
+                            }
+                        }
+                    })
+                }else{
+                    var tIds = self.getAllTargetDimensionIDs(wid);
+                    BI.any(tIds, function(idx, tId){
+                        if(!self.isCalculateTargetByDimensionID(tId)){
+                            //维度和某个指标之间没有设置路径
+                            if(!BI.has(dimensionMap, tId)){
+                                valid = false;
+                                return true;
+                            }else{
+                                var targetRelation = dimensionMap[tId].target_relation;
+                                BI.any(targetRelation, function(id, path){
+                                    var pId = self.getFirstRelationPrimaryIdFromRelations(path);
+                                    var fId = self.getLastRelationForeignIdFromRelations(path);
+                                    var paths = self.getPathsFromFieldAToFieldB(pId, fId);
+                                    if(!BI.deepContains(paths, path)){
+                                        //维度和某个指标之间设置了路径但是路径在配置处被删了
+                                        if(paths.length === 1){
+                                            widget.dimensions[dId].dimension_map[tId].target_relation.length = id;
+                                            widget.dimensions[dId].dimension_map[tId].target_relation.push(paths[0]);
+                                        }else{
+                                            valid = false;
+                                            return true;
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                    });
+                }
+                if(valid === false){
+                    widget.dimensions[dId].used = false;
+                }
+            });
+
             widget.filter = {filter_type: BICst.FILTER_TYPE.AND, filter_value: filterValues};
             widget.real_data = true;
+
             return widget;
         },
 
@@ -2711,7 +2811,7 @@
             var date = BI.isNull(consultedDate) ? new Date() : consultedDate;
             var currY = date.getFullYear(), currM = date.getMonth(), currD = date.getDate();
             date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-            if (BI.isNull(type) && BI.isNotNull(v.year)) {
+            if (BI.isNull(type) && isValidDate(v)) {
                 return new Date(v.year, v.month, v.day).getTime();
             }
             switch (type) {
@@ -2758,6 +2858,10 @@
 
             }
         }
+
+        function isValidDate(v){
+            return BI.isNotNull(v.year) && BI.isNotNull(v.month) && BI.isNotNull(v.day);
+        }
     }
 
     //format date type filter
@@ -2767,6 +2871,9 @@
             BI.each(filterValue, function (i, value) {
                 parseFilter(value);
             });
+        }
+        if (BI.isNull(filterValue)) {
+            return;
         }
         if (filterType === BICst.FILTER_DATE.BELONG_DATE_RANGE || filterType === BICst.FILTER_DATE.NOT_BELONG_DATE_RANGE) {
             var start = filterValue.start, end = filterValue.end;

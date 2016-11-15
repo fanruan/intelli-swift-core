@@ -3,7 +3,7 @@ package com.fr.bi.web.conf.utils;
 import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.util.Iterator;
 
@@ -23,7 +23,7 @@ public class BIWebConfUtils {
                 loader.getTableIndex(key);
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
             return false;
         }
         return true;

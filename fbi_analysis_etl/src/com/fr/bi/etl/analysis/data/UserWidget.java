@@ -7,6 +7,7 @@ import com.fr.bi.cal.analyze.executor.detail.DetailExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
+import com.fr.bi.cal.analyze.report.report.widget.BISummaryWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.analyze.session.BIWeblet;
@@ -15,7 +16,7 @@ import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.json.JSONException;
 import com.fr.stable.StringUtils;
 
@@ -51,10 +52,10 @@ public class UserWidget {
 
     public List<List> createData(int start, int end) {
         end = Math.min(end, maxRow);
-        if (!contains(start, end)){
-            synchronized (lock){
-                if (!contains(start, end)){
-                    if (widget.getType() == BIReportConstant.WIDGET.DETAIL){
+        if (!contains(start, end)) {
+            synchronized (lock) {
+                if (!contains(start, end)) {
+                    if (widget.getType() == BIReportConstant.WIDGET.DETAIL) {
                         createDetailData(start, end);
                     } else {
                         createTableData(end);
@@ -68,8 +69,8 @@ public class UserWidget {
 
     private List<List> getDate(int start, int end) {
         List<List> values = new ArrayList<List>();
-        for (int i = start; i< end; i++){
-            if (!tempValue.containsKey(i)){
+        for (int i = start; i < end; i++) {
+            if (!tempValue.containsKey(i)) {
                 break;
             }
             values.add(tempValue.get(i));
@@ -78,40 +79,47 @@ public class UserWidget {
     }
 
     private boolean contains(int start, int end) {
-        for (int i = start; i< end; i++){
-            if (!tempValue.containsKey(i)){
+        for (int i = start; i < end; i++) {
+            if (!tempValue.containsKey(i)) {
                 return false;
             }
         }
         return true;
     }
 
+    private int getPageSize() {
+        return ((BISummaryWidget) widget).getMaxRow();
+    }
+
     private void createTableData(int end) {
-        List<List> v;
+        List<List> v = new ArrayList<List>();
         int rowCount = tempValue.size();
-        while (rowCount < end){
-            if (rowCount == 0){
+        while (rowCount < end) {
+            if (rowCount == 0) {
                 v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH);
             } else {
-                v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.ROW_NEXT);
+                if (((TableWidget) widget).hasVerticalNextPage()) {
+                    v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.ROW_NEXT);
+                }
             }
-            for (int i = 0; i < v.size(); i++){
+            for (int i = 0; i < v.size(); i++) {
                 tempValue.put(rowCount, v.get(i));
-                rowCount ++;
+                rowCount++;
             }
-            if (v.size() != PagingFactory.PAGE_PER_GROUP_20 ){
+
+            if (v.size() != getPageSize()) {
                 maxRow = rowCount;
                 break;
             }
         }
     }
 
-    private List<List> getNextValue(UserSession session, int op){
+    private List<List> getNextValue(UserSession session, int op) {
         List<List> values = new ArrayList<List>();
         try {
-            ((TableWidget)widget).setComplexExpander(new ComplexAllExpalder());
-            ((TableWidget)widget).setOperator(op);
-            Node n = (Node) ((TableWidget)widget).getExecutor(session).getCubeNode();
+            ((TableWidget) widget).setComplexExpander(new ComplexAllExpalder());
+            ((TableWidget) widget).setOperator(op);
+            Node n = (Node) ((TableWidget) widget).getExecutor(session).getCubeNode();
             while (n.getFirstChild() != null) {
                 n = n.getFirstChild();
             }
@@ -119,7 +127,7 @@ public class UserWidget {
             while (n != null) {
                 List rowList = new ArrayList();
                 Node temp = n;
-                for (TargetGettingKey key : ((TableWidget) widget).getTargetsKey()){
+                for (TargetGettingKey key : ((TableWidget) widget).getTargetsKey()) {
                     rowList.add(temp.getSummaryValue(key));
                 }
                 int i = rows.length;
@@ -130,11 +138,13 @@ public class UserWidget {
                     rowList.add(0, v);
                     temp = temp.getParent();
                 }
-                values.add(rowList);
+                if (!rowList.isEmpty()) {
+                    values.add(rowList);
+                }
                 n = n.getSibling();
             }
         } catch (JSONException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return values;
     }
@@ -145,24 +155,24 @@ public class UserWidget {
         paging.setPageSize(step);
         int page = start / step;
         paging.setCurrentPage(page + 1);
-        DetailExecutor exe = new DetailExecutor((BIDetailWidget)widget, paging, session);
-        List<List> data =  exe.getData();
-        int row = page*step;
-        for (int i = 0; i < data.size(); i++){
+        DetailExecutor exe = new DetailExecutor((BIDetailWidget) widget, paging, session);
+        List<List> data = exe.getData();
+        int row = page * step;
+        for (int i = 0; i < data.size(); i++) {
             tempValue.put(i + row, data.get(i));
         }
         maxRow = (int) paging.getTotalSize();
         paging.setCurrentPage(page + 2);
-        exe = new DetailExecutor((BIDetailWidget)widget, paging, session);
-        data =  exe.getData();
+        exe = new DetailExecutor((BIDetailWidget) widget, paging, session);
+        data = exe.getData();
         row = (page + 1) * step;
-        for (int i =0; i < data.size(); i++){
+        for (int i = 0; i < data.size(); i++) {
             tempValue.put(i + row, data.get(i));
         }
     }
 
     public void clear() {
-        synchronized (lock){
+        synchronized (lock) {
             maxRow = Integer.MAX_VALUE;
             tempValue.clear();
             session = new UserSession();
@@ -170,7 +180,7 @@ public class UserWidget {
 
     }
 
-    private class UserSession extends BISession{
+    private class UserSession extends BISession {
 
         public UserSession() {
             super(StringUtils.EMPTY, new BIWeblet(), userId);

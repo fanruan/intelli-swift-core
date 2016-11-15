@@ -38,9 +38,11 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                 clicked[dId] = v;
             }
             self.model.set("clicked", clicked);
+            self._refreshTableAndFilter();
         });
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
             self.model.set("clicked", {});
+            self._refreshTableAndFilter();
         });
 
         //全局样式的修改
@@ -197,8 +199,8 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
                     self._onClickFilter();
                     break;
                 case BICst.DASHBOARD_WIDGET_EXCEL:
-                    window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
-                        + window.encodeURIComponent(self.model.get("name")));
+                    window.location = FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
+                        + window.encodeURIComponent(self.model.get("name"));
                     break;
                 case BICst.DASHBOARD_WIDGET_COPY :
                     self.model.copy();
@@ -303,7 +305,7 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
         if (BI.has(changed, "bounds")) {
             this.tableResize();
         }
-        if (BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
+        if (BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();
         }
         if (BI.has(changed, "dimensions") ||

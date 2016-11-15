@@ -5,12 +5,13 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.cal.index.loader.nodeiterator.IteratorManager;
 import com.fr.bi.cal.analyze.cal.index.loader.nodeiterator.NormalIteratorManager;
-import com.fr.bi.cal.analyze.cal.multithread.*;
+import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
+import com.fr.bi.cal.analyze.cal.multithread.MergeSummaryCall;
+import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.cal.sssecret.*;
 import com.fr.bi.cal.analyze.cal.sssecret.sort.SortedTree;
 import com.fr.bi.cal.analyze.cal.sssecret.sort.SortedTreeBuilder;
-import com.fr.bi.cal.analyze.cal.store.GroupKey;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
@@ -30,7 +31,6 @@ import com.fr.general.ComparatorUtils;
 import com.fr.general.NameObject;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class created on 2016/3/9.
@@ -39,7 +39,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 4.0
  */
 public class DimensionGroupFilter {
-    private static Map<FilterGroupValueIndexKey, GroupValueIndex[]> filterGroupValueIndexMap = new ConcurrentHashMap<FilterGroupValueIndexKey, GroupValueIndex[]>();
     private final BISession session;
     List<MergerInfo> mergerInfoList = new ArrayList<MergerInfo>();
     BIDimension[] rowDimension;
@@ -56,7 +55,7 @@ public class DimensionGroupFilter {
     private long startTime = System.currentTimeMillis();
 
 
-    public DimensionGroupFilter(List<MergerInfo> mergerInfoList, Map<String, DimensionFilter> targetFilterMap, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, Map<String, TargetCalculator> targetsMap, BISession session, NameObject targetSort) {
+    public DimensionGroupFilter(List<MergerInfo> mergerInfoList, Map<String, DimensionFilter> targetFilterMap, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, Map<String, TargetCalculator> targetsMap, BISession session, NameObject targetSort, boolean showSum) {
         this.mergerInfoList = mergerInfoList;
         this.rowDimension = rowDimension;
         this.dimensionComparator = new Comparator[rowDimension.length];
@@ -311,7 +310,7 @@ public class DimensionGroupFilter {
         while (!GroupUtils.isAllEmpty(roots)) {
             moveNext(roots);
             int firstChangeDeep = getFirstChangeDeep(roots, lastRoots);
-            clearLastIndex(lastRoots, firstChangeDeep);
+            clearLastIndex(roots, lastRoots, firstChangeDeep);
             for (int deep = firstChangeDeep; deep < rowDimension.length; deep++) {
                 fillValueIndex(groupValueIndexe2D, roots, counter, nodeBuilder, deep, shouldBuildTree, executor, hasFilter[deep]);
             }
@@ -330,13 +329,13 @@ public class DimensionGroupFilter {
         return groupValueIndexes;
     }
 
-    private void clearLastIndex(GroupConnectionValue[] roots, int firstChangeDeep) {
-        if (roots != null){
-            for (GroupConnectionValue root : roots){
-                if (root == null){
+    private void clearLastIndex(GroupConnectionValue[] roots, GroupConnectionValue[] lastRoots, int firstChangeDeep) {
+        if (roots != null && lastRoots != null){
+            for (int i = 0; i < roots.length; i++){
+                if (roots[i] == null || lastRoots[i] == null){
                     continue;
                 }
-                GroupConnectionValue chain = root.getChild();
+                GroupConnectionValue chain = lastRoots[i].getChild();
                 int deep = firstChangeDeep;
                 while (deep != 0){
                     if (chain == null){
@@ -369,7 +368,6 @@ public class DimensionGroupFilter {
 
     private void createFinalIndexes(GroupValueIndex[] groupValueIndexes, GroupValueIndex[][] groupValueIndexe2D) {
         for (int i = 0; i < groupValueIndexe2D.length; i++) {
-            if (!ComparatorUtils.equals(mergerInfoList.get(i).getRoot().getTableKey(), BIBusinessTable.createEmptyTable())) {
                 for (int j = 0; j < groupValueIndexe2D[i].length; j++) {
                     if (groupValueIndexes[i] == MergerInfo.ALL_SHOW) {
                         groupValueIndexes[i] = groupValueIndexe2D[i][j];
@@ -377,7 +375,6 @@ public class DimensionGroupFilter {
                         groupValueIndexes[i] = groupValueIndexes[i].AND(groupValueIndexe2D[i][j]);
                     }
                 }
-            }
         }
     }
 

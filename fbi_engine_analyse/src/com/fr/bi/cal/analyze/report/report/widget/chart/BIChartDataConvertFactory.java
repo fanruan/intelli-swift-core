@@ -8,11 +8,12 @@ import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.operation.group.group.NoGroup;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import sun.misc.DoubleConsts;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -130,7 +131,7 @@ public class BIChartDataConvertFactory {
             }
             return new JSONObject().put("types", types).put("data", convertedData).put("options", options);
         } catch (JSONException e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
         return new JSONObject();
     }
@@ -223,7 +224,7 @@ public class BIChartDataConvertFactory {
                     JSONObject item = data.getJSONArray("c").getJSONObject(j);
                     String x = item.getString("n");
                     double y = item.getJSONArray("s").getDouble(i);
-                    adjustData.put(new JSONObject().put("x", x).put("y", (Double.isFinite(y) ? y : 0)));
+                    adjustData.put(new JSONObject().put("x", x).put("y", (Math.abs(y) <= DoubleConsts.MAX_VALUE ? y : 0)));
                 }
                 result.put(new JSONObject().put("data", adjustData).put("name", showTarget[i].getText()));
             }
@@ -259,13 +260,13 @@ public class BIChartDataConvertFactory {
                             default:
                                 res = new JSONObject("{ " +
                                         "x:" + item.getString("n") + "," +
-                                        "y:" + (Double.isFinite(y) ? y : 0) + "}");
+                                        "y:" + (Math.abs(y) <= DoubleConsts.MAX_VALUE ? y : 0) + "}");
                                 break;
                         }
                     }else{
                         res = new JSONObject("{ " +
                                 "x:" + item.getString("n") + "," +
-                                "y:" + (Double.isFinite(y) ? y : 0) + "," +
+                                "y:" + (Math.abs(y) <= DoubleConsts.MAX_VALUE ? y : 0) + "," +
                                 "settings:" + showTarget[i].getChartSetting().getSettings().toString() +
                                 "}");
                     }
@@ -312,8 +313,8 @@ public class BIChartDataConvertFactory {
                 double x = item.getJSONArray("s").getDouble(1);
                 JSONArray adjustData = new JSONArray();
                 adjustData.put(new JSONObject("{ " +
-                        "x:" + (Double.isFinite(x) ? x : 0) + "," +
-                        "y:" + (Double.isFinite(y) ? y : 0) + "," +
+                        "x:" + (Math.abs(x) <= DoubleConsts.MAX_VALUE ? x : 0) + "," +
+                        "y:" + (Math.abs(y) <= DoubleConsts.MAX_VALUE ? y : 0) + "," +
                         "seriesName:" + seriesName + "," + "}"));
                 obj.put("data", adjustData).put("name", name);
                 result.put(obj);
@@ -344,9 +345,9 @@ public class BIChartDataConvertFactory {
                 double x = item.getJSONArray("s").getDouble(1);
                 JSONArray adjustData = new JSONArray();
                 adjustData.put(new JSONObject("{ " +
-                        "x:" + (Double.isFinite(x) ? x : 0) + "," +
-                        "y:" + (Double.isFinite(y) ? y : 0) + "," +
-                        "z:" + (Double.isFinite(z) ? z : 0) + "," +
+                        "x:" + (Math.abs(x) <= DoubleConsts.MAX_VALUE ? x : 0) + "," +
+                        "y:" + (Math.abs(y) <= DoubleConsts.MAX_VALUE ? y : 0) + "," +
+                        "z:" + (Math.abs(z) <= DoubleConsts.MAX_VALUE ? z : 0) + "," +
                         "seriesName:" + seriesName + "," + "}"));
                 obj.put("data", adjustData).put("name", name);
                 result.put(obj);
@@ -452,7 +453,7 @@ public class BIChartDataConvertFactory {
                     double y = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s").getDouble(0);
                     da.put(new JSONObject("{ " +
                             "x:" + x + "," +
-                            "y:" + (Double.isFinite(y) ? y : 0) + "," +
+                            "y:" + (Math.abs(y) <= DoubleConsts.MAX_VALUE ? y : 0) + "," +
                             "value:" + value + "," +
                             "seriesName:" + seriesName + "}"));
                 }
@@ -477,7 +478,7 @@ public class BIChartDataConvertFactory {
                     double y = item.getJSONArray("s").getDouble(i);
                     adjustData.put(new JSONObject("{ " +
                             "x:" + x + "," +
-                            "y:" + (Double.isFinite(y) ? y : 0) + "," +
+                            "y:" + (Math.abs(y) <= DoubleConsts.MAX_VALUE ? y : 0) + "," +
                             "value:" + value + "," +
                             "seriesName:" + showTarget[i].getText() + "}"));
                 }

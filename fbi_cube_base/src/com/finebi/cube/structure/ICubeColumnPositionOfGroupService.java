@@ -6,7 +6,7 @@ import com.fr.bi.common.inter.Release;
 /**
  * Created by 小灰灰 on 2016/6/28.
  */
-public interface ICubeColumnPositionOfGroupService extends Release {
+public interface ICubeColumnPositionOfGroupService extends Release ,ICubeResourceForceRelease {
     /**
      * 给每一个原始值添加在分组中的位置
      *
@@ -24,5 +24,4 @@ public interface ICubeColumnPositionOfGroupService extends Release {
      */
     int getPositionOfGroup(int row) throws BIResourceInvalidException;
 
-    void forceReleaseWriter();
 }

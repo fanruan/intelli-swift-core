@@ -1,7 +1,8 @@
 package com.fr.bi.web.dezi.services;
 
 import com.finebi.cube.ICubeConfiguration;
-import com.finebi.cube.impl.conf.CubeBuildTableSource;
+import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.impl.conf.CubeBuildStuffRealTime;
 import com.finebi.cube.location.BICubeLocation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.TempCubeManager;
@@ -15,9 +16,7 @@ import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.bi.stable.utils.file.BIPathUtils;
-import com.fr.bi.util.BIConfigurePathUtils;
 import com.fr.bi.web.dezi.AbstractBIDeziAction;
 import com.fr.json.JSONObject;
 import com.fr.web.core.SessionDealWith;
@@ -47,7 +46,8 @@ public class BIStartGenerateTempCubeAction extends AbstractBIDeziAction {
         final String fileName = TempPathGenerator.createTempPath();
         final CubeTableSource source = BIModuleUtils.getSourceByID(new BITableID(tableId), new BIUser(userId));
         BICubeLocation cubeLocation = new BICubeLocation(BIBaseConstant.CACHE.getCacheDirectory() + BIPathUtils.tablePath(source.fetchObjectCore().getID().getIdentityValue()), File.separator + fileName);
-        final String cubePath = cubeLocation.getAbsolutePath();
+        final String cubeBasePath = cubeLocation.getBaseLocation().getPath();
+        final String cubePath = cubeLocation.getChildLocation().getPath();
         final TempCubeTask task = new TempCubeTask(source.getSourceID(), tableId, userId);
         final CubeTempModelReadingTableIndexLoader loader = (CubeTempModelReadingTableIndexLoader) CubeTempModelReadingTableIndexLoader.getInstance(task);
 
@@ -60,15 +60,15 @@ public class BIStartGenerateTempCubeAction extends AbstractBIDeziAction {
             }
         });
 
-        CubeBuildTableSource cubeBuildStuff = new CubeBuildTableSource(source, new ICubeConfiguration() {
+        CubeBuildStuffRealTime cubeBuildStuff = new CubeBuildStuffRealTime(source, new ICubeConfiguration() {
             @Override
             public URI getRootURI() {
                 URI uri = null;
                 try {
-                    File file = new File(new BICubeLocation(BIConfigurePathUtils.createBasePath(), cubePath).getAbsolutePath());
+                    File file = new File(new BICubeLocation(cubeBasePath, cubePath).getAbsolutePath());
                     uri = URI.create(file.toURI().getRawPath());
                 } catch (URISyntaxException e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
                 return uri;
             }

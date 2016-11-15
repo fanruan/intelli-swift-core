@@ -1,13 +1,13 @@
 package com.fr.bi.cal;
 
-import com.finebi.cube.impl.conf.CubeBuildStaff;
+import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.CubeRunner;
 import com.fr.bi.cal.generate.TimerRunner;
 import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.fs.base.entity.User;
 import com.fr.fs.control.UserControl;
@@ -35,10 +35,10 @@ public class SingleUserCubeManager {
         try {
             user = UserControl.getInstance().getUser(userId);
             if (user != null) {
-                BILogger.getLogger().info(BIDateUtils.getCurrentDateTime() + "User :" + user.getUsername() + "BI Service Start");
+                BILoggerFactory.getLogger().info(BIDateUtils.getCurrentDateTime() + "User :" + user.getUsername() + "BI Service Start");
             }
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -50,7 +50,7 @@ public class SingleUserCubeManager {
         runner.generateCubes();
     }
 
-    public CubeBuildStaff getGeneratingObject() {
+    public CubeBuildStuffComplete getGeneratingObject() {
         return runner.getCubeGeneratingObjects();
     }
 

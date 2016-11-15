@@ -28,7 +28,8 @@ BI.UpdatePreviewPane = BI.inherit(BI.BarPopoverSection, {
         switch (v) {
             case this._constants.SHOW_RESULT:
                 this.warningContainer = BI.createWidget({
-                    type: "bi.vertical"
+                    type: "bi.vertical",
+                    cls: "warning-container"
                 });
                 this.previewTable = BI.createWidget({
                     type: "bi.preview_table",
@@ -38,11 +39,13 @@ BI.UpdatePreviewPane = BI.inherit(BI.BarPopoverSection, {
                 return BI.createWidget({
                     type: "bi.absolute",
                     items: [{
-                        el: {
-                            type: "bi.vertical",
-                            cls: "preview-content",
-                            items: [this.warningContainer, this.previewTable]
-                        },
+                        el: this.warningContainer,
+                        top: 29,
+                        left: 0,
+                        bottom: 0,
+                        right: 0
+                    }, {
+                        el: this.previewTable,
                         top: 29,
                         left: 0,
                         bottom: 0,

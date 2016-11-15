@@ -4,7 +4,7 @@ import com.fr.bi.cluster.ClusterAdapter;
 import com.fr.bi.cluster.exception.DistributedException;
 import com.fr.bi.cluster.wrapper.ZooKeeperWrapper;
 import com.fr.bi.cluster.zookeeper.ZooKeeperConstant;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooDefs;
@@ -32,7 +32,7 @@ public class BIFileLock {
             init();
 
         } catch (Exception ex) {
-            BILogger.getLogger().error(ex.getMessage(), ex);
+            BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         }
     }
 
@@ -64,9 +64,9 @@ public class BIFileLock {
 //            System.out.println("注册文件锁的监听");
 
         } catch (InterruptedException ex) {
-            BILogger.getLogger().error(ex.getMessage(), ex);
+            BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         } catch (KeeperException ex) {
-            BILogger.getLogger().error(ex.getMessage(), ex);
+            BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         }
 
     }
@@ -88,7 +88,7 @@ public class BIFileLock {
                     getZookeeper().delete(getPath() + "/" + childNode, -1);
                 }
             } catch (Exception ex) {
-                BILogger.getLogger().error(ex.getMessage(), ex);
+                BILoggerFactory.getLogger().error(ex.getMessage(), ex);
             }
         }
     }
@@ -97,7 +97,7 @@ public class BIFileLock {
         try {
             getZookeeper().delete(id, -1);
         } catch (Exception ex) {
-            BILogger.getLogger().error(ex.getMessage(), ex);
+            BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         }
     }
 
@@ -106,7 +106,7 @@ public class BIFileLock {
 //            System.out.println("注册监听");
             getZookeeper().exists(id, watcher);
         } catch (Exception ex) {
-            BILogger.getLogger().error(ex.getMessage(), ex);
+            BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         }
 
     }

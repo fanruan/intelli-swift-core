@@ -3,7 +3,7 @@ package com.fr.bi.cluster.zookeeper.operation;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.cluster.zookeeper.BINodeValueParser;
 import com.fr.bi.cluster.zookeeper.BIWorkerNodeValue;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.json.JSONParser;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class BIWorkerFirstIndexOperation implements BIWorkerOperation {
             }
 //            operation.process(relations);
         } catch (Exception ex) {
-             BILogger.getLogger().error(ex.getMessage(), ex);
+             BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         } finally {
             nodeValue.setStatus(BIWorkerNodeValue.STATUS_FINISH);
         }

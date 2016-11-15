@@ -5,6 +5,7 @@ import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.field.filtervalue.string.StringFilterValueUtils;
 import com.fr.bi.stable.gvi.GVIFactory;
@@ -12,7 +13,7 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 
@@ -21,6 +22,9 @@ import com.fr.json.JSONObject;
  */
 public class StringNotInUserFilterValue extends StringRangeFilterValue {
     protected BusinessField column = null;
+
+    @BICoreField
+    private String CLASS_TYPE = "StringNotInUserFilterValue";
 
     @Override
     public GroupValueIndex createFilterIndex(DimensionCalculator dimension, BusinessTable target, ICubeDataLoader loader, long userId) {
@@ -75,7 +79,7 @@ public class StringNotInUserFilterValue extends StringRangeFilterValue {
                     }
                 }
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }

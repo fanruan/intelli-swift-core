@@ -48,10 +48,11 @@ BI.RangeAreaChart = BI.inherit(BI.AbstractChart, {
         var self = this;
         var title = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         config.colors = this.config.chart_color;
-        config.style = formatChartStyle();
+        config.plotOptions.style = formatChartStyle();
         formatCordon();
         this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
+        config.plotOptions.connectNulls = this.config.null_continue;
 
         config.yAxis = this.yAxis;
         config.yAxis[0].title.rotation = this.constants.ROTATION;
@@ -73,7 +74,8 @@ BI.RangeAreaChart = BI.inherit(BI.AbstractChart, {
             lineWidth: this.config.line_width,
             enableTick: this.config.enable_tick,
             labelRotation: this.config.text_direction,
-            gridLineWidth: this.config.show_grid_line === true ? 1 : 0
+            gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
+            maxHeight: '40%'
         });
 
         config.chartType = "area";
@@ -249,7 +251,8 @@ BI.RangeAreaChart = BI.inherit(BI.AbstractChart, {
             enable_tick: BI.isNull(options.enable_tick) ? true : options.enable_tick,
             enable_minor_tick: BI.isNull(options.enable_minor_tick) ? true : options.enable_minor_tick,
             num_separators: options.num_separators || false,
-            chart_font: options.chart_font || c.FONT_STYLE
+            chart_font: options.chart_font || c.FONT_STYLE,
+            null_continue: options.null_continue || false
         };
         this.options.items = items;
 

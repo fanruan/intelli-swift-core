@@ -6,7 +6,7 @@ package com.fr.bi.stable.structure.collection.map.lru;
 import com.fr.bi.stable.structure.collection.map.ConcurrentCacheHashMap;
 import com.fr.bi.common.inter.Release;
 import com.fr.bi.common.inter.ValueCreator;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.util.Map;
 
@@ -113,7 +113,7 @@ public class LRUWithKHashMap<K, V> implements Release {
         try {
             v = creater.createNewObject();
         } catch (Exception e) {
-                    BILogger.getLogger().error(e.getMessage(), e);
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         if (v != null) {
             put(k, v);

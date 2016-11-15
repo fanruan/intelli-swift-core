@@ -1,6 +1,6 @@
 package com.fr.bi.common.persistent.json;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BIBeanUtils;
 import com.fr.bi.stable.utils.program.BIFieldUtils;
 import com.fr.bi.stable.utils.program.BITypeUtils;
@@ -83,7 +83,7 @@ public class BIJSONObject implements JSONTransform {
 
                 }
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
         return null;
@@ -134,7 +134,7 @@ public class BIJSONObject implements JSONTransform {
                     continue;
                 }
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
                 continue;
             }
         }

@@ -8,7 +8,7 @@ import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.code.BIPrintUtils;
 
 import java.util.Set;
@@ -29,7 +29,7 @@ public class SimpleIndexGenerator extends AbstractIndexGenerator {
 
     @Override
     public void generateCube() {
-        BILogger.getLogger().info("table: " + this.dataSource.toString() + "loading data：");
+        BILoggerFactory.getLogger().info("table: " + this.dataSource.toString() + "loading data：");
 
         try {
             cube.createDetailDataWriter();
@@ -37,7 +37,7 @@ public class SimpleIndexGenerator extends AbstractIndexGenerator {
             long rowCount = writeSimpleIndex();
             cube.writeRowCount(rowCount);
             cube.writeTableGenerateVersion(version);
-            BILogger.getLogger().info("table: " + this.dataSource.toString() + "loading data completed : 100%");
+            BILoggerFactory.getLogger().info("table: " + this.dataSource.toString() + "loading data completed : 100%");
         } catch (Throwable e) {
             throw new RuntimeException(e);
         } finally {

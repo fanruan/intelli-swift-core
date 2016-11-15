@@ -47,7 +47,7 @@ BI.PercentAccumulateAxisChart = BI.inherit(BI.AbstractChart, {
         var self = this, o = this.options;
         var yTitle = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         config.colors = this.config.chart_color;
-        config.style = formatChartStyle();
+        config.plotOptions.style = formatChartStyle();
         formatCordon();
         this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
@@ -80,7 +80,8 @@ BI.PercentAccumulateAxisChart = BI.inherit(BI.AbstractChart, {
             enableTick: this.config.enable_tick,
             labelRotation: this.config.text_direction,
             enableMinorTick: this.config.enable_minor_tick,
-            gridLineWidth: this.config.show_grid_line === true ? 1 : 0
+            gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
+            maxHeight: '40%'
         });
 
         config.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${PERCENT}";

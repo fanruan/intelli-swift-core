@@ -36,7 +36,7 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
     _formatConfig: function (config, items) {
         var self = this, o = this.options;
         config.colors = this.config.chart_color;
-        config.style = formatChartStyle();
+        config.plotOptions.style = formatChartStyle();
         formatCordon();
         this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
@@ -88,7 +88,8 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
             lineWidth: self.config.line_width,
             enableTick: self.config.enable_tick,
             labelRotation: this.config.text_direction,
-            gridLineWidth: this.config.show_grid_line === true ? 1 : 0
+            gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
+            maxHeight: '40%'
         });
 
         config.chartType = "column";

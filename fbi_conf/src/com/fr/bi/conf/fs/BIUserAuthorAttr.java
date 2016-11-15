@@ -1,7 +1,7 @@
 package com.fr.bi.conf.fs;
 
 import com.fr.base.FRContext;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -19,15 +19,20 @@ import java.util.*;
  * Created by 小灰灰 on 2015/8/21.
  */
 public class BIUserAuthorAttr implements XMLable {
+    public static final int NO_LIMIT = -1;
+
     public static final String XML_TAG = "UserAuthorAttr";
-    public static final int DEFAULT_MOBILE_USER_AUTH_LIMIT = 0;
-    private final static int EDIT = 1;
-    private final static int VIEW = 2;
-    private final static int MOBILE = 3;
-    private static long biEditUserLimit = 0;
-    private static long biViewUserLimit = 0;
-    private static long biMobileUserLimit = 0;
-    private static long fsMobileUserLimit = 0;
+    public static final String EDIT_AUTH_TAG = "biEditAuth";
+    public static final String VIEW_AUTH_TAG = "biViewAuth";
+    public static final String MOBILE_AUTH_TAG = "biMobileAuth";
+    public static final int DEFAULT_MOBILE_USER_AUTH_LIMIT = NO_LIMIT;
+    public final static int EDIT = 1;
+    public final static int VIEW = 2;
+    public final static int MOBILE = 3;
+    private static long biEditUserLimit = NO_LIMIT;
+    private static long biViewUserLimit = NO_LIMIT;
+    private static long biMobileUserLimit = NO_LIMIT;
+    private static long fsMobileUserLimit = NO_LIMIT;
     //bi编辑用户名单
     private JSONObject biEditUserJo = new JSONObject();
     //bi查看用户名单
@@ -42,7 +47,7 @@ public class BIUserAuthorAttr implements XMLable {
 //        BI_MOBILE
 //        BI_MAKER
 //        BI_USER=50
-//        0 代码不限制
+//        -1 无限制
         if (licJo.has("BI_USER")) {
             biViewUserLimit = Math.max(DEFAULT_MOBILE_USER_AUTH_LIMIT, licJo.optInt("BI_USER"));
         }
@@ -59,11 +64,11 @@ public class BIUserAuthorAttr implements XMLable {
 
     private void readChild(XMLableReader reader) {
         String tagName = reader.getTagName();
-        if (ComparatorUtils.equals("biEditAuth", tagName)) {
+        if (ComparatorUtils.equals(EDIT_AUTH_TAG, tagName)) {
             reader.readXMLObject(getBiAuthReaderByMode(EDIT));
-        } else if (ComparatorUtils.equals("biViewAuth", tagName)) {
+        } else if (ComparatorUtils.equals(VIEW_AUTH_TAG, tagName)) {
             reader.readXMLObject(getBiAuthReaderByMode(VIEW));
-        } else if (ComparatorUtils.equals("biMobileAuth", tagName)) {
+        } else if (ComparatorUtils.equals(MOBILE_AUTH_TAG, tagName)) {
             reader.readXMLObject(getBiAuthReaderByMode(MOBILE));
         }
     }
@@ -133,12 +138,11 @@ public class BIUserAuthorAttr implements XMLable {
                         }
                         JSONObject userJo = getBIAuthUserJoByMode(mode);
                         if (StringUtils.isNotEmpty(userName)) {
-                            //等于0代表不限制
-                            if (getBIAuthUserLimitByMode(mode) == 0 || userJo.length() < getBIAuthUserLimitByMode(mode)) {
+                            //等于-1代表不限制
+                            if (getBIAuthUserLimitByMode(mode) == NO_LIMIT || userJo.length() < getBIAuthUserLimitByMode(mode)) {
                                 userJo.put(userName, fullName);
                             }
                         }
-
                     } catch (JSONException e) {
                         FRContext.getLogger().error(e.getMessage());
                     }
@@ -166,7 +170,7 @@ public class BIUserAuthorAttr implements XMLable {
                     writer.end();
                 }
             } catch (JSONException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
             writer.end();
         }

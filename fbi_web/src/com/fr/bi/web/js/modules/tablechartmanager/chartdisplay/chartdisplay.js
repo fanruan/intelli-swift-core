@@ -68,15 +68,6 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
     _onClickDrill: function (dId, value, drillId) {
         var wId = this.options.wId;
         var drillMap = BI.Utils.getDrillByID(wId);
-        var drilledIds = [];
-        BI.each(drillMap, function (drId, ds) {
-            BI.each(ds, function (i, drs) {
-                drilledIds.push(drs.dId);
-            });
-        });
-        if (BI.contains(drilledIds, dId)) {
-            return;
-        }
         if (BI.isNull(dId)) {
             this.fireEvent(BI.ChartDisplay.EVENT_CHANGE, {clicked: BI.extend(BI.Utils.getLinkageValuesByID(wId), {})});
             return;
@@ -94,13 +85,16 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
         //上钻
         if (BI.isNull(drillId)) {
             if (drillOperators.length !== 0) {
-                var val = drillOperators[drillOperators.length - 1].values[0].value[0];
-                while (val !== value) {
+                var val = drillOperators[drillOperators.length - 1].values[0].dId;
+                while (val !== dId) {
                     if (drillOperators.length === 0) {
                         break;
                     }
                     var obj = drillOperators.pop();
-                    val = obj.values[0].value[0];
+                    val = obj.values[0].dId;
+                }
+                if(val === dId && drillOperators.length !== 0){
+                    drillOperators.pop();
                 }
             }
         } else {
@@ -271,7 +265,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 var chart = BI.createWidget({type: "bi.map_chart"});
                 chart.on(BI.MapChart.EVENT_CHANGE, function (obj) {
                     self._doChartItemClick(obj);
-                    self._onClickDrill(obj.dId, obj.x, obj.drillDid);
+                    BI.isNotNull(obj.drillDid) && self._onClickDrill(obj.dId, obj.x, obj.drillDid);
                 });
                 chart.on(BI.MapChart.EVENT_CLICK_DTOOL, function (obj) {
                     self._onClickDrill(obj.dId, obj.x);
@@ -290,8 +284,6 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
         var self = this, o = this.options;
         var type = BI.Utils.getWidgetTypeByID(o.wId);
         this.errorPane.setVisible(false);
-        this.tab.setSelect(type);
-        var selectedTab = this.tab.getSelectedTab();
         this.loading();
         this.model.getWidgetData(type, function (types, data, options) {
             self.loaded();
@@ -313,6 +305,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         left_y_axis_reversed: BI.Utils.getWSLeftYAxisReversedByID(o.wId),
                         right_y_axis_reversed: BI.Utils.getWSRightYAxisReversedByID(o.wId),
                         chart_font: BI.Utils.getGSChartFont(o.wId),
+                        null_continue: BI.Utils.getWSNullContinueByID(o.wId),
                         line_width: BICst.DEFAULT_CHART_SETTING.mini_line_width,
                         show_label: BICst.DEFAULT_CHART_SETTING.mini_show_label,
                         enable_tick: BICst.DEFAULT_CHART_SETTING.mini_enable_tick,
@@ -384,6 +377,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         right_num_separators: BI.Utils.getWSRightNumberSeparatorsByID(o.wId),
                         right2_num_separators: BI.Utils.getWSRight2NumberSeparatorsByID(o.wId),
                         chart_font: BI.Utils.getGSChartFont(o.wId),
+                        null_continue: BI.Utils.getWSNullContinueByID(o.wId),
                         background_layer_info: MapConst.WMS_INFO[BI.Utils.getWSBackgroundLayerInfoByID(o.wId)]
                     }, {
                         cordon: self.model.getCordon(),
@@ -391,6 +385,8 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         lnglat: BI.isNotNull(lnglat) ? lnglat.type : lnglat
                     });
                 }
+                self.tab.setSelect(type);
+                var selectedTab = self.tab.getSelectedTab();
                 selectedTab.populate(data, op, types);
             } catch (e) {
                 self.errorPane.setErrorInfo("error happens during populate chart: " + e);

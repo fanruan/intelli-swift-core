@@ -58,10 +58,11 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
         var self = this;
         var title = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
         config.colors = this.config.chart_color;
-        config.style = formatChartStyle();
+        config.plotOptions.style = formatChartStyle();
         formatChartRadarStyle();
         this.formatChartLegend(config, this.config.chart_legend);
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
+        config.plotOptions.connectNulls = this.config.null_continue;
 
         config.radiusAxis = this.radiusAxis;
         config.angleAxis = this.angleAxis;
@@ -159,7 +160,8 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
             show_grid_line: BI.isNull(options.show_grid_line) ? true : options.show_grid_line,
             cordon: options.cordon || [],
             num_separators: options.num_separators || false,
-            chart_font: options.chart_font || c.FONT_STYLE
+            chart_font: options.chart_font || c.FONT_STYLE,
+            null_continue: options.null_continue || false
         };
         this.options.items = items;
         var types = [];

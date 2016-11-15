@@ -1,12 +1,14 @@
 package com.fr.bi.conf.base.cube;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BISystemDataManager;
 import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.conf.provider.BICubeConfManagerProvider;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.fs.control.UserControl;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 
 /**
@@ -33,7 +35,7 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
         try {
             return getValue(UserControl.getInstance().getSuperManagerID()).getCubePath();
         } catch (BIKeyAbsentException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }
@@ -41,9 +43,15 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
     @Override
     public void saveCubePath(String path) {
         try {
-            getValue(UserControl.getInstance().getSuperManagerID()).setCubePath(path);
-        } catch (BIKeyAbsentException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            synchronized (this) {
+                String oPath = getValue(UserControl.getInstance().getSuperManagerID()).getCubePath();
+                getValue(UserControl.getInstance().getSuperManagerID()).setCubePath(path);
+                if (!ComparatorUtils.equals(oPath, path)) {
+                    BIFileUtils.moveFile(oPath, path);
+                }
+            }
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -52,7 +60,7 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
         try {
             return getValue(UserControl.getInstance().getSuperManagerID()).getLoginField();
         } catch (BIKeyAbsentException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }
@@ -62,7 +70,7 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
         try {
             getValue(UserControl.getInstance().getSuperManagerID()).setLoginField(loginField);
         } catch (BIKeyAbsentException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -71,7 +79,7 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
         try {
             return getValue(UserControl.getInstance().getSuperManagerID()).getFieldValue(field, userId);
         } catch (BIKeyAbsentException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }
@@ -81,7 +89,7 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
         try {
             getValue(UserControl.getInstance().getSuperManagerID()).setPackageLastModify(System.currentTimeMillis());
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -90,7 +98,7 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
         try {
             return getValue(UserControl.getInstance().getSuperManagerID()).getPackageLastModify();
         } catch (BIKeyAbsentException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return System.currentTimeMillis();
     }
@@ -100,7 +108,7 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
         try {
             getValue(UserControl.getInstance().getSuperManagerID()).setMultiPathCubeStatus(needGenerateCube);
         } catch (BIKeyAbsentException e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
     }
 
@@ -109,7 +117,7 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
         try {
             return getValue(UserControl.getInstance().getSuperManagerID()).getMultiPathCubeStatus();
         } catch (BIKeyAbsentException e) {
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
         return BIReportConstant.MULTI_PATH_STATUS.NOT_NEED_GENERATE_CUBE;
     }
@@ -119,7 +127,7 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
         try {
             return getValue(UserControl.getInstance().getSuperManagerID()).createJSON();
         } catch (BIKeyAbsentException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }

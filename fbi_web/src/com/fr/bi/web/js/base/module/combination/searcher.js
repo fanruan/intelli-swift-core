@@ -140,7 +140,9 @@ BI.Searcher = BI.inherit(BI.Widget, {
     _pauseSearch: function () {
         var o = this.options, name = this.getName();
         this._stop = true;
-        BI.Maskers.hide(name);
+        BI.nextTick(function (name) {
+            BI.Maskers.hide(name);
+        }, this.getName());
         if (BI.Maskers.has(name) && this._isSearching === true) {
             this.popupView && this.popupView.pauseSearch && this.popupView.pauseSearch();
             this.fireEvent(BI.Searcher.EVENT_PAUSE);
@@ -256,6 +258,10 @@ BI.Searcher = BI.inherit(BI.Widget, {
 
     getKeyword: function () {
         return this.editor.getValue();
+    },
+
+    getKeywords: function () {
+        return this.editor.getKeywords();
     },
 
     getValue: function () {

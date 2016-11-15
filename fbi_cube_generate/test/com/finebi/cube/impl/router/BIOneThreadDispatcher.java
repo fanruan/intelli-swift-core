@@ -2,7 +2,7 @@ package com.finebi.cube.impl.router;
 
 import com.finebi.cube.exception.BIMessageFailureException;
 import com.finebi.cube.message.IMessage;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 
 /**
  * This class created on 2016/5/13.
@@ -24,7 +24,7 @@ public class BIOneThreadDispatcher extends BIMessageDispatcher {
 
 
             } catch (InterruptedException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
                 break;
             }
         }

@@ -24,9 +24,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         BI.Broadcasts.on(BICst.BROADCAST.LINKAGE_PREFIX + wId, function (dId, v) {
             var clicked = self.model.get("clicked") || {};
             var allFromIds = BI.Utils.getAllLinkageFromIdsByID(BI.Utils.getWidgetIDByDimensionID(dId));
-            //这条链上所有的其他clicked都应当被清掉
+            //这条链上所有的其他clicked都应当被清掉 钻取的东西也清掉
             BI.each(clicked, function (cid, click) {
-                if (allFromIds.contains(cid)) {
+                if (allFromIds.contains(cid) || BI.Utils.isDimensionByDimensionID(cid)) {
                     delete clicked[cid];
                 }
             });
@@ -36,12 +36,34 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                 clicked[dId] = v;
             }
             self.model.set("clicked", clicked);
+            self._refreshTableAndFilter();
         });
         BI.Broadcasts.on(BICst.BROADCAST.REFRESH_PREFIX + wId, function () {
+            //检查一下是否有维度被删除（联动）
+            var clicked = self.model.get("clicked");
+            if (BI.isNotNull(clicked)) {
+                BI.each(clicked, function(dId, values) {
+                    if (BI.Utils.isTargetByDimensionID(dId)) {
+                        var newValues = [];
+                        BI.each(values, function(i, v) {
+                            if (BI.Utils.isDimensionExist(v.dId)) {
+                                newValues.push(v);
+                            }
+                        });
+                        if (newValues.length > 0) {
+                            clicked[dId] = newValues;
+                        } else {
+                            delete clicked[dId];
+                        }
+                    }
+                });
+            }
+            self.model.set("clicked", clicked);
             self._refreshTableAndFilter();
         });
         BI.Broadcasts.on(BICst.BROADCAST.RESET_PREFIX + wId, function () {
             self.model.set("clicked", {});
+            self._refreshTableAndFilter();
         });
         //全局样式的修改
         BI.Broadcasts.on(BICst.BROADCAST.GLOBAL_STYLE_PREFIX, function (globalStyle) {
@@ -64,6 +86,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         this.tableChartResize = BI.debounce(BI.bind(this.tableChart.resize, this.tableChart), 0);
         this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function (widget) {
             self.model.set(widget);
+            if (BI.isNotNull(widget.clicked)) {
+                self._refreshTableAndFilter();
+            }
         });
         this.tableChart.on(BI.TableChartManager.EVENT_CLICK_CHART, function (obj) {
             self._onClickChart(obj);
@@ -162,11 +187,15 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         });
         this.chartDrill.on(BI.ChartDrill.EVENT_CHANGE, function (widget) {
             self.model.set(widget);
+            if (BI.isNotNull(widget.clicked)) {
+                self._refreshTableAndFilter();
+            }
         });
         this.chartDrill.populate();
     },
 
     _onClickChart: function (obj) {
+        //这边单独set clicked，因为地图钻取是没有钻取框的，直接钻的
         if (BI.has(obj, "clicked")) {
             this.model.set(obj);
         } else {
@@ -262,8 +291,8 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
                     self._onClickFilter();
                     break;
                 case BICst.DASHBOARD_WIDGET_EXCEL:
-                    window.open(FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
-                        + window.encodeURIComponent(self.model.get("name")));
+                    window.location = FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID") + "&name="
+                        + window.encodeURIComponent(self.model.get("name"));
                     break;
                 case BICst.DASHBOARD_WIDGET_COPY:
                     self.model.copy();
@@ -299,6 +328,9 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             });
             this.filterPane.on(BI.WidgetFilter.EVENT_REMOVE_FILTER, function (widget) {
                 self.model.set(widget);
+                if (BI.isNotNull(widget.clicked)) {
+                    self._refreshTableAndFilter();
+                }
             });
             BI.createWidget({
                 type: "bi.absolute",
@@ -406,7 +438,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             BI.has(changed, "linkages")) {
             this._refreshTableAndFilter();
         }
-        if (BI.has(changed, "clicked") || BI.has(changed, "filter_value")) {
+        if (BI.has(changed, "filter_value")) {
             this._refreshTableAndFilter();
         }
         if (BI.has(changed, "type")) {

@@ -97,7 +97,7 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
                         items: [this.colorSelect]
                     },
                     lgap: constant.SIMPLE_H_GAP
-                }, {
+                }, /*{
                     type: "bi.label",
                     text: BI.i18nText("BI-Table_Style"),
                     cls: "attr-names",
@@ -108,7 +108,7 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
                         items: [this.chartStyleGroup]
                     },
                     lgap: constant.SIMPLE_H_GAP
-                }, {
+                }, */{
                     type: "bi.label",
                     text: BI.i18nText("BI-Type"),
                     cls: "attr-names",
@@ -382,17 +382,16 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
-        //空值连续nullContinue,之前去掉了，现在又要加回来
-        //this.nullContinue = BI.createWidget({
-        //    type: "bi.multi_select_item",
-        //    value: BI.i18nText("BI-Null_Continue"),
-        //    invisible: BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.COMBINE_CHART,
-        //    width: 115
-        //});
-        //
-        //this.nullContinue.on(BI.Controller.EVENT_CHANGE, function(){
-        //    self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
-        //});
+        this.nullContinue = BI.createWidget({
+           type: "bi.multi_select_item",
+           value: BI.i18nText("BI-Null_Continue"),
+           invisible: BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.COMBINE_CHART,
+           width: 115
+        });
+
+        this.nullContinue.on(BI.Controller.EVENT_CHANGE, function(){
+           self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
+        });
 
         this.showElement = BI.createWidget({
             type: "bi.horizontal_adapt",
@@ -427,6 +426,9 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.center_adapt",
                     items: [this.showZoom]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.nullContinue]
                 }], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
@@ -712,6 +714,7 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this._invisible(!BI.Utils.getWSMinimalistByID(wId));
         this.separatorsLeft.setSelected(BI.Utils.getWSNumberSeparatorsByID(wId));
         this.separatorsRight.setSelected(BI.Utils.getWSRightNumberSeparatorsByID(wId));
+        this.nullContinue.setSelected(BI.Utils.getWSNullContinueByID(wId));
 
         this.isShowTitleLY.isSelected() ? this.editTitleLY.setVisible(true) : this.editTitleLY.setVisible(false);
         this.isShowTitleRY.isSelected() ? this.editTitleRY.setVisible(true) : this.editTitleRY.setVisible(false);
@@ -746,7 +749,8 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
             show_zoom: this.showZoom.isSelected(),
             minimalist_model: this.minimalistModel.isSelected(),
             num_separators: this.separatorsLeft.isSelected(),
-            right_num_separators: this.separatorsRight.isSelected()
+            right_num_separators: this.separatorsRight.isSelected(),
+            null_continue: this.nullContinue.isSelected()
         }
     },
 

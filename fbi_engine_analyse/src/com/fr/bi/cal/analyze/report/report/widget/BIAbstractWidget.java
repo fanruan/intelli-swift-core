@@ -10,7 +10,6 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
 import com.fr.bi.cal.report.report.poly.BIPolyWorkSheet;
-import com.fr.bi.common.constant.BIValueConstant;
 import com.fr.bi.conf.base.auth.data.BIPackageAuthority;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.BIWidget;
@@ -22,7 +21,7 @@ import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 import com.fr.main.impl.WorkBook;
@@ -99,6 +98,16 @@ public abstract class BIAbstractWidget implements BIWidget {
     }
 
     @Override
+    public boolean showRowToTal() {
+        return true;
+    }
+
+    @Override
+    public boolean showColumnTotal() {
+        return true;
+    }
+
+    @Override
     public void refreshColumns() {
         for (BITargetAndDimension td : getTargets()){
             td.refreshColumn();
@@ -170,7 +179,7 @@ public abstract class BIAbstractWidget implements BIWidget {
         try {
             return super.clone();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }
@@ -210,7 +219,7 @@ public abstract class BIAbstractWidget implements BIWidget {
                         TargetFilter filter = TargetFilterFactory.parseFilter(auth.getFilter(), userId);
                         filters.add(filter);
                     } catch (Exception e) {
-                        BILogger.getLogger().error(e.getMessage(), e);
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
                     }
                 }
             }

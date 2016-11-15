@@ -19,23 +19,22 @@ import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.field.BIAbstractTargetAndDimension;
 import com.fr.bi.field.BIStyleTarget;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
-import com.fr.bi.field.target.detailtarget.field.BIDateDetailTarget;
 import com.fr.bi.field.target.detailtarget.field.BINumberDetailTarget;
 import com.fr.bi.field.target.detailtarget.formula.BINumberFormulaDetailTarget;
-import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.algorithem.BIComparatorUtils;
 import com.fr.bi.util.BIConfUtils;
-import com.fr.general.DateUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONObject;
-import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by GUY on 2015/4/16.
@@ -168,9 +167,10 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
         for (int i = 0; i < viewDimension.length; i++) {
             BIDetailTarget t = viewDimension[i];
             Object v = ob[i];
-            if (t instanceof BIDateDetailTarget && ((BIDateDetailTarget) t).getGroup().getType() == BIReportConstant.GROUP.YMD && v != null) {
-                v = DateUtils.DATEFORMAT1.format(new Date(Long.parseLong(v.toString())));
-            }
+            v = viewDimension[i].createShowValue(v);
+//            if (t instanceof BIDateDetailTarget && ((BIDateDetailTarget) t).getGroup().getType() == BIReportConstant.GROUP.YMD && v != null) {
+//                v = DateUtils.DATEFORMAT1.format(new Date(Long.parseLong(v.toString())));
+//            }
 
             CBCell cell = new CBCell(v == null ? NONEVALUE : v.toString());
             cell.setRow(row);
@@ -234,7 +234,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
             cell.setRowSpan(1);
             cell.setColumnSpan(1);
             cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-            cell.setStyle(BITableStyle.getInstance().getDimensionCellStyle(cell.getValue() instanceof Number, false));
+            cell.setStyle(BITableStyle.getInstance().getTitleDimensionCellStyle(0));
             List cellList = new ArrayList();
             cellList.add(cell);
             CBBoxElement cbox = new CBBoxElement(cellList);
@@ -249,7 +249,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
             cell.setRowSpan(1);
             cell.setColumnSpan(1);
             cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-            cell.setStyle(BITableStyle.getInstance().getDimensionCellStyle(cell.getValue() instanceof Number, false));
+            cell.setStyle(BITableStyle.getInstance().getTitleDimensionCellStyle(0));
             List cellList = new ArrayList();
             cellList.add(cell);
             CBBoxElement cbox = new CBBoxElement(cellList);

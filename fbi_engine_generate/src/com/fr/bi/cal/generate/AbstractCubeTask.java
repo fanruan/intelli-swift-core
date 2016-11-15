@@ -1,8 +1,11 @@
 package com.fr.bi.cal.generate;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.CubeBuild;
-import com.finebi.cube.impl.conf.CubeBuildStaff;
+import com.finebi.cube.conf.CubeBuildStuff;
+import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
+import com.finebi.cube.relation.BICubeGenerateRelation;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.index.IndexGenerator;
 import com.fr.bi.cal.generate.relation.RelationGenerator;
@@ -11,7 +14,6 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.utils.CubeBaseUtils;
-import com.fr.bi.stable.utils.code.BILogger;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONObject;
 
@@ -28,8 +30,8 @@ public abstract class AbstractCubeTask implements CubeTask {
 
     private Date end;
     protected BIUser biUser;
-    private CubeBuild cubeBuild;
-    
+    private CubeBuildStuff cubeBuild;
+
 
     public AbstractCubeTask(long userId) {
         biUser = new BIUser(userId);
@@ -40,7 +42,7 @@ public abstract class AbstractCubeTask implements CubeTask {
     public JSONObject createJSON() throws Exception {
         JSONObject jo = new JSONObject();
         jo.put("type", getTaskType());
-        jo.put("id", getUUID());
+        jo.put("id", getTaskId());
         if (start != null) {
             jo.put("start", start.getTime());
         }
@@ -53,7 +55,7 @@ public abstract class AbstractCubeTask implements CubeTask {
     @Override
     public void start() {
         start = new Date();
-        cubeBuild =new CubeBuildStaff(biUser);
+        cubeBuild = new CubeBuildStuffComplete(biUser);
         BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
         BIConfigureManagerCenter.getLogManager().logStart(getUserId());
     }
@@ -62,13 +64,17 @@ public abstract class AbstractCubeTask implements CubeTask {
     public void end() {
         end = new Date();
         BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
-        BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId());
+        Set<BITableSourceRelation> relations = new HashSet<BITableSourceRelation>();
+        for (BICubeGenerateRelation relation : cubeBuild.getCubeGenerateRelationSet()) {
+            relations.add(relation.getRelation());
+        }
+        BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), relations);
         BIConfigureManagerCenter.getLogManager().logEnd(getUserId());
     }
 
 
     @Override
-    public String getUUID() {
+    public String getTaskId() {
         return name;
     }
 
@@ -87,9 +93,9 @@ public abstract class AbstractCubeTask implements CubeTask {
         }
 
         //多线程取数
-        BILogger.getLogger().info("start sync data from database");
+        BILoggerFactory.getLogger().info("start sync data from database");
         long start = System.currentTimeMillis();
-            List<IndexGenerator> threadList = new ArrayList<IndexGenerator>();
+        List<IndexGenerator> threadList = new ArrayList<IndexGenerator>();
         for (Map.Entry<Integer, Set<CubeTableSource>> entry : tables.entrySet()) {
             List<IndexGenerator> ilist = new ArrayList<IndexGenerator>();
             for (CubeTableSource source : entry.getValue()) {
@@ -102,11 +108,11 @@ public abstract class AbstractCubeTask implements CubeTask {
             try {
                 CubeBaseUtils.invokeCubeThreads(ilist);
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
 
-        BILogger.getLogger().info("data sync complete! cost :" + DateUtils.timeCostFrom(start));
+        BILoggerFactory.getLogger().info("data sync complete! cost :" + DateUtils.timeCostFrom(start));
 
         BIConfigureManagerCenter.getLogManager().logIndexStart(biUser.getUserId());
         //生成索引

@@ -1,7 +1,8 @@
 package com.fr.bi.cal.analyze.session;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.data.TableDataSource;
-import com.fr.general.FRLogManager;
+import com.fr.fs.control.UserControl;
 import com.fr.general.LogDuration;
 import com.fr.main.FineBook;
 import com.fr.main.TemplateWorkBook;
@@ -16,6 +17,7 @@ import com.fr.script.Calculator;
 import com.fr.script.CalculatorMap;
 import com.fr.stable.ActorConstants;
 import com.fr.stable.ActorFactory;
+import com.fr.stable.Constants;
 import com.fr.stable.fun.IOFileAttrMark;
 import com.fr.stable.script.CalculatorProvider;
 import com.fr.stable.script.ColumnRowRange;
@@ -35,9 +37,14 @@ public abstract class AbstractSession extends SessionIDInfor implements ReportSe
     private Object initBook2ShowLock = new Object();
 
 
-    public AbstractSession(String remoteAddress) {
+    public AbstractSession(String remoteAddress, long userId) {
         this.remoteAddress = remoteAddress;
         this.parameterMap4Execute = CalculatorMap.createEmptyMap();
+        try {
+            this.parameterMap4Execute.put(Constants.P.PRIVILEGE_USERNAME, UserControl.getInstance().getUser(userId).getUsername());
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage());
+        }
         updateTime();
     }
 

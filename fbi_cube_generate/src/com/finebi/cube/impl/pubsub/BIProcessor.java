@@ -5,7 +5,7 @@ import com.finebi.cube.message.IMessage;
 import com.finebi.cube.message.IMessageBody;
 import com.finebi.cube.pubsub.IProcessor;
 import com.finebi.cube.pubsub.IPublish;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.concurrent.*;
@@ -28,7 +28,11 @@ public abstract class BIProcessor<T> implements IProcessor<Future<T>> {
     }
 
     private void showProcess(final IMessage lastReceiveMessage) {
-        BILogger.getLogger().debug("Process:" + messagePublish + "\n" + "        Get message:" + lastReceiveMessage+"\n");
+        BILoggerFactory.getLogger().debug("Process:" + messagePublish + "\n" + "        Get message:" + lastReceiveMessage + "\n");
+    }
+
+    protected boolean disposeStopMessage() {
+        return false;
     }
 
     @Override
@@ -41,30 +45,36 @@ public abstract class BIProcessor<T> implements IProcessor<Future<T>> {
                 throw BINonValueUtils.beyondControl(e);
             }
         }
-        try {
-            messagePublish.publicRunningMessage(getRunningMess());
-            Future<T> result = executorService.submit(new Callable<T>() {
-                @Override
-                public T call() throws Exception {
-                    try {
-                        T result = mainTask(lastReceiveMessage);
-                        release();
-                        messagePublish.publicFinishMessage(getFinishMess());
-                        return result;
-                    } catch (Exception e) {
-                        messagePublish.publicStopMessage(getStopMess());
-                        BILogger.getLogger().error(e.getMessage(), e);
-                        release();
-                    }
-                    return null;
-                }
-            });
-            resultQueue.add(result);
-        } catch (BIDeliverFailureException e) {
+        /**
+         * 当前收到父级的不是stop消息，或者当前Processor是对stop消息同样处理
+         * 那么将进入到mainTask里
+         */
+        if (!lastReceiveMessage.isStopStatus() || disposeStopMessage()) {
             try {
-                messagePublish.publicStopMessage(getStopMess());
-            } catch (BIDeliverFailureException e1) {
-                throw BINonValueUtils.beyondControl(e1);
+                messagePublish.publicRunningMessage(getRunningMess());
+                Future<T> result = executorService.submit(new Callable<T>() {
+                    @Override
+                    public T call() throws Exception {
+                        try {
+                            T result = mainTask(lastReceiveMessage);
+                            release();
+                            messagePublish.publicFinishMessage(getFinishMess());
+                            return result;
+                        } catch (Exception e) {
+                            messagePublish.publicStopMessage(getStopMess());
+                            BILoggerFactory.getLogger().error(e.getMessage(), e);
+                            release();
+                        }
+                        return null;
+                    }
+                });
+                resultQueue.add(result);
+            } catch (BIDeliverFailureException e) {
+                try {
+                    messagePublish.publicStopMessage(getStopMess());
+                } catch (BIDeliverFailureException e1) {
+                    throw BINonValueUtils.beyondControl(e1);
+                }
             }
         }
     }

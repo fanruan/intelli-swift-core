@@ -43,7 +43,7 @@ public class BICubeTableRelationIndexReader implements ICubeTableIndexReader {
 
     }
 
-    public GroupValueIndex getNullIndex(){
+    public GroupValueIndex getNullIndex() {
         try {
             return getterService.getNULLIndex(0);
         } catch (BICubeIndexException e) {

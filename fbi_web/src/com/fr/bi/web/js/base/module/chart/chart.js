@@ -38,10 +38,6 @@ BI.Chart = BI.inherit(BI.Pane, {
         });
     },
 
-    _setData: function () {
-        this.vanCharts.setOptions(this.config);
-    },
-
     resize: function () {
         if (this.element.is(":visible") && this.isSetOptions === true) {
             this._resizer();
@@ -49,7 +45,7 @@ BI.Chart = BI.inherit(BI.Pane, {
     },
 
     magnify: function () {
-        this.vanCharts.charts[0] && this.vanCharts.charts[0].refreshRestore();
+        this.vanCharts.refreshRestore()
     },
 
     populate: function (items, options) {
@@ -63,10 +59,6 @@ BI.Chart = BI.inherit(BI.Pane, {
             self.isSetOptions = true;
         };
         BI.nextTick(setOptions);
-
-        if (this.element.is(":visible") && this.isSetOptions === true) {
-            this._setData();
-        }
     }
 });
 BI.Chart.EVENT_CHANGE = "EVENT_CHANGE";

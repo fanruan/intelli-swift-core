@@ -30,11 +30,17 @@ public abstract class BICubeDetailData<T> implements ICubeDetailDataService<T> {
     }
 
 
-    protected abstract ICubeResourceLocation setDetailType();
+    protected abstract ICubeResourceLocation setDetailType(boolean isIncrease);
+
 
     @Override
     public void addDetailDataValue(int rowNumber, T originalValue) {
         getCubeWriter().recordSpecificValue(rowNumber, originalValue);
+    }
+
+    @Override
+    public void increaseAddDetailDataValue(int rowNumber, T originalValue) {
+        getCubeIncreaseWriter().recordSpecificValue(rowNumber, originalValue);
     }
 
     protected boolean isCubeWriterAvailable() {
@@ -50,9 +56,20 @@ public abstract class BICubeDetailData<T> implements ICubeDetailDataService<T> {
         return cubeWriter;
     }
 
+    public ICubeWriter<T> getCubeIncreaseWriter() {
+        initCubeIncreaseWriter();
+        return cubeWriter;
+    }
+
     public void initCubeWriter() {
         if (!isCubeWriterAvailable()) {
-            buildCubeWriter();
+            buildCubeWriter(false);
+        }
+    }
+
+    public void initCubeIncreaseWriter() {
+        if (!isCubeWriterAvailable()) {
+            buildCubeWriter(true);
         }
     }
 
@@ -68,8 +85,9 @@ public abstract class BICubeDetailData<T> implements ICubeDetailDataService<T> {
     }
 
     public void buildStructure() {
-        initCubeReader();
+//        initCubeReader();
         initCubeWriter();
+        forceReleaseWriter();
     }
 
     @Override
@@ -80,9 +98,16 @@ public abstract class BICubeDetailData<T> implements ICubeDetailDataService<T> {
         }
     }
 
+    @Override
+    public void forceReleaseReader() {
+        if (cubeReader != null) {
+            cubeReader.forceRelease();
+        }
+    }
+
     private void buildCubeReader() {
         try {
-            currentLocation = setDetailType();
+            currentLocation = setDetailType(false);
             ICubeResourceDiscovery resourceDiscovery = discovery;
             currentLocation.setReaderSourceLocation();
             cubeReader = resourceDiscovery.getCubeReader(currentLocation);
@@ -91,9 +116,9 @@ public abstract class BICubeDetailData<T> implements ICubeDetailDataService<T> {
         }
     }
 
-    private void buildCubeWriter() {
+    private void buildCubeWriter(boolean isIncrease) {
         try {
-            currentLocation = setDetailType();
+            currentLocation = setDetailType(isIncrease);
             ICubeResourceDiscovery resourceDiscovery = discovery;
             currentLocation.setWriterSourceLocation();
             cubeWriter = resourceDiscovery.getCubeWriter(currentLocation);

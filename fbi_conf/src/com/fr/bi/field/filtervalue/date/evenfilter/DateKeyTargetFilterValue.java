@@ -17,7 +17,7 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
@@ -72,7 +72,7 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
         try {
             firstPath = BICubeConfigureCenter.getTableRelationManager().getFirstPath(userId, target, dimension.getField().getTableBelongTo());
         } catch (BITableUnreachableException e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         if (ComparatorUtils.equals(dimension.getField().getTableBelongTo(), target)) {
             firstPath = new BITableRelationPath();
@@ -83,19 +83,15 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
 
         ICubeColumnIndexReader getter = loader.getTableIndex(dimension.getField().getTableBelongTo().getTableSource()).loadGroup(new IndexTypeKey(dimension.getField().getFieldName(), group), BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations()));
         Iterator<BIDateValue> it = valueSet.iterator();
-        GroupValueIndex gvi = null;
+        GroupValueIndex gvi = GVIFactory.createAllEmptyIndexGVI();
         while (it.hasNext()) {
             BIDateValue dk = it.next();
             Object[] keys = getter.createKey(1);
             keys[0] = dk == null ? null : dk.getValue();
             GroupValueIndex cgvi = getter.getGroupIndex(keys)[0];
-            if (gvi == null) {
-                gvi = cgvi;
-            } else {
-                gvi = gvi.OR(cgvi);
-            }
+            gvi.or(cgvi);
         }
-        return gvi == null ? GVIFactory.createAllEmptyIndexGVI() : gvi;
+        return gvi;
     }
 
     private GroupValueIndex getGroupValueIndexWhenNull(BusinessTable targetKey, ICubeDataLoader loader) {
@@ -182,7 +178,7 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
                 JSONObject jo = new JSONObject(reader.getAttrAsString("filter_value", StringUtils.EMPTY));
                 this.parseJSON(jo, UserControl.getInstance().getSuperManagerID());
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }
@@ -197,7 +193,7 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
         try {
             writer.attr("filter_value", createJSON().toString());
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         writer.end();
     }

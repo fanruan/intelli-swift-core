@@ -8,6 +8,7 @@ import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.stable.session.PackAvailableInfo;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
+import com.fr.stable.fun.IOFileAttrMark;
 
 
 /**
@@ -24,7 +25,7 @@ public abstract class BIAbstractSession extends AbstractSession implements BISes
     protected boolean isShareReq;
 
     public BIAbstractSession(String remoteAddress, BIWeblet let, long userId) {
-        super(remoteAddress);
+        super(remoteAddress, userId);
         this.let = let;
         this.accessUserId = userId;
     }
@@ -68,5 +69,10 @@ public abstract class BIAbstractSession extends AbstractSession implements BISes
     @Override
     public BIReport getBIReport() {
         return report;
+    }
+
+    @Override
+    public IOFileAttrMark getIOFileAttrMark(String tag) {
+        return null;
     }
 }

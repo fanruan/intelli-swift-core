@@ -631,8 +631,14 @@ if (!window.BI) {
             }
         },
 
-        deepUniq: function () {
-
+        deepUnique: function (array) {
+            var result = [];
+            BI.each(array, function (i, item) {
+                if (!BI.deepContains(result, item)) {
+                    result.push(item);
+                }
+            });
+            return result;
         },
 
         //比较两个对象得出不一样的key值
@@ -838,6 +844,10 @@ if (!window.BI) {
 
         toLowerCase: function (string) {
             return (string + "").toLocaleLowerCase();
+        },
+
+        isEndWithBlank: function (string) {
+            return /(\s|\u00A0)$/.test(string);
         },
 
         isLiteral: function (exp) {

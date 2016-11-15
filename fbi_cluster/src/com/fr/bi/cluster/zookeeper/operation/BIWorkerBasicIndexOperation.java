@@ -5,7 +5,7 @@ import com.fr.bi.cal.generate.CubeBuildOperation;
 import com.fr.bi.cluster.zookeeper.BINodeValueParser;
 import com.fr.bi.cluster.zookeeper.BIWorkerNodeValue;
 import com.fr.bi.stable.data.Table;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.json.JSONParser;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class BIWorkerBasicIndexOperation implements BIWorkerOperation {
             operation.process(tableKeys);
 
         } catch (Exception ex) {
-             BILogger.getLogger().error(ex.getMessage(), ex);
+             BILoggerFactory.getLogger().error(ex.getMessage(), ex);
         } finally {
             nodeValue.setStatus(BIWorkerNodeValue.STATUS_FINISH);
         }

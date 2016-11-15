@@ -14,10 +14,11 @@ import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.field.target.filter.AbstractTargetFilter;
+import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
@@ -160,7 +161,7 @@ public class TreeColumnFieldsFilter extends AbstractTargetFilter {
                 JSONObject jo = new JSONObject(reader.getAttrAsString("value", StringUtils.EMPTY));
                 this.parseJSON(jo, UserControl.getInstance().getSuperManagerID());
             } catch (Exception e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }
@@ -175,7 +176,7 @@ public class TreeColumnFieldsFilter extends AbstractTargetFilter {
         try {
             writer.attr("value", createJSON().toString());
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         writer.end();
     }
@@ -198,18 +199,15 @@ public class TreeColumnFieldsFilter extends AbstractTargetFilter {
         try {
             allPath = BICubeConfigureCenter.getTableRelationManager().getAllPath(userId, target, foreignTable);
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
+        resgvi = GVIFactory.createAllEmptyIndexGVI();
 //        allPath.addAll(BIConfigureManagerCenter.getConnectionManager().getAllPath(userId, target, foreignTable));
         if (allPath != null || ComparatorUtils.equals(target, foreignTable)) {
             for (int i = 0; i < values.length; i++) {
                 if (values[i] != null) {
                     GroupValueIndex tgvi = values[i].createFilterIndex(dimension, this.keys, 0, foreignTable, this.relations, loader, userId);
-                    if (resgvi == null) {
-                        resgvi = tgvi;
-                    } else {
-                        resgvi = resgvi.OR(tgvi);
-                    }
+                     resgvi.or(tgvi);
                 }
             }
             GroupValueIndex gvi = null;

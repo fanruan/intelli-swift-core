@@ -2,11 +2,13 @@ package com.fr.bi.stable.utils;
 
 import com.fr.base.FRContext;
 import com.fr.base.TableData;
+import com.fr.bi.conf.base.datasource.BIConnectOptimizationUtils;
+import com.fr.bi.conf.base.datasource.BIConnectOptimizationUtilsFactory;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.dbdealer.*;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.data.core.db.ColumnInformation;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
@@ -58,7 +60,7 @@ public class BIDBUtils {
 
         }
     }
-    
+
     public static int classTypeToSql(int classType) {
         switch (classType) {
             case DBConstant.CLASS.INTEGER: {
@@ -249,7 +251,7 @@ public class BIDBUtils {
             for (int i = 0, cols = columns.length; i < cols; i++) {
                 int columnSize = columns[i].getColumnSize();
                 PersistentField column;
-                if(columnSize == 0) {
+                if (columnSize == 0) {
                     column = new PersistentField(columns[i].getColumnName(), columns[i].getColumnType(), columns[i].getColumnSize());
                 } else {
                     column = new PersistentField(columns[i].getColumnName(), null, columns[i].getColumnType(), columns[i].getColumnSize(), columns[i].getScale());
@@ -269,7 +271,7 @@ public class BIDBUtils {
             ServerLinkInformation serverLinkInformation = new ServerLinkInformation(sqlConnection, sql);
             return serverLinkInformation.createDBTableData();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
     }
@@ -411,7 +413,7 @@ public class BIDBUtils {
             DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
             TableData tableData = datasourceManager.getTableData(tableName);
             if (tableData == null) {
-                BILogger.getLogger().error("can not find server db :" + tableName);
+                BILoggerFactory.getLogger().error("can not find server db :" + tableName);
             }
             if (tableData instanceof DBTableData) {
                 return getServerBITable((DBTableData) tableData, persistentTable);
@@ -452,19 +454,25 @@ public class BIDBUtils {
      */
     public static SQLStatement getSQLStatement(String dbName, String tableName) {
         com.fr.data.impl.Connection connection = BIConnectionManager.getInstance().getConnection(dbName);
+        if (connection instanceof JDBCDatabaseConnection) {
+            BIConnectOptimizationUtils utils = BIConnectOptimizationUtilsFactory.getOptimizationUtils((JDBCDatabaseConnection) (connection));
+            connection = utils.optimizeConnection((JDBCDatabaseConnection) (connection));
+        }
         SQLStatement sql = new SQLStatement(connection);
         try {
             Connection conn = sql.getSqlConn();
             Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
             Table table = new Table(BIConnectionManager.getInstance().getSchema(dbName), tableName);
             sql.setFrom(dialect.table2SQL(table));
-
+            sql.setSchema(table.getSchema());
+            sql.setTableName(table.getName());
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
         return sql;
     }
-    public static SQLStatement getSQLStatementByConditions(String dbName, String tableName,String where) {
+
+    public static SQLStatement getSQLStatementByConditions(String dbName, String tableName, String where) {
         com.fr.data.impl.Connection connection = BIConnectionManager.getInstance().getConnection(dbName);
         SQLStatement sql = new SQLStatement(connection);
         try {
@@ -479,6 +487,7 @@ public class BIDBUtils {
         }
         return sql;
     }
+
     public static SQLStatement getDistinctSQLStatement(String dbName, String tableName, String fieldName) {
         com.fr.data.impl.Connection connection = BIConnectionManager.getInstance().getConnection(dbName);
         SqlSettedStatement sql = new SqlSettedStatement(connection);

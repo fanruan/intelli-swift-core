@@ -68,7 +68,7 @@ public abstract class NumberValuesFilterValue extends AbstractFilterValue<Number
         if (relations == null) {
             return null;
         }
-        Object[] value = copyValue(sgm);;
+        Object[] value = copyValue(sgm);
         GroupValueIndex sgvi = GVIFactory.createAllEmptyIndexGVI();
         Object[] indexs = sgm.getGroupIndex(value);
         boolean hasValue = value.length > 0;

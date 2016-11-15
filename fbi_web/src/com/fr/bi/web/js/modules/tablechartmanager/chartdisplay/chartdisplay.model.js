@@ -304,20 +304,33 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     var date = new Date(BI.parseInt(name));
                     name = date.print("%Y-%X-%d");
                 }
-                var data = BI.map(left.c, function (idx, obj) {
-                    var value = obj.n, x = obj.n;
-                    if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
-                        var date = new Date(BI.parseInt(x));
-                        x = date.print("%Y-%X-%d");
-                    }
-                    return {
-                        "x": x,
-                        "y": (BI.isFinite(obj.s.c[id].s[0]) ? obj.s.c[id].s[0] : 0),
-                        "value": value,
+                var data = [];
+                if(BI.has(left, "c")){
+                    data = BI.map(left.c, function (idx, obj) {
+                        var value = obj.n, x = obj.n;
+                        var seriesValue = obj.s.c[id].s[0];
+                        if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
+                            var date = new Date(BI.parseInt(x));
+                            x = date.print("%Y-%X-%d");
+                        }
+                        return {
+                            "x": x,
+                            "y":(BI.isNull(seriesValue) || BI.isFinite(seriesValue)) ? seriesValue : 0,
+                            "value": value,
+                            seriesName: seriesName,
+                            targetIds: [targetIds[0]]
+                        };
+                    });
+                }else{
+                    var leftSeriesValue = left.s.c[id].s[0];
+                    data = [{
+                        "x": "",
+                        "y": (BI.isNull(leftSeriesValue) || BI.isFinite(leftSeriesValue)) ? leftSeriesValue : 0,
+                        "value": "",
                         seriesName: seriesName,
                         targetIds: [targetIds[0]]
-                    };
-                });
+                    }]
+                }
                 var obj = {};
                 obj.data = data;
                 obj.name = name;
@@ -330,13 +343,14 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             return BI.map(columnSizeArray, function (idx, value) {
                 var adjustData = BI.map(data.c, function (id, item) {
                     var value = item.n, x = item.n;
+                    var seriesValue = item.s[idx];
                     if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
                         var date = new Date(BI.parseInt(x));
                         x = date.print("%Y-%X-%d");
                     }
                     return {
                         x: x,
-                        y: (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
+                        y: (BI.isNull(seriesValue) || BI.isFinite(seriesValue)) ? seriesValue : 0,
                         value: value,
                         seriesName: BI.Utils.getDimensionNameByID(targetIds[idx]),
                         targetIds: [targetIds[idx]]
@@ -526,67 +540,30 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         BI.each(view[BICst.REGION.DIMENSION2], function (i, dId) {
             BI.Utils.isDimensionUsable(dId) && (self.crossDimIds.push(dId));
         });
-        BI.each(drill, function (drId, drArray) {
-            if (drArray.length !== 0) {
-                var dIndex = self.dimIds.indexOf(drId), cIndex = self.crossDimIds.indexOf(drId);
-                BI.remove(self.dimIds, drId);
-                BI.remove(self.crossDimIds, drId);
-                BI.each(drArray, function (i, dr) {
-                    var tempDrId = dr.dId;
-                    if (i === drArray.length - 1) {
-                        if (BI.Utils.getRegionTypeByDimensionID(drId) === BICst.REGION.DIMENSION1) {
-                            self.dimIds.splice(dIndex, 0, tempDrId);
+        if(BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.MAP){
+            //地图不需要调整dimIds
+        }else{
+            BI.each(drill, function (drId, drArray) {
+                if (drArray.length !== 0) {
+                    var dIndex = self.dimIds.indexOf(drId), cIndex = self.crossDimIds.indexOf(drId);
+                    BI.remove(self.dimIds, drId);
+                    BI.remove(self.crossDimIds, drId);
+                    BI.each(drArray, function (i, dr) {
+                        var tempDrId = dr.dId;
+                        if (i === drArray.length - 1) {
+                            if (BI.Utils.getRegionTypeByDimensionID(drId) === BICst.REGION.DIMENSION1) {
+                                self.dimIds.splice(dIndex, 0, tempDrId);
+                            } else {
+                                self.crossDimIds.splice(cIndex, 0, tempDrId);
+                            }
                         } else {
-                            self.crossDimIds.splice(cIndex, 0, tempDrId);
-                        }
-                    } else {
-                        BI.remove(self.dimIds, tempDrId);
-                        BI.remove(self.crossDimIds, tempDrId);
-                    }
-                });
-            }
-        });
-        
-    },
-
-    //clicked 中的值，如果是分组名使用分组对应的id
-    _parseClickedValue4Group: function (v, dId) {
-        var group = BI.Utils.getDimensionGroupByID(dId);
-        var fieldType = BI.Utils.getFieldTypeByDimensionID(dId);
-        var clicked = v;
-
-        if (BI.isNotNull(group)) {
-            if (fieldType === BICst.COLUMN.STRING) {
-                var details = group.details,
-                    ungroup2Other = group.ungroup2Other,
-                    ungroup2OtherName = group.ungroup2OtherName;
-                if (ungroup2Other === BICst.CUSTOM_GROUP.UNGROUP2OTHER.SELECTED &&
-                    ungroup2OtherName === v) {
-                    clicked = BICst.UNGROUP_TO_OTHER;
-                }
-                BI.some(details, function (i, detail) {
-                    if (detail.value === v) {
-                        clicked = detail.id;
-                        return true;
-                    }
-                });
-            } else if (fieldType === BICst.COLUMN.NUMBER) {
-                var groupValue = group.group_value, groupType = group.type;
-                if (groupType === BICst.GROUP.CUSTOM_NUMBER_GROUP) {
-                    var groupNodes = groupValue.group_nodes, useOther = groupValue.use_other;
-                    if (useOther === v) {
-                        clicked = BICst.UNGROUP_TO_OTHER;
-                    }
-                    BI.some(groupNodes, function (i, node) {
-                        if (node.group_name === v) {
-                            clicked = node.id;
-                            return true;
+                            BI.remove(self.dimIds, tempDrId);
+                            BI.remove(self.crossDimIds, tempDrId);
                         }
                     });
                 }
-            }
+            });
         }
-        return clicked;
     },
 
     getWidgetData: function(type, callback){
@@ -696,7 +673,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 dId = obj.targetIds;
                 clicked = [{
                     dId: clickeddId,
-                    value: [this._parseClickedValue4Group(obj.seriesName, clickeddId)]
+                    value: [BI.Utils.getClickedValue4Group(obj.seriesName, clickeddId)]
                 }];
                 break;
             case BICst.WIDGET.MAP:
@@ -704,19 +681,19 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 dId = obj.targetIds;
                 clicked = [{
                     dId: clickeddId,
-                    value: [this._parseClickedValue4Group(obj.x, clickeddId)]
+                    value: [BI.Utils.getClickedValue4Group(obj.x, clickeddId)]
                 }];
                 break;
             default:
                 dId = obj.targetIds;
                 clicked = [{
                     dId: clickeddId,
-                    value: [this._parseClickedValue4Group(obj.value || obj.x, clickeddId)]
+                    value: [BI.Utils.getClickedValue4Group(obj.value || obj.x, clickeddId)]
                 }];
                 if (BI.isNotNull(this.seriesDid)) {
                     clicked.push({
                         dId: obj.dId || this.crossDimIds[0],
-                        value: [this._parseClickedValue4Group(obj.seriesName, obj.dId || this.crossDimIds[0])]
+                        value: [BI.Utils.getClickedValue4Group(obj.seriesName, obj.dId || this.crossDimIds[0])]
                     })
                 }
                 break;

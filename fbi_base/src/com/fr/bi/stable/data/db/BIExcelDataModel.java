@@ -1,6 +1,6 @@
 package com.fr.bi.stable.data.db;
 
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.data.AbstractDataModel;
 import com.fr.general.DateUtils;
 import com.fr.general.data.TableDataException;
@@ -65,14 +65,14 @@ public class BIExcelDataModel extends AbstractDataModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) throws TableDataException {
         initData();
-        if( columnIndex > columnNames.length || rowIndex > rowDataList.size() ) {
+        if(rowIndex > rowDataList.size() - 1 || columnIndex > rowDataList.get(rowIndex).length - 1) {
             return null;
         }
         return rowDataList.get(rowIndex)[columnIndex];
     }
 
     public Object getValueAt4Preview(int rowIndex, int columnIndex) throws Exception {
-        if(columnIndex > columnNames.length || rowIndex > rowDataList.size()){
+        if(rowIndex > rowDataList.size() - 1 || columnIndex > rowDataList.get(rowIndex).length - 1){
             return null;
         }
         return rowDataList.get(rowIndex)[columnIndex];
@@ -166,12 +166,12 @@ public class BIExcelDataModel extends AbstractDataModel {
         long start = System.currentTimeMillis();
         try {
             Excel2007Util excel2007Util = new Excel2007Util(this.filePath, isPreview);
-            BILogger.getLogger().info("read excel time : " + DateUtils.timeCostFrom(start));
+            BILoggerFactory.getLogger().info("read excel time : " + DateUtils.timeCostFrom(start));
             rowDataList = excel2007Util.getRowDataList();
             columnNames = excel2007Util.getColumnNames();
             columnTypes = excel2007Util.getColumnTypes();
         } catch (Exception e){
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
     }
 
@@ -182,12 +182,12 @@ public class BIExcelDataModel extends AbstractDataModel {
         long start = System.currentTimeMillis();
         try {
             Excel2003Util excel2003Util = new Excel2003Util(this.filePath, isPreview);
-            BILogger.getLogger().info("read excel time : " + DateUtils.timeCostFrom(start));
+            BILoggerFactory.getLogger().info("read excel time : " + DateUtils.timeCostFrom(start));
             rowDataList = excel2003Util.getRowDataList();
             columnNames = excel2003Util.getColumnNames();
             columnTypes = excel2003Util.getColumnTypes();
         }catch (Exception e){
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
     }
 
@@ -195,12 +195,12 @@ public class BIExcelDataModel extends AbstractDataModel {
         long start = System.currentTimeMillis();
         try {
             ExcelCSVUtil excelCSVUtil = new ExcelCSVUtil(this.filePath, isPreview);
-            BILogger.getLogger().info("read excel time : " + DateUtils.timeCostFrom(start));
+            BILoggerFactory.getLogger().info("read excel time : " + DateUtils.timeCostFrom(start));
             rowDataList = excelCSVUtil.getRowDataList();
             columnNames = excelCSVUtil.getColumnNames();
             columnTypes = excelCSVUtil.getColumnTypes();
         }catch (Exception e){
-            BILogger.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage());
         }
     }
 }

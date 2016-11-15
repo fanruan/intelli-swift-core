@@ -11,7 +11,7 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.utils.DateUtils;
-import com.fr.bi.stable.utils.code.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.json.JSONObject;
 
 import java.text.ParseException;
@@ -51,7 +51,7 @@ public class LeftExpression implements Expression {
         try {
             return new BICoreGenerator(this).fetchObjectCore();
         } catch (Exception e) {
-            BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return BIBasicCore.EMPTY_CORE;
     }
@@ -65,7 +65,7 @@ public class LeftExpression implements Expression {
             try {
                 tValue = columnType == DBConstant.COLUMN.DATE ? DateUtils.parse((String) value).getTime() : value;
             } catch (ParseException e) {
-                BILogger.getLogger().error(e.getMessage(), e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
         return tValue;
