@@ -9,9 +9,9 @@ import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -45,23 +45,23 @@ public class CubeBuildStuffSupplement extends CubeBuildSpecific {
     }
 
 
-
-
     @Override
-    public boolean copyFileFromOldCubes() {
-        try {
-            ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(userId));
-            ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(userId));
-            if (new File(tempConf.getRootURI().getPath()).exists()) {
-                BIFileUtils.delete(new File(tempConf.getRootURI().getPath()));
-            }
-            if (new File(advancedConf.getRootURI().getPath()).exists()) {
-                BIFileUtils.copyFolder(new File(advancedConf.getRootURI().getPath()), new File(tempConf.getRootURI().getPath()));
-            }
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+    protected Set<CubeTableSource> choseTables() {
+        Set<CubeTableSource> tables = new HashSet<CubeTableSource>();
+        tables.addAll(tableInConstruction);
+        for (BITableSourceRelation relation : relationInConstruction) {
+            tables.add(relation.getPrimaryTable());
         }
-        return true;
+        for (BITableSourceRelationPath path : pathInConstruction) {
+            try {
+                tables.add(path.getFirstRelation().getPrimaryTable());
+            } catch (BITablePathEmptyException e) {
+                logger.error(e.getMessage(), e);
+                continue;
+            }
+        }
+        tables = set2Set(calculateTableSource(tables));
+        return filterDuplicateTable(tables);
     }
 
     @Override
@@ -76,5 +76,24 @@ public class CubeBuildStuffSupplement extends CubeBuildSpecific {
     @Override
     public String getCubeTaskId() {
         return DBConstant.GLOBAL_UPDATE_TYPE.PART_UPDATE;
+    }
+    /**
+     * rename advanced to temp
+     * rename tCube to advanced
+     * delete temp
+     *
+     * @return
+     */
+    @Override
+    public boolean replaceOldCubes() {
+
+        ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(userId));
+        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(userId));
+        try {
+            BIFileUtils.moveFile(tempConf.getRootURI().getPath().toString(), advancedConf.getRootURI().getPath().toString());
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage());
+        }
+        return true;
     }
 }

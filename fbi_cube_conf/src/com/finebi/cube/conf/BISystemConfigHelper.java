@@ -7,7 +7,6 @@ import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
-import com.finebi.cube.utils.BITableRelationUtils;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
@@ -86,6 +85,13 @@ public class BISystemConfigHelper {
         }
     }
 
+    public static boolean isRelationValid(BITableRelation relation) {
+        boolean checkNull = null != relation.getPrimaryTable() && null != relation.getForeignTable() && null != relation.getPrimaryField() && null != relation.getForeignField();
+        boolean isStructureCorrect = relation.getForeignField().getTableBelongTo().getID().getIdentity().equals(relation.getForeignTable().getID().getIdentity()) && relation.getPrimaryField().getTableBelongTo().getID().getIdentity().equals(relation.getPrimaryTable().getID().getIdentity());
+        boolean isTypeCorrect = relation.getForeignField().getFieldType() == relation.getPrimaryField().getFieldType();
+        return checkNull && isStructureCorrect && isTypeCorrect;
+    }
+
     private Set<BIBusinessTable> extractBusinessTable(long userID) {
         Set<BIBusinessTable> systemBusinessTables = new HashSet<BIBusinessTable>();
         for (BusinessTable table : BICubeConfigureCenter.getPackageManager().getAllTables(userID)) {
@@ -149,7 +155,7 @@ public class BISystemConfigHelper {
     }
 
     public boolean isTableRelationValid(BITableRelation relation) {
-        boolean relationValid = BITableRelationUtils.isRelationValid(relation);
+        boolean relationValid = isRelationValid(relation);
         boolean isStructureValid = businessTables.contains(relation.getPrimaryTable()) && businessTables.contains(relation.getForeignTable());
         return isStructureValid && relationValid;
     }

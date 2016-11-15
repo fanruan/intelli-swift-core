@@ -160,6 +160,16 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             return false;
         }
+
+
+//        ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(userId));
+//        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(userId));
+//        try {
+//            BIFileUtils.moveFile(tempConf.getRootURI().getPath().toString(), advancedConf.getRootURI().getPath().toString());
+//        } catch (Exception e) {
+//            BILoggerFactory.getLogger().error(e.getMessage());
+//        }
+//        return true;
     }
 
 

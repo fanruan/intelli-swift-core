@@ -13,14 +13,14 @@ import com.finebi.cube.structure.Cube;
  */
 public class BITablePathIndexBuilder4Test extends BITablePathIndexBuilder {
     public BITablePathIndexBuilder4Test(Cube cube, BICubeTablePath relationPath) {
-        super(cube, relationPath);
+        super(cube, null, relationPath);
     }
 
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
         System.out.println("Table Path Index!");
         BICubeBuildProbeTool.INSTANCE.getFlag().put("tablePath", 30);
-        BICubeBuildProbeTool.INSTANCE.getFlag().put("tablePath:"+lastReceiveMessage.getFragment(),200);
+        BICubeBuildProbeTool.INSTANCE.getFlag().put("tablePath:" + lastReceiveMessage.getFragment(), 200);
 
 //        try {
 //            Thread.sleep(100);

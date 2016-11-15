@@ -63,7 +63,7 @@ public class CubeRunner {
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
                 } finally {
-                    finish();
+                    finish(cubeTask);
                     setStatue(Status.LOADED);
                     BILoggerFactory.getLogger().info(BIDateUtils.getCurrentDateTime() + " Build OLAP database Cost:" + DateUtils.timeCostFrom(start));
                 }
@@ -150,12 +150,17 @@ public class CubeRunner {
         BackUpUtils.backup();
     }
 
-    private void finish() {
-        BILoggerFactory.getLogger().info("start persist data!");
+    private void finish(CubeTask cubeTask) {
         long t = System.currentTimeMillis();
         try {
-            BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
-            BILoggerFactory.getLogger().info("persist data finished! time cost: " + DateUtils.timeCostFrom(t));
+
+            if (!cubeTask.getTaskType().equals(CubeTaskType.INSTANT)) {
+                BILoggerFactory.getLogger().info("start to persist meta data!");
+                BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
+                BICubeConfigureCenter.getPackageManager().persistData(biUser.getUserId());
+                BICubeConfigureCenter.getDataSourceManager().persistData(biUser.getUserId());
+            }
+            BILoggerFactory.getLogger().info("meta data finished! time cost: " + DateUtils.timeCostFrom(t));
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
