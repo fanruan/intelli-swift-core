@@ -124,6 +124,8 @@ public class BISession extends BIAbstractSession {
         this.isEdit = true;
     }
 
+
+    private static final long TIME_OUT = 45000;
     /**
      * 半推半就
      *
@@ -146,7 +148,7 @@ public class BISession extends BIAbstractSession {
                     if (ss instanceof BISession) {
                         long t = ((BISession) ss).lastTime;
                         //45- 30 超过15-45秒还没反應可能是没有心跳
-                        if (System.currentTimeMillis() - t < 45000) {
+                        if (System.currentTimeMillis() - t < TIME_OUT) {
                             doForce = false;
                             break;
                         }

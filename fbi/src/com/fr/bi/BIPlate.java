@@ -1,6 +1,7 @@
 package com.fr.bi;
 
 
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BICubeManagerProvider;
@@ -69,7 +70,7 @@ public class BIPlate extends AbstractFSPlate {
             ((LocalEnv) FRContext.getCurrentEnv()).setBuildFilePath("bibuild.txt");
         } catch(Throwable e){
         }
-        System.out.println("FINE BI :" + GeneralUtils.readBuildNO());
+        BILoggerFactory.getLogger().info("FINE BI :" + GeneralUtils.readBuildNO());
         initModules();
         super.initData();
         startModules();
