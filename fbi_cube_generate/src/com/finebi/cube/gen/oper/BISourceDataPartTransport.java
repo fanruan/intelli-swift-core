@@ -41,7 +41,6 @@ import com.fr.data.core.db.dml.Table;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
-import com.fr.stable.StringUtils;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.collections.array.IntArray;
 import org.slf4j.Logger;
