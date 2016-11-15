@@ -68,7 +68,7 @@ public class BIPlate extends AbstractFSPlate {
             ((LocalEnv) FRContext.getCurrentEnv()).setBuildFilePath("bibuild.txt");
         } catch(Throwable e){
         }
-        System.out.println("FINE BI :" + GeneralUtils.readBuildNO());
+        BILoggerFactory.getLogger().info("FINE BI :" + GeneralUtils.readBuildNO());
         initModules();
         super.initData();
         startModules();
