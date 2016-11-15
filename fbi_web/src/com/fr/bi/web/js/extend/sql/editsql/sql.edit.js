@@ -68,7 +68,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
             self.previewTab.setSelect(self.constants.PREVIEW_EMPTY);
         });
         this.sqlEditor = BI.createWidget({
-            type: "bi.text_area_editor",
+            type: "bi.textarea_editor",
             watermark: BI.i18nText("BI-Please_Enter_SQL"),
             cls: "sql-editor"
         });
