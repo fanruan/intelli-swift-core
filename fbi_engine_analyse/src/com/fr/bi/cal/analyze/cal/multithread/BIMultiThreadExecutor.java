@@ -31,14 +31,16 @@ public class BIMultiThreadExecutor {
     }
 
     public void awaitExecutor(final BISession session){
-        for (MergeSummaryCallList list : lists){
-            list.add(new BISingleThreadCal() {
-                @Override
-                public void cal() {
-                    session.getLoader().releaseCurrentThread();
-                }
-            });
-            list.finish();
+        if(null!=lists){
+            for (MergeSummaryCallList list : lists){
+                list.add(new BISingleThreadCal() {
+                    @Override
+                    public void cal() {
+                        session.getLoader().releaseCurrentThread();
+                    }
+                });
+                list.finish();
+            }
         }
         lists = null;
         executorService.shutdown();
