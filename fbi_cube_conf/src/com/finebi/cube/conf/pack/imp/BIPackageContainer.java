@@ -1,7 +1,9 @@
 package com.finebi.cube.conf.pack.imp;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.pack.IPackagesManagerService;
 import com.finebi.cube.conf.pack.data.*;
+import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.container.BISetContainer;
@@ -10,10 +12,11 @@ import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 import com.fr.bi.stable.data.BITableID;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITableAbsentException;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -168,15 +171,15 @@ public class BIPackageContainer extends BISetContainer<BIBusinessPackage> implem
     public void parsePackageContainer(BIPackageContainer container) {
         synchronized (container) {
             clear();
-          Iterator<BIBusinessPackage> it = container.getContainer().iterator();
-            while (it.hasNext()){
+            Iterator<BIBusinessPackage> it = container.getContainer().iterator();
+            while (it.hasNext()) {
                 try {
                     BIBusinessPackage<BusinessTable> businessPackage = it.next();
                     BIBusinessPackage<BusinessTable> copyBusinessPackage = new BIBasicBusinessPackage(businessPackage.getID(), businessPackage.getName(), businessPackage.getOwner(), businessPackage.getPosition());
                     copyBusinessPackage.parseTableContainer(businessPackage);
                     addPackage(copyBusinessPackage);
-                }catch (Exception e){
-                    BILoggerFactory.getLogger().error(e.getMessage(),e);
+                } catch (Exception e) {
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                     continue;
                 }
             }
@@ -191,5 +194,28 @@ public class BIPackageContainer extends BISetContainer<BIBusinessPackage> implem
     public void removeTable(BIPackageID packageID, BITableID tableID) throws BIPackageAbsentException, BITableAbsentException {
         BIBusinessPackage biBusinessPackage = getPackageObj(packageID);
         biBusinessPackage.removeBusinessTableByID(tableID);
+    }
+
+    @Override
+    public void removeTable(Set<CubeTableSource> absent) {
+        Set<String> id = new HashSet<String>();
+        for (CubeTableSource source : absent) {
+            id.add(source.getSourceID());
+        }
+        Set<BIBusinessPackage> packages = new HashSet<BIBusinessPackage>(getAllPackages());
+        for (BIBusinessPackage biBusinessPackage : packages) {
+            Set<BIBusinessTable> tables = new HashSet<BIBusinessTable>(biBusinessPackage.getBusinessTables());
+            for (BusinessTable table : tables) {
+                if (id.contains(table.getTableSource().getSourceID())) {
+                    try {
+                        removeTable(biBusinessPackage.getID(), table.getID());
+                    } catch (BIPackageAbsentException e) {
+                        BILoggerFactory.getLogger(BIPackageContainer.class).error(e.getMessage(), e);
+                    } catch (BITableAbsentException e) {
+                        BILoggerFactory.getLogger(BIPackageContainer.class).error(e.getMessage(), e);
+                    }
+                }
+            }
+        }
     }
 }

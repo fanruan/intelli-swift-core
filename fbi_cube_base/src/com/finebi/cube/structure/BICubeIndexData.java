@@ -128,8 +128,9 @@ public class BICubeIndexData implements ICubeIndexDataService {
 
     public void buildStructure() {
 //        initNullReader();
-//        initNullWriter();
-//        initIndexWriter();
+        initNullWriter();
+        initIndexWriter();
+        forceReleaseWriter();
 //        initIndexReader();
     }
 
@@ -183,7 +184,7 @@ public class BICubeIndexData implements ICubeIndexDataService {
     protected void resetIndexReader() {
         if (isIndexReaderAvailable()) {
             indexReader.clear();
-//            indexReader = null;
+            indexReader = null;
         }
     }
 
@@ -197,7 +198,7 @@ public class BICubeIndexData implements ICubeIndexDataService {
     protected void resetNullReader() {
         if (isNullReaderAvailable()) {
             nullReader.clear();
-//            nullReader = null;
+            nullReader = null;
         }
     }
 

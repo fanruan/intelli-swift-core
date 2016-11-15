@@ -252,28 +252,43 @@ public class DBTableSource extends AbstractTableSource {
 
     @Override
     public JSONObject createPreviewJSON(ArrayList<String> fields, ICubeDataLoader loader, long userId) throws Exception {
-        EmbeddedTableData emTableData = EmbeddedTableData.embedify(createPreviewTableData(), null, BIBaseConstant.PREVIEW_COUNT);
-        DataModel dm = emTableData.createDataModel(null);
         JSONObject jo = new JSONObject();
-        JSONArray fieldNames = new JSONArray();
-        JSONArray values = new JSONArray();
-        jo.put(BIJSONConstant.JSON_KEYS.FIELDS, fieldNames);
-        jo.put(BIJSONConstant.JSON_KEYS.VALUE, values);
-        int colLen = dm.getColumnCount();
-        int rolLen = Math.min(dm.getRowCount(), BIBaseConstant.PREVIEW_COUNT);
+        EmbeddedTableData emTableData = null;
+        DataModel dm = null;
+        try {
+            emTableData = EmbeddedTableData.embedify(createPreviewTableData(), null, BIBaseConstant.PREVIEW_COUNT);
+            dm = emTableData.createDataModel(null);
+            JSONArray fieldNames = new JSONArray();
+            JSONArray values = new JSONArray();
+            jo.put(BIJSONConstant.JSON_KEYS.FIELDS, fieldNames);
+            jo.put(BIJSONConstant.JSON_KEYS.VALUE, values);
+            int colLen = dm.getColumnCount();
+            int rolLen = Math.min(dm.getRowCount(), BIBaseConstant.PREVIEW_COUNT);
 
-        for (int col = 0; col < colLen; col++) {
-            String name = dm.getColumnName(col);
-            if (!fields.isEmpty() && !fields.contains(name)) {
-                continue;
+            for (int col = 0; col < colLen; col++) {
+                String name = dm.getColumnName(col);
+                if (!fields.isEmpty() && !fields.contains(name)) {
+                    continue;
+                }
+                fieldNames.put(name);
+                JSONArray value = new JSONArray();
+                values.put(value);
+                for (int row = 0; row < rolLen; row++) {
+                    value.put(dm.getValueAt(row, col));
+                }
             }
-            fieldNames.put(name);
-            JSONArray value = new JSONArray();
-            values.put(value);
-            for (int row = 0; row < rolLen; row++) {
-                value.put(dm.getValueAt(row, col));
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), "table preview failed!");
+            return jo;
+        } finally {
+            if (null != dm) {
+                dm.release();
+            }
+            if (null != emTableData) {
+                emTableData.clear();
             }
         }
+
         return jo;
     }
 
@@ -349,6 +364,7 @@ public class DBTableSource extends AbstractTableSource {
         return DatasourceManager.getInstance().getConnection(dbName);
     }
 
+    // TODO: 2016/11/9 判断表的字段和数据库中的能否对得上
     @Override
     public boolean canExecute() throws Exception {
         try {
@@ -356,8 +372,9 @@ public class DBTableSource extends AbstractTableSource {
         } catch (Exception e) {
             return false;
         }
-        List<ICubeFieldSource> fields = new ArrayList<ICubeFieldSource>(getFacetFields(null));
-        return testSQL(getConnection(), getSqlString(fields));
+//        List<ICubeFieldSource> fields = new ArrayList<ICubeFieldSource>(getFacetFields(null));
+//        return testSQL(getConnection(), getSqlString(fields));
+        return true;
     }
 
     protected String getSqlString(List<ICubeFieldSource> fields) throws Exception {

@@ -43,6 +43,8 @@ public class BICubeVersion extends BICubeLongProperty implements ICubeVersion {
 
     @Override
     public Boolean isVersionAvailable() {
-        return getReader().canRead();
+        boolean isVersionAvailable = getReader().canRead();
+        resetReader();
+        return isVersionAvailable;
     }
 }

@@ -20,7 +20,7 @@ import java.util.Set;
  * @author Connery
  * @since 4.0
  */
-public interface CubeTableEntityGetterService extends Release, ICubeVersion ,ICubeResourceForceRelease {
+public interface CubeTableEntityGetterService extends Release, ICubeVersion, ICubeResourceForceRelease {
 
 
     /**
@@ -67,13 +67,15 @@ public interface CubeTableEntityGetterService extends Release, ICubeVersion ,ICu
     /**
      * 获取关联数据的接口
      *
-     * @param path  关联的路径
+     * @param path 关联的路径
      * @return 获取关联数据的接口
      */
     CubeRelationEntityGetterService getRelationIndexGetter(BICubeTablePath path)
             throws BICubeRelationAbsentException, BICubeColumnAbsentException, IllegalRelationPathException;
 
     boolean tableDataAvailable();
+
+    boolean relationExists(BICubeTablePath path);
 
     boolean isRowCountAvailable();
 
