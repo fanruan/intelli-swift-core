@@ -23,7 +23,11 @@ public class TimerScheduleAdapter {
                 scheduleList.add(taskSchedule);
             }
         }
+        scheduleList = filterSchedule(scheduleList);
         return scheduleList;
     }
 
+    private static List<TimerTaskSchedule> filterSchedule(List<TimerTaskSchedule> scheduleList) {
+        return scheduleList;
+    }
 }
