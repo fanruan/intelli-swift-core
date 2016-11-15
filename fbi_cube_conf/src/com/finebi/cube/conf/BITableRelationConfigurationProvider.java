@@ -6,6 +6,7 @@ import com.finebi.cube.conf.relation.relation.IRelationContainer;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.exception.*;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -243,7 +244,7 @@ public interface BITableRelationConfigurationProvider {
      *
      * @param userId      用户ID
      */
-    void finishGenerateCubes(long userId);
+    void finishGenerateCubes(long userId,Set<BITableSourceRelation> absentRelation);
 
     /**
      * 清除用户的全部数据

@@ -21,13 +21,12 @@ public interface CubeBuildStuff {
 
     Set<BITableSourceRelation> getTableSourceRelationSet();
 
-    Set<CubeTableSource> getTableSources();
+    Set<CubeTableSource> getSystemTableSources();
 
     Set<List<Set<CubeTableSource>>> getDependTableResource();
 
     ICubeConfiguration getCubeConfiguration();
 
-    Set<BITableRelation> getTableRelationSet();
 
     Map<CubeTableSource, Long> getVersions();
 

@@ -82,7 +82,7 @@ public class CubeBuildStuffRealTime extends AbstractCubeBuildStuff implements Cu
     }
 
     @Override
-    public Set<CubeTableSource> getTableSources() {
+    public Set<CubeTableSource> getSystemTableSources() {
         return allSingleSources;
     }
 
@@ -94,11 +94,6 @@ public class CubeBuildStuffRealTime extends AbstractCubeBuildStuff implements Cu
     @Override
     public ICubeConfiguration getCubeConfiguration() {
         return cubeConfiguration;
-    }
-
-    @Override
-    public Set<BITableRelation> getTableRelationSet() {
-        return new HashSet<BITableRelation>();
     }
 
 

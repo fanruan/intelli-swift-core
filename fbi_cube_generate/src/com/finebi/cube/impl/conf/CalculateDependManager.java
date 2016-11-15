@@ -62,7 +62,6 @@ public class CalculateDependManager implements CalculateDependTool {
                 if (pathFront.getAllRelations().size() >= 2) {
                     if (pathIDs.contains(BIRelationIDUtils.calculatePathID(pathFront))) {
                         pathDepends.add(pathFront);
-                        break;
                     }
                 }
             } catch (BITablePathEmptyException e) {

@@ -29,7 +29,7 @@ public class BITablePathBuilderTest extends BICubeTestBase {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        tablePathIndexBuilder = new BITablePathIndexBuilder(cube, BICubePathTestTool.getABC());
+        tablePathIndexBuilder = new BITablePathIndexBuilder(cube, null, BICubePathTestTool.getABC());
         BISourceDataTransportTest transportTest = new BISourceDataTransportTest();
         transportTest.transport(BIMemoryDataSourceFactory.generateTableA());
         transportTest.transport(BIMemoryDataSourceFactory.generateTableB());
@@ -54,7 +54,6 @@ public class BITablePathBuilderTest extends BICubeTestBase {
                 BIMemoryDataSourceFactory.generateTableC(), 1, 2);
         tablePathIndexBuilder.mainTask(null);
     }
-
 
 
     public void testPathIndex() {
@@ -88,13 +87,14 @@ public class BITablePathBuilderTest extends BICubeTestBase {
             assertTrue(false);
         }
     }
+
     public void buildEmptyTablePath() {
         try {
             setUp();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        tablePathIndexBuilder = new BITablePathIndexBuilder(cube, BICubePathTestTool.getEmptyTable_B_C());
+        tablePathIndexBuilder = new BITablePathIndexBuilder(cube, null, BICubePathTestTool.getEmptyTable_B_C());
         BISourceDataTransportTest transportTest = new BISourceDataTransportTest();
         transportTest.transport(BIMemoryDataSourceFactory.generateEmptyTable());
         transportTest.transport(BIMemoryDataSourceFactory.generateTableB());
