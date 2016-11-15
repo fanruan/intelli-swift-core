@@ -25,11 +25,12 @@ BI.StyleSetManager = BI.inherit(FR.OB, {
     },
 
     _formatTitleFont: function (titleFont) {
+        var tFont = titleFont || {};
         return {
-            "color": titleFont.color,
-            "font-style": titleFont.fontStyle,
-            "font-weight": titleFont.fontWeight,
-            "text-align": titleFont.textAlign
+            "color": tFont.color,
+            "font-style": tFont.fontStyle,
+            "font-weight": tFont.fontWeight,
+            "text-align": tFont.textAlign
         }
     },
 
