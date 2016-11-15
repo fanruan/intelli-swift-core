@@ -112,7 +112,15 @@ public class BuildCubeTask implements CubeTask {
         logTable(cubeBuildStuff.getSingleSourceLayers(), cubeBuildStuff.getUpdateSettingSources());
         logRelation(cubeBuildStuff.getTableSourceRelationSet());
         BILoggerFactory.getLogger().info("start copy some files");
-        cubeBuildStuff.copyFileFromOldCubes();
+        if (System.getProperty("os.name").toUpperCase().contains("HP-UX")) {
+            BILoggerFactory.getLogger().info("current system is hp-unix. Handlers must be released before copying Files");
+            BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
+            cubeBuildStuff.copyFileFromOldCubes();
+            BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
+        } else {
+            cubeBuildStuff.copyFileFromOldCubes();
+        }
+
         BILoggerFactory.getLogger().info("copy files cost time: " + DateUtils.timeCostFrom(t));
     }
 
