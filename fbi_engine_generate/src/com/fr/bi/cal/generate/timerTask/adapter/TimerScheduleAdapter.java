@@ -7,6 +7,7 @@ import com.finebi.cube.impl.conf.CubeBuildStuffSingleTable;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
+import com.fr.bi.cal.generate.CubeBuildManager;
 import com.fr.bi.cal.generate.timerTask.TimerTaskSchedule;
 import com.fr.bi.conf.manager.update.source.TimeFrequency;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
@@ -41,15 +42,18 @@ public class TimerScheduleAdapter {
                 } else {
                     BusinessTable table = tableCheck(userId, keys);
                     if (table != null) {
-                        TimerTaskSchedule taskSchedule = setBaseTableUpdateSettings(userId, frequency, scheduleTime, table);
-                        scheduleList.add(taskSchedule);
-                        List<TimerTaskSchedule> EtlList = seEtlUpdateSettings(userId, keys, frequency, scheduleTime, table);
-                        scheduleList.addAll(EtlList);
+                        TimerTaskSchedule timerTaskSchedule = setTableUpdateSettings(userId, frequency, scheduleTime, table, keys);
+                        scheduleList.add(timerTaskSchedule);
                     }
                 }
             }
         }
         return scheduleList;
+    }
+
+    private static TimerTaskSchedule setTableUpdateSettings(long userId, TimeFrequency frequency, String scheduleTime, BusinessTable table, String keys) {
+        CubeBuildStuff cubeBuild = new CubeBuildManager().buildSingleTable(userId, table.getID(), keys, frequency.getUpdateType());
+        return new TimerTaskSchedule(scheduleTime, cubeBuild, table.getTableSource().getTableName(), userId, frequency.getUpdateType());
     }
 
     private static TimerTaskSchedule setBaseTableUpdateSettings(long userId, TimeFrequency frequency, String scheduleTime, BusinessTable table) {
