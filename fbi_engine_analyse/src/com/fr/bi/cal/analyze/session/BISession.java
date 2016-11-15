@@ -36,6 +36,7 @@ import com.fr.fs.control.CompanyRoleControl;
 import com.fr.fs.control.CustomRoleControl;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
+import com.fr.general.FRLogManager;
 import com.fr.general.GeneralContext;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -44,6 +45,7 @@ import com.fr.main.TemplateWorkBook;
 import com.fr.main.workbook.ResultWorkBook;
 import com.fr.report.report.ResultReport;
 import com.fr.report.stable.fun.Actor;
+import com.fr.script.Calculator;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.IOFileAttrMark;
 import com.fr.stable.script.CalculatorProvider;
@@ -432,6 +434,8 @@ public class BISession extends BIAbstractSession {
             detailValueMap.clear();
         }
         releaseLock();
+        FRLogManager.setSession(null);
+        Calculator.putThreadSavedNameSpace(null);
     }
 
     @Override
