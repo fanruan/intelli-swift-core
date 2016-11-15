@@ -40,7 +40,14 @@ public class CubeBuildManager {
 
     private BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
 
-    public boolean CubeBuildSingleTable(long userId, BITableID hostTableId, String basicTableSourceId, int updateType) {
+
+    public boolean CubeBuildSingleTable(long userId, BITableID hostTableId, String childTableSourceId, int updateType) {
+        CubeBuildStuff cubeBuild = buildSingleTable(userId, hostTableId, childTableSourceId, updateType);
+        boolean taskAdd = cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId);
+        return taskAdd;
+    }
+
+    public CubeBuildStuff buildSingleTable(long userId, BITableID hostTableId, String basicTableSourceId, int updateType) {
         BILoggerFactory.getLogger().info(BIDateUtils.getCurrentDateTime() + " Cube single table update start");
         BusinessTable businessTable = BusinessTableHelper.getBusinessTable(hostTableId);
         CubeBuildStuff cubeBuild = new CubeBuildStuffSpecificTable(
@@ -51,8 +58,7 @@ public class CubeBuildManager {
                 getAbsentTable(userId),
                 getAbsentRelation(userId),
                 getAbsentPath(userId));
-        boolean taskAdd = cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId);
-        return taskAdd;
+        return cubeBuild;
     }
 
 
