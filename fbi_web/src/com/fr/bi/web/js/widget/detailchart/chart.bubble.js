@@ -98,7 +98,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             config.plotOptions.tooltip.formatter = function () {
                 var y = self.formatTickInXYaxis(self.config.leftYNumberFormat, self.config.leftYNumberLevel, self.config.leftYSeparator)(this.y);
                 var x = self.formatTickInXYaxis(self.config.rightYNumberFormat, self.config.rightYNumberLevel, self.config.rightYSeparator)(this.x);
-                var size =  BI.contentFormat(this.size,
+                var size = BI.contentFormat(this.size,
                     self.formatToolTipAndDataLabel(items[0].settings.format || c.NORMAL, items[0].settings.numLevel || c.NORMAL,
                         items[0].settings.unit || "", items[0].settings.numSeparators || c.NUM_SEPARATORS));
                 return this.seriesName + '<div>(X)' + self.config.tooltip[0] + ':' + x + '</div><div>(Y)' + self.config.tooltip[1]
@@ -110,7 +110,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         if (config.plotOptions.dataLabels.enabled === true) {
             BI.each(items, function (idx, item) {
                 item.dataLabels = {
-                    "style" : self.config.chartFont,
+                    "style": self.config.chartFont,
                     "align": "outside",
                     "autoAdjust": true,
                     enabled: true,
@@ -127,7 +127,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                         }
                     }
                 };
-                if(item.settings.numLevel) {
+                if (item.settings.numLevel) {
                     item.data[0].z = item.data[0].size = self.formatXYDataWithMagnify(item.data[0].z, self.calcMagnify(item.settings.num_level))
                 }
                 item.dataLabels.formatter.XFormat = config.xAxis[0].formatter;
@@ -136,12 +136,22 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                     return BI.contentFormat(arguments[0],
                         self.formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.numLevel || c.NORMAL,
                             item.settings.unit || "", item.settings.numSeparators || c.NUM_SEPARATORS));
-                }
+                };
+                self.formatDataLabelForData(item.data);
+                BI.each(item.data, function (i, data) {
+                    if (data.dataLabels) {
+                        data.dataLabels.formatter = {};
+                        data.dataLabels.formatter.XFormat = config.xAxis[0].formatter;
+                        data.dataLabels.formatter.YFormat = config.yAxis[0].formatter;
+                        data.dataLabels.formatter.sizeFormat = item.dataLabels.formatter.sizeFormat;
+                    }
+                });
+                self._formatDataLabel(item.data);
             });
         }
 
-        config.legend.style = BI.extend( this.config.legendStyle, {
-            fontSize:  this.config.legendStyle.fontSize + "px"
+        config.legend.style = BI.extend(this.config.legendStyle, {
+            fontSize: this.config.legendStyle.fontSize + "px"
         });
 
         return [items, config];
@@ -189,7 +199,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             });
 
             BI.each(self.config.fixedStyle, function (idx, item) {
-                if(idx == 0 && min < item.range.min){
+                if (idx == 0 && min < item.range.min) {
                     range.push({
                         from: min,
                         to: item.range.min,
@@ -203,12 +213,12 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                     color: item.color
                 });
 
-                if(idx == (self.config.fixedStyle.length-1) && max > item.range.max){
-                   range.push({
-                       from: item.range.max,
-                       to: max,
-                       color: item.color
-                   })
+                if (idx == (self.config.fixedStyle.length - 1) && max > item.range.max) {
+                    range.push({
+                        from: item.range.max,
+                        to: max,
+                        color: item.color
+                    })
                 }
             });
 
@@ -332,7 +342,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style" : self.config.chartFont,
+                                "style": self.config.chartFont,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -357,7 +367,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style" : self.config.chartFont,
+                                "style": self.config.chartFont,
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -393,10 +403,8 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
 
     _formatDataLabel: function (items) {
         BI.each(items, function (idx, item) {
-            if (item.dataLabels) {
-                item.dataLabels.formatter = {
-                    identifier: item.dataLabels.formatterConf.x + item.dataLabels.formatterConf.y + item.dataLabels.formatterConf.z
-                };
+            if (item.dataLabels && item.dataLabels.formatter) {
+                item.dataLabels.formatter.identifier = item.dataLabels.formatterConf.x + item.dataLabels.formatterConf.y + item.dataLabels.formatterConf.z;
             }
         })
     },
@@ -410,8 +418,6 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         BI.each(items, function (idx, axisItems) {
             var type = [];
             BI.each(axisItems, function (id, item) {
-                self.defaultFormatDataLabel(item.data);
-                self._formatDataLabel(item.data);
                 type.push(BICst.WIDGET.BUBBLE);
             });
             types.push(type);

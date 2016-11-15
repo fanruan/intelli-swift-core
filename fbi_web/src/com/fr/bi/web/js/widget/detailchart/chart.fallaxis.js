@@ -73,6 +73,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
         if (config.plotOptions.dataLabels.enabled === true) {
+            var self = this;
             BI.each(items, function (idx, item) {
                 if (idx === 0) {
                     item.dataLabels = {};
@@ -88,6 +89,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
                         valueFormat: config.yAxis[0].formatter
                     }
                 };
+                self.formatDataLabelForData(item.data, config.yAxis[0].formatter);
             });
         }
 
@@ -232,7 +234,6 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
         BI.each(items, function (idx, axisItems) {
             var type = [];
             BI.each(axisItems, function (id, item) {
-                self.defaultFormatDataLabel(item.data);
                 type.push(BICst.WIDGET.AXIS);
             });
             types.push(type);

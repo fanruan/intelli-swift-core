@@ -100,6 +100,15 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
                 };
                 item.dataLabels.formatter.XFormat = config.xAxis[0].formatter;
                 item.dataLabels.formatter.YFormat = config.yAxis[0].formatter;
+                self.formatDataLabelForData(item.data);
+                BI.each(item.data, function (i, data) {
+                    if (data.dataLabels) {
+                        data.dataLabels.formatter = {};
+                        data.dataLabels.formatter.XFormat = config.xAxis[0].formatter;
+                        data.dataLabels.formatter.YFormat = config.yAxis[0].formatter;
+                    }
+                });
+                self._formatDataLabel(item.data);
             });
         }
 
@@ -180,10 +189,8 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
 
     _formatDataLabel: function (items) {
         BI.each(items, function (idx, item) {
-            if (item.dataLabels) {
-                item.dataLabels.formatter = {
-                    identifier: item.dataLabels.formatterConf.x + item.dataLabels.formatterConf.y
-                };
+            if (item.dataLabels && item.dataLabels.formatter) {
+                item.dataLabels.formatter.identifier = item.dataLabels.formatterConf.x + item.dataLabels.formatterConf.y;
             }
         })
     },
@@ -197,8 +204,6 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         BI.each(items, function (idx, axisItems) {
             var type = [];
             BI.each(axisItems, function (id, item) {
-                self.defaultFormatDataLabel(item.data);
-                self._formatDataLabel(item.data);
                 type.push(BICst.WIDGET.SCATTER);
             });
             types.push(type);

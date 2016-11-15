@@ -66,8 +66,8 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
         BI.extend(config.yAxis[0], self.catSetting(this.config));
         config.yAxis[0].title.rotation = 90;
 
-        config.legend.style = BI.extend( this.config.legendStyle, {
-            fontSize:  this.config.legendStyle.fontSize + "px"
+        config.legend.style = BI.extend(this.config.legendStyle, {
+            fontSize: this.config.legendStyle.fontSize + "px"
         });
 
         //值轴
@@ -159,7 +159,6 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
         BI.each(items, function (idx, axisItems) {
             var type = [];
             BI.each(axisItems, function (id, item) {
-                self.defaultFormatDataLabel(item.data);
                 type.push(BICst.WIDGET.BAR);
             });
             types.push(type);
