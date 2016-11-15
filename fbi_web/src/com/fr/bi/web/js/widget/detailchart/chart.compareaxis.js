@@ -107,7 +107,8 @@ BI.CompareAxisChart = BI.inherit(BI.AbstractChart, {
             enableTick: this.config.enable_tick,
             labelRotation: this.config.text_direction,
             enableMinorTick: this.config.enable_minor_tick,
-            gridLineWidth: this.config.show_grid_line === true ? 1 : 0
+            gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
+            maxHeight: '40%'
         });
 
         BI.extend(config.xAxis[1], {

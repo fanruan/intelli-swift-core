@@ -63,6 +63,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         config.yAxis[0].title.text = this.config.show_left_y_axis_title === true ? this.config.left_y_axis_title + config.yAxis[0].title.text : config.yAxis[0].title.text;
         config.yAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
         config.yAxis[0].title.rotation = this.constants.ROTATION;
+        config.yAxis[0].maxWidth = '40%';
 
         config.xAxis[0].formatter = self.formatTickInXYaxis(this.config.x_axis_style, this.config.x_axis_number_level, this.config.right_num_separators);
         formatNumberLevelInXaxis(this.config.x_axis_number_level);
@@ -70,6 +71,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         config.xAxis[0].title.text = this.config.show_x_axis_title === true ? this.config.x_axis_title + config.xAxis[0].title.text : config.xAxis[0].title.text;
         config.xAxis[0].title.align = "center";
         config.xAxis[0].gridLineWidth = this.config.show_grid_line === true ? 1 : 0;
+        config.xAxis[0].maxHeight = '40%';
         config.chartType = "scatter";
 
         if (BI.isNotEmptyArray(this.config.tooltip)) {
