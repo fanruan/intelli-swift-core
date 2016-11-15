@@ -468,21 +468,22 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
     },
 
     getChartConfig: function (options) {
+        var c = this.constants;
         return {
-            chartColor: options.chartColor,
-            chartStyle: options.chartStyle,
-            lienAreaChartType: options.lienAreaChartType,
-            pieChartType: options.pieChartType,
-            radarChartType: options.radarChartType,
-            dashboardChartType: options.dashboardChartType,
-            innerRadius: options.innerRadius,
-            totalAngle: options.totalAngle,
-            dashboardPointer: options.dashboardPointer,
-            dashboardStyles: options.dashboardStyles,
+            chartColor: options.chartColor || [],
+            chartStyle: options.chartStyle || c.STYLE_NORMAL,
+            lienAreaChartType: options.lienAreaChartType || c.NORMAL,
+            pieChartType: options.pieChartType || c.NORMAL,
+            radarChartType: options.radarChartType || c.NORMAL,
+            dashboardChartType: options.dashboardChartType || c.NORMAL,
+            innerRadius: options.innerRadius || 0,
+            totalAngle: options.totalAngle || BICst.PIE_ANGLES.TOTAL,
+            dashboardPointer: options.dashboardPointer || c.ONE_POINTER,
+            dashboardStyles: options.dashboardStyles || [],
             //y左值轴
-            leftYNumberFormat: options.leftYNumberFormat,
-            leftYUnit: options.leftYUnit,
-            leftYNumberLevel: options.leftYNumberLevel,
+            leftYNumberFormat: options.leftYNumberFormat || c.NORMAL,
+            leftYUnit: options.leftYUnit || '',
+            leftYNumberLevel: options.leftYNumberLevel || c.NORMAL,
             leftYShowTitle: options.leftYShowTitle,
             leftYTitle: options.leftYTitle,
             leftYReverse: options.leftYReverse,
@@ -527,6 +528,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             catLineColor: options.catLineColor,
             catTitleStyle: options.catTitleStyle,
             //其他元素
+            lineWidth: options.lineWidth || 1,
             legend: options.legend,
             legendStyle: options.legendStyle,
             showDataLabel: options.showDataLabel,
@@ -551,7 +553,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             vGridLineColor: options.vGridLineColor,
             tooltipStyle: options.tooltipStyle,
             chartFont: BI.extend({}, options.chartFont, {
-                fontSize: options.chartFont.fontSize + "px"
+                fontSize: options.chartFont && options.chartFont.fontSize + "px"
             }),
             nullContinuity: options.nullContinuity,
             backgroundLayerInfo: MapConst.WMS_INFO[options.backgroundLayerInfo],

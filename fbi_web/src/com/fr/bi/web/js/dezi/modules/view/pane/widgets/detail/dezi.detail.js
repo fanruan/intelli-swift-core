@@ -57,7 +57,7 @@ BIDezi.DetailView = BI.inherit(BI.View, {
             if (diffs.length > 0 && (diffs.length > 1 || diffs[0] !== "column_size")) {
                 this.tableChartPopupulate();
             }
-            this.title.setText(changed.settings.widget_title);
+            this.title.setText(changed.settings.widgetName);
         }
         if (BI.has(changed, "clicked")) {
             this.tableChartPopupulate();
@@ -262,7 +262,7 @@ BIDezi.DetailView = BI.inherit(BI.View, {
         });
         this.chartSetting.populate();
         this.chartSetting.on(BI.ChartSetting.EVENT_CHANGE, function (v) {
-            var name = v.widget_title;
+            var name = v.widgetName;
             self.model.set({"settings": BI.extend(self.model.get("settings"), v), "name": name});
         });
         return this.chartSetting;

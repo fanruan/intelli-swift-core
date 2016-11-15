@@ -418,10 +418,10 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         if (BI.has(changed, "name")) {
             this.title.setValue(this.model.get("name"));
         }
-        if (BI.has(changed, "settings") && (changed.settings.title_detail !== prev.settings.title_detail)) {
+        if (BI.has(changed, "settings") && (changed.settings.widgetNameStyle !== prev.settings.widgetNameStyle)) {
             this._refreshWidgetTitle();
         }
-        if (BI.has(changed, "settings") && (changed.settings.widget_bg !== prev.settings.widget_bg)) {
+        if (BI.has(changed, "settings") && (changed.settings.widgetBG !== prev.settings.widgetBG)) {
             this._refreshWidgetBG();
         }
         if (BI.has(changed, "clicked")) {
@@ -461,25 +461,28 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
 
     _refreshWidgetTitle: function () {
         var id = this.model.get("id");
-        var titleSetting = this.model.get("settings").title_detail || {};
-        this.title.setTextStyle(titleSetting.detail_style || {});
+        var titleSetting = this.model.get("settings").widgetNameStyle || {};
+        this.title.setTextStyle(titleSetting.titleWordStyle || {});
+
+        this.titleWrapper.element.css({"background": this._getBackground(titleSetting.titleBG)});
     },
 
     _refreshWidgetBG: function () {
-        var widgetBG = this.model.get("settings").widget_bg || {};
-        var getBackground = function (bg) {
-            if (!bg) {
-                return "";
-            }
-            switch (bg.type) {
-                case BICst.BACKGROUND_TYPE.COLOR:
-                    return bg.value;
-                case BICst.BACKGROUND_TYPE.IMAGE:
-                    return "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + bg["value"] + ")";
-            }
+        var widgetBG = this.model.get("settings").widgetBG || {};
+        this.element.css({"background": this._getBackground(widgetBG)})
+    },
+
+    _getBackground: function (bg) {
+        if (!bg) {
             return "";
-        };
-        this.element.css({"background": getBackground(widgetBG)})
+        }
+        switch (bg.type) {
+            case BICst.BACKGROUND_TYPE.COLOR:
+                return bg.value;
+            case BICst.BACKGROUND_TYPE.IMAGE:
+                return "url(" + FR.servletURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + bg["value"] + ")";
+        }
+        return "";
     },
 
     _refreshGlobalStyle: function () {

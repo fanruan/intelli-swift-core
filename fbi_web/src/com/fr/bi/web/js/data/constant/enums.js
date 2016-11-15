@@ -489,7 +489,6 @@ BICst.DEFAULT_CHART_SETTING = {
     rightYShowCustomScale: false,
     leftYShowCustomScale: false,
     rightY2ShowCustomScale: false,
-    lineWidth: BICst.LINE_WIDTH.ONE,
     miniLineWidth: BICst.LINE_WIDTH.ZERO,
     showLabel: true,
     miniShowLabel: false,

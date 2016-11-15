@@ -273,15 +273,14 @@ BIShow.WidgetView = BI.inherit(BI.View, {
 
     _refreshWidgetTitle: function () {
         var id = this.model.get("id");
-        var titleSetting = this.model.get("settings").title_detail || {};
-        var $title = this.title.element.find(".shelter-editor-text .bi-text");
-        $title.css(titleSetting.detail_style || {});
+        var titleSetting = this.model.get("settings").widgetNameStyle || {};
+        this.title.setTextStyle(titleSetting.titleWordStyle || {});
 
-        this.titleWrapper.element.css({"background": this._getBackgroundValue(titleSetting.detail_background)});
+        this.titleWrapper.element.css({"background": this._getBackgroundValue(titleSetting.titleBG)});
     },
 
     _refreshWidgetBG: function () {
-        var widgetBG = this.model.get("settings").widget_bg || {};
+        var widgetBG = this.model.get("settings").widgetBG || {};
         this.element.css({"background": this._getBackgroundValue(widgetBG)})
     },
 
@@ -358,10 +357,10 @@ BIShow.WidgetView = BI.inherit(BI.View, {
             this.tableChart.resize();
             this._refreshMagnifyButton();
         }
-        if (BI.has(changed, "settings") && (changed.settings.title_detail !== prev.settings.title_detail)) {
+        if (BI.has(changed, "settings") && (changed.settings.widgetNameStyle !== prev.settings.widgetNameStyle)) {
             this._refreshWidgetTitle()
         }
-        if (BI.has(changed, "settings") && (changed.settings.widget_bg !== prev.settings.widget_bg)) {
+        if (BI.has(changed, "settings") && (changed.settings.widgetBG !== prev.settings.widgetBG)) {
             this._refreshWidgetBG()
         }
     },
