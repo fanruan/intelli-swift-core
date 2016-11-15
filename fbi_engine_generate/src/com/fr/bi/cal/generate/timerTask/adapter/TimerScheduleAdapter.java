@@ -28,7 +28,7 @@ public class TimerScheduleAdapter {
         for (String keys : allTimeTaskMap.keySet()) {
             timeListSet.clear();
             UpdateSettingSource settingSource = allTimeTaskMap.get(keys);
-            boolean isGlobalUpdate = keys.equals(DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE);
+            boolean isGlobalUpdate = ComparatorUtils.equals(keys,DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE);
             for (TimeFrequency frequency : settingSource.getTimeList()) {
                 String scheduleTime = BIDateUtils.getScheduleTime(frequency.getUpdateTime(), frequency.getUpdateFrequency());
                 if (timeListSet.contains(scheduleTime)) {
@@ -79,7 +79,7 @@ public class TimerScheduleAdapter {
         Set<BusinessTable> allTables = BICubeConfigureCenter.getPackageManager().getAllTables(userId);
         for (BusinessTable table : allTables) {
             for (BICore biCore : table.getTableSource().createSourceMap().keySet()) {
-                if (table.getTableSource().createSourceMap().get(biCore).getSourceID().equals(keys)) {
+                if(ComparatorUtils.equals(table.getTableSource().createSourceMap().get(biCore).getSourceID(),keys)) {
                     return table;
                 }
             }
