@@ -15,14 +15,14 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
         var self = this;
 
         //标题栏
-        this.titleColour = BI.createWidget({
+        this.titleBG = BI.createWidget({
             type: "bi.global_style_index_background"
         });
-        this.titleColour.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
+        this.titleBG.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
             self.fireEvent(BI.ShowTitleDetailedSettingPopup.EVENT_CHANGE);
         });
 
-        var titleColourWrapper = this._createComboWrapper(BI.i18nText("BI-Title_Background"), this.titleColour);
+        var titleColourWrapper = this._createComboWrapper(BI.i18nText("BI-Title_Background"), this.titleBG);
 
         //标题文字
         this.titleWordStyle = BI.createWidget({
@@ -76,14 +76,14 @@ BI.ShowTitleDetailedSettingPopup = BI.inherit(BI.Widget, {
 
     getValue: function() {
         return {
-            titleColour: this.titleColour.getValue(),
+            titleBG: this.titleBG.getValue(),
             titleWordStyle: this.titleWordStyle.getValue()
         }
     },
 
     setValue: function(v) {
         v || (v = {});
-        this.titleColour.setValue(v.titleColour);
+        this.titleBG.setValue(v.titleBG);
         this.titleWordStyle.setValue(v.titleWordStyle)
     }
 
