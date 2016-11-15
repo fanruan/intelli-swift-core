@@ -336,10 +336,10 @@ public class BIFileUtils {
      */
     public static void copyFolder(File src, File dest) throws IOException {
         String os = System.getProperty("os.name");
-//        if (os.toUpperCase().contains("HP-UX")) {
-//            String cmd = "cp -r " + src.getAbsolutePath() + " " + dest.getAbsolutePath();
-//            Runtime.getRuntime().exec(cmd);
-//        } else {
+        if (os.toUpperCase().contains("HP-UX")) {
+            String cmd = "cp -r " + src.getAbsolutePath() + " " + dest.getAbsolutePath();
+            Runtime.getRuntime().exec(cmd);
+        } else {
             if (src.isDirectory()) {
                 if (!dest.exists()) {
                     dest.mkdirs();
@@ -354,7 +354,7 @@ public class BIFileUtils {
             } else {
                 copyFile(src, dest);
             }
-//        }
+        }
     }
 
     public static boolean renameFolder(File src, File dest) throws IOException {

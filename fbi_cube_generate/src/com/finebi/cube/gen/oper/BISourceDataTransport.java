@@ -3,7 +3,6 @@ package com.finebi.cube.gen.oper;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
-import com.finebi.cube.data.disk.BICubeDiskPrimitiveDiscovery;
 import com.finebi.cube.impl.pubsub.BIProcessor;
 import com.finebi.cube.location.BICubeLocation;
 import com.finebi.cube.structure.BITableKey;
@@ -102,13 +101,14 @@ public abstract class BISourceDataTransport extends BIProcessor {
             BICubeLocation from = new BICubeLocation(advancedConf.getRootURI().getPath().toString(), tableSource.getSourceID());
             BICubeLocation to = new BICubeLocation(tempConf.getRootURI().getPath().toString(), tableSource.getSourceID());
             if (!new File(to.getAbsolutePath()).exists()) {
-                if (System.getProperty("os.name").toUpperCase().contains("HP-UX")) {
-                    BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
-                    BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
-                    BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
-                } else {
-                    BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
-                }
+//                if (System.getProperty("os.name").toUpperCase().contains("HP-UX")) {
+//                    BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
+//                    BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
+//                    BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
+//                } else {
+//                    BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
+//                }
+                BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
             }
         } catch (IOException e) {
             BILoggerFactory.getLogger().error(e.getMessage());
