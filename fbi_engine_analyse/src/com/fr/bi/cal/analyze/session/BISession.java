@@ -426,6 +426,7 @@ public class BISession extends BIAbstractSession {
 
     @Override
     public void release() {
+        super.release();
         detailIndexMap.clear();
         detailValueMap.clear();
         partpageGroup.clear();
