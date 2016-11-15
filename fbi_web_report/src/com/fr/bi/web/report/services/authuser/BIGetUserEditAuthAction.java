@@ -27,7 +27,8 @@ public class BIGetUserEditAuthAction extends ActionNoSessionCMD {
     public void actionCMD(HttpServletRequest req, HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
         JSONObject result = new JSONObject();
-        if (ComparatorUtils.equals(FBIConfig.getInstance().getUserAuthorAttr().getBIAuthUserLimitByMode(BIUserAuthorAttr.EDIT), BIUserAuthorAttr.NO_LIMIT)) {
+        if (ComparatorUtils.equals(userId, UserControl.getInstance().getSuperManagerID()) ||
+                ComparatorUtils.equals(FBIConfig.getInstance().getUserAuthorAttr().getBIAuthUserLimitByMode(BIUserAuthorAttr.EDIT), BIUserAuthorAttr.NO_LIMIT)) {
             result.put("result", true);
         } else {
             JSONArray ja = FBIConfig.getInstance().getUserAuthorAttr().getUserAuthJaByMode(BIUserAuthorAttr.EDIT, StringUtils.EMPTY);
