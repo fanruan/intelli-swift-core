@@ -109,13 +109,12 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
 
     _formatConfig: function () {
         var config = {};
-        config.chart_legend = BICst.CHART_LEGENDS.NOT_SHOW;
-        config.show_cat_label = false;
-        config.show_left_label = false;
-        config.chart_demo = true;
-        config.line_width = 0;
-        config.enable_tick = false;
-        config.enable_minor_tick = false;
+        config.chartLegend = BICst.CHART_LEGENDS.NOT_SHOW;
+        config.showCatLabel = false;
+        config.showLeftLabel = false;
+        config.lineWidth = 0;
+        config.enableTick = false;
+        config.enableMinorTick = false;
         return config;
     },
 
