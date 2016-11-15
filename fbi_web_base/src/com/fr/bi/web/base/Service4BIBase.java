@@ -5,10 +5,7 @@ import com.fr.bi.web.base.fs.BIFSGetConfigAction;
 import com.fr.bi.web.base.fs.BIFSSetConfigAction;
 import com.fr.bi.web.base.image.BIFSSaveUploadImageAction;
 import com.fr.bi.web.base.image.BIFSGetImageSizeAction;
-import com.fr.bi.web.base.services.BICheckValidationOfExpressionAction;
-import com.fr.bi.web.base.services.BIGetPyAction;
-import com.fr.bi.web.base.services.BIGetTableAction;
-import com.fr.bi.web.base.services.BIGetTransNameAction;
+import com.fr.bi.web.base.services.*;
 import com.fr.fs.FSContext;
 import com.fr.fs.base.FSManager;
 import com.fr.fs.privilege.auth.FSAuthentication;
@@ -36,7 +33,8 @@ public class Service4BIBase extends NoSessionIDService {
             new BIFSSetConfigAction(),
             new BICheckValidationOfExpressionAction(),
             new BIFSSaveUploadImageAction(),
-            new BIFSGetImageSizeAction()
+            new BIFSGetImageSizeAction(),
+            new BIGetMapJsonAction()
     };
 
     /**
@@ -64,13 +62,13 @@ public class Service4BIBase extends NoSessionIDService {
         res.setHeader("Pragma", "No-cache");
         res.setHeader("Cache-Control", "no-cache, no-store");
         res.setDateHeader("Expires", -10);
-
-        PrivilegeVote vote = getFSVote(req, res);
-        FSAuthentication authentication = FSAuthenticationManager.exAuth4FineServer(req);
-        if (!vote.isPermitted() && (authentication == null || !authentication.isRoot())) {
-            vote.action(req, res);
-            return;
-        }
+//
+//        PrivilegeVote vote = getFSVote(req, res);
+//        FSAuthentication authentication = FSAuthenticationManager.exAuth4FineServer(req);
+//        if (!vote.isPermitted() && (authentication == null || !authentication.isRoot())) {
+//            vote.action(req, res);
+//            return;
+//        }
 //        long userId = ServiceUtils.getCurrentUserID(req);
 //        if (UserControl.getInstance().hasModulePrivilege(userId, FSConstants.MODULEID.BI)) {
             WebActionsDispatcher.dealForActionNoSessionIDCMD(req, res, actions);
