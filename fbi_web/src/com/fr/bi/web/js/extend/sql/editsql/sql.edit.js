@@ -189,7 +189,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
             case self.constants.PREVIEW_EMPTY:
                 this.previewButton = BI.createWidget({
                     type: "bi.button",
-                    text: BI.i18nText("BI-Preview"),
+                    text: BI.i18nText("BI-Basic_Preview"),
                     height: self.constants.SQL_EDIT_BUTTON_HEIGHT,
                     width: self.constants.SQL_EDIT_BUTTON_WIDTH,
                     handler: function(){
@@ -207,7 +207,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
             case self.constants.PREVIEW_ERROR:
                 var cancelButton = BI.createWidget({
                     type: "bi.button",
-                    text: BI.i18nText("BI-Cancel"),
+                    text: BI.i18nText("BI-Basic_Cancel"),
                     level: "ignore",
                     width: 90,
                     height: 28,
@@ -240,7 +240,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
                             }]
                         }, {
                             type: "bi.label",
-                            text: BI.i18nText("BI-Preview") + BI.i18nText("BI-Failed"),
+                            text: BI.i18nText("BI-Basic_Preview") + BI.i18nText("BI-Basic_Failed"),
                             cls: "preview-fail-comment"
                         }, {
                             type: "bi.horizontal_float",
@@ -265,8 +265,8 @@ BI.EditSQL = BI.inherit(BI.Widget, {
         this.saveButton = BI.createWidget({
             type: "bi.button",
             level: "common",
-            text: BI.i18nText("BI-Save"),
-            title: BI.i18nText("BI-Save"),
+            text: BI.i18nText("BI-Basic_Save"),
+            title: BI.i18nText("BI-Basic_Save"),
             height: this.constants.SQL_EDIT_BUTTON_HEIGHT
         });
         //保存前需要检查：数据连接是否正常，a:连得上时有无预览结果，b:连不上提示可能会有问题
@@ -274,11 +274,11 @@ BI.EditSQL = BI.inherit(BI.Widget, {
             var mask = BI.createWidget({
                 type: "bi.loading_mask",
                 masker: self.element,
-                text: BI.i18nText("BI-Loading")
+                text: BI.i18nText("BI-Basic_Loading")
             });
             BI.Utils.getTestConnectionByLinkName(self.model.getDataLinkName(), function(res){
                 if(BI.isNull(res) || res.success === false){
-                    BI.Msg.confirm(BI.i18nText("BI-Prompt"), BI.i18nText("BI-Can_Not_Connect_Connection") + "," + BI.i18nText("BI-Sure_Next_Step"), function(v){
+                    BI.Msg.confirm(BI.i18nText("BI-Basic_Prompt"), BI.i18nText("BI-Can_Not_Connect_Connection") + "," + BI.i18nText("BI-Sure_Next_Step"), function(v){
                         v === true && self._saveSql(true);
                     });
                 } else {
@@ -294,7 +294,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
                 left: [{
                     type: "bi.button",
                     level: "ignore",
-                    text: BI.i18nText("BI-Cancel"),
+                    text: BI.i18nText("BI-Basic_Cancel"),
                     height: this.constants.SQL_EDIT_BUTTON_HEIGHT,
                     handler: function () {
                         self.fireEvent(BI.EditSQL.EVENT_CANCEL);
@@ -312,7 +312,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: this.element,
-            text: BI.i18nText("BI-Loading")
+            text: BI.i18nText("BI-Basic_Loading")
         });
         BI.Utils.getTablesDetailInfoByTables([{
             connection_name: BICst.CONNECTION.SQL_CONNECTION,
@@ -322,7 +322,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
         }], function(res){
             var table = res[0];
             if(!errorConnection && table.md5 === "Empty"){
-                BI.Msg.confirm(BI.i18nText("BI-Prompt"), BI.i18nText("BI-Error_SQL_Not_Next_Step") + "," + BI.i18nText("BI-Sure_Next_Step"), function(v){
+                BI.Msg.confirm(BI.i18nText("BI-Basic_Prompt"), BI.i18nText("BI-Error_SQL_Not_Next_Step") + "," + BI.i18nText("BI-Sure_Next_Step"), function(v){
                     v === true && self.fireEvent(BI.EditSQL.EVENT_SAVE, table);
                 });
             } else {
@@ -338,7 +338,7 @@ BI.EditSQL = BI.inherit(BI.Widget, {
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: BICst.BODY_ELEMENT,
-            text: BI.i18nText("BI-Loading")
+            text: BI.i18nText("BI-Basic_Loading")
         });
         BI.Utils.getServerSetPreviewBySql({
             data_link: self.model.getDataLinkName(),
