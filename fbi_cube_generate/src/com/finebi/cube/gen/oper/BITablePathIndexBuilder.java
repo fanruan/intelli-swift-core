@@ -199,10 +199,10 @@ public class BITablePathIndexBuilder extends BIProcessor {
     }
 
     protected int getJuniorTableRowCount() throws BITablePathEmptyException {
-        ITableKey primaryTableKey = relationPath.getLastRelation().getForeignTable();
-        CubeTableEntityGetterService primaryTable = cube.getCubeTable(primaryTableKey);
-        int rowCount = primaryTable.getRowCount();
-        primaryTable.clear();
+        ITableKey foreignTableKey = relationPath.getLastRelation().getForeignTable();
+        CubeTableEntityGetterService foreignTable = cube.getCubeTable(foreignTableKey);
+        int rowCount = foreignTable.getRowCount();
+        foreignTable.clear();
         return rowCount;
     }
 

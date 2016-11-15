@@ -2,7 +2,7 @@ package com.finebi.cube.conf;
 
 import com.finebi.cube.conf.relation.BISystemTableRelationManager;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
-import com.finebi.cube.impl.conf.CubeBuildStuffIncreased;
+import com.finebi.cube.impl.conf.CubeBuildStuffSupplement;
 import com.finebi.cube.impl.conf.CubeBuildStuffRealTime;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.base.cube.BISystemCubeConfManager;
@@ -33,7 +33,7 @@ public class CubeBuildbyCompleteTest extends TestCase {
     }
 
     public void testIncremental() {
-        CubeBuildStuff cubeBuildManager = new CubeBuildStuffIncreased(-999, null, null, null);
+        CubeBuildStuff cubeBuildManager = new CubeBuildStuffSupplement(-999, null, null, null);
         assertTrue(cubeBuildManager.getSingleSourceLayers().size() == 0);
         assertTrue(cubeBuildManager.getDependTableResource().size() == 0);
         assertTrue(cubeBuildManager.getTableSourceRelationPathSet().size() == 0);

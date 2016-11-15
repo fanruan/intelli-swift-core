@@ -5,11 +5,12 @@ import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.CubeGenerationManager;
-import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
-import com.finebi.cube.impl.conf.CubeBuildStuffIncreased;
-import com.finebi.cube.impl.conf.CubeBuildStuffSingleTable;
+import com.finebi.cube.impl.conf.CubeBuildStuffSpecificTable;
+import com.finebi.cube.impl.conf.CubeBuildStuffSupplement;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -37,7 +38,15 @@ public class CubeBuildManager {
 
     public boolean CubeBuildSingleTable(long userId, BITableID hostTableId, String childTableSourceId, int updateType) {
         BILoggerFactory.getLogger().info(BIDateUtils.getCurrentDateTime() + " Cube single table update start");
-        CubeBuildStuff cubeBuild = new CubeBuildStuffSingleTable(new BIBusinessTable(hostTableId), childTableSourceId, userId, updateType);
+        BusinessTable businessTable = BusinessTableHelper.getBusinessTable(hostTableId);
+        CubeBuildStuff cubeBuild = new CubeBuildStuffSpecificTable(
+                userId,
+                businessTable.getTableSource(),
+                childTableSourceId,
+                updateType,
+                getAbsentTable(userId),
+                getAbsentRelation(userId),
+                getAbsentPath(userId));
         boolean taskAdd = cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId);
         return taskAdd;
     }
@@ -55,7 +64,7 @@ public class CubeBuildManager {
             Set<CubeTableSource> absentTables = getAbsentTable(userId);
             Set<BITableSourceRelation> absentRelations = getAbsentRelation(userId);
             Set<BITableSourceRelationPath> absentPaths = getAbsentPath(userId);
-            cubeBuild = new CubeBuildStuffIncreased(userId, absentTables, absentRelations, absentPaths);
+            cubeBuild = new CubeBuildStuffSupplement(userId, absentTables, absentRelations, absentPaths);
         } else {
             msg.append(" Cube all update start");
             cubeBuild = new CubeBuildStuffComplete(new BIUser(userId));

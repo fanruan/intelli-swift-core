@@ -9,9 +9,8 @@ import com.finebi.cube.impl.conf.CubeBuildStuffSingleTable;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.BuildCubeTask;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.engine.CubeTask;
 import com.fr.general.ComparatorUtils;
 import com.fr.third.org.quartz.Job;
 import com.fr.third.org.quartz.JobDataMap;
@@ -39,33 +38,41 @@ public class JobTask implements Job {
         BILoggerFactory.getLogger().info(message);
         BusinessTable businessTable = tableCheck(userId, tableKey);
         if (null == businessTable) {
-            BILoggerFactory.getLogger().info("the table " + tableKey + " is not existed.");
+            BILoggerFactory.getLogger().info("the table " + tableKey + " is not existed. Timer Task canceled");
             return;
         } else {
-            List<CubeBuildStuff> stuffList = getCubeBuildStuffs(userId, tableKey, updateType, businessTable);
-            generateCubeTasks(userId, stuffList);
+            List<CubeBuildStuff> cubeTasks = generateCubeTasks(userId, updateType, businessTable);
+            startAllTasks(userId, cubeTasks);
         }
     }
 
-    private void generateCubeTasks(long userId, List<CubeBuildStuff> stuffList) {
+    private void startAllTasks(long userId, List<CubeBuildStuff> stuffList) {
         for (CubeBuildStuff cubeBuildStuff : stuffList) {
-            if (!cubeBuildStuff.preConditionsCheck()) {
+            if (cubeBuildStuff.preConditionsCheck()) {
+                CubeTask task = new BuildCubeTask(new BIUser(userId), cubeBuildStuff);
+                CubeGenerationManager.getCubeManager().addTask(task, userId);
+            }else {
                 String errorMessage = "preConditions check failed! Please check the available HD space and data connections";
                 BILoggerFactory.getLogger().error(errorMessage);
-                BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), errorMessage, userId);
-                BIConfigureManagerCenter.getLogManager().logEnd(userId);
-                continue;
             }
-            CubeGenerationManager.getCubeManager().addTask(new BuildCubeTask(new BIUser(userId), cubeBuildStuff), userId);
         }
     }
 
-    private List<CubeBuildStuff> getCubeBuildStuffs(long userId, String baseTableKey, int updateType, BusinessTable hostTable) {
-        List<CubeBuildStuff> stuffList = getETLCubeBuild(userId, baseTableKey, updateType, hostTable);
-        if (stuffList.size() == 0) {
-            stuffList.add(getBaseTableCubeBuild(userId, updateType, hostTable));
+    private List<CubeBuildStuff> generateCubeTasks(long userId, int updateType, BusinessTable baseTable) {
+        String baseTableKey = baseTable.getTableSource().getSourceID();
+        List cubeBuildTasks = new ArrayList<CubeBuildStuff>();
+        Set<BusinessTable> hostTables = getHostTables(userId, baseTableKey);
+        //如果该表所属的ETL需要更新，那自身就没有必要再更新一遍了
+        if (hostTables.size() == 0) {
+            CubeBuildStuff cubeBuild = new CubeBuildStuffSingleTable(baseTable, baseTableKey, userId, updateType);
+            cubeBuildTasks.add(cubeBuild);
+        } else {
+            for (BusinessTable hostTable : hostTables) {
+                CubeBuildStuff cubeBuild = new CubeBuildStuffSingleTable(hostTable, baseTableKey, userId, updateType);
+                cubeBuildTasks.add(cubeBuild);
+            }
         }
-        return stuffList;
+        return cubeBuildTasks;
     }
 
     private BusinessTable tableCheck(long userId, String tableKey) {
@@ -80,23 +87,30 @@ public class JobTask implements Job {
         return null;
     }
 
-    private List<CubeBuildStuff> getETLCubeBuild(long userId, String keys, int updateType, BusinessTable table) {
-        List<CubeBuildStuff> etlCubeBuildList = new ArrayList<CubeBuildStuff>();
+    private Set<BusinessTable> getHostTables(long userId, String keys) {
+        Set<BusinessTable> hostTables = new HashSet<BusinessTable>();
         for (BusinessTable businessTable : BICubeConfigureCenter.getPackageManager().getAllTables(userId)) {
             Map<BICore, CubeTableSource> sourceMap = businessTable.getTableSource().createSourceMap();
             for (BICore biCore : sourceMap.keySet()) {
                 if (ComparatorUtils.equals(sourceMap.get(biCore).getSourceID(), keys) && sourceMap.size() > 1) {
-                    CubeBuildStuff EtlCubeBuild = new CubeBuildStuffSingleTable(businessTable, table.getTableSource().getSourceID(), userId, updateType);
-                    etlCubeBuildList.add(EtlCubeBuild);
+                    hostTables.add(businessTable);
                     break;
                 }
             }
         }
-        return etlCubeBuildList;
+        hostTables = filterETLs(hostTables);
+        return hostTables;
     }
 
-    private CubeBuildStuff getBaseTableCubeBuild(long userId, int updateType, BusinessTable table) {
-        CubeBuildStuff cubeBuild = new CubeBuildStuffSingleTable(table, table.getTableSource().getSourceID(), userId, updateType);
-        return cubeBuild;
+    /**
+     * todo kary
+     * 过滤重复的ETL
+     * 例：若ETL-A join B存在，则过滤掉ETL-A
+     *
+     * @param hostTables
+     * @return
+     */
+    private Set<BusinessTable> filterETLs(Set<BusinessTable> hostTables) {
+        return hostTables;
     }
 }
