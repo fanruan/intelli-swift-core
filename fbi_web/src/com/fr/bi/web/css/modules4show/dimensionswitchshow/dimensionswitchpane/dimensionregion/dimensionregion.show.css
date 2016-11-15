@@ -1,0 +1,16 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-dimension-switch-region-show {
+  background: #ffffff;
+}
+.bi-dimension-switch-region-show .dimension-wrapper {
+  background: #d8f2fd;
+}
+.bi-dimension-switch-region-show .target-wrapper {
+  background: #e1f4e7;
+}
+.bi-dimension-switch-region-show.control-show-by-z-index {
+  background: #ffffff;
+  z-index: 1;
+}
