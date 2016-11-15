@@ -30,20 +30,20 @@ public class JobTask implements Job {
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-            JobDataMap data = jobExecutionContext.getJobDetail().getJobDataMap();
-            long userId = Long.valueOf(data.get("userId").toString());
-            String tableKey = data.getString("sourceName");
-            int updateType = data.getInt("updateType");
-            String message = "timerTask started!Current time is:" + new Date();
-            BILoggerFactory.getLogger().info(message);
-            BusinessTable businessTable = tableCheck(userId, tableKey);
-            if (null == businessTable) {
-                BILoggerFactory.getLogger().info("the table " + tableKey + " is not existed. Timer Task canceled");
-                return;
-            } else {
-                List<CubeBuildStuff> cubeTasks = generateCubeTasks(userId, updateType, businessTable);
-                startAllTasks(userId, cubeTasks);
-            }
+        JobDataMap data = jobExecutionContext.getJobDetail().getJobDataMap();
+        long userId = Long.valueOf(data.get("userId").toString());
+        String tableKey = data.getString("sourceName");
+        int updateType = data.getInt("updateType");
+        String message = "timerTask started!Current time is:" + new Date();
+        BILoggerFactory.getLogger().info(message);
+        BusinessTable businessTable = tableCheck(userId, tableKey);
+        if (null == businessTable) {
+            BILoggerFactory.getLogger().info("the table " + tableKey + " is not existed. Timer Task canceled");
+            return;
+        } else {
+            List<CubeBuildStuff> cubeTasks = generateCubeTasks(userId, updateType, businessTable);
+            startAllTasks(userId, cubeTasks);
+        }
 
     }
 
@@ -52,7 +52,7 @@ public class JobTask implements Job {
             if (cubeBuildStuff.preConditionsCheck()) {
                 CubeTask task = new BuildCubeTask(new BIUser(userId), cubeBuildStuff);
                 CubeGenerationManager.getCubeManager().addTask(task, userId);
-            }else {
+            } else {
                 String errorMessage = "preConditions check failed! Please check the available HD space and data connections";
                 BILoggerFactory.getLogger().error(errorMessage);
             }
