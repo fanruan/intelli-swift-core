@@ -81,7 +81,8 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
             enableTick: this.config.enable_tick,
             enableMinorTick: this.config.enable_minor_tick,
             labelRotation: this.config.text_direction,
-            gridLineWidth: this.config.show_grid_line === true ? 1 : 0
+            gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
+            maxHeight: '40%'
         });
 
         //为了给数据标签加个%,还要遍历所有的系列，唉

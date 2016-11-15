@@ -94,7 +94,8 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
             lineWidth: this.config.line_width,
             enableTick: this.config.enable_tick,
             labelRotation: this.config.text_direction,
-            gridLineWidth: this.config.show_grid_line === true ? 1 : 0
+            gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
+            maxHeight: '40%'
         });
 
         config.chartType = "area";
