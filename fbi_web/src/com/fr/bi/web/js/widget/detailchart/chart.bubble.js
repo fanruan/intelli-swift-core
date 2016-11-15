@@ -51,7 +51,6 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         var self = this, c = this.constants;
 
         formatCordon();
-        formatForSize();
 
         switch (this.config.displayRules) {
             case BICst.DISPLAY_RULES.FIXED:
