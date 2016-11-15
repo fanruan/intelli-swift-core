@@ -16,23 +16,24 @@ public class BIMultiThreadExecutor {
     private MergeSummaryCallList[] lists = new MergeSummaryCallList[SIZE];
     private int index = 0;
     private ExecutorService executorService;
+
     public BIMultiThreadExecutor() {
         executorService = Executors.newFixedThreadPool(SIZE);
-        for (int i = 0; i < SIZE; i ++){
+        for (int i = 0; i < SIZE; i++) {
             MergeSummaryCallList list = new MergeSummaryCallList();
             executorService.submit(list);
             lists[i] = list;
         }
     }
 
-    public void add(BISingleThreadCal cal){
+    public void add(BISingleThreadCal cal) {
         lists[index & MOD].add(cal);
         index++;
     }
 
-    public void awaitExecutor(final BISession session){
-        if(null!=lists){
-            for (MergeSummaryCallList list : lists){
+    public void awaitExecutor(final BISession session) {
+        if (null != lists) {
+            for (MergeSummaryCallList list : lists) {
                 list.add(new BISingleThreadCal() {
                     @Override
                     public void cal() {
