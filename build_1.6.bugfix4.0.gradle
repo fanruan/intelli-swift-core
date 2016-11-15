@@ -13,7 +13,10 @@ version='4.0'
 FileTree files =fileTree(dir:'./',include:'build.*.gradle')
 def buildDir=files[0].path.substring(0,files[0].path.lastIndexOf ('\\'))
 def branchName=buildDir.substring(buildDir.lastIndexOf ('\\')+1)
-
+//删除test文件下的文件
+ant{
+	delete(dir:"**/test/")
+}
 jar{
 //指定生成jar包的名称
 	baseName='fr-bi-server'
@@ -23,6 +26,7 @@ def list=[
 		"fbi_base/src",
 		"fbi_engine_finereport/src",
 		"fbi_conf/src", 
+		"fbi_h5/src",
 		"fbi_engine_base/src",
 		"fbi_engine_generate/src",
 		"fbi_engine_analyse/src",
@@ -82,13 +86,22 @@ def dataContent ={def dir ->
 				'**/*.g',
 				'**/package.html',
 				'**/*.less',
-				'**/cross/demo/**'
+				'**/cross/demo/**',
+				'**/test/**'
 			}
 		}
 }
 
 //将非.java文件复制到classes文件夹下 参与打包
 task copyFile(type:Copy,dependsOn:compileJava){
+	//删除test文件夹
+	ant{
+		echo('--------------------------------delete test---------------------------')
+		delete(defaultexcludes:'false'){
+			fileset(dir:'.',includes:'**/test/')
+
+		}
+	}
 	list.each{ def srcDir->
 		copy{
 			with dataContent.call("${srcDir}") 
