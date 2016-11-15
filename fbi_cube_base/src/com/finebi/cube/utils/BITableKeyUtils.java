@@ -20,7 +20,7 @@ public class BITableKeyUtils {
         return new BITableKey(tableSource);
     }
 
-    public static boolean isTableExisted(CubeTableSource tableSource,ICubeConfiguration cubeConfiguration) {
+    public static boolean isTableExisted(CubeTableSource tableSource, ICubeConfiguration cubeConfiguration) {
         BICube iCube = new BICube(new BICubeResourceRetrieval(cubeConfiguration), BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
         ITableKey iTableKey = new BITableKey(tableSource);
         return iCube.exist(iTableKey);
