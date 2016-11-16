@@ -1,10 +1,7 @@
 package com.fr.bi.cal.generate;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.conf.BICubeConfiguration;
-import com.finebi.cube.conf.BICubeManagerProvider;
-import com.finebi.cube.conf.CubeBuildStuff;
-import com.finebi.cube.conf.CubeGenerationManager;
+import com.finebi.cube.conf.*;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.finebi.cube.data.ICubeResourceDiscovery;
@@ -30,6 +27,8 @@ import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.general.ComparatorUtils;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -40,27 +39,32 @@ public class CubeBuildManager {
 
     private BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
 
-
-    public boolean CubeBuildSingleTable(long userId, BITableID hostTableId, String childTableSourceId, int updateType) {
-        CubeBuildStuff cubeBuild = buildSingleTable(userId, hostTableId, childTableSourceId, updateType);
-        boolean taskAdd = cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId);
+    public boolean CubeBuildSingleTable(long userId, String childTableSourceId, int updateType) {
+        List<CubeBuildStuff> cubeBuildList = buildSingleTable(userId, childTableSourceId, updateType);
+        boolean taskAdd = true;
+        for (CubeBuildStuff cubeBuild : cubeBuildList) {
+            taskAdd = cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId) && taskAdd;
+        }
         return taskAdd;
     }
 
-    public CubeBuildStuff buildSingleTable(long userId, BITableID hostTableId, String basicTableSourceId, int updateType) {
+    public List<CubeBuildStuff> buildSingleTable(long userId, String childTableSourceId, int updateType) {
         BILoggerFactory.getLogger().info(BIDateUtils.getCurrentDateTime() + " Cube single table update start");
-        BusinessTable businessTable = BusinessTableHelper.getBusinessTable(hostTableId);
-        CubeBuildStuff cubeBuild = new CubeBuildStuffSpecificTable(
+        List<CubeBuildStuff> cubeBuildList = new ArrayList<CubeBuildStuff>();
+        cubeBuildList.addAll(getCubeBuildFromTables(userId, childTableSourceId, updateType));
+        return cubeBuildList;
+    }
+
+    private CubeBuildStuff getCubeBuildStuffSpecificTable(long userId, BusinessTable businessTable, String childTableSourceId, int updateType) {
+        return new CubeBuildStuffSpecificTable(
                 userId,
                 businessTable.getTableSource(),
-                basicTableSourceId,
+                childTableSourceId,
                 updateType,
                 getAbsentTable(userId),
                 getAbsentRelation(userId),
                 getAbsentPath(userId));
-        return cubeBuild;
     }
-
 
 
     /**
@@ -141,5 +145,28 @@ public class CubeBuildManager {
             BIConfigureManagerCenter.getLogManager().logEnd(userId);
         }
         return conditionsMeet;
+    }
+
+    private List<CubeBuildStuff> getCubeBuildFromTables(long userId, String baseTableSourceId, int updateType) {
+        List<CubeBuildStuff> cubeBuildList = new ArrayList<CubeBuildStuff>();
+        for (BusinessTable businessTable : BICubeConfigureCenter.getPackageManager().getAllTables(userId)) {
+            List<Set<CubeTableSource>> sourceList = businessTable.getTableSource().createGenerateTablesList();
+            for (Set<CubeTableSource> sourceSet : sourceList) {
+                Iterator iterator = sourceSet.iterator();
+                while (iterator.hasNext()) {
+
+                    CubeTableSource tableSource = (CubeTableSource) iterator.next();
+                    if (ComparatorUtils.equals(tableSource.getSourceID(), baseTableSourceId)) {
+                        if (businessTable.getTableSource() instanceof ETLTableSource && !checkETLTable(userId, (ETLTableSource) businessTable.getTableSource(), baseTableSourceId)) {
+                            break;
+                        }
+                        CubeBuildStuff cubeBuild = getCubeBuildStuffSpecificTable(userId, businessTable, baseTableSourceId, updateType);
+                        cubeBuildList.add(cubeBuild);
+                    }
+
+                }
+            }
+        }
+        return cubeBuildList;
     }
 }
