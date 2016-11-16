@@ -93,6 +93,8 @@ public class BIPlate extends AbstractFSPlate {
 
         //兼容FR工程中可能存在BID这一列的情况
         dropColumnBID();
+        //兼容FR工程中可能存在PARENTID类型是整型的情况
+        notifyColumnParentIdType();
     }
 
     public void loadMemoryData() {
@@ -200,6 +202,20 @@ public class BIPlate extends AbstractFSPlate {
             cn = PlatformDB.getDB().createConnection();
             Statement st = cn.createStatement();
             st.execute("ALTER TABLE " + tableName + " DROP BID ");
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().info(e.getMessage());
+        } finally {
+            DBUtils.closeConnection(cn);
+        }
+    }
+
+    private static void notifyColumnParentIdType() {
+        Connection cn = null;
+        String tableName = "FR_T_" + DAOUtils.getClassNameWithOutPath(BIReportNode.class);
+        try {
+            cn = PlatformDB.getDB().createConnection();
+            Statement st = cn.createStatement();
+            st.execute("ALTER TABLE " + tableName + "  ALTER COLUMN PARENTID VARCHAR (255)");
         } catch (Exception e) {
             BILoggerFactory.getLogger().info(e.getMessage());
         } finally {
