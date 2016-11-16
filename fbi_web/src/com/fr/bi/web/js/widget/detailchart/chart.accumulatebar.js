@@ -62,7 +62,8 @@ BI.AccumulateBarChart = BI.inherit(BI.AbstractChart, {
             gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
             labelRotation: this.config.text_direction,
             lineWidth: this.config.line_width,
-            enableTick: this.config.enable_tick
+            enableTick: this.config.enable_tick,
+            maxWidth: '40%'
         });
 
         self.formatNumberLevelInXaxis(items, this.config.left_y_axis_number_level);

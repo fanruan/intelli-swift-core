@@ -11,7 +11,7 @@ import com.fr.bi.common.inter.Release;
  * @author Connery
  * @since 4.0
  */
-public interface ICubeRelationManagerService extends Release,ICubeResourceForceRelease {
+public interface ICubeRelationManagerService extends Release, ICubeResourceForceRelease {
     /**
      * 依据关联获得相应的接口
      *
@@ -22,5 +22,7 @@ public interface ICubeRelationManagerService extends Release,ICubeResourceForceR
     ICubeRelationEntityService getRelationService(BICubeTablePath relationPath) throws BICubeRelationAbsentException, IllegalRelationPathException;
 
     void setOwner(ITableKey owner);
+
+    boolean relationExists(BICubeTablePath path)throws IllegalRelationPathException ;
 
 }

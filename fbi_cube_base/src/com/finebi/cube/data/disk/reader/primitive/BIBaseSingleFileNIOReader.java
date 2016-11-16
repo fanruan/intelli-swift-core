@@ -29,10 +29,10 @@ public abstract class BIBaseSingleFileNIOReader extends BIAbstractBaseNIOReader 
     protected abstract void releaseChild();
 
     protected void initBuffer() {
-        /**
-         * 资源不可用，需要初始化，释放读锁，加写锁。
-         */
         if (isValid){
+            /**
+             * 资源不可用，需要初始化，释放读锁，加写锁。
+             */
             readWriteLock.writeLock().lock();
             try {
                 if (buffer != null){
