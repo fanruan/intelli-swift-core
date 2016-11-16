@@ -53,7 +53,18 @@ public class CubeUpdateUtils {
         return absentTables;
     }
 
-    private static Set<CubeTableSource> toSet(List<Set<CubeTableSource>> tableLayerTree) {
+    /**
+     * @param userId
+     * @param tableSource
+     * @return
+     */
+    public static boolean isTableExist(long userId, CubeTableSource tableSource) {
+        ICubeConfiguration cubeConfiguration = BICubeConfiguration.getConf(Long.toString(userId));
+        return BITableKeyUtils.isTableExisted(tableSource, cubeConfiguration);
+
+    }
+
+    public static Set<CubeTableSource> toSet(List<Set<CubeTableSource>> tableLayerTree) {
         Set<CubeTableSource> tableLayers = new HashSet<CubeTableSource>();
         for (Set<CubeTableSource> value : tableLayerTree) {
             tableLayers.addAll(value);

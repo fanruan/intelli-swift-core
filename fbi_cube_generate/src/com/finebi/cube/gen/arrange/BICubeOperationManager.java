@@ -163,6 +163,10 @@ public class BICubeOperationManager {
         Set<CubeTableSource> parentTables = null;
         while (it.hasNext()) {
             Set<CubeTableSource> sameLevelTable = it.next();
+            if (sameLevelTable.isEmpty()) {
+                logger.warn("Table Source layer is empty.check the log please");
+                continue;
+            }
             Iterator<CubeTableSource> sameLevelTableIt = sameLevelTable.iterator();
             /**
              * 遍历当期层级的表

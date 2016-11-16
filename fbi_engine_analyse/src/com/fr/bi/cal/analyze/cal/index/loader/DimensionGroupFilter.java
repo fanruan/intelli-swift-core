@@ -301,7 +301,7 @@ public class DimensionGroupFilter {
         boolean shouldBuildTree = shouldBuildTree();
         BIMultiThreadExecutor executor = null;
         if (MultiThreadManagerImpl.getInstance().isMultiCall() && shouldBuildTree){
-            executor = new BIMultiThreadExecutor();
+            executor = MultiThreadManagerImpl.getInstance().getExecutorService();
         }
         boolean hasFilter[] = new boolean[rowDimension.length];
         for (int i = 0;i < rowDimension.length; i ++){
@@ -320,7 +320,7 @@ public class DimensionGroupFilter {
 
         if (shouldBuildTree) {
             if (MultiThreadManagerImpl.getInstance().isMultiCall()) {
-                executor.awaitExecutor();
+                executor.awaitExecutor(session);
                 executor = null;
             }
             buildTree(groupValueIndexe2D, counter, nodeBuilder);

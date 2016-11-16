@@ -4,18 +4,13 @@ import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
-import com.finebi.cube.exception.BICubeResourceAbsentException;
 import com.finebi.cube.gen.oper.BIRelationIDUtils;
 import com.finebi.cube.gen.oper.BuildLogHelper;
-import com.finebi.cube.location.BICubeResourceRetrieval;
-import com.finebi.cube.location.ICubeResourceLocation;
-import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.relation.BICubeGenerateRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
-import com.finebi.cube.structure.BITableKey;
-import com.finebi.cube.structure.table.BICubeOccupiedTable;
 import com.fr.bi.conf.data.source.ETLTableSource;
+import com.fr.bi.conf.data.source.TableSourceUtils;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIBaseConstant;
@@ -27,8 +22,6 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.general.ComparatorUtils;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -63,7 +56,7 @@ public class CubeBuildStuffSpecificTable extends CubeBuildSpecific {
         filter();
         calculateDepends(this.tableInConstruction, this.relationInConstruction, this.pathInConstruction);
         if (specificTable instanceof ETLTableSource) {
-            this.tableSourceLayerDepends = filterBasicTable(tableSourceLayerDepends, specificBasicTableID);
+            this.tableSourceLayerDepends = filterBasicTable(tableSourceLayerDepends, specificBasicTableID, absentTables);
         }
     }
 
@@ -254,7 +247,12 @@ public class CubeBuildStuffSpecificTable extends CubeBuildSpecific {
      *
      * @param tableSourceLayerDepends
      */
-    private Set<List<Set<CubeTableSource>>> filterBasicTable(Set<List<Set<CubeTableSource>>> tableSourceLayerDepends, String specificBasicTableID) {
+    private Set<List<Set<CubeTableSource>>> filterBasicTable(Set<List<Set<CubeTableSource>>> tableSourceLayerDepends, String specificBasicTableID, Set<CubeTableSource> absentTables) {
+
+        Set<String> absentTableIDs = new HashSet<String>();
+        for (CubeTableSource tableSource : absentTables) {
+            absentTableIDs.add(tableSource.getSourceID());
+        }
         /**
          * 需要更新的ID
          */
@@ -263,11 +261,13 @@ public class CubeBuildStuffSpecificTable extends CubeBuildSpecific {
         etlStepIDs.add(this.specificTable.getSourceID());
         if (tableSourceLayerDepends.size() == 1) {
             List<Set<CubeTableSource>> tableLayers = tableSourceLayerDepends.iterator().next();
-            for (Set<CubeTableSource> oneLayer : tableLayers) {
+            Iterator<Set<CubeTableSource>> tableLayerIterator = tableLayers.iterator();
+            while (tableLayerIterator.hasNext()) {
+                Set<CubeTableSource> oneLayer = tableLayerIterator.next();
                 Iterator<CubeTableSource> it = oneLayer.iterator();
                 while (it.hasNext()) {
                     CubeTableSource tableSource = it.next();
-                    if (isBasicTable(tableSource)) {
+                    if (TableSourceUtils.isBasicTable(tableSource)) {
                         /**
                          * 自身是基础表，如包含在需要生成的表中，那么就生成，否则移除。
                          */
@@ -275,36 +275,23 @@ public class CubeBuildStuffSpecificTable extends CubeBuildSpecific {
                             it.remove();
                         }
                     } else {
-                        boolean isFatherBuilt = false;
-                        ETLTableSource etlTableSource = (ETLTableSource) tableSource;
-                        List<CubeTableSource> fatherOperators = etlTableSource.getParents();
-                        for (CubeTableSource operator : fatherOperators) {
-                            if (etlStepIDs.contains(operator.getSourceID())) {
-                                /**
-                                 * 父类表需要生成，那么自身也要生成
-                                 */
-                                etlStepIDs.add(etlTableSource.getSourceID());
-                                isFatherBuilt = true;
-                            }
-                        }
-                        if (!isFatherBuilt) {
-                            /**
-                             * 父类表都不需要生成，那么自身也不生成
-                             */
-                            it.remove();
-                        }
+                        /**
+                         * 如果非基础表，那么都必须生成
+                         * 如下场景：
+                         * A做了新增公式操作得到A_ETL,然后和B做join操作。
+                         * 如果单表对B做更新。此时，不对A进行更新，A表是基础表。
+                         * 但是新增公式的操作必须要做，否则没法确定中间的ETL操作是否生成过
+                         */
                     }
+                }
+                if (oneLayer.isEmpty()) {
+                    tableLayerIterator.remove();
                 }
             }
         } else {
             throw BINonValueUtils.beyondControl("Current operation should specify single table");
         }
         return tableSourceLayerDepends;
-    }
-
-
-    private boolean isBasicTable(CubeTableSource tableSource) {
-        return !(tableSource instanceof ETLTableSource || tableSource instanceof BICubeOccupiedTable);
     }
 
 

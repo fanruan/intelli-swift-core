@@ -249,6 +249,7 @@ public class BuildCubeTask implements CubeTask {
         finishObserver = new BICubeFinishObserver<Future<String>>(new BIOperationID("FINEBI_E"));
         operationManager.setVersionMap(cubeBuildStuff.getVersions());
         operationManager.generateDataSource(cubeBuildStuff.getDependTableResource());
+        logTableDepend(cubeBuildStuff.getDependTableResource());
         operationManager.generateRelationBuilder(cubeBuildStuff.getCubeGenerateRelationSet());
         logRelationDepend(cubeBuildStuff.getCubeGenerateRelationSet());
         operationManager.generateTableRelationPath(cubeBuildStuff.getCubeGenerateRelationPathSet());
@@ -353,6 +354,31 @@ public class BuildCubeTask implements CubeTask {
             }
         }
         logger.info("***************Path depend end*****************\n");
+    }
+
+    private void logTableDepend(Set<List<Set<CubeTableSource>>> tableSourceSet) {
+        logger.info("***************Table depend*****************");
+
+        int countSource = 0;
+        for (List<Set<CubeTableSource>> tableSource : tableSourceSet) {
+            countSource++;
+            StringBuffer sb = new StringBuffer("\nTable Depend " + countSource + " \n");
+            int layerCount = 0;
+            for (Set<CubeTableSource> oneLayer : tableSource) {
+                layerCount++;
+                sb.append("---------------Layer " + layerCount).append("----------------\n");
+                int cellCount = 0;
+                for (CubeTableSource oneCell : oneLayer) {
+                    sb.append("Layer " + layerCount + ", Cell " + cellCount);
+                    sb.append(BuildLogHelper.tableLogContent("", oneCell));
+                    sb.append("\n");
+                }
+                sb.append("-------------Layer " + layerCount).append(" end--------------\n\n");
+            }
+            logger.info(sb.toString());
+        }
+        logger.info("***************Table depend end*****************");
+
     }
 
     private void logRelationDepend(Set<BICubeGenerateRelation> relationDependSet) {
