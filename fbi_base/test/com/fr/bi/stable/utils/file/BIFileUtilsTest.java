@@ -64,27 +64,4 @@ public class BIFileUtilsTest extends TestCase {
                 }
             }
     }
-
-//    public void testCmdExec() throws Exception {
-//        try {
-//            String cmds = "ls";
-//            Process ps = Runtime.getRuntime().exec(cmds);
-//            System.out.print(loadStream(ps.getInputStream()));
-//            System.err.print(loadStream(ps.getErrorStream()));
-//            File src = new File("testSrcDir");
-//            File dest = new File("testDestDir");
-//            src.mkdirs();
-//            File child1 = new File(src.getAbsoluteFile() + "/child1");
-//            File child2 = new File(src.getAbsoluteFile() + "/child2");
-//            child1.createNewFile();
-//            child2.createNewFile();
-//            cmds="cp -r "+src.getAbsolutePath()+" "+dest.getAbsolutePath();
-//            ps = Runtime.getRuntime().exec(cmds);
-//            System.out.print(loadStream(ps.getInputStream()));
-//            System.err.print(loadStream(ps.getErrorStream()));
-//        } catch (IOException ioe) {
-//            ioe.printStackTrace();
-//        }
-//    }
-
 }

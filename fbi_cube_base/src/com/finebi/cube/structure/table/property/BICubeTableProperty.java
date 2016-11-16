@@ -429,7 +429,6 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
             }
         }
         getFieldInfoWriter().forceRelease();
-        getFieldInfoWriter().forceRelease();
     }
 
 
