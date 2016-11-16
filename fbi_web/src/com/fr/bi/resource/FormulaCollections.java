@@ -116,6 +116,8 @@ public class FormulaCollections {
                     names.add(name);
                 }
             } catch (ClassNotFoundException ignore) {
+            } catch (NoClassDefFoundError defError){
+                BILoggerFactory.getLogger().info(defError.getMessage());
             }
         }
         return names;

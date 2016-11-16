@@ -17,6 +17,6 @@ public class IncreaseIndexGenerator extends IndexGenerator {
 
     @Override
     protected AbstractIndexGenerator createSimpleIndexGenerator() {
-        return new SimpleIndexIncreaseGenerator(cube, source, CubeGenerationManager.getCubeManager().getGeneratingObject(biUser.getUserId()).getTableSources(), version, BIConfigureManagerCenter.getLogManager().getBILog(biUser.getUserId()), BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()));
+        return new SimpleIndexIncreaseGenerator(cube, source, CubeGenerationManager.getCubeManager().getGeneratingObject(biUser.getUserId()).getSystemTableSources(), version, BIConfigureManagerCenter.getLogManager().getBILog(biUser.getUserId()), BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()));
     }
 }
