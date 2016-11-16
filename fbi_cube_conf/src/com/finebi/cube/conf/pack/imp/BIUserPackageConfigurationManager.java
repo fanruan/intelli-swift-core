@@ -1,7 +1,6 @@
 package com.finebi.cube.conf.pack.imp;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.pack.data.BIBasicBusinessPackage;
 import com.finebi.cube.conf.pack.data.BIBusinessPackage;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
@@ -68,10 +67,6 @@ public class BIUserPackageConfigurationManager {
             } else {
                 packageConfigManager.setEndBuildCube(absentTables);
             }
-            BICubeConfigureCenter.getTableRelationManager().persistData(user.getUserId());
-            BICubeConfigureCenter.getPackageManager().persistData(user.getUserId());
-            BICubeConfigureCenter.getDataSourceManager().persistData(user.getUserId());
-
         }
     }
 
