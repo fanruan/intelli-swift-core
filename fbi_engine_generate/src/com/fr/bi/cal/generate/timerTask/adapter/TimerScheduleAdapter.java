@@ -28,7 +28,7 @@ public class TimerScheduleAdapter {
         for (String keys : allTimeTaskMap.keySet()) {
             timeListSet.clear();
             UpdateSettingSource settingSource = allTimeTaskMap.get(keys);
-            boolean isGlobalUpdate = ComparatorUtils.equals(keys,DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE);
+            boolean isGlobalUpdate = ComparatorUtils.equals(keys, DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE);
             for (TimeFrequency frequency : settingSource.getTimeList()) {
                 String scheduleTime = BIDateUtils.getScheduleTime(frequency.getUpdateTime(), frequency.getUpdateFrequency());
                 if (timeListSet.contains(scheduleTime)) {
@@ -42,8 +42,8 @@ public class TimerScheduleAdapter {
                 } else {
                     BusinessTable table = tableCheck(userId, keys);
                     if (table != null) {
-                        TimerTaskSchedule timerTaskSchedule = setTableUpdateSettings(userId, frequency, scheduleTime, table, keys);
-                        scheduleList.add(timerTaskSchedule);
+                        List<TimerTaskSchedule> timerTaskSchedule = setTableUpdateSettings(userId, frequency, scheduleTime, table, keys);
+                        scheduleList.addAll(timerTaskSchedule);
                     }
                 }
             }
@@ -51,9 +51,13 @@ public class TimerScheduleAdapter {
         return scheduleList;
     }
 
-    private static TimerTaskSchedule setTableUpdateSettings(long userId, TimeFrequency frequency, String scheduleTime, BusinessTable table, String keys) {
-        CubeBuildStuff cubeBuild = new CubeBuildManager().buildSingleTable(userId, table.getID(), keys, frequency.getUpdateType());
-        return new TimerTaskSchedule(scheduleTime, cubeBuild, table.getTableSource().getTableName(), userId, frequency.getUpdateType());
+    private static List<TimerTaskSchedule> setTableUpdateSettings(long userId, TimeFrequency frequency, String scheduleTime, BusinessTable table, String keys) {
+        List<TimerTaskSchedule> scheduleList = new ArrayList<TimerTaskSchedule>();
+        List<CubeBuildStuff> cubeBuildList = new CubeBuildManager().buildSingleTable(userId, keys, frequency.getUpdateType());
+        for (CubeBuildStuff cubeBuild : cubeBuildList) {
+            scheduleList.add(new TimerTaskSchedule(scheduleTime, cubeBuild, table.getTableSource().getTableName(), userId, frequency.getUpdateType()));
+        }
+        return scheduleList;
     }
 
     private static TimerTaskSchedule setBaseTableUpdateSettings(long userId, TimeFrequency frequency, String scheduleTime, BusinessTable table) {
@@ -79,7 +83,7 @@ public class TimerScheduleAdapter {
         Set<BusinessTable> allTables = BICubeConfigureCenter.getPackageManager().getAllTables(userId);
         for (BusinessTable table : allTables) {
             for (BICore biCore : table.getTableSource().createSourceMap().keySet()) {
-                if(ComparatorUtils.equals(table.getTableSource().createSourceMap().get(biCore).getSourceID(),keys)) {
+                if (ComparatorUtils.equals(table.getTableSource().createSourceMap().get(biCore).getSourceID(), keys)) {
                     return table;
                 }
             }
