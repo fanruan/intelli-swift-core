@@ -62,7 +62,7 @@ public class BIFileUtils {
     public static List deleteFiles(File f) {
         List removedFailedFiles = new ArrayList();
         File[] files = f.listFiles();
-        if (null != files) {
+        if (null!=files) {
             for (int i = 0; i < files.length; i++) {
                 if (files[i].isDirectory()) {
                     deleteFiles(files[i]);
@@ -72,7 +72,7 @@ public class BIFileUtils {
                     }
                 }
             }
-            if (!f.delete()) {
+            if(!f.delete()) {
                 removedFailedFiles.add(f.getAbsolutePath());
             }
         }
@@ -335,25 +335,20 @@ public class BIFileUtils {
      * @throws IOException
      */
     public static void copyFolder(File src, File dest) throws IOException {
-        String os = System.getProperty("os.name");
-        if (os.toUpperCase().contains("HP-UX")) {
-            String cmd = "cp -r " + src.getAbsolutePath() + " " + dest.getAbsolutePath();
-            Runtime.getRuntime().exec(cmd);
-        } else {
-            if (src.isDirectory()) {
-                if (!dest.exists()) {
-                    dest.mkdirs();
-                }
-                String files[] = src.list();
-                for (String file : files) {
-                    File srcFile = new File(src, file);
-                    File destFile = new File(dest, file);
-                    // 递归复制
-                    copyFolder(srcFile, destFile);
-                }
-            } else {
-                copyFile(src, dest);
+        if (src.isDirectory()) {
+            if (!dest.exists()) {
+                dest.mkdirs();
             }
+            String files[] = src.list();
+            for (String file : files) {
+                File srcFile = new File(src, file);
+                File destFile = new File(dest, file);
+                // 递归复制
+                copyFolder(srcFile, destFile);
+            }
+        } else {
+
+            copyFile(src, dest);
         }
     }
 

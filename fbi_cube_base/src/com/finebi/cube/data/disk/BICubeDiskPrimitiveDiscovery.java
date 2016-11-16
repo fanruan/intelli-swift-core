@@ -167,7 +167,6 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
             try {
                 for (NIOResourceManager nioManager : fileResourceMap.values()) {
                     nioManager.forceRelease();
-                    nioManager.forceRelease();
                 }
             } catch (Exception e) {
                 BILoggerFactory.getLogger().error(e.getMessage(), e);

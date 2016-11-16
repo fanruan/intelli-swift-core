@@ -13,7 +13,6 @@ import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.ICubeTablePropertyService;
 import com.finebi.cube.structure.ITableKey;
-import com.finebi.cube.structure.property.BICubeProperty;
 import com.finebi.cube.structure.property.BICubeVersion;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -429,6 +428,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
                 BINonValueUtils.beyondControl("the field:" + field.toString() + " createJson method has problem.");
             }
         }
+        getFieldInfoWriter().forceRelease();
         getFieldInfoWriter().forceRelease();
     }
 
