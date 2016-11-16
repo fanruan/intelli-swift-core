@@ -9,7 +9,7 @@ import com.finebi.cube.structure.BICube;
 import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.Cube;
 import com.finebi.cube.structure.CubeTableEntityService;
-import com.finebi.cube.structure.table.CubeSourceHelper;
+import com.finebi.cube.conf.CubeSourceHelper;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.constant.DBConstant;

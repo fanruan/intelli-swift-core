@@ -64,7 +64,8 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
             gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
             labelRotation: this.config.text_direction,
             enableTick: this.config.enable_tick,
-            lineWidth: this.config.line_width
+            lineWidth: this.config.line_width,
+            maxWidth: '40%'
         });
 
         //值轴

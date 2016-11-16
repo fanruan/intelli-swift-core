@@ -115,7 +115,10 @@ public class Service4BIConfigure extends NoSessionIDService {
             new BITurnOffDeployModeAction(),
             new BITurnOnDeployModeAction(),
             new BISetDeployModeLimitValueAction(),
-            new BIDisplayDeployModeLimitValueAction()
+            new BIDisplayDeployModeLimitValueAction(),
+            new BIDownloadFineindexLogAction(),
+            new BIGetThreadPoolSizeAction(),
+            new BISetThreadPoolSizeAction()
 
 
     };

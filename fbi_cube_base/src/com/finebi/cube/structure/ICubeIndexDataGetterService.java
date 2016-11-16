@@ -31,6 +31,4 @@ public interface ICubeIndexDataGetterService extends Release, CubeResource {
     GroupValueIndex getNULLIndex(int position) throws BICubeIndexException;
 
     boolean isEmpty();
-
-
 }

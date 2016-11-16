@@ -62,7 +62,8 @@ BI.CompareBarChart = BI.inherit(BI.AbstractChart, {
             gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
             lineWidth: this.config.line_width,
             enableTick: this.config.enable_tick,
-            labelRotation: this.config.text_direction
+            labelRotation: this.config.text_direction,
+            maxWidth: '40%'
         });
 
         self.formatNumberLevelInXaxis(items, this.config.left_y_axis_number_level);

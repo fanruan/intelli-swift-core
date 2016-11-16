@@ -95,7 +95,8 @@ BI.LineChart = BI.inherit(BI.AbstractChart, {
             enableTick: this.config.enable_tick,
             labelRotation: this.config.text_direction,
             enableMinorTick: self.config.enable_minor_tick,
-            gridLineWidth: this.config.show_grid_line === true ? 1 : 0
+            gridLineWidth: this.config.show_grid_line === true ? 1 : 0,
+            maxHeight: '40%'
         });
 
         config.chartType = "line";

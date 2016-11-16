@@ -64,7 +64,7 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
             } else {
                 BILoggerFactory.getLogger(CompoundCubeTableReader.class).error("hostTable sourceId" + hostTable.tableKey.getSourceID());
             }
-            throw new BICubeTableAbsentException("Please generate Cube firstly ,The Table:"+ hostTable.tableKey.getSourceID()+" absent");
+            throw new BICubeTableAbsentException("Please generate Cube firstly ,The Table:" + hostTable.tableKey.getSourceID() + " absent");
         }
         if (isParentAvailable()) {
             for (ICubeFieldSource field : parentTable.getFieldInfo()) {
@@ -202,12 +202,12 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
 
     @Override
     public Date getLastExecuteTime() {
-        return  hostTable.getLastExecuteTime();
+        return hostTable.getLastExecuteTime();
     }
 
     @Override
     public Date getCurrentExecuteTime() {
-        return  hostTable.getCurrentExecuteTime();
+        return hostTable.getCurrentExecuteTime();
     }
 
 
@@ -253,6 +253,7 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
             parentTable.forceReleaseWriter();
         }
     }
+
     @Override
     public void forceReleaseReader() {
         hostTable.forceReleaseReader();
@@ -260,6 +261,7 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
             parentTable.forceReleaseReader();
         }
     }
+
     @Override
     public void recordParentsTable(List<ITableKey> parents) {
         throw new UnsupportedOperationException();
@@ -321,6 +323,11 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
     @Override
     public Boolean isVersionAvailable() {
         return hostTable.isVersionAvailable();
+    }
+
+    @Override
+    public boolean relationExists(BICubeTablePath path) {
+        return hostTable.relationExists(path);
     }
 
     @Override

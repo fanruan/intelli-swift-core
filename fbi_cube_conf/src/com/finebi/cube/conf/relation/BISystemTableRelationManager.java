@@ -8,6 +8,7 @@ import com.finebi.cube.conf.relation.relation.IRelationContainer;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.exception.*;
 import com.finebi.cube.common.log.BILoggerFactory;
@@ -152,9 +153,9 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
     }
 
     @Override
-    public void finishGenerateCubes(long userId) {
+    public void finishGenerateCubes(long userId,Set<BITableSourceRelation> absentRelation) {
         userId = UserControl.getInstance().getSuperManagerID();
-        getUserGroupConfigManager(userId).finishGenerateCubes();
+        getUserGroupConfigManager(userId).finishGenerateCubes(absentRelation);
     }
 
     @Override

@@ -221,4 +221,12 @@ public class BIOccupiedCubeTableSource implements CubeTableSource {
     public int hashCode() {
         return hostTableSource != null ? hostTableSource.hashCode() : 0;
     }
+
+    public Set<CubeTableSource> getParents() {
+        Set<CubeTableSource> sources = null;
+        if(hostTableSource instanceof ETLTableSource) {
+            sources = ((ETLTableSource) hostTableSource).createSourceSet();
+        }
+        return sources;
+    }
 }

@@ -1,6 +1,6 @@
-package com.finebi.cube.structure.table;
+package com.finebi.cube.conf;
 
-import com.finebi.cube.conf.BICubeConfigureCenter;
+
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.structure.BITableKey;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -20,11 +20,9 @@ public class CubeSourceHelper {
                     if (source.getSourceID().equals(biTableKey.getSourceID())) {
                         return source;
                     }
-
                 }
             }
         }
-
         return null;
     }
 }
