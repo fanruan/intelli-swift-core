@@ -46,9 +46,32 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var dimensionMap = BI.Utils.getDimensionMapByDimensionID(o.dId);
         var tIds = BI.Utils.getAllTargetDimensionIDs(BI.Utils.getWidgetIDByDimensionID(o.dId));
         var res = BI.find(tIds, function(idx, tId){
-            return !BI.has(dimensionMap, tId) && !BI.Utils.isCalculateTargetByDimensionID(tId);
+            return BI.Utils.isCalculateTargetByDimensionID(tId) || !checkDimAndTarRelationValidInCurrentPaths(o.dId, tId);
         });
         return BI.isNull(res);
+
+        function checkDimAndTarRelationValidInCurrentPaths(dId, tId){
+            var valid = true;
+            if(BI.has(dimensionMap, tId)){
+                var targetRelation = dimensionMap[tId].target_relation;
+                BI.any(targetRelation, function (id, path) {
+                    var pId = BI.Utils.getFirstRelationPrimaryIdFromRelations(path);
+                    var fId = BI.Utils.getLastRelationForeignIdFromRelations(path);
+                    var paths = BI.Utils.getPathsFromFieldAToFieldB(pId, fId);
+                    if (!BI.deepContains(paths, path)) {
+                        if (paths.length === 1) {
+                        } else {
+                            valid = false;
+                            return true;
+                        }
+                    }
+                })
+            }else{
+                var paths = BI.Utils.getPathsFromFieldAToFieldB(BI.Utils.getFieldIDByDimensionID(dId), BI.Utils.getFieldIDByDimensionID(tId))
+                valid = paths.length === 1;
+            }
+            return valid;
+        }
     },
 
     rebuildItemsForGISMAP: function () {
@@ -126,25 +149,36 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
         if(items.length > 0 && BI.isNotNull(items[items.length - 1][0])){
             var map = BI.Utils.getDimensionMapByDimensionID(o.dId);
-            var fromTextArray = [];
-            BI.each(map, function(tId, obj){
-                var fromText = "";
-                var name = BI.Utils.getFieldNameByID(obj._src.field_id);
-                if(BI.isNull(name)){
+            if(BI.size(map) > 0){
+                var fromTextArray = [];
+                BI.each(map, function(tId, obj){
+                    var fromText = "";
+                    var name = BI.Utils.getFieldNameByID(obj._src.field_id);
+                    if(BI.isNull(name)){
+                    }else{
+                        var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(obj._src.field_id));
+                        fromText = tableName + "."  + name;
+                    }
+                    if(!BI.contains(fromTextArray, fromText)){
+                        items[items.length - 1].push({
+                            text: fromText,
+                            tipType: "success",
+                            value: BICst.TARGET_COMBO.INFO,
+                            disabled: true
+                        });
+                        fromTextArray.push(fromText);
+                    }
+                });
+            }else{
+                var fieldId = BI.Utils.getFieldIDByDimensionID(o.dId);
+                var fieldName = BI.Utils.getFieldNameByID(fieldId);
+                if(BI.isNull(fieldName)){
+                    items[items.length - 1][0].text = items[items.length - 1][0].title = BI.i18nText("BI-Dimension_From");
                 }else{
-                    var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(obj._src.field_id));
-                    fromText = tableName + "."  + name;
+                    var tableName = BI.Utils.getTableNameByID(BI.Utils.getTableIdByFieldID(fieldId));
+                    items[items.length - 1][0].text = items[items.length - 1][0].title = BI.i18nText("BI-Dimension_From") + ": " + tableName + "."  + fieldName;
                 }
-                if(!BI.contains(fromTextArray, fromText)){
-                    items[items.length - 1].push({
-                        text: fromText,
-                        tipType: "success",
-                        value: BICst.TARGET_COMBO.INFO,
-                        disabled: true
-                    });
-                    fromTextArray.push(fromText);
-                }
-            });
+            }
         }
 
         if(!this._checkDimensionValid()){

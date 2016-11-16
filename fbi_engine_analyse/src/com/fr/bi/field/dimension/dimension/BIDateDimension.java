@@ -7,6 +7,7 @@ import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.stable.StringUtils;
 
 import java.util.List;
 
@@ -20,14 +21,13 @@ public class BIDateDimension extends BIAbstractDimension {
      */
     @Override
     public String toString(Object v) {
-        if (group.getType() == BIReportConstant.GROUP.YMD) {
-            return v.toString();
-
+        if (v == null){
+            return StringUtils.EMPTY;
         }
-        if (v != null) {
-            return v.toString();
+        if (group.getType() == BIReportConstant.GROUP.M) {
+            return String.valueOf(((Number)v).intValue() + 1);
         }
-        return "";
+        return v.toString();
     }
 
 

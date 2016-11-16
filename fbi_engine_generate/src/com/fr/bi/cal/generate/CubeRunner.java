@@ -3,12 +3,7 @@ package com.fr.bi.cal.generate;
 import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
-import com.finebi.cube.conf.CubeBuild;
-import com.finebi.cube.conf.CubeGenerationManager;
-import com.finebi.cube.fun.CubeConditionProvider;
-import com.finebi.cube.impl.conf.CubeBuildByPart;
-import com.finebi.cube.impl.conf.CubeBuildComplete;
-import com.finebi.cube.utils.CubeUpdateUtils;
+import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.inter.BrokenTraversal;
 import com.fr.bi.common.inter.Traversal;
@@ -22,11 +17,9 @@ import com.fr.bi.stable.utils.file.BIPathUtils;
 import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
-import com.fr.plugin.ExtraClassManager;
 
 import java.io.File;
 import java.util.Iterator;
-import java.util.Set;
 
 /**
  * Created by GUY on 2015/3/16.
@@ -41,7 +34,7 @@ public class CubeRunner {
     protected volatile Status statue = Status.UNLOAD;
     protected BIUser biUser;
     QueueThread<CubeTask> cubeThread = new QueueThread<CubeTask>();
-    private CubeBuildComplete object;
+    private CubeBuildStuffComplete object;
 
     public CubeRunner(long userId) {
         biUser = new BIUser(userId);
@@ -62,10 +55,6 @@ public class CubeRunner {
             public void actionPerformed(CubeTask cubeTask) {
                 long start = System.currentTimeMillis();
                 setStatue(Status.LOADING);
-                Set<CubeConditionProvider> set = ExtraClassManager.getInstance().getArray(CubeConditionProvider.MARK_STRING);
-                for (CubeConditionProvider provider : set) {
-                    provider.prepare(cubeTask);
-                }
                 start();
                 try {
                     cubeTask.start();
@@ -74,7 +63,7 @@ public class CubeRunner {
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
                 } finally {
-                    finish();
+                    finish(cubeTask);
                     setStatue(Status.LOADED);
                     BILoggerFactory.getLogger().info(BIDateUtils.getCurrentDateTime() + " Build OLAP database Cost:" + DateUtils.timeCostFrom(start));
                 }
@@ -109,7 +98,7 @@ public class CubeRunner {
         Iterator<CubeTask> iterator = cubeThread.iterator();
         while (iterator.hasNext()) {
             CubeTask task = iterator.next();
-            if (task.getTaskId().equals(t.getTaskId())) {
+            if (ComparatorUtils.equals(task.getTaskId(), t.getTaskId())) {
                 return true;
             }
         }
@@ -133,7 +122,7 @@ public class CubeRunner {
     }
 
     public void addTask(CubeTask task) {
-            cubeThread.add(task);
+        cubeThread.add(task);
     }
 
     public void removeTask(String taskId) {
@@ -151,22 +140,29 @@ public class CubeRunner {
     }
 
     private void generateCube() {
-        setStatue(Status.LOADED);
-        CubeBuild cubeBuild = new CubeBuildByPart(biUser.getUserId(), CubeUpdateUtils.getNewTables(biUser.getUserId()), CubeUpdateUtils.getNewRelations(biUser.getUserId()));
-        CubeTask task = new BuildCubeTask(biUser, cubeBuild);
-        CubeGenerationManager.getCubeManager().addTask(task, biUser.getUserId());
+//        setStatue(Status.LOADED);
+//        CubeBuildStuff cubeBuild = new CubeBuildStuffIncreased(biUser.getUserId(), CubeUpdateUtils.getCubeAbsentTables(biUser.getUserId()), CubeUpdateUtils.getCubeAbsentRelations(biUser.getUserId()));
+//        CubeTask task = new BuildCubeTask(biUser, cubeBuild);
+//        CubeGenerationManager.getCubeManager().addTask(task, biUser.getUserId());
     }
 
     private void start() {
         BackUpUtils.backup();
     }
 
-    private void finish() {
-        BILoggerFactory.getLogger().info("start persist data!");
+    private void finish(CubeTask cubeTask) {
         long t = System.currentTimeMillis();
         try {
-            BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId());
-            BILoggerFactory.getLogger().info("persist data finished! time cost: " + DateUtils.timeCostFrom(t));
+
+
+
+            if (!cubeTask.getTaskType().equals(CubeTaskType.INSTANT)) {
+                BILoggerFactory.getLogger().info("start to persist meta data!");
+                BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
+                BICubeConfigureCenter.getPackageManager().persistData(biUser.getUserId());
+                BICubeConfigureCenter.getDataSourceManager().persistData(biUser.getUserId());
+            }
+            BILoggerFactory.getLogger().info("meta data finished! time cost: " + DateUtils.timeCostFrom(t));
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
@@ -176,9 +172,9 @@ public class CubeRunner {
     }
 
 
-    public CubeBuildComplete getCubeGeneratingObjects() {
+    public CubeBuildStuffComplete getCubeGeneratingObjects() {
         if (object == null) {
-            object = new CubeBuildComplete(biUser);
+            object = new CubeBuildStuffComplete(biUser);
             object.initialCubeStuff();
         }
         return object;

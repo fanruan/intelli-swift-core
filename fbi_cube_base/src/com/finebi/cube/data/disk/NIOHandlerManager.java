@@ -10,16 +10,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 public interface NIOHandlerManager<T extends CubeResourceRelease> {
     T queryHandler();
 
-    void releaseHandler();
+    void releaseHandler(String handlerKey);
 
-    void forceReleaseHandler();
+    void destroyHandler();
 
     boolean isForceReleased();
 
     boolean isHandlerEmpty();
 
-    //    fortest
-    void printCountOfHandler();
+    void registerHandlerKey(String handlerKey);
 
-    void reSetHandlerValid(boolean isValid);
+    void reValidHandler();
 }

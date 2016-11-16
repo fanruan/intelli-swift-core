@@ -227,6 +227,12 @@ public class CompoundCubeTableReaderNode implements CubeTableEntityService {
             table.forceReleaseWriter();
         }
     }
+    @Override
+    public void forceReleaseReader() {
+        for (CubeTableEntityService table : currentLevelTables) {
+            table.forceReleaseReader();
+        }
+    }
 
     @Override
     public List<ITableKey> getParentsTable() {
@@ -284,6 +290,11 @@ public class CompoundCubeTableReaderNode implements CubeTableEntityService {
     @Override
     public Boolean isVersionAvailable() {
         return masterTable.isVersionAvailable();
+    }
+
+    @Override
+    public boolean relationExists(BICubeTablePath path) {
+        return masterTable.relationExists(path);
     }
 
     @Override

@@ -6,6 +6,7 @@ package com.fr.bi.field.filtervalue.number.containsfilter;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 
@@ -19,6 +20,9 @@ public class NumberContainsFilterValue extends NumberValuesFilterValue {
 	 *
 	 */
 	private static final long serialVersionUID = -6973324281928100499L;
+
+	@BICoreField
+	private String CLASS_TYPE = "NumberContainsFilterValue";
 
 	@Override
 	public boolean isMatchValue(Number value) {

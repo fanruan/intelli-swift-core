@@ -31,7 +31,6 @@ import com.fr.general.ComparatorUtils;
 import com.fr.general.NameObject;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class created on 2016/3/9.
@@ -40,7 +39,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 4.0
  */
 public class DimensionGroupFilter {
-    private static Map<FilterGroupValueIndexKey, GroupValueIndex[]> filterGroupValueIndexMap = new ConcurrentHashMap<FilterGroupValueIndexKey, GroupValueIndex[]>();
     private final BISession session;
     List<MergerInfo> mergerInfoList = new ArrayList<MergerInfo>();
     BIDimension[] rowDimension;
@@ -57,7 +55,7 @@ public class DimensionGroupFilter {
     private long startTime = System.currentTimeMillis();
 
 
-    public DimensionGroupFilter(List<MergerInfo> mergerInfoList, Map<String, DimensionFilter> targetFilterMap, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, Map<String, TargetCalculator> targetsMap, BISession session, NameObject targetSort) {
+    public DimensionGroupFilter(List<MergerInfo> mergerInfoList, Map<String, DimensionFilter> targetFilterMap, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, Map<String, TargetCalculator> targetsMap, BISession session, NameObject targetSort, boolean showSum) {
         this.mergerInfoList = mergerInfoList;
         this.rowDimension = rowDimension;
         this.dimensionComparator = new Comparator[rowDimension.length];
@@ -303,7 +301,7 @@ public class DimensionGroupFilter {
         boolean shouldBuildTree = shouldBuildTree();
         BIMultiThreadExecutor executor = null;
         if (MultiThreadManagerImpl.getInstance().isMultiCall() && shouldBuildTree){
-            executor = new BIMultiThreadExecutor();
+            executor = MultiThreadManagerImpl.getInstance().getExecutorService();
         }
         boolean hasFilter[] = new boolean[rowDimension.length];
         for (int i = 0;i < rowDimension.length; i ++){
@@ -322,7 +320,7 @@ public class DimensionGroupFilter {
 
         if (shouldBuildTree) {
             if (MultiThreadManagerImpl.getInstance().isMultiCall()) {
-                executor.awaitExecutor();
+                executor.awaitExecutor(session);
                 executor = null;
             }
             buildTree(groupValueIndexe2D, counter, nodeBuilder);

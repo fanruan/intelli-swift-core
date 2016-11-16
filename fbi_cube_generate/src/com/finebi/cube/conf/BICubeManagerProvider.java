@@ -1,7 +1,7 @@
 package com.finebi.cube.conf;
 
 
-import com.finebi.cube.impl.conf.CubeBuildComplete;
+import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
 import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.engine.CubeTask;
 
@@ -33,14 +33,14 @@ public interface BICubeManagerProvider {
     void generateCubes();
 
     /**
-     * 增加人物
+     * 增加任务
      *
      * @param task 任务
      * @return 是否增加
      */
     boolean addTask(CubeTask task, long userId);
 
-    CubeBuildComplete getGeneratingObject(long userId);
+    CubeBuildStuffComplete getGeneratingObject(long userId);
 
     void removeTask(String id, long userId);
 

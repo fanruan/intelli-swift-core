@@ -132,7 +132,7 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
         var type = v.type, value = v.value;
         var date = BI.isNull(consultedDate) ? new Date() : consultedDate;
         var currY = date.getFullYear(), currM = date.getMonth(), currD = date.getDate();
-        if (BI.isNull(type) && BI.isNotNull(v.year)) {
+        if (BI.isNull(type) && isValidDate(v)) {
             return new Date(v.year, v.month, v.day);
         }
         switch (type) {
@@ -174,6 +174,10 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
                 return new Date(value.year, value.month, value.day);
             default:
                 break;
+        }
+
+        function isValidDate(v){
+            return BI.isNotNull(v.year) && BI.isNotNull(v.month) && BI.isNotNull(v.day);
         }
     },
 

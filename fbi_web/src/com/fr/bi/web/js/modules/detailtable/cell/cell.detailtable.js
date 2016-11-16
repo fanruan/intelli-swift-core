@@ -21,35 +21,24 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
         var type = BI.Utils.getDimensionTypeByID(dId);
         if (this._checkHyperLinkDimension()) {
             var hyperlink = BI.Utils.getDimensionHyperLinkByID(dId);
+            var expression = BI.Func.formatAddress(hyperlink.expression);
             var item = BI.createWidget({
-                type: "bi.a",
+                type: "bi.text_button",
                 cls: "hyper-link-item",
-                lgap: 5,
-                textAlign: "left",
-                text: this.options.text,
-                href: hyperlink.expression.replaceAll("\\$\\{.*\\}", this.options.text)
-            });
-
-            this._createItemWithStyle(item);
-
-        } else if (type === BICst.TARGET_TYPE.NUMBER || type === BICst.TARGET_TYPE.FORMULA) {
-            var item = BI.createWidget({
-                type: "bi.label",
-                cls: "detail-table-cell-text",
-                textAlign: "right",
-                whiteSpace: "nowrap",
-                height: this.options.height,
-                text: this.options.text,
-                value: this.options.value,
+                textAlign: (type === BICst.TARGET_TYPE.NUMBER || type === BICst.TARGET_TYPE.FORMULA) ? "right" : "left",
+                height: o.height,
+                text: o.text,
                 lgap: 5,
                 rgap: 5
             });
-            this._createItemWithStyle(item);
+            item.on(BI.TextButton.EVENT_CHANGE, function() {
+                window.open(expression.replaceAll("\\$\\{.*\\}", o.text));
+            });
         } else {
             var item = BI.createWidget({
                 type: "bi.label",
                 cls: "detail-table-cell-text",
-                textAlign: "left",
+                textAlign: (type === BICst.TARGET_TYPE.NUMBER || type === BICst.TARGET_TYPE.FORMULA) ? "right" : "left",
                 whiteSpace: "nowrap",
                 height: this.options.height,
                 text: this.options.text,
@@ -57,51 +46,13 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
                 lgap: 5,
                 rgap: 5
             });
-            this._createItemWithStyle(item);
         }
+        this._createItemWithStyle(item);
     },
 
     _checkHyperLinkDimension: function () {
         var hyperlink = BI.Utils.getDimensionHyperLinkByID(this.options.dId);
         return hyperlink.used || false
-    },
-
-    _parseFloatByDot: function (text, dot, separators) {
-        this._getText(text);
-        var num = BI.parseFloat(text);
-        switch (dot) {
-            case BICst.TARGET_STYLE.FORMAT.NORMAL:
-                if (separators) {
-                    num = BI.contentFormat(num, '#,###.##;-#,###.##')
-                } else {
-                    num = BI.contentFormat(num, '#.##;-#.##')
-                }
-                return num;
-                break;
-            case BICst.TARGET_STYLE.FORMAT.ZERO2POINT:
-                if (separators) {
-                    num = BI.contentFormat(num, '#,###;-#,###')
-                } else {
-                    num = BI.parseInt(num)
-                }
-                return num;
-                break;
-            case BICst.TARGET_STYLE.FORMAT.ONE2POINT:
-                if (separators) {
-                    num = BI.contentFormat(num, '#,###.0;-#,###.0')
-                } else {
-                    num = BI.contentFormat(num, '#.0;-#.0')
-                }
-                return num;
-            case BICst.TARGET_STYLE.FORMAT.TWO2POINT:
-                if (separators) {
-                    num = BI.contentFormat(num, '#,###.00;-#,###.00')
-                } else {
-                    num = BI.contentFormat(num, '#.00;-#.00')
-                }
-                return num;
-        }
-        return text;
     },
 
     _getIconByStyleAndMark: function (text, style, mark) {
@@ -129,16 +80,6 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
         return "";
     },
 
-    _getText: function (text) {
-        if (text === Infinity || text !== text) {
-            return text;
-        }
-        if (!BI.isNumeric(text)) {
-            return text;
-        }
-        return BI.parseFloat(text)
-    },
-
     _createItemWithStyle: function (item) {
         var o = this.options;
         var iconCls = "", color = "";
@@ -146,9 +87,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
         var dId = this.options.dId;
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
         var type = BI.Utils.getDimensionTypeByID(dId);
-        if (type === BICst.TARGET_TYPE.NUMBER || type === BICst.TARGET_TYPE.FORMULA) {
-            text = this._getText(text);
-        }
+
         var format = styleSettings.format, numLevel = styleSettings.num_level,
             iconStyle = styleSettings.icon_style, mark = styleSettings.mark,
             num_separators = styleSettings.num_separators;
@@ -176,8 +115,10 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
             }
         });
 
-        text = BI.TargetBodyNormalCell.parseFloatByDot(text, format, num_separators);
-        
+        if (type === BICst.TARGET_TYPE.NUMBER || type === BICst.TARGET_TYPE.FORMULA) {
+            text = BI.TargetBodyNormalCell.parseFloatByDot(text, format, num_separators);
+        }
+
         if (BI.Utils.getDimensionSettingsByID(dId).num_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
             text += "%";
         }

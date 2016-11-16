@@ -846,6 +846,10 @@ if (!window.BI) {
             return (string + "").toLocaleLowerCase();
         },
 
+        isEndWithBlank: function (string) {
+            return /(\s|\u00A0)$/.test(string);
+        },
+
         isLiteral: function (exp) {
             var literalValueRE = /^\s?(true|false|-?[\d\.]+|'[^']*'|"[^"]*")\s?$/
             return literalValueRE.test(exp)

@@ -20,6 +20,6 @@ public class BIDoubleNIOReaderBuilder extends BIPrimitiveNIOReaderBuilder<ICubeD
 
     @Override
     protected ICubeDoubleReader createNIOReader(File target, ICubeResourceLocation targetLocation) {
-        return new BIDoubleNIOReader(target);
+        return isSingleFile(target) ? new BIDoubleSingleFileNIOReader(target) : new BIDoubleNIOReader(target);
     }
 }

@@ -204,12 +204,21 @@ public class BICubeOccupiedTable implements CubeTableEntityService {
     }
 
     @Override
+    public boolean relationExists(BICubeTablePath path) {
+        return false;
+    }
+
+    @Override
     public void buildStructure() {
 
     }
 
     @Override
     public void forceReleaseWriter() {
+
+    }
+    @Override
+    public void forceReleaseReader(){
 
     }
 }

@@ -2,6 +2,7 @@ package com.fr.bi.field.filtervalue.number.nonefilter;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
@@ -14,6 +15,9 @@ public class NumberNullFilterValue extends NumberNoneValueFilterValue {
 	 * 
 	 */
 	private static final long serialVersionUID = -6292297241616352753L;
+
+    @BICoreField
+    private String CLASS_TYPE = "NumberNullFilterValue";
 
 	/**
      * 是否显示记录

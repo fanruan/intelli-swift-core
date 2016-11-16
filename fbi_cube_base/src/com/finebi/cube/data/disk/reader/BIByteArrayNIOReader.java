@@ -10,8 +10,10 @@ import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 
-public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
+import java.util.UUID;
 
+public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
+    private final String handlerKey = UUID.randomUUID().toString();
     private ICubeLongReader positionReader;
 
     private ICubeIntegerReader lengthReader;
@@ -22,6 +24,9 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
         this.positionReader = positionReader;
         this.lengthReader = lengthReader;
         this.contentReader = contentReader;
+        this.positionReader.getHandlerReleaseHelper().registerHandlerKey(handlerKey);
+        this.lengthReader.getHandlerReleaseHelper().registerHandlerKey(handlerKey);
+        this.contentReader.getHandlerReleaseHelper().registerHandlerKey(handlerKey);
     }
 
 
@@ -91,10 +96,9 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
 
     @Override
     public void clear() {
-//        尝试reader不通过外界clear，在需要writer时进行强制释放
-//        positionReader.releaseHandler();
-//        lengthReader.releaseHandler();
-//        contentReader.releaseHandler();
+        positionReader.releaseHandler(handlerKey);
+        lengthReader.releaseHandler(handlerKey);
+        contentReader.releaseHandler(handlerKey);
     }
 
     @Override
@@ -114,21 +118,5 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
         return positionReader.isForceReleased() ||
                 lengthReader.isForceReleased() ||
                 contentReader.isForceReleased();
-    }
-
-    @Override
-    public byte getFirstByte(int row) throws BIResourceInvalidException {
-        long start;
-        try {
-            start = positionReader.getSpecificValue(row);
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().info(BIStringUtils.append(
-                    e.getMessage(),
-                    "\n" + "retry again!"
-            ));
-            releaseBuffers();
-            start = positionReader.getSpecificValue(row);
-        }
-        return contentReader.getSpecificValue(start);
     }
 }

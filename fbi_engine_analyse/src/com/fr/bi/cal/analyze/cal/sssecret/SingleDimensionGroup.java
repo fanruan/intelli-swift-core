@@ -50,8 +50,6 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
     protected DimensionCalculator column;
     protected transient DimensionCalculator[] pcolumns;
 
-    protected transient int[] pckindex;
-
     protected transient Object[] data;
 
     protected transient int ckIndex;
@@ -66,12 +64,11 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
      * @param column 维度
      * @param gvi    获取实际过滤条件的对象
      */
-    protected SingleDimensionGroup(BusinessTable tableKey, DimensionCalculator[] pcolumns, int[] pckindex, DimensionCalculator column, Object[] data, int ckIndex, GroupValueIndex gvi, ICubeDataLoader loader, boolean useRealData, int demoGroupLimit) {
+    protected SingleDimensionGroup(BusinessTable tableKey, DimensionCalculator[] pcolumns, DimensionCalculator column, Object[] data, int ckIndex, GroupValueIndex gvi, ICubeDataLoader loader, boolean useRealData, int demoGroupLimit) {
         this.loader = loader;
         this.tableKey = tableKey;
         this.pcolumns = pcolumns;
         this.column = column;
-        this.pckindex = pckindex;
         this.ckIndex = ckIndex;
         this.data = data;
         this.useRealData = useRealData;
@@ -83,7 +80,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         }
     }
 
-    public static SingleDimensionGroup createDimensionGroup(final BusinessTable tableKey, final DimensionCalculator[] pcolumns, final int[] pckindex, final DimensionCalculator column, final Object[] data, final int ckIndex, final GroupValueIndex gvi, final ICubeDataLoader loader, boolean useRealData) {
+    public static SingleDimensionGroup createDimensionGroup(final BusinessTable tableKey, final DimensionCalculator[] pcolumns, final DimensionCalculator column, final Object[] data, final int ckIndex, final GroupValueIndex gvi, final ICubeDataLoader loader, boolean useRealData) {
         BusinessTable target = ComparatorUtils.equals(tableKey, BIBusinessTable.createEmptyTable()) ? column.getField().getTableBelongTo() : tableKey;
         long rowCount = loader.getTableIndex(target.getTableSource()).getRowCount();
         int groupLimit = 10;
@@ -95,11 +92,11 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         }
         final boolean urd = useRealData;
         final int count = Math.min(Math.max(BIBaseConstant.PART_DATA_GROUP_LIMIT, groupLimit), BIBaseConstant.PART_DATA_GROUP_MAX_LIMIT);
-        return new SingleDimensionGroup(tableKey, pcolumns, pckindex, column, data, ckIndex, gvi, loader, urd, count);
+        return new SingleDimensionGroup(tableKey, pcolumns, column, data, ckIndex, gvi, loader, urd, count);
     }
 
-    public static ISingleDimensionGroup createSortDimensionGroup(final BusinessTable tableKey, final DimensionCalculator[] pcolumns, final int[] pckindex, final DimensionCalculator column, final Object[] data, final int ckIndex, final GroupValueIndex gvi, final ICubeDataLoader loader, SortedNode sortedNode, boolean useRealData) {
-        SingleDimensionGroup singleDimensionGroup = createDimensionGroup(tableKey, pcolumns, pckindex, column, data, ckIndex, gvi, loader, useRealData);
+    public static ISingleDimensionGroup createSortDimensionGroup(final BusinessTable tableKey, final DimensionCalculator[] pcolumns, final DimensionCalculator column, final Object[] data, final int ckIndex, final GroupValueIndex gvi, final ICubeDataLoader loader, SortedNode sortedNode, boolean useRealData) {
+        SingleDimensionGroup singleDimensionGroup = createDimensionGroup(tableKey, pcolumns, column, data, ckIndex, gvi, loader, useRealData);
         return new SortedSingleDimensionGroup(singleDimensionGroup, sortedNode);
     }
 
@@ -156,17 +153,19 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
 
     private boolean hasSpecialGroup() {
         int groupType = column.getGroup().getType();
-        if (groupType == BIReportConstant.GROUP.CUSTOM_GROUP ||
-                groupType == BIReportConstant.GROUP.CUSTOM_NUMBER_GROUP) {
-            return true;
-        }
-        if (groupType != BIReportConstant.GROUP.NO_GROUP && groupType != BIReportConstant.GROUP.ID_GROUP) {
+        if (isCustomGroup(groupType)) {
             return true;
         }
         if (column.getSortType() == BIReportConstant.SORT.CUSTOM) {
             return true;
         }
         return false;
+    }
+
+    private boolean isCustomGroup(int groupType) {
+        return groupType == BIReportConstant.GROUP.CUSTOM_GROUP
+                || groupType == BIReportConstant.GROUP.CUSTOM_NUMBER_GROUP
+                || groupType == BIReportConstant.GROUP.AUTO_GROUP;
     }
 
 

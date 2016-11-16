@@ -34,10 +34,15 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this, o = this.options;
+        var isDashboard = BI.contains([self.constants.NORMAL, self.constants.HALF_DASHBOARD], self.config.chart_dashboard_type);
+        var isMultiPointers = self.config.number_of_pointer === self.constants.MULTI_POINTER;
         formatChartDashboardStyle();
         config.chartType = "gauge";
         delete config.xAxis;
         delete config.yAxis;
+        if (isDashboard && !isMultiPointers) {
+            config.plotOptions.seriesLabel.enabled = false
+        }
         config.gaugeAxis[0].labelStyle = this.config.chart_font;
         return [items, config];
 
@@ -60,12 +65,21 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                     } else {
                         value = BI.contentFormat(this.value, "#.##;-#.##");
                     }
-                    if (self.config.chart_dashboard_type === BICst.CHART_SHAPE.VERTICAL_TUBE) {
-                        return '<div style="text-align: center">' + this.category + '</div>' + '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + value + '</div>';
-                    } else {
-                        return '<div style="text-align: center">' + this.category + '</div>' + '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + value +
-                            getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS) + '</div>';
+
+                    var label = '<div style="text-align: center">' + this.seriesName + '</div>' + '<div style="text-align: center">' + value +
+                        getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS) + '</div>';
+
+                    if (isDashboard && items[0].data.length > 1) {
+                        if (isMultiPointers) {
+                            return '<div style="text-align: center">' + this.seriesName + ':' + value +
+                                getXYAxisUnit(self.config.dashboard_number_level, self.constants.DASHBOARD_AXIS) + '</div>';
+                        }
+                        return label
+                    } else if (isDashboard &&  BI.isNull(items[0].data[0].seriesName)) {
+                        return label
                     }
+
+                    return '<div style="text-align: center">' + this.category + '</div>' + label;
                 },
                 style: self.config.chart_font,
                 useHtml: true
@@ -100,7 +114,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                     break;
                 case BICst.CHART_SHAPE.NORMAL:
                 default:
-                    setPlotOptions("pointer", bands, slotValueLAbel,percentageLabel);
+                    setPlotOptions("pointer", bands, slotValueLAbel, percentageLabel);
                     break;
             }
             changeMaxMinScale();
@@ -283,6 +297,16 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
                     })
                 });
                 return [result];
+            } else if(this.config.number_of_pointer === c.ONE_POINTER && items[0].length > 1) {
+                BI.each(items[0], function (idx, item) {
+                    result.push({
+                        data: [BI.extend(item.data[0], {
+                            x: item.name
+                        })],
+                        name: BI.UUID()
+                    })
+                });
+                return [result]
             }
             if (this.config.number_of_pointer === c.MULTI_POINTER && items[0].length > 1) {//多个系列
                 BI.each(items, function (idx, item) {
@@ -299,18 +323,20 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
             }
         } else {
             var others = [];
-            BI.each(items[0], function (idx, item) {
-                BI.each(item.data, function (id, da) {
-                    others.push({
-                        data: [BI.extend({}, da, {
-                            x: item.name,
-                            y: da.y
-                        })],
-                        name: da.x
+            if (BI.isNotNull(items[0][0].data[0].seriesName)) {
+                BI.each(items[0], function (idx, item) {
+                    BI.each(item.data, function (id, da) {
+                        others.push({
+                            data: [BI.extend({}, da, {
+                                x: item.name,
+                                y: da.y
+                            })],
+                            name: da.x
+                        })
                     })
-                })
-            });
-            return [others];
+                });
+                return [others];
+            }
         }
         return items;
     },

@@ -60,11 +60,11 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
             }
         } else {
             if (null == hostTable) {
-                BILoggerFactory.getLogger().error("hostTable null");
+                BILoggerFactory.getLogger(CompoundCubeTableReader.class).error("hostTable null");
             } else {
-                BILoggerFactory.getLogger().error("hostTable sourceId" + hostTable.tableKey.getSourceID());
+                BILoggerFactory.getLogger(CompoundCubeTableReader.class).error("hostTable sourceId" + hostTable.tableKey.getSourceID());
             }
-            throw new BICubeTableAbsentException("Please generate Cube firstly");
+            throw new BICubeTableAbsentException("Please generate Cube firstly ,The Table:" + hostTable.tableKey.getSourceID() + " absent");
         }
         if (isParentAvailable()) {
             for (ICubeFieldSource field : parentTable.getFieldInfo()) {
@@ -202,12 +202,12 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
 
     @Override
     public Date getLastExecuteTime() {
-        return  hostTable.getLastExecuteTime();
+        return hostTable.getLastExecuteTime();
     }
 
     @Override
     public Date getCurrentExecuteTime() {
-        return  hostTable.getCurrentExecuteTime();
+        return hostTable.getCurrentExecuteTime();
     }
 
 
@@ -251,6 +251,14 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
         hostTable.forceReleaseWriter();
         if (isParentAvailable()) {
             parentTable.forceReleaseWriter();
+        }
+    }
+
+    @Override
+    public void forceReleaseReader() {
+        hostTable.forceReleaseReader();
+        if (isParentAvailable()) {
+            parentTable.forceReleaseReader();
         }
     }
 
@@ -315,6 +323,11 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
     @Override
     public Boolean isVersionAvailable() {
         return hostTable.isVersionAvailable();
+    }
+
+    @Override
+    public boolean relationExists(BICubeTablePath path) {
+        return hostTable.relationExists(path);
     }
 
     @Override

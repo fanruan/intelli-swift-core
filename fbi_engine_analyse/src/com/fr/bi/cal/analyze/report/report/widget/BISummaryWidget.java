@@ -1,9 +1,9 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
-import com.finebi.cube.conf.field.BusinessFieldHelper;
 import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.conf.table.BusinessTableHelper;
@@ -11,6 +11,7 @@ import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
+import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
@@ -29,7 +30,6 @@ import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.structure.collection.map.ConcurrentCacheHashMap;
 import com.fr.bi.stable.utils.BITravalUtils;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.bi.util.BIConfUtils;
@@ -59,7 +59,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
 
     protected ComplexExpander complexExpander = new ComplexExpander();
     private int maxCol = 7;     //单页最大列数
-    private int maxRow = 20;    //单页最大行数
+    private int maxRow = PagingFactory.PAGE_PER_GROUP_20;    //单页最大行数
     private int dimensionRelationIndex = 1;
     private int targetRelationIndex = 0;
 
@@ -453,5 +453,30 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                     ", ob=" + getObject() +
                     '}';
         }
+    }
+
+    /**
+     * 螺旋分析在更新完cube以后需要把dimensionsMap中的tableSource刷新来保证缓存的正常使用(etl会改变field的tableSource)
+     */
+    @Override
+    public void refreshColumns() {
+        super.refreshColumns();
+
+        Iterator<Map.Entry<String, Map<String, BusinessField>>> it = dimensionsMap.entrySet().iterator();
+        LinkedHashMap<String, Map<String, BusinessField>> refreshedDimensionsMap = new LinkedHashMap<String, Map<String, BusinessField>>();
+        while (it.hasNext()) {
+            Map.Entry<String, Map<String, BusinessField>> dimensionsMapEntry = it.next();
+            Map<String, BusinessField> dimensionFieldOfTargetsMap = dimensionsMapEntry.getValue();
+            Map<String, BusinessField> refreshedDimensionFieldOfTargetsMap = new LinkedHashMap<String, BusinessField>();
+            Iterator<Map.Entry<String, BusinessField>> dimensionFieldOfTargetIterator = dimensionFieldOfTargetsMap.entrySet().iterator();
+            while (dimensionFieldOfTargetIterator.hasNext()) {
+                Map.Entry<String, BusinessField> entry = dimensionFieldOfTargetIterator.next();
+                BusinessField dimensionFieldOfTarget = entry.getValue();
+                refreshedDimensionFieldOfTargetsMap.put(entry.getKey(), BIModuleUtils.getBusinessFieldById(dimensionFieldOfTarget.getFieldID()));
+            }
+            refreshedDimensionsMap.put(dimensionsMapEntry.getKey(), refreshedDimensionFieldOfTargetsMap);
+        }
+        dimensionsMap.clear();
+        dimensionsMap = refreshedDimensionsMap;
     }
 }

@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.session;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
@@ -28,7 +29,6 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.log.CubeGenerateStatusProvider;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.data.TableDataSource;
 import com.fr.fs.base.entity.CompanyRole;
 import com.fr.fs.base.entity.CustomRole;
@@ -424,12 +424,10 @@ public class BISession extends BIAbstractSession {
 
     @Override
     public void release() {
-        synchronized (detailIndexMap) {
-            detailIndexMap.clear();
-        }
-        synchronized (detailValueMap) {
-            detailValueMap.clear();
-        }
+        detailIndexMap.clear();
+        detailValueMap.clear();
+        partpageGroup.clear();
+        pageGroup.clear();
         releaseLock();
     }
 

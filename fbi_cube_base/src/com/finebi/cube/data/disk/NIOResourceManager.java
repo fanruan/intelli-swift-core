@@ -13,9 +13,7 @@ import com.finebi.cube.exception.BIBuildReaderException;
 import com.finebi.cube.exception.BIBuildWriterException;
 import com.finebi.cube.exception.IllegalCubeResourceLocationException;
 import com.finebi.cube.location.ICubeResourceLocation;
-import com.fr.bi.stable.utils.program.BINonValueUtils;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -30,6 +28,7 @@ public class NIOResourceManager implements ICubePrimitiveResourceDiscovery {
     private ReaderHandlerManager readerHandlerManager;
     private WriterHandlerManager writerHandlerManager;
 
+
     public NIOResourceManager() {
         writerManager = BIPrimitiveNIOWriterManager.getInstance();
         readerManager = BIPrimitiveNIOReaderManager.getInstance();
@@ -39,12 +38,18 @@ public class NIOResourceManager implements ICubePrimitiveResourceDiscovery {
         return readWriteLock;
     }
 
+    public ReaderHandlerManager getReaderHandlerManager() {
+        return readerHandlerManager;
+    }
+
+    public WriterHandlerManager getWriterHandlerManager() {
+        return writerHandlerManager;
+    }
     @Override
     public ICubePrimitiveReader getCubeReader(ICubeResourceLocation resourceLocation) throws IllegalCubeResourceLocationException, BIBuildReaderException {
         synchronized (this) {
             if (!isAvailable(readerHandlerManager) || (isAvailable(readerHandlerManager) && (readerHandlerManager.isForceReleased()))) {
                 ICubePrimitiveReader reader = readerManager.buildCubeReader(resourceLocation);
-//                readerHandlerManager = new ReaderHandlerManager(reader);
                 readerHandlerManager = new ReaderHandlerManager(reader, resourceLocation);
                 reader.setHandlerReleaseHelper(readerHandlerManager);
             }
@@ -62,7 +67,6 @@ public class NIOResourceManager implements ICubePrimitiveResourceDiscovery {
         synchronized (this) {
             if (!isAvailable(writerHandlerManager) || (isAvailable(writerHandlerManager) && writerHandlerManager.isForceReleased())) {
                 ICubePrimitiveWriter writer = writerManager.buildCubeWriter(resourceLocation);
-//              writerHandlerManager = new WriterHandlerManager(writer);
                 writerHandlerManager = new WriterHandlerManager(writer, resourceLocation);
                 writer.setHandlerReleaseHelper(writerHandlerManager);
             }
@@ -71,8 +75,7 @@ public class NIOResourceManager implements ICubePrimitiveResourceDiscovery {
             } else {
                 BILoggerFactory.getLogger().debug("can't get writer: " + resourceLocation.getAbsolutePath());
                 BILoggerFactory.getLogger().debug("force release reader: " + resourceLocation.getAbsolutePath());
-//                throw new RuntimeException("Writing or reading ,Current can't get the resource writer");
-                readerHandlerManager.forceReleaseHandler();
+                readerHandlerManager.destroyHandler();
                 return writerHandlerManager.queryHandler();
             }
         }
@@ -84,40 +87,27 @@ public class NIOResourceManager implements ICubePrimitiveResourceDiscovery {
 
     private boolean canGetReader() {
         return !isAvailable(writerHandlerManager) || writerHandlerManager.isHandlerEmpty();
-//        return true;
     }
 
     private boolean canGetWriter() {
         return (!isAvailable(readerHandlerManager) || (readerHandlerManager.isHandlerEmpty()))
                 &&
                 (!isAvailable(writerHandlerManager) || writerHandlerManager.isHandlerEmpty());
-//        return true;
     }
 
     //只在替换tcube时调用，
     public void forceRelease() {
         if (isAvailable(readerHandlerManager)) {
-            readerHandlerManager.forceReleaseHandler();
+            readerHandlerManager.destroyHandler();
         }
         if (isAvailable(writerHandlerManager)) {
-            writerHandlerManager.forceReleaseHandler();
+            writerHandlerManager.destroyHandler();
         }
     }
 
-    public void printCountOfHandler() {
+    public void reValidReader(){
         if (isAvailable(readerHandlerManager)) {
-            readerHandlerManager.printCountOfHandler();
-        }
-        if (isAvailable(writerHandlerManager)) {
-            writerHandlerManager.printCountOfHandler();
-        }
-    }
-
-    public void reSetHandlerValid() {
-        if (isAvailable(readerHandlerManager)) {
-//            reader use isValid
-            readerHandlerManager.reSetHandlerValid(true);
-            readerHandlerManager.setForceReleased(false);
+            readerHandlerManager.reValidHandler();
         }
     }
 }
