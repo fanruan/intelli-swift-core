@@ -393,13 +393,9 @@ public class RootDimensionGroup implements IRootDimensionGroup {
                 if (firstPath == null) {
                     continue;
                 }
-
-
                 GroupValueIndex pgvi = stf.createFilterIndex(new NoneDimensionCalculator(ckp.getField(), BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations())),
                         ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
                 gvi = gvi.AND(pgvi);
-
-
             }
             v = v.getParent();
         }

@@ -85,7 +85,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
     public static SingleDimensionGroup createDimensionGroup(final BusinessTable tableKey, final DimensionCalculator[] pcolumns, final DimensionCalculator column, final Object[] data, final int ckIndex, ICubeValueEntryGetter getter, final GroupValueIndex gvi, final ICubeDataLoader loader, boolean useRealData) {
         BusinessTable target = ComparatorUtils.equals(tableKey, BIBusinessTable.createEmptyTable()) ? column.getField().getTableBelongTo() : tableKey;
         long rowCount = loader.getTableIndex(target.getTableSource()).getRowCount();
-        int groupLimit = 10;
+        int groupLimit = BIBaseConstant.PART_DATA_GROUP_LIMIT;
         if (rowCount < BIBaseConstant.PART_DATA_COUNT_LIMIT) {
             useRealData = true;
         } else {
@@ -203,7 +203,11 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
                 }
             }
         });
-        return column.getSortType() == BIReportConstant.SORT.DESC || column.getSortType() == BIReportConstant.SORT.NUMBER_DESC ? new Iterator() {
+        return column.getSortType() == BIReportConstant.SORT.DESC || column.getSortType() == BIReportConstant.SORT.NUMBER_DESC ? getArraySortDESCIterator(getter, groupIndex) : getArraySortASCIterator(getter, groupIndex);
+    }
+
+    private Iterator getArraySortDESCIterator(final ICubeValueEntryGetter getter, final int[] groupIndex) {
+        return new Iterator() {
 
             private int index = groupIndex.length - 1;
 
@@ -223,7 +227,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
             @Override
             public Object next() {
                 final CubeValueEntry gve = getter.getEntryByGroupRow(index);
-                Map.Entry entry = new Entry() {
+                Entry entry = new Entry() {
                     @Override
                     public Object getKey() {
                         return gve.getT();
@@ -252,7 +256,11 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
                 index--;
                 return entry;
             }
-        } : new Iterator() {
+        };
+    }
+
+    private Iterator getArraySortASCIterator(final ICubeValueEntryGetter getter, final int[] groupIndex) {
+        return new Iterator() {
 
             private int index = 0;
 
@@ -272,7 +280,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
             @Override
             public Object next() {
                 final CubeValueEntry gve = getter.getEntryByGroupRow(index);
-                Map.Entry entry = new Entry() {
+                Entry entry = new Entry() {
                     @Override
                     public Object getKey() {
                         return gve.getT();
@@ -313,6 +321,10 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
                 i.value = getter.getPositionOfGroupByRow(row);
             }
         });
+        return getOneKeyIterator(getter, i);
+    }
+
+    private Iterator getOneKeyIterator(final ICubeValueEntryGetter getter, final FinalInt i) {
         return new Iterator() {
             @Override
             public void remove() {
@@ -327,7 +339,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
             @Override
             public Object next() {
                 final CubeValueEntry gve = getter.getEntryByGroupRow(i.value);
-                Map.Entry entry = new Entry() {
+                Entry entry = new Entry() {
                     @Override
                     public Object getKey() {
                         return gve.getT();
@@ -371,6 +383,10 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
             }
         });
         final Iterator<Integer> it = set.iterator();
+        return getTreeMapSortIterator(getter, it);
+    }
+
+    private Iterator getTreeMapSortIterator(final ICubeValueEntryGetter getter, final Iterator<Integer> it) {
         return new Iterator() {
             @Override
             public void remove() {
@@ -385,7 +401,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
             @Override
             public Object next() {
                 final CubeValueEntry gve = getter.getEntryByGroupRow(it.next());
-                Map.Entry entry = new Entry() {
+                Entry entry = new Entry() {
                     @Override
                     public Object getKey() {
                         return gve.getT();
