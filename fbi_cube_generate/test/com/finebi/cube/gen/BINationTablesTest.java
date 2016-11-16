@@ -62,7 +62,6 @@ public class BINationTablesTest extends BICubeTestBase {
     }
 
 
-
     public void testFieldPathIndex() {
         try {
 
@@ -74,7 +73,7 @@ public class BINationTablesTest extends BICubeTestBase {
             fieldIndexGenerator(BINationDataFactory.createTablePerson(), 1);
             fieldIndexGenerator(BINationDataFactory.createTablePerson(), 2);
             //生成依赖关系
-            BIRelationIndexGenerator indexGenerator = new BIRelationIndexGenerator(cube, generatePersonsAndNationsRelation());
+            BIRelationIndexGenerator indexGenerator = new BIRelationIndexGenerator(cube, null, generatePersonsAndNationsRelation());
             indexGenerator.mainTask(null);
 
 
@@ -134,7 +133,6 @@ public class BINationTablesTest extends BICubeTestBase {
             assertTrue(false);
         }
     }
-
 
 
     /**

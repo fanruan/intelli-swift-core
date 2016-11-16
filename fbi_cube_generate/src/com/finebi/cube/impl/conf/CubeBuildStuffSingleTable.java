@@ -23,7 +23,6 @@ import com.fr.bi.stable.exception.BIRelationAbsentException;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
-import com.fr.bi.stable.utils.BIRelationUtils;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
@@ -66,7 +65,7 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
         try {
             setTaskId(businessTable, childTableSourceId);
             setAllSources(businessTable);
-            Set<List<Set<CubeTableSource>>> depends = calculateTableSource(getTableSources());
+            Set<List<Set<CubeTableSource>>> depends = calculateTableSource(getSystemTableSources());
             setDependTableResource(depends);
             setAllSingleSources(set2Set(depends));
             setChildTableSource(childTableSourceId);
@@ -126,7 +125,7 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
         for (BITableRelation tableRelation : inUseRelations) {
             if (isTableRelationAvailable(tableRelation, cubeConfiguration)) {
                 BITableRelation tempTableRelation = new BITableRelation(tableRelation.getPrimaryField(), tableRelation.getForeignField());
-                BITableSourceRelation convertRelation = convertRelation(tempTableRelation);
+                BITableSourceRelation convertRelation = configHelper.convertRelation(tempTableRelation);
                 if (null != convertRelation) {
                     this.biTableSourceRelationSet.add(convertRelation);
                     Set<CubeTableSource> dependTableSourceSet = new HashSet<CubeTableSource>();
@@ -157,21 +156,21 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
 
     private Set<BITableRelationPath> getGeneratedPaths(Set<BITableRelation> generatedRelations) {
         Set<BITableRelationPath> generatedRelationPaths = new HashSet<BITableRelationPath>();
-        for (BITableRelationPath tableRelationPath : allRelationPathSet) {
-            boolean flag = true;
-            if (tableRelationPath.size() == BIRelationUtils.PATH_NULL || tableRelationPath.size() == BIRelationUtils.PATH_RELATION) {
-                flag = false;
-            }
-            for (BITableRelation tableRelation : tableRelationPath.getAllRelations()) {
-                if (!generatedRelations.contains(tableRelation)) {
-                    flag = false;
-                    break;
-                }
-            }
-            if (flag) {
-                generatedRelationPaths.add(tableRelationPath);
-            }
-        }
+//        for (BITableRelationPath tableRelationPath : allRelationPathSet) {
+//            boolean flag = true;
+//            if (tableRelationPath.size() == BIRelationUtils.PATH_NULL || tableRelationPath.size() == BIRelationUtils.PATH_RELATION) {
+//                flag = false;
+//            }
+//            for (BITableRelation tableRelation : tableRelationPath.getAllRelations()) {
+//                if (!generatedRelations.contains(tableRelation)) {
+//                    flag = false;
+//                    break;
+//                }
+//            }
+//            if (flag) {
+//                generatedRelationPaths.add(tableRelationPath);
+//            }
+//        }
         return generatedRelationPaths;
     }
 
@@ -219,7 +218,7 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
     /**
      * @return allTableSources
      */
-    public Set<CubeTableSource> getTableSources() {
+    public Set<CubeTableSource> getSystemTableSources() {
         return sources;
     }
 
@@ -247,11 +246,6 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
     }
 
     @Override
-    public Set<BITableRelation> getTableRelationSet() {
-        return inUseRelations;
-    }
-
-    @Override
     public Set<BICubeGenerateRelationPath> getCubeGenerateRelationPathSet() {
         return this.cubeGenerateRelationPathSet;
     }
@@ -259,11 +253,6 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
     @Override
     public Set<BICubeGenerateRelation> getCubeGenerateRelationSet() {
         return this.cubeGenerateRelationSet;
-    }
-
-    @Override
-    public boolean preConditionsCheck() {
-        return true;
     }
 
     @Override
@@ -277,6 +266,7 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
 
     /***
      * 单表更新ETL时，除了选中的表外，其他基础表不作更新
+     *
      * @return
      */
     @Override

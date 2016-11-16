@@ -1,5 +1,6 @@
 package com.finebi.cube.conf.pack.imp;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.pack.data.BIBasicBusinessPackage;
 import com.finebi.cube.conf.pack.data.BIBusinessPackage;
@@ -8,7 +9,7 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.factory.IFactoryService;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
-import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.data.source.CubeTableSource;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -54,11 +55,23 @@ public class BIUserPackageConfigurationManager {
      * 完成生成cube
      */
     public void finishGenerateCubes() {
+        finishGenerateCubes(null);
+    }
+
+    /**
+     * 完成生成cube
+     */
+    public void finishGenerateCubes(Set<CubeTableSource> absentTables) {
         synchronized (this) {
-            packageConfigManager.setEndBuildCube();
+            if (absentTables == null || absentTables.isEmpty()) {
+                packageConfigManager.setEndBuildCube();
+            } else {
+                packageConfigManager.setEndBuildCube(absentTables);
+            }
             BICubeConfigureCenter.getTableRelationManager().persistData(user.getUserId());
             BICubeConfigureCenter.getPackageManager().persistData(user.getUserId());
             BICubeConfigureCenter.getDataSourceManager().persistData(user.getUserId());
+
         }
     }
 

@@ -1,10 +1,11 @@
 package com.fr.bi.web.conf.services.cubetask;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.utils.CubeUpdateUtils;
+import com.fr.bi.cal.generate.CubeBuildManager;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BITableID;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
@@ -36,9 +37,9 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
         }
         boolean cubeBuild;
         if (StringUtils.isEmpty(baseTableSourceId)) {
-            cubeBuild = CubeTaskHelper.CubeBuildStaff(userId);
+            cubeBuild =new CubeBuildManager().CubeBuildStaff(userId);
         } else {
-            cubeBuild = CubeTaskHelper.CubeBuildSingleTable(userId, new BITableID(tableId), baseTableSourceId, updateType);
+            cubeBuild = new CubeBuildManager().CubeBuildSingleTable(userId, new BITableID(tableId), baseTableSourceId, updateType);
         }
         BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
         BIConfigureManagerCenter.getCubeConfManager().updateMultiPathLastCubeStatus(BIReportConstant.MULTI_PATH_STATUS.NOT_NEED_GENERATE_CUBE);

@@ -2,26 +2,19 @@ package com.finebi.cube.conf;
 
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.conf.table.BIBusinessTable;
-import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.impl.conf.CalculateDependManager;
-import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
-import com.finebi.cube.structure.BICube;
 import com.finebi.cube.utils.BITableRelationUtils;
 import com.finebi.cube.utils.CubePreConditionsCheck;
 import com.finebi.cube.utils.CubePreConditionsCheckManager;
-import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.utils.file.BIFileUtils;
@@ -36,28 +29,17 @@ import java.util.*;
  * Created by kary on 16/7/11.
  */
 public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
-    private long userId;
+
+    protected long userId;
     protected Set<CubeTableSource> allTableSources = new HashSet<CubeTableSource>();
-    private Set allBusinessTable = new HashSet<BIBusinessTable>();
-    protected Set<BITableRelationPath> allRelationPathSet = new HashSet<BITableRelationPath>();
-    protected Map<CubeTableSource, Map<String, ICubeFieldSource>> tableDBFieldMaps = new HashMap<CubeTableSource, Map<String, ICubeFieldSource>>();
     protected CalculateDependTool calculateDependTool;
+    protected BISystemConfigHelper configHelper;
 
     public AbstractCubeBuildStuff(long userId) {
         this.userId = userId;
-        init(userId);
-        extractTableSource();
-        extractFieldSource();
-    }
-
-    private void init(long userId) {
-        allBusinessTable = BICubeConfigureCenter.getPackageManager().getAllTables(userId);
+        configHelper = new BISystemConfigHelper(userId);
+        allTableSources.addAll(configHelper.extractTableSource(configHelper.getSystemBusinessTables()));
         calculateDependTool = new CalculateDependManager();
-        try {
-            allRelationPathSet = BICubeConfigureCenter.getTableRelationManager().getAllTablePath(userId);
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
-        }
     }
 
     @Override
@@ -98,16 +80,17 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
         BILoggerFactory.getLogger().info("***************space check start*****************");
         boolean spaceCheck = getSpaceCheckResult();
         BILoggerFactory.getLogger().info("***************space check result: " + spaceCheck);
-        BILoggerFactory.getLogger().info("***************connection check start*****************");
-        boolean connectionCheck = getConnectionCheck();
-        BILoggerFactory.getLogger().info("***************connection check result: " + connectionCheck);
+//        BILoggerFactory.getLogger().info("***************connection check start*****************");
+//        boolean connectionCheck = getConnectionCheck();
+//        BILoggerFactory.getLogger().info("***************connection check result: " + connectionCheck);
 //        BILoggerFactory.getLogger().info("***************table check start*****************");
 //        boolean sqlTest = getSqlTest();
 //        BILoggerFactory.getLogger().info("***************table  check result: " + sqlTest);
-        return spaceCheck && connectionCheck;
+//        return spaceCheck && connectionCheck;
+        return spaceCheck;
     }
 
-    public Set<CubeTableSource> getTableSources() {
+    public Set<CubeTableSource> getSystemTableSources() {
         return this.allTableSources;
     }
 
@@ -128,7 +111,13 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
         return false;
     }
 
-
+    /**
+     * rename advanced to temp
+     * rename tCube to advanced
+     * delete temp
+     *
+     * @return
+     */
     @Override
     public boolean replaceOldCubes() {
         ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(Long.toString(userId));
@@ -138,10 +127,14 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
         String tCubePath = tempConf.getRootURI().getPath();
         String tempFolderPath = advancedTempConf.getRootURI().getPath();
         try {
-            if (new File(tempFolderPath).exists()) {
-                BIFileUtils.delete(new File(tempFolderPath));
-            }
-            if (new File(advancedPath).exists() && !new File(tempFolderPath).exists()) {
+            if (new File(advancedPath).exists()) {
+                if (new File(tempFolderPath).exists()) {
+                    boolean tempFolderDelete = BIFileUtils.delete(new File(tempFolderPath));
+                    if (!tempFolderDelete) {
+                        BILoggerFactory.getLogger().error("delete tempFolder failed");
+                        return false;
+                    }
+                }
                 boolean renameFolder = BIFileUtils.renameFolder(new File(advancedPath), new File(tempFolderPath));
                 if (!renameFolder) {
                     BILoggerFactory.getLogger().error("rename Advanced to tempFolder failed");
@@ -155,6 +148,7 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
                     return false;
                 }
             }
+            //tCube替换（重命名）成功后删除tempFolder
             if (new File(tempFolderPath).exists()) {
                 boolean deleteTempFolder = BIFileUtils.delete(new File(tempFolderPath));
                 if (!deleteTempFolder) {
@@ -166,14 +160,18 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             return false;
         }
+
+
+//        ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(userId));
+//        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(userId));
+//        try {
+//            BIFileUtils.moveFile(tempConf.getRootURI().getPath().toString(), advancedConf.getRootURI().getPath().toString());
+//        } catch (Exception e) {
+//            BILoggerFactory.getLogger().error(e.getMessage());
+//        }
+//        return true;
     }
 
-    public void extractTableSource() {
-        for (Object biBusinessTable : allBusinessTable) {
-            BusinessTable table = (BusinessTable) biBusinessTable;
-            allTableSources.add(table.getTableSource());
-        }
-    }
 
     protected UpdateSettingSource setUpdateTypes(CubeTableSource source) {
         switch (source.getType()) {
@@ -199,7 +197,6 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
                     }
                 }
             }
-
         }
         if (needUpdate) {
             updateSettingSource.setUpdateType(DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
@@ -219,58 +216,8 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
     }
 
 
-    private void extractFieldSource() {
-        Iterator<CubeTableSource> tableSourceIterator = allTableSources.iterator();
-        while (tableSourceIterator.hasNext()) {
-            CubeTableSource tableSource = tableSourceIterator.next();
-            Set<ICubeFieldSource> BICubeFieldSources = tableSource.getFacetFields(allTableSources);
-            Map<String, ICubeFieldSource> name2Field = new HashMap<String, ICubeFieldSource>();
-            Iterator<ICubeFieldSource> it = BICubeFieldSources.iterator();
-            while (it.hasNext()) {
-                ICubeFieldSource field = it.next();
-                name2Field.put(field.getFieldName(), field);
-            }
-            tableDBFieldMaps.put(tableSource, name2Field);
-        }
-    }
-
-    protected BITableSourceRelation convertRelation(BITableRelation relation) {
-        if (!isTableRelationValid(relation)) {
-            BILoggerFactory.getLogger().error("tableSourceRelation invalid:" + relation.toString());
-            return null;
-        }
-        BITableSourceRelation biTableSourceRelation;
-        try {
-            CubeTableSource primaryTable;
-            CubeTableSource foreignTable;
-            primaryTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getPrimaryField().getTableBelongTo());
-            foreignTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getForeignField().getTableBelongTo());
-            ICubeFieldSource primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
-            ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
-            biTableSourceRelation = new BITableSourceRelation(
-                    primaryField,
-                    foreignField,
-                    primaryTable,
-                    foreignTable
-            );
-            primaryField.setTableBelongTo(primaryTable);
-            foreignField.setTableBelongTo(foreignTable);
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
-            return null;
-        }
-        return biTableSourceRelation;
-    }
-
-
-    protected boolean isTableRelationValid(BITableRelation relation) {
-        boolean relationValid = BITableRelationUtils.isRelationValid(relation);
-        boolean isStructureValid = allBusinessTable.contains(relation.getPrimaryTable()) && allBusinessTable.contains(relation.getForeignTable());
-        return isStructureValid && relationValid;
-    }
-
     protected boolean isTableRelationAvailable(BITableRelation relation, ICubeConfiguration cubeConfiguration) {
-        if (isTableRelationValid(relation)) {
+        if (configHelper.isTableRelationValid(relation)) {
             return BITableRelationUtils.isRelationAvailable(relation, cubeConfiguration);
         } else {
             return false;
@@ -278,15 +225,7 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
     }
 
     protected BITableSourceRelationPath convertPath(BITableRelationPath path) throws BITablePathConfusionException {
-        BITableSourceRelationPath tableSourceRelationPath = new BITableSourceRelationPath();
-        for (BITableRelation biTableRelation : path.getAllRelations()) {
-            BITableSourceRelation biTableSourceRelation = convertRelation(biTableRelation);
-            if (null == biTableSourceRelation) {
-                return null;
-            }
-            tableSourceRelationPath.addRelationAtTail(biTableSourceRelation);
-        }
-        return tableSourceRelationPath;
+        return configHelper.convertPath(path);
     }
 
     protected Set<BITableSourceRelation> removeDuplicateRelations(Set<BITableSourceRelation> tableRelations) {
@@ -349,16 +288,5 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
         return check.HDSpaceCheck(new File(conf.getRootURI().getPath()));
     }
 
-    private boolean getSqlTest() {
-        BICube cube = new BICube(new BICubeResourceRetrieval(getCubeConfiguration()), BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
-        for (CubeTableSource cubeTableSource : getSingleSourceLayers()) {
-            CubePreConditionsCheck check = new CubePreConditionsCheckManager();
-            boolean SqlCheckResult = check.SQLCheck(cube, cubeTableSource);
-            if (!SqlCheckResult) {
-                BILoggerFactory.getLogger().error("the table:" + cubeTableSource.getTableName() + " sql test failed");
-                return false;
-            }
-        }
-        return true;
-    }
+
 }

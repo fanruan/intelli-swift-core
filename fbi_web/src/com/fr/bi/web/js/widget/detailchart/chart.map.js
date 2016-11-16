@@ -35,7 +35,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.dataLabels.enabled = this.config.showDataLabel;
         config.plotOptions.tooltip.shared = true;
         var formatterArray = [];
-        BI.backEach(items, function (idx, item) {
+        BI.each(items, function (idx, item) {
             if (BI.has(item, "settings")) {
                 formatterArray.push(self.formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.numLevel || c.NORMAL,
                     item.settings.unit || "", item.settings.numSeparators || c.NUM_SEPARATORS));
