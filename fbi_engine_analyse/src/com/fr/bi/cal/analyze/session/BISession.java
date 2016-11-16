@@ -36,6 +36,7 @@ import com.fr.fs.control.CompanyRoleControl;
 import com.fr.fs.control.CustomRoleControl;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
+import com.fr.general.FRLogManager;
 import com.fr.general.GeneralContext;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -44,6 +45,7 @@ import com.fr.main.TemplateWorkBook;
 import com.fr.main.workbook.ResultWorkBook;
 import com.fr.report.report.ResultReport;
 import com.fr.report.stable.fun.Actor;
+import com.fr.script.Calculator;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.script.CalculatorProvider;
 import com.fr.web.core.SessionDealWith;
@@ -122,6 +124,8 @@ public class BISession extends BIAbstractSession {
         this.isEdit = true;
     }
 
+
+    private static final long TIME_OUT = 45000;
     /**
      * 半推半就
      *
@@ -144,7 +148,7 @@ public class BISession extends BIAbstractSession {
                     if (ss instanceof BISession) {
                         long t = ((BISession) ss).lastTime;
                         //45- 30 超过15-45秒还没反應可能是没有心跳
-                        if (System.currentTimeMillis() - t < 45000) {
+                        if (System.currentTimeMillis() - t < TIME_OUT) {
                             doForce = false;
                             break;
                         }
@@ -424,11 +428,14 @@ public class BISession extends BIAbstractSession {
 
     @Override
     public void release() {
+        super.release();
         detailIndexMap.clear();
         detailValueMap.clear();
         partpageGroup.clear();
         pageGroup.clear();
         releaseLock();
+        FRLogManager.setSession(null);
+        Calculator.putThreadSavedNameSpace(null);
     }
 
     @Override
