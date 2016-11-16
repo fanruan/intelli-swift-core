@@ -3,7 +3,6 @@ package com.fr.bi.cal.generate;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.*;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
 import com.finebi.cube.impl.conf.CubeBuildStuffSpecificTable;
@@ -20,7 +19,6 @@ import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.data.source.ETLTableSource;
 import com.fr.bi.conf.data.source.TableSourceUtils;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
@@ -39,8 +37,8 @@ public class CubeBuildManager {
 
     private BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
 
-    public boolean CubeBuildSingleTable(long userId, String childTableSourceId, int updateType) {
-        List<CubeBuildStuff> cubeBuildList = buildSingleTable(userId, childTableSourceId, updateType);
+    public boolean CubeBuildSingleTable(long userId, String baseTableSourceId, int updateType) {
+        List<CubeBuildStuff> cubeBuildList = buildSingleTable(userId, baseTableSourceId, updateType);
         boolean taskAdd = true;
         for (CubeBuildStuff cubeBuild : cubeBuildList) {
             taskAdd = cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId) && taskAdd;
@@ -48,10 +46,10 @@ public class CubeBuildManager {
         return taskAdd;
     }
 
-    public List<CubeBuildStuff> buildSingleTable(long userId, String childTableSourceId, int updateType) {
+    public List<CubeBuildStuff> buildSingleTable(long userId, String baseTableSourceId, int updateType) {
         BILoggerFactory.getLogger().info(BIDateUtils.getCurrentDateTime() + " Cube single table update start");
         List<CubeBuildStuff> cubeBuildList = new ArrayList<CubeBuildStuff>();
-        cubeBuildList.addAll(getCubeBuildFromTables(userId, childTableSourceId, updateType));
+        cubeBuildList.addAll(getCubeBuildFromTables(userId, baseTableSourceId, updateType));
         return cubeBuildList;
     }
 
