@@ -20,13 +20,17 @@ import com.finebi.cube.structure.Cube;
 import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
+import com.fr.bi.conf.data.source.ETLTableSource;
+import com.fr.bi.conf.data.source.TableSourceUtils;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.utils.time.BIDateUtils;
+import com.fr.general.ComparatorUtils;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -36,24 +40,48 @@ public class CubeBuildManager {
 
     private BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
 
+
     public boolean CubeBuildSingleTable(long userId, BITableID hostTableId, String childTableSourceId, int updateType) {
         CubeBuildStuff cubeBuild = buildSingleTable(userId, hostTableId, childTableSourceId, updateType);
         boolean taskAdd = cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId);
         return taskAdd;
     }
 
-    public CubeBuildStuff buildSingleTable(long userId, BITableID hostTableId, String childTableSourceId, int updateType) {
+    public CubeBuildStuff buildSingleTable(long userId, BITableID hostTableId, String basicTableSourceId, int updateType) {
         BILoggerFactory.getLogger().info(BIDateUtils.getCurrentDateTime() + " Cube single table update start");
         BusinessTable businessTable = BusinessTableHelper.getBusinessTable(hostTableId);
         CubeBuildStuff cubeBuild = new CubeBuildStuffSpecificTable(
                 userId,
                 businessTable.getTableSource(),
-                childTableSourceId,
+                basicTableSourceId,
                 updateType,
                 getAbsentTable(userId),
                 getAbsentRelation(userId),
                 getAbsentPath(userId));
         return cubeBuild;
+    }
+
+
+
+    /**
+     * 检查ETL表的基础表，是否存在。
+     *
+     * @param userId
+     * @param etlTableSource
+     * @param basicTableID
+     * @return
+     */
+    private boolean checkETLTable(long userId, ETLTableSource etlTableSource, String basicTableID) {
+        List<Set<CubeTableSource>> layers = etlTableSource.createGenerateTablesList();
+        for (CubeTableSource tableSource : CubeUpdateUtils.toSet(layers)) {
+            if (TableSourceUtils.isBasicTable(tableSource)) {
+                if (!CubeUpdateUtils.isTableExist(userId, tableSource) &&
+                        !ComparatorUtils.equals(tableSource.getSourceID(), basicTableID)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public boolean CubeBuildStaff(long userId) {
