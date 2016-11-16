@@ -32,7 +32,6 @@ public class BILongSingleFileNIOReader extends BIBaseSingleFileNIOReader impleme
         }
     }
 
-    @Override
     protected void setBufferInValid() {
         fakeBuffer = longBuffer;
         longBuffer = null;
@@ -46,7 +45,7 @@ public class BILongSingleFileNIOReader extends BIBaseSingleFileNIOReader impleme
                 longBuffer.clear();
                 longBuffer = null;
             }
-            if (fakeBuffer != null) {
+            if (fakeBuffer != null){
                 fakeBuffer.clear();
                 fakeBuffer = null;
             }

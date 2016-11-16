@@ -97,7 +97,7 @@ public class AnalysisDataSourceManager extends BISystemDataManager<DataSourceCom
 
     @Override
     public void persistData(long userId) {
-        persistUserData(userId);
+        persistUserData(UserControl.getInstance().getSuperManagerID());
     }
 
     @Override

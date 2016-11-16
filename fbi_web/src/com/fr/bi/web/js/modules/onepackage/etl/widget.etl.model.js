@@ -365,6 +365,7 @@ BI.ETLModel = BI.inherit(FR.OB, {
     },
 
     refresh4Fields: function (data) {
+        var self = this;
         var fields = data.fields, oFields = this.fields;
 
         function getFieldId(name, fields) {
@@ -383,6 +384,7 @@ BI.ETLModel = BI.inherit(FR.OB, {
         BI.each(fields, function (i, fs) {
             BI.each(fs, function (j, field) {
                 field.id = getFieldId(field.field_name, oFields);
+                self.allFields[field.id] = field;
             });
         });
     },

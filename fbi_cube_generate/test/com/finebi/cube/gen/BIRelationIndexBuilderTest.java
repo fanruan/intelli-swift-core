@@ -55,7 +55,7 @@ public class BIRelationIndexBuilderTest extends BICubeTestBase {
         fieldIndexGenerator.fieldIndexGenerator(tableA, primaryIndex);
         fieldIndexGenerator.fieldIndexGenerator(tableB, foreignIndex);
 
-        indexGenerator = new BIRelationIndexGenerator(cube, relation);
+        indexGenerator = new BIRelationIndexGenerator(cube, null, relation);
         indexGenerator.mainTask(null);
     }
 
@@ -67,7 +67,7 @@ public class BIRelationIndexBuilderTest extends BICubeTestBase {
             assertTrue(false);
         }
 
-        indexGenerator = new BIRelationIndexGenerator(cube, relation);
+        indexGenerator = new BIRelationIndexGenerator(cube, null, relation);
         indexGenerator.mainTask(null);
     }
 

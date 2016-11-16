@@ -45,7 +45,7 @@ public class BIDoubleSingleFileNIOReader extends BIBaseSingleFileNIOReader imple
                 doubleBuffer.clear();
                 doubleBuffer = null;
             }
-            if (fakeBuffer != null) {
+            if (fakeBuffer != null){
                 fakeBuffer.clear();
                 fakeBuffer = null;
             }

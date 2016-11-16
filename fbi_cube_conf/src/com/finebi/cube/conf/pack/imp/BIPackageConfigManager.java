@@ -1,11 +1,12 @@
 package com.finebi.cube.conf.pack.imp;
 
-import com.finebi.cube.conf.pack.IPackagesManagerService;
-import com.finebi.cube.conf.pack.BIStatusChaosException;
-import com.finebi.cube.conf.pack.data.*;
-import com.finebi.cube.conf.pack.group.IGroupTagsManagerService;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
+import com.finebi.cube.conf.pack.BIStatusChaosException;
+import com.finebi.cube.conf.pack.IPackagesManagerService;
+import com.finebi.cube.conf.pack.data.*;
+import com.finebi.cube.conf.pack.group.IGroupTagsManagerService;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
@@ -18,8 +19,8 @@ import com.fr.bi.conf.data.pack.exception.BIGroupDuplicateException;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 import com.fr.bi.stable.data.BITableID;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITableAbsentException;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -124,10 +125,18 @@ public class BIPackageConfigManager implements Release {
 
     public void setEndBuildCube() throws BIStatusChaosException {
         synchronized (analysisPackageManager) {
+            setEndBuildCube(new HashSet<CubeTableSource>());
+        }
+    }
+
+    public void setEndBuildCube(Set<CubeTableSource> absentTable) throws BIStatusChaosException {
+        synchronized (analysisPackageManager) {
             if (!isFree()) {
                 analysisPackageManager.parsePackageContainer(buildingCubePackages);
                 buildingCubePackages.clearPackages();
+                analysisPackageManager.removeTable(absentTable);
                 setFree();
+
             } else {
                 throw new BIStatusChaosException("Please check current status of building cube,here happened a fatal problem");
             }
