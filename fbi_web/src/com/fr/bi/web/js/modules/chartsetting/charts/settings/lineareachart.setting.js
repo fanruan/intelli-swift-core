@@ -1061,7 +1061,7 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.rightYTitleStyle.setVisible(this.rightYShowTitle.isSelected());
         this.rightYTitleStyle.setValue(BI.Utils.getWSChartRightYTitleStyleByID(wId));
         this.rightYShowCustomScale.setSelected(BI.Utils.getWSChartRightYShowCustomScaleByID(wId));
-        this.rightYCustomScale.setValue(BI.Utils.getWSChartLeftYCustomScaleByID(wId));
+        this.rightYCustomScale.setValue(BI.Utils.getWSChartRightYCustomScaleByID(wId));
         this.rightYCustomScale.setVisible(BI.Utils.getWSChartRightYShowCustomScaleByID(wId));
         this.rightYSeparator.setSelected(BI.Utils.getWSRightYNumberSeparatorByID(wId));
         this.rightYShowLabel.setSelected(BI.Utils.getWSRightYShowLabelByID(wId));

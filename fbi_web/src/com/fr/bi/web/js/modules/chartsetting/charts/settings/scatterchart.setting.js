@@ -768,7 +768,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.rightYShowTitle.setSelected(BI.Utils.getWSChartRightYShowTitleByID(wId));
         this.rightYTitle.setValue(titleX);
         this.rightYShowCustomScale.setSelected(BI.Utils.getWSChartRightYShowCustomScaleByID(wId));
-        this.rightYCustomScale.setValue(BI.Utils.getWSChartLeftYCustomScaleByID(wId));
+        this.rightYCustomScale.setValue(BI.Utils.getWSChartRightYCustomScaleByID(wId));
         this.rightYCustomScale.setVisible(BI.Utils.getWSChartRightYShowCustomScaleByID(wId));
         this.rightYSeparator.setSelected(BI.Utils.getWSRightYNumberSeparatorByID(wId));
         this.rightYShowLabel.setSelected(BI.Utils.getWSRightYShowLabelByID(wId));
