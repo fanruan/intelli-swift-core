@@ -535,7 +535,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             //其他元素
             lineWidth: options.lineWidth || 1,
             legend: options.legend,
-            legendStyle: options.legendStyle || c.FONT_STYLE,
+            legendStyle: options.legendStyle,
             showDataLabel: options.showDataLabel,
             showDataTable: options.showDataTable || false,
             showZoom: options.showZoom,

@@ -56,14 +56,23 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             case BICst.DISPLAY_RULES.FIXED:
                 delete config.legend;
                 formatFixedLegend();
+                config.rangeLegend.style = BI.extend(this.config.legendStyle, {
+                    fontSize: this.config.legendStyle.fontSize + "px"
+                });
                 break;
             case BICst.DISPLAY_RULES.GRADIENT:
                 delete config.legend;
                 formatGradientLegend();
+                config.rangeLegend.style = BI.extend(this.config.legendStyle, {
+                    fontSize: this.config.legendStyle.fontSize + "px"
+                });
                 break;
             case BICst.DISPLAY_RULES.DIMENSION:
             default:
-                formatLegend();
+                self.formatChartLegend(config, this.config.legend);
+                config.legend.style = BI.extend(this.config.legendStyle, {
+                    fontSize: this.config.legendStyle.fontSize + "px"
+                });
                 break;
         }
 
@@ -149,10 +158,6 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             });
         }
 
-        config.legend.style = BI.extend(this.config.legendStyle, {
-            fontSize: this.config.legendStyle.fontSize + "px"
-        });
-
         return [items, config];
 
         function formatChartStyle() {
@@ -162,24 +167,6 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                 case BICst.CHART_STYLE.STYLE_NORMAL:
                 default:
                     return "normal";
-            }
-        }
-
-        function formatLegend() {
-            switch (self.config.legend) {
-                case BICst.CHART_LEGENDS.BOTTOM:
-                    config.legend.enabled = true;
-                    config.legend.position = "bottom";
-                    config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
-                    break;
-                case BICst.CHART_LEGENDS.RIGHT:
-                    config.legend.enabled = true;
-                    config.legend.position = "right";
-                    break;
-                case BICst.CHART_LEGENDS.NOT_SHOW:
-                default:
-                    config.legend.enabled = false;
-                    break;
             }
         }
 
