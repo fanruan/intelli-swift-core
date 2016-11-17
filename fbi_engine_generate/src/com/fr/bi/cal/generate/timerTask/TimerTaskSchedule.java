@@ -42,28 +42,4 @@ public class TimerTaskSchedule {
         return jobName;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        TimerTaskSchedule that = (TimerTaskSchedule) o;
-
-        if (userId != that.userId) return false;
-        if (updateType != that.updateType) return false;
-        if (timeSchedule != null ? !timeSchedule.equals(that.timeSchedule) : that.timeSchedule != null) return false;
-        if (tableKey != null ? !tableKey.equals(that.tableKey) : that.tableKey != null) return false;
-        return jobName != null ? jobName.equals(that.jobName) : that.jobName == null;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = timeSchedule != null ? timeSchedule.hashCode() : 0;
-        result = 31 * result + (tableKey != null ? tableKey.hashCode() : 0);
-        result = 31 * result + (jobName != null ? jobName.hashCode() : 0);
-        result = 31 * result + (int) (userId ^ (userId >>> 32));
-        result = 31 * result + updateType;
-        return result;
-    }
 }

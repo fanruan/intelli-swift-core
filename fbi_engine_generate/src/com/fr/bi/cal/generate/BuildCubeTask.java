@@ -73,7 +73,6 @@ public class BuildCubeTask implements CubeTask {
     protected Cube integrityCube;
     protected BICubeFinishObserver<Future<String>> finishObserver;
     private int retryNTimes;
-    private String currentTaskId;
 
 
     public BuildCubeTask(BIUser biUser, CubeBuildStuff cubeBuildStuff) {
@@ -85,7 +84,6 @@ public class BuildCubeTask implements CubeTask {
         this.cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
         this.integrityCube = new BICube(new BICubeResourceRetrieval(IntegrityCubeConfiguration), BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
         retryNTimes = 100;
-        currentTaskId = UUID.randomUUID() + cubeBuildStuff.getCubeTaskId();
     }
 
     @Override
@@ -103,7 +101,6 @@ public class BuildCubeTask implements CubeTask {
 
     @Override
     public void start() {
-        BILoggerFactory.getLogger().info("CubeTask " + currentTaskId + " start");
         BIConfigureManagerCenter.getLogManager().logStart(biUser.getUserId());
         PerformancePlugManager.getInstance().printSystemParameters();
         getPackageManager().startBuildingCube(biUser.getUserId());
@@ -141,7 +138,6 @@ public class BuildCubeTask implements CubeTask {
             if (!cubeBuildSucceed) {
                 checkTaskFinish();
             }
-            BILoggerFactory.getLogger().info("get cubeTask " + currentTaskId + " generate result:" + cubeBuildSucceed);
             if (cubeBuildSucceed) {
                 cube.addVersion(System.currentTimeMillis());
                 long start = System.currentTimeMillis();
@@ -174,7 +170,6 @@ public class BuildCubeTask implements CubeTask {
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         } finally {
-            currentTaskId = null;
         }
     }
 
