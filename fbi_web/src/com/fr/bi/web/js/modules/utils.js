@@ -824,7 +824,7 @@
 
         getWSChartBubbleGradientStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.gradient_colors) ? ws.gradient_colors :
+            return BI.isNotNull(ws.gradientStyle) ? ws.gradientStyle :
                 BICst.BUBBLE_GRADIENT_COLOR
         },
 
@@ -1330,8 +1330,8 @@
 
         getWSChartBigDataModeByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.big_data_mode) ? ws.big_data_mode :
-                BICst.DEFAULT_CHART_SETTING.big_data_mode
+            return BI.isNotNull(ws.bigDataMode) ? ws.bigDataMode :
+                BICst.DEFAULT_CHART_SETTING.bigDataMode
         },
 
         getWSChartRightYShowCustomScaleByID: function (wid) {
