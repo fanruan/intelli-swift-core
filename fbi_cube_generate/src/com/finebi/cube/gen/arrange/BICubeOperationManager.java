@@ -427,7 +427,6 @@ public class BICubeOperationManager {
             } catch (Exception e) {
 
                 BILoggerFactory.getLogger().error(BIStringUtils.append("path build failed", "\n", BuildLogHelper.pathLogContent(path.getBiTableSourceRelationPath())));
-                ;
                 throw BINonValueUtils.beyondControl(e.getMessage(), e);
             }
             subscribePathFinish();
