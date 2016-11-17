@@ -32,6 +32,7 @@ public class TableColumnFieldsFilterOperator extends AbstractTableColumnFilterOp
     public static final String XML_TAG = "TableColumnFieldsFilterOperator";
     @BICoreField
     private List<FilterItem> filterList;
+    @BICoreField
     private int type = BIReportConstant.FILTER_TYPE.AND;
 
     public TableColumnFieldsFilterOperator(long userId) {
