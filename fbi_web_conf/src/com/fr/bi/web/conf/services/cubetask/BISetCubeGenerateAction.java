@@ -1,11 +1,8 @@
 package com.fr.bi.web.conf.services.cubetask;
 
-import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.cal.generate.CubeBuildManager;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
@@ -27,14 +24,7 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
                                             HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
         String baseTableSourceId = WebUtils.getHTTPRequestParameter(req, "baseTableSourceId");
-        String tableId = WebUtils.getHTTPRequestParameter(req, "tableId");
-//        Boolean isETL = Boolean.valueOf(WebUtils.getHTTPRequestParameter(req, "isETL"));
         int updateType = WebUtils.getHTTPRequestIntParameter(req, "updateType");
-        try {
-            CubeUpdateUtils.recordTableAndRelationInfo(userId);
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
-        }
         boolean cubeBuild;
         if (StringUtils.isEmpty(baseTableSourceId)) {
             cubeBuild = new CubeBuildManager().CubeBuildStaff(userId);

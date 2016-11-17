@@ -136,6 +136,6 @@ public class CubeBuildStuffRealTime extends AbstractCubeBuildStuff implements Cu
     }
 
     public String getCubeTaskId() {
-        return BIStringUtils.append(DBConstant.CUBE_UPDATE_TYPE.SINGLETABLE_UPDATE, sourceId);
+        return BIStringUtils.append(DBConstant.CUBE_UPDATE_TYPE.SINGLE_TABLE_UPDATE, sourceId);
     }
 }

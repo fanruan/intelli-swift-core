@@ -76,7 +76,7 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
     }
 
     private void setTaskId(BusinessTable businessTable, String childTableSourceId) {
-        taskId = BIStringUtils.append(DBConstant.CUBE_UPDATE_TYPE.SINGLETABLE_UPDATE, businessTable.getID().getIdentity(), childTableSourceId);
+        taskId = BIStringUtils.append(DBConstant.CUBE_UPDATE_TYPE.SINGLE_TABLE_UPDATE, businessTable.getID().getIdentity(), childTableSourceId);
     }
 
     private void setChildTableSource(String childTableSourceId) {

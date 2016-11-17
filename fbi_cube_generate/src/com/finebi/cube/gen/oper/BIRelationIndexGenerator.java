@@ -162,7 +162,6 @@ public class BIRelationIndexGenerator extends BIProcessor {
         return cubeTableSourceSet;
     }
 
-
     @Override
     public void release() {
         cube.clear();
@@ -192,7 +191,6 @@ public class BIRelationIndexGenerator extends BIProcessor {
             primaryTable = cubeChooser.getCubeTable(primaryTableKey);
             foreignTable = cubeChooser.getCubeTable(foreignTableKey);
 
-
             /**
              * 关联的主字段对象
              */
@@ -212,16 +210,14 @@ public class BIRelationIndexGenerator extends BIProcessor {
              */
             int primaryGroupSize = primaryColumn.sizeOfGroup();
             int foreignGroupSize = foreignColumn.sizeOfGroup();
-            if (foreignGroupSize == 0) {
-                return;
-            }
             int foreignIndex = 0;
-            Object foreignColumnValue = foreignColumn.getGroupObjectValue(foreignIndex);
-            GroupValueIndex foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
-            Comparator c = primaryColumn.getGroupComparator();
-            if (isNumberColumn(primaryColumn.getClassType()) && isNumberColumn(foreignColumn.getClassType())) {
-                c = generateComparatorByType(primaryColumn.getClassType(), foreignColumn.getClassType());
+            Object foreignColumnValue = null;
+            GroupValueIndex foreignGroupValueIndex = null;
+            if (foreignGroupSize != 0) {
+                foreignColumnValue = foreignColumn.getGroupObjectValue(foreignIndex);
+                foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
             }
+            Comparator c = primaryColumn.getGroupComparator();
             int[] reverse = new int[foreignTable.getRowCount()];
             Arrays.fill(reverse, NIOConstant.INTEGER.NULL_VALUE);
             Stopwatch stopwatch = Stopwatch.createStarted();

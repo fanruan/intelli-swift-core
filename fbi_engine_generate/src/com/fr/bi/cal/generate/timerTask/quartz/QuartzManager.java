@@ -23,7 +23,7 @@ public class QuartzManager {
         JobDetail jobDetail = new JobDetail(schedule.getJobName(), JOB_GROUP_NAME, jobTask.getClass());//任务名，任务组，任务执行类
         jobDetail.getJobDataMap().put("jobName", schedule.getJobName());
         jobDetail.getJobDataMap().put("time", schedule.getTimeSchedule());
-        jobDetail.getJobDataMap().put("sourceName", schedule.getTableKey());
+        jobDetail.getJobDataMap().put("tableKey", schedule.getTableKey());
         jobDetail.getJobDataMap().put("userId", schedule.getUserId());
         jobDetail.getJobDataMap().put("updateType", schedule.getUpdateType());
         //触发器

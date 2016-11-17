@@ -332,6 +332,6 @@ public class CubeBuildStuffSpecificTable extends CubeBuildSpecific {
     }
 
     public String getCubeTaskId() {
-        return BIStringUtils.append(DBConstant.CUBE_UPDATE_TYPE.SINGLETABLE_UPDATE, specificTable.getSourceID(), specificBasicTableID);
+        return BIStringUtils.append(DBConstant.CUBE_UPDATE_TYPE.SINGLE_TABLE_UPDATE, specificTable.getSourceID(), specificBasicTableID);
     }
 }
