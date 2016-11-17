@@ -147,15 +147,13 @@ public class CubeRunner {
     }
 
     private void start() {
+        BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
         BackUpUtils.backup();
     }
 
     private void finish(CubeTask cubeTask) {
         long t = System.currentTimeMillis();
         try {
-
-
-
             if (!cubeTask.getTaskType().equals(CubeTaskType.INSTANT)) {
                 BILoggerFactory.getLogger().info("start to persist meta data!");
                 BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());

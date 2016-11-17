@@ -53,8 +53,6 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.concurrent.Future;
 
-import static com.finebi.cube.conf.BICubeConfigureCenter.getPackageManager;
-
 /**
  * This class created on 2016/4/19.
  *
@@ -103,7 +101,6 @@ public class BuildCubeTask implements CubeTask {
     public void start() {
         BIConfigureManagerCenter.getLogManager().logStart(biUser.getUserId());
         PerformancePlugManager.getInstance().printSystemParameters();
-        getPackageManager().startBuildingCube(biUser.getUserId());
         Long t = System.currentTimeMillis();
         logBusinessTable();
         logTable(cubeBuildStuff.getSingleSourceLayers(), cubeBuildStuff.getUpdateSettingSources());
