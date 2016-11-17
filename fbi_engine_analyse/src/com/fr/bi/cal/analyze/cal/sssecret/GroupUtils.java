@@ -277,7 +277,7 @@ public class GroupUtils {
                     TargetCalculator[] cs = calculators.get(i);
                     if (cs != null){
                         for (TargetCalculator c : cs){
-                            MultiThreadManagerImpl.getInstance().getExecutorService().submit(new SummaryCall(node, groups[i],c));
+                            MultiThreadManagerImpl.getInstance().getExecutorService().add(new SummaryCall(node, groups[i],c));
                         }
                     }
                 } else {

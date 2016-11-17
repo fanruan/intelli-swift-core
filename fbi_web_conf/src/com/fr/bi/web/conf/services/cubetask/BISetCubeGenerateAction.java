@@ -37,9 +37,9 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
         }
         boolean cubeBuild;
         if (StringUtils.isEmpty(baseTableSourceId)) {
-            cubeBuild =new CubeBuildManager().CubeBuildStaff(userId);
+            cubeBuild = new CubeBuildManager().CubeBuildStaff(userId);
         } else {
-            cubeBuild = new CubeBuildManager().CubeBuildSingleTable(userId, new BITableID(tableId), baseTableSourceId, updateType);
+            cubeBuild = new CubeBuildManager().CubeBuildSingleTable(userId, baseTableSourceId, updateType);
         }
         BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
         BIConfigureManagerCenter.getCubeConfManager().updateMultiPathLastCubeStatus(BIReportConstant.MULTI_PATH_STATUS.NOT_NEED_GENERATE_CUBE);

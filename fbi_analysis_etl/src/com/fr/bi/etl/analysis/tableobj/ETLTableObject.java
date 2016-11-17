@@ -66,9 +66,11 @@ public class ETLTableObject implements Release, Delete {
      */
     @Override
     public void clear() {
-        isClear = true;
-        ti.clear();
-        manager.clear();
+        synchronized (this){
+            isClear = true;
+            ti.clear();
+            manager.clear();
+        }
     }
 
     /**

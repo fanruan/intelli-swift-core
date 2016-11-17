@@ -532,14 +532,14 @@ public class CubeIndexLoader {
         }
         MultiThreadManagerImpl.getInstance().refreshExecutorService();
         NodeAndPageInfo topInfo = createPageGroupNode(topWidget, usedTargets, sumTarget, colDimension, page, useRealData, expander.getXExpander(), session, calculateTargets, new ArrayList(), createColumnOperator(page, widget), pg.getColumnGroup(), true);
-        MultiThreadManagerImpl.getInstance().awaitExecutor();
+        MultiThreadManagerImpl.getInstance().awaitExecutor(session);
         return topInfo;
     }
 
     private NodeAndPageInfo getLeftInfo(BIDimension[] rowDimension, BISummaryTarget[] sumTarget, int page, boolean useRealData, CrossExpander expander, BISummaryWidget widget, BISession session, BISummaryTarget[] usedTargets, LinkedList calculateTargets, PageIteratorGroup pg) {
         MultiThreadManagerImpl.getInstance().refreshExecutorService();
         NodeAndPageInfo leftInfo = createPageGroupNode(widget, usedTargets, sumTarget, rowDimension, page, useRealData, expander.getYExpander(), session, calculateTargets, new ArrayList(), createRowOperator(page, widget), pg.getRowGroup(), true);
-        MultiThreadManagerImpl.getInstance().awaitExecutor();
+        MultiThreadManagerImpl.getInstance().awaitExecutor(session);
         if (usedTargets.length != 0 && isEmpty(leftInfo)) {
             leftInfo.getNode().getChilds().clear();
             leftInfo.setHasNext(false);
@@ -684,7 +684,7 @@ public class CubeIndexLoader {
         }
         MultiThreadManagerImpl.getInstance().refreshExecutorService();
         NodeAndPageInfo info = createPageGroupNode(widget, usedTargets, sumTarget, rowDimension, page, useRealData, expander, session, calculateTargets, targetCalculator, isHor ? createColumnOperator(page, widget) : createRowOperator(page, widget), pg.getRowGroup());
-        MultiThreadManagerImpl.getInstance().awaitExecutor();
+        MultiThreadManagerImpl.getInstance().awaitExecutor(session);
         Node n = info.getNode();
         widget.setPageSpinner(isHor ? BIReportConstant.TABLE_PAGE.HORIZON_PRE : BIReportConstant.TABLE_PAGE.VERTICAL_PRE, info.isHasPre());
         widget.setPageSpinner(isHor ? BIReportConstant.TABLE_PAGE.HORIZON_NEXT : BIReportConstant.TABLE_PAGE.VERTICAL_NEXT, info.isHasNext());
