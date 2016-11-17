@@ -1010,7 +1010,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     }
                 });
             }
-            BI.each(s, function (j, sum) {
+            self.showColTotal && BI.each(s, function (j, sum) {
                 if (BI.isNull(items[j].children[0].values)) {
                     items[j].children[0].values = [];
                 }
