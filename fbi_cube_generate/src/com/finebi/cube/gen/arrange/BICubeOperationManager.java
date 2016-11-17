@@ -38,6 +38,7 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
 
 import java.util.*;
@@ -381,17 +382,12 @@ public class BICubeOperationManager {
                             operation.subscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.DATA_SOURCE_TOPIC, cubeTableSource.getSourceID()));
                         }
                     } else {
-                        logger.warn("The relation:"+ sourceID+" subscribe start message");
+                        logger.warn("The relation:" + sourceID + " subscribe start message");
                         operation.subscribe(BICubeBuildTopicTag.START_BUILD_CUBE);
                     }
                     pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
                 } catch (Exception e) {
-                    try {
-                        BILoggerFactory.getLogger().info("relation build failed");
-                        logger.info(BuildLogHelper.relationLogContent("", relation.getRelation()));
-                    } catch (Exception e1) {
-                        BILoggerFactory.getLogger().error(e1.getMessage(), e1);
-                    }
+                    logger.error(BIStringUtils.append("relation subscribe failed:", "\n", BuildLogHelper.relationLogContent("", relation.getRelation())));
                     throw BINonValueUtils.beyondControl(e.getMessage(), e);
                 }
             }
@@ -429,8 +425,9 @@ public class BICubeOperationManager {
                     pathFinishSubscribe(BIStatusUtils.generateStatusFinish(BICubeBuildTopicTag.PATH_TOPIC, sourceID));
                 }
             } catch (Exception e) {
-                BILoggerFactory.getLogger().error("path build failed");
-                BuildLogHelper.pathLogContent(path.getBiTableSourceRelationPath());
+
+                BILoggerFactory.getLogger().error(BIStringUtils.append("path build failed", "\n", BuildLogHelper.pathLogContent(path.getBiTableSourceRelationPath())));
+                ;
                 throw BINonValueUtils.beyondControl(e.getMessage(), e);
             }
             subscribePathFinish();
