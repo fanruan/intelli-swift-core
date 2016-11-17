@@ -450,9 +450,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         if(!BI.Utils.getWSChartShowDataLabelByID(o.wId)) {
             return;
         }
-        if (BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.PIE || BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.DONUT) {
-            return;
-        }
         var hasSeries = this._checkSeriesExist();
         var allSeries = BI.pluck(data, "name");
         var cataArrayMap = {};  //值按分类分组
@@ -553,9 +550,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     _setDataImageSettingForAxis: function (data) {
         var self = this, o = this.options;
-        if (BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.PIE || BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.DONUT) {
-            return;
-        }
         var hasSeries = this._checkSeriesExist();
         var allSeries = BI.pluck(data, "name");
         var cataArrayMap = {};  //值按分类分组

@@ -69,8 +69,8 @@ BI.AccumulateBarChart = BI.inherit(BI.AbstractChart, {
         config.xAxis[0].title.rotation = 0;
         config.chartType = "bar";
 
-        config.legend.style = BI.extend( this.config.legendStyle, {
-            fontSize:  this.config.legendStyle.fontSize + "px"
+        config.legend.style = BI.extend(this.config.legendStyle, {
+            fontSize: this.config.legendStyle.fontSize + "px"
         });
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
@@ -102,7 +102,7 @@ BI.AccumulateBarChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style" : self.config.chartFont,
+                                "style": self.config.chartFont,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -127,7 +127,7 @@ BI.AccumulateBarChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style" : self.config.chartFont,
+                                "style": self.config.chartFont,
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -162,7 +162,6 @@ BI.AccumulateBarChart = BI.inherit(BI.AbstractChart, {
         BI.each(items, function (idx, axisItems) {
             var type = [];
             BI.each(axisItems, function (id, item) {
-                self.defaultFormatDataLabel(item.data);
                 type.push(BICst.WIDGET.BAR);
             });
             types.push(type);

@@ -88,7 +88,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
         this.widget.element.hover(function () {
             self.tools.setVisible(true);
         }, function () {
-            if (!self.widget.element.parent().parent().hasClass("selected")) {
+            if (!self.widget.element.parent().parent().parent().hasClass("selected")) {
                 self.tools.setVisible(false);
             }
         });
@@ -179,14 +179,18 @@ BIShow.WidgetView = BI.inherit(BI.View, {
         });
 
         var expand = BI.createWidget({
-            type: "bi.icon_button",
-            width: this._constants.TOOL_ICON_WIDTH,
-            height: this._constants.TOOL_ICON_HEIGHT,
-            title: BI.i18nText("BI-Detailed_Setting"),
-            cls: "widget-combo-detail-font dashboard-title-detail"
+            type: "bi.dimension_switch_show",
+            wId: this.model.get("id"),
+            dimensionCreator: function (dId, regionType, op) {
+                var dimensionsVessel = BI.createWidget({
+                    type: "bi.layout"
+                });
+                self.addSubVessel(dId, dimensionsVessel).skipTo("detail/" + regionType + "/" + dId, dId, "dimensions." + dId);
+                return dimensionsVessel;
+            }
         });
-        expand.on(BI.IconButton.EVENT_CHANGE, function () {
-            self._expandWidget();
+        expand.on(BI.DimensionSwitchShow.EVENT_CHANGE, function () {
+            self.model.set("view", this.getValue());
         });
 
         var filterIcon = BI.createWidget({
@@ -297,13 +301,6 @@ BIShow.WidgetView = BI.inherit(BI.View, {
         return "";
     },
 
-    _expandWidget: function () {
-        var wId = this.model.get("id");
-        BIShow.FloatBoxes.open("detail", "detail", {}, this, {
-            id: wId
-        })
-    },
-
     _refreshMagnifyButton: function () {
         switch (this.model.get("type")) {
             case BICst.WIDGET.ACCUMULATE_AXIS:
@@ -346,6 +343,7 @@ BIShow.WidgetView = BI.inherit(BI.View, {
             this.chartDrill.populate();
         }
         if (BI.has(changed, "dimensions") ||
+            BI.has(changed, "view") ||
             BI.has(changed, "sort") ||
             BI.has(changed, "linkages")) {
             this._refreshTableAndFilter();

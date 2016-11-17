@@ -90,12 +90,12 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
         config.angleAxis[0].showLabel = this.config.leftYShowLabel;
         config.angleAxis[0].lineColor = this.config.leftYLineColor;
         config.angleAxis[0].gridLineWidth = this.config.vShowGridLine === true ? 1 : 0;
-        config.legend.style = BI.extend( this.config.legendStyle, {
-            fontSize:  this.config.legendStyle.fontSize + "px"
+        config.legend.style = BI.extend(this.config.legendStyle, {
+            fontSize: this.config.legendStyle.fontSize + "px"
         });
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        self.formatDataLabelForAxis(config.plotOptions.dataLabels.enabled, items, config.radiusAxis[0].formatter, this.config.chartFont, this.config.leftYUnit);
+        self.formatDataLabelForOthers(config.plotOptions.dataLabels.enabled, items, config.radiusAxis[0].formatter, this.config.chartFont, this.config.leftYUnit);
 
         //全局样式的图表文字
         config.radiusAxis[0].labelStyle = config.radiusAxis[0].title.style = this.config.chartFont;
@@ -163,7 +163,6 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
         BI.each(items, function (idx, axisItems) {
             var type = [];
             BI.each(axisItems, function (id, item) {
-                self.defaultFormatDataLabel(item.data);
                 type.push(BICst.WIDGET.RADAR);
             });
             types.push(type);

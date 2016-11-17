@@ -1,10 +1,10 @@
-package com.fr.bi.web.report.services;
+package com.fr.bi.web.base.services;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
 import com.fr.bi.stable.constant.BIBaseConstant;
-import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.web.base.AbstractBIBaseAction;
 import com.fr.stable.CodeUtils;
-import com.fr.web.core.ActionNoSessionCMD;
 import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,14 +17,14 @@ import java.io.OutputStream;
 /**
  * Created by User on 2016/8/30.
  */
-public class BIGetMapJsonAction  extends ActionNoSessionCMD {
+public class BIGetMapJsonAction extends AbstractBIBaseAction {
     @Override
     public String getCMD() {
         return "get_map_json";
     }
 
     @Override
-    public void actionCMD(HttpServletRequest req, HttpServletResponse res) throws Exception {
+    protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         String path = CodeUtils.cjkDecode(WebUtils.getHTTPRequestParameter(req, "file_path"));
         OutputStream os = res.getOutputStream();
         try {
@@ -46,5 +46,6 @@ public class BIGetMapJsonAction  extends ActionNoSessionCMD {
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
+
     }
 }

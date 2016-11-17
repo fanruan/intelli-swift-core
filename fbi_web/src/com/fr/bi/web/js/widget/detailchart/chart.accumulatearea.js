@@ -175,7 +175,6 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         BI.each(items, function (idx, axisItems) {
             var type = [];
             BI.each(axisItems, function (id, item) {
-                self.defaultFormatDataLabel(item.data);
                 type.push(BICst.WIDGET.AREA);
             });
             types.push(type);

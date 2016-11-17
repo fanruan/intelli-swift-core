@@ -174,7 +174,7 @@ BI.ForceBubbleChart = BI.inherit(BI.AbstractChart, {
                 color.push([minProp, item.color_range.from_color]);
                 color.push([maxProp, item.color_range.to_color]);
 
-                if(idx == self.config.gradientStyle.length - 1 && maxProp < 1) {
+                if (idx == self.config.gradientStyle.length - 1 && maxProp < 1) {
                     color.push([1, item.color_range.to_color])
                 }
             });

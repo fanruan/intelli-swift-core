@@ -706,10 +706,10 @@
         getGSNamePos: function () {
             var titleFont = this.getGSTitleFont() || this.getDefaultChartConfig().titleFont;
             if (BI.isNotNull(titleFont)) {
-                if (titleFont["text-align"] === "left") {
+                if (titleFont.textAlign === "left") {
                     return BICst.DASHBOARD_WIDGET_NAME_POS_LEFT
                 }
-                if (titleFont["text-align"] === "center") {
+                if (titleFont.textAlign === "center") {
                     return BICst.DASHBOARD_WIDGET_NAME_POS_CENTER
                 }
             }
@@ -1433,7 +1433,7 @@
         },
 
         //根据text dId 获取clicked 处理分组的情况
-        getClickedValue4Group: function(v, dId) {
+        getClickedValue4Group: function (v, dId) {
             var group = this.getDimensionGroupByID(dId);
             var fieldType = this.getFieldTypeByDimensionID(dId);
             var clicked = v;
@@ -1473,12 +1473,12 @@
         },
 
         //获取组件中所有维度的钻取链A->B->C
-        getDrillList: function(wid){
+        getDrillList: function (wid) {
             var drillMap = BI.Utils.getDrillByID(wid);
             var map = {};
             BI.each(drillMap, function (drId, ds) {
                 map[drId] = [];
-                BI.each(ds, function(idx, obj){
+                BI.each(ds, function (idx, obj) {
                     map[drId].push(obj.dId)
                 });
             });
@@ -2674,7 +2674,7 @@
                             BI.isNotNull(fatherFilterValue) && (filterObj.filter_value = BI.concat(filterObj.filter_value, fatherFilterValue));
                             result.push(filterObj);
                         } else {
-                            if(fatherFilterValue) {
+                            if (fatherFilterValue) {
                                 leafFilterObj = BI.concat(leafFilterObj, fatherFilterValue);
                             }
                             createTreeFilterValue(result, child, floor + 1, dimensionIds, leafFilterObj);
@@ -2703,10 +2703,10 @@
                             BI.isNotNull(fatherFilterValue) && (filterObj.filter_value = BI.concat(filterObj.filter_value, fatherFilterValue));
                             result.push(filterObj);
                         } else {
-                            if(leafFilterObj[0].filter_value.type === BI.Selection.All) {
+                            if (leafFilterObj[0].filter_value.type === BI.Selection.All) {
                                 leafFilterObj = [];
                             }
-                            if(fatherFilterValue) {
+                            if (fatherFilterValue) {
                                 leafFilterObj = BI.concat(leafFilterObj, fatherFilterValue);
                             }
                             createTreeLabelFilterValue(result, child, floor + 1, dimensionIds, leafFilterObj);
@@ -3026,9 +3026,12 @@
                             if (!BI.has(dimensionMap, tId)) {
                                 var fieldId = BI.Utils.getFieldIDByDimensionID(dId);
                                 var paths = BI.Utils.getPathsFromFieldAToFieldB(fieldId, BI.Utils.getFieldIDByDimensionID(tId))
-                                if(paths.length === 1){
-                                    widget.dimensions[dId].dimension_map[tId] = {_src: {field_id: fieldId}, target_relation: paths};
-                                }else{
+                                if (paths.length === 1) {
+                                    widget.dimensions[dId].dimension_map[tId] = {
+                                        _src: {field_id: fieldId},
+                                        target_relation: paths
+                                    };
+                                } else {
                                     valid = false;
                                     return true;
                                 }
@@ -3251,7 +3254,7 @@
             }
         }
 
-        function isValidDate(v){
+        function isValidDate(v) {
             return BI.isNotNull(v.year) && BI.isNotNull(v.month) && BI.isNotNull(v.day);
         }
     }

@@ -1,6 +1,7 @@
 package com.fr.bi;
 
 
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BICubeManagerProvider;
@@ -9,6 +10,7 @@ import com.finebi.cube.conf.BITableRelationConfigurationProvider;
 import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.generate.TimerRunner;
+import com.fr.bi.cal.report.BIActor;
 import com.fr.bi.cal.report.db.DialectCreatorImpl;
 import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
@@ -65,7 +67,7 @@ public class BIPlate extends AbstractFSPlate {
     @Override
     public void initData() {
         FRContext.getCurrentEnv().setBuildFilePath("bibuild.txt");
-        System.out.println("FINE BI :" + GeneralUtils.readBuildNO());
+        BILoggerFactory.getLogger().info("FINE BI :" + GeneralUtils.readBuildNO());
         initModules();
         super.initData();
         startModules();
@@ -88,6 +90,8 @@ public class BIPlate extends AbstractFSPlate {
 
         //兼容FR工程中可能存在BID这一列的情况
         dropColumnBID();
+        //兼容FR工程中可能存在PARENTID类型是整型的情况
+        notifyColumnParentIdType();
     }
 
     public void loadMemoryData() {
@@ -195,6 +199,20 @@ public class BIPlate extends AbstractFSPlate {
             cn = PlatformDB.getDB().createConnection();
             Statement st = cn.createStatement();
             st.execute("ALTER TABLE " + tableName + " DROP BID ");
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().info(e.getMessage());
+        } finally {
+            DBUtils.closeConnection(cn);
+        }
+    }
+
+    private static void notifyColumnParentIdType() {
+        Connection cn = null;
+        String tableName = "FR_T_" + DAOUtils.getClassNameWithOutPath(BIReportNode.class);
+        try {
+            cn = PlatformDB.getDB().createConnection();
+            Statement st = cn.createStatement();
+            st.execute("ALTER TABLE " + tableName + "  ALTER COLUMN PARENTID VARCHAR (255)");
         } catch (Exception e) {
             BILoggerFactory.getLogger().info(e.getMessage());
         } finally {

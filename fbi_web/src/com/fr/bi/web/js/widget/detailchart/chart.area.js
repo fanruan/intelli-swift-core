@@ -67,7 +67,7 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
 
         BI.extend(config.xAxis[0], self.catSetting(this.config));
 
-        config.legend.style = BI.extend( this.config.legendStyle, {
+        config.legend.style = BI.extend(this.config.legendStyle, {
             fontSize: this.config.legendStyle.fontSize + "px"
         });
 
@@ -100,7 +100,7 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style" : self.config.chartFont,
+                                "style": self.config.chartFont,
                                 "text": t.text,
                                 "align": "top"
                             }
@@ -125,7 +125,7 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
                             value: t.value.div(magnify),
                             width: 1,
                             label: {
-                                "style" : self.config.chartFont,
+                                "style": self.config.chartFont,
                                 "text": t.text,
                                 "align": "left"
                             }
@@ -164,7 +164,6 @@ BI.AreaChart = BI.inherit(BI.AbstractChart, {
         BI.each(items, function (idx, axisItems) {
             var type = [];
             BI.each(axisItems, function (id, item) {
-                self.defaultFormatDataLabel(item.data);
                 type.push(BICst.WIDGET.AREA);
             });
             types.push(type);

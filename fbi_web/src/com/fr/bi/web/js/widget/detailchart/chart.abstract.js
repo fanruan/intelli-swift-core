@@ -265,6 +265,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
     },
 
     formatDataLabel: function (state, items, config, style) {
+        var self = this;
         if (state === true) {
             BI.each(items, function (idx, item) {
                 item.dataLabels = {
@@ -277,11 +278,32 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                         valueFormat: config.yAxis[item.yAxis].formatter
                     }
                 };
+                self.formatDataLabelForData(item.data, config.yAxis[item.yAxis].formatter);
             });
         }
     },
 
     formatDataLabelForAxis: function (state, items, format, style) {
+        var self = this;
+        if (state === true) {
+            BI.each(items, function (idx, item) {
+                item.dataLabels = {
+                    "align": "outside",
+                    "autoAdjust": true,
+                    style: style,
+                    enabled: true,
+                    formatter: {
+                        identifier: "${VALUE}",
+                        valueFormat: format
+                    }
+                };
+                self.formatDataLabelForData(item.data, format);
+            });
+        }
+    },
+
+    formatDataLabelForOthers: function (state, items, format, style) {
+        var self = this;
         if (state === true) {
             BI.each(items, function (idx, item) {
                 item.dataLabels = {
@@ -298,12 +320,13 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         }
     },
 
-    defaultFormatDataLabel: function (items) {
+    formatDataLabelForData: function (items, format) {
         BI.each(items, function (idx, item) {
             if (item.dataLabels) {
                 var styleSetting = item.dataLabels.styleSetting || {};
                 item.dataLabels.formatter = {
-                    identifier: "${VALUE}"
+                    identifier: "${VALUE}",
+                    valueFormat: format
                 };
                 item.dataLabels.enabled = true;
                 item.dataLabels.autoAdjust = true;
@@ -545,7 +568,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             initDrillPath: options.initDrillPath || [],
         }
     },
-    
+
     setFontStyle: function (fontStyle, config) {
         if (config.dataSheet) {
             config.dataSheet.style = fontStyle;

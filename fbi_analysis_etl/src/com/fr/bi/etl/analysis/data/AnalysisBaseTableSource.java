@@ -92,7 +92,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
 
     private int getTableWidgetSqlType(int index) {
         BIDimension dim = (BIDimension) widget.getDimensions()[index];
-        if (dim.getStatisticElement().getFieldType() == DBConstant.COLUMN.NUMBER) {
+        if (dim.getStatisticElement() != null && dim.getStatisticElement().getFieldType() == DBConstant.COLUMN.NUMBER) {
             return (dim.getGroup().getType() == BIReportConstant.GROUP.NO_GROUP
                     || dim.getGroup().getType() == BIReportConstant.GROUP.ID_GROUP) ?
                     BIDBUtils.classTypeToSql(dim.getStatisticElement().getClassType()) : Types.VARCHAR;

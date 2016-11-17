@@ -24,6 +24,7 @@ BI.DetailTableCommonTableSet = BI.inherit(BI.Widget, {
         this.tree = BI.createWidget(
             {
                 type: "bi.branch_tree",
+                cls: "tables-region",
                 expander: {
                     el: {
                         type: "bi.label",
@@ -68,15 +69,15 @@ BI.DetailTableCommonTableSet = BI.inherit(BI.Widget, {
         var c = this.constants;
         var itemsCp = BI.deepClone(items);
         BI.each(itemsCp, function (i, item) {
-            BI.each(item.children, function (i, item) {
-                item.type = "bi.absolute";
-                item.items = [{
+            BI.each(item.children, function (i, it) {
+                it.type = "bi.absolute";
+                it.items = [{
                     el: {
                         type: "bi.label",
                         cls: "relation-setting-label",
-                        text: item.text,
-                        title: item.text,
-                        value: item.value,
+                        text: it.text,
+                        title: it.text,
+                        value: it.value,
                         width: 60,
                         textHeight: 20
                     },
@@ -85,9 +86,10 @@ BI.DetailTableCommonTableSet = BI.inherit(BI.Widget, {
                     left: 20,
                     right: 0
                 }];
-                item.width = 80 + c.TABLE_LABEL_BORDER * 2;
-                item.height = 30 + c.TABLE_LABEL_BORDER * 2;
+                it.width = 80 + c.TABLE_LABEL_BORDER * 2;
+                it.height = 30 + c.TABLE_LABEL_BORDER * 2;
             })
+            item.title = item.text;
         });
         return itemsCp;
     },

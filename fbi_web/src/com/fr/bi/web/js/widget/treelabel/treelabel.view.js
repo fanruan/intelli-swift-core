@@ -56,17 +56,17 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
             type: "bi.absolute",
             items: [{
                 el: this.title,
-                left:0,
-                right:0,
-                top:0,
-                bottom:0,
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0,
                 width: 60
             }, {
                 el: this.right,
                 left: 65,
-                right:0,
-                top:0,
-                bottom:0
+                right: 0,
+                top: 0,
+                bottom: 0
             }],
             element: this.element
         });
@@ -87,12 +87,12 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
         var self = this;
         var updateList = this.items.slice(floor + 1);
         var values = items.slice(floor + 1);
-        for(var i = 0;i<updateList.length;i++) {
+        for (var i = 0; i < updateList.length; i++) {
             if (BI.isNull(values[i])) {
                 return;
             }
-            if(BI.isEmptyArray(values[i])) {
-                for (var j = i;j<updateList.length;j++) {
+            if (BI.isEmptyArray(values[i])) {
+                for (var j = i; j < updateList.length; j++) {
                     updateList[j].populate({items: []});
                 }
                 return;
@@ -104,17 +104,17 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
             updateList[i].setValue(value);
 
             var now = updateList[i].getValue();
-            if(!arraysEqual(value, now)) {     //接着刷新剩余行
+            if (!arraysEqual(value, now)) {     //接着刷新剩余行
                 return;
             }
         }
 
-        function arraysEqual (a1, a2) {     //仅考虑数值字符串等简单数据
+        function arraysEqual(a1, a2) {     //仅考虑数值字符串等简单数据
             if (a1.length !== a2.length) {
                 return false;
             }
             BI.each(a2, function (idx, data) {
-                if(a1.indexOf(data) === -1) {
+                if (a1.indexOf(data) === -1) {
                     return false;
                 }
             });
@@ -123,22 +123,22 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
     },
 
     refreshView: function (data) {
-        if(data.titles) {
+        if (data.titles) {
             this.setTitles(BI.isEmpty(data.titles) ? [{
                 text: BI.i18nText("BI-Tree_Label_Con") + BI.i18nText("BI-Colon"),
                 title: BI.i18nText("BI-Tree_Label_Con")
             }] : data.titles);
         }
-        if(data.items) {
+        if (data.items) {
             this.setItems(BI.isEmpty(data.items) ? [[]] : data.items);
         }
     },
 
     setItems: function (items) {
-        var self =this;
+        var self = this;
         var length = this.right.getAllButtons().length;
         var deletes = [];
-        for(var i=0;i < length;i++) {
+        for (var i = 0; i < length; i++) {
             deletes.push(i);
         }
         this.right.removeItemAt(deletes);
@@ -170,7 +170,7 @@ BI.TreeLabelView = BI.inherit(BI.Widget, {
     setTitles: function (titles) {
         var length = this.title.getAllButtons().length;
         var deletes = [];
-        for(var i=0;i < length;i++) {
+        for (var i = 0; i < length; i++) {
             deletes.push(i);
         }
         this.title.removeItemAt(deletes);

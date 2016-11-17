@@ -64,8 +64,8 @@ BI.PercentAccumulateAxisChart = BI.inherit(BI.AbstractChart, {
 
         BI.extend(config.xAxis[0], self.catSetting(this.config));
 
-        config.legend.style = BI.extend( this.config.legendStyle, {
-            fontSize:  this.config.legendStyle.fontSize + "px"
+        config.legend.style = BI.extend(this.config.legendStyle, {
+            fontSize: this.config.legendStyle.fontSize + "px"
         });
 
         config.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${PERCENT}";
@@ -152,7 +152,6 @@ BI.PercentAccumulateAxisChart = BI.inherit(BI.AbstractChart, {
         BI.each(items, function (idx, axisItems) {
             var type = [];
             BI.each(axisItems, function (id, item) {
-                self.defaultFormatDataLabel(item.data);
                 type.push(BICst.WIDGET.AXIS);
             });
             types.push(type);

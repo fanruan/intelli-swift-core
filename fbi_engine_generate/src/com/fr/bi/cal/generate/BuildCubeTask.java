@@ -2,6 +2,7 @@ package com.fr.bi.cal.generate;
 
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.table.BusinessTable;
@@ -21,10 +22,14 @@ import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.message.IMessageTopic;
+import com.finebi.cube.relation.BICubeGenerateRelation;
+import com.finebi.cube.relation.BICubeGenerateRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.router.IRouter;
 import com.finebi.cube.structure.BICube;
+import com.finebi.cube.structure.Cube;
+import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
 import com.fr.bi.common.factory.BIFactoryHelper;
@@ -65,6 +70,7 @@ public class BuildCubeTask implements CubeTask {
     protected ICubeResourceRetrievalService retrievalService;
     protected ICubeConfiguration cubeConfiguration;
     protected BICube cube;
+    protected Cube integrityCube;
     protected BICubeFinishObserver<Future<String>> finishObserver;
     private int retryNTimes;
 
@@ -74,7 +80,9 @@ public class BuildCubeTask implements CubeTask {
         this.biUser = biUser;
         cubeConfiguration = cubeBuildStuff.getCubeConfiguration();
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
+        ICubeConfiguration IntegrityCubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
         this.cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
+        this.integrityCube = new BICube(new BICubeResourceRetrieval(IntegrityCubeConfiguration), BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
         retryNTimes = 100;
     }
 
@@ -102,6 +110,14 @@ public class BuildCubeTask implements CubeTask {
         BILoggerFactory.getLogger().info("copy files cost time: " + DateUtils.timeCostFrom(t));
     }
 
+    protected Set<BITableSourceRelation> getGeneratedRelation() {
+        Set<BITableSourceRelation> relations = new HashSet<BITableSourceRelation>();
+        for (BICubeGenerateRelation relation : cubeBuildStuff.getCubeGenerateRelationSet()) {
+            relations.add(relation.getRelation());
+        }
+        return relations;
+    }
+
     @Override
     public void end() {
         Future<String> result = finishObserver.getOperationResult();
@@ -118,13 +134,11 @@ public class BuildCubeTask implements CubeTask {
                 long start = System.currentTimeMillis();
                 boolean replaceSuccess = replaceOldCubes();
                 if (replaceSuccess) {
-                    /**
-                     * 单表更新没有处理新增关联,这里单表更新逻辑需要重新整理,先简单处理一下,防止目前使用的时候分析会获取到没有生成的关联而报错
-                     */
-                    if (!cubeBuildStuff.isSingleTable()) {
-                        BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId());
-                    }
+                    BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), CubeUpdateUtils.getCubeAbsentRelations(biUser.getUserId()));
                     BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
+                    BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId(), CubeUpdateUtils.getCubeAbsentTables(biUser.getUserId()));
+                    BICubeConfigureCenter.getPackageManager().persistData(biUser.getUserId());
+                    BICubeConfigureCenter.getDataSourceManager().persistData(biUser.getUserId());
                     BIModuleUtils.clearAnalysisETLCache(biUser.getUserId());
                     BILoggerFactory.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
                 } else {
@@ -132,10 +146,19 @@ public class BuildCubeTask implements CubeTask {
                     BILoggerFactory.getLogger().error(message);
                 }
             } else {
-                message = "Cube build failed ,the Cube files will not be replaced ";
-                BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), message, biUser.getUserId());
-                BILoggerFactory.getLogger().error(message);
+                try {
+                    BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
+                    message = "Cube build failed ,the Cube files will not be replaced ";
+                    BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), message, biUser.getUserId());
+                    BILoggerFactory.getLogger().error(message);
+                } catch (Exception e) {
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
+                } finally {
+                    BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
+                }
             }
+
+
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         } finally {
@@ -202,7 +225,7 @@ public class BuildCubeTask implements CubeTask {
     @Override
     public void run() {
         BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
-        BICubeOperationManager operationManager = new BICubeOperationManager(cube, cubeBuildStuff.getTableSources());
+        BICubeOperationManager operationManager = new BICubeOperationManager(cube, integrityCube, cubeBuildStuff.getSystemTableSources());
         operationManager.initialWatcher();
         logBusinessTable();
         operationManager.subscribeStartMessage();
@@ -219,7 +242,9 @@ public class BuildCubeTask implements CubeTask {
         operationManager.setVersionMap(cubeBuildStuff.getVersions());
         operationManager.generateDataSource(cubeBuildStuff.getDependTableResource());
         operationManager.generateRelationBuilder(cubeBuildStuff.getCubeGenerateRelationSet());
+        logRelationDepend(cubeBuildStuff.getCubeGenerateRelationSet());
         operationManager.generateTableRelationPath(cubeBuildStuff.getCubeGenerateRelationPathSet());
+        logPathDepend(cubeBuildStuff.getCubeGenerateRelationPathSet());
         IRouter router = BIFactoryHelper.getObject(IRouter.class);
         try {
             BIConfigureManagerCenter.getLogManager().relationPathSet(cubeBuildStuff.getTableSourceRelationPathSet(), biUser.getUserId());
@@ -285,6 +310,7 @@ public class BuildCubeTask implements CubeTask {
 
     }
 
+
     private void logPath(Set<BITableSourceRelationPath> relationPathSet) {
         logger.info("***************Path*****************");
 
@@ -299,6 +325,49 @@ public class BuildCubeTask implements CubeTask {
         logger.info("***************Path end*****************\n");
     }
 
+    private void logPathDepend(Set<BICubeGenerateRelationPath> relationPathSet) {
+        logger.info("***************Path depend*****************");
+
+        if (relationPathSet != null) {
+            Integer countPath = 0;
+            for (BICubeGenerateRelationPath path : relationPathSet) {
+                countPath++;
+                StringBuffer sb = new StringBuffer();
+                Iterator<BITableSourceRelationPath> it = path.getDependRelationPathSet().iterator();
+                sb.append("\nPath depend:" + countPath + ":\nTarget:\n" + BuildLogHelper.pathLogContent(path.getBiTableSourceRelationPath()))
+                        .append("\n").append("Depend:\n");
+                int countDepend = 0;
+                while (it.hasNext()) {
+                    BITableSourceRelationPath dependPath = it.next();
+                    sb.append("\n").append("relation ").append(countDepend).append("\n").append(BuildLogHelper.pathLogContent(dependPath));
+                }
+                logger.info(sb.toString());
+            }
+        }
+        logger.info("***************Path depend end*****************\n");
+    }
+
+    private void logRelationDepend(Set<BICubeGenerateRelation> relationDependSet) {
+        logger.info("***************Relation depend*****************");
+        Integer countRelation = 0;
+        if (relationDependSet != null) {
+            for (BICubeGenerateRelation relationDepend : relationDependSet) {
+                countRelation++;
+                StringBuffer sb = new StringBuffer();
+                sb.append("\nRelation depend" + countRelation + "\n Target:\n" + BuildLogHelper.relationLogContent("", relationDepend.getRelation()))
+                        .append("\n").append("Depend:\n");
+                int countDepend = 0;
+                Iterator<CubeTableSource> it = relationDepend.getDependTableSourceSet().iterator();
+                while (it.hasNext()) {
+                    CubeTableSource dependTable = it.next();
+                    sb.append("\n").append("tabel ").append(countDepend).append("\n").append(BuildLogHelper.tableLogContent(dependTable));
+                }
+                logger.info(sb.toString());
+            }
+        }
+        logger.info("***************Relation depend end*****************\n");
+
+    }
 
     private Set<BITableSourceRelationPath> filterPath(Set<BITableSourceRelationPath> paths) {
         Iterator<BITableSourceRelationPath> iterator = paths.iterator();
@@ -330,6 +399,7 @@ public class BuildCubeTask implements CubeTask {
     public JSONObject createJSON() throws Exception {
         return null;
     }
+
 
     @Override
     public boolean equals(Object obj) {

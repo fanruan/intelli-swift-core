@@ -35,7 +35,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.dataLabels.enabled = this.config.showDataLabel;
         config.plotOptions.tooltip.shared = true;
         var formatterArray = [];
-        BI.forEach(items, function (idx, item) {
+        BI.each(items, function (idx, item) {
             if (BI.has(item, "settings")) {
                 formatterArray.push(self.formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.numLevel || c.NORMAL,
                     item.settings.unit || "", item.settings.numSeparators || c.NUM_SEPARATORS));
@@ -116,7 +116,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                 if (BI.isNotEmptyArray(items) && BI.has(items[0], "settings")) {
                     var settings = items[0].settings;
                     var legendFormat = self.formatToolTipAndDataLabel(settings.format || c.NORMAL, settings.numLevel || c.NORMAL,
-                        settings.unit || "",settings.numSeparators || c.NUM_SEPARATORS);
+                        settings.unit || "", settings.numSeparators || c.NUM_SEPARATORS);
                     to = BI.contentFormat(to, legendFormat)
                 }
                 return to
@@ -219,14 +219,14 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
                     data.name = data.x;
                     data.value = data.y;
                 }
-                if(BI.has(da, "type") && da.type === "areaMap"){
+                if (BI.has(da, "type") && da.type === "areaMap") {
                     hasArea = true;
                 }
                 if (BI.has(data, "drilldown")) {
                     self._formatDrillItems(data.drilldown);
                 }
             });
-            if(hasArea === false){
+            if (hasArea === false) {
                 items.series.push({
                     type: "areaMap",
                     data: []

@@ -93,6 +93,7 @@ BI.SingleSlider = BI.inherit(BI.Widget, {
             errorText: "",
             height: c.HEIGHT,
             width: c.EDITOR_WIDTH,
+            allowBlank: false,
             validationChecker: function (v) {
                 return self._checkValidation(v);
             },

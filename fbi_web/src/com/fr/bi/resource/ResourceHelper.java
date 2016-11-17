@@ -323,6 +323,11 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules4show/dimensionsmanager4show/regionsmanager.css",
                 "com/fr/bi/web/css/modules4show/dimensionsmanager4show/dimensionsmanager.css",
 
+                //数据切换
+                "com/fr/bi/web/css/modules4show/dimensionswitchshow/dimensionswitchpane/dimensionswitchpane.show.css",
+                "com/fr/bi/web/css/modules4show/dimensionswitchshow/dimensionswitch.show.css",
+                "com/fr/bi/web/css/modules4show/dimensionswitchshow/dimensionswitchpane/dimensionregion/dimensionregion.show.css",
+
                 //最大化
                 "com/fr/bi/web/css/modules4show/maximization/widget.maximization.chartpane.css",
                 "com/fr/bi/web/css/modules4show/maximization/widget.maximization.css",
@@ -374,6 +379,14 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailformula.combo.show.js",
                 "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailnumber.combo.show.js",
                 "com/fr/bi/web/js/modules4show/dimension4show/detail/widget.detailstring.combo.show.js",
+
+                //数据切换
+                "com/fr/bi/web/js/modules4show/dimensionswitchshow/dimensionswitch.show.js",
+                "com/fr/bi/web/js/modules4show/dimensionswitchshow/dimensionswitchpopup.show.js",
+                "com/fr/bi/web/js/modules4show/dimensionswitchshow/dimensionswitchpane/dimensionswitchpane.show.js",
+                "com/fr/bi/web/js/modules4show/dimensionswitchshow/dimensionswitchpane/model.dimensionswitchpane.show.js",
+                "com/fr/bi/web/js/modules4show/dimensionswitchshow/dimensionswitchpane/dimensionregion/dimensionregion.show.js",
+                "com/fr/bi/web/js/modules4show/dimensionswitchshow/dimensionswitchpane/dimensionregion/dimensionregionmanager.show.js",
 
                 //最大化
                 "com/fr/bi/web/js/modules4show/maximization/widget.maximization.chartpane.js",
