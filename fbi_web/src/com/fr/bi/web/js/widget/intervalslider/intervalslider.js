@@ -44,6 +44,7 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
             type: "bi.sign_editor",
             cls: "slider-editor-button",
             errorText: "",
+            allowBlank: false,
             height: c.HEIGHT,
             width: c.EDITOR_WIDTH,
             validationChecker: function (v) {
@@ -65,6 +66,7 @@ BI.IntervalSlider = BI.inherit(BI.Widget, {
             type: "bi.sign_editor",
             cls: "slider-editor-button",
             errorText: "",
+            allowBlank: false,
             height: c.HEIGHT,
             width: c.EDITOR_WIDTH,
             validationChecker: function (v) {
