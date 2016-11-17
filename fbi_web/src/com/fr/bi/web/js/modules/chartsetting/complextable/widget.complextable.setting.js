@@ -424,7 +424,7 @@ BI.ComplexTableSetting = BI.inherit(BI.Widget, {
         this.widgetTitle.setVisible(BI.Utils.getWSShowNameByID(wId));
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
 
-        this.tableFormGroup.setValue(BI.Utils.getWSTableFormByID(wId));
+        this.tableFormGroup.setValue(BI.Utils.getWSTableFromByID(wId));
         this.themeColor.setValue(BI.Utils.getWSThemeColorByID(wId));
         this.tableStyleGroup.setValue(BI.Utils.getWSTableStyleByID(wId));
         this.showRowTotal.setSelected(BI.Utils.getWSShowRowTotalByID(wId));

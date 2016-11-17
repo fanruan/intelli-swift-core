@@ -738,7 +738,7 @@
             return ws.widgetBG
         },
 
-        getWSTableFormByID: function (wid) {
+        getWSTableFromByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.tableFormGroup) ? ws.tableFormGroup :
                 BICst.DEFAULT_CHART_SETTING.tableFormGroup;
@@ -754,6 +754,18 @@
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.tableStyleGroup) ? ws.tableStyleGroup :
                 BICst.DEFAULT_CHART_SETTING.tableStyleGroup;
+        },
+
+        getWSIsCustomTableStyleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.isCustomTableStyle) ? ws.isCustomTableStyle :
+                BICst.DEFAULT_CHART_SETTING.isCustomTableStyle;
+        },
+
+        getWSCustomTableStyleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.customTableStyle) ? ws.customTableStyle :
+                {};
         },
 
         getWSShowNumberByID: function (wid) {
@@ -796,6 +808,12 @@
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.maxCol) ? ws.maxCol :
                 BICst.DEFAULT_CHART_SETTING.maxCol;
+        },
+
+        getWSRowHeightByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.rowHeight) ? ws.rowHeight :
+                BICst.DEFAULT_CHART_SETTING.rowHeight;
         },
 
         getWSFreezeDimByID: function (wid) {
