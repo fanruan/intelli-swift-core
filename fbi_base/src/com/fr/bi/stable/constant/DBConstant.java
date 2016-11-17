@@ -122,7 +122,7 @@ public class DBConstant {
 
     public static final class CUBE_UPDATE_TYPE {
         public static final String GLOBAL_UPDATE = "__global_update__";
-        public static final String SINGLE_TABLE_UPDATE = "__singleTable_update__";
+        public static final String SINGLETABLE_UPDATE = "__singleTable_update__";
     }
 
     public static final class GLOBAL_UPDATE_TYPE {
