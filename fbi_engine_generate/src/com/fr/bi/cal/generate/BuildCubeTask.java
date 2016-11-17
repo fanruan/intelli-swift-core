@@ -101,7 +101,6 @@ public class BuildCubeTask implements CubeTask {
     public void start() {
         BIConfigureManagerCenter.getLogManager().logStart(biUser.getUserId());
         PerformancePlugManager.getInstance().printSystemParameters();
-
         logBusinessTable();
         logTable(cubeBuildStuff.getSingleSourceLayers(), cubeBuildStuff.getUpdateSettingSources());
         logRelation(cubeBuildStuff.getTableSourceRelationSet());
@@ -134,6 +133,7 @@ public class BuildCubeTask implements CubeTask {
                 if (replaceSuccess) {
                     BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), CubeUpdateUtils.getCubeAbsentRelations(biUser.getUserId()));
                     BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
+                    BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId(), CubeUpdateUtils.getCubeAbsentTables(biUser.getUserId()));
                     BICubeConfigureCenter.getPackageManager().persistData(biUser.getUserId());
                     BICubeConfigureCenter.getDataSourceManager().persistData(biUser.getUserId());
                     BIModuleUtils.clearAnalysisETLCache(biUser.getUserId());

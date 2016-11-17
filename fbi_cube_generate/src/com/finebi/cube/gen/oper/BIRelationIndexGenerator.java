@@ -217,6 +217,9 @@ public class BIRelationIndexGenerator extends BIProcessor {
             Object foreignColumnValue = foreignColumn.getGroupObjectValue(foreignIndex);
             GroupValueIndex foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
             Comparator c = primaryColumn.getGroupComparator();
+            if (isNumberColumn(primaryColumn.getClassType()) && isNumberColumn(foreignColumn.getClassType())) {
+                c = generateComparatorByType(primaryColumn.getClassType(), foreignColumn.getClassType());
+            }
             int[] reverse = new int[foreignTable.getRowCount()];
             Arrays.fill(reverse, NIOConstant.INTEGER.NULL_VALUE);
             Stopwatch stopwatch = Stopwatch.createStarted();
