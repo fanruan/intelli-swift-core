@@ -83,9 +83,14 @@ BI.ParamPopupView = BI.inherit(BI.Widget, {
 
     //指定日期n个月之前或之后的日期
     _getOffsetMonth: function (date, n) {
-        var dt = new Date(date);
-        dt.setMonth(dt.getMonth() + parseInt(n));
-        return dt;
+        var day = date.getDate();
+        var monthDay = new Date(date.getFullYear(), date.getMonth() + parseInt(n), 1).getMonthDays();
+        if(day > monthDay){
+            day = monthDay;
+        }
+        date.setDate(day);
+        date.setMonth(date.getMonth() + parseInt(n));
+        return date;
     },
 
     //指定日期n个季度之前或之后的日期
