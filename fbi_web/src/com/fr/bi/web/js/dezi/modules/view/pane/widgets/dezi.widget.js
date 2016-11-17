@@ -96,7 +96,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     },
     _onClickShowName: function () {
         var settings = this.model.get("settings");
-        settings.show_name = !BI.Utils.getWSShowNameByID(this.model.get("id"));
+        settings.showName = !BI.Utils.getWSShowNameByID(this.model.get("id"));
         this.model.set("settings", settings);
         this._refreshLayout();
     },
