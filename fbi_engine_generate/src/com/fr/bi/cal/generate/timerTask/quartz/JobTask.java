@@ -32,11 +32,10 @@ public class JobTask implements Job {
         if (ComparatorUtils.equals(tableKey, DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE)) {
             new CubeBuildManager().CubeBuildStaff(userId);
         } else {
-            if (!isTableUsed(userId, tableKey)) {
-                BILoggerFactory.getLogger().warn("the table " + tableKey + " is not existed. Timer task canceled");
-                return;
-            } else {
+            if (isTableUsed(userId, tableKey)) {
                 new CubeBuildManager().CubeBuildSingleTable(userId, tableKey, updateType);
+            } else {
+                BILoggerFactory.getLogger().warn("the table " + tableKey + " is not existed. Timer task canceled");
             }
         }
     }
