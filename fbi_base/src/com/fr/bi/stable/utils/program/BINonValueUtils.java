@@ -30,7 +30,12 @@ public class BINonValueUtils {
     public static BIRuntimeException beyondControl(Throwable throwable) {
         if (throwable instanceof BIRuntimeException) {
             Throwable cause = throwable.getCause();
-            return beyondControl(cause.getMessage(), cause);
+            if(null != cause)
+            {
+                return beyondControl(cause.getMessage(), cause);
+            }else {
+                return beyondControl(throwable.getMessage(),throwable);
+            }
         }
         return beyondControl(throwable.getMessage(), throwable);
     }
