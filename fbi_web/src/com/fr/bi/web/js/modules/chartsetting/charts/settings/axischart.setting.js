@@ -536,7 +536,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.leftYNumberLevel]
+                    items: [this.rightYNumberLevel]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Unit_Normal"),

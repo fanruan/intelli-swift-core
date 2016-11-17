@@ -368,7 +368,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         }, {
             title: {
                 align: "center",
-                text: config.catShowTitle ? config.catShowTitle : "",
+                text: config.catShowTitle ? config.catTitle : "",
                 style: BI.extend({}, config.catTitleStyle, {
                     fontSize: config.catTitleStyle && config.catTitleStyle.fontSize + "px"
                 })
@@ -377,7 +377,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
     },
 
     leftAxisSetting: function (config) {
-        var title = this.getXYAxisUnit(config.leftYNumberLevel, config.leftYUnit);
+        var unit = this.getXYAxisUnit(config.leftYNumberLevel, config.leftYUnit);
         return BI.extend({
             lineWidth: config.lineWidth,
             lineColor: config.leftYLineColor,
@@ -399,7 +399,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             formatter: this.formatTickInXYaxis(config.leftYNumberFormat, config.leftYNumberLevel, config.leftYSeparator)
         }, {
             title: {
-                text: config.leftYShowTitle ? config.leftYTitle + title : title,
+                text: config.leftYShowTitle ? config.leftYTitle + unit : '',
                 rotation: this.constants.ROTATION,
                 style: BI.extend({}, config.leftYTitleStyle, {
                     fontSize: config.leftYTitleStyle && config.leftYTitleStyle.fontSize + "px"
@@ -431,7 +431,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             formatter: this.formatTickInXYaxis(config.rightYNumberFormat, config.rightYNumberLevel, config.rightYSeparator)
         }, {
             title: {
-                text: config.rightYShowTitle ? config.rightYTitle + unit : unit,
+                text: config.rightYShowTitle ? config.rightYTitle + unit : '',
                 rotation: this.constants.ROTATION,
                 style: BI.extend({}, config.rightYTitleStyle, {
                     fontSize: config.rightYTitleStyle && config.rightYTitleStyle.fontSize + "px"
@@ -463,7 +463,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             formatter: this.formatTickInXYaxis(config.rightY2NumberFormat, config.rightY2NumberLevel, config.rightY2Separator)
         }, {
             title: {
-                text: config.rightY2ShowTitle ? config.rightY2Title + unit : unit,
+                text: config.rightY2ShowTitle ? config.rightY2Title + unit : '',
                 rotation: this.constants.ROTATION,
                 style: BI.extend({}, config.rightY2TitleStyle, {
                     fontSize: config.rightY2TitleStyle && config.rightY2TitleStyle.fontSize + "px"
@@ -489,7 +489,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             leftYNumberFormat: options.leftYNumberFormat || c.NORMAL,
             leftYUnit: options.leftYUnit || '',
             leftYNumberLevel: options.leftYNumberLevel || c.NORMAL,
-            leftYShowTitle: options.leftYShowTitle || c.NOT_SHOW,
+            leftYShowTitle: options.leftYShowTitle || false,
             leftYTitle: options.leftYTitle || '',
             leftYReverse: options.leftYReverse || c.REVERSE,
             leftYShowLabel: options.leftYShowLabel,
@@ -503,7 +503,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             rightYNumberLevel: options.rightYNumberLevel || c.NORMAL,
             rightYUnit: options.rightYUnit || '',
             rightYReverse: options.rightYReverse || c.REVERSE,
-            rightYShowTitle: options.rightYShowTitle || c.NOT_SHOW,
+            rightYShowTitle: options.rightYShowTitle || false,
             rightYTitleStyle: options.rightYTitleStyle || c.FONT_STYLE,
             rightYTitle: options.rightYTitle,
             rightYSeparator: options.rightYSeparator,
@@ -515,7 +515,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             rightY2NumberFormat: options.rightY2NumberFormat,
             rightY2NumberLevel: options.rightY2NumberLevel,
             rightY2Unit: options.rightY2Unit,
-            rightY2ShowTitle: options.rightY2ShowTitle,
+            rightY2ShowTitle: options.rightY2ShowTitle || false,
             rightY2Title: options.rightY2Title,
             rightY2Reverse: options.rightY2Reverse,
             rightY2Separator: options.rightY2Separator,
@@ -526,7 +526,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             rightY2CustomScale: options.rightY2CustomScale || c.CUSTOM_SCALE,
             rightY2ShowCustomScale: options.rightY2ShowCustomScale,
             //分类轴
-            catShowTitle: options.catShowTitle,
+            catShowTitle: options.catShowTitle || false,
             catTitle: options.catTitle,
             catShowLabel: options.catShowLabel,
             catLabelStyle: options.catLabelStyle || c.FONT_STYLE,
@@ -537,7 +537,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             legend: options.legend,
             legendStyle: options.legendStyle || c.FONT_STYLE,
             showDataLabel: options.showDataLabel,
-            showDataTable: options.showDataTable,
+            showDataTable: options.showDataTable || false,
             showZoom: options.showZoom,
             styleRadio: options.styleRadio,
             themeColor: options.themeColor,
@@ -566,6 +566,9 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             bigDataMode: options.bigDataMode,
             geo: options.geo,
             initDrillPath: options.initDrillPath || [],
+            cordon: options.cordon || [],
+            tooltip: options.tooltip || [],
+            lnglat: options.lnglat
         }
     },
 

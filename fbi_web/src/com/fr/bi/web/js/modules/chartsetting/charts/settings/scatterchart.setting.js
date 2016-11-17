@@ -699,9 +699,6 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.bigDataMode.on(BI.Controller.EVENT_CHANGE, function () {
             self._bigDataMode(!this.isSelected());
-            if (this.isSelected()) {
-                self._colorSettingChange(BICst.DISPLAY_RULES.GRADIENT)
-            }
             self.fireEvent(BI.ScatterChartSetting.EVENT_CHANGE)
         });
 
