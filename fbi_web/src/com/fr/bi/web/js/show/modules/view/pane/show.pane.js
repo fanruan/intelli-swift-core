@@ -96,6 +96,9 @@ BIShow.PaneView = BI.inherit(BI.View, {
     },
 
     _createNorth: function () {
+        var zclip = BI.createWidget({
+            type: "bi.copy_link_item"
+        });
         var viewChange = BI.createWidget({
             type: "bi.icon_text_item",
             cls: "toolbar-edit-font",
@@ -116,9 +119,13 @@ BIShow.PaneView = BI.inherit(BI.View, {
             type: "bi.absolute",
             cls: "dashboard-toolbar",
             items: [{
-                el: Data.SharingPool.get("show") ? BI.createWidget() : viewChange,
+                el: Data.SharingPool.get("show") ? BI.createWidget() : zclip,
                 top: 0,
                 left: 110
+            }, {
+                el: Data.SharingPool.get("show") ? BI.createWidget() : viewChange,
+                top: 0,
+                left: 210
             }]
         })
     },

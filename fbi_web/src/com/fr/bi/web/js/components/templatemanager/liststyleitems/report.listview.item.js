@@ -56,14 +56,14 @@ BI.ReportListViewItem = BI.inherit(BI.BasicButton, {
             this.hangout = BI.createWidget({
                 type: "bi.icon_change_button",
                 cls: "template-item-icon",
-                title: function(){
-                    if(self.status === BICst.REPORT_STATUS.NORMAL) {
+                title: function () {
+                    if (self.status === BICst.REPORT_STATUS.NORMAL) {
                         return BI.i18nText("BI-Report_Hangout_Applying");
                     }
-                    if(self.status === BICst.REPORT_STATUS.APPLYING) {
+                    if (self.status === BICst.REPORT_STATUS.APPLYING) {
                         return BI.i18nText("BI-Cancel_Apply_Hangout");
                     }
-                    if(self.status === BICst.REPORT_STATUS.HANGOUT) {
+                    if (self.status === BICst.REPORT_STATUS.HANGOUT) {
                         return BI.i18nText("BI-Hangouted");
                     }
                 },
@@ -78,11 +78,11 @@ BI.ReportListViewItem = BI.inherit(BI.BasicButton, {
             this.markButton = BI.createWidget({
                 type: "bi.icon_change_button",
                 cls: "template-item-mark-icon",
-                title: function(){
-                    if(self.status === BICst.REPORT_STATUS.APPLYING) {
+                title: function () {
+                    if (self.status === BICst.REPORT_STATUS.APPLYING) {
                         return BI.i18nText("BI-Report_Hangout_Applying");
                     }
-                    if(self.status === BICst.REPORT_STATUS.HANGOUT) {
+                    if (self.status === BICst.REPORT_STATUS.HANGOUT) {
                         return BI.i18nText("BI-Hangouted");
                     }
                 },
@@ -96,7 +96,7 @@ BI.ReportListViewItem = BI.inherit(BI.BasicButton, {
                 self._onClickHangout();
             });
             this._refreshHangout();
-            
+
             //查看已分享
             var sharedButton = BI.createWidget({
                 type: "bi.icon_button",
@@ -107,26 +107,32 @@ BI.ReportListViewItem = BI.inherit(BI.BasicButton, {
                 invisible: true,
                 stopPropagation: true
             });
-            sharedButton.on(BI.IconButton.EVENT_CHANGE, function(){
+            sharedButton.on(BI.IconButton.EVENT_CHANGE, function () {
                 var id = BI.UUID();
                 var sharedUsers = BI.createWidget({
                     type: "bi.edit_shared_pane",
                     shared: o.shared
                 });
-                sharedUsers.on(BI.EditSharedPane.EVENT_CLOSE, function(){
+                sharedUsers.on(BI.EditSharedPane.EVENT_CLOSE, function () {
                     BI.Popovers.remove(id);
                 });
-                sharedUsers.on(BI.EditSharedPane.EVENT_SAVE, function(){
+                sharedUsers.on(BI.EditSharedPane.EVENT_SAVE, function () {
                     o.editSharedUsers(this.getValue());
                     BI.Popovers.remove(id);
                 });
                 BI.Popovers.create(id, sharedUsers, {width: 600, height: 500}).open(id);
             });
-            if(BI.isNull(o.shared) || o.shared.length === 0) {
+            if (BI.isNull(o.shared) || o.shared.length === 0) {
                 sharedButton.setEnable(false);
                 sharedButton.setWarningTitle(BI.i18nText("BI-The_Report_Not_Shared"));
             }
         }
+
+        var copyButton = BI.createWidget({
+            type: 'bi.copy_link_icon_button',
+            cls: "template-item-icon",
+            buildUrl: o.buildUrl + "&edit=_bi_edit_"
+        });
 
         var renameIcon = BI.createWidget({
             type: "bi.icon_button",
@@ -161,11 +167,13 @@ BI.ReportListViewItem = BI.inherit(BI.BasicButton, {
         });
 
         this.element.hover(function () {
+            copyButton.setVisible(true);
             renameIcon.setVisible(true);
             deleteIcon.setVisible(true);
             self.hangout && self.hangout.setVisible(true);
             sharedButton && sharedButton.setVisible(true);
         }, function () {
+            copyButton.setVisible(false);
             renameIcon.setVisible(false);
             deleteIcon.setVisible(false);
             self.hangout && self.hangout.setVisible(false);
@@ -219,7 +227,7 @@ BI.ReportListViewItem = BI.inherit(BI.BasicButton, {
             }, {
                 type: "bi.vertical_adapt",
                 hgap: 20,
-                items: [sharedButton, this.hangout, renameIcon, deleteIcon]
+                items: [sharedButton, this.hangout, renameIcon, deleteIcon, copyButton]
             }, {
                 el: {
                     type: "bi.left_right_vertical_adapt",
@@ -234,7 +242,7 @@ BI.ReportListViewItem = BI.inherit(BI.BasicButton, {
         });
     },
 
-    doClick: function(){
+    doClick: function () {
         var self = this, o = this.options;
         BI.ReportListViewItem.superclass.doClick.apply(this, arguments);
         o.onClickReport.apply(self, arguments);
@@ -252,18 +260,18 @@ BI.ReportListViewItem = BI.inherit(BI.BasicButton, {
     _refreshHangout: function () {
         if (this.status === BICst.REPORT_STATUS.NORMAL) {
             this.hangout.setIcon("report-apply-hangout-ing-font");
-            if(BI.isNotNull(this.markButton)) {
+            if (BI.isNotNull(this.markButton)) {
                 this.markButton.setVisible(false);
             }
         }
-        if(this.status === BICst.REPORT_STATUS.APPLYING) {
+        if (this.status === BICst.REPORT_STATUS.APPLYING) {
             this.hangout.setIcon("report-hangout-ing-mark-font");
-            if(BI.isNotNull(this.markButton)) {
+            if (BI.isNotNull(this.markButton)) {
                 this.markButton.setIcon("report-hangout-ing-mark-font");
                 this.markButton.setVisible(true);
             }
         }
-        if(this.status === BICst.REPORT_STATUS.HANGOUT) {
+        if (this.status === BICst.REPORT_STATUS.HANGOUT) {
             this.hangout.setIcon("report-apply-hangout-normal-font");
             this.markButton && this.markButton.setVisible(true);
         }
