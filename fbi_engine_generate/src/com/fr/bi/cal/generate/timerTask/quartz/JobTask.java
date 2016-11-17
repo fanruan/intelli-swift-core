@@ -31,14 +31,14 @@ public class JobTask implements Job {
         int updateType = data.getInt("updateType");
         if (ComparatorUtils.equals(tableKey, DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE)) {
             new CubeBuildManager().CubeBuildStaff(userId);
-        }
-        if (!isTableUsed(userId, tableKey)) {
-            BILoggerFactory.getLogger().info("the table " + tableKey + " is not existed. Timer task canceled");
-            return;
         } else {
-            new CubeBuildManager().CubeBuildSingleTable(userId, tableKey, updateType);
+            if (!isTableUsed(userId, tableKey)) {
+                BILoggerFactory.getLogger().warn("the table " + tableKey + " is not existed. Timer task canceled");
+                return;
+            } else {
+                new CubeBuildManager().CubeBuildSingleTable(userId, tableKey, updateType);
+            }
         }
-
     }
 
     private boolean isTableUsed(long userId, String tableKey) {

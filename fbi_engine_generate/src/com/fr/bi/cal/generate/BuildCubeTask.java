@@ -101,20 +101,12 @@ public class BuildCubeTask implements CubeTask {
     public void start() {
         BIConfigureManagerCenter.getLogManager().logStart(biUser.getUserId());
         PerformancePlugManager.getInstance().printSystemParameters();
-        Long t = System.currentTimeMillis();
+
         logBusinessTable();
         logTable(cubeBuildStuff.getSingleSourceLayers(), cubeBuildStuff.getUpdateSettingSources());
         logRelation(cubeBuildStuff.getTableSourceRelationSet());
-        BILoggerFactory.getLogger().info("start copy some files");
-        if (System.getProperty("os.name").toUpperCase().contains("HP-UX")) {
-            BILoggerFactory.getLogger().info("current system is hp-unix. Handlers must be released before copying Files");
-            BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
-            cubeBuildStuff.copyFileFromOldCubes();
-            BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
-        } else {
-            cubeBuildStuff.copyFileFromOldCubes();
-        }
-        BILoggerFactory.getLogger().info("copy files cost time: " + DateUtils.timeCostFrom(t));
+        logPath(filterPath(cubeBuildStuff.getTableSourceRelationPathSet()));
+        copyFilesFromOldCubs();
     }
 
     protected Set<BITableSourceRelation> getGeneratedRelation() {
@@ -407,6 +399,19 @@ public class BuildCubeTask implements CubeTask {
         return result;
     }
 
+    private void copyFilesFromOldCubs() {
+        BILoggerFactory.getLogger().info("start copy some files");
+        Long t = System.currentTimeMillis();
+        if (System.getProperty("os.name").toUpperCase().contains("HP-UX")) {
+            BILoggerFactory.getLogger().warn("current system is hp-unix. Handlers must be released before copying Files");
+            BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
+            cubeBuildStuff.copyFileFromOldCubes();
+            BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
+        } else {
+            cubeBuildStuff.copyFileFromOldCubes();
+        }
+        BILoggerFactory.getLogger().info("copy files cost time: " + DateUtils.timeCostFrom(t));
+    }
 
     public static IMessage generateMessageDataSourceStart() {
         return buildTopic(new BIMessageTopic(BICubeBuildTopicTag.START_BUILD_CUBE));

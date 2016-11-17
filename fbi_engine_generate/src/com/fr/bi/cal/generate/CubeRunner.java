@@ -159,11 +159,12 @@ public class CubeRunner {
                 BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
                 BICubeConfigureCenter.getPackageManager().persistData(biUser.getUserId());
                 BICubeConfigureCenter.getDataSourceManager().persistData(biUser.getUserId());
-                BICubeConfigureCenter.getPackageManager().endBuildingCube(biUser.getUserId());
             }
             BILoggerFactory.getLogger().info("meta data finished! time cost: " + DateUtils.timeCostFrom(t));
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }finally {
+            BICubeConfigureCenter.getPackageManager().endBuildingCube(biUser.getUserId());
         }
         BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
         /* 前台进度条完成进度最多到90%，当cube文件替换完成后传入调用logEnd，进度条直接到100%*/

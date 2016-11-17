@@ -210,13 +210,12 @@ public class BIRelationIndexGenerator extends BIProcessor {
              */
             int primaryGroupSize = primaryColumn.sizeOfGroup();
             int foreignGroupSize = foreignColumn.sizeOfGroup();
-            int foreignIndex = 0;
-            Object foreignColumnValue = null;
-            GroupValueIndex foreignGroupValueIndex = null;
-            if (foreignGroupSize != 0) {
-                foreignColumnValue = foreignColumn.getGroupObjectValue(foreignIndex);
-                foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
+            if (foreignGroupSize == 0) {
+                return;
             }
+            int foreignIndex = 0;
+            Object foreignColumnValue = foreignColumn.getGroupObjectValue(foreignIndex);
+            GroupValueIndex foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
             Comparator c = primaryColumn.getGroupComparator();
             int[] reverse = new int[foreignTable.getRowCount()];
             Arrays.fill(reverse, NIOConstant.INTEGER.NULL_VALUE);
