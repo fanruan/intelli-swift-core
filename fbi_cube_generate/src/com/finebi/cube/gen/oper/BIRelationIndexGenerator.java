@@ -334,7 +334,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
 
     private GroupValueIndex getForeignColumnIndex(int foreignIndex, int foreignGroupSize, ICubeColumnEntityService foreignColumn) {
         if (foreignIndex == foreignGroupSize) {
-            return null;
+            return GVIFactory.createAllEmptyIndexGVI();
         } else {
             try {
                 return foreignColumn.getBitmapIndex(foreignIndex);

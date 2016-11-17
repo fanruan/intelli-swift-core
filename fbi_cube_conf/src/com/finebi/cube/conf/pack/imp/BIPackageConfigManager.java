@@ -91,12 +91,7 @@ public class BIPackageConfigManager implements Release {
     public void setStartBuildCube() throws BIStatusChaosException {
         try {
             synchronized (currentPackageManager) {
-                if (isFree()) {
-                    buildingCubePackages = currentPackageManager.clonePackageContainer();
-                    setBusy();
-                } else {
-                    throw new BIStatusChaosException("Please check current status of building cube,here happened a fatal problem");
-                }
+                buildingCubePackages = currentPackageManager.clonePackageContainer();
             }
         } catch (CloneNotSupportedException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -115,13 +110,6 @@ public class BIPackageConfigManager implements Release {
         return status == PACKAGE_MANAGER_STATUS_FREE;
     }
 
-    private void setBusy() {
-        status = PACKAGE_MANAGER_STATUS_BUILDING;
-    }
-
-    private void setFree() {
-        status = PACKAGE_MANAGER_STATUS_FREE;
-    }
 
     public void setEndBuildCube() throws BIStatusChaosException {
         synchronized (analysisPackageManager) {
@@ -131,14 +119,11 @@ public class BIPackageConfigManager implements Release {
 
     public void setEndBuildCube(Set<CubeTableSource> absentTable) throws BIStatusChaosException {
         synchronized (analysisPackageManager) {
-            if (!isFree()) {
-                analysisPackageManager.parsePackageContainer(buildingCubePackages);
-                buildingCubePackages.clearPackages();
+            try {
+                analysisPackageManager.parsePackageContainer(currentPackageManager.clonePackageContainer());
                 analysisPackageManager.removeTable(absentTable);
-                setFree();
-
-            } else {
-                throw new BIStatusChaosException("Please check current status of building cube,here happened a fatal problem");
+            } catch (CloneNotSupportedException e) {
+                BILoggerFactory.getLogger(BIPackageConfigManager.class).error(e.getMessage(), e);
             }
         }
     }
