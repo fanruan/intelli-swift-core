@@ -1,15 +1,10 @@
 package com.fr.bi.web.conf.services.cubeconf;
 
 import com.finebi.cube.ICubeConfiguration;
-import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeGenerationManager;
-import com.finebi.cube.utils.BITableKeyUtils;
-import com.fr.bi.base.BIUser;
-import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
@@ -32,23 +27,14 @@ public class BICheckGenerateCubeAction extends AbstractBIConfigureAction {
         CubeTableSource source = TableSourceFactory.createTableSource(new JSONObject(tableJson), userId);
         JSONObject jo = new JSONObject();
         try {
-            ICubeConfiguration cubeConfiguration = BICubeConfiguration.getConf(Long.toString(userId));
-            boolean tableExisted = BITableKeyUtils.isTableExisted(source, cubeConfiguration);
-            if (tableExisted) {
-                ICubeDataLoader dataLoader = BIFactoryHelper.getObject(ICubeDataLoader.class, new BIUser(userId));
-                ICubeTableService tableService = dataLoader.getTableIndex(source);
-                BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
-                jo.put("isGenerated", tableService.isDataAvailable() && !cubeManager.hasTask(userId));
-            } else {
-                jo.put("isGenerated", false);
-            }
+            BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
+            jo.put("isGenerated", !cubeManager.hasTask(userId));
         } catch (Exception e) {
-            jo.put("isGenerated", false);
+            jo.put("isGenerated", true);
             BILoggerFactory.getLogger().error(e.getMessage());
         }
         WebUtils.printAsJSON(res, jo);
     }
-
     @Override
     public String getCMD() {
         return "check_generate_cube";

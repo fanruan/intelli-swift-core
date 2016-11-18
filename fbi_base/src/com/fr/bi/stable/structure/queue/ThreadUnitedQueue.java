@@ -3,14 +3,14 @@
  */
 package com.fr.bi.stable.structure.queue;
 
+import com.fr.bi.common.inter.Delete;
+import com.fr.bi.common.inter.Release;
+
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
-
-import com.fr.bi.common.inter.Release;
-import com.fr.bi.common.inter.Delete;
 
 /**
  * @author Daniel

@@ -45,8 +45,8 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var o = this.options;
         var dimensionMap = BI.Utils.getDimensionMapByDimensionID(o.dId);
         var tIds = BI.Utils.getAllTargetDimensionIDs(BI.Utils.getWidgetIDByDimensionID(o.dId));
-        var res = BI.find(tIds, function (idx, tId) {
-            return !BI.Utils.isCalculateTargetByDimensionID(tId) && !checkDimAndTarRelationValidInCurrentPaths(o.dId, tId);
+        var res = BI.find(tIds, function(idx, tId){
+            return BI.Utils.isCalculateTargetByDimensionID(tId) || !checkDimAndTarRelationValidInCurrentPaths(o.dId, tId);
         });
         return BI.isNull(res);
 

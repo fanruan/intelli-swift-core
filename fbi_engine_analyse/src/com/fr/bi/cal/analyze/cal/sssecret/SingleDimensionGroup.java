@@ -3,13 +3,11 @@ package com.fr.bi.cal.analyze.cal.sssecret;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.FinalInt;
-import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.analyze.cal.Executor.Executor;
 import com.fr.bi.cal.analyze.cal.Executor.ILazyExecutorOperation;
 import com.fr.bi.cal.analyze.cal.result.*;
@@ -55,6 +53,8 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
 
     protected transient int ckIndex;
 
+    private ICubeValueEntryGetter getter;
+
     private transient boolean useRealData = true;
 
     private transient int demoGroupLimit = BIBaseConstant.PART_DATA_GROUP_LIMIT;
@@ -65,12 +65,13 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
      * @param column 维度
      * @param gvi    获取实际过滤条件的对象
      */
-    protected SingleDimensionGroup(BusinessTable tableKey, DimensionCalculator[] pcolumns, DimensionCalculator column, Object[] data, int ckIndex, GroupValueIndex gvi, ICubeDataLoader loader, boolean useRealData, int demoGroupLimit) {
+    protected SingleDimensionGroup(BusinessTable tableKey, DimensionCalculator[] pcolumns, DimensionCalculator column, Object[] data, int ckIndex, ICubeValueEntryGetter getter, GroupValueIndex gvi, ICubeDataLoader loader, boolean useRealData, int demoGroupLimit) {
         this.loader = loader;
         this.tableKey = tableKey;
         this.pcolumns = pcolumns;
         this.column = column;
         this.ckIndex = ckIndex;
+        this.getter = getter;
         this.data = data;
         this.useRealData = useRealData;
         this.initRoot(gvi);
@@ -81,10 +82,10 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         }
     }
 
-    public static SingleDimensionGroup createDimensionGroup(final BusinessTable tableKey, final DimensionCalculator[] pcolumns, final DimensionCalculator column, final Object[] data, final int ckIndex, final GroupValueIndex gvi, final ICubeDataLoader loader, boolean useRealData) {
+    public static SingleDimensionGroup createDimensionGroup(final BusinessTable tableKey, final DimensionCalculator[] pcolumns, final DimensionCalculator column, final Object[] data, final int ckIndex, ICubeValueEntryGetter getter, final GroupValueIndex gvi, final ICubeDataLoader loader, boolean useRealData) {
         BusinessTable target = ComparatorUtils.equals(tableKey, BIBusinessTable.createEmptyTable()) ? column.getField().getTableBelongTo() : tableKey;
         long rowCount = loader.getTableIndex(target.getTableSource()).getRowCount();
-        int groupLimit = 10;
+        int groupLimit = BIBaseConstant.PART_DATA_GROUP_LIMIT;
         if (rowCount < BIBaseConstant.PART_DATA_COUNT_LIMIT) {
             useRealData = true;
         } else {
@@ -93,11 +94,11 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         }
         final boolean urd = useRealData;
         final int count = Math.min(Math.max(BIBaseConstant.PART_DATA_GROUP_LIMIT, groupLimit), BIBaseConstant.PART_DATA_GROUP_MAX_LIMIT);
-        return new SingleDimensionGroup(tableKey, pcolumns, column, data, ckIndex, gvi, loader, urd, count);
+        return new SingleDimensionGroup(tableKey, pcolumns, column, data, ckIndex, getter, gvi, loader, urd, count);
     }
 
-    public static ISingleDimensionGroup createSortDimensionGroup(final BusinessTable tableKey, final DimensionCalculator[] pcolumns, final DimensionCalculator column, final Object[] data, final int ckIndex, final GroupValueIndex gvi, final ICubeDataLoader loader, SortedNode sortedNode, boolean useRealData) {
-        SingleDimensionGroup singleDimensionGroup = createDimensionGroup(tableKey, pcolumns, column, data, ckIndex, gvi, loader, useRealData);
+    public static ISingleDimensionGroup createSortDimensionGroup(final BusinessTable tableKey, final DimensionCalculator[] pcolumns, final DimensionCalculator column, final Object[] data, final int ckIndex, ICubeValueEntryGetter getter, final GroupValueIndex gvi, final ICubeDataLoader loader, SortedNode sortedNode, boolean useRealData) {
+        SingleDimensionGroup singleDimensionGroup = createDimensionGroup(tableKey, pcolumns, column, data, ckIndex, getter, gvi, loader, useRealData);
         return new SortedSingleDimensionGroup(singleDimensionGroup, sortedNode);
     }
 
@@ -140,15 +141,15 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         }
         BusinessTable target = getRealTableKey4Calculate();
         double validPercent = 0.75;
-        int wholeRowCount = getLoader().getTableIndex(target.getTableSource()).getRowCount();
         int currentRowCount = root.getGroupValueIndex().getRowsCountWithData();
         if (ckIndex != 0) {
-            return getIterByAllCal(wholeRowCount, currentRowCount);
+            return getIterByAllCal(currentRowCount);
         }
+        int wholeRowCount = getLoader().getTableIndex(target.getTableSource()).getRowCount();
         if (currentRowCount * 1.0 / wholeRowCount > validPercent) {
             return column.createValueMapIterator(getRealTableKey4Calculate(), getLoader(), useRealData, demoGroupLimit);
         }
-        return getIterByAllCal(wholeRowCount, currentRowCount);
+        return getIterByAllCal(currentRowCount);
 
     }
 
@@ -174,27 +175,8 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         return ComparatorUtils.equals(tableKey, BIBusinessTable.createEmptyTable()) ? column.getField().getTableBelongTo() : tableKey;
     }
 
-    private CubeTableSource getSource(){
-        //多对多
-        if (column.getDirectToDimensionRelationList().size() > 0) {
-            ICubeFieldSource primaryField = column.getDirectToDimensionRelationList().get(0).getPrimaryField();
-            return  primaryField.getTableBelongTo();
-        }
-        return column.getField().getTableBelongTo().getTableSource();
-    }
 
-    private BIKey createKey(){
-        //多对多
-        if (column.getDirectToDimensionRelationList().size() > 0) {
-            ICubeFieldSource primaryField = column.getDirectToDimensionRelationList().get(0).getPrimaryField();
-            return new IndexKey(primaryField.getFieldName());
-        }
-        return column.createKey();
-    }
-
-    private Iterator getIterByAllCal(int wholeRowCount, int currentRowCount) {
-        ICubeTableService ti = getLoader().getTableIndex(getSource());
-        ICubeValueEntryGetter getter = ti.getValueEntryGetter(createKey(), column.getRelationList());
+    private Iterator getIterByAllCal(int currentRowCount) {
         SortTool tool = SortToolUtils.getSortTool(getter.getGroupSize(), currentRowCount);
         switch (tool) {
             case INT_ARRAY:
@@ -221,7 +203,11 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
                 }
             }
         });
-        return column.getSortType() == BIReportConstant.SORT.DESC || column.getSortType() == BIReportConstant.SORT.NUMBER_DESC ? new Iterator() {
+        return column.getSortType() == BIReportConstant.SORT.DESC || column.getSortType() == BIReportConstant.SORT.NUMBER_DESC ? getArraySortDESCIterator(getter, groupIndex) : getArraySortASCIterator(getter, groupIndex);
+    }
+
+    private Iterator getArraySortDESCIterator(final ICubeValueEntryGetter getter, final int[] groupIndex) {
+        return new Iterator() {
 
             private int index = groupIndex.length - 1;
 
@@ -241,7 +227,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
             @Override
             public Object next() {
                 final CubeValueEntry gve = getter.getEntryByGroupRow(index);
-                Map.Entry entry = new Entry() {
+                Entry entry = new Entry() {
                     @Override
                     public Object getKey() {
                         return gve.getT();
@@ -270,7 +256,11 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
                 index--;
                 return entry;
             }
-        } : new Iterator() {
+        };
+    }
+
+    private Iterator getArraySortASCIterator(final ICubeValueEntryGetter getter, final int[] groupIndex) {
+        return new Iterator() {
 
             private int index = 0;
 
@@ -290,7 +280,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
             @Override
             public Object next() {
                 final CubeValueEntry gve = getter.getEntryByGroupRow(index);
-                Map.Entry entry = new Entry() {
+                Entry entry = new Entry() {
                     @Override
                     public Object getKey() {
                         return gve.getT();
@@ -331,6 +321,10 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
                 i.value = getter.getPositionOfGroupByRow(row);
             }
         });
+        return getOneKeyIterator(getter, i);
+    }
+
+    private Iterator getOneKeyIterator(final ICubeValueEntryGetter getter, final FinalInt i) {
         return new Iterator() {
             @Override
             public void remove() {
@@ -345,7 +339,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
             @Override
             public Object next() {
                 final CubeValueEntry gve = getter.getEntryByGroupRow(i.value);
-                Map.Entry entry = new Entry() {
+                Entry entry = new Entry() {
                     @Override
                     public Object getKey() {
                         return gve.getT();
@@ -389,6 +383,10 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
             }
         });
         final Iterator<Integer> it = set.iterator();
+        return getTreeMapSortIterator(getter, it);
+    }
+
+    private Iterator getTreeMapSortIterator(final ICubeValueEntryGetter getter, final Iterator<Integer> it) {
         return new Iterator() {
             @Override
             public void remove() {
@@ -403,7 +401,7 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
             @Override
             public Object next() {
                 final CubeValueEntry gve = getter.getEntryByGroupRow(it.next());
-                Map.Entry entry = new Entry() {
+                Entry entry = new Entry() {
                     @Override
                     public Object getKey() {
                         return gve.getT();

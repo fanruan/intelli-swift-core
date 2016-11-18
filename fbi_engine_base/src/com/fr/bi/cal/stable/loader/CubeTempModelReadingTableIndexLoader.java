@@ -258,6 +258,13 @@ public class CubeTempModelReadingTableIndexLoader extends CubeAbstractLoader {
         BICube tempCube = new BICube(resourceRetrieval, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
         CubeTableSource tableSource = BIModuleUtils.getSourceByID(new BITableID(task.getTableId()), new BIUser(task.getUserId()));
         while (!tempCube.isVersionAvailable()) {
+            /**
+             * 先临时处理下，要改成消息监听
+             */
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+            }
         }
         return new BICubeTableAdapter(tempCube, tableSource);
 
