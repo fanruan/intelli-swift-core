@@ -36,7 +36,7 @@ BI.CopyLingIconButton = BI.inherit(BI.Widget, {
             height: o.height,
             stopPropagation: true,
             copy: function () {
-                return FR.servletURL + o.buildUrl;
+                return location.origin + FR.servletURL + o.buildUrl;
             },
             afterCopy: function () {
                 BI.Msg.toast(BI.i18nText("BI-Copy") + BI.i18nText("BI-Succeed"));

@@ -27,7 +27,7 @@ BI.CopyLinkItem = BI.inherit(BI.Widget, {
             width: 80,
             stopPropagation: true,
             copy: function () {
-                return FR.servletURL + "?op=fr_bi&cmd=bi_init&id=" + Data.SharingPool.get("reportId") + "&createBy=" + Data.SharingPool.get("createBy") + "&edit=_bi_edit_";
+                return location.href;
             },
 
             afterCopy: function () {
