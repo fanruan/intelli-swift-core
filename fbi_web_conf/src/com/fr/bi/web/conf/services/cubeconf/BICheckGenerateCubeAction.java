@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 public class BICheckGenerateCubeAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
-        String tableJson = WebUtils.getHTTPRequestParameter(req, "table");
         long userId = ServiceUtils.getCurrentUserID(req);
         JSONObject jo = new JSONObject();
         try {
