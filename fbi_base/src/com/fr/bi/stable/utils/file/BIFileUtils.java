@@ -343,7 +343,7 @@ public class BIFileUtils {
             for (String file : files) {
                 File srcFile = new File(src, file);
                 File destFile = new File(dest, file);
-                // 递归复制  
+                // 递归复制
                 copyFolder(srcFile, destFile);
             }
         } else {

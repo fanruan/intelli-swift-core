@@ -92,7 +92,9 @@ public abstract class BIAbstractBaseNIOReader implements ICubePrimitiveReader {
 
     @Override
     public void reSetValid(boolean isValid) {
+        readWriteLock.writeLock().lock();
         this.isValid = isValid;
+        readWriteLock.writeLock().unlock();
     }
 
     public void releaseSource() {
