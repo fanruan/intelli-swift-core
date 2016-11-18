@@ -75,7 +75,7 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
         } catch (BIKeyAbsentException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
-        return null;
+        return new Object[0];
     }
 
     @Override
