@@ -53,7 +53,7 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
             type: "bi.sign_editor",
             height: this.constants.DIMENSION_BUTTON_HEIGHT,
             cls: "bi-dimension-name",
-            errorText: "�ֶβ�������",
+            errorText: BI.i18nText("BI-Field_Name_Can_Not_Be_Same"),
             allowBlank: false,
             validationChecker: function (v) {
                 return self._checkDimensionName(v);
