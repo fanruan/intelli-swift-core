@@ -24,7 +24,7 @@ public class BICheckGenerateCubeAction extends AbstractBIConfigureAction {
         long userId = ServiceUtils.getCurrentUserID(req);
         CubeTableSource source = TableSourceFactory.createTableSource(new JSONObject(tableJson), userId);
         JSONObject jo = new JSONObject();
-        BILoggerFactory.getLogger(BICheckGenerateCubeAction.class).info("Check the Table:" + source.getSourceID());
+        BILoggerFactory.getLogger(BICheckGenerateCubeAction.class).debug("Check the Table:" + source.getSourceID());
         try {
             BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
             jo.put("isGenerated", !cubeManager.hasTask(userId));
