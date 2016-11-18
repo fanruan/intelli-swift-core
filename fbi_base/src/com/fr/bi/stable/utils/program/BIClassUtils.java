@@ -25,7 +25,11 @@ import java.util.jar.JarFile;
  * 2.如果通过classloader没有获得任何文件。那么此时会通过
  * WEB根路径，遍历到lib文件，此时只会获得所有lib下面jar
  * 包里面的内容。
- *
+ * <p/>
+ * 注意：如果希望获得非lib下面的class。这个方法在WebSphere是
+ * 不可行的。因为该容器，通过classloader是不一定能够获得的资源，
+ * 而是通过lib路径获得
+ * <p/>
  * Created by Connery on 2015/12/8.
  */
 public class BIClassUtils {
