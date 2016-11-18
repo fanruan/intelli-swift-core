@@ -1,6 +1,7 @@
 package com.finebi.cube.utils;
 
 import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BISystemConfigHelper;
@@ -84,6 +85,11 @@ public class CubeUpdateUtils {
         BISystemConfigHelper converter = new BISystemConfigHelper();
         converter.prepare(userId);
         for (BITableRelation relation : currentRelations) {
+            //部分businessTableRelation本身就有问题，在这里过滤掉
+            if (!converter.isTableRelationValid(relation)) {
+                BILoggerFactory.getLogger().error("tableRelation invalid:" + relation.toString());
+                continue;
+            }
             BITableSourceRelation sourceRelation = converter.convertRelation(relation);
             if (!BICubeRelationUtils.isRelationExisted(sourceRelation, cubeConfiguration)) {
                 absentRelations.add(sourceRelation);
