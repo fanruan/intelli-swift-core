@@ -196,7 +196,11 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "unit-input",
             watermark: BI.i18nText("BI-Default_Data"),
             validationChecker: function (v) {
-                return self.maxScale.getValue() == '' ? true : BI.parseFloat(v) < BI.parseFloat(self.maxScale.getValue())
+                if(BI.parseFloat(v) < 0) {
+                    return false
+                }
+                return self.maxScale.getValue() === '' ? true :
+                    (BI.parseFloat(v) > 0 && BI.parseFloat(v) < BI.parseFloat(self.maxScale.getValue()))
             }
         });
 
@@ -212,7 +216,11 @@ BI.DashboardChartSetting = BI.inherit(BI.AbstractChartSetting, {
             cls: "unit-input",
             watermark: BI.i18nText("BI-Default_Data"),
             validationChecker: function (v) {
-                return self.minScale.getValue() == '' ? true : BI.parseFloat(v) > BI.parseFloat(self.minScale.getValue())
+                if(BI.parseFloat(v) < 0) {
+                    return false
+                }
+                return self.minScale.getValue() === '' ? true :
+                    BI.parseFloat(v) > BI.parseFloat(self.minScale.getValue())
             }
         });
 
