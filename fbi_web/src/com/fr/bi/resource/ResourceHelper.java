@@ -1744,6 +1744,10 @@ public class ResourceHelper {
                 //另存为
                 "com/fr/bi/web/js/modules/saveas/report.saveas.floatbox.js",
 
+                //复制链接
+                "com/fr/bi/web/js/modules/copylinks/copylink.item.js",
+                "com/fr/bi/web/js/modules/copylinks/copylink.iconbutton.js",
+
                 //图表钻取
                 "com/fr/bi/web/js/modules/chartdrill/button.pushdrill.js",
                 "com/fr/bi/web/js/modules/chartdrill/cell.chartdrill.js",
