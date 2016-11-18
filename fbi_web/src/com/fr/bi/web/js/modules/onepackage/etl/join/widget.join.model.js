@@ -355,7 +355,7 @@ BI.JoinModel = BI.inherit(FR.OB, {
                     }
                     self.joinNames.push({
                         isLeft: true,
-                        name: self._createDistinctName(field.field_name),
+                        name: field.field_name,
                         column_name: field.field_name
                     });
                 } else {
@@ -367,12 +367,25 @@ BI.JoinModel = BI.inherit(FR.OB, {
                     }
                     self.joinNames.push({
                         isLeft: false,
-                        name: self._createDistinctName(field.field_name),
+                        name: field.field_name,
                         column_name: field.field_name
                     });
                 }
             });
         });
+        this._dealWithRepeatNames();
+    },
+
+    _dealWithRepeatNames: function() {
+        var joinNames = BI.deepClone(this.joinNames);
+        var newJoinNames = [];
+        this.joinStyle === BICst.ETL_JOIN_STYLE.RIGHT_JOIN && joinNames.reverse();
+        BI.each(joinNames, function(i, item) {
+            item.name = BI.Func.createDistinctName(newJoinNames, item.name);
+            newJoinNames.push(item);
+        });
+        this.joinStyle === BICst.ETL_JOIN_STYLE.RIGHT_JOIN && newJoinNames.reverse();
+        this.joinNames = newJoinNames;
     },
 
     _createDistinctName: function (name) {
