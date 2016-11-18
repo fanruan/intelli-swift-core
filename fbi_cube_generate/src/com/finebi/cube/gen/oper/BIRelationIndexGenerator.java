@@ -212,12 +212,17 @@ public class BIRelationIndexGenerator extends BIProcessor {
              */
             int primaryGroupSize = primaryColumn.sizeOfGroup();
             int foreignGroupSize = foreignColumn.sizeOfGroup();
-            if (foreignGroupSize == 0) {
-                return;
-            }
+
             int foreignIndex = 0;
-            Object foreignColumnValue = foreignColumn.getGroupObjectValue(foreignIndex);
-            GroupValueIndex foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
+            Object foreignColumnValue;
+            GroupValueIndex foreignGroupValueIndex;
+            if (foreignGroupSize == 0) {
+                foreignColumnValue = null;
+                foreignGroupValueIndex = GVIFactory.createAllEmptyIndexGVI();
+            } else {
+                foreignColumnValue = foreignColumn.getGroupObjectValue(foreignIndex);
+                foreignGroupValueIndex = foreignColumn.getBitmapIndex(foreignIndex);
+            }
             Comparator c = primaryColumn.getGroupComparator();
             if (isNumberColumn(primaryColumn.getClassType()) && isNumberColumn(foreignColumn.getClassType())) {
                 c = generateComparatorByType(primaryColumn.getClassType(), foreignColumn.getClassType());
@@ -292,12 +297,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
             tableRelation.addRelationNULLIndex(0, nullIndex);
             tableRelation.addVersion(System.currentTimeMillis());
         } catch (Exception e) {
-            try {
-                logger.error("error relation :" + relation.toString() + " the exception is:" + "relation information used as listed:" + relation.getPrimaryTable().getSourceID() + "." + relation.getPrimaryField().getColumnName() + " to " + relation.getForeignTable().getSourceID() + "." + relation.getForeignField().getColumnName());
-            } catch (Exception e1) {
-                BILoggerFactory.getLogger().error(e1.getMessage(), e1);
-            }
-            throw BINonValueUtils.beyondControl(e.getMessage(), e);
+            throw BINonValueUtils.beyondControl("The relation:" + logRelation() + ",error message" + e.getMessage(), e);
         } finally {
             if (primaryTable != null) {
                 primaryTable.forceReleaseWriter();

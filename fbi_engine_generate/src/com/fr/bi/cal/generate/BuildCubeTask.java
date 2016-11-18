@@ -335,14 +335,14 @@ public class BuildCubeTask implements CubeTask {
                 countPath++;
                 StringBuffer sb = new StringBuffer();
                 Iterator<BITableSourceRelationPath> it = path.getDependRelationPathSet().iterator();
-                sb.append("\nPath depend:" + countPath + ":\nTarget:\n" + BuildLogHelper.pathLogContent(path.getBiTableSourceRelationPath()))
-                        .append("\n").append("Depend:\n");
+                sb.append("\nPath Depend:" + countPath + ":\nTarget:\n" + BuildLogHelper.pathLogContent(path.getBiTableSourceRelationPath()))
+                        .append("\n").append("Depend Content:\n");
                 int countDepend = 0;
                 while (it.hasNext()) {
                     BITableSourceRelationPath dependPath = it.next();
-                    sb.append("\n").append("relation ").append(countDepend).append("\n").append(BuildLogHelper.pathLogContent(dependPath));
+                    sb.append("\n").append("Path ").append(countDepend).append("\n").append(BuildLogHelper.pathLogContent(dependPath));
                 }
-                logger.info(sb.toString());
+                logger.info(sb.toString()+"\n");
             }
         }
         logger.info("***************Path depend end*****************\n");

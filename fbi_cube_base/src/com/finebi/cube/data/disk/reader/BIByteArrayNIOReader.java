@@ -89,7 +89,6 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
             size = lengthReader.getSpecificValue(row - 1);
         } catch (BIResourceInvalidException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
-
         }
         return start + size;
     }

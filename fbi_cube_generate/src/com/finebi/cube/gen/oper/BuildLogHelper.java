@@ -35,7 +35,7 @@ public class BuildLogHelper {
         try {
             Integer countRelation = 0;
             StringBuffer sb = new StringBuffer();
-            sb.append("Path ID:").append(calculatePathID(path)).append("\n Relation List:");
+            sb.append("Path ID:").append(calculatePathID(path)).append("\nRelation List:");
             for (BITableSourceRelation relation : path.getAllRelations()) {
                 sb.append(BIStringUtils.append(
                         "\nRelation " + (countRelation++) + ":",
