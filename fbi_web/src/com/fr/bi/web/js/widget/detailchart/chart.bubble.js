@@ -185,7 +185,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             });
 
             BI.each(self.config.fixedStyle, function (idx, item) {
-                if (idx == 0 && min < item.range.min) {
+                if (idx === 0 && min < item.range.min) {
                     range.push({
                         from: min,
                         to: item.range.min,
@@ -245,7 +245,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                 var minProp = (item.range.min - min) / (max - min);
                 var maxProp = (item.range.max - min) / (max - min);
 
-                if (idx == 0 && minProp > 0) {
+                if (idx === 0 && minProp > 0) {
                     color.push([0, '#65B3EE'])
                 }
 

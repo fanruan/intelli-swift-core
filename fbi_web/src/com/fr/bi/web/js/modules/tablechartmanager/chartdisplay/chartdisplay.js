@@ -210,7 +210,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 self.errorPane.setVisible(true);
                 return;
             }
-            try {
+            // try {
                 var dimensionIds = BI.Utils.getAllDimDimensionIDs(o.wId);
                 var lnglat = BI.Utils.getDimensionPositionByID(dimensionIds[0]);
                 var op;
@@ -342,11 +342,11 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                 self.tab.setSelect(type);
                 var selectedTab = self.tab.getSelectedTab();
                 selectedTab.populate(data, op, types);
-            } catch (e) {
-                self.errorPane.setErrorInfo("error happens during populate chart: " + e);
-                console.error(e);
-                self.errorPane.setVisible(true);
-            }
+            // } catch (e) {
+            //     self.errorPane.setErrorInfo("error happens during populate chart: " + e);
+            //     console.error(e);
+            //     self.errorPane.setVisible(true);
+            // }
         });
     },
 

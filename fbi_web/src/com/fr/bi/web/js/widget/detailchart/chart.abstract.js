@@ -246,19 +246,19 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         switch (type) {
             case this.constants.NORMAL:
                 formatter = '#.##';
-                if (separators) formatter = '#,###.##';
+                if (separators) {formatter = '#,###.##'}
                 break;
             case this.constants.ZERO2POINT:
                 formatter = '#0';
-                if (separators) formatter = '#,###';
+                if (separators) {formatter = '#,###'}
                 break;
             case this.constants.ONE2POINT:
                 formatter = '#0.0';
-                if (separators) formatter = '#,###.0';
+                if (separators) {formatter = '#,###.0'}
                 break;
             case this.constants.TWO2POINT:
                 formatter = '#0.00';
-                if (separators) formatter = '#,###.00';
+                if (separators) {formatter = '#,###.00'}
                 break;
         }
         return formatter
