@@ -43,15 +43,17 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     protected NoneDimensionGroup root;
     protected DimensionCalculator[] cks;
+
     protected ICubeValueEntryGetter[] getters;
+
     protected BISession session;
+
     ISingleDimensionGroup[] singleDimensionGroupCache;
     private BIWidget widget;
     private BIDimension[] dimensions;
     private NodeExpander expander;
     private TreeIterator iter;
     private boolean useRealData;
-
     public RootDimensionGroup(NoneDimensionGroup root, DimensionCalculator[] cks, BIDimension[] dimensions, NodeExpander expander, BISession session,  BIWidget widget, boolean useRealData) {
         setRoot(root);
         this.cks = cks;
@@ -64,18 +66,35 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         this.singleDimensionGroupCache = new ISingleDimensionGroup[cks.length];
         init();
     }
+    public RootDimensionGroup(NoneDimensionGroup root, DimensionCalculator[] cks, BIDimension[] dimensions, NodeExpander expander, BISession session,  BIWidget widget, boolean useRealData, ICubeValueEntryGetter[] getters) {
+        this.getters = getters;
+        setRoot(root);
+        this.cks = cks;
+        this.dimensions = dimensions;
+        this.expander = expander;
+        this.session = session;
+        this.iter = new TreeIterator(cks.length);
+        this.widget = widget;
+        this.useRealData = useRealData;
+        this.singleDimensionGroupCache = new ISingleDimensionGroup[cks.length];
+    }
 
     private void init() {
         initGetters();
     }
 
     private void initGetters() {
-        getters = new ICubeValueEntryGetter[cks.length];
-        for(int i = 0; i < cks.length; i++){
-            ICubeTableService ti = session.getLoader().getTableIndex(getSource(cks[i]));
-            getters[i] =  ti.getValueEntryGetter(createKey(cks[i]), cks[i].getRelationList());
+        if (null == getters){
+            getters = new ICubeValueEntryGetter[cks.length];
+            for(int i = 0; i < cks.length; i++){
+                ICubeTableService ti = session.getLoader().getTableIndex(getSource(cks[i]));
+                getters[i] =  ti.getValueEntryGetter(createKey(cks[i]), cks[i].getRelationList());
+            }
         }
+    }
 
+    public ICubeValueEntryGetter[] getGetters() {
+        return getters;
     }
 
     private CubeTableSource getSource(DimensionCalculator column){
