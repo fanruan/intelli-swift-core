@@ -2446,7 +2446,6 @@ Data.Utils = {
             configs.plotOptions.dataLabels.enabled = true;
             configs.plotOptions.dataLabels.align = "inside";
             configs.plotOptions.dataLabels.formatter.identifier = "${CATEGORY}${VALUE}";
-            configs.chartType = "bubble";
             delete configs.xAxis;
             delete configs.yAxis;
             return BI.extend(configs, {
@@ -5775,7 +5774,7 @@ Data.Utils = {
                             }
                         },
                         "maxSize": 80,
-                        "fillColorOpacity": 1.0,
+                        "fillColorOpacity": 0.5,
                         "step": false,
                         "force": false,
                         "minSize": 15,

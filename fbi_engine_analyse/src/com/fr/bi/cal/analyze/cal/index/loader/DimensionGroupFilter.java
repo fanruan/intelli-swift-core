@@ -68,11 +68,6 @@ public class DimensionGroupFilter {
         iterators = getNodeIterators(mergerInfoList);
         sortedTrees = new SortedTree[mergerInfoList.size()];
         LoaderUtils.setAllExpander(mergerInfoList);
-        if (this.mergerInfoList != null) {
-            for (MergerInfo m : this.mergerInfoList) {
-                m.setHasTraverseResultFilter(hasTraverseResultFilter() || targetSort != null);
-            }
-        }
     }
 
     private NodeDimensionIterator[] getNodeIterators(List<MergerInfo> mergerInfoList) {
@@ -189,17 +184,6 @@ public class DimensionGroupFilter {
         return filterList;
     }
 
-    private List<DimensionFilter> getAllNotDateDimensionFilter() {
-        List<DimensionFilter> filterList = new ArrayList<DimensionFilter>();
-        for (int deep = 0; deep < rowDimension.length; deep++) {
-            if (!isStringDimension(rowDimension[deep])) {
-                DimensionFilter filter = rowDimension[deep].getFilter();
-                filterList.add(filter);
-            }
-        }
-        return filterList;
-    }
-
     private boolean hasTraverseResultFilter() {
         return !getTraverseResultFilter().isEmpty();
     }
@@ -301,7 +285,7 @@ public class DimensionGroupFilter {
         boolean shouldBuildTree = shouldBuildTree();
         BIMultiThreadExecutor executor = null;
         if (MultiThreadManagerImpl.getInstance().isMultiCall() && shouldBuildTree){
-            executor = new BIMultiThreadExecutor();
+            executor = MultiThreadManagerImpl.getInstance().getExecutorService();
         }
         boolean hasFilter[] = new boolean[rowDimension.length];
         for (int i = 0;i < rowDimension.length; i ++){
@@ -320,7 +304,7 @@ public class DimensionGroupFilter {
 
         if (shouldBuildTree) {
             if (MultiThreadManagerImpl.getInstance().isMultiCall()) {
-                executor.awaitExecutor();
+                executor.awaitExecutor(session);
                 executor = null;
             }
             buildTree(groupValueIndexe2D, counter, nodeBuilder);
@@ -776,20 +760,6 @@ public class DimensionGroupFilter {
         return allMinChildGroups;
     }
 
-
-    private Node mergeNodes(Node[] minNodes) {
-        Node mergeNode = new Node(null, null);
-        for (int i = 0; i < minNodes.length; i++) {
-            if (minNodes[i] != null) {
-                if (mergeNode.getData() == null) {
-                    mergeNode.setData(minNodes[i].getData());
-                }
-                mergeNode.setSummaryValue(minNodes[i].getSummaryValue());
-            }
-        }
-        return mergeNode;
-    }
-
     public boolean shouldBuildTree() {
         if (hasTargetSort()) {
             return true;
@@ -800,10 +770,6 @@ public class DimensionGroupFilter {
             }
         }
 
-//		if (hasDateDimension()) {
-//			return true;
-//		}
-
         for (DimensionFilter filter : getAllResultFilters()) {
             if (filter.needParentRelation()) {
                 return true;
@@ -813,14 +779,6 @@ public class DimensionGroupFilter {
         return false;
     }
 
-    private boolean hasDimensionTargetSort() {
-        for (int i = 0; i < rowDimension.length; i++) {
-            if (rowDimension[i].getSortTarget() != null) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     private Comparator getComparator(int deep) {
         if (dimensionComparator[deep] == null) {
@@ -831,7 +789,6 @@ public class DimensionGroupFilter {
 
     private Comparator getComparator(BIDimension dimension) {
         return dimension.createCalculator(dimension.getStatisticElement(), new ArrayList<BITableSourceRelation>()).getComparator();
-//		return dimension.createColumnKey(dimension.getColumn()).getComparator();
     }
 
     public boolean isShouldRecalculateIndex() {
@@ -840,10 +797,5 @@ public class DimensionGroupFilter {
 
     public void setShouldRecalculateIndex(boolean shouldRecalculateIndex) {
         this.shouldRecalculateIndex = shouldRecalculateIndex;
-    }
-
-    private List<TargetGettingKey> getNoCalculatorTargetKeys() {
-        List<BISummaryTarget> noCalculatorTargetKeys = Arrays.asList(usedTargets);
-        return null;
     }
 }
