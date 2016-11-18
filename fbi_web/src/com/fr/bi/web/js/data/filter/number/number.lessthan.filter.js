@@ -12,7 +12,7 @@
             }
             var sum = 0;
             BI.each(array, function(idx, num){
-                sum = BI.parseFloat(sum.add(num));
+                sum = BI.parseFloat(sum.add(num || 0));
             });
             return BI.parseFloat(sum.div(array.length));
         },
