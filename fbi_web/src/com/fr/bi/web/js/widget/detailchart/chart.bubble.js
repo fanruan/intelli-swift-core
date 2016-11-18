@@ -56,14 +56,23 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             case BICst.DISPLAY_RULES.FIXED:
                 delete config.legend;
                 formatFixedLegend();
+                config.rangeLegend.style = BI.extend(this.config.legendStyle, {
+                    fontSize: this.config.legendStyle.fontSize + "px"
+                });
                 break;
             case BICst.DISPLAY_RULES.GRADIENT:
                 delete config.legend;
                 formatGradientLegend();
+                config.rangeLegend.style = BI.extend(this.config.legendStyle, {
+                    fontSize: this.config.legendStyle.fontSize + "px"
+                });
                 break;
             case BICst.DISPLAY_RULES.DIMENSION:
             default:
-                formatLegend();
+                self.formatChartLegend(config, this.config.legend);
+                config.legend.style = BI.extend(this.config.legendStyle, {
+                    fontSize: this.config.legendStyle.fontSize + "px"
+                });
                 break;
         }
 
@@ -149,10 +158,6 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             });
         }
 
-        config.legend.style = BI.extend(this.config.legendStyle, {
-            fontSize: this.config.legendStyle.fontSize + "px"
-        });
-
         return [items, config];
 
         function formatChartStyle() {
@@ -162,24 +167,6 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                 case BICst.CHART_STYLE.STYLE_NORMAL:
                 default:
                     return "normal";
-            }
-        }
-
-        function formatLegend() {
-            switch (self.config.legend) {
-                case BICst.CHART_LEGENDS.BOTTOM:
-                    config.legend.enabled = true;
-                    config.legend.position = "bottom";
-                    config.legend.maxHeight = self.constants.LEGEND_HEIGHT;
-                    break;
-                case BICst.CHART_LEGENDS.RIGHT:
-                    config.legend.enabled = true;
-                    config.legend.position = "right";
-                    break;
-                case BICst.CHART_LEGENDS.NOT_SHOW:
-                default:
-                    config.legend.enabled = false;
-                    break;
             }
         }
 
@@ -198,7 +185,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             });
 
             BI.each(self.config.fixedStyle, function (idx, item) {
-                if (idx == 0 && min < item.range.min) {
+                if (idx === 0 && min < item.range.min) {
                     range.push({
                         from: min,
                         to: item.range.min,
@@ -258,7 +245,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                 var minProp = (item.range.min - min) / (max - min);
                 var maxProp = (item.range.max - min) / (max - min);
 
-                if (idx == 0 && minProp > 0) {
+                if (idx === 0 && minProp > 0) {
                     color.push([0, '#65B3EE'])
                 }
 
@@ -320,7 +307,13 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             var step = Math.pow(10, Math.floor(Math.log(span / m) / Math.LN10));
             var err = m / span * step;
 
-            if (err <= .15) step *= 10; else if (err <= .35) step *= 5; else if (err <= .75) step *= 2;
+            if (err <= .15) {
+                step *= 10;
+            } else if (err <= .35) {
+                step *= 5;
+            } else if (err <= .75) {
+                step *= 2;
+            }
 
             return step;
         }

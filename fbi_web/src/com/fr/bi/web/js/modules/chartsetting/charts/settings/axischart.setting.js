@@ -536,7 +536,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names"
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.leftYNumberLevel]
+                    items: [this.rightYNumberLevel]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Unit_Normal"),
@@ -1018,7 +1018,7 @@ BI.AxisChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.rightYTitleStyle.setVisible(this.rightYShowTitle.isSelected());
         this.rightYTitleStyle.setValue(BI.Utils.getWSChartRightYTitleStyleByID(wId));
         this.rightYShowCustomScale.setSelected(BI.Utils.getWSChartRightYShowCustomScaleByID(wId));
-        this.rightYCustomScale.setValue(BI.Utils.getWSChartLeftYCustomScaleByID(wId));
+        this.rightYCustomScale.setValue(BI.Utils.getWSChartRightYCustomScaleByID(wId));
         this.rightYCustomScale.setVisible(BI.Utils.getWSChartRightYShowCustomScaleByID(wId));
         this.rightYSeparator.setSelected(BI.Utils.getWSRightYNumberSeparatorByID(wId));
         this.rightYShowLabel.setSelected(BI.Utils.getWSRightYShowLabelByID(wId));

@@ -1233,7 +1233,7 @@ BI.MultiAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.rightYTitle.setValue(titleRY);
         this.rightYReverse.setSelected(BI.Utils.getWSChartRightYReverseByID(wId));
         this.rightYShowCustomScale.setSelected(BI.Utils.getWSChartRightYShowCustomScaleByID(wId));
-        this.rightYCustomScale.setValue(BI.Utils.getWSChartLeftYCustomScaleByID(wId));
+        this.rightYCustomScale.setValue(BI.Utils.getWSChartRightYCustomScaleByID(wId));
         this.rightYCustomScale.setVisible(BI.Utils.getWSChartRightYShowCustomScaleByID(wId));
         this.rightYSeparator.setSelected(BI.Utils.getWSRightYNumberSeparatorByID(wId));
         this.rightYShowLabel.setSelected(BI.Utils.getWSRightYShowLabelByID(wId));

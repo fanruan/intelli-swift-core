@@ -146,28 +146,26 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
         });
 
         //自定义表格样式
-        this.customTableStyle = BI.createWidget({
+        this.isCustomTableStyle = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Custom_Table_Style"),
             width: 135
         });
 
-        this.customTableStyle.on(BI.Controller.EVENT_CHANGE, function() {
-            self.tableStyleSetting.setVisible(this.isSelected());
+        this.isCustomTableStyle.on(BI.Controller.EVENT_CHANGE, function() {
+            self.customTableStyle.setVisible(this.isSelected());
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
         });
 
         //表格样式设置
-        this.tableStyleSetting = BI.createWidget({
+        this.customTableStyle = BI.createWidget({
             type: "bi.table_detailed_setting_combo"
         });
 
-        this.tableStyleSetting.on(BI.TableDetailedSettingCombo.EVENT_CHANGE, function() {
+        this.customTableStyle.on(BI.TableDetailedSettingCombo.EVENT_CHANGE, function() {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
         });
-
-        this.tableStyleSetting.setVisible(false);
-
+        
         var tableStyle = BI.createWidget({
             type: "bi.left",
             cls: "single-line-settings",
@@ -193,11 +191,11 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
                 cls: "attr-names"
             }, this.tableStyleGroup, {
                 type: "bi.vertical_adapt",
-                items: [this.customTableStyle],
+                items: [this.isCustomTableStyle],
                 cls: "attr-names"
             }, {
                 type: "bi.vertical_adapt",
-                items: [this.tableStyleSetting]
+                items: [this.customTableStyle]
             }], {
                 height: this.constant.SINGLE_LINE_HEIGHT
             }),
@@ -368,25 +366,6 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
         })
     },
 
-    getValue: function () {
-        return {
-            showName: this.showName.isSelected(),
-            widgetName: this.widgetName.getValue(),
-            widgetNameStyle: this.widgetNameStyle.getValue(),
-            widgetBG: this.widgetBG.getValue(),
-
-            tableFromGroup: this.tableFormGroup.getValue()[0],
-            themeColor: this.themeColor.getValue(),
-            tableStyleGroup: this.tableStyleGroup.getValue()[0],
-            showNumber: this.showNumber.isSelected(),
-            showRowTotal: this.showRowTotal.isSelected(),
-            openRowNode: this.openRowNode.isSelected(),
-            maxRow: this.maxRow.getValue(),
-            freezeDim: this.freezeDim.isSelected(),
-            transferFilter: this.transferFilter.isSelected()
-        }
-    },
-
     populate: function () {
         var wId = this.options.wId;
         this.showName.setSelected(BI.Utils.getWSShowNameByID(wId));
@@ -395,16 +374,47 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
         this.widgetTitle.setVisible(BI.Utils.getWSShowNameByID(wId));
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
 
-        this.tableFormGroup.setValue(BI.Utils.getWSTableFormByID(wId));
+        this.tableFormGroup.setValue(BI.Utils.getWSTableFromByID(wId));
         this.themeColor.setValue(BI.Utils.getWSThemeColorByID(wId));
         this.tableStyleGroup.setValue(BI.Utils.getWSTableStyleByID(wId));
+        this.isCustomTableStyle.setSelected(BI.Utils.getWSIsCustomTableStyleByID(wId));
+        this.customTableStyle.setValue(BI.Utils.getWSCustomTableStyleByID(wId));
+        this.customTableStyle.setVisible(BI.Utils.getWSIsCustomTableStyleByID(wId));
+
         this.showNumber.setSelected(BI.Utils.getWSShowNumberByID(wId));
         this.showRowTotal.setSelected(BI.Utils.getWSShowRowTotalByID(wId));
         this.openRowNode.setSelected(BI.Utils.getWSOpenRowNodeByID(wId));
         this.maxRow.setValue(BI.Utils.getWSMaxRowByID(wId));
+        this.rowHeight.setValue(BI.Utils.getWSRowHeightByID(wId));
+
         this.freezeDim.setSelected(BI.Utils.getWSFreezeDimByID(wId));
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
     },
+
+    getValue: function () {
+        return {
+            showName: this.showName.isSelected(),
+            widgetName: this.widgetName.getValue(),
+            widgetNameStyle: this.widgetNameStyle.getValue(),
+            widgetBG: this.widgetBG.getValue(),
+
+            tableFormGroup: this.tableFormGroup.getValue()[0],
+            themeColor: this.themeColor.getValue(),
+            tableStyleGroup: this.tableStyleGroup.getValue()[0],
+            isCustomTableStyle: this.isCustomTableStyle.isSelected(),
+            customTableStyle: this.customTableStyle.getValue(),
+
+            showNumber: this.showNumber.isSelected(),
+            showRowTotal: this.showRowTotal.isSelected(),
+            openRowNode: this.openRowNode.isSelected(),
+            maxRow: this.maxRow.getValue(),
+            rowHeight: this.rowHeight.getValue(),
+
+            freezeDim: this.freezeDim.isSelected(),
+            transferFilter: this.transferFilter.isSelected()
+        }
+    },
+
 });
 BI.GroupTableSetting.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.group_table_setting", BI.GroupTableSetting);

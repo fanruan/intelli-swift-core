@@ -208,7 +208,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         this.openColNode = BI.Utils.getWSOpenColNodeByID(wId);      //展开所有列表头节点
         this.freezeDim = BI.Utils.getWSFreezeDimByID(wId);           //冻结维度
         this.themeColor = BI.Utils.getWSThemeColorByID(wId);         //主题色
-        this.tableForm = BI.Utils.getWSTableFormByID(wId);           //表格类型
+        this.tableForm = BI.Utils.getWSTableFromByID(wId);           //表格类型
         this.tableStyle = BI.Utils.getWSTableStyleByID(wId);         //表格风格
 
         this.header = [];

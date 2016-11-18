@@ -138,7 +138,7 @@ BI.TableDetailedSettingPopup = BI.inherit(BI.Widget, {
             tableNameStyle: this.tableName.getValue(),
             tableNameColor: this.nameColor.getValue(),
             tableValueStyle: this.tableValue.getValue(),
-            bGColorInterval: this.bgColorInterval.getSelect(),
+            bGColorInterval: this.bgColorInterval.isSelected(),
             tableValueColor: this.valueColor.getValue(),
             tableValueIntervalColor: this.intervalValueColor.getValue(),
             tableLine: this.tableLine.getValue()

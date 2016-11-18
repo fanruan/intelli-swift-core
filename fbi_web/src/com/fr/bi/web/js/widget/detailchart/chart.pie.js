@@ -53,7 +53,9 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
             })
         });
 
-        config.legend.style = this.config.chartFont;
+        config.legend.style = BI.extend({}, this.config.legendStyle, {
+            fontSize: this.config.legendStyle && this.config.legendStyle.fontSize + "px"
+        });
 
         return [items, config];
 

@@ -146,27 +146,25 @@ BI.CrossTableSetting = BI.inherit(BI.Widget, {
         });
 
         //自定义表格样式
-        this.customTableStyle = BI.createWidget({
+        this.isCustomTableStyle = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Custom_Table_Style"),
             width: 135
         });
 
-        this.customTableStyle.on(BI.Controller.EVENT_CHANGE, function() {
-            self.tableStyleSetting.setVisible(this.isSelected());
+        this.isCustomTableStyle.on(BI.Controller.EVENT_CHANGE, function() {
+            self.customTableStyle.setVisible(this.isSelected());
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
         });
 
         //表格样式设置
-        this.tableStyleSetting = BI.createWidget({
+        this.customTableStyle = BI.createWidget({
             type: "bi.table_detailed_setting_combo"
         });
 
-        this.tableStyleSetting.on(BI.TableDetailedSettingCombo.EVENT_CHANGE, function() {
+        this.customTableStyle.on(BI.TableDetailedSettingCombo.EVENT_CHANGE, function() {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
         });
-
-        this.tableStyleSetting.setVisible(false);
 
         var tableStyle = BI.createWidget({
             type: "bi.left",
@@ -197,12 +195,12 @@ BI.CrossTableSetting = BI.inherit(BI.Widget, {
                 height: this.constant.SINGLE_LINE_HEIGHT
             }, this.tableStyleGroup, {
                 type: "bi.vertical_adapt",
-                items: [this.customTableStyle],
+                items: [this.isCustomTableStyle],
                 cls: "attr-names",
                 height: this.constant.SINGLE_LINE_HEIGHT
             }, {
                 type: "bi.vertical_adapt",
-                items: [this.tableStyleSetting],
+                items: [this.customTableStyle],
                 height: this.constant.SINGLE_LINE_HEIGHT
             }],
             hgap: this.constant.SIMPLE_H_GAP
@@ -440,9 +438,13 @@ BI.CrossTableSetting = BI.inherit(BI.Widget, {
         this.widgetTitle.setVisible(BI.Utils.getWSShowNameByID(wId));
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
 
-        this.tableFormGroup.setValue(BI.Utils.getWSTableFormByID(wId));
+        this.tableFormGroup.setValue(BI.Utils.getWSTableFromByID(wId));
         this.themeColor.setValue(BI.Utils.getWSThemeColorByID(wId));
         this.tableStyleGroup.setValue(BI.Utils.getWSTableStyleByID(wId));
+        this.isCustomTableStyle.setSelected(BI.Utils.getWSIsCustomTableStyleByID(wId));
+        this.customTableStyle.setValue(BI.Utils.getWSCustomTableStyleByID(wId));
+        this.customTableStyle.setVisible(BI.Utils.getWSIsCustomTableStyleByID(wId));
+
         this.showNumber.setSelected(BI.Utils.getWSShowNumberByID(wId));
         this.showRowTotal.setSelected(BI.Utils.getWSShowRowTotalByID(wId));
         this.showColTotal.setSelected(BI.Utils.getWSShowColTotalByID(wId));
@@ -450,6 +452,8 @@ BI.CrossTableSetting = BI.inherit(BI.Widget, {
         this.openColNode.setSelected(BI.Utils.getWSOpenColNodeByID(wId));
         this.maxRow.setValue(BI.Utils.getWSMaxRowByID(wId));
         this.maxCol.setValue(BI.Utils.getWSMaxColByID(wId));
+        this.rowHeight.setValue(BI.Utils.getWSRowHeightByID(wId));
+
         this.freezeDim.setSelected(BI.Utils.getWSFreezeDimByID(wId));
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
     },
@@ -464,6 +468,9 @@ BI.CrossTableSetting = BI.inherit(BI.Widget, {
             tableFormGroup: this.tableFormGroup.getValue()[0],
             themeColor: this.themeColor.getValue(),
             tableStyleGroup: this.tableStyleGroup.getValue()[0],
+            isCustomTableStyle: this.isCustomTableStyle.isSelected(),
+            customTableStyle: this.customTableStyle.getValue(),
+
             showNumber: this.showNumber.isSelected(),
             showRowTotal: this.showRowTotal.isSelected(),
             showColTotal: this.showColTotal.isSelected(),
@@ -471,6 +478,8 @@ BI.CrossTableSetting = BI.inherit(BI.Widget, {
             openColNode: this.openColNode.isSelected(),
             maxRow: this.maxRow.getValue(),
             maxCol: this.maxCol.getValue(),
+            rowHeight: this.rowHeight.getValue(),
+
             freezeDim: this.freezeDim.isSelected(),
             transferFilter: this.transferFilter.isSelected()
         }

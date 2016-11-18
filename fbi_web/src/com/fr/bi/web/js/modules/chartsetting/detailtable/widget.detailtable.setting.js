@@ -126,27 +126,25 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
         });
 
         //自定义表格样式
-        this.customTableStyle = BI.createWidget({
+        this.isCustomTableStyle = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Custom_Table_Style"),
             width: 135
         });
 
-        this.customTableStyle.on(BI.Controller.EVENT_CHANGE, function() {
-            self.tableStyleSetting.setVisible(this.isSelected());
+        this.isCustomTableStyle.on(BI.Controller.EVENT_CHANGE, function() {
+            self.customTableStyle.setVisible(this.isSelected());
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
         });
 
         //表格样式设置
-        this.tableStyleSetting = BI.createWidget({
+        this.customTableStyle = BI.createWidget({
             type: "bi.table_detailed_setting_combo"
         });
 
-        this.tableStyleSetting.on(BI.TableDetailedSettingCombo.EVENT_CHANGE, function() {
+        this.customTableStyle.on(BI.TableDetailedSettingCombo.EVENT_CHANGE, function() {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE)
         });
-
-        this.tableStyleSetting.setVisible(false);
 
         var tableStyle = BI.createWidget({
             type: "bi.left_right_vertical_adapt",
@@ -284,7 +282,13 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
 
         this.themeColor.setValue(BI.Utils.getWSThemeColorByID(wId));
         this.tableSyleGroup.setValue(BI.Utils.getWSTableStyleByID(wId));
+        this.isCustomTableStyle.setSelected(BI.Utils.getWSIsCustomTableStyleByID(wId));
+        this.customTableStyle.setValue(BI.Utils.getWSCustomTableStyleByID(wId));
+        this.customTableStyle.setVisible(BI.Utils.getWSIsCustomTableStyleByID(wId));
+
         this.showNumber.setSelected(BI.Utils.getWSShowNumberByID(wId));
+        this.rowHeight.setValue(BI.Utils.getWSRowHeightByID(wId));
+
         this.freezeFirstColumn.setSelected(BI.Utils.getWSFreezeFirstColumnById(wId));
     },
 
@@ -297,7 +301,12 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
 
             themeColor: this.themeColor.getValue(),
             tableStyleGroup: this.tableSyleGroup.getValue()[0],
+            isCustomTableStyle: this.isCustomTableStyle.isSelected(),
+            customTableStyle: this.customTableStyle.getValue(),
+
             showNumber: this.showNumber.isSelected(),
+            rowHeight: this.rowHeight.getValue(),
+
             freezeFirstColumn: this.freezeFirstColumn.isSelected()
         }
     },

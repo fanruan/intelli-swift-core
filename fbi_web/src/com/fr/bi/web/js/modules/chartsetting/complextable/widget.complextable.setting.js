@@ -424,15 +424,21 @@ BI.ComplexTableSetting = BI.inherit(BI.Widget, {
         this.widgetTitle.setVisible(BI.Utils.getWSShowNameByID(wId));
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
 
-        this.tableFormGroup.setValue(BI.Utils.getWSTableFormByID(wId));
+        this.tableFormGroup.setValue(BI.Utils.getWSTableFromByID(wId));
         this.themeColor.setValue(BI.Utils.getWSThemeColorByID(wId));
         this.tableStyleGroup.setValue(BI.Utils.getWSTableStyleByID(wId));
+        this.isCustomTableStyle.setSelected(BI.Utils.getWSIsCustomTableStyleByID(wId));
+        this.customTableStyle.setValue(BI.Utils.getWSCustomTableStyleByID(wId));
+        this.customTableStyle.setVisible(BI.Utils.getWSIsCustomTableStyleByID(wId));
+
         this.showRowTotal.setSelected(BI.Utils.getWSShowRowTotalByID(wId));
         this.showColTotal.setSelected(BI.Utils.getWSShowColTotalByID(wId));
         this.openRowNode.setSelected(BI.Utils.getWSOpenRowNodeByID(wId));
         this.openColNode.setSelected(BI.Utils.getWSOpenColNodeByID(wId));
         this.maxRow.setValue(BI.Utils.getWSMaxRowByID(wId));
         this.maxCol.setValue(BI.Utils.getWSMaxColByID(wId));
+        this.rowHeight.setValue(BI.Utils.getWSRowHeightByID(wId));
+
         this.freezeDim.setSelected(BI.Utils.getWSFreezeDimByID(wId));
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
     },
@@ -447,12 +453,17 @@ BI.ComplexTableSetting = BI.inherit(BI.Widget, {
             tableFormGroup: this.tableFormGroup.getValue()[0],
             themeColor: this.themeColor.getValue(),
             tableStyleGroup: this.tableStyleGroup.getValue()[0],
+            isCustomTableStyle: this.isCustomTableStyle.isSelected(),
+            customTableStyle: this.customTableStyle.getValue(),
+
             showRowTotal: this.showRowTotal.isSelected(),
             showColTotal: this.showColTotal.isSelected(),
             openRowNode: this.openRowNode.isSelected(),
             openColNode: this.openColNode.isSelected(),
             maxRow: this.maxRow.getValue(),
             maxCol: this.maxCol.getValue(),
+            rowHeight: this.rowHeight.getValue(),
+
             freezeDim: this.freezeDim.isSelected(),
             transferFilter: this.transferFilter.isSelected()
         }
