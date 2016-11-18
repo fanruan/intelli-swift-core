@@ -307,7 +307,13 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             var step = Math.pow(10, Math.floor(Math.log(span / m) / Math.LN10));
             var err = m / span * step;
 
-            if (err <= .15) step *= 10; else if (err <= .35) step *= 5; else if (err <= .75) step *= 2;
+            if (err <= .15) {
+                step *= 10;
+            } else if (err <= .35) {
+                step *= 5;
+            } else if (err <= .75) {
+                step *= 2;
+            }
 
             return step;
         }
