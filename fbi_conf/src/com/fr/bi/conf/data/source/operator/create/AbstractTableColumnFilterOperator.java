@@ -38,9 +38,6 @@ public abstract class AbstractTableColumnFilterOperator extends AbstractCreateTa
     public IPersistentTable getBITable(IPersistentTable[] tables) {
         IPersistentTable persistentTable = getBITable();
         for (int i = 0; i < tables.length; i++) {
-            if (tables[i]==null){
-                continue;
-            }
             for (int j = 0; j < tables[i].getFieldSize(); j++) {
                 persistentTable.addColumn(tables[i].getField(j));
             }
