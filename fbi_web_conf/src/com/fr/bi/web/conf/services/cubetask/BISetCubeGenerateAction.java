@@ -5,7 +5,6 @@ import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.cal.generate.CubeBuildManager;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;

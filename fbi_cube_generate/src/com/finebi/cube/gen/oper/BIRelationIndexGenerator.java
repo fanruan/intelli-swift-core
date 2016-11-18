@@ -162,7 +162,6 @@ public class BIRelationIndexGenerator extends BIProcessor {
         return cubeTableSourceSet;
     }
 
-
     @Override
     public void release() {
         cube.clear();
@@ -191,7 +190,6 @@ public class BIRelationIndexGenerator extends BIProcessor {
             ITableKey foreignTableKey = relation.getForeignTable();
             primaryTable = cubeChooser.getCubeTable(primaryTableKey);
             foreignTable = cubeChooser.getCubeTable(foreignTableKey);
-
 
             /**
              * 关联的主字段对象
@@ -339,7 +337,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
 
     private GroupValueIndex getForeignColumnIndex(int foreignIndex, int foreignGroupSize, ICubeColumnEntityService foreignColumn) {
         if (foreignIndex == foreignGroupSize) {
-            return null;
+            return GVIFactory.createAllEmptyIndexGVI();
         } else {
             try {
                 return foreignColumn.getBitmapIndex(foreignIndex);
