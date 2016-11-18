@@ -128,6 +128,14 @@ BI.AllReportsListItem = BI.inherit(BI.Widget, {
         });
         infoIcon.setVisible(false);
 
+        var copyButton = BI.createWidget({
+            type: 'bi.copy_link_icon_button',
+            cls: "normal-mark",
+            buildUrl: report.buildUrl,
+            height: 40,
+            width: 40
+        });
+
         var timeText = BI.createWidget({
             type: "bi.label",
             cls: "template-file-item-date",
@@ -136,9 +144,11 @@ BI.AllReportsListItem = BI.inherit(BI.Widget, {
         });
 
         this.element.hover(function () {
+            copyButton.setVisible(true);
             self.hangoutIcon && self.hangoutIcon.setVisible(true);
             infoIcon.setVisible(true);
         }, function () {
+            copyButton.setVisible(false);
             self.hangoutIcon && self.hangoutIcon.setVisible(false);
             infoIcon.setVisible(false);
         });
@@ -195,7 +205,11 @@ BI.AllReportsListItem = BI.inherit(BI.Widget, {
                         }, {
                             el: infoIcon,
                             top: 0,
-                            left: 60
+                            left: 40
+                        }, {
+                            el: copyButton,
+                            top: 0,
+                            left: 80
                         }, {
                             el: timeText,
                             top: 0,
