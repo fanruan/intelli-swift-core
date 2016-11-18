@@ -8,7 +8,6 @@ import com.fr.general.DateUtils;
 import com.fr.general.Inter;
 import com.fr.stable.ColumnRow;
 import com.fr.stable.StringUtils;
-import com.fr.stable.core.UUID;
 import com.fr.third.v2.org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import com.fr.third.v2.org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import com.fr.third.v2.org.apache.poi.openxml4j.opc.OPCPackage;
@@ -515,8 +514,10 @@ public class Excel2007Util {
                 } catch (Exception e) {
                     cellValue = n;
                 }
+            } else if (this.formatString != null && this.formatString.contains("%")) {
+                cellValue = this.formatter.formatRawCellContents(Double.parseDouble(value.toString()) * 100, this.formatIndex, "") + "%";
             } else {
-                cellValue = this.formatter.formatRawCellContents(Double.parseDouble(value.toString()), this.formatIndex, "##.##");
+                cellValue = this.formatter.formatRawCellContents(Double.parseDouble(value.toString()), this.formatIndex, "");
             }
         }
 
