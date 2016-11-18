@@ -128,7 +128,7 @@ public class BISystemConfigHelper {
 
     public BITableSourceRelation convertRelation(BITableRelation relation) {
         if (!isTableRelationValid(relation)) {
-            BILoggerFactory.getLogger().error("tableSourceRelation invalid:" + relation.toString());
+            BILoggerFactory.getLogger().error("tableRelation invalid:" + relation.toString());
             return null;
         }
         BITableSourceRelation biTableSourceRelation;
