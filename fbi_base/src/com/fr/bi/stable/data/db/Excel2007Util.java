@@ -8,7 +8,6 @@ import com.fr.general.DateUtils;
 import com.fr.general.Inter;
 import com.fr.stable.ColumnRow;
 import com.fr.stable.StringUtils;
-import com.fr.stable.core.UUID;
 import com.fr.third.v2.org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import com.fr.third.v2.org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import com.fr.third.v2.org.apache.poi.openxml4j.opc.OPCPackage;
@@ -320,6 +319,7 @@ public class Excel2007Util {
         private String cellValue;
         private int thisColumn = -1;
         private int lastColumnNumber = -1;
+        private static final int PERCENT = 100;
 
         public MyXSSFSheetHandler(StylesTable styles, ReadOnlySharedStringsTable strings, DataFormatter dataFormatter) {
             this.value = new StringBuffer();
@@ -515,8 +515,10 @@ public class Excel2007Util {
                 } catch (Exception e) {
                     cellValue = n;
                 }
+            } else if (this.formatString != null && this.formatString.contains("%")) {
+                cellValue = this.formatter.formatRawCellContents(Double.parseDouble(value.toString()) * PERCENT, this.formatIndex, "") + "%";
             } else {
-                cellValue = this.formatter.formatRawCellContents(Double.parseDouble(value.toString()), this.formatIndex, "##.##");
+                cellValue = this.formatter.formatRawCellContents(Double.parseDouble(value.toString()), this.formatIndex, "");
             }
         }
 
