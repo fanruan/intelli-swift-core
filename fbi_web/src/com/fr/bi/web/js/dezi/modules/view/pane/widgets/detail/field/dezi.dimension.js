@@ -53,7 +53,7 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
             type: "bi.sign_editor",
             height: this.constants.DIMENSION_BUTTON_HEIGHT,
             cls: "bi-dimension-name",
-            errorText: "字段不可重名",
+            errorText: BI.i18nText("BI-Field_Name_Can_Not_Be_Same"),
             allowBlank: false,
             validationChecker: function (v) {
                 return self._checkDimensionName(v);
@@ -138,7 +138,7 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         var dimensionMap = this.model.get("dimension_map");
         var tIds = BI.Utils.getAllTargetDimensionIDs(BI.Utils.getWidgetIDByDimensionID(dId));
         var res = BI.find(tIds, function(idx, tId){
-            return BI.Utils.isCalculateTargetByDimensionID(tId) || !checkDimAndTarRelationValidInCurrentPaths(dId, tId);
+            return !BI.Utils.isCalculateTargetByDimensionID(tId) && !checkDimAndTarRelationValidInCurrentPaths(dId, tId);
         });
         if(BI.isNull(res)){
             this.editor.element.removeClass("dimension-invalid");
