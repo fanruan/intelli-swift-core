@@ -12,7 +12,7 @@
             if(BI.isNull(this.valueSet) || BI.isEmptyArray(this.valueSet)){
                 return false;
             }
-            return !BI.contains(this.valueSet, value);
+            return this.isAllSelect() ? BI.contains(this.valueSet, value) : !BI.contains(this.valueSet, value);
         },
 
         isAllSelect: function(){
