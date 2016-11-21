@@ -36,7 +36,7 @@ BIDezi.WidgetModel = BI.inherit(BI.Model, {
             var dids = BI.keys(dimensions);
             var linkages = this.get("linkages");
             BI.remove(linkages, function (i, linkage) {
-                return !dids.contains(linkage.from) || (linkage.cids && !dids.contains(linkage.cids[0]));
+                return !dids.contains(linkage.from) || (linkage.cids && linkage.cids.length > 0 && !dids.contains(linkage.cids[0]));
             });
             this.set("linkages", linkages);
             this.refresh();

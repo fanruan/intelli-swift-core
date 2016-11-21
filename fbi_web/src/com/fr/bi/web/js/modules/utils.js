@@ -2806,7 +2806,7 @@
                     //坑爹，要自己算分组名称出来
                     var groupInterval = groupValue.group_interval, max = groupValue.max, min = groupValue.min;
                     while (min < max) {
-                        var newMin = min + groupInterval;
+                        var newMin = BI.parseInt(min) + BI.parseInt(groupInterval);
                         groupMap[min + "-" + newMin] = {
                             min: min,
                             max: newMin,
@@ -3044,12 +3044,9 @@
                             if (!BI.has(dimensionMap, tId)) {
                                 var fieldId = BI.Utils.getFieldIDByDimensionID(dId);
                                 var paths = BI.Utils.getPathsFromFieldAToFieldB(fieldId, BI.Utils.getFieldIDByDimensionID(tId))
-                                if (paths.length === 1) {
-                                    widget.dimensions[dId].dimension_map[tId] = {
-                                        _src: {field_id: fieldId},
-                                        target_relation: paths
-                                    };
-                                } else {
+                                if(paths.length === 1){
+                                    widget.dimensions[dId].dimension_map[tId] = {_src: {field_id: fieldId}, target_relation: paths};
+                                }else{
                                     valid = false;
                                     return true;
                                 }

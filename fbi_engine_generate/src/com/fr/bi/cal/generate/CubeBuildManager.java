@@ -1,12 +1,8 @@
 package com.fr.bi.cal.generate;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.conf.BICubeConfiguration;
-import com.finebi.cube.conf.BICubeManagerProvider;
-import com.finebi.cube.conf.CubeBuildStuff;
-import com.finebi.cube.conf.CubeGenerationManager;
+import com.finebi.cube.conf.*;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
 import com.finebi.cube.impl.conf.CubeBuildStuffSpecificTable;
@@ -20,14 +16,16 @@ import com.finebi.cube.structure.Cube;
 import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.factory.BIFactoryHelper;
+import com.fr.bi.conf.data.source.ETLTableSource;
+import com.fr.bi.conf.data.source.TableSourceUtils;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.utils.time.BIDateUtils;
+import com.fr.general.ComparatorUtils;
 
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by kary on 16/5/30.
@@ -36,19 +34,57 @@ public class CubeBuildManager {
 
     private BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
 
-    public boolean CubeBuildSingleTable(long userId, BITableID hostTableId, String childTableSourceId, int updateType) {
+    public boolean CubeBuildSingleTable(long userId, String baseTableSourceId, int updateType) {
+        List<CubeBuildStuff> cubeBuildList = buildSingleTable(userId, baseTableSourceId, updateType);
+        boolean taskAdd = true;
+        for (CubeBuildStuff cubeBuild : cubeBuildList) {
+            taskAdd = cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId) && taskAdd;
+        }
+        return taskAdd;
+    }
+
+    public List<CubeBuildStuff> buildSingleTable(long userId, String baseTableSourceId, int updateType) {
         BILoggerFactory.getLogger().info(BIDateUtils.getCurrentDateTime() + " Cube single table update start");
-        BusinessTable businessTable = BusinessTableHelper.getBusinessTable(hostTableId);
-        CubeBuildStuff cubeBuild = new CubeBuildStuffSpecificTable(
+        List<CubeBuildStuff> cubeBuildStuffList = new ArrayList<CubeBuildStuff>();
+        List<BusinessTable> tableList = getTablesContainsSourceId(userId, baseTableSourceId, updateType);
+        List<CubeTableSource> tableSourceList = getTableSourcesFromBusinessTables(tableList, userId, baseTableSourceId);
+        for (CubeTableSource tableSource : tableSourceList) {
+            cubeBuildStuffList.add(getCubeBuildStuffSpecificTable(userId, tableSource, baseTableSourceId, updateType));
+        }
+        return cubeBuildStuffList;
+    }
+
+    private CubeBuildStuff getCubeBuildStuffSpecificTable(long userId, CubeTableSource cubeTableSource, String baseTableSourceId, int updateType) {
+        return new CubeBuildStuffSpecificTable(
                 userId,
-                businessTable.getTableSource(),
-                childTableSourceId,
+                cubeTableSource,
+                baseTableSourceId,
                 updateType,
                 getAbsentTable(userId),
                 getAbsentRelation(userId),
                 getAbsentPath(userId));
-        boolean taskAdd = cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId);
-        return taskAdd;
+    }
+
+
+    /**
+     * 检查ETL表的基础表，是否存在。
+     *
+     * @param userId
+     * @param etlTableSource
+     * @param basicTableID
+     * @return
+     */
+    private boolean checkETLTable(long userId, ETLTableSource etlTableSource, String basicTableID) {
+        List<Set<CubeTableSource>> layers = etlTableSource.createGenerateTablesList();
+        for (CubeTableSource tableSource : CubeUpdateUtils.toSet(layers)) {
+            if (TableSourceUtils.isBasicTable(tableSource)) {
+                if (!CubeUpdateUtils.isTableExist(userId, tableSource) &&
+                        !ComparatorUtils.equals(tableSource.getSourceID(), basicTableID)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public boolean CubeBuildStaff(long userId) {
@@ -108,5 +144,48 @@ public class CubeBuildManager {
             BIConfigureManagerCenter.getLogManager().logEnd(userId);
         }
         return conditionsMeet;
+    }
+
+    private List<BusinessTable> getTablesContainsSourceId(long userId, String baseTableSourceId, int updateType) {
+        List<BusinessTable> tableList = new ArrayList<BusinessTable>();
+        for (BusinessTable businessTable : BICubeConfigureCenter.getPackageManager().getAllTables(userId)) {
+            List<Set<CubeTableSource>> sourceList = businessTable.getTableSource().createGenerateTablesList();
+            for (Set<CubeTableSource> sourceSet : sourceList) {
+                Iterator iterator = sourceSet.iterator();
+                while (iterator.hasNext()) {
+                    CubeTableSource tableSource = (CubeTableSource) iterator.next();
+                    if (ComparatorUtils.equals(tableSource.getSourceID(), baseTableSourceId)) {
+                        tableList.add(businessTable);
+                    }
+                }
+            }
+        }
+        return tableList;
+    }
+
+    private List<CubeTableSource> getTableSourcesFromBusinessTables(List<BusinessTable> tableList, long userId, String baseTableSourceId) {
+        List<CubeTableSource> tableSources = new ArrayList<CubeTableSource>();
+        for (BusinessTable table : tableList) {
+            if (table.getTableSource() instanceof ETLTableSource) {
+                if (checkETLTable(userId, (ETLTableSource) table.getTableSource(), baseTableSourceId)) {
+                    tableSources.add(table.getTableSource());
+                }
+            } else {
+                tableSources.add(table.getTableSource());
+            }
+        }
+        return removeDuplicateSources(tableSources);
+    }
+
+    private List<CubeTableSource> removeDuplicateSources(List<CubeTableSource> sourceList) {
+        List<CubeTableSource> tableSources = new ArrayList<CubeTableSource>();
+        Set<String> sourceIds = new HashSet<String>();
+        for (CubeTableSource source : sourceList) {
+            if (!sourceIds.contains(source.getSourceID())) {
+                sourceIds.add(source.getSourceID());
+                tableSources.add(source);
+            }
+        }
+        return tableSources;
     }
 }

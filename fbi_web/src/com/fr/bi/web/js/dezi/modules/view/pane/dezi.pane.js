@@ -4,6 +4,7 @@
  * @type {*|void|Object}
  */
 BIDezi.PaneView = BI.inherit(BI.View, {
+
     _const: {
         tabHeight: 30,
         toolbarHeight: 30,
@@ -23,6 +24,9 @@ BIDezi.PaneView = BI.inherit(BI.View, {
     _createNorth: function () {
         var self = this;
 
+        var zclip = BI.createWidget({
+            type: "bi.copy_link_item"
+        });
         //undo
         this.undoButton = BI.createWidget({
             type: "bi.icon_text_item",
@@ -77,21 +81,25 @@ BIDezi.PaneView = BI.inherit(BI.View, {
             invisible: !!Data.SharingPool.get("hideTop"),
             cls: "dashboard-toolbar",
             items: [{
-                el: this.undoButton,
+                el: zclip,
                 top: 0,
                 left: 110
             }, {
+                el: this.undoButton,
+                top: 0,
+                left: 210
+            }, {
                 el: this.redoButton,
                 top: 0,
-                left: 190
+                left: 290
             }, {
                 el: viewChange,
                 top: 0,
-                left: 270
+                left: 370
             }, {
                 el: this.globalStyle,
                 top: 0,
-                left: 370
+                left: 470
             }]
         })
     },

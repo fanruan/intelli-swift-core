@@ -1,5 +1,6 @@
 package com.fr.bi.web.dezi;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
@@ -10,7 +11,6 @@ import com.fr.bi.conf.report.BIReport;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.data.BITableID;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.code.BIPrintUtils;
 import com.fr.json.JSONObject;
 import com.fr.web.core.ErrorHandlerHelper;

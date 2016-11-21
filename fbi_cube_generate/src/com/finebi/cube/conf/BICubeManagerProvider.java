@@ -33,7 +33,7 @@ public interface BICubeManagerProvider {
     void generateCubes();
 
     /**
-     * 增加人物
+     * 增加任务
      *
      * @param task 任务
      * @return 是否增加

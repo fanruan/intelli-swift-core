@@ -1,16 +1,13 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.analyze.cal.Executor.ExecutorPartner;
 import com.fr.bi.cal.analyze.cal.result.MemNode;
 import com.fr.bi.cal.analyze.cal.result.NewRootNodeChild;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.common.inter.Release;
-import com.fr.bi.field.dimension.calculator.CombinationDateDimensionCalculator;
-import com.fr.bi.field.dimension.calculator.CombinationDimensionCalculator;
-import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.gvi.AllShowRoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
@@ -36,8 +33,6 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
 
     protected volatile boolean isPageFinished = false;
 
-    private boolean needAllCalculate = false;
-
     private  MemNode tempNode;
 
 
@@ -59,13 +54,6 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
         this.tableKey = tableKey;
         this.tempNode = node;
         initRoot(node.getGroupValueIndex());
-    }
-
-    protected NoneDimensionGroup(BusinessTable tableKey, GroupValueIndex gvi, ICubeDataLoader loader, boolean needAllCalculate) {
-        this.tableKey = tableKey;
-        this.loader = loader;
-        this.needAllCalculate = needAllCalculate;
-        initRoot(gvi);
     }
 
     public static NoneDimensionGroup createDimensionGroup(final BusinessTable tableKey, final GroupValueIndex gvi, final ICubeDataLoader loader) {
@@ -98,24 +86,18 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
     }
 
 
-    public ISingleDimensionGroup createSingleDimensionGroup(DimensionCalculator[] pck, DimensionCalculator ck, Object[] data, int ckIndex, boolean useRealData) {
+    public ISingleDimensionGroup createSingleDimensionGroup(DimensionCalculator[] pck, DimensionCalculator ck, Object[] data, int ckIndex, ICubeValueEntryGetter getter, boolean useRealData) {
         if(ckIndex == 0){
             pck = null;
         }
-        if (ck instanceof CombinationDimensionCalculator || ck instanceof CombinationDateDimensionCalculator) {
-            return ReverseSingleDimensionGroup.createDimensionGroup(tableKey, pck, ck, data, ckIndex, node.getGroupValueIndex(), loader, useRealData);
-        }
-        return SingleDimensionGroup.createDimensionGroup(tableKey, pck, ck, data, ckIndex, node.getGroupValueIndex(), loader, useRealData);
+        return SingleDimensionGroup.createDimensionGroup(tableKey, pck, ck, data, ckIndex, getter, node.getGroupValueIndex(), loader, useRealData);
     }
 
-    public ISingleDimensionGroup createNoneTargetSingleDimensionGroup(DimensionCalculator[] pck, DimensionCalculator ck, Object[] data, int ckIndex, GroupValueIndex gvi, boolean useRealData) {
+    public ISingleDimensionGroup createNoneTargetSingleDimensionGroup(DimensionCalculator[] pck, DimensionCalculator ck, Object[] data, int ckIndex, ICubeValueEntryGetter getter, GroupValueIndex gvi, boolean useRealData) {
         if(ckIndex == 0){
             pck = null;
         }
-        if (ck instanceof CombinationDimensionCalculator || ck instanceof CombinationDateDimensionCalculator) {
-            return ReverseSingleDimensionGroup.createDimensionGroup(tableKey, pck, ck, data, ckIndex, gvi, loader, useRealData);
-        }
-        return SingleDimensionGroup.createDimensionGroup(tableKey, pck, ck, data, ckIndex, gvi, loader, useRealData);
+        return SingleDimensionGroup.createDimensionGroup(tableKey, pck, ck, data, ckIndex, getter, gvi, loader, useRealData);
     }
 
 
@@ -144,47 +126,12 @@ public class NoneDimensionGroup extends ExecutorPartner<NewRootNodeChild> implem
         return 1;
     }
 
-    public boolean isPageFinished() {
-        return isPageFinished;
-    }
-
     public BusinessTable getTableKey() {
         return tableKey;
     }
 
     public ICubeDataLoader getLoader() {
         return loader;
-    }
-
-    public boolean isNeedAllCalculate() {
-        return needAllCalculate;
-    }
-
-    public void setNeedAllCalculate(boolean needAllCalculate) {
-        this.needAllCalculate = needAllCalculate;
-    }
-
-    /**
-     * 过滤掉自定义分组,自定义排序
-     * @param needAllCal
-     * @param dcs
-     * @return
-     */
-    private boolean judgeNeedAllCal(boolean needAllCal, DimensionCalculator[] dcs){
-        if (getRoot().getGroupValueIndex() instanceof AllShowRoaringGroupValueIndex){
-            return false;
-        }
-        if(!needAllCal){
-            return false;
-        }
-        for (DimensionCalculator d : dcs){
-            if(d.getSortType() == BIReportConstant.SORT.CUSTOM
-                    || d.getGroup().getType() != BIReportConstant.GROUP.ID_GROUP
-                    || d.getGroup().getType() != BIReportConstant.GROUP.NO_GROUP){
-                return false;
-            }
-        }
-        return true;
     }
 
     public void releaseMemNode(){

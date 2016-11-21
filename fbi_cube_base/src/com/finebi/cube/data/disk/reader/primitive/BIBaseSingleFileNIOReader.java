@@ -20,7 +20,6 @@ public abstract class BIBaseSingleFileNIOReader extends BIAbstractBaseNIOReader 
 
     public BIBaseSingleFileNIOReader(File cacheFile) {
         super(cacheFile);
-        initBuffer();
     }
     public BIBaseSingleFileNIOReader(String cacheFilePath) {
         this(new File(cacheFilePath));
@@ -36,7 +35,7 @@ public abstract class BIBaseSingleFileNIOReader extends BIAbstractBaseNIOReader 
              */
             readWriteLock.writeLock().lock();
             try {
-                if (buffer != null){
+                if (buffer != null || !isValid){
                     return;
                 }
                 fc = initFile();

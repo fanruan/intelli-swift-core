@@ -515,6 +515,7 @@ BI.OnePackage = BI.inherit(BI.Widget, {
                 BI.Utils.generateCubeByTable(info.tableInfo, function () {
 
                 });
+                self.fireEvent(BI.OnePackage.EVENT_CUBE_SAVE);
             });
         });
         etl.on(BI.ETL.EVENT_SAVE, function (data) {

@@ -45,7 +45,7 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         var o = this.options;
         var dimensionMap = BI.Utils.getDimensionMapByDimensionID(o.dId);
         var tIds = BI.Utils.getAllTargetDimensionIDs(BI.Utils.getWidgetIDByDimensionID(o.dId));
-        var res = BI.find(tIds, function (idx, tId) {
+        var res = BI.find(tIds, function(idx, tId){
             return !BI.Utils.isCalculateTargetByDimensionID(tId) && !checkDimAndTarRelationValidInCurrentPaths(o.dId, tId);
         });
         return BI.isNull(res);
@@ -116,16 +116,16 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
 
         switch (selectedValues[0].value) {         //先更新老子的文本
             case this.typeConfig().ASCEND :
-                this._changeElText(ascend.el, BI.has(selectedValues[0], "childValue") ? BI.i18nText("BI-Ascend") + "(" + BI.Utils.getDimensionNameByID(selectedValues[0].childValue) + ")" : BI.i18nText("BI-Ascend"));
-                this._changeElText(descend.el, BI.i18nText("BI-Descend"));
+                this._changeElText(ascend.el, BI.has(selectedValues[0], "childValue") ? BI.i18nText("BI-Basic_Ascend") + "(" + BI.Utils.getDimensionNameByID(selectedValues[0].childValue) + ")" : BI.i18nText("BI-Basic_Ascend"));
+                this._changeElText(descend.el, BI.i18nText("BI-Basic_Descend"));
                 break;
             case this.typeConfig().DESCEND :
-                this._changeElText(ascend.el, BI.i18nText("BI-Ascend"));
-                this._changeElText(descend.el, BI.has(selectedValues[0], "childValue") ? BI.i18nText("BI-Descend") + "(" + BI.Utils.getDimensionNameByID(selectedValues[0].childValue) + ")" : BI.i18nText("BI-Descend"));
+                this._changeElText(ascend.el, BI.i18nText("BI-Basic_Ascend"));
+                this._changeElText(descend.el, BI.has(selectedValues[0], "childValue") ? BI.i18nText("BI-Basic_Descend") + "(" + BI.Utils.getDimensionNameByID(selectedValues[0].childValue) + ")" : BI.i18nText("BI-Basic_Descend"));
                 break;
             default :
-                this._changeElText(ascend.el, BI.i18nText("BI-Ascend"));
-                this._changeElText(descend.el, BI.i18nText("BI-Descend"));
+                this._changeElText(ascend.el, BI.i18nText("BI-Basic_Ascend"));
+                this._changeElText(descend.el, BI.i18nText("BI-Basic_Descend"));
                 break;
         }
         ascend.children = [];                //再重置儿子的属性
@@ -199,11 +199,11 @@ BI.AbstractDimensionCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
         BI.any(items, function (idx, item) {
             BI.any(item, function (idx, it) {
                 var itE = BI.stripEL(it);
-                if (itE.text === BI.i18nText("BI-Ascend")) {
+                if (itE.text === BI.i18nText("BI-Basic_Ascend")) {
                     ascend = it;
                     findCount++;
                 }
-                if (itE.text === BI.i18nText("BI-Descend")) {
+                if (itE.text === BI.i18nText("BI-Basic_Descend")) {
                     descend = it;
                     findCount++;
                 }

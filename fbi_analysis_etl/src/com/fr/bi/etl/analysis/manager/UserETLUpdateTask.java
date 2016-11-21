@@ -193,8 +193,8 @@ public class UserETLUpdateTask implements CubeTask {
      */
     public boolean check(long oldVersion) {
         UserETLCubeManagerProvider manager = BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider();
-        return manager.getCubePath(source.fetchObjectCore().getID().getIdentityValue()) != null && checkSourceVersion(oldVersion);
-    }
+    return manager.getCubePath(source.fetchObjectCore().getID().getIdentityValue()) != null && checkSourceVersion(oldVersion);
+}
 
     /**
      * @return

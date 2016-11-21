@@ -147,13 +147,13 @@ public class CubeRunner {
     }
 
     private void start() {
+        BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
         BackUpUtils.backup();
     }
 
     private void finish(CubeTask cubeTask) {
         long t = System.currentTimeMillis();
         try {
-
             if (!cubeTask.getTaskType().equals(CubeTaskType.INSTANT)) {
                 BILoggerFactory.getLogger().info("start to persist meta data!");
                 BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
@@ -163,6 +163,8 @@ public class CubeRunner {
             BILoggerFactory.getLogger().info("meta data finished! time cost: " + DateUtils.timeCostFrom(t));
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }finally {
+            BICubeConfigureCenter.getPackageManager().endBuildingCube(biUser.getUserId());
         }
         BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
         /* 前台进度条完成进度最多到90%，当cube文件替换完成后传入调用logEnd，进度条直接到100%*/
