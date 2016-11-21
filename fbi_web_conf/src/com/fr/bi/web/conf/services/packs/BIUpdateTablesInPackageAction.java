@@ -190,8 +190,8 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
     }
 
     public void saveUpdateSetting(JSONObject updateSettingJO, long userId) throws Exception {
+        UpdateSettingSource originalGlobalSetting = BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSettingManager(userId).getUpdateSettings().get(DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE);
         Iterator<String> sourceTableIds = updateSettingJO.keys();
-        UpdateSettingSource originalGlobalSetting = BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSettingManager(-999).getUpdateSettings().get(DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE);
         BIConfigureManagerCenter.getUpdateFrequencyManager().clear(userId);
         while (sourceTableIds.hasNext()) {
             String sourceTableId = sourceTableIds.next();
