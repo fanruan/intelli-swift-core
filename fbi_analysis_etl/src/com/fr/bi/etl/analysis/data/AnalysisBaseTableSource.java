@@ -102,19 +102,23 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     }
 
     private int getTypeByGroup(IGroup group) {
+        int type;
         switch (group.getType()) {
             case BIReportConstant.GROUP.Y:
             case BIReportConstant.GROUP.M:
             case BIReportConstant.GROUP.S:
             case BIReportConstant.GROUP.MD:
             case BIReportConstant.GROUP.W:
-                return Types.INTEGER;
+                type = Types.INTEGER;
+                break;
             case BIReportConstant.GROUP.YMD:
             case BIReportConstant.GROUP.YMDHMS:
-                return Types.DATE;
+                type = Types.DATE;
+                break;
             default:
-                return Types.VARCHAR;
+                type = Types.VARCHAR;
         }
+        return type;
     }
 
 
