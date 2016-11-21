@@ -191,12 +191,13 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
 
     public void saveUpdateSetting(JSONObject updateSettingJO, long userId) throws Exception {
         Iterator<String> sourceTableIds = updateSettingJO.keys();
+        UpdateSettingSource originalGlobalSetting = BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSettingManager(-999).getUpdateSettings().get(DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE);
         BIConfigureManagerCenter.getUpdateFrequencyManager().clear(userId);
         while (sourceTableIds.hasNext()) {
             String sourceTableId = sourceTableIds.next();
             UpdateSettingSource source = new UpdateSettingSource();
             if (ComparatorUtils.equals(sourceTableId, DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE)) {
-                source = BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSettingManager(-999).getUpdateSettings().get(sourceTableId);
+                source = null != originalGlobalSetting ? originalGlobalSetting : source;
             } else {
                 source.parseJSON(updateSettingJO.getJSONObject(sourceTableId));
             }
