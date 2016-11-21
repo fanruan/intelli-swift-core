@@ -19,6 +19,7 @@ import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.conf.manager.excelview.source.ExcelViewSource;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
@@ -194,7 +195,11 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
         while (sourceTableIds.hasNext()) {
             String sourceTableId = sourceTableIds.next();
             UpdateSettingSource source = new UpdateSettingSource();
-            source.parseJSON(updateSettingJO.getJSONObject(sourceTableId));
+            if (ComparatorUtils.equals(sourceTableId, DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE)) {
+                source = BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSettingManager(-999).getUpdateSettings().get(sourceTableId);
+            } else {
+                source.parseJSON(updateSettingJO.getJSONObject(sourceTableId));
+            }
             BIConfigureManagerCenter.getUpdateFrequencyManager().saveUpdateSetting(sourceTableId, source, userId);
         }
         BICubeManager biCubeManager = StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG, BICubeManager.class);
