@@ -83,7 +83,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
         BIAbstractDetailTarget target = (BIAbstractDetailTarget) widget.getDimensions()[index];
         if (target.isCalculateTarget()) {
             return Types.DOUBLE;
-        } else if (target.getStatisticElement().getFieldType() == DBConstant.COLUMN.NUMBER) {
+        } else if (target.getStatisticElement() != null && target.getStatisticElement().getFieldType() == DBConstant.COLUMN.NUMBER) {
             return BIDBUtils.classTypeToSql(target.getStatisticElement().getClassType());
         } else {
             return getTypeByGroup(target.getGroup());
