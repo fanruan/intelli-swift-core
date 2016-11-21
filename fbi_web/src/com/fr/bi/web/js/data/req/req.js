@@ -117,6 +117,12 @@ Data.Req = BIReq = {
             callback(res);
         }, complete)
     },
+    
+    reqIsTableExist: function(table, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "check_table_exist", {table: table}, function(res) {
+            callback(res); 
+        }, complete);
+    },
 
     reqPreviewDataByTableAndFields: function (table, fields, callback, complete) {
         BI.requestAsync("fr_bi_configure", "get_preview_table_conf", {table: table, fields: fields}, function (res) {
