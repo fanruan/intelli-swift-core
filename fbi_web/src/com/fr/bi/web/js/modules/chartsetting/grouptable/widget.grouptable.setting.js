@@ -374,7 +374,7 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
         this.widgetTitle.setVisible(BI.Utils.getWSShowNameByID(wId));
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
 
-        this.tableFormGroup.setValue(BI.Utils.getWSTableFromByID(wId));
+        this.tableFormGroup.setValue(BI.Utils.getWSTableFormByID(wId));
         this.themeColor.setValue(BI.Utils.getWSThemeColorByID(wId));
         this.tableStyleGroup.setValue(BI.Utils.getWSTableStyleByID(wId));
         this.isCustomTableStyle.setSelected(BI.Utils.getWSIsCustomTableStyleByID(wId));

@@ -738,7 +738,7 @@
             return ws.widgetBG
         },
 
-        getWSTableFromByID: function (wid) {
+        getWSTableFormByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.tableFormGroup) ? ws.tableFormGroup :
                 BICst.DEFAULT_CHART_SETTING.tableFormGroup;

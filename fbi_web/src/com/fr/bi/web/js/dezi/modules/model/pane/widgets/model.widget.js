@@ -60,7 +60,7 @@ BIDezi.WidgetModel = BI.inherit(BI.Model, {
         if (BI.has(changed, "settings")) {
             this.refresh();
             //联动传递过滤条件发生改变的时候，清一下联动到的组件
-            if (changed.settings.transfer_filter !== pre.settings.transfer_filter) {
+            if (changed.settings.transferFilter !== pre.settings.transferFilter) {
                 BI.each(this.get("linkages"), function (i, link) {
                     if (BI.Utils.isWidgetExistByID(link.to)) {
                         BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + link.to, link.from);
