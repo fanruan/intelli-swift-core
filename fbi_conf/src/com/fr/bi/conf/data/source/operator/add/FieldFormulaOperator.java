@@ -1,6 +1,7 @@
 package com.fr.bi.conf.data.source.operator.add;
 
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.Utils;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
@@ -8,7 +9,6 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.utils.BIFormularUtils;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.json.JSONObject;
 import com.fr.script.Calculator;
@@ -82,10 +82,12 @@ public class FieldFormulaOperator extends AbstractAddColumnOperator {
             try {
                 Object value = BIFormularUtils.getCalculatorValue(cal, formula, ti, columnIndexMap, row);
                 travel.actionPerformed(new BIDataValue(row, startCol, getValueByColumnType(value)));
+            } catch (NullPointerException e) {
+                BILoggerFactory.getLogger(FieldFormulaOperator.class).error(e.getMessage(), e);
             } catch (Exception e) {
-                BILoggerFactory.getLogger().error("incorrect formula");
-                BILoggerFactory.getLogger().error(BIStringUtils.append(e.getMessage()+"", e.getClass().toString()));
-                BILoggerFactory.getLogger().error(BIStringUtils.append("The formula:", formula));
+                BILoggerFactory.getLogger(FieldFormulaOperator.class).error("incorrect formula");
+                BILoggerFactory.getLogger(FieldFormulaOperator.class).error(BIStringUtils.append(e.getMessage() + "", e.getClass().toString()));
+                BILoggerFactory.getLogger(FieldFormulaOperator.class).error(BIStringUtils.append("The formula:", formula));
                 travel.actionPerformed(new BIDataValue(row, startCol, null));
             }
         }
