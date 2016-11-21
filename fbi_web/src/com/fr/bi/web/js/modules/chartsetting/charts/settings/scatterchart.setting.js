@@ -773,6 +773,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.rightYSeparator.setSelected(BI.Utils.getWSRightYNumberSeparatorByID(wId));
         this.rightYShowLabel.setSelected(BI.Utils.getWSRightYShowLabelByID(wId));
         this.rightYLabelStyle.setValue(BI.Utils.getWSRightYLabelStyleByID(wId));
+        this.rightYLabelStyle.setVisible(BI.Utils.getWSRightYShowLabelByID(wId));
         this.rightYLineColor.setValue(BI.Utils.getWSRightYLineColorByID(wId));
         this.rightYTitleStyle.setValue(BI.Utils.getWSChartRightYTitleStyleByID(wId));
         this.rightYTitle.setVisible(this.rightYShowTitle.isSelected());
@@ -790,6 +791,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.leftYSeparator.setSelected(BI.Utils.getWSLeftYNumberSeparatorByID(wId));
         this.leftYShowLabel.setSelected(BI.Utils.getWSChartLeftYShowLabelByID(wId));
         this.leftYLabelStyle.setValue(BI.Utils.getWSChartLeftYLabelStyleByID(wId));
+        this.leftYLabelStyle.setVisible(BI.Utils.getWSChartLeftYShowLabelByID(wId));
         this.leftYLineColor.setValue(BI.Utils.getWSChartLeftYLineColorByID(wId));
         this.leftYTitleStyle.setValue(BI.Utils.getWSChartLeftYTitleStyleByID(wId));
         this.leftYTitle.setVisible(this.leftYShowTitle.isSelected());

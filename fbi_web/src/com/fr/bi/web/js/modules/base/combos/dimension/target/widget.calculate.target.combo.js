@@ -16,7 +16,7 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             [{
                 text: BI.i18nText("BI-Style_Setting"),
                 value: BICst.CALCULATE_TARGET_COMBO.FORM_SETTING,
-                warningTitle: BI.i18nText("BI-Unmodified_in_Current_Mode"),
+                warningTitle: BI.i18nText("BI-Unmodified_in_Mini_Mode"),
                 cls: "style-set-h-font"
             }],
             [{
@@ -253,6 +253,12 @@ BI.CalculateTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     }]
                 };
                 if (bigDataMode) {
+                    item[this.constants.CordonPos][0] = {
+                        text: BI.i18nText("BI-Style_Setting"),
+                        value: BICst.CALCULATE_TARGET_COMBO.FORM_SETTING,
+                        warningTitle: BI.i18nText("BI-Unmodified_in_BigData_Mode"),
+                        cls: "style-set-h-font"
+                    };
                     item[this.constants.CordonPos][0].disabled = true;
                 }
                 if (!dataLable) {
