@@ -56,7 +56,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
             [{
                 text: BI.i18nText("BI-Style_Setting"),
                 value: BICst.TARGET_COMBO.STYLE_SETTING,
-                warningTitle: BI.i18nText("BI-Unmodified_in_Current_Mode"),
+                warningTitle: BI.i18nText("BI-Unmodified_in_Mini_Mode"),
                 cls: "style-set-h-font"
             }],
             [{
@@ -269,7 +269,7 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                             }]
                         };
                         if (!dataLable) {
-                            item[this.constants.CordonPos][0].children.disabled = true
+                            items[this.constants.CordonPos][0].children.disabled = true
                         }
                         BI.removeAt(items, this.constants.CHART_TYPE_POSITION);
                         return addDependency();
@@ -287,6 +287,12 @@ BI.CountTargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                     }]
                 };
                 if (bigDataMode) {
+                    items[this.constants.CordonPos][0] = {
+                        text: BI.i18nText("BI-Style_Setting"),
+                        value: BICst.CALCULATE_TARGET_COMBO.FORM_SETTING,
+                        warningTitle: BI.i18nText("BI-Unmodified_in_BigData_Mode"),
+                        cls: "style-set-h-font"
+                    };
                     items[this.constants.CordonPos][0].disabled = true;
                 }
                 if (!dataLable) {
