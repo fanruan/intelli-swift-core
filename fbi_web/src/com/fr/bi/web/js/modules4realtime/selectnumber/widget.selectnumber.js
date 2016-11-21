@@ -33,6 +33,7 @@ BI.SelectNumber4RealTime = BI.inherit(BI.Widget, {
                 })
             },
             fieldsCreator: function (tableId, opt) {
+                opt = opt || {};
                 var ids = BI.Utils.getNumberFieldIDsOfTableID(tableId);
                 var result = [];
                 BI.each(ids, function (i, fid) {

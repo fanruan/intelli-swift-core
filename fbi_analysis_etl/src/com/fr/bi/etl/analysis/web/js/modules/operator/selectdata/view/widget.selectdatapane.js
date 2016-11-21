@@ -24,6 +24,7 @@ BI.AnalysisETLSelectDataPane = BI.inherit(BI.MVCWidget, {
             showExcelView: false,
             showDateGroup: true,
             tablesCreator: function (packageId, opt) {
+                opt = opt || {};
                 if (opt.isRelation === true) {
                     var tIds = BI.Utils.getPrimaryRelationTablesByTableID(packageId);
                     return BI.map(tIds, function (i, id) {
@@ -45,6 +46,7 @@ BI.AnalysisETLSelectDataPane = BI.inherit(BI.MVCWidget, {
                 })
             },
             fieldsCreator: function (tableId, opt) {
+                opt = opt || {};
                 var ids = BI.Utils.getSortedFieldIdsOfOneTableByTableId(tableId);
                 var result = [];
                 BI.each(ids, function (i, fid) {
