@@ -21,8 +21,8 @@ BI.DetailSelectDataPane = BI.inherit(BI.Widget, {
             showRelativeTables: true,
             showExcelView: true,
             showDateGroup: true,
-            tablesCreator: function (packageId, isRelation) {
-                if (isRelation === true) {
+            tablesCreator: function (packageId, opt) {
+                if (opt.isRelation === true) {
                     var tIds = BI.Utils.getPrimaryRelationTablesByTableID(packageId);
                     return BI.map(tIds, function (i, id) {
                         return {
@@ -38,7 +38,7 @@ BI.DetailSelectDataPane = BI.inherit(BI.Widget, {
                     }
                 })
             },
-            fieldsCreator: function (tableId, isRelation) {
+            fieldsCreator: function (tableId, opt) {
                 var ids = BI.Utils.getSortedFieldIdsOfOneTableByTableId(tableId);
                 ids = BI.Utils.getCountFieldIDsOfTableID(tableId).concat(ids);
                 var result = [];

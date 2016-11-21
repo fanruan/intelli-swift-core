@@ -22,8 +22,8 @@ BI.DetailSelectData4RealTime = BI.inherit(BI.Widget, {
             showRelativeTables: false,
             showExcelView: false,
             showDateGroup: true,
-            tablesCreator: function (packageId, isRelation) {
-                if (isRelation === true) {
+            tablesCreator: function (packageId, opt) {
+                if (opt.isRelation === true) {
                     var tIds = BI.Utils.getPrimaryRelationTablesByTableID(packageId);
                     return BI.map(tIds, function (i, id) {
                         return {
@@ -40,15 +40,19 @@ BI.DetailSelectData4RealTime = BI.inherit(BI.Widget, {
                     }
                 })
             },
-            fieldsCreator: function (tableId, isRelation) {
+            fieldsCreator: function (tableId, opt) {
                 var ids = BI.Utils.getSortedFieldIdsOfOneTableByTableId(tableId);
                 ids = BI.Utils.getCountFieldIDsOfTableID(tableId).concat(ids);
                 var result = [];
                 BI.each(ids, function (i, fid) {
                     if (BI.Utils.getFieldIsUsableByID(fid) === true) {
-                        result.push({
-                            id: fid
-                        })
+                        var res = BI.Func.getSearchResult(fieldname, opt.keyword);
+                        if(BI.contains(res.matched, BI.Utils.getFieldNameByID(fid)) && opt.isSearching === true){
+                            result.push({
+                                id: fid,
+                                type: "bi.detail_select_data_level0_item"
+                            });
+                        }
                     }
                 });
                 return result;

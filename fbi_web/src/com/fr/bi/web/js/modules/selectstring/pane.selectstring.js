@@ -30,14 +30,14 @@ BI.SelectStringPane = BI.inherit(BI.Widget, {
                     }
                 })
             },
-            fieldsCreator: function (tableId, isRelation) {
+            fieldsCreator: function (tableId, opt) {
                 var ids = BI.Utils.getStringFieldIDsOfTableID(tableId);
                 var result = [];
                 BI.each(ids, function (i, fid) {
                     if (BI.Utils.getFieldIsUsableByID(fid) === true) {
                         result.push({
                             id: fid,
-                            type: isRelation ? "bi.select_string_level1_item" : "bi.select_string_level0_item"
+                            type: opt.isRelation ? "bi.select_string_level1_item" : "bi.select_string_level0_item"
                         })
                     }
                 });

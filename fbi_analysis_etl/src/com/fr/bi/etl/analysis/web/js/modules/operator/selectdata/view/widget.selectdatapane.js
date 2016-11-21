@@ -23,8 +23,8 @@ BI.AnalysisETLSelectDataPane = BI.inherit(BI.MVCWidget, {
             showRelativeTables: true,
             showExcelView: false,
             showDateGroup: true,
-            tablesCreator: function (packageId, isRelation) {
-                if (isRelation === true) {
+            tablesCreator: function (packageId, opt) {
+                if (opt.isRelation === true) {
                     var tIds = BI.Utils.getPrimaryRelationTablesByTableID(packageId);
                     return BI.map(tIds, function (i, id) {
                         return {
@@ -44,7 +44,7 @@ BI.AnalysisETLSelectDataPane = BI.inherit(BI.MVCWidget, {
                     }
                 })
             },
-            fieldsCreator: function (tableId, isRelation) {
+            fieldsCreator: function (tableId, opt) {
                 var ids = BI.Utils.getSortedFieldIdsOfOneTableByTableId(tableId);
                 var result = [];
                 BI.each(ids, function (i, fid) {
@@ -53,12 +53,12 @@ BI.AnalysisETLSelectDataPane = BI.inherit(BI.MVCWidget, {
                         if (BI.Utils.getFieldTypeByID(fid) === BICst.COLUMN.DATE) {
                             field = {
                                 id: fid,
-                                type: isRelation ? "bi.analysis_etl_detail_select_data_level2_item" : "bi.analysis_etl_detail_select_data_level1_item"
+                                type: opt.isRelation ? "bi.analysis_etl_detail_select_data_level2_item" : "bi.analysis_etl_detail_select_data_level1_item"
                             };
                         } else {
                             field = {
                                 id: fid,
-                                type: isRelation ? "bi.analysis_etl_detail_select_data_level1_item" : "bi.analysis_etl_detail_select_data_level0_item"
+                                type: opt.isRelation ? "bi.analysis_etl_detail_select_data_level1_item" : "bi.analysis_etl_detail_select_data_level0_item"
                             };
                         }
                         field.listener = function () {
