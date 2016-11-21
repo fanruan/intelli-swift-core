@@ -51,7 +51,11 @@ BI.AnalysisDetailDetailSelectDataNode = BI.inherit(BI.Widget, {
             if (BI.isNotEmptyString(tableId)) {
                 var dIds = BI.Utils.getAllDimensionIDs(o.wId);
                 var tIds = [];
-                BI.each(dIds, function (id, dId) {
+                //这个地方要排除计算指标，因为和计算指标没有tableId
+                var filterDIds = BI.filter(dIds,  function(idx, dId){
+                    return BI.Utils.isCalculateTargetByDimensionID(dId);
+                });
+                BI.each(filterDIds, function (id, dId) {
                     tIds.push(BI.Utils.getTableIDByDimensionID(dId));
                 });
                 tIds.push(tableId);
