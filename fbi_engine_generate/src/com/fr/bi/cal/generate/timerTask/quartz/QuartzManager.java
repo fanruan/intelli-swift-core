@@ -23,8 +23,7 @@ public class QuartzManager {
         JobDetail jobDetail = new JobDetail(schedule.getJobName(), JOB_GROUP_NAME, jobTask.getClass());//任务名，任务组，任务执行类
         jobDetail.getJobDataMap().put("jobName", schedule.getJobName());
         jobDetail.getJobDataMap().put("time", schedule.getTimeSchedule());
-        jobDetail.getJobDataMap().put("sourceName", schedule.getSourceName());
-        jobDetail.getJobDataMap().put("CubeBuild", schedule.getCubeBuild());
+        jobDetail.getJobDataMap().put("tableKey", schedule.getTableKey());
         jobDetail.getJobDataMap().put("userId", schedule.getUserId());
         jobDetail.getJobDataMap().put("updateType", schedule.getUpdateType());
         //触发器
@@ -34,7 +33,7 @@ public class QuartzManager {
         sched.scheduleJob(jobDetail, trigger);
         //启动
         if (!sched.isShutdown()) {
-            BILoggerFactory.getLogger().info("Time Task scheduled!\n Tables for update：" + schedule.getSourceName() + "\n Time settings：" + schedule.getTimeSchedule() + "\n"+"update type: "+schedule.getUpdateType()+"\n task name:"+schedule.getJobName());
+            BILoggerFactory.getLogger().info("Time Task scheduled!\n Tables for update：" + schedule.getTableKey() + "\n Time settings：" + schedule.getTimeSchedule() + "\n"+"update type: "+schedule.getUpdateType()+"\n task name:"+schedule.getJobName());
             sched.start();
         }
     }

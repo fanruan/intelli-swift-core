@@ -35,7 +35,7 @@ public abstract class BIBaseSingleFileNIOReader extends BIAbstractBaseNIOReader 
              */
             readWriteLock.writeLock().lock();
             try {
-                if (buffer != null){
+                if (buffer != null || !isValid){
                     return;
                 }
                 fc = initFile();

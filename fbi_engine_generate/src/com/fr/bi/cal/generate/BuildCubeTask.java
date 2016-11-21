@@ -53,8 +53,6 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.concurrent.Future;
 
-import static com.finebi.cube.conf.BICubeConfigureCenter.getPackageManager;
-
 /**
  * This class created on 2016/4/19.
  *
@@ -103,11 +101,11 @@ public class BuildCubeTask implements CubeTask {
     public void start() {
         BIConfigureManagerCenter.getLogManager().logStart(biUser.getUserId());
         PerformancePlugManager.getInstance().printSystemParameters();
-        getPackageManager().startBuildingCube(biUser.getUserId());
-        Long t = System.currentTimeMillis();
-        BILoggerFactory.getLogger().info("start copy some files");
-        cubeBuildStuff.copyFileFromOldCubes();
-        BILoggerFactory.getLogger().info("copy files cost time: " + DateUtils.timeCostFrom(t));
+        logBusinessTable();
+        logTable(cubeBuildStuff.getSingleSourceLayers(), cubeBuildStuff.getUpdateSettingSources());
+        logRelation(cubeBuildStuff.getTableSourceRelationSet());
+        logPath(filterPath(cubeBuildStuff.getTableSourceRelationPathSet()));
+        copyFilesFromOldCubs();
     }
 
     protected Set<BITableSourceRelation> getGeneratedRelation() {
@@ -128,7 +126,6 @@ public class BuildCubeTask implements CubeTask {
             if (!cubeBuildSucceed) {
                 checkTaskFinish();
             }
-
             if (cubeBuildSucceed) {
                 cube.addVersion(System.currentTimeMillis());
                 long start = System.currentTimeMillis();
@@ -162,7 +159,6 @@ public class BuildCubeTask implements CubeTask {
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         } finally {
-
         }
     }
 
@@ -227,14 +223,10 @@ public class BuildCubeTask implements CubeTask {
         BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
         BICubeOperationManager operationManager = new BICubeOperationManager(cube, integrityCube, cubeBuildStuff.getSystemTableSources());
         operationManager.initialWatcher();
-        logBusinessTable();
         operationManager.subscribeStartMessage();
-        Map<CubeTableSource, UpdateSettingSource> updateSettingSources = cubeBuildStuff.getUpdateSettingSources();
-        operationManager.setUpdateSettingSourceMap(updateSettingSources);
+        operationManager.setUpdateSettingSourceMap(cubeBuildStuff.getUpdateSettingSources());
         manager.registerDataSource(cubeBuildStuff.getSingleSourceLayers());
-        logTable(cubeBuildStuff.getSingleSourceLayers(), updateSettingSources);
         manager.registerRelation(cubeBuildStuff.getTableSourceRelationSet());
-        logRelation(cubeBuildStuff.getTableSourceRelationSet());
         Set<BITableSourceRelationPath> relationPathSet = filterPath(cubeBuildStuff.getTableSourceRelationPathSet());
         manager.registerTableRelationPath(relationPathSet);
         logPath(relationPathSet);
@@ -407,6 +399,19 @@ public class BuildCubeTask implements CubeTask {
         return result;
     }
 
+    private void copyFilesFromOldCubs() {
+        BILoggerFactory.getLogger().info("start copy some files");
+        Long t = System.currentTimeMillis();
+        if (System.getProperty("os.name").toUpperCase().contains("HP-UX")) {
+            BILoggerFactory.getLogger().warn("current system is hp-unix. Handlers must be released before copying Files");
+            BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
+            cubeBuildStuff.copyFileFromOldCubes();
+            BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
+        } else {
+            cubeBuildStuff.copyFileFromOldCubes();
+        }
+        BILoggerFactory.getLogger().info("copy files cost time: " + DateUtils.timeCostFrom(t));
+    }
 
     public static IMessage generateMessageDataSourceStart() {
         return buildTopic(new BIMessageTopic(BICubeBuildTopicTag.START_BUILD_CUBE));

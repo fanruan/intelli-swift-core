@@ -1,12 +1,8 @@
 package com.fr.bi.web.conf.services.cubeconf;
 
-import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeGenerationManager;
-import com.fr.bi.conf.data.source.TableSourceFactory;
-import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
@@ -22,9 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 public class BICheckGenerateCubeAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
-        String tableJson = WebUtils.getHTTPRequestParameter(req, "table");
         long userId = ServiceUtils.getCurrentUserID(req);
-        CubeTableSource source = TableSourceFactory.createTableSource(new JSONObject(tableJson), userId);
         JSONObject jo = new JSONObject();
         try {
             BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
