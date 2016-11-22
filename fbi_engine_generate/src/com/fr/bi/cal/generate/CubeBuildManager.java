@@ -35,7 +35,9 @@ public class CubeBuildManager {
     private BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
 
     public boolean CubeBuildSingleTable(long userId, String baseTableSourceId, int updateType) {
+        BILoggerFactory.getLogger().info("Update table ID:" + baseTableSourceId);
         List<CubeBuildStuff> cubeBuildList = buildSingleTable(userId, baseTableSourceId, updateType);
+        BILoggerFactory.getLogger().info("Update relevant table size:" + cubeBuildList.size());
         boolean taskAdd = true;
         for (CubeBuildStuff cubeBuild : cubeBuildList) {
             taskAdd = cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId) && taskAdd;
@@ -44,7 +46,6 @@ public class CubeBuildManager {
     }
 
     public List<CubeBuildStuff> buildSingleTable(long userId, String baseTableSourceId, int updateType) {
-        BILoggerFactory.getLogger().info(BIDateUtils.getCurrentDateTime() + " Cube single table update start");
         List<CubeBuildStuff> cubeBuildStuffList = new ArrayList<CubeBuildStuff>();
         List<BusinessTable> tableList = getTablesContainsSourceId(userId, baseTableSourceId, updateType);
         List<CubeTableSource> tableSourceList = getTableSourcesFromBusinessTables(tableList, userId, baseTableSourceId);

@@ -81,7 +81,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
             };
         }
 
-        if (config.plotOptions.dataLabels.enabled === true) {
+        if (config.plotOptions.dataLabels.enabled === true && !this.config.bigDataMode) {
             BI.each(items, function (idx, item) {
                 item.dataLabels = {
                     "style": self.config.chartFont,
@@ -110,6 +110,13 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
                 });
                 self._formatDataLabel(item.data);
             });
+        }
+
+        config.plotOptions.large = this.config.bigDataMode;
+
+        if(this.config.bigDataMode) {
+            config.plotOptions.dataLabels.enabled = false;
+            config.plotOptions.tooltip.enabled = false;
         }
 
         return [items, config];

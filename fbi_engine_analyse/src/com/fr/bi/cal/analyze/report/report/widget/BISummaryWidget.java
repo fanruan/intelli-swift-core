@@ -79,12 +79,16 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
         List<BusinessTable> result = new ArrayList<BusinessTable>();
         BIDimension[] dimensions = getDimensions();
         for (int i = 0; i < dimensions.length; i++) {
-            result.add(dimensions[i].getStatisticElement().getTableBelongTo());
+            if (dimensions[i].getStatisticElement() != null) {
+                result.add(dimensions[i].getStatisticElement().getTableBelongTo());
+            }
         }
         BISummaryTarget[] targets = getTargets();
         for (int i = 0; i < targets.length; i++) {
             BISummaryTarget st = targets[i];
-            result.add(st.getStatisticElement().getTableBelongTo());
+            if (st.getStatisticElement() != null) {
+                result.add(st.getStatisticElement().getTableBelongTo());
+            }
         }
         return result;
     }
