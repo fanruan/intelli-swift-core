@@ -373,6 +373,12 @@ BI.extend(BI.Utils, {
             callback(data);
         }, complete)
     },
+    
+    checkTableExist: function(table, callback, complete) {
+        Data.Req.reqIsTableExist(table, function (data) {
+            callback(data);
+        }, complete)
+    },
 
     //fields 传[]表示获取全部字段
     getPreviewDataByTableAndFields: function (table, fields, callback, complete) {
