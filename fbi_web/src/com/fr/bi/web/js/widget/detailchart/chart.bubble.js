@@ -76,11 +76,6 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                 break;
         }
 
-        BI.extend(config.plotOptions, {
-            large: this.config.bigDataMode,
-            shadow: this.config.bubbleStyle !== c.NO_PROJECT
-        });
-
         config.colors = this.config.chartColor;
         config.style = formatChartStyle();
         config.plotOptions.tooltip.formatter = this.config.tooltip;
@@ -115,7 +110,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         }
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        if (config.plotOptions.dataLabels.enabled === true) {
+        if (config.plotOptions.dataLabels.enabled === true && !this.config.bigDataMode) {
             BI.each(items, function (idx, item) {
                 item.dataLabels = {
                     "style": self.config.chartFont,
@@ -156,6 +151,16 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                 });
                 self._formatDataLabel(item.data);
             });
+        }
+
+        BI.extend(config.plotOptions, {
+            large: this.config.bigDataMode,
+            shadow: this.config.bubbleStyle !== c.NO_PROJECT
+        });
+
+        if(this.config.bigDataMode) {
+            config.plotOptions.dataLabels.enabled = false;
+            config.plotOptions.tooltip.enabled = false;
         }
 
         return [items, config];

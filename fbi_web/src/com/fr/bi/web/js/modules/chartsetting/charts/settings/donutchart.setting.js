@@ -280,11 +280,14 @@ BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.widgetTitle.setVisible(BI.Utils.getWSShowNameByID(wId));
         this.widgetName.setValue(BI.Utils.getWidgetNameByID(wId));
         this.widgetNameStyle.setValue(BI.Utils.getWSTitleDetailSettingByID(wId));
+
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
         this.chartColor.setValue(BI.Utils.getWSChartColorByID(wId));
         this.chartStyle.setValue(BI.Utils.getWSChartStyleByID(wId));
+
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
+        this.legendStyle.setValue(BI.Utils.getWSChartLegendStyleByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
     },
 
@@ -298,6 +301,7 @@ BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
             chartColor: this.chartColor.getValue()[0],
             chartStyle: this.chartStyle.getValue()[0],
             legend: this.legend.getValue()[0],
+            legendStyle: this.legendStyle.getValue(),
             showDataLabel: this.showDataLabel.isSelected(),
 
             transferFilter: this.transferFilter.isSelected(),
