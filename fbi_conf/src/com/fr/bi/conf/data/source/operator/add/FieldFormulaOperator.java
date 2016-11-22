@@ -83,6 +83,8 @@ public class FieldFormulaOperator extends AbstractAddColumnOperator {
                 Object value = BIFormularUtils.getCalculatorValue(cal, formula, ti, columnIndexMap, row);
                 travel.actionPerformed(new BIDataValue(row, startCol, getValueByColumnType(value)));
             } catch (NullPointerException e) {
+                BILoggerFactory.getLogger(FieldFormulaOperator.class).error("incorrect formula");
+                BILoggerFactory.getLogger(FieldFormulaOperator.class).error(BIStringUtils.append("The formula:", formula));
                 BILoggerFactory.getLogger(FieldFormulaOperator.class).error(e.getMessage(), e);
             } catch (Exception e) {
                 BILoggerFactory.getLogger(FieldFormulaOperator.class).error("incorrect formula");
@@ -95,6 +97,9 @@ public class FieldFormulaOperator extends AbstractAddColumnOperator {
     }
 
     private Object getValueByColumnType(Object value) {
+        if(null == value){
+            return null;
+        }
         switch (columnType) {
             case DBConstant.COLUMN.DATE:
                 return ((Date) value).getTime();
