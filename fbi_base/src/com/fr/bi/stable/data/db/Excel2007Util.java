@@ -315,6 +315,7 @@ public class Excel2007Util {
         private String cellValue;
         private int thisColumn = -1;
         private int lastColumnNumber = -1;
+        private static final int PERCENT = 100;
 
         public MyXSSFSheetHandler(StylesTable styles, ReadOnlySharedStringsTable strings, DataFormatter dataFormatter) {
             this.value = new StringBuffer();
@@ -509,8 +510,10 @@ public class Excel2007Util {
                 } catch (Exception e) {
                     cellValue = n;
                 }
+            } else if (this.formatString != null && this.formatString.contains("%")) {
+                cellValue = this.formatter.formatRawCellContents(Double.parseDouble(value.toString()) * PERCENT, this.formatIndex, "") + "%";
             } else {
-                cellValue = this.formatter.formatRawCellContents(Double.parseDouble(value.toString()), this.formatIndex, "##.##");
+                cellValue = this.formatter.formatRawCellContents(Double.parseDouble(value.toString()), this.formatIndex, "");
             }
         }
 
