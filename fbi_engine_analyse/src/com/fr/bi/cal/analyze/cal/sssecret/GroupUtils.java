@@ -59,7 +59,6 @@ public class GroupUtils {
                                 deep++;
                             }
                             if (n.getShowValue() != BIBaseConstant.EMPTY_NODE_DATA || deep != 0) {
-                                ((RootDimensionGroup) roots[i]).setWidgetDateMap(deep, data);
                                 node.addChild(n);
                                 addSummaryValue(n, gcvsChild, calculators);
                             }
@@ -90,7 +89,6 @@ public class GroupUtils {
             deep++;
         }
         String dataString = data.toString();
-        ((RootDimensionGroup) root).setWidgetDateMap(deep, dataString);
         n.setShowValue(dataString);
         node.getChilds().clear();
         node.addChild(n);
