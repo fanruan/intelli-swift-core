@@ -27,7 +27,8 @@ import java.util.TreeSet;
 /**
  * Created by kary on 16/7/13.
  */
-public class BISourceDataAllTransport extends BISourceDataTransport {
+public class
+BISourceDataAllTransport extends BISourceDataTransport {
     private static final Logger logger = LoggerFactory.getLogger(BISourceDataAllTransport.class);
 
     public BISourceDataAllTransport(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version) {
