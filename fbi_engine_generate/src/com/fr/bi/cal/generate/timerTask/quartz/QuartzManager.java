@@ -33,7 +33,7 @@ public class QuartzManager {
         sched.scheduleJob(jobDetail, trigger);
         //启动
         if (!sched.isShutdown()) {
-            BILoggerFactory.getLogger().info("Time Task scheduled!\n Tables for update：" + schedule.getTableKey() + "\n Time settings：" + schedule.getTimeSchedule() + "\n"+"update type: "+schedule.getUpdateType()+"\n task name:"+schedule.getJobName());
+            BILoggerFactory.getLogger().info("\n Tables for update：" + schedule.getTableKey() + "\n Time settings：" + schedule.getTimeSchedule() + "\n"+" update type: "+schedule.getUpdateType()+"\n");
             sched.start();
         }
     }
