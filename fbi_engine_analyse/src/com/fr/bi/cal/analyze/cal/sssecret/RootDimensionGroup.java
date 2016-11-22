@@ -10,8 +10,6 @@ import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.conf.report.BIWidget;
-import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.field.dimension.calculator.StringDimensionCalculator;
@@ -49,32 +47,26 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     protected BISession session;
 
     ISingleDimensionGroup[] singleDimensionGroupCache;
-    private BIWidget widget;
-    private BIDimension[] dimensions;
     private NodeExpander expander;
     private TreeIterator iter;
     private boolean useRealData;
-    public RootDimensionGroup(NoneDimensionGroup root, DimensionCalculator[] cks, BIDimension[] dimensions, NodeExpander expander, BISession session,  BIWidget widget, boolean useRealData) {
+    public RootDimensionGroup(NoneDimensionGroup root, DimensionCalculator[] cks,  NodeExpander expander, BISession session,  boolean useRealData) {
         setRoot(root);
         this.cks = cks;
-        this.dimensions = dimensions;
         this.expander = expander;
         this.session = session;
         this.iter = new TreeIterator(cks.length);
-        this.widget = widget;
         this.useRealData = useRealData;
         this.singleDimensionGroupCache = new ISingleDimensionGroup[cks.length];
         init();
     }
-    public RootDimensionGroup(NoneDimensionGroup root, DimensionCalculator[] cks, BIDimension[] dimensions, NodeExpander expander, BISession session,  BIWidget widget, boolean useRealData, ICubeValueEntryGetter[] getters) {
+    public RootDimensionGroup(NoneDimensionGroup root, DimensionCalculator[] cks, NodeExpander expander, BISession session, boolean useRealData, ICubeValueEntryGetter[] getters) {
         this.getters = getters;
         setRoot(root);
         this.cks = cks;
-        this.dimensions = dimensions;
         this.expander = expander;
         this.session = session;
         this.iter = new TreeIterator(cks.length);
-        this.widget = widget;
         this.useRealData = useRealData;
         this.singleDimensionGroupCache = new ISingleDimensionGroup[cks.length];
     }
@@ -156,13 +148,6 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     public boolean isUseRealData() {
         return useRealData;
-    }
-
-    public void setWidgetDateMap(int i, Object data) {
-        if (widget == null) {
-            return;
-        }
-        session.setWidgetDateMap(widget.getWidgetName(), dimensions[i].getValue(), dimensions[i].toString(data), data);
     }
 
     @Override
