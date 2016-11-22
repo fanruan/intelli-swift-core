@@ -441,26 +441,7 @@ public class CubeIndexLoader {
             session.setPageIteratorGroup(useRealData, widgetName, pg);
         }
         if (hasAllCalCalculatorTargets(usedTargets)){
-            NodeAndPageInfo leftInfo = getLeftInfo(rowDimension, sumTarget, page, useRealData, expander, widget, session, usedTargets, calculateTargets, pg);
-            Map<GroupKey, IRootDimensionGroup> rowMap = new ConcurrentHashMap<GroupKey, IRootDimensionGroup>();
-            Map<GroupKey, IRootDimensionGroup> columnMap = new ConcurrentHashMap<GroupKey, IRootDimensionGroup>();
-            NodeAndPageInfo leftAllInfo = getLeftInfo(rowDimension, sumTarget, -1, useRealData, expander, widget, session, usedTargets, calculateTargets, new PageIteratorGroup(rowMap, columnMap));
-            NodeAndPageInfo topInfo = getTopInfo(colDimension, sumTarget, page, useRealData, expander, widget, session, usedTargets, calculateTargets, pg);
-            if (usedTargets.length != 0 && isEmpty(topInfo)) {
-                leftInfo.getNode().getChilds().clear();
-                leftInfo.setHasNext(false);
-            }
-            setPageSpiner(widget, leftInfo, topInfo);
-            n = new NewCrossRoot(leftAllInfo.getNode().createCrossHeader(), topInfo.getNode().createCrossHeader());
-            new CrossCalculator(session.getLoader()).execute(n, targetGettingKey, expander);
-            int size = calculateTargets.size();
-            Set set = new HashSet(targetGettingKey);
-            dealCalculateTarget(calculateTargets, n, size, set);
-            if (n == null) {
-                n = new NewCrossRoot(new CrossHeader(null, null, null), new CrossHeader(null, null, null));
-            }
-            cutChilds(n.getLeft().getChilds(), leftInfo.getNode().getChilds());
-            return n;
+            return getAllCalCrossRoot(rowDimension, colDimension, sumTarget, page, useRealData, session, expander, widget, usedTargets, targetGettingKey, calculateTargets, pg);
         }
         NodeAndPageInfo leftInfo = getLeftInfo(rowDimension, sumTarget, page, useRealData, expander, widget, session, usedTargets, calculateTargets, pg);
         NodeAndPageInfo topInfo = getTopInfo(colDimension, sumTarget, page, useRealData, expander, widget, session, usedTargets, calculateTargets, pg);
@@ -477,6 +458,29 @@ public class CubeIndexLoader {
         if (n == null) {
             n = new NewCrossRoot(new CrossHeader(null, null, null), new CrossHeader(null, null, null));
         }
+        return n;
+    }
+
+    private NewCrossRoot getAllCalCrossRoot(BIDimension[] rowDimension, BIDimension[] colDimension, BISummaryTarget[] sumTarget, int page, boolean useRealData, BISession session, CrossExpander expander, BISummaryWidget widget, BISummaryTarget[] usedTargets, List targetGettingKey, LinkedList calculateTargets, PageIteratorGroup pg) {
+        NewCrossRoot n;NodeAndPageInfo leftInfo = getLeftInfo(rowDimension, sumTarget, page, useRealData, expander, widget, session, usedTargets, calculateTargets, pg);
+        Map<GroupKey, IRootDimensionGroup> rowMap = new ConcurrentHashMap<GroupKey, IRootDimensionGroup>();
+        Map<GroupKey, IRootDimensionGroup> columnMap = new ConcurrentHashMap<GroupKey, IRootDimensionGroup>();
+        NodeAndPageInfo leftAllInfo = getLeftInfo(rowDimension, sumTarget, -1, useRealData, expander, widget, session, usedTargets, calculateTargets, new PageIteratorGroup(rowMap, columnMap));
+        NodeAndPageInfo topInfo = getTopInfo(colDimension, sumTarget, page, useRealData, expander, widget, session, usedTargets, calculateTargets, pg);
+        if (usedTargets.length != 0 && isEmpty(topInfo)) {
+            leftInfo.getNode().getChilds().clear();
+            leftInfo.setHasNext(false);
+        }
+        setPageSpiner(widget, leftInfo, topInfo);
+        n = new NewCrossRoot(leftAllInfo.getNode().createCrossHeader(), topInfo.getNode().createCrossHeader());
+        new CrossCalculator(session.getLoader()).execute(n, targetGettingKey, expander);
+        int size = calculateTargets.size();
+        Set set = new HashSet(targetGettingKey);
+        dealCalculateTarget(calculateTargets, n, size, set);
+        if (n == null) {
+            n = new NewCrossRoot(new CrossHeader(null, null, null), new CrossHeader(null, null, null));
+        }
+        cutChilds(n.getLeft().getChilds(), leftInfo.getNode().getChilds());
         return n;
     }
 
