@@ -44,6 +44,12 @@ public class CubeValueEntryGetter implements ICubeValueEntryGetter {
     }
 
     @Override
+    public Object getGroupValue(int groupRow) {
+        ICubeColumnIndexReader reader = cf.createGroupByType(key, new ArrayList<BITableSourceRelation>(), manager);
+        return reader.getGroupValue(groupRow);
+    }
+
+    @Override
     public int getPositionOfGroupByRow(int row) {
         return cf.getPositionOfGroup(row, manager);
     }

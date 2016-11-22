@@ -6,10 +6,14 @@ package com.fr.bi.stable.engine;
 public class SortToolUtils {
     private static final long N_LOG_N = 100;
     private static final long GROUP_COUNT = 3;
+    private static final int RESORT_COUNT = 1<<12;
 
     public static SortTool getSortTool(int groupSize, int gviCount){
         if (gviCount <= 1){
             return SortTool.DIRECT;
+        }
+        if (gviCount <= RESORT_COUNT){
+            return SortTool.RE_SORT;
         }
         //尽量避免下面的log，/等数学运算
         if (groupSize < gviCount){

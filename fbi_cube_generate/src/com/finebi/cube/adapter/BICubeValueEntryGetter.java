@@ -67,7 +67,7 @@ public class BICubeValueEntryGetter<T> implements ICubeValueEntryGetter {
         return row == NIOConstant.INTEGER.NULL_VALUE ? indexDataGetterService.getNULLIndex(0) : indexDataGetterService.getBitmapIndex(row);
     }
 
-    private T getGroupValue(int groupRow) throws BICubeIndexException {
+    public T getGroupValue(int groupRow) {
         return  groupRow == NIOConstant.INTEGER.NULL_VALUE ? null : columnReaderService.getGroupObjectValue(groupRow);
     }
 
