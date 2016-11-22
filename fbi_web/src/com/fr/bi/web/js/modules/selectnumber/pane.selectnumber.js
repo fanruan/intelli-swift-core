@@ -30,14 +30,15 @@ BI.SelectNumberPane = BI.inherit(BI.Widget, {
                     }
                 })
             },
-            fieldsCreator: function (tableId, isRelation) {
+            fieldsCreator: function (tableId, opt) {
+                opt = opt || {};
                 var ids = BI.Utils.getNumberFieldIDsOfTableID(tableId);
                 var result = [];
                 BI.each(ids, function (i, fid) {
                     if (BI.Utils.getFieldIsUsableByID(fid) === true) {
                         result.push({
                             id: fid,
-                            type: isRelation ? "bi.select_number_level1_item" : "bi.select_number_level0_item"
+                            type: opt.isRelation ? "bi.select_number_level1_item" : "bi.select_number_level0_item"
                         })
                     }
                 });
