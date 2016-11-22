@@ -9,6 +9,8 @@ import com.finebi.cube.conf.pack.data.*;
 import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
+import com.fr.bi.base.BIBusinessPackagePersistThread;
+import com.fr.bi.base.BIBusinessPackagePersistThreadHolder;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.BICubeManager;
 import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
@@ -81,7 +83,7 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
         String usedFields = WebUtils.getHTTPRequestParameter(req, "used_fields");
         String excelViews = WebUtils.getHTTPRequestParameter(req, "excel_views");
         String updateSettings = WebUtils.getHTTPRequestParameter(req, "update_settings");
-        long userId = ServiceUtils.getCurrentUserID(req);
+        final long userId = ServiceUtils.getCurrentUserID(req);
         JSONArray tableIdsJO = new JSONArray(tableIds);
         JSONObject tableDataJO = new JSONObject(tableString);
         JSONObject relationsJO = relations != null ? new JSONObject(relations) : new JSONObject();
@@ -112,7 +114,12 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
         saveExcelView(excelViewJO, userId);
         saveUpdateSetting(updateSettingJO, userId);
         BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
-        writeResource(userId);
+        BIBusinessPackagePersistThreadHolder.getInstance().getBiBusinessPackagePersistThread().triggerWork(new BIBusinessPackagePersistThread.Action() {//单独的线程写业务包配置文件，web端立即返回
+            @Override
+            public void work() {
+                writeResource(userId);
+            }
+        });
     }
 
     private IBusinessPackageGetterService EditPackageConfiguration(String packageName, String groupName, String packageId, long userId) throws BIPackageDuplicateException, BIPackageAbsentException, BIGroupDuplicateException, BIGroupAbsentException {
