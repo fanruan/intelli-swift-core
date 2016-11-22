@@ -333,7 +333,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                         item[this.constants.CordonPos][0] = {
                             el: {
                                 text: BI.i18nText("BI-Style_Setting"),
-                                warningTitle: BI.i18nText("BI-UnModified_In_BigData_Mode"),
+                                warningTitle: BI.i18nText("BI-Unmodified_In_BigData_Mode"),
                                 value: BICst.TARGET_COMBO.STYLE_SETTING,
                                 cls: ""
                             },
@@ -355,7 +355,7 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 item[this.constants.CordonPos][0] = {
                     el: {
                         text: BI.i18nText("BI-Style_Setting"),
-                        warningTitle: BI.i18nText("BI-UnModified_In_BigData_Mode"),
+                        warningTitle: BI.i18nText("BI-Unmodified_In_BigData_Mode"),
                         value: BICst.TARGET_COMBO.STYLE_SETTING,
                         cls: ""
                     },
