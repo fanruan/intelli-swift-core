@@ -1876,7 +1876,6 @@
 
         isCalculateTargetByDimensionID: function (dId) {
             var wId = this.getWidgetIDByDimensionID(dId);
-            var views = this.getWidgetViewByID(wId);
             var type = this.getDimensionTypeByID(dId);
             var _set = [BICst.TARGET_TYPE.FORMULA,
                 BICst.TARGET_TYPE.MONTH_ON_MONTH_RATE,
@@ -1890,14 +1889,7 @@
                 BICst.TARGET_TYPE.YEAR_ON_YEAR_RATE,
                 BICst.TARGET_TYPE.YEAR_ON_YEAR_VALUE
             ];
-            var region = 0;
-            BI.some(views, function (reg, view) {
-                if (view.contains(dId)) {
-                    region = reg;
-                    return true;
-                }
-            });
-            return BI.parseInt(region) >= BI.parseInt(BICst.REGION.TARGET1) && _set.contains(type);
+            return _set.contains(type);
         },
 
         isCounterTargetByDimensionID: function (dId) {
@@ -2986,7 +2978,7 @@
 
                 //还应该拿到所有的联动过来的组件的钻取条件 也是给跪了
                 var linkDrill = self.getDrillByID(lId);
-                if (BI.isNotNull(linkDrill)) {
+                if (BI.isNotNull(lLinkages) && BI.isNotEmptyObject(lLinkages) && BI.isNotNull(linkDrill)) {
                     BI.each(linkDrill, function (drId, drArray) {
                         if (drArray.length === 0) {
                             return;
