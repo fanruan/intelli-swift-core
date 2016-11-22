@@ -2590,7 +2590,7 @@
 
                 //还应该拿到所有的联动过来的组件的钻取条件 也是给跪了
                 var linkDrill = self.getDrillByID(lId);
-                if (BI.isNotNull(linkDrill)) {
+                if (BI.isNotNull(lLinkages) && BI.isNotEmptyObject(lLinkages) && BI.isNotNull(linkDrill)) {
                     BI.each(linkDrill, function (drId, drArray) {
                         if (drArray.length === 0) {
                             return;

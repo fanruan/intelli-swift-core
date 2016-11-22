@@ -233,6 +233,9 @@ BIDezi.DetailTableView = BI.inherit(BI.View, {
             });
             this.filterPane.on(BI.WidgetFilter.EVENT_REMOVE_FILTER, function (widget) {
                 self.model.set(widget);
+                if (BI.isNotNull(widget.clicked)) {
+                    self._refreshTableAndFilter();
+                }
             });
             BI.createWidget({
                 type: "bi.absolute",
