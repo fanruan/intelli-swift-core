@@ -52,6 +52,10 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
 
         config.yAxis = this.yAxis;
         BI.each(config.yAxis, function (idx, axis) {
+            var res = _calculateValueNiceDomain(0, self.maxes[axis.axisIndex]);
+            axis.max = res[1].mul(2);
+            axis.min = res[0].mul(2);
+            axis.tickInterval = BI.parseFloat((BI.parseFloat(axis.max).sub(BI.parseFloat(axis.min)))).div(5);
             switch (axis.axisIndex) {
                 case self.constants.LEFT_AXIS:
                     BI.extend(axis, self.leftAxisSetting(self.config));
@@ -64,10 +68,6 @@ BI.CompareAreaChart = BI.inherit(BI.AbstractChart, {
                     formatNumberLevelInYaxis(self.config.rightYNumberLevel, idx, axis.formatter);
                     break;
             }
-            var res = _calculateValueNiceDomain(0, self.maxes[axis.axisIndex]);
-            axis.max = res[1].mul(2);
-            axis.min = res[0].mul(2);
-            axis.tickInterval = BI.parseFloat((BI.parseFloat(axis.max).sub(BI.parseFloat(axis.min)))).div(5);
         });
 
         BI.extend(config.xAxis[0], self.catSetting(this.config));
