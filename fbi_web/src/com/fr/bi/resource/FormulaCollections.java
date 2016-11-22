@@ -40,10 +40,8 @@ public class FormulaCollections {
             Function formula = null;
             try {
                 formulaClass = Class.forName(className);
-            } catch (ClassNotFoundException e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
-            } catch (NoClassDefFoundError defFoundError){
-                BILoggerFactory.getLogger().info(defFoundError.getMessage());
+            } catch (Throwable throwable) {
+                BILoggerFactory.getLogger().error(throwable.getMessage());
             }
             try {
                 if (!BIConstructorUtils.isAbstract(formulaClass)) {
@@ -110,16 +108,16 @@ public class FormulaCollections {
             for (int i = 0; i < functionDefCount; i++) {
                 try{
                     names.add(funtionManager.getFunctionDef(i).getName());
-                }catch (NoClassDefFoundError defFoundError){
-                    BILoggerFactory.getLogger().info(defFoundError.getMessage());
+                }catch (Throwable throwable){
+                    BILoggerFactory.getLogger().info(throwable.getMessage());
                 }
             }
         }
         FunctionDef[] fs = new FunctionDef[0];
         try{
             fs = ExtraClassManager.getInstance().getFunctionDef();
-        } catch (NoClassDefFoundError defFoundError){
-            BILoggerFactory.getLogger().info(defFoundError.getMessage());
+        } catch (Throwable throwable){
+            BILoggerFactory.getLogger().info(throwable.getMessage());
         }
         int count = fs.length;
         for (int i = 0; i < count; i++) {
