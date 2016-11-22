@@ -411,7 +411,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     _setDataLabelSettingForBubbleAndScatter: function (data) {
         var self = this, o = this.options;
-        if(!BI.Utils.getWSChartShowDataLabelByID(o.wId)) {
+        if(!BI.Utils.getWSChartShowDataLabelByID(o.wId) || BI.Utils.getWSChartBigDataModeByID(o.wId)) {
             return;
         }
         var allSeries = BI.pluck(data, "name");
