@@ -118,9 +118,9 @@ public class Excel2007Util {
                     int mergedColCount = e.getColumn() - s.getColumn();
                     for (int i = 0; i < mergedColCount; i++) {
                         Object[] tempArray = tempRowDataList.get(e.getRow());
-                        if(tempArray.length < e.getColumn() - 1) {
-                            Object [] tArray = new Object[e.getColumn() - 1];
-                            for(int k = 0; k < tempArray.length; k++) {
+                        if (tempArray.length < e.getColumn() - 1) {
+                            Object[] tArray = new Object[e.getColumn() - 1];
+                            for (int k = 0; k < tempArray.length; k++) {
                                 tArray[k] = tempArray[k];
                             }
                             tArray[e.getColumn() - i] = tempRowDataList.get(e.getRow())[s.getColumn()];
@@ -134,9 +134,9 @@ public class Excel2007Util {
                     int mergedRowCount = e.getRow() - s.getRow();
                     for (int j = 0; j < mergedRowCount; j++) {
                         Object[] tempArray = tempRowDataList.get(e.getRow() - j);
-                        if(tempArray.length < e.getColumn() + 1) {
-                            Object [] tArray = new Object[e.getColumn() + 1];
-                            for(int k = 0; k < tempArray.length; k++) {
+                        if (tempArray.length < e.getColumn() + 1) {
+                            Object[] tArray = new Object[e.getColumn() + 1];
+                            for (int k = 0; k < tempArray.length; k++) {
                                 tArray[k] = tempArray[k];
                             }
                             tArray[e.getColumn()] = tempRowDataList.get(s.getRow())[e.getColumn()];
