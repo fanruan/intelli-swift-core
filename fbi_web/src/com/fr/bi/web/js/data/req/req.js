@@ -185,6 +185,12 @@ Data.Req = BIReq = {
         }, complete)
     },
 
+    reqSaveFileGetExcelViewData: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "save_file_get_excel_view_data", data, function (res) {
+            callback(res);
+        }, complete)
+    },
+
     reqSaveFileGetExcelData: function (data, callback, complete) {
         BI.requestAsync("fr_bi_configure", "save_file_get_excel_data", data, function (res) {
             callback(res);
@@ -321,9 +327,9 @@ Data.Req = BIReq = {
     reqGetChartPreStyle: function () {
         return BI.requestSync('fr_bi_base', 'get_config_setting', null);
     },
-    
-    reqCheckTableInUse: function(data, callback, complete) {
-        BI.requestAsync("fr_bi_configure", "remove_table_in_use_check", data, function(res) {
+
+    reqCheckTableInUse: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "remove_table_in_use_check", data, function (res) {
             callback(res);
         }, complete);
     }

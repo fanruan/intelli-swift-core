@@ -116,7 +116,7 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
             text: BI.i18nText("BI-Loading")
         });
         this.clearRowCol();
-        BI.Utils.saveFileGetExcelData(file.attach_id, function (data) {
+        BI.Utils.saveFileGetExcelViewData(file.attach_id, function (data) {
             self.excel = [];
             self.mergeInfos = data.mergeInfos;
             var row = [];

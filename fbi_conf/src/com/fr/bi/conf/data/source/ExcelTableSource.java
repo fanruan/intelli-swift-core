@@ -9,6 +9,8 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.*;
+import com.fr.bi.stable.data.db.excel.BIExcelDataModel;
+import com.fr.bi.stable.data.db.excel.BIExcelTableData;
 import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.finebi.cube.common.log.BILoggerFactory;
