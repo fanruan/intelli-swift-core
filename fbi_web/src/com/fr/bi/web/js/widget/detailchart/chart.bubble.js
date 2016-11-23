@@ -142,7 +142,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                 };
                 self.formatDataLabelForData(item.data);
                 BI.each(item.data, function (i, data) {
-                    if (data.dataLabels) {
+                    if (data.dataLabels && data.dataLabels.styleSetting && data.dataLabels.styleSetting.type === BICst.DATA_LABEL_STYLE_TYPE.TEXT) {
                         data.dataLabels.formatter = {};
                         data.dataLabels.formatter.XFormat = config.xAxis[0].formatter;
                         data.dataLabels.formatter.YFormat = config.yAxis[0].formatter;
@@ -400,7 +400,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
 
     _formatDataLabel: function (items) {
         BI.each(items, function (idx, item) {
-            if (item.dataLabels && item.dataLabels.formatter) {
+            if (item.dataLabels && item.dataLabels.formatter && item.dataLabels.styleSetting.type === BICst.DATA_LABEL_STYLE_TYPE.TEXT) {
                 item.dataLabels.formatter.identifier = item.dataLabels.formatterConf.x + item.dataLabels.formatterConf.y + item.dataLabels.formatterConf.z;
             }
         })
