@@ -278,7 +278,9 @@ public class Excel2003Util implements HSSFListener {
         thisColumn = numberRecord.getColumn();
         if (formatListener.formatNumberDateCell(numberRecord).contains(",")) {
             thisStr = String.valueOf(numberRecord.getValue());
-        } else {
+        } else if(formatListener.formatNumberDateCell(numberRecord).contains("%")){
+            thisStr = String.valueOf(numberRecord.getValue());
+        }else {
             thisStr = formatListener.formatNumberDateCell(numberRecord);
         }
     }

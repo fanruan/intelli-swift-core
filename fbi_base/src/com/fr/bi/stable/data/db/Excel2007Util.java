@@ -510,8 +510,6 @@ public class Excel2007Util {
                 } catch (Exception e) {
                     cellValue = n;
                 }
-            } else if (this.formatString != null && this.formatString.contains("%")) {
-                cellValue = this.formatter.formatRawCellContents(Double.parseDouble(value.toString()) * PERCENT, this.formatIndex, "") + "%";
             } else {
                 cellValue = this.formatter.formatRawCellContents(Double.parseDouble(value.toString()), this.formatIndex, "");
             }
