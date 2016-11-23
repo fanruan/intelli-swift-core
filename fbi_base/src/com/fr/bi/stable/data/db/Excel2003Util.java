@@ -48,9 +48,11 @@ public class Excel2003Util implements HSSFListener {
     private boolean outputNextStringRecord;
     private int thisRow = -1, thisColumn = -1;
     private String thisStr = null;
+
     public Excel2003Util(String filename) throws IOException {
         this.fs = new POIFSFileSystem(new FileInputStream(filename));
     }
+
     public Excel2003Util(String filePath, boolean preview) throws Exception {
         preview = preview;
         resetValues();
@@ -78,7 +80,7 @@ public class Excel2003Util implements HSSFListener {
 
     public List<Object[]> getRowDataList() {
         //此处在外部获取的应当是数据，不包括字段名称
-        return  rowDataList.subList(1, rowDataList.size());
+        return rowDataList.subList(1, rowDataList.size());
     }
 
     public void resetValues() {
@@ -208,9 +210,9 @@ public class Excel2003Util implements HSSFListener {
         }
     }
 
-    private void processRowRecord(Record record){
+    private void processRowRecord(Record record) {
         //此处读到的count都包含了标识行和列结束的cell，即+1了
-        columnCount = ((RowRecord)record).getLastCol();
+        columnCount = ((RowRecord) record).getLastCol();
     }
 
     public void processBlankRecord(Record record) {
@@ -278,6 +280,8 @@ public class Excel2003Util implements HSSFListener {
         thisColumn = numberRecord.getColumn();
         if (formatListener.formatNumberDateCell(numberRecord).contains(",")) {
             thisStr = String.valueOf(numberRecord.getValue());
+        } else if (formatListener.formatNumberDateCell(numberRecord).contains("%")) {
+            thisStr = String.valueOf(numberRecord.getValue());
         } else {
             thisStr = formatListener.formatNumberDateCell(numberRecord);
         }
@@ -319,8 +323,8 @@ public class Excel2003Util implements HSSFListener {
         tempData = new ArrayList<String>();
     }
 
-    private void initFieldNames(){
-        Object [] firstRow = rowDataList.get(0);
+    private void initFieldNames() {
+        Object[] firstRow = rowDataList.get(0);
         columnNames = new String[firstRow.length];
         //如果是首行含有空值或特殊字符
         for (int i = 0; i < firstRow.length; i++) {
@@ -337,10 +341,10 @@ public class Excel2003Util implements HSSFListener {
 
     //从第二行来读取数据类型
     public void initFieldType() {
-        Object [] secondRow = rowDataList.get(1);
+        Object[] secondRow = rowDataList.get(1);
         columnTypes = new int[secondRow.length];
-        if(secondRow == null){
-            for(int i = 0; i < columnNames.length; i++){
+        if (secondRow == null) {
+            for (int i = 0; i < columnNames.length; i++) {
                 columnTypes[i] = DBConstant.COLUMN.STRING;
             }
             return;
