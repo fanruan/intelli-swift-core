@@ -76,6 +76,6 @@ public class BusinessTableHelper {
                 return field;
             }
         }
-        throw new BIFieldAbsentException("The field the name is:" + fieldName + " is absent in table:" + table.getTableName());
+        throw new BIFieldAbsentException("The field the name is:" + fieldName + " is absent in table:" + table.getTableName() + " table ID:" + table.getID().getIdentityValue());
     }
 }

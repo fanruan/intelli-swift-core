@@ -14,6 +14,7 @@ import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.exception.FieldNameDuplicateException;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -277,6 +278,9 @@ public abstract class AbstractTableSource implements CubeTableSource {
             String fieldName = field.getFieldName();
             ICubeFieldSource old = this.fields.get(fieldName);
             boolean isUsable = old == null || old.isUsable();
+            if (fields.containsKey(fieldName)){
+                throw new FieldNameDuplicateException("The field name:"+ fieldName+" is duplicated");
+            }
             fields.put(fieldName, field);
         }
 

@@ -334,7 +334,7 @@ public class BuildCubeTask implements CubeTask {
                     BITableSourceRelationPath dependPath = it.next();
                     sb.append("\n").append("Path ").append(countDepend).append("\n").append(BuildLogHelper.pathLogContent(dependPath));
                 }
-                logger.info(sb.toString()+"\n");
+                logger.info(sb.toString() + "\n");
             }
         }
         logger.info("***************Path depend end*****************\n");
@@ -356,6 +356,7 @@ public class BuildCubeTask implements CubeTask {
                     sb.append("Layer " + layerCount + ", Cell " + cellCount);
                     sb.append(BuildLogHelper.tableLogContent("", oneCell));
                     sb.append("\n");
+                    cellCount++;
                 }
                 sb.append("-------------Layer " + layerCount).append(" end--------------\n\n");
             }
