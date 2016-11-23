@@ -73,7 +73,7 @@ public class BIGetImportedExcelViewData {
         try {
             for (int i = 0; i < rowCount; i++) {
                 JSONArray oneJa = new JSONArray();
-                Object[] row= rowList.get(i);
+                Object[] row = rowList.get(i);
                 for (int j = 0; j < row.length; j++) {
                     oneJa.put(excelViewDataModel.getValueAt4Preview(i, j));
                 }

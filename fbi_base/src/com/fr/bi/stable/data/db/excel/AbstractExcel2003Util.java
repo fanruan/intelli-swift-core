@@ -327,21 +327,6 @@ public abstract class AbstractExcel2003Util implements HSSFListener {
     }
 
     protected abstract void initFieldNames();
-//    {
-//        Object[] firstRow = rowDataList.get(0);
-//        columnNames = new String[firstRow.length];
-//        //如果是首行含有空值或特殊字符
-//        for (int i = 0; i < firstRow.length; i++) {
-//            //特殊字符替换
-//            String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~\\s]";
-//            Pattern p = Pattern.compile(regEx);
-//            Matcher m = p.matcher(firstRow[i].toString());
-//            columnNames[i] = m.replaceAll(StringUtils.EMPTY).trim();
-//            if (ComparatorUtils.equals(StringUtils.EMPTY, columnNames[i])) {
-//                columnNames[i] = Inter.getLocText("BI-Field") + (i + 1);
-//            }
-//        }
-//    }
 
     //从第二行来读取数据类型
     private void initFieldType() {

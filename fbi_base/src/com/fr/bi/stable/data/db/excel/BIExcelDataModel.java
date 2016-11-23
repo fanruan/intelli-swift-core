@@ -9,7 +9,7 @@ import com.fr.general.DateUtils;
 public class BIExcelDataModel extends AbstractExcelDataModel {
 
     public BIExcelDataModel(String filePath, String[] columnNames, int[] columnTypes) {
-        super(filePath,columnNames,columnTypes);
+        super(filePath, columnNames, columnTypes);
     }
 
     public BIExcelDataModel(String filePath) {

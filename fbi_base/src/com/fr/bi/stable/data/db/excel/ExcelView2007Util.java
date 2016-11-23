@@ -67,8 +67,8 @@ public class ExcelView2007Util extends AbstractExcel2007Util {
                     String cName;
                     try {
                         cName = oneRow[j].toString();
-                    }catch (Exception e){
-                        cName=StringUtils.EMPTY;
+                    } catch (Exception e) {
+                        cName = StringUtils.EMPTY;
                     }
                     String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~\\s]";
                     Pattern p = Pattern.compile(regEx);
@@ -81,9 +81,9 @@ public class ExcelView2007Util extends AbstractExcel2007Util {
                 for (int j = 0; j < columnCount; j++) {
                     String v;
                     try {
-                        v=oneRow[j].toString();
-                    }catch (Exception e){
-                        v=StringUtils.EMPTY;
+                        v = oneRow[j].toString();
+                    } catch (Exception e) {
+                        v = StringUtils.EMPTY;
                     }
                     currentRowData.add(v);
                     boolean dateType = false;
@@ -108,9 +108,9 @@ public class ExcelView2007Util extends AbstractExcel2007Util {
                 for (int j = 0; j < columnCount; j++) {
                     String v;
                     try {
-                        v=oneRow[j].toString();
-                    }catch (Exception e){
-                        v=StringUtils.EMPTY;
+                        v = oneRow[j].toString();
+                    } catch (Exception e) {
+                        v = StringUtils.EMPTY;
                     }
                     currentRowData.add(v);
                 }

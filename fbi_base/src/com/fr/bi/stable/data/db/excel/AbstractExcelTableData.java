@@ -21,22 +21,20 @@ public abstract class AbstractExcelTableData extends AbstractTableData {
     protected String[] columnNames;
     protected int[] columnTypes;
 
-    public AbstractExcelTableData(String filePath){
+    public AbstractExcelTableData(String filePath) {
         this.filePath = filePath;
     }
-    public AbstractExcelTableData(String filePath, String[] columnNames, int[] columnTypes){
+
+    public AbstractExcelTableData(String filePath, String[] columnNames, int[] columnTypes) {
         this.filePath = FRContext.getCurrentEnv().getPath() + BIBaseConstant.EXCELDATA.EXCEL_DATA_PATH + File.separator + filePath;
         this.columnNames = columnNames;
         this.columnTypes = columnTypes;
     }
+
     /**
      * 创建数据表格
      */
     public abstract DataModel createDataModel();
-//    public abstract DataModel createDataModel() {
-////        return new BIExcelDataModel(filePath,
-////                columnNames, columnTypes);
-//    }
 
     public String getFilePath() {
         return filePath;
@@ -58,29 +56,6 @@ public abstract class AbstractExcelTableData extends AbstractTableData {
     public void setNeedColumnName(boolean need) {
         this.needColumnName = need;
     }
-
-//    @Override
-//    public void readXML(XMLableReader reader) {
-//        if (reader.isChildNode()) {
-//            String tmpTagName = reader.getTagName();
-//            String tmpVal;
-//            if ("ExcelTableDataAttr".equals(tmpTagName)) {
-//                if ((tmpVal = reader.getAttrAsString("filePath", null)) != null) {
-//                    this.filePath = tmpVal;
-//                }
-//
-//                this.needColumnName = !reader.getAttrAsString("needColumnName", "").isEmpty();
-//            }
-//        }
-//    }
-
-//    @Override
-//    public void writeXML(XMLPrintWriter writer) {
-//        writer.startTAG("ExcelTableDataAttr")
-//                .attr("needColumnName", this.needColumnName())
-//                .attr("filePath", this.getFilePath()).end();
-//
-//    }
 
     /**
      * 获取数据集中所使用的参数
@@ -138,15 +113,6 @@ public abstract class AbstractExcelTableData extends AbstractTableData {
     public void registerNoPrivilege(ArrayList<String> arrayList, String s, String s1) {
 
     }
-
-
-//    @Override
-//    public boolean equals(Object obj) {
-//        return obj instanceof BIExcelTableData
-//                && this.needColumnName == ((BIExcelTableData) obj).needColumnName
-//                && ComparatorUtils.equals(this.filePath,
-//                ((BIExcelTableData) obj).filePath);
-//    }
 
     @Override
     public Object clone() throws CloneNotSupportedException {

@@ -41,7 +41,7 @@ public class BISaveFileGetExcelViewDataAction extends AbstractBIConfigureAction 
                 fs.close();
                 BIGetImportedExcelViewData excelViewTableData = new BIGetImportedExcelViewData(file.getName());
                 JSONObject jo = excelViewTableData.getFieldsAndPreviewData();
-                jo.put("full_file_name" , file.getName());
+                jo.put("full_file_name", file.getName());
                 WebUtils.printAsJSON(res, jo);
             }
         }

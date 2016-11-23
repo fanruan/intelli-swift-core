@@ -7,14 +7,14 @@ import com.fr.stable.xml.XMLableReader;
 /**
  * Created by zcf on 2016/11/18.
  */
-public class BIExcelViewTableData extends AbstractExcelTableData{
+public class BIExcelViewTableData extends AbstractExcelTableData {
 
     public BIExcelViewTableData(String filePath) {
         super(filePath);
     }
 
     public BIExcelViewTableData(String filePath, String[] columnNames, int[] columnTypes) {
-        super(filePath,columnNames,columnTypes);
+        super(filePath, columnNames, columnTypes);
     }
 
     /**

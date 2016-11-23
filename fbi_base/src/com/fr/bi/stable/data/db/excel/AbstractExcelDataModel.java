@@ -174,37 +174,11 @@ public abstract class AbstractExcelDataModel extends AbstractDataModel {
      * 初始化07excel
      */
     protected abstract void initExcel4XLSX(boolean isPreview);
-//    private void initExcel4XLSX(boolean isPreview) {
-//        long start = System.currentTimeMillis();
-//        try {
-//            Excel2007Util excel2007Util = new Excel2007Util(this.filePath, isPreview);
-//            BILoggerFactory.getLogger().info("read excel time : " + DateUtils.timeCostFrom(start));
-//            rowDataList = excel2007Util.getRowDataList();
-//            columnNames = excel2007Util.getColumnNames();
-//            columnTypes = excel2007Util.getColumnTypes();
-//            mergeInfos = excel2007Util.getMergeInfos();
-//        } catch (Exception e) {
-//            BILoggerFactory.getLogger().error(e.getMessage());
-//        }
-//    }
 
     /**
      * 初始化03excel
      */
     protected abstract void initExcel4XLS(boolean isPreview);
-//    private void initExcel4XLS(boolean isPreview) {
-//        long start = System.currentTimeMillis();
-//        try {
-//            Excel2003Util excel2003Util = new Excel2003Util(this.filePath, isPreview);
-//            BILoggerFactory.getLogger().info("read excel time : " + DateUtils.timeCostFrom(start));
-//            rowDataList = excel2003Util.getRowDataList();
-//            columnNames = excel2003Util.getColumnNames();
-//            columnTypes = excel2003Util.getColumnTypes();
-//            mergeInfos = excel2003Util.getMergeInfos();
-//        } catch (Exception e) {
-//            BILoggerFactory.getLogger().error(e.getMessage());
-//        }
-//    }
 
     private void initExcel4CSV(boolean isPreview) {
         long start = System.currentTimeMillis();

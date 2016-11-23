@@ -18,7 +18,7 @@ public class Excel2003Util extends AbstractExcel2003Util {
     }
 
     public Excel2003Util(String filePath, boolean preview) throws Exception {
-        super(filePath,preview);
+        super(filePath, preview);
     }
 
     protected void initFieldNames() {

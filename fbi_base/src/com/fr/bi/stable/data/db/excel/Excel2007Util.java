@@ -85,9 +85,9 @@ public class Excel2007Util extends AbstractExcel2007Util {
                 for (int j = 0; j < columnCount; j++) {
                     String v;
                     try {
-                        v=oneRow[j].toString();
-                    }catch (Exception e){
-                        v=StringUtils.EMPTY;
+                        v = oneRow[j].toString();
+                    } catch (Exception e) {
+                        v = StringUtils.EMPTY;
                     }
                     currentRowData.add(v);
                     boolean dateType = false;
@@ -112,9 +112,9 @@ public class Excel2007Util extends AbstractExcel2007Util {
                 for (int j = 0; j < columnCount; j++) {
                     String v;
                     try {
-                        v=oneRow[j].toString();
-                    }catch (Exception e){
-                        v=StringUtils.EMPTY;
+                        v = oneRow[j].toString();
+                    } catch (Exception e) {
+                        v = StringUtils.EMPTY;
                     }
                     currentRowData.add(v);
                 }
