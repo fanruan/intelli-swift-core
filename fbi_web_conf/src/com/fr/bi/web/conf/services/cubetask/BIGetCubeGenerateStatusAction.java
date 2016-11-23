@@ -1,6 +1,6 @@
 /**
- * 判断是否在执行生成cube操作
- * todo 从请求发送到cubeTask构建完毕的所有动作都应该包含在内
+ * 判断是否在执行生成cube的操作
+ * todo 目前只记录了从cubetask放入队列到生成完成的过程，实际上从请求发送到cubeTask构建完毕的所有动作也应该包含在内
  */
 package com.fr.bi.web.conf.services.cubetask;
 

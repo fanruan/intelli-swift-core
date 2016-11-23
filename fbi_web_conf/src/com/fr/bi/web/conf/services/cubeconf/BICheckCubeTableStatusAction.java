@@ -16,8 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Created by sheldon on 14-9-13.
  * todo 通过生成队列状态，来确定当前生成状态。这样的颗粒度太粗。添加任务ID，通过ID来判断状态。
- * 查看当前cube执行情况BIGetCubeGenerateStatusAction ，查看表是否已经生成用BICheckCubeTableAction，
- * 这个Action暂时不用，之后可以考虑用来根据任务ID来查找
+ * 查看当前cube执行情况BIGetCubeGenerateStatusAction ，查看某张表是否已经生成用BICheckCubeTableAction，
+ * todo 可以考虑用来通过tableId查看是否有对应的cube任务
  */
 public class BICheckCubeTableStatusAction extends AbstractBIConfigureAction {
     @Override

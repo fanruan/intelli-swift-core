@@ -488,7 +488,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         }
         self.cubeInterval = setInterval(function () {
             self._getTaskStatus()
-        }, 2000)
+        }, 5000)
 
     },
 
