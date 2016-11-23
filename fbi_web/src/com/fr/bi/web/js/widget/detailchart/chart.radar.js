@@ -47,6 +47,9 @@ BI.RadarChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this;
+
+        delete config.zoom;
+
         var title = getXYAxisUnit(this.config.left_y_axis_number_level, this.constants.LEFT_AXIS);
 
         config.colors = this.config.chart_color;
