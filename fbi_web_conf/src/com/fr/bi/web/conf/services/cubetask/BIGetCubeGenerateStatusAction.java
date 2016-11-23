@@ -1,5 +1,6 @@
 /**
- *
+ * 判断是否在执行生成cube操作
+ * todo 从请求发送到cubeTask构建完毕的所有动作都应该包含在内
  */
 package com.fr.bi.web.conf.services.cubetask;
 
@@ -20,7 +21,6 @@ public class BIGetCubeGenerateStatusAction extends AbstractBIConfigureAction {
 
     @Override
     public String getCMD() {
-
         return "get_cube_generate_status";
     }
 
@@ -31,7 +31,7 @@ public class BIGetCubeGenerateStatusAction extends AbstractBIConfigureAction {
         long useId = ServiceUtils.getCurrentUserID(req);
         BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
         JSONObject jo = new JSONObject();
-        jo.put("isGenerating", cubeManager.hasTask(useId));
+        jo.put("hasTask", cubeManager.hasTask(useId));
         WebUtils.printAsJSON(res, jo);
     }
 

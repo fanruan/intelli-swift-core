@@ -17,7 +17,6 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.UpdateSingleTableSetting.superclass._init.apply(this, arguments);
-        this.taskAdding = false;
         var self = this, o = this.options;
         this.model = new BI.UpdateSingleTableSettingModel({
             update_setting: o.update_setting,
@@ -105,8 +104,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             self.immediateCombo.hideView();
         });
         this.immediateCombo.on(BI.Combo.EVENT_CHANGE, function (v) {
-            self.immediateButton.setEnable(false);
-            self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
+            self._immediateButtonDisable();
             var tableInfo = {
                 updateType: v,
                 baseTable: self.model.table,
@@ -116,7 +114,6 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                 tableInfo.isETL = true;
                 tableInfo.ETLTable = self.model.currentTable;
             }
-            self.taskAdding = true;
             self._createCheckInterval();
             self.fireEvent(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE, tableInfo);
         });
@@ -149,6 +146,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             hgap: 10,
             vgap: 10
         })
+        self._initImmediateButtonStatus();
     },
 
     _createPartUpdateTab: function () {
@@ -485,20 +483,59 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
 
     _createCheckInterval: function () {
         var self = this;
+        if (undefined != self.cubeInterval) {
+            self._clearCheckInterval();
+        }
         self.cubeInterval = setInterval(function () {
-            BI.Utils.checkCubeStatusByTable(self.model.table, function (data) {
-                    if (data.isGenerated == true && self.taskAdding == true) {
-                        self.immediateButton.setEnable(true);
-                        self.immediateButton.setText(BI.i18nText("BI-Update_Table_Immedi"));
-                        self.taskAdding = false;
-                        clearInterval(self.cubeInterval);
-                    }
-                }
-            )
-
+            self._getTaskStatus()
         }, 2000)
-    }
 
+    },
+
+    _initImmediateButtonStatus: function () {
+        var self = this;
+        BI.Utils.reqCubeStatusCheck(function (data) {
+                if (!data.hasTask) {
+                    self._immediateButtonAvailable();
+                } else {
+                    self._immediateButtonDisable();
+                    self._createCheckInterval();
+                }
+            }
+        )
+    },
+
+    _immediateButtonAvailable: function () {
+        var self = this;
+        self.immediateButton.setEnable(true);
+        self.immediateButton.setText(BI.i18nText("BI-Update_Table_Immedi"));
+    },
+
+    _immediateButtonDisable: function () {
+        var self = this;
+        self.immediateButton.setEnable(false);
+        self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
+    },
+
+    _getTaskStatus: function () {
+        var self = this;
+        BI.Utils.reqCubeStatusCheck(function (data) {
+                if (!data.hasTask) {
+                    self._immediateButtonAvailable();
+                    self._clearCheckInterval();
+                } else {
+                    self._immediateButtonDisable()
+                }
+            }
+        )
+    },
+
+    _clearCheckInterval: function () {
+        var self = this;
+        if (undefined != self.cubeInterval) {
+            clearInterval(self.cubeInterval);
+        }
+    }
 
 });
 BI.UpdateSingleTableSetting.EVENT_CHANGE = "EVENT_CHANGE";
