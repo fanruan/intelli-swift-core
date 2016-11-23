@@ -139,6 +139,15 @@ public class BISystemConfigHelper {
             foreignTable = BICubeConfigureCenter.getDataSourceManager().getTableSource(relation.getForeignField().getTableBelongTo());
             ICubeFieldSource primaryField = tableDBFieldMaps.get(primaryTable).get(relation.getPrimaryField().getFieldName());
             ICubeFieldSource foreignField = tableDBFieldMaps.get(foreignTable).get(relation.getForeignField().getFieldName());
+            if (primaryField == null) {
+                throw BINonValueUtils.beyondControl("The field:" + relation.getPrimaryField().getFieldName() +
+                        " is absent in table:" + primaryTable.getTableName());
+            }
+            if (foreignField == null) {
+                throw BINonValueUtils.beyondControl("The field:" + relation.getForeignField().getFieldName() +
+                        " is absent in table:" + foreignTable.getTableName());
+            }
+
             biTableSourceRelation = new BITableSourceRelation(
                     primaryField,
                     foreignField,
