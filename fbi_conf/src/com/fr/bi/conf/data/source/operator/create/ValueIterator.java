@@ -110,8 +110,10 @@ class ValueIterator {
         switch (tool) {
             case INT_ARRAY:
                 return getArraySortIterator(getter, gvi);
-            case RE_SORT:
+            case TREE_MAP_RE_SORT:
                 return getTreeMapReSortIterator(getter, gvi);
+            case INT_ARRAY_RE_SORT:
+                return getArrayReSortIterator(getter, gvi);
             case DIRECT:
                 return getOneKeyIterator(getter, gvi);
             case TREE_MAP:
@@ -183,6 +185,71 @@ class ValueIterator {
                     @Override
                     public Object getValue() {
                         return gve.getGvi();
+                    }
+
+                    @Override
+                    public Object setValue(Object value) {
+                        return null;
+                    }
+
+                    @Override
+                    public boolean equals(Object o) {
+                        return false;
+                    }
+
+                    @Override
+                    public int hashCode() {
+                        return 0;
+                    }
+                };
+                index++;
+                return entry;
+            }
+        };
+    }
+
+    private Iterator getArrayReSortIterator(final ICubeValueEntryGetter getter, GroupValueIndex gvi) {
+        final IntArray[] groupArray = new IntArray[getter.getGroupSize()];
+        gvi.Traversal(new SingleRowTraversalAction() {
+            @Override
+            public void actionPerformed(int row) {
+                int groupRow = getter.getPositionOfGroupByRow(row);
+                if (groupRow != NIOConstant.INTEGER.NULL_VALUE) {
+                    if (groupArray[groupRow] == null){
+                        groupArray[groupRow] = new IntArray();
+                    }
+                    groupArray[groupRow].add(row);
+                }
+            }
+        });
+        return new Iterator() {
+
+            private int index = 0;
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("remove");
+            }
+            @Override
+            public boolean hasNext() {
+                while (index < groupArray.length && groupArray[index] == null) {
+                    index++;
+                }
+                return index < groupArray.length;
+            }
+
+            @Override
+            public Object next() {
+                Map.Entry entry = new Map.Entry() {
+                    int groupRow = index;
+                    @Override
+                    public Object getKey() {
+                        return getter.getGroupValue(groupRow);
+                    }
+
+                    @Override
+                    public Object getValue() {
+                        return GVIFactory.createGroupValueIndexBySimpleIndex(groupArray[groupRow]);
                     }
 
                     @Override

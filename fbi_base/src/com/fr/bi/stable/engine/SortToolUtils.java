@@ -12,16 +12,21 @@ public class SortToolUtils {
         if (gviCount <= 1){
             return SortTool.DIRECT;
         }
-        if (gviCount <= RESORT_COUNT){
-            return SortTool.RE_SORT;
-        }
         //尽量避免下面的log，/等数学运算
         if (groupSize < gviCount){
-            return SortTool.INT_ARRAY;
+            return getIntArray(gviCount);
         }
         double treeMap = gviCount * Math.log(gviCount) * N_LOG_N;
         double intArray = groupSize * GROUP_COUNT ;
-        return treeMap < intArray ? SortTool.TREE_MAP : SortTool.INT_ARRAY;
+        return treeMap < intArray ? getTreeMap(gviCount) : getIntArray(gviCount);
+    }
+
+    private static SortTool getIntArray(int gviCount){
+        return gviCount <= RESORT_COUNT ? SortTool.INT_ARRAY_RE_SORT : SortTool.INT_ARRAY;
+    }
+
+    private static SortTool getTreeMap(int gviCount){
+        return gviCount <= RESORT_COUNT ? SortTool.TREE_MAP_RE_SORT : SortTool.TREE_MAP;
     }
 
 }
