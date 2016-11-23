@@ -56,6 +56,12 @@ public class BISerializableUtils {
         return unsupportedClass;
     }
 
+    /**
+     * 有没有非Object的父类
+     *
+     * @param target
+     * @return
+     */
     protected static boolean hasSuper(Class target) {
         return !Modifier.isInterface(target.getModifiers()) && !ComparatorUtils.equals(Object.class, target.getSuperclass());
     }

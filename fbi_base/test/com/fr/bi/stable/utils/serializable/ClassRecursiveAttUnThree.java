@@ -6,7 +6,7 @@ package com.fr.bi.stable.utils.serializable;
  * @author Connery
  * @since Advanced FineBI Analysis 1.0
  */
-public class ClassRecursiveAttUnTwo  {
+public class ClassRecursiveAttUnThree {
     private ClassUnSerial attri;
-    private ClassRecursiveAttUnThree three;
+    private ClassRecursiveAttUnOne one;
 }

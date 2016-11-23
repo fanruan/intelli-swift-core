@@ -11,7 +11,7 @@ import junit.framework.TestCase;
  */
 public class BISerializableUtilsTest extends TestCase {
     /**
-     * Detail:
+     * Detail: 检查基础序列化
      * Author:Connery
      * Date:2016/11/23
      */
@@ -25,7 +25,7 @@ public class BISerializableUtilsTest extends TestCase {
     }
 
     /**
-     * Detail:
+     * Detail: 基础对象没有序列化
      * Author:Connery
      * Date:2016/11/23
      */
@@ -39,7 +39,7 @@ public class BISerializableUtilsTest extends TestCase {
     }
 
     /**
-     * Detail:
+     * Detail:接口没有序列化
      * Author:Connery
      * Date:2016/11/23
      */
@@ -53,7 +53,7 @@ public class BISerializableUtilsTest extends TestCase {
     }
 
     /**
-     * Detail:
+     * Detail:接口序列化
      * Author:Connery
      * Date:2016/11/23
      */
@@ -67,7 +67,7 @@ public class BISerializableUtilsTest extends TestCase {
     }
 
     /**
-     * Detail:
+     * Detail:属性没有序列化
      * Author:Connery
      * Date:2016/11/23
      */
@@ -81,13 +81,13 @@ public class BISerializableUtilsTest extends TestCase {
     }
 
     /**
-     * Detail:
+     * Detail:属性递归检查
      * Author:Connery
      * Date:2016/11/23
      */
     public void testClassRecursive() {
         try {
-            assertEquals(BISerializableUtils.findUnsupportedSerializable(ClassRecursiveAttUnOne.class).size(), 1);
+            assertEquals(BISerializableUtils.findUnsupportedSerializable(ClassRecursiveAttUnOne.class).size(), 2);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -95,7 +95,7 @@ public class BISerializableUtilsTest extends TestCase {
     }
 
     /**
-     * Detail:
+     * Detail:class的接口没有序列化
      * Author:Connery
      * Date:2016/11/23
      */
@@ -109,7 +109,7 @@ public class BISerializableUtilsTest extends TestCase {
     }
 
     /**
-     * Detail:
+     * Detail:class的父类没有序列化
      * Author:Connery
      * Date:2016/11/23
      */
@@ -123,7 +123,7 @@ public class BISerializableUtilsTest extends TestCase {
     }
 
     /**
-     * Detail:
+     * Detail:属性的类型是接口，同时没有序列化
      * Author:Connery
      * Date:2016/11/23
      */
@@ -137,7 +137,7 @@ public class BISerializableUtilsTest extends TestCase {
     }
 
     /**
-     * Detail:
+     * Detail:属性的类型是接口，同时有序列化
      * Author:Connery
      * Date:2016/11/23
      */
@@ -151,7 +151,7 @@ public class BISerializableUtilsTest extends TestCase {
     }
 
     /**
-     * Detail:
+     * Detail:接口没有父类
      * Author:Connery
      * Date:2016/11/23
      */
@@ -165,7 +165,7 @@ public class BISerializableUtilsTest extends TestCase {
     }
 
     /**
-     * Detail:
+     * Detail:对象有父类
      * Author:Connery
      * Date:2016/11/23
      */
@@ -179,7 +179,7 @@ public class BISerializableUtilsTest extends TestCase {
     }
 
     /**
-     * Detail:
+     * Detail:对象没非Object父类
      * Author:Connery
      * Date:2016/11/23
      */
