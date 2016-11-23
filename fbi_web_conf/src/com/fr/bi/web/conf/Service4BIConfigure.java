@@ -79,7 +79,8 @@ public class Service4BIConfigure extends NoSessionIDService {
             new BISaveFileGetExcelDataAction(),
             new BISaveFileGetExcelViewDataAction(),
 
-            new BICheckGenerateCubeAction(),
+            new BICheckGenerateCubeStatusAction(),
+            new BICheckCubeTableAction(),
 
             new BIGetConnectionNamesAction(),
             new BIGetTableFieldsByTableInfoAction(),

@@ -41,8 +41,8 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
             tablesCreator: function (packageId) {
                 return self._getTablesStructureByPackId(packageId);
             },
-            fieldsCreator: function (tableId, isRelation) {
-                return self._getFieldsStructureByTableId(tableId);
+            fieldsCreator: function (tableId, opt) {
+                return self._getFieldsStructureByTableId(tableId, opt);
             }
         });
         this.selectDataPane.on(BI.PackageSelectDataService.EVENT_CLICK_ITEM, function () {
@@ -177,7 +177,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
         return tablesStructure;
     },
 
-    _getFieldsStructureByTableId: function (tableId) {
+    _getFieldsStructureByTableId: function (tableId, opt) {
         var self = this;
         var translations = this.model.getTranslations();
         var fieldStructure = [];

@@ -1,6 +1,5 @@
 package com.fr.bi.resource;
 
-import com.fr.base.FRContext;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BIClassUtils;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
@@ -10,22 +9,14 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.plugin.ExtraClassManager;
-import com.fr.stable.EncodeConstants;
-import com.fr.stable.OperatingSystem;
 import com.fr.stable.StableUtils;
-import com.fr.stable.StringUtils;
 import com.fr.stable.script.Function;
 import com.fr.stable.script.FunctionDef;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 从后台获取所有的公式名字
@@ -49,8 +40,8 @@ public class FormulaCollections {
             Function formula = null;
             try {
                 formulaClass = Class.forName(className);
-            } catch (ClassNotFoundException e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
+            } catch (Throwable throwable) {
+                BILoggerFactory.getLogger().error(throwable.getMessage());
             }
             try {
                 if (!BIConstructorUtils.isAbstract(formulaClass)) {
@@ -115,11 +106,19 @@ public class FormulaCollections {
             int functionDefCount = funtionManager.getFunctionDefCount();
 
             for (int i = 0; i < functionDefCount; i++) {
-                names.add(funtionManager.getFunctionDef(i).getName());
+                try{
+                    names.add(funtionManager.getFunctionDef(i).getName());
+                }catch (Throwable throwable){
+                    BILoggerFactory.getLogger().info(throwable.getMessage());
+                }
             }
         }
-
-        FunctionDef[] fs = ExtraClassManager.getInstance().getFunctionDef();
+        FunctionDef[] fs = new FunctionDef[0];
+        try{
+            fs = ExtraClassManager.getInstance().getFunctionDef();
+        } catch (Throwable throwable){
+            BILoggerFactory.getLogger().info(throwable.getMessage());
+        }
         int count = fs.length;
         for (int i = 0; i < count; i++) {
             names.add(fs[i].getName());

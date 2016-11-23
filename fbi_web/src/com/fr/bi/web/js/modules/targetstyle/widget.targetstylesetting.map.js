@@ -50,26 +50,20 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
         });
         this.format.setValue(styleSettings.format);
 
+        this.format.on(BI.Segment.EVENT_CHANGE, function () {
+            example.setText(self._switchLabel());
+        });
+
         this.separators = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Separators"),
             width: 80
         });
 
-        var example = BI.createWidget({
-            type: "bi.label",
-            height: 25
-        });
-
-        this.showSeparators = styleSettings.numSeparators || false;
-
-        this.separators.setSelected(this.showSeparators);
-
-        example.setText(this._switchLabel(this.showSeparators));
+        this.separators.setSelected(styleSettings.numSeparators);
 
         this.separators.on(BI.Controller.EVENT_CHANGE, function () {
-            self.showSeparators = !self.showSeparators;
-            example.setText(self._switchLabel(self.showSeparators));
+            example.setText(self._switchLabel());
         });
 
         this.numLevel = BI.createWidget({
@@ -79,6 +73,10 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
         });
         this.numLevel.setValue(styleSettings.numLevel);
 
+        this.numLevel.on(BI.Segment.EVENT_CHANGE, function(){
+            example.setText(self._switchLabel());
+        });
+
         this.unit = BI.createWidget({
             type: "bi.sign_editor",
             width: this.constants.EDITOR_WIDTH,
@@ -86,6 +84,17 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
             cls: "unit-input"
         });
         this.unit.setValue(styleSettings.unit);
+
+        this.unit.on(BI.SignEditor.EVENT_CONFIRM, function () {
+            example.setText(self._switchLabel());
+        });
+
+        var example = BI.createWidget({
+            type: "bi.label",
+            height: 25
+        });
+
+        example.setText(this._switchLabel());
 
         BI.createWidget({
             type: "bi.left",
@@ -123,8 +132,9 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
         })
     },
 
-    _switchLabel: function(v) {
-        return v ? BI.i18nText("BI-Separators_Example") : BI.i18nText("BI-None_Separator_Example")
+    _switchLabel: function() {
+        return BI.TargetStyleSetting.formatNumber(this.numLevel.getValue()[0], this.format.getValue()[0],
+            this.separators.isSelected(), this.unit.getValue());
     },
 
     end: function(){

@@ -535,7 +535,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             //其他元素
             lineWidth: options.lineWidth || 1,
             legend: options.legend,
-            legendStyle: options.legendStyle,
+            legendStyle: options.legendStyle || {},
             showDataLabel: options.showDataLabel,
             showDataTable: options.showDataTable || false,
             showZoom: options.showZoom,
@@ -563,7 +563,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             nullContinuity: options.nullContinuity,
             backgroundLayerInfo: MapConst.WMS_INFO[options.backgroundLayerInfo],
             transferFilter: options.transferFilter,
-            bigDataMode: options.bigDataMode,
+            bigDataMode: options.bigDataMode || false,
             geo: options.geo,
             initDrillPath: options.initDrillPath || [],
             cordon: options.cordon || [],

@@ -1,6 +1,7 @@
 package com.fr.bi.etl.analysis.data;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
@@ -83,6 +84,9 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
         BIAbstractDetailTarget target = (BIAbstractDetailTarget) widget.getDimensions()[index];
         if (target.isCalculateTarget()) {
             return Types.DOUBLE;
+        } else if(target.getStatisticElement() == null) {
+            BILoggerFactory.getLogger().info("name: " + target.getText() + ". id: " + target.getName() + ". source miss!");
+            return Types.VARCHAR;
         } else if (target.getStatisticElement().getFieldType() == DBConstant.COLUMN.NUMBER) {
             return BIDBUtils.classTypeToSql(target.getStatisticElement().getClassType());
         } else {
@@ -102,19 +106,23 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     }
 
     private int getTypeByGroup(IGroup group) {
+        int type;
         switch (group.getType()) {
             case BIReportConstant.GROUP.Y:
             case BIReportConstant.GROUP.M:
             case BIReportConstant.GROUP.S:
             case BIReportConstant.GROUP.MD:
             case BIReportConstant.GROUP.W:
-                return Types.INTEGER;
+                type = Types.INTEGER;
+                break;
             case BIReportConstant.GROUP.YMD:
             case BIReportConstant.GROUP.YMDHMS:
-                return Types.DATE;
+                type = Types.DATE;
+                break;
             default:
-                return Types.VARCHAR;
+                type = Types.VARCHAR;
         }
+        return type;
     }
 
 

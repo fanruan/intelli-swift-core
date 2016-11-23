@@ -75,7 +75,16 @@ public class SQLTableSource extends ServerTableSource {
     @Override
     public IPersistentTable getPersistentTable() {
         if (dbTable == null) {
-            dbTable = BIDBUtils.getServerBITable(sqlConnection, sql, fetchObjectCore().getID().getIdentityValue());
+            try {
+                dbTable = BIDBUtils.getServerBITable(sqlConnection, sql, fetchObjectCore().getID().getIdentityValue());
+            } catch (Exception e) {
+                BILoggerFactory.getLogger(SQLTableSource.class).error(e.getMessage(), e);
+                /**
+                 * 内部出现异常，但是仍然给了一个空table。
+                 * 这里table再也不会被初始化了。导致字段就丢失了
+                 */
+                dbTable = null;
+            }
         }
         return dbTable;
     }

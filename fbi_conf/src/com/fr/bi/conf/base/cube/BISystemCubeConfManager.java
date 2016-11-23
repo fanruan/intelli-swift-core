@@ -6,9 +6,7 @@ import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.conf.provider.BICubeConfManagerProvider;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.fs.control.UserControl;
-import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 
 /**
@@ -44,11 +42,7 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
     public void saveCubePath(String path) {
         try {
             synchronized (this) {
-                String oPath = getValue(UserControl.getInstance().getSuperManagerID()).getCubePath();
                 getValue(UserControl.getInstance().getSuperManagerID()).setCubePath(path);
-                if (!ComparatorUtils.equals(oPath, path)) {
-                    BIFileUtils.moveFile(oPath, path);
-                }
             }
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -81,7 +75,7 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
         } catch (BIKeyAbsentException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
-        return null;
+        return new Object[0];
     }
 
     @Override

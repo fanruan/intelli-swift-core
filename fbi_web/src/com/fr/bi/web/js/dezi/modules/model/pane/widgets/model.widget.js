@@ -36,7 +36,7 @@ BIDezi.WidgetModel = BI.inherit(BI.Model, {
             var dids = BI.keys(dimensions);
             var linkages = this.get("linkages");
             BI.remove(linkages, function (i, linkage) {
-                return !dids.contains(linkage.from) || (linkage.cids && !dids.contains(linkage.cids[0]));
+                return !dids.contains(linkage.from) || (linkage.cids && linkage.cids.length > 0 && !dids.contains(linkage.cids[0]));
             });
             this.set("linkages", linkages);
             this.refresh();
@@ -60,7 +60,7 @@ BIDezi.WidgetModel = BI.inherit(BI.Model, {
         if (BI.has(changed, "settings")) {
             this.refresh();
             //联动传递过滤条件发生改变的时候，清一下联动到的组件
-            if (changed.settings.transfer_filter !== pre.settings.transfer_filter) {
+            if (changed.settings.transferFilter !== pre.settings.transferFilter) {
                 BI.each(this.get("linkages"), function (i, link) {
                     if (BI.Utils.isWidgetExistByID(link.to)) {
                         BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + link.to, link.from);

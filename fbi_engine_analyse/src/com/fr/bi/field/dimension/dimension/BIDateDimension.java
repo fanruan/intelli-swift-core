@@ -21,7 +21,7 @@ public class BIDateDimension extends BIAbstractDimension {
      */
     @Override
     public String toString(Object v) {
-        if (v == null){
+        if (v == null) {
             return StringUtils.EMPTY;
         }
         if (group.getType() == BIReportConstant.GROUP.M) {
@@ -70,6 +70,6 @@ public class BIDateDimension extends BIAbstractDimension {
 
     @Override
     public Object getValueByType(Object data) {
-        return data == null ? null : Long.parseLong(data.toString());
+        return data == null || !(data instanceof Number) ? null : Long.parseLong(data.toString());
     }
 }

@@ -11,7 +11,11 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
         EDITOR_WIDTH: 80,
         EDITOR_HEIGHT: 28,
         SHOW_MARK: 1,
-        HIDE_MARK: 2
+        HIDE_MARK: 2,
+        NORMAL: 1,
+        ZERO2POINT: 2,
+        ONE2POINT: 3,
+        TWO2POINT: 4,
     },
 
     _defaultConfig: function(){
@@ -57,26 +61,20 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
         });
         this.format.setValue(styleSettings.format);
 
+        this.format.on(BI.Segment.EVENT_CHANGE, function () {
+            example.setText(self._switchLabel());
+        });
+
         this.separators = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Separators"),
             width: 80
         });
 
-        var example = BI.createWidget({
-            type: "bi.label",
-            height: 25
-        });
-
-        this.showSeparators = styleSettings.numSeparators || false;
-
-        this.separators.setSelected(this.showSeparators);
-
-        example.setText(this._switchLabel(this.showSeparators));
+        this.separators.setSelected(styleSettings.numSeparators);
 
         this.separators.on(BI.Controller.EVENT_CHANGE, function () {
-            self.showSeparators = !self.showSeparators;
-            example.setText(self._switchLabel(self.showSeparators));
+            example.setText(self._switchLabel());
         });
 
         this.numLevel = BI.createWidget({
@@ -88,6 +86,7 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
         this.numLevel.on(BI.Segment.EVENT_CHANGE, function(){
             BI.isNotNull(self.mark) && self.mark.setLevel(this.getValue()[0]);
             self.conditions.setNumLevel(this.getValue()[0]);
+            example.setText(self._switchLabel());
         });
 
         this.unit = BI.createWidget({
@@ -97,6 +96,10 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
             cls: "unit-input"
         });
         this.unit.setValue(styleSettings.unit);
+
+        this.unit.on(BI.SignEditor.EVENT_CONFIRM, function () {
+            example.setText(self._switchLabel());
+        });
 
         this.iconStyle = BI.createWidget({
             type: "bi.icon_mark_combo",
@@ -143,6 +146,13 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
             conditions: styleSettings.conditions,
             numLevel: styleSettings.numLevel
         });
+
+        var example = BI.createWidget({
+            type: "bi.label",
+            height: 25
+        });
+
+        example.setText(this._switchLabel());
 
         BI.createWidget({
             type: "bi.vertical",
@@ -193,8 +203,9 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
         })
     },
 
-    _switchLabel: function(v) {
-        return v ? BI.i18nText("BI-Separators_Example") : BI.i18nText("BI-None_Separator_Example")
+    _switchLabel: function() {
+        return BI.TargetStyleSetting.formatNumber(this.numLevel.getValue()[0], this.format.getValue()[0],
+        this.separators.isSelected(), this.unit.getValue());
     },
 
     end: function(){
@@ -215,3 +226,77 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
 });
 BI.TargetStyleSetting.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.target_style_setting", BI.TargetStyleSetting);
+BI.extend(BI.TargetStyleSetting, {
+    formatNumberLevelAndSeparators: function (type, separators) {
+        var formatter;
+        switch (type) {
+            case BICst.TARGET_STYLE.FORMAT.NORMAL:
+                formatter = '#.##';
+                if (separators) {formatter = '#,###.##'}
+                break;
+            case BICst.TARGET_STYLE.FORMAT.ZERO2POINT:
+                formatter = '#0';
+                if (separators) {formatter = '#,###'}
+                break;
+            case BICst.TARGET_STYLE.FORMAT.ONE2POINT:
+                formatter = '#0.0';
+                if (separators) {formatter = '#,###.0'}
+                break;
+            case BICst.TARGET_STYLE.FORMAT.TWO2POINT:
+                formatter = '#0.00';
+                if (separators) {formatter = '#,###.00'}
+                break;
+        }
+        return formatter
+    },
+
+    getUnit: function (numberLevelType, axisUnit) {
+        var unit = "";
+        switch (numberLevelType) {
+            case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
+                unit = "";
+                break;
+            case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
+                unit = BI.i18nText("BI-Wan");
+                break;
+            case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
+                unit = BI.i18nText("BI-Million");
+                break;
+            case BICst.TARGET_STYLE.NUM_LEVEL.YI:
+                unit = BI.i18nText("BI-Yi");
+                break;
+            case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
+                unit += '%';
+                break;
+        }
+        return (BI.isEmptyString(unit) && BI.isEmptyString(axisUnit)) ? unit : (unit + axisUnit);
+    },
+
+    calcMagnify: function (numberLevel) {
+        var magnify = 1;
+        switch (numberLevel) {
+            case BICst.TARGET_STYLE.NUM_LEVEL.NORMAL:
+            case BICst.TARGET_STYLE.NUM_LEVEL.PERCENT:
+                magnify = 1;
+                break;
+            case BICst.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
+                magnify = 10000;
+                break;
+            case BICst.TARGET_STYLE.NUM_LEVEL.MILLION:
+                magnify = 1000000;
+                break;
+            case BICst.TARGET_STYLE.NUM_LEVEL.YI:
+                magnify = 100000000;
+                break;
+        }
+        return magnify;
+    },
+
+    formatNumber: function (numberLevel, type, separators, axisUnit) {
+        var num = 20000000;
+        var format = this.formatNumberLevelAndSeparators(type, separators);
+        format += this.getUnit(numberLevel, axisUnit);
+        format += ';-' + format;
+        return BI.i18nText('BI-Example') + '：' + BI.contentFormat(num.div(this.calcMagnify(numberLevel)), format )
+    },
+});

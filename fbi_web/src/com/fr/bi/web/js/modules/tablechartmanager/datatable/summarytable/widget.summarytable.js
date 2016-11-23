@@ -246,7 +246,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                 return true;
             }
         });
-        if (!isValid) {
+            if (!isValid) {
             var columnSize = this.table.getCalculateColumnSize();
             if (this.model.isNeed2Freeze()) {
                 var regionColumnSize = this.table.getCalculateRegionColumnSize();

@@ -235,7 +235,7 @@ BI.CompareColumnChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.leftYShowLabel.on(BI.Controller.EVENT_CHANGE, function () {
-            self.leftLabelStyle.setVisible(this.isSelected());
+            self.leftYLabelStyle.setVisible(this.isSelected());
             self.fireEvent(BI.CompareColumnChartsSetting.EVENT_CHANGE)
         });
 
