@@ -290,6 +290,12 @@ BI.extend(BI.Utils, {
         }, complete)
     },
 
+    saveFileGetExcelViewData: function (fileId, callback, complete) {
+        Data.Req.reqSaveFileGetExcelViewData({fileId: fileId}, function (res) {
+            callback(res);
+        }, complete)
+    },
+
     saveFileGetExcelData: function (fileId, callback, complete) {
         Data.Req.reqSaveFileGetExcelData({fileId: fileId}, function (res) {
             callback(res);
@@ -497,9 +503,9 @@ BI.extend(BI.Utils, {
             callback(res);
         }, complete);
     },
-    
-    checkTableInUse: function(data, callback, complete) {
-        Data.Req.reqCheckTableInUse(data, function(res) {
+
+    checkTableInUse: function (data, callback, complete) {
+        Data.Req.reqCheckTableInUse(data, function (res) {
             callback(res);
         }, complete);
     }
