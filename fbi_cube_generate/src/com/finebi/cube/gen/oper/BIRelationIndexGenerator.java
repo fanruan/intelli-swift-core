@@ -361,8 +361,6 @@ public class BIRelationIndexGenerator extends BIProcessor {
             try {
                 initReverseIndex(reverse, array.get(i), foreignGroupValueIndex);
             } catch (ArrayIndexOutOfBoundsException e) {
-                logger.error("GVI:" + foreignGroupValueIndex.toString());
-
                 foreignGroupValueIndex.Traversal(new SingleRowTraversalAction() {
                     @Override
                     public void actionPerformed(int rowIndex) {
@@ -378,7 +376,12 @@ public class BIRelationIndexGenerator extends BIProcessor {
         gvi.Traversal(new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int rowIndex) {
-                index[rowIndex] = row;
+                try {
+                    index[rowIndex] = row;
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    logger.error("Array size:" + index.length + " row index:" + rowIndex);
+                    throw e;
+                }
             }
         });
     }
