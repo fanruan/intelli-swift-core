@@ -719,6 +719,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.hShowGridLine.on(BI.Controller.EVENT_CHANGE, function() {
+            self.hGridLineColor.setVisible(this.isSelected());
             self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE)
         });
 
@@ -762,7 +763,7 @@ BI.CompareAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function () {
-            self.vGridLineColor.setVisible(this.isSelected());
+            self.dataLabelSetting.setVisible(this.isSelected());
             self.fireEvent(BI.CompareAreaChartsSetting.EVENT_CHANGE);
         });
 

@@ -793,6 +793,7 @@ BI.LineAreaChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function () {
+            self.dataLabelSetting.setVisible(this.isSelected());
             self.fireEvent(BI.LineAreaChartSetting.EVENT_CHANGE);
         });
 
