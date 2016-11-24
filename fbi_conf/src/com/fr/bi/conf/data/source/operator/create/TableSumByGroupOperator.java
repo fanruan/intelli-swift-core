@@ -149,6 +149,7 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
             keys[i] = getDimensions()[i].createKey();
             groups[i] = getDimensions()[i].getGroup();
         }
+
         ValueIterator iterator = new ValueIterator(ti, keys, groups);
         int index = 0;
         while (iterator.hasNext()) {
@@ -245,13 +246,16 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
         if (reader.isChildNode()) {
             if (ComparatorUtils.equals(reader.getTagName(), "dim_targ")) {
                 try {
-                    JSONObject jo = new JSONObject(reader.getAttrAsString("values", StringUtils.EMPTY));
-                    parseJSON(jo);
+                    init(reader.getAttrAsString("values", StringUtils.EMPTY));
                 } catch (Exception e) {
 
                 }
             }
         }
+    }
+
+    private void init(String values) throws Exception {
+        parseJSON(new JSONObject(values));
     }
 
     /**

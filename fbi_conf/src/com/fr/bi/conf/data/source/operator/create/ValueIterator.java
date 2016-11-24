@@ -157,8 +157,11 @@ class ValueIterator {
                 }
             }
         });
-        return new Iterator() {
+        return getArraySortIterator(getter, groupIndex);
+    }
 
+    private Iterator getArraySortIterator(final ICubeValueEntryGetter getter, final int[] groupIndex) {
+        return new Iterator() {
             private int index = 0;
 
             @Override
@@ -222,10 +225,12 @@ class ValueIterator {
                 }
             }
         });
+        return getArrayReSortIterator(getter, groupArray);
+    }
+
+    private Iterator getArrayReSortIterator(final ICubeValueEntryGetter getter, final IntArray[] groupArray) {
         return new Iterator() {
-
             private int index = 0;
-
             @Override
             public void remove() {
                 throw new UnsupportedOperationException("remove");
@@ -405,12 +410,10 @@ class ValueIterator {
             public void remove() {
                 throw new UnsupportedOperationException("remove");
             }
-
             @Override
             public boolean hasNext() {
                 return groupRow != NIOConstant.INTEGER.NULL_VALUE;
             }
-
             @Override
             public Object next() {
                 Map.Entry entry = new Map.Entry() {
@@ -420,22 +423,18 @@ class ValueIterator {
                         groupRow = NIOConstant.INTEGER.NULL_VALUE;
                         return value;
                     }
-
                     @Override
                     public Object getValue() {
                         return GVIFactory.createGroupValueIndexBySimpleIndex(i.value);
                     }
-
                     @Override
                     public Object setValue(Object value) {
                         return null;
                     }
-
                     @Override
                     public boolean equals(Object o) {
                         return false;
                     }
-
                     @Override
                     public int hashCode() {
                         return 0;
@@ -463,12 +462,10 @@ class ValueIterator {
             public void remove() {
                 it.remove();
             }
-
             @Override
             public boolean hasNext() {
                 return it.hasNext();
             }
-
             @Override
             public Object next() {
                 final CubeValueEntry gve = getter.getEntryByGroupRow(it.next());
@@ -477,22 +474,18 @@ class ValueIterator {
                     public Object getKey() {
                         return gve.getT();
                     }
-
                     @Override
                     public Object getValue() {
                         return gve.getGvi();
                     }
-
                     @Override
                     public Object setValue(Object value) {
                         return null;
                     }
-
                     @Override
                     public boolean equals(Object o) {
                         return false;
                     }
-
                     @Override
                     public int hashCode() {
                         return 0;
