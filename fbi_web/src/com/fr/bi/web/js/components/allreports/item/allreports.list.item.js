@@ -203,11 +203,11 @@ BI.AllReportsListItem = BI.inherit(BI.Widget, {
                             top: 0,
                             left: 0
                         }, {
-                            el: infoIcon,
+                            el: copyButton,
                             top: 0,
                             left: 40
                         }, {
-                            el: copyButton,
+                            el: infoIcon,
                             top: 0,
                             left: 80
                         }, {
