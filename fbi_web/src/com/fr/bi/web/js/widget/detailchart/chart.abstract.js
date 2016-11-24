@@ -246,32 +246,45 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         switch (type) {
             case this.constants.NORMAL:
                 formatter = '#.##';
-                if (separators) {formatter = '#,###.##'}
+                if (separators) {
+                    formatter = '#,###.##'
+                }
                 break;
             case this.constants.ZERO2POINT:
                 formatter = '#0';
-                if (separators) {formatter = '#,###'}
+                if (separators) {
+                    formatter = '#,###'
+                }
                 break;
             case this.constants.ONE2POINT:
                 formatter = '#0.0';
-                if (separators) {formatter = '#,###.0'}
+                if (separators) {
+                    formatter = '#,###.0'
+                }
                 break;
             case this.constants.TWO2POINT:
                 formatter = '#0.00';
-                if (separators) {formatter = '#,###.00'}
+                if (separators) {
+                    formatter = '#,###.00'
+                }
                 break;
         }
         return formatter
     },
 
-    formatDataLabel: function (state, items, config, style) {
-        var self = this;
+    _setDataLableContend: function (chartOptions) {
+        var position = chartOptions.dataLabelSetting;
+
+    },
+
+    formatDataLabel: function (state, items, config) {
+        var self = this, chartOptions = this.getChartConfig();
         if (state === true) {
             BI.each(items, function (idx, item) {
                 item.dataLabels = {
                     "align": "outside",
                     "autoAdjust": true,
-                    style: style,
+                    style: chartOptions.chartFont,
                     enabled: true,
                     formatter: {
                         identifier: "${VALUE}",
@@ -283,14 +296,14 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         }
     },
 
-    formatDataLabelForAxis: function (state, items, format, style) {
-        var self = this;
+    formatDataLabelForAxis: function (state, items, format) {
+        var self = this, chartOptions = this.getChartConfig();
         if (state === true) {
             BI.each(items, function (idx, item) {
                 item.dataLabels = {
                     "align": "outside",
                     "autoAdjust": true,
-                    style: style,
+                    style: chartOptions.chartFont,
                     enabled: true,
                     formatter: {
                         identifier: "${VALUE}",
@@ -302,14 +315,14 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         }
     },
 
-    formatDataLabelForOthers: function (state, items, format, style) {
-        var self = this;
+    formatDataLabelForOthers: function (state, items, format) {
+        var self = this, chartOptions = this.getChartConfig();
         if (state === true) {
             BI.each(items, function (idx, item) {
                 item.dataLabels = {
                     "align": "outside",
                     "autoAdjust": true,
-                    style: style,
+                    style: chartOptions.chartFont,
                     enabled: true,
                     formatter: {
                         identifier: "${VALUE}",
@@ -568,7 +581,8 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             initDrillPath: options.initDrillPath || [],
             cordon: options.cordon || [],
             tooltip: options.tooltip || [],
-            lnglat: options.lnglat
+            lnglat: options.lnglat,
+            dataLabelSetting: options.dataLabelSetting || {}
         }
     },
 

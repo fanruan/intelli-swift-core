@@ -95,7 +95,7 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
         });
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        self.formatDataLabelForOthers(config.plotOptions.dataLabels.enabled, items, config.radiusAxis[0].formatter, this.config.chartFont, this.config.leftYUnit);
+        self.formatDataLabelForOthers(config.plotOptions.dataLabels.enabled, items, config.radiusAxis[0].formatter);
 
         //全局样式的图表文字
         config.radiusAxis[0].labelStyle = config.radiusAxis[0].title.style = this.config.chartFont;

@@ -78,7 +78,7 @@ BI.RadarChart = BI.inherit(BI.AbstractChart, {
         delete config.xAxis;
         delete config.yAxis;
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        this.formatDataLabelForOthers(config.plotOptions.dataLabels.enabled, items, config.radiusAxis[0].formatter, this.config.chart_font);
+        this.formatDataLabelForOthers(config.plotOptions.dataLabels.enabled, items, config.radiusAxis[0].formatter);
 
         config.angleAxis[0].labelStyle = BI.extend(this.config.leftYLabelStyle.textStyle, {
             fontSize: this.config.leftYLabelStyle.textStyle.fontSize + "px"

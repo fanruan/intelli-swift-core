@@ -76,7 +76,7 @@ BI.BarChart = BI.inherit(BI.AbstractChart, {
         config.xAxis[0].title.rotation = 0;
         config.chartType = "bar";
 
-        this.formatDataLabelForAxis(config.plotOptions.dataLabels.enabled, items, config.xAxis[0].formatter, this.config.chartFont);
+        this.formatDataLabelForAxis(config.plotOptions.dataLabels.enabled, items, config.xAxis[0].formatter);
 
         config.plotOptions.tooltip.formatter.valueFormat = config.xAxis[0].formatter;
 

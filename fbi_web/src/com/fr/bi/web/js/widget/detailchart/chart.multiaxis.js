@@ -97,7 +97,7 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         });
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        this.formatDataLabel(config.plotOptions.dataLabels.enabled, items, config, this.config.chartFont);
+        this.formatDataLabel(config.plotOptions.dataLabels.enabled, items, config);
 
         //全局样式的图表文字
         if (config.dataSheet) {

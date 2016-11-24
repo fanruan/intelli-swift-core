@@ -74,7 +74,7 @@ BI.AccumulateBarChart = BI.inherit(BI.AbstractChart, {
         });
 
         //为了给数据标签加个%,还要遍历所有的系列，唉
-        this.formatDataLabelForAxis(config.plotOptions.dataLabels.enabled, items, config.xAxis[0].formatter, this.config.chartFont);
+        this.formatDataLabelForAxis(config.plotOptions.dataLabels.enabled, items, config.xAxis[0].formatter);
 
         config.plotOptions.tooltip.formatter.valueFormat = config.xAxis[0].formatter;
 
