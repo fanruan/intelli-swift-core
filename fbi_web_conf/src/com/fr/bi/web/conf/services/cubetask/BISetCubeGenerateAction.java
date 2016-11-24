@@ -35,17 +35,31 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
-        boolean cubeBuild;
-        if (StringUtils.isEmpty(baseTableSourceId)) {
-            cubeBuild = new CubeBuildManager().CubeBuildStaff(userId);
-        } else {
-            cubeBuild = new CubeBuildManager().CubeBuildSingleTable(userId, baseTableSourceId, updateType);
-        }
-        BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
-        BIConfigureManagerCenter.getCubeConfManager().updateMultiPathLastCubeStatus(BIReportConstant.MULTI_PATH_STATUS.NOT_NEED_GENERATE_CUBE);
-        BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
+        boolean cubeBuild = cubeTaskBuild(userId, baseTableSourceId, updateType);
         JSONObject jsonObject = new JSONObject().put("result", cubeBuild);
         WebUtils.printAsJSON(res, jsonObject);
+    }
+
+    private boolean cubeTaskBuild(long userId, String baseTableSourceId, int updateType) {
+        boolean cubeBuild;
+        try {
+            if (StringUtils.isEmpty(baseTableSourceId)) {
+                cubeBuild = new CubeBuildManager().CubeBuildStaff(userId);
+            } else {
+                cubeBuild = new CubeBuildManager().CubeBuildSingleTable(userId, baseTableSourceId, updateType);
+            }
+        } catch (Exception e) {
+            cubeBuild = false;
+            CubeGenerationManager.getCubeManager().setStatus(userId, Status.WRONG);
+            BILoggerFactory.getLogger().error("cube task build failed" + "\n" + e.getMessage());
+            CubeGenerationManager.getCubeManager().setStatus(userId, Status.END);
+        }
+        if (cubeBuild) {
+            BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
+            BIConfigureManagerCenter.getCubeConfManager().updateMultiPathLastCubeStatus(BIReportConstant.MULTI_PATH_STATUS.NOT_NEED_GENERATE_CUBE);
+            BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
+        }
+        return cubeBuild;
     }
 
 }

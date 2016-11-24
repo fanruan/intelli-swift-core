@@ -64,7 +64,6 @@ public class CubeRunner {
                     setStatue(Status.REPLACING);
                     cubeTask.end();
                     setStatue(Status.END);
-                    setStatue(Status.SUCCESS);
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
                     setStatue(Status.WRONG);
@@ -113,7 +112,7 @@ public class CubeRunner {
     }
 
     public boolean hasTask() {
-        return !cubeThread.isEmpty();
+        return !cubeThread.isEmpty()||statue==Status.PREPARING;
     }
 
     public boolean hasWaitingCheckTask() {
