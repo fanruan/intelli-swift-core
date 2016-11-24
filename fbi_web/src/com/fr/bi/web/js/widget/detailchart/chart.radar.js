@@ -53,6 +53,8 @@ BI.RadarChart = BI.inherit(BI.AbstractChart, {
         var self = this;
         var title = getXYAxisUnit(this.config.rightYNumberLevel, this.constants.LEFT_AXIS);
 
+        delete config.zoom;
+
         config.colors = this.config.chartColor;
         config.plotOptions.style = formatChartStyle();
         formatChartRadarStyle();

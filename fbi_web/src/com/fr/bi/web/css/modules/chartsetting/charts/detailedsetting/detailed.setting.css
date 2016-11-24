@@ -7,3 +7,16 @@
   -moz-border-radius: 2px;
   border-radius: 2px;
 }
+.bi-detailed-setting .data-label-position-icon {
+  border: 1px solid #ffffff;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  font-size: 22px;
+}
+.bi-detailed-setting .data-label-position-icon:hover {
+  background: #f4f4f4;
+}
+.bi-detailed-setting .data-label-position-icon.active {
+  border: 1px solid #009de3;
+}

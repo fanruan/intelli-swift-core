@@ -3765,3 +3765,30 @@
   content: "\e6dd";
   color: #58cc7d;
 }
+.datalabel-position-inner .b-font:before {
+  content: "\e6ce";
+  color: #009de3;
+}
+.datalabel-position-inner.native .b-font:before,
+.datalabel-position-inner.disabled .b-font:before {
+  content: "\e6ce";
+  color: #009de3;
+}
+.datalabel-position-outer .b-font:before {
+  content: "\e6cf";
+  color: #009de3;
+}
+.datalabel-position-outer.native .b-font:before,
+.datalabel-position-outer.disabled .b-font:before {
+  content: "\e6cf";
+  color: #009de3;
+}
+.datalabel-position-center .b-font:before {
+  content: "\e6d0";
+  color: #009de3;
+}
+.datalabel-position-center.native .b-font:before,
+.datalabel-position-center.disabled .b-font:before {
+  content: "\e6d0";
+  color: #009de3;
+}
