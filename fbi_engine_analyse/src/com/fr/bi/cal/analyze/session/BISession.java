@@ -26,7 +26,6 @@ import com.fr.bi.fs.BIReportNodeLock;
 import com.fr.bi.fs.BIReportNodeLockDAO;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.log.CubeGenerateStatusProvider;
 import com.fr.data.TableDataSource;
@@ -461,14 +460,6 @@ public class BISession extends BIAbstractSession {
         }
     }
 
-    public void setWidgetDateMap(String widgetName, String name, String s, Object data) {
-
-    }
-
-    public boolean hasPackageAccessiblePrivilege(BusinessTable key) {
-        return true;
-    }
-
     public PageIteratorGroup getPageIteratorGroup(boolean useRealData, String widgetName) {
         return getPageIteratorGroup(useRealData, widgetName, 0);
     }
@@ -500,10 +491,6 @@ public class BISession extends BIAbstractSession {
             map = pmap.get(widgetName);
         }
         map.put(i, pg);
-    }
-
-    public BIDay getWidgetDatekey(String widgetName, String dimName, String v) {
-        return null;
     }
 
     public GroupValueIndex createFilterGvi(BusinessTable key) {

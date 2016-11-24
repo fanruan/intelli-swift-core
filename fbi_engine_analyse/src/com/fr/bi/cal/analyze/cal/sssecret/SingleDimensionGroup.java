@@ -29,6 +29,7 @@ import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.structure.object.CubeValueEntry;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
+import com.fr.stable.collections.array.IntArray;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -181,6 +182,8 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         switch (tool) {
             case INT_ARRAY:
                 return getArraySortIterator(getter);
+            case RE_SORT:
+                return getTreeMapReSortIterator(getter);
             case DIRECT:
                 return getOneKeyIterator(getter);
             case TREE_MAP:
@@ -318,14 +321,15 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         root.getGroupValueIndex().Traversal(new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int row) {
-                i.value = getter.getPositionOfGroupByRow(row);
+                i.value = row;
             }
         });
-        return getOneKeyIterator(getter, i);
+        return getOneKeyIterator(getter, i.value);
     }
 
-    private Iterator getOneKeyIterator(final ICubeValueEntryGetter getter, final FinalInt i) {
+    private Iterator getOneKeyIterator(final ICubeValueEntryGetter getter, final Integer row) {
         return new Iterator() {
+            int groupRow = getter.getPositionOfGroupByRow(row);
             @Override
             public void remove() {
                 throw new UnsupportedOperationException("remove");
@@ -333,21 +337,22 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
 
             @Override
             public boolean hasNext() {
-                return i.value != NIOConstant.INTEGER.NULL_VALUE;
+                return groupRow != NIOConstant.INTEGER.NULL_VALUE;
             }
 
             @Override
             public Object next() {
-                final CubeValueEntry gve = getter.getEntryByGroupRow(i.value);
                 Entry entry = new Entry() {
                     @Override
                     public Object getKey() {
-                        return gve.getT();
+                        Object value = getter.getGroupValue(groupRow);
+                        groupRow = NIOConstant.INTEGER.NULL_VALUE;
+                        return value;
                     }
 
                     @Override
                     public Object getValue() {
-                        return gve.getGvi();
+                        return GVIFactory.createGroupValueIndexBySimpleIndex(row);
                     }
 
                     @Override
@@ -365,7 +370,6 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
                         return 0;
                     }
                 };
-                i.value = NIOConstant.INTEGER.NULL_VALUE;
                 return entry;
             }
         };
@@ -432,6 +436,71 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         };
     }
 
+    public Iterator getTreeMapReSortIterator(final ICubeValueEntryGetter getter) {
+        final TreeMap<Integer, IntArray> map = column.getSortType() == BIReportConstant.SORT.DESC ? new TreeMap<Integer, IntArray>(BIBaseConstant.COMPARATOR.COMPARABLE.DESC) : new TreeMap<Integer, IntArray>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
+        root.getGroupValueIndex().Traversal(new SingleRowTraversalAction() {
+            @Override
+            public void actionPerformed(int row) {
+                int groupRow = getter.getPositionOfGroupByRow(row);
+                if (groupRow != NIOConstant.INTEGER.NULL_VALUE) {
+                    IntArray array = map.get(groupRow);
+                    if (array == null){
+                        array = new IntArray();
+                        map.put(groupRow, array);
+                    }
+                    array.add(row);
+                }
+            }
+        });
+        final Iterator<Entry<Integer, IntArray>> it = map.entrySet().iterator();
+        return getTreeMapReSortIterator(getter, it);
+    }
+
+    private Iterator getTreeMapReSortIterator(final ICubeValueEntryGetter getter, final Iterator<Entry<Integer, IntArray>> it) {
+        return new Iterator() {
+            @Override
+            public void remove() {
+                it.remove();
+            }
+
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
+            public Object next() {
+                final Entry<Integer, IntArray> fEntry = it.next();
+                final Entry entry = new Entry() {
+                    @Override
+                    public Object getKey() {
+                        return getter.getGroupValue(fEntry.getKey());
+                    }
+
+                    @Override
+                    public Object getValue() {
+                        return GVIFactory.createGroupValueIndexBySimpleIndex(fEntry.getValue());
+                    }
+
+                    @Override
+                    public Object setValue(Object value) {
+                        return null;
+                    }
+
+                    @Override
+                    public boolean equals(Object o) {
+                        return false;
+                    }
+
+                    @Override
+                    public int hashCode() {
+                        return 0;
+                    }
+                };
+                return entry;
+            }
+        };
+    }
 
     private NewRootNodeChild getCurrentNodeChild(Entry entry) {
         Object keyValue = entry.getKey();
