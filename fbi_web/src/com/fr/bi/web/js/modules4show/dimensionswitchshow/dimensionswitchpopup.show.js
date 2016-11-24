@@ -7,7 +7,7 @@ BI.DimensionSwitchPopupShow = BI.inherit(BI.Widget, {
         return BI.extend(BI.DimensionSwitchPopupShow.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-dimension-switch-popup-show",
             wId: "",
-            dimensionCreator: BI.emptyFn()
+            dimensionCreator: BI.emptyFn
         });
     },
 

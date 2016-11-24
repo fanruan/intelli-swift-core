@@ -7,7 +7,7 @@ BI.DimensionSwitchShow = BI.inherit(BI.Widget, {
         return BI.extend(BI.DimensionSwitchShow.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-dimension-switch-show",
             wId: "",
-            dimensionCreator: BI.emptyFn()
+            dimensionCreator: BI.emptyFn
         });
     },
 

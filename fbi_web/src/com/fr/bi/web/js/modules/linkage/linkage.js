@@ -679,7 +679,7 @@ BI.Linkage = BI.inherit(BI.Widget, {
         var tip = BI.createWidget({
             type: "bi.label",
             cls: "linkage-widget-disabled-title",
-            text: BI.i18nText("BI-Already-Has-Linkage")
+            text: BI.i18nText("BI-Already_Has_Linkage")
         });
 
         var content = BI.createWidget({
