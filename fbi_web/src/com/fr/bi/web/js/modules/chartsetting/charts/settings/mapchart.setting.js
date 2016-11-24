@@ -216,6 +216,14 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.MapSetting.EVENT_CHANGE);
         });
 
+        this.dataLabelSetting = BI.createWidget({
+            type: "bi.data_label_detailed_setting_combo"
+        });
+
+        this.dataLabelSetting.on(BI.DataLabelDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.MapSetting.EVENT_CHANGE);
+        });
+
         //显示背景图层
         this.isShowBackgroundLayer = BI.createWidget({
             type: "bi.multi_select_item",
@@ -262,6 +270,9 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.dataLabelSetting]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.isShowBackgroundLayer]
@@ -360,6 +371,8 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
         this.mapStyles.setValue(BI.Utils.getWSChartMapStylesByID(wId));
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
+        this.dataLabelSetting.setValue(BI.Utils.getWSChartDataLabelSettingByID(wId));
+        this.dataLabelSetting.setVisible(BI.Utils.getWSChartShowDataLabelByID(wId));
         this.isShowBackgroundLayer.setSelected(BI.Utils.getWSShowBackgroundByID(wId));
         this.isShowBackgroundLayer.isSelected() ? this.backgroundLayerInfo.setVisible(true) : this.backgroundLayerInfo.setVisible(false);
         this._setNumberLevel();
@@ -397,6 +410,7 @@ BI.MapSetting = BI.inherit(BI.AbstractChartSetting, {
             mapStyles: this.mapStyles.getValue(),
             legend: this.legend.getValue()[0],
             showDataLabel: this.showDataLabel.isSelected(),
+            dataLabelSetting: this.dataLabelSetting.getValue(),
             isShowBackgroundLayer: this.isShowBackgroundLayer.isSelected(),
             backgroundLayerInfo: this.backgroundLayerInfo.getValue()[0],
 

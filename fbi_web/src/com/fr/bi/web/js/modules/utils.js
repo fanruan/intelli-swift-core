@@ -1143,6 +1143,12 @@
                 BICst.DEFAULT_CHART_SETTING.showDataLabel;
         },
 
+        getWSChartDataLabelSettingByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            return BI.isNotNull(ws.dataLabelSetting) ? ws.dataLabelSetting :
+            {}
+        },
+
         getWSChartShowDataTableByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.showDataTable) ? ws.showDataTable :

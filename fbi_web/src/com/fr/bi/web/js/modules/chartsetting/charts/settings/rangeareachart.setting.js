@@ -515,6 +515,14 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE);
         });
 
+        this.dataLabelSetting = BI.createWidget({
+            type: "bi.data_label_detailed_setting_combo"
+        });
+
+        this.dataLabelSetting.on(BI.DataLabelDetailedSettingCombo.EVENT_CHANGE, function () {
+            self.fireEvent(BI.RangeAreaChartsSetting.EVENT_CHANGE);
+        });
+
         //图表缩放滚轮
         this.showZoom = BI.createWidget({
             type: "bi.multi_select_item",
@@ -581,6 +589,9 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.dataLabelSetting]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.showZoom]
@@ -727,6 +738,8 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.catLabelStyle.setVisible(this.catShowLabel.isSelected());
 
         this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
+        this.dataLabelSetting.setValue(BI.Utils.getWSChartDataLabelSettingByID(wId));
+        this.dataLabelSetting.setVisible(BI.Utils.getWSChartShowDataLabelByID(wId));
         this.hShowGridLine.setSelected(BI.Utils.getWSChartHShowGridLineByID(wId));
         this.hGridLineColor.setValue(BI.Utils.getWSChartHGridLineColorByID(wId));
         this.vShowGridLine.setSelected(BI.Utils.getWSChartVShowGridLineByID(wId));
@@ -771,6 +784,7 @@ BI.RangeAreaChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             catTitle: this.catTitle.getValue(),
 
             showDataLabel: this.showDataLabel.isSelected(),
+            dataLabelSetting: this.dataLabelSetting.getValue(),
             hShowGridLine: this.hShowGridLine.isSelected(),
             hGridLineColor: this.hGridLineColor.getValue(),
             vShowGridLine: this.vShowGridLine.isSelected(),
