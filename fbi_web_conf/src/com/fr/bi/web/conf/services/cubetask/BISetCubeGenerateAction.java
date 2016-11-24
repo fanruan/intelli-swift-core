@@ -30,7 +30,6 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
         CubeGenerationManager.getCubeManager().setStatus(userId, Status.PREPARING);
         String baseTableSourceId = WebUtils.getHTTPRequestParameter(req, "baseTableSourceId");
         int updateType = WebUtils.getHTTPRequestIntParameter(req, "updateType");
-        Thread.sleep(10000);
         try {
             CubeUpdateUtils.recordTableAndRelationInfo(userId);
         } catch (Exception e) {

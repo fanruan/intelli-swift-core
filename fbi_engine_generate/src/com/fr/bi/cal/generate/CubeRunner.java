@@ -113,7 +113,7 @@ public class CubeRunner {
     }
 
     public boolean hasTask() {
-        return !cubeThread.isEmpty()||statue==Status.PREPARING;
+        return !cubeThread.isEmpty();
     }
 
     public boolean hasWaitingCheckTask() {
