@@ -2058,6 +2058,41 @@
             return result;
         },
 
+        //dimension是否合法:
+        // 1.与各个指标间是否设置了路径
+        // 2.设置的路径是否还存在，不存在的话剩余路径是否可以替换
+        isDimensionValidByDimensionID: function (dId) {
+            var dimensionMap = this.getDimensionMapByDimensionID(dId);
+            var tIds = this.getAllTargetDimensionIDs(this.getWidgetIDByDimensionID(dId));
+            var res = BI.find(tIds, function(idx, tId){
+                return !BI.Utils.isCalculateTargetByDimensionID(tId) && !checkDimAndTarRelationValidInCurrentPaths(tId);
+            });
+            return BI.isNull(res);
+
+            function checkDimAndTarRelationValidInCurrentPaths(tId){
+                var valid = true;
+                if(BI.has(dimensionMap, tId)){
+                    var targetRelation = dimensionMap[tId].target_relation;
+                    BI.any(targetRelation, function (id, path) {
+                        var pId = BI.Utils.getFirstRelationPrimaryIdFromRelations(path);
+                        var fId = BI.Utils.getLastRelationForeignIdFromRelations(path);
+                        var paths = BI.Utils.getPathsFromFieldAToFieldB(pId, fId);
+                        if (!BI.deepContains(paths, path)) {
+                            if (paths.length === 1) {
+                            } else {
+                                valid = false;
+                                return true;
+                            }
+                        }
+                    })
+                }else{
+                    var paths = BI.Utils.getPathsFromFieldAToFieldB(BI.Utils.getFieldIDByDimensionID(dId), BI.Utils.getFieldIDByDimensionID(tId))
+                    valid = paths.length === 1;
+                }
+                return valid
+            }
+        },
+
 
         /**
          * 关联相关
