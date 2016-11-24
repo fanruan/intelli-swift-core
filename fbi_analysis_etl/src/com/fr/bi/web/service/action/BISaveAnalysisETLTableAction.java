@@ -61,8 +61,13 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
         if (businessTables != null) {
             for (BusinessTable t : businessTables) {
                 AnalysisCubeTableSource s = (AnalysisCubeTableSource) BIAnalysisETLManagerCenter.getDataSourceManager().getTableSource(t);
-                s.refreshWidget();
-                t.setSource(s);
+                try {
+                    s.refreshWidget();
+                    t.setSource(s);
+                } catch (Exception e) {
+                    BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).error("Refresh AnalysisETLTableSource Widget failed" + "\n" + "The Failed table is: " + logTable(table));
+                }
+
             }
         }
         BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().refresh();
