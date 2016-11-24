@@ -227,7 +227,7 @@ BI.ReportListViewItem = BI.inherit(BI.BasicButton, {
             }, {
                 type: "bi.vertical_adapt",
                 hgap: 20,
-                items: [sharedButton, this.hangout, renameIcon, deleteIcon, copyButton]
+                items: [sharedButton, this.hangout, copyButton, renameIcon, deleteIcon]
             }, {
                 el: {
                     type: "bi.left_right_vertical_adapt",
