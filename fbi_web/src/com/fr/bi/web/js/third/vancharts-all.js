@@ -4629,6 +4629,9 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
         }
 
         var vanCharts = VanCharts.init(container);
+
+        //todo zIndex的管理要重新考虑下，现在有点乱
+        container.style.zIndex = 3332;
         vanCharts.isFullScreen = true;
         vanCharts.setOptions(options);
 
@@ -5719,7 +5722,7 @@ define('VanChartLayout',['require','./Constants','./utils/BaseUtils','./Componen
             'left':0, 'right':0, 'bottom':0, 'top':0
         };
 
-        [ComponentLibrary.Y_AXIS_COMPONENT, ComponentLibrary.X_AXIS_COMPONENT].forEach(function(cName){
+        [ComponentLibrary.Y_AXIS_COMPONENT, ComponentLibrary.X_AXIS_COMPONENT, ComponentLibrary.DATA_SHEET_COMPONENT].forEach(function(cName){
             vanchart.components[cName] && vanchart.components[cName].reCalculateSize();
         });
 
@@ -14161,6 +14164,8 @@ define('VanCharts',['require','./utils/BaseUtils','./Constants','./VanChart','./
 
         setOptions:function(options){
 
+            this.options = options || this.options;
+
             if (BaseUtils.isArray(options.options)) {
                 this.charts = this.carousel.init(options, this.charts, this.dom);
             }else{
@@ -15409,7 +15414,12 @@ define('chart/Series',['require','../utils/BaseUtils','../utils/QueryUtils','../
         },
 
         pushCustomLabelContent:function(point, formatter, dataLabels, useHtml, content, defaultPosition){
-            var text = BaseUtils.getFormatterFunction(formatter).call(point);
+            var text = "";
+            try{
+                text = BaseUtils.getFormatterFunction(formatter).call(point);
+            } catch (e){
+                //用户自定义的，里面极有可能有抛错，如window.FR.contentFormat
+            }
             var style = this.getValuePercentageStyle(dataLabels, defaultPosition, point);
             var dim = BaseUtils.getTextDimension(text, style, useHtml);
 
@@ -33250,6 +33260,10 @@ define('component/DataSheet',['require','./Base','../utils/BaseUtils','../utils/
          */
         doLayout:function(){
             this._recordForPlotBounds(Constants.LEFT, Math.round(this.getSeriesNameLength()));
+        },
+
+        reCalculateSize:function(){
+            this.doLayout();
         },
 
         updateAxisSizeAndBounds:function(){
