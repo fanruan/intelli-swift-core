@@ -1,10 +1,12 @@
 package com.fr.bi.web.conf.services.cubetask;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.cal.generate.CubeBuildManager;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.constant.Status;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONObject;
@@ -25,10 +27,10 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
     protected void actionCMDPrivilegePassed(HttpServletRequest req,
                                             HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
+        CubeGenerationManager.getCubeManager().setStatus(userId, Status.PREPARING);
         String baseTableSourceId = WebUtils.getHTTPRequestParameter(req, "baseTableSourceId");
-        String tableId = WebUtils.getHTTPRequestParameter(req, "tableId");
-//        Boolean isETL = Boolean.valueOf(WebUtils.getHTTPRequestParameter(req, "isETL"));
         int updateType = WebUtils.getHTTPRequestIntParameter(req, "updateType");
+        Thread.sleep(10000);
         try {
             CubeUpdateUtils.recordTableAndRelationInfo(userId);
         } catch (Exception e) {

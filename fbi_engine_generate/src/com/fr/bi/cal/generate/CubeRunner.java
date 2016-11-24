@@ -31,7 +31,7 @@ public class CubeRunner {
      */
     private static final long serialVersionUID = -249303913165576913L;
 
-    protected volatile Status statue = Status.UNLOAD;
+    protected volatile Status statue = Status.NULL;
     protected BIUser biUser;
     QueueThread<CubeTask> cubeThread = new QueueThread<CubeTask>();
     private CubeBuildStuffComplete object;
@@ -48,23 +48,29 @@ public class CubeRunner {
     }
 
     private void init() {
-
         //设置回调函数
         cubeThread.setTraversal(new Traversal<CubeTask>() {
             @Override
             public void actionPerformed(CubeTask cubeTask) {
                 long start = System.currentTimeMillis();
-                setStatue(Status.LOADING);
+                setStatue(Status.WAITING);
                 start();
                 try {
+                    setStatue(Status.START);
                     cubeTask.start();
+                    setStatue(Status.LOADING);
                     cubeTask.run();
+                    setStatue(Status.LOADED);
+                    setStatue(Status.REPLACING);
                     cubeTask.end();
+                    setStatue(Status.END);
+                    setStatue(Status.SUCCESS);
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
+                    setStatue(Status.WRONG);
                 } finally {
                     finish(cubeTask);
-                    setStatue(Status.LOADED);
+                    setStatue(Status.NULL);
                     BILoggerFactory.getLogger().info(BIDateUtils.getCurrentDateTime() + " Build OLAP database Cost:" + DateUtils.timeCostFrom(start));
                 }
             }
@@ -107,7 +113,9 @@ public class CubeRunner {
     }
 
     public boolean hasTask() {
-        return !cubeThread.isEmpty();
+        if (cubeThread.isEmpty()&&Status.PREPARING==statue){
+        }
+        return !cubeThread.isEmpty()||statue==Status.PREPARING;
     }
 
     public boolean hasWaitingCheckTask() {
@@ -123,6 +131,7 @@ public class CubeRunner {
 
     public void addTask(CubeTask task) {
         cubeThread.add(task);
+        setStatue(Status.PREPARED);
     }
 
     public void removeTask(String taskId) {
@@ -185,6 +194,8 @@ public class CubeRunner {
     }
 
     public void setStatue(Status statue) {
+        BILoggerFactory.getLogger().info("previous cube status :"+getStatue());
+        BILoggerFactory.getLogger().info("change cube status to :"+statue.name());
         this.statue = statue;
     }
 
