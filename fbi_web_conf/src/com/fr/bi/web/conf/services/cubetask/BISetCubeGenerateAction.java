@@ -36,8 +36,7 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         boolean cubeBuild = cubeTaskBuild(userId, baseTableSourceId, updateType);
-        JSONObject jsonObject = new JSONObject().put("result", cubeBuild);
-        WebUtils.printAsJSON(res, jsonObject);
+        WebUtils.printAsJSON(res, new JSONObject().put("result", cubeBuild));
     }
 
     private boolean cubeTaskBuild(long userId, String baseTableSourceId, int updateType) {
@@ -48,16 +47,16 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
             } else {
                 cubeBuild = new CubeBuildManager().CubeBuildSingleTable(userId, baseTableSourceId, updateType);
             }
+            if (cubeBuild) {
+                BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
+                BIConfigureManagerCenter.getCubeConfManager().updateMultiPathLastCubeStatus(BIReportConstant.MULTI_PATH_STATUS.NOT_NEED_GENERATE_CUBE);
+                BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
+            }
         } catch (Exception e) {
             cubeBuild = false;
             CubeGenerationManager.getCubeManager().setStatus(userId, Status.WRONG);
             BILoggerFactory.getLogger().error("cube task build failed" + "\n" + e.getMessage());
             CubeGenerationManager.getCubeManager().setStatus(userId, Status.END);
-        }
-        if (cubeBuild) {
-            BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
-            BIConfigureManagerCenter.getCubeConfManager().updateMultiPathLastCubeStatus(BIReportConstant.MULTI_PATH_STATUS.NOT_NEED_GENERATE_CUBE);
-            BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
         }
         return cubeBuild;
     }
