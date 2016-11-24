@@ -44,7 +44,11 @@ public abstract class NumberCalculateLineFilter extends AbstractFilterValue<Numb
     private static final int CLOSE = 1;
     @BICoreField
     protected Operator t;
-	@BIIgnoreField
+    /**
+     * getter对象属性从@BIIgnoreField改成@BICoreField
+     * 详见bug BI-2350
+     */
+	@BICoreField
 	protected CalLineGetter getter = AvgLine.INSTANCE;
 	@BICoreField
 	private BIKey[] dimension;
