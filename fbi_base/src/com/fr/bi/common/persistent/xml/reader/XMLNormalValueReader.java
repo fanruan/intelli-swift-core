@@ -1,8 +1,8 @@
 package com.fr.bi.common.persistent.xml.reader;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.common.persistent.xml.BIXMLTag;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BITypeUtils;
 import com.fr.general.ComparatorUtils;
@@ -34,6 +34,7 @@ public class XMLNormalValueReader extends XMLValueReader {
                 fieldValue = beanWrapper.getOriginalValue(fieldName);
             } catch (IllegalArgumentException e) {
                 throw BINonValueUtils.beyondControl(e.getMessage() + " \ncurrent class:" + beanWrapper.getBeanClass() + ",and the field:" + fieldName + " is absent", e);
+//                BILoggerFactory.getLogger().debug(e.getMessage() + " \ncurrent class:" + beanWrapper.getBeanClass() + ",and the field:" + fieldName + " is absent", e);
             }
             if (useFieldDefaultValue(fieldValue)) {
                 /**

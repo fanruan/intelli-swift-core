@@ -1,6 +1,7 @@
 package com.finebi.cube.gen.oper;
 
 import com.finebi.cube.adapter.BIUserCubeManager;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.Cube;
@@ -11,7 +12,6 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
@@ -61,7 +61,7 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
             try {
                 biLogManager.infoTable(tableSource.getPersistentTable(), tableCostTime, UserControl.getInstance().getSuperManagerID());
             } catch (Exception e) {
-                BILoggerFactory.getLogger().error(tableSource.getTableName()+e.getMessage(), e);
+                BILoggerFactory.getLogger().error(tableSource.getTableName() + e.getMessage(), e);
             }
             return null;
         } catch (Exception e) {
