@@ -374,13 +374,12 @@ BI.extend(BI.Utils, {
         }, complete)
     },
 
-    checkCubeStatusByTable: function (table, callback, complete) {
-        Data.Req.reqCubeStatusByTable(table, function (data) {
+    reqCubeStatusCheck: function (callback, complete) {
+        Data.Req.reqCubeStatusCheck(function (data) {
             callback(data);
         }, complete)
     },
-    
-    checkTableExist: function(table, callback, complete) {
+    checkTableExist: function (table, callback, complete) {
         Data.Req.reqIsTableExist(table, function (data) {
             callback(data);
         }, complete)

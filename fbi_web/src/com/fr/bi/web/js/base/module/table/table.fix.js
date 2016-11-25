@@ -14,238 +14,33 @@ BI.FixTable = BI.inherit(BI.Table, {
         })
     },
 
-    _createFreezeFixTable: function () {
+    _createBottomLeftBody: function () {
+        var body = this.bottomLeftBody = this._body();
+        if (!this._isNeedFix) {
+            body.element.append(this._createCells(this.bottomLeftItems, this.columnLeft, this.mergeLeft, this.bottomLeftBodyTds, this.bottomLeftBodyItems));
+        }
+        return body;
+    },
+
+    _createBottomRightBody: function () {
+        var body = this.bottomRightBody = this._body();
+        if (!this._isNeedFix) {
+            body.element.append(this._createCells(this.bottomRightItems, this.columnRight, this.mergeRight, this.bottomRightBodyTds, this.bottomRightBodyItems, this.columnLeft.length));
+        }
+        return body;
+    },
+
+    _createBody: function () {
         var self = this, o = this.options;
-        var isRight = this._isRightFreeze();
-        var split = this._split(o.header);
-        this.topLeftItems = split.left;
-        this.topRightItems = split.right;
-        split = this._split(o.items);
-        this.bottomLeftItems = split.left;
-        this.bottomRightItems = split.right;
-
-        this.columnLeft = [];
-        this.columnRight = [];
-        BI.each(o.columnSize, function (i, size) {
-            if (o.freezeCols.contains(i)) {
-                self[isRight ? "columnRight" : "columnLeft"].push(size);
-            } else {
-                self[isRight ? "columnLeft" : "columnRight"].push(size);
-            }
-        });
-        this.mergeLeft = [];
-        this.mergeRight = [];
-        BI.each(o.mergeCols, function (i, col) {
-            if (o.freezeCols.contains(col)) {
-                self[isRight ? "mergeRight" : "mergeLeft"].push(col);
-            } else {
-                self[isRight ? "mergeLeft" : "mergeRight"].push(col);
-            }
-        });
-
-        var topLeft = this._createTopLeft();
-        var topRight = this._createTopRight();
-        var bottomLeft = this._createBottomLeft();
-        var bottomRight = this._createBottomRight();
-
-        this.scrollTopLeft = BI.createWidget({
-            type: "bi.adaptive",
-            cls: "scroll-top-left",
-            width: "100%",
-            height: "100%",
-            scrollable: false,
-            items: [topLeft]
-        });
-        this.scrollTopRight = BI.createWidget({
-            type: "bi.adaptive",
-            cls: "scroll-top-right",
-            width: "100%",
-            height: "100%",
-            scrollable: false,
-            items: [topRight]
-        });
-        this.scrollBottomLeft = BI.createWidget({
-            type: "bi.adaptive",
-            cls: "scroll-bottom-left",
-            width: "100%",
-            height: "100%",
-            scrollable: isRight || null,
-            scrollx: !isRight,
-            items: [bottomLeft]
-        });
-        this.scrollBottomRight = BI.createWidget({
-            type: "bi.adaptive",
-            cls: "scroll-bottom-right",
-            width: "100%",
-            height: "100%",
-            scrollable: !isRight || null,
-            scrollx: isRight,
-            items: [bottomRight]
-        });
-        this.topLeft = BI.createWidget({
-            type: "bi.adaptive",
-            cls: "top-left",
-            scrollable: false,
-            items: [this.scrollTopLeft]
-        });
-        this.topRight = BI.createWidget({
-            type: "bi.adaptive",
-            cls: "top-right",
-            scrollable: false,
-            items: [this.scrollTopRight]
-        });
-        this.bottomLeft = BI.createWidget({
-            type: "bi.adaptive",
-            cls: "bottom-left",
-            //scrollable: false,
-            items: [this.scrollBottomLeft]
-        });
-        this.bottomRight = BI.createWidget({
-            type: "bi.adaptive",
-            cls: "bottom-right",
-            //scrollable: false,
-            items: [this.scrollBottomRight]
-        });
-
-        var headerHeight = o.header.length * ((o.headerRowSize || o.rowSize) + 1) + 1;
-        var leftWidth = BI.sum(o.freezeCols, function (i, col) {
-            return o.columnSize[col] > 1 ? o.columnSize[col] + 1 : o.columnSize[col];
-        });
-
-        if (o.isNeedResize) {
-            var resizer;
-            var createResizer = function (size, position) {
-                var rowSize = self.getCalculateRegionRowSize();
-                resizer = BI.createWidget({
-                    type: "bi.layout",
-                    cls: "bi-resizer",
-                    width: size.width,
-                    height: rowSize[0] + rowSize[1]
-                });
-                BI.createWidget({
-                    type: "bi.absolute",
-                    element: "body",
-                    items: [{
-                        el: resizer,
-                        left: position.left,
-                        top: position.top - rowSize[0]
-                    }]
-                });
-            };
-            var resizeResizer = function (size, position) {
-                var rowSize = self.getCalculateRegionRowSize();
-                var columnSize = self.getCalculateRegionColumnSize();
-                var height = rowSize[0] + rowSize[1];
-                var sumSize = columnSize[0] + columnSize[1];
-                if (size.width > sumSize / 5 * 4) {
-                    size.width = sumSize / 5 * 4;
-                }
-                if (size.width < sumSize / 5) {
-                    size.width = sumSize / 5;
-                }
-                resizer.element.css({
-                    "left": position.left + "px",
-                    "width": size.width + "px",
-                    "height": height + "px"
-                });
-            };
-            var stopResizer = function () {
-                resizer && resizer.destroy();
-                resizer = null;
-            };
-            var handle;
-            if (o.freezeCols.length > 0 && o.freezeCols.length < o.columnSize.length) {
-                if (isRight) {
-                    var options = {
-                        handles: "w",
-                        minWidth: 15,
-                        helper: "clone",
-                        start: function (event, ui) {
-                            createResizer(ui.size, ui.position);
-                            self.fireEvent(BI.FixTable.EVENT_TABLE_BEFORE_REGION_RESIZE);
-                        },
-                        resize: function (e, ui) {
-                            resizeResizer(ui.size, ui.position);
-                            self.fireEvent(BI.FixTable.EVENT_TABLE_REGION_RESIZE);
-                            e.stopPropagation();
-                            //return false;
-                        },
-                        stop: function (e, ui) {
-                            stopResizer();
-                            if (o.isResizeAdapt) {
-                                var increment = ui.size.width - (BI.sum(self.columnRight) + self.columnRight.length);
-                                o.columnSize[self.columnLeft.length] += increment;
-                            } else {
-                                self.setRegionColumnSize(["fill", ui.size.width]);
-                            }
-                            self._resize();
-                            ui.element.css("left", "");
-                            self.fireEvent(BI.FixTable.EVENT_TABLE_AFTER_REGION_RESIZE);
-                        }
-                    };
-                    self.bottomRight.element.resizable(options);
-                    handle = $(".ui-resizable-handle", this.bottomRight.element).css("top", -1 * headerHeight);
-                } else {
-                    var options = {
-                        handles: "e",
-                        minWidth: 15,
-                        helper: "clone",
-                        start: function (event, ui) {
-                            createResizer(ui.size, ui.position);
-                            self.fireEvent(BI.FixTable.EVENT_TABLE_BEFORE_REGION_RESIZE);
-                        },
-                        resize: function (e, ui) {
-                            resizeResizer(ui.size, ui.position);
-                            self.fireEvent(BI.FixTable.EVENT_TABLE_REGION_RESIZE);
-                            e.stopPropagation();
-                            //return false;
-                        },
-                        stop: function (e, ui) {
-                            stopResizer();
-                            if (o.isResizeAdapt) {
-                                var increment = ui.size.width - (BI.sum(self.columnLeft) + self.columnLeft.length);
-                                o.columnSize[self.columnLeft.length - 1] += increment;
-                            } else {
-                                self.setRegionColumnSize([ui.size.width, "fill"]);
-                            }
-                            self._resize();
-                            self.fireEvent(BI.FixTable.EVENT_TABLE_AFTER_REGION_RESIZE);
-                        }
-                    };
-                    self.bottomLeft.element.resizable(options);
-                    handle = $(".ui-resizable-handle", this.bottomLeft.element).css("top", -1 * headerHeight);
-                }
-            }
+        this.body = this._body();
+        if (!this._isNeedFix) {
+            this.body.element.append(this._createCells(o.items, null, null, this.bodyTds, this.bodyItems));
         }
+        return this.body;
+    },
 
-        var regionColumnSize = o.regionColumnSize;
-        if (o.freezeCols.length === 0) {
-            regionColumnSize = isRight ? ['fill', 0] : [0, 'fill'];
-        } else if (o.freezeCols.length >= o.columnSize.length) {
-            regionColumnSize = isRight ? [0, 'fill'] : ['fill', 0];
-        }
-        this.partitions = BI.createWidget(BI.extend({
-            element: this.element
-        }, BI.LogicFactory.createLogic("table", BI.extend({}, o.logic, {
-            rows: 2,
-            columns: 2,
-            columnSize: regionColumnSize || (isRight ? ['fill', leftWidth] : [leftWidth, 'fill']),
-            rowSize: [headerHeight, 'fill'],
-            items: [[{
-                el: this.topLeft
-            }, {
-                el: this.topRight
-            }], [{
-                el: this.bottomLeft
-            }, {
-                el: this.bottomRight
-            }]]
-        }))));
-
-        //var scrollElement = isRight ? scrollBottomLeft.element : scrollBottomRight.element;
-        //var scrollTopElement = isRight ? scrollTopLeft.element : scrollTopRight.element;
-        //var otherElement = isRight ? scrollBottomRight.element : scrollBottomLeft.element;
-
+    _initFreezeScroll: function () {
+        var self = this;
         scroll(this.scrollBottomRight.element, this.scrollTopRight.element, this.scrollBottomLeft.element);
         scroll(this.scrollBottomLeft.element, this.scrollTopLeft.element, this.scrollBottomRight.element);
 
@@ -254,10 +49,13 @@ BI.FixTable = BI.inherit(BI.Table, {
             var fn = function (event, delta, deltaX, deltaY) {
                 var inf = self._getScrollOffsetAndDur(event);
                 if (deltaY < 0 || deltaY > 0) {
-                    if (scrolling) {
+                    if (!self._isNeedFix && scrolling) {
                         scrollElement[0].scrollTop = scrolling;
                     }
                     scrolling = scrollElement[0].scrollTop - delta * inf.offset;
+                    if (Math.abs(scrollElement[0].scrollTop - scrolling) < 0.1) {
+                        return;
+                    }
                     var stopPropagation = false;
                     var st = scrollElement[0].scrollTop;
                     scrollElement[0].scrollTop = scrolling;
@@ -279,138 +77,75 @@ BI.FixTable = BI.inherit(BI.Table, {
                         }
                     });
 
-
-                    //otherElement[0].scrollTop = scrollTop;
-                    //scrollElement[0].scrollTop = scrollTop;
-                    //self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL, scrollTop);
                     if (stopPropagation === true) {
                         event.stopPropagation();
                         return false;
                     }
                     return;
                 }
-                //if (deltaX < 0 || deltaX > 0) {
-                //    if (scrollingX) {
-                //        scrollElement[0].scrollLeft = scrollingX;
-                //    }
-                //    scrollingX = scrollElement[0].scrollLeft + delta * inf.offset;
-                //    var stopPropagation = false;
-                //    var sl = scrollElement[0].scrollLeft;
-                //    scrollElement[0].scrollLeft = scrollingX;
-                //    if (scrollElement[0].scrollLeft !== sl) {
-                //        stopPropagation = true;
-                //    }
-                //    scrollElement[0].scrollLeft = sl;
-                //    self._animateScrollTo(scrollElement, scrollElement[0].scrollLeft, scrollingX, inf.dur, "linear", {
-                //        direction: "left",
-                //        onStart: function () {
-                //        },
-                //        onUpdate: function (left) {
-                //            scrollTopElement[0].scrollLeft = left;
-                //            self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL, null, left);
-                //        },
-                //        onComplete: function () {
-                //            self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL, null, scrollingX);
-                //            scrollingX = null;
-                //        }
-                //    });
-                //
-                //
-                //    //otherElement[0].scrollTop = scrollTop;
-                //    //scrollElement[0].scrollTop = scrollTop;
-                //    //self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL, scrollTop);
-                //    if (stopPropagation === true) {
-                //        event.stopPropagation();
-                //        return false;
-                //    }
-                //}
             };
             scrollElement.mousewheel(fn);
-            var scrollTop = 0, scrollLeft = 0;
-            scrollElement.scroll(function (e) {
-                var change = false;
-                if (scrollElement.scrollTop() != scrollTop) {
-                    var old = otherElement.scrollTop();
-                    otherElement.scrollTop(scrollElement.scrollTop());
-                    scrollTop = scrollElement.scrollTop();
-                    if (Math.abs(old - otherElement[0].scrollTop) > 0.1) {
-                        e.stopPropagation();
-                        change = true;
-                    }
-                }
-                if (scrollElement.scrollLeft() != scrollLeft) {
-                    var old = scrollTopElement.scrollLeft();
-                    scrollTopElement.scrollLeft(scrollElement.scrollLeft());
-                    scrollLeft = scrollElement.scrollLeft();
-                    if (Math.abs(old - scrollTopElement[0].scrollLeft) > 0.1) {
-                        e.stopPropagation();
-                        change = true;
-                    }
-                }
-                // self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL);
-                if (change === true) {
-                    e.stopPropagation();
-                    //return false;
-                }
-            });
         }
+    },
 
-        this._resize = function () {
-            if (self.scrollBottomLeft.element.is(":visible")) {
-                self.scrollBottomLeft.element.css({"overflow-x": "auto"});
-                self.scrollBottomRight.element.css({"overflow-x": "auto"});
-                self.setColumnSize(o.columnSize);
-                if (isRight) {
-                    self.scrollBottomLeft.element.css({"overflow-y": "auto"});
-                } else {
-                    self.scrollBottomRight.element.css({"overflow-y": "auto"});
+    _initNormalScroll: function () {
+        var self = this;
+        var scrolling, scrollX;
+        this.scrollBottomRight.element.mousewheel(function (event, delta, deltaX, deltaY) {
+            var inf = self._getScrollOffsetAndDur(event);
+            if (deltaY < 0 || deltaY > 0) {
+                var ele = self.scrollBottomRight.element;
+                if (!self._isNeedFix && scrolling) {
+                    ele[0].scrollTop = scrolling;
                 }
-                if (self.scrollBottomLeft.element.hasHorizonScroll() || self.scrollBottomRight.element.hasHorizonScroll()) {
-                    self.scrollBottomLeft.element.css("overflow-x", "scroll");
-                    self.scrollBottomRight.element.css("overflow-x", "scroll");
-                }
-                if (self.scrollBottomRight.element.hasVerticalScroll()) {
-                    self.scrollTopRight.element.css("overflow-y", "scroll");
-                } else {
-                    self.scrollTopRight.element.css("overflow-y", "hidden");
-                }
-                if (self.scrollBottomLeft.element.hasVerticalScroll()) {
-                    self.scrollTopLeft.element.css("overflow-y", "scroll");
-                } else {
-                    self.scrollTopLeft.element.css("overflow-y", "hidden");
-                }
-                self.scrollTopLeft.element[0].scrollLeft = self.scrollBottomLeft.element[0].scrollLeft;
-                self.scrollTopRight.element[0].scrollLeft = self.scrollBottomRight.element[0].scrollLeft;
-                self.scrollBottomLeft.element[0].scrollTop = self.scrollBottomRight.element[0].scrollTop;
-                //调整拖拽handle的高度
-                if (o.isNeedResize) {
-                    handle && handle.css("height", self.bottomLeft.element.height() + headerHeight);
-                }
-            }
-        };
 
-        BI.nextTick(function () {
-            if (self.element.is(":visible")) {
-                self._resize();
-                self.fireEvent(BI.FixTable.EVENT_TABLE_AFTER_INIT);
-            }
-        });
-        BI.Resizers.add(this.getName(), function (e) {
-            if (BI.isWindow(e.target) && self.element.is(":visible")) {
-                self._resize();
-                self.fireEvent(BI.FixTable.EVENT_TABLE_RESIZE);
+                scrolling = ele[0].scrollTop - delta * inf.offset;
+                if (Math.abs(ele[0].scrollTop - scrolling) < 0.1) {
+                    return;
+                }
+                var stopPropagation = false;
+                var st = ele[0].scrollTop;
+                ele[0].scrollTop = scrolling;
+                if (ele[0].scrollTop !== st) {
+                    stopPropagation = true;
+                }
+                ele[0].scrollTop = st;
+                self._animateScrollTo(ele, ele[0].scrollTop, scrolling, inf.dur, "linear", {
+                    onStart: function () {
+                    },
+                    onUpdate: function (top) {
+                        self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL, top);
+                    },
+                    onComplete: function () {
+                        self._scrollBounce(scrolling);
+                        self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL, scrolling);
+                        scrolling = null;
+                    }
+                });
+                //var scrollTop = self.scrollBottomRight.element[0].scrollTop = self.scrollBottomRight.element[0].scrollTop - delta * offset;
+                //self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop);
+                if (stopPropagation === true) {
+                    event.stopPropagation();
+                    return false;
+                }
             }
         });
     },
 
     _scroll: function (scrollTop) {
+        var self = this, o = this.options;
+        console.log(scrollTop);
         if (this._isNeedFix) {
-            var self = this, o = this.options;
             var pos = this._helper.scrollTo(scrollTop);
             this._rowBuffer.getRows(pos.index || 0, pos.offset || 0);
-            this.bottomLeftBody.element.html(this._createBodyCells(this.bottomLeftItems, this.columnLeft, this.mergeLeft, this.bottomLeftBodyTds, this.bottomLeftBodyItems, 0, null, pos.index, pos.offset));
-            this.bottomRightBody.element.html(this._createBodyCells(this.bottomRightItems, this.columnRight, this.mergeRight, this.bottomRightBodyTds, this.bottomRightBodyItems, this.columnLeft.length, null, pos.index, pos.offset));
-            o.afterScroll();
+            if (o.isNeedFreeze === true) {
+                this.bottomLeftBody.element.html(this._createBodyCells(this.bottomLeftItems, this.columnLeft, this.mergeLeft, this.bottomLeftBodyTds, this.bottomLeftBodyItems, 0, null, pos.index, pos.offset));
+                this.bottomRightBody.element.html(this._createBodyCells(this.bottomRightItems, this.columnRight, this.mergeRight, this.bottomRightBodyTds, this.bottomRightBodyItems, this.columnLeft.length, null, pos.index, pos.offset));
+                o.afterScroll();
+            }
+            if (o.isNeedFreeze === false) {
+                this.body.element.html(this._createBodyCells(o.items, o.columnSize, o.mergeCols, this.bodyTds, this.bodyItems, 0, o.rowSize, pos.index, pos.offset));
+            }
         }
     },
 
@@ -418,15 +153,19 @@ BI.FixTable = BI.inherit(BI.Table, {
         if (this._isNeedFix) {
             var self = this, o = this.options;
             if (!this.__scrollBounce) {
-                this.__scrollBounce = BI.debounce(BI.bind(this._scroll, this), 100);
+                this.__scrollBounce = BI.debounce(BI.bind(this._scroll, this), 30);
             }
             this.__scrollBounce(top);
         }
     },
 
     resize: function () {
-        this._initScroller();
-        this._resize && this._resize();
+        var self = this;
+        BI.nextTick(function () {
+            self._initScroller();
+            self._scroll(0);
+            self._resize && self._resize();
+        });
     },
 
     _createBodyCells: function (items, columnSize, mergeCols, TDs, Ws, start, rowSize) {
@@ -509,135 +248,6 @@ BI.FixTable = BI.inherit(BI.Table, {
         return frag;
     },
 
-    _createNormalFixTable: function () {
-        var self = this, o = this.options, table = this._table();
-        this.colgroupTds = {};
-        this.headerTds = {};
-        this.footerTds = {};
-        this.bodyTds = {};
-
-        this.headerItems = {};
-        this.footerItems = {};
-        this.bodyItems = {};
-        var colgroup = this._createColGroup(null, this.colgroupTds);
-        var header = this._createHeader(null, null, this.headerTds, this.headerItems);
-        var footer = this._createFooter(null, this.footerTds, this.footerItems);
-        var body = this._createBody(null, null, this.bodyTds, this.bodyItems);
-
-        BI.createWidget({
-            type: "bi.adaptive",
-            element: table,
-            items: [colgroup, header, footer, body]
-        });
-
-        var w = BI.sum(this.options.columnSize) || undefined;
-        w = this._calculateWidth(w);
-        if (BI.isNumeric(w) && w > 1) {
-            w += o.columnSize.length;
-        }
-        this.tableContainer = BI.createWidget({
-            type: "bi.adaptive",
-            width: this._calculateWidth(w),
-            items: [table]
-        });
-
-        this.scrollContainer = BI.createWidget({
-            type: "bi.adaptive",
-            width: "100%",
-            height: "100%",
-            cls: "scroll-bottom-right",
-            scrollable: true,
-            items: [this.tableContainer]
-        });
-
-        this.bottomRight = BI.createWidget({
-            type: "bi.adaptive",
-            cls: "bottom-right",
-            element: this.element,
-            scrollable: false,
-            items: [this.scrollContainer]
-        });
-        var scrolling, scrollX;
-        this.scrollContainer.element.mousewheel(function (event, delta, deltaX, deltaY) {
-            var inf = self._getScrollOffsetAndDur(event);
-            if (deltaY < 0 || deltaY > 0) {
-                var ele = self.scrollContainer.element;
-                if (scrolling) {
-                    ele[0].scrollTop = scrolling;
-                }
-
-                scrolling = ele[0].scrollTop - delta * inf.offset;
-                var stopPropagation = false;
-                var st = ele[0].scrollTop;
-                ele[0].scrollTop = scrolling;
-                if (ele[0].scrollTop !== st) {
-                    stopPropagation = true;
-                }
-                ele[0].scrollTop = st;
-                self._animateScrollTo(ele, ele[0].scrollTop, scrolling, inf.dur, "linear", {
-                    onStart: function () {
-                    },
-                    onUpdate: function (top) {
-                        self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL, top);
-                    },
-                    onComplete: function () {
-                        self._scroll(scrolling);
-                        self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL, scrolling);
-                        scrolling = null;
-                    }
-                });
-                //var scrollTop = self.scrollContainer.element[0].scrollTop = self.scrollContainer.element[0].scrollTop - delta * offset;
-                //self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL, scrollTop);
-                if (stopPropagation === true) {
-                    event.stopPropagation();
-                    return false;
-                }
-            }
-        });
-
-        var scrollTop = 0, scrollLeft = 0;
-        this.scrollContainer.element.scroll(function (e) {
-            var change = false;
-            var scrollElement = self.scrollContainer.element;
-            if (scrollElement.scrollTop() != scrollTop) {
-                if (Math.abs(scrollElement.scrollTop() - scrollTop) > 0.1) {
-                    e.stopPropagation();
-                    change = true;
-                }
-                scrollTop = scrollElement.scrollTop();
-            }
-            if (scrollElement.scrollLeft() != scrollLeft) {
-                if (Math.abs(scrollElement.scrollLeft() - scrollLeft) > 0.1) {
-                    e.stopPropagation();
-                    change = true;
-                }
-                scrollLeft = scrollElement.scrollLeft();
-            }
-            self.fireEvent(BI.FixTable.EVENT_TABLE_SCROLL);
-            if (change === true) {
-                e.stopPropagation();
-                //return false;
-            }
-            return false;
-        });
-        this._resize = function () {
-            if (self.element.is(":visible")) {
-                self.setColumnSize(o.columnSize);
-            }
-        };
-        BI.Resizers.add(this.getName(), function (e) {
-            if (self.element.is(":visible") && BI.isWindow(e.target)) {
-                self._resize();
-                self.fireEvent(BI.FixTable.EVENT_TABLE_RESIZE);
-            }
-        });
-        BI.nextTick(function () {
-            if (self.element.is(":visible")) {
-                self.fireEvent(BI.FixTable.EVENT_TABLE_AFTER_INIT);
-            }
-        });
-    },
-
     _init: function () {
         BI.FixTable.superclass._init.apply(this, arguments);
     },
@@ -654,8 +264,8 @@ BI.FixTable = BI.inherit(BI.Table, {
                 this._scrollBounce(scrollTop);
             }
         } else {
-            if (this.scrollContainer.element[0].scrollTop !== scrollTop) {
-                this.scrollContainer.element[0].scrollTop = scrollTop;
+            if (this.scrollBottomRight.element[0].scrollTop !== scrollTop) {
+                this.scrollBottomRight.element[0].scrollTop = scrollTop;
             }
         }
     },
@@ -683,11 +293,13 @@ BI.FixTable = BI.inherit(BI.Table, {
         }
         this._initScroller();
         if (this.options.isNeedFreeze) {
-            this._createFreezeFixTable();
-            this._scrollBounce(0);
+            this._createFreezeTable();
         } else {
-            this._createNormalFixTable();
+            this._createNormalTable();
         }
+        BI.nextTick(function () {
+            self._scroll(0);
+        });
     },
 
     destroy: function () {
