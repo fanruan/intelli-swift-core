@@ -3,6 +3,7 @@ package com.fr.bi.stable.data.source;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.TableData;
 import com.fr.bi.base.BIBasicCore;
 import com.fr.bi.base.BICore;
@@ -13,8 +14,8 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.engine.index.key.IndexKey;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.exception.FieldNameDuplicateException;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -80,9 +81,28 @@ public abstract class AbstractTableSource implements CubeTableSource {
     }
 
     //重新获取数据 guy
-    public IPersistentTable reGetBiTable() {
-        dbTable = null;
-        return getPersistentTable();
+    public void refreshDBTable() {
+        PersistentTable tempTable = dbTable;
+        try {
+            dbTable = (PersistentTable) getPersistentTable();
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(AbstractTableSource.class).error(e.getMessage(), e);
+            dbTable = tempTable;
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
+    public void refreshFields() {
+        Map<String, ICubeFieldSource> tempFields = new HashMap<String, ICubeFieldSource>(fields);
+        try {
+            fields.clear();
+            getFields();
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(AbstractTableSource.class).error(e.getMessage(), e);
+            fields.clear();
+            fields.putAll(tempFields);
+            throw BINonValueUtils.beyondControl(e);
+        }
     }
 
     @Override
@@ -235,7 +255,9 @@ public abstract class AbstractTableSource implements CubeTableSource {
 
     public Map<String, ICubeFieldSource> getFields() {
         try {
-            this.fields = getFieldFromPersistentTable();
+            if (fields.isEmpty()) {
+                this.fields = getFieldFromPersistentTable();
+            }
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
@@ -278,8 +300,8 @@ public abstract class AbstractTableSource implements CubeTableSource {
             String fieldName = field.getFieldName();
             ICubeFieldSource old = this.fields.get(fieldName);
             boolean isUsable = old == null || old.isUsable();
-            if (fields.containsKey(fieldName)){
-                throw new FieldNameDuplicateException("The field name:"+ fieldName+" is duplicated");
+            if (fields.containsKey(fieldName)) {
+                throw new FieldNameDuplicateException("The field name:" + fieldName + " is duplicated");
             }
             fields.put(fieldName, field);
         }
@@ -297,15 +319,8 @@ public abstract class AbstractTableSource implements CubeTableSource {
 
     @Override
     public void refresh() {
-        PersistentTable temp = dbTable;
-        try {
-            if (reGetBiTable() == null) {
-                dbTable = temp;
-            }
-        } catch (Exception e) {
-            dbTable = temp;
-        }
-
+        refreshDBTable();
+        refreshFields();
     }
 
     public void envChange() {
@@ -361,6 +376,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
         if (jo.has("temp_name")) {
             this.tempName = jo.getString("temp_name");
         }
+
     }
 
     @Override
@@ -403,7 +419,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
     }
 
     @Override
-    public boolean canExecute() throws Exception{
+    public boolean canExecute() throws Exception {
         return true;
     }
 }

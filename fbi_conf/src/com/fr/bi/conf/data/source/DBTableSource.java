@@ -83,11 +83,6 @@ public class DBTableSource extends AbstractTableSource {
         return tableName;
     }
 
-    @Override
-    public IPersistentTable reGetBiTable() {
-        return super.reGetBiTable();
-    }
-
 
     /**
      * @return
@@ -100,6 +95,7 @@ public class DBTableSource extends AbstractTableSource {
     @Override
     public IPersistentTable getPersistentTable() {
         if (dbTable == null) {
+            BILoggerFactory.getLogger(DBTableSource.class).info("The table:"+this.getTableName()+"extract data from db");
             dbTable = BIDBUtils.getDBTable(dbName, tableName);
         }
         return dbTable;
@@ -340,6 +336,7 @@ public class DBTableSource extends AbstractTableSource {
         if (jo.has("table_name")) {
             tableName = jo.getString("table_name");
         }
+
     }
 
     @Override

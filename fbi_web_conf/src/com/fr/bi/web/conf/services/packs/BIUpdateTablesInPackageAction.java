@@ -15,13 +15,17 @@ import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIGroupDuplicateException;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
+import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.data.source.ExcelTableSource;
 import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.conf.manager.excelview.source.ExcelViewSource;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.exception.BIKeyDuplicateException;
+import com.fr.bi.exception.BIRuntimeException;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BITableID;
+import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
@@ -36,6 +40,7 @@ import com.fr.web.utils.WebUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
+
 
 public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
 
@@ -100,7 +105,37 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
             JSONObject tableJson = tableDataJO.optJSONObject(tableId);
             if (tableJson != null) {
                 BusinessTable table = pack.getSpecificTable(new BITableID(tableId));
-                BICubeConfigureCenter.getDataSourceManager().addTableSource(table, TableSourceFactory.createTableSource(tableJson, userId));
+                if (BICubeConfigureCenter.getDataSourceManager().containTableSource(table)) {
+                    CubeTableSource tableSource = TableSourceFactory.createTableSource(tableJson, userId);
+                    if (tableSource instanceof DBTableSource) {
+                        /**
+                         *如果不是ETL的话，重用保存的TableSource
+                         */
+                        CubeTableSource storeTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSource(table);
+                        BICubeConfigureCenter.getDataSourceManager().addTableSource(table, storeTableSource);
+                    } else {
+                        CubeTableSource storeTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSource(table);
+                        /**
+                         * 如果ETL已经存在，那么不再刷新字段。
+                         * 因为如果数据库连接断掉，那么字段没有的。
+                         */
+                        if (ComparatorUtils.equals(storeTableSource.getSourceID(), tableSource.getSourceID())) {
+                            addTableSource(table, storeTableSource);
+                        } else {
+                            /**
+                             * 否则必须确保保存的TableSource是完整的。
+                             * 如果首次添加ETL连接断掉，依然没有字段。
+                             */
+                            ensureFieldInitial(tableSource);
+                            addTableSource(table, tableSource);
+                        }
+                    }
+                } else {
+                    CubeTableSource tableSource = TableSourceFactory.createTableSource(tableJson, userId);
+                    ensureFieldInitial(tableSource);
+                    addTableSource(table, tableSource);
+                }
+
             } else {
                 BILoggerFactory.getLogger().error("table : id = " + tableId + " in pack: " + packageName + " save failed");
             }
@@ -116,6 +151,18 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
         updateExcelTables(userId, getExcelTable(oldTables, pack.getBusinessTables()));
 
         writeResource(userId);
+    }
+
+    private void ensureFieldInitial(CubeTableSource tableSource) {
+        ((AbstractTableSource) tableSource).getRecordedFields();
+    }
+
+    private void addTableSource(BusinessTable businessTable, CubeTableSource source) throws BIKeyDuplicateException {
+        try {
+            BICubeConfigureCenter.getDataSourceManager().addTableSource(businessTable, source);
+        } catch (BIRuntimeException e) {
+            BILoggerFactory.getLogger(BIUpdateTablesInPackageAction.class).error(e.getMessage(), e);
+        }
     }
 
     private List<CubeTableSource> getExcelTable(Set<BusinessTable> oldTables, Set<BusinessTable> newTables) {
