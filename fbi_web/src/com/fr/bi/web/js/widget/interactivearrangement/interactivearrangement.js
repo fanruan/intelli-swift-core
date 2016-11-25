@@ -339,6 +339,14 @@ BI.InteractiveArrangement = BI.inherit(BI.Widget, {
         return other;
     },
 
+    getClientWidth: function () {
+        return this.arrangement.getClientWidth();
+    },
+
+    getClientHeight: function () {
+        return this.arrangement.getClientHeight();
+    },
+
     getPosition: function (name, position, size) {
         var regions = this.getAllRegions();
         var me;

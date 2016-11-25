@@ -1,9 +1,12 @@
 @import "../../bibase";
 
 .bi-fit-widget {
-  .transition(all 200ms ease);
+  -webkit-transition: left,top 200ms ease;
+  -moz-transition: left,top 200ms ease;
+  -o-transition: left,top 200ms ease;
+  transition: left,top 200ms ease;
   &.selected {
-    .transition(all 0ms ease);
+    .transition(none);
   }
   & .fit-widget-draggable {
     cursor: url(@cursor), auto;

@@ -7,10 +7,6 @@
  */
 BI.Arrangement = BI.inherit(BI.Widget, {
 
-    _const: {
-        GRID_HEIGHT: 80
-    },
-
     _defaultConfig: function () {
         return BI.extend(BI.Arrangement.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-arrangement",
@@ -1986,8 +1982,8 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         var perWidth = this._getOneWidthPortion();
         var widthPortion = Math.round(position.width / perWidth);
         var leftPortion = Math.round(position.left / perWidth);
-        var topPortion = Math.round(position.top / this._const.GRID_HEIGHT);
-        var heightPortion = Math.round(position.height / this._const.GRID_HEIGHT);
+        var topPortion = Math.round(position.top / BI.Arrangement.GRID_HEIGHT);
+        var heightPortion = Math.round(position.height / BI.Arrangement.GRID_HEIGHT);
         // if (leftPortion > BI.Arrangement.PORTION) {
         //     leftPortion = BI.Arrangement.PORTION;
         // }
@@ -2015,9 +2011,9 @@ BI.Arrangement = BI.inherit(BI.Widget, {
         var perWidth = this._getOneWidthPortion();
         return {
             left: position.x * perWidth,
-            top: position.y * this._const.GRID_HEIGHT,
+            top: position.y * BI.Arrangement.GRID_HEIGHT,
             width: position.w * perWidth,
-            height: position.h * this._const.GRID_HEIGHT
+            height: position.h * BI.Arrangement.GRID_HEIGHT
         };
     },
 
@@ -2886,7 +2882,8 @@ BI.Arrangement = BI.inherit(BI.Widget, {
     }
 });
 BI.extend(BI.Arrangement, {
-    PORTION: 12,
+    PORTION: 24,
+    GRID_HEIGHT: 50,
     LAYOUT_TYPE: {
         ADAPTIVE: BICst.DASHBOARD_LAYOUT_ADAPT,
         FREE: BICst.DASHBOARD_LAYOUT_FREE,

@@ -269,6 +269,14 @@ BI.AdaptiveArrangement = BI.inherit(BI.Widget, {
         }
     },
 
+    getClientWidth: function () {
+        return this.arrangement.getClientWidth();
+    },
+
+    getClientHeight: function () {
+        return this.arrangement.getClientHeight();
+    },
+
     getDirectRelativeRegions: function (name, direction) {
         return this.arrangement.getDirectRelativeRegions(name, direction);
     },
