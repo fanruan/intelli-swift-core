@@ -32,6 +32,7 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         var self = this, c = this.constants;
         formatRangeLegend();
         delete config.legend;
+        delete config.zoom;
         config.plotOptions.dataLabels.enabled = this.config.show_data_label;
         config.plotOptions.tooltip.shared = true;
         var formatterArray = [];

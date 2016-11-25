@@ -50,6 +50,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this;
+        delete config.zoom;
         config.colors = this.config.chart_color;
         config.plotOptions.style = formatChartStyle();
         config.plotOptions.marker = {"symbol": "circle", "radius": 4.5, "enabled": true};
