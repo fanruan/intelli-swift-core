@@ -72,6 +72,11 @@ public class BICubeManager implements BICubeManagerProvider {
         return getCubeManager(userId).getStatus();
     }
 
+    @Override
+    public void setStatus(long userId, Status status) {
+        getCubeManager(userId).setStatus(status);
+    }
+
     /**
      * 若存在相同任务则返回false,不添加
      * 添加成功返回true
