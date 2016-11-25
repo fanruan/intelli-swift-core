@@ -26,11 +26,9 @@ BI.DimensionSwitchCardShow = BI.inherit(BI.Widget, {
         var widgetName = this.nameMap[name];
         BI.each(this.layout.getWidgets(), function (id, widget) {
             if (widget.getName() === widgetName) {
-                widget.element.css({"height": "100%"});
-                widget.getSortableCenter().element.sortable("refreshPositions");
+                widget.setVisible(true);
             } else {
-                widget.element.css({"height": "0%"});
-                widget.getSortableCenter().element.sortable("refreshPositions");
+                widget.setVisible(false);
             }
         });
     },
