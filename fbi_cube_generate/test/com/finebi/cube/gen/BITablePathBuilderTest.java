@@ -60,12 +60,12 @@ public class BITablePathBuilderTest extends BICubeTestBase {
         try {
             buildTablePath();
             CubeRelationEntityGetterService getterService = cube.getCubeRelation(BITableKeyUtils.convert(BIMemoryDataSourceFactory.generateTableA()), BICubePathTestTool.getABC());
-            assertEquals(getterService.getBitmapIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{1, 7}));
-            assertEquals(getterService.getBitmapIndex(1), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{4, 6}));
-            assertEquals(getterService.getBitmapIndex(2), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{}));
-            assertEquals(getterService.getBitmapIndex(3), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{}));
-            assertEquals(getterService.getBitmapIndex(4), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{}));
-            assertEquals(getterService.getNULLIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{0, 2, 3, 5}));
+            assertEquals(getterService.getBitmapIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new int[]{1, 7}));
+            assertEquals(getterService.getBitmapIndex(1), RoaringGroupValueIndex.createGroupValueIndex(new int[]{4, 6}));
+            assertEquals(getterService.getBitmapIndex(2), RoaringGroupValueIndex.createGroupValueIndex(new int[]{}));
+            assertEquals(getterService.getBitmapIndex(3), RoaringGroupValueIndex.createGroupValueIndex(new int[]{}));
+            assertEquals(getterService.getBitmapIndex(4), RoaringGroupValueIndex.createGroupValueIndex(new int[]{}));
+            assertEquals(getterService.getNULLIndex(0), RoaringGroupValueIndex.createGroupValueIndex(new int[]{0, 2, 3, 5}));
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);

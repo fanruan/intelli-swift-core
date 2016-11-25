@@ -16,6 +16,7 @@ import com.fr.bi.conf.report.widget.field.filtervalue.string.StringFilterValue;
 import com.fr.bi.field.filtervalue.string.StringFilterValueUtils;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
@@ -169,13 +170,12 @@ public abstract class StringRangeFilterValue extends AbstractFilterValue<String>
         }
         String[] value = valueSet.getValues().toArray(new String[valueSet.getValues().size()]);
         boolean hasNull = valueSet.getValues().contains(StringUtils.EMPTY);
-        GroupValueIndex sgvi = GVIFactory.createAllEmptyIndexGVI();
-        Object[] indexs = sgm.getGroupIndex(value);
+        GroupValueIndexOrHelper helper = new GroupValueIndexOrHelper();
         boolean hasValue = value.length > 0;
-        for (int i = 0, len = indexs.length; i < len; i++) {
-            GroupValueIndex gvi = (GroupValueIndex) indexs[i];
+        for (int i = 0, len = value.length; i < len; i++) {
+            GroupValueIndex gvi = sgm.getIndex(value[i]);
             if (gvi != null) {
-                sgvi.or(gvi);
+                helper.add(gvi);
             }
         }
         if (hasNull) {
@@ -183,10 +183,9 @@ public abstract class StringRangeFilterValue extends AbstractFilterValue<String>
             if (nullres == null) {
                 nullres = GVIFactory.createAllEmptyIndexGVI();
             }
-            if (sgvi != null) {
-                sgvi.or(nullres);
-            }
+            helper.add(nullres);
         }
+        GroupValueIndex sgvi = helper.compute();
         return hasValue ? (valueSet.isContains() ? sgvi : sgvi.NOT(eti.getRowCount())) : null;
     }
 

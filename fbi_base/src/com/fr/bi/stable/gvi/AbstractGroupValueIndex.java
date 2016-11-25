@@ -1,5 +1,7 @@
 package com.fr.bi.stable.gvi;
 
+import com.fr.bi.stable.gvi.roaringbitmap.RoaringBitmap;
+
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -74,4 +76,6 @@ public abstract class AbstractGroupValueIndex implements GroupValueIndex {
 	public GroupValueIndex clone(){
 		return this;
     }
+
+    protected abstract RoaringBitmap getBitMap();
 }
