@@ -3042,6 +3042,9 @@ public class ResourceHelper {
                 //带样式表格
                 "com/fr/bi/web/js/components/styletable/styletable.js",
 
+                //数据预处理表格
+                "com/fr/bi/web/js/components/pretreatedtable/pretreatedtable.js",
+
                 //模板管理
                 "com/fr/bi/web/js/components/templatemanager/liststyleitems/report.listview.item.js",
                 "com/fr/bi/web/js/components/templatemanager/liststyleitems/folder.listview.item.js",
