@@ -279,9 +279,11 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         var setting = chartOptions.dataLabelSetting, identifier = '';
         if(setting.showCategoryName) {
             identifier += '${CATEGORY}'
-        } else if(setting.showSeriesName) {
+        }
+        if(setting.showSeriesName) {
             identifier += '${SERIES}'
-        } else if(setting.showValue) {
+        }
+        if(setting.showValue) {
             identifier += '${VALUE}'
         }
         return identifier
@@ -310,16 +312,16 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                 format = config.yAxis[item.yAxis].formatter;
 
                 item.dataLabels = {
-                    align: this._setDataLabelPosition(chartOptions),
+                    align: self._setDataLabelPosition(chartOptions),
                     autoAdjust: true,
                     style: chartOptions.chartFont,
                     enabled: true,
                     formatter: {
-                        identifier: this._setDataLabelContent(chartOptions),
+                        identifier: self._setDataLabelContent(chartOptions),
                         valueFormat: format,
                     }
                 };
-                self.formatDataLabelForEachData(item.data, format);
+                self.formatDataLabelForEachData(item.data, format, chartOptions);
             });
         }
     },
@@ -329,12 +331,12 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         if (state === true) {
             BI.each(items, function (idx, item) {
                 item.dataLabels = {
-                    align: this._setDataLabelPosition(chartOptions),
+                    align: self._setDataLabelPosition(chartOptions),
                     autoAdjust: true,
                     style: chartOptions.chartFont,
                     enabled: true,
                     formatter: {
-                        identifier: this._setDataLabelContent(chartOptions),
+                        identifier: self._setDataLabelContent(chartOptions),
                         valueFormat: format
                     }
                 };
@@ -343,16 +345,17 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
     },
 
     formatDataLabelForEachData: function (items, format, chartOptions) {
+        var self = this;
         BI.each(items, function (idx, item) {
             if (item.dataLabels) {
                 var styleSetting = item.dataLabels.styleSetting || {};
                 item.dataLabels.formatter = {
-                    identifier: this._setDataLabelContent(chartOptions),
+                    identifier: chartOptions ? self._setDataLabelContent(chartOptions) : '${VALUE}',
                     valueFormat: format
                 };
                 item.dataLabels.enabled = true;
                 item.dataLabels.autoAdjust = true;
-                item.dataLabels.align = this._setDataLabelPosition(chartOptions);
+                item.dataLabels.align = chartOptions ? self._setDataLabelPosition(chartOptions) : 'outside';
                 item.dataLabels.style = {
                     "fontFamily": "inherit",
                     "color": "#808080",

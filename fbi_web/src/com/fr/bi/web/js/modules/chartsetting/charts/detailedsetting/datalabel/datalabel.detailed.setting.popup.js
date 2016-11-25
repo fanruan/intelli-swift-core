@@ -80,6 +80,10 @@ BI.DataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
             }]
         });
 
+        this.position.on(BI.ButtonGroup.EVENT_CHANGE, function () {
+            self.fireEvent(BI.DataLabelDetailedSettingPopup.EVENT_CHANGE)
+        });
+
         var positionWrapper = this._createWrapper(BI.i18nText("BI-Show_Position"), this.position);
 
         //字体设置

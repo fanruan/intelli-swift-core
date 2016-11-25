@@ -88,7 +88,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
                         valueFormat: config.yAxis[0].formatter
                     }
                 };
-                self.formatDataLabelForEachData(item.data, config.yAxis[0].formatter);
+                self.formatDataLabelForEachData(item.data, config.yAxis[0].formatter, self.config);
             });
         }
 
