@@ -10,11 +10,13 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.BICubeManager;
+import com.fr.bi.cal.generate.CubeBuildManager;
 import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIGroupDuplicateException;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 import com.fr.bi.conf.data.source.DBTableSource;
+import com.fr.bi.conf.data.source.ExcelTableSource;
 import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.conf.manager.excelview.source.ExcelViewSource;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
@@ -37,9 +39,8 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
+
 
 public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
 
@@ -95,8 +96,9 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
         JSONObject updateSettingJO = updateSettings != null ? new JSONObject(updateSettings) : new JSONObject();
 
         BIBusinessPackage pack = (BIBusinessPackage) EditPackageConfiguration(packageName, groupName, packageId, userId);
+        Set<BusinessTable> oldTables = new HashSet<BusinessTable>();
+        oldTables.addAll(pack.getBusinessTables());
         pack.parseJSON(createTablesJsonObject(tableIdsJO, usedFieldsJO, tableDataJO));
-
 
         for (int i = 0; i < tableIdsJO.length(); i++) {
             String tableId = tableIdsJO.optJSONObject(i).optString("id");
@@ -144,6 +146,10 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
         saveExcelView(excelViewJO, userId);
         saveUpdateSetting(updateSettingJO, userId);
         BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
+
+        //实时生成excel cube
+        updateExcelTables(userId, getExcelTable(oldTables, pack.getBusinessTables()));
+
         writeResource(userId);
     }
 
@@ -156,6 +162,33 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
             BICubeConfigureCenter.getDataSourceManager().addTableSource(businessTable, source);
         } catch (BIRuntimeException e) {
             BILoggerFactory.getLogger(BIUpdateTablesInPackageAction.class).error(e.getMessage(), e);
+        }
+    }
+
+    private List<CubeTableSource> getExcelTable(Set<BusinessTable> oldTables, Set<BusinessTable> newTables) {
+        //检查excel是否是原先的excel
+        List<CubeTableSource> excelSource = new ArrayList<CubeTableSource>();
+        for (BusinessTable newTable : newTables) {
+            CubeTableSource tableSource = newTable.getTableSource();
+            if (tableSource instanceof ExcelTableSource) {
+                boolean isExist = false;
+                for (BusinessTable oldTable : oldTables) {
+                    CubeTableSource oldSource = oldTable.getTableSource();
+                    if (ComparatorUtils.equals(oldTable.getID(), newTable.getID()) && ComparatorUtils.equals(oldSource.getTableName(), tableSource.getTableName())) {
+                        isExist = true;
+                    }
+                }
+                if (!isExist) {
+                    excelSource.add(tableSource);
+                }
+            }
+        }
+        return excelSource;
+    }
+
+    private void updateExcelTables(long userId, List<CubeTableSource> excelSources) {
+        for (CubeTableSource source : excelSources) {
+            new CubeBuildManager().CubeBuildSingleTable(userId, source.getSourceID(), DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
         }
     }
 
