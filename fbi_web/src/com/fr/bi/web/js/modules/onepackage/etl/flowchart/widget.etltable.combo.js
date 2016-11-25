@@ -85,7 +85,7 @@ BI.ETLTableCombo = BI.inherit(BI.Widget, {
     _createCombo: function (items) {
         var self = this;
         var tableInfo = self.options.tableInfo;
-        var tableName = this._getTableName();
+        var tableName = this._getTableName(tableInfo);
         self.tableCombo = BI.createWidget({
             type: "bi.combo",
             cls: "bi-etl-table",
@@ -125,12 +125,15 @@ BI.ETLTableCombo = BI.inherit(BI.Widget, {
         });
     },
 
-    _getTableName: function () {
-        var table = this.options.tableInfo;
+    _getTableName: function (table) {
         var tableNameText = "";
         if (BI.isNotNull(table.etl_type)) {
             var oTable = table.tables[0];
-            tableNameText = table.temp_name || ((oTable.temp_name || oTable.table_name) + "_" + table.etl_type);
+            if (BI.isNotNull(table.temp_name) || BI.isNotNull(oTable.table_name)) {
+                tableNameText = table.temp_name || ((oTable.temp_name || oTable.table_name) + "_" + table.etl_type);
+            } else {
+                tableNameText = this._getTableName(oTable) + "_" + table.etl_type;
+            }
         } else {
             tableNameText = table.temp_name || table.table_name;
         }
