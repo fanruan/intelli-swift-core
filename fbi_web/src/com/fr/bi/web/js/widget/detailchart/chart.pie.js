@@ -30,7 +30,7 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function(config, items){
         var self = this, o = this.options;
-
+        delete config.zoom;
         config.colors = this.config.chart_color;
         config.plotOptions.style = formatChartStyle();
         formatChartPieStyle();

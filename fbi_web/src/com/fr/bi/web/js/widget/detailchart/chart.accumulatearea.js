@@ -13,7 +13,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
 
     _init: function () {
         BI.AccumulateAreaChart.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
 
         this.xAxis = [{
             type: "category",

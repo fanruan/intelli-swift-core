@@ -13,7 +13,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
 
     _init: function () {
         BI.BubbleChart.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
         this.xAxis = [{
             type: "value",
             title: {
@@ -49,6 +49,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this, o = this.options;
+        delete config.zoom;
         config.colors = this.config.chart_color;
         config.plotOptions.style = formatChartStyle();
         formatCordon();

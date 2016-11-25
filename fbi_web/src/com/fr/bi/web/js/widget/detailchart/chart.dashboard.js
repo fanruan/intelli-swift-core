@@ -14,7 +14,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
 
     _init: function () {
         BI.DashboardChart.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
         this.gaugeAxis = [{
             "minorTickColor": "rgb(226,226,226)",
             "tickColor": "rgb(186,186,186)",
@@ -40,6 +40,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
         var self = this, o = this.options;
         var isDashboard = BI.contains([self.constants.NORMAL, self.constants.HALF_DASHBOARD], self.config.chart_dashboard_type);
         var isMultiPointers = self.config.number_of_pointer === self.constants.MULTI_POINTER;
+        delete config.zoom;
         formatChartDashboardStyle();
         config.chartType = "gauge";
         delete config.xAxis;
