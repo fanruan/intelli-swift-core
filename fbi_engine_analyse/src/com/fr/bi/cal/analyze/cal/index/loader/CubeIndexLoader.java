@@ -37,6 +37,7 @@ import com.fr.general.ComparatorUtils;
 import com.fr.general.GeneralContext;
 import com.fr.general.Inter;
 import com.fr.general.NameObject;
+import com.fr.stable.ArrayUtils;
 import com.fr.stable.EnvChangedListener;
 
 import java.util.*;
@@ -418,7 +419,11 @@ public class CubeIndexLoader {
                                            int page, boolean useRealData, BISession session, CrossExpander expander, BISummaryWidget widget) {
         BIDimension[] allDimension = createBiDimensionAdpaters(rowDimension, colDimension);
         checkRegisteration(sumTarget, allDimension);
-        BISummaryTarget[] usedTargets = createUsedSummaryTargets(rowDimension, usedTarget, sumTarget);
+        /**
+         * 交叉表调用createUsedSummaryTargets的时候把row和cross的dimension都传入进去，而不是只传rowDimension
+         * 详见BI-2304
+         */
+        BISummaryTarget[] usedTargets = createUsedSummaryTargets(ArrayUtils.addAll(rowDimension, colDimension), usedTarget, sumTarget);
         int summaryLength = usedTargets.length;
 
         List<NewCrossRoot> nodeArray = new ArrayList<NewCrossRoot>();
