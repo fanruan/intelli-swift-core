@@ -127,9 +127,8 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
                 data[0][0].data[0].imageWidth = size.width;
                 data[0][0].data[0].image = BI.Func.getCompleteImageUrl(src)
             } else {
+                this.config.showDataLabel = true;
                 data[0][0].data[0].dataLabels = {
-                    enabled: true,
-                    align: "outside",
                     styleSetting: {
                         type: BICst.DATA_LABEL_STYLE_TYPE.IMG,
                         imgStyle: {

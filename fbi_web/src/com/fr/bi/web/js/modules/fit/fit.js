@@ -335,9 +335,17 @@ BI.Fit = BI.inherit(BI.Widget, {
         var dragGroup = BI.createWidget({
             type: "bi.drag_icon_group",
             drag: function (size, position, opt) {
+                var clientWidth = self.arrangement.getClientWidth();
+                var one = clientWidth / BI.Arrangement.PORTION;
+                size.width = size.width * one;
+                size.height = size.height * BI.Arrangement.GRID_HEIGHT;
                 self._dragIcon(size, position, opt);
             },
             stop: function (size, position, opt) {
+                var clientWidth = self.arrangement.getClientWidth();
+                var one = clientWidth / BI.Arrangement.PORTION;
+                size.width = size.width * one;
+                size.height = size.height * BI.Arrangement.GRID_HEIGHT;
                 if (self.arrangement.setPosition(position, size)) {
                     self._stopDragIcon(size, position, opt);
                 }

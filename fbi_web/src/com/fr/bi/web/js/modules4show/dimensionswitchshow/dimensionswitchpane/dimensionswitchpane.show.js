@@ -7,7 +7,7 @@ BI.DimensionSwitchPaneShow = BI.inherit(BI.Widget, {
         return BI.extend(BI.DimensionSwitchPaneShow.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-dimension-switch-pane-show",
             wId: "",
-            dimensionCreator: BI.emptyFn()
+            dimensionCreator: BI.emptyFn
         })
     },
 
@@ -66,19 +66,19 @@ BI.DimensionSwitchPaneShow = BI.inherit(BI.Widget, {
     _createTagButton: function (name, cardName) {
         var self = this;
         var button = BI.createWidget({
-            type: "bi.text_button",
-            cls: this._getCls() + " tag-button",
+            type: "bi.dimension_tag_button",
+            cls: this._getCls(),
             text: name,
             value: cardName,
-            height: 40,
-            width: 60
-        });
-        button.element.droppable({
-            accept: "." + this._getCls(),
-            tolerance: "pointer",
-            over: function (event, ui) {
-                if (self._isAllowShowCard(button.getValue())) {
-                    button.doClick();
+            drop: {
+                accept: "." + this._getCls(),
+                tolerance: "pointer",
+                over: function (event, ui) {
+                    var v = button.getValue();
+                    if (self._isAllowShowCard(v)) {
+                        self.tagButtons.setValue([v]);
+                        self.cards.showCardByName(v);
+                    }
                 }
             }
         });
@@ -130,7 +130,7 @@ BI.DimensionSwitchPaneShow = BI.inherit(BI.Widget, {
                         button.setEnable(false);
                     } else {
                         //不灰化设置高亮
-                        button.element.addClass("highlight-background");
+                        button.setHighLightBg(true);
                     }
                 });
             },
@@ -139,7 +139,7 @@ BI.DimensionSwitchPaneShow = BI.inherit(BI.Widget, {
                 var buttons = self.tagButtons.getAllButtons();
                 BI.each(buttons, function (i, button) {
                     button.setEnable(true);
-                    button.element.removeClass("highlight-background");
+                    button.setHighLightBg(false);
                 });
             },
             over: function (event, ui) {
@@ -174,7 +174,8 @@ BI.DimensionSwitchPaneShow = BI.inherit(BI.Widget, {
         });
         this.tagButtons.populate(buttons);
         this.cards.populate(self.cardLayouts);
-        buttons[0].doClick();
+        buttons[0].setSelected(true);
+        this.cards.showCardByName(buttons[0].getValue());
     }
 });
 BI.DimensionSwitchPaneShow.EVENT_CHANGE = "BI.DimensionSwitchPaneShow.EVENT_CHANGE";

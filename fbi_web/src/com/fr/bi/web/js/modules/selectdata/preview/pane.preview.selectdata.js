@@ -204,38 +204,7 @@ BI.DetailSelectDataPreviewPane = BI.inherit(BI.Pane, {
                         height: 30
                     }]
                 });
-                //年份
-                var year = [], season = [], month = [], week = [], date_ = [], date_hms = [];
 
-                function getSeason(month) {
-                    return Math.floor(month / 3);
-                }
-
-                BI.each(fieldValues, function (i, v) {
-                    var d = new Date(v);
-                    if (BI.isNotNull(v)) {
-                        year.push(d.getFullYear());
-                        season.push(Date._QN[getSeason(d.getMonth()) + 1]);
-                        month.push(d.print("%B"));
-                        week.push(d.print("%A"));
-                        date_.push(d.print("%Y-%X-%d"));
-                        date_hms.push(d.print("%Y-%X-%d %H:%M:%S"))
-                    } else {
-                        year.push("");
-                        season.push("");
-                        month.push("");
-                        week.push("");
-                        date_.push("");
-                        date_hms.push("");
-                    }
-
-                });
-                self.mapValues[fId + BICst.GROUP.Y] = year;
-                self.mapValues[fId + BICst.GROUP.S] = season;
-                self.mapValues[fId + BICst.GROUP.M] = month;
-                self.mapValues[fId + BICst.GROUP.W] = week;
-                self.mapValues[fId + BICst.GROUP.YMD] = date_;
-                self.mapValues[fId + BICst.GROUP.YMDHMS] = date_hms;
                 self.sortedFieldIdsArray.pushArray([{
                     field_id: fId, group: BICst.GROUP.Y
                 }, {
@@ -279,12 +248,12 @@ BI.DetailSelectDataPreviewPane = BI.inherit(BI.Pane, {
                     }],
                     height: 30
                 });
-                self.mapValues[fId] = fieldValues;
                 self.sortedFieldIdsArray.push(fId);
             }
+            self.mapValues[fId] = fieldValues;
         });
         this.dataTable = BI.createWidget({
-            type: "bi.preview_table",
+            type: "bi.pretreated_table",
             cls: "table-data-container"
         });
         this._refreshDataTable();
@@ -321,52 +290,24 @@ BI.DetailSelectDataPreviewPane = BI.inherit(BI.Pane, {
                 selectedFields.push(self.sortedFieldIdsArray[i]);
             }
         });
-        BI.each(selectedFields, function (i, value) {
-            if (BI.isNotNull(value.group)) {
-                var fieldName = BI.Utils.getFieldNameByID(value.field_id);
-                dataArray.push(self.mapValues[value.field_id + value.group]);
-                switch (value.group) {
-                    case BICst.GROUP.Y:
-                        fieldName = BI.i18nText("BI-Year_Fen") + "(" + fieldName + ")";
-                        break;
-                    case BICst.GROUP.S:
-                        fieldName = BI.i18nText("BI-Quarter") + "(" + fieldName + ")";
-                        break;
-                    case BICst.GROUP.M:
-                        fieldName = BI.i18nText("BI-Multi_Date_Month") + "(" + fieldName + ")";
-                        break;
-                    case BICst.GROUP.W:
-                        fieldName = BI.i18nText("BI-Week_XingQi") + "(" + fieldName + ")";
-                        break;
-                    case BICst.GROUP.YMD:
-                        fieldName = BI.i18nText("BI-Date") + "(" + fieldName + ")";
-                        break;
-                    case BICst.GROUP.YMDHMS:
-                        fieldName = BI.i18nText("BI-Time_ShiKe") + "(" + fieldName + ")";
-                        break;
+
+        BI.each(selectedFields, function (i, field) {
+            header.push({
+                text: BI.Utils.getFieldNameByID(field.field_id),
+                fieldType: BI.Utils.getFieldTypeByID(field.field_id),
+                group: field.group
+            });
+            BI.each(self.mapValues[field.field_id], function (row, v) {
+                if (!items[row]) {
+                    items[row] = [];
                 }
-                header.push({text: fieldName});
-            } else {
-                dataArray.push(self.mapValues[value]);
-                header.push({text: BI.Utils.getFieldNameByID(value)});
-            }
-        });
-        BI.each(dataArray, function (i, value) {
-            BI.each(value, function (j, v) {
-                if (BI.isNotNull(items[j])) {
-                    items[j].push({
-                        text: v,
-                        height: 25
-                    });
-                } else {
-                    items.push([{
-                        text: v,
-                        height: 25
-                    }]);
-                }
+                items[row][i] = {
+                    text: v,
+                    height: 25
+                };
             });
         });
-        this.dataTable.populate(items, [header]);
+        this.dataTable.populate(items, header);
     }
 });
 BI.DetailSelectDataPreviewPane.EVENT_CHANGE = "DetailSelectDataPreviewPane.EVENT_CHANGE";
