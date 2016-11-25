@@ -40,7 +40,7 @@ BI.DonutChart = BI.inherit(BI.AbstractChart, {
 
         config.plotOptions.innerRadius = "50.0%";
         config.chartType = "pie";
-        BI.extend(config.plotOptions.dataLabel, {
+        BI.extend(config.plotOptions.dataLabels, {
             align: self.setDataLabelPosition(this.config),
             style: this.config.dataLabelSetting.textStyle,
             connectorWidth: 1

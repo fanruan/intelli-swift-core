@@ -80,6 +80,14 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         CAT_LABEL_STYLE: {
             text_direction: 0,
             text_style: {}
+        },
+        DATA_SETTING_STYLE: {
+            showCategoryName: true,
+            showSeriesName: true,
+            showValue: true,
+            showPercentage: false,
+            position: BICst.DATA_LABEL.POSITION_OUTER,
+            textStyle: {}
         }
     },
 
@@ -285,6 +293,9 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         }
         if(setting.showValue) {
             identifier += '${VALUE}'
+        }
+        if(setting.showPercentage) {
+            identifier += '${PERCENTAGE}'
         }
         return identifier
     },
@@ -594,7 +605,11 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             cordon: options.cordon || [],
             tooltip: options.tooltip || [],
             lnglat: options.lnglat,
-            dataLabelSetting: options.dataLabelSetting || {}
+            dataLabelSetting: options.dataLabelSetting ? BI.extend(options.dataLabelSetting, {
+                    textStyle: BI.extend(options.dataLabelSetting.textStyle, {
+                            fontSize: options.dataLabelSetting.textStyle.fontSize + 'px'
+                    })
+            }) : c.DATA_SETTING_STYLE,
         }
     },
 
