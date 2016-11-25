@@ -275,7 +275,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         return formatter
     },
 
-    _setDataLabelContent: function (chartOptions) {
+    setDataLabelContent: function (chartOptions) {
         var setting = chartOptions.dataLabelSetting, identifier = '';
         if(setting.showCategoryName) {
             identifier += '${CATEGORY}'
@@ -289,18 +289,18 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         return identifier
     },
 
-    _setDataLabelPosition: function (chartOptions) {
+    setDataLabelPosition: function (chartOptions) {
         var setting = chartOptions.dataLabelSetting || {};
         switch (setting.position || this.constants.OUTER) {
             case this.constants.INNER:
-                return 'inside';
-            case this.constants.CENTER:
                 return 'center';
-            default:
+            case this.constants.CENTER:
+                return 'inside';
+            case this.constants.OUTER:
                 return 'outside'
         }
     },
-
+    
     formatDataLabelForAxis: function (items, config, chartOptions) {
         var self = this;
         if (config.plotOptions.dataLabels.enabled === true) {
@@ -312,12 +312,12 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                 format = config.yAxis[item.yAxis].formatter;
 
                 item.dataLabels = {
-                    align: self._setDataLabelPosition(chartOptions),
+                    align: self.setDataLabelPosition(chartOptions),
                     autoAdjust: true,
                     style: chartOptions.chartFont,
                     enabled: true,
                     formatter: {
-                        identifier: self._setDataLabelContent(chartOptions),
+                        identifier: self.setDataLabelContent(chartOptions),
                         valueFormat: format,
                     }
                 };
@@ -331,12 +331,12 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         if (state === true) {
             BI.each(items, function (idx, item) {
                 item.dataLabels = {
-                    align: self._setDataLabelPosition(chartOptions),
+                    align: self.setDataLabelPosition(chartOptions),
                     autoAdjust: true,
                     style: chartOptions.chartFont,
                     enabled: true,
                     formatter: {
-                        identifier: self._setDataLabelContent(chartOptions),
+                        identifier: self.setDataLabelContent(chartOptions),
                         valueFormat: format
                     }
                 };
@@ -350,12 +350,12 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             if (item.dataLabels) {
                 var styleSetting = item.dataLabels.styleSetting || {};
                 item.dataLabels.formatter = {
-                    identifier: chartOptions ? self._setDataLabelContent(chartOptions) : '${VALUE}',
+                    identifier: chartOptions ? self.setDataLabelContent(chartOptions) : '${VALUE}',
                     valueFormat: format
                 };
                 item.dataLabels.enabled = true;
                 item.dataLabels.autoAdjust = true;
-                item.dataLabels.align = chartOptions ? self._setDataLabelPosition(chartOptions) : 'outside';
+                item.dataLabels.align = chartOptions ? self.setDataLabelPosition(chartOptions) : 'outside';
                 item.dataLabels.style = {
                     "fontFamily": "inherit",
                     "color": "#808080",

@@ -37,16 +37,18 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
 
         this.formatChartLegend(config, this.config.legend);
 
-        config.plotOptions.dataLabels.enabled = this.config.showDataLabel;
         config.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${VALUE}${PERCENT}";
-
         config.chartType = "pie";
         delete config.xAxis;
         delete config.yAxis;
-        config.plotOptions.dataLabels.align = "outside";
-        config.plotOptions.dataLabels.connectorWidth = "outside";
-        config.plotOptions.dataLabels.formatter.identifier = "${VALUE}${PERCENT}";
-        config.plotOptions.dataLabels.style = this.config.chartFont;
+
+        BI.extend(config.plotOptions.dataLabels, {
+            enabled: this.config.showDataLabel,
+            align: self.setDataLabelPosition(this.config),
+            style: this.config.chartFont,
+            connectorWidth: 1
+        });
+        config.plotOptions.dataLabels.formatter.identifier = self.setDataLabelContent(this.config);
         BI.each(items, function (idx, item) {
             BI.each(item.data, function (id, da) {
                 da.y = self.formatXYDataWithMagnify(da.y, 1);

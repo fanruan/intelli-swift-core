@@ -40,10 +40,12 @@ BI.DonutChart = BI.inherit(BI.AbstractChart, {
 
         config.plotOptions.innerRadius = "50.0%";
         config.chartType = "pie";
-        config.plotOptions.dataLabels.align = "outside";
-        config.plotOptions.dataLabels.connectorWidth = "outside";
-        config.plotOptions.dataLabels.style = this.config.chartFont;
-        config.plotOptions.dataLabels.formatter.identifier = "${VALUE}${PERCENT}";
+        BI.extend(config.plotOptions.dataLabel, {
+            align: self.setDataLabelPosition(this.config),
+            style: this.config.chartFont,
+            connectorWidth: 1
+        });
+        config.plotOptions.dataLabels.formatter.identifier = self.setDataLabelContent(this.config);
         delete config.xAxis;
         delete config.yAxis;
         BI.each(items, function (idx, item) {
