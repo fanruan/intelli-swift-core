@@ -281,7 +281,7 @@ public class BIDBUtils {
 
         DataModel dm = null;
         try {
-            dm = tableData.createDataModel(Calculator.createCalculator());
+            dm = tableData.createDataModel(Calculator.createCalculator(),tableName);
             int cols = dm.getColumnCount();
             JSONObject jo = new JSONObject();
             jo.put("tableName", tableName);

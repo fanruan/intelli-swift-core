@@ -142,6 +142,10 @@ public class SingleUserCubeManager {
         return runner.getStatue();
     }
 
+    public void setStatus(Status status) {
+        runner.setStatue(status);
+    }
+
     /**
      * 环境改变
      */
