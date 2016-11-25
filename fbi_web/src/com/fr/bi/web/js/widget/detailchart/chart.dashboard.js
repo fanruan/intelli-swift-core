@@ -14,7 +14,7 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
 
     _init: function () {
         BI.DashboardChart.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
         this.gaugeAxis = [{
             "minorTickColor": "rgb(226,226,226)",
             "tickColor": "rgb(186,186,186)",

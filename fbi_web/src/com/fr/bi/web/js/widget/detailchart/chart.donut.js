@@ -13,7 +13,7 @@ BI.DonutChart = BI.inherit(BI.AbstractChart, {
 
     _init: function () {
         BI.DonutChart.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
             popupItemsGetter: o.popupItemsGetter,

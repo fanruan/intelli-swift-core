@@ -13,7 +13,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
 
     _init: function () {
         BI.ScatterChart.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
         this.xAxis = [{
             type: "value",
             title: {
