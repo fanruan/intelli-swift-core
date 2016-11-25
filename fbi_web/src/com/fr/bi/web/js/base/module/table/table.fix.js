@@ -134,7 +134,6 @@ BI.FixTable = BI.inherit(BI.Table, {
 
     _scroll: function (scrollTop) {
         var self = this, o = this.options;
-        console.log(scrollTop);
         if (this._isNeedFix) {
             var pos = this._helper.scrollTo(scrollTop);
             this._rowBuffer.getRows(pos.index || 0, pos.offset || 0);
