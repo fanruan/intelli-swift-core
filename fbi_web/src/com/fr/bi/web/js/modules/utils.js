@@ -1145,8 +1145,10 @@
 
         getWSChartDataLabelSettingByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.dataLabelSetting) ? ws.dataLabelSetting :
-                BICst.DEFAULT_CHART_SETTING.DataLabelSetting;
+            var chartFont = this.getGSChartFont();
+            var dataLabelSetting = ws.dataLabelSetting || BICst.DEFAULT_CHART_SETTING.DataLabelSetting;
+            dataLabelSetting.textStyle = BI.extend(chartFont, dataLabelSetting.textStyle);
+            return dataLabelSetting;
         },
 
         getWSChartShowDataTableByID: function (wid) {
