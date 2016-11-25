@@ -5,15 +5,3 @@
   background: #ffffff;
   border-bottom: 1px solid #eaeaea;
 }
-.bi-dimension-switch-pane-show .tag-button.active .bi-text {
-  color: #009de3;
-}
-.bi-dimension-switch-pane-show .tag-button:hover {
-  background: #a3d6e8;
-}
-.bi-dimension-switch-pane-show .tag-button:hover .bi-text {
-  color: #009de3;
-}
-.bi-dimension-switch-pane-show .highlight-background {
-  background: #d8f2fd;
-}

@@ -327,6 +327,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules4show/dimensionswitchshow/dimensionswitchpane/dimensionswitchpane.show.css",
                 "com/fr/bi/web/css/modules4show/dimensionswitchshow/dimensionswitch.show.css",
                 "com/fr/bi/web/css/modules4show/dimensionswitchshow/dimensionswitchpane/dimensionregion/dimensionregion.show.css",
+                "com/fr/bi/web/css/modules4show/dimensionswitchshow/dimensionswitchpane/button/dimensiontagbutton.css",
 
                 //最大化
                 "com/fr/bi/web/css/modules4show/maximization/widget.maximization.chartpane.css",
@@ -387,6 +388,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules4show/dimensionswitchshow/dimensionswitchpane/model.dimensionswitchpane.show.js",
                 "com/fr/bi/web/js/modules4show/dimensionswitchshow/dimensionswitchpane/dimensionregion/dimensionregion.show.js",
                 "com/fr/bi/web/js/modules4show/dimensionswitchshow/dimensionswitchpane/dimensionregion/dimensionregionmanager.show.js",
+                "com/fr/bi/web/js/modules4show/dimensionswitchshow/dimensionswitchpane/button/dimensiontagbutton.js",
 
                 //最大化
                 "com/fr/bi/web/js/modules4show/maximization/widget.maximization.chartpane.js",

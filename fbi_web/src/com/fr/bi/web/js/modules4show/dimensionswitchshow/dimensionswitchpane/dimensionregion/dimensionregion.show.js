@@ -6,7 +6,7 @@ BI.DimensionSwitchRegionShow = BI.inherit(BI.Widget, {
         return BI.extend(BI.DimensionSwitchRegionShow.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-dimension-switch-region-show",
             dimensionType: BICst.REGION.DIMENSION1,
-            dimensionCreator: BI.emptyFn(),
+            dimensionCreator: BI.emptyFn,
             cls: ""
         })
     },
@@ -71,6 +71,15 @@ BI.DimensionSwitchRegionShow = BI.inherit(BI.Widget, {
             result.push($(dom).data("dId"));
         });
         return result;
+    },
+
+    setVisible: function (enable) {
+        if (enable) {
+            this.element.css({"height": "100%"});
+        } else {
+            this.element.css({"height": "0%"});
+        }
+        this.getSortableCenter().element.sortable("refreshPositions");
     },
 
     getDimensionType: function () {
