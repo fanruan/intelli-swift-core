@@ -30,7 +30,7 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this, o = this.options;
-
+        delete config.zoom;
         config.colors = this.config.chartColor;
         config.plotOptions.style = formatChartStyle();
         formatChartPieStyle();
@@ -45,7 +45,7 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
         BI.extend(config.plotOptions.dataLabels, {
             enabled: this.config.showDataLabel,
             align: self.setDataLabelPosition(this.config),
-            style: this.config.chartFont,
+            style: this.config.dataLabelSetting.textStyle,
             connectorWidth: 1
         });
         config.plotOptions.dataLabels.formatter.identifier = self.setDataLabelContent(this.config);

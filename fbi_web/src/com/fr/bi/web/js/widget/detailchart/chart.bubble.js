@@ -49,7 +49,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this, c = this.constants;
-
+        delete config.zoom;
         formatCordon();
 
         switch (this.config.displayRules) {

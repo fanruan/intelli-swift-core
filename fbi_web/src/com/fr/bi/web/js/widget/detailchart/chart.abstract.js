@@ -314,7 +314,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                 item.dataLabels = {
                     align: self.setDataLabelPosition(chartOptions),
                     autoAdjust: true,
-                    style: chartOptions.chartFont,
+                    style: chartOptions.dataLabelSetting.textStyle,
                     enabled: true,
                     formatter: {
                         identifier: self.setDataLabelContent(chartOptions),
@@ -333,7 +333,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                 item.dataLabels = {
                     align: self.setDataLabelPosition(chartOptions),
                     autoAdjust: true,
-                    style: chartOptions.chartFont,
+                    style: chartOptions.dataLabelSetting.textStyle,
                     enabled: true,
                     formatter: {
                         identifier: self.setDataLabelContent(chartOptions),

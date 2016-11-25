@@ -30,7 +30,7 @@ BI.DonutChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this;
-
+        delete config.zoom;
         config.colors = this.config.chartColor;
         config.plotOptions.style = formatChartStyle();
 
@@ -42,7 +42,7 @@ BI.DonutChart = BI.inherit(BI.AbstractChart, {
         config.chartType = "pie";
         BI.extend(config.plotOptions.dataLabel, {
             align: self.setDataLabelPosition(this.config),
-            style: this.config.chartFont,
+            style: this.config.dataLabelSetting.textStyle,
             connectorWidth: 1
         });
         config.plotOptions.dataLabels.formatter.identifier = self.setDataLabelContent(this.config);
