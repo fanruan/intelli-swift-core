@@ -24,11 +24,15 @@ BI.DashboardChart = BI.inherit(BI.AbstractChart, {
         }];
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
+            popupItemsGetter: o.popupItemsGetter,
             formatConfig: BI.bind(this._formatConfig, this),
             element: this.element
         });
         this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
             self.fireEvent(BI.DashboardChart.EVENT_CHANGE, obj);
+        });
+        this.combineChart.on(BI.CombineChart.EVENT_ITEM_CLICK, function (obj) {
+            self.fireEvent(BI.AbstractChart.EVENT_ITEM_CLICK, obj)
         });
     },
 

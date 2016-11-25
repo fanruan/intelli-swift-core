@@ -132,8 +132,7 @@ BI.Table = BI.inherit(BI.Widget, {
         this.bottomLeftBodyItems = {};
         var table = this._table();
         var colgroup = this._createColGroup(this.columnLeft, this.bottomLeftColGroupTds);
-        var body = this.bottomLeftBody = this._body();
-        body.element.append(this._createCells(this.bottomLeftItems, this.columnLeft, this.mergeLeft, this.bottomLeftBodyTds, this.bottomLeftBodyItems));
+        var body = this._createBottomLeftBody();
         BI.createWidget({
             type: "bi.adaptive",
             element: table,
@@ -157,6 +156,12 @@ BI.Table = BI.inherit(BI.Widget, {
         }));
     },
 
+    _createBottomLeftBody: function(){
+        var body = this.bottomLeftBody = this._body();
+        body.element.append(this._createCells(this.bottomLeftItems, this.columnLeft, this.mergeLeft, this.bottomLeftBodyTds, this.bottomLeftBodyItems));
+        return body;
+    },
+
     _createBottomRight: function () {
         var o = this.options, isRight = this._isRightFreeze();
         this.bottomRightColGroupTds = {};
@@ -164,8 +169,7 @@ BI.Table = BI.inherit(BI.Widget, {
         this.bottomRightBodyItems = {};
         var table = this._table();
         var colgroup = this._createColGroup(this.columnRight, this.bottomRightColGroupTds);
-        var body = this.bottomRightBody = this._body();
-        body.element.append(this._createCells(this.bottomRightItems, this.columnRight, this.mergeRight, this.bottomRightBodyTds, this.bottomRightBodyItems, this.columnLeft.length));
+        var body = this._createBottomRightBody();
         BI.createWidget({
             type: "bi.adaptive",
             element: table,
@@ -187,6 +191,12 @@ BI.Table = BI.inherit(BI.Widget, {
             width: this._calculateWidth(w),
             items: [table]
         }));
+    },
+
+    _createBottomRightBody: function(){
+        var body = this.bottomRightBody = this._body();
+        body.element.append(this._createCells(this.bottomRightItems, this.columnRight, this.mergeRight, this.bottomRightBodyTds, this.bottomRightBodyItems, this.columnLeft.length));
+        return body;
     },
 
     _createFreezeTable: function () {
@@ -392,6 +402,39 @@ BI.Table = BI.inherit(BI.Widget, {
                 }
             }
         }
+        this._resize = function () {
+            if (self.scrollBottomLeft.element.is(":visible")) {
+                self.scrollBottomLeft.element.css({"overflow-x": "auto"});
+                self.scrollBottomRight.element.css({"overflow-x": "auto"});
+                self.setColumnSize(o.columnSize);
+                if (isRight) {
+                    self.scrollBottomLeft.element.css({"overflow-y": "auto"});
+                } else {
+                    self.scrollBottomRight.element.css({"overflow-y": "auto"});
+                }
+                if (self.scrollBottomLeft.element.hasHorizonScroll() || self.scrollBottomRight.element.hasHorizonScroll()) {
+                    self.scrollBottomLeft.element.css("overflow-x", "scroll");
+                    self.scrollBottomRight.element.css("overflow-x", "scroll");
+                }
+                if (self.scrollBottomRight.element.hasVerticalScroll()) {
+                    self.scrollTopRight.element.css("overflow-y", "scroll");
+                } else {
+                    self.scrollTopRight.element.css("overflow-y", "hidden");
+                }
+                if (self.scrollBottomLeft.element.hasVerticalScroll()) {
+                    self.scrollTopLeft.element.css("overflow-y", "scroll");
+                } else {
+                    self.scrollTopLeft.element.css("overflow-y", "hidden");
+                }
+                self.scrollTopLeft.element[0].scrollLeft = self.scrollBottomLeft.element[0].scrollLeft;
+                self.scrollTopRight.element[0].scrollLeft = self.scrollBottomRight.element[0].scrollLeft;
+                self.scrollBottomLeft.element[0].scrollTop = self.scrollBottomRight.element[0].scrollTop;
+                //调整拖拽handle的高度
+                if (o.isNeedResize) {
+                    handle && handle.css("height", self.bottomLeft.element.height() + headerHeight);
+                }
+            }
+        };
 
         var regionColumnSize = o.regionColumnSize;
         if (o.freezeCols.length === 0) {
@@ -421,6 +464,23 @@ BI.Table = BI.inherit(BI.Widget, {
         //var scrollTopElement = isRight ? scrollTopLeft.element : scrollTopRight.element;
         //var otherElement = isRight ? scrollBottomRight.element : scrollBottomLeft.element;
 
+        this._initFreezeScroll();
+        BI.nextTick(function () {
+            if (self.element.is(":visible")) {
+                self._resize();
+                self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT);
+            }
+        });
+        BI.Resizers.add(this.getName(), function (e) {
+            if (BI.isWindow(e.target) && self.element.is(":visible")) {
+                self._resize();
+                self.fireEvent(BI.Table.EVENT_TABLE_RESIZE);
+            }
+        });
+    },
+
+    _initFreezeScroll: function () {
+        var self = this, o = this.options;
         scroll(this.scrollBottomRight.element, this.scrollTopRight.element, this.scrollBottomLeft.element);
         scroll(this.scrollBottomLeft.element, this.scrollTopLeft.element, this.scrollBottomRight.element);
 
@@ -528,53 +588,6 @@ BI.Table = BI.inherit(BI.Widget, {
                 }
             });
         }
-
-        this._resize = function () {
-            if (self.scrollBottomLeft.element.is(":visible")) {
-                self.scrollBottomLeft.element.css({"overflow-x": "auto"});
-                self.scrollBottomRight.element.css({"overflow-x": "auto"});
-                self.setColumnSize(o.columnSize);
-                if (isRight) {
-                    self.scrollBottomLeft.element.css({"overflow-y": "auto"});
-                } else {
-                    self.scrollBottomRight.element.css({"overflow-y": "auto"});
-                }
-                if (self.scrollBottomLeft.element.hasHorizonScroll() || self.scrollBottomRight.element.hasHorizonScroll()) {
-                    self.scrollBottomLeft.element.css("overflow-x", "scroll");
-                    self.scrollBottomRight.element.css("overflow-x", "scroll");
-                }
-                if (self.scrollBottomRight.element.hasVerticalScroll()) {
-                    self.scrollTopRight.element.css("overflow-y", "scroll");
-                } else {
-                    self.scrollTopRight.element.css("overflow-y", "hidden");
-                }
-                if (self.scrollBottomLeft.element.hasVerticalScroll()) {
-                    self.scrollTopLeft.element.css("overflow-y", "scroll");
-                } else {
-                    self.scrollTopLeft.element.css("overflow-y", "hidden");
-                }
-                self.scrollTopLeft.element[0].scrollLeft = self.scrollBottomLeft.element[0].scrollLeft;
-                self.scrollTopRight.element[0].scrollLeft = self.scrollBottomRight.element[0].scrollLeft;
-                self.scrollBottomLeft.element[0].scrollTop = self.scrollBottomRight.element[0].scrollTop;
-                //调整拖拽handle的高度
-                if (o.isNeedResize) {
-                    handle && handle.css("height", self.bottomLeft.element.height() + headerHeight);
-                }
-            }
-        };
-
-        BI.nextTick(function () {
-            if (self.element.is(":visible")) {
-                self._resize();
-                self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT);
-            }
-        });
-        BI.Resizers.add(this.getName(), function (e) {
-            if (BI.isWindow(e.target) && self.element.is(":visible")) {
-                self._resize();
-                self.fireEvent(BI.Table.EVENT_TABLE_RESIZE);
-            }
-        });
     },
 
     _animateScrollTo: function (el, from, to, duration, easing, op) {
@@ -674,20 +687,26 @@ BI.Table = BI.inherit(BI.Widget, {
                     break;
                 case "easeInOutSmooth":
                     t /= d / 2;
-                    if (t < 1) return c / 2 * t * t + b;
+                    if (t < 1) {
+                        return c / 2 * t * t + b;
+                    }
                     t--;
                     return -c / 2 * (t * (t - 2) - 1) + b;
                     break;
                 case "easeInOutStrong":
                     t /= d / 2;
-                    if (t < 1) return c / 2 * Math.pow(2, 10 * (t - 1)) + b;
+                    if (t < 1){
+                        return c / 2 * Math.pow(2, 10 * (t - 1)) + b;
+                    }
                     t--;
                     return c / 2 * ( -Math.pow(2, -10 * t) + 2 ) + b;
                     break;
                 case "easeInOut":
                 case "mcsEaseInOut":
                     t /= d / 2;
-                    if (t < 1) return c / 2 * t * t * t + b;
+                    if (t < 1){
+                        return c / 2 * t * t * t + b;
+                    }
                     t -= 2;
                     return c / 2 * (t * t * t + 2) + b;
                     break;
@@ -961,13 +980,13 @@ BI.Table = BI.inherit(BI.Widget, {
         return this.colgroup;
     },
 
-    _createHeader: function (columnSize, mergeCols, store, widgets) {
+    _createHeader: function () {
         var self = this, o = this.options;
         if (o.header === false) {
             return;
         }
         this.header = this._header();
-        this.header.element.append(this._createHeaderCells(o.header, columnSize, mergeCols, store, widgets));
+        this.header.element.append(this._createHeaderCells(o.header, null, null, this.headerTds, this.headerItems));
         return this.header;
     },
 
@@ -977,14 +996,14 @@ BI.Table = BI.inherit(BI.Widget, {
             return;
         }
         this.footer = this._footer();
-        this.footer.element.append(this._createFooterCells(o.footer, columnSize, store, widgets));
+        this.footer.element.append(this._createFooterCells(o.footer, null, this.footerTds, this.footerItems));
         return this.footer;
     },
 
-    _createBody: function (columnSize, mergeCols, store, widgets) {
+    _createBody: function () {
         var self = this, o = this.options;
         this.body = this._body();
-        this.body.element.append(this._createCells(o.items, columnSize, mergeCols, store, widgets));
+        this.body.element.append(this._createCells(o.items, null, null, this.bodyTds, this.bodyItems));
         return this.body;
     },
 
@@ -999,9 +1018,9 @@ BI.Table = BI.inherit(BI.Widget, {
         this.footerItems = {};
         this.bodyItems = {};
         var colgroup = this._createColGroup(null, this.colgroupTds);
-        var header = this._createHeader(null, null, this.headerTds, this.headerItems);
-        var footer = this._createFooter(null, this.footerTds, this.footerItems);
-        var body = this._createBody(null, null, this.bodyTds, this.bodyItems);
+        var header = this._createHeader();
+        var footer = this._createFooter();
+        var body = this._createBody();
 
         BI.createWidget({
             type: "bi.adaptive",
@@ -1020,7 +1039,7 @@ BI.Table = BI.inherit(BI.Widget, {
             items: [table]
         });
 
-        this.scrollContainer = BI.createWidget({
+        this.scrollBottomRight = BI.createWidget({
             type: "bi.adaptive",
             width: "100%",
             height: "100%",
@@ -1034,13 +1053,36 @@ BI.Table = BI.inherit(BI.Widget, {
             cls: "bottom-right",
             element: this.element,
             scrollable: false,
-            items: [this.scrollContainer]
+            items: [this.scrollBottomRight]
         });
+
+        this._resize = function () {
+            if (self.element.is(":visible")) {
+                self.setColumnSize(o.columnSize);
+            }
+        };
+
+        this._initNormalScroll();
+        BI.Resizers.add(this.getName(), function (e) {
+            if (self.element.is(":visible") && BI.isWindow(e.target)) {
+                self._resize();
+                self.fireEvent(BI.Table.EVENT_TABLE_RESIZE);
+            }
+        });
+        BI.nextTick(function () {
+            if (self.element.is(":visible")) {
+                self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT);
+            }
+        });
+    },
+
+    _initNormalScroll: function () {
+        var self = this;
         var scrolling, scrollX;
-        this.scrollContainer.element.mousewheel(function (event, delta, deltaX, deltaY) {
+        this.scrollBottomRight.element.mousewheel(function (event, delta, deltaX, deltaY) {
             var inf = self._getScrollOffsetAndDur(event);
             if (deltaY < 0 || deltaY > 0) {
-                var ele = self.scrollContainer.element;
+                var ele = self.scrollBottomRight.element;
                 if (scrolling) {
                     ele[0].scrollTop = scrolling;
                 }
@@ -1064,7 +1106,7 @@ BI.Table = BI.inherit(BI.Widget, {
                         scrolling = null;
                     }
                 });
-                //var scrollTop = self.scrollContainer.element[0].scrollTop = self.scrollContainer.element[0].scrollTop - delta * offset;
+                //var scrollTop = self.scrollBottomRight.element[0].scrollTop = self.scrollBottomRight.element[0].scrollTop - delta * offset;
                 //self.fireEvent(BI.Table.EVENT_TABLE_SCROLL, scrollTop);
                 if (stopPropagation === true) {
                     event.stopPropagation();
@@ -1072,11 +1114,10 @@ BI.Table = BI.inherit(BI.Widget, {
                 }
             }
         });
-
         var scrollTop = 0, scrollLeft = 0;
-        this.scrollContainer.element.scroll(function (e) {
+        this.scrollBottomRight.element.scroll(function (e) {
             var change = false;
-            var scrollElement = self.scrollContainer.element;
+            var scrollElement = self.scrollBottomRight.element;
             if (scrollElement.scrollTop() != scrollTop) {
                 if (Math.abs(scrollElement.scrollTop() - scrollTop) > 0.1) {
                     e.stopPropagation();
@@ -1097,22 +1138,6 @@ BI.Table = BI.inherit(BI.Widget, {
                 //return false;
             }
             return false;
-        });
-        this._resize = function () {
-            if (self.element.is(":visible")) {
-                self.setColumnSize(o.columnSize);
-            }
-        };
-        BI.Resizers.add(this.getName(), function (e) {
-            if (self.element.is(":visible") && BI.isWindow(e.target)) {
-                self._resize();
-                self.fireEvent(BI.Table.EVENT_TABLE_RESIZE);
-            }
-        });
-        BI.nextTick(function () {
-            if (self.element.is(":visible")) {
-                self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT);
-            }
         });
     },
 
@@ -1924,7 +1949,7 @@ BI.Table = BI.inherit(BI.Widget, {
         if (o.isNeedFreeze) {
             return [this.scrollBottomLeft.element.width(), this.scrollBottomRight.element.width()];
         }
-        return [this.scrollContainer.element.width()];
+        return [this.scrollBottomRight.element.width()];
     },
 
     getCalculateRegionRowSize: function () {
@@ -1932,7 +1957,7 @@ BI.Table = BI.inherit(BI.Widget, {
         if (o.isNeedFreeze) {
             return [this.scrollTopRight.element.height(), this.scrollBottomRight.element.height()];
         }
-        return [this.scrollContainer.element.height()];
+        return [this.scrollBottomRight.element.height()];
     },
 
     getClientRegionColumnSize: function () {
@@ -1940,7 +1965,7 @@ BI.Table = BI.inherit(BI.Widget, {
         if (o.isNeedFreeze) {
             return [this.scrollBottomLeft.element[0].clientWidth, this.scrollBottomRight.element[0].clientWidth];
         }
-        return [this.scrollContainer.element[0].clientWidth];
+        return [this.scrollBottomRight.element[0].clientWidth];
     },
 
     getScrollRegionColumnSize: function () {
@@ -1948,7 +1973,7 @@ BI.Table = BI.inherit(BI.Widget, {
         if (o.isNeedFreeze) {
             return [this.scrollBottomLeft.element[0].scrollWidth, this.scrollBottomRight.element[0].scrollWidth];
         }
-        return [this.scrollContainer.element[0].scrollWidth];
+        return [this.scrollBottomRight.element[0].scrollWidth];
     },
 
     getScrollRegionRowSize: function () {
@@ -1960,7 +1985,7 @@ BI.Table = BI.inherit(BI.Widget, {
                 return [this.scrollTopLeft.element[0].scrollHeight, this.scrollBottomLeft.element[0].scrollHeight];
             }
         }
-        return [this.scrollContainer.element[0].scrollHeight];
+        return [this.scrollBottomRight.element[0].scrollHeight];
     },
 
     hasVerticalScroll: function () {
@@ -1968,7 +1993,7 @@ BI.Table = BI.inherit(BI.Widget, {
         if (o.isNeedFreeze) {
             return this.scrollBottomRight.element.hasVerticalScroll() || this.scrollBottomLeft.element.hasVerticalScroll();
         }
-        return this.scrollContainer.element.hasVerticalScroll();
+        return this.scrollBottomRight.element.hasVerticalScroll();
     },
 
     setVerticalScroll: function (scrollTop) {
@@ -1981,8 +2006,8 @@ BI.Table = BI.inherit(BI.Widget, {
                 this.scrollBottomLeft.element[0].scrollTop = scrollTop;
             }
         } else {
-            if (this.scrollContainer.element[0].scrollTop !== scrollTop) {
-                this.scrollContainer.element[0].scrollTop = scrollTop;
+            if (this.scrollBottomRight.element[0].scrollTop !== scrollTop) {
+                this.scrollBottomRight.element[0].scrollTop = scrollTop;
             }
         }
     },
@@ -1997,8 +2022,8 @@ BI.Table = BI.inherit(BI.Widget, {
                 this.scrollTopLeft.element[0].scrollLeft = scrollLeft;
             }
         } else {
-            if (this.scrollContainer.element[0].scrollLeft !== scrollLeft) {
-                this.scrollContainer.element[0].scrollLeft = scrollLeft;
+            if (this.scrollBottomRight.element[0].scrollLeft !== scrollLeft) {
+                this.scrollBottomRight.element[0].scrollLeft = scrollLeft;
             }
         }
     },
@@ -2013,8 +2038,8 @@ BI.Table = BI.inherit(BI.Widget, {
                 this.scrollTopRight.element[0].scrollLeft = scrollLeft;
             }
         } else {
-            if (this.scrollContainer.element[0].scrollLeft !== scrollLeft) {
-                this.scrollContainer.element[0].scrollLeft = scrollLeft;
+            if (this.scrollBottomRight.element[0].scrollLeft !== scrollLeft) {
+                this.scrollBottomRight.element[0].scrollLeft = scrollLeft;
             }
         }
     },
@@ -2024,7 +2049,7 @@ BI.Table = BI.inherit(BI.Widget, {
         if (o.isNeedFreeze) {
             return this.scrollBottomRight.element[0].scrollTop || this.scrollBottomLeft.element[0].scrollTop;
         }
-        return this.scrollContainer.element[0].scrollTop;
+        return this.scrollBottomRight.element[0].scrollTop;
     },
 
     getLeftHorizontalScroll: function () {
@@ -2032,7 +2057,7 @@ BI.Table = BI.inherit(BI.Widget, {
         if (o.isNeedFreeze) {
             return this.scrollBottomLeft.element[0].scrollLeft;
         }
-        return this.scrollContainer.element[0].scrollLeft;
+        return this.scrollBottomRight.element[0].scrollLeft;
     },
 
     getRightHorizontalScroll: function () {
@@ -2040,7 +2065,7 @@ BI.Table = BI.inherit(BI.Widget, {
         if (o.isNeedFreeze) {
             return this.scrollBottomRight.element[0].scrollLeft;
         }
-        return this.scrollContainer.element[0].scrollLeft;
+        return this.scrollBottomRight.element[0].scrollLeft;
     },
 
     getColumns: function () {
