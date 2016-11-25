@@ -3012,8 +3012,12 @@
                 });
 
                 //还应该拿到所有的联动过来的组件的钻取条件 也是给跪了
+                //联动过来的组件的联动条件被删除，忽略钻取条件
                 var linkDrill = self.getDrillByID(lId);
-                if (BI.isNotNull(lLinkages) && BI.isNotEmptyObject(lLinkages) && BI.isNotNull(linkDrill)) {
+                var notIgnore = BI.some(linkages, function(ldid, link) {
+                     return lId === self.getWidgetIDByDimensionID(ldid);
+                });
+                if (notIgnore && BI.isNotNull(linkDrill) && BI.isNotEmptyObject(linkDrill)) {
                     BI.each(linkDrill, function (drId, drArray) {
                         if (drArray.length === 0) {
                             return;

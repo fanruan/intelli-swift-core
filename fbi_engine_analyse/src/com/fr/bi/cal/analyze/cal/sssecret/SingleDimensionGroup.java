@@ -182,8 +182,10 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
         switch (tool) {
             case INT_ARRAY:
                 return getArraySortIterator(getter);
-            case RE_SORT:
+            case TREE_MAP_RE_SORT:
                 return getTreeMapReSortIterator(getter);
+            case INT_ARRAY_RE_SORT:
+                return getArrayReSortIterator(getter);
             case DIRECT:
                 return getOneKeyIterator(getter);
             case TREE_MAP:
@@ -497,6 +499,131 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
                         return 0;
                     }
                 };
+                return entry;
+            }
+        };
+    }
+
+    private Iterator getArrayReSortIterator(final ICubeValueEntryGetter getter) {
+        final IntArray[] groupArray = new IntArray[getter.getGroupSize()];
+        root.getGroupValueIndex().Traversal(new SingleRowTraversalAction() {
+            @Override
+            public void actionPerformed(int row) {
+                int groupRow = getter.getPositionOfGroupByRow(row);
+                if (groupRow != NIOConstant.INTEGER.NULL_VALUE) {
+                    if (groupArray[groupRow] == null){
+                        groupArray[groupRow] = new IntArray();
+                    }
+                    groupArray[groupRow].add(row);
+                }
+            }
+        });
+        return column.getSortType() == BIReportConstant.SORT.DESC || column.getSortType() == BIReportConstant.SORT.NUMBER_DESC ? getArrayReSortDESCIterator(getter, groupArray) : getArrayReSortASCIterator(getter, groupArray);
+    }
+
+    private Iterator getArrayReSortDESCIterator(final ICubeValueEntryGetter getter, final IntArray[] groupArray) {
+        return new Iterator() {
+
+            private int index = groupArray.length - 1;
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("remove");
+            }
+
+            @Override
+            public boolean hasNext() {
+                while (index >= 0 && groupArray[index] == null) {
+                    index--;
+                }
+                return index >= 0;
+            }
+
+            @Override
+            public Object next() {
+                Entry entry = new Entry() {
+                    int group = index;
+                    @Override
+                    public Object getKey() {
+                        return getter.getGroupValue(group);
+                    }
+
+                    @Override
+                    public Object getValue() {
+                        return GVIFactory.createGroupValueIndexBySimpleIndex(groupArray[group]);
+                    }
+
+
+                    @Override
+                    public Object setValue(Object value) {
+                        return null;
+                    }
+
+                    @Override
+                    public boolean equals(Object o) {
+                        return false;
+                    }
+
+                    @Override
+                    public int hashCode() {
+                        return 0;
+                    }
+                };
+                index--;
+                return entry;
+            }
+        };
+    }
+
+    private Iterator getArrayReSortASCIterator(final ICubeValueEntryGetter getter, final IntArray[] groupArray) {
+        return new Iterator() {
+
+            private int index = 0;
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("remove");
+            }
+
+            @Override
+            public boolean hasNext() {
+                while (index < groupArray.length && groupArray[index] == null) {
+                    index++;
+                }
+                return index < groupArray.length;
+            }
+
+            @Override
+            public Object next() {
+                Entry entry = new Entry() {
+                    int group = index;
+                    @Override
+                    public Object getKey() {
+                        return getter.getGroupValue(group);
+                    }
+
+                    @Override
+                    public Object getValue() {
+                        return GVIFactory.createGroupValueIndexBySimpleIndex(groupArray[group]);
+                    }
+
+
+                    @Override
+                    public Object setValue(Object value) {
+                        return null;
+                    }
+
+                    @Override
+                    public boolean equals(Object o) {
+                        return false;
+                    }
+
+                    @Override
+                    public int hashCode() {
+                        return 0;
+                    }
+                };
+                index++;
                 return entry;
             }
         };
