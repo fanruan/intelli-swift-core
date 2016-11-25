@@ -2269,7 +2269,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/module/table/table.tree.js",
 
                 "com/fr/bi/web/js/base/module/table/table.fix.js",
-                "com/fr/bi/web/js/base/module/table/table.cache.js",
 
                 "com/fr/bi/web/js/base/module/layer/layer.floatbox.js",
                 "com/fr/bi/web/js/base/module/layer/layer.popup.js",
