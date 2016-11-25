@@ -114,6 +114,8 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
         saveExcelView(excelViewJO, userId);
         saveUpdateSetting(updateSettingJO, userId);
         BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
+
+
         BIBusinessPackagePersistThreadHolder.getInstance().getBiBusinessPackagePersistThread().triggerWork(new BIBusinessPackagePersistThread.Action() {//单独的线程写业务包配置文件，web端立即返回
             @Override
             public void work() {

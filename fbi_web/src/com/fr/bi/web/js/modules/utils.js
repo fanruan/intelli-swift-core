@@ -1211,6 +1211,19 @@
             return clicked;
         },
 
+        //获取组件中所有维度的钻取链A->B->C
+        getDrillList: function (wid) {
+            var drillMap = BI.Utils.getDrillByID(wid);
+            var map = {};
+            BI.each(drillMap, function (drId, ds) {
+                map[drId] = [];
+                BI.each(ds, function (idx, obj) {
+                    map[drId].push(obj.dId)
+                });
+            });
+            return map;
+        },
+
         getWidgetFilterValueByID: function (wid) {
             if (this.isWidgetExistByID(wid)) {
                 return Data.SharingPool.get("widgets", wid, "filter_value") || {};
