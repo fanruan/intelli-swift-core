@@ -687,20 +687,26 @@ BI.Table = BI.inherit(BI.Widget, {
                     break;
                 case "easeInOutSmooth":
                     t /= d / 2;
-                    if (t < 1) return c / 2 * t * t + b;
+                    if (t < 1) {
+                        return c / 2 * t * t + b;
+                    }
                     t--;
                     return -c / 2 * (t * (t - 2) - 1) + b;
                     break;
                 case "easeInOutStrong":
                     t /= d / 2;
-                    if (t < 1) return c / 2 * Math.pow(2, 10 * (t - 1)) + b;
+                    if (t < 1){
+                        return c / 2 * Math.pow(2, 10 * (t - 1)) + b;
+                    }
                     t--;
                     return c / 2 * ( -Math.pow(2, -10 * t) + 2 ) + b;
                     break;
                 case "easeInOut":
                 case "mcsEaseInOut":
                     t /= d / 2;
-                    if (t < 1) return c / 2 * t * t * t + b;
+                    if (t < 1){
+                        return c / 2 * t * t * t + b;
+                    }
                     t -= 2;
                     return c / 2 * (t * t * t + 2) + b;
                     break;
