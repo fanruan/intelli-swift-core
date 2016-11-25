@@ -295,7 +295,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             identifier += '${VALUE}'
         }
         if(setting.showPercentage) {
-            identifier += '${PERCENTAGE}'
+            identifier += '${PERCENT}'
         }
         return identifier
     },
