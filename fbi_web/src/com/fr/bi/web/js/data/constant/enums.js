@@ -526,6 +526,14 @@ BICst.DEFAULT_CHART_SETTING = {
         minScale: {},
         maxScale: {},
         interval: {}
+    },
+    DataLabelSetting: {
+        showCategoryName: true,
+        showSeriesName: true,
+        showValue: true,
+        showPercentage: false,
+        position: BICst.DATA_LABEL.POSITION_OUTER,
+        textStyle: {}
     }
 };
 

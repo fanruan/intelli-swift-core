@@ -100,7 +100,7 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
                 };
                 item.dataLabels.formatter.XFormat = config.xAxis[0].formatter;
                 item.dataLabels.formatter.YFormat = config.yAxis[0].formatter;
-                self.formatDataLabelForData(item.data);
+                self.formatDataLabelForEachData(item.data);
                 BI.each(item.data, function (i, data) {
                     if (data.dataLabels && data.dataLabels.styleSetting && data.dataLabels.styleSetting.type === BICst.DATA_LABEL_STYLE_TYPE.TEXT) {
                         data.dataLabels.formatter = {};

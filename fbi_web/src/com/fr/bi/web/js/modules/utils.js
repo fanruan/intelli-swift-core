@@ -1146,7 +1146,7 @@
         getWSChartDataLabelSettingByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.dataLabelSetting) ? ws.dataLabelSetting :
-            {}
+                BICst.DEFAULT_CHART_SETTING.DataLabelSetting;
         },
 
         getWSChartShowDataTableByID: function (wid) {

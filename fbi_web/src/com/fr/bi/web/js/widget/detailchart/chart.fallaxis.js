@@ -71,7 +71,6 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
             fontSize: this.config.legendStyle.fontSize + "px"
         });
 
-        //为了给数据标签加个%,还要遍历所有的系列，唉
         if (config.plotOptions.dataLabels.enabled === true) {
             var self = this;
             BI.each(items, function (idx, item) {
@@ -89,7 +88,7 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
                         valueFormat: config.yAxis[0].formatter
                     }
                 };
-                self.formatDataLabelForData(item.data, config.yAxis[0].formatter);
+                self.formatDataLabelForEachData(item.data, config.yAxis[0].formatter);
             });
         }
 

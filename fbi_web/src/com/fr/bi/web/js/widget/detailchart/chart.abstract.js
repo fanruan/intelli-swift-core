@@ -6,6 +6,9 @@
 BI.AbstractChart = BI.inherit(BI.Widget, {
 
     constants: {
+        INNER: 1,
+        OUTER: 2,
+        CENTER: 3,
         REVERSE: false,
         SHOW_AXIS_LABEL: true,
         SEPARATOR: false,
@@ -272,78 +275,84 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         return formatter
     },
 
-    _setDataLableContend: function (chartOptions) {
-        var position = chartOptions.dataLabelSetting;
-
+    _setDataLabelContent: function (chartOptions) {
+        var setting = chartOptions.dataLabelSetting, identifier = '';
+        if(setting.showCategoryName) {
+            identifier += '${CATEGORY}'
+        } else if(setting.showSeriesName) {
+            identifier += '${SERIES}'
+        } else if(setting.showValue) {
+            identifier += '${VALUE}'
+        }
+        return identifier
     },
 
-    formatDataLabel: function (state, items, config) {
-        var self = this, chartOptions = this.getChartConfig();
-        if (state === true) {
+    _setDataLabelPosition: function (chartOptions) {
+        var setting = chartOptions.dataLabelSetting || {};
+        switch (setting.position || this.constants.OUTER) {
+            case this.constants.INNER:
+                return 'inside';
+            case this.constants.CENTER:
+                return 'center';
+            default:
+                return 'outside'
+        }
+    },
+
+    formatDataLabelForAxis: function (items, config, chartOptions) {
+        var self = this;
+        if (config.plotOptions.dataLabels.enabled === true) {
             BI.each(items, function (idx, item) {
+                var format;
+                if(config.xAxis[0] && (config.xAxis[0].type === 'value')) {
+                    format = config.xAxis[item.xAxis].formatter;
+                }
+                format = config.yAxis[item.yAxis].formatter;
+
                 item.dataLabels = {
-                    "align": "outside",
-                    "autoAdjust": true,
+                    align: this._setDataLabelPosition(chartOptions),
+                    autoAdjust: true,
                     style: chartOptions.chartFont,
                     enabled: true,
                     formatter: {
-                        identifier: "${VALUE}",
-                        valueFormat: config.yAxis[item.yAxis].formatter
+                        identifier: this._setDataLabelContent(chartOptions),
+                        valueFormat: format,
                     }
                 };
-                self.formatDataLabelForData(item.data, config.yAxis[item.yAxis].formatter);
+                self.formatDataLabelForEachData(item.data, format);
             });
         }
     },
 
-    formatDataLabelForAxis: function (state, items, format) {
-        var self = this, chartOptions = this.getChartConfig();
+    formatDataLabelForOthers: function (state, items, format, chartOptions) {
+        var self = this;
         if (state === true) {
             BI.each(items, function (idx, item) {
                 item.dataLabels = {
-                    "align": "outside",
-                    "autoAdjust": true,
+                    align: this._setDataLabelPosition(chartOptions),
+                    autoAdjust: true,
                     style: chartOptions.chartFont,
                     enabled: true,
                     formatter: {
-                        identifier: "${VALUE}",
+                        identifier: this._setDataLabelContent(chartOptions),
                         valueFormat: format
                     }
                 };
-                self.formatDataLabelForData(item.data, format);
             });
         }
     },
 
-    formatDataLabelForOthers: function (state, items, format) {
-        var self = this, chartOptions = this.getChartConfig();
-        if (state === true) {
-            BI.each(items, function (idx, item) {
-                item.dataLabels = {
-                    "align": "outside",
-                    "autoAdjust": true,
-                    style: chartOptions.chartFont,
-                    enabled: true,
-                    formatter: {
-                        identifier: "${VALUE}",
-                        valueFormat: format
-                    }
-                };
-            });
-        }
-    },
-
-    formatDataLabelForData: function (items, format) {
+    formatDataLabelForEachData: function (items, format, chartOptions) {
         BI.each(items, function (idx, item) {
             if (item.dataLabels) {
                 var styleSetting = item.dataLabels.styleSetting || {};
                 item.dataLabels.formatter = {
-                    identifier: "${VALUE}",
+                    identifier: this._setDataLabelContent(chartOptions),
                     valueFormat: format
                 };
                 item.dataLabels.enabled = true;
                 item.dataLabels.autoAdjust = true;
-                item.dataLabels.align = "outside";
+                item.dataLabels.align = this._setDataLabelPosition(chartOptions);
                 item.dataLabels.style = {
                     "fontFamily": "inherit",
                     "color": "#808080",
