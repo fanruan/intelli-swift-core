@@ -6,6 +6,7 @@ package com.fr.bi.field.target.filter.formula;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.target.filter.AbstractTargetFilter;
@@ -34,6 +35,7 @@ public class FormulaFilter extends AbstractTargetFilter {
      */
     private static final long serialVersionUID = 5615839692061360681L;
     private static final String XML_TAG = "FormulaFilter";
+    @BICoreField
     private String expression = StringUtils.EMPTY;
 
 
