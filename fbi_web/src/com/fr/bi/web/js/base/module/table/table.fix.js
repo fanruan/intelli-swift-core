@@ -160,11 +160,13 @@ BI.FixTable = BI.inherit(BI.Table, {
 
     resize: function () {
         var self = this;
-        BI.nextTick(function () {
-            self._initScroller();
-            self._scroll(0);
-            self._resize && self._resize();
-        });
+        this._resize && this._resize();
+        if (this._isNeedFix) {
+            BI.nextTick(function () {
+                self._initScroller();
+                self._scroll(0);
+            });
+        }
     },
 
     _createBodyCells: function (items, columnSize, mergeCols, TDs, Ws, start, rowSize) {
