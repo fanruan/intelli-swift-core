@@ -1474,3 +1474,31 @@ BICst.PERCENTAGE_SHOW = [{
     text: BI.i18nText("BI-Hidden"),
     value: BICst.PERCENTAGE.NOT_SHOW
 }];
+
+BICst.INIT_CHART_MAP = {};
+BICst.INIT_CHART_MAP[BICst.WIDGET.AXIS] = {type: "bi.axis_chart", events:[BI.AxisChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.COMBINE_CHART] = {type: "bi.multi_axis_chart", events:[BI.AxisChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.MULTI_AXIS_COMBINE_CHART] = {type: "bi.multi_axis_chart", events: [BI.MultiAxisChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.ACCUMULATE_AXIS] = {type: "bi.accumulate_axis_chart", events: [BI.AccumulateAxisChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.LINE] = {type: "bi.line_chart", events: [BI.LineChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.AREA] = {type: "bi.area_chart", events: [BI.AreaChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.ACCUMULATE_AREA] = {type: "bi.accumulate_area_chart", events: [BI.AccumulateAreaChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.PERCENT_ACCUMULATE_AXIS] = {type: "bi.percent_accumulate_axis_chart", events: [BI.PercentAccumulateAxisChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.ACCUMULATE_BAR] = {type: "bi.accumulate_bar_chart", events: [BI.AccumulateBarChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.DONUT] = {type: "bi.donut_chart", events: [BI.DonutChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.RADAR] = {type: "bi.radar_chart", events: [BI.RadarChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.ACCUMULATE_RADAR] = {type: "bi.accumulate_radar_chart", events: [BI.AccumulateRadarChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.PIE] = {type: "bi.pie_chart", events: [BI.PieChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.DASHBOARD] = {type: "bi.dashboard_chart", events: [BI.DashboardChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.BAR] = {type: "bi.bar_chart", events: [BI.BarChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.PERCENT_ACCUMULATE_AREA] = {type: "bi.percent_accumulate_area_chart", events: [BI.PercentAccumulateAreaChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.COMPARE_BAR] = {type: "bi.compare_bar_chart", events: [BI.CompareBarChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.COMPARE_AXIS] = {type: "bi.compare_axis_chart", events: [BI.CompareAxisChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.RANGE_AREA] = {type: "bi.range_area_chart", events: [BI.RangeAreaChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.COMPARE_AREA] = {type: "bi.compare_area_chart", events: [BI.CompareAreaChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.FALL_AXIS] = {type: "bi.fall_axis_chart", events: [BI.FallAxisChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.BUBBLE] = {type: "bi.bubble_chart", events: [BI.BubbleChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.FORCE_BUBBLE] = {type: "bi.force_bubble_chart", events: [BI.ForceBubbleChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.SCATTER] = {type: "bi.scatter_chart", events: [BI.ScatterChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.MAP] = {type: "bi.map_chart", events: [BI.MapChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.GIS_MAP] = {type: "bi.gis_map_chart", events: [BI.GISMapChart.EVENT_CHANGE]};
