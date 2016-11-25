@@ -2,7 +2,6 @@ package com.fr.bi.web.conf.services.cubetask;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.CubeGenerationManager;
-import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.cal.generate.CubeBuildManager;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -30,11 +29,6 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
         CubeGenerationManager.getCubeManager().setStatus(userId, Status.PREPARING);
         String baseTableSourceId = WebUtils.getHTTPRequestParameter(req, "baseTableSourceId");
         int updateType = WebUtils.getHTTPRequestIntParameter(req, "updateType");
-        try {
-            CubeUpdateUtils.recordTableAndRelationInfo(userId);
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
-        }
         boolean cubeBuild = cubeTaskBuild(userId, baseTableSourceId, updateType);
         WebUtils.printAsJSON(res, new JSONObject().put("result", cubeBuild));
     }
