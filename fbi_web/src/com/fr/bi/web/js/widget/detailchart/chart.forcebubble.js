@@ -58,6 +58,7 @@ BI.ForceBubbleChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.dataLabels.formatter.identifier = "${CATEGORY}${VALUE}";
         delete config.xAxis;
         delete config.yAxis;
+        delete config.zoom;
         BI.each(items, function (idx, item) {
             BI.each(item.data, function (id, da) {
                 da.y = self.formatXYDataWithMagnify(da.y, 1);
