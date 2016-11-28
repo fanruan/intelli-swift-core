@@ -33,14 +33,14 @@ public class CubeValueEntryGetter implements ICubeValueEntryGetter {
     }
 
     @Override
-    public CubeValueEntry getEntryByRow(int row) {
-        return new CubeValueEntry(cf.createDetailGetter(manager).getValue(row), cf.getIndexByRow(row, manager), cf.getPositionOfGroup(row, manager));
+    public GroupValueIndex getIndexByGroupRow(int groupRow) {
+        ICubeColumnIndexReader reader = cf.createGroupByType(key, new ArrayList<BITableSourceRelation>(), manager);
+        return reader.getIndex(reader.getGroupValue(groupRow));
     }
 
     @Override
-    public CubeValueEntry getEntryByGroupRow(int row) {
-        ICubeColumnIndexReader reader = cf.createGroupByType(key, new ArrayList<BITableSourceRelation>(), manager);
-        return new CubeValueEntry(reader.getGroupValue(row), reader.getIndex(reader.getGroupValue(row)), row);
+    public CubeValueEntry getEntryByRow(int row) {
+        return new CubeValueEntry(cf.createDetailGetter(manager).getValue(row), cf.getIndexByRow(row, manager), cf.getPositionOfGroup(row, manager));
     }
 
     @Override

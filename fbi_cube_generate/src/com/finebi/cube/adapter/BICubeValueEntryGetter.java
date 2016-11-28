@@ -56,15 +56,20 @@ public class BICubeValueEntryGetter<T> implements ICubeValueEntryGetter {
     public GroupValueIndex getIndexByRow(int row) {
         try {
             int groupRow  = getPositionOfGroupByRow(row);
-            return getGroupValueIndex(groupRow);
+            return getIndexByGroupRow(groupRow);
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return GVIFactory.createAllEmptyIndexGVI();
     }
 
-    private GroupValueIndex getGroupValueIndex(int row) throws BICubeIndexException {
-        return row == NIOConstant.INTEGER.NULL_VALUE ? indexDataGetterService.getNULLIndex(0) : indexDataGetterService.getBitmapIndex(row);
+    public GroupValueIndex getIndexByGroupRow(int groupRow) {
+        try {
+            return groupRow == NIOConstant.INTEGER.NULL_VALUE ? indexDataGetterService.getNULLIndex(0) : indexDataGetterService.getBitmapIndex(groupRow);
+        } catch (BICubeIndexException e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            return null;
+        }
     }
 
     public T getGroupValue(int groupRow) {
@@ -78,25 +83,12 @@ public class BICubeValueEntryGetter<T> implements ICubeValueEntryGetter {
         T value = null;
         try {
             groupRow  = getPositionOfGroupByRow(row);
-            gvi = getGroupValueIndex(groupRow);
+            gvi = getIndexByGroupRow(groupRow);
             value = getGroupValue(groupRow);
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return new CubeValueEntry(value, gvi, groupRow);
-    }
-
-    @Override
-    public CubeValueEntry getEntryByGroupRow(int row) {
-        GroupValueIndex gvi = null;
-        T value = null;
-        try {
-            gvi = getGroupValueIndex(row);
-            value = getGroupValue(row);
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
-        }
-        return new CubeValueEntry(value, gvi, row);
     }
 
     @Override

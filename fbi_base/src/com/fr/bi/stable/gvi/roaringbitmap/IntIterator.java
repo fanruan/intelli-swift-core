@@ -1,5 +1,6 @@
 /*
- * (c) the authors Licensed under the Apache License, Version 2.0.
+ * (c) Daniel Lemire, Owen Kaser, Samy Chambi, Jon Alvarado, Rory Graves, Björn Sperber
+ * Licensed under the Apache License, Version 2.0.
  */
 
 package com.fr.bi.stable.gvi.roaringbitmap;
@@ -8,21 +9,21 @@ package com.fr.bi.stable.gvi.roaringbitmap;
  * A simple iterator over integer values
  */
 public interface IntIterator extends Cloneable {
-  /**
-   * Creates a copy of the iterator.
-   * 
-   * @return a clone of the current iterator
-   */
-  IntIterator clone();
+    /**
+     * @return whether there is another value
+     */
+    boolean hasNext();
 
-  /**
-   * @return whether there is another value
-   */
-  boolean hasNext();
-
-  /**
-   * @return next integer value
-   */
-  int next();
+    /**
+     * @return next integer value
+     */
+    int next();
+    
+    /**
+     * Creates a copy of the iterator.
+     * 
+     * @return a clone of the current iterator
+     */
+    IntIterator clone();
 
 }
