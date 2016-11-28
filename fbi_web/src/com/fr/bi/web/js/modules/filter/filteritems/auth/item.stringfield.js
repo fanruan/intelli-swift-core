@@ -93,7 +93,7 @@ BI.AuthorityStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         this.filterType.on(BI.TextValueDownListCombo.EVENT_CHANGE, function () {
             self._refreshFilterWidget(self.filterType.getValue()[0]);
             self._setNodeData({
-                filter_type : this.getValue()[0]
+                filter_type: this.getValue()[0]
             });
             o.afterValueChange.apply(self, arguments);
         });
@@ -140,7 +140,7 @@ BI.AuthorityStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
         this.filterWidget.on(BI.AuthoritySelectFieldDataCombo.EVENT_CONFIRM, function () {
             self._setNodeData({
-                filter_value : this.getValue()
+                filter_value: this.getValue()
             });
             o.afterValueChange.apply(self, arguments);
         });
@@ -148,7 +148,7 @@ BI.AuthorityStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         return this.filterWidget;
     },
 
-    _createLoginInfoCombo: function(initData){
+    _createLoginInfoCombo: function (initData) {
         var self = this, o = this.options;
         this.filterWidget = BI.createWidget({
             type: "bi.login_info_combo",
@@ -156,9 +156,9 @@ BI.AuthorityStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             width: 200,
             height: this._constant.BUTTON_HEIGHT
         });
-        this.filterWidget.on(BI.LoginInfoCombo.EVENT_CHANGE, function(){
+        this.filterWidget.on(BI.LoginInfoCombo.EVENT_CHANGE, function () {
             self._setNodeData({
-                filter_value : this.getValue()
+                filter_value: this.getValue()
             });
             o.afterValueChange.apply(self, arguments);
         });
@@ -172,12 +172,12 @@ BI.AuthorityStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             type: "bi.sign_editor",
             cls: "condition-operator-input",
             allowBlank: true,
-            height: this._constant.BUTTON_HEIGHT,
-            width: this._constant.INPUT_WIDTH
+            height: this._constant.BUTTON_HEIGHT - 2,
+            width: this._constant.INPUT_WIDTH - 2
         });
-        this.filterWidget.on(BI.SignEditor.EVENT_CONFIRM, function(){
+        this.filterWidget.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self._setNodeData({
-                filter_value : this.getValue()
+                filter_value: this.getValue()
             });
             o.afterValueChange.apply(self, arguments);
         });
@@ -185,7 +185,7 @@ BI.AuthorityStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         return this.filterWidget;
     },
 
-    _setNodeData: function(v){
+    _setNodeData: function (v) {
         var o = this.options;
         o.node.set("data", BI.extend(o.node.get("data"), v));
     },

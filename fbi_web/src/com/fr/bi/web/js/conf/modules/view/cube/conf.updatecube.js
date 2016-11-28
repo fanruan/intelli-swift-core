@@ -37,12 +37,13 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
             text: BI.i18nText("BI-Immediate_Update_DataBase"),
             height: 28,
             handler: function () {
-                self.immediateButton.setEnable(false);
-                self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
+                self._immediateButtonStatus(false);
                 BI.Utils.generateCube(function (data) {
                     if (data.result) {
                         self.cubeLog.refreshLog(true);
                         self._createCheckInterval();
+                    }else {
+                        self._immediateButtonStatus(true);
                     }
                 });
             }
@@ -68,13 +69,10 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
             success: function (data) {
                 var hasTask = data.hasTask;
                 if (!hasTask) {
-                    self.immediateButton.setEnable(true);
-                    self.immediateButton.setText(BI.i18nText("BI-Immediate_Update_DataBase"));
-                    //清掉interval了
+                    self._immediateButtonStatus(true);
                     self._clearCheckInterval();
                 } else {
-                    self.immediateButton.setEnable(false);
-                    self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
+                    self._immediateButtonStatus(false);
                 }
             }
         });
@@ -105,6 +103,17 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
             type: "bi.cube_log"
         })
 
+    },
+
+    _immediateButtonStatus:function (isAvailable) {
+        var self=this;
+        if (isAvailable){
+            self.immediateButton.setEnable(true);
+            self.immediateButton.setText(BI.i18nText("BI-Update_Table_Immedi"));
+        }else {
+            self.immediateButton.setEnable(false);
+            self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
+        }
     },
 
     refresh: function () {

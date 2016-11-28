@@ -1,6 +1,6 @@
 package com.finebi.cube.conf.pack.data;
 
-import com.finebi.cube.common.log.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
@@ -11,7 +11,6 @@ import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.exception.BITableAbsentException;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -178,6 +177,8 @@ public abstract class BIBusinessPackage<T extends BusinessTable> extends BISetCo
     public void parseJSON(JSONObject jo) throws Exception {
         //this.setName(jo.optString("package_name"));
         JSONArray ja = jo.optJSONArray("data");
+        Set<BusinessTable> oldTables = new HashSet<BusinessTable>();
+        oldTables.addAll(this.container);
         BILoggerFactory.getLogger(BIBusinessPackage.class).info("*********clear package start********");
         clear();
         BILoggerFactory.getLogger(BIBusinessPackage.class).info("*********clear package end********");
@@ -187,10 +188,15 @@ public abstract class BIBusinessPackage<T extends BusinessTable> extends BISetCo
             T table = createTable();
             JSONObject tableJson = ja.optJSONObject(i);
             table.parseJSON(tableJson);
-            List<String> fieldNames = new ArrayList<String>();
 
             if (tableJson.has("fields")) {
-                table.setFields(this.parseField(tableJson.getJSONArray("fields"), table));
+                List<BusinessField> fields = this.parseField(tableJson.getJSONArray("fields"), table);
+                //防止保存空字段
+                if (fields.isEmpty()) {
+                    table.setFields(getOldFields(table.getID().getIdentityValue(), oldTables));
+                } else {
+                    table.setFields(fields);
+                }
             }
             add(table);
             BILoggerFactory.getLogger(BIBusinessPackage.class).info("The table " + i + ":\n" + logTable(table));
@@ -198,6 +204,15 @@ public abstract class BIBusinessPackage<T extends BusinessTable> extends BISetCo
         }
         BILoggerFactory.getLogger(BIBusinessPackage.class).info("*********save package table end********");
 
+    }
+
+    private List<BusinessField> getOldFields(String id, Set<BusinessTable> oldTables) {
+        for (BusinessTable table : oldTables) {
+            if (ComparatorUtils.equals(table.getID().getIdentityValue(), id)) {
+                return table.getFields();
+            }
+        }
+        return new ArrayList<BusinessField>();
     }
 
     private String logTable(BusinessTable table) {

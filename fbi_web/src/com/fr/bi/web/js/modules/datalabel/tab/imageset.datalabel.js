@@ -2,7 +2,35 @@
  * Created by Fay on 2016/7/7.
  */
 BI.DataLabelImageSet = BI.inherit(BI.Widget, {
-    _defaultImg: [],
+    _defaultImg: [
+        "defaultimage-01.png",
+        "defaultimage-02.png",
+        "defaultimage-03.png",
+        "defaultimage-04.png",
+        "defaultimage-05.png",
+        "defaultimage-06.png",
+        "defaultimage-07.png",
+        "defaultimage-08.png",
+        "defaultimage-09.png",
+        "defaultimage-10.png",
+        "defaultimage-11.png",
+        "defaultimage-12.png",
+        "defaultimage-13.png",
+        "defaultimage-14.png",
+        "defaultimage-15.png",
+        "defaultimage-16.png",
+        "defaultimage-17.png",
+        "defaultimage-18.png",
+        "defaultimage-19.png",
+        "defaultimage-20.png",
+        "defaultimage-21.png",
+        "defaultimage-22.png",
+        "defaultimage-23.png",
+        "defaultimage-24.png",
+        "defaultimage-25.png",
+        "defaultimage-26.png",
+        "defaultimage-27.png"
+    ],
 
     _imageSelect: "",
 
@@ -133,27 +161,25 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
             BI.requestAsync("fr_bi_dezi", "save_upload_image", {
                 attach_id: attachId
             }, function () {
-                if (self._img && self._img.length < 14) {
-                    var button = BI.createWidget({
-                        type: "bi.data_label_image_button",
-                        src: src,
-                        width: 50,
-                        height: 35,
-                        iconWidth: 14,
-                        iconHeight: 14
-                    });
-                    button.on(BI.DataLabelImageButton.EVENT_CHANGE, function (src) {
-                        self._imageSelect = src;
-                        self.fireEvent(BI.DataLabelImageSet.EVENT_CHANGE, arguments);
-                    });
-                    button.on(BI.DataLabelImageButton.DELETE_IMAGE, function () {
-                        self.refreshImg();
-                        BI.Broadcasts.send(BICst.BROADCAST.IMAGE_LIST_PREFIX + self.wId, self._img);
-                    });
-                    self.imageGroup.prependItems([button]);
+                var button = BI.createWidget({
+                    type: "bi.data_label_image_button",
+                    src: src,
+                    width: 50,
+                    height: 35,
+                    iconWidth: 14,
+                    iconHeight: 14
+                });
+                button.on(BI.DataLabelImageButton.EVENT_CHANGE, function (src) {
+                    self._imageSelect = src;
+                    self.fireEvent(BI.DataLabelImageSet.EVENT_CHANGE, arguments);
+                });
+                button.on(BI.DataLabelImageButton.DELETE_IMAGE, function () {
                     self.refreshImg();
                     BI.Broadcasts.send(BICst.BROADCAST.IMAGE_LIST_PREFIX + self.wId, self._img);
-                }
+                });
+                self.imageGroup.prependItems([button]);
+                self.refreshImg();
+                BI.Broadcasts.send(BICst.BROADCAST.IMAGE_LIST_PREFIX + self.wId, self._img);
             });
         });
         var header = BI.createWidget({
@@ -179,7 +205,7 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
         BI.each(this._defaultImg, function (i, item) {
             var img = {
                 type: "bi.image_button",
-                width: 50,
+                width: 49,
                 height: 50,
                 handler: function () {
                     self._imageSelect = this.getSrc();
@@ -189,13 +215,18 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
             img.src = BI.Func.getCompleteImageUrl(item);
             result.push(img);
         });
-        return BI.createWidget({
+        var imgs = BI.createWidget({
             type: "bi.inline",
             cls: "image-group",
             items: result,
             hgap: 2,
             tgap: 5
         });
+        return BI.createWidget({
+            type: "bi.vertical",
+            items: [imgs],
+            height: 110
+        })
     },
 
     _createImgs: function () {
@@ -210,7 +241,11 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
                 vgap: 2
             }]
         });
-        return this.imageGroup;
+        return BI.createWidget({
+            type: "bi.vertical",
+            items: [this.imageGroup],
+            height: 80
+        });
     },
 
     convert2Images: function (items) {
