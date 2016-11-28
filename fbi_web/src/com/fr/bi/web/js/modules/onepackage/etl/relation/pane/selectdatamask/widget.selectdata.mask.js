@@ -145,6 +145,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
     _getTablesStructureByPackId: function (pId) {
         var self = this;
         var translations = this.model.getTranslations();
+        var tableId = this.model.getTableIdByFieldId(this.model.getFieldId());
         var tablesStructure = [];
         //当前编辑业务包从Sharing Pool取
         if (pId === BI.Utils.getCurrentPackageId4Conf()) {
@@ -157,7 +158,9 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
                     value: id,
                     isParent: true,
                     open: self._isTableOpen(table),
-                    title: translations[id]
+                    title: translations[id],
+                    disabled: id === tableId,
+                    warningTitle: BI.i18nText("BI-Can_Not_Relation_Self")
                 });
             });
         } else {
@@ -170,7 +173,9 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
                     value: id,
                     isParent: true,
                     open: self._isTableOpen(table),
-                    title: translations[id]
+                    title: translations[id],
+                    disabled: id === tableId,
+                    warningTitle: BI.i18nText("BI-Can_Not_Relation_Self")
                 });
             });
         }

@@ -11,20 +11,18 @@ BI.UpdatePreviewPane = BI.inherit(BI.BarPopoverSection, {
         PART_MODIFY: 3
     },
 
-    _defaultConfig: function(){
-        return BI.extend(BI.UpdatePreviewPane.superclass._defaultConfig.apply(this, arguments), {
-
-        })
+    _defaultConfig: function () {
+        return BI.extend(BI.UpdatePreviewPane.superclass._defaultConfig.apply(this, arguments), {})
     },
 
-    _init: function(){
+    _init: function () {
         BI.UpdatePreviewPane.superclass._init.apply(this, arguments);
         this.model = new BI.UpdatePreviewPaneModel({
             table: this.options.table
         })
     },
 
-    _createPane: function(v) {
+    _createPane: function (v) {
         switch (v) {
             case this._constants.SHOW_RESULT:
                 this.warningContainer = BI.createWidget({
@@ -36,7 +34,7 @@ BI.UpdatePreviewPane = BI.inherit(BI.BarPopoverSection, {
                     items: [],
                     header: []
                 });
-                return BI.createWidget({
+                return this.resultContainer = BI.createWidget({
                     type: "bi.absolute",
                     items: [{
                         el: this.warningContainer,
@@ -73,7 +71,7 @@ BI.UpdatePreviewPane = BI.inherit(BI.BarPopoverSection, {
         }
     },
 
-    rebuildNorth: function(north){
+    rebuildNorth: function (north) {
         BI.createWidget({
             type: "bi.label",
             element: north,
@@ -83,7 +81,7 @@ BI.UpdatePreviewPane = BI.inherit(BI.BarPopoverSection, {
         })
     },
 
-    rebuildCenter: function(center) {
+    rebuildCenter: function (center) {
         var buttons = BI.createWidget({
             type: "bi.button_group",
             height: 30,
@@ -127,7 +125,7 @@ BI.UpdatePreviewPane = BI.inherit(BI.BarPopoverSection, {
         })
     },
 
-    rebuildSouth: function(south) {
+    rebuildSouth: function (south) {
         var self = this;
         BI.createWidget({
             type: "bi.right",
@@ -138,7 +136,7 @@ BI.UpdatePreviewPane = BI.inherit(BI.BarPopoverSection, {
                     type: "bi.button",
                     text: BI.i18nText("BI-Sure"),
                     height: 30,
-                    handler: function(){
+                    handler: function () {
                         self.close();
                     }
                 }],
@@ -148,18 +146,18 @@ BI.UpdatePreviewPane = BI.inherit(BI.BarPopoverSection, {
         })
     },
 
-    close: function(){
+    close: function () {
         this.fireEvent(BI.UpdatePreviewPane.EVENT_CHANGE);
     },
 
-    populate: function(sql, type) {
+    populate: function (sql, type) {
         var self = this;
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: this.tab,
             text: BI.i18nText("BI-Loading")
         });
-        BI.Utils.getUpdatePreviewSqlResult({sql: sql, table: this.options.table}, function(res){
+        BI.Utils.getUpdatePreviewSqlResult({sql: sql, table: this.options.table}, function (res) {
             var data = res.data, fieldNames = res.field_names, sql = res.sql, error = res.error;
             //sql
             self.sqlContainer.empty();
@@ -175,7 +173,7 @@ BI.UpdatePreviewPane = BI.inherit(BI.BarPopoverSection, {
 
             self.warningContainer.empty();
             //warning
-            if(BI.isNull(data) || BI.isNull(fieldNames)) {
+            if (BI.isNull(data) || BI.isNull(fieldNames)) {
                 self.previewTable.populate([], []);
                 self.warningContainer.addItem({
                     type: "bi.label",
@@ -189,37 +187,40 @@ BI.UpdatePreviewPane = BI.inherit(BI.BarPopoverSection, {
             } else {
                 var lackFields = self.model.getLackFields(fieldNames);
                 var extraFields = self.model.getExtraFields(fieldNames);
-                if(lackFields.length > 0) {
+                var warningHeight = 29;
+                if (lackFields.length > 0) {
                     self.warningContainer.addItem({
                         type: "bi.label",
                         text: "1、" + BI.i18nText("BI-Sql_Result_Less_Cube") + lackFields,
+                        title: BI.i18nText("BI-Sql_Result_Less_Cube") + lackFields,
                         cls: "warning-comment",
-                        whiteSpace: "normal",
                         textAlign: "left",
                         textHeight: 20,
                         hgap: 10
-                    })
+                    });
+                    warningHeight += 30;
                 }
-                if(extraFields.length > 0) {
+                if (extraFields.length > 0) {
                     self.warningContainer.addItem({
                         type: "bi.label",
                         text: "2、" + BI.i18nText("BI-Cube_Less_Sql_Result") + extraFields + BI.i18nText("BI-Fields_Wonnot_Action_Update"),
+                        title: BI.i18nText("BI-Cube_Less_Sql_Result") + extraFields + BI.i18nText("BI-Fields_Wonnot_Action_Update"),
                         cls: "warning-comment",
-                        whiteSpace: "normal",
                         textAlign: "left",
                         textHeight: 20,
                         hgap: 10
-                    })
+                    });
+                    warningHeight += 30;
                 }
                 var header = [], items = [];
-                BI.each(fieldNames, function(i, fieldName){
+                BI.each(fieldNames, function (i, fieldName) {
                     header.push({
                         text: fieldName
-                    })
+                    });
                 });
-                BI.each(data, function(i, row){
+                BI.each(data, function (i, row) {
                     var item = [];
-                    BI.each(row, function(j, cell){
+                    BI.each(row, function (j, cell) {
                         item.push({
                             text: cell
                         });
@@ -227,8 +228,10 @@ BI.UpdatePreviewPane = BI.inherit(BI.BarPopoverSection, {
                     items.push(item);
                 });
                 self.previewTable.populate(items, [header]);
+                self.resultContainer.attr("items")[1].top = warningHeight;
+                self.resultContainer.resize();
             }
-        }, function() {
+        }, function () {
             mask.destroy();
         })
     }
