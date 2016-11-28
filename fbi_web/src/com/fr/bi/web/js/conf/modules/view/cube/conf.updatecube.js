@@ -103,7 +103,7 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
         var self=this;
         if (isAvailable){
             self.immediateButton.setEnable(true);
-            self.immediateButton.setText(BI.i18nText("BI-Update_Table_Immedi"));
+            self.immediateButton.setText(BI.i18nText("BI-Immediate_Update_DataBase"));
         }else {
             self.immediateButton.setEnable(false);
             self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
