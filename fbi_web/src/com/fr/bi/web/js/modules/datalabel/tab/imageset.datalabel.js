@@ -133,27 +133,25 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
             BI.requestAsync("fr_bi_dezi", "save_upload_image", {
                 attach_id: attachId
             }, function () {
-                if (self._img && self._img.length < 14) {
-                    var button = BI.createWidget({
-                        type: "bi.data_label_image_button",
-                        src: src,
-                        width: 50,
-                        height: 35,
-                        iconWidth: 14,
-                        iconHeight: 14
-                    });
-                    button.on(BI.DataLabelImageButton.EVENT_CHANGE, function (src) {
-                        self._imageSelect = src;
-                        self.fireEvent(BI.DataLabelImageSet.EVENT_CHANGE, arguments);
-                    });
-                    button.on(BI.DataLabelImageButton.DELETE_IMAGE, function () {
-                        self.refreshImg();
-                        BI.Broadcasts.send(BICst.BROADCAST.IMAGE_LIST_PREFIX + self.wId, self._img);
-                    });
-                    self.imageGroup.prependItems([button]);
+                var button = BI.createWidget({
+                    type: "bi.data_label_image_button",
+                    src: src,
+                    width: 50,
+                    height: 35,
+                    iconWidth: 14,
+                    iconHeight: 14
+                });
+                button.on(BI.DataLabelImageButton.EVENT_CHANGE, function (src) {
+                    self._imageSelect = src;
+                    self.fireEvent(BI.DataLabelImageSet.EVENT_CHANGE, arguments);
+                });
+                button.on(BI.DataLabelImageButton.DELETE_IMAGE, function () {
                     self.refreshImg();
                     BI.Broadcasts.send(BICst.BROADCAST.IMAGE_LIST_PREFIX + self.wId, self._img);
-                }
+                });
+                self.imageGroup.prependItems([button]);
+                self.refreshImg();
+                BI.Broadcasts.send(BICst.BROADCAST.IMAGE_LIST_PREFIX + self.wId, self._img);
             });
         });
         var header = BI.createWidget({
@@ -210,7 +208,11 @@ BI.DataLabelImageSet = BI.inherit(BI.Widget, {
                 vgap: 2
             }]
         });
-        return this.imageGroup;
+        return BI.createWidget({
+            type: "bi.vertical",
+            items: [this.imageGroup],
+            height: 80
+        });
     },
 
     convert2Images: function (items) {

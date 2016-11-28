@@ -38,8 +38,6 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         HORIZONTAL_TUBE: 13,
         LNG_FIRST: 3,
         LAT_FIRST: 4,
-        theme_color: "#65bce7",
-        auto_custom: 1,
         POLYGON: 7,
         AUTO_CUSTOM: 1,
         AUTO: 1,
@@ -53,6 +51,13 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             "fontFamily": "inherit",
             "color": "inherit",
             "fontSize": "12px"
+        },
+        LABEL_STYLE: {
+            textStyle: {
+                "fontFamily": "inherit",
+                "color": "inherit",
+                "fontSize": "12px"
+            }
         },
         CUSTOM_SCALE: {
             maxScale: {
@@ -529,7 +534,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             leftYTitle: options.leftYTitle || '',
             leftYReverse: options.leftYReverse || c.REVERSE,
             leftYShowLabel: options.leftYShowLabel,
-            leftYLabelStyle: options.leftYLabelStyle || c.FONT_STYLE,
+            leftYLabelStyle: options.leftYLabelStyle || c.LABEL_STYLE,
             leftYLineColor: options.leftYLineColor || '',
             leftYSeparator: options.leftYSeparator || c.SEPARATOR,
             leftYTitleStyle: options.leftYTitleStyle || c.FONT_STYLE,
@@ -545,7 +550,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             rightYSeparator: options.rightYSeparator,
             rightYCustomScale: options.rightYCustomScale || c.CUSTOM_SCALE,
             rightYShowLabel: options.rightYShowLabel,
-            rightYLabelStyle: options.rightYLabelStyle || c.FONT_STYLE,
+            rightYLabelStyle: options.rightYLabelStyle || c.LABEL_STYLE,
             rightYLineColor: options.rightYLineColor,
             //y2右值轴
             rightY2NumberFormat: options.rightY2NumberFormat,
@@ -556,7 +561,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             rightY2Reverse: options.rightY2Reverse,
             rightY2Separator: options.rightY2Separator,
             rightY2ShowLabel: options.rightY2ShowLabel,
-            rightY2LabelStyle: options.rightY2LabelStyle || c.FONT_STYLE,
+            rightY2LabelStyle: options.rightY2LabelStyle || c.LABEL_STYLE,
             rightY2LineColor: options.rightY2LineColor,
             rightY2TitleStyle: options.rightY2TitleStyle,
             rightY2CustomScale: options.rightY2CustomScale || c.CUSTOM_SCALE,
@@ -565,7 +570,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             catShowTitle: options.catShowTitle || false,
             catTitle: options.catTitle,
             catShowLabel: options.catShowLabel,
-            catLabelStyle: options.catLabelStyle || c.FONT_STYLE,
+            catLabelStyle: options.catLabelStyle || c.LABEL_STYLE,
             catLineColor: options.catLineColor,
             catTitleStyle: options.catTitleStyle || c.FONT_STYLE,
             //其他元素
