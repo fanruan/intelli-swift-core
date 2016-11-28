@@ -110,6 +110,7 @@ BI.NewAnalysisFloatBox = BI.inherit(BI.BarPopoverSection, {
             type: "bi.multi_select_item",
             cls: "real-time-report",
             value: BI.i18nText("BI-Realtime_Report"),
+            title: BI.i18nText("BI-Realtime_Report"),
             logic: {
                 dynamic: true
             }
