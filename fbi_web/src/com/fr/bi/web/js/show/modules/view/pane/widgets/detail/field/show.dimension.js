@@ -30,6 +30,10 @@ BIShow.DimensionView = BI.inherit(BI.View, {
             this.htape.attr("items")[this.constants.ICON_BUTTON_POS].width = (BI.isEmpty(changed.filter_value) ? 0 : this.constants.ICON_BUTTON_WIDTH);
             this.htape.resize();
         }
+        if (BI.has(changed, "used")) {
+            this.usedCheck.setSelected(changed.used);
+            this.usedRadio.setSelected(changed.used);
+        }
     },
 
     _render: function (vessel) {
@@ -213,6 +217,10 @@ BIShow.DimensionView = BI.inherit(BI.View, {
                 case BICst.DIMENSION_STRING_COMBO.DT_RELATION:
                     self._buildMatchingRelationShipPane();
                     break;
+                case BICst.DIMENSION_STRING_COMBO.SHOW_FIELD:
+                    var used = self.model.get("used");
+                    self.model.set("used", !used);
+                    break;
                 case BICst.DIMENSION_STRING_COMBO.COPY:
                     self._copyDimension();
                     break;
@@ -253,6 +261,10 @@ BIShow.DimensionView = BI.inherit(BI.View, {
                     break;
                 case BICst.DIMENSION_NUMBER_COMBO.DT_RELATION:
                     self._buildMatchingRelationShipPane();
+                    break;
+                case BICst.DIMENSION_NUMBER_COMBO.SHOW_FIELD:
+                    var used = self.model.get("used");
+                    self.model.set("used", !used);
                     break;
                 case BICst.DIMENSION_NUMBER_COMBO.COPY:
                     self._copyDimension();
@@ -300,6 +312,10 @@ BIShow.DimensionView = BI.inherit(BI.View, {
                     break;
                 case BICst.DIMENSION_DATE_COMBO.DT_RELATION:
                     self._buildMatchingRelationShipPane();
+                    break;
+                case BICst.DIMENSION_DATE_COMBO.SHOW_FIELD:
+                    var used = self.model.get("used");
+                    self.model.set("used", !used);
                     break;
                 case BICst.DIMENSION_DATE_COMBO.COPY:
                     self._copyDimension();
