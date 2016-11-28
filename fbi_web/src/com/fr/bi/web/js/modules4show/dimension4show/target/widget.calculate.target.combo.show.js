@@ -9,7 +9,13 @@ BI.CalculateTargetComboShow = BI.inherit(BI.AbstractDimensionTargetComboShow, {
         USED_HIDDEN_POSITION: 1
     },
     defaultItems: function () {
-        return [];
+        return [
+            [{
+                text: BI.i18nText("BI-Show_Field"),
+                value: BICst.TARGET_COMBO.SHOW_FIELD,
+                cls: BI.Utils.isDimensionUsable(this.options.dId) ? "widget-combo-show-title-font" : ""
+            }]
+        ];
     },
 
     _defaultConfig: function () {

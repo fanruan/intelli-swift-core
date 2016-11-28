@@ -48,15 +48,7 @@ BI.ETLTableCombo = BI.inherit(BI.Widget, {
                 top: this.constants.OPERATOR_TOP_GAP,
                 left: this.constants.OPERATOR_LEFT_GAP
             });
-            BI.Utils.checkTableExist(tableInfo, function (data) {
-                var items = data.exists === true ? BI.deepClone(BICst.ETL_MANAGE_ITEMS) :
-                    self._setPartItemsDisable();
-                if (tableInfo.isFinal !== true) {
-                    items[items.length - 1].disabled = true;
-                    items[items.length - 1].warningTitle = BI.i18nText("BI-Temp_Tables_No_Remove")
-                }
-                self._createCombo(items);
-            });
+            self._createCombo();
         } else {
             //原始表（非最终表的情况下都不可删除）
             var items = BI.deepClone(BICst.ETL_MANAGE_ITEMS);
@@ -64,28 +56,34 @@ BI.ETLTableCombo = BI.inherit(BI.Widget, {
                 items[items.length - 1].disabled = true;
                 items[items.length - 1].warningTitle = BI.i18nText("BI-Temp_Tables_No_Remove")
             }
-            if(tableInfo.connection_name === BICst.CONNECTION.EXCEL_CONNECTION) {
+            if (tableInfo.connection_name === BICst.CONNECTION.EXCEL_CONNECTION) {
                 items.splice(0, 0, {
                     text: BI.i18nText("BI-Update_Excel_Dot"),
                     title: BI.i18nText("BI-Update_Excel_Dot"),
                     value: BICst.ETL_MANAGE_EXCEL_CHANGE
                 });
             }
-            if(tableInfo.connection_name === BICst.CONNECTION.SQL_CONNECTION) {
+            if (tableInfo.connection_name === BICst.CONNECTION.SQL_CONNECTION) {
                 items.splice(0, 0, {
                     text: BI.i18nText("BI-Remodify_Sql"),
                     title: BI.i18nText("BI-Remodify_Sql"),
                     value: BICst.ETL_MANAGE_SQL_CHANGE
                 });
             }
-            this._createCombo(items);
+            this._createCombo();
         }
     },
 
-    _createCombo: function (items) {
+    _createCombo: function () {
         var self = this;
         var tableInfo = self.options.tableInfo;
-        var tableName = this._getTableName();
+        var tableName = this._getTableName(tableInfo);
+        var popup = BI.createWidget({
+            type: "bi.button_group",
+            layouts: [{
+                type: "bi.vertical"
+            }]
+        });
         self.tableCombo = BI.createWidget({
             type: "bi.combo",
             cls: "bi-etl-table",
@@ -98,24 +96,29 @@ BI.ETLTableCombo = BI.inherit(BI.Widget, {
                 height: self.constants.COMBO_HEIGHT
             },
             popup: {
-                el: {
-                    type: "bi.button_group",
-                    items: BI.createItems(items, {
-                        type: "bi.text_item",
-                        cls: "bi-list-item",
-                        textHgap: self.constants.ITEM_TEXT_GAP,
-                        height: self.constants.ITEM_HEIGHT,
-                        handler: function () {
-                            self.tableCombo.hideView();
-                        }
-                    }),
-                    layouts: [{
-                        type: "bi.vertical"
-                    }]
-                },
+                el: popup,
                 maxHeight: 300
             },
             width: self.constants.COMBO_WIDTH
+        });
+        self.tableCombo.on(BI.Combo.EVENT_BEFORE_POPUPVIEW, function () {
+            BI.Utils.checkTableExist(tableInfo, function (data) {
+                var items = data.exists === true ? BI.deepClone(BICst.ETL_MANAGE_ITEMS) :
+                    self._setPartItemsDisable();
+                if (tableInfo.isFinal !== true) {
+                    items[items.length - 1].disabled = true;
+                    items[items.length - 1].warningTitle = BI.i18nText("BI-Temp_Tables_No_Remove")
+                }
+                popup.populate(BI.createItems(items, {
+                    type: "bi.text_item",
+                    cls: "bi-list-item",
+                    textHgap: self.constants.ITEM_TEXT_GAP,
+                    height: self.constants.ITEM_HEIGHT,
+                    handler: function () {
+                        self.tableCombo.hideView();
+                    }
+                }));
+            });
         });
         self._setETLEvents();
         self.oneTable.addItem({
@@ -125,12 +128,15 @@ BI.ETLTableCombo = BI.inherit(BI.Widget, {
         });
     },
 
-    _getTableName: function () {
-        var table = this.options.tableInfo;
+    _getTableName: function (table) {
         var tableNameText = "";
         if (BI.isNotNull(table.etl_type)) {
             var oTable = table.tables[0];
-            tableNameText = table.temp_name || ((oTable.temp_name || oTable.table_name) + "_" + table.etl_type);
+            if (BI.isNotNull(table.temp_name) || BI.isNotNull(oTable.table_name)) {
+                tableNameText = table.temp_name || ((oTable.temp_name || oTable.table_name) + "_" + table.etl_type);
+            } else {
+                tableNameText = this._getTableName(oTable) + "_" + table.etl_type;
+            }
         } else {
             tableNameText = table.temp_name || table.table_name;
         }
