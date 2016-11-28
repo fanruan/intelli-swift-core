@@ -1,10 +1,9 @@
 package com.fr.bi.conf.data.source.operator.create;
 
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
@@ -12,12 +11,7 @@ import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.engine.index.key.IndexKey;
-import com.fr.bi.stable.engine.index.utils.TableIndexUtils;
-import com.fr.bi.stable.gvi.GVIFactory;
-import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.structure.collection.CubeIndexGetterWithNullValue;
-import com.fr.bi.stable.structure.collection.list.IntList;
+import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -28,9 +22,7 @@ import com.fr.stable.xml.XMLableReader;
 
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 
 /**
  * Created by GUY on 2015/3/5.
@@ -151,26 +143,33 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
         if (getDimensions().length == 0) {
             return writeNoDimensionIndex(travel, ti);
         }
-        GroupLine line = new GroupLine(ti, travel);
-        ICubeColumnIndexReader[] getters = new ICubeColumnIndexReader[dimensions.length];
-        for (int i = 0; i < getters.length; i++) {
-            ICubeColumnIndexReader baseGroupMap = ti.loadGroup(getDimensions()[i].createKey(), new ArrayList<BITableSourceRelation>());
-            GroupValueIndex nullIndex =  ti.getNullGroupValueIndex(getDimensions()[i].createKey());
-            if (!nullIndex.isAllEmpty()){
-                baseGroupMap =  new CubeIndexGetterWithNullValue(baseGroupMap, nullIndex);
-            }
-            getters[i] = getDimensions()[i].getGroup().createGroupedMap(baseGroupMap);
+        BIKey[] keys = new BIKey[getDimensions().length];
+        IGroup[] groups = new IGroup[getDimensions().length];
+        for (int i = 0; i < groups.length; i++){
+            keys[i] = getDimensions()[i].createKey();
+            groups[i] = getDimensions()[i].getGroup();
         }
-        Iterator<Entry<Object, GroupValueIndex>> iter = getters[0].iterator();
-        while (iter.hasNext()) {
-            Entry<Object, GroupValueIndex> entry = iter.next();
-//            if(entry.getKey() == null) {
-//                continue;
-//            }
-            line.fill(0, entry.getKey());
-            writeIndexLineByLine(ti, entry.getValue(), getters, 1, line);
+
+        ValueIterator iterator = new ValueIterator(ti, keys, groups);
+        int index = 0;
+        while (iterator.hasNext()) {
+            ValuesAndGVI valuesAndGVI = iterator.next();
+            write(ti, valuesAndGVI, index, travel);
+            index++;
         }
-        return line.index;
+        return index;
+    }
+
+    private void write(ICubeTableService ti, ValuesAndGVI valuesAndGVI, int index, Traversal<BIDataValue> travel) {
+        int col = 0;
+        for (int i = 0; i < valuesAndGVI.values.length; i++){
+            travel.actionPerformed(new BIDataValue(index, col, valuesAndGVI.values[i]));
+            col++;
+        }
+        for (int i = 0; i < getTargets().length; i++) {
+            travel.actionPerformed(new BIDataValue(index, col, getTargets()[i].getSumValue(ti, valuesAndGVI.gvi)));
+            col++;
+        }
     }
 
     private int writeNoDimensionIndex(Traversal<BIDataValue> travel, ICubeTableService ti) {
@@ -178,51 +177,6 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
             travel.actionPerformed(new BIDataValue(0, i, getTargets()[i].getSumValue(ti, ti.getAllShowIndex())));
         }
         return 1;
-    }
-
-    private void writeIndexLineByLine(ICubeTableService ti, GroupValueIndex pgvi, ICubeColumnIndexReader[] getters, int colIndex, GroupLine line) {
-        if (pgvi == null || pgvi.getRowsCountWithData() == 0) {
-            return;
-        }
-        if (colIndex == getDimensions().length) {
-            line.cal(pgvi);
-            return;
-        }
-        if (isSmallNoneGroupDimension(ti, pgvi, colIndex)) {
-            Object[] fieldValues = TableIndexUtils.getValueFromGvi(ti, new IndexKey(dimensions[colIndex].getName()), new GroupValueIndex[]{pgvi});
-            String[] doubleValues = new String[fieldValues.length];
-            IntList list = new IntList();
-            for (int i = 0; i < fieldValues.length; i++) {
-                if (fieldValues[i] == null) {
-                    doubleValues[i] = StringUtils.EMPTY;
-                    list.add(i);
-                } else {
-                    doubleValues[i] = fieldValues[i].toString();
-                }
-            }
-
-            fieldValues = doubleValues;
-            GroupValueIndex[] gvis = getters[colIndex].getGroupIndex(fieldValues);
-            for (int i = 0; i < fieldValues.length; i++) {
-                line.fill(colIndex, fieldValues[i]);
-                GroupValueIndex cgvi = gvis[i];
-                if (list.indexOf(i) != -1) {
-                    cgvi = GVIFactory.createAllEmptyIndexGVI();
-                }
-                writeIndexLineByLine(ti, pgvi.AND(cgvi), getters, colIndex + 1, line);
-            }
-        } else {
-            Iterator<Entry<Object, GroupValueIndex>> iter = getters[colIndex].iterator();
-            while (iter.hasNext()) {
-                Entry<Object, GroupValueIndex> entry = iter.next();
-                line.fill(colIndex, entry.getKey());
-                writeIndexLineByLine(ti, pgvi.AND(entry.getValue()), getters, colIndex + 1, line);
-            }
-        }
-    }
-
-    private boolean isSmallNoneGroupDimension(ICubeTableService ti, GroupValueIndex pgvi, int colIndex) {
-        return pgvi.getRowsCountWithData() < SMALL_GROUP_LIMIT && (ti.getColumns().get(new IndexKey(dimensions[colIndex].getName())).getFieldType() == DBConstant.COLUMN.STRING) && dimensions[colIndex].getGroup().getType() != BIReportConstant.GROUP.CUSTOM_GROUP;
     }
 
     /**
@@ -292,13 +246,16 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
         if (reader.isChildNode()) {
             if (ComparatorUtils.equals(reader.getTagName(), "dim_targ")) {
                 try {
-                    JSONObject jo = new JSONObject(reader.getAttrAsString("values", StringUtils.EMPTY));
-                    parseJSON(jo);
+                    init(reader.getAttrAsString("values", StringUtils.EMPTY));
                 } catch (Exception e) {
 
                 }
             }
         }
+    }
+
+    private void init(String values) throws Exception {
+        parseJSON(new JSONObject(values));
     }
 
     /**
@@ -320,36 +277,5 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
         }
         writer.end();
         writer.end();
-    }
-
-    private class GroupLine {
-        private Object[] values;
-        private ICubeTableService ti;
-        private Traversal<BIDataValue> travel;
-        private int index = 0;
-
-        private GroupLine(ICubeTableService ti, Traversal<BIDataValue> travel) {
-            this.ti = ti;
-            this.travel = travel;
-            values = new Object[getDimensions().length + getTargets().length];
-        }
-
-        private void fill(int index, Object value) {
-            values[index] = getDimensions()[index].getKeyValue(value);
-        }
-
-        private void cal(GroupValueIndex gvi) {
-            for (int i = 0; i < getTargets().length; i++) {
-                values[i + getDimensions().length] = getTargets()[i].getSumValue(ti, gvi);
-            }
-            write();
-        }
-
-        private void write() {
-            for (int i = 0; i < values.length; i++) {
-                travel.actionPerformed(new BIDataValue(index, i, values[i]));
-            }
-            index++;
-        }
     }
 }

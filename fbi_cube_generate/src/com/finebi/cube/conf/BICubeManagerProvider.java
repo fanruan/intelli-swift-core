@@ -64,6 +64,8 @@ public interface BICubeManagerProvider {
 
     Status getStatus(long userId);
 
+    void setStatus(long userId, Status status);
+
     boolean isReplacing(long userId);
 
 }

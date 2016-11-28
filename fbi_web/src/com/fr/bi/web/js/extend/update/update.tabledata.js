@@ -131,7 +131,9 @@ BI.UpdateTableData = BI.inherit(BI.BarPopoverSection, {
     },
 
     _clear: function () {
-        this.setting._clearCheckInterval();
+        if (undefined!=this.setting) {
+            this.setting._clearCheckInterval();
+        }
     },
 
     getValue: function () {

@@ -1,6 +1,10 @@
 package com.fr.bi.web.conf.services.dbconnection;
 
-import com.fr.bi.conf.data.source.*;
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.conf.data.source.TableSourceFactory;
+import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.conf.AbstractBIConfigureAction;
 import com.fr.fs.web.service.ServiceUtils;
@@ -24,8 +28,19 @@ public class BIGetFieldInfo4NewTableAction extends AbstractBIConfigureAction {
         JSONArray tablesWithFields = new JSONArray();
         for (int i = 0; i < tablesJA.length(); i++) {
             JSONObject table = tablesJA.getJSONObject(i);
-            CubeTableSource source = TableSourceFactory.createTableSource(table, userId);
-            JSONObject data = source.createJSON();
+            CubeTableSource tableSource;
+            if (table.has("id")) {
+                BusinessTable businessTable = new BIBusinessTable(new BITableID(table.getString("id")));
+                if (BICubeConfigureCenter.getDataSourceManager().containTableSource(businessTable)) {
+                    tableSource = BICubeConfigureCenter.getDataSourceManager().getTableSource(businessTable);
+                    tableSource.refresh();
+                } else {
+                    tableSource = TableSourceFactory.createTableSource(table, userId);
+                }
+            } else {
+                tableSource = TableSourceFactory.createTableSource(table, userId);
+            }
+            JSONObject data = tableSource.createJSON();
             if (table.has("id")) {
                 formatTableDataFields(table.getString("id"), data);
             }
