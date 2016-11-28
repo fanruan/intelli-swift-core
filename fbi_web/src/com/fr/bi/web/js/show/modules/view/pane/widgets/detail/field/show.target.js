@@ -133,6 +133,10 @@ BIShow.TargetView = BI.inherit(BI.View, {
                 case BICst.TARGET_COMBO.FILTER:
                     self._buildFilterPane();
                     break;
+                case BICst.TARGET_COMBO.SHOW_FIELD:
+                    var used = self.model.get("used");
+                    self.model.set("used", !used);
+                    break;
                 case BICst.TARGET_COMBO.COPY:
                     self._copyTarget();
                     break;
@@ -167,6 +171,10 @@ BIShow.TargetView = BI.inherit(BI.View, {
                 case BICst.TARGET_COMBO.FILTER:
                     self._buildFilterPane();
                     break;
+                case BICst.TARGET_COMBO.SHOW_FIELD:
+                    var used = self.model.get("used");
+                    self.model.set("used", !used);
+                    break;
                 case BICst.TARGET_COMBO.COPY:
                     self._copyTarget();
                     break;
@@ -197,6 +205,10 @@ BIShow.TargetView = BI.inherit(BI.View, {
                     break;
                 case BICst.CALCULATE_TARGET_COMBO.DISPLAY:
                     self.model.set("used", true);
+                    break;
+                case BICst.TARGET_COMBO.SHOW_FIELD:
+                    var used = self.model.get("used");
+                    self.model.set("used", !used);
                     break;
                 case BICst.CALCULATE_TARGET_COMBO.DELETE:
                     self._deleteTarget();
