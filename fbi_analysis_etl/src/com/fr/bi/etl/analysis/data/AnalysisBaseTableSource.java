@@ -83,6 +83,8 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
         BIAbstractDetailTarget target = (BIAbstractDetailTarget) widget.getDimensions()[index];
         if (target.isCalculateTarget()) {
             return Types.DOUBLE;
+        } else if (target.getStatisticElement() == null) {
+            return Types.VARCHAR;
         } else if (target.getStatisticElement().getFieldType() == DBConstant.COLUMN.NUMBER) {
             return BIDBUtils.classTypeToSql(target.getStatisticElement().getClassType());
         } else {
@@ -93,6 +95,8 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     private int getTableWidgetSqlType(int index) {
         BIDimension dim = (BIDimension) widget.getDimensions()[index];
         if (dim.getStatisticElement() == null) {
+            return Types.VARCHAR;
+        } else if (dim.getStatisticElement() == null) {
             return Types.VARCHAR;
         } else if (dim.getStatisticElement().getFieldType() == DBConstant.COLUMN.NUMBER) {
             return (dim.getGroup().getType() == BIReportConstant.GROUP.NO_GROUP
@@ -164,7 +168,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
             return;
         }
         for (BITargetAndDimension dim : widget.getViewDimensions()) {
-            if (dim.getStatisticElement()!= null && dim.createTableKey() != null && dim.createTableKey().getTableSource() != null) {
+            if (dim.getStatisticElement() != null && dim.createTableKey() != null && dim.createTableKey().getTableSource() != null) {
                 CubeTableSource source = dim.createTableKey().getTableSource();
                 if (source.getType() == Constants.TABLE_TYPE.BASE || source.getType() == Constants.TABLE_TYPE.ETL) {
                     ((AnalysisCubeTableSource) source).getSourceUsedAnalysisETLSource(set);

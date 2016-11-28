@@ -94,7 +94,10 @@ BI.CubeLog = BI.inherit(BI.Widget, {
     refreshLog: function (isStart) {
         var self = this;
         if (isStart) {
-            this.processBar.setValue(10);
+            this.processBar.setValue(1);
+            BI.delay(function() {
+                self.processBar.setValue(10);
+            }, 1000);
         }
         if (BI.isNull(this.interval)) {
             this.interval = setInterval(function () {
