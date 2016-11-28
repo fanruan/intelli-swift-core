@@ -5,7 +5,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         SCATTER_REGION_COUNT: 3
     },
 
-    _init: function(){
+    _init: function () {
         BI.ChartDisplayModel.superclass._init.apply(this, arguments);
     },
 
@@ -47,11 +47,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 var adjustData = [];
                 BI.each(data.c, function (id, item) {
                     var res = {};
-                    if(BI.isNull(assertValue(item.s[idx]))){
+                    if (BI.isNull(assertValue(item.s[idx]))) {
                         return;
                     }
                     if (BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], targetIds[idx])) {
-                        switch(type){
+                        switch (type) {
                             case BICst.WIDGET.BUBBLE:
                             case BICst.WIDGET.AXIS:
                             case BICst.WIDGET.PIE:
@@ -64,7 +64,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                                     drillDid: self.dimIds[currentLayer]
                                 };
                         }
-                    }else{
+                    } else {
                         res = {
                             x: item.n,
                             y: (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
@@ -73,7 +73,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                             drillDid: self.dimIds[currentLayer]
                         };
                     }
-                    if(BI.has(item, "c")){
+                    if (BI.has(item, "c")) {
                         res.drilldown = {};
                         res.drilldown.series = self._formatDataForMap(item, currentLayer);
                         var type = MapConst.INNER_MAP_INFO.MAP_NAME[res.x];
@@ -94,18 +94,18 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         }
         return result;
 
-        function assertValue(v){
-            if(BI.isNull(v)){
+        function assertValue(v) {
+            if (BI.isNull(v)) {
                 return;
             }
-            if(!BI.isFinite(v)){
+            if (!BI.isFinite(v)) {
                 return 0;
             }
             return v;
         }
     },
 
-    _formatDataForGISMap: function(data){
+    _formatDataForGISMap: function (data) {
         var self = this, o = this.options;
         var targetIds = this._getShowTarget();
         if (BI.has(data, "t")) {
@@ -114,8 +114,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 var data = [];
                 BI.each(left.c, function (idx, obj) {
                     var x = obj.n;
-                    BI.each(obj.s.c[id].s, function(i, o){
-                        if(BI.isNotNull(o) && BI.isNotNull(x)){
+                    BI.each(obj.s.c[id].s, function (i, o) {
+                        if (BI.isNotNull(o) && BI.isNotNull(x)) {
                             data.push({
                                 "x": x,
                                 "z": tObj.n,
@@ -133,12 +133,12 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             });
             var result = [];
             var size = 0;
-            if(init.length > 0){
+            if (init.length > 0) {
                 size = targetIds.length;
             }
-            BI.each(BI.makeArray(size, null), function(idx, index){
+            BI.each(BI.makeArray(size, null), function (idx, index) {
                 var res = {data: [], name: BI.Utils.getDimensionNameByID(targetIds[idx])};
-                BI.each(init, function(id, obj){
+                BI.each(init, function (id, obj) {
                     res.data.push(obj.data[idx]);
                 });
                 result.push(res);
@@ -177,32 +177,36 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         BI.each(this.targetIds, function (idx, tId) {
             if (BI.has(view, BICst.REGION.TARGET1) && BI.contains(view[BICst.REGION.TARGET1], tId)) {
                 array.length === 0 && array.push([]);
-                if(checkSeriesExist()){
+                if (checkSeriesExist()) {
                     array[0] = data;
-                }else{
+                } else {
                     array[0].push(data[idx])
                 }
             }
-            if(BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], tId)) {
-                while (array.length < 2){array.push([]);}
-                if(checkSeriesExist()){
+            if (BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], tId)) {
+                while (array.length < 2) {
+                    array.push([]);
+                }
+                if (checkSeriesExist()) {
                     array[1] = data;
-                }else{
+                } else {
                     array[1].push(data[idx])
                 }
             }
-            if(BI.has(view, BICst.REGION.TARGET3) && BI.contains(view[BICst.REGION.TARGET3], tId)){
-                while (array.length < 3){array.push([]);}
-                if(checkSeriesExist()){
+            if (BI.has(view, BICst.REGION.TARGET3) && BI.contains(view[BICst.REGION.TARGET3], tId)) {
+                while (array.length < 3) {
+                    array.push([]);
+                }
+                if (checkSeriesExist()) {
                     array[2] = data;
-                }else{
+                } else {
                     array[2].push(data[idx])
                 }
             }
         });
         return array;
 
-        function checkSeriesExist(){
+        function checkSeriesExist() {
             var view = BI.Utils.getWidgetViewByID(o.wId);
             var result = BI.find(view[BICst.REGION.DIMENSION2], function (idx, dId) {
                 return BI.Utils.isDimensionUsable(dId);
@@ -271,7 +275,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     },
 
     _getDrillDimensionId: function (drill) {
-        if(BI.isEmptyArray(drill) || BI.isNull(drill)){
+        if (BI.isEmptyArray(drill) || BI.isNull(drill)) {
             return null;
         }
         return drill[drill.length - 1].dId;
@@ -284,16 +288,16 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var drillseriDimId = this._getDrillDimensionId(BI.Utils.getDrillByID(o.wId)[self.seriesDid]);
         var cataGroup = BI.Utils.getDimensionGroupByID(self.cataDid);
         var seriesGroup = BI.Utils.getDimensionGroupByID(self.seriesDid);
-        if(BI.isNotNull(drillcataDimId)){
+        if (BI.isNotNull(drillcataDimId)) {
             cataGroup = BI.Utils.getDimensionGroupByID(drillcataDimId);
         }
-        if(BI.isNotNull(drillseriDimId)){
+        if (BI.isNotNull(drillseriDimId)) {
             seriesGroup = BI.Utils.getDimensionGroupByID(drillseriDimId);
         }
         if (BI.has(data, "t")) {
             var top = data.t, left = data.l;
             return BI.map(top.c, function (id, tObj) {
-                if(BI.isNull(tObj.c)){
+                if (BI.isNull(tObj.c)) {
                     return {
                         data: [],
                         name: BI.Utils.getDimensionNameByID(tObj.n)
@@ -305,7 +309,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     name = date.print("%Y-%X-%d");
                 }
                 var data = [];
-                if(BI.has(left, "c")){
+                if (BI.has(left, "c")) {
                     data = BI.map(left.c, function (idx, obj) {
                         var value = obj.n, x = obj.n;
                         var seriesValue = obj.s.c[id].s[0];
@@ -315,13 +319,13 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         }
                         return {
                             "x": x,
-                            "y":(BI.isNull(seriesValue) || BI.isFinite(seriesValue)) ? seriesValue : 0,
+                            "y": (BI.isNull(seriesValue) || BI.isFinite(seriesValue)) ? seriesValue : 0,
                             "value": value,
                             seriesName: seriesName,
                             targetIds: [targetIds[0]]
                         };
                     });
-                }else{
+                } else {
                     var leftSeriesValue = left.s.c[id].s[0];
                     data = [{
                         "x": "",
@@ -362,7 +366,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 return obj;
             });
         }
-        if(BI.has(data, "s")){
+        if (BI.has(data, "s")) {
             return BI.map(data.s, function (idx, value) {
                 return {
                     name: BI.Utils.getDimensionNameByID(targetIds[idx]),
@@ -382,7 +386,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var targetIds = this._getShowTarget();
         var cataGroup = BI.Utils.getDimensionGroupByID(self.cataDid);
         var drillcataDimId = this._getDrillDimensionId(BI.Utils.getDrillByID(o.wId)[self.cataDid]);
-        if(BI.isNotNull(drillcataDimId)){
+        if (BI.isNotNull(drillcataDimId)) {
             cataGroup = BI.Utils.getDimensionGroupByID(drillcataDimId);
         }
         if (BI.has(data, "c")) {
@@ -424,15 +428,15 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     getToolTip: function (type) {
         switch (type) {
             case BICst.WIDGET.SCATTER:
-                if(this.targetIds.length < 2){
+                if (this.targetIds.length < 2) {
                     return [];
-                }else{
+                } else {
                     return [BI.Utils.getDimensionNameByID(this.targetIds[1]), BI.Utils.getDimensionNameByID(this.targetIds[0])];
                 }
             case BICst.WIDGET.BUBBLE:
-                if(this.targetIds.length < 3){
+                if (this.targetIds.length < 3) {
                     return [];
-                }else{
+                } else {
                     return [BI.Utils.getDimensionNameByID(this.targetIds[1]), BI.Utils.getDimensionNameByID(this.targetIds[0]), BI.Utils.getDimensionNameByID(this.targetIds[2])];
                 }
             default:
@@ -444,11 +448,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var o = this.options;
         var cordon = {};
         var result = [];
-        BI.each(BI.Utils.getAllDimensionIDs(o.wId), function(idx, dId){
-            if(!BI.Utils.isDimensionUsable(dId)){
+        BI.each(BI.Utils.getAllDimensionIDs(o.wId), function (idx, dId) {
+            if (!BI.Utils.isDimensionUsable(dId)) {
                 return;
             }
-            var items = BI.map(BI.Utils.getDimensionCordonByID(dId), function(id, cor){
+            var items = BI.map(BI.Utils.getDimensionCordonByID(dId), function (id, cor) {
                 return {
                     text: cor.cordon_name,
                     value: cor.cordon_value,
@@ -456,23 +460,23 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 }
             });
             var regionType = BI.Utils.getRegionTypeByDimensionID(dId);
-            if(BI.isNotEmptyArray(items)){
+            if (BI.isNotEmptyArray(items)) {
                 BI.has(cordon, regionType) === false && (cordon[regionType] = []);
                 cordon[regionType] = BI.concat(cordon[regionType], items);
             }
         });
         var type = BI.Utils.getWidgetTypeByID(o.wId);
-        if(type === BICst.WIDGET.SCATTER || type === BICst.WIDGET.BUBBLE){
+        if (type === BICst.WIDGET.SCATTER || type === BICst.WIDGET.BUBBLE) {
             result.push(BI.isNull(cordon[BICst.REGION.TARGET2]) ? [] : cordon[BICst.REGION.TARGET2]);
             result.push(BI.isNull(cordon[BICst.REGION.TARGET1]) ? [] : cordon[BICst.REGION.TARGET1]);
             return result;
         }
-        if(type === BICst.WIDGET.BAR || type ===BICst.WIDGET.ACCUMULATE_BAR){
+        if (type === BICst.WIDGET.BAR || type === BICst.WIDGET.ACCUMULATE_BAR) {
             result.push(BI.isNull(cordon[BICst.REGION.TARGET1]) ? [] : cordon[BICst.REGION.TARGET1]);
             result.push(BI.isNull(cordon[BICst.REGION.DIMENSION1]) ? [] : cordon[BICst.REGION.DIMENSION1]);
             return result;
         }
-        if(type === BICst.WIDGET.COMPARE_BAR){
+        if (type === BICst.WIDGET.COMPARE_BAR) {
             var negativeAxis = BI.isNull(cordon[BICst.REGION.TARGET1]) ? [] : cordon[BICst.REGION.TARGET1];
             var positiveAxis = BI.isNull(cordon[BICst.REGION.TARGET2]) ? [] : cordon[BICst.REGION.TARGET2]
             result.push(BI.concat(negativeAxis, positiveAxis));
@@ -513,7 +517,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.FORCE_BUBBLE:
                 return this._formatDataForAxis(data);
 
-                //return this._formatDataForDashBoard(data);
+            //return this._formatDataForDashBoard(data);
             case BICst.WIDGET.BUBBLE:
                 return this._formatDataForBubble(data);
             case BICst.WIDGET.SCATTER:
@@ -527,7 +531,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         }
     },
 
-    _refreshDimsInfo: function(){
+    _refreshDimsInfo: function () {
         var self = this, o = this.options;
         this.dimIds = [];
         this.crossDimIds = [];
@@ -540,9 +544,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         BI.each(view[BICst.REGION.DIMENSION2], function (i, dId) {
             BI.Utils.isDimensionUsable(dId) && (self.crossDimIds.push(dId));
         });
-        if(BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.MAP){
+        if (BI.Utils.getWidgetTypeByID(o.wId) === BICst.WIDGET.MAP) {
             //地图不需要调整dimIds
-        }else{
+        } else {
             BI.each(drill, function (drId, drArray) {
                 if (drArray.length !== 0) {
                     var dIndex = self.dimIds.indexOf(drId), cIndex = self.crossDimIds.indexOf(drId);
@@ -566,16 +570,16 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         }
     },
 
-    getWidgetData: function(type, callback){
+    getWidgetData: function (type, callback) {
         var self = this, o = this.options;
         var options = {};
         this._refreshDimsInfo();
         var realData = true;
-        if(o.status === BICst.WIDGET_STATUS.DETAIL) {
+        if (o.status === BICst.WIDGET_STATUS.DETAIL) {
             realData = BI.Utils.isShowWidgetRealDataByID(o.wId) || false;
         }
         BI.Utils.getWidgetDataByID(o.wId, function (jsonData) {
-            if(BI.isNotNull(jsonData.error)) {
+            if (BI.isNotNull(jsonData.error)) {
                 callback(jsonData);
                 return;
             }
@@ -596,33 +600,33 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 });
                 types.push(t);
             });
-            if(BI.isEmptyArray(types)){
+            if (BI.isEmptyArray(types)) {
                 types.push([type]);
             }
-            BI.each(data, function(idx, item){
+            BI.each(data, function (idx, item) {
                 var i = BI.UUID();
                 var type = types[idx];
-                BI.each(item, function(id, it){
+                BI.each(item, function (id, it) {
                     (type[id] === BICst.WIDGET.ACCUMULATE_AREA || type[id] === BICst.WIDGET.ACCUMULATE_AXIS) && BI.extend(it, {stack: i});
                 });
             });
-            if(type === BICst.WIDGET.MAP){
+            if (type === BICst.WIDGET.MAP) {
                 var subType = BI.Utils.getWidgetSubTypeByID(o.wId);
-                if(BI.isNull(subType)){
-                    BI.find(MapConst.INNER_MAP_INFO.MAP_LAYER, function(path, layer){
-                        if(layer === 0){
+                if (BI.isNull(subType)) {
+                    BI.find(MapConst.INNER_MAP_INFO.MAP_LAYER, function (path, layer) {
+                        if (layer === 0) {
                             subType = path;
                             return true;
                         }
                     });
                 }
                 var name = MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType];
-                if(BI.isNull(name)){
+                if (BI.isNull(name)) {
                     name = MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME[subType]
                 }
                 options.initDrillPath = [name];
                 var drill = BI.values(BI.Utils.getDrillByID(o.wId))[0];
-                BI.each(drill, function(idx, dri){
+                BI.each(drill, function (idx, dri) {
                     options.initDrillPath.push(dri.values[0].value[0]);
                 });
                 options.geo = {
@@ -630,7 +634,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     name: MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType] || MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME[subType]
                 }
             }
-            if(type === BICst.WIDGET.GIS_MAP){
+            if (type === BICst.WIDGET.GIS_MAP) {
                 options.geo = {
                     "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
                     "attribution": "<a><img src=\"http://webapi.amap.com/theme/v1.3/mapinfo_05.png\">&copy; 2016 AutoNavi</a>"
@@ -662,7 +666,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         });
     },
 
-    getLinkageInfo: function(obj){
+    getLinkageInfo: function (obj) {
         var o = this.options;
         this._refreshDimsInfo();
         var dId = [], clicked = [];
@@ -686,10 +690,12 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 break;
             default:
                 dId = obj.targetIds;
-                clicked = [{
-                    dId: clickeddId,
-                    value: [BI.Utils.getClickedValue4Group(obj.value || obj.x, clickeddId)]
-                }];
+                if (BI.isNotNull(this.cataDid)) {
+                    clicked = [{
+                        dId: clickeddId,
+                        value: [BI.Utils.getClickedValue4Group(obj.value || obj.x, clickeddId)]
+                    }];
+                }
                 if (BI.isNotNull(this.seriesDid)) {
                     clicked.push({
                         dId: obj.dId || this.crossDimIds[0],
@@ -698,9 +704,9 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 }
                 break;
         }
-        if(BI.isNull(dId) || BI.isNull(clicked)){
+        if (BI.isNull(dId) || BI.isNull(clicked)) {
             return {};
-        }else{
+        } else {
             return {dId: dId, clicked: clicked};
         }
     }
