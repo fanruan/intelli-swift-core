@@ -85,8 +85,7 @@ BI.CompareAxisChart = BI.inherit(BI.AbstractChart, {
             fontSize: this.config.legendStyle.fontSize + "px"
         });
 
-        //为了给数据标签加个%,还要遍历所有的系列，唉
-        this.formatDataLabel(config.plotOptions.dataLabels.enabled, items, config, this.config.chartFont);
+        self.formatDataLabelForAxis(items, config, this.config);
 
         //全局样式的图表文字
         this.setFontStyle(this.config.chartFont, config);

@@ -189,8 +189,8 @@ BI.BubbleNumberFieldFilterItem = BI.inherit(BI.AbstractDataLabelFilterItem, {
             type: "bi.sign_editor",
             cls: "condition-operator-input",
             allowBlank: true,
-            height: this._constant.BUTTON_HEIGHT,
-            width: this._constant.INPUT_WIDTH
+            height: this._constant.BUTTON_HEIGHT - 2,
+            width: this._constant.INPUT_WIDTH - 2
         });
         BI.isNotNull(initData) && this.filterWidget.setValue(initData);
         return this.filterWidget;

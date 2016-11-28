@@ -527,6 +527,15 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function () {
+            self.dataLabelSetting.setVisible(this.isSelected());
+            self.fireEvent(BI.PercentChartsSetting.EVENT_CHANGE);
+        });
+
+        this.dataLabelSetting = BI.createWidget({
+            type: "bi.data_label_detailed_setting_combo"
+        });
+
+        this.dataLabelSetting.on(BI.DataLabelDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.PercentChartsSetting.EVENT_CHANGE);
         });
 
@@ -610,6 +619,9 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.dataLabelSetting]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.showDataTable]
@@ -768,6 +780,8 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
+        this.dataLabelSetting.setValue(BI.Utils.getWSChartDataLabelSettingByID(wId));
+        this.dataLabelSetting.setVisible(BI.Utils.getWSChartShowDataLabelByID(wId));
         this.showDataTable.setSelected(BI.Utils.getWSChartShowDataTableByID(wId));
         this.showZoom.setSelected(BI.Utils.getWSChartShowZoomByID(wId));
         this.legendStyle.setValue(BI.Utils.getWSChartLegendStyleByID(wId));
@@ -800,7 +814,6 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             leftYShowTitle: this.leftYShowTitle.isSelected(),
             leftYTitle: this.leftYTitle.getValue(),
 
-
             leftYShowCustomScale: this.leftYShowCustomScale.isSelected(),
             leftYCustomScale: this.leftYCustomScale.getValue(),
             leftYSeparator: this.leftYSeparator.isSelected(),
@@ -818,6 +831,7 @@ BI.PercentChartsSetting = BI.inherit(BI.AbstractChartSetting, {
 
             legend: this.legend.getValue()[0],
             showDataLabel: this.showDataLabel.isSelected(),
+            dataLabelSetting: this.dataLabelSetting.getValue(),
             showDataTable: this.showDataTable.isSelected(),
             showZoom: this.showZoom.isSelected(),
             legendStyle: this.legendStyle.getValue(),

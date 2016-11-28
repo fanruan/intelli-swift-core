@@ -61,6 +61,7 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
     _formatConfig: function (config, items) {
         var self = this;
         var title = getXYAxisUnit(this.config.leftYNumberLevel, self.constants.LEFT_AXIS);
+        delete config.zoom;
         formatChartRadarStyle();
         config.colors = this.config.chartColor;
         self.formatChartLegend(config, this.config.legend);
@@ -94,8 +95,7 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
             fontSize: this.config.legendStyle.fontSize + "px"
         });
 
-        //为了给数据标签加个%,还要遍历所有的系列，唉
-        self.formatDataLabelForOthers(config.plotOptions.dataLabels.enabled, items, config.radiusAxis[0].formatter, this.config.chartFont, this.config.leftYUnit);
+        self.formatDataLabelForOthers(config.plotOptions.dataLabels.enabled, items, config.radiusAxis[0].formatter);
 
         //全局样式的图表文字
         config.radiusAxis[0].labelStyle = config.radiusAxis[0].title.style = this.config.chartFont;

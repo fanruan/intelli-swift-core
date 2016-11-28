@@ -1619,6 +1619,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/detailed.setting.trigger.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/chartlabel/chartlabel.detailed.setting.combo.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/chartlabel/chartlabel.detailed.setting.popup.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/datalabel/datalabel.detailed.setting.combo.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/datalabel/datalabel.detailed.setting.popup.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/legend/legend.detailed.setting.combo.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/legend/legend.detailed.setting.popup.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/showtitle/showtitle.detailed.setting.combo.js",
@@ -3051,6 +3053,9 @@ public class ResourceHelper {
                 //exceltabledata
                 "com/fr/bi/web/js/components/excel/exceltabledata/exceltabledatadisplaymanager.js",
                 "com/fr/bi/web/js/components/excel/exceltabledata/model.exceltabledatadisplay.js",
+
+                //数据预处理表格
+                "com/fr/bi/web/js/components/pretreatedtable/pretreatedtable.js",
 
                 //模板管理
                 "com/fr/bi/web/js/components/templatemanager/liststyleitems/report.listview.item.js",

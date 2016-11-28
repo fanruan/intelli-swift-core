@@ -510,6 +510,15 @@ BI.FallAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function () {
+            self.dataLabelSetting.setVisible(this.isSelected());
+            self.fireEvent(BI.FallAxisChartSetting.EVENT_CHANGE);
+        });
+
+        this.dataLabelSetting = BI.createWidget({
+            type: "bi.data_label_detailed_setting_combo"
+        });
+
+        this.dataLabelSetting.on(BI.DataLabelDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.FallAxisChartSetting.EVENT_CHANGE);
         });
 
@@ -583,6 +592,9 @@ BI.FallAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.dataLabelSetting]
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.showDataTable]
@@ -730,6 +742,8 @@ BI.FallAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.catTitleStyle.setValue(BI.Utils.getWSChartCatTitleStyleByID(wId));
 
         this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
+        this.dataLabelSetting.setValue(BI.Utils.getWSChartDataLabelSettingByID(wId));
+        this.dataLabelSetting.setVisible(BI.Utils.getWSChartShowDataLabelByID(wId));
         this.showDataTable.setSelected(BI.Utils.getWSChartShowDataTableByID(wId));
         this.showZoom.setSelected(BI.Utils.getWSChartShowZoomByID(wId));
         this.hShowGridLine.setSelected(BI.Utils.getWSChartHShowGridLineByID(wId));
@@ -777,6 +791,7 @@ BI.FallAxisChartSetting = BI.inherit(BI.AbstractChartSetting, {
             catLineColor: this.catLineColor.getValue(),
 
             showDataLabel: this.showDataLabel.isSelected(),
+            dataLabelSetting: this.dataLabelSetting.getValue(),
             showDataTable: this.showDataTable.isSelected(),
             showZoom: this.showZoom.isSelected(),
             hShowGridLine: this.hShowGridLine.isSelected(),

@@ -1,7 +1,6 @@
 package com.fr.bi.etl.analysis.data;
 
 import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
@@ -84,8 +83,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
         BIAbstractDetailTarget target = (BIAbstractDetailTarget) widget.getDimensions()[index];
         if (target.isCalculateTarget()) {
             return Types.DOUBLE;
-        } else if(target.getStatisticElement() == null) {
-            BILoggerFactory.getLogger().info("name: " + target.getText() + ". id: " + target.getName() + ". source miss!");
+        } else if (target.getStatisticElement() == null) {
             return Types.VARCHAR;
         } else if (target.getStatisticElement().getFieldType() == DBConstant.COLUMN.NUMBER) {
             return BIDBUtils.classTypeToSql(target.getStatisticElement().getClassType());
@@ -96,7 +94,11 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
 
     private int getTableWidgetSqlType(int index) {
         BIDimension dim = (BIDimension) widget.getDimensions()[index];
-        if (dim.getStatisticElement() != null && dim.getStatisticElement().getFieldType() == DBConstant.COLUMN.NUMBER) {
+        if (dim.getStatisticElement() == null) {
+            return Types.VARCHAR;
+        } else if (dim.getStatisticElement() == null) {
+            return Types.VARCHAR;
+        } else if (dim.getStatisticElement().getFieldType() == DBConstant.COLUMN.NUMBER) {
             return (dim.getGroup().getType() == BIReportConstant.GROUP.NO_GROUP
                     || dim.getGroup().getType() == BIReportConstant.GROUP.ID_GROUP) ?
                     BIDBUtils.classTypeToSql(dim.getStatisticElement().getClassType()) : Types.VARCHAR;
@@ -106,23 +108,19 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
     }
 
     private int getTypeByGroup(IGroup group) {
-        int type;
         switch (group.getType()) {
             case BIReportConstant.GROUP.Y:
             case BIReportConstant.GROUP.M:
             case BIReportConstant.GROUP.S:
             case BIReportConstant.GROUP.MD:
             case BIReportConstant.GROUP.W:
-                type = Types.INTEGER;
-                break;
+                return Types.INTEGER;
             case BIReportConstant.GROUP.YMD:
             case BIReportConstant.GROUP.YMDHMS:
-                type = Types.DATE;
-                break;
+                return Types.DATE;
             default:
-                type = Types.VARCHAR;
+                return Types.VARCHAR;
         }
-        return type;
     }
 
 
@@ -170,7 +168,7 @@ public class AnalysisBaseTableSource extends AbstractCubeTableSource implements 
             return;
         }
         for (BITargetAndDimension dim : widget.getViewDimensions()) {
-            if (dim.getStatisticElement()!= null && dim.createTableKey() != null && dim.createTableKey().getTableSource() != null) {
+            if (dim.getStatisticElement() != null && dim.createTableKey() != null && dim.createTableKey().getTableSource() != null) {
                 CubeTableSource source = dim.createTableKey().getTableSource();
                 if (source.getType() == Constants.TABLE_TYPE.BASE || source.getType() == Constants.TABLE_TYPE.ETL) {
                     ((AnalysisCubeTableSource) source).getSourceUsedAnalysisETLSource(set);

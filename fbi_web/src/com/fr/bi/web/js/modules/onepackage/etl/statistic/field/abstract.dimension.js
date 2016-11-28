@@ -28,11 +28,9 @@ BI.AbstractDimension = BI.inherit(BI.Widget, {
             type: "bi.sign_style_editor",
             cls: "etl-dimension-name",
             height:25,
+            errorText: BI.i18nText("BI-Field_Name_Can_Not_Be_Same"),
             validationChecker:function(v){
                 return self._checkDimensionName(v);
-            },
-            quitChecker: function (v) {
-                return false;
             }
         });
 
@@ -76,13 +74,6 @@ BI.AbstractDimension = BI.inherit(BI.Widget, {
                 return true;
             }
         });
-        if(valid === false){
-            BI.Bubbles.show(this.constants.INVALID_NAME, BI.i18nText("BI-Can_Not_Have_Rename_Fields"), this.nameEditor, {
-                offsetStyle: "center"
-            });
-        }else{
-            BI.Bubbles.hide(this.constants.INVALID_NAME);
-        }
         return valid;
     },
 

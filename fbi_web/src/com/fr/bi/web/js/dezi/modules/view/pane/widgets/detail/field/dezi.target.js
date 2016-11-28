@@ -43,11 +43,9 @@ BIDezi.TargetView = BI.inherit(BI.View, {
             height: this.constants.TARGET_BUTTON_HEIGHT,
             cls: "bi-target-name",
             allowBlank: false,
+            errorText: BI.i18nText("BI-Field_Name_Can_Not_Be_Same"),
             validationChecker: function (v) {
                 return self._checkDimensionName(v);
-            },
-            quitChecker: function (v) {
-                return false;
             }
         });
         this.editor.on(BI.SignEditor.EVENT_CONFIRM, function () {
@@ -345,13 +343,6 @@ BIDezi.TargetView = BI.inherit(BI.View, {
                 return true;
             }
         });
-        if(valid === false){
-            BI.Bubbles.show(this.constants.INVALID_NAME, BI.i18nText("BI-Can_Not_Have_Rename_Fields"), this.editor, {
-                offsetStyle: "center"
-            });
-        }else{
-            BI.Bubbles.hide(this.constants.INVALID_NAME);
-        }
         return valid;
     },
 

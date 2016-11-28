@@ -6,6 +6,9 @@
 BI.AbstractChart = BI.inherit(BI.Widget, {
 
     constants: {
+        CENTER: 1,
+        OUTER: 2,
+        INNER: 3,
         REVERSE: false,
         SHOW_AXIS_LABEL: true,
         SEPARATOR: false,
@@ -35,8 +38,6 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         HORIZONTAL_TUBE: 13,
         LNG_FIRST: 3,
         LAT_FIRST: 4,
-        theme_color: "#65bce7",
-        auto_custom: 1,
         POLYGON: 7,
         AUTO_CUSTOM: 1,
         AUTO: 1,
@@ -50,6 +51,13 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             "fontFamily": "inherit",
             "color": "inherit",
             "fontSize": "12px"
+        },
+        LABEL_STYLE: {
+            textStyle: {
+                "fontFamily": "inherit",
+                "color": "inherit",
+                "fontSize": 12
+            }
         },
         CUSTOM_SCALE: {
             maxScale: {
@@ -77,6 +85,16 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         CAT_LABEL_STYLE: {
             text_direction: 0,
             text_style: {}
+        },
+        DATA_SETTING_STYLE: {
+            showCategoryName: true,
+            showSeriesName: true,
+            showValue: true,
+            showPercentage: false,
+            position: BICst.DATA_LABEL.POSITION_OUTER,
+            textStyle: {
+                "fontSize": "12px"
+            }
         }
     },
 
@@ -246,91 +264,116 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         switch (type) {
             case this.constants.NORMAL:
                 formatter = '#.##';
-                if (separators) {formatter = '#,###.##'}
+                if (separators) {
+                    formatter = '#,###.##'
+                }
                 break;
             case this.constants.ZERO2POINT:
                 formatter = '#0';
-                if (separators) {formatter = '#,###'}
+                if (separators) {
+                    formatter = '#,###'
+                }
                 break;
             case this.constants.ONE2POINT:
                 formatter = '#0.0';
-                if (separators) {formatter = '#,###.0'}
+                if (separators) {
+                    formatter = '#,###.0'
+                }
                 break;
             case this.constants.TWO2POINT:
                 formatter = '#0.00';
-                if (separators) {formatter = '#,###.00'}
+                if (separators) {
+                    formatter = '#,###.00'
+                }
                 break;
         }
         return formatter
     },
 
-    formatDataLabel: function (state, items, config, style) {
+    setDataLabelContent: function (chartOptions) {
+        var setting = chartOptions.dataLabelSetting, identifier = '';
+        if(setting.showCategoryName) {
+            identifier += '${CATEGORY}'
+        }
+        if(setting.showSeriesName) {
+            identifier += '${SERIES}'
+        }
+        if(setting.showValue) {
+            identifier += '${VALUE}'
+        }
+        if(setting.showPercentage) {
+            identifier += '${PERCENT}'
+        }
+        return identifier
+    },
+
+    setDataLabelPosition: function (chartOptions) {
+        var setting = chartOptions.dataLabelSetting || {};
+        switch (setting.position || this.constants.OUTER) {
+            case this.constants.CENTER:
+                return 'center';
+            case this.constants.INNER:
+                return 'inside';
+            case this.constants.OUTER:
+                return 'outside'
+        }
+    },
+    
+    formatDataLabelForAxis: function (items, config, chartOptions) {
         var self = this;
-        if (state === true) {
+        if (config.plotOptions.dataLabels.enabled === true) {
             BI.each(items, function (idx, item) {
+                var format;
+                if(config.xAxis[0] && (config.xAxis[0].type === 'value')) {
+                    format = config.xAxis[item.xAxis].formatter;
+                }
+                format = config.yAxis[item.yAxis].formatter;
+
                 item.dataLabels = {
-                    "align": "outside",
-                    "autoAdjust": true,
-                    style: style,
+                    align: self.setDataLabelPosition(chartOptions),
+                    autoAdjust: true,
+                    style: chartOptions.dataLabelSetting.textStyle,
                     enabled: true,
                     formatter: {
-                        identifier: "${VALUE}",
-                        valueFormat: config.yAxis[item.yAxis].formatter
+                        identifier: self.setDataLabelContent(chartOptions),
+                        valueFormat: format,
                     }
                 };
-                self.formatDataLabelForData(item.data, config.yAxis[item.yAxis].formatter);
+                self.formatDataLabelForEachData(item.data, format, chartOptions);
             });
         }
     },
 
-    formatDataLabelForAxis: function (state, items, format, style) {
+    formatDataLabelForOthers: function (state, items, format, chartOptions) {
         var self = this;
         if (state === true) {
             BI.each(items, function (idx, item) {
                 item.dataLabels = {
-                    "align": "outside",
-                    "autoAdjust": true,
-                    style: style,
+                    align: self.setDataLabelPosition(chartOptions),
+                    autoAdjust: true,
+                    style: chartOptions.dataLabelSetting.textStyle,
                     enabled: true,
                     formatter: {
-                        identifier: "${VALUE}",
+                        identifier: self.setDataLabelContent(chartOptions),
                         valueFormat: format
                     }
                 };
-                self.formatDataLabelForData(item.data, format);
             });
         }
     },
 
-    formatDataLabelForOthers: function (state, items, format, style) {
+    formatDataLabelForEachData: function (items, format, chartOptions) {
         var self = this;
-        if (state === true) {
-            BI.each(items, function (idx, item) {
-                item.dataLabels = {
-                    "align": "outside",
-                    "autoAdjust": true,
-                    style: style,
-                    enabled: true,
-                    formatter: {
-                        identifier: "${VALUE}",
-                        valueFormat: format
-                    }
-                };
-            });
-        }
-    },
-
-    formatDataLabelForData: function (items, format) {
         BI.each(items, function (idx, item) {
             if (item.dataLabels) {
                 var styleSetting = item.dataLabels.styleSetting || {};
                 item.dataLabels.formatter = {
-                    identifier: "${VALUE}",
+                    identifier: chartOptions ? self.setDataLabelContent(chartOptions) : '${VALUE}',
                     valueFormat: format
                 };
                 item.dataLabels.enabled = true;
                 item.dataLabels.autoAdjust = true;
-                item.dataLabels.align = "outside";
+                item.dataLabels.align = chartOptions ? self.setDataLabelPosition(chartOptions) : 'outside';
                 item.dataLabels.style = {
                     "fontFamily": "inherit",
                     "color": "#808080",
@@ -493,7 +536,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             leftYTitle: options.leftYTitle || '',
             leftYReverse: options.leftYReverse || c.REVERSE,
             leftYShowLabel: options.leftYShowLabel,
-            leftYLabelStyle: options.leftYLabelStyle || c.FONT_STYLE,
+            leftYLabelStyle: options.leftYLabelStyle || c.LABEL_STYLE,
             leftYLineColor: options.leftYLineColor || '',
             leftYSeparator: options.leftYSeparator || c.SEPARATOR,
             leftYTitleStyle: options.leftYTitleStyle || c.FONT_STYLE,
@@ -509,7 +552,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             rightYSeparator: options.rightYSeparator,
             rightYCustomScale: options.rightYCustomScale || c.CUSTOM_SCALE,
             rightYShowLabel: options.rightYShowLabel,
-            rightYLabelStyle: options.rightYLabelStyle || c.FONT_STYLE,
+            rightYLabelStyle: options.rightYLabelStyle || c.LABEL_STYLE,
             rightYLineColor: options.rightYLineColor,
             //y2右值轴
             rightY2NumberFormat: options.rightY2NumberFormat,
@@ -520,7 +563,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             rightY2Reverse: options.rightY2Reverse,
             rightY2Separator: options.rightY2Separator,
             rightY2ShowLabel: options.rightY2ShowLabel,
-            rightY2LabelStyle: options.rightY2LabelStyle || c.FONT_STYLE,
+            rightY2LabelStyle: options.rightY2LabelStyle || c.LABEL_STYLE,
             rightY2LineColor: options.rightY2LineColor,
             rightY2TitleStyle: options.rightY2TitleStyle,
             rightY2CustomScale: options.rightY2CustomScale || c.CUSTOM_SCALE,
@@ -529,7 +572,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             catShowTitle: options.catShowTitle || false,
             catTitle: options.catTitle,
             catShowLabel: options.catShowLabel,
-            catLabelStyle: options.catLabelStyle || c.FONT_STYLE,
+            catLabelStyle: options.catLabelStyle || c.LABEL_STYLE,
             catLineColor: options.catLineColor,
             catTitleStyle: options.catTitleStyle || c.FONT_STYLE,
             //其他元素
@@ -557,8 +600,8 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             vShowGridLine: options.vShowGridLine,
             vGridLineColor: options.vGridLineColor,
             tooltipStyle: options.tooltipStyle,
-            chartFont: BI.extend({}, options.chartFont, {
-                fontSize: options.chartFont && options.chartFont.fontSize + "px"
+            chartFont: options.chartFont && BI.extend({}, options.chartFont, {
+                fontSize:  options.chartFont.fontSize ? options.chartFont.fontSize + "px" : ""
             }),
             nullContinuity: options.nullContinuity,
             backgroundLayerInfo: MapConst.WMS_INFO[options.backgroundLayerInfo],
@@ -568,7 +611,12 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             initDrillPath: options.initDrillPath || [],
             cordon: options.cordon || [],
             tooltip: options.tooltip || [],
-            lnglat: options.lnglat
+            lnglat: options.lnglat,
+            dataLabelSetting: options.dataLabelSetting ? BI.extend(options.dataLabelSetting, {
+                    textStyle: BI.extend(options.dataLabelSetting.textStyle, {
+                            fontSize: options.dataLabelSetting.textStyle.fontSize + 'px'
+                    })
+            }) : c.DATA_SETTING_STYLE,
         }
     },
 

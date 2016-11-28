@@ -1143,6 +1143,14 @@
                 BICst.DEFAULT_CHART_SETTING.showDataLabel;
         },
 
+        getWSChartDataLabelSettingByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var chartFont = this.getGSChartFont();
+            var dataLabelSetting = ws.dataLabelSetting || BICst.DEFAULT_CHART_SETTING.DataLabelSetting;
+            dataLabelSetting.textStyle = BI.extend(chartFont, dataLabelSetting.textStyle);
+            return dataLabelSetting;
+        },
+
         getWSChartShowDataTableByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.showDataTable) ? ws.showDataTable :
@@ -3012,8 +3020,12 @@
                 });
 
                 //还应该拿到所有的联动过来的组件的钻取条件 也是给跪了
+                //联动过来的组件的联动条件被删除，忽略钻取条件
                 var linkDrill = self.getDrillByID(lId);
-                if (BI.isNotNull(lLinkages) && BI.isNotEmptyObject(lLinkages) && BI.isNotNull(linkDrill)) {
+                var notIgnore = BI.some(linkages, function(ldid, link) {
+                     return lId === self.getWidgetIDByDimensionID(ldid);
+                });
+                if (notIgnore && BI.isNotNull(linkDrill) && BI.isNotEmptyObject(linkDrill)) {
                     BI.each(linkDrill, function (drId, drArray) {
                         if (drArray.length === 0) {
                             return;

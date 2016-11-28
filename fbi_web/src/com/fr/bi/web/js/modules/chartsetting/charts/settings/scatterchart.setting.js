@@ -652,7 +652,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
-                }/*, {
+                }, /*, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Tooltip"),
                     cls: "attr-names"
@@ -726,7 +726,7 @@ BI.ScatterChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _bigDataMode: function (v) {
         this.showDataLabel.setEnable(v);
-        this.transferFilter.setEnable(v)
+        this.transferFilter.setEnable(v);
     },
 
     populate: function () {

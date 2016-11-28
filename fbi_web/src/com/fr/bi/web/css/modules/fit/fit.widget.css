@@ -2,16 +2,16 @@
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
 .bi-fit-widget {
-  -webkit-transition: all 200ms ease;
-  -moz-transition: all 200ms ease;
-  -o-transition: all 200ms ease;
-  transition: all 200ms ease;
+  -webkit-transition: left,top 200ms ease;
+  -moz-transition: left,top 200ms ease;
+  -o-transition: left,top 200ms ease;
+  transition: left,top 200ms ease;
 }
 .bi-fit-widget.selected {
-  -webkit-transition: all 0ms ease;
-  -moz-transition: all 0ms ease;
-  -o-transition: all 0ms ease;
-  transition: all 0ms ease;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  transition: none;
 }
 .bi-fit-widget .fit-widget-draggable {
   cursor: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/cursor/cursor_hand.cur'), auto;

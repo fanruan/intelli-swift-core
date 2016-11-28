@@ -18,20 +18,20 @@ BI.DimensionNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
     },
 
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.DimensionNumberFieldFilterItem.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "bi-dimension-number-field-item",
             afterValueChange: BI.emptyFn
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.DimensionNumberFieldFilterItem.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
 
         this.isDimension = false;
         var wId = BI.Utils.getWidgetIDByDimensionID(this.options.dId);
-        if(BI.contains(BI.Utils.getAllDimDimensionIDs(wId), this.options.dId)){
+        if (BI.contains(BI.Utils.getAllDimDimensionIDs(wId), this.options.dId)) {
             this.isDimension = true;
         }
 
@@ -41,7 +41,7 @@ BI.DimensionNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             type: "bi.icon_button",
             cls: "close-h-font"
         });
-        this.deleteButton.on(BI.Controller.EVENT_CHANGE, function(){
+        this.deleteButton.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, BI.Events.DESTROY, o.id, self);
         });
 
@@ -49,7 +49,7 @@ BI.DimensionNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             type: "bi.vertical",
             element: this.element,
             items: [{
-                el:{
+                el: {
                     type: "bi.left_right_vertical_adapt",
                     height: this._constant.CONTAINER_HEIGHT,
                     items: {
@@ -65,16 +65,16 @@ BI.DimensionNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         });
     },
 
-    populate: function(items, keyword, context){
+    populate: function (items, keyword, context) {
         this.filterType.setValue(context.filter_type);
         this._refreshFilterWidget(context.filter_type, context.filter_value);
     },
 
-    _buildConditions: function(){
+    _buildConditions: function () {
         var self = this, o = this.options;
         o.filter_type = this.isDimension === false ? o.filter_type : BICst.DIMENSION_FILTER_STRING.BELONG_VALUE;
-        if(BI.isNull(o.dId)){
-            return[];
+        if (BI.isNull(o.dId)) {
+            return [];
         }
         var fieldName = BI.Utils.getDimensionNameByID(o.dId);
         this.fieldButton = BI.createWidget({
@@ -86,7 +86,7 @@ BI.DimensionNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             textAlign: "left",
             hgap: this._constant.TEXT_BUTTON_H_GAP
         });
-        this.fieldButton.on(BI.Controller.EVENT_CHANGE, function(){
+        this.fieldButton.on(BI.Controller.EVENT_CHANGE, function () {
 
             arguments[2] = self;
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
@@ -103,10 +103,10 @@ BI.DimensionNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             items: this.isDimension ? BICst.DIMENSION_FILTER_STRING_COMBO : BICst.DIMENSION_TAR_FILTER_NUMBER_COMBO
         });
         this.filterType.setValue(o.filter_type);
-        this.filterType.on(BI.TextValueDownListCombo.EVENT_CHANGE, function(){
+        this.filterType.on(BI.TextValueDownListCombo.EVENT_CHANGE, function () {
             self._refreshFilterWidget(self.filterType.getValue()[0]);
             self._setNodeData({
-                filter_type : self.filterType.getValue()[0]
+                filter_type: self.filterType.getValue()[0]
             });
             o.afterValueChange.apply(self, arguments);
         });
@@ -114,9 +114,9 @@ BI.DimensionNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         return [this.fieldButton, this.filterType, this.filterWidgetContainer];
     },
 
-    _refreshFilterWidget: function(filterType, initData){
+    _refreshFilterWidget: function (filterType, initData) {
         var w = BI.createWidget();
-        switch (filterType){
+        switch (filterType) {
             case BICst.DIMENSION_FILTER_STRING.CONTAIN:
             case BICst.DIMENSION_FILTER_STRING.NOT_CONTAIN:
                 w = this._createStringInput(initData);
@@ -162,12 +162,12 @@ BI.DimensionNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             type: "bi.sign_editor",
             cls: "condition-operator-input",
             allowBlank: true,
-            height: this._constant.BUTTON_HEIGHT,
-            width: this._constant.INPUT_WIDTH
+            height: this._constant.BUTTON_HEIGHT - 2,
+            width: this._constant.INPUT_WIDTH - 2
         });
-        this.filterWidget.on(BI.SignEditor.EVENT_CONFIRM, function(){
+        this.filterWidget.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self._setNodeData({
-                filter_value : this.getValue()
+                filter_value: this.getValue()
             });
             o.afterValueChange.apply(self, arguments);
         });
@@ -186,7 +186,7 @@ BI.DimensionNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
 
         this.filterWidget.on(BI.SelectFieldDataCombo.EVENT_CONFIRM, function () {
             self._setNodeData({
-                filter_value : this.getValue()
+                filter_value: this.getValue()
             });
             o.afterValueChange.apply(self, arguments);
         });
@@ -194,7 +194,7 @@ BI.DimensionNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         return this.filterWidget;
     },
 
-    _createNumberIntervalFilter: function(initData){
+    _createNumberIntervalFilter: function (initData) {
         var self = this, o = this.options;
         this.filterWidget = BI.createWidget({
             type: "bi.numerical_interval",
@@ -202,19 +202,19 @@ BI.DimensionNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             height: this._constant.BUTTON_HEIGHT
         });
         BI.isNotNull(initData) && this.filterWidget.setValue(initData);
-        this.filterWidget.on(BI.NumericalInterval.EVENT_CHANGE, function(){
+        this.filterWidget.on(BI.NumericalInterval.EVENT_CHANGE, function () {
             self._setNodeData({
-                filter_value : this.getValue()
+                filter_value: this.getValue()
             });
             o.afterValueChange.apply(self, arguments);
         });
         return this.filterWidget;
     },
-    _createNumberInput: function(initData){
+    _createNumberInput: function (initData) {
         var self = this, o = this.options;
         this.filterWidget = BI.createWidget({
             type: "bi.text_editor",
-            validationChecker: function(v){
+            validationChecker: function (v) {
                 return BI.isPositiveInteger(v);
             },
             errorText: BI.i18nText("BI-Please_Input_Integer"),
@@ -222,9 +222,9 @@ BI.DimensionNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             height: this._constant.BUTTON_HEIGHT,
             width: this._constant.INPUT_WIDTH
         });
-        this.filterWidget.on(BI.TextEditor.EVENT_CONFIRM, function(){
+        this.filterWidget.on(BI.TextEditor.EVENT_CONFIRM, function () {
             self._setNodeData({
-                filter_value : this.getValue()
+                filter_value: this.getValue()
             });
             o.afterValueChange.apply(self, arguments);
         });
@@ -232,7 +232,7 @@ BI.DimensionNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         return this.filterWidget;
     },
 
-    _createNInput: function(initData){
+    _createNInput: function (initData) {
         this._createNumberInput(initData);
         return BI.createWidget({
             type: "bi.inline",
@@ -244,12 +244,12 @@ BI.DimensionNumberFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         });
     },
 
-    _setNodeData: function(v){
+    _setNodeData: function (v) {
         var o = this.options;
         o.node.set("data", BI.extend(o.node.get("data"), v));
     },
 
-    getValue: function(){
+    getValue: function () {
         return {
             target_id: this.options.dId,
             filter_type: this.filterType.getValue()[0],

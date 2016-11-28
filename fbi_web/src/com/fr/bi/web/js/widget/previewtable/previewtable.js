@@ -120,6 +120,82 @@ BI.PreviewTable = BI.inherit(BI.Widget, {
         }
     },
 
+    setColumnSize: function (columnSize) {
+        return this.table.setColumnSize(columnSize);
+    },
+
+    getColumnSize: function () {
+        return this.table.getColumnSize();
+    },
+
+    getCalculateColumnSize: function () {
+        return this.table.getCalculateColumnSize();
+    },
+
+    setHeaderColumnSize: function (columnSize) {
+        return this.table.setHeaderColumnSize(columnSize);
+    },
+
+    setRegionColumnSize: function (columnSize) {
+        return this.table.setRegionColumnSize(columnSize);
+    },
+
+    getRegionColumnSize: function () {
+        return this.table.getRegionColumnSize();
+    },
+
+    getCalculateRegionColumnSize: function () {
+        return this.table.getCalculateRegionColumnSize();
+    },
+
+    getCalculateRegionRowSize: function () {
+        return this.table.getCalculateRegionRowSize();
+    },
+
+    getClientRegionColumnSize: function () {
+        return this.table.getClientRegionColumnSize();
+    },
+
+    getScrollRegionColumnSize: function () {
+        return this.table.getScrollRegionColumnSize()
+    },
+
+    getScrollRegionRowSize: function () {
+        return this.table.getScrollRegionRowSize()
+    },
+
+    hasVerticalScroll: function () {
+        return this.table.hasVerticalScroll();
+    },
+
+    setVerticalScroll: function (scrollTop) {
+        return this.table.setVerticalScroll(scrollTop);
+    },
+
+    setLeftHorizontalScroll: function (scrollLeft) {
+        return this.table.setLeftHorizontalScroll(scrollLeft)
+    },
+
+    setRightHorizontalScroll: function (scrollLeft) {
+        return this.table.setRightHorizontalScroll(scrollLeft);
+    },
+
+    getVerticalScroll: function () {
+        return this.table.getVerticalScroll();
+    },
+
+    getLeftHorizontalScroll: function () {
+        return this.table.getLeftHorizontalScroll();
+    },
+
+    getRightHorizontalScroll: function () {
+        return this.table.getRightHorizontalScroll();
+    },
+
+    getColumns: function () {
+        return this.table.getColumns();
+    },
+
     populate: function (items, header) {
         this.table.populate(items, header);
     },

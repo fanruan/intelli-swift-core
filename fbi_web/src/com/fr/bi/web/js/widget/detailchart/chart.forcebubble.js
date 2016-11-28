@@ -30,6 +30,7 @@ BI.ForceBubbleChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this, o = this.options;
+        delete config.zoom;
         config.chartType = 'forceBubble';
         config.colors = this.config.chartColor;
 
@@ -58,6 +59,7 @@ BI.ForceBubbleChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.dataLabels.formatter.identifier = "${CATEGORY}${VALUE}";
         delete config.xAxis;
         delete config.yAxis;
+        delete config.zoom;
         BI.each(items, function (idx, item) {
             BI.each(item.data, function (id, da) {
                 da.y = self.formatXYDataWithMagnify(da.y, 1);

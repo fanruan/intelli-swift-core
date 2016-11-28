@@ -93,7 +93,7 @@ BI.ConfTargetStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         this.filterType.on(BI.TextValueDownListCombo.EVENT_CHANGE, function () {
             self._refreshFilterWidget(self.filterType.getValue()[0]);
             self._setNodeData({
-                filter_type : this.getValue()[0]
+                filter_type: this.getValue()[0]
             });
             o.afterValueChange.apply(self, arguments);
         });
@@ -135,7 +135,7 @@ BI.ConfTargetStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         });
         this.filterWidget.on(BI.ConfFilterValueChooserCombo.EVENT_CONFIRM, function () {
             self._setNodeData({
-                filter_value : this.getValue()
+                filter_value: this.getValue()
             });
             o.afterValueChange.apply(self, arguments);
         });
@@ -148,19 +148,19 @@ BI.ConfTargetStringFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             type: "bi.sign_editor",
             cls: "condition-operator-input",
             allowBlank: true,
-            height: this._constant.BUTTON_HEIGHT,
-            width: this._constant.INPUT_WIDTH
+            height: this._constant.BUTTON_HEIGHT - 2,
+            width: this._constant.INPUT_WIDTH - 2
         });
         this.filterWidget.on(BI.SignEditor.EVENT_CONFIRM, function () {
             self._setNodeData({
-                filter_value : this.getValue()
+                filter_value: this.getValue()
             });
             o.afterValueChange.apply(self, arguments);
         });
         BI.isNotNull(initData) && this.filterWidget.setValue(initData);
     },
 
-    _setNodeData: function(v){
+    _setNodeData: function (v) {
         var o = this.options;
         o.node.set("data", BI.extend(o.node.get("data"), v));
     },

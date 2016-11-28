@@ -130,12 +130,9 @@ BI.DataLabelChart = BI.inherit(BI.Widget, {
                 data[0][0].data[0].dataLabels = {
                     enabled: true,
                     align: "outside",
-                    styleSetting: {
-                        type: BICst.DATA_LABEL_STYLE_TYPE.IMG,
-                        imgStyle: {
-                            src: src
-                        }
-                    }
+                    useHtml: true,
+                    autoAdjust: true,
+                    formatter: "function(){return '<img width=\"20px\" height=\"20px\" src=\"" + BI.Func.getCompleteImageUrl(src) + "\">';}"
                 };
             }
         }

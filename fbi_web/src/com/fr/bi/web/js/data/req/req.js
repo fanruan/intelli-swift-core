@@ -112,15 +112,15 @@ Data.Req = BIReq = {
         }, complete);
     },
 
-    reqCubeStatusByTable: function (table, callback, complete) {
-        BI.requestAsync("fr_bi_configure", "check_generate_cube", {table: table}, function (res) {
+    reqCubeStatusCheck: function (callback, complete) {
+        BI.requestAsync("fr_bi_configure", "get_cube_generate_status", {}, function (res) {
             callback(res);
         }, complete)
     },
-    
-    reqIsTableExist: function(table, callback, complete) {
-        BI.requestAsync("fr_bi_configure", "check_table_exist", {table: table}, function(res) {
-            callback(res); 
+
+    reqIsTableExist: function (table, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "check_table_exist", {table: table}, function (res) {
+            callback(res);
         }, complete);
     },
 

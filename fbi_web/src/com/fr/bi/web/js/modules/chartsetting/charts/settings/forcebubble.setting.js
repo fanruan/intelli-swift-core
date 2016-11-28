@@ -380,7 +380,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
-                }/*, {
+                }, /*, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Tooltip"),
                     cls: "attr-names"
@@ -466,6 +466,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
         this.gradientStyle.setValue(BI.Utils.getWSChartBubbleGradientStyleByID(wId));
         this.chartColor.setValue(BI.Utils.getWSChartColorByID(wId));
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
+        this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
         this.bubbleSizeFrom.setValue(BI.Utils.getWSChartBubbleSizeFromByID(wId));
         this.bubbleSizeTo.setValue(BI.Utils.getWSChartBubbleSizeToByID(wId));
         this.bubbleStyle.setValue(BI.Utils.getWSChartBubbleStyleByID(wId));
@@ -485,6 +486,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
             gradientStyle: this.gradientStyle.getValue(),
             chartColor: this.chartColor.getValue()[0],
             legend: this.legend.getValue()[0],
+            showDataLabel: this.showDataLabel.isSelected(),
             bubbleSizeFrom: this.bubbleSizeFrom.getValue(),
             bubbleSizeTo: this.bubbleSizeTo.getValue(),
             bubbleStyle: this.bubbleStyle.getValue()[0],

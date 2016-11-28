@@ -333,6 +333,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         backgroundLayerInfo: MapConst.WMS_INFO[BI.Utils.getWSChartMapBackgroundLayerInfoByID(o.wId)],
                         transferFilter: BI.Utils.getWSTransferFilterByID(o.wId),
                         bigDataMode: BI.Utils.getWSChartBigDataModeByID(o.wId),
+                        dataLabelSetting: BI.Utils.getWSChartDataLabelSettingByID(o.wId),
                     }, {
                         cordon: self.model.getCordon(),
                         tooltip: self.model.getToolTip(type),

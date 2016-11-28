@@ -16,15 +16,17 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Created by sheldon on 14-9-13.
  * todo 通过生成队列状态，来确定当前生成状态。这样的颗粒度太粗。添加任务ID，通过ID来判断状态。
+ * 查看当前cube执行情况BIGetCubeGenerateStatusAction ，查看某张表是否已经生成用BICheckCubeTableAction，
+ * todo 可以考虑用来通过tableId查看是否有对应的cube任务
  */
-public class BICheckGenerateCubeStatusAction extends AbstractBIConfigureAction {
+public class BICheckCubeTableStatusAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         String tableJson = WebUtils.getHTTPRequestParameter(req, "table");
         long userId = ServiceUtils.getCurrentUserID(req);
         CubeTableSource source = TableSourceFactory.createTableSource(new JSONObject(tableJson), userId);
         JSONObject jo = new JSONObject();
-        BILoggerFactory.getLogger(BICheckGenerateCubeStatusAction.class).debug("Check the Build Status:" + source.getSourceID());
+        BILoggerFactory.getLogger(BICheckCubeTableStatusAction.class).debug("Check the Build Status:" + source.getSourceID());
         try {
             BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
             jo.put("isGenerated", !cubeManager.hasTask(userId));
@@ -37,6 +39,6 @@ public class BICheckGenerateCubeStatusAction extends AbstractBIConfigureAction {
 
     @Override
     public String getCMD() {
-        return "check_generate_cube";
+        return "check_cube_table_status";
     }
 }
