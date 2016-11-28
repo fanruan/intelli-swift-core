@@ -3044,6 +3044,14 @@ public class ResourceHelper {
                 //带样式表格
                 "com/fr/bi/web/js/components/styletable/styletable.js",
 
+                //excelview
+                "com/fr/bi/web/js/components/excel/excelview/excelviewdisplaymanager.js",
+                "com/fr/bi/web/js/components/excel/excelview/model.excelviewdisplay.js",
+
+                //exceltabledata
+                "com/fr/bi/web/js/components/excel/exceltabledata/exceltabledatadisplaymanager.js",
+                "com/fr/bi/web/js/components/excel/exceltabledata/model.exceltabledatadisplay.js",
+
                 //模板管理
                 "com/fr/bi/web/js/components/templatemanager/liststyleitems/report.listview.item.js",
                 "com/fr/bi/web/js/components/templatemanager/liststyleitems/folder.listview.item.js",
