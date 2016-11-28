@@ -56,7 +56,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             textStyle: {
                 "fontFamily": "inherit",
                 "color": "inherit",
-                "fontSize": "12px"
+                "fontSize": 12
             }
         },
         CUSTOM_SCALE: {
@@ -92,7 +92,9 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             showValue: true,
             showPercentage: false,
             position: BICst.DATA_LABEL.POSITION_OUTER,
-            textStyle: {}
+            textStyle: {
+                "fontSize": "12px"
+            }
         }
     },
 
