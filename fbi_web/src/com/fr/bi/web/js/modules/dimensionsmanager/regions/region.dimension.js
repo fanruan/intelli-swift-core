@@ -64,7 +64,7 @@ BI.DimensionRegion = BI.inherit(BI.AbstractRegion, {
     _fieldDragStart: function (fields) {
         this.fields = fields;
         var onlyCounter = !BI.some(fields, function (i, fieldId) {
-            return BI.Utils.getFieldTypeByID(fieldId) !== BICst.COLUMN.COUNTER;
+            return BI.Utils.getFieldTypeByID(fieldId) !== BICst.COLUMN.COUNTER && BI.isNotNull(fieldId);
         });
         if (onlyCounter) {
             this._showForbiddenMask();
@@ -81,7 +81,7 @@ BI.DimensionRegion = BI.inherit(BI.AbstractRegion, {
         var total = this.fields.length;
         var counters = 0;
         BI.each(this.fields, function (i, fieldId) {
-            if (BI.Utils.getFieldTypeByID(fieldId) === BICst.COLUMN.COUNTER) {
+            if (BI.Utils.getFieldTypeByID(fieldId) === BICst.COLUMN.COUNTER || BI.isNull(fieldId)) {
                 counters++;
             }
         });

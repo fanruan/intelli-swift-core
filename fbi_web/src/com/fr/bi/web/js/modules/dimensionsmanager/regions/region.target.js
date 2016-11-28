@@ -112,7 +112,8 @@ BI.TargetRegion = BI.inherit(BI.AbstractRegion, {
         this.fields = fields;
         var hasNum = BI.some(fields, function (i, fieldId) {
             var fieldType = BI.Utils.getFieldTypeByID(fieldId);
-            return fieldType === BICst.COLUMN.NUMBER || fieldType === BICst.COLUMN.COUNTER;
+            //todo 之前设计的接口没有考虑维度指标的复用，暂时这样写一下
+            return BI.isNull(fieldType) || fieldType === BICst.COLUMN.NUMBER || fieldType === BICst.COLUMN.COUNTER;
         });
         if (!hasNum) {
             this._showForbiddenMask();
@@ -129,10 +130,13 @@ BI.TargetRegion = BI.inherit(BI.AbstractRegion, {
         var total = this.fields.length;
         var notNums = 0;
         BI.each(this.fields, function (i, fieldId) {
+            //todo 之前设计的接口没有考虑维度指标的复用，暂时这样写一下
             var fieldType = BI.Utils.getFieldTypeByID(fieldId);
             if (fieldType !== BICst.COLUMN.COUNTER &&
                 fieldType !== BICst.COLUMN.NUMBER) {
-                notNums++;
+                if(BI.isNotNull(fieldType)){
+                    notNums++;
+                }
             }
         });
         if (notNums > 0 && notNums !== total) {
