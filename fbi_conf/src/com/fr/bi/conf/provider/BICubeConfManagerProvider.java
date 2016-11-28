@@ -24,6 +24,10 @@ public interface BICubeConfManagerProvider {
 
     long getPackageLastModify();
 
+    void setMultiPathVersion();
+
+    long getMultiPathVersion();
+
     void updateMultiPathLastCubeStatus(BIReportConstant.MULTI_PATH_STATUS status);
 
     BIReportConstant.MULTI_PATH_STATUS getMultiPathCubeStatus();
