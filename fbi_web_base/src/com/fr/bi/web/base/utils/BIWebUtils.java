@@ -216,7 +216,7 @@ public class BIWebUtils {
         map.put("plateConfig", plateConfig);
         //cube版本号 和 权限版本号
         map.put("__version__", BIConfigureManagerCenter.getCubeConfManager().getPackageLastModify() + ""
-                + BIConfigureManagerCenter.getAuthorityManager().getAuthVersion() + "" + userId);
+                + BIConfigureManagerCenter.getAuthorityManager().getAuthVersion() + "" + BIConfigureManagerCenter.getCubeConfManager().getMultiPathVersion() + "" + userId);
         boolean biEdit = pop == null || ComparatorUtils.equals(edit, "_bi_edit_");
         boolean isEdit = sessionIDInfo.setEdit(biEdit);
         if (biEdit && !isEdit) {
