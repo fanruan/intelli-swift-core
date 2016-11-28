@@ -32,17 +32,25 @@ public class BIReportSaveAsAction extends ActionNoSessionCMD {
         String reportName = WebUtils.getHTTPRequestParameter(req, "report_name");
         String reportLocation = WebUtils.getHTTPRequestParameter(req, "report_location");
         String realTime = WebUtils.getHTTPRequestParameter(req, "real_time");
+        String config = WebUtils.getHTTPRequestParameter(req, "config");
 
         reportLocation = reportLocation == null ? "-1" : reportLocation;
         JSONObject jo = new JSONObject();
-        BIReportNode node = BIDAOUtils.findByID(Long.parseLong(reportId), Long.parseLong(createBy));
-        if (node != null) {
-            JSONObject reportSetting = BIReadReportUtils.getBIReportNodeJSON(node);
+        if (config != null) {
+            JSONObject reportSetting = new JSONObject(config);
             BIDesignReport report = new BIDesignReport(new BIDesignSetting(reportSetting.toString()));
             long newId = BIFSReportUtils.createNewBIReport(report, userId, reportName, reportLocation, realTime == null ? "" : realTime);
             jo.put(BIBaseConstant.REPORT_ID, newId);
         } else {
-            jo.put("message", "can not find report: " + reportName);
+            BIReportNode node = BIDAOUtils.findByID(Long.parseLong(reportId), Long.parseLong(createBy));
+            if (node != null) {
+                JSONObject reportSetting = BIReadReportUtils.getBIReportNodeJSON(node);
+                BIDesignReport report = new BIDesignReport(new BIDesignSetting(reportSetting.toString()));
+                long newId = BIFSReportUtils.createNewBIReport(report, userId, reportName, reportLocation, realTime == null ? "" : realTime);
+                jo.put(BIBaseConstant.REPORT_ID, newId);
+            } else {
+                jo.put("message", "can not find report: " + reportName);
+            }
         }
         WebUtils.printAsJSON(res, jo);
     }
