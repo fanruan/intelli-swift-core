@@ -534,6 +534,15 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function () {
+            self.dataLabelSetting.setVisible(this.isSelected());
+            self.fireEvent(BI.BarChartsSetting.EVENT_CHANGE);
+        });
+
+        this.dataLabelSetting = BI.createWidget({
+            type: "bi.data_label_detailed_setting_combo"
+        });
+
+        this.dataLabelSetting.on(BI.DataLabelDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.BarChartsSetting.EVENT_CHANGE);
         });
 
@@ -590,6 +599,9 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.dataLabelSetting]
                 }/*, {
                  type: "bi.label",
                  text: BI.i18nText("BI-Tooltip"),
@@ -743,6 +755,8 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.legendStyle.setValue(BI.Utils.getWSChartLegendStyleByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
+        this.dataLabelSetting.setValue(BI.Utils.getWSChartDataLabelSettingByID(wId));
+        this.dataLabelSetting.setVisible(BI.Utils.getWSChartShowDataLabelByID(wId));
         this.hShowGridLine.setSelected(BI.Utils.getWSChartHShowGridLineByID(wId));
         this.hGridLineColor.setValue(BI.Utils.getWSChartHGridLineColorByID(wId));
         this.vShowGridLine.setSelected(BI.Utils.getWSChartVShowGridLineByID(wId));
@@ -790,6 +804,7 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
             legend: this.legend.getValue()[0],
             legendStyle: this.legendStyle.getValue(),
             showDataLabel: this.showDataLabel.isSelected(),
+            dataLabelSetting: this.dataLabelSetting.getValue(),
             hShowGridLine: this.hShowGridLine.isSelected(),
             hGridLineColor: this.hGridLineColor.getValue(),
             vShowGridLine: this.vShowGridLine.isSelected(),

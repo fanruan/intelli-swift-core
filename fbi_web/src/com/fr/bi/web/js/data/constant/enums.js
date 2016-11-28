@@ -263,6 +263,12 @@ BICst.CHART_SHAPE = {
     PROJECTOR: 17       //有投影的气泡
 };
 
+BICst.DATA_LABEL = {
+    POSITION_INNER: 1,
+    POSITION_OUTER: 2,
+    POSITION_CENTER: 3,
+};
+
 BICst.CHART_STYLE = {
     //风格
     STYLE_NORMAL: 1,       //普通风格
@@ -520,6 +526,14 @@ BICst.DEFAULT_CHART_SETTING = {
         minScale: {},
         maxScale: {},
         interval: {}
+    },
+    DataLabelSetting: {
+        showCategoryName: true,
+        showSeriesName: true,
+        showValue: true,
+        showPercentage: false,
+        position: BICst.DATA_LABEL.POSITION_OUTER,
+        textStyle: {}
     }
 };
 

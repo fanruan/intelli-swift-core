@@ -1143,6 +1143,14 @@
                 BICst.DEFAULT_CHART_SETTING.showDataLabel;
         },
 
+        getWSChartDataLabelSettingByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            var chartFont = this.getGSChartFont();
+            var dataLabelSetting = ws.dataLabelSetting || BICst.DEFAULT_CHART_SETTING.DataLabelSetting;
+            dataLabelSetting.textStyle = BI.extend(chartFont, dataLabelSetting.textStyle);
+            return dataLabelSetting;
+        },
+
         getWSChartShowDataTableByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.showDataTable) ? ws.showDataTable :

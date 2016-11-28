@@ -30,6 +30,7 @@ BI.ForceBubbleChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this, o = this.options;
+        delete config.zoom;
         config.chartType = 'forceBubble';
         config.colors = this.config.chartColor;
 

@@ -113,7 +113,7 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
                 items: BI.createItems([{
                     type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
-                }], {
+                },], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
                 lgap: constant.SIMPLE_L_GAP

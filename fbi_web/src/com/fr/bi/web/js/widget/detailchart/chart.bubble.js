@@ -49,7 +49,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
 
     _formatConfig: function (config, items) {
         var self = this, c = this.constants;
-
+        delete config.zoom;
         formatCordon();
 
         switch (this.config.displayRules) {
@@ -109,7 +109,6 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
             };
         }
 
-        //为了给数据标签加个%,还要遍历所有的系列，唉
         if (config.plotOptions.dataLabels.enabled === true && !this.config.bigDataMode) {
             BI.each(items, function (idx, item) {
                 item.dataLabels = {
@@ -140,7 +139,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                         self.formatToolTipAndDataLabel(item.settings.format || c.NORMAL, item.settings.numLevel || c.NORMAL,
                             item.settings.unit || "", item.settings.numSeparators || c.NUM_SEPARATORS));
                 };
-                self.formatDataLabelForData(item.data);
+                self.formatDataLabelForEachData(item.data);
                 BI.each(item.data, function (i, data) {
                     if (data.dataLabels && data.dataLabels.styleSetting && data.dataLabels.styleSetting.type === BICst.DATA_LABEL_STYLE_TYPE.TEXT) {
                         data.dataLabels.formatter = {};
