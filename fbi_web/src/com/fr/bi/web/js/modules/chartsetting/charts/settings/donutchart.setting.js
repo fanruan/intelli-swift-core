@@ -178,15 +178,6 @@ BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function () {
-            self.dataLabelSetting.setVisible(this.isSelected());
-            self.fireEvent(BI.DonutChartSetting.EVENT_CHANGE);
-        });
-
-        this.dataLabelSetting = BI.createWidget({
-            type: "bi.data_label_detailed_setting_combo"
-        });
-
-        this.dataLabelSetting.on(BI.DataLabelDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.DonutChartSetting.EVENT_CHANGE);
         });
 
@@ -226,10 +217,7 @@ BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.dataLabelSetting]
-                }/*, {
+                }, /*, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Tooltip"),
                     cls: "attr-names"
@@ -301,8 +289,6 @@ BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.legendStyle.setValue(BI.Utils.getWSChartLegendStyleByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
-        this.dataLabelSetting.setValue(BI.Utils.getWSChartDataLabelSettingByID(wId));
-        this.dataLabelSetting.setVisible(BI.Utils.getWSChartShowDataLabelByID(wId));
     },
 
     getValue: function () {
@@ -317,7 +303,6 @@ BI.DonutChartSetting = BI.inherit(BI.AbstractChartSetting, {
             legend: this.legend.getValue()[0],
             legendStyle: this.legendStyle.getValue(),
             showDataLabel: this.showDataLabel.isSelected(),
-            dataLabelSetting: this.dataLabelSetting.getValue(),
 
             transferFilter: this.transferFilter.isSelected(),
         }

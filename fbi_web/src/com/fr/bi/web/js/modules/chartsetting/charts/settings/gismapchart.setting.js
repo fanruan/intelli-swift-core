@@ -93,15 +93,6 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function(){
-            self.dataLabelSetting.setVisible(this.isSelected());
-            self.fireEvent(BI.GISMapSetting.EVENT_CHANGE);
-        });
-
-        this.dataLabelSetting = BI.createWidget({
-            type: "bi.data_label_detailed_setting_combo"
-        });
-
-        this.dataLabelSetting.on(BI.DataLabelDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.GISMapSetting.EVENT_CHANGE);
         });
 
@@ -122,10 +113,7 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
                 items: BI.createItems([{
                     type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.dataLabelSetting]
-                }], {
+                },], {
                     height: constant.SINGLE_LINE_HEIGHT
                 }),
                 lgap: constant.SIMPLE_L_GAP
@@ -173,8 +161,6 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
-        this.dataLabelSetting.setSelected(BI.Utils.getWSChartDataLabelSettingByID(wId));
-        this.dataLabelSetting.setVisible(BI.Utils.getWSChartShowDataLabelByID(wId));
 
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
     },
@@ -187,7 +173,6 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
 
             widgetBG: this.widgetBG.getValue(),
             showDataLabel: this.showDataLabel.isSelected(),
-            dataLabelSetting: this.dataLabelSetting.setValue(),
 
             transferFilter: this.transferFilter.isSelected(),
         }

@@ -6,9 +6,9 @@
 BI.AbstractChart = BI.inherit(BI.Widget, {
 
     constants: {
-        INNER: 1,
+        CENTER: 1,
         OUTER: 2,
-        CENTER: 3,
+        INNER: 3,
         REVERSE: false,
         SHOW_AXIS_LABEL: true,
         SEPARATOR: false,
@@ -303,9 +303,9 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
     setDataLabelPosition: function (chartOptions) {
         var setting = chartOptions.dataLabelSetting || {};
         switch (setting.position || this.constants.OUTER) {
-            case this.constants.INNER:
-                return 'center';
             case this.constants.CENTER:
+                return 'center';
+            case this.constants.INNER:
                 return 'inside';
             case this.constants.OUTER:
                 return 'outside'

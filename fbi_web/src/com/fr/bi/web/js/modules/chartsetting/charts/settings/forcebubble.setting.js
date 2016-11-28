@@ -341,15 +341,6 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function () {
-            self.dataLabelSetting.setVisible(this.isSelected());
-            self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE);
-        });
-
-        this.dataLabelSetting = BI.createWidget({
-            type: "bi.data_label_detailed_setting_combo"
-        });
-
-        this.dataLabelSetting.on(BI.DataLabelDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE);
         });
 
@@ -389,10 +380,7 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.dataLabelSetting]
-                }/*, {
+                }, /*, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Tooltip"),
                     cls: "attr-names"
@@ -479,8 +467,6 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
         this.chartColor.setValue(BI.Utils.getWSChartColorByID(wId));
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
-        this.dataLabelSetting.setValue(BI.Utils.getWSChartDataLabelSettingByID(wId));
-        this.dataLabelSetting.setVisible(BI.Utils.getWSChartShowDataLabelByID(wId));
         this.bubbleSizeFrom.setValue(BI.Utils.getWSChartBubbleSizeFromByID(wId));
         this.bubbleSizeTo.setValue(BI.Utils.getWSChartBubbleSizeToByID(wId));
         this.bubbleStyle.setValue(BI.Utils.getWSChartBubbleStyleByID(wId));
@@ -501,7 +487,6 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
             chartColor: this.chartColor.getValue()[0],
             legend: this.legend.getValue()[0],
             showDataLabel: this.showDataLabel.isSelected(),
-            dataLabelSetting: this.dataLabelSetting.getValue(),
             bubbleSizeFrom: this.bubbleSizeFrom.getValue(),
             bubbleSizeTo: this.bubbleSizeTo.getValue(),
             bubbleStyle: this.bubbleStyle.getValue()[0],

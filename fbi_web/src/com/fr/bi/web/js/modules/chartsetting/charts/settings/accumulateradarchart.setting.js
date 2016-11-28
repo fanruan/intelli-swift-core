@@ -389,15 +389,6 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function () {
-            self.dataLabelSetting.setVisible(this.isSelected());
-            self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
-        });
-
-        this.dataLabelSetting = BI.createWidget({
-            type: "bi.data_label_detailed_setting_combo"
-        });
-
-        this.dataLabelSetting.on(BI.DataLabelDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.AccumulateRadarChartSetting.EVENT_CHANGE);
         });
 
@@ -464,9 +455,6 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.dataLabelSetting]
                 }, /*{
                     type: "bi.label",
                     text: BI.i18nText("BI-Tooltip"),
@@ -560,8 +548,6 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.vGridLineColor.setVisible(this.vShowGridLine.isSelected());
         this.vGridLineColor.setValue(BI.Utils.getWSChartVGridLineColorByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
-        this.dataLabelSetting.setValue(BI.Utils.getWSChartDataLabelSettingByID(wId));
-        this.dataLabelSetting.setVisible(BI.Utils.getWSChartShowDataLabelByID(wId));
         this.tooltipStyle.setValue(BI.Utils.getWSChartToolTipStyleByID(wId));
         this.nullContinuity.setSelected(BI.Utils.getWSNullContinuityByID(wId));
 
@@ -596,7 +582,6 @@ BI.AccumulateRadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             vShowGridLine: this.vShowGridLine.isSelected(),
             vGridLineColor: this.vGridLineColor.getValue(),
             showDataLabel: this.showDataLabel.isSelected(),
-            dataLabelSetting: this.dataLabelSetting.getValue(),
             tooltipStyle: this.tooltipStyle.getValue(),
             nullContinuity: this.nullContinuity.isSelected(),
 
