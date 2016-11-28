@@ -19,13 +19,13 @@ BI.ExcelUpload = BI.inherit(BI.Widget, {
         PREVIEW_PANE: 1
     },
 
-    _defaultConfig: function(){
+    _defaultConfig: function () {
         return BI.extend(BI.ExcelUpload.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-excel-upload"
         })
     },
 
-    _init: function(){
+    _init: function () {
         BI.ExcelUpload.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.model = new BI.ExcelUploadModel({
@@ -46,12 +46,12 @@ BI.ExcelUpload = BI.inherit(BI.Widget, {
                 }
             }
         });
-        this.model.initData(function(){
+        this.model.initData(function () {
             self._refreshAfterUpload();
         })
     },
 
-    _createWest: function(){
+    _createWest: function () {
         var self = this;
         this.excelName = BI.createWidget({
             type: "bi.label",
@@ -64,9 +64,13 @@ BI.ExcelUpload = BI.inherit(BI.Widget, {
             width: this.constants.EXCEL_UPLOAD_BUTTON_WIDTH,
             height: this.constants.EXCEL_UPLOAD_BUTTON_HEIGHT
         });
-        this.uploadButton.on(BI.UploadExcelButton.EVENT_AFTER_UPLOAD, function(files){
-            self.model.setFile(files[files.length - 1], function(){
-                self._refreshAfterUpload();
+        this.uploadButton.on(BI.UploadExcelButton.EVENT_AFTER_UPLOAD, function (files) {
+            self.model.setFile(files[files.length - 1], function (firstRowHasMerge) {
+                if (firstRowHasMerge === true) {
+                    BI.Msg.alert(BI.i18nText("BI-Prompt"), BI.i18nText("BI-Excel_First_Row_Has_Merge_Cell"));
+                } else {
+                    self._refreshAfterUpload();
+                }
             });
         });
         var tip = BI.createWidget({
@@ -126,7 +130,7 @@ BI.ExcelUpload = BI.inherit(BI.Widget, {
         })
     },
 
-    _createCenter: function(){
+    _createCenter: function () {
         var self = this;
         this.previewWrapper = BI.createWidget({
             type: "bi.preview_table",
@@ -136,8 +140,8 @@ BI.ExcelUpload = BI.inherit(BI.Widget, {
             type: "bi.tab",
             direction: "custom",
             tab: {},
-            cardCreator: function(v){
-                switch (v){
+            cardCreator: function (v) {
+                switch (v) {
                     case self.constants.PREVIEW_EMPTY:
                         return {
                             type: "bi.label",
@@ -183,7 +187,7 @@ BI.ExcelUpload = BI.inherit(BI.Widget, {
         })
     },
 
-    _createSouth: function(){
+    _createSouth: function () {
         var self = this;
         this.saveButton = BI.createWidget({
             type: "bi.button",
@@ -193,7 +197,7 @@ BI.ExcelUpload = BI.inherit(BI.Widget, {
             warningTitle: BI.i18nText("BI-Please_Upload_Excel_Data"),
             height: this.constants.EXCEL_UPLOAD_BUTTON_HEIGHT
         });
-        this.saveButton.on(BI.Button.EVENT_CHANGE, function() {
+        this.saveButton.on(BI.Button.EVENT_CHANGE, function () {
             self.fireEvent(BI.ExcelUpload.EVENT_SAVE, self.getValue());
         });
         this.saveButton.setEnable(false);
@@ -217,11 +221,11 @@ BI.ExcelUpload = BI.inherit(BI.Widget, {
         })
     },
 
-    _refreshAfterUpload: function(){
+    _refreshAfterUpload: function () {
         var self = this;
         this.excelName.setText(this.model.getFileName());
         this.excelFieldsWrapper.empty();
-        if(BI.isEmptyArray(this.model.getFields())) {
+        if (BI.isEmptyArray(this.model.getFields())) {
             this.previewTab.setSelect(this.constants.PREVIEW_EMPTY);
             this.saveButton.setEnable(false);
             return;
@@ -233,7 +237,7 @@ BI.ExcelUpload = BI.inherit(BI.Widget, {
             fields: this.model.getFields(),
             isNewArray: this.model.getIsNewArray()
         });
-        excelFieldSet.on(BI.ExcelFieldSet.EVENT_CHANGE, function(data){
+        excelFieldSet.on(BI.ExcelFieldSet.EVENT_CHANGE, function (data) {
             self.model.setFieldType(data);
         });
         this.excelFieldsWrapper.addItem({
@@ -248,7 +252,7 @@ BI.ExcelUpload = BI.inherit(BI.Widget, {
     },
 
     //获取excel信息
-    getValue: function(){
+    getValue: function () {
         return {
             connection_name: BICst.CONNECTION.EXCEL_CONNECTION,
             table_name: this.model.getTableName(),
