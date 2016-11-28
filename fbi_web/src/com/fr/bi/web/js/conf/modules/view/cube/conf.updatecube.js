@@ -38,11 +38,11 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
             height: 28,
             handler: function () {
                 self._immediateButtonStatus(false);
+                self.cubeLog.refreshLog(true);
                 BI.Utils.generateCube(function (data) {
                     if (data.result) {
-                        self.cubeLog.refreshLog(true);
                         self._createCheckInterval();
-                    }else {
+                    } else {
                         self._immediateButtonStatus(true);
                     }
                 });
@@ -99,12 +99,12 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
 
     },
 
-    _immediateButtonStatus:function (isAvailable) {
-        var self=this;
-        if (isAvailable){
+    _immediateButtonStatus: function (isAvailable) {
+        var self = this;
+        if (isAvailable) {
             self.immediateButton.setEnable(true);
-            self.immediateButton.setText(BI.i18nText("BI-Update_Table_Immedi"));
-        }else {
+            self.immediateButton.setText(BI.i18nText("BI-Immediate_Update_DataBase"));
+        } else {
             self.immediateButton.setEnable(false);
             self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
         }
