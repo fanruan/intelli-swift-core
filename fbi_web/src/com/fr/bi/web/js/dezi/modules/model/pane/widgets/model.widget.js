@@ -24,7 +24,17 @@ BIDezi.WidgetModel = BI.inherit(BI.Model, {
             var dids = BI.keys(dimensions);
             var linkages = this.get("linkages");
             BI.remove(linkages, function (i, linkage) {
-                return !dids.contains(linkage.from) || (linkage.cids && linkage.cids.length > 0 && !dids.contains(linkage.cids[0]));
+                var change = false;
+                //计算指标修改时删除相关的联动
+                if(linkage.cids[0]) {
+                    var ids = BI.concat(BI.Utils.getCalculateTargetIdsByID(linkage.cids[0]), linkage.cids[0]);
+                    BI.any(linkage.cids, function (idx, id) {
+                        if(!BI.contains(ids, id)) {
+                            return change = true;
+                        }
+                    });
+                }
+                return !dids.contains(linkage.from) || (linkage.cids && linkage.cids.length > 0 && !dids.contains(linkage.cids[0])) || change;
             });
             this.set("linkages", linkages);
             this.refresh();
