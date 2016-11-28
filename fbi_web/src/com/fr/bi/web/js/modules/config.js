@@ -1262,17 +1262,27 @@ BICst.BUBBLE_CHART_STYLE_GROUP = [{
 }];
 
 BICst.DATA_LABEL_POSITION = [{
-    text: BI.i18nText("BI-Inner"),
+    title: BI.i18nText("BI-Inner"),
     cls: "datalabel-position-inner",
     value: BICst.DATA_LABEL.POSITION_INNER
 }, {
-    text: BI.i18nText("BI-Outer"),
+    title: BI.i18nText("BI-Outer"),
     cls: "datalabel-position-outer",
     value: BICst.DATA_LABEL.POSITION_OUTER,
 }, {
-    text: BI.i18nText("BI-Center"),
+    title: BI.i18nText("BI-Center"),
     cls: "datalabel-position-center",
     value: BICst.DATA_LABEL.POSITION_CENTER
+}];
+
+BICst.PIE_DATA_LABEL_POSITION = [{
+    title: BI.i18nText("BI-Inner"),
+    cls: "datalabel-position-inner",
+    value: BICst.DATA_LABEL.POSITION_INNER
+}, {
+    title: BI.i18nText("BI-Outer"),
+    cls: "datalabel-position-outer",
+    value: BICst.DATA_LABEL.POSITION_OUTER,
 }];
 
 //数据标签过滤

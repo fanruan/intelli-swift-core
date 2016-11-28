@@ -13,7 +13,7 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
 
     _init: function () {
         BI.PieChartSetting.superclass._init.apply(this, arguments);
-        var self = this, constant = BI.AbstractChartSetting;
+        var self = this, o = this.options, constant = BI.AbstractChartSetting;
 
         //显示组件标题
         this.showName = BI.createWidget({
@@ -249,12 +249,23 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function () {
+            self.dataLabelSetting.setVisible(this.isSelected());
+            self.fireEvent(BI.PieChartSetting.EVENT_CHANGE);
+        });
+
+        this.dataLabelSetting = BI.createWidget({
+            type: "bi.data_label_detailed_setting_combo",
+            wId: o.wId,
+        });
+
+        this.dataLabelSetting.on(BI.DataLabelDetailedSettingCombo.EVENT_CHANGE, function () {
             self.fireEvent(BI.PieChartSetting.EVENT_CHANGE);
         });
 
         //数据点提示详细设置
         this.tooltipStyle = BI.createWidget({
-            type: "bi.tooltip_detailed_setting_combo"
+            type: "bi.tooltip_detailed_setting_combo",
+            wId: o.wId,
         });
 
         this.tooltipStyle.on(BI.TooltipDetailedSettingCombo.EVENT_CHANGE, function () {
@@ -288,7 +299,10 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.showDataLabel]
-                }, /*, {
+                }, {
+                    type: "bi.vertical_adapt",
+                    items: [this.dataLabelSetting]
+                }/*, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Tooltip"),
                     cls: "attr-names"
@@ -350,6 +364,8 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
         this.legendStyle.setValue(BI.Utils.getWSChartLegendStyleByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
+        this.dataLabelSetting.setValue(BI.Utils.getWSChartDataLabelSettingByID(wId));
+        this.dataLabelSetting.setVisible(BI.Utils.getWSChartShowDataLabelByID(wId));
 
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));
     },
@@ -369,6 +385,7 @@ BI.PieChartSetting = BI.inherit(BI.AbstractChartSetting, {
             legend: this.legend.getValue()[0],
             legendStyle: this.legendStyle.getValue(),
             showDataLabel: this.showDataLabel.isSelected(),
+            dataLabelSetting: this.dataLabelSetting.getValue(),
 
             transferFilter: this.transferFilter.isSelected(),
         }

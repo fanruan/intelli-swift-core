@@ -539,7 +539,8 @@ BI.BarChartsSetting = BI.inherit(BI.AbstractChartSetting, {
         });
 
         this.dataLabelSetting = BI.createWidget({
-            type: "bi.data_label_detailed_setting_combo"
+            type: "bi.data_label_detailed_setting_combo",
+            wId: o.wId,
         });
 
         this.dataLabelSetting.on(BI.DataLabelDetailedSettingCombo.EVENT_CHANGE, function () {
