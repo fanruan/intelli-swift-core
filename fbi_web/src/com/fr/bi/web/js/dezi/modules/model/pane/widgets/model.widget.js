@@ -40,8 +40,9 @@ BIDezi.WidgetModel = BI.inherit(BI.Model, {
                 //计算指标修改时删除相关的联动
                 if(linkage.cids[0]) {
                     var ids = BI.concat(BI.Utils.getCalculateTargetIdsByID(linkage.cids[0]), linkage.cids[0]);
+                    var fromIds = BI.Utils.getCalculateTargetIdsByID(linkage.cids[linkage.cids.length-1]);
                     BI.any(linkage.cids, function (idx, id) {
-                        if(!BI.contains(ids, id)) {
+                        if(!BI.contains(ids, id) || !BI.contains(fromIds, linkage.from)) {
                             return change = true;
                         }
                     });
