@@ -71,7 +71,11 @@ BI.CombineChart = BI.inherit(BI.Widget, {
 
     _createPopup: function (items, rect, opt) {
         var self = this;
-        var combo = BI.createWidget({
+        if(this.combo) {
+            this.combo.destroy();
+        }
+        this._doDestroy = true;
+        this.combo = BI.createWidget({
             type: "bi.combo",
             direction: "bottom",
             popup: {
@@ -87,7 +91,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
                                 height: 30,
                                 handler: function () {
                                     self.fireEvent(BI.CombineChart.EVENT_ITEM_CLICK, BI.extend({}, item, opt));
-                                    combo.destroy();
+                                    self.combo.destroy();
                                 },
                                 lgap: 10
                             }, item)
@@ -102,12 +106,26 @@ BI.CombineChart = BI.inherit(BI.Widget, {
             type: "bi.absolute",
             element: this.element,
             items: [{
-                el: combo,
+                el: this.combo,
                 top: rect.y,
                 left: rect.x
             }]
         });
-        combo.showView();
+        this.combo.element.hover(function () {
+            self._doDestroy = false;
+        }, function () {
+            self._doDestroy = true;
+            self._debounce2Destroy();
+        });
+        this._debounce2Destroy = BI.debounce(BI.bind(destroyCombo , this), 3000);
+        this.combo.showView();
+        this._debounce2Destroy();
+
+        function destroyCombo() {
+            if (this._doDestroy) {
+                this.combo.destroy();
+            }
+        }
     },
 
     setTypes: function (types) {
