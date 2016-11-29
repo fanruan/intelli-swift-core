@@ -10,7 +10,7 @@ $.extend(BI, {
 
         return {
             alert: function (title, message, callback) {
-                this._show(true, title, message, callback);
+                this._show(false, title, message, callback);
             },
             confirm: function (title, message, callback, min_width) {
                 this._show(true, title, message, callback);
