@@ -43,18 +43,14 @@ BI.DimensionSwitchPaneShow = BI.inherit(BI.Widget, {
         });
 
         BI.createWidget({
-            type: "bi.absolute",
+            type: "bi.vtape",
             element: this.element,
-            height: "100%",
-            width: 260,
             items: [{
-                el: this.cards
+                height: 50,
+                el: this.tagButtons
             }, {
-                el: this.tagButtons,
-                top: 0,
-                right: 0,
-                width: 260,
-                height: 50
+                height: "fill",
+                el: this.cards
             }]
         });
     },
