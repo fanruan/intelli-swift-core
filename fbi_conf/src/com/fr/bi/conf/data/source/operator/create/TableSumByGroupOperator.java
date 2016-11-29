@@ -163,7 +163,7 @@ public class TableSumByGroupOperator extends AbstractCreateTableETLOperator {
     private void write(ICubeTableService ti, ValuesAndGVI valuesAndGVI, int index, Traversal<BIDataValue> travel) {
         int col = 0;
         for (int i = 0; i < valuesAndGVI.values.length; i++){
-            travel.actionPerformed(new BIDataValue(index, col, valuesAndGVI.values[i]));
+            travel.actionPerformed(new BIDataValue(index, col, getDimensions()[i].getKeyValue(valuesAndGVI.values[i])));
             col++;
         }
         for (int i = 0; i < getTargets().length; i++) {

@@ -9,8 +9,8 @@ import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
-import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 /**
@@ -56,14 +56,14 @@ public class BIFieldPathIndexBuilder extends BITablePathIndexBuilder {
             int primaryFieldRowCount = primaryColumnReader.sizeOfGroup();
             tablePathReader = buildTableRelationPathReader();
             targetPathEntity = buildTargetRelationPathWriter();
-            final GroupValueIndex appearPrimaryValue = GVIFactory.createAllEmptyIndexGVI();
+            GroupValueIndexOrHelper helper = new GroupValueIndexOrHelper();
             for (int row = 0; row < primaryFieldRowCount; row++) {
                 GroupValueIndex frontGroupValueIndex = primaryColumnReader.getBitmapIndex(row);
                 GroupValueIndex resultGroupValueIndex = BITablePathIndexBuilder.getTableLinkedOrGVI(frontGroupValueIndex, tablePathReader);
                 targetPathEntity.addRelationIndex(row, resultGroupValueIndex);
-                appearPrimaryValue.or(resultGroupValueIndex);
+                helper.add(resultGroupValueIndex);
             }
-            targetPathEntity.addRelationNULLIndex(0, appearPrimaryValue.NOT(getJuniorTableRowCount()));
+            targetPathEntity.addRelationNULLIndex(0, helper.compute().NOT(getJuniorTableRowCount()));
             targetPathEntity.addVersion(System.currentTimeMillis());
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
