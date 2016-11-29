@@ -7,44 +7,41 @@
 
   & .bi_preview_table_drag_clone {
     background: @background-color-light-blue;
-    top:0px;
+    top: 0px;
     opacity: (0.5);
   }
 
   & .drop-helper svg path {
-    stroke:@border-color-outline;
+    stroke: @border-color-outline;
   }
 
   & .rect-border svg path {
-    stroke:@border-color-outline;
+    stroke: @border-color-outline;
   }
 
   & .rect-border-dragging {
-     & svg path {
-       stroke:@border-color-dark;
-     }
-    & .drop-helper svg path {
-      stroke:@border-color-outline;
+    & svg path {
+      stroke: @border-color-dark;
     }
-
-
+    & .drop-helper svg path {
+      stroke: @border-color-outline;
+    }
   }
 
   .transition(drop-helper, left);
 
   & &-null-label {
-    color : @font-color-gray;
-    font-size :@font-size-16;
-    zoom:2;
+    color: @font-color-gray;
+    font-size: 32px;
   }
 
   & .warning {
-    color : @font-color-warning;
+    color: @font-color-warning;
   }
 
   & .bi-table {
     & .bi-adaptive-layout > table {
-      border-right : 1px solid @border-color-line;
+      border-right: 1px solid @border-color-line;
     }
   }
 }
