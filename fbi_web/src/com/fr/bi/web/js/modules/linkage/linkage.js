@@ -101,7 +101,6 @@ BI.Linkage = BI.inherit(BI.Widget, {
         var cIds = pId ? BI.concat(pId, cId) : [cId];
         var self = this;
         var name = BI.Utils.getDimensionNameByID(cId);
-        var expression = BI.Utils.getDimensionSrcByID(cId).expression;
         var icon = BI.createWidget({
             type: "bi.center_adapt",
             items: [{
@@ -136,7 +135,7 @@ BI.Linkage = BI.inherit(BI.Widget, {
         });
 
         var items = [];
-        BI.each(expression && expression.ids, function (idx, item) {
+        BI.each(BI.Utils.getExpressionValuesByDimensionID(cId), function (idx, item) {
             if (BI.Utils.isCalculateTargetByDimensionID(item)) {
                 items.push(BI.createWidget({
                     type: "bi.vertical",
