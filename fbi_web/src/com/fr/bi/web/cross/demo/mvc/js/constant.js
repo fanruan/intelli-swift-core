@@ -423,6 +423,10 @@ var _JS = [
 
     "detail/mvc.exceltable.js",
 
+    "detail/mvc.excelviewdisplaymanager.js",
+
+    "detail/mvc.exceltabledatadisplaymanager.js",
+
     "detail/mvc.adaptivetable.js",
 
     "detail/mvc.adaptivetable2.js",
@@ -662,6 +666,8 @@ var _Routes = {
     "/adaptive_table": "AdaptiveTableView",
     "/adaptive_table2": "AdaptiveTable2View",
     "/excel_table": "ExcelTableView",
+    "/excel_view_display_manager":"ExcelVDisplayManagerView",
+    "/excel_table_data_display_manager":"ExcelTableDataDisplayManagerView",
     "/custom_scroll_table": "CustomScrollTableView",
     "/page_table": "PageTableView",
     "/page_table2": "PageTable2View",
@@ -685,8 +691,8 @@ var _Routes = {
     "/select_color_combo": "SelectColorComboView",
     "/list_label": "ListLabelView",
     "/tree_label": "TreeLabelView",
-    "/slider":"SliderView",
-    "/interval_slider":"IntervalSliderView"
+    "/slider": "SliderView",
+    "/interval_slider": "IntervalSliderView"
 };
 
 var _Models = {};
@@ -1204,12 +1210,12 @@ _Models.detail = [{
 }, {
     id: 33,
     text: "树标签"
-},{
-    id:34,
-    text:"单值滑块"
-},{
-    id:35,
-    text:"区间滑块"
+}, {
+    id: 34,
+    text: "单值滑块"
+}, {
+    id: 35,
+    text: "区间滑块"
 },
 
 
@@ -1486,6 +1492,14 @@ _Models.detail = [{
         text: "bi.excel_table",
         value: "excel_table"
     }, {
+        pId: 27,
+        text: "bi.excel_view_display_manager",
+        value: "excel_view_display_manager"
+    }, {
+        pId:27,
+        text:"bi.excel_table_data_display_manager",
+        value:"excel_table_data_display_manager"
+    },{
         pId: 32,
         text: "bi.sequence_table",
         value: "sequence_table"
@@ -1557,14 +1571,14 @@ _Models.detail = [{
         pId: 33,
         text: "树标签",
         value: "tree_label"
-    },{
-        pId:34,
-        text:"滑块",
-        value:"slider"
-    },{
-        pId:35,
-        text:"区间双滑块",
-        value:"interval_slider"
+    }, {
+        pId: 34,
+        text: "滑块",
+        value: "slider"
+    }, {
+        pId: 35,
+        text: "区间双滑块",
+        value: "interval_slider"
     }];
 _Models.component = [];
 _Models.module = [];

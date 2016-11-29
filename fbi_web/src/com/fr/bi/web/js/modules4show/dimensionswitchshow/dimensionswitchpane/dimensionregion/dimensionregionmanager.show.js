@@ -15,9 +15,6 @@ BI.DimensionSwitchCardShow = BI.inherit(BI.Widget, {
         this.layout = BI.createWidget({
             type: "bi.absolute",
             element: this.element,
-            width: 260,
-            tgap: 50,
-            height: "100%",
             items: []
         });
     },
@@ -61,8 +58,7 @@ BI.DimensionSwitchCardShow = BI.inherit(BI.Widget, {
             items.push({
                 el: el,
                 top: 0,
-                left: 0,
-                bottom: 0
+                left: 0
             });
         });
         this.layout.populate(items);

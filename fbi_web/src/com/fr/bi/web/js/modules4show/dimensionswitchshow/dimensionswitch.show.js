@@ -36,7 +36,7 @@ BI.DimensionSwitchShow = BI.inherit(BI.Widget, {
         var combo = BI.createWidget({
             type: "bi.combo",
             element: this.element,
-            adjustXOffset: -130,
+            adjustXOffset: -40,
             adjustYOffset: 5,
             direction: "bottom,left",
             el: button,
