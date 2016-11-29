@@ -71,14 +71,14 @@ public class BIWidgetSettingAction extends AbstractBIDeziAction {
         } catch (Exception exception) {
             BILoggerFactory.getLogger(BIWidgetSettingAction.class).error(exception.getMessage(), exception);
 //            IndexOutOfBoundsException,需要释放资源然后重新访问（并且当前没有cube正在生成），其他异常直接重新访问，
-            if (isIndexOutOfBoundsException(exception)&& CubeGenerationManager.getCubeManager().hasTask()) {
+            if (isIndexOutOfBoundsException(exception) && (!CubeGenerationManager.getCubeManager().hasTask())) {
                 BILoggerFactory.getLogger(BIWidgetSettingAction.class).info("start clear readers");
                 BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
                 BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
                 CubeReaderCacheUtils.clearUserMapCache();
                 BILoggerFactory.getLogger(BIWidgetSettingAction.class).info("readers clear finished");
                 jo = retry(jo, widget, sessionIDInfor);
-            }else {
+            } else {
                 jo = retry(jo, widget, sessionIDInfor);
             }
         }
@@ -105,9 +105,9 @@ public class BIWidgetSettingAction extends AbstractBIDeziAction {
     }
 
 
-    private boolean isIndexOutOfBoundsException(Exception exception){
-        if((exception instanceof UncheckedExecutionException && exception.getCause().getCause() instanceof IndexOutOfBoundsException)
-                || (exception instanceof RuntimeException && exception.getCause() instanceof IndexOutOfBoundsException)){
+    private boolean isIndexOutOfBoundsException(Exception exception) {
+        if ((exception instanceof UncheckedExecutionException && exception.getCause().getCause() instanceof IndexOutOfBoundsException)
+                || (exception instanceof RuntimeException && exception.getCause() instanceof IndexOutOfBoundsException)) {
             return true;
         }
         return false;
