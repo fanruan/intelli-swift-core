@@ -4,6 +4,8 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
+import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
@@ -30,23 +32,14 @@ import com.fr.stable.collections.array.IntArray;
 
 import java.util.*;
 
-public class StringControlWidget extends BISummaryWidget {
+public class StringControlWidget extends TableWidget {
 
     private static final int STEP = 100;
     private int data_type = -2;
     private int times = -1;
     private String selected_values;
     private String keyword = StringUtils.EMPTY;
-
-    @Override
-    public BIDimension[] getViewDimensions() {
-        return new BIDimension[0];
-    }
-
-    @Override
-    public BIDimension[] getViewTargets() {
-        return new BIDimension[0];
-    }
+    private boolean needDoLoadGroup = false;
 
     @Override
     public int isOrder() {
@@ -56,20 +49,31 @@ public class StringControlWidget extends BISummaryWidget {
     public JSONObject createDataJSON(BISessionProvider session) throws JSONException {
         BIDimension dimension = getDimensions()[0];
         DimensionCalculator calculator = dimension.createCalculator(dimension.getStatisticElement(), new ArrayList<BITableSourceRelation>());
-        GroupValueIndex gvi = createFilterGVI(new DimensionCalculator[]{calculator}, dimension.getStatisticElement().getTableBelongTo(), session.getLoader(), session.getUserId());
-        ICubeColumnIndexReader reader = calculator.createNoneSortGroupValueMapGetter(dimension.getStatisticElement().getTableBelongTo(), session.getLoader());
         Set<String> selected_value = new HashSet<String>();
 
         if (selected_values != null && StringUtils.isNotEmpty(selected_values)) {
             JSONArray selectedValueArray = new JSONArray(selected_values);
             selected_value.addAll(Arrays.asList(BIJsonUtils.jsonArray2StringArray(selectedValueArray)));
         }
-        if (dimension.getGroup()!= null && dimension.getGroup().getType() != BIReportConstant.GROUP.ID_GROUP && dimension.getGroup().getType() != BIReportConstant.GROUP.NO_GROUP) {
-            return getCustomGroupResult(gvi, reader, selected_value, calculator);
-        } else {
-            ICubeTableService ti = session.getLoader().getTableIndex(dimension.getStatisticElement().getTableBelongTo().getTableSource());
-            ICubeValueEntryGetter getter = ti.getValueEntryGetter(dimension.createKey(dimension.getStatisticElement()), new ArrayList<BITableSourceRelation>());
-            return createIDGroupIndex(gvi, reader, selected_value, getter, calculator.getComparator());
+
+        if(needDoLoadGroup){
+            Node node = CubeIndexLoader.getInstance(session.getUserId()).loadGroup(this, getViewTargets(), getViewDimensions(), getViewDimensions(), getTargets(), -1, true, (BISession) session);
+            List<Object> list = new ArrayList<Object>();
+            for(Node child : node.getChilds()){
+                list.add(child.getShowValue());
+            }
+            return getCustomGroupResult(list, selected_value, calculator);
+        }else{
+            GroupValueIndex gvi = createFilterGVI(new DimensionCalculator[]{calculator}, dimension.getStatisticElement().getTableBelongTo(), session.getLoader(), session.getUserId());
+            ICubeColumnIndexReader reader = calculator.createNoneSortGroupValueMapGetter(dimension.getStatisticElement().getTableBelongTo(), session.getLoader());
+
+            if (dimension.getGroup()!= null && dimension.getGroup().getType() != BIReportConstant.GROUP.ID_GROUP && dimension.getGroup().getType() != BIReportConstant.GROUP.NO_GROUP) {
+                return getCustomGroupResult(gvi, reader, selected_value, calculator);
+            } else {
+                ICubeTableService ti = session.getLoader().getTableIndex(dimension.getStatisticElement().getTableBelongTo().getTableSource());
+                ICubeValueEntryGetter getter = ti.getValueEntryGetter(dimension.createKey(dimension.getStatisticElement()), new ArrayList<BITableSourceRelation>());
+                return createIDGroupIndex(gvi, reader, selected_value, getter, calculator.getComparator());
+            }
         }
     }
 
@@ -168,6 +172,17 @@ public class StringControlWidget extends BISummaryWidget {
         }
     }
 
+    private JSONObject getCustomGroupResult(List<Object> list, Set<String> selected_value, DimensionCalculator calculator) throws JSONException {
+        if (data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_DATA_LENGTH) {
+            return JSONObject.create().put(BIJSONConstant.JSON_KEYS.VALUE, getSearchCount(selected_value, list));
+        }
+        if (data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_ALL_DATA || times < 1) {
+            return getSearchResult(selected_value, 0, list.size(), list, calculator);
+        } else {
+            return getSearchResult(selected_value, (times - 1) * STEP, times * STEP, list, calculator);
+        }
+    }
+
     private int getSearchCount(ICubeColumnIndexReader reader, Set selectedValue, SimpleIntArray array, SearchMode mode) {
         if (selectedValue.isEmpty() && mode == SearchMode.START_WITH){
             return array.size();
@@ -234,7 +249,9 @@ public class StringControlWidget extends BISummaryWidget {
             selected_values = treeJo.optString("selected_values", StringUtils.EMPTY);
             keyword = treeJo.optString("keyword", StringUtils.EMPTY);
         }
-
+        if(this.getTargets().length > 0){
+            needDoLoadGroup = true;
+        }
     }
 
     private JSONObject getSearchResult(Set selectedValue, int start, int end, List<Object> list, DimensionCalculator calculator) throws JSONException {
