@@ -287,6 +287,7 @@ BI.DragWidgetitem = BI.inherit(BI.Single, {
                 });
                 break;
         }
+        dimension.dId = newId;
         self.dimTarIdMap[idx] = newId;
         return {id: newId, dimension: dimension};
     },
