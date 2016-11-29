@@ -11,16 +11,14 @@ import com.fr.bi.conf.report.BIReport;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
+import com.fr.dav.DavXMLUtils;
 import com.fr.json.JSONObject;
 import com.fr.web.core.ActionNoSessionCMD;
 import com.fr.web.core.SessionDealWith;
-import com.fr.web.core.SessionIDInfor;
 import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
 /**
@@ -34,22 +32,11 @@ public class FCLoadDataAction extends ActionNoSessionCMD {
 
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res, String sessionID) throws Exception {
-        SessionIDInfor sessionInfo = SessionDealWith.getSessionIDInfor(sessionID);
-        Object result;
-        if (sessionInfo == null || !(sessionInfo instanceof BISession)) {
-            result = new JSONObject().put("error", "no session!");
-        } else {
-            result = getTableData(req, sessionID);
-        }
         OutputStream out = res.getOutputStream();
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(bout);
-        oos.writeObject(result);
-        oos.flush();
-        byte[] byteArray = bout.toByteArray();
-        bout.close();
-        oos.close();
-        out.write(byteArray);
+
+        // 用DavXMLUtils.writeXMLFileTableData将数据集写入输出流
+        // 报表端读取可以用DavXMLUtils.readXMLTableData读取
+        DavXMLUtils.writeXMLFileTableData(getTableData(req, sessionID), out);
         out.flush();
         out.close();
     }

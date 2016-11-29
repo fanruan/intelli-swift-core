@@ -70,12 +70,12 @@ public abstract class BIBasicNIOWriter<T> implements ICubePrimitiveWriter<T> {
     public void destroyResource() {
         readWriteLock.writeLock().lock();
         try {
-            if (!isReleased) {
+//            if (!isReleased) {
                 isReleased = true;
                 clearBuffer();
                 currentIndex = -1L;
                 file_index = -1L;
-            }
+//            }
         } finally {
             readWriteLock.writeLock().unlock();
         }

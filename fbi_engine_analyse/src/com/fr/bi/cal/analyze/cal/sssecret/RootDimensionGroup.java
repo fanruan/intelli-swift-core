@@ -329,7 +329,15 @@ public class RootDimensionGroup implements IRootDimensionGroup {
             }
             if (ckp instanceof DateDimensionCalculator) {
                 Set<BIDateValue> currentSet = new HashSet<BIDateValue>();
-                currentSet.add(BIDateValueFactory.createDateValue(ckp.getGroup().getType(), (Number) value));
+                /**
+                 * 螺旋分析这里会出现空字符串
+                 */
+                if(value instanceof Number){
+                    currentSet.add(BIDateValueFactory.createDateValue(ckp.getGroup().getType(), (Number) value));
+                }else {
+                    currentSet.add(null);
+                }
+
                 DateKeyTargetFilterValue dktf = new DateKeyTargetFilterValue(((DateDimensionCalculator) ckp).getGroupDate(), currentSet);
                 GroupValueIndex pgvi = dktf.createFilterIndex(ckp, ck.getField().getTableBelongTo(), BICubeManager.getInstance().fetchCubeLoader(session.getUserId()), session.getUserId());
                 if (pgvi != null) {

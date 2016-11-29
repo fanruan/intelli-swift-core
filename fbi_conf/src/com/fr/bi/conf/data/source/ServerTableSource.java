@@ -84,7 +84,7 @@ public class ServerTableSource extends DBTableSource {
             public void actionPerformed(BIDataValue data) {
                 set.add(data.getValue());
             }
-        });
+        },getTableName());
         return set;
     }
 
@@ -180,7 +180,7 @@ public class ServerTableSource extends DBTableSource {
                         BIPrintUtils.writeIndexLog("table: " + toString() + CubeConstant.READ_FROM_DB, j + 1, start);
                     }
                 }
-            });
+            },getTableName());
         }
     }
 

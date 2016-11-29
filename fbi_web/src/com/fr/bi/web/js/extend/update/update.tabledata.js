@@ -32,23 +32,23 @@ BI.UpdateTableData = BI.inherit(BI.BarPopoverSection, {
         this.settings = {};
         if (tables.length === 1) {
             var tableId = tableIds[0];
-            var setting = BI.createWidget({
+            this.setting = BI.createWidget({
                 type: "bi.update_single_table_setting",
                 element: center,
                 table: this.model.getTableBySourceTableId(tableId),
                 currentTable: self.model.table,
                 update_setting: this.model.getUpdateSettingBySourceTableId(tableId)
             });
-            setting.on(BI.UpdateSingleTableSetting.EVENT_OPEN_PREVIEW, function () {
+            this.setting.on(BI.UpdateSingleTableSetting.EVENT_OPEN_PREVIEW, function () {
                 BI.Popovers.close(self.model.getId());
             });
-            setting.on(BI.UpdateSingleTableSetting.EVENT_CLOSE_PREVIEW, function () {
+            this.setting.on(BI.UpdateSingleTableSetting.EVENT_CLOSE_PREVIEW, function () {
                 BI.Popovers.open(self.model.getId());
             });
-            setting.on(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE, function (tableInfo) {
+            this.setting.on(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE, function (tableInfo) {
                 self.fireEvent(BI.UpdateTableData.EVENT_CUBE_SAVE, tableInfo);
             });
-            this.settings[tableIds[0]] = setting;
+            this.settings[tableIds[0]] = this.setting;
         } else {
             var items = [];
             BI.each(tables, function (i, table) {
@@ -120,8 +120,20 @@ BI.UpdateTableData = BI.inherit(BI.BarPopoverSection, {
         }
     },
 
+    close: function () {
+        this._clear();
+        BI.BarPopoverSection.superclass.close.apply(this, arguments);
+    },
+
     end: function () {
+        this._clear();
         this.fireEvent(BI.UpdateTableData.EVENT_SAVE);
+    },
+
+    _clear: function () {
+        if (undefined!=this.setting) {
+            this.setting._clearCheckInterval();
+        }
     },
 
     getValue: function () {

@@ -1,5 +1,6 @@
 package com.fr.bi.stable.utils;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
 import com.fr.base.TableData;
 import com.fr.bi.conf.base.datasource.BIConnectOptimizationUtils;
@@ -8,7 +9,7 @@ import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.dbdealer.*;
-import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.data.core.db.ColumnInformation;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
@@ -259,7 +260,7 @@ public class BIDBUtils {
                 table.addColumn(column);
             }
         } catch (Exception e) {
-            FRContext.getLogger().error(e.getMessage(), e);
+            throw BINonValueUtils.beyondControl(e);
         } finally {
             com.fr.data.core.db.DBUtils.closeConnection(conn);
         }
@@ -280,7 +281,7 @@ public class BIDBUtils {
 
         DataModel dm = null;
         try {
-            dm = tableData.createDataModel(Calculator.createCalculator());
+            dm = tableData.createDataModel(Calculator.createCalculator(),tableName);
             int cols = dm.getColumnCount();
             JSONObject jo = new JSONObject();
             jo.put("tableName", tableName);
@@ -393,7 +394,7 @@ public class BIDBUtils {
             conn = connection.createConnection();
             return getDBTable(connection, conn, schema, tableName);
         } catch (Exception e) {
-            FRContext.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger(BIDBUtils.class).error(e.getMessage(), e);
         } finally {
             com.fr.data.core.db.DBUtils.closeConnection(conn);
         }
