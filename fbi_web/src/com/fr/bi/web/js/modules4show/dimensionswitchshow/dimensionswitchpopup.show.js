@@ -32,8 +32,8 @@ BI.DimensionSwitchPopupShow = BI.inherit(BI.Widget, {
                 el: this.pane,
                 top: 0,
                 left: 0,
-                width: 260,
-                height: 300
+                right: 0,
+                bottom: 0
             }]
         })
     },
