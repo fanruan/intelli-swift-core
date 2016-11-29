@@ -38,9 +38,9 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
             height: 28,
             handler: function () {
                 self._immediateButtonStatus(false);
+                self.cubeLog.refreshLog(true);
                 BI.Utils.generateCube(function (data) {
                     if (data.result) {
-                        self.cubeLog.refreshLog(true);
                         self._createCheckInterval();
                     }else {
                         self._immediateButtonStatus(true);
