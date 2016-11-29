@@ -412,9 +412,9 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                     });
                     var r = self._createDimensionsAndTargets(find, dimTarIdMap, dimensions);
                     if (BI.has(expression, "formula_value")) {
-                        expression.formula_value = expression.formula_value.replaceAll(tId, r[0].dId);
+                        expression.formula_value = expression.formula_value.replaceAll(tId, r[r.length - 1].dId);
                     }
-                    expression.ids[id] = r[0].dId;
+                    expression.ids[id] = r[r.length - 1].dId;
                     result = BI.concat(result, r);
                 });
                 break;
