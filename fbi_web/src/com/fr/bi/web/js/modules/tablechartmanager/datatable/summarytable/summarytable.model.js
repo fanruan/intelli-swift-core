@@ -986,15 +986,15 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 }]
             });
         });
-        createItems(items, l.s);
+        createItems(items, l.s, {cIndex: 0});
         this.items = items;
 
-        function createItems(items, data) {
+        function createItems(items, data, indexOb) {
             var s = data.s, c = data.c;
             if (BI.isNotEmptyArray(c)) {
                 BI.each(c, function (i, child) {
                     if (BI.isNotNull(child.s) && BI.isNotNull(child.c)) {
-                        createItems(items, child);
+                        createItems(items, child, indexOb);
                     } else if (BI.isNotNull(child.s)) {
                         BI.each(child.s, function (j, sum) {
                             if (BI.isNull(items[j].children[0].values)) {
@@ -1004,23 +1004,27 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                                 type: "bi.target_body_normal_cell",
                                 text: sum,
                                 dId: self.targetIds[j],
-                                clicked: [{}]
+                                clicked: self.crossPV[indexOb.cIndex]
                             });
                         });
+                        indexOb.cIndex++;
                     }
                 });
             }
-            self.showColTotal && BI.each(s, function (j, sum) {
-                if (BI.isNull(items[j].children[0].values)) {
-                    items[j].children[0].values = [];
-                }
-                items[j].children[0].values.push({
-                    type: "bi.target_body_normal_cell",
-                    text: sum,
-                    dId: self.targetIds[j],
-                    clicked: [{}]
+            if (self.showColTotal) {
+                BI.each(s, function (j, sum) {
+                    if (BI.isNull(items[j].children[0].values)) {
+                        items[j].children[0].values = [];
+                    }
+                    items[j].children[0].values.push({
+                        type: "bi.target_body_normal_cell",
+                        text: sum,
+                        dId: self.targetIds[j],
+                        clicked: self.crossPV[indexOb.cIndex]
+                    });
                 });
-            });
+                indexOb.cIndex++;
+            }
         }
     },
 

@@ -692,7 +692,11 @@ define("almond", function(){});
      */
     function removeEventListeners(target, types, handler) {
         each(splitStr(types), function(type) {
-            target.removeEventListener(type, handler, false);
+            if(target.removeEventListener){
+                target.removeEventListener(type, handler, false);
+            }else if(target.detachEvent){
+                target.detachEvent('on' + type, handler);
+            }
         });
     }
 
@@ -6130,6 +6134,9 @@ define('HammerHandler',['require','./utils/BaseUtils','./Constants','./dom/Event
                     target.fire(type, ev, true);
 
                     if(type == 'panstart'){
+
+                        rootHandler.removeAllChosen(ev);
+
                         rootHandler.panTarget = target;
                     } else if(type == 'panend'){
                         rootHandler.panTarget = null;
@@ -7249,7 +7256,8 @@ define('vector/SvgRenderer',['require','./Renderer','../utils/DomUtils','./Eleme
                 dom.style[t] = transform;
             } else {
                 var centerX = (dom.scrollWidth || dom.getBBox().width) / 2; // firefox has no scroll size
-                var centerY = (dom.scrollHeight || dom.getBBox().height) / 2;
+                // IE 11 height > text height; result in a wrong position
+                var centerY = (dom.scrollHeight || dom.getBBox().height) / 2 - 1;
 
                 centerX += (+dom.getAttribute('x') || 0);
                 centerY += (+dom.getAttribute('y') || 0);
@@ -10129,6 +10137,8 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
 
             VanChartLayout.reLayoutPlotBounds(this);
 
+            this.renderer.updateClip(this.plotClip, this.getPlotClipBounds());
+
             // if onZero, it depends on another axis
             if (xAxis) {
                 xAxis.render();
@@ -10694,7 +10704,7 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
 
         // set this chart's state, like enable/disable dom event
         set: function (opt) {
-            if ('enable' in opt) {
+            if (('enable' in opt) && this.handler) {
                 if (opt['enable']) {
                     this.handler.hammer.set({enable:true});
                 } else {
@@ -10772,7 +10782,7 @@ define('VanChart',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/C
             this.clearTimeQueue();
             this.renderer.remove();
             this._leaflet && this._leaflet.remove();
-            this.handler.destroy();
+            this.handler && this.handler.destroy();
 
             this.renderer = this.plotClip = this._leaflet = this.handler
                 = this.chartBackgroundGroup = this.trendLineGroup = this.seriesGroup
@@ -11199,7 +11209,7 @@ define('VanChartMap',['require','./VanChart','./VanChartLayout','./utils/BaseUti
         },
 
         filterRender:function(){
-            this.render();
+            this.reRenderSeries();
         },
 
         //重新计算标签
@@ -11643,8 +11653,9 @@ define('VanChartMap',['require','./VanChart','./VanChartLayout','./utils/BaseUti
                     radius:data.radius,
                     fillColor:data.color,
                     fillOpacity:data.opacity,
+                    stroke:true,
                     weight:0,
-                    stroke:false
+                    color:'none'
                 }
             }
             var bubbleOptions = {
@@ -13556,6 +13567,9 @@ define('Carousel',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/D
 
         var isCssAni = 'transition' in document.getElementsByTagName('body')[0].style;
 
+        // IE7 in IE11
+        var isIE7 = /MSIE 7/.test(navigator.userAgent);
+
         function refresh (option, i) {
             var titleText = getTitleText(option);
             var btnDom = menuButtons[i];
@@ -13707,6 +13721,11 @@ define('Carousel',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/D
             frontEmptyWrap.style.width = 100 / optLength + "%";
             frontEmptyWrap.style.marginLeft = -100 / optLength + "%";
 
+            if (isIE7) {
+                frontEmptyWrap.style.width = outerDom.clientWidth + 'px';
+                frontEmptyWrap.style.marginLeft = -outerDom.clientWidth + 'px';
+            }
+
             var cs = options.map(function (option, i) {
                 setupCarouselDoms(option, i);
                 return setupChart(option, oldCharts[i], chartDoms[i], i);
@@ -13715,6 +13734,11 @@ define('Carousel',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/D
             rearEmptyWrap = rearEmptyWrap || DomUtils.create('div', 'vanchart-chart', container);
             rearEmptyWrap.style.width = 100 / optLength + "%";
             rearEmptyWrap.style.marginRight = -100 / optLength + "%";
+
+            if (isIE7) {
+                rearEmptyWrap.style.width = outerDom.clientWidth + 'px';
+                rearEmptyWrap.style.marginLeft = -outerDom.clientWidth + 'px';
+            }
 
             return cs;
         }
@@ -13793,7 +13817,17 @@ define('Carousel',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/D
             btnDom.style.width = 100 / optLength + "%";
 
             if (!BaseUtils.isSupportSVG()) {
-                btnDom.style.width = outerDom.clientWidth / optLength + 'px';
+                var width = outerDom.clientWidth / optLength;
+                if (isIE7) {
+                    // IE11 quirks IE7 is ... different from IE7
+                    width -= 2 * fontSize + 1;
+                }
+
+                btnDom.style.width = width + 'px';
+
+                if (btnDom.offsetTop !== 0) {
+                    btnDom.style.width = width - 1 + 'px';
+                }
             }
 
             if (btnDom.mText.textContent) {
@@ -13823,7 +13857,7 @@ define('Carousel',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/D
         }
 
         function showButtonTooltip(btnDom) {
-            if (btnDom.scrollWidth > btnDom.clientWidth || btnDom.mText.innerHTML === '') {
+            if (btnDom.scrollWidth >= btnDom.clientWidth || btnDom.mText.innerHTML === '') {
                 var tooltipDim = tooltip.calculateTooltipDivDim(TOOLTIP_STYLE, btnDom._title);
                 var pos = [
                     outerDom.clientWidth * (btnDom.i + 0.5) / optLength - tooltipDim.width / 2,
@@ -13839,8 +13873,9 @@ define('Carousel',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/D
         function setupChart(option, oldChart, chartDom, i) {
             chartDom.style.width = 100 / optLength + "%";
 
-            if (!BaseUtils.isSupportSVG()) {
-                chartDom.style.width = outerDom.clientWidth + 'px';
+            if (!BaseUtils.isSupportSVG() || chartDom.offsetLeft < outerDom.clientWidth * i) {
+                var det = outerDom.clientWidth * i - chartDom.offsetLeft;
+                chartDom.style.width = outerDom.clientWidth + det + 'px';
             }
 
             var c, targetDom = chartDom;
@@ -13957,7 +13992,9 @@ define('Carousel',['require','./utils/BaseUtils','./utils/QueryUtils','./utils/D
             if (btnDom.clientWidth <= 22 + 3 * fontSize) {
                 btnDom.mText.innerHTML = '';
                 btnDom.mText.style.marginLeft = 0;
-                btnDom.style.padding = 0;
+                if (!isIE7) {
+                    btnDom.style.padding = 0;
+                }
             }
         }
 
@@ -14219,10 +14256,15 @@ define('VanCharts',['require','./utils/BaseUtils','./Constants','./VanChart','./
             this.setOptions(this.options);
         },
 
-        resize:function(){
-            this.charts.forEach(function(chart){
-                chart.resize();
-            });
+        resize:function(options){
+            //不要删，删了就坑了露露了
+            if(options){
+                this.setOptions(options);
+            }else{
+                this.charts.forEach(function(chart){
+                    chart.resize();
+                });
+            }
         },
 
         clear:function(){
@@ -25009,8 +25051,8 @@ define('chart/Funnel',['require','./Series','../utils/BaseUtils','../Constants',
         },
 
         _getFixedPos:function(point, divDim){
-            var plotBounds = point.series.vanchart.getPlotBounds();
-            return [plotBounds.x + point.posX + point.width/2, plotBounds.y + point.posY + point.height/2];
+            var translate = point.series._getTranslate();
+            return [translate[0] + point.posX + point.width/2, translate[1] + point.posY + point.height/2];
         },
 
         _getMoreLabelDefaultCenter:function(d, moreLabelDim) {
@@ -25096,7 +25138,7 @@ define('chart/Funnel',['require','./Series','../utils/BaseUtils','../Constants',
                 'fill':p.series.getFillFilter(p.mouseOverColor || p.color, p),
                 'fill-opacity': p.opacity,
                 'stroke-width':CHOSEN_STROKE_WIDTH,
-                'stroke-opacity':  p.opacity == 0 ? 0 : CHOSEN_STROKE_OPACITY
+                'stroke-opacity':  p.opacity === 0 ? 0 : CHOSEN_STROKE_OPACITY
             }
         },
 
@@ -25106,7 +25148,7 @@ define('chart/Funnel',['require','./Series','../utils/BaseUtils','../Constants',
                 'fill':p.series.getFillFilter(p.clickColor, p),
                 'fill-opacity': p.clickOpacity,
                 'stroke-width':CHOSEN_STROKE_WIDTH,
-                'stroke-opacity':  p.opacity == 0 ? 0 : CHOSEN_STROKE_OPACITY
+                'stroke-opacity':  p.opacity === 0 ? 0 : CHOSEN_STROKE_OPACITY
             }
         },
 
@@ -25382,7 +25424,8 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
                 }
 
                 var fromZero = this.type == ComponentLibrary.VALUE_AXIS_COMPONENT && BaseUtils.hasNotDefined(cfg.min);
-                min = fromZero ? Math.min(0, min) : min;
+                var baseValue = this.isLog() ? 1 : 0;
+                min = fromZero ? Math.min(baseValue, min) : min;
 
                 this._calculateNiceDomain(zoomDomain[0], zoomDomain[1], min, max);
             }
@@ -25488,7 +25531,21 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
             if (isHorizontal){
 
                 //todo 8.3发布前先只处理左边标签
-                var leftDis = plotBounds.x + this.vanchart.axisSize.left + PADDING;
+                var axisSize = this.vanchart.axisSize;
+                var leftDis = plotBounds.x + axisSize.left + PADDING;
+
+                if(this.isCategory() && !this.isRangePoints){
+                    var domain = this._zoomDomain || this._dataDomain;
+                    var rangeBand = (plotBounds.width - axisSize.left - axisSize.right)/domain.length;
+                    leftDis += (Math.round(rangeBand/2));
+                }
+
+                if(this.options.labelRotation <= -15){
+                    startSize = Math.round((startSize - PADDING) * 2);
+                }else if(this.options.labelRotation >= 15){
+                    endSize = Math.round((endSize - PADDING) * 2);
+                }
+
                 startSize = Math.max(startSize - leftDis, 0) + PADDING;
 
                 clipBounds[Constants.LEFT] = Math.max(clipBounds[Constants.LEFT] || 0, startSize);
@@ -25604,7 +25661,10 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
 
             this.tickData = [];
             var style = axisOption.labelStyle || {};
-            var tbStyle = BaseUtils.extend({'writing-mode': 'tb-rl'}, style);
+            var tbStyle = BaseUtils.extend({
+                'writing-mode': 'tb-rl',
+                '-webkit-writing-mode': 'vertical-rl'
+            }, style);
             for(var i = 0, len = labels.length; i < len; i++){
                 var tickValue = labels[i];
                 var tickContent = this._getTickContent(tickValue, formatter);
@@ -25656,7 +25716,10 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
                 this.titleRotation = title.rotation;
                 if (BaseUtils.hasChn(title.text) && Math.abs(title.rotation) === 90) {
                     this.titleRotation = 360;
-                    BaseUtils.extend(title.style, {'writing-mode': 'tb-rl'});
+                    BaseUtils.extend(title.style, {
+                        'writing-mode': 'tb-rl',
+                        '-webkit-writing-mode': 'vertical-rl'
+                    });
                 }
 
                 rectDim = BaseUtils.getTextDimension(title.text, title.style, title.useHtml);
@@ -26851,12 +26914,19 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
             var px = useHtml ? 'px' : '';
             var transform = 'translate(' + textX + px + ' ' + textY + px + ')';
 
-            return {
+            var result = {
                 transform : transform,
                 dy: dy,
                 dx: dx,
                 'writing-mode': writingMode
+            };
+
+            // phantomjs bug
+            if (useHtml && writingMode) {
+                result['-webkit-writing-mode'] = 'vertical-rl';
             }
+
+            return result;
         },
 
         _drawAxisTitle: function () {
@@ -27375,8 +27445,14 @@ define('component/ValueAxis',['require','./Base','./BaseAxis','../utils/BaseUtil
             var minValue = Number.MAX_VALUE,maxValue = -minValue, emptyData = true;
             var series = this.series, dataMap = {};
 
+            //check是否系列是全不可见的
+            var visible = false;
+            for(var i = 0, len = series.length; i < len && !visible; i++){
+                visible = series[i].visible;
+            }
+
             for(var i = 0, len = series.length; i < len; i++){
-                if(series[i].visible){
+                if(series[i].visible || !visible){
                     this._getSeriesValue(dataMap, series[i]);
                     this.getTrendLineForecast(series[i]);
                 }
@@ -28291,10 +28367,6 @@ define('component/Legend',['require','./Base','../utils/BaseUtils','../Constants
 
                     height -= (BUTTON_HEIGHT + PADDING_FUN());//可见部分不应该包括按钮的高度
 
-                    var totalHeight = dim.height - 2 * PADDING_FUN();
-
-                    this.pageCount = Math.ceil(totalHeight / height);
-
                     this.pageIndex = this.pageIndex || 0;
 
                     this.translateMap = [0];//第几页到平移多少应该都是确定的
@@ -28307,6 +28379,8 @@ define('component/Legend',['require','./Base','../utils/BaseUtils','../Constants
                             this.translateMap.push(-startY);
                         }
                     }
+
+                    this.pageCount = this.translateMap.length;
                 }
 
                 this.yPanEnabled = this.hasPages;
@@ -28342,7 +28416,7 @@ define('component/Legend',['require','./Base','../utils/BaseUtils','../Constants
 
             for(var i = 0, len = this.items.length; i < len; i++){
                 var item = this.items[i], options = item.options;
-                var labelDim = BaseUtils.getTextDimension(options.itemName, this.options.style, true);
+                var labelDim = BaseUtils.getTextDimension(options.itemName, this.options.style, this.options.useHtml);
                 var iconDim = LegendIconFactory.getLegendIconSize(this.items[i].legendIconType);
                 maxWidth = Math.max(labelDim.width + GAP_FUN() + iconDim.width, maxWidth);
 
@@ -28443,6 +28517,9 @@ define('component/Legend',['require','./Base','../utils/BaseUtils','../Constants
                 clip.height -= BUTTON_HEIGHT;
                 this.pageButton = this.pageButton || new PageButton(legend);
                 this.pageButton.refresh();
+            }else if(this.pageButton){
+                this.pageButton.remove();
+                this.pageButton = null;
             }
 
             //clip的显示区域
@@ -28534,7 +28611,7 @@ define('component/Legend',['require','./Base','../utils/BaseUtils','../Constants
                 renderer.registerInteractiveTarget(this, this.pageGroup);
                 this.leftButton = renderer.path().style({'cursor':'pointer'}).addTo(this.pageGroup);
                 this.rightButton = renderer.path().style({'cursor':'pointer'}).addTo(this.pageGroup);
-                this.pageText = renderer.text().style({'font-Family':legend.options.style.fontFamily || 'Verdana', 'font-Size':'14px'}).addTo(this.pageGroup);
+                this.pageText = renderer.text().style({'fontFamily':legend.options.style.fontFamily || 'Verdana', 'font-Size':'14px'}).addTo(this.pageGroup);
             }
 
             var buttonWidth = 40;//实际现实的按钮的宽度
@@ -28552,6 +28629,13 @@ define('component/Legend',['require','./Base','../utils/BaseUtils','../Constants
             }).attr("text-anchor", "middle");
 
             this.updatePage();
+        },
+
+        remove:function(){
+            if(this.pageGroup){
+                this.pageGroup.remove();
+                this.pageGroup = null;
+            }
         },
 
         updatePage:function(){
