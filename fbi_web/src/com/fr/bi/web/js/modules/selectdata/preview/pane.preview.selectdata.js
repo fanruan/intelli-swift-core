@@ -293,11 +293,11 @@ BI.DetailSelectDataPreviewPane = BI.inherit(BI.Pane, {
 
         BI.each(selectedFields, function (i, field) {
             header.push({
-                text: BI.Utils.getFieldNameByID(field.field_id),
-                fieldType: BI.Utils.getFieldTypeByID(field.field_id),
+                text: BI.Utils.getFieldNameByID(field.field_id || field),
+                fieldType: BI.Utils.getFieldTypeByID(field.field_id || field),
                 group: field.group
             });
-            BI.each(self.mapValues[field.field_id], function (row, v) {
+            BI.each(self.mapValues[field.field_id || field], function (row, v) {
                 if (!items[row]) {
                     items[row] = [];
                 }
