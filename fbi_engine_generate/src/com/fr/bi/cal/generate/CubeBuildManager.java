@@ -34,15 +34,13 @@ public class CubeBuildManager {
 
     private BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
 
-    public boolean CubeBuildSingleTable(long userId, String baseTableSourceId, int updateType) {
+    public void CubeBuildSingleTable(long userId, String baseTableSourceId, int updateType) {
         BILoggerFactory.getLogger().info("Update table ID:" + baseTableSourceId);
         List<CubeBuildStuff> cubeBuildList = buildSingleTable(userId, baseTableSourceId, updateType);
         BILoggerFactory.getLogger().info("Update relevant table size:" + cubeBuildList.size());
-        boolean taskAdd = true;
         for (CubeBuildStuff cubeBuild : cubeBuildList) {
-            taskAdd = cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId) && taskAdd;
+            cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId) ;
         }
-        return taskAdd;
     }
 
     public List<CubeBuildStuff> buildSingleTable(long userId, String baseTableSourceId, int updateType) {
@@ -88,8 +86,7 @@ public class CubeBuildManager {
         return true;
     }
 
-    public boolean CubeBuildStaff(long userId) {
-        boolean taskAddResult = false;
+    public void CubeBuildStaff(long userId) {
         CubeBuildStuff cubeBuild;
         /**
          * 若cube不存在,全局更新
@@ -110,9 +107,8 @@ public class CubeBuildManager {
 //        if (preConditionsCheck(userId, cubeBuild)) {
             CubeTask task = new BuildCubeTask(new BIUser(userId), cubeBuild);
             BILoggerFactory.getLogger().info(BIDateUtils.getCurrentDateTime() + msg);
-            taskAddResult = cubeManager.addTask(task, userId);
+            cubeManager.addTask(task, userId);
 //        }
-        return taskAddResult;
     }
 
     private Set<CubeTableSource> getAbsentTable(long userId) {
