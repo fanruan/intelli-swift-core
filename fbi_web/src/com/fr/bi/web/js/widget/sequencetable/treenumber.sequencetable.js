@@ -173,7 +173,7 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
 
     _layout: function () {
         var self = this, o = this.options;
-        var headerHeight = o.headerRowSize * (o.crossHeader.length + 1);
+        var headerHeight = o.headerRowSize * (o.crossHeader.length + o.header.length > 0 ? 1 : 0);
         var items = this.layout.attr("items");
         if (o.isNeedFreeze === false) {
             items[0].height = 0;

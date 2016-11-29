@@ -1415,6 +1415,14 @@
             return {};
         },
 
+        getCalculateTargetIdsByID: function (did) {
+            var src = this.getDimensionSrcByID(did);
+            if(src.expression) {
+                return src.expression.ids || [];
+            }
+            return [];
+        },
+
         getDimensionGroupByID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
                 return Data.SharingPool.get("dimensions", did, "group") || {};
