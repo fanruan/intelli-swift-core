@@ -42,7 +42,7 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
                 BI.Utils.generateCube(function (data) {
                     if (data.result) {
                         self._createCheckInterval();
-                    }else {
+                    } else {
                         self._immediateButtonStatus(true);
                     }
                 });
@@ -99,12 +99,12 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
 
     },
 
-    _immediateButtonStatus:function (isAvailable) {
-        var self=this;
-        if (isAvailable){
+    _immediateButtonStatus: function (isAvailable) {
+        var self = this;
+        if (isAvailable) {
             self.immediateButton.setEnable(true);
             self.immediateButton.setText(BI.i18nText("BI-Immediate_Update_DataBase"));
-        }else {
+        } else {
             self.immediateButton.setEnable(false);
             self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
         }
