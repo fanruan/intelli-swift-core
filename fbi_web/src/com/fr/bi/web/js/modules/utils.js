@@ -597,6 +597,7 @@
                         });
                         break;
                 }
+                dimension.dId = newId;
                 dimTarIdMap[idx] = newId;
                 return {id: newId, dimension: dimension};
             }
@@ -1413,14 +1414,6 @@
                 return Data.SharingPool.get("dimensions", did, "_src") || {};
             }
             return {};
-        },
-
-        getCalculateTargetIdsByID: function (did) {
-            var src = this.getDimensionSrcByID(did);
-            if(src.expression) {
-                return src.expression.ids || [];
-            }
-            return [];
         },
 
         getDimensionGroupByID: function (did) {
