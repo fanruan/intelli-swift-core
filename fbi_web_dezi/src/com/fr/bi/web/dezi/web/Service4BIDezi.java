@@ -56,7 +56,9 @@ public class Service4BIDezi implements Service {
 
             new BISaveUploadImageAction(),
 
-            new BIGetImageSizeAction()
+            new BIGetImageSizeAction(),
+
+            new BICheckReportEditAction()
 
     };
 

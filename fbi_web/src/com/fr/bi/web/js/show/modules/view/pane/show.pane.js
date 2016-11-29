@@ -96,6 +96,7 @@ BIShow.PaneView = BI.inherit(BI.View, {
     },
 
     _createNorth: function () {
+        var self = this;
         var zclip = BI.createWidget({
             type: "bi.copy_link_item"
         });
@@ -112,6 +113,38 @@ BIShow.PaneView = BI.inherit(BI.View, {
             var createBy = Data.SharingPool.get("createBy");
             window.location.href = FR.servletURL + "?op=fr_bi&cmd=bi_init&id=" + reportId + "&createBy=" + createBy + "&edit=_bi_edit_";
         });
+        var lockedBy = Data.SharingPool.get("lockedBy");
+        var countDown = BI.createWidget({
+            type: "bi.label",
+            cls: "count-down",
+            width: 30,
+            height: 20
+        });
+        countDown.setVisible(false);
+        //模板被其他用户编辑时 预览按钮灰化
+        if (BI.isNotNull(lockedBy) && BI.isNotEmptyString(lockedBy)) {
+            viewChange.setEnable(false);
+            countDown.setVisible(true);
+            var count = 30;
+            var countInterval = setInterval(function() {
+                countDown.setText(count);
+                count === 0 ? (count = 30) : count--;
+            }, 1000);
+            var checkInterval = setInterval(function() {
+                BI.requestAsync("fr_bi_dezi", "check_report_edit", {
+                    id: Data.SharingPool.get("reportId"),
+                    createBy: Data.SharingPool.get("createBy")
+                }, function(res) {
+                    if (res.result === true) {
+                        viewChange.setEnable(true);
+                        countDown.setVisible(false);
+                        clearInterval(countInterval);
+                        clearInterval(checkInterval);
+                    }
+                });
+            }, 30000);
+        }
+
         this.globalStyle = BI.createWidget({
             type: "bi.global_style"
         });
@@ -126,6 +159,10 @@ BIShow.PaneView = BI.inherit(BI.View, {
                 el: Data.SharingPool.get("show") ? BI.createWidget() : viewChange,
                 top: 0,
                 left: 210
+            }, {
+                el: countDown,
+                top: 5,
+                left: 295
             }]
         })
     },
