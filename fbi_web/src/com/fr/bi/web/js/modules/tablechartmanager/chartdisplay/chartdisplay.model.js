@@ -317,7 +317,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     name = date.print("%Y-%X-%d");
                 }
                 var data = [];
-                if(BI.has(left, "c")){
+                if (BI.has(left, "c")) {
                     data = BI.map(left.c, function (idx, obj) {
                         var value = obj.n, x = obj.n;
                         var seriesValue = obj.s.c[id].s[0];
@@ -327,13 +327,13 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         }
                         return {
                             "x": x,
-                            "y":(BI.isNull(seriesValue) || BI.isFinite(seriesValue)) ? seriesValue : 0,
+                            "y": (BI.isNull(seriesValue) || BI.isFinite(seriesValue)) ? seriesValue : 0,
                             "value": value,
                             seriesName: seriesName,
                             targetIds: [targetIds[0]]
                         };
                     });
-                }else{
+                } else {
                     var leftSeriesValue = left.s.c[id].s[0];
                     data = [{
                         "x": "",
@@ -374,7 +374,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 return obj;
             });
         }
-        if(BI.has(data, "s")){
+        if (BI.has(data, "s")) {
             return BI.map(data.s, function (idx, value) {
                 return {
                     name: BI.Utils.getDimensionNameByID(targetIds[idx]),
@@ -392,15 +392,15 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     getToolTip: function (type) {
         switch (type) {
             case BICst.WIDGET.SCATTER:
-                if(this.targetIds.length < 2){
+                if (this.targetIds.length < 2) {
                     return [];
-                }else{
+                } else {
                     return [BI.Utils.getDimensionNameByID(this.targetIds[1]), BI.Utils.getDimensionNameByID(this.targetIds[0])];
                 }
             case BICst.WIDGET.BUBBLE:
-                if(this.targetIds.length < 3){
+                if (this.targetIds.length < 3) {
                     return [];
-                }else{
+                } else {
                     return [BI.Utils.getDimensionNameByID(this.targetIds[1]), BI.Utils.getDimensionNameByID(this.targetIds[0]), BI.Utils.getDimensionNameByID(this.targetIds[2])];
                 }
             default:
@@ -411,7 +411,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     _setDataLabelSettingForBubbleAndScatter: function (data) {
         var self = this, o = this.options;
-        if(!BI.Utils.getWSChartShowDataLabelByID(o.wId) || BI.Utils.getWSChartBigDataModeByID(o.wId)) {
+        if (!BI.Utils.getWSChartShowDataLabelByID(o.wId) || BI.Utils.getWSChartBigDataModeByID(o.wId)) {
             return;
         }
         var allSeries = BI.pluck(data, "name");
@@ -419,7 +419,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             var filter = null;
             var filterArray = [];
             if (BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1) {
-                if(!BI.Utils.isDimensionUsable(dataLabel.target_id)) {
+                if (!BI.Utils.isDimensionUsable(dataLabel.target_id)) {
                     return;
                 }
                 filter = BI.FilterFactory.parseFilter(dataLabel);
@@ -447,7 +447,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     _setDataLabelSettingForAxis: function (data) {
         var self = this, o = this.options;
-        if(!BI.Utils.getWSChartShowDataLabelByID(o.wId)) {
+        if (!BI.Utils.getWSChartShowDataLabelByID(o.wId)) {
             return;
         }
         var hasSeries = this._checkSeriesExist();
@@ -528,7 +528,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         });
 
         function formatDataLabelForClassify(series, filter, array, labelStyle) {
-            if(!BI.Utils.isDimensionUsable(labelStyle.target_id)) {
+            if (!BI.Utils.isDimensionUsable(labelStyle.target_id)) {
                 return;
             }
             var filterArray = filter.getFilterResult(array);
@@ -613,7 +613,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         });
 
         function formatDataImageForClassify(series, filter, array, labelStyle) {
-            if(!BI.Utils.isDimensionUsable(labelStyle.target_id)) {
+            if (!BI.Utils.isDimensionUsable(labelStyle.target_id)) {
                 return;
             }
             var filterArray = filter.getFilterResult(array);
@@ -626,7 +626,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     },
 
     _createDataLabel: function (data, label) {
-        var x = label.style_setting.showLabels[0] ? "${X}": "";
+        var x = label.style_setting.showLabels[0] ? "${X}" : "";
         var y = label.style_setting.showLabels[1] ? "${Y}" : "";
         var z = label.style_setting.showLabels[2] ? "${SIZE}" : "";
         data.dataLabels = {
@@ -640,12 +640,12 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     },
 
     _createDataImage: function (data, label) {
-        if(!label.style_setting.src) {
+        if (!label.style_setting.src) {
             return;
         }
         this.imageSizeMap = this.imageSizeMap || {};
         var size = this.imageSizeMap[label.style_setting.src];
-        if(!size) {
+        if (!size) {
             size = BI.DOM.getImageWidthAndHeight(label.style_setting.src);
         }
         this.imageSizeMap[label.style_setting.src] = size;
@@ -890,18 +890,18 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     (type[id] === BICst.WIDGET.ACCUMULATE_AREA || type[id] === BICst.WIDGET.ACCUMULATE_AXIS) && BI.extend(it, {stack: i});
                 });
             });
-            if(type === BICst.WIDGET.MAP){
+            if (type === BICst.WIDGET.MAP) {
                 var subType = BI.Utils.getWidgetSubTypeByID(o.wId);
-                if(BI.isNull(subType)){
-                    BI.find(MapConst.INNER_MAP_INFO.MAP_LAYER, function(path, layer){
-                        if(layer === 0){
+                if (BI.isNull(subType)) {
+                    BI.find(MapConst.INNER_MAP_INFO.MAP_LAYER, function (path, layer) {
+                        if (layer === 0) {
                             subType = path;
                             return true;
                         }
                     });
                 }
                 var name = MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType];
-                if(BI.isNull(name)){
+                if (BI.isNull(name)) {
                     name = MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME[subType]
                 }
                 options.initDrillPath = [name];
@@ -970,17 +970,18 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 break;
             default:
                 dId = obj.targetIds;
-                clicked = [{
-                    dId: clickeddId,
-                    value: [BI.Utils.getClickedValue4Group(obj.value || obj.x, clickeddId)]
-                }];
+                if (BI.isNotNull(this.cataDid)) {
+                    clicked = [{
+                        dId: clickeddId,
+                        value: [BI.Utils.getClickedValue4Group(obj.value || obj.x, clickeddId)]
+                    }];
+                }
                 if (BI.isNotNull(this.seriesDid)) {
                     clicked.push({
                         dId: obj.dId || this.crossDimIds[0],
                         value: [BI.Utils.getClickedValue4Group(obj.seriesName, obj.dId || this.crossDimIds[0])]
                     })
                 }
-                break;
         }
         if (BI.isNull(dId) || BI.isNull(clicked)) {
             return {};

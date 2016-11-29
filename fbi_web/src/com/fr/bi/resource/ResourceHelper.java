@@ -1620,7 +1620,13 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/chartlabel/chartlabel.detailed.setting.combo.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/chartlabel/chartlabel.detailed.setting.popup.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/datalabel/datalabel.detailed.setting.combo.js",
-                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/datalabel/datalabel.detailed.setting.popup.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/datalabel/popup/area.datalabel.detailed.setting.popup.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/datalabel/popup/axis.datalabel.detailed.setting.popup.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/datalabel/popup/bubble.detailed.setting.popup.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/datalabel/popup/dashboard.datalabel.detailed.setting.popup.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/datalabel/popup/map.datalabel.detailed.setting.popup.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/datalabel/popup/pie.datalabel.detailed.setting.popup.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/datalabel/popup/scatter.datalabel.detailed.setting.popup.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/legend/legend.detailed.setting.combo.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/legend/legend.detailed.setting.popup.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/showtitle/showtitle.detailed.setting.combo.js",
@@ -3045,6 +3051,14 @@ public class ResourceHelper {
 
                 //带样式表格
                 "com/fr/bi/web/js/components/styletable/styletable.js",
+
+                //excelview
+                "com/fr/bi/web/js/components/excel/excelview/excelviewdisplaymanager.js",
+                "com/fr/bi/web/js/components/excel/excelview/model.excelviewdisplay.js",
+
+                //exceltabledata
+                "com/fr/bi/web/js/components/excel/exceltabledata/exceltabledatadisplaymanager.js",
+                "com/fr/bi/web/js/components/excel/exceltabledata/model.exceltabledatadisplay.js",
 
                 //数据预处理表格
                 "com/fr/bi/web/js/components/pretreatedtable/pretreatedtable.js",
