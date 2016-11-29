@@ -641,6 +641,7 @@
                         });
                         break;
                 }
+                dimension.dId = newId;
                 dimTarIdMap[idx] = newId;
                 return {id: newId, dimension: dimension};
             }
