@@ -560,12 +560,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
             },
             start: function (event, ui) {
                 //通知region
-                var dims = self.searcher.getValue();
-                BI.Broadcasts.send(BICst.BROADCAST.FIELD_DRAG_START, BI.map(dims, function(idx, dimension){
-                    if(BI.isNotNull(dimension) && BI.isNotNull(dimension._src)){
-                        return dimension._src.field_id;
-                    }
-                }));
+                BI.Broadcasts.send(BICst.BROADCAST.FIELD_DRAG_START, ui.helper.data("data"));
             },
             stop: function (event, ui) {
                 BI.Broadcasts.send(BICst.BROADCAST.FIELD_DRAG_STOP);
