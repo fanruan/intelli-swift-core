@@ -13,7 +13,19 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
         SHARED_TO_ME_ID: "-2",
         CONTROL_TYPE: [BICst.WIDGET.STRING, BICst.WIDGET.NUMBER, BICst.WIDGET.SINGLE_SLIDER, BICst.WIDGET.INTERVAL_SLIDER, BICst.WIDGET.DATE, BICst.WIDGET.MONTH,
             BICst.WIDGET.QUARTER, BICst.WIDGET.TREE, BICst.WIDGET.LIST_LABEL, BICst.WIDGET.TREE_LABEL, BICst.WIDGET.YEAR, BICst.WIDGET.YMD, BICst.WIDGET.GENERAL_QUERY,
-            BICst.WIDGET.QUERY, BICst.WIDGET.RESET]
+            BICst.WIDGET.QUERY, BICst.WIDGET.RESET],
+        CALCULATE_TARGET_TYPE: [BICst.TARGET_TYPE.FORMULA,
+            BICst.TARGET_TYPE.MONTH_ON_MONTH_RATE,
+            BICst.TARGET_TYPE.MONTH_ON_MONTH_VALUE,
+            BICst.TARGET_TYPE.RANK,
+            BICst.TARGET_TYPE.RANK_IN_GROUP,
+            BICst.TARGET_TYPE.SUM_OF_ABOVE,
+            BICst.TARGET_TYPE.SUM_OF_ABOVE_IN_GROUP,
+            BICst.TARGET_TYPE.SUM_OF_ALL,
+            BICst.TARGET_TYPE.SUM_OF_ALL_IN_GROUP,
+            BICst.TARGET_TYPE.YEAR_ON_YEAR_RATE,
+            BICst.TARGET_TYPE.YEAR_ON_YEAR_VALUE
+        ]
     },
 
     _defaultConfig: function () {
@@ -475,19 +487,26 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
             cursorAt: {left: 5, top: 5},
             helper: function () {
                 var text = dimensionName;
-                var result = [];
+                var result = {};
                 var dims = self.searcher.getValue();
                 var targetIdMap = {};
                 BI.each(dims, function (idx, dim) {
                     var copy = self._createDimensionsAndTargets(dim, targetIdMap, dimensions);
-                    BI.each(copy, function (idx, obj) {
-                        if (!BI.deepContains(result, obj)) {
-                            result.push(obj);
+                    BI.each(copy, function(id, dimension){
+                        if(copy.length > 1){
+                            dimension.used = BI.contains(self.constants.CALCULATE_TARGET_TYPE, dimension.type);
+                        }else{
+                            dimension.used = true;
                         }
-                    });
+                        if (BI.has(result, dimension.dId) && result[dimension.dId].used === true) {
+                            result[dimension.dId].used = true;
+                        }else{
+                            result[dimension.dId] = dimension;
+                        }
+                    })
                 });
-                if (result.length > 1) {
-                    text = BI.i18nText("BI-All_Field_Count", result.length);
+                if (BI.size(result) > 1) {
+                    text = BI.i18nText("BI-All_Field_Count", BI.size(result));
                 }
                 var data = BI.map(result, function (id, dim) {
                     var type = dim.type;
@@ -496,7 +515,8 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                             dId: dim.dId,
                             type: dim.type,
                             name: dim.name,
-                            _src: dim._src
+                            _src: dim._src,
+                            used: dim.used
                         };
 
                         var sort = dim.sort;
@@ -537,6 +557,13 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
                     }]
                 });
                 return help.element;
+            },
+            start: function (event, ui) {
+                //通知region
+                BI.Broadcasts.send(BICst.BROADCAST.FIELD_DRAG_START, ui.helper.data("data"));
+            },
+            stop: function (event, ui) {
+                BI.Broadcasts.send(BICst.BROADCAST.FIELD_DRAG_STOP);
             }
         }
     },

@@ -114,7 +114,7 @@ BI.BubbleDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
         v || (v = {});
         this.showSeriesName.setSelected(v.showSeriesName);
         this.showValue.setSelected(v.showValue);
-        this.position.setValue(v.position);
+        this.position.setValue(v.position || BICst.DATA_LABEL.POSITION_OUTER);
         this.textStyle.setValue(v.textStyle);
     }
 
