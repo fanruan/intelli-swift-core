@@ -9,6 +9,7 @@ import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
+import com.fr.json.JSONObject;
 
 /**
  * Created by Connery on 10/25/2016.
@@ -110,6 +111,24 @@ public class BILogHelper {
             return BIStringUtils.append(
                     "\n" + prefix + " AnalysisETL Business Field Name:", field.getFieldName(),
                     "\n" + prefix + " AnalysisETL Business Field ID:", field.getFieldID().getIdentity()
+            );
+        } catch (Exception e) {
+            logger.debug(e.getMessage(), e);
+            return "";
+        }
+
+    }
+
+    public static String logTableRelation(JSONObject relationJson) {
+        try {
+            JSONObject primaryJson = relationJson.getJSONObject("primaryKey");
+            JSONObject foreignJson = relationJson.getJSONObject("foreignKey");
+            String primaryFieldID = primaryJson.getString("field_id");
+            String foreignFieldID = foreignJson.getString("field_id");
+
+            return BIStringUtils.append(
+                    "\n" + "primaryFieldID is :" + primaryFieldID,
+                    "\n" + "foreignFieldID is :" + foreignFieldID
             );
         } catch (Exception e) {
             logger.debug(e.getMessage(), e);
