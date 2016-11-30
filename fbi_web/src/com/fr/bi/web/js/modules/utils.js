@@ -641,6 +641,7 @@
                         });
                         break;
                 }
+                dimension.dId = newId;
                 dimTarIdMap[idx] = newId;
                 return {id: newId, dimension: dimension};
             }
@@ -1883,7 +1884,6 @@
         },
 
         isCalculateTargetByDimensionID: function (dId) {
-            var wId = this.getWidgetIDByDimensionID(dId);
             var type = this.getDimensionTypeByID(dId);
             var _set = [BICst.TARGET_TYPE.FORMULA,
                 BICst.TARGET_TYPE.MONTH_ON_MONTH_RATE,

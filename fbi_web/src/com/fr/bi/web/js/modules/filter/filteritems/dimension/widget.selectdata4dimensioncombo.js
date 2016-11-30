@@ -27,8 +27,7 @@ BI.SelectDimensionDataCombo = BI.inherit(BI.Widget, {
             itemsCreator: BI.bind(this._itemsCreator, this),
             valueFormatter: function (v) {
                 var text = v;
-                var group = BI.Utils.getDimensionGroupByID(o.dId);
-                if (BI.isNotNull(group) && group.type === BICst.GROUP.YMD) {
+                if (BI.Utils.getDimensionTypeByID(o.dId) === BICst.TARGET_TYPE.DATE && (v + "").length > 4) {
                     var date = new Date(BI.parseInt(v));
                     text = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
                 }
