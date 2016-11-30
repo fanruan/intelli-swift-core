@@ -39,7 +39,7 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
         this.session = session;
         paras = new DetailParas(widget, gvi, loader);
         Object[] lastValue = session.getDetailLastValue(paras.getSortKey(), paging.getCurrentPage());
-        index = new DetailSortGviIndex(lastValue, paras.getCubeIndexGetters(), paras.getAsc());
+        index = new DetailSortGviIndex(lastValue, paras.getCubeIndexGetters(), paras.getAsc(), gvi);
         if (lastValue != null && lastValue.length > 0){
             row = paging.getStartRow() - session.getDetailLastIndex(paras.getSortKey(), paging.getCurrentPage());
         }

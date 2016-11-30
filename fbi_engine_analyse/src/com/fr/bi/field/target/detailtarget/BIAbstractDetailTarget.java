@@ -1,9 +1,6 @@
 package com.fr.bi.field.target.detailtarget;
 
-import com.finebi.cube.api.ICubeColumnDetailGetter;
-import com.finebi.cube.api.ICubeColumnIndexReader;
-import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.api.*;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.annotation.BICoreField;
@@ -106,10 +103,11 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
      * @return 分组的map
      */
     @Override
-    public ICubeColumnIndexReader createGroupValueMapGetter(BusinessTable target, ICubeDataLoader loader, long userId) {
+    public CubeIndexGetterWithNullValue createGroupValueMapGetter(BusinessTable target, ICubeDataLoader loader, long userId) {
         ICubeTableService ti = loader.getTableIndex(column.getTableBelongTo().getTableSource());
         ICubeColumnIndexReader baseGroupMap = ti.loadGroup(createKey(getStatisticElement()), BIConfUtils.convert2TableSourceRelation(getRelationList(target, userId)));
-        return new CubeIndexGetterWithNullValue(baseGroupMap, ti.getNullGroupValueIndex(createKey(getStatisticElement())));
+        ICubeValueEntryGetter getter = ti.getValueEntryGetter(createKey(getStatisticElement()), BIConfUtils.convert2TableSourceRelation(getRelationList(target, userId)));
+        return new CubeIndexGetterWithNullValue(baseGroupMap, getter, ti.getNullGroupValueIndex(createKey(getStatisticElement())));
     }
 
     /**
