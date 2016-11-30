@@ -140,7 +140,7 @@ BI.AxisDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
         this.showSeriesName.setSelected(v.showSeriesName);
         this.showValue.setSelected(v.showValue);
         this.showPercentage.setSelected(v.showPercentage);
-        this.position.setValue(v.position);
+        this.position.setValue(v.position || BICst.DATA_LABEL.POSITION_OUTER);
         this.textStyle.setValue(v.textStyle)
     }
 

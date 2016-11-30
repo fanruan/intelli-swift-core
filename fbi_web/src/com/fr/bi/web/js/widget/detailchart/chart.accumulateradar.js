@@ -95,7 +95,7 @@ BI.AccumulateRadarChart = BI.inherit(BI.AbstractChart, {
             fontSize: this.config.legendStyle.fontSize + "px"
         });
 
-        self.formatDataLabelForOthers(config.plotOptions.dataLabels.enabled, items, config.radiusAxis[0].formatter);
+        self.formatDataLabelForOthers(config.plotOptions.dataLabels.enabled, items, config, this.config);
 
         //全局样式的图表文字
         config.radiusAxis[0].labelStyle = config.radiusAxis[0].title.style = this.config.chartFont;

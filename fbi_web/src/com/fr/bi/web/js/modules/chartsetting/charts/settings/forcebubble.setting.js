@@ -333,17 +333,6 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE)
         });
 
-        //数据标签
-        this.showDataLabel = BI.createWidget({
-            type: "bi.multi_select_item",
-            value: BI.i18nText("BI-Show_Data_Label"),
-            width: 115
-        });
-
-        this.showDataLabel.on(BI.Controller.EVENT_CHANGE, function () {
-            self.fireEvent(BI.ForceBubbleSetting.EVENT_CHANGE);
-        });
-
         //数据点提示详细设置
         this.tooltipStyle = BI.createWidget({
             type: "bi.tooltip_detailed_setting_combo"
@@ -377,9 +366,6 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
                 }, {
                     type: "bi.vertical_adapt",
                     items: [this.legendStyle]
-                }, {
-                    type: "bi.vertical_adapt",
-                    items: [this.showDataLabel]
                 }/*, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Tooltip"),
@@ -466,7 +452,6 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
         this.gradientStyle.setValue(BI.Utils.getWSChartBubbleGradientStyleByID(wId));
         this.chartColor.setValue(BI.Utils.getWSChartColorByID(wId));
         this.legend.setValue(BI.Utils.getWSChartLegendByID(wId));
-        this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
         this.bubbleSizeFrom.setValue(BI.Utils.getWSChartBubbleSizeFromByID(wId));
         this.bubbleSizeTo.setValue(BI.Utils.getWSChartBubbleSizeToByID(wId));
         this.bubbleStyle.setValue(BI.Utils.getWSChartBubbleStyleByID(wId));
@@ -486,7 +471,6 @@ BI.ForceBubbleSetting = BI.inherit(BI.AbstractChartSetting, {
             gradientStyle: this.gradientStyle.getValue(),
             chartColor: this.chartColor.getValue()[0],
             legend: this.legend.getValue()[0],
-            showDataLabel: this.showDataLabel.isSelected(),
             bubbleSizeFrom: this.bubbleSizeFrom.getValue(),
             bubbleSizeTo: this.bubbleSizeTo.getValue(),
             bubbleStyle: this.bubbleStyle.getValue()[0],
