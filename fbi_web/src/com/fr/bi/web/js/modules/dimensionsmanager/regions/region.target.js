@@ -7,6 +7,23 @@
  */
 BI.TargetRegion = BI.inherit(BI.AbstractRegion, {
 
+    consts: {
+        RECEIVE_TYPES: [BICst.TARGET_TYPE.FORMULA,
+            BICst.TARGET_TYPE.MONTH_ON_MONTH_RATE,
+            BICst.TARGET_TYPE.MONTH_ON_MONTH_VALUE,
+            BICst.TARGET_TYPE.RANK,
+            BICst.TARGET_TYPE.RANK_IN_GROUP,
+            BICst.TARGET_TYPE.SUM_OF_ABOVE,
+            BICst.TARGET_TYPE.SUM_OF_ABOVE_IN_GROUP,
+            BICst.TARGET_TYPE.SUM_OF_ALL,
+            BICst.TARGET_TYPE.SUM_OF_ALL_IN_GROUP,
+            BICst.TARGET_TYPE.YEAR_ON_YEAR_RATE,
+            BICst.TARGET_TYPE.YEAR_ON_YEAR_VALUE,
+            BICst.TARGET_TYPE.NUMBER,
+            BICst.TARGET_TYPE.COUNTER
+        ]
+    },
+
     _defaultConfig: function () {
         var conf = BI.TargetRegion.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
@@ -108,11 +125,11 @@ BI.TargetRegion = BI.inherit(BI.AbstractRegion, {
         return BI.i18nText("BI-Drag_Left_Numberic_Field");
     },
 
-    _fieldDragStart: function (fields) {
-        this.fields = fields;
-        var hasNum = BI.some(fields, function (i, fieldId) {
-            var fieldType = BI.Utils.getFieldTypeByID(fieldId);
-            return fieldType === BICst.COLUMN.NUMBER || fieldType === BICst.COLUMN.COUNTER;
+    _fieldDragStart: function (tars) {
+        var self = this;
+        this.targets = tars;
+        var hasNum = BI.some(tars, function (i, target) {
+            return BI.contains(self.consts.RECEIVE_TYPES, target.type);
         });
         if (!hasNum) {
             this._showForbiddenMask();
@@ -120,18 +137,17 @@ BI.TargetRegion = BI.inherit(BI.AbstractRegion, {
     },
 
     _fieldDragStop: function () {
-        this.fields = null;
+        this.targets = null;
         this._hideForbiddenMask();
     },
 
     _getFieldDropOverHelper: function () {
         //可以放置的字段 + 不可放置的字段
-        var total = this.fields.length;
+        var self = this;
+        var total = this.targets.length;
         var notNums = 0;
-        BI.each(this.fields, function (i, fieldId) {
-            var fieldType = BI.Utils.getFieldTypeByID(fieldId);
-            if (fieldType !== BICst.COLUMN.COUNTER &&
-                fieldType !== BICst.COLUMN.NUMBER) {
+        BI.each(this.targets, function (i, target) {
+            if (!BI.contains(self.consts.RECEIVE_TYPES, target.type)) {
                 notNums++;
             }
         });

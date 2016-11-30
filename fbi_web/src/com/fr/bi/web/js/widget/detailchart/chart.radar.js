@@ -77,7 +77,7 @@ BI.RadarChart = BI.inherit(BI.AbstractChart, {
         config.plotOptions.connectNulls = this.config.nullContinuity;
         delete config.xAxis;
         delete config.yAxis;
-        self.formatDataLabelForOthers(config.plotOptions.dataLabels.enabled, items, config.radiusAxis[0].formatter);
+        self.formatDataLabelForOthers(config.plotOptions.dataLabels.enabled, items, config, this.config);
 
         config.angleAxis[0].labelStyle = BI.extend(this.config.leftYLabelStyle.textStyle, {
             fontSize: this.config.leftYLabelStyle.textStyle.fontSize + "px"

@@ -325,7 +325,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             BI.each(items, function (idx, item) {
                 var format;
                 if(config.xAxis[0] && (config.xAxis[0].type === 'value')) {
-                    format = config.xAxis[item.xAxis].formatter;
+                    format = config.xAxis[item.yAxis].formatter;
                 }
                 format = config.yAxis[item.yAxis].formatter;
 
@@ -344,7 +344,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         }
     },
 
-    formatDataLabelForOthers: function (state, items, format, chartOptions) {
+    formatDataLabelForOthers: function (state, items, config, chartOptions) {
         var self = this;
         if (state === true) {
             BI.each(items, function (idx, item) {
@@ -355,7 +355,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                     enabled: true,
                     formatter: {
                         identifier: self.setDataLabelContent(chartOptions),
-                        valueFormat: format
+                        valueFormat: config.radiusAxis[0].formatter
                     }
                 };
             });

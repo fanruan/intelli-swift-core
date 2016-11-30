@@ -698,7 +698,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             },
             start: function (event, ui) {
                 //通知region
-                BI.Broadcasts.send(BICst.BROADCAST.FIELD_DRAG_START, self.searcher.getValue());
+                BI.Broadcasts.send(BICst.BROADCAST.FIELD_DRAG_START, ui.helper.data("data"));
             },
             stop: function (event, ui) {
                 BI.Broadcasts.send(BICst.BROADCAST.FIELD_DRAG_STOP);

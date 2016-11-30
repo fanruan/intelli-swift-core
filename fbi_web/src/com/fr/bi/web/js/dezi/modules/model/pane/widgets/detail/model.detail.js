@@ -543,7 +543,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                 //维度指标基本属性
                 dimensions[dId] = src;
                 dimensions[dId].name = this._createDimName(src.name);
-                dimensions[dId].used = true;
+                dimensions[dId].used = src.used;
                 //构造dimension_map
                 var fId = src._src.field_id;
 

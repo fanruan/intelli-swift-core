@@ -2,7 +2,6 @@ package com.fr.bi.conf.data.source.operator.create;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.BIBaseConstant;
@@ -16,7 +15,6 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.cache.list.IntList;
-import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -374,28 +372,6 @@ public class TableJoinOperator extends AbstractCreateTableETLOperator {
             column.parseJSON(fields.getJSONObject(i));
             columns.add(column);
         }
-    }
-
-    private int getLeftIndex(String name) {
-        for (int i = 0; i < columns.size(); i++) {
-            if (columns.get(i).isLeft() && ComparatorUtils.equals(columns.get(i).getColumnName(), name)) {
-                return i;
-            }
-        }
-        String message = "can`t find column : " + name;
-        BILoggerFactory.getLogger().info(message);
-        throw new RuntimeException(message);
-    }
-
-    private int getRightIndex(String name) {
-        for (int i = 0; i < columns.size(); i++) {
-            if (!columns.get(i).isLeft() && ComparatorUtils.equals(columns.get(i).getColumnName(), name)) {
-                return i;
-            }
-        }
-        String message = "can`t find column : " + name;
-        BILoggerFactory.getLogger().info(message);
-        throw new RuntimeException(message);
     }
 
     /**
