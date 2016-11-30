@@ -28,9 +28,17 @@ public class DimensionIteratorCreator {
     }
 
     public static Iterator<Map.Entry<Object, GroupValueIndex>> createValueMapIterator(ICubeValueEntryGetter getter, GroupValueIndex filterGVI, Object start, boolean asc){
-        return createValueMapIterator(getter, filterGVI, getter.getPositionOfGroupByValue(start), asc);
+        int index = asc ? getter.getPositionOfGroupByValue(start) : getter.getGroupSize() - getter.getPositionOfGroupByValue(start) - 1;
+        return createValueMapIterator(getter, filterGVI, index, asc);
     }
-
+    /**
+     * 根据父节点的过滤条件算出子节点的结构
+     * @param getter 子节点所在维度的ICubeValueEntryGetter
+     * @param filterGVI 父节点的索引
+     * @param asc 升序为true
+     * @param startIndex 偏移量
+     * @return 迭代器
+     */
     public static Iterator<Map.Entry<Object, GroupValueIndex>> createValueMapIterator(ICubeValueEntryGetter getter, GroupValueIndex filterGVI, int startIndex, boolean asc){
         if (GVIUtils.isAllShowRoaringGroupValueIndex(filterGVI)){
             return getAllShowIterator(getter, startIndex,  asc);
