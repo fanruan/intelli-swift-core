@@ -44,6 +44,7 @@ import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
+import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONObject;
@@ -101,6 +102,7 @@ public class BuildCubeTask implements CubeTask {
     public void start() {
         BIConfigureManagerCenter.getLogManager().logStart(biUser.getUserId());
         PerformancePlugManager.getInstance().printSystemParameters();
+        logCubeTaskType();
         logBusinessTable();
         logTable(cubeBuildStuff.getSingleSourceLayers(), cubeBuildStuff.getUpdateSettingSources());
         logRelation(cubeBuildStuff.getTableSourceRelationSet());
@@ -245,6 +247,14 @@ public class BuildCubeTask implements CubeTask {
             router.deliverMessage(generateMessageDataSourceStart());
         } catch (BIDeliverFailureException e) {
             throw BINonValueUtils.beyondControl(e);
+        }
+    }
+
+    private void logCubeTaskType() {
+        if (getTaskType() == CubeTaskType.SINGLE) {
+            StringBuffer msg = new StringBuffer();
+            msg.append(" Cube single table update start" + "\n");
+            logger.info(BIDateUtils.getCurrentDateTime() + msg);
         }
     }
 
