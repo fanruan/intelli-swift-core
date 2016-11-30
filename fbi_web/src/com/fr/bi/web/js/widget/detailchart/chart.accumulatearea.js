@@ -111,7 +111,7 @@ BI.AccumulateAreaChart = BI.inherit(BI.AbstractChart, {
         function formatCordon(cordon) {
             BI.each(cordon, function (idx, cor) {
                 if (idx === 0 && self.xAxis.length > 0) {
-                    //x轴拖指标没有number level，以后可能回家
+                    //x轴拖指标没有number level，以后可能会加
                     var magnify = self.calcMagnify(1);
                     self.xAxis[0].plotLines = BI.map(cor, function (i, t) {
                         return BI.extend(t, {
