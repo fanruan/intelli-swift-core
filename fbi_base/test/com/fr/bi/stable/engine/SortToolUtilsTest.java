@@ -1,4 +1,6 @@
 package com.fr.bi.stable.engine;
+import com.fr.bi.stable.engine.cal.SortTool;
+import com.fr.bi.stable.engine.cal.SortToolUtils;
 import junit.framework.TestCase;
 
 /**

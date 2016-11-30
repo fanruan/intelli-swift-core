@@ -2425,6 +2425,16 @@
             dimensions[dId] = dimension;
             var view = {};
             view[BICst.REGION.DIMENSION1] = [dId];
+
+            var targetIds = this.getAllTargetDimensionIDs(this.getWidgetIDByDimensionID(dId));
+            BI.each(targetIds, function(idx, targetId){
+                dimensions[targetId] = Data.SharingPool.get("dimensions", targetId);
+                if(!BI.has(view, BICst.REGION.TARGET1)){
+                    view[BICst.REGION.TARGET1] = [];
+                }
+                view[BICst.REGION.TARGET1].push(targetId);
+            });
+
             this.getWidgetDataByWidgetInfo(dimensions, view, function (data) {
                 callback(BI.pluck(data.data.c, "n"));
             }, {page: BICst.TABLE_PAGE_OPERATOR.ALL_PAGE});
@@ -2442,6 +2452,16 @@
             widget.dimensions[dId] = dimension;
             widget.view = {};
             widget.view[BICst.REGION.DIMENSION1] = [dId];
+
+            var targetIds = this.getAllTargetDimensionIDs(this.getWidgetIDByDimensionID(dId));
+            BI.each(targetIds, function(idx, targetId){
+                widget.dimensions[targetId] = Data.SharingPool.get("dimensions", targetId);
+                if(!BI.has(widget.view, BICst.REGION.TARGET1)){
+                    widget.view[BICst.REGION.TARGET1] = [];
+                }
+                widget.view[BICst.REGION.TARGET1].push(targetId);
+            });
+
             Data.Req.reqWidgetSettingByData({widget: widget}, function (data) {
                 callback(BI.pluck(data.data.c, "n"));
             });

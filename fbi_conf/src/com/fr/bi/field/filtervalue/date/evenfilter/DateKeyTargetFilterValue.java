@@ -2,6 +2,7 @@ package com.fr.bi.field.filtervalue.date.evenfilter;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelationPath;
@@ -12,12 +13,11 @@ import com.fr.bi.stable.data.key.date.BIDateValue;
 import com.fr.bi.stable.data.key.date.BIDateValueFactory;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.exception.BITableUnreachableException;
-import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.bi.stable.report.result.LightNode;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
@@ -83,15 +83,15 @@ public class DateKeyTargetFilterValue extends AbstractFilterValue<Long> implemen
 
         ICubeColumnIndexReader getter = loader.getTableIndex(dimension.getField().getTableBelongTo().getTableSource()).loadGroup(new IndexTypeKey(dimension.getField().getFieldName(), group), BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations()));
         Iterator<BIDateValue> it = valueSet.iterator();
-        GroupValueIndex gvi = GVIFactory.createAllEmptyIndexGVI();
+        GroupValueIndexOrHelper helper = new GroupValueIndexOrHelper();
         while (it.hasNext()) {
             BIDateValue dk = it.next();
             Object[] keys = getter.createKey(1);
             keys[0] = dk == null ? null : dk.getValue();
             GroupValueIndex cgvi = getter.getGroupIndex(keys)[0];
-            gvi.or(cgvi);
+            helper.add(cgvi);
         }
-        return gvi;
+        return helper.compute();
     }
 
     private GroupValueIndex getGroupValueIndexWhenNull(BusinessTable targetKey, ICubeDataLoader loader) {

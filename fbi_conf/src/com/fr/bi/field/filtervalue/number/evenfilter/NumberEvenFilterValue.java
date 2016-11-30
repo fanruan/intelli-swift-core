@@ -12,8 +12,8 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
-import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -53,17 +53,17 @@ public abstract class NumberEvenFilterValue extends AbstractFilterValue<Number> 
         if (dimension.getRelationList() == null) {
             return ti.getAllShowIndex();
         }
-        GroupValueIndex gvi = GVIFactory.createAllEmptyIndexGVI();
+        GroupValueIndexOrHelper helper = new GroupValueIndexOrHelper();
         Iterator it = dimension.createNoneSortNoneGroupValueMapGetter(target, loader).iterator();
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry) it.next();
             Number v = (Number) entry.getKey();
             GroupValueIndex g = (GroupValueIndex) entry.getValue();
             if (v != null && isMatchValue(v.doubleValue())) {
-                    gvi.or(g);
+                    helper.add(g);
             }
         }
-        return gvi;
+        return helper.compute();
     }
 
     /**

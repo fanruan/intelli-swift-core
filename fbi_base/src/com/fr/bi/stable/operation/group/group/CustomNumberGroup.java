@@ -1,13 +1,12 @@
 package com.fr.bi.stable.operation.group.group;
 
+import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.base.annotation.BICoreField;
-import com.fr.bi.stable.gvi.GVIFactory;
-import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
 import com.fr.bi.stable.operation.group.AbstractGroup;
 import com.fr.bi.stable.operation.group.data.number.NumberGroupInfo;
 import com.fr.bi.stable.operation.group.data.number.NumberOtherGroupInfo;
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.structure.collection.map.CubeLinkedHashMap;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -26,17 +25,19 @@ public class CustomNumberGroup extends AbstractGroup {
     @Override
     public ICubeColumnIndexReader createGroupedMap(ICubeColumnIndexReader baseMap) {
         if (isNullGroup()) {return baseMap;}
-        Map<String, GroupValueIndex> otherGroup = new HashMap<String, GroupValueIndex>();
         CubeLinkedHashMap newMap = new CubeLinkedHashMap();
         CubeLinkedHashMap ungroupMap = new CubeLinkedHashMap();
-        GroupValueIndex[] newMapArray = new GroupValueIndex[groups.length];
+        GroupValueIndexOrHelper[] newMapArray = new GroupValueIndexOrHelper[groups.length];
         for(int i = 0; i < newMapArray.length; i++){
-            newMapArray[i] = GVIFactory.createAllEmptyIndexGVI();
+            newMapArray[i] = new GroupValueIndexOrHelper();
         }
         Iterator iter = baseMap.iterator();
-        List<String> groupNames = new ArrayList<String>();
-        for (int i = 0; i < groups.length; i++) {
-            if(!groups[i].isOtherGroup()){groupNames.add(groups[i].getValue());}
+        GroupValueIndexOrHelper otherHelper = null;
+        for (int i = 0; i < groups.length; i++){
+            if (groups[i].isOtherGroup()){
+                otherHelper = newMapArray[i];
+                break;
+            }
         }
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
@@ -50,33 +51,31 @@ public class CustomNumberGroup extends AbstractGroup {
             for (int i = 0; i < groups.length; i++) {
                 if (groups[i].contains(key) && !groups[i].isOtherGroup()) {
                     find = true;
-                    newMapArray[i] = newMapArray[i].or(gvi);
-                }else{
-                    if(groups[i].isOtherGroup() && !find){
-                        find = true;
-                        if(groupNames.contains(groups[i].getValue())){
-                            int index = groupNames.indexOf(groups[i].getValue());
-                            newMapArray[index] = newMapArray[index].or(gvi);
-                        }else{
-                            otherGroup.put(groups[i].getValue(), GVIUtils.OR(otherGroup.get(groups[i].getValue()), gvi));
-                        }
-                    }
+                    newMapArray[i].add(gvi);
                 }
             }
             if (!find) {
-                String name = entry.getKey().toString();
-                ungroupMap.put(name, GVIUtils.OR((GroupValueIndex) newMap.get(name), gvi));
+                if (otherHelper != null){
+                    otherHelper.add(gvi);
+                } else {
+                    String name = entry.getKey().toString();
+                    ungroupMap.put(name,  gvi);
+                }
             }
         }
         for(int i = 0; i < groups.length; ++i){
-            if(newMap.containsKey(groups[i].getValue())){
-                newMap.put(groups[i].getValue(), GVIUtils.OR((GroupValueIndex) newMap.get(groups[i].getValue()), newMapArray[i]));
-                continue;
-            }
-            newMap.put(groups[i].getValue(), newMapArray[i]);
+            newMap.put(groups[i].getValue(), newMapArray[i].compute());
         }
-        if(!ungroupMap.isEmpty()){newMap.putAll(ungroupMap);}
-        if(!otherGroup.isEmpty()){newMap.putAll(otherGroup);}
+        Iterator it = ungroupMap.iterator();
+        while (it.hasNext()){
+            Map.Entry entry = (Map.Entry) it.next();
+            if (newMap.containsKey(entry.getKey())){
+                GroupValueIndex result = newMap.getIndex(entry.getKey()).OR((GroupValueIndex) entry.getValue());
+                newMap.put(entry.getKey(), result);
+            } else {
+                newMap.put(entry.getKey(), entry.getValue());
+            }
+        }
         return newMap;
     }
 
