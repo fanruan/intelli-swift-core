@@ -9,6 +9,7 @@ import com.fr.bi.conf.report.widget.field.filtervalue.AbstractFilterValue;
 import com.fr.bi.conf.report.widget.field.filtervalue.number.NumberFilterValue;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
 import com.fr.bi.stable.operation.group.data.number.NumberGroupInfo;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
@@ -156,16 +157,16 @@ public abstract class NumberRangeFilterValue extends AbstractFilterValue<Number>
             return ti.getAllShowIndex();
         }
         Iterator it = dimension.createNoneSortNoneGroupValueMapGetter(target, loader).iterator();
-        GroupValueIndex gvi = GVIFactory.createAllEmptyIndexGVI();
+        GroupValueIndexOrHelper helper = new GroupValueIndexOrHelper();
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry) it.next();
             Number v = (Number) entry.getKey();
             GroupValueIndex g = (GroupValueIndex) entry.getValue();
             if (v != null && gi.contains(v.doubleValue())) {
-                gvi.or(g);
+                helper.add(g);
             }
         }
-        return gvi;
+        return helper.compute();
     }
 
 
