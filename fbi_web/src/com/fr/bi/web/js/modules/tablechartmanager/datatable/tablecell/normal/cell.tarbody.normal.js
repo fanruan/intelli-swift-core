@@ -243,7 +243,7 @@ BI.extend(BI.TargetBodyNormalCell, {
                 if (separators) {
                     num = BI.contentFormat(num, '#,###;-#,###')
                 } else {
-                    num = BI.parseInt(num)
+                    num = BI.contentFormat(num, '#0;-#0')
                 }
                 return num;
                 break;
