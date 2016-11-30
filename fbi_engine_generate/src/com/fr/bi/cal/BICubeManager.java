@@ -107,7 +107,14 @@ public class BICubeManager implements BICubeManagerProvider {
     public boolean hasTask(long userId) {
         return getCubeManager(userId).hasTask();
     }
-
+    @Override
+    public boolean hasTask(){
+        boolean result = false;
+        for(long userId: userMap.keySet()){
+            result = (result || getCubeManager(userId).hasTask());
+        }
+        return result;
+    }
 
     @Override
     public boolean hasWaitingCheckTask(long userId) {
