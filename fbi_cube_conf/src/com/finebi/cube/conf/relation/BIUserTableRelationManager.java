@@ -86,6 +86,109 @@ public class BIUserTableRelationManager implements Release {
         return currentAnalyserHandler.isChanged(oldAnalyserHandler.getRelationContainer());
     }
 
+    /**
+     * 是不是关联只是减少了。
+     *
+     * @return
+     */
+    public boolean isRelationReduced() {
+        /**
+         * 如果存在当前配置的关联，是否都在分析的关联中。
+         */
+        for (BITableRelation relation : currentAnalyserHandler.getRelationContainer().getContainer()) {
+            /**
+             * 如果存在当前关联，在分析中不存在，说明关联增加了。
+             */
+            if (!oldAnalyserHandler.getRelationContainer().contain(relation)) {
+                return false;
+            }
+        }
+        /**
+         * 如果存在分析的关联，是否比当前配置的关联多。
+         */
+        for (BITableRelation relation : oldAnalyserHandler.getRelationContainer().getContainer()) {
+            /**
+             * 如果存在分析关联，在当期配置关联中不存在，说明关联减少了。
+             */
+            if (!currentAnalyserHandler.getRelationContainer().contain(relation)) {
+                return true;
+            }
+        }
+        /**
+         * 说明关联没有变动
+         */
+        return false;
+    }
+
+    /**
+     * 是不是关联只是增加了。
+     *
+     * @return
+     */
+    public boolean isRelationIncreased() {
+        /**
+         * 分析的关联，是否比当前配置的关联多。
+         */
+        for (BITableRelation relation : oldAnalyserHandler.getRelationContainer().getContainer()) {
+            /**
+             * 如果存在分析关联，在当期配置关联中不存在，说明关联减少了。
+             */
+            if (!currentAnalyserHandler.getRelationContainer().contain(relation)) {
+                return false;
+            }
+        }
+        /**
+         * 当前配置的关联，是否都在分析的关联中。
+         */
+        for (BITableRelation relation : currentAnalyserHandler.getRelationContainer().getContainer()) {
+            /**
+             * 如果存在当前关联，在分析中不存在，说明关联增加了。
+             */
+            if (!oldAnalyserHandler.getRelationContainer().contain(relation)) {
+                return true;
+            }
+        }
+
+        /**
+         * 说明关联没有变动
+         */
+        return false;
+    }
+
+    /**
+     * 是不是关联只是增加了。
+     *
+     * @return
+     */
+    public boolean isRelationNoChange() {
+        /**
+         * 分析的关联，是否比当前配置的关联多。
+         */
+        for (BITableRelation relation : oldAnalyserHandler.getRelationContainer().getContainer()) {
+            /**
+             * 如果存在分析关联，在当期配置关联中不存在，说明关联减少了。
+             */
+            if (!currentAnalyserHandler.getRelationContainer().contain(relation)) {
+                return false;
+            }
+        }
+        /**
+         * 当前配置的关联，是否都在分析的关联中。
+         */
+        for (BITableRelation relation : currentAnalyserHandler.getRelationContainer().getContainer()) {
+            /**
+             * 如果存在当前关联，在分析中不存在，说明关联增加了。
+             */
+            if (!oldAnalyserHandler.getRelationContainer().contain(relation)) {
+                return false;
+            }
+        }
+
+        /**
+         * 说明关联没有变动
+         */
+        return true;
+    }
 
     public BITableContainer getCommonSeniorTables(BITablePair tablePair) throws BITableAbsentException {
         return tableRelationshipService.getCommonSeniorTables(tablePair);
