@@ -532,6 +532,7 @@ BICst.DEFAULT_CHART_SETTING = {
         showSeriesName: true,
         showValue: true,
         showPercentage: false,
+        showTractionLine: true,
         position: BICst.DATA_LABEL.POSITION_OUTER,
         textStyle: {}
     }

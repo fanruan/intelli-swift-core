@@ -92,6 +92,7 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             showValue: true,
             showPercentage: false,
             position: BICst.DATA_LABEL.POSITION_OUTER,
+            showTractionLine: true,
             textStyle: {
                 "fontSize": "12px"
             }
