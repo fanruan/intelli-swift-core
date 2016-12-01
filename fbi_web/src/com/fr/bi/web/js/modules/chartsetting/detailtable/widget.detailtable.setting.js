@@ -164,12 +164,12 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
                     cls: "attr-names"
                 }, this.tableSyleGroup, {
                     type: "bi.vertical_adapt",
-                    items: [this.customTableStyle],
+                    items: [this.isCustomTableStyle],
                     cls: "attr-names",
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.tableStyleSetting],
+                    items: [this.customTableStyle],
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }]
             },

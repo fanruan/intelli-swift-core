@@ -337,7 +337,7 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
                 dynamic: true
             }
         });
-        this.transferFilter.on(BI.Checkbox.EVENT_CHANGE, function () {
+        this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
         var otherAttr = BI.createWidget({
