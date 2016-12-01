@@ -3,6 +3,7 @@ package com.fr.bi.data;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.dbdealer.DBDealer;
 import com.fr.bi.stable.dbdealer.TimestampDealer;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.data.core.db.dialect.Dialect;
 
 import java.sql.Connection;
@@ -29,6 +30,7 @@ public class NormalExtractor extends DBExtractorImpl {
         try {
             stmt.setFetchSize(dialect.getFetchSize());
         } catch (Exception e) {
+            throw BINonValueUtils.beyondControl(e);
         }
         return stmt;
     }
