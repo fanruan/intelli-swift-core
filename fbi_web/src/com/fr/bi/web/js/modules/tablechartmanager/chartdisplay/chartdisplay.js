@@ -193,7 +193,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
         var self = this, linkageInfo = this.model.getLinkageInfo(obj);
         BI.each(BI.isArray(obj.to) ? obj.to : [obj.to], function (idx, to) {
             BI.Broadcasts.send(BICst.BROADCAST.LINKAGE_PREFIX + to, obj.from, linkageInfo.clicked);
-            self._send2AllChildLinkWidget(to, obj.from, obj.clicked);
+            self._send2AllChildLinkWidget(to, obj.from, linkageInfo.clicked);
         });
     },
 

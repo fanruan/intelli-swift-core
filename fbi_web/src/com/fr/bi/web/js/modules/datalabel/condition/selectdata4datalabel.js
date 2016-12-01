@@ -120,9 +120,6 @@ BI.SelectDataLabelDataCombo = BI.inherit(BI.SelectDimensionDataCombo, {
     setValue: function (v) {
         v = this._assertValue(v);
         var group = BI.Utils.getDimensionGroupByID(this.options.dId);
-        if (BI.isNotNull(group) && group.type !== v.group_type) {
-            v.value = [];
-        }
         this.combo.setValue(v);
     },
 

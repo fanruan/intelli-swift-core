@@ -52,6 +52,12 @@ public interface BICubeManagerProvider {
 
     boolean hasTask(long useId);
 
+    /**
+     * 获取所有用户是否有cube生成任务
+     * @return
+     */
+    boolean hasTask();
+
     boolean hasWaitingCheckTask(long useId);
 
     Iterator<CubeTask> getWaitingTaskIterator(long userId);

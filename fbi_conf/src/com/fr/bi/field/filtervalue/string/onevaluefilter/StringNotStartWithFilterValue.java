@@ -8,8 +8,8 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
-import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
 import com.fr.bi.stable.io.sortlist.ArrayLookupHelper;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 
@@ -38,14 +38,22 @@ public class StringNotStartWithFilterValue extends StringOneValueFilterValue {
         if (start == -1){
             return ti.getAllShowIndex();
         }
-        GroupValueIndex gvi = GVIFactory.createAllEmptyIndexGVI();
-        for (int i = 0; i < start; i ++){
-            gvi.or(sgm.getGroupValueIndex(i));
+        System.out.println();
+        GroupValueIndexOrHelper orHelper = new GroupValueIndexOrHelper();
+        if (end - start > sgm.sizeOfGroup() / 2){
+            for (int i = 0; i < start; i ++){
+                orHelper.add(sgm.getGroupValueIndex(i));
+            }
+            for (int i = end + 1; i < sgm.sizeOfGroup(); i ++){
+                orHelper.add(sgm.getGroupValueIndex(i));
+            }
+            return orHelper.compute();
+        } else {
+            for (int i = start; i < end; i++) {
+                orHelper.add(sgm.getGroupValueIndex(i));
+            }
+            return orHelper.compute().NOT(ti.getRowCount());
         }
-        for (int i = end + 1; i < sgm.sizeOfGroup(); i ++){
-            gvi.or(sgm.getGroupValueIndex(i));
-        }
-        return gvi;
     }
 
 	/* (non-Javadoc)

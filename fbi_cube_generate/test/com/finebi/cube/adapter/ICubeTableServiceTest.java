@@ -71,7 +71,7 @@ public class ICubeTableServiceTest extends BICubeTestBase {
     public void testTableColumnMax() {
         try {
             assertEquals(tableService.getMAXValue(new IndexKey("age")), Double.valueOf(5));
-            assertEquals(tableService.getMAXValue(RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{0, 1, 2, 3}), new IndexKey("age")), Double.valueOf(4));
+            assertEquals(tableService.getMAXValue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{0, 1, 2, 3}), new IndexKey("age")), Double.valueOf(4));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -82,7 +82,7 @@ public class ICubeTableServiceTest extends BICubeTestBase {
     public void testTableColumnMin() {
         try {
             assertEquals(tableService.getMINValue(new IndexKey("age")), Double.valueOf(1));
-            assertEquals(tableService.getMINValue(RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{1, 2, 3}), new IndexKey("age")), Double.valueOf(2));
+            assertEquals(tableService.getMINValue(RoaringGroupValueIndex.createGroupValueIndex(new int[]{1, 2, 3}), new IndexKey("age")), Double.valueOf(2));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -94,9 +94,9 @@ public class ICubeTableServiceTest extends BICubeTestBase {
         try {
 
             ICubeColumnIndexReader reader = tableService.loadGroup(new IndexKey("gender"), BITableSourceRelationPathTestTool.getABCList());
-            assertEquals(reader.getGroupIndex(new Object[]{"girl"})[0], RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{1, 7}));
-            assertEquals(reader.getGroupIndex(new Object[]{".dr"})[0], RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{4, 6}));
-            assertEquals(reader.getGroupIndex(new Object[]{"boy"})[0], RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{}));
+            assertEquals(reader.getGroupIndex(new Object[]{"girl"})[0], RoaringGroupValueIndex.createGroupValueIndex(new int[]{1, 7}));
+            assertEquals(reader.getGroupIndex(new Object[]{".dr"})[0], RoaringGroupValueIndex.createGroupValueIndex(new int[]{4, 6}));
+            assertEquals(reader.getGroupIndex(new Object[]{"boy"})[0], RoaringGroupValueIndex.createGroupValueIndex(new int[]{}));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -107,11 +107,11 @@ public class ICubeTableServiceTest extends BICubeTestBase {
     public void testTableTableRelation() {
         try {
             ICubeTableIndexReader reader = tableService.ensureBasicIndex(BITableSourceRelationPathTestTool.getABCList());
-            assertEquals(reader.get(0), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{1, 7}));
-            assertEquals(reader.get(1), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{4, 6}));
-            assertEquals(reader.get(2), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{}));
-            assertEquals(reader.get(3), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{}));
-            assertEquals(reader.get(4), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{}));
+            assertEquals(reader.get(0), RoaringGroupValueIndex.createGroupValueIndex(new int[]{1, 7}));
+            assertEquals(reader.get(1), RoaringGroupValueIndex.createGroupValueIndex(new int[]{4, 6}));
+            assertEquals(reader.get(2), RoaringGroupValueIndex.createGroupValueIndex(new int[]{}));
+            assertEquals(reader.get(3), RoaringGroupValueIndex.createGroupValueIndex(new int[]{}));
+            assertEquals(reader.get(4), RoaringGroupValueIndex.createGroupValueIndex(new int[]{}));
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -122,10 +122,10 @@ public class ICubeTableServiceTest extends BICubeTestBase {
         try {
             ICubeTableIndexReader reader = tableService.ensureBasicIndex(BITableSourceRelationPathTestTool.getABCList());
 //          assertEquals(tableService.getIndexByRow(0), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{1, 7}));
-            assertEquals(reader.get(1), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{4, 6}));
-            assertEquals(reader.get(2), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{}));
-            assertEquals(reader.get(3), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{}));
-            assertEquals(reader.get(4), RoaringGroupValueIndex.createGroupValueIndex(new Integer[]{}));
+            assertEquals(reader.get(1), RoaringGroupValueIndex.createGroupValueIndex(new int[]{4, 6}));
+            assertEquals(reader.get(2), RoaringGroupValueIndex.createGroupValueIndex(new int[]{}));
+            assertEquals(reader.get(3), RoaringGroupValueIndex.createGroupValueIndex(new int[]{}));
+            assertEquals(reader.get(4), RoaringGroupValueIndex.createGroupValueIndex(new int[]{}));
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);

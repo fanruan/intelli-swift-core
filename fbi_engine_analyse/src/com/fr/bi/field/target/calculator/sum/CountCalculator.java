@@ -119,7 +119,7 @@ public class CountCalculator extends AbstractSummaryCalculator {
      */
     @Override
     public double createSumValue(GroupValueIndex gvi, ICubeTableService ti) {
-        if (StringUtils.isNotEmpty(countTarget)) {
+        if (StringUtils.isNotEmpty(countTarget) && countTarget != NONE_TARGET_COUNT_CAL.countTarget) {
             return ti.getDistinctCountValue(gvi, new IndexKey(countTarget));
         } else {
             return gvi == null ? 0 : gvi.getRowsCountWithData();

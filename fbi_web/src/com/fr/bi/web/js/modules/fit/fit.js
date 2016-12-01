@@ -36,6 +36,7 @@ BI.Fit = BI.inherit(BI.Widget, {
                     type: "bi.layout"
                 }, {
                     type: "bi.label",
+                    cls: "no-widgets",
                     text: BI.i18nText("BI-Please_Drag_Element_Left_To_Add")
                 }]
             }]

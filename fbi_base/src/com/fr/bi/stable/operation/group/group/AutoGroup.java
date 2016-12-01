@@ -2,8 +2,8 @@ package com.fr.bi.stable.operation.group.group;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.base.annotation.BICoreField;
-import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
 import com.fr.bi.stable.operation.group.AbstractGroup;
 import com.fr.bi.stable.structure.collection.map.CubeLinkedHashMap;
 import com.fr.bi.stable.utils.BICollectionUtils;
@@ -14,6 +14,7 @@ import com.fr.stable.StableUtils;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -49,7 +50,7 @@ public class AutoGroup extends AbstractGroup {
         }
         int groupSize = (int) Math.ceil((tiMax - start) / interval);
         CubeLinkedHashMap resultMap = new CubeLinkedHashMap();
-        CubeLinkedHashMap indexMap = new CubeLinkedHashMap();
+        Map<Integer, GroupValueIndexOrHelper> indexMap = new HashMap<Integer, GroupValueIndexOrHelper>();
         Iterator<Map.Entry<Number, GroupValueIndex>> it = baseMap.iterator();
         while (it.hasNext()) {
             Map.Entry<Number, GroupValueIndex> entry = it.next();
@@ -61,14 +62,17 @@ public class AutoGroup extends AbstractGroup {
             GroupValueIndex gvi = entry.getValue();
             int index = getAutoGroupIndex(key, interval, groupSize);
             if (indexMap.containsKey(index)){
-                ((GroupValueIndex)indexMap.get(index)).or(gvi);
+                indexMap.get(index).add(gvi);
             } else {
-                String groupName = getAutoGroupName(index, interval);
-                GroupValueIndex g = GVIFactory.createAllEmptyIndexGVI();
-                g.or(gvi);
-                resultMap.put(groupName, g);
-                indexMap.put(index, g);
+                GroupValueIndexOrHelper helper = new GroupValueIndexOrHelper();
+                helper.add(gvi);
+                indexMap.put(index, helper);
             }
+        }
+        Iterator<Map.Entry<Integer, GroupValueIndexOrHelper>> iterator = indexMap.entrySet().iterator();
+        while (iterator.hasNext()){
+            Map.Entry<Integer, GroupValueIndexOrHelper> entry = iterator.next();
+            resultMap.put(getAutoGroupName(entry.getKey(), interval), entry.getValue().compute());
         }
         return resultMap;
     }

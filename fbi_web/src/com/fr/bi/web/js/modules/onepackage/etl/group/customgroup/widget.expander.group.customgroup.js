@@ -66,26 +66,36 @@ BI.CustomgroupGroupExpander = BI.inherit(BI.Widget, {
         var self = this, popupButtons = [], o = this.options;
         if (BI.isNotNull(item.content) && BI.isNotEmptyArray(item.content)) {
             BI.each(item.content, function (i_in, item_in) {
-                var findField = BI.find(self.fieldWidgetMap, function (fieldId, fieldWidget) {
-                    if (item_in.id === fieldId) {
-                        return true;
-                    }
-                });
+                /**
+                 * 面板上每個分組最多只展示100個字段
+                 */
+                if (popupButtons.length < 100) {
+                    var findField = BI.find(self.fieldWidgetMap, function (fieldId, fieldWidget) {
+                        if (item_in.id === fieldId) {
+                            return true;
+                        }
+                    });
+                    // var findField = BI.find(self.fieldWidgetMap, function (fieldId, fieldWidget) {
+                    //     if (item_in.id === fieldId) {
+                    //         return true;
+                    //     }
+                    // });
 
-                if (!findField) {
-                    var fieldButton = BI.createWidget({
-                        type: "bi.etl_group_custom_group_field_button",
-                        valueLeft: item_in.value,
-                        id: item_in.id,
-                        title: o.title,
-                        cls: "item-custom-group",
-                        hgap: 10
-                    });
-                    self.fieldWidgetMap[item_in.id] = fieldButton;
-                    fieldButton.on(BI.CustomGroupFieldButton.EVENT_CHANGE, function (value, obj) {
-                        self.fireEvent(BI.CustomgroupGroupExpander.EVENT_CHANGE, obj)
-                    });
-                    popupButtons.push(fieldButton);
+                    if (!findField) {
+                        var fieldButton = BI.createWidget({
+                            type: "bi.etl_group_custom_group_field_button",
+                            valueLeft: item_in.value,
+                            id: item_in.id,
+                            title: o.title,
+                            cls: "item-custom-group",
+                            hgap: 10
+                        });
+                        self.fieldWidgetMap[item_in.id] = fieldButton;
+                        fieldButton.on(BI.CustomGroupFieldButton.EVENT_CHANGE, function (value, obj) {
+                            self.fireEvent(BI.CustomgroupGroupExpander.EVENT_CHANGE, obj)
+                        });
+                        popupButtons.push(fieldButton);
+                    }
                 }
             })
         }

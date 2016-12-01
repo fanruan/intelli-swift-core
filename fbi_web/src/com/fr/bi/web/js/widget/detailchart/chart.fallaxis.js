@@ -79,12 +79,12 @@ BI.FallAxisChart = BI.inherit(BI.AbstractChart, {
                     return;
                 }
                 item.dataLabels = {
-                    "style": self.config.chartFont,
-                    "align": "outside",
+                    "style": self.config.dataLabelSetting.textStyle,
+                    "align": self.setDataLabelPosition(self.config),
                     "autoAdjust": true,
                     enabled: true,
                     formatter: {
-                        identifier: "${VALUE}",
+                        identifier: self.setDataLabelContent(self.config),
                         valueFormat: config.yAxis[0].formatter
                     }
                 };

@@ -45,9 +45,9 @@ public class ByteStreamDataInput implements BIByteDataInput {
     }
 
     @Override
-    @Deprecated
     public int skipBytes(int n) throws IOException {
-        throw new RuntimeException(UNSUPPORTED);
+        index +=n;
+        return 0;
     }
 
     @Override
@@ -73,9 +73,13 @@ public class ByteStreamDataInput implements BIByteDataInput {
     }
 
     @Override
-    @Deprecated
     public short readShort() throws IOException {
-        throw new RuntimeException(UNSUPPORTED);
+        try {
+            return (short)((reader.getSpecificValue(index++) << 8) | (reader.getSpecificValue(index++) & 0xff));
+        } catch (BIResourceInvalidException e) {
+            e.printStackTrace();
+        }
+        return Short.MIN_VALUE;
     }
 
     @Override
@@ -105,9 +109,20 @@ public class ByteStreamDataInput implements BIByteDataInput {
     }
 
     @Override
-    @Deprecated
     public long readLong() throws IOException {
-        throw new RuntimeException(UNSUPPORTED);
+        try {
+            return ((((long)reader.getSpecificValue(index++)       ) << 56) |
+                    (((long)reader.getSpecificValue(index++) & 0xff) << 48) |
+                    (((long)reader.getSpecificValue(index++) & 0xff) << 40) |
+                    (((long)reader.getSpecificValue(index++) & 0xff) << 32) |
+                    (((long)reader.getSpecificValue(index++) & 0xff) << 24) |
+                    (((long)reader.getSpecificValue(index++) & 0xff) << 16) |
+                    (((long)reader.getSpecificValue(index++) & 0xff) <<  8) |
+                    (((long)reader.getSpecificValue(index++) & 0xff)      ));
+        } catch (BIResourceInvalidException e) {
+            BILoggerFactory.getLogger().error(e.getMessage());
+        }
+        return NIOConstant.LONG.NULL_VALUE;
     }
 
     @Override

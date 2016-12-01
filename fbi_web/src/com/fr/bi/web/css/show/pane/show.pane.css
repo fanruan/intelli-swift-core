@@ -8,3 +8,10 @@
   border-bottom: 1px solid #d4dadd;
   color: #808080;
 }
+.bi-pane-view-show .dashboard-toolbar .count-down {
+  border: 1px solid #eaeaea;
+  color: #c4c6c6;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
