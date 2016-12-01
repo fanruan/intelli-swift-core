@@ -228,7 +228,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         return [BI.map(data.c, function (idx, item) {
             var obj = {};
             var name = item.n, seriesName = item.n;
-            var drillcataDimId = this._getDrillDimensionId(BI.Utils.getDrillByID(o.wId)[self.cataDid]);
+            var drillcataDimId = slef._getDrillDimensionId(BI.Utils.getDrillByID(o.wId)[self.cataDid]);
             var dGroup = BI.Utils.getDimensionGroupByID(self.cataDid);
             if (BI.isNotNull(drillcataDimId)) {
                 dGroup = BI.Utils.getDimensionGroupByID(drillcataDimId);
@@ -262,7 +262,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         return [BI.map(data.c, function (idx, item) {
             var obj = {};
             var name = item.n, seriesName = item.n;
-            var drillcataDimId = this._getDrillDimensionId(BI.Utils.getDrillByID(o.wId)[self.cataDid]);
+            var drillcataDimId = self._getDrillDimensionId(BI.Utils.getDrillByID(o.wId)[self.cataDid]);
             var dGroup = BI.Utils.getDimensionGroupByID(self.cataDid);
             if (BI.isNotNull(drillcataDimId)) {
                 dGroup = BI.Utils.getDimensionGroupByID(drillcataDimId);
