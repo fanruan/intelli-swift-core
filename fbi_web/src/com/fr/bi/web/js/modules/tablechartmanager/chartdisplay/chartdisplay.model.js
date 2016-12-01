@@ -228,7 +228,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         return [BI.map(data.c, function (idx, item) {
             var obj = {};
             var name = item.n, seriesName = item.n;
+            var drillcataDimId = this._getDrillDimensionId(BI.Utils.getDrillByID(o.wId)[self.cataDid]);
             var dGroup = BI.Utils.getDimensionGroupByID(self.cataDid);
+            if (BI.isNotNull(drillcataDimId)) {
+                dGroup = BI.Utils.getDimensionGroupByID(drillcataDimId);
+            }
             if (BI.isNotNull(dGroup) && dGroup.type === BICst.GROUP.YMD) {
                 var date = new Date(BI.parseInt(name));
                 name = date.print("%Y-%X-%d");
@@ -258,7 +262,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         return [BI.map(data.c, function (idx, item) {
             var obj = {};
             var name = item.n, seriesName = item.n;
+            var drillcataDimId = this._getDrillDimensionId(BI.Utils.getDrillByID(o.wId)[self.cataDid]);
             var dGroup = BI.Utils.getDimensionGroupByID(self.cataDid);
+            if (BI.isNotNull(drillcataDimId)) {
+                dGroup = BI.Utils.getDimensionGroupByID(drillcataDimId);
+            }
             if (BI.isNotNull(dGroup) && dGroup.type === BICst.GROUP.YMD) {
                 var date = new Date(BI.parseInt(name));
                 name = date.print("%Y-%X-%d");
