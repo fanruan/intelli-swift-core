@@ -133,6 +133,16 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
     }
 
     @Override
+    public boolean isTableIncreased(long userId) {
+        return false;
+    }
+
+    @Override
+    public boolean isTableNoChange(long userId) {
+        return false;
+    }
+
+    @Override
     public void persistData(long userId) {
         persistUserData(userId);
     }
@@ -246,6 +256,10 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     }
 
+    @Override
+    public boolean isTableReduced(long userId) {
+        return false;
+    }
 
     public SingleTableUpdateManager getSingleTableUpdateManager(long userId) {
         return null;

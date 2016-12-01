@@ -352,7 +352,7 @@ BI.ETL = BI.inherit(BI.Widget, {
         selectTablePane.on(BI.SelectTablePane.EVENT_NEXT_STEP, function (tables) {
             BI.Layers.remove(BICst.SELECT_TABLES_LAYER);
             self.model.addNewTables(tables);
-            self._populateAfterETLOperator();
+            self._populateAfterAddTables();
         });
         selectTablePane.on(BI.SelectTablePane.EVENT_CANCEL, function () {
             BI.Layers.remove(BICst.SELECT_TABLES_LAYER);
@@ -363,6 +363,16 @@ BI.ETL = BI.inherit(BI.Widget, {
         this._buildDataSetPane();
         this._buildETLSetPane();
         this._changeButtonsStatus();
+    },
+    
+    _populateAfterAddTables: function() {
+        var self = this;
+        var allTables = this.model.getAllTables();
+        if (allTables.length === 1) {
+            var finalTable = allTables[0][0];
+            self.model.setFields(finalTable.fields, true);
+        }
+        self._populate();
     },
 
     _populateAfterETLOperator: function () {

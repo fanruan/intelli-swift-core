@@ -76,7 +76,7 @@ BI.SelectTablePane = BI.inherit(BI.LoadingPane, {
                         BI.isNotNull(eTable.temp_name) && (seTables[sourceTables.length + i].temp_name = eTable.temp_name);
                     });
                     tables = tables.concat(seTables);
-                    tables = tables.concat(allTables.pTables);
+                    tables = tables.concat(BI.deepClone(allTables.pTables));
                     self.fireEvent(BI.SelectTablePane.EVENT_NEXT_STEP, tables);
                 });
             }

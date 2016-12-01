@@ -1,0 +1,67 @@
+package com.fr.bi.web.conf.services.dbconnection;
+
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.table.BIBusinessTable;
+import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.conf.data.source.TableSourceFactory;
+import com.fr.bi.stable.data.BITableID;
+import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.web.conf.AbstractBIConfigureAction;
+import com.fr.fs.web.service.ServiceUtils;
+import com.fr.json.JSONArray;
+import com.fr.json.JSONObject;
+import com.fr.web.utils.WebUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Created by Young's on 2016/11/30.
+ */
+public class BIRefreshTableFieldsAction extends AbstractBIConfigureAction {
+    @Override
+    protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
+        long userId = ServiceUtils.getCurrentUserID(req);
+        String tables = WebUtils.getHTTPRequestParameter(req, "tables");
+        JSONArray tablesJA = new JSONArray(tables);
+        JSONArray tablesWithFields = new JSONArray();
+        for (int i = 0; i < tablesJA.length(); i++) {
+            JSONObject table = tablesJA.getJSONObject(i);
+            CubeTableSource tableSource;
+            BusinessTable businessTable = new BIBusinessTable(new BITableID(table.getString("id")));
+            if (BICubeConfigureCenter.getDataSourceManager().containTableSource(businessTable)) {
+                tableSource = BICubeConfigureCenter.getDataSourceManager().getTableSource(businessTable);
+                tableSource.refresh();
+            } else {
+                tableSource = TableSourceFactory.createTableSource(table, userId);
+            }
+            JSONObject data = tableSource.createJSON();
+            if (table.has("id")) {
+                formatTableDataFields(table.getString("id"), data);
+            }
+            tablesWithFields.put(data);
+        }
+        WebUtils.printAsJSON(res, tablesWithFields);
+    }
+
+    private void formatTableDataFields(String tableId, JSONObject tableData) throws Exception {
+        JSONArray fields = tableData.getJSONArray("fields");
+        JSONArray newFields = new JSONArray();
+        for (int i = 0; i < fields.length(); i++) {
+            JSONArray fs = fields.getJSONArray(i);
+            JSONArray nFields = new JSONArray();
+            for (int j = 0; j < fs.length(); j++) {
+                JSONObject field = fs.getJSONObject(j);
+                field.put("table_id", tableId);
+                nFields.put(field);
+            }
+            newFields.put(nFields);
+        }
+        tableData.put("fields", newFields);
+    }
+
+    @Override
+    public String getCMD() {
+        return "refresh_table_fields";
+    }
+}

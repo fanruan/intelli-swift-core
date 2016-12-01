@@ -1,6 +1,7 @@
 package com.finebi.cube.adapter;
 
 import com.finebi.cube.api.ICubeValueEntryGetter;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -12,7 +13,6 @@ import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.structure.object.CubeValueEntry;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.List;
@@ -101,6 +101,16 @@ public class BICubeValueEntryGetter<T> implements ICubeValueEntryGetter {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return groupRow;
+    }
+
+    @Override
+    public int getPositionOfGroupByValue(Object value) {
+        try {
+            return columnReaderService.getPositionOfGroupByGroupValue((T)value);
+        } catch (BIResourceInvalidException e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            return 0;
+        }
     }
 
     @Override
