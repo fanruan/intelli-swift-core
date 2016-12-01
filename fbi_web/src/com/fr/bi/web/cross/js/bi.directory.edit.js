@@ -13,7 +13,7 @@
                 id: data.reportId,
                 openFromShare: true,
                 systemManager: true,
-                createBy: "-999"
+                createBy: data.createBy
             });
             $('<a target="_blank" href=' + url + '/>')
                 .text(FS.getShowText(tdname, 280, 12, 'SimSun'))
@@ -100,7 +100,7 @@
             var result = [];
             for (var i = 0, len = this.cacheData.length; i < len; i++) {
                 var file = this.cacheData[i];
-                var fileData = [file.text, {reportName:file.reportName, reportId:file.reportId}, file.id];
+                var fileData = [file.text, {reportName:file.reportName, reportId:file.reportId, createBy: file.createBy}, file.id];
                 result.push(fileData);
             }
             return result;
