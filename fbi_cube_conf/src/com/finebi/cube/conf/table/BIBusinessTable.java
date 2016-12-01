@@ -125,7 +125,7 @@ public class BIBusinessTable implements BusinessTable {
 
     @Override
     public void setFields(List<BusinessField> fields) {
-        this.fields = fields;
+        this.fields = new ArrayList<BusinessField>(fields);
     }
 
     @Override
