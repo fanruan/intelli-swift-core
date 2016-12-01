@@ -281,7 +281,7 @@ public class BIDBUtils {
 
         DataModel dm = null;
         try {
-            dm = tableData.createDataModel(Calculator.createCalculator());
+            dm = tableData.createDataModel(Calculator.createCalculator(),tableName);
             int cols = dm.getColumnCount();
             JSONObject jo = new JSONObject();
             jo.put("tableName", tableName);
@@ -394,7 +394,7 @@ public class BIDBUtils {
             conn = connection.createConnection();
             return getDBTable(connection, conn, schema, tableName);
         } catch (Exception e) {
-            FRContext.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger(BIDBUtils.class).error(e.getMessage(), e);
         } finally {
             com.fr.data.core.db.DBUtils.closeConnection(conn);
         }

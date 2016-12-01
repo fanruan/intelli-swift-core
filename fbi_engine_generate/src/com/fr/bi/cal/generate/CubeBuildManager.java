@@ -5,6 +5,7 @@ import com.finebi.cube.conf.*;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
+import com.finebi.cube.impl.conf.CubeBuildStuffEmptyTable;
 import com.finebi.cube.impl.conf.CubeBuildStuffSpecificTable;
 import com.finebi.cube.impl.conf.CubeBuildStuffSupplement;
 import com.finebi.cube.location.BICubeResourceRetrieval;
@@ -34,15 +35,13 @@ public class CubeBuildManager {
 
     private BICubeManagerProvider cubeManager = CubeGenerationManager.getCubeManager();
 
-    public boolean CubeBuildSingleTable(long userId, String baseTableSourceId, int updateType) {
+    public void CubeBuildSingleTable(long userId, String baseTableSourceId, int updateType) {
         BILoggerFactory.getLogger().info("Update table ID:" + baseTableSourceId);
         List<CubeBuildStuff> cubeBuildList = buildSingleTable(userId, baseTableSourceId, updateType);
         BILoggerFactory.getLogger().info("Update relevant table size:" + cubeBuildList.size());
-        boolean taskAdd = true;
         for (CubeBuildStuff cubeBuild : cubeBuildList) {
-            taskAdd = cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId) && taskAdd;
+            cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId);
         }
-        return taskAdd;
     }
 
     public List<CubeBuildStuff> buildSingleTable(long userId, String baseTableSourceId, int updateType) {
@@ -88,8 +87,7 @@ public class CubeBuildManager {
         return true;
     }
 
-    public boolean CubeBuildStaff(long userId) {
-        boolean taskAddResult = false;
+    public void CubeBuildStaff(long userId) {
         CubeBuildStuff cubeBuild;
         /**
          * 若cube不存在,全局更新
@@ -102,17 +100,42 @@ public class CubeBuildManager {
             Set<BITableSourceRelation> absentRelations = getAbsentRelation(userId);
             Set<BITableSourceRelationPath> absentPaths = getAbsentPath(userId);
             cubeBuild = new CubeBuildStuffSupplement(userId, absentTables, absentRelations, absentPaths);
+        } else if (isUpdateMeta(userId)) {
+            msg.append(" Cube update meta data");
+            cubeBuild = new CubeBuildStuffEmptyTable(userId);
         } else {
             msg.append(" Cube all update start");
             cubeBuild = new CubeBuildStuffComplete(new BIUser(userId));
             BILoggerFactory.getLogger().info(BIDateUtils.getCurrentDateTime() + " preCondition checking……");
         }
-        if (preConditionsCheck(userId, cubeBuild)) {
-            CubeTask task = new BuildCubeTask(new BIUser(userId), cubeBuild);
-            BILoggerFactory.getLogger().info(BIDateUtils.getCurrentDateTime() + msg);
-            taskAddResult = cubeManager.addTask(task, userId);
-        }
-        return taskAddResult;
+//        if (preConditionsCheck(userId, cubeBuild)) {
+        CubeTask task = new BuildCubeTask(new BIUser(userId), cubeBuild);
+        BILoggerFactory.getLogger().info(BIDateUtils.getCurrentDateTime() + msg);
+        cubeManager.addTask(task, userId);
+//        }
+    }
+
+    /**
+     * @param userId
+     * @return
+     */
+    private boolean isUpdateMeta(long userId) {
+        /**
+         * 关联减少，表没有变化
+         */
+        boolean relationReduced = BICubeConfigureCenter.getTableRelationManager().isRelationReduced(userId) &&
+                BICubeConfigureCenter.getPackageManager().isTableNoChange(userId);
+        /**
+         * 表减少，关联没有变化
+         */
+        boolean tableReduced = BICubeConfigureCenter.getPackageManager().isTableReduced(userId) &&
+                BICubeConfigureCenter.getTableRelationManager().isRelationNoChange(userId);
+        /**
+         * 关联和表都减少了
+         */
+        boolean tableRelationReduced = BICubeConfigureCenter.getPackageManager().isTableReduced(userId) &&
+                BICubeConfigureCenter.getTableRelationManager().isRelationReduced(userId);
+        return relationReduced || tableReduced || tableRelationReduced;
     }
 
     private Set<CubeTableSource> getAbsentTable(long userId) {

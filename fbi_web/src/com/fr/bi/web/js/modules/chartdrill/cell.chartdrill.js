@@ -22,7 +22,8 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
             type: "bi.icon_text_item",
             cls: "chart-drill-up up-drill-button",
             text: BI.i18nText("BI-Drill_up"),
-            height: 25
+            height: 25,
+            warningTitle: BI.i18nText("BI-No_Up_Drill")
         });
         this.upDrill.on(BI.IconTextItem.EVENT_CHANGE, function () {
             self.fireEvent(BI.ChartDrillCell.EVENT_DRILL_UP);
@@ -32,7 +33,8 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
             type: "bi.icon_text_item",
             cls: "down-drill-button chart-drill-down",
             text: BI.i18nText("BI-Drill_down"),
-            height: 25
+            height: 25,
+            warningTitle: BI.i18nText("BI-No_Down_Drill")
         });
         this.downDrill = BI.createWidget({
             type: "bi.down_list_combo",

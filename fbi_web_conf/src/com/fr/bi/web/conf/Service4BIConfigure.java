@@ -6,10 +6,7 @@ import com.fr.bi.web.conf.services.*;
 import com.fr.bi.web.conf.services.cubeconf.*;
 import com.fr.bi.web.conf.services.cubetask.*;
 import com.fr.bi.web.conf.services.datalink.*;
-import com.fr.bi.web.conf.services.dbconnection.BIGetAllTranslatedTablesByConnectionAction;
-import com.fr.bi.web.conf.services.dbconnection.BIGetConnectionNamesAction;
-import com.fr.bi.web.conf.services.dbconnection.BIGetFieldInfo4NewTableAction;
-import com.fr.bi.web.conf.services.dbconnection.BIGetTableFieldsByTableInfoAction;
+import com.fr.bi.web.conf.services.dbconnection.*;
 import com.fr.bi.web.conf.services.packs.*;
 import com.fr.fs.FSContext;
 import com.fr.fs.base.FSManager;
@@ -78,12 +75,13 @@ public class Service4BIConfigure extends NoSessionIDService {
 
             new BISaveFileGetExcelDataAction(),
 
-            new BICheckGenerateCubeStatusAction(),
+            new BICheckCubeTableStatusAction(),
             new BICheckCubeTableAction(),
 
             new BIGetConnectionNamesAction(),
             new BIGetTableFieldsByTableInfoAction(),
             new BIGetFieldInfo4NewTableAction(),
+            new BIRefreshTableFieldsAction(),
 
             new BICreateFieldsUnionAction(),
 
@@ -108,7 +106,6 @@ public class Service4BIConfigure extends NoSessionIDService {
             new BIGetAllTableNamesOfAllPackageAction(),
             new BIGetFieldValueByFieldIdAction(),
             new BISaveLoginFieldAction(),
-            new BIPersistTableInfoAction(),
             new BICacheClearAction(),
             new BIUserMapCacheClearAction(),
             new BIChildMapClearAction(),
@@ -119,8 +116,8 @@ public class Service4BIConfigure extends NoSessionIDService {
             new BIDisplayDeployModeLimitValueAction(),
             new BIDownloadFineindexLogAction(),
             new BIGetThreadPoolSizeAction(),
-            new BISetThreadPoolSizeAction()
-
+            new BISetThreadPoolSizeAction(),
+            new BISimpleAPIDemoAction()
 
     };
 

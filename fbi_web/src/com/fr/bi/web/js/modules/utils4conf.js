@@ -362,19 +362,24 @@ BI.extend(BI.Utils, {
         }, complete);
     },
 
+    getTablesDetailInfoByTables4Refresh: function(tables, callback, complete) {
+        Data.Req.reqTablesDetailInfoByTables4Refresh(tables, function (res) {
+            callback(res);
+        }, complete);
+    },
+
     getRelationAndTransByTables: function (data, callback, complete) {
         Data.Req.reqRelationAndTransByTables(data, function (rt) {
             callback(rt);
         }, complete)
     },
 
-    checkCubeStatusByTable: function (table, callback, complete) {
-        Data.Req.reqCubeStatusByTable(table, function (data) {
+    reqCubeStatusCheck: function (callback, complete) {
+        Data.Req.reqCubeStatusCheck(function (data) {
             callback(data);
         }, complete)
     },
-    
-    checkTableExist: function(table, callback, complete) {
+    checkTableExist: function (table, callback, complete) {
         Data.Req.reqIsTableExist(table, function (data) {
             callback(data);
         }, complete)
@@ -497,9 +502,9 @@ BI.extend(BI.Utils, {
             callback(res);
         }, complete);
     },
-    
-    checkTableInUse: function(data, callback, complete) {
-        Data.Req.reqCheckTableInUse(data, function(res) {
+
+    checkTableInUse: function (data, callback, complete) {
+        Data.Req.reqCheckTableInUse(data, function (res) {
             callback(res);
         }, complete);
     }

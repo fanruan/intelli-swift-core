@@ -72,6 +72,11 @@ public class BICubeManager implements BICubeManagerProvider {
         return getCubeManager(userId).getStatus();
     }
 
+    @Override
+    public void setStatus(long userId, Status status) {
+        getCubeManager(userId).setStatus(status);
+    }
+
     /**
      * 若存在相同任务则返回false,不添加
      * 添加成功返回true
@@ -102,7 +107,14 @@ public class BICubeManager implements BICubeManagerProvider {
     public boolean hasTask(long userId) {
         return getCubeManager(userId).hasTask();
     }
-
+    @Override
+    public boolean hasTask(){
+        boolean result = false;
+        for(long userId: userMap.keySet()){
+            result = (result || getCubeManager(userId).hasTask());
+        }
+        return result;
+    }
 
     @Override
     public boolean hasWaitingCheckTask(long userId) {

@@ -4,15 +4,12 @@ import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
-import com.finebi.cube.conf.field.BusinessFieldHelper;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.conf.table.BusinessTableHelper;
-import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.exception.BITablePathConfusionException;
-import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
+import com.fr.json.JSONObject;
 
 /**
  * Created by Connery on 10/25/2016.
@@ -77,6 +74,67 @@ public class BILogHelper {
             logger.debug(e.getMessage(), e);
             return "";
         }
+    }
+
+    public static String logAnalysisETLTable(BusinessTable table) {
+        try {
+            return BIStringUtils.append(
+                    "\n" + "AnalysisETLTable is: ", table.getTableName(),
+                    "\n" + "AnalysisETLTable ID is: ", table.getID().getIdentityValue(),
+                    "\n" + "AnalysisETLTable Source is: ", table.getTableSource().getTableName(),
+                    "\n" + "AnalysisETLTable SourceID is: ", table.getTableSource().getSourceID()
+            );
+        } catch (Exception e) {
+            logger.debug(e.getMessage(), e);
+            return "";
+        }
+    }
+
+    public static String logAnalysisETLTableField(BusinessTable table, String prefix) {
+        try {
+            StringBuffer sb = new StringBuffer();
+            int count = 0;
+            for (BusinessField field : table.getFields()) {
+                sb.append("\n" + prefix + "AnalysisETLTable Field" + ++count + " :");
+                sb.append(logAnalysisETLBusinessField(field, prefix + "     "));
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            logger.debug(e.getMessage(), e);
+            return "";
+        }
+    }
+
+
+    public static String logAnalysisETLBusinessField(BusinessField field, String prefix) {
+        try {
+            return BIStringUtils.append(
+                    "\n" + prefix + " AnalysisETL Business Field Name:", field.getFieldName(),
+                    "\n" + prefix + " AnalysisETL Business Field ID:", field.getFieldID().getIdentity()
+            );
+        } catch (Exception e) {
+            logger.debug(e.getMessage(), e);
+            return "";
+        }
+
+    }
+
+    public static String logTableRelation(JSONObject relationJson) {
+        try {
+            JSONObject primaryJson = relationJson.getJSONObject("primaryKey");
+            JSONObject foreignJson = relationJson.getJSONObject("foreignKey");
+            String primaryFieldID = primaryJson.getString("field_id");
+            String foreignFieldID = foreignJson.getString("field_id");
+
+            return BIStringUtils.append(
+                    "\n" + "primaryFieldID is :" + primaryFieldID,
+                    "\n" + "foreignFieldID is :" + foreignFieldID
+            );
+        } catch (Exception e) {
+            logger.debug(e.getMessage(), e);
+            return "";
+        }
+
     }
 
 

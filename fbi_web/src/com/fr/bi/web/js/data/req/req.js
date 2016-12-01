@@ -53,6 +53,12 @@ Data.Req = BIReq = {
         }, complete);
     },
 
+    reqTablesDetailInfoByTables4Refresh: function (tables, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "refresh_table_fields", {tables: tables}, function (res) {
+            callback(res);
+        }, complete);
+    },
+
     reqPackage: function (callback) {
         BI.requestAsync("fr_bi_configure", "get_accessable_packages", "", function (res) {
             callback(res);
@@ -112,15 +118,15 @@ Data.Req = BIReq = {
         }, complete);
     },
 
-    reqCubeStatusByTable: function (table, callback, complete) {
-        BI.requestAsync("fr_bi_configure", "check_generate_cube", {table: table}, function (res) {
+    reqCubeStatusCheck: function (callback, complete) {
+        BI.requestAsync("fr_bi_configure", "get_cube_generate_status", {}, function (res) {
             callback(res);
         }, complete)
     },
-    
-    reqIsTableExist: function(table, callback, complete) {
-        BI.requestAsync("fr_bi_configure", "check_table_exist", {table: table}, function(res) {
-            callback(res); 
+
+    reqIsTableExist: function (table, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "check_table_exist", {table: table}, function (res) {
+            callback(res);
         }, complete);
     },
 
@@ -327,9 +333,9 @@ Data.Req = BIReq = {
     reqGetChartPreStyle: function () {
         return BI.requestSync('fr_bi_base', 'get_config_setting', null);
     },
-    
-    reqCheckTableInUse: function(data, callback, complete) {
-        BI.requestAsync("fr_bi_configure", "remove_table_in_use_check", data, function(res) {
+
+    reqCheckTableInUse: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "remove_table_in_use_check", data, function (res) {
             callback(res);
         }, complete);
     }

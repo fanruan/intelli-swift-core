@@ -347,7 +347,7 @@ BI.ETL = BI.inherit(BI.Widget, {
         selectTablePane.on(BI.SelectTablePane.EVENT_NEXT_STEP, function (tables) {
             BI.Layers.remove(BICst.SELECT_TABLES_LAYER);
             self.model.addNewTables(tables);
-            self._populateAfterETLOperator();
+            self._populateAfterAddTables();
         });
         selectTablePane.on(BI.SelectTablePane.EVENT_CANCEL, function () {
             BI.Layers.remove(BICst.SELECT_TABLES_LAYER);
@@ -358,6 +358,16 @@ BI.ETL = BI.inherit(BI.Widget, {
         this._buildDataSetPane();
         this._buildETLSetPane();
         this._changeButtonsStatus();
+    },
+    
+    _populateAfterAddTables: function() {
+        var self = this;
+        var allTables = this.model.getAllTables();
+        if (allTables.length === 1) {
+            var finalTable = allTables[0][0];
+            self.model.setFields(finalTable.fields, true);
+        }
+        self._populate();
     },
 
     _populateAfterETLOperator: function () {
@@ -993,7 +1003,7 @@ BI.ETL = BI.inherit(BI.Widget, {
             masker: this.element,
             text: BI.i18nText("BI-Loading")
         });
-        BI.Utils.checkCubeStatusByTable(table, function (status) {
+        BI.Utils.checkTableExist(table, function (status) {
             callback(status);
         }, function () {
             mask.destroy();
@@ -1280,8 +1290,8 @@ BI.ETL = BI.inherit(BI.Widget, {
         if (allTables.length === 1) {
             //如果不是etl表，也是可以预览的
             if (BI.isNotNull(allTables[0][0].etl_type)) {
-                BI.Utils.checkCubeStatusByTable(allTables[0][0], function (data) {
-                    if (data.isGenerated === true) {
+                BI.Utils.checkTableExist(allTables[0][0], function (data) {
+                    if (data.exists === true) {
                         self.tablePreview.setEnable(true);
                     } else {
                         self.tablePreview.setEnable(false);

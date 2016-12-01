@@ -118,7 +118,8 @@ BIShow.View = BI.inherit(BI.View, {
                 report_name: data.report_name,
                 create_by: self.model.get("createBy"),
                 report_location: data.report_location,
-                real_time: self.model.get("description")
+                real_time: self.model.get("description"),
+                config: self.model.get("popConfig")
             }, function(res, model){
                 if (BI.isNotNull(res) && BI.isNotNull(res.reportId)) {
                     BI.Msg.toast(BI.i18nText("BI-Save_As_Success"));

@@ -44,6 +44,7 @@ import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
+import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONObject;
@@ -101,6 +102,7 @@ public class BuildCubeTask implements CubeTask {
     public void start() {
         BIConfigureManagerCenter.getLogManager().logStart(biUser.getUserId());
         PerformancePlugManager.getInstance().printSystemParameters();
+        logCubeTaskType();
         logBusinessTable();
         logTable(cubeBuildStuff.getSingleSourceLayers(), cubeBuildStuff.getUpdateSettingSources());
         logRelation(cubeBuildStuff.getTableSourceRelationSet());
@@ -248,6 +250,14 @@ public class BuildCubeTask implements CubeTask {
         }
     }
 
+    private void logCubeTaskType() {
+        if (getTaskType() == CubeTaskType.SINGLE) {
+            StringBuffer msg = new StringBuffer();
+            msg.append(" Cube single table update start" + "\n");
+            logger.info(BIDateUtils.getCurrentDateTime() + msg);
+        }
+    }
+
     private void logBusinessTable() {
         Integer businessTableCount = 0;
         logger.info("***************Business Table*****************");
@@ -334,7 +344,7 @@ public class BuildCubeTask implements CubeTask {
                     BITableSourceRelationPath dependPath = it.next();
                     sb.append("\n").append("Path ").append(countDepend).append("\n").append(BuildLogHelper.pathLogContent(dependPath));
                 }
-                logger.info(sb.toString()+"\n");
+                logger.info(sb.toString() + "\n");
             }
         }
         logger.info("***************Path depend end*****************\n");
@@ -356,6 +366,7 @@ public class BuildCubeTask implements CubeTask {
                     sb.append("Layer " + layerCount + ", Cell " + cellCount);
                     sb.append(BuildLogHelper.tableLogContent("", oneCell));
                     sb.append("\n");
+                    cellCount++;
                 }
                 sb.append("-------------Layer " + layerCount).append(" end--------------\n\n");
             }
