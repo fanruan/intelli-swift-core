@@ -12,7 +12,7 @@ BI.ComplexDimensionRegion = BI.inherit(BI.Widget, {
 
     _defaultConfig: function () {
         return BI.extend(BI.ComplexDimensionRegion.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-complex-dimension-region",
+            baseCls: "bi-dimension-region",
             wId: ""
         });
     },
@@ -91,21 +91,21 @@ BI.ComplexDimensionRegion = BI.inherit(BI.Widget, {
             }
         });
 
-        var dragTool = BI.createWidget({
-            type: "bi.layout",
-            cls: "complex-region-left-drag-background drag-tool",
-            width: 10
-        });
-        BI.createWidget({
-            type: "bi.absolute",
-            element: this.element,
-            items: [{
-                el: dragTool,
-                left: 0,
-                top: 0,
-                bottom: 0
-            }]
-        });
+        // var dragTool = BI.createWidget({
+        //     type: "bi.layout",
+        //     cls: "complex-region-left-drag-background drag-tool",
+        //     width: 10
+        // });
+        // BI.createWidget({
+        //     type: "bi.absolute",
+        //     element: this.element,
+        //     items: [{
+        //         el: dragTool,
+        //         left: 0,
+        //         top: 0,
+        //         bottom: 0
+        //     }]
+        // });
 
         BI.createWidget({
             type: "bi.default",
@@ -258,6 +258,14 @@ BI.ComplexDimensionRegion = BI.inherit(BI.Widget, {
             });
         }
         return this.containers[dId];
+    },
+
+    getRegionType: function () {
+        return this.options.regionType;
+    },
+
+    getSortableCenter: function () {
+        return this.sinlgeRegion;
     },
 
     getValue: function () {

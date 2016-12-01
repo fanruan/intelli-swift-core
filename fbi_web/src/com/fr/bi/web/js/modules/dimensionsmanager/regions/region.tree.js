@@ -5,7 +5,7 @@ BI.TreeRegion = BI.inherit(BI.AbstractRegion, {
     _defaultConfig: function () {
         var conf = BI.TreeRegion.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
-            extraCls: "bi-tree-region bi-dimension-region"
+            extraCls: "bi-tree-region bi-dimension-region bi-region-wrapper"
         })
 
     },
@@ -60,6 +60,126 @@ BI.TreeRegion = BI.inherit(BI.AbstractRegion, {
 
     },
 
+    _createRegion: function () {
+        var self = this, o = this.options;
+        var titleName = BI.createWidget({
+            type: "bi.icon_text_item",
+            logic: {
+                dynamic: true
+            },
+            cls: "region-north-title " + this._getFieldClass(o.regionType),
+            text: o.titleName,
+            height: this.constants.REGION_HEIGHT_NORMAL
+        });
+
+        var north = BI.createWidget({
+            type: "bi.border",
+            items: {
+                west: {
+                    el: titleName,
+                    height: this.constants.REGION_HEIGHT_NORMAL,
+                    left: this.constants.REGION_DIMENSION_GAP
+                }
+            },
+            cls: "region-north"
+        });
+
+        this.center = BI.createWidget({
+            type: "bi.vertical",
+            cls: "dimensions-container",
+            scrolly: true,
+            width: "100%",
+            height: "100%",
+            hgap: this.constants.REGION_DIMENSION_GAP,
+            vgap: this.constants.REGION_DIMENSION_GAP
+        });
+
+        this.center.element.droppable({
+            accept: ".select-data-level0-item-button, .select-data-level1-item-button",
+            tolerance: "pointer",
+            drop: function (event, ui) {
+                BI.isNotNull(self.dropArea) && self.dropArea.destroy();
+                BI.size(self.store) === 0 && BI.isNotNull(self.tip) && self.tip.setVisible(true);
+
+                var helper = ui.helper;
+                var data = helper.data("data");
+                if (self.options.regionType >= BICst.REGION.TARGET1) {
+                    data = BI.filter(data, function (i, dimension) {
+                        return BI.Utils.isTargetType(dimension.type);
+                    });
+                }
+                if (self.options.regionType < BICst.REGION.TARGET1) {
+                    data = BI.filter(data, function (i, dimension) {
+                        return BI.Utils.isDimensionType(dimension.type);
+                    });
+                }
+                BI.each(data, function (i, dimension) {
+                    dimension.name = createDimName(dimension.name);
+                    self.addDimension(dimension.dId || BI.UUID(), dimension)
+                });
+                if (data.length > 0) {
+                    self.fireEvent(BI.AbstractRegion.EVENT_CHANGE);
+                }
+                BI.Broadcasts.send(BICst.BROADCAST.FIELD_DROP_PREFIX);
+
+                function createDimName (fieldName) {
+                    return BI.Func.createDistinctName(BI.Utils.getWidgetDimensionsByID(o.wId), fieldName);
+                }
+            },
+            over: function (event, ui) {
+                if (BI.isNull(self.forbiddenMask) || !self.forbiddenMask.isVisible()) {
+                    self.dropArea = BI.createWidget({
+                        type: "bi.layout",
+                        height: 25,
+                        cls: "virtual-drop-area"
+                    });
+                    self.center.addItem(self.dropArea);
+                    BI.size(self.store) === 0 && BI.isNotNull(self.tip) && self.tip.setVisible(false);
+                }
+                var helperWidget = ui.helper.data().helperWidget;
+                var helper = self._getFieldDropOverHelper();
+                if (BI.isNotNull(helper)) {
+                    helperWidget.modifyContent(helper);
+                }
+            },
+            out: function (event, ui) {
+                BI.isNotNull(self.dropArea) && self.dropArea.destroy();
+                BI.size(self.store) === 0 && BI.isNotNull(self.tip) && self.tip.setVisible(true);
+                var helperWidget = ui.helper.data().helperWidget;
+                helperWidget.populate();
+            }
+        });
+
+        BI.createWidget({
+            type: "bi.vtape",
+            element: this.element,
+            items: [{
+                el: north,
+                height: this.constants.REGION_HEIGHT_NORMAL
+            }, {
+                type: "bi.default",
+                items: [this.center]
+            }]
+        })
+    },
+
+    _toggleTip: function (dimensions) {
+        if (BI.isNull(dimensions) || dimensions.length === 0) {
+            if (BI.isNotNull(this.tip)) {
+                this.tip.setVisible(true);
+            } else {
+                this.tip = BI.createWidget({
+                    type: "bi.label",
+                    text: this._getDragTipContent(),
+                    height: 25,
+                    cls: "region-empty-tip"
+                });
+                this.center.addItem(this.tip);
+            }
+        } else {
+            BI.isNotNull(this.tip) && this.tip.setVisible(false);
+        }
+    },
 
     _getFields: function () {
         var dimensions = this.getValue();

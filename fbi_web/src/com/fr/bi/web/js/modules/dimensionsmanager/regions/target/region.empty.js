@@ -1,15 +1,15 @@
 /**
- * Created by Young's on 2016/9/12.
+ * Created by fay on 2016/11/16.
  */
-BI.ComplexEmptyRegion = BI.inherit(BI.Widget, {
+BI.TargetEmptyRegion = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
-        return BI.extend(BI.ComplexEmptyRegion.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-complex-empty-region"
+        return BI.extend(BI.TargetEmptyRegion.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-empty-region"
         });
     },
 
     _init: function () {
-        BI.ComplexEmptyRegion.superclass._init.apply(this, arguments);
+        BI.TargetEmptyRegion.superclass._init.apply(this, arguments);
         var self = this;
         var commentTip = BI.createWidget({
             type: "bi.label",
@@ -17,7 +17,7 @@ BI.ComplexEmptyRegion = BI.inherit(BI.Widget, {
             cls: "drag-comment",
             height: 25
         });
-        var emptyRegion = BI.createWidget({
+        var TargetEmptyRegion = BI.createWidget({
             type: "bi.vertical",
             element: this.element,
             height: 40,
@@ -25,7 +25,7 @@ BI.ComplexEmptyRegion = BI.inherit(BI.Widget, {
             vgap: 5,
             hgap: 5
         });
-        emptyRegion.element.droppable({
+        TargetEmptyRegion.element.droppable({
             accept: ".select-data-level0-item-button, .select-data-level1-item-button",
             tolerance: "pointer",
             drop: function (event, ui) {
@@ -34,28 +34,19 @@ BI.ComplexEmptyRegion = BI.inherit(BI.Widget, {
 
                 var helper = ui.helper;
                 var data = helper.data("data");
-                if (self.options.regionType >= BICst.REGION.TARGET1) {
+                if (self.options.wrapperType >= BICst.REGION.TARGET1) {
                     data = BI.filter(data, function (i, dimension) {
-                        return dimension.type === BICst.TARGET_TYPE.NUMBER || dimension.type === BICst.TARGET_TYPE.COUNTER || dimension.type === BICst.TARGET_TYPE.FORMULA ||
-                            dimension.type === BICst.TARGET_TYPE.YEAR_ON_YEAR_RATE ||
-                            dimension.type === BICst.TARGET_TYPE.MONTH_ON_MONTH_RATE ||
-                            dimension.type === BICst.TARGET_TYPE.YEAR_ON_YEAR_VALUE ||
-                            dimension.type === BICst.TARGET_TYPE.MONTH_ON_MONTH_VALUE ||
-                            dimension.type === BICst.TARGET_TYPE.SUM_OF_ABOVE ||
-                            dimension.type === BICst.TARGET_TYPE.SUM_OF_ABOVE_IN_GROUP ||
-                            dimension.type === BICst.TARGET_TYPE.SUM_OF_ALL ||
-                            dimension.type === BICst.TARGET_TYPE.SUM_OF_ALL_IN_GROUP ||
-                            dimension.type === BICst.TARGET_TYPE.RANK ||
-                            dimension.type === BICst.TARGET_TYPE.RANK_IN_GROUP;
+                        return BI.Utils.isTargetType(dimension.type);
                     });
                 }
-                if (self.options.regionType < BICst.REGION.TARGET1) {
+                if (self.options.wrapperType < BICst.REGION.TARGET1) {
                     data = BI.filter(data, function (i, dimension) {
-                        return dimension.type === BICst.TARGET_TYPE.STRING || dimension.type === BICst.TARGET_TYPE.DATE || dimension.type === BICst.TARGET_TYPE.NUMBER;
+                        return BI.Utils.isDimensionType(dimension.type);
                     });
                 }
+
                 if (data.length > 0) {
-                    self.fireEvent(BI.ComplexEmptyRegion.EVENT_CHANGE, data);
+                    self.fireEvent(BI.TargetEmptyRegion.EVENT_CHANGE, data);
                 }
                 BI.Broadcasts.send(BICst.BROADCAST.FIELD_DROP_PREFIX);
             },
@@ -66,7 +57,7 @@ BI.ComplexEmptyRegion = BI.inherit(BI.Widget, {
                         height: 25,
                         cls: "virtual-drop-area"
                     });
-                    emptyRegion.addItem(self.dropArea);
+                    TargetEmptyRegion.addItem(self.dropArea);
                     BI.size(self.store) === 0 && BI.isNotNull(commentTip) && commentTip.setVisible(false);
                 }
                 var helperWidget = ui.helper.data().helperWidget;
@@ -93,10 +84,11 @@ BI.ComplexEmptyRegion = BI.inherit(BI.Widget, {
 
     _fieldDragStart: function (fields) {
         this.fields = fields;
-        var onlyCounter = !BI.some(fields, function (i, fieldId) {
-            return BI.Utils.getFieldTypeByID(fieldId) !== BICst.COLUMN.COUNTER;
+        var hasNum = BI.some(fields, function (i, fieldId) {
+            var fieldType = BI.Utils.getFieldTypeByID(fieldId);
+            return fieldType === BICst.COLUMN.NUMBER || fieldType === BICst.COLUMN.COUNTER;
         });
-        if (onlyCounter) {
+        if (!hasNum) {
             this._showForbiddenMask();
         }
     },
@@ -111,7 +103,8 @@ BI.ComplexEmptyRegion = BI.inherit(BI.Widget, {
         var total = this.fields.length;
         var counters = 0;
         BI.each(this.fields, function (i, fieldId) {
-            if (BI.Utils.getFieldTypeByID(fieldId) === BICst.COLUMN.COUNTER) {
+            if (BI.Utils.getFieldTypeByID(fieldId) !== BICst.COLUMN.COUNTER &&
+                BI.Utils.getFieldTypeByID(fieldId) !== BICst.COLUMN.NUMBER) {
                 counters++;
             }
         });
@@ -187,11 +180,11 @@ BI.ComplexEmptyRegion = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
-        return  BI.ComplexEmptyRegion.ID;
+        return  BI.TargetEmptyRegion.ID;
     }
 });
-BI.extend(BI.ComplexEmptyRegion, {
-    ID: "__complex_empty_region__"
+BI.extend(BI.TargetEmptyRegion, {
+    ID: "__target_empty_region__"
 });
-BI.ComplexEmptyRegion.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut("bi.complex_empty_region", BI.ComplexEmptyRegion);
+BI.TargetEmptyRegion.EVENT_CHANGE = "EVENT_CHANGE";
+$.shortcut("bi.target_empty_region", BI.TargetEmptyRegion);

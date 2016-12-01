@@ -723,6 +723,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/dimensionsmanager/regions/map/region.point.map.sub.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regions/map/region.point.map.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regions/region.target.css",
+                "com/fr/bi/web/css/modules/dimensionsmanager/regions/region.wrapper.css",
+                "com/fr/bi/web/css/modules/dimensionsmanager/regions/region.empty.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/dimensionsmanager.css",
 
@@ -1075,8 +1077,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/maptypecombo/popup.maptype.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/charttype/charttype.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regions/abstract.region.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regions/region.dimension.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regions/region.target.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regions/abstract.wrapper.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regions/abstract.region.wrapper.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regions/region.detail.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regions/region.tree.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regions/complex/region.dimension.complex.js",
@@ -1089,6 +1091,14 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/dimensionsmanager/model.dimensionsmanager.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/dimensionsmanager.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/dimensionsmanager.control.js",
+
+                //新的Region
+                "com/fr/bi/web/js/modules/dimensionsmanager/regions/dimension/region.wrapper.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regions/dimension/region.empty.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regions/dimension/region.dimension.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regions/target/region.wrapper.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regions/target/region.empty.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regions/target/region.target.js",
 
                 "com/fr/bi/web/js/modules/tablechartmanager/tablechartmanager.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/errorpane/tablechart.errorpane.js",

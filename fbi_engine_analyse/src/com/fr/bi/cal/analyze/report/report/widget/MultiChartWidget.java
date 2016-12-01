@@ -36,8 +36,13 @@ public class MultiChartWidget extends TableWidget {
             }
             Collections.sort(sorted, new ChinesePinyinComparator());
             for(String region : sorted){
-                if(ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION1) ||
-                        ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION2)){
+//                if(ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION1) ||
+//                        ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION2)){
+//                    continue;
+//                }
+                int regionValue = Integer.parseInt(region);
+                if(regionValue >= Integer.parseInt(BIReportConstant.REGION.DIMENSION1) &&
+                        regionValue < Integer.parseInt(BIReportConstant.REGION.TARGET1)) {
                     continue;
                 }
                 JSONArray tmp =  vjo.getJSONArray(region);
