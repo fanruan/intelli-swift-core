@@ -10,6 +10,7 @@ import com.fr.stable.xml.XMLableReader;
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -118,6 +119,9 @@ public abstract class XMLValueReader {
 
     protected Class loadClass(String className) throws ClassNotFoundException {
         try {
+            if  (className.equals("java.util.Collections$UnmodifiableRandomAccessList")){
+                return ArrayList.class;
+            }
             return Class.forName(className);
         } catch (ClassNotFoundException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);

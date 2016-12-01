@@ -86,7 +86,14 @@ public class CubeUpdateUtils {
                 BILoggerFactory.getLogger().error("tableRelation invalid:" + relation.toString());
                 continue;
             }
-            BITableSourceRelation sourceRelation = converter.convertRelation(relation);
+
+            BITableSourceRelation sourceRelation = null;
+            try {
+                sourceRelation = converter.convertRelation(relation);
+            } catch (Exception e) {
+                BILoggerFactory.getLogger(CubeUpdateUtils.class).error(e.getMessage(), e);
+                continue;
+            }
             if (!BICubeRelationUtils.isRelationExisted(sourceRelation, cubeConfiguration)) {
                 absentRelations.add(sourceRelation);
             }

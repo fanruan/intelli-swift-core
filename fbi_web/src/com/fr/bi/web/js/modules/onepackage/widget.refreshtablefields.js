@@ -87,7 +87,7 @@ BI.RefreshTableLoadingMask = BI.inherit(BI.Widget, {
             }]
         }];
         this.wrapper.populate(items);
-        BI.Utils.getTablesDetailInfoByTables([this.options.table], function (data) {
+        BI.Utils.getTablesDetailInfoByTables4Refresh([this.options.table], function (data) {
             if (self.isCancel === true) {
                 self.isCancel = false;
                 return;
