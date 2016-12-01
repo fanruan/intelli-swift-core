@@ -240,6 +240,20 @@ public class BISystemPackageConfigurationManager extends BISystemDataManager<BIU
         return getUserGroupConfigManager(userId).getPackageConfigManager().getAllTables();
     }
 
+    public boolean isTableReduced(long userId) {
+        return getUserGroupConfigManager(userId).getPackageConfigManager().isTableReduced();
+    }
+
+    public boolean isTableIncreased(long userId) {
+        return getUserGroupConfigManager(userId).getPackageConfigManager().isTableIncreased();
+
+    }
+
+    @Override
+    public boolean isTableNoChange(long userId) {
+        return getUserGroupConfigManager(userId).getPackageConfigManager().isTableNoChange();
+    }
+
     @Override
     public Set<BusinessTable> getAnalysisAllTables(long userId) {
         return getUserGroupConfigManager(userId).getPackageConfigManager().getAnalysisAllTables();
