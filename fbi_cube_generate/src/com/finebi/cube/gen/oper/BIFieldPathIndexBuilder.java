@@ -59,6 +59,7 @@ public class BIFieldPathIndexBuilder extends BITablePathIndexBuilder {
             GroupValueIndexOrHelper helper = new GroupValueIndexOrHelper();
             for (int row = 0; row < primaryFieldRowCount; row++) {
                 GroupValueIndex frontGroupValueIndex = primaryColumnReader.getBitmapIndex(row);
+                frontGroupValueIndex = frontGroupValueIndex.AND(getAllShowIndex());
                 GroupValueIndex resultGroupValueIndex = BITablePathIndexBuilder.getTableLinkedOrGVI(frontGroupValueIndex, tablePathReader);
                 targetPathEntity.addRelationIndex(row, resultGroupValueIndex);
                 helper.add(resultGroupValueIndex);
@@ -107,6 +108,16 @@ public class BIFieldPathIndexBuilder extends BITablePathIndexBuilder {
         BICubeTablePath tableRelationPath = new BICubeTablePath();
         tableRelationPath.copyFrom(relationPath);
         return tableRelationPath;
+    }
+
+    public GroupValueIndex getAllShowIndex() throws BITablePathEmptyException {
+        ITableKey primaryTableKey = relationPath.getFirstRelation().getPrimaryTable();
+        CubeTableEntityGetterService primaryTable = cubeChooser.getCubeTable(primaryTableKey);
+        if (null != primaryTable.getRemovedList() && primaryTable.getRemovedList().size != 0) {
+            return GVIFactory.createGroupValueIndexBySimpleIndex(primaryTable.getRemovedList()).NOT(primaryTable.getRowCount());
+        } else {
+            return GVIFactory.createAllShowIndexGVI(primaryTable.getRowCount());
+        }
     }
 
 }
