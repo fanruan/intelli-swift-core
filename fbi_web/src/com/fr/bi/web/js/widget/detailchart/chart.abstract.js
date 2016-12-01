@@ -87,8 +87,10 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             text_style: {}
         },
         DATA_SETTING_STYLE: {
+            showBlockName: true,
             showCategoryName: true,
             showSeriesName: true,
+            showSize: true,
             showValue: true,
             showPercentage: false,
             position: BICst.DATA_LABEL.POSITION_OUTER,
@@ -296,8 +298,14 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         if(setting.showCategoryName) {
             identifier += '${CATEGORY}'
         }
+        if(setting.showBlockName) {
+            identifier += '${NAME}'
+        }
         if(setting.showSeriesName) {
             identifier += '${SERIES}'
+        }
+        if(setting.showSize) {
+            identifier += '${SIZE}';
         }
         if(setting.showValue) {
             identifier += '${VALUE}'
