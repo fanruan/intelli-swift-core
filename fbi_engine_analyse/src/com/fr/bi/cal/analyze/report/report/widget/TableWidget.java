@@ -20,7 +20,6 @@ import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateT
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.structure.collection.map.ConcurrentCacheHashMap;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -28,6 +27,7 @@ import com.fr.report.poly.TemplateBlock;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -313,7 +313,7 @@ public class TableWidget extends BISummaryWidget {
                 }
             }
             if (changed) {
-                Map<String, TargetGettingKey> targetMap = new ConcurrentCacheHashMap<String, TargetGettingKey>();
+                Map<String, TargetGettingKey> targetMap = new ConcurrentHashMap<String, TargetGettingKey>();
                 for (int i = 0; i < targets.length; i++) {
                     targets[i].setTargetMap(targetMap);
                     targetMap.put(targets[i].getValue(), targets[i].createSummaryCalculator().createTargetGettingKey());
