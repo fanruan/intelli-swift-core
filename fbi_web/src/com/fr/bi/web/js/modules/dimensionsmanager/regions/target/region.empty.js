@@ -2,6 +2,23 @@
  * Created by fay on 2016/11/16.
  */
 BI.TargetEmptyRegion = BI.inherit(BI.Widget, {
+    consts: {
+        RECEIVE_TYPES: [BICst.TARGET_TYPE.FORMULA,
+            BICst.TARGET_TYPE.MONTH_ON_MONTH_RATE,
+            BICst.TARGET_TYPE.MONTH_ON_MONTH_VALUE,
+            BICst.TARGET_TYPE.RANK,
+            BICst.TARGET_TYPE.RANK_IN_GROUP,
+            BICst.TARGET_TYPE.SUM_OF_ABOVE,
+            BICst.TARGET_TYPE.SUM_OF_ABOVE_IN_GROUP,
+            BICst.TARGET_TYPE.SUM_OF_ALL,
+            BICst.TARGET_TYPE.SUM_OF_ALL_IN_GROUP,
+            BICst.TARGET_TYPE.YEAR_ON_YEAR_RATE,
+            BICst.TARGET_TYPE.YEAR_ON_YEAR_VALUE,
+            BICst.TARGET_TYPE.NUMBER,
+            BICst.TARGET_TYPE.COUNTER
+        ]
+    },
+
     _defaultConfig: function () {
         return BI.extend(BI.TargetEmptyRegion.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-empty-region"
@@ -82,11 +99,11 @@ BI.TargetEmptyRegion = BI.inherit(BI.Widget, {
         });
     },
 
-    _fieldDragStart: function (fields) {
-        this.fields = fields;
-        var hasNum = BI.some(fields, function (i, fieldId) {
-            var fieldType = BI.Utils.getFieldTypeByID(fieldId);
-            return fieldType === BICst.COLUMN.NUMBER || fieldType === BICst.COLUMN.COUNTER;
+    _fieldDragStart: function (tars) {
+        var self = this;
+        this.targets = tars;
+        var hasNum = BI.some(tars, function (i, target) {
+            return BI.contains(self.consts.RECEIVE_TYPES, target.type);
         });
         if (!hasNum) {
             this._showForbiddenMask();
@@ -94,21 +111,21 @@ BI.TargetEmptyRegion = BI.inherit(BI.Widget, {
     },
 
     _fieldDragStop: function () {
-        this.fields = null;
+        this.targets = null;
         this._hideForbiddenMask();
     },
 
     _getFieldDropOverHelper: function () {
         //可以放置的字段 + 不可放置的字段
-        var total = this.fields.length;
-        var counters = 0;
-        BI.each(this.fields, function (i, fieldId) {
-            if (BI.Utils.getFieldTypeByID(fieldId) !== BICst.COLUMN.COUNTER &&
-                BI.Utils.getFieldTypeByID(fieldId) !== BICst.COLUMN.NUMBER) {
-                counters++;
+        var self = this;
+        var total = this.targets.length;
+        var notNums = 0;
+        BI.each(this.targets, function (i, target) {
+            if (!BI.contains(self.consts.RECEIVE_TYPES, target.type)) {
+                notNums++;
             }
         });
-        if (counters > 0 && counters !== total) {
+        if (notNums > 0 && notNums !== total) {
             return BI.createWidget({
                 type: "bi.left",
                 cls: "helper-warning",
@@ -121,7 +138,7 @@ BI.TargetEmptyRegion = BI.inherit(BI.Widget, {
                         height: 20
                     }, {
                         type: "bi.label",
-                        text: total - counters
+                        text: total - notNums
                     }],
                     lgap: 5
                 }, {
@@ -133,13 +150,13 @@ BI.TargetEmptyRegion = BI.inherit(BI.Widget, {
                         height: 20
                     }, {
                         type: "bi.label",
-                        text: counters
+                        text: notNums
                     }],
                     lgap: 5
                 }],
                 rgap: 5
             });
-        } else if (counters === total) {
+        } else if (notNums === total) {
             return BI.createWidget({
                 type: "bi.left",
                 cls: "helper-warning drag-helper-forbidden-font",
