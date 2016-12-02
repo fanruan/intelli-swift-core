@@ -30,7 +30,7 @@ public class NormalExtractor extends DBExtractorImpl {
             stmt.setFetchSize(dialect.getFetchSize());
         } catch (Exception e) {
             /**
-             * 不管这个异常了
+             * 不管这个异常了，getFetchSize()返回了-1.
              */
         }
         return stmt;
