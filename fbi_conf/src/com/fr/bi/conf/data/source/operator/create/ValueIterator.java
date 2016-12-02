@@ -104,7 +104,7 @@ class ValueIterator {
             ICubeColumnIndexReader baseGroupMap = ti.loadGroup(keys[index], new ArrayList<BITableSourceRelation>());
             GroupValueIndex nullIndex =  ti.getNullGroupValueIndex(keys[index]);
             if (!nullIndex.isAllEmpty()){
-                baseGroupMap =  new CubeIndexGetterWithNullValue(baseGroupMap, nullIndex);
+                baseGroupMap =  new CubeIndexGetterWithNullValue(baseGroupMap, getters[index], nullIndex);
             }
             mapGetters[index] = groups[index].createGroupedMap(baseGroupMap);
         }

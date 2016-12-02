@@ -1,6 +1,5 @@
 package com.fr.bi.cal.analyze.executor.detail.execute;
 
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -13,6 +12,7 @@ import com.fr.bi.stable.connection.DirectTableConnectionFactory;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.structure.collection.CollectionKey;
+import com.fr.bi.stable.structure.collection.CubeIndexGetterWithNullValue;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.bi.util.BIConfUtils;
 
@@ -33,7 +33,7 @@ public class DetailParas {
     protected BIUser biUser;
     private transient DetailSortKey sortKey;
 
-    private ICubeColumnIndexReader[] getters;
+    private CubeIndexGetterWithNullValue[] getters;
     private ArrayList<BIDetailTarget> noneCalculateList = new ArrayList<BIDetailTarget>();
     private ArrayList<BIDetailTarget> calculateList = new ArrayList<BIDetailTarget>();
     private Map rowMap = new HashMap();
@@ -72,7 +72,7 @@ public class DetailParas {
         return asc;
     }
 
-    public ICubeColumnIndexReader[] getCubeIndexGetters() {
+    public CubeIndexGetterWithNullValue[] getCubeIndexGetters() {
         return getters;
     }
 
@@ -103,7 +103,7 @@ public class DetailParas {
         List<BIDetailTarget> sortList = getTargetSortMap();
         sortKey = new DetailSortKey(gvi, target, sortList);
         asc = new boolean[sortList.size()];
-        getters = new ICubeColumnIndexReader[sortList.size()];
+        getters = new CubeIndexGetterWithNullValue[sortList.size()];
         for (int i = 0; i < sortList.size(); i++) {
             getters[i] = sortList.get(i).createGroupValueMapGetter(target, loader, biUser.getUserId());
             asc[i] = (sortList.get(i).getSort().getSortType() == BIReportConstant.SORT.ASC) || (sortList.get(i).getSort().getSortType() == BIReportConstant.SORT.NUMBER_ASC);

@@ -148,6 +148,11 @@ public class AllSingleDimensionGroupTest extends TestCase {
                 }
 
                 @Override
+                public int getPositionOfGroupByValue(Object value) {
+                    return 0;
+                }
+
+                @Override
                 public int getGroupSize() {
                     return 0;
                 }
