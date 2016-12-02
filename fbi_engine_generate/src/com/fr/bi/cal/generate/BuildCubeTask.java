@@ -92,10 +92,7 @@ public class BuildCubeTask implements CubeTask {
 
     @Override
     public CubeTaskType getTaskType() {
-        if (cubeBuildStuff.isSingleTable()) {
-            return CubeTaskType.SINGLE;
-        }
-        return CubeTaskType.ALL;
+        return cubeBuildStuff.getTaskType();
     }
 
     @Override
@@ -222,6 +219,11 @@ public class BuildCubeTask implements CubeTask {
 
     @Override
     public void run() {
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
         BICubeOperationManager operationManager = new BICubeOperationManager(cube, integrityCube, cubeBuildStuff.getSystemTableSources());
         operationManager.initialWatcher();
@@ -251,11 +253,9 @@ public class BuildCubeTask implements CubeTask {
     }
 
     private void logCubeTaskType() {
-        if (getTaskType() == CubeTaskType.SINGLE) {
             StringBuffer msg = new StringBuffer();
-            msg.append(" Cube single table update start" + "\n");
+            msg.append(" Cube update start. Update type: "+getTaskType().name());
             logger.info(BIDateUtils.getCurrentDateTime() + msg);
-        }
     }
 
     private void logBusinessTable() {
