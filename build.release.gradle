@@ -60,7 +60,7 @@ sourceSets{
 
 }
 
-FileTree jarfiles=fileTree(dir:"${BI_HOME}/lib/",include:'**/*.jar')
+FileTree jarfiles=fileTree(dir:"${BI_HOME}/lib/bugfix%2F4.0",include:'**/*.jar')
 FileTree jarBuildFiles=fileTree(dir:"${BI_HOME}/lib4build/",include:'**/*.jar')
 
 jarfiles.each{File file->
@@ -73,7 +73,7 @@ jarBuildFiles.each{File file->
 
 //声明外部依赖
 dependencies{
-	compile fileTree(dir:"${BI_HOME}/lib/",include:'**/*.jar')
+	compile fileTree(dir:"${BI_HOME}/lib/bugfix%2F4.0",include:'**/*.jar')
 	testCompile 'junit:junit:4.12'
 }
 //指明无法编译文件所在路径
