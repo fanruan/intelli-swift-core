@@ -29,7 +29,7 @@ BI.FlexHorizontalLayout = BI.inherit(BI.Layout, {
 
     _addElement: function (i, item) {
         var o = this.options, w = BI.createWidget(item);
-        w.element.css({"position": "relative", "margin": "0 auto"}).appendTo(this.wrapper);
+        w.element.css({"position": "relative"}).appendTo(this.wrapper);
         if (o.hgap + o.lgap + (item.lgap || 0) > 0) {
             w.element.css({
                 "margin-left": o.hgap + o.lgap + (item.lgap || 0) + "px"

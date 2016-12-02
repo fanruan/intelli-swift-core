@@ -9,11 +9,11 @@ $(function () {
         }
     });
     BI.Plugin.registerWidget("bi.center_adapt", function (ob) {
-       if (BI.isSupportFlex) {
-           return BI.extend({}, ob, {type: "bi.flex_center"});
-       } else {
-           return ob;
-       }
+        if (BI.isSupportFlex && ob.items && ob.items.length <= 1) {
+            return BI.extend({}, ob, {type: "bi.flex_center"});
+        } else {
+            return ob;
+        }
     });
     BI.Plugin.registerWidget("bi.vertical_adapt", function (ob) {
         if (BI.isSupportFlex) {

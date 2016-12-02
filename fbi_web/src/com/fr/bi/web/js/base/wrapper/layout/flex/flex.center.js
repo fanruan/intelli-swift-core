@@ -19,7 +19,7 @@ BI.FlexCenterLayout = BI.inherit(BI.Layout, {
 
     _addElement: function (i, item) {
         var o = this.options, w = BI.createWidget(item);
-        w.element.css({"position": "relative", "margin": "auto"}).appendTo(this.wrapper);
+        w.element.css({"position": "relative"}).appendTo(this.wrapper);
         return w;
     },
 
