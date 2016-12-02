@@ -67,7 +67,7 @@ jarfiles.each{File file->
 	println "-----------------------${file.path}"	
 }
 
-farBuildFiles.each{File file->
+jarBuildFiles.each{File file->
 	println "-----------------------${file.path}"	
 }
 
