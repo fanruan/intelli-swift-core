@@ -72,7 +72,6 @@ sourceSets{
 			"fbi_web/test",
 			"fbi_web_conf/test",
 	]*/
-	
 	instrumentTest.java.srcDirs=[
 		//"fbi/test",
 		"fbi_base/test",
