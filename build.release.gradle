@@ -154,7 +154,7 @@ task obfuse(dependsOn:'build')<<{
 	ant.mkdir(dir:"${BI_HOME}/build/build/JAR/tmp/1.8")
 	ant.taskdef(name:'yguard',classname:'com.yworks.yguard.YGuardTask',classpath:"${BI_HOME}/lib4build/yguard.jar")
 	ant.yguard(){
-		inoutpair(in:"build/libs/${jarname}",out:"${BI_HOME}/build/build/JAR/tmp/1.8/${jarname}")
+		inoutpair(in:"build/libs/${jarname}",out:"JAR/tmp/1.8/${jarname}")
 		rename(){
 		keep{
 			method(name:'void main(String[])'){
