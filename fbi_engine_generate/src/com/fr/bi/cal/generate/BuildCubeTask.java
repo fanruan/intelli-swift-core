@@ -219,11 +219,6 @@ public class BuildCubeTask implements CubeTask {
 
     @Override
     public void run() {
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         BICubeBuildTopicManager manager = new BICubeBuildTopicManager();
         BICubeOperationManager operationManager = new BICubeOperationManager(cube, integrityCube, cubeBuildStuff.getSystemTableSources());
         operationManager.initialWatcher();
