@@ -53,7 +53,7 @@ def list=[
 sourceSets{
 	main.java.srcDirs=list
 	
-	test.java.srcDirs = [
+	/*test.java.srcDirs = [
 			"fbi_analysis_etl/test",
 			"fbi_base/test",
 			//err"fbi_cluster/test",
@@ -67,7 +67,7 @@ sourceSets{
 			//err"fbi_engine_generate/test",
 			"fbi_web/test",
 			"fbi_web_conf/test",
-	]
+	]*/
 	instrumentTest.java.srcDirs=[
 		//"fbi/test",
 		"fbi_base/test",
