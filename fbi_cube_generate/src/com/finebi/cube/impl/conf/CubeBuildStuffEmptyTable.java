@@ -12,6 +12,7 @@ import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.engine.CubeTaskType;
 
 import java.util.*;
 
@@ -76,11 +77,6 @@ public class CubeBuildStuffEmptyTable extends AbstractCubeBuildStuff {
     }
 
     @Override
-    public boolean isSingleTable() {
-        return false;
-    }
-
-    @Override
     public boolean copyFileFromOldCubes() {
         return true;
     }
@@ -99,5 +95,10 @@ public class CubeBuildStuffEmptyTable extends AbstractCubeBuildStuff {
     public String getCubeTaskId() {
         return DBConstant.GLOBAL_UPDATE_TYPE.META_UPDATE;
 
+    }
+
+    @Override
+    public CubeTaskType getTaskType() {
+        return CubeTaskType.EMPTY;
     }
 }

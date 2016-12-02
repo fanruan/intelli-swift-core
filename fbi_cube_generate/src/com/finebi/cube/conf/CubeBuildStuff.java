@@ -4,6 +4,7 @@ import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.relation.*;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.engine.CubeTaskType;
 
 import java.util.List;
 import java.util.Map;
@@ -36,14 +37,13 @@ public interface CubeBuildStuff {
 
     boolean preConditionsCheck();
 
-    boolean isSingleTable();
-
     boolean copyFileFromOldCubes();
 
     boolean replaceOldCubes();
 
     Map<CubeTableSource, UpdateSettingSource> getUpdateSettingSources();
 
+    String getCubeTaskId();
 
-   String getCubeTaskId();
+    CubeTaskType getTaskType();
 }
