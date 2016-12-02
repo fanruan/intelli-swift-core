@@ -61,8 +61,13 @@ sourceSets{
 }
 
 FileTree jarfiles=fileTree(dir:"${BI_HOME}/lib/",include:'**/*.jar')
+FileTree jarBuildFiles=fileTree(dir:"${BI_HOME}/lib4build/",include:'**/*.jar')
 
 jarfiles.each{File file->
+	println "-----------------------${file.path}"	
+}
+
+farBuildFiles.each{File file->
 	println "-----------------------${file.path}"	
 }
 
