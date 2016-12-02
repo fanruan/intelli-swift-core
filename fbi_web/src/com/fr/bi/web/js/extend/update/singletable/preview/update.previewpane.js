@@ -185,12 +185,25 @@ BI.UpdatePreviewPane = BI.inherit(BI.BarPopoverSection, {
                     textHeight: 20
                 });
             } else {
+                var lackFields = self.model.getLackFields(fieldNames);
                 var extraFields = self.model.getExtraFields(fieldNames);
                 var warningHeight = 29;
+                if (lackFields.length > 0) {
+                    self.warningContainer.addItem({
+                        type: "bi.label",
+                        text: "1." + BI.i18nText("BI-Sql_Result_Less_Cube") + lackFields,
+                        title: BI.i18nText("BI-Sql_Result_Less_Cube") + lackFields,
+                        cls: "warning-comment",
+                        textAlign: "left",
+                        textHeight: 20,
+                        hgap: 10
+                    });
+                    warningHeight += 30;
+                }
                 if (extraFields.length > 0) {
                     self.warningContainer.addItem({
                         type: "bi.label",
-                        text: "2、" + BI.i18nText("BI-Cube_Less_Sql_Result") + extraFields + BI.i18nText("BI-Fields_Wonnot_Action_Update"),
+                        text: (lackFields.length > 0 ? "2." : "1.") + BI.i18nText("BI-Cube_Less_Sql_Result") + extraFields + BI.i18nText("BI-Fields_Wonnot_Action_Update"),
                         title: BI.i18nText("BI-Cube_Less_Sql_Result") + extraFields + BI.i18nText("BI-Fields_Wonnot_Action_Update"),
                         cls: "warning-comment",
                         textAlign: "left",
