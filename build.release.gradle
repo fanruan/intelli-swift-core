@@ -9,10 +9,15 @@ def baseDir='.'
 def jarname='fr-bi-server-4.0.jar'
 //指定生成的jar包版本
 version='4.0'
+//获取什么分支名
+FileTree files =fileTree(dir:'./',include:'build.*.gradle')
+def buildDir=files[0].path.substring(0,files[0].path.lastIndexOf ('\\'))
+def branchName=buildDir.substring(buildDir.lastIndexOf ('\\')+1)
 jar{
 //指定生成jar包的名称
 	baseName='fr-bi-server'
 }
+
 def list=[
 		"fbi/src",
 		"fbi_base/src",
@@ -150,8 +155,8 @@ task addTime(dependsOn:'compressJS'){
 
 //混淆代码
 task obfuse(dependsOn:'build')<<{
-	ant.delete(dir:"${BI_HOME}/build/build/JAR/tmp/1.8")
-	ant.mkdir(dir:"${BI_HOME}/build/build/JAR/tmp/1.8")
+	ant.delete(dir:"JAR/tmp/1.8")
+	ant.mkdir(dir:"JAR/tmp/1.8")
 	ant.taskdef(name:'yguard',classname:'com.yworks.yguard.YGuardTask',classpath:"${BI_HOME}/lib4build/yguard.jar")
 	ant.yguard(){
 		inoutpair(in:"build/libs/${jarname}",out:"JAR/tmp/1.8/${jarname}")
