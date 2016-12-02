@@ -16,6 +16,7 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
@@ -333,5 +334,10 @@ public class CubeBuildStuffSpecificTable extends CubeBuildSpecific {
 
     public String getCubeTaskId() {
         return BIStringUtils.append(DBConstant.CUBE_UPDATE_TYPE.SINGLETABLE_UPDATE, specificTable.getSourceID(), specificBasicTableID);
+    }
+
+    @Override
+    public CubeTaskType getTaskType() {
+        return CubeTaskType.SINGLE;
     }
 }
