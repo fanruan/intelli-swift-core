@@ -5,6 +5,7 @@ tasks.withType(JavaCompile){
 //sourceCompatibility=1.5
 //BI工程的根目录
 def BI_HOME='../../'
+def baseDir='.'
 def jarname='fr-bi-server-4.0.jar'
 //指定生成的jar包版本
 version='4.0'
