@@ -1,0 +1,33 @@
+@import "../../../bibase";
+.bi-region-wrapper {
+  &.bi-dimension-region-wrapper {
+    border: 1px solid @color-dimension-region-border;
+    & .region-north {
+      background: @color-dimension-background;
+      border-bottom: 1px solid @color-dimension-region-border;
+      & .region-north-title {
+        font-size: @font-size-14;
+        color: @color-bi-text-gray;
+      }
+    }
+  }
+  & .dimensions-container {
+    & .dimension-container {
+      background: @color-dimension-background;
+      .border-radius(2px);
+    }
+    & .virtual-drop-area {
+      .border-radius(2px);
+      border: 1px dashed @color-dimension-region-border;
+    }
+    & .region-empty-tip{
+      color: @color-bi-text-dark;
+      font-size: @font-size-14;
+    }
+  }
+  & .forbidden-mask{
+    background: @color-bi-background-black;
+    .opacity(0.05);
+    z-index: 1;
+  }
+}

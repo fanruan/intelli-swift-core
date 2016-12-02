@@ -1,5 +1,5 @@
 @import "../../../bibase";
-
+@container-min-height: 37px;
 .bi-dimension-region {
   border: 1px solid @color-dimension-region-border;
   & .region-north {
@@ -10,7 +10,12 @@
       color: @color-bi-text-gray;
     }
   }
+  & .drag-tool{
+    border-right: 1px solid @color-dimension-region-border;
+    cursor: move;
+  }
   & .dimensions-container {
+    min-height: @container-min-height;
     & .dimension-container {
       background: @color-dimension-background;
       .border-radius(2px);

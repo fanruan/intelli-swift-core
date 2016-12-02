@@ -1,70 +1,51 @@
 /**
- * Created by Young's on 2016/9/12.
+ * Created by fay on 2016/11/16.
  */
-BI.MainPointMapRegion = BI.inherit(BI.Widget, {
-    constants: {
-        TITLE_ICON_HEIGHT: 20,
-        TITLE_ICON_WIDTH: 20,
-        REGION_HEIGHT_NORMAL: 25,
-        REGION_DIMENSION_GAP: 5,
-        REGION_DIMENSION_LEFT_GAP: 15
-    },
-
+BI.DimensionEmptyRegion = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
-        return BI.extend(BI.MainPointMapRegion.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-main-point-map-region",
-            wId: ""
+        return BI.extend(BI.DimensionEmptyRegion.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-empty-region"
         });
     },
 
     _init: function () {
-        BI.MainPointMapRegion.superclass._init.apply(this, arguments);
-        var self = this, o = this.options;
-        this.store = {};
-        this.containers = {};
-
-        this.center = BI.createWidget({
-            type: "bi.vertical",
-            cls: "dimensions-container",
-            scrolly: true,
-            width: "100%",
-            height: "100%",
-            hgap: this.constants.REGION_DIMENSION_GAP,
-            vgap: this.constants.REGION_DIMENSION_GAP
+        BI.DimensionEmptyRegion.superclass._init.apply(this, arguments);
+        var self = this;
+        var commentTip = BI.createWidget({
+            type: "bi.label",
+            text: BI.i18nText("BI-Drag_Left_Field"),
+            cls: "drag-comment",
+            height: 25
         });
-        this.center.element.droppable({
+        var DimensionEmptyRegion = BI.createWidget({
+            type: "bi.vertical",
+            element: this.element,
+            height: 40,
+            items: [commentTip],
+            vgap: 5,
+            hgap: 5
+        });
+        DimensionEmptyRegion.element.droppable({
             accept: ".select-data-level0-item-button, .select-data-level1-item-button",
             tolerance: "pointer",
             drop: function (event, ui) {
                 BI.isNotNull(self.dropArea) && self.dropArea.destroy();
+                BI.size(self.store) === 0 && BI.isNotNull(commentTip) && commentTip.setVisible(true);
 
                 var helper = ui.helper;
                 var data = helper.data("data");
-                if (self.options.regionType >= BICst.REGION.TARGET1) {
+                if (self.options.wrapperType >= BICst.REGION.TARGET1) {
                     data = BI.filter(data, function (i, dimension) {
-                        return dimension.type === BICst.TARGET_TYPE.NUMBER || dimension.type === BICst.TARGET_TYPE.COUNTER || dimension.type === BICst.TARGET_TYPE.FORMULA ||
-                            dimension.type === BICst.TARGET_TYPE.YEAR_ON_YEAR_RATE ||
-                            dimension.type === BICst.TARGET_TYPE.MONTH_ON_MONTH_RATE ||
-                            dimension.type === BICst.TARGET_TYPE.YEAR_ON_YEAR_VALUE ||
-                            dimension.type === BICst.TARGET_TYPE.MONTH_ON_MONTH_VALUE ||
-                            dimension.type === BICst.TARGET_TYPE.SUM_OF_ABOVE ||
-                            dimension.type === BICst.TARGET_TYPE.SUM_OF_ABOVE_IN_GROUP ||
-                            dimension.type === BICst.TARGET_TYPE.SUM_OF_ALL ||
-                            dimension.type === BICst.TARGET_TYPE.SUM_OF_ALL_IN_GROUP ||
-                            dimension.type === BICst.TARGET_TYPE.RANK ||
-                            dimension.type === BICst.TARGET_TYPE.RANK_IN_GROUP;
+                        return BI.Utils.isTargetType(dimension.type);
                     });
                 }
-                if (self.options.regionType < BICst.REGION.TARGET1) {
+                if (self.options.wrapperType < BICst.REGION.TARGET1) {
                     data = BI.filter(data, function (i, dimension) {
-                        return dimension.type === BICst.TARGET_TYPE.STRING || dimension.type === BICst.TARGET_TYPE.DATE || dimension.type === BICst.TARGET_TYPE.NUMBER;
+                        return BI.Utils.isDimensionType(dimension.type);
                     });
                 }
-                BI.each(data, function (i, dimension) {
-                    self.addDimension(dimension.dId || BI.UUID(), dimension);
-                });
                 if (data.length > 0) {
-                    self.fireEvent(BI.MainPointMapRegion.EVENT_CHANGE);
+                    self.fireEvent(BI.DimensionEmptyRegion.EVENT_CHANGE, data);
                 }
                 BI.Broadcasts.send(BICst.BROADCAST.FIELD_DROP_PREFIX);
             },
@@ -75,7 +56,8 @@ BI.MainPointMapRegion = BI.inherit(BI.Widget, {
                         height: 25,
                         cls: "virtual-drop-area"
                     });
-                    self.center.addItem(self.dropArea);
+                    DimensionEmptyRegion.addItem(self.dropArea);
+                    BI.size(self.store) === 0 && BI.isNotNull(commentTip) && commentTip.setVisible(false);
                 }
                 var helperWidget = ui.helper.data().helperWidget;
                 var helper = self._getFieldDropOverHelper();
@@ -85,15 +67,10 @@ BI.MainPointMapRegion = BI.inherit(BI.Widget, {
             },
             out: function(event, ui) {
                 BI.isNotNull(self.dropArea) && self.dropArea.destroy();
+                BI.size(self.store) === 0 && BI.isNotNull(commentTip) && commentTip.setVisible(true);
                 var helperWidget = ui.helper.data().helperWidget;
                 helperWidget.populate();
             }
-        });
-
-        BI.createWidget({
-            type: "bi.default",
-            element: this.element,
-            items: [this.center]
         });
 
         BI.Broadcasts.on(BICst.BROADCAST.FIELD_DRAG_START, function (fields) {
@@ -112,10 +89,6 @@ BI.MainPointMapRegion = BI.inherit(BI.Widget, {
         if (onlyCounter) {
             this._showForbiddenMask();
         }
-    },
-
-    getSortableCenter: function () {
-        return this.center;
     },
 
     _fieldDragStop: function () {
@@ -216,67 +189,12 @@ BI.MainPointMapRegion = BI.inherit(BI.Widget, {
         BI.isNotNull(this.forbiddenMask) && this.forbiddenMask.setVisible(false);
     },
 
-    addDimension: function (dId, options) {
-        this.store[dId] = this._createDimension(dId, options);
-        this.center.addItem(this.store[dId]);
-    },
-
-    _createDimension: function (dId, options) {
-        var self = this, o = this.options;
-        options || (options = {});
-        var dim = o.dimensionCreator(dId, this.options.regionType, options);
-        if (this.containers[dId]) {
-            BI.createWidget({
-                type: "bi.absolute",
-                element: this.containers[dId],
-                items: [{
-                    el: dim,
-                    left: 0,
-                    top: 0,
-                    right: 0,
-                    bottom: 0
-                }]
-            });
-        } else {
-            this.containers[dId] = BI.createWidget({
-                type: "bi.absolute",
-                cls: "dimension-container",
-                data: {
-                    dId: dId
-                },
-                height: 25,
-                items: [{
-                    el: dim,
-                    left: 0,
-                    top: 0,
-                    right: 0,
-                    bottom: 0
-                }]
-            });
-        }
-        return this.containers[dId];
-    },
-
     getValue: function () {
-        var self = this, o = this.options || {};
-        var result = [];
-        var dimensions = $(".dimension-container", this.center.element);
-        BI.each(dimensions, function (i, dom) {
-            var dId = $(dom).data("dId");
-            result.push(dId);
-        });
-        return result;
-    },
-
-    populate: function (dimensions) {
-        var self = this, o = this.options;
-        BI.DOM.hang(this.store);
-        this.store = {};
-        BI.each(dimensions, function (i, did) {
-            self.store[did] = self._createDimension(did);
-            self.center.addItem(self.store[did]);
-        })
+        return  BI.DimensionEmptyRegion.ID;
     }
 });
-BI.MainPointMapRegion.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut("bi.main_point_map_region", BI.MainPointMapRegion);
+BI.extend(BI.DimensionEmptyRegion, {
+    ID: "__dimension_empty_region__"
+});
+BI.DimensionEmptyRegion.EVENT_CHANGE = "EVENT_CHANGE";
+$.shortcut("bi.dimension_empty_region", BI.DimensionEmptyRegion);

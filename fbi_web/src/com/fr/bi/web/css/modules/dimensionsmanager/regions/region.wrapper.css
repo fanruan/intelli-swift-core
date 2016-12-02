@@ -1,41 +1,34 @@
 /****添加计算宽度的--运算符直接需要space****/
 /****** common color(常用颜色,可用于普遍场景) *****/
 /**** custom color(自定义颜色,用于特定场景) ****/
-.bi-dimension-region {
+.bi-region-wrapper.bi-dimension-region-wrapper {
   border: 1px solid #a3d6e8;
 }
-.bi-dimension-region .region-north {
+.bi-region-wrapper.bi-dimension-region-wrapper .region-north {
   background: #d8f2fd;
   border-bottom: 1px solid #a3d6e8;
 }
-.bi-dimension-region .region-north .region-north-title {
+.bi-region-wrapper.bi-dimension-region-wrapper .region-north .region-north-title {
   font-size: 14px;
   color: #808080;
 }
-.bi-dimension-region .drag-tool {
-  border-right: 1px solid #a3d6e8;
-  cursor: move;
-}
-.bi-dimension-region .dimensions-container {
-  min-height: 37px;
-}
-.bi-dimension-region .dimensions-container .dimension-container {
+.bi-region-wrapper .dimensions-container .dimension-container {
   background: #d8f2fd;
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   border-radius: 2px;
 }
-.bi-dimension-region .dimensions-container .virtual-drop-area {
+.bi-region-wrapper .dimensions-container .virtual-drop-area {
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   border-radius: 2px;
   border: 1px dashed #a3d6e8;
 }
-.bi-dimension-region .dimensions-container .region-empty-tip {
+.bi-region-wrapper .dimensions-container .region-empty-tip {
   color: #d4dadd;
   font-size: 14px;
 }
-.bi-dimension-region .forbidden-mask {
+.bi-region-wrapper .forbidden-mask {
   background: #1a1a1a;
   opacity: 0.05;
   filter: alpha(opacity=5);
