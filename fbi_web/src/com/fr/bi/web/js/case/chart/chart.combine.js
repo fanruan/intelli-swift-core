@@ -55,7 +55,7 @@ BI.CombineChart = BI.inherit(BI.Widget, {
         });
         var config = BI.ChartCombineFormatItemFactory.combineConfig();
         config.plotOptions.click = function () {
-            var data = this.options;
+            var data = BI.clone(this.options);
             data.toolTipRect = this.getTooltipRect();
             var items = o.popupItemsGetter(data);
             if(items && items.length === 1) {
