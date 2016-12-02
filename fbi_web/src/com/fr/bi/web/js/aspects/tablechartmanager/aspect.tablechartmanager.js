@@ -64,15 +64,15 @@ BI.TableChartManagerAspect = function () {
                 BI.each(v, function (i, dId) {
                     BI.Utils.isDimensionUsable(dId) && dim2Size++;
                 });
-            } else if (vId === BICst.REGION.TARGET1) {
+            } else if (BI.parseInt(vId) >= BI.parseInt(BICst.REGION.TARGET1) && BI.parseInt(vId) < BI.parseInt(BICst.REGION.TARGET2)) {
                 BI.each(v, function (i, dId) {
                     BI.Utils.isDimensionUsable(dId) && tar1Size++;
                 });
-            } else if (vId === BICst.REGION.TARGET2) {
+            } else if (BI.parseInt(vId) >= BI.parseInt(BICst.REGION.TARGET2) && BI.parseInt(vId) < BI.parseInt(BICst.REGION.TARGET3)) {
                 BI.each(v, function (i, dId) {
                     BI.Utils.isDimensionUsable(dId) && tar2Size++;
                 });
-            } else if (vId === BICst.REGION.TARGET3) {
+            } else if (BI.parseInt(vId) >= BI.parseInt(BICst.REGION.TARGET3)) {
                 BI.each(v, function (i, dId) {
                     BI.Utils.isDimensionUsable(dId) && tar3Size++;
                 });

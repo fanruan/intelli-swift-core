@@ -221,10 +221,11 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                     var preDim1Select = [], preDim2Select = [];
                     BI.each(preDims, function (dId, dim) {
                         if (dim.used === true) {
-                            if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.DIMENSION1) {
+                            var regionType = BI.Utils.getRegionTypeByDimensionID(dId);
+                            if (regionType >= BICst.REGION.DIMENSION1 && regionType < BICst.REGION.DIMENSION2) {
                                 preDim1Select.push(dId);
                             }
-                            if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.DIMENSION2) {
+                            if (regionType >= BICst.REGION.DIMENSION2 && regionType < BICst.REGION.TARGET1) {
                                 preDim2Select.push(dId);
                             }
                         }
@@ -233,7 +234,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                     BI.each(dims, function (dId, dim) {
                         var rType = BI.Utils.getRegionTypeByDimensionID(dId);
                         if (dim.used === true) {
-                            if (rType === BICst.REGION.DIMENSION1) {
+                            if (rType >= BICst.REGION.DIMENSION1 && rType < BICst.REGION.DIMENSION2) {
                                 if(!preDim1Select.contains(dId)){
                                     //添加维度
                                     if(BI.isNotEmptyArray(preDim1Select) && BI.size(dims) !== BI.size(preDims)){
@@ -244,7 +245,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                                     }
                                 }
                             }
-                            if (rType === BICst.REGION.DIMENSION2) {
+                            if (rType >= BICst.REGION.DIMENSION2 && rType < BICst.REGION.TARGET1) {
                                 if(!preDim2Select.contains(dId)){
                                     if(BI.isNotEmptyArray(preDim2Select) && BI.size(dims) !== BI.size(preDims)){
                                         dims[dId].used = false;
@@ -288,13 +289,14 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                         var preTar1Select = [], preTar2Select = [], preTar3Select = [];
                         BI.each(preDims, function (dId, dim) {
                             if (dim.used === true) {
-                                if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.TARGET1) {
+                                var regionType = BI.Utils.getRegionTypeByDimensionID(dId);
+                                if (regionType >= BICst.REGION.TARGET1 && regionType < BICst.REGION.TARGET2) {
                                     preTar1Select.push(dId);
                                 }
-                                if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.TARGET2) {
+                                if (regionType >= BICst.REGION.TARGET2 && regionType < BICst.REGION.TARGET3) {
                                     preTar2Select.push(dId);
                                 }
-                                if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.TARGET3) {
+                                if (regionType >= BICst.REGION.TARGET3) {
                                     preTar3Select.push(dId);
                                 }
                             }
@@ -303,7 +305,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                         BI.each(dims, function (dId, dim) {
                             var rType = BI.Utils.getRegionTypeByDimensionID(dId);
                             if (dim.used === true) {
-                                if (rType === BICst.REGION.TARGET1) {
+                                if (rType >= BICst.REGION.TARGET1 && rType < BICst.REGION.TARGET2) {
                                     if(!preTar1Select.contains(dId)){
                                         //添加指标
                                         if(BI.isNotEmptyArray(preTar1Select) && BI.size(dims) !== BI.size(preDims)){
@@ -314,7 +316,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                                         }
                                     }
                                 }
-                                if (rType === BICst.REGION.TARGET2) {
+                                if (rType >= BICst.REGION.TARGET2 && rType < BICst.REGION.TARGET3) {
                                     if(!preTar2Select.contains(dId)){
                                         if(BI.isNotEmptyArray(preTar2Select) && BI.size(dims) !== BI.size(preDims)){
                                             dims[dId].used = false;
@@ -323,7 +325,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                                         }
                                     }
                                 }
-                                if (rType === BICst.REGION.TARGET3) {
+                                if (rType >= BICst.REGION.TARGET3) {
                                     if(!preTar3Select.contains(dId)){
                                         if(BI.isNotEmptyArray(preTar3Select) && BI.size(dims) !== BI.size(preDims)){
                                             dims[dId].used = false;
@@ -355,10 +357,11 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                         var preTar2Select = [], preTar1Select = [];
                         BI.each(preDims, function (dId, dim) {
                             if (dim.used === true) {
-                                if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.TARGET1) {
+                                var rType = BI.Utils.getRegionTypeByDimensionID(dId);
+                                if (rType >= BICst.REGION.TARGET1 && rType < BICst.REGION.TARGET2) {
                                     preTar1Select.push(dId);
                                 }
-                                if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.TARGET2) {
+                                if (rType >= BICst.REGION.TARGET2 && rType < BICst.REGION.TARGET3) {
                                     preTar2Select.push(dId);
                                 }
                             }
@@ -367,7 +370,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                         BI.each(dims, function (dId, dim) {
                             var rType = BI.Utils.getRegionTypeByDimensionID(dId);
                             if (dim.used === true) {
-                                if (rType === BICst.REGION.TARGET1) {
+                                if (rType >= BICst.REGION.TARGET1 && rType < BICst.REGION.TARGET2) {
                                     if(!preTar1Select.contains(dId)){
                                         if(BI.isNotEmptyArray(preTar1Select) && BI.size(dims) !== BI.size(preDims)){
                                         }else{
@@ -375,7 +378,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                                         }
                                     }
                                 }
-                                if (rType === BICst.REGION.TARGET2) {
+                                if (rType >= BICst.REGION.TARGET2 && rType < BICst.REGION.TARGET3) {
                                     if(!preTar2Select.contains(dId)){
                                         if(BI.isNotEmptyArray(preTar2Select) && BI.size(dims) !== BI.size(preDims)){
                                             dims[dId].used = false;

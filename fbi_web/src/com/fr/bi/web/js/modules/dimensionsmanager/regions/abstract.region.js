@@ -11,13 +11,14 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
         TITLE_ICON_HEIGHT: 20,
         TITLE_ICON_WIDTH: 20,
         REGION_HEIGHT_NORMAL: 25,
-        REGION_DIMENSION_GAP: 5
+        REGION_DIMENSION_GAP: 5,
+        REGION_DIMENSION_LEFT_GAP: 15
     },
 
     _defaultConfig: function () {
         var conf = BI.AbstractRegion.superclass._defaultConfig.apply(this, arguments);
         return BI.extend(conf, {
-            baseCls: 'bi-region',
+            baseCls: 'bi-dimension-region',
             titleName: "",
             wId: ""
         })
@@ -25,10 +26,11 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.AbstractRegion.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
         this._createRegion();
         this.store = {};
         this._toggleTip();
+        this.element.attr("id", o.regionType);
         BI.Broadcasts.on(BICst.BROADCAST.FIELD_DRAG_START, function (fields) {
             self._fieldDragStart(fields);
         });
@@ -54,27 +56,6 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
 
     _createRegion: function () {
         var self = this, o = this.options;
-        var titleName = BI.createWidget({
-            type: "bi.icon_text_item",
-            logic: {
-                dynamic: true
-            },
-            cls: "region-north-title " + this._getFieldClass(o.regionType),
-            text: o.titleName,
-            height: this.constants.REGION_HEIGHT_NORMAL
-        });
-
-        var north = BI.createWidget({
-            type: "bi.border",
-            items: {
-                west: {
-                    el: titleName,
-                    height: this.constants.REGION_HEIGHT_NORMAL,
-                    left: this.constants.REGION_DIMENSION_GAP
-                }
-            },
-            cls: "region-north"
-        });
 
         this.center = BI.createWidget({
             type: "bi.vertical",
@@ -82,6 +63,7 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
             scrolly: true,
             width: "100%",
             height: "100%",
+            lgap: this.constants.REGION_DIMENSION_LEFT_GAP,
             hgap: this.constants.REGION_DIMENSION_GAP,
             vgap: this.constants.REGION_DIMENSION_GAP
         });
@@ -91,7 +73,6 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
             tolerance: "pointer",
             drop: function (event, ui) {
                 BI.isNotNull(self.dropArea) && self.dropArea.destroy();
-                BI.size(self.store) === 0 && BI.isNotNull(self.tip) && self.tip.setVisible(true);
 
                 var helper = ui.helper;
                 var data = helper.data("data");
@@ -129,7 +110,6 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
                         cls: "virtual-drop-area"
                     });
                     self.center.addItem(self.dropArea);
-                    BI.size(self.store) === 0 && BI.isNotNull(self.tip) && self.tip.setVisible(false);
                 }
                 var helperWidget = ui.helper.data().helperWidget;
                 var helper = self._getFieldDropOverHelper();
@@ -139,23 +119,20 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
             },
             out: function (event, ui) {
                 BI.isNotNull(self.dropArea) && self.dropArea.destroy();
-                BI.size(self.store) === 0 && BI.isNotNull(self.tip) && self.tip.setVisible(true);
                 var helperWidget = ui.helper.data().helperWidget;
                 helperWidget.populate();
             }
         });
 
         BI.createWidget({
-            type: "bi.vtape",
+            type: "bi.default",
             element: this.element,
-            items: [{
-                el: north,
-                height: this.constants.REGION_HEIGHT_NORMAL
-            }, {
-                type: "bi.default",
-                items: [this.center]
-            }]
-        })
+            items: [this.center]
+        });
+    },
+
+    _toggleTip: function () {
+
     },
 
     getSortableCenter: function () {
@@ -200,14 +177,14 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
         } else {
             this.forbiddenMask = BI.createWidget({
                 type: "bi.layout",
-                cls: "forbidden-mask"
+                //cls: "forbidden-mask"
             });
             BI.createWidget({
                 type: "bi.absolute",
                 element: this.element,
                 items: [{
                     el: this.forbiddenMask,
-                    top: 25,
+                    top: 0,
                     left: 0,
                     bottom: 0,
                     right: 0
@@ -225,22 +202,8 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
         this.center.addItem(this.store[dId]);
     },
 
-    _toggleTip: function (dimensions) {
-        if (BI.isNull(dimensions) || dimensions.length === 0) {
-            if (BI.isNotNull(this.tip)) {
-                this.tip.setVisible(true);
-            } else {
-                this.tip = BI.createWidget({
-                    type: "bi.label",
-                    text: this._getDragTipContent(),
-                    height: 25,
-                    cls: "region-empty-tip"
-                });
-                this.center.addItem(this.tip);
-            }
-        } else {
-            BI.isNotNull(this.tip) && this.tip.setVisible(false);
-        }
+    getRegionType: function () {
+        return this.options.regionType;
     },
 
     getValue: function () {
@@ -250,7 +213,6 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
     populate: function (dimensions) {
         var self = this, o = this.options;
         BI.DOM.hang(this.store);
-        var store = this.store;
         this.store = {};
         BI.each(dimensions, function (i, did) {
             self.store[did] = self._createDimension(did);
