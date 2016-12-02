@@ -60,6 +60,21 @@ sourceSets{
 
 }
 
+repositories{
+    mavenCentral()
+}
+configurations{
+	ftpAntTask
+}
+//添加ftp依赖
+dependencies {
+    ftpAntTask("org.apache.ant:ant-commons-net:1.8.4") {
+        module("commons-net:commons-net:1.4.1") {
+            dependencies "oro:oro:2.0.8:jar"
+        }
+    }
+}
+
 FileTree jarfiles=fileTree(dir:"${BI_HOME}/lib/bugfix%2F4.0",include:'**/*.jar')
 FileTree jarBuildFiles=fileTree(dir:"${BI_HOME}/lib4build/",include:'**/*.jar')
 
@@ -168,4 +183,51 @@ task obfuse(dependsOn:'build')<<{
 	}
 	ant.delete(file:'yguardlog.xml')
 	ant.delete(dir:"build")
+}
+
+ant{
+	taskdef(name: 'ftp',
+                classname: 'org.apache.tools.ant.taskdefs.optional.net.FTP',
+               classpath: configurations.ftpAntTask.asPath)
+	echo('ftp target is 192.168.5.86')
+	//jar包上传到ftp
+	fileset(id:'ftp.upload.fileset.jar',dir:'bi_jar_zip'){
+		include(name:'**/**')
+	}
+
+}
+
+task copyjar(dependsOn:'obfuse')<<{
+	ant{
+		delete(file:"${baseDir}/JAR/CN/${jarname}")
+		mkdir(dir:"${baseDir}/JAR/tmp/1.8")
+		mkdir(dir:"${baseDir}/JAR/CN")
+		//构建jdk1.8的jar包
+		jar(destfile:"${baseDir}/JAR/CN/${jarname}"){
+			zipfileset(includes:'**/*.*',excludes:'com/fr/bi/test/**',src:"JAR/tmp/1.8/${jarname}")
+			fileset(dir:"${BI_HOME}/build/master/build/JAR/CN"){
+				include(name:"com/**/*")
+			}
+		}
+		delete(file:"${baseDir}/bi_jar/*.*")
+		copy(todir:"${baseDir}/bi_jar"){
+			fileset(file:"${baseDir}/JAR/CN/${jarname}")
+			fileset(dir:"${baseDir}/../../lib/${branchName}/report",includes:"fr-*.jar")
+		}
+		zip(destfile:"${baseDir}/bi_jar_zip/BI4.0jar_jdk1.8.zip"){
+			zipfileset(dir:"${baseDir}/bi_jar")
+		}
+		delete(file:"${baseDir}/JAR/CN/${jarname}")
+		delete(dir:"${baseDir}/JAR/tmp")
+	}	
+}
+
+//上传exe文件到ftp上
+//上传生成的jar包到ftp上
+task ftp_uploadjar(dependsOn:copyjar)<<{
+	ant{
+		ftp(server:'192.168.5.86',userid:'fr',password:'ilovejava',remotedir:'finebi/bugfix4.0S',action:'put'){
+			fileset(refid:'ftp.upload.fileset.jar')
+		}
+	}
 }
