@@ -18,13 +18,12 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
+import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.stable.structure.collection.map.CubeLinkedHashMap;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by 小灰灰 on 2015/6/24.
@@ -156,7 +155,19 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
             usedColumnKey = new IndexKey(primaryField.getFieldName());
         }
         ICubeColumnIndexReader getter = loader.getTableIndex(usedTableSource).loadGroup(usedColumnKey, getRelationList(), useRealData, groupLimit);
-        getter = dimension.getGroup().createGroupedMap(getter);
+        GroupValueIndex nullGroupValueIndex = loader.getTableIndex(usedTableSource).getNullGroupValueIndex(usedColumnKey);
+        CubeLinkedHashMap newGetter = new CubeLinkedHashMap();
+        newGetter.put("", nullGroupValueIndex);
+        Iterator iter = getter.iterator();
+        while (iter.hasNext()) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            Object key = entry.getKey();
+            if (key == null) {
+                continue;
+            }
+            newGetter.put(key, entry.getValue());
+        }
+        getter = dimension.getGroup().createGroupedMap(newGetter);
         if (useRealData && isNoGroup() && getSortType() != BIReportConstant.SORT.CUSTOM) {
             return getSortType() != BIReportConstant.SORT.DESC ? getter.iterator() : getter.previousIterator();
         }

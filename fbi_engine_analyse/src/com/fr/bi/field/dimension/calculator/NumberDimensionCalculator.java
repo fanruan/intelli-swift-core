@@ -7,7 +7,9 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
+import com.fr.bi.stable.structure.collection.map.CubeLinkedHashMap;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
 
 import java.util.Comparator;
@@ -45,7 +47,19 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
 
     private void initCustomMap(ICubeDataLoader loader, boolean useRealData, int groupLimit) {
         ICubeColumnIndexReader getter = loader.getTableIndex(field.getTableBelongTo().getTableSource()).loadGroup(dimension.createKey(field), getRelationList(), useRealData, groupLimit);
-        getter = dimension.getGroup().createGroupedMap(getter);
+        GroupValueIndex nullGroupValueIndex = loader.getTableIndex(field.getTableBelongTo().getTableSource()).getNullGroupValueIndex(dimension.createKey(field));
+        CubeLinkedHashMap newGetter = new CubeLinkedHashMap();
+        newGetter.put("", nullGroupValueIndex);
+        Iterator iter = getter.iterator();
+        while (iter.hasNext()) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            Object key = entry.getKey();
+            if (key == null) {
+                continue;
+            }
+            newGetter.put(key, entry.getValue());
+        }
+        getter = dimension.getGroup().createGroupedMap(newGetter);
         if(isCustomSort()){
             customMap =  dimension.getSort().createGroupedMap(getter);
         } else {
