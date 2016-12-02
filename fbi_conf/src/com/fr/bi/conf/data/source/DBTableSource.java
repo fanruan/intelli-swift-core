@@ -94,7 +94,7 @@ public class DBTableSource extends AbstractTableSource {
     @Override
     public IPersistentTable getPersistentTable() {
         if (dbTable == null) {
-            BILoggerFactory.getLogger(DBTableSource.class).info("The table:"+this.getTableName()+"extract data from db");
+            BILoggerFactory.getLogger(DBTableSource.class).info("The table:" + this.getTableName() + "extract data from db");
             dbTable = BIDBUtils.getDBTable(dbName, tableName);
         }
         return dbTable;
@@ -270,7 +270,12 @@ public class DBTableSource extends AbstractTableSource {
                 JSONArray value = new JSONArray();
                 values.put(value);
                 for (int row = 0; row < rolLen; row++) {
-                    value.put(dm.getValueAt(row, col));
+                    boolean isString = false;
+                    if (getFields().containsKey(name) && getFields().get(name).getFieldType() == DBConstant.COLUMN.STRING) {
+                        isString = true;
+                    }
+                    Object val = dm.getValueAt(row, col);
+                    value.put((isString && val == null) ? "" : val);
                 }
             }
         } catch (Exception e) {

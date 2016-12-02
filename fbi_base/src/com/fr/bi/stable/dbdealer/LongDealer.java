@@ -13,12 +13,21 @@ public class LongDealer extends AbstractDealer<Long> {
 
     @Override
     public Long dealWithResultSet(ResultSet rs) {
+        long v = 0L;
         try {
-            return rs.getLong(rsColumn);
+            v = rs.getLong(rsColumn);
         } catch (SQLException e1) {
             BILoggerFactory.getLogger().error(e1.getMessage(), e1);
         }
-        return null;
+        if (v == 0) {
+            try {
+                return rs.getObject(rsColumn) == null ? null : new Long(0);
+            } catch (Exception e) {
+                return 0L;
+            }
+        } else {
+            return v;
+        }
     }
 
 }
