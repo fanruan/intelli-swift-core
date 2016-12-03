@@ -46,7 +46,7 @@ BI.PieChart = BI.inherit(BI.AbstractChart, {
             enabled: this.config.showDataLabel,
             align: self.setDataLabelPosition(this.config),
             style: this.config.dataLabelSetting.textStyle,
-            connectorWidth: 1
+            connectorWidth: this.config.dataLabelSetting.showTractionLine,
         });
         config.plotOptions.dataLabels.formatter.identifier = self.setDataLabelContent(this.config);
         BI.each(items, function (idx, item) {

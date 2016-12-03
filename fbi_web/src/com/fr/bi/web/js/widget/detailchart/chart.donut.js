@@ -43,7 +43,7 @@ BI.DonutChart = BI.inherit(BI.AbstractChart, {
         BI.extend(config.plotOptions.dataLabels, {
             align: self.setDataLabelPosition(this.config),
             style: this.config.dataLabelSetting.textStyle,
-            connectorWidth: 1
+            connectorWidth: this.config.dataLabelSetting.showTractionLine,
         });
         config.plotOptions.dataLabels.formatter.identifier = self.setDataLabelContent(this.config);
         delete config.xAxis;

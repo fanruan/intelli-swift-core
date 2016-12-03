@@ -60,7 +60,7 @@ BI.AreaDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
 
         var show = BI.createWidget({
             type: "bi.left",
-            items: [this.categoryName, this.seriesName, this.showValue, this.showPercentage]
+            items: [this.showCategoryName, this.showSeriesName, this.showValue, this.showPercentage]
         });
 
         var showWrapper = this._createWrapper(BI.i18nText("BI-Show_Content"), show);
