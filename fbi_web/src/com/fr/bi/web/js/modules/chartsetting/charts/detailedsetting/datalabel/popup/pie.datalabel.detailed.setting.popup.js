@@ -81,7 +81,7 @@ BI.PieDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
         });
 
         this.position.on(BI.ButtonGroup.EVENT_CHANGE, function () {
-            self.showTractionLine.setVisible(this.getValue() === BICst.DATA_LABEL.POSITION_OUTER);
+            self.showTractionLine.setVisible(this.getValue()[0] === BICst.DATA_LABEL.POSITION_OUTER);
             self.fireEvent(BI.PieDataLabelDetailedSettingPopup.EVENT_CHANGE)
         });
 
