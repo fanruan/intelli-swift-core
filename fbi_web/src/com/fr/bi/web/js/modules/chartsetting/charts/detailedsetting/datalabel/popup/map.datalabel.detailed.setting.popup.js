@@ -37,13 +37,13 @@ BI.MapDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
         });
 
         //值
-        this.showValue = BI.createWidget({
+        this.showSize = BI.createWidget({
             type: "bi.multi_select_item",
             width: 50,
             value: BI.i18nText("BI-Value")
         });
 
-        this.showValue.on(BI.Controller.EVENT_CHANGE, function() {
+        this.showSize.on(BI.Controller.EVENT_CHANGE, function() {
             self.fireEvent(BI.MapDataLabelDetailedSettingPopup.EVENT_CHANGE)
         });
 
@@ -60,7 +60,7 @@ BI.MapDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
 
         var show = BI.createWidget({
             type: "bi.left",
-            items: [this.showBlockName, this.seriesName, this.showValue, this.showPercentage]
+            items: [this.showBlockName, this.showSeriesName, this.showSize, this.showPercentage]
         });
 
         var showWrapper = this._createWrapper(BI.i18nText("BI-Show_Content"), show);
@@ -105,7 +105,7 @@ BI.MapDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
         return {
             showBlockName: this.showBlockName.isSelected(),
             showSeriesName: this.showSeriesName.isSelected(),
-            showValue: this.showValue.isSelected(),
+            showSize: this.showSize.isSelected(),
             showPercentage: this.showPercentage.isSelected(),
             textStyle: this.textStyle.getValue(),
         }
@@ -115,7 +115,7 @@ BI.MapDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
         v || (v = {});
         this.showBlockName.setSelected(v.showBlockName);
         this.showSeriesName.setSelected(v.showSeriesName);
-        this.showValue.setSelected(v.showValue);
+        this.showSize.setSelected(v.showSize);
         this.showPercentage.setSelected(v.showPercentage);
         this.textStyle.setValue(v.textStyle)
     }
