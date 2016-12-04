@@ -309,8 +309,4 @@ public abstract class CubeBuildSpecific extends AbstractCubeBuildStuff implement
         return true;
     }
 
-    @Override
-    public boolean isSingleTable() {
-        return true;
-    }
 }

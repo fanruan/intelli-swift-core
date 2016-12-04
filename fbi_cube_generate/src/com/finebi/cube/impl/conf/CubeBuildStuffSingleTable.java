@@ -19,6 +19,7 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.exception.BIRelationAbsentException;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
@@ -232,6 +233,11 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
     }
 
     @Override
+    public CubeTaskType getTaskType() {
+        return CubeTaskType.SINGLE;
+    }
+
+    @Override
     public Set<CubeTableSource> getSingleSourceLayers() {
         return allSingleSources;
     }
@@ -253,11 +259,6 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
     @Override
     public Set<BICubeGenerateRelation> getCubeGenerateRelationSet() {
         return this.cubeGenerateRelationSet;
-    }
-
-    @Override
-    public boolean isSingleTable() {
-        return true;
     }
 
     public void setDependTableResource(Set<List<Set<CubeTableSource>>> dependTableResource) {
