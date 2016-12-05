@@ -464,7 +464,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                             BI.each(preView[region], function (i, dId) {
                                 BI.Utils.isDimensionUsable(dId) && (isPreSelect = true);
                             });
-                            if (isPreSelect === true || (region === BICst.REGION.DIMENSION2 && hasMultiTarget)) {
+                            if (isPreSelect === true || (region >= BICst.REGION.DIMENSION2 && region < BICst.REGION.TARGET1 && hasMultiTarget)) {
                                 BI.each(adds, function(i, add){
                                     dimensions[add].used = false;
                                 });

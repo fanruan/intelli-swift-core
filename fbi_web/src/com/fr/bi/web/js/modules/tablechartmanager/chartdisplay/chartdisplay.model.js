@@ -772,7 +772,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 BI.each(drArray, function (i, dr) {
                     var tempDrId = dr.dId;
                     if (i === drArray.length - 1) {
-                        if (BI.Utils.getRegionTypeByDimensionID(drId) === BICst.REGION.DIMENSION1) {
+                        var rType = BI.Utils.getRegionTypeByDimensionID(drId);
+                        if (rType >= BICst.REGION.DIMENSION1 && rType < BICst.REGION.DIMENSION2) {
                             self.dimIds.splice(dIndex, 0, tempDrId);
                         } else {
                             self.crossDimIds.splice(cIndex, 0, tempDrId);
