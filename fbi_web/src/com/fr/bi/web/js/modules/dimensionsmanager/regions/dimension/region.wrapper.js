@@ -30,7 +30,8 @@ BI.DimensionRegionWrapper = BI.inherit(BI.AbstractWrapper, {
         emptyRegion = BI.createWidget({
             type: "bi.dimension_empty_region",
             id: BI.DimensionEmptyRegion.ID,
-            wrapperType: o.wrapperType
+            wrapperType: o.wrapperType,
+            wId: o.wId
         });
         emptyRegion.on(BI.DimensionEmptyRegion.EVENT_CHANGE, function (data) {
             self._addRegionAndDimension(data);
