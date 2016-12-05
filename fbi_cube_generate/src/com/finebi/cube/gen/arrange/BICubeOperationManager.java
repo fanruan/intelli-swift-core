@@ -3,8 +3,6 @@ package com.finebi.cube.gen.arrange;
 import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
-import com.finebi.cube.conf.CubeGenerationManager;
-import com.finebi.cube.data.disk.BICubeDiskDiscovery;
 import com.finebi.cube.exception.BIRegisterIsForbiddenException;
 import com.finebi.cube.exception.BITopicAbsentException;
 import com.finebi.cube.gen.mes.*;
@@ -14,15 +12,12 @@ import com.finebi.cube.gen.oper.watcher.BIDataSourceBuildFinishWatcher;
 import com.finebi.cube.gen.oper.watcher.BIPathBuildFinishWatcher;
 import com.finebi.cube.gen.oper.watcher.BITableSourceBuildWatcher;
 import com.finebi.cube.impl.operate.BIOperation;
-import com.finebi.cube.location.BICubeResourceRetrieval;
-import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.relation.BICubeGenerateRelation;
 import com.finebi.cube.relation.BICubeGenerateRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.router.status.IStatusTag;
 import com.finebi.cube.router.topic.ITopicTag;
-import com.finebi.cube.structure.BICube;
 import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.Cube;
 import com.finebi.cube.structure.CubeTableEntityService;
@@ -30,13 +25,10 @@ import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.finebi.cube.utils.BICubeRelationUtils;
 import com.finebi.cube.utils.BITableKeyUtils;
-import com.fr.bi.conf.data.source.ExcelTableSource;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.engine.CubeTask;
-import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
@@ -485,38 +477,24 @@ public class BICubeOperationManager {
     }
 
     protected BISourceDataTransport getDataTransportBuilder(Cube cube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parent, long version, UpdateSettingSource tableUpdateSetting) {
-        CubeTask currentTask = CubeGenerationManager.getCubeManager().getGeneratingTask(UserControl.getInstance().getSuperManagerID());
-/*若没有更新设置,按默认处理
-* 首次更新均为全局更新*/
+/*若没有更新设置,按全部更新处理 &&首次更新均为全局更新*/
         if (null == tableUpdateSetting || !(BITableKeyUtils.isTableExisted(tableSource, BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID()))))) {
             return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
         }
-        /*若设置为不随全局更新的话，那就不更新*/
-        else if (currentTask.getTaskType() == CubeTaskType.ALL && tableUpdateSetting.getTogetherOrNever() == DBConstant.SINGLE_TABLE_UPDATE.NEVER) {
-            return new BISourceDataNeverTransport(cube, tableSource, allSources, parent, version);
-        } else {
-            switch (tableUpdateSetting.getUpdateType()) {
-                case DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL: {
-                    return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
-                }
-                /*增量更新现在暂时只适用于SQL语句，其他数据集是不能用的*/
-                case DBConstant.SINGLE_TABLE_UPDATE_TYPE.PART: {
-                    BICubeDiskDiscovery discovery = BICubeDiskDiscovery.getInstance();
-                    ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
-                    cube = new BICube(resourceRetrievalService, discovery);
-                    if (tableSource instanceof ExcelTableSource) {
-                        return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
-                    } else {
-                        return new BISourceDataPartTransport(cube, tableSource, allSources, parent, version, tableUpdateSetting);
-                    }
-                }
-                case DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER: {
-                    return new BISourceDataNeverTransport(cube, tableSource, allSources, parent, version);
-                }
-                default:
-                    return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
+        switch (tableUpdateSetting.getUpdateType()) {
+            case DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL: {
+                return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
             }
+            case DBConstant.SINGLE_TABLE_UPDATE_TYPE.PART: {
+                return new BISourceDataPartTransport(cube, tableSource, allSources, parent, version, tableUpdateSetting);
+            }
+            case DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER: {
+                return new BISourceDataNeverTransport(cube, tableSource, allSources, parent, version);
+            }
+            default:
+                return new BISourceDataAllTransport(cube, tableSource, allSources, parent, version);
         }
+//        }
     }
 
     protected BITablePathIndexBuilder getTablePathBuilder(Cube cube, Cube integrityCube, BITableSourceRelationPath tablePath) {
