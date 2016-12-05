@@ -93,8 +93,8 @@ BI.TableDetailedSettingPopup = BI.inherit(BI.Widget, {
         //表格线
         this.tableLine = BI.createWidget({
             type: "bi.color_chooser",
-            width: 28,
-            height: 28
+            width: c.BUTTON_WIDTH,
+            height: c.BUTTON_HEIGHT,
         });
 
         this.tableLine.on(BI.ColorChooser.EVENT_CHANGE, function() {
@@ -139,7 +139,7 @@ BI.TableDetailedSettingPopup = BI.inherit(BI.Widget, {
         return {
             type: "bi.left",
             items: [widget],
-            left: 55,
+            left: 60,
             vgap: 5
         }
     },
@@ -147,11 +147,11 @@ BI.TableDetailedSettingPopup = BI.inherit(BI.Widget, {
     getValue: function() {
         return {
             tableNameStyle: this.tableName.getValue(),
-            tableNameColor: this.nameColor.getValue(),
+            tableNameColor: this.nameColor.getValue()[0],
             tableValueStyle: this.tableValue.getValue(),
             bGColorInterval: this.bgColorInterval.isSelected(),
-            tableValueColor: this.valueColor.getValue(),
-            tableValueIntervalColor: this.intervalValueColor.getValue(),
+            tableValueColor: this.valueColor.getValue()[0],
+            tableValueIntervalColor: this.intervalValueColor.getValue()[0],
             tableLine: this.tableLine.getValue()
         }
     },
