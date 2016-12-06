@@ -52,7 +52,7 @@ class ValueIterator {
         }
         iterators[0] = getIter(0, allShowIndex);
         if (iterators[0].hasNext()){
-            moveNext();
+            move(0);
         }
     }
 
