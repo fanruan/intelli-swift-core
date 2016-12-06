@@ -94,9 +94,11 @@ BI.DimensionDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             case BICst.GROUP.W:
             case BICst.GROUP.S:
                 items = BICst.DIMENSION_FILTER_STRING_COMBO;
+                o.filter_type = BICst.DIMENSION_FILTER_STRING.BELONG_VALUE;
                 break;
             case BICst.GROUP.YMD:
                 items = BICst.DIMENSION_FILTER_DATE_COMBO;
+                o.filter_type = BICst.DIMENSION_FILTER_DATE.BELONG_VALUE;
                 break;
         }
         this.filterType = BI.createWidget({
