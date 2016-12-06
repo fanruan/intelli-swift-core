@@ -62,12 +62,13 @@ BI.FlexHorizontalLayout = BI.inherit(BI.Layout, {
     },
 
     resize: function () {
-        console.log("flex_center布局不需要resize");
+        console.log("flex_horizontal布局不需要resize");
     },
 
     populate: function (items) {
         BI.FlexHorizontalLayout.superclass.populate.apply(this, arguments);
         var self = this;
+        this.wrapper.empty();
         BI.each(items, function (i, item) {
             if (!!item) {
                 self._addElement(i, item);
