@@ -263,9 +263,6 @@ public class StringControlWidget extends TableWidget {
         int matched = 0;
         String key = this.keyword.toLowerCase();
         for (Object ob : list){
-            if (calculator instanceof DateDimensionCalculator && calculator.getGroup().getType() == BIReportConstant.GROUP.M) {
-                ob = Integer.parseInt(ob.toString()) + 1;
-            }
             if (ob == null) {
                 continue;
             }
