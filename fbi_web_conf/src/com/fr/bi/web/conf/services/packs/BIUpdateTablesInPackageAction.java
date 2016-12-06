@@ -19,6 +19,7 @@ import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
 import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.data.source.ExcelTableSource;
+import com.fr.bi.conf.data.source.ServerTableSource;
 import com.fr.bi.conf.data.source.TableSourceFactory;
 import com.fr.bi.conf.manager.excelview.source.ExcelViewSource;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
@@ -109,14 +110,15 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
                 BusinessTable table = pack.getSpecificTable(new BITableID(tableId));
                 if (BICubeConfigureCenter.getDataSourceManager().containTableSource(table)) {
                     CubeTableSource tableSource = TableSourceFactory.createTableSource(tableJson, userId);
-                    if (tableSource instanceof DBTableSource) {
-                        /**
-                         *如果不是ETL的话，重用保存的TableSource
-                         */
-                        CubeTableSource storeTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSource(table);
-                        BICubeConfigureCenter.getDataSourceManager().addTableSource(table, storeTableSource);
+                    CubeTableSource storeTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSource(table);
+                    /**
+                     *ELT删除了ETL操作以后也可能是DBTable,但是这个时候需要重新构建TableSource
+                     */
+                    if (reuseTableSource(tableSource) && reuseTableSource(storeTableSource)) {
+                        if (reuseTableSource(storeTableSource)) {
+                            BICubeConfigureCenter.getDataSourceManager().addTableSource(table, storeTableSource);
+                        }
                     } else {
-                        CubeTableSource storeTableSource = BICubeConfigureCenter.getDataSourceManager().getTableSource(table);
                         /**
                          * 如果ETL已经存在，那么不再刷新字段。
                          * 因为如果数据库连接断掉，那么字段没有的。
@@ -158,6 +160,10 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
                 writeResource(userId);
             }
         });
+    }
+
+    private boolean reuseTableSource(CubeTableSource tableSource) {
+        return tableSource instanceof DBTableSource && !(tableSource instanceof ServerTableSource);
     }
 
     private void ensureFieldInitial(CubeTableSource tableSource) {

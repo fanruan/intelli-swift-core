@@ -39,7 +39,7 @@ public class AutoGroup extends AbstractGroup {
         if(lastKey != null){
             tiMax = lastKey.doubleValue();
         }
-        Number firstKey = ((Number) baseMap.firstKey());
+        Number firstKey = (Number)BICollectionUtils.firstUnNullKey(baseMap);
         double tiMin = 0d;
         if(firstKey != null) {
             tiMin = firstKey.doubleValue();
@@ -54,6 +54,11 @@ public class AutoGroup extends AbstractGroup {
         Iterator<Map.Entry<Number, GroupValueIndex>> it = baseMap.iterator();
         while (it.hasNext()) {
             Map.Entry<Number, GroupValueIndex> entry = it.next();
+            if(entry.getKey() == null || ComparatorUtils.equals(entry.getKey(),"")){
+                GroupValueIndexOrHelper helper = new GroupValueIndexOrHelper();
+                resultMap.put("", entry.getValue());
+                continue;
+            }
             Number k = entry.getKey();
             if(k == null) {
                 continue;

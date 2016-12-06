@@ -197,7 +197,23 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
                 return field;
             }
         }
-        throw new BICubeColumnAbsentException();
+
+        throw new BICubeColumnAbsentException("The missing field name:" + fieldName + " all field:" + allFieldLog());
+    }
+
+    private String allFieldLog() {
+        try {
+            String allField = "";
+            for (ICubeFieldSource field : compoundFields) {
+                if (field != null) {
+                    allField += field.getFieldName() + ",";
+                }
+            }
+            return allField;
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(CompoundCubeTableReader.class).error(e.getMessage(), e);
+            return " error ";
+        }
     }
 
     @Override

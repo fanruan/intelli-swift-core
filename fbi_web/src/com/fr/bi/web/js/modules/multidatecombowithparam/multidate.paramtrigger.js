@@ -14,7 +14,7 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
             extraCls: "bi-multidate-param-trigger",
             min: '1900-01-01', //最小日期
             max: '2099-12-31', //最大日期
-            height: 24
+            height: 28
         });
     },
     _init: function () {

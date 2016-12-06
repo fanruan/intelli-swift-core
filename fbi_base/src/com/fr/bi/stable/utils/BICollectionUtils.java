@@ -3,6 +3,8 @@ package com.fr.bi.stable.utils;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.TargetCalculator;
+import com.fr.general.ComparatorUtils;
+import com.fr.third.org.apache.poi.util.StringUtil;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -19,7 +21,7 @@ public class BICollectionUtils {
         if (key == null) {
             return value;
         }
-        if(value == null){
+        if (value == null) {
             return new HashMap();
         }
         Iterator<Map.Entry> it = key.entrySet().iterator();
@@ -60,15 +62,29 @@ public class BICollectionUtils {
         }
     }
 
+    public static <T> T firstUnNullKey(ICubeColumnIndexReader<T> baseMap) {
+        T firstKey = baseMap.firstKey();
+        if (firstKey == null || ComparatorUtils.equals(firstKey, "")) {
+            Iterator<Map.Entry<T, GroupValueIndex>> iter = baseMap.iterator(firstKey);
+            while (iter.hasNext()) {
+                Map.Entry<T, GroupValueIndex> entry = iter.next();
+                firstKey = entry.getKey();
+                if (firstKey != null && firstKey != "") {
+                    break;
+                }
+            }
+        }
+        return firstKey;
+    }
 
     public static <T> T lastUnNullKey(ICubeColumnIndexReader<T> baseMap) {
         T lastKey = baseMap.lastKey();
-        if(lastKey == null) {
+        if (lastKey == null || ComparatorUtils.equals(lastKey, "")) {
             Iterator<Map.Entry<T, GroupValueIndex>> iter = baseMap.previousIterator(lastKey);
-            while(iter.hasNext()) {
+            while (iter.hasNext()) {
                 Map.Entry<T, GroupValueIndex> entry = iter.next();
                 lastKey = entry.getKey();
-                if(lastKey != null) {
+                if (lastKey != null && lastKey != "") {
                     break;
                 }
             }

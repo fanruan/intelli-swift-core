@@ -4,7 +4,6 @@ import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
-import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.stable.StringUtils;
@@ -24,9 +23,9 @@ public class BIDateDimension extends BIAbstractDimension {
         if (v == null || StringUtils.isEmpty(v.toString())) {
             return StringUtils.EMPTY;
         }
-        if (group.getType() == BIReportConstant.GROUP.M) {
-            return String.valueOf(((Number)v).intValue());
-        }
+//        if (group.getType() == BIReportConstant.GROUP.M) {
+//            return String.valueOf(((Number) v).intValue() + 1);
+//        }
         return v.toString();
     }
 

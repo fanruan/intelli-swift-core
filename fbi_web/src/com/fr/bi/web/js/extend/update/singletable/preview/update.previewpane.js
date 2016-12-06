@@ -191,7 +191,7 @@ BI.UpdatePreviewPane = BI.inherit(BI.BarPopoverSection, {
                 if (lackFields.length > 0) {
                     self.warningContainer.addItem({
                         type: "bi.label",
-                        text: "1、" + BI.i18nText("BI-Sql_Result_Less_Cube") + lackFields,
+                        text: "1." + BI.i18nText("BI-Sql_Result_Less_Cube") + lackFields,
                         title: BI.i18nText("BI-Sql_Result_Less_Cube") + lackFields,
                         cls: "warning-comment",
                         textAlign: "left",
@@ -203,7 +203,7 @@ BI.UpdatePreviewPane = BI.inherit(BI.BarPopoverSection, {
                 if (extraFields.length > 0) {
                     self.warningContainer.addItem({
                         type: "bi.label",
-                        text: "2、" + BI.i18nText("BI-Cube_Less_Sql_Result") + extraFields + BI.i18nText("BI-Fields_Wonnot_Action_Update"),
+                        text: (lackFields.length > 0 ? "2." : "1.") + BI.i18nText("BI-Cube_Less_Sql_Result") + extraFields + BI.i18nText("BI-Fields_Wonnot_Action_Update"),
                         title: BI.i18nText("BI-Cube_Less_Sql_Result") + extraFields + BI.i18nText("BI-Fields_Wonnot_Action_Update"),
                         cls: "warning-comment",
                         textAlign: "left",

@@ -22,17 +22,23 @@ BIShow.WidgetView = BI.inherit(BI.View, {
         BIShow.WidgetView.superclass._init.apply(this, arguments);
         var self = this, wId = this.model.get("id");
         BI.Broadcasts.on(BICst.BROADCAST.LINKAGE_PREFIX + wId, function (dId, v) {
-            var clicked = self.model.get("clicked") || {};
-            var allFromIds = BI.Utils.getAllLinkageFromIdsByID(BI.Utils.getWidgetIDByDimensionID(dId));
-            //这条链上所有的其他clicked都应当被清掉
-            BI.each(clicked, function (cid, click) {
-                if (allFromIds.contains(cid) || BI.Utils.isDimensionByDimensionID(cid)) {
-                    delete clicked[cid];
-                }
-            });
-            if (BI.isNull(v)) {
-                delete clicked[dId];
-            } else {
+            // var clicked = self.model.get("clicked") || {};
+            // var allFromIds = BI.Utils.getAllLinkageFromIdsByID(BI.Utils.getWidgetIDByDimensionID(dId));
+            // //这条链上所有的其他clicked都应当被清掉
+            // BI.each(clicked, function (cid, click) {
+            //     if (allFromIds.contains(cid) || BI.Utils.isDimensionByDimensionID(cid)) {
+            //         delete clicked[cid];
+            //     }
+            // });
+            // if (BI.isNull(v)) {
+            //     delete clicked[dId];
+            // } else {
+            //     clicked[dId] = v;
+            // }
+
+            // 2016.12.1 young 都清除掉，每次都是往上找到所有的联动条件
+            var clicked = BI.Utils.getLinkageValuesByID(BI.Utils.getWidgetIDByDimensionID(dId));
+            if (BI.isNotNull(v)) {
                 clicked[dId] = v;
             }
             self.model.set("clicked", clicked);
@@ -180,17 +186,14 @@ BIShow.WidgetView = BI.inherit(BI.View, {
 
         var expand = BI.createWidget({
             type: "bi.dimension_switch_show",
-            wId: this.model.get("id"),
-            dimensionCreator: function (dId, regionType, op) {
-                var dimensionsVessel = BI.createWidget({
+            wId: wId,
+            popupCreator: function () {
+                var vessel = BI.createWidget({
                     type: "bi.layout"
                 });
-                self.addSubVessel(dId, dimensionsVessel).skipTo("detail/" + regionType + "/" + dId, dId, "dimensions." + dId);
-                return dimensionsVessel;
+                self.addSubVessel("detail", vessel).skipTo("detail", "detail", "detail", {}, {id: wId});
+                return vessel;
             }
-        });
-        expand.on(BI.DimensionSwitchShow.EVENT_CHANGE, function () {
-            self.model.set("view", this.getValue());
         });
 
         var filterIcon = BI.createWidget({

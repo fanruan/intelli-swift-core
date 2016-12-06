@@ -78,11 +78,14 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
 
         config.colors = this.config.chartColor;
         config.style = formatChartStyle();
-        config.plotOptions.tooltip.formatter = this.config.tooltip;
         config.plotOptions.bubble.minSize = this.config.bubbleSizeFrom;
         config.plotOptions.bubble.maxSize = this.config.bubbleSizeTo;
-        config.plotOptions.dataLabels.enabled = this.config.showDataLabel;
-        config.plotOptions.dataLabels.formatter.identifier = "${X}${Y}${SIZE}";
+        config.plotOptions.dataLabels.formatter.identifier = setDataLabelContentForBubble();
+        BI.extend(config.plotOptions.dataLabels, {
+            align: self.setDataLabelPosition(this.config),
+            enabled: this.config.showDataLabel,
+            style: this.config.dataLabelSetting.textStyle,
+        });
         config.yAxis = this.yAxis;
 
         formatNumberLevelInYaxis(this.config.leftYNumberLevel, c.LEFT_AXIS);
@@ -112,12 +115,12 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
         if (config.plotOptions.dataLabels.enabled === true && !this.config.bigDataMode) {
             BI.each(items, function (idx, item) {
                 item.dataLabels = {
-                    "style": self.config.chartFont,
-                    "align": "outside",
-                    "autoAdjust": true,
+                    align: self.setDataLabelPosition(self.config),
+                    autoAdjust: true,
+                    style: self.config.dataLabelSetting.textStyle,
                     enabled: true,
                     formatter: {
-                        identifier: "${X}${Y}${SIZE}",
+                        identifier: setDataLabelContentForBubble(),
                         "XFormat": function () {
                             return BI.contentFormat(arguments[0], '#.##;-#.##')
                         },
@@ -130,7 +133,7 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                     }
                 };
                 if (item.settings.numLevel) {
-                    item.data[0].z = item.data[0].size = self.formatXYDataWithMagnify(item.data[0].z, self.calcMagnify(item.settings.num_level))
+                    item.data[0].z = item.data[0].size = self.formatXYDataWithMagnify(item.data[0].z, self.calcMagnify(item.settings.numLevel))
                 }
                 item.dataLabels.formatter.XFormat = config.xAxis[0].formatter;
                 item.dataLabels.formatter.YFormat = config.yAxis[0].formatter;
@@ -226,6 +229,17 @@ BI.BubbleChart = BI.inherit(BI.AbstractChart, {
                     config.rangeLegend.visible = false;
                     break;
             }
+        }
+
+        function setDataLabelContentForBubble () {
+            var setting = self.config.dataLabelSetting, identifier = '';
+            if(setting.showSeriesName) {
+                identifier += '${SERIES}'
+            }
+            if(setting.showValue) {
+                identifier += '${X}${Y}${SIZE}'
+            }
+            return identifier
         }
 
         function formatGradientLegend() {

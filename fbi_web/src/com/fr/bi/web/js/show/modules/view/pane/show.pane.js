@@ -126,15 +126,15 @@ BIShow.PaneView = BI.inherit(BI.View, {
             viewChange.setEnable(false);
             countDown.setVisible(true);
             var count = 30;
-            var countInterval = setInterval(function() {
+            var countInterval = setInterval(function () {
                 countDown.setText(count);
                 count === 0 ? (count = 30) : count--;
             }, 1000);
-            var checkInterval = setInterval(function() {
+            var checkInterval = setInterval(function () {
                 BI.requestAsync("fr_bi_dezi", "check_report_edit", {
                     id: Data.SharingPool.get("reportId"),
                     createBy: Data.SharingPool.get("createBy")
-                }, function(res) {
+                }, function (res) {
                     if (res.result === true) {
                         viewChange.setEnable(true);
                         countDown.setVisible(false);
@@ -150,6 +150,7 @@ BIShow.PaneView = BI.inherit(BI.View, {
         });
         return BI.createWidget({
             type: "bi.absolute",
+            invisible: !!Data.SharingPool.get("hideTop"),
             cls: "dashboard-toolbar",
             items: [{
                 el: zclip,

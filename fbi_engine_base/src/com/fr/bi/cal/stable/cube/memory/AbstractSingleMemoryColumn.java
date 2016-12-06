@@ -151,7 +151,7 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
         for (Map.Entry<Object, IntArray> entry : treeMap.entrySet()){
             getter.put(entry.getKey(), GVIFactory.createGroupValueIndexBySimpleIndex(entry.getValue()));
         }
-        return nullList.size == 0 ? getter : new CubeIndexGetterWithNullValue(getter, GVIFactory.createGroupValueIndexBySimpleIndex(nullList));
+        return nullList.size == 0 ? getter : new CubeIndexGetterWithNullValue(getter, null, GVIFactory.createGroupValueIndexBySimpleIndex(nullList));
     }
 
     @Override

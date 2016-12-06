@@ -9,6 +9,7 @@ import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 
@@ -77,6 +78,12 @@ public class CubeBuildStuffSupplement extends CubeBuildSpecific {
     public String getCubeTaskId() {
         return DBConstant.GLOBAL_UPDATE_TYPE.PART_UPDATE;
     }
+
+    @Override
+    public CubeTaskType getTaskType() {
+        return CubeTaskType.PART;
+    }
+
     /**
      * rename advanced to temp
      * rename tCube to advanced

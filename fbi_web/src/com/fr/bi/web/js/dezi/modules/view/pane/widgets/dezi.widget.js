@@ -22,17 +22,23 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
         BIDezi.WidgetView.superclass._init.apply(this, arguments);
         var self = this, wId = this.model.get("id");
         BI.Broadcasts.on(BICst.BROADCAST.LINKAGE_PREFIX + wId, function (dId, v) {
-            var clicked = self.model.get("clicked") || {};
-            var allFromIds = BI.Utils.getAllLinkageFromIdsByID(BI.Utils.getWidgetIDByDimensionID(dId));
-            //这条链上所有的其他clicked都应当被清掉 钻取的东西也清掉
-            BI.each(clicked, function (cid, click) {
-                if (allFromIds.contains(cid) || BI.Utils.isDimensionByDimensionID(cid)) {
-                    delete clicked[cid];
-                }
-            });
-            if (BI.isNull(v)) {
-                delete clicked[dId];
-            } else {
+            // var clicked = self.model.get("clicked") || {};
+            // var allFromIds = BI.Utils.getAllLinkageFromIdsByID(BI.Utils.getWidgetIDByDimensionID(dId));
+            // //这条链上所有的其他clicked都应当被清掉 钻取的东西也清掉
+            // BI.each(clicked, function (cid, click) {
+            //     if (allFromIds.contains(cid) || BI.Utils.isDimensionByDimensionID(cid)) {
+            //         delete clicked[cid];
+            //     }
+            // });
+            // if (BI.isNull(v)) {
+            //     delete clicked[dId];
+            // } else {
+            //     clicked[dId] = v;
+            // }
+
+            // 2016.12.1 young 都清除掉，每次都是往上找到所有的联动条件
+            var clicked = BI.Utils.getLinkageValuesByID(BI.Utils.getWidgetIDByDimensionID(dId));
+            if (BI.isNotNull(v)) {
                 clicked[dId] = v;
             }
             self.model.set("clicked", clicked, {
@@ -96,7 +102,7 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
     },
     _onClickShowName: function () {
         var settings = this.model.get("settings");
-        settings.showName = !BI.Utils.getWSShowNameByID(this.model.get("id"));
+        settings.show_name = !BI.Utils.getWSShowNameByID(this.model.get("id"));
         this.model.set("settings", settings);
         this._refreshLayout();
     },

@@ -55,6 +55,11 @@ public class CubeValueEntryGetter implements ICubeValueEntryGetter {
     }
 
     @Override
+    public int getPositionOfGroupByValue(Object value) {
+        return 0;
+    }
+
+    @Override
     public int getGroupSize() {
         return (int) cf.getGroupCount(key);
     }

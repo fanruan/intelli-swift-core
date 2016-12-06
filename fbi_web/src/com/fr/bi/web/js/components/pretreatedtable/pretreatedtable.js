@@ -72,7 +72,8 @@ BI.PretreatedTable = BI.inherit(BI.Widget, {
                         if (BI.isNull(value)) {
                             return value;
                         }
-                        var d = new Date(value);
+                        //Safari有格式化要求
+                        var d = new Date(value.replace(/-/g, "/"));
                         switch (item.group) {
                             case BICst.GROUP.Y:
                                 return d.getFullYear();

@@ -11,7 +11,7 @@ FlexboxCenterAdaptView = BI.inherit(BI.View, {
 
     _createNoWidth: function () {
         return BI.createWidget({
-            type: "bi.flexbox_center_adapt",
+            type: "bi.flex_center",
             hgap: 10,
             items: [{
                 type: "bi.label",

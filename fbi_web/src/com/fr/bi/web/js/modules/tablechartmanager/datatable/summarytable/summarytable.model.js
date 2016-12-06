@@ -159,15 +159,34 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         var self = this;
         this.dimIds = [];
         this.crossDimIds = [];
-        var view = BI.Utils.getWidgetViewByID(this.wId);
+        this.targetIds = [];
+        var views = BI.Utils.getWidgetViewByID(this.wId);
         var drill = BI.Utils.getDrillByID(this.wId);
+        BI.each(views, function (type, view) {
+            if(type >= BICst.REGION.DIMENSION1 && type < BICst.REGION.DIMENSION2) {
+                BI.each(view, function (idx, dId) {
+                    BI.Utils.isDimensionUsable(dId) && (self.dimIds.push(dId));
+                })
+            }
+            if(type >= BICst.REGION.DIMENSION2 && type < BICst.REGION.TARGET1) {
+                BI.each(view, function (idx, dId) {
+                    BI.Utils.isDimensionUsable(dId) && (self.crossDimIds.push(dId));
+                })
+            }
 
-        BI.each(view[BICst.REGION.DIMENSION1], function (i, dId) {
-            BI.Utils.isDimensionUsable(dId) && (self.dimIds.push(dId));
-        });
-        BI.each(view[BICst.REGION.DIMENSION2], function (i, dId) {
-            BI.Utils.isDimensionUsable(dId) && (self.crossDimIds.push(dId));
-        });
+            //使用中的指标
+            if(type >= BICst.REGION.TARGET1 && type < BICst.REGION.TARGET2) {
+                BI.each(view, function (i, dId) {
+                    BI.Utils.isDimensionUsable(dId) && (self.targetIds.push(dId));
+                });
+            }
+        })
+        // BI.each(view[BICst.REGION.DIMENSION1], function (i, dId) {
+        //     BI.Utils.isDimensionUsable(dId) && (self.dimIds.push(dId));
+        // });
+        // BI.each(view[BICst.REGION.DIMENSION2], function (i, dId) {
+        //     BI.Utils.isDimensionUsable(dId) && (self.crossDimIds.push(dId));
+        // });
         BI.each(drill, function (drId, drArray) {
             if (drArray.length !== 0) {
                 var dIndex = self.dimIds.indexOf(drId), cIndex = self.crossDimIds.indexOf(drId);
@@ -176,7 +195,8 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                 BI.each(drArray, function (i, dr) {
                     var tempDrId = dr.dId;
                     if (i === drArray.length - 1) {
-                        if (BI.Utils.getRegionTypeByDimensionID(drId) === BICst.REGION.DIMENSION1) {
+                        var rType = BI.Utils.getRegionTypeByDimensionID(drId);
+                        if ( rType >= BICst.REGION.DIMENSION1 && rType < BICst.REGION.DIMENSION2) {
                             self.dimIds.splice(dIndex, 0, tempDrId);
                         } else {
                             self.crossDimIds.splice(cIndex, 0, tempDrId);
@@ -190,10 +210,10 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         });
 
         //使用中的指标
-        this.targetIds = [];
-        BI.each(view[BICst.REGION.TARGET1], function (i, dId) {
-            BI.Utils.isDimensionUsable(dId) && (self.targetIds.push(dId));
-        });
+        // this.targetIds = [];
+        // BI.each(view[BICst.REGION.TARGET1], function (i, dId) {
+        //     BI.Utils.isDimensionUsable(dId) && (self.targetIds.push(dId));
+        // });
     },
 
     /**
