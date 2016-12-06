@@ -37,44 +37,64 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
             self.fireEvent(BI.SelectDataWithMask.EVENT_CHANGE, arguments);
         });
 
+        var selectdataWrapper = BI.createWidget({
+            type: "bi.vtape",
+            cls: "select-data-wrapper",
+            items: [{
+                el: this.selectDataPane,
+                height: "fill"
+            }, {
+                el: this._createSelectDataBottom(),
+                height: 50
+            }]
+        })
+
+        selectdataWrapper.element.resizable({
+            handles: "e",
+            minWidth: 200,
+            maxWidth: 400,
+            autoHide: true,
+            helper: "bi-resizer",
+            start: function () {
+            },
+            resize: function (e, ui) {
+            },
+            stop: function (e, ui) {
+                items[1].width = ui.size.width;
+                selectdataWrapper.resize();
+            }
+        });
+
+        var items = [{
+            el: {
+                type: "bi.absolute",
+                items: [{
+                    el: {
+                        type: "bi.default",
+                        cls: "select-data-mask"
+                    },
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0
+                }]
+            },
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0
+        }, {
+            el: selectdataWrapper,
+            top: 10,
+            bottom: 10,
+            width: 240,
+            left: 10
+        }];
+
         BI.createWidget({
             type: "bi.absolute",
             element: this.element,
-            items: [{
-                el: {
-                    type: "bi.absolute",
-                    items: [{
-                        el: {
-                            type: "bi.default",
-                            cls: "select-data-mask"
-                        },
-                        top: 0,
-                        left: 0,
-                        bottom: 0,
-                        right: 0
-                    }]
-                },
-                top: 0,
-                right: 0,
-                bottom: 0,
-                left: 0
-            }, {
-                el: {
-                    type: "bi.vtape",
-                    cls: "select-data-wrapper",
-                    items: [{
-                        el: this.selectDataPane,
-                        height: "fill"
-                    }, {
-                        el: this._createSelectDataBottom(),
-                        height: 50
-                    }],
-                    width: 240
-                },
-                top: 10,
-                bottom: 10,
-                left: 10
-            }]
+            items: items
         });
 
         BI.Maskers.hide(maskId);
