@@ -135,15 +135,36 @@ BI.TableFieldInfo = BI.inherit(BI.Widget, {
                     break;
             }
             var item = [];
-            item.push({
-                type: "bi.label",
-                text: field["field_name"],
-                title: field["field_name"],
-                width: 125,
-                whiteSpace: "nowrap",
-                textAlign: "left",
-                lgap: 5
-            });
+            if (self._isPrimaryKey(field.id)) {
+                item.push({
+                    type: "bi.left",
+                    cls: "primary-key-font",
+                    items: [{
+                        type: "bi.icon",
+                        width: 20,
+                        title: BI.i18nText("BI-Primary_Key")
+                    }, {
+                        type: "bi.label",
+                        text: field["field_name"],
+                        title: field["field_name"],
+                        width: 90,
+                        whiteSpace: "nowrap",
+                        textAlign: "left"
+                    }],
+                    lgap: 5
+                });
+            } else {
+                item.push({
+                    type: "bi.label",
+                    text: field["field_name"],
+                    title: field["field_name"],
+                    width: 125,
+                    whiteSpace: "nowrap",
+                    textAlign: "left",
+                    lgap: 5
+                });
+            }
+
             item.push({
                 type: "bi.icon_button",
                 cls: "field-type " + typeCls
@@ -210,10 +231,10 @@ BI.TableFieldInfo = BI.inherit(BI.Widget, {
                         }
                     }
                 });
-                if(isValid === true){
-                    BI.any(self.tableInfo.fields, function(idx, catagory){
-                        return BI.any(catagory, function(id, field){
-                            if(field.field_name === v){
+                if (isValid === true) {
+                    BI.any(self.tableInfo.fields, function (idx, catagory) {
+                        return BI.any(catagory, function (id, field) {
+                            if (field.field_name === v) {
                                 isValid = false;
                                 return true;
                             }
@@ -222,18 +243,18 @@ BI.TableFieldInfo = BI.inherit(BI.Widget, {
                 }
                 return isValid;
             },
-            quitChecker: function(){
+            quitChecker: function () {
                 return false;
             }
         });
-        transName.on(BI.SignEditor.EVENT_ERROR, function(){
+        transName.on(BI.SignEditor.EVENT_ERROR, function () {
             self.fireEvent(BI.TableFieldInfo.EVENT_ERROR);
         });
-        transName.on(BI.SignEditor.EVENT_VALID, function(){
-            var res = BI.any(self.transNames, function(idx, editor){
+        transName.on(BI.SignEditor.EVENT_VALID, function () {
+            var res = BI.any(self.transNames, function (idx, editor) {
                 return editor.isValid() === false;
             });
-            if(res === false){
+            if (res === false) {
                 self.fireEvent(BI.TableFieldInfo.EVENT_VALID);
             }
         })
@@ -275,6 +296,16 @@ BI.TableFieldInfo = BI.inherit(BI.Widget, {
             }
         });
         return relationTables;
+    },
+
+    _isPrimaryKey: function (fieldId) {
+        var relations = this.tableInfo.relations;
+        var primKeyMap = relations.primKeyMap;
+        var currentPrimKey = primKeyMap[fieldId] || [];
+        return BI.some(currentPrimKey, function (i, maps) {
+            var pk = maps.primaryKey, fk = maps.foreignKey;
+            return pk.field_id === fieldId && fk.field_id !== fieldId;
+        });
     },
 
     _createIsUsable: function (field) {
