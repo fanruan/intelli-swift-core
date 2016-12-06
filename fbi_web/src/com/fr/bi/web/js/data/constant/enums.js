@@ -528,10 +528,13 @@ BICst.DEFAULT_CHART_SETTING = {
         interval: {}
     },
     DataLabelSetting: {
+        showBlockName: true,
         showCategoryName: true,
         showSeriesName: true,
+        showSize:true,
         showValue: true,
         showPercentage: false,
+        showTractionLine: true,
         position: BICst.DATA_LABEL.POSITION_OUTER,
         textStyle: {}
     }

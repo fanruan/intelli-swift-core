@@ -33,7 +33,6 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
         delete config.zoom;
         formatRangeLegend();
         delete config.legend;
-        config.plotOptions.dataLabels.enabled = this.config.showDataLabel;
         config.plotOptions.tooltip.shared = true;
         var formatterArray = [];
         BI.each(items, function (idx, item) {
@@ -50,13 +49,16 @@ BI.MapChart = BI.inherit(BI.AbstractChart, {
             });
             return tip;
         };
+
+        //datalabel
+        config.plotOptions.dataLabels.enabled = this.config.showDataLabel;
         config.plotOptions.dataLabels.formatter.valueFormat = function () {
             return BI.contentFormat(arguments[0], formatterArray[0]);
         };
-        config.plotOptions.dataLabels.style = this.config.chartFont;
-
+        config.plotOptions.dataLabels.formatter.identifier = self.setDataLabelContent(this.config);
+        config.plotOptions.dataLabels.style = this.config.dataLabelSetting.textStyle;
         config.plotOptions.bubble.dataLabels = config.plotOptions.dataLabels;
-        config.plotOptions.bubble.dataLabels.formatter.identifier = "${SIZE}";
+        config.plotOptions.bubble.dataLabels.formatter.identifier =  self.setDataLabelContent(this.config);
 
         config.plotOptions.bubble.tooltip = config.plotOptions.tooltip;
 

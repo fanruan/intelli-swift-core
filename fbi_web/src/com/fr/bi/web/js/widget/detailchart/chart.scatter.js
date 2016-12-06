@@ -56,7 +56,8 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         formatCordon();
         this.formatChartLegend(config, this.config.legend);
         config.plotOptions.dataLabels.enabled = this.config.showDataLabel;
-        config.plotOptions.dataLabels.formatter.identifier = "${X}${Y}";
+        config.plotOptions.dataLabels.formatter.identifier = setDataLabelContentForScatter();
+        config.plotOptions.dataLabels.style = this.config.dataLabelSetting.textStyle;
 
         config.yAxis = this.yAxis;
         config.xAxis = this.xAxis;
@@ -85,12 +86,12 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
         if (config.plotOptions.dataLabels.enabled === true && !this.config.bigDataMode) {
             BI.each(items, function (idx, item) {
                 item.dataLabels = {
-                    "style": self.config.chartFont,
-                    "align": "outside",
-                    "autoAdjust": true,
+                    style: self.config.dataLabelSetting.textStyle,
+                    align: 'outside',
+                    autoAdjust: true,
                     enabled: true,
                     formatter: {
-                        identifier: "${X}${Y}",
+                        identifier: setDataLabelContentForScatter(),
                         "XFormat": function () {
                             return BI.contentFormat(arguments[0], '#.##;-#.##')
                         },
@@ -174,6 +175,17 @@ BI.ScatterChart = BI.inherit(BI.AbstractChart, {
                     });
                 }
             })
+        }
+
+        function setDataLabelContentForScatter () {
+            var setting = self.config.dataLabelSetting, identifier = '';
+            if(setting.showSeriesName) {
+                identifier += '${SERIES}'
+            }
+            if(setting.showValue) {
+                identifier += '${X}${Y}'
+            }
+            return identifier
         }
 
         function formatNumberLevelInXaxis(type) {

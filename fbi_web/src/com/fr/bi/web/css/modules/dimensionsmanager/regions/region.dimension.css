@@ -12,6 +12,13 @@
   font-size: 14px;
   color: #808080;
 }
+.bi-dimension-region .drag-tool {
+  border-right: 1px solid #a3d6e8;
+  cursor: move;
+}
+.bi-dimension-region .dimensions-container {
+  min-height: 37px;
+}
 .bi-dimension-region .dimensions-container .dimension-container {
   background: #d8f2fd;
   -webkit-border-radius: 2px;

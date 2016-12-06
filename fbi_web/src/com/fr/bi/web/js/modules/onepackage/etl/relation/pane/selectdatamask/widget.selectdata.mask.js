@@ -15,20 +15,8 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.model = o.model;
         this.fieldId = o.field_id;
+        var maskId = o.maskId;
         this._initAllRelationTables();
-
-        var mask = BI.createWidget({
-            type: "bi.loading_mask",
-            masker: this.element,
-            text: BI.i18nText("BI-Loading")
-        });
-        BI.Utils.getAllPackages(function (packs) {
-            self.packs = packs;
-            //选中当前业务包
-            self.selectDataPane.setPackage(BI.Utils.getCurrentPackageId4Conf());
-        }, function () {
-            mask.destroy();
-        });
 
         this.selectDataPane = BI.createWidget({
             type: "bi.package_select_data_service",
@@ -49,7 +37,7 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
             self.fireEvent(BI.SelectDataWithMask.EVENT_CHANGE, arguments);
         });
 
-        var wrapper = BI.createWidget({
+        var selectdataWrapper = BI.createWidget({
             type: "bi.vtape",
             cls: "select-data-wrapper",
             items: [{
@@ -58,38 +46,72 @@ BI.SelectDataWithMask = BI.inherit(BI.Widget, {
             }, {
                 el: this._createSelectDataBottom(),
                 height: 50
-            }],
-            width: 240
-        });
-        this.mask = BI.createWidget({
-            type: "bi.absolute",
-            items: [{
-                el: {
-                    type: "bi.default",
-                    cls: "select-data-mask"
-                },
-                top: 0,
-                left: 0,
-                bottom: 0,
-                right: 0
             }]
+        })
+
+        selectdataWrapper.element.resizable({
+            handles: "e",
+            minWidth: 200,
+            maxWidth: 400,
+            autoHide: true,
+            helper: "bi-resizer",
+            start: function () {
+            },
+            resize: function (e, ui) {
+            },
+            stop: function (e, ui) {
+                items[1].width = ui.size.width;
+                selectdataWrapper.resize();
+            }
         });
+
+        var items = [{
+            el: {
+                type: "bi.absolute",
+                items: [{
+                    el: {
+                        type: "bi.default",
+                        cls: "select-data-mask"
+                    },
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0
+                }]
+            },
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0
+        }, {
+            el: selectdataWrapper,
+            top: 10,
+            bottom: 10,
+            width: 240,
+            left: 10
+        }];
+
         BI.createWidget({
             type: "bi.absolute",
             element: this.element,
-            items: [{
-                el: this.mask,
-                top: 0,
-                right: 0,
-                bottom: 0,
-                left: 0
-            }, {
-                el: wrapper,
-                top: 10,
-                bottom: 10,
-                left: 10
-            }]
-        })
+            items: items
+        });
+
+        BI.Maskers.hide(maskId);
+        var mask = BI.createWidget({
+            type: "bi.loading_mask",
+            masker: BICst.BODY_ELEMENT,
+            text: BI.i18nText("BI-Loading")
+        });
+        BI.Utils.getAllPackages(function (packs) {
+            BI.Maskers.show(maskId);
+            self.packs = packs;
+            //选中当前业务包
+            self.selectDataPane.setPackage(BI.Utils.getCurrentPackageId4Conf());
+        }, function () {
+            mask.destroy();
+        });
+
     },
 
     _createSelectDataBottom: function () {
