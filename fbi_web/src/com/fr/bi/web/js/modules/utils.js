@@ -2062,6 +2062,7 @@
         getDataByDimensionID: function (dId, callback) {
             var wid = this.getWidgetIDByDimensionID(dId);
             var dimension = Data.SharingPool.get("dimensions", dId);
+            dimension.filter_value = {};
             dimension.used = true;
             var widget = Data.SharingPool.get("widgets", wid);
             widget.page = -1;
