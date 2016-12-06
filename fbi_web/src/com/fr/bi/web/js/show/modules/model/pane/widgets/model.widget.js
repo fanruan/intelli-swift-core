@@ -14,7 +14,7 @@ BIShow.WidgetModel = BI.inherit(BI.Model, {
     change: function (changed, pre) {
         if (BI.has(changed, "detail")) {
             this.set(this.get("detail"), {
-                notrefresh: true
+                // notrefresh: true
             });
         }
         //维度或指标改变时需要调节联动设置
