@@ -34,7 +34,7 @@ BI.TargetRegion = BI.inherit(BI.AbstractRegion, {
     _init: function () {
         BI.TargetRegion.superclass._init.apply(this, arguments);
         this.containers = {};
-        // this._createDragTool();
+        this._createDragTool();
     },
 
     _createDragTool: function () {
@@ -90,6 +90,7 @@ BI.TargetRegion = BI.inherit(BI.AbstractRegion, {
             });
             this.containers[dId] = container;
         }
+        // this.containers[dId].element.draggable();
         return this.containers[dId];
     },
 
