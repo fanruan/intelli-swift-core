@@ -263,7 +263,7 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
         sortArea.element.sortable({
             containment: sortArea.element,
             tolerance: "move",
-            //handle: ".drag-tool",
+            handle: ".drag-tool",
             placeholder: {
                 element: function ($currentItem) {
                     var holder = BI.createWidget({
@@ -308,7 +308,7 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
         sortArea.element.sortable({
             containment: sortArea.element,
             tolerance: "move",
-            //handle: ".drag-tool",
+            handle: ".drag-tool",
             placeholder: {
                 element: function ($currentItem) {
                     var holder = BI.createWidget({
@@ -353,7 +353,7 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
         sortArea.element.sortable({
             containment: sortArea.element,
             tolerance: "move",
-            // handle: ".drag-tool",
+            handle: ".drag-tool",
             placeholder: {
                 element: function ($currentItem) {
                     var holder = BI.createWidget({
@@ -390,6 +390,7 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
     _bindRegionEvent: function () {
         var self = this, o = this.options;
         BI.each(this.wrappers, function (type, wrapper) {
+            var element = wrapper.element;
             var wrapperType = wrapper.getWrapperType();
             var regions = wrapper.getRegions();
             BI.each(regions, function (stype, region) {
@@ -397,7 +398,16 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
                     containment: self.element,
                     connectWith: wrapperType < BICst.REGION.TARGET1 ? ".dimensions-container" : ".targets-container",
                     tolerance: "pointer",
-                    //helper: "clone",
+                    helper: function (event, ui) {
+                        var drag = BI.createWidget();
+                        drag.element.append(ui.html());
+                        BI.createWidget({
+                            type: "bi.default",
+                            element: element,
+                            items: [drag]
+                        })
+                        return drag.element;
+                    },
                     placeholder: {
                         element: function ($currentItem) {
                             var holder = BI.createWidget({

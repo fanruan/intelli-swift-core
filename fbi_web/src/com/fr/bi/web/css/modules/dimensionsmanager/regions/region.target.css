@@ -44,3 +44,9 @@
 .bi-target-region .bi-empty-region {
   border-color: #9fd3ae;
 }
+.bi-target-region .ui-sortable-helper {
+  background: #e1f4e7;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
