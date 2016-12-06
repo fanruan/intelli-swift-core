@@ -12,7 +12,7 @@ BI.DimensionRegionWrapper = BI.inherit(BI.AbstractWrapper, {
 
     _defaultConfig: function () {
         return BI.extend(BI.DimensionRegionWrapper.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-dimension-region-wrapper",
+            baseCls: "bi-dimension-region",
             titleName: ""
         });
     },
