@@ -80,10 +80,6 @@ class ValueIterator {
             if (i != index){
                 iterators[i] = getIter(i, valuesAndGVIs[i].gvi);
             }
-            if (!iterators[i].hasNext() && i != 0){
-                move(i - 1);
-                return;
-            }
             Map.Entry<Object, GroupValueIndex> entry = iterators[i].next();
             Object[] values = new Object[i + 1];
             System.arraycopy(valuesAndGVIs[i].values, 0, values, 0, values.length - 1);
