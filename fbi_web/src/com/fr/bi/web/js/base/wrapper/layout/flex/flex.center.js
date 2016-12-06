@@ -38,7 +38,6 @@ BI.FlexCenterLayout = BI.inherit(BI.Layout, {
     populate: function (items) {
         BI.FlexCenterLayout.superclass.populate.apply(this, arguments);
         var self = this;
-        this.wrapper.empty();
         BI.each(items, function (i, item) {
             if (!!item) {
                 self._addElement(i, item);
