@@ -7,7 +7,7 @@ BI.DatabaseTable = BI.inherit(BI.BasicButton, {
 
     constants: {
         ICON_WIDTH: 20,
-        ICON_HEIGHT: 16,
+        ICON_HEIGHT: 20,
         BUTTON_HEIGHT: 30
     },
 
@@ -22,11 +22,14 @@ BI.DatabaseTable = BI.inherit(BI.BasicButton, {
     _init: function(){
         BI.DatabaseTable.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
+        var linkNames = o.linkNames;
         this.iconButton = BI.createWidget({
             type: "bi.icon_button",
             cls: this._getIconCls(o.connName) + " table-font",
             height: this.constants.ICON_HEIGHT,
-            width: this.constants.ICON_WIDTH
+            width: this.constants.ICON_WIDTH,
+            iconHeight: this.constants.ICON_HEIGHT,
+            iconWidth: this.constants.ICON_WIDTH
         });
         this.tableNameText = BI.createWidget({
             type: "bi.text_button",
@@ -34,13 +37,28 @@ BI.DatabaseTable = BI.inherit(BI.BasicButton, {
             title: o.text,
             value: o.value
         });
-        BI.createWidget({
-            type: "bi.center_adapt",
-            element: this.element,
-            items: [this.iconButton, this.tableNameText],
-            height: this.constants.BUTTON_HEIGHT,
-            hgap: 5
-        });
+        if (BI.isNotNull(linkNames)) {
+            BI.createWidget({
+                type: "bi.vertical_adapt",
+                element: this.element,
+                items: [{
+                    type: "bi.default",
+                    cls: "table-conn-label" + (linkNames.indexOf(o.connName) % 10 + 1),
+                    width: 6,
+                    height: 30
+                }, this.iconButton, this.tableNameText],
+                height: this.constants.BUTTON_HEIGHT,
+                rgap: 5
+            });
+        } else {
+            BI.createWidget({
+                type: "bi.center_adapt",
+                element: this.element,
+                items: [this.iconButton, this.tableNameText],
+                height: this.constants.BUTTON_HEIGHT,
+                hgap: 5
+            });
+        }
     },
 
     _getIconCls: function(connction){
