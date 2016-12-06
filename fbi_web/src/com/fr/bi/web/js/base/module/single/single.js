@@ -52,7 +52,7 @@ BI.Single = BI.inherit(BI.Widget, {
     },
 
     enableHover: function (opt) {
-        opt || (opt = {});
+        opt || (opt = {container: 'body'});
         var self = this;
         if (!this._hoverBinded) {
             this.element.on("mouseenter.title" + this.getName(), function (e) {
