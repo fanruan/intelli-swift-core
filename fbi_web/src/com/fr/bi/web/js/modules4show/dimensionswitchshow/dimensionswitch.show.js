@@ -7,7 +7,7 @@ BI.DimensionSwitchShow = BI.inherit(BI.Widget, {
         return BI.extend(BI.DimensionSwitchShow.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-dimension-switch-show",
             wId: "",
-            dimensionCreator: BI.emptyFn
+            popupCreator: BI.emptyFn
         });
     },
 
@@ -27,7 +27,7 @@ BI.DimensionSwitchShow = BI.inherit(BI.Widget, {
         this.pane = BI.createWidget({
             type: "bi.dimension_switch_popup_show",
             wId: o.wId,
-            dimensionCreator: o.dimensionCreator
+            popupCreator: o.popupCreator
         });
         this.pane.on(BI.DimensionSwitchPopupShow.EVENT_CHANGE, function () {
             self.fireEvent(BI.DimensionSwitchShow.EVENT_CHANGE);
@@ -50,12 +50,7 @@ BI.DimensionSwitchShow = BI.inherit(BI.Widget, {
         combo.on(BI.Combo.EVENT_TRIGGER_CHANGE, function () {
             self.pane.populate();
         });
-    },
-
-    getValue: function () {
-        return this.pane.getValue();
     }
-
 });
 BI.DimensionSwitchShow.EVENT_CHANGE = "BI.DimensionSwitchShow.EVENT_CHANGE";
 $.shortcut("bi.dimension_switch_show", BI.DimensionSwitchShow);
