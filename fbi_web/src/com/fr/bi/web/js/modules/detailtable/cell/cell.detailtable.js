@@ -31,7 +31,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
                 lgap: 5,
                 rgap: 5
             });
-            item.on(BI.TextButton.EVENT_CHANGE, function() {
+            item.on(BI.TextButton.EVENT_CHANGE, function () {
                 window.open(expression.replaceAll("\\$\\{.*\\}", o.text));
             });
         } else {
@@ -119,7 +119,7 @@ BI.DetailTableCell = BI.inherit(BI.Widget, {
             text = BI.TargetBodyNormalCell.parseFloatByDot(text, format, num_separators);
         }
 
-        if (BI.Utils.getDimensionSettingsByID(dId).num_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+        if (BI.Utils.getDimensionSettingsByID(dId).num_level === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && BI.isKey(text)) {
             text += "%";
         }
 
