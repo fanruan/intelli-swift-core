@@ -68,7 +68,7 @@ BI.DataLinksTab = BI.inherit(BI.Widget, {
             tab: dataLinkGroup,
             defaultShowIndex: false,
             cardCreator: function (v) {
-                return self._createLinksCards(v);
+                return self._createLinksCards(v, linkNames);
             }
         });
         if(BI.isNotEmptyArray(items.etl)) {
@@ -80,11 +80,11 @@ BI.DataLinksTab = BI.inherit(BI.Widget, {
         }
     },
 
-    _createLinksCards: function (v) {
+    _createLinksCards: function (v, linkNames) {
         if (v.indexOf(BICst.DATA_LINK.DATA_SOURCE) !== -1) {
             return this._createDataSourceCard(v.slice(BICst.DATA_LINK.DATA_SOURCE.length));
         } else if (v.indexOf(BICst.DATA_LINK.PACKAGES) !== -1) {
-            return this._createPackagesCard(v.slice(BICst.DATA_LINK.PACKAGES.length));
+            return this._createPackagesCard(v.slice(BICst.DATA_LINK.PACKAGES.length), linkNames);
         } else if (v.indexOf(BICst.DATA_LINK.ETL) !== -1) {
             return this._createETLCard(v.slice(BICst.DATA_LINK.ETL.length));
         }
@@ -104,12 +104,13 @@ BI.DataLinksTab = BI.inherit(BI.Widget, {
         return this.tablesTab;
     },
 
-    _createPackagesCard: function (packId) {
+    _createPackagesCard: function (packId, linkNames) {
         var self = this;
         var packagePane = BI.createWidget({
             type: "bi.package_tables_main_pane",
             packId: packId,
-            translations: this.options.translations
+            translations: this.options.translations,
+            linkNames: linkNames
         });
         packagePane.on(BI.PackageTablesMainPane.EVENT_CHANGE, function () {
             self.fireEvent(BI.DataLinksTab.EVENT_CHANGE);

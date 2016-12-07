@@ -30,13 +30,7 @@ BI.DataLinkGroup = BI.inherit(BI.Widget, {
         arr = arr.concat(etl);
         this.group = BI.createWidget({
             type: "bi.button_group",
-            items: BI.createItems(arr, {
-                type: "bi.text_button",
-                cls: "nav-button",
-                textAlign: "left",
-                height: this.constants.NAV_BUTTON_HEIGHT,
-                lgap: this.constants.LEFT_GAP
-            })
+            items: this._createDataLinkItems(arr)
         });
         this.group.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.Controller.EVENT_CHANGE, arguments);
@@ -95,6 +89,20 @@ BI.DataLinkGroup = BI.inherit(BI.Widget, {
                 bottom: 0
             }]
         })
+    },
+
+    _createDataLinkItems: function(links) {
+        var self = this, items = [];
+        BI.each(links, function(i, link) {
+            items.push(BI.extend({
+                type: "bi.text_button",
+                cls: "nav-button" + (i % 10 + 1),
+                textAlign: "left",
+                height: self.constants.NAV_BUTTON_HEIGHT,
+                lgap: self.constants.LEFT_GAP
+            }, link));
+        });
+        return items;
     },
 
     getValue: function () {
