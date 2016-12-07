@@ -64,6 +64,17 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         init();
     }
 
+    public RootDimensionGroup(NoneDimensionGroup root, DimensionCalculator[] cks,  NodeExpander expander, BISession session,  boolean useRealData) {
+        setRoot(root);
+        this.cks = cks;
+        this.expander = expander;
+        this.session = session;
+        this.iter = new TreeIterator(cks.length);
+        this.useRealData = useRealData;
+        this.singleDimensionGroupCache = new ISingleDimensionGroup[cks.length];
+        init();
+    }
+
     private void init() {
         initGetters();
     }
