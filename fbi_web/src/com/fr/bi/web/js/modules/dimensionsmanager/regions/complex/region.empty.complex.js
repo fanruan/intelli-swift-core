@@ -20,10 +20,14 @@ BI.ComplexEmptyRegion = BI.inherit(BI.Widget, {
         var emptyRegion = BI.createWidget({
             type: "bi.vertical",
             element: this.element,
+            cls: "dimensions-container",
             height: 40,
             items: [commentTip],
             vgap: 5,
             hgap: 5
+        });
+        emptyRegion.element.sortable({
+            connectWith: ".dimensions-container",
         });
         emptyRegion.element.droppable({
             accept: ".select-data-level0-item-button, .select-data-level1-item-button",
@@ -201,6 +205,17 @@ BI.ComplexEmptyRegion = BI.inherit(BI.Widget, {
 
     getValue: function () {
         return  BI.ComplexEmptyRegion.ID;
+    },
+
+    getDimensions: function () {
+        var self = this, o = this.options || {};
+        var result = [];
+        var dimensions = $(".dimension-container", this.element);
+        BI.each(dimensions, function (i, dom) {
+            var dId = $(dom).data("dId");
+            result.push(dId);
+        });
+        return result;
     }
 });
 BI.extend(BI.ComplexEmptyRegion, {
