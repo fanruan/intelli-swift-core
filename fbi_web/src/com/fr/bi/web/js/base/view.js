@@ -384,7 +384,7 @@ BI.View = BI.inherit(BI.V, {
     reading: function (options) {
         var self = this;
         var name = BI.UUID();
-        this.read(BI.extend({
+        this.read(BI.extend({}, options, {
             beforeSend: function () {
                 var loading = BI.createWidget({
                     type: 'bi.vertical',
@@ -401,13 +401,13 @@ BI.View = BI.inherit(BI.V, {
                 options.complete && options.complete(data);
                 BI.Maskers.remove(name);
             }
-        }, options));
+        }));
     },
 
     updating: function (options) {
         var self = this;
         var name = BI.UUID();
-        this.update(BI.extend({
+        this.update(BI.extend({}, options, {
             noset: true,
             beforeSend: function () {
                 var loading = BI.createWidget({
@@ -425,13 +425,13 @@ BI.View = BI.inherit(BI.V, {
                 options.complete && options.complete(data);
                 BI.Maskers.remove(name);
             }
-        }, options));
+        }));
     },
 
     patching: function (options) {
         var self = this;
         var name = BI.UUID();
-        this.patch(BI.extend({
+        this.patch(BI.extend({}, options, {
             noset: true,
             beforeSend: function () {
                 var loading = BI.createWidget({
@@ -449,7 +449,7 @@ BI.View = BI.inherit(BI.V, {
                 options.complete && options.complete(data);
                 BI.Maskers.remove(name);
             }
-        }, options));
+        }));
     },
 
     populate: function (modelData, options) {
