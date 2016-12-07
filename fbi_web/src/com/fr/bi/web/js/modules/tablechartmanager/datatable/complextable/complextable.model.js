@@ -124,6 +124,18 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         return this.tableStyle;
     },
 
+    getHeaderRowSize: function () {
+        return this.headerRowSize;
+    },
+
+    getFooterRowSize: function () {
+        return this.footerRowSize;
+    },
+
+    getRowSize: function () {
+        return this.rowSize;
+    },
+
     setPageOperator: function (pageOperator) {
         this.pageOperator = pageOperator;
     },
@@ -253,6 +265,9 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         this.themeColor = BI.Utils.getWSThemeColorByID(wId);         //主题色
         this.tableForm = BI.Utils.getWSTableFormByID(wId);           //表格类型
         this.tableStyle = BI.Utils.getWSTableStyleByID(wId);         //表格风格
+        this.headerRowSize = BI.Utils.getWSRowHeightByID(wId);
+        this.footerRowSize = BI.Utils.getWSRowHeightByID(wId);
+        this.rowSize = BI.Utils.getWSRowHeightByID(wId);
 
         this.header = [];
         this.items = [];
