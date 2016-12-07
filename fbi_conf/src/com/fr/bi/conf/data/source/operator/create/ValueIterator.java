@@ -51,7 +51,9 @@ class ValueIterator {
             getters[i] = ti.getValueEntryGetter(this.keys[i], new ArrayList<BITableSourceRelation>());
         }
         iterators[0] = getIter(0, allShowIndex);
-        moveNext();
+        if (iterators[0].hasNext()){
+            move(0);
+        }
     }
 
     public boolean hasNext() {

@@ -177,7 +177,7 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
         } else {
             this.forbiddenMask = BI.createWidget({
                 type: "bi.layout",
-                //cls: "forbidden-mask"
+                cls: "forbidden-mask"
             });
             BI.createWidget({
                 type: "bi.absolute",
