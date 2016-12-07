@@ -43,17 +43,6 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
         var self = this, o = this.options;
         var dId = o.dId;
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
-        if(BI.isEmptyObject(styleSettings)) {
-            styleSettings = {
-                format: BICst.TARGET_STYLE.FORMAT.NORMAL,
-                numLevel: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
-                unit: "",
-                iconStyle: BICst.TARGET_STYLE.ICON_STYLE.NONE,
-                mark: 0,
-                conditions: [],
-                numSeparators: true
-            }
-        }
 
         this.format = BI.createWidget({
             type: "bi.segment",

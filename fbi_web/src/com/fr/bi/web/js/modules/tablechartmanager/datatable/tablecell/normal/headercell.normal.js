@@ -63,7 +63,7 @@ BI.NormalHeaderCell = BI.inherit(BI.Widget, {
                 },
                 width: 25
             }],
-            height: o.height + 1,
+            height: o.height,
         });
     },
 

@@ -30,7 +30,7 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
                     }
                 },
                 width: 25,
-                height: 25
+                height: o.height,
             })
         }
 
@@ -161,7 +161,7 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
                 chooseType: BI.Selection.None,
                 title: BI.i18nText("BI-Drill"),
                 cls: "drill-combo",
-                height: 25
+                height: o.height,
             });
             drillCombo.on(BI.DownListCombo.EVENT_BEFORE_POPUPVIEW, function () {
                 var items = [[{

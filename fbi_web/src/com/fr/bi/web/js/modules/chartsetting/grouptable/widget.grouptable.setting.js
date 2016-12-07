@@ -408,7 +408,7 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
             showRowTotal: this.showRowTotal.isSelected(),
             openRowNode: this.openRowNode.isSelected(),
             maxRow: this.maxRow.getValue(),
-            rowHeight: this.rowHeight.getValue(),
+            rowHeight: BI.parseFloat(this.rowHeight.getValue()),
 
             freezeDim: this.freezeDim.isSelected(),
             transferFilter: this.transferFilter.isSelected()
