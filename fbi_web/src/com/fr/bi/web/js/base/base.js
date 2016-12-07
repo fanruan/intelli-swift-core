@@ -1100,6 +1100,15 @@ if (!window.BI) {
                             height: 400
                         }).open(BI.LoginTimeOut.POPOVER_ID);
 
+                    } else if (BI.isNotNull(res.responseText) &&
+                        res.responseText.indexOf("script") > -1 &&
+                        res.responseText.indexOf("Session Timeout...") > -1) {
+                        //登录失效
+                        BI.REQUEST_LOADING.setCallback(function () {
+                            location.reload();
+                        });
+                        BI.REQUEST_LOADING.showError();
+
                     } else if (status === "success" && BI.isFunction(option.success)) {
                         option.success(FR.jsonDecode(res.responseText));
                     }
