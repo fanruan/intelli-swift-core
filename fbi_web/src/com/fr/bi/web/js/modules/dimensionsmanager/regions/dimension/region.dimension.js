@@ -19,7 +19,7 @@ BI.DimensionRegion = BI.inherit(BI.AbstractRegion, {
         var self = this;
         BI.DimensionRegion.superclass._init.apply(this, arguments);
         this.containers = {};
-        //this._createDragTool();
+        this._createDragTool();
     },
     
     _createDragTool: function () {
