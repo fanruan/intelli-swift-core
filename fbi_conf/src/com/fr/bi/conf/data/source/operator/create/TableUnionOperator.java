@@ -117,11 +117,21 @@ public class TableUnionOperator extends AbstractCreateTableETLOperator {
         for (CubeTableSource s : parents) {
             tis.add(loader.getTableIndex(s));
         }
-        return write(travel, tis);
+        return write(travel, tis, parents);
     }
 
-    private int write(Traversal<BIDataValue> travel, List<ICubeTableService> tis) {
+    private IPersistentTable[] getPersisTables(List<? extends CubeTableSource> parents) {
+        List<IPersistentTable> tables = new ArrayList<IPersistentTable>();
+        for (CubeTableSource table : parents) {
+            tables.add(table.getPersistentTable());
+        }
+        return tables.toArray(new IPersistentTable[tables.size()]);
+    }
+
+    private int write(Traversal<BIDataValue> travel, List<ICubeTableService> tis, List<? extends CubeTableSource> parents) {
         int index = 0;
+        IPersistentTable[] tables = getPersisTables(parents);
+        IPersistentTable table = getBITable(tables);
         for (int i = 0; i < tis.size(); i++) {
             ICubeTableService ti = tis.get(i);
             ICubeFieldSource[] cIndex = new ICubeFieldSource[lists.size()];
@@ -132,10 +142,12 @@ public class TableUnionOperator extends AbstractCreateTableETLOperator {
             for (int j = 0; j < row; j++) {
                 for (int k = 0; k < lists.size(); k++) {
                     if (cIndex[k] == null) {
-                        travel.actionPerformed(new BIDataValue(index, k, null));
+                        travel.actionPerformed(new BIDataValue(index, k, (table.getField(k).getBIType() == DBConstant.COLUMN.STRING) ? "" : null));
                     } else {
                         Object ob = ti.getColumnDetailReader(new IndexKey(cIndex[k].getFieldName())).getValue(j);
-                        travel.actionPerformed(new BIDataValue(index, k, (cIndex[k].getFieldType() == DBConstant.COLUMN.NUMBER && ob != null) ? ((Number) ob).doubleValue() : ob));
+                        Object res = (cIndex[k].getFieldType() == DBConstant.COLUMN.NUMBER && ob != null) ? ((Number) ob).doubleValue()
+                                : ((cIndex[k].getFieldType() == DBConstant.COLUMN.STRING && ob == null) ? "" : ob);
+                        travel.actionPerformed(new BIDataValue(index, k, res));
                     }
                 }
                 index++;
@@ -147,12 +159,12 @@ public class TableUnionOperator extends AbstractCreateTableETLOperator {
     @Override
     public int writePartIndex(Traversal<BIDataValue> travel, List<? extends CubeTableSource> parents, ICubeDataLoader loader, int startCol, int start, int end) {
         int st = (int) Math.ceil(start / parents.size());
-        int ed = Math.max(1,(int) Math.ceil(end / parents.size()));
+        int ed = Math.max(1, (int) Math.ceil(end / parents.size()));
         List<ICubeTableService> tis = new ArrayList<ICubeTableService>();
         for (CubeTableSource s : parents) {
             tis.add(loader.getTableIndex(s, st, ed));
         }
-        return write(travel, tis);
+        return write(travel, tis, parents);
     }
 
 
