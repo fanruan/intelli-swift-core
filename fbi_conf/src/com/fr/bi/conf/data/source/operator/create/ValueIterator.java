@@ -30,7 +30,7 @@ class ValueIterator {
     private IGroup[] groups;
 
     public ValueIterator(ICubeTableService ti, BIKey[] keys) {
-       this(ti, keys, null);
+        this(ti, keys, null);
     }
 
     public ValueIterator(ICubeTableService ti, BIKey[] keys, IGroup[] groups) {
@@ -40,7 +40,7 @@ class ValueIterator {
         getters = new ICubeValueEntryGetter[keys.length];
         iterators = new Iterator[keys.length];
         valuesAndGVIs = new ValuesAndGVI[keys.length + 1];
-        if (groups == null || groups.length != keys.length){
+        if (groups == null || groups.length != keys.length) {
             this.groups = new IGroup[keys.length];
         } else {
             this.groups = groups;
@@ -51,8 +51,8 @@ class ValueIterator {
             getters[i] = ti.getValueEntryGetter(this.keys[i], new ArrayList<BITableSourceRelation>());
         }
         iterators[0] = getIter(0, allShowIndex);
-        if (iterators[0].hasNext()){
-            moveNext();
+        if (iterators[0].hasNext()) {
+            move(0);
         }
     }
 
@@ -67,34 +67,39 @@ class ValueIterator {
     }
 
     private void moveNext() {
-        for (int i = iterators.length - 1; i >= 0; i--){
-            if (iterators[i].hasNext()){
+        for (int i = iterators.length - 1; i >= 0; i--) {
+            if (iterators[i].hasNext()) {
                 move(i);
                 return;
             }
         }
         next = null;
     }
-    private void move(int index){
-        for (int i = index; i < iterators.length; i ++){
-            if (i != index){
+
+    private void move(int index) {
+        if (index < 0) {
+            next = null;
+            return;
+        }
+        for (int i = index; i < iterators.length; i++) {
+            if (i != index) {
                 iterators[i] = getIter(i, valuesAndGVIs[i].gvi);
             }
-            if (!iterators[i].hasNext() && i != 0){
-                move(i - 1);
-                return;
-            }
-            Map.Entry<Object, GroupValueIndex> entry = iterators[i].next();
             Object[] values = new Object[i + 1];
             System.arraycopy(valuesAndGVIs[i].values, 0, values, 0, values.length - 1);
-            values[values.length - 1] = entry.getKey();
-            valuesAndGVIs[i + 1] = new ValuesAndGVI(values, entry.getValue().AND(valuesAndGVIs[i].gvi));
+            if (iterators[i].hasNext()) {
+                Map.Entry<Object, GroupValueIndex> entry = iterators[i].next();
+                values[values.length - 1] = entry.getKey();
+                valuesAndGVIs[i + 1] = new ValuesAndGVI(values, entry.getValue().AND(valuesAndGVIs[i].gvi));
+            } else {
+                move(i - 1);
+            }
         }
         next = valuesAndGVIs[valuesAndGVIs.length - 1];
     }
 
     private Iterator getIter(int index, GroupValueIndex gvi) {
-        if (isCustomGroup(groups[index])){
+        if (isCustomGroup(groups[index])) {
             return createMapIterator(index);
         }
         ICubeValueEntryGetter getter = getters[index];
@@ -102,11 +107,11 @@ class ValueIterator {
     }
 
     private Iterator createMapIterator(int index) {
-        if (mapGetters[index] == null){
+        if (mapGetters[index] == null) {
             ICubeColumnIndexReader baseGroupMap = ti.loadGroup(keys[index], new ArrayList<BITableSourceRelation>());
-            GroupValueIndex nullIndex =  ti.getNullGroupValueIndex(keys[index]);
-            if (!nullIndex.isAllEmpty()){
-                baseGroupMap =  new CubeIndexGetterWithNullValue(baseGroupMap, getters[index], nullIndex);
+            GroupValueIndex nullIndex = ti.getNullGroupValueIndex(keys[index]);
+            if (!nullIndex.isAllEmpty()) {
+                baseGroupMap = new CubeIndexGetterWithNullValue(baseGroupMap, getters[index], nullIndex);
             }
             mapGetters[index] = groups[index].createGroupedMap(baseGroupMap);
         }
@@ -114,7 +119,7 @@ class ValueIterator {
     }
 
     private boolean isCustomGroup(IGroup group) {
-        if (group == null){
+        if (group == null) {
             return false;
         }
         int groupType = group.getType();
