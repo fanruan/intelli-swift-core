@@ -2445,9 +2445,12 @@ Data.Utils = {
             configs.plotOptions.shadow = config.bubble_style !== constants.NO_PROJECT;
             configs.plotOptions.dataLabels.enabled = true;
             configs.plotOptions.dataLabels.align = "inside";
+            configs.plotOptions.dataLabels.style = config.chart_font;
+            configs.legend.style = config.chart_font;
             configs.plotOptions.dataLabels.formatter.identifier = "${CATEGORY}${VALUE}";
             delete configs.xAxis;
             delete configs.yAxis;
+            delete config.zoom;
             return BI.extend(configs, {
                 series: items
             });
