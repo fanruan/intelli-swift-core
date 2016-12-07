@@ -31,6 +31,9 @@ BI.SelectDimensionDataCombo = BI.inherit(BI.Widget, {
                     var date = new Date(BI.parseInt(v));
                     text = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
                 }
+                if(BI.Utils.getDimensionGroupByID(o.dId) === BICst.GROUP.M){
+                    text = BI.parseInt(v) + 1;
+                }
                 return text;
             },
             width: o.width,
@@ -115,10 +118,11 @@ BI.SelectDimensionDataCombo = BI.inherit(BI.Widget, {
                     title: text
                 })
             } else {
+                var text = (BI.isNotNull(group) && group.type === BICst.GROUP.M) ? BI.parseInt(value) + 1 : value
                 result.push({
-                    text: value,
+                    text:  text,
                     value: value,
-                    title: value
+                    title: text
                 })
             }
         });
