@@ -50,7 +50,8 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
                 unit: "",
                 iconStyle: BICst.TARGET_STYLE.ICON_STYLE.NONE,
                 mark: 0,
-                conditions: []
+                conditions: [],
+                numSeparators: true
             }
         }
 

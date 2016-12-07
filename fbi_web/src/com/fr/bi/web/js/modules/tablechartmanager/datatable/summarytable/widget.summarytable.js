@@ -496,6 +496,9 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         this.table.attr("freezeCols", this.model.getFreezeCols());
         this.table.attr("mergeCols", this.model.getMergeCols());
         this.table.attr("columnSize", this.model.getColumnSize());
+        this.table.attr("headerRowSize", this.model.getHeaderRowSize());
+        this.table.attr("footerRowSize", this.model.getFooterRowSize());
+        this.table.attr("rowSize", this.model.getRowSize());
         this.table.populate(this.model.getItems(), this.model.getHeader(), this.model.getCrossItems(), this.model.getCrossHeader());
         this._afterTablePopulate();
     },
@@ -506,6 +509,9 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         this.table.attr("freezeCols", this.model.getFreezeCols());
         this.table.attr("mergeCols", this.model.getMergeCols());
         this.table.attr("columnSize", this.model.getColumnSize());
+        this.table.attr("headerRowSize", this.model.getHeaderRowSize());
+        this.table.attr("footerRowSize", this.model.getFooterRowSize());
+        this.table.attr("rowSize", this.model.getRowSize());
         this.table.refresh(this.model.getItems(), this.model.getHeader(), this.model.getCrossItems(), this.model.getCrossHeader());
         this._afterTablePopulate();
     },

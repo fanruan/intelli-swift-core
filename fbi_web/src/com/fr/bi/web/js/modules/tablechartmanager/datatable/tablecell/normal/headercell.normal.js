@@ -52,17 +52,18 @@ BI.NormalHeaderCell = BI.inherit(BI.Widget, {
                     whiteSpace: "nowrap",
                     textAlign: "center",
                     lgap: 5,
-                    height: 25
+                    height: o.height
                 }
             }, {
                 el: {
                     type: "bi.center_adapt",
                     items: [combo],
                     width: 25,
-                    height: 25
+                    height: o.height,
                 },
                 width: 25
-            }]
+            }],
+            height: o.height + 1,
         });
     },
 

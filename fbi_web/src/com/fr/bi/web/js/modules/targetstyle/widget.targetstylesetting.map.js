@@ -39,7 +39,8 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
         if(BI.isEmptyObject(styleSettings)) {
             styleSettings = {
                 format: BICst.TARGET_STYLE.FORMAT.NORMAL,
-                numLevel: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL
+                numLevel: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
+                numSeparators: true,
             }
         }
 

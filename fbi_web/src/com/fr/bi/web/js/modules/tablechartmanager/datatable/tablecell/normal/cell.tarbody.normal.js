@@ -121,7 +121,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 type: "bi.label",
                 text: text,
                 title: text,
-                height: 25,
+                height: o.height,
                 cls: "target-cell-text",
                 textAlign: "right",
                 rgap: 5

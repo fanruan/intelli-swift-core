@@ -813,7 +813,7 @@
 
         getWSRowHeightByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            return BI.isNotNull(ws.rowHeight) ? ws.rowHeight :
+            return BI.isNotNull(ws.rowHeight) ? BI.parseFloat(ws.rowHeight) :
                 BICst.DEFAULT_CHART_SETTING.rowHeight;
         },
 

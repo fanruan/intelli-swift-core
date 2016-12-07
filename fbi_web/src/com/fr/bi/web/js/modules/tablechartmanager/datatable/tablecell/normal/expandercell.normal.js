@@ -70,7 +70,7 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
                 text: text,
                 title: text,
                 cls: cls,
-                height: 25,
+                height: o.height,
                 whiteSpace: "nowrap",
                 textAlign: "left",
                 lgap: 5
