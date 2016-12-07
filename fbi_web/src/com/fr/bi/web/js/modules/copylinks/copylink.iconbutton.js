@@ -42,7 +42,9 @@ BI.CopyLingIconButton = BI.inherit(BI.Widget, {
                 BI.Msg.toast(BI.i18nText("BI-Copy") + BI.i18nText("BI-Succeed"));
             }
         });
-
+        this.element.mouseleave(function (e) {
+            e.stopPropagation();
+        });
         BI.createWidget({
             type: "bi.absolute",
             element: this.element,
