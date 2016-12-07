@@ -76,15 +76,23 @@ class ValueIterator {
         next = null;
     }
     private void move(int index){
+        if (index < 0){
+            next = null;
+            return;
+        }
         for (int i = index; i < iterators.length; i ++){
             if (i != index){
                 iterators[i] = getIter(i, valuesAndGVIs[i].gvi);
             }
-            Map.Entry<Object, GroupValueIndex> entry = iterators[i].next();
             Object[] values = new Object[i + 1];
             System.arraycopy(valuesAndGVIs[i].values, 0, values, 0, values.length - 1);
-            values[values.length - 1] = entry.getKey();
-            valuesAndGVIs[i + 1] = new ValuesAndGVI(values, entry.getValue().AND(valuesAndGVIs[i].gvi));
+            if (iterators[i].hasNext()){
+                Map.Entry<Object, GroupValueIndex> entry = iterators[i].next();
+                values[values.length - 1] = entry.getKey();
+                valuesAndGVIs[i + 1] = new ValuesAndGVI(values, entry.getValue().AND(valuesAndGVIs[i].gvi));
+            } else {
+                move(i - 1);
+            }
         }
         next = valuesAndGVIs[valuesAndGVIs.length - 1];
     }
