@@ -72,6 +72,8 @@ BI.SelectDimensionDataCombo = BI.inherit(BI.Widget, {
         var targetIds = BI.Utils.getAllTargetDimensionIDs(BI.Utils.getWidgetIDByDimensionID(o.dId));
         BI.each(targetIds, function(idx, targetId){
             dimensions[targetId] = Data.SharingPool.get("dimensions", targetId);
+            //去掉指标的过滤条件，因为指标对日期做过滤的话是需要做计算转化的，干脆不要了
+            delete dimensions[targetId].filter_value;
             if(!BI.has(view, BICst.REGION.TARGET1)){
                 view[BICst.REGION.TARGET1] = [];
             }
