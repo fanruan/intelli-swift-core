@@ -103,7 +103,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
             } else {
                 self.interval = setInterval(function () {
                     self.refreshLog();
-                }, 5000);
+                }, 2000);
             }
             self._refreshProcess(data);
             self.cubeTree.populate(self._formatItems(data));
@@ -117,6 +117,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
 
     _showFinish: function() {
         this.processBar.setVisible(false);
+        this.processBar.setValue(1);
         this.finishLable.setVisible(true);
     },
 
@@ -133,7 +134,7 @@ BI.CubeLog = BI.inherit(BI.Widget, {
         if (BI.isNull(this.interval)) {
             this.interval = setInterval(function () {
                 self.refreshLog();
-            }, 5000);
+            }, 2000);
             return;
         }
         BI.Utils.getCubeLog(function (data) {
