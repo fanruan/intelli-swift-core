@@ -35,10 +35,6 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
         super(dimension, field, relations, directToDimensionRelations);
     }
 
-    private CubeTableSource getTableSourceFromField() {
-        return field.getTableBelongTo().getTableSource();
-    }
-
     @Override
     public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useRealData, int groupLimit) {
         if (isNoGroup() && !isCustomSort()) {
