@@ -64,6 +64,7 @@ BI.PackageTablesMainPane = BI.inherit(BI.Widget, {
                     cls: "bi-table-ha-button",
                     connName: table.connection_name,
                     text: self._getTableTranName(id, table),
+                    linkNames: o.linkNames,
                     value: BI.extend(table, {
                         id: id,
                         temp_name: o.translations[id]
