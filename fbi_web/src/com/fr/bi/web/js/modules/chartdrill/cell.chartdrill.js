@@ -109,7 +109,8 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
             return v;
         }
         v = v || {};
-        var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
+        var wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
+        var wType = BI.Utils.getWidgetTypeByID(wId);
         var value = v.x;
         switch (wType) {
             case BICst.WIDGET.BUBBLE:
@@ -117,7 +118,7 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
                 value = v.seriesName;
                 break;
             default:
-                var drillMap = BI.Utils.getDrillByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
+                var drillMap = BI.Utils.getDrillByID(wId);
                 var drillDid = o.dId;
                 BI.any(drillMap, function (drId, ds) {
                     if (ds.length > 0 && (o.dId === drId || ds[ds.length - 1].dId === o.dId)) {
