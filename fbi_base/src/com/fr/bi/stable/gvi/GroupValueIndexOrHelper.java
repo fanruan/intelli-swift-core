@@ -10,12 +10,12 @@ public class GroupValueIndexOrHelper {
 
     public void add(GroupValueIndex bitmap){
         if (bitmap != null){
-            roaringBitmap.or(((AbstractGroupValueIndex)bitmap).getBitMap());
+            roaringBitmap.naivelazyor(((AbstractGroupValueIndex)bitmap).getBitMap());
         }
     }
 
     public RoaringGroupValueIndex compute(){
-        //roaringBitmap.repairAfterLazy();
+        roaringBitmap.repairAfterLazy();
         return new RoaringGroupValueIndex(roaringBitmap);
     }
 }
