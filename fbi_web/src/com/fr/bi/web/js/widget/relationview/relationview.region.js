@@ -26,9 +26,14 @@ BI.RelationViewRegion = BI.inherit(BI.BasicButton, {
             cls: "relation-view-region-title",
             height: 25,
             text: o.text,
-            value: o.value,
-            title: o.header
+            value: o.value
         });
+        //title放body上
+        if (BI.isKey(o.header)) {
+            this.title.setTitle(o.header, {
+                container: "body"
+            })
+        }
         this.button_group = BI.createWidget({
             type: "bi.button_group",
             items: this._createItems(o.items),
@@ -67,11 +72,11 @@ BI.RelationViewRegion = BI.inherit(BI.BasicButton, {
         });
     },
 
-    doRedMark: function(){
+    doRedMark: function () {
         this.title.doRedMark.apply(this.title, arguments);
     },
 
-    unRedMark: function(){
+    unRedMark: function () {
         this.title.unRedMark.apply(this.title, arguments);
     },
 
