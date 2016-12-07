@@ -12,6 +12,7 @@ import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
+import com.fr.bi.field.dimension.calculator.NumberDimensionCalculator;
 import com.fr.bi.field.dimension.calculator.StringDimensionCalculator;
 import com.fr.bi.field.filtervalue.date.evenfilter.DateKeyTargetFilterValue;
 import com.fr.bi.field.filtervalue.string.rangefilter.StringINFilterValue;
@@ -50,6 +51,19 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     private NodeExpander expander;
     private TreeIterator iter;
     private boolean useRealData;
+
+    public RootDimensionGroup(NoneDimensionGroup root, DimensionCalculator[] cks,  NodeExpander expander, BISession session,  boolean useRealData, ICubeValueEntryGetter[] getters) {
+        setRoot(root);
+        this.cks = cks;
+        this.expander = expander;
+        this.session = session;
+        this.iter = new TreeIterator(cks.length);
+        this.useRealData = useRealData;
+        this.getters = getters;
+        this.singleDimensionGroupCache = new ISingleDimensionGroup[cks.length];
+        init();
+    }
+
     public RootDimensionGroup(NoneDimensionGroup root, DimensionCalculator[] cks,  NodeExpander expander, BISession session,  boolean useRealData) {
         setRoot(root);
         this.cks = cks;
@@ -59,16 +73,6 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         this.useRealData = useRealData;
         this.singleDimensionGroupCache = new ISingleDimensionGroup[cks.length];
         init();
-    }
-    public RootDimensionGroup(NoneDimensionGroup root, DimensionCalculator[] cks, NodeExpander expander, BISession session, boolean useRealData, ICubeValueEntryGetter[] getters) {
-        this.getters = getters;
-        setRoot(root);
-        this.cks = cks;
-        this.expander = expander;
-        this.session = session;
-        this.iter = new TreeIterator(cks.length);
-        this.useRealData = useRealData;
-        this.singleDimensionGroupCache = new ISingleDimensionGroup[cks.length];
     }
 
     private void init() {
@@ -331,7 +335,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     private ISingleDimensionGroup getCacheDimensionGroup(GroupConnectionValue gv, NoneDimensionGroup ng, int deep) {
-        if (singleDimensionGroupCache[deep] == null || !ComparatorUtils.equals(singleDimensionGroupCache[deep].getData(), getParentsValuesByGv(gv, deep))){
+        if (singleDimensionGroupCache[deep] == null || !ComparatorUtils.equals(singleDimensionGroupCache[deep].getData(), getParentsValuesByGv(gv, deep))) {
             singleDimensionGroupCache[deep] = createSingleDimensionGroup(gv, ng, deep);
         }
         return singleDimensionGroupCache[deep];
@@ -375,9 +379,9 @@ public class RootDimensionGroup implements IRootDimensionGroup {
                 /**
                  * 螺旋分析这里会出现空字符串
                  */
-                if(value instanceof Number){
+                if (value instanceof Number) {
                     currentSet.add(BIDateValueFactory.createDateValue(ckp.getGroup().getType(), (Number) value));
-                }else {
+                } else {
                     currentSet.add(null);
                 }
 
@@ -407,6 +411,26 @@ public class RootDimensionGroup implements IRootDimensionGroup {
                 }
                 GroupValueIndex pgvi = stf.createFilterIndex(new NoneDimensionCalculator(ckp.getField(), BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations())),
                         ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
+                gvi = gvi.AND(pgvi);
+            } else if (ckp instanceof NumberDimensionCalculator) {
+                if (value == BIBaseConstant.EMPTY_NODE_DATA) {
+                    v = v.getParent();
+                    continue;
+                }
+                BITableRelationPath firstPath = null;
+                try {
+                    firstPath = BICubeConfigureCenter.getTableRelationManager().getFirstPath(session.getLoader().getUserId(), ck.getField().getTableBelongTo(), ckp.getField().getTableBelongTo());
+                } catch (BITableUnreachableException e) {
+                    continue;
+                }
+                if (ComparatorUtils.equals(ck.getField().getTableBelongTo(), ckp.getField().getTableBelongTo())) {
+                    firstPath = new BITableRelationPath();
+                }
+                if (firstPath == null) {
+                    continue;
+                }
+                ckp.setRelationList(BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations()));
+                GroupValueIndex pgvi = ckp.createNoneSortGroupValueMapGetter(ck.getField().getTableBelongTo(), session.getLoader()).getIndex(value);
                 gvi = gvi.AND(pgvi);
             }
             v = v.getParent();

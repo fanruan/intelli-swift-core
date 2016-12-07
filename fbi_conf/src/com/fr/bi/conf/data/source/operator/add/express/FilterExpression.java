@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.bi.conf.data.source.operator.add.express;
 
@@ -23,46 +23,45 @@ import java.text.ParseException;
 
 /**
  * @author Daniel
- *
  */
 public class FilterExpression<T> implements Expression {
 
     @BICoreField
-	private FilterValue filter;
-	private transient BIKey key;
+    private FilterValue filter;
+    private transient BIKey key;
     @BICoreField
-	private Field field;
+    private Field field;
     @BICoreField
-	private Object value;
+    private Object value;
     @BIIgnoreField
     private transient Object tValue;
-	private int field_type;
+    private int field_type;
 
-	@Override
-	public void parseJSON(JSONObject jo) throws Exception {
-		field = new Field();
-		field.parseJSON(jo.getJSONObject("field"));
-		field_type = jo.getInt("field_type");
-		filter = ExpressionFilterValueFactory.createRowValue(jo, field.fieldType);
-		value = jo.get("value");
-	}
+    @Override
+    public void parseJSON(JSONObject jo) throws Exception {
+        field = new Field();
+        field.parseJSON(jo.getJSONObject("field"));
+        field_type = jo.getInt("field_type");
+        filter = ExpressionFilterValueFactory.createRowValue(jo, field.fieldType);
+        value = jo.get("value");
+    }
 
-	private BIKey getKey() {
-		if(key == null){
-			key = new IndexKey(field.value);
-		}
-		return key;
-	}
+    private BIKey getKey() {
+        if (key == null) {
+            key = new IndexKey(field.value);
+        }
+        return key;
+    }
 
-	@Override
-	public JSONObject createJSON() throws Exception {
-		JSONObject jo = new JSONObject();
-		jo.put("value", value);
-		jo.put("field", field.createJSON());
-		jo.put("field_type", field_type);
-		jo.join(filter.createJSON());
-		return jo;
-	}
+    @Override
+    public JSONObject createJSON() throws Exception {
+        JSONObject jo = new JSONObject();
+        jo.put("value", value);
+        jo.put("field", field.createJSON());
+        jo.put("field_type", field_type);
+        jo.join(filter.createJSON());
+        return jo;
+    }
 
 
     @Override
@@ -76,21 +75,27 @@ public class FilterExpression<T> implements Expression {
         return BIBasicCore.EMPTY_CORE;
     }
 
-	@Override
-	public Object get(ICubeTableService ti, int row, int columnType) {
+    @Override
+    public Object get(ICubeTableService ti, int row, int columnType) {
         ICubeColumnDetailGetter getter = ti.getColumnDetailReader(getKey());
 
         Object v = getter.getValue(row);
-		if(filter.isMatchValue((T) v)){
-			return getTransValue(columnType);
-		}
-		return null;
-	}
+        if (filter.isMatchValue((T) v)) {
+            return getTransValue(columnType);
+        }
+        return null;
+    }
 
     private Object getTransValue(int columnType) {
-        if (tValue == null){
+        if (tValue == null) {
             try {
-                tValue = columnType == DBConstant.COLUMN.DATE ? DateUtils.parse((String) value).getTime() : value;
+                if (columnType == DBConstant.COLUMN.DATE) {
+                    tValue = DateUtils.parse((String) value).getTime();
+                } else if (columnType == DBConstant.COLUMN.NUMBER) {
+                    tValue = Double.valueOf((String) value);
+                } else {
+                    tValue = value;
+                }
             } catch (ParseException e) {
                 BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
@@ -99,29 +104,29 @@ public class FilterExpression<T> implements Expression {
     }
 
 
-    private class Field implements JSONTransform{
+    private class Field implements JSONTransform {
 
-		private String value;
-		private int fieldType = DBConstant.COLUMN.STRING;
+        private String value;
+        private int fieldType = DBConstant.COLUMN.STRING;
 
-		@Override
-		public JSONObject createJSON() throws Exception {
-			JSONObject jo = new JSONObject();
-			jo.put("fieldType", fieldType);
-			jo.put("text", value);
-			jo.put("value", value);
-			return jo;
-		}
+        @Override
+        public JSONObject createJSON() throws Exception {
+            JSONObject jo = new JSONObject();
+            jo.put("fieldType", fieldType);
+            jo.put("text", value);
+            jo.put("value", value);
+            return jo;
+        }
 
-		@Override
-		public void parseJSON(JSONObject jo) throws Exception {
-			if(jo.has("fieldType")){
-				fieldType = jo.getInt("fieldType");
-			}
-			if(jo.has("value")){
-				this.value = jo.getString("value");
-			}
-		}
-	}
+        @Override
+        public void parseJSON(JSONObject jo) throws Exception {
+            if (jo.has("fieldType")) {
+                fieldType = jo.getInt("fieldType");
+            }
+            if (jo.has("value")) {
+                this.value = jo.getString("value");
+            }
+        }
+    }
 
 }
