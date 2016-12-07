@@ -29,7 +29,7 @@ public class DetailChartSetting implements JSONParser {
         Iterator it = dimensions.keys();
         while (it.hasNext()){
             String id = it.next().toString();
-            numberLevelMap.put(id, getFormatByTargetId(id));
+            numberLevelMap.put(id, getTargetSettingsByTarget(id).optInt("num_level", BIReportConstant.TARGET_STYLE.NUM_LEVEL.NORMAL));
         }
     }
 
