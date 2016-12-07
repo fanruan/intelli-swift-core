@@ -82,14 +82,16 @@ public class SingleDimensionGroup extends NoneDimensionGroup implements ILazyExe
     }
 
     public static SingleDimensionGroup createDimensionGroup(final BusinessTable tableKey, final DimensionCalculator[] pcolumns, final DimensionCalculator column, final Object[] data, final int ckIndex, ICubeValueEntryGetter getter, final GroupValueIndex gvi, final ICubeDataLoader loader, boolean useRealData) {
-        BusinessTable target = ComparatorUtils.equals(tableKey, BIBusinessTable.createEmptyTable()) ? column.getField().getTableBelongTo() : tableKey;
-        long rowCount = loader.getTableIndex(target.getTableSource()).getRowCount();
         int groupLimit = BIBaseConstant.PART_DATA_GROUP_LIMIT;
-        if (rowCount < BIBaseConstant.PART_DATA_COUNT_LIMIT) {
-            useRealData = true;
-        } else {
-            long groupCount = loader.getTableIndex(column.getField().getTableBelongTo().getTableSource()).loadGroup(column.createKey(), new ArrayList<BITableSourceRelation>()).nonPrecisionSize();
-            groupLimit = (int) (groupCount * BIBaseConstant.PART_DATA_COUNT_LIMIT / rowCount);
+        if (useRealData == false){
+            BusinessTable target = ComparatorUtils.equals(tableKey, BIBusinessTable.createEmptyTable()) ? column.getField().getTableBelongTo() : tableKey;
+            long rowCount = loader.getTableIndex(target.getTableSource()).getRowCount();
+            if (rowCount < BIBaseConstant.PART_DATA_COUNT_LIMIT) {
+                useRealData = true;
+            } else {
+                long groupCount = loader.getTableIndex(column.getField().getTableBelongTo().getTableSource()).loadGroup(column.createKey(), new ArrayList<BITableSourceRelation>()).nonPrecisionSize();
+                groupLimit = (int) (groupCount * BIBaseConstant.PART_DATA_COUNT_LIMIT / rowCount);
+            }
         }
         final boolean urd = useRealData;
         final int count = Math.min(Math.max(BIBaseConstant.PART_DATA_GROUP_LIMIT, groupLimit), BIBaseConstant.PART_DATA_GROUP_MAX_LIMIT);
