@@ -34,6 +34,11 @@ public class NoneDimensionCalculator implements DimensionCalculator {
     }
 
     @Override
+    public void setRelationList(List<BITableSourceRelation> relationList) {
+        relations = relationList;
+    }
+
+    @Override
     public BusinessField getField() {
         return field;
     }

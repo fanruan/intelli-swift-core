@@ -10,6 +10,7 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 
 import java.util.*;
@@ -113,11 +114,6 @@ public class CubeBuildStuffRealTime extends AbstractCubeBuildStuff implements Cu
     }
 
     @Override
-    public boolean isSingleTable() {
-        return true;
-    }
-
-    @Override
     public boolean copyFileFromOldCubes() {
         return false;
     }
@@ -137,5 +133,10 @@ public class CubeBuildStuffRealTime extends AbstractCubeBuildStuff implements Cu
 
     public String getCubeTaskId() {
         return BIStringUtils.append(DBConstant.CUBE_UPDATE_TYPE.SINGLETABLE_UPDATE, sourceId);
+    }
+
+    @Override
+    public CubeTaskType getTaskType() {
+        return CubeTaskType.INSTANT;
     }
 }
