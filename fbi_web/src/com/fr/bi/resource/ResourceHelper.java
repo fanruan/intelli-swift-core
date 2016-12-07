@@ -996,6 +996,7 @@ public class ResourceHelper {
                 //更新设置
                 "com/fr/bi/web/css/extend/update/update.tabledata.css",
                 "com/fr/bi/web/css/extend/update/singletable/update.singletable.setting.css",
+                "com/fr/bi/web/css/extend/update/singletable/iconchangetext.button.css",
                 "com/fr/bi/web/css/extend/update/singletable/preview/update.previewpane.css",
 
                 //指标弹出明细表
@@ -1810,6 +1811,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/extend/update/update.tabledata.model.js",
                 "com/fr/bi/web/js/extend/update/singletable/item/item.singletable.timesetting.js",
                 "com/fr/bi/web/js/extend/update/singletable/button/updatetype.button.js",
+                "com/fr/bi/web/js/extend/update/singletable/button/iconchangetext.button.js",
                 "com/fr/bi/web/js/extend/update/singletable/update.singletable.setting.js",
                 "com/fr/bi/web/js/extend/update/singletable/update.singletable.setting.model.js",
                 "com/fr/bi/web/js/extend/update/singletable/preview/update.previewpane.js",
