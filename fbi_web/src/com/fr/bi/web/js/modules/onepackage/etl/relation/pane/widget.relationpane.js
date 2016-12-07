@@ -44,6 +44,7 @@ BI.RelationPane = BI.inherit(BI.Widget, {
         if (this.model.getRelationIds().length === 0) {
             this._createSelectDataMask();
         }
+        this._refreshBaseTablePrimaryKeyIcon();
     },
 
     _drawSVGLine: function () {
@@ -132,6 +133,7 @@ BI.RelationPane = BI.inherit(BI.Widget, {
         this.relationTree.on(BI.Controller.EVENT_CHANGE, function (type, clickType, fieldId) {
             switch (clickType) {
                 case BI.RelationSettingTable.CLICK_GROUP:
+                    self._refreshBaseTablePrimaryKeyIcon();
                     self.fireEvent(BI.RelationPane.EVENT_VALID);
                     break;
                 case BI.RelationSettingTable.CLICK_TABLE:
@@ -147,15 +149,16 @@ BI.RelationPane = BI.inherit(BI.Widget, {
     },
 
     _createBranchItems: function (relationChildren) {
+        this.baseTableField = BI.createWidget({
+            type: "bi.relation_table_field_button",
+            table_name: this.model.getTableNameByFieldId(this.model.getFieldId()),
+            field_name: this.model.getFieldNameByFieldId(this.model.getFieldId()),
+            field_id: this.model.getFieldId()
+        });
         return [{
             el: {
                 type: "bi.float_center_adapt",
-                items: [{
-                    type: "bi.relation_table_field_button",
-                    table_name: this.model.getTableNameByFieldId(this.model.getFieldId()),
-                    field_name: this.model.getFieldNameByFieldId(this.model.getFieldId()),
-                    field_id: this.model.getFieldId()
-                }],
+                items: [this.baseTableField],
                 width: 180
             },
             children: BI.createItems(relationChildren, {
@@ -176,20 +179,29 @@ BI.RelationPane = BI.inherit(BI.Widget, {
         this.relationTree.populate(this._createBranchItems(relationChildren));
         this._drawSVGLine();
         this.model.setRelations(this.getValue());
-        if(this._checkAllRelationIsMatchingValid(relationChildren)){
+        if (this._checkAllRelationIsMatchingValid(relationChildren)) {
             this.fireEvent(BI.RelationPane.EVENT_VALID);
-        }else{
+        } else {
             this.fireEvent(BI.RelationPane.EVENT_ERROR);
         }
+        this._refreshBaseTablePrimaryKeyIcon();
     },
 
-    _checkAllRelationIsMatchingValid: function(items){
-        if(items.length === 0){
+    _checkAllRelationIsMatchingValid: function (items) {
+        if (items.length === 0) {
             return true;
         }
-        return BI.isNotNull(BI.find(items, function(idx, item){
+        return BI.isNotNull(BI.find(items, function (idx, item) {
             return BI.isNotNull(item.relationType);
         }))
+    },
+
+    _refreshBaseTablePrimaryKeyIcon: function () {
+        var treeValue = this.relationTree.getValue();
+        this.baseTableField.setPrimaryKeyIconVisible(BI.some(treeValue, function (i, item) {
+            return item.relationType === BICst.RELATION_TYPE.ONE_TO_N ||
+                item.relationType === BICst.RELATION_TYPE.ONE_TO_ONE;
+        }));
     },
 
     getValue: function () {
