@@ -31,7 +31,7 @@ BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
                 })
             });
             var dimensions = this.get("dimensions");
-            this._setDefaultRelation(dimensions);
+            //this._setDefaultRelation(dimensions, key2, old);
             var allIds = BI.keys(dimensions);
             var filterValue = this.get("filter_value");
             BI.each(filterValue, function (id, filter) {
@@ -100,7 +100,7 @@ BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
                 };
 
                 //设置所有纬度指标的target_relation
-                this._setDefaultRelation(dimensions);
+                this._setDefaultRelation(dimensions, dId);
                 view[BICst.REGION.DIMENSION1] || (view[BICst.REGION.DIMENSION1] = []);
                 if (!BI.contains(view[BICst.REGION.DIMENSION1], dId)) {
                     view[BICst.REGION.DIMENSION1].push(dId);
@@ -170,7 +170,7 @@ BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
     },
 
 
-    _setDefaultRelation: function (dimensions) {
+    _setDefaultRelation: function (dimensions, dId) {
         var self = this;
         var viewTableIds = [];
         BI.each(dimensions, function (did, dimension) {
@@ -179,9 +179,20 @@ BIDezi.DetailTableDetailModel = BI.inherit(BI.Model, {
                 (!BI.contains(viewTableIds, tableId)) && viewTableIds.push(tableId);
             }
         });
-        BI.each(dimensions, function (did, dimension) {
-            dimension.dimension_map = self._getDefaultRelation(dimension, BI.firstObject(BI.Utils.getCommonForeignTablesByTableIDs(viewTableIds)));
-        });
+        var isFromSameTable = false;
+        if(BI.has(dimensions, dId)){
+            isFromSameTable = BI.isNotNull(BI.find(viewTableIds, function(idx, tableId){
+                return tableId === BI.Utils.getTableIdByFieldID(dimensions[dId]._src.field_id)
+            }));
+        }
+        var defaultCommonTable = BI.firstObject(BI.Utils.getCommonForeignTablesByTableIDs(viewTableIds));
+        if(isFromSameTable === false){
+            BI.each(dimensions, function (did, dimension) {
+                dimension.dimension_map = self._getDefaultRelation(dimension, defaultCommonTable);
+            });
+        }else{
+            dimensions[dId].dimension_map = self._getDefaultRelation(dimensions[dId], defaultCommonTable)
+        }
     },
 
     refresh: function () {
