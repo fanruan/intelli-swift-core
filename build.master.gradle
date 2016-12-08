@@ -2,6 +2,7 @@ apply plugin:'java'
 
 //应用jacoco plugin
 apply plugin : 'jacoco'
+
 tasks.withType(JavaCompile){
 	options.encoding = 'UTF-8'
 }
@@ -17,7 +18,6 @@ repositories {
 //sourceCompatibility=1.5
 //BI工程的根目录
 def BI_HOME='../../'
-def baseDir='.'
 def jarname='fr-bi-server-4.0.jar'
 //指定生成的jar包版本
 version='4.0'
@@ -25,10 +25,7 @@ version='4.0'
 FileTree files =fileTree(dir:'./',include:'build.*.gradle')
 def buildDir=files[0].path.substring(0,files[0].path.lastIndexOf ('\\'))
 def branchName=buildDir.substring(buildDir.lastIndexOf ('\\')+1)
-//删除test文件下的文件
-ant{
-	delete(dir:"**/test/")
-}
+
 jar{
 //指定生成jar包的名称
 	baseName='fr-bi-server'
@@ -38,7 +35,6 @@ def list=[
 		"fbi_base/src",
 		"fbi_engine_finereport/src",
 		"fbi_conf/src", 
-		"fbi_h5/src",
 		"fbi_engine_base/src",
 		"fbi_engine_generate/src",
 		"fbi_engine_analyse/src",
@@ -109,20 +105,9 @@ test {
 	}
 }
 
-configurations{
-	ftpAntTask
-}
-//添加ftp依赖
-dependencies {
-    ftpAntTask("org.apache.ant:ant-commons-net:1.8.4") {
-        module("commons-net:commons-net:1.4.1") {
-            dependencies "oro:oro:2.0.8:jar"
-        }
-    }
-}
 //声明外部依赖
 dependencies{
-	compile fileTree(dir:"${BI_HOME}/lib/bugfix%2F4.0",include:'**/*.jar',exclude:"direct/*.jar")
+	compile fileTree(dir:"${BI_HOME}/lib/${branchName}",include:'**/*.jar')
 	testCompile 'junit:junit:4.12'
 }
 //指明无法编译文件所在路径
@@ -137,22 +122,13 @@ def dataContent ={def dir ->
 				'**/*.g',
 				'**/package.html',
 				'**/*.less',
-				'**/cross/demo/**',
-				'**/test/**'
+				'**/cross/demo/**'
 			}
 		}
 }
 
 //将非.java文件复制到classes文件夹下 参与打包
 task copyFile(type:Copy,dependsOn:compileJava){
-	//删除test文件夹
-	ant{
-		echo('--------------------------------delete test---------------------------')
-		delete(defaultexcludes:'false'){
-			fileset(dir:'.',includes:'**/test/')
-
-		}
-	}
 	list.each{ def srcDir->
 		copy{
 			with dataContent.call("${srcDir}") 
@@ -177,9 +153,6 @@ task compressJS(dependsOn:'copyFile'){
 			exclude (name:'**/js/third/*.js')
 			exclude (name:'**/cross/demo/**')
 			exclude (name:'**/test/**')
-			exclude (name:'js/widget/arrangement/arrangement.js')
-			exclude (name:'js/widget/detailchart/chart.bubble.js')
-
 		}
 	}
 }
@@ -195,11 +168,11 @@ task addTime(dependsOn:'compressJS'){
 
 //混淆代码
 task obfuse(dependsOn:'build')<<{
-	ant.delete(dir:"JAR/tmp/1.8")
-	ant.mkdir(dir:"JAR/tmp/1.8")
+	ant.delete(dir:"${BI_HOME}/build/${branchName}/build/JAR/tmp/1.8")
+	ant.mkdir(dir:"${BI_HOME}/build/${branchName}/build/JAR/tmp/1.8")
 	ant.taskdef(name:'yguard',classname:'com.yworks.yguard.YGuardTask',classpath:"${BI_HOME}/lib4build/yguard.jar")
 	ant.yguard(){
-		inoutpair(in:"build/libs/${jarname}",out:"JAR/tmp/1.8/${jarname}")
+		inoutpair(in:"build/libs/${jarname}",out:"${BI_HOME}/build/${branchName}/build/JAR/tmp/1.8/${jarname}")
 		rename(){
 		keep{
 			method(name:'void main(String[])'){
@@ -228,51 +201,4 @@ task obfuse(dependsOn:'build')<<{
 		}
 	}
 	ant.delete(file:'yguardlog.xml')
-}
-
-ant{
-	taskdef(name: 'ftp',
-                classname: 'org.apache.tools.ant.taskdefs.optional.net.FTP',
-               classpath: configurations.ftpAntTask.asPath)
-	echo('ftp target is 192.168.5.86')
-	//jar包上传到ftp
-	fileset(id:'ftp.upload.fileset.jar',dir:'bi_jar_zip'){
-		include(name:'**/**')
-	}
-
-}
-
-task copyjar(dependsOn:'obfuse')<<{
-	ant{
-		delete(file:"${baseDir}/JAR/CN/${jarname}")
-		mkdir(dir:"${baseDir}/JAR/tmp/1.8")
-		mkdir(dir:"${baseDir}/JAR/CN")
-		//构建jdk1.8的jar包
-		jar(destfile:"${baseDir}/JAR/CN/${jarname}"){
-			zipfileset(includes:'**/*.*',excludes:'com/fr/bi/test/**',src:"JAR/tmp/1.8/${jarname}")
-			fileset(dir:"${BI_HOME}/build/master/build/JAR/CN"){
-				include(name:"com/**/*")
-			}
-		}
-		delete(file:"${baseDir}/bi_jar/*.*")
-		copy(todir:"${baseDir}/bi_jar"){
-			fileset(file:"${baseDir}/JAR/CN/${jarname}")
-			fileset(dir:"${baseDir}/../../lib/bugfix%2F4.0/report",includes:"fr-*.jar")
-		}
-		zip(destfile:"${baseDir}/bi_jar_zip/BI4.0jar_jdk1.8.zip"){
-			zipfileset(dir:"${baseDir}/bi_jar")
-		}
-		delete(file:"${baseDir}/JAR/CN/${jarname}")
-		delete(dir:"${baseDir}/JAR/tmp")
-	}	
-}
-
-//上传exe文件到ftp上
-//上传生成的jar包到ftp上
-task ftp_uploadjar(dependsOn:copyjar)<<{
-	ant{
-		ftp(server:'192.168.5.86',userid:'fr',password:'ilovejava',remotedir:'finebi/bugfixcube',action:'put'){
-			fileset(refid:'ftp.upload.fileset.jar')
-		}
-	}
 }

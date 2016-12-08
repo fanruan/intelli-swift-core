@@ -2,6 +2,7 @@ apply plugin:'java'
 
 //应用jacoco plugin
 apply plugin : 'jacoco'
+
 tasks.withType(JavaCompile){
 	options.encoding = 'UTF-8'
 }
@@ -88,6 +89,8 @@ sourceSets{
 		"fbi_cube_conf/test",
 		"fbi_cube_generate/test"
 	]
+
+
 }
 
 test {
@@ -99,7 +102,6 @@ test {
 		destinationFile = file("reports/jacoco/jacoco.exec")
 	}
 }
-
 //声明外部依赖
 dependencies{
 	compile fileTree(dir:"${BI_HOME}/lib/${branchName}",include:'**/*.jar')
@@ -117,8 +119,7 @@ def dataContent ={def dir ->
 				'**/*.g',
 				'**/package.html',
 				'**/*.less',
-				'**/cross/demo/**',
-				'**/test/**'
+				'**/cross/demo/**'
 			}
 		}
 }

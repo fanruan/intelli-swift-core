@@ -13,6 +13,7 @@ ant.delete(dir:"reports")
 repositories {
     mavenCentral()
 }
+
 //sourceCompatibility=1.5
 //BI工程的根目录
 def BI_HOME='../../'
@@ -101,7 +102,6 @@ test {
 		destinationFile = file("reports/jacoco/jacoco.exec")
 	}
 }
-
 //声明外部依赖
 dependencies{
 	compile fileTree(dir:"${BI_HOME}/lib/${branchName}",include:'**/*.jar')
@@ -119,8 +119,7 @@ def dataContent ={def dir ->
 				'**/*.g',
 				'**/package.html',
 				'**/*.less',
-				'**/cross/demo/**',
-				'**/test/**'
+				'**/cross/demo/**'
 			}
 		}
 }
