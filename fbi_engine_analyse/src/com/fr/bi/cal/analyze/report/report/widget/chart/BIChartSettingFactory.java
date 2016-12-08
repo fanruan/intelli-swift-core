@@ -50,7 +50,7 @@ public class BIChartSettingFactory {
         BIChartSetting chartSetting = null;
         try {
             chartSetting = newChartSettingByType(type);
-            JSONObject settings = widget.getChatSetting().getDetailChartSetting();
+            JSONObject settings = widget.getChartSetting().getDetailChartSetting();
             boolean isMinimalistModel = false;
             if(settings.optBoolean("minimalist_model", false)){
                 for(int i = 0; i < MINIMALIST_WIDGET.length; i++){

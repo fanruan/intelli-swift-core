@@ -98,7 +98,7 @@ BI.DetailTablePopupView = BI.inherit(BI.View, {
                 },
                 left: 0,
                 right: this.constants.DETAIL_PANE_HORIZONTAL_GAP,
-                top: this.constants.DETAIL_GAP_NORMAL,
+                top: 0,
                 bottom: this.constants.DETAIL_GAP_NORMAL
             }]
         });

@@ -1727,7 +1727,15 @@
 
         getDimensionSettingsByID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
-                return Data.SharingPool.get("dimensions", did, "settings") || {};
+                return Data.SharingPool.get("dimensions", did, "settings") || {
+                        format: BICst.TARGET_STYLE.FORMAT.NORMAL,
+                        numLevel: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
+                        unit: "",
+                        iconStyle: BICst.TARGET_STYLE.ICON_STYLE.NONE,
+                        mark: 0,
+                        conditions: [],
+                        numSeparators: true,
+                    };
             }
             return {};
         },
@@ -3000,7 +3008,7 @@
                 }
             });
 
-            //联动传递指标过滤条件  找到联动链上的所有的组件，获取当前点击的指标的过滤条件  感觉有点浮夸的功能
+            //联动传递过滤条件  找到联动链上的所有的组件，获取当前点击的指标的过滤条件  感觉有点浮夸的功能
             var allLinksWIds = [];
 
             function getLinkedIds(wid, links) {

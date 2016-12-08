@@ -79,6 +79,18 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         return columnSize;
     },
 
+    getHeaderRowSize: function () {
+        return this.headerRowSize;
+    },
+
+    getFooterRowSize: function () {
+        return this.footerRowSize;
+    },
+
+    getRowSize: function () {
+        return this.rowSize;
+    },
+
     getHeader: function () {
         return this.header;
     },
@@ -237,6 +249,9 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         this.crossItems = [];
         this.mergeCols = [];
         this.columnSize = BI.Utils.getWSColumnSizeByID(wId);
+        this.headerRowSize = BI.Utils.getWSRowHeightByID(wId);
+        this.footerRowSize = BI.Utils.getWSRowHeightByID(wId);
+        this.rowSize = BI.Utils.getWSRowHeightByID(wId);
 
         this.tree = new BI.Tree();
         this.crossTree = new BI.Tree();
@@ -529,7 +544,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     self.resetETree();
                     self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
                     self.headerOperatorCallback(v, dId);
-                }
+                },
             });
         });
     },
@@ -549,7 +564,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                         self.resetETree();
                         self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
                         self.headerOperatorCallback(v, dId);
-                    }
+                    },
                 });
             }
         });
@@ -563,7 +578,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                         self.resetETree();
                         self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
                         self.headerOperatorCallback(v, dId);
-                    }
+                    },
                 });
             }
         });
@@ -766,7 +781,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                             self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
                             self.headerOperatorCallback(v, tId);
                         },
-                        isSum: true
+                        isSum: true,
                     });
                 });
             }
@@ -1066,7 +1081,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                         self.resetETree();
                         self.pageOperator = BICst.TABLE_PAGE_OPERATOR.REFRESH;
                         self.headerOperatorCallback(v, dId);
-                    }
+                    },
                 });
             }
         });
