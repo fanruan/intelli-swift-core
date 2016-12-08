@@ -2,6 +2,7 @@ package com.fr.bi.stable.operation.group.group;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
 import com.fr.bi.stable.operation.group.AbstractGroup;
@@ -34,14 +35,14 @@ public class AutoGroup extends AbstractGroup {
 
     @Override
     public ICubeColumnIndexReader createGroupedMap(ICubeColumnIndexReader baseMap) {
-        Number lastKey = (Number)BICollectionUtils.lastUnNullKey(baseMap);
+        Number lastKey = (Number) BICollectionUtils.lastUnNullKey(baseMap);
         double tiMax = 0d;
-        if(lastKey != null){
+        if (lastKey != null) {
             tiMax = lastKey.doubleValue();
         }
-        Number firstKey = (Number)BICollectionUtils.firstUnNullKey(baseMap);
+        Number firstKey = (Number) BICollectionUtils.firstUnNullKey(baseMap);
         double tiMin = 0d;
-        if(firstKey != null) {
+        if (firstKey != null) {
             tiMin = firstKey.doubleValue();
         }
         double interval = this.interval;
@@ -54,19 +55,22 @@ public class AutoGroup extends AbstractGroup {
         Iterator<Map.Entry<Number, GroupValueIndex>> it = baseMap.iterator();
         while (it.hasNext()) {
             Map.Entry<Number, GroupValueIndex> entry = it.next();
-            if(entry.getKey() == null || ComparatorUtils.equals(entry.getKey(),"")){
-                GroupValueIndexOrHelper helper = new GroupValueIndexOrHelper();
-                resultMap.put("", entry.getValue());
+            if (entry.getKey() == null || ComparatorUtils.equals(entry.getKey(), "")) {
+                if (resultMap.get("") == null) {
+                    resultMap.put("", entry.getValue());
+                } else {
+                    resultMap.put("", GVIUtils.OR(entry.getValue(), (GroupValueIndex) resultMap.get("")));
+                }
                 continue;
             }
             Number k = entry.getKey();
-            if(k == null) {
+            if (k == null) {
                 continue;
             }
             double key = k.doubleValue();
             GroupValueIndex gvi = entry.getValue();
             int index = getAutoGroupIndex(key, interval, groupSize);
-            if (indexMap.containsKey(index)){
+            if (indexMap.containsKey(index)) {
                 indexMap.get(index).add(gvi);
             } else {
                 GroupValueIndexOrHelper helper = new GroupValueIndexOrHelper();
@@ -75,7 +79,7 @@ public class AutoGroup extends AbstractGroup {
             }
         }
         Iterator<Map.Entry<Integer, GroupValueIndexOrHelper>> iterator = indexMap.entrySet().iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             Map.Entry<Integer, GroupValueIndexOrHelper> entry = iterator.next();
             resultMap.put(getAutoGroupName(entry.getKey(), interval), entry.getValue().compute());
         }
@@ -84,7 +88,7 @@ public class AutoGroup extends AbstractGroup {
 
     private int getAutoGroupIndex(double value, double interval, int groupSize) {
         int index = (int) ((value - start) / interval);
-        if(value == start + interval * groupSize){
+        if (value == start + interval * groupSize) {
             return index - 1;
         }
         return index;
@@ -102,7 +106,7 @@ public class AutoGroup extends AbstractGroup {
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
         super.parseJSON(jo);
-        if(jo.has("group_value")){
+        if (jo.has("group_value")) {
             JSONObject valueJson = jo.optJSONObject("group_value");
             if (valueJson.has("max")) {
                 max = valueJson.getDouble("max");
@@ -126,8 +130,8 @@ public class AutoGroup extends AbstractGroup {
         return Double.parseDouble(val);
     }
 
-    private double cutBig(String val, int cutPosition){
-        if(val.charAt(cutPosition) == '0'){
+    private double cutBig(String val, int cutPosition) {
+        if (val.charAt(cutPosition) == '0') {
             return Double.parseDouble(val);
         }
         val = val.substring(0, cutPosition);
@@ -137,7 +141,7 @@ public class AutoGroup extends AbstractGroup {
             add.append("0");
         }
         add.append("1");
-        if( ComparatorUtils.equals(val.charAt(cutPosition - 1), '.')){
+        if (ComparatorUtils.equals(val.charAt(cutPosition - 1), '.')) {
             return new BigDecimal(val.substring(0, cutPosition - 1)).add(new BigDecimal("1")).doubleValue();
         }
         BigDecimal b1 = new BigDecimal(val);
@@ -182,11 +186,11 @@ public class AutoGroup extends AbstractGroup {
 
         //后面补零对齐
         int zeros = maxBuilder.length() - minBuilder.length();
-        if(zeros > 0){
+        if (zeros > 0) {
             while (zeros-- > 0) {
                 minBuilder.append("0");
             }
-        }else{
+        } else {
             while (zeros++ < 0) {
                 maxBuilder.append("0");
             }
@@ -209,9 +213,9 @@ public class AutoGroup extends AbstractGroup {
         double genMin = minV * magnify;
         double genMax = maxV * magnify;
         this.start = genMin;
-        if(!hasInterval){
+        if (!hasInterval) {
             return Double.parseDouble(StableUtils.convertNumberStringToString((genMax - genMin) / 5));
-        }else{
+        } else {
             return this.interval;
         }
     }
