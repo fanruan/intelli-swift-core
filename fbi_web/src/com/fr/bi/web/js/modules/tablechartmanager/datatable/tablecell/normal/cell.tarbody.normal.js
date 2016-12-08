@@ -124,7 +124,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 title: text,
                 height: o.height,
                 cls: "target-cell-text",
-                textAlign: valueStyle.alignchooser || "right",
+                textAlign: valueStyle.textAlign || "right",
                 rgap: 5
             });
         } else {
@@ -133,7 +133,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 text: text,
                 title: text,
                 height: 25,
-                textAlign: valueStyle.alignchooser || "right",
+                textAlign: valueStyle.textAlign || "right",
                 cls: "target-linkage-label",
                 rgap: 5
             });
