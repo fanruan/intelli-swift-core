@@ -1727,7 +1727,15 @@
 
         getDimensionSettingsByID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
-                return Data.SharingPool.get("dimensions", did, "settings") || {};
+                return Data.SharingPool.get("dimensions", did, "settings") || {
+                        format: BICst.TARGET_STYLE.FORMAT.NORMAL,
+                        numLevel: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
+                        unit: "",
+                        iconStyle: BICst.TARGET_STYLE.ICON_STYLE.NONE,
+                        mark: 0,
+                        conditions: [],
+                        numSeparators: true,
+                    };
             }
             return {};
         },

@@ -15,7 +15,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
         var text = o.text;
         var iconCls = "", color = "";
-        var format = styleSettings.format, numLevel = styleSettings.numLevel, num_separators = styleSettings.num_separators;
+        var format = styleSettings.format, numLevel = styleSettings.numLevel, num_separators = styleSettings.numSeparators;
         text = BI.TargetBodyNormalCell.parseNumByLevel(text, numLevel);
         var iconStyle = styleSettings.iconStyle, mark = styleSettings.mark;
         iconCls = this._getIconByStyleAndMark(text, iconStyle, mark);
@@ -121,7 +121,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 type: "bi.label",
                 text: text,
                 title: text,
-                height: 25,
+                height: o.height,
                 cls: "target-cell-text",
                 textAlign: "right",
                 rgap: 5

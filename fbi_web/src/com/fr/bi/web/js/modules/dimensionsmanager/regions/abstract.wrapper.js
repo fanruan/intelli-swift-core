@@ -111,6 +111,11 @@ BI.AbstractWrapper = BI.inherit(BI.Widget, {
         }
     },
 
+
+    getEmptyRegionValue: function () {
+        return this.emptyRegion && this.emptyRegion.getDimensions();
+    },
+
     getWrapperType: function () {
         return this.options.wrapperType;
     },

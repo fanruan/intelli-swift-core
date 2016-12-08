@@ -36,6 +36,7 @@ BI.DimensionRegionWrapper = BI.inherit(BI.AbstractWrapper, {
         emptyRegion.on(BI.DimensionEmptyRegion.EVENT_CHANGE, function (data) {
             self._addRegionAndDimension(data);
         });
+        this.emptyRegion = emptyRegion;
         this.center.addItems([emptyRegion]);
     },
 

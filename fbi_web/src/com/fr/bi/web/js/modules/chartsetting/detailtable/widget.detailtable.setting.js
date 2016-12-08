@@ -305,7 +305,7 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
             customTableStyle: this.customTableStyle.getValue(),
 
             showNumber: this.showNumber.isSelected(),
-            rowHeight: this.rowHeight.getValue(),
+            rowHeight: BI.parseFloat(this.rowHeight.getValue()),
 
             freezeFirstColumn: this.freezeFirstColumn.isSelected()
         }
