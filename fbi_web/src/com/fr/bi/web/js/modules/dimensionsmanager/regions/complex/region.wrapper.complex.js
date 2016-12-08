@@ -152,8 +152,7 @@ BI.ComplexRegionWrapper = BI.inherit(BI.Widget, {
     getEmptyRegionValue: function () {
         return this.emptyRegion && this.emptyRegion.getDimensions();
     },
-
-
+    
     populate: function () {
 
     }
