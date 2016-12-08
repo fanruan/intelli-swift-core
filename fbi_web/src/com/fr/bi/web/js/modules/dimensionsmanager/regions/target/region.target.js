@@ -179,7 +179,7 @@ BI.TargetRegion = BI.inherit(BI.AbstractRegion, {
         var dimensions = $(".target-container", this.center.element);
         BI.each(dimensions, function (i, dom) {
             var dId = $(dom).data("dId");
-            if (BI.isNull(self.containers[dId])) {
+            //if (BI.isNull(self.containers[dId])) {
                 var dim = o.dimensionCreator(dId, o.regionType, o);
                 self.containers[dId] = BI.createWidget({
                     type: "bi.absolute",
@@ -192,7 +192,7 @@ BI.TargetRegion = BI.inherit(BI.AbstractRegion, {
                         bottom: 0
                     }]
                 });
-            }
+            //}
             result.push(dId);
         });
         return result;

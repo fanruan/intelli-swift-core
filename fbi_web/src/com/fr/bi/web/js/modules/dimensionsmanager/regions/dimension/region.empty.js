@@ -28,6 +28,7 @@ BI.DimensionEmptyRegion = BI.inherit(BI.Widget, {
         });
         DimensionEmptyRegion.element.sortable({
             connectWith: ".dimensions-container",
+            items: ".dimension-container"
         });
         DimensionEmptyRegion.element.droppable({
             accept: ".select-data-level0-item-button, .select-data-level1-item-button",

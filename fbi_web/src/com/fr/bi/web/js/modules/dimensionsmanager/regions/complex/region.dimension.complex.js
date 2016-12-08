@@ -287,7 +287,7 @@ BI.ComplexDimensionRegion = BI.inherit(BI.Widget, {
         var dimensions = $(".dimension-container", this.sinlgeRegion.element);
         BI.each(dimensions, function (i, dom) {
             var dId = $(dom).data("dId");
-            if (BI.isNull(self.containers[dId])) {
+            //if (BI.isNull(self.containers[dId])) {
                 var dim = o.dimensionCreator(dId, o.regionType, o);
                 self.containers[dId] = BI.createWidget({
                     type: "bi.absolute",
@@ -300,7 +300,7 @@ BI.ComplexDimensionRegion = BI.inherit(BI.Widget, {
                         bottom: 0
                     }]
                 });
-            }
+            //}
             result.push(dId);
         });
         return result;

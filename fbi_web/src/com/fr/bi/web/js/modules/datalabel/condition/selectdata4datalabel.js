@@ -91,7 +91,7 @@ BI.SelectDataLabelDataCombo = BI.inherit(BI.SelectDimensionDataCombo, {
             if (BI.isNotNull(group) && group.type === BICst.GROUP.YMD) {
                 var date = new Date(BI.parseInt(value));
                 var year = date.getFullYear(),
-                    month = '' + date.getMonth(),
+                    month = '' + (date.getMonth() + 1),
                     day = '' + date.getDate();
                 var text = [year, month, day].join('/');
                 if (month.length < 2) {
