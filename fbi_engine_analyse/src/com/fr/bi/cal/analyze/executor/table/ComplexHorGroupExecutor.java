@@ -131,9 +131,9 @@ public class ComplexHorGroupExecutor extends AbstractComplexNodeExecutor {
             BIDimension[] colDimension = rowData.getDimensionArray(integers[i]);
             NodeExpander nodeExpander = complexExpander.getXExpander(integers[i]);
             if (paging.getOprator() < Node.NONE_PAGE_LEVER) {
-                HorGroupExecutor.dealWithNode(tree, cbcells, 0, startColumn, colDimension, usedSumTarget, keys, colDimension.length - 1, rowData, widget.getChatSetting());
+                HorGroupExecutor.dealWithNode(tree, cbcells, 0, startColumn, colDimension, usedSumTarget, keys, colDimension.length - 1, rowData, widget.getChartSetting());
             } else {
-                HorGroupExecutor.dealWithNode(tree, nodeExpander, cbcells, 0, startColumn, colDimension, usedSumTarget, keys, new ArrayList<String>(), colDimension.length - 1, false, new IntList(), false, null, widget, rowData, widget.getChatSetting());
+                HorGroupExecutor.dealWithNode(tree, nodeExpander, cbcells, 0, startColumn, colDimension, usedSumTarget, keys, new ArrayList<String>(), colDimension.length - 1, false, new IntList(), false, null, widget, rowData, widget.getChartSetting());
             }
             startColumn += paging.getOprator() < Node.NONE_PAGE_LEVER ? tree.getTotalLengthWithSummary() : tree.getTotalLengthWithSummary(nodeExpander);
         }

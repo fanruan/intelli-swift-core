@@ -587,7 +587,8 @@ public class BIChartDataConvertFactory {
 
     private static void setDataLabelSettingForBubbleAndScatter(MultiChartWidget widget, JSONArray data) throws JSONException{
         JSONArray allSeries = pluck(data, "name");
-        JSONArray dataLabels = widget.getChatSetting().getDetailChartSetting().optJSONArray("data_label");
+//        JSONArray dataLabels = widget.getChatSetting().getDetailChartSetting().optJSONArray("data_label");
+        JSONArray dataLabels = null;
         if(dataLabels == null){
             return;
         }
