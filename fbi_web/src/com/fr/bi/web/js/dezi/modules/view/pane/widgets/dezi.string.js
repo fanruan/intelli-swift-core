@@ -103,7 +103,7 @@ BIDezi.StringWidgetView = BI.inherit(BI.View, {
                     right: 10
                 }]
             });
-            this.title.on(BI.ShelterEditor.EVENT_CHANGE, function () {
+            this.title.on(BI.ShelterEditor.EVENT_CONFIRM, function () {
                 self.model.set("name", this.getValue());
             });
         } else {
