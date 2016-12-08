@@ -20,9 +20,9 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
             showExcelView: true,
             showDateGroup: true,
             showTime: true,
-            tablesCreator: function (packageId, isRelation) {
+            tablesCreator: function (packageIdOrTableId, isRelation) {
                 if (isRelation === true) {
-                    var tIds = BI.Utils.getPrimaryRelationTablesByTableID(packageId);
+                    var tIds = BI.Utils.getPrimaryRelationTablesByTableID(packageIdOrTableId);
                     return BI.map(tIds, function (i, id) {
                         return {
                             id: id,
@@ -30,7 +30,7 @@ BI.DetailDetailTableSelectDataPane = BI.inherit(BI.Widget, {
                         }
                     })
                 }
-                var ids = BI.Utils.getTableIDsOfPackageID(packageId);
+                var ids = BI.Utils.getTableIDsOfPackageID(packageIdOrTableId);
                 return BI.map(ids, function (i, id) {
                     return {
                         id: id,
