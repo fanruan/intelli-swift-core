@@ -31,7 +31,7 @@ BI.TableDetailedSettingCombo = BI.inherit(BI.Widget, {
             },
             popup: {
                 el:  this.popup,
-                minWidth: 350,
+                minWidth: 390,
                 stopPropagation: false
             }
         })
