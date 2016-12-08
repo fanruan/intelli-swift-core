@@ -24,7 +24,7 @@ BI.ComplexRegionWrapper = BI.inherit(BI.Widget, {
         this.center = BI.createWidget({
             type: "bi.button_group",
             layouts: [{
-                type: "bi.default",
+                type: "bi.vertical",
                 cls: "regions-container",
                 scrolly: true,
                 width: "100%",
@@ -148,6 +148,11 @@ BI.ComplexRegionWrapper = BI.inherit(BI.Widget, {
     getRegions: function () {
         return this.regions;
     },
+
+    getEmptyRegionValue: function () {
+        return this.emptyRegion && this.emptyRegion.getDimensions();
+    },
+
 
     populate: function () {
 
