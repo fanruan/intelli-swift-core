@@ -120,6 +120,7 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
                 this.wrappers[BICst.REGION.TARGET1] = this._createTargetRegionWrapper(BI.i18nText("BI-Target"), BICst.REGION.TARGET1);
                 break;
             case BICst.WIDGET.PIE:
+            case BICst.WIDGET.MULTI_PIE:
             case BICst.WIDGET.DASHBOARD:
             case BICst.WIDGET.FORCE_BUBBLE:
             case BICst.WIDGET.FUNNEL:

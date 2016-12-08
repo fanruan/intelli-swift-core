@@ -38,6 +38,7 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.PIE:
+            case BICst.WIDGET.MULTI_PIE:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.GIS_MAP:
@@ -120,6 +121,7 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.PIE:
+            case BICst.WIDGET.MULTI_PIE:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.GIS_MAP:
@@ -219,6 +221,7 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.PIE:
+            case BICst.WIDGET.MULTI_PIE:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.GIS_MAP:

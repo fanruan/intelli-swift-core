@@ -2001,6 +2001,8 @@
                     return "drag-bar-compare-icon";
                 case BICst.WIDGET.PIE:
                     return "drag-pie-icon";
+                case BICst.WIDGET.MULTI_PIE:
+                    return "drag-multi-pie-icon";
                 case BICst.WIDGET.MAP:
                     return "drag-map-china-icon";
                 case BICst.WIDGET.GIS_MAP:

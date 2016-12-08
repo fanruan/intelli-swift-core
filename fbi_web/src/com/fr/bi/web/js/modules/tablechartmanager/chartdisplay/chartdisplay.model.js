@@ -30,6 +30,16 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     },
 
+    _assertValue: function (v) {
+        if (BI.isNull(v)) {
+            return;
+        }
+        if (!BI.isFinite(v)) {
+            return 0;
+        }
+        return v;
+    },
+
     _formatDataForMap: function (data, currentLayer) {
         var self = this, o = this.options;
         var targetIds = this._getShowTarget();
@@ -47,7 +57,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 var adjustData = [];
                 BI.each(data.c, function (id, item) {
                     var res = {};
-                    if (BI.isNull(assertValue(item.s[idx]))) {
+                    if (BI.isNull(self._assertValue(item.s[idx]))) {
                         return;
                     }
                     if (regionType >= BICst.REGION.TARGET2 && regionType < BICst.REGION.TARGET3) {
@@ -93,15 +103,37 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             });
         }
         return result;
+    },
 
-        function assertValue(v) {
-            if (BI.isNull(v)) {
-                return;
+    _formatDataForMultiPie: function(da){
+        var self = this, o = this.options;
+        var targetIds = this._getShowTarget();
+        var obj = {};
+        obj.data = _formatChidren(da);
+        obj.name = BI.Utils.getDimensionNameByID(targetIds[0]);
+        return [obj];
+
+        function _formatChidren(data){
+            if (BI.has(data, "c")) {
+                var adjustData = [];
+                BI.each(data.c, function (id, item) {
+                    var res = {};
+                    if (BI.isNull(self._assertValue(item.s[0]))) {
+                        return;
+                    }
+                    res = {
+                        x: item.n,
+                        y: (BI.isFinite(item.s[0]) ? item.s[0] : 0),
+                        targetIds: [targetIds[0]],
+                    };
+                    if (BI.has(item, "c")) {
+                        res.children = _formatChidren(item);
+                    }
+                    adjustData.push(res);
+                });
+                return adjustData;
             }
-            if (!BI.isFinite(v)) {
-                return 0;
-            }
-            return v;
+            return [];
         }
     },
 
@@ -748,6 +780,10 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.GIS_MAP:
                 var da = this._formatDataForGISMap(data);
                 return BI.isEmptyArray(da) ? da : [da];
+            case BICst.WIDGET.MULTI_PIE:
+                var da = this._formatDataForMultiPie(data);
+                return BI.isEmptyArray(da) ? da : [da];
+
         }
     },
 

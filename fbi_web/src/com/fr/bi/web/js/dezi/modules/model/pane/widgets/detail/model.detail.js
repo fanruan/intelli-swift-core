@@ -215,7 +215,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                 wType !== BICst.WIDGET.COMPLEX_TABLE) {
                 var dims = BI.deepClone(changed.dimensions), preDims = BI.deepClone(prev.dimensions);
                 var view = this.get("view");
-                if(wType !== BICst.WIDGET.MAP){
+                if(wType !== BICst.WIDGET.MAP && wType !== BICst.WIDGET.MULTI_PIE){
                     //地图不参与分类和系列的单选复选join
                     //分类和系列join
                     var preDim1Select = [], preDim2Select = [];
@@ -281,11 +281,11 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                             dims[d].used = false;
                         });
                     }
-                    //对比柱状/面积/条形图,范围面积,瀑布,气泡,力学,散点,漏斗这些指标区域是单选的
+                    //对比柱状/面积/条形图,范围面积,瀑布,气泡,力学,散点,漏斗,多层饼图这些指标区域是单选的
                     if(type === BICst.WIDGET.COMPARE_AXIS || type === BICst.WIDGET.COMPARE_AREA ||
                         type === BICst.WIDGET.COMPARE_BAR || type === BICst.WIDGET.RANGE_AREA || type === BICst.WIDGET.FALL_AXIS||
                         type === BICst.WIDGET.BUBBLE || type === BICst.WIDGET.FORCE_BUBBLE || type === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART ||
-                        type === BICst.WIDGET.SCATTER){
+                        type === BICst.WIDGET.SCATTER || type === BICst.WIDGET.MULTI_PIE){
                         var preTar1Select = [], preTar2Select = [], preTar3Select = [];
                         BI.each(preDims, function (dId, dim) {
                             if (dim.used === true) {

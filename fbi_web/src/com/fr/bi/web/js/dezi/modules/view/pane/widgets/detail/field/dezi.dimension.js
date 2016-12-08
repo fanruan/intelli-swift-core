@@ -124,7 +124,7 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         if (wType === BICst.WIDGET.TABLE ||
             wType === BICst.WIDGET.CROSS_TABLE ||
             wType === BICst.WIDGET.COMPLEX_TABLE ||
-            wType === BICst.WIDGET.MAP) {
+            wType === BICst.WIDGET.MAP || wType === BICst.WIDGET.MULTI_PIE) {
             this.usedCheck.setVisible(true);
             this.usedRadio.setVisible(false);
             return;

@@ -51,6 +51,7 @@ public class BIWidgetFactory {
             case BIReportConstant.WIDGET.MAP:
             case BIReportConstant.WIDGET.ACCUMULATE_BAR:
             case BIReportConstant.WIDGET.PIE:
+            case BIReportConstant.WIDGET.MULTI_PIE:
             case BIReportConstant.WIDGET.DASHBOARD:
             case BIReportConstant.WIDGET.DONUT:
             case BIReportConstant.WIDGET.RADAR:
