@@ -36,11 +36,16 @@ BI.TargetEmptyRegion = BI.inherit(BI.Widget, {
         });
         var TargetEmptyRegion = BI.createWidget({
             type: "bi.vertical",
+            cls: "targets-container",
             element: this.element,
             height: 40,
             items: [commentTip],
             vgap: 5,
             hgap: 5
+        });
+        TargetEmptyRegion.element.sortable({
+            connectWith: ".targets-container",
+            items: ".target-container"
         });
         TargetEmptyRegion.element.droppable({
             accept: ".select-data-level0-item-button, .select-data-level1-item-button",
@@ -207,6 +212,17 @@ BI.TargetEmptyRegion = BI.inherit(BI.Widget, {
 
     getValue: function () {
         return  BI.TargetEmptyRegion.ID;
+    },
+
+    getDimensions: function () {
+        var self = this, o = this.options || {};
+        var result = [];
+        var dimensions = $(".target-container", this.element);
+        BI.each(dimensions, function (i, dom) {
+            var dId = $(dom).data("dId");
+            result.push(dId);
+        });
+        return result;
     }
 });
 BI.extend(BI.TargetEmptyRegion, {
