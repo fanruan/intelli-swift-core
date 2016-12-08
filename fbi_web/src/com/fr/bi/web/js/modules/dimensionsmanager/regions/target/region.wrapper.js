@@ -73,11 +73,13 @@ BI.TargetRegionWrapper = BI.inherit(BI.AbstractWrapper, {
         emptyRegion = BI.createWidget({
             type: "bi.target_empty_region",
             id: BI.TargetEmptyRegion.ID,
-            wrapperType: o.wrapperType
+            wrapperType: o.wrapperType,
+            wId: o.wId
         });
         emptyRegion.on(BI.TargetEmptyRegion.EVENT_CHANGE, function (data) {
             self._addRegionAndDimension(data);
         });
+        this.emptyRegion = emptyRegion;
         this.center.addItems([emptyRegion]);
     },
 

@@ -34,7 +34,7 @@ BI.TargetRegion = BI.inherit(BI.AbstractRegion, {
     _init: function () {
         BI.TargetRegion.superclass._init.apply(this, arguments);
         this.containers = {};
-        // this._createDragTool();
+        this._createDragTool();
     },
 
     _createDragTool: function () {
@@ -90,6 +90,7 @@ BI.TargetRegion = BI.inherit(BI.AbstractRegion, {
             });
             this.containers[dId] = container;
         }
+        // this.containers[dId].element.draggable();
         return this.containers[dId];
     },
 
@@ -178,7 +179,7 @@ BI.TargetRegion = BI.inherit(BI.AbstractRegion, {
         var dimensions = $(".target-container", this.center.element);
         BI.each(dimensions, function (i, dom) {
             var dId = $(dom).data("dId");
-            if (BI.isNull(self.containers[dId])) {
+            //if (BI.isNull(self.containers[dId])) {
                 var dim = o.dimensionCreator(dId, o.regionType, o);
                 self.containers[dId] = BI.createWidget({
                     type: "bi.absolute",
@@ -191,7 +192,7 @@ BI.TargetRegion = BI.inherit(BI.AbstractRegion, {
                         bottom: 0
                     }]
                 });
-            }
+            //}
             result.push(dId);
         });
         return result;

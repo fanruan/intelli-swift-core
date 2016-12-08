@@ -18,3 +18,33 @@
 .bi-database-table .table-font {
   font-size: 16px;
 }
+.bi-database-table .table-conn-label1 {
+  background-color: #009de3;
+}
+.bi-database-table .table-conn-label2 {
+  background-color: #4fc1e9;
+}
+.bi-database-table .table-conn-label3 {
+  background-color: #48cfad;
+}
+.bi-database-table .table-conn-label4 {
+  background-color: #57cb7c;
+}
+.bi-database-table .table-conn-label5 {
+  background-color: #a0d468;
+}
+.bi-database-table .table-conn-label6 {
+  background-color: #fbaf4f;
+}
+.bi-database-table .table-conn-label7 {
+  background-color: #fc6e51;
+}
+.bi-database-table .table-conn-label8 {
+  background-color: #ed5565;
+}
+.bi-database-table .table-conn-label9 {
+  background-color: #ac92ec;
+}
+.bi-database-table .table-conn-label10 {
+  background-color: #5d9cec;
+}

@@ -2470,6 +2470,7 @@
         getDataByDimensionID: function (dId, callback) {
             var wid = this.getWidgetIDByDimensionID(dId);
             var dimension = Data.SharingPool.get("dimensions", dId);
+            dimension.filter_value = {};
             dimension.used = true;
             var widget = Data.SharingPool.get("widgets", wid);
             widget.page = -1;
@@ -3023,7 +3024,7 @@
                 }
             });
 
-            //联动传递指标过滤条件  找到联动链上的所有的组件，获取当前点击的指标的过滤条件  感觉有点浮夸的功能
+            //联动传递过滤条件  找到联动链上的所有的组件，获取当前点击的指标的过滤条件  感觉有点浮夸的功能
             var allLinksWIds = [];
 
             function getLinkedIds(wid, links) {

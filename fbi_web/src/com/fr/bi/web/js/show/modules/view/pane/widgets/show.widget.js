@@ -186,17 +186,14 @@ BIShow.WidgetView = BI.inherit(BI.View, {
 
         var expand = BI.createWidget({
             type: "bi.dimension_switch_show",
-            wId: this.model.get("id"),
-            dimensionCreator: function (dId, regionType, op) {
-                var dimensionsVessel = BI.createWidget({
+            wId: wId,
+            popupCreator: function () {
+                var vessel = BI.createWidget({
                     type: "bi.layout"
                 });
-                self.addSubVessel(dId, dimensionsVessel).skipTo("detail/" + regionType + "/" + dId, dId, "dimensions." + dId);
-                return dimensionsVessel;
+                self.addSubVessel("detail", vessel).skipTo("detail", "detail", "detail", {}, {id: wId});
+                return vessel;
             }
-        });
-        expand.on(BI.DimensionSwitchShow.EVENT_CHANGE, function () {
-            self.model.set("view", this.getValue());
         });
 
         var filterIcon = BI.createWidget({

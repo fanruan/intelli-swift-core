@@ -45,7 +45,7 @@ BI.AbstractWrapper = BI.inherit(BI.Widget, {
         this.center = BI.createWidget({
             type: "bi.button_group",
             layouts: [{
-                type: "bi.default",
+                type: "bi.vertical",
                 cls: "regions-container",
                 scrolly: true,
                 width: "100%",
@@ -109,6 +109,11 @@ BI.AbstractWrapper = BI.inherit(BI.Widget, {
             default:
                 return "classify-font";
         }
+    },
+
+
+    getEmptyRegionValue: function () {
+        return this.emptyRegion && this.emptyRegion.getDimensions();
     },
 
     getWrapperType: function () {

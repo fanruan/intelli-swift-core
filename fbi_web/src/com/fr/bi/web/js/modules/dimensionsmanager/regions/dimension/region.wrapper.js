@@ -12,7 +12,7 @@ BI.DimensionRegionWrapper = BI.inherit(BI.AbstractWrapper, {
 
     _defaultConfig: function () {
         return BI.extend(BI.DimensionRegionWrapper.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-dimension-region-wrapper",
+            baseCls: "bi-dimension-region",
             titleName: ""
         });
     },
@@ -30,11 +30,13 @@ BI.DimensionRegionWrapper = BI.inherit(BI.AbstractWrapper, {
         emptyRegion = BI.createWidget({
             type: "bi.dimension_empty_region",
             id: BI.DimensionEmptyRegion.ID,
-            wrapperType: o.wrapperType
+            wrapperType: o.wrapperType,
+            wId: o.wId
         });
         emptyRegion.on(BI.DimensionEmptyRegion.EVENT_CHANGE, function (data) {
             self._addRegionAndDimension(data);
         });
+        this.emptyRegion = emptyRegion;
         this.center.addItems([emptyRegion]);
     },
 

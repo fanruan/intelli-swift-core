@@ -2,13 +2,6 @@
  * Created by Young's on 2016/4/22.
  */
 BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
-
-    _constants: {
-        PART_ADD: 1,
-        PART_DELETE: 2,
-        PART_MODIFY: 3
-    },
-
     _defaultConfig: function () {
         return BI.extend(BI.UpdateSingleTableSetting.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-update-single-table-setting"
@@ -156,13 +149,13 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             type: "bi.button_group",
             items: BI.createItems([{
                 text: BI.i18nText("BI-Incremental_Increase"),
-                value: this._constants.PART_ADD
+                value: BI.UpdateSingleTableSetting.PART_ADD
             }, {
                 text: BI.i18nText("BI-Incremental_Deletion"),
-                value: this._constants.PART_DELETE
+                value: BI.UpdateSingleTableSetting.PART_DELETE
             }, {
                 text: BI.i18nText("BI-Incremental_Updates"),
-                value: this._constants.PART_MODIFY
+                value: BI.UpdateSingleTableSetting.PART_MODIFY
             }], {
                 type: "bi.update_type_button",
                 cls: "part-update-type-button",
@@ -174,7 +167,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                 rgap: 2
             }]
         });
-        this.buttons.setValue(this._constants.PART_ADD);
+        this.buttons.setValue(BI.UpdateSingleTableSetting.PART_ADD);
         this.buttons.on(BI.ButtonGroup.EVENT_CHANGE, function () {
             self.tab.setSelect(this.getValue()[0]);
         });
@@ -191,13 +184,13 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         lastUpdateParam.on(BI.TextButton.EVENT_CHANGE, function () {
             var v = self.tab.getSelect();
             switch (v) {
-                case self._constants.PART_ADD:
+                case BI.UpdateSingleTableSetting.PART_ADD:
                     self.partAddSql.insertParam(param);
                     break;
-                case self._constants.PART_DELETE:
+                case BI.UpdateSingleTableSetting.PART_DELETE:
                     self.partDeleteSql.insertParam(param);
                     break;
-                case self._constants.PART_MODIFY:
+                case BI.UpdateSingleTableSetting.PART_MODIFY:
                     self.partModifySql.insertParam(param);
                     break;
             }
@@ -214,13 +207,13 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         currentUpdateParam.on(BI.TextButton.EVENT_CHANGE, function () {
             var v = self.tab.getSelect();
             switch (v) {
-                case self._constants.PART_ADD:
+                case BI.UpdateSingleTableSetting.PART_ADD:
                     self.partAddSql.insertParam(currParam);
                     break;
-                case self._constants.PART_DELETE:
+                case BI.UpdateSingleTableSetting.PART_DELETE:
                     self.partDeleteSql.insertParam(currParam);
                     break;
-                case self._constants.PART_MODIFY:
+                case BI.UpdateSingleTableSetting.PART_MODIFY:
                     self.partModifySql.insertParam(currParam);
                     break;
             }
@@ -246,7 +239,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             cardCreator: BI.bind(this._createPartUpdateCard, this),
             height: 200
         });
-        this.tab.setSelect(this._constants.PART_ADD);
+        this.tab.setSelect(BI.UpdateSingleTableSetting.PART_ADD);
 
         return BI.createWidget({
             type: "bi.absolute",
@@ -303,13 +296,13 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         BI.Popovers.create(this.model.getId() + "preview", previewPane);
         var sql = "", type = this.tab.getSelect();
         switch (type) {
-            case this._constants.PART_ADD:
+            case BI.UpdateSingleTableSetting.PART_ADD:
                 sql = this.model.getAddSql();
                 break;
-            case this._constants.PART_DELETE:
+            case BI.UpdateSingleTableSetting.PART_DELETE:
                 sql = this.model.getDeleteSql();
                 break;
-            case this._constants.PART_MODIFY:
+            case BI.UpdateSingleTableSetting.PART_MODIFY:
                 sql = this.model.getModifySql();
                 break;
         }
@@ -321,7 +314,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
     _createPartUpdateCard: function (v) {
         var self = this;
         switch (v) {
-            case this._constants.PART_ADD:
+            case BI.UpdateSingleTableSetting.PART_ADD:
                 this.partAddSql = BI.createWidget({
                     type: "bi.code_editor",
                     cls: "sql-container"
@@ -345,7 +338,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                         right: 0
                     }]
                 });
-            case this._constants.PART_DELETE:
+            case BI.UpdateSingleTableSetting.PART_DELETE:
                 this.partDeleteSql = BI.createWidget({
                     type: "bi.code_editor",
                     cls: "sql-container"
@@ -369,7 +362,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                         right: 0
                     }]
                 });
-            case this._constants.PART_MODIFY:
+            case BI.UpdateSingleTableSetting.PART_MODIFY:
                 this.partModifySql = BI.createWidget({
                     type: "bi.code_editor",
                     cls: "sql-container"
@@ -551,8 +544,12 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         }
     }
 
-})
-;
+});
+BI.extend(BI.UpdateSingleTableSetting, {
+    PART_ADD: 1,
+    PART_DELETE: 2,
+    PART_MODIFY: 3
+});
 BI.UpdateSingleTableSetting.EVENT_CHANGE = "EVENT_CHANGE";
 BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE = "EVENT_CUBE_SAVE";
 BI.UpdateSingleTableSetting.EVENT_OPEN_PREVIEW = "EVENT_OPEN_PREVIEW";

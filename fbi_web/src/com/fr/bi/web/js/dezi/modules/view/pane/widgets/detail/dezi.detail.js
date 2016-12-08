@@ -133,7 +133,6 @@ BIDezi.DetailView = BI.inherit(BI.View, {
             textAlign: "left",
             cls: "widget-top-name",
             height: 25,
-            width: 400,
             text: this.model.get("name")
         });
         var shrink = BI.createWidget({

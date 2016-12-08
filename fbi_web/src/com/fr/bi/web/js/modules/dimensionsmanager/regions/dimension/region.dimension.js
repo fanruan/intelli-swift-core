@@ -19,7 +19,7 @@ BI.DimensionRegion = BI.inherit(BI.AbstractRegion, {
         var self = this;
         BI.DimensionRegion.superclass._init.apply(this, arguments);
         this.containers = {};
-        //this._createDragTool();
+        this._createDragTool();
     },
     
     _createDragTool: function () {
@@ -174,7 +174,8 @@ BI.DimensionRegion = BI.inherit(BI.AbstractRegion, {
         var dimensions = $(".dimension-container", this.center.element);
         BI.each(dimensions, function (i, dom) {
             var dId = $(dom).data("dId");
-            if (BI.isNull(self.containers[dId])) {
+            //拖到emptyRegion中会重新创建页面元素
+            //if (BI.isNull(self.containers[dId])) {
                 var dim = o.dimensionCreator(dId, o.regionType, o);
                 self.containers[dId] = BI.createWidget({
                     type: "bi.absolute",
@@ -187,7 +188,7 @@ BI.DimensionRegion = BI.inherit(BI.AbstractRegion, {
                         bottom: 0
                     }]
                 });
-            }
+            //}
             result.push(dId);
         });
         return result;

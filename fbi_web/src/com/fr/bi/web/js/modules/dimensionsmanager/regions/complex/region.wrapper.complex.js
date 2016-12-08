@@ -76,6 +76,7 @@ BI.ComplexRegionWrapper = BI.inherit(BI.Widget, {
         emptyRegion.on(BI.ComplexEmptyRegion.EVENT_CHANGE, function (data) {
             self._addRegionAndDimension(data);
         });
+        this.emptyRegion = emptyRegion;
         this.center.addItems([emptyRegion]);
     },
 

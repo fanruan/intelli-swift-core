@@ -3792,3 +3792,21 @@
   content: "\e6d0";
   color: #009de3;
 }
+.single-table-update-increase-font .b-font:before {
+  content: "\e6e4";
+  color: #009de3;
+}
+.single-table-update-increase-font.native .b-font:before,
+.single-table-update-increase-font.disabled .b-font:before {
+  content: "\e6e4";
+  color: #009de3;
+}
+.single-table-update-full-font .b-font:before {
+  content: "\e6e3";
+  color: #009de3;
+}
+.single-table-update-full-font.native .b-font:before,
+.single-table-update-full-font.disabled .b-font:before {
+  content: "\e6e3";
+  color: #009de3;
+}

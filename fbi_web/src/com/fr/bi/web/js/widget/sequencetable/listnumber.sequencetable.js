@@ -101,8 +101,8 @@ BI.SequenceTableListNumber = BI.inherit(BI.Widget, {
             items[0].height = 0;
             items[1].height = 0;
         } else if (o.isNeedFreeze === true) {
-            items[0].height = headerHeight + 1;
-            items[1].height = 1;
+            items[0].height = headerHeight;
+            items[1].height = 2;
         }
         this.layout.attr("items", items);
         this.layout.resize();

@@ -27,7 +27,7 @@ BI.TargetEmptyRegion = BI.inherit(BI.Widget, {
 
     _init: function () {
         BI.TargetEmptyRegion.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, o = this.options;
         var commentTip = BI.createWidget({
             type: "bi.label",
             text: BI.i18nText("BI-Drag_Left_Field"),
@@ -36,11 +36,16 @@ BI.TargetEmptyRegion = BI.inherit(BI.Widget, {
         });
         var TargetEmptyRegion = BI.createWidget({
             type: "bi.vertical",
+            cls: "targets-container",
             element: this.element,
             height: 40,
             items: [commentTip],
             vgap: 5,
             hgap: 5
+        });
+        TargetEmptyRegion.element.sortable({
+            connectWith: ".targets-container",
+            items: ".target-container"
         });
         TargetEmptyRegion.element.droppable({
             accept: ".select-data-level0-item-button, .select-data-level1-item-button",
@@ -61,11 +66,20 @@ BI.TargetEmptyRegion = BI.inherit(BI.Widget, {
                         return BI.Utils.isDimensionType(dimension.type);
                     });
                 }
-
+                BI.each(data, function (i, dimension) {
+                    dimension.name = createDimName(dimension.name);
+                    if(!BI.has(dimension, "used")){
+                        dimension.used = true;
+                    }
+                });
                 if (data.length > 0) {
                     self.fireEvent(BI.TargetEmptyRegion.EVENT_CHANGE, data);
                 }
                 BI.Broadcasts.send(BICst.BROADCAST.FIELD_DROP_PREFIX);
+
+                function createDimName (fieldName) {
+                    return BI.Func.createDistinctName(BI.Utils.getWidgetDimensionsByID(o.wId), fieldName);
+                }
             },
             over: function(event, ui) {
                 if (BI.isNull(self.forbiddenMask) || !self.forbiddenMask.isVisible()) {
@@ -198,6 +212,17 @@ BI.TargetEmptyRegion = BI.inherit(BI.Widget, {
 
     getValue: function () {
         return  BI.TargetEmptyRegion.ID;
+    },
+
+    getDimensions: function () {
+        var self = this, o = this.options || {};
+        var result = [];
+        var dimensions = $(".target-container", this.element);
+        BI.each(dimensions, function (i, dom) {
+            var dId = $(dom).data("dId");
+            result.push(dId);
+        });
+        return result;
     }
 });
 BI.extend(BI.TargetEmptyRegion, {

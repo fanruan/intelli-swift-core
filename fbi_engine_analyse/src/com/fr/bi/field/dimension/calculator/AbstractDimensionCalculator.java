@@ -18,12 +18,13 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
-import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.structure.collection.map.CubeLinkedHashMap;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by 小灰灰 on 2015/6/24.
@@ -178,7 +179,7 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
         return getGroup().getType() == BIReportConstant.GROUP.NO_GROUP || getGroup().getType() == BIReportConstant.GROUP.ID_GROUP;
     }
 
-    private CubeTableSource getTableSourceFromField() {
+    protected CubeTableSource getTableSourceFromField() {
         return field.getTableBelongTo().getTableSource();
     }
 
@@ -234,5 +235,8 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
         return dimension.getSelfToSelfRelationPath();
     }
 
-
+    @Override
+    public void setRelationList(List<BITableSourceRelation> list) {
+        relations = list;
+    }
 }

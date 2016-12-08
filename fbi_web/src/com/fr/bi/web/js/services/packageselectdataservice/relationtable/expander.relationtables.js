@@ -35,7 +35,7 @@ BI.RelationTablesExpander = BI.inherit(BI.Widget, {
         this.expander.on(BI.Expander.EVENT_CHANGE, function () {
             self.trigger.setValue(this.getValue());
         });
-        this.expander.on(BI.Expander.EVENT_COLLAPSE, function(){
+        this.expander.on(BI.Expander.EVENT_COLLAPSE, function () {
             this.getView().hideView();
         });
     },
@@ -52,22 +52,24 @@ BI.RelationTablesExpander = BI.inherit(BI.Widget, {
         return this.expander.getValue() || [];
     },
 
-    getAllButtons: function(){
+    getAllButtons: function () {
         return this.expander.getView().getAllButtons();
     },
 
-    showView: function(b){
+    showView: function (b) {
         var view = this.expander.getView();
-        if(view) {
+        if (view) {
             BI.each(view.getAllButtons(), function (i, button) {
                 button.showView && button.showView(b);
             })
         }
     },
 
-    hideView: function(b){
+    hideView: function (b) {
         var view = this.expander.getView();
-        if(view) {
+        this.trigger.setVisible(true);
+        this.expander.hideView();
+        if (view) {
             BI.each(view.getAllButtons(), function (i, button) {
                 button.hideView && button.hideView(b);
             })

@@ -510,7 +510,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             }]
         });
 
-        //联动传递指标过滤条件
+        //联动传递过滤条件
         this.transferFilter = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Bind_Target_Condition"),

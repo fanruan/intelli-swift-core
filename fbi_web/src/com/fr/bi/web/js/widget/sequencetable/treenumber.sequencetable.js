@@ -147,7 +147,7 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
                 cls: "sequence-table-title",
                 textAlign: "left",
                 forceCenter: true,
-                height: (o.crossHeader.length + 1) * (o.headerRowSize || o.rowSize),
+                height: (o.crossHeader.length + 1) * (o.headerRowSize || o.rowSize) - 1,
                 text: BI.i18nText("BI-Number_Index"),
                 hgap: 5
             })
@@ -179,8 +179,8 @@ BI.SequenceTableTreeNumber = BI.inherit(BI.Widget, {
             items[0].height = 0;
             items[1].height = 0;
         } else if (o.isNeedFreeze === true) {
-            items[0].height = headerHeight + 1 + o.crossHeader.length;
-            items[1].height = 1;
+            items[0].height = headerHeight + o.crossHeader.length;
+            items[1].height = 2;
         }
         this.layout.attr("items", items);
         this.layout.resize();
