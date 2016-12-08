@@ -4,6 +4,11 @@
  */
 BI.TableDetailedSettingPopup = BI.inherit(BI.Widget, {
 
+    constant: {
+        BUTTON_WIDTH: 30,
+        BUTTON_HEIGHT: 30
+    },
+
     _defaultConfig: function() {
         return BI.extend(BI.TableDetailedSettingPopup.superclass._defaultConfig.apply(this, arguments), {
             baseCls: "bi-detailed-setting bi-table-detailed-setting-popup"
@@ -12,7 +17,7 @@ BI.TableDetailedSettingPopup = BI.inherit(BI.Widget, {
 
     _init: function() {
         BI.TableDetailedSettingPopup.superclass._init.apply(this, arguments);
-        var self = this;
+        var self = this, c = this.constant;
 
         //字段名
         this.tableName = BI.createWidget({
@@ -27,9 +32,11 @@ BI.TableDetailedSettingPopup = BI.inherit(BI.Widget, {
 
         //字段名颜色
         this.nameColor = BI.createWidget({
-            type: "bi.global_style_index_background"
+            type: "bi.color_chooser",
+            height: c.BUTTON_HEIGHT,
+            width: c.BUTTON_WIDTH,
         });
-        this.nameColor.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
+        this.nameColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
             self.fireEvent(BI.TableDetailedSettingPopup.EVENT_CHANGE);
         });
 
@@ -62,9 +69,11 @@ BI.TableDetailedSettingPopup = BI.inherit(BI.Widget, {
 
         //字段值颜色
         this.valueColor = BI.createWidget({
-            type: "bi.global_style_index_background"
+            type: "bi.color_chooser",
+            height: c.BUTTON_HEIGHT,
+            width: c.BUTTON_WIDTH,
         });
-        this.valueColor.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
+        this.valueColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
             self.fireEvent(BI.TableDetailedSettingPopup.EVENT_CHANGE);
         });
 
@@ -72,9 +81,11 @@ BI.TableDetailedSettingPopup = BI.inherit(BI.Widget, {
 
         //字段值间隔色
         this.intervalValueColor = BI.createWidget({
-            type: "bi.global_style_index_background"
+            type: "bi.color_chooser",
+            height: c.BUTTON_HEIGHT,
+            width: c.BUTTON_WIDTH,
         });
-        this.intervalValueColor.on(BI.GlobalStyleIndexBackground.EVENT_CHANGE, function () {
+        this.intervalValueColor.on(BI.ColorChooser.EVENT_CHANGE, function () {
             self.fireEvent(BI.TableDetailedSettingPopup.EVENT_CHANGE);
         });
         var intervalValueColorWrapper = this._createComboWrapper(this.intervalValueColor);
@@ -82,8 +93,8 @@ BI.TableDetailedSettingPopup = BI.inherit(BI.Widget, {
         //表格线
         this.tableLine = BI.createWidget({
             type: "bi.color_chooser",
-            width: 28,
-            height: 28
+            width: c.BUTTON_WIDTH,
+            height: c.BUTTON_HEIGHT,
         });
 
         this.tableLine.on(BI.ColorChooser.EVENT_CHANGE, function() {
@@ -128,7 +139,7 @@ BI.TableDetailedSettingPopup = BI.inherit(BI.Widget, {
         return {
             type: "bi.left",
             items: [widget],
-            left: 55,
+            left: 60,
             vgap: 5
         }
     },
@@ -136,11 +147,11 @@ BI.TableDetailedSettingPopup = BI.inherit(BI.Widget, {
     getValue: function() {
         return {
             tableNameStyle: this.tableName.getValue(),
-            tableNameColor: this.nameColor.getValue(),
+            tableNameColor: this.nameColor.getValue()[0],
             tableValueStyle: this.tableValue.getValue(),
             bGColorInterval: this.bgColorInterval.isSelected(),
-            tableValueColor: this.valueColor.getValue(),
-            tableValueIntervalColor: this.intervalValueColor.getValue(),
+            tableValueColor: this.valueColor.getValue()[0],
+            tableValueIntervalColor: this.intervalValueColor.getValue()[0],
             tableLine: this.tableLine.getValue()
         }
     },

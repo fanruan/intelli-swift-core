@@ -460,7 +460,7 @@ BI.ComplexTableSetting = BI.inherit(BI.Widget, {
             openColNode: this.openColNode.isSelected(),
             maxRow: this.maxRow.getValue(),
             maxCol: this.maxCol.getValue(),
-            rowHeight: this.rowHeight.getValue(),
+            rowHeight: BI.parseFloat(this.rowHeight.getValue()),
 
             freezeDim: this.freezeDim.isSelected(),
             transferFilter: this.transferFilter.isSelected()
