@@ -15,7 +15,7 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
     _init: function () {
         BI.NormalExpanderCell.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
-
+        var nameStyle = BI.Utils.getWSTableNameStyleByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
         var needExpand = o.needExpand, isExpanded = o.isExpanded;
         var items = [];
         if (needExpand === true) {
@@ -72,7 +72,7 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
                 cls: cls,
                 height: o.height,
                 whiteSpace: "nowrap",
-                textAlign: "left",
+                textAlign: nameStyle.textAlign || "left",
                 lgap: 5
             },
             width: "fill"
