@@ -2,6 +2,7 @@ package com.fr.bi.stable.operation.group.group;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
 import com.fr.bi.stable.operation.group.AbstractGroup;
@@ -44,7 +45,15 @@ public class CustomNumberGroup extends AbstractGroup {
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
             if (entry.getKey() == null || ComparatorUtils.equals(entry.getKey(), "")) {
-                newMap.put("", entry.getValue());
+                if (otherHelper != null) {
+                    otherHelper.add((GroupValueIndex) entry.getValue());
+                    continue;
+                }
+                if (newMap.get("") == null) {
+                    newMap.put("", entry.getValue());
+                } else {
+                    newMap.put("", GVIUtils.OR((GroupValueIndex)entry.getValue(), (GroupValueIndex) newMap.get("")));
+                }
                 continue;
             }
             double key = ((Number) entry.getKey()).doubleValue();

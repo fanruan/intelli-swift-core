@@ -20,11 +20,19 @@ BI.SelectDatePane = BI.inherit(BI.Widget, {
             type: "bi.package_select_data_service",
             element: this.element,
             wId: o.wId,
-            showRelativeTables: false,
+            showRelativeTables: true,
             showExcelView: false,
             showDateGroup: false,
-            tablesCreator: function (packageId) {
-                var ids = BI.Utils.getTableIDsOfPackageID(packageId);
+            tablesCreator: function (packageIdOrTableId, isRelation) {
+                if (isRelation === true) {
+                    var tIds = BI.Utils.getPrimaryRelationTablesByTableID(packageIdOrTableId);
+                    return BI.map(tIds, function (i, id) {
+                        return {
+                            id: id
+                        }
+                    })
+                }
+                var ids = BI.Utils.getTableIDsOfPackageID(packageIdOrTableId);
                 return BI.map(ids, function (i, id) {
                     return {
                         id: id
@@ -39,7 +47,7 @@ BI.SelectDatePane = BI.inherit(BI.Widget, {
                     if (BI.Utils.getFieldIsUsableByID(fid) === true) {
                         result.push({
                             id: fid,
-                            type: opt.isRelation ? "bi.select_date_level1_item" : "bi.select_date_level0_item"
+                            type: "bi.select_date_level0_item"
                         })
                     }
                 });
