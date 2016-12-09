@@ -62,6 +62,7 @@ BI.DataLabelDetailedSettingCombo = BI.inherit(BI.Widget, {
                 break;
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.PIE:
+            case BICst.WIDGET.MULTI_PIE:
                 this.popup = BI.createWidget({
                     type: "bi.pie_data_label_detailed_setting_popup"
                 });
