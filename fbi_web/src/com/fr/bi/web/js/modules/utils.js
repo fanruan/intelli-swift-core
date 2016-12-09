@@ -436,6 +436,37 @@
             return Data.SharingPool.get("widgets", wid, "view") || {};
         },
 
+        getWidgetViewClassificationByID: function (wid) {
+            var views = this.getWidgetViewByID(wid);
+            var result = {};
+            BI.each(views, function (viewType, view) {
+                viewType = BI.parseInt(viewType);
+                if (viewType < BICst.REGION.DIMENSION2) {
+                    result[BICst.REGION.DIMENSION1] = result[BICst.REGION.DIMENSION1] || [];
+                    result[BICst.REGION.DIMENSION1].push(viewType);
+                    return;
+                }
+                if (viewType < BICst.REGION.TARGET1) {
+                    result[BICst.REGION.DIMENSION2] = result[BICst.REGION.DIMENSION2] || [];
+                    result[BICst.REGION.DIMENSION2].push(viewType);
+                    return;
+                }
+                if (viewType < BICst.REGION.TARGET2) {
+                    result[BICst.REGION.TARGET1] = result[BICst.REGION.TARGET1] || [];
+                    result[BICst.REGION.TARGET1].push(viewType);
+                    return;
+                }
+                if (viewType < BICst.REGION.TARGET3) {
+                    result[BICst.REGION.TARGET2] = result[BICst.REGION.TARGET2] || [];
+                    result[BICst.REGION.TARGET2].push(viewType);
+                    return;
+                }
+                result[BICst.REGION.TARGET3] = result[BICst.REGION.TARGET3] || [];
+                result[BICst.REGION.TARGET3].push(viewType);
+            });
+            return result;
+        },
+
         getWidgetTypeByID: function (wid) {
             return Data.SharingPool.get("widgets", wid, "type");
         },
@@ -756,18 +787,18 @@
 
         getWSTableNameStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            if(ws.customTableStyle) {
+            if (ws.customTableStyle) {
                 return BI.isNotNull(ws.customTableStyle.tableNameStyle) ? ws.customTableStyle.tableNameStyle :
-                    {};
+                {};
             }
             return {}
         },
 
         getWSTableValueStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
-            if(ws.customTableStyle) {
+            if (ws.customTableStyle) {
                 return BI.isNotNull(ws.customTableStyle.tableValueStyle) ? ws.customTableStyle.tableValueStyle :
-                    {};
+                {};
             }
             return {}
         },
