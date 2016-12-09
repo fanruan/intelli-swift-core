@@ -100,7 +100,7 @@ BI.DimensionsManager = BI.inherit(BI.Widget, {
         var widgetType = this.model.getType();
         this.chartType.setValue({type: widgetType, subType: BI.Utils.getWidgetSubTypeByID(o.wId)});
         this.tab.setSelect(widgetType);
-        this.tab.populate(views);
+        this.tab.populate();
     }
 });
 BI.DimensionsManager.EVENT_CHANGE = "DimensionsManager.EVENT_CHANGE";
