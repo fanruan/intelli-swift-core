@@ -54,6 +54,9 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
             height: this.constants.DIMENSION_BUTTON_HEIGHT,
             cls: "bi-dimension-name",
             errorText: BI.i18nText("BI-Field_Name_Can_Not_Be_Same"),
+            title: function () {
+                return self.editor.getValue();
+            },
             allowBlank: false,
             validationChecker: function (v) {
                 return self._checkDimensionName(v);
@@ -124,7 +127,7 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         if (wType === BICst.WIDGET.TABLE ||
             wType === BICst.WIDGET.CROSS_TABLE ||
             wType === BICst.WIDGET.COMPLEX_TABLE ||
-            wType === BICst.WIDGET.MAP) {
+            wType === BICst.WIDGET.MAP || wType === BICst.WIDGET.MULTI_PIE) {
             this.usedCheck.setVisible(true);
             this.usedRadio.setVisible(false);
             return;

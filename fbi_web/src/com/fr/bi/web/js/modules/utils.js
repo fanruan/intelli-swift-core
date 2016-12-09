@@ -747,11 +747,29 @@
             return BI.isNotNull(ws.isCustomTableStyle) ? ws.isCustomTableStyle :
                 BICst.DEFAULT_CHART_SETTING.isCustomTableStyle;
         },
-
+        //表格样式
         getWSCustomTableStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.customTableStyle) ? ws.customTableStyle :
             {};
+        },
+
+        getWSTableNameStyleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            if(ws.customTableStyle) {
+                return BI.isNotNull(ws.customTableStyle.tableNameStyle) ? ws.customTableStyle.tableNameStyle :
+                    {};
+            }
+            return {}
+        },
+
+        getWSTableValueStyleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            if(ws.customTableStyle) {
+                return BI.isNotNull(ws.customTableStyle.tableValueStyle) ? ws.customTableStyle.tableValueStyle :
+                    {};
+            }
+            return {}
         },
 
         getWSShowNumberByID: function (wid) {
@@ -1994,6 +2012,8 @@
                     return "drag-bar-compare-icon";
                 case BICst.WIDGET.PIE:
                     return "drag-pie-icon";
+                case BICst.WIDGET.MULTI_PIE:
+                    return "drag-multi-pie-icon";
                 case BICst.WIDGET.MAP:
                     return "drag-map-china-icon";
                 case BICst.WIDGET.GIS_MAP:

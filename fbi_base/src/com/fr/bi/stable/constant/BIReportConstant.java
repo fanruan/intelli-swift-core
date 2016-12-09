@@ -384,30 +384,33 @@ public class BIReportConstant {
         public static final int MULTI_AXIS_COMBINE_CHART = 0x14;  //多值轴组合图
 
         public static final int PIE = 0x15;                //饼图
+        public static final int MULTI_PIE = 0x16;                //多层饼图
 
-        public static final int DONUT = 0x16;              //donut
+        public static final int DONUT = 0x17;              //donut
 
-        public static final int MAP = 0x17;                //地图
-        public static final int GIS_MAP = 0x18;           //GIS地图
+        public static final int MAP = 0x18;                //地图
+        public static final int GIS_MAP = 0x19;           //GIS地图
 
-        public static final int DASHBOARD = 0x19;          //仪表盘
+        public static final int DASHBOARD = 0x1a;          //仪表盘
 
-        public static final int BUBBLE = 0x1a;            //气泡图
-        public static final int FORCE_BUBBLE = 0x1b;      //力学气泡图
+        public static final int BUBBLE = 0x1b;            //气泡图
+        public static final int FORCE_BUBBLE = 0x1c;      //力学气泡图
 
-        public static final int SCATTER = 0x1c;           //散点图
+        public static final int SCATTER = 0x1d;           //散点图
 
-        public static final int RADAR = 0x1d;             //雷达图
-        public static final int ACCUMULATE_RADAR = 0x1e;  //堆积雷达图
+        public static final int RADAR = 0x1e;             //雷达图
+        public static final int ACCUMULATE_RADAR = 0x1f;  //堆积雷达图
 
-        public static final int FUNNEL = 0x1f;            //漏斗图
+        public static final int FUNNEL = 0x20;            //漏斗图
 
 
-        public static final int STRING = 0x20;            //文本控件
-        public static final int NUMBER = 0x21;            //数值控件
-        public static final int TREE = 0x22;              //树控件
-        public static final int LIST_LABEL = 0x25;        //文本标签
-        public static final int TREE_LABEL = 0x26;        //树标签
+        public static final int STRING = 0x21;            //文本控件
+        public static final int NUMBER = 0x22;            //数值控件
+        public static final int TREE = 0x23;              //树控件
+        public static final int LIST_LABEL = 0x24;        //文本标签
+        public static final int TREE_LABEL = 0x25;        //树标签
+        public static final int SINGLE_SLIDER = 0x26;       //数值滑块
+        public static final int INTERVAL_SLIDER = 0x27;     //数值区间滑块
 
         //仅前台使用的部分类型
         public static final int DATE = 0x30;

@@ -1644,6 +1644,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/showtitle/showtitle.detailed.setting.popup.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/table/table.detailed.setting.combo.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/table/table.detailed.setting.popup.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/table/table.detailed.setting.texttoolbar.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/tooltip/tooltip.detailed.setting.combo.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/tooltip/tooltip.detailed.setting.popup.js",
 
@@ -2751,6 +2752,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/detailchart/chart.comparebar.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.comparearea.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.pie.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.multipie.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.radar.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.scatter.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.fallaxis.js",

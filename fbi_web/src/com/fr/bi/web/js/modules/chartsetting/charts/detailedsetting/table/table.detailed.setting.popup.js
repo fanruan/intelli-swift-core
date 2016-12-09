@@ -21,9 +21,8 @@ BI.TableDetailedSettingPopup = BI.inherit(BI.Widget, {
 
         //字段名
         this.tableName = BI.createWidget({
-            type: "bi.data_label_text_toolbar",
-            cls: "detailed-setting-popup",
-            width: 230
+            type: "bi.table_detailed_setting_text_toolbar",
+            cls: "detailed-setting-popup"
         });
         this.tableName.on(BI.DataLabelTextToolBar.EVENT_CHANGE, function () {
             self.fireEvent(BI.TableDetailedSettingPopup.EVENT_CHANGE)
@@ -44,9 +43,8 @@ BI.TableDetailedSettingPopup = BI.inherit(BI.Widget, {
 
         //字段值
         this.tableValue = BI.createWidget({
-            type: "bi.data_label_text_toolbar",
-            cls: "detailed-setting-popup",
-            width: 230
+            type: "bi.table_detailed_setting_text_toolbar",
+            cls: "detailed-setting-popup"
         });
         this.tableValue.on(BI.DataLabelTextToolBar.EVENT_CHANGE, function () {
             self.fireEvent(BI.TableDetailedSettingPopup.EVENT_CHANGE)

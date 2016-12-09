@@ -15,6 +15,7 @@ BI.NormalHeaderCell = BI.inherit(BI.Widget, {
         BI.NormalHeaderCell.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var dId = o.dId;
+        var nameStyle = BI.Utils.getWSTableNameStyleByID(BI.Utils.getWidgetIDByDimensionID(dId));
         var combo = BI.createWidget();
         var name = o.text;
         if (BI.Utils.isDimensionByDimensionID(dId)) {
@@ -50,7 +51,7 @@ BI.NormalHeaderCell = BI.inherit(BI.Widget, {
                     title: name,
                     cls: "header-cell-text",
                     whiteSpace: "nowrap",
-                    textAlign: "center",
+                    textAlign: nameStyle.textAlign || "center",
                     lgap: 5,
                     height: o.height
                 }
