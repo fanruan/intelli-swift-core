@@ -156,7 +156,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             if(BI.has(data, "s")){
                 return BI.map(data.s, function (idx, value) {
                     return {
-                        x: "",
+                        x: BI.Utils.getDimensionNameByID(targetIds[0]),
                         y: (BI.isFinite(value) ? value : 0),
                         targetIds: [targetIds[idx]]
                     };
