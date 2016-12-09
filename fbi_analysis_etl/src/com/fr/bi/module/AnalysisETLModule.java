@@ -18,10 +18,10 @@ import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberSmall
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberTopNFilter;
 import com.fr.bi.field.filtervalue.BIFilterValueMap;
 import com.fr.bi.resource.ResourceConstants;
-import com.fr.bi.rpc.RPC;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.web.service.Service4AnalysisETL;
 import com.fr.bi.web.service.action.PartCubeDataLoader;
+import com.fr.cluster.rpc.RPC;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
 import com.fr.web.ResourceHelper;
