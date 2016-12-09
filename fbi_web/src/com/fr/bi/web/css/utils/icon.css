@@ -1178,6 +1178,21 @@
   _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/icon_pie.png');
   _background: none;
 }
+.drag-multi-pie-icon .x-icon,
+.drag-multi-pie-icon:hover .x-icon,
+.drag-multi-pie-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/icon_multi_pie.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/icon_multi_pie.png');
+  _background: none;
+}
+.drag-multi-pie-icon.native .x-icon,
+.drag-multi-pie-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/icon_multi_pie.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/icon_multi_pie.png');
+  _background: none;
+}
 .drag-map-china-icon .x-icon,
 .drag-map-china-icon:hover .x-icon,
 .drag-map-china-icon:active .x-icon {

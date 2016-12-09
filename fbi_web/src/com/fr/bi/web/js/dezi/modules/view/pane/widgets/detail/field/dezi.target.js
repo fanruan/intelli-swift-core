@@ -42,6 +42,9 @@ BIDezi.TargetView = BI.inherit(BI.View, {
             type: "bi.sign_editor",
             height: this.constants.TARGET_BUTTON_HEIGHT,
             cls: "bi-target-name",
+            title: function () {
+                return self.editor.getValue();
+            },
             allowBlank: false,
             errorText: BI.i18nText("BI-Field_Name_Can_Not_Be_Same"),
             validationChecker: function (v) {
@@ -358,7 +361,7 @@ BIDezi.TargetView = BI.inherit(BI.View, {
             wType === BICst.WIDGET.COMPARE_AREA ||
             wType === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART ||
             wType === BICst.WIDGET.SCATTER ||
-            wType === BICst.WIDGET.BUBBLE) {
+            wType === BICst.WIDGET.BUBBLE || wType === BICst.WIDGET.MULTI_PIE) {
             this.usedCheck.setVisible(false);
             this.usedRadio.setVisible(true);
             return;

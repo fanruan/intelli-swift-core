@@ -50,6 +50,9 @@ BI.ChartCombineFormatItemFactory = {
             case BICst.WIDGET.PIE:
                 item = BI.extend({"type": "pie"}, items);
                 break;
+            case BICst.WIDGET.MULTI_PIE:
+                item = BI.extend({"type": "multiPie"}, items);
+                break;
             case BICst.WIDGET.DASHBOARD:
                 item = BI.extend({"type": "gauge"}, items);
                 break;

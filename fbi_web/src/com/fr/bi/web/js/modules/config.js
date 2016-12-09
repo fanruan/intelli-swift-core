@@ -201,7 +201,18 @@ BICst.DASHBOARD_WIDGETS = [[{
     text: BI.i18nText("BI-Pie_Chart"),
     title: BI.i18nText("BI-Pie_Chart"),
     value: BICst.WIDGET.PIE,
-    cls: "drag-pie-icon"
+    cls: "drag-pie-icon",
+    children: [{
+        text: BI.i18nText("BI-Pie_Chart"),
+        title: BI.i18nText("BI-Pie_Chart"),
+        value: BICst.WIDGET.PIE,
+        cls: "drag-pie-icon",
+    }, {
+        text: BI.i18nText("BI-Multi_Pie_Chart"),
+        title: BI.i18nText("BI-Multi_Pie_Chart"),
+        value: BICst.WIDGET.MULTI_PIE,
+        cls: "drag-multi-pie-icon",
+    }]
 }, {
     text: BI.i18nText("BI-Donut_Chart"),
     title: BI.i18nText("BI-Donut_Chart"),
@@ -1695,3 +1706,4 @@ BICst.INIT_CHART_MAP[BICst.WIDGET.FORCE_BUBBLE] = {type: "bi.force_bubble_chart"
 BICst.INIT_CHART_MAP[BICst.WIDGET.SCATTER] = {type: "bi.scatter_chart", events: [BI.ScatterChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.MAP] = {type: "bi.map_chart", events: [BI.MapChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.GIS_MAP] = {type: "bi.gis_map_chart", events: [BI.GISMapChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.MULTI_PIE] = {type: "bi.multi_pie_chart", events: [BI.GISMapChart.EVENT_CHANGE]};
