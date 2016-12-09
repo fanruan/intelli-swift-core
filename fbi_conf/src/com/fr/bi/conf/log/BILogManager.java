@@ -18,8 +18,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-//tod kary 现在只能监听cube生成过程中产生的异常，后期可考虑监听所有和cube相关的异常
-//edit kary 修改获取整体relation和cubeTableSource的方法，以适应部分更新功能
 public class BILogManager implements BILogManagerProvider {
 
 
@@ -218,7 +216,7 @@ public class BILogManager implements BILogManagerProvider {
      */
     @Override
     public void relationPathSet(Set<BITableSourceRelationPath> biTableSourceRelationHashSet, long userId) {
-        getInstance(userId).reLationSet(biTableSourceRelationHashSet);
+        getInstance(userId).relationSet(biTableSourceRelationHashSet);
     }
 
     /**
@@ -254,5 +252,25 @@ public class BILogManager implements BILogManagerProvider {
     @Override
     public void clearLog(long userId) {
         getInstance(userId).clearRecord();
+    }
+
+    @Override
+    public Set<BITableSourceRelationPath> getAllRelationPathSet(long userId) {
+        return getInstance(userId).getAllPaths();
+    }
+
+    @Override
+    public Set<CubeTableSource> getAllTableSourceSet(long userId) {
+        return getInstance(userId).getAllSingleSources();
+    }
+
+    @Override
+    public Set<BITableErrorLog> getErrorTables(long userId) {
+        return getInstance(userId).getErrorTables();
+    }
+
+    @Override
+    public Set<BIConnectionErrorLog> getErrorPaths(long userId) {
+        return getInstance(userId).getErrorPaths();
     }
 }

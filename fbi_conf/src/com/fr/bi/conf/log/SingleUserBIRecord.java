@@ -3,6 +3,7 @@ package com.fr.bi.conf.log;
 
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
+import com.fr.bi.stable.constant.BILogConstant;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -269,7 +270,7 @@ public class SingleUserBIRecord implements BIRecord {
      * @param biTableSourceRelationSet
      */
     @Override
-    public void reLationSet(Set<BITableSourceRelationPath> biTableSourceRelationSet) {
+    public void relationSet(Set<BITableSourceRelationPath> biTableSourceRelationSet) {
         this.biTableSourceRelationPathSet = biTableSourceRelationSet;
     }
 
@@ -281,6 +282,38 @@ public class SingleUserBIRecord implements BIRecord {
     @Override
     public void cubeTableSourceSet(Set<CubeTableSource> cubeTableSources) {
         cubeTableSourceSet = cubeTableSources;
+    }
+
+    @Override
+    public Set<CubeTableSource> getAllSingleSources() {
+        return cubeTableSourceSet;
+    }
+
+    @Override
+    public Set<BITableErrorLog> getErrorTables() {
+        Set<BITableErrorLog> errorLogs = new HashSet<BITableErrorLog>();
+        for (BITableLog biTableLog : tableLogMap.values()) {
+            if (biTableLog.getLogType() == BILogConstant.TABLE_LOG_TYPE.ERROR) {
+                errorLogs.add((BITableErrorLog) biTableLog);
+            }
+        }
+        return errorLogs;
+    }
+
+    @Override
+    public Set<BITableSourceRelationPath> getAllPaths() {
+        return this.biTableSourceRelationPathSet;
+    }
+
+    @Override
+    public Set<BIConnectionErrorLog> getErrorPaths() {
+        Set<BIConnectionErrorLog> pathLog = new HashSet<BIConnectionErrorLog>();
+        for (BIConnectionLog log : connectionLogMap.values()) {
+            if (log.getType() == BILogConstant.PATH_LOG_TYPE.ERROR) {
+                pathLog.add((BIConnectionErrorLog)log);
+            }
+        }
+        return pathLog;
     }
 
     private void BITableLogSort(List<BITableLog> log) {
