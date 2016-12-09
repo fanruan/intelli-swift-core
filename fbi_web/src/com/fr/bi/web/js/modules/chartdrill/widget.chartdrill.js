@@ -109,6 +109,7 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
                 }
                 break;
             case BICst.WIDGET.PIE:
+            case BICst.WIDGET.MULTI_PIE:
             case BICst.WIDGET.FUNNEL:
             case BICst.WIDGET.BUBBLE:
             case BICst.WIDGET.FORCE_BUBBLE:
