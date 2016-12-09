@@ -53,6 +53,9 @@ BI.ChartCombineFormatItemFactory = {
             case BICst.WIDGET.MULTI_PIE:
                 item = BI.extend({"type": "multiPie"}, items);
                 break;
+            case BICst.WIDGET.RECT_TREE:
+                item = BI.extend({"type": "treeMap"}, items);
+                break;
             case BICst.WIDGET.DASHBOARD:
                 item = BI.extend({"type": "gauge"}, items);
                 break;
