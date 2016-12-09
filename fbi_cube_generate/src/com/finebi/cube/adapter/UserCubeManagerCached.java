@@ -29,6 +29,7 @@ import com.fr.fs.control.UserControl;
 @BIMandatedObject(module = IModuleFactory.CUBE_BASE_MODULE, factory = BIMateFactory.CUBE_BASE
         , implement = ICubeDataLoader.class)
 public class UserCubeManagerCached implements ICubeDataLoader {
+    private static final long serialVersionUID = 184378570479345083L;
     private BIUserCubeManager hostCubeManager;
     private CubeTableCache cubeTableCache;
 

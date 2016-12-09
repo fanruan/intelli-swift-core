@@ -470,13 +470,13 @@ public abstract class BIAbstractChartSetting implements BIChartSetting {
             m += s1.split(".")[1].length();
         }
         catch(Exception e){
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
         try{
             m += s2.split(".")[1].length();
         }
         catch(Exception e){
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
         return Double.parseDouble(s1.replace(".","")) * Double.parseDouble(s2.replace(".","")) / Math.pow(10,m);
     }

@@ -8,6 +8,8 @@ package com.finebi.cube.exception;
  */
 public class BIStatusDuplicateException extends Exception {
 
+    private static final long serialVersionUID = 6262064630407471115L;
+
     public BIStatusDuplicateException() {
     }
 

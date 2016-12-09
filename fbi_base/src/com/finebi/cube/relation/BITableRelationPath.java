@@ -12,6 +12,8 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
  */
 @BIMandatedObject(factory = IFactoryService.CONF_XML, implement = BITableRelationPath.class)
 public class BITableRelationPath extends BIBasicRelationPath<BusinessTable, BusinessField, BITableRelation> {
+    private static final long serialVersionUID = 5692740721506576688L;
+
     public BITableRelationPath() {
         super();
     }

@@ -14,6 +14,7 @@ import com.fr.stable.xml.XMLableReader;
  * Created by GUY on 2015/2/3.
  */
 public class BIName implements XMLable, JSONTransform, NameProvider {
+    private static final long serialVersionUID = -7148759885493972159L;
     @BICoreField
     protected String name = StringUtils.EMPTY;
 

@@ -169,7 +169,7 @@ public final class VT4FBI {
             jo.put("supportMultiStatisticsWidget", supportMultiStatisticsWidget());
             jo.put("supportBigData", supportBigData());
         } catch (JSONException e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
         return jo;
     }

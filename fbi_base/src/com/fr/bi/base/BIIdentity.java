@@ -4,12 +4,15 @@ import com.fr.bi.base.provider.BIIdentityProvider;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.FCloneable;
 
+import java.io.Serializable;
+
 /**
  * 对象判断相等都是基于ID来判断，
  * 特殊情况通过BICore来实现。
  * Created by Connery on 2015/12/11.
  */
-public class BIIdentity<T> implements BIIdentityProvider<T>, FCloneable {
+public class BIIdentity<T> implements BIIdentityProvider<T>, FCloneable,Serializable{
+    private static final long serialVersionUID = 9138542530195352027L;
     protected T identity;
 
     public BIIdentity(T id) {

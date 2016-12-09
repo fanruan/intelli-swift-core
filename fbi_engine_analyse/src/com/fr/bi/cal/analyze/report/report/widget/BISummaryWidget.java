@@ -41,6 +41,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class BISummaryWidget extends BIAbstractWidget {
+    private static final long serialVersionUID = -4264115812022703958L;
     @BICoreField
     protected BISummaryTarget[] targets;
     @BICoreField
@@ -448,6 +449,8 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
     }
 
     private class TargetSort extends NameObject {
+        private static final long serialVersionUID = -3319190000338485415L;
+
         public TargetSort(String s, Object o) {
             super(s, o);
         }

@@ -17,6 +17,7 @@ import org.apache.zookeeper.data.Stat;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by Connery on 2015/3/27.
@@ -132,9 +133,11 @@ public class BIMaster extends BIWatcher implements BIMissionListener {
 
     private void startMasterController() {
         if (isMaster()) {
-            controller = new BIMasterController(zk);
+            controller = new BIMasterController(zk,new CountDownLatch(1));
             try {
                 controller.startWork();
+//                TODO 需要等待子节点出现
+                controller.getCountDownLatch().await();
                 controller.registerMissionListener(this);
             } catch (Exception ex) {
                  BILoggerFactory.getLogger().error(ex.getMessage(), ex);

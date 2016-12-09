@@ -7,6 +7,8 @@ package com.finebi.cube.exception;
  * @since 4.0
  */
 public class BIMessageFailureException extends Exception {
+    private static final long serialVersionUID = 3137031084942172004L;
+
     public BIMessageFailureException() {
     }
 

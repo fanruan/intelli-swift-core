@@ -11,6 +11,8 @@ import java.util.Map;
 
 public class BINumberDetailTarget extends BIAbstractDetailTarget {
 
+    private static final long serialVersionUID = -580557367397174028L;
+
     /**
      * 获取显示值
      *

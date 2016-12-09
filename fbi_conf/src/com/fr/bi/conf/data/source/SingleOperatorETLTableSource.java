@@ -16,6 +16,7 @@ import java.util.Set;
  * 生成cube用
  */
 public class SingleOperatorETLTableSource extends ETLTableSource {
+    private static final long serialVersionUID = -3024473065220993066L;
     private IETLOperator operator;
 
     public SingleOperatorETLTableSource(List<CubeTableSource> parents, IETLOperator operator) {

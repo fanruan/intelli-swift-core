@@ -19,6 +19,7 @@ public class PersistentField implements IPersistentField {
     public static final int DEFALUTSCALE = 15;
 
     public static final int DEFALUTCOLUMN_SIZE = 100;
+    private static final long serialVersionUID = -3638876557665551219L;
 
     public String getRemark() {
         return remark;

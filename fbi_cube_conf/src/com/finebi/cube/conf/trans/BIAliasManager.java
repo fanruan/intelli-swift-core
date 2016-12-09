@@ -4,6 +4,7 @@ import com.finebi.cube.conf.BIAliasManagerProvider;
 import com.finebi.cube.conf.BISystemDataManager;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.exception.BIKeyDuplicateException;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
@@ -38,7 +39,20 @@ public class BIAliasManager extends BISystemDataManager<UserAliasManager> implem
             throw BINonValueUtils.beyondControl(e);
         }
     }
-
+    @Override
+    public void setTransManager(long userId,UserAliasManager value){
+        try {
+            if (containsKey(userId)){
+                remove(userId);
+            }
+            putKeyValue(userId,value);
+        } catch (BIKeyAbsentException e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            throw BINonValueUtils.beyondControl(e);
+        } catch (BIKeyDuplicateException e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     public void setAliasName(String id, String name, long userId) {
         getTransManager(userId).setTransName(id, name);

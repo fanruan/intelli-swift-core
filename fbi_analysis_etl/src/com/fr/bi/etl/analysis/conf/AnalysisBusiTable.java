@@ -25,6 +25,7 @@ import java.util.List;
  */
 public class AnalysisBusiTable extends BIBusinessTable {
 
+    private static final long serialVersionUID = 5081075157518418589L;
     private String describe;
     private String name;
     private long userId;

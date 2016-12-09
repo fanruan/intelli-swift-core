@@ -13,6 +13,8 @@ import com.fr.json.JSONObject;
  * Created by Young's on 2016/5/19.
  */
 public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManager> implements BICubeConfManagerProvider {
+    private static final long serialVersionUID = -5659817095041808020L;
+
     @Override
     public BICubeConfManager constructUserManagerValue(Long userId) {
         return new BICubeConfManager();
@@ -121,7 +123,7 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
         try {
             getValue(UserControl.getInstance().getSuperManagerID()).setMultiPathCubeStatus(needGenerateCube);
         } catch (BIKeyAbsentException e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
     }
 
@@ -130,7 +132,7 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
         try {
             return getValue(UserControl.getInstance().getSuperManagerID()).getMultiPathCubeStatus();
         } catch (BIKeyAbsentException e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
         return BIReportConstant.MULTI_PATH_STATUS.NOT_NEED_GENERATE_CUBE;
     }

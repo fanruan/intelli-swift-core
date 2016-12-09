@@ -11,10 +11,13 @@ import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
 
+import java.io.Serializable;
+
 /**
  * Created by 小灰灰 on 2015/7/9.
  */
-public class SumByGroupTarget implements JSONTransform {
+public class SumByGroupTarget implements JSONTransform,Serializable {
+    private static final long serialVersionUID = -4160548493555235018L;
     private int sumType;
     private String name;
 

@@ -13,6 +13,8 @@ import java.util.List;
  * Created by 小灰灰 on 2015/6/30.
  */
 public class DateDimensionCalculator extends AbstractDimensionCalculator {
+    private static final long serialVersionUID = -1201531041684245593L;
+
     public DateDimensionCalculator(BIDimension dimension, BusinessField column, List<BITableSourceRelation> relations) {
         super(dimension, column, relations);
     }

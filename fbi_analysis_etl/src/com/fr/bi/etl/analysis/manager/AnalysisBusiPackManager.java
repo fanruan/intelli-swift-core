@@ -1,29 +1,49 @@
 package com.fr.bi.etl.analysis.manager;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
+import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BISystemDataManager;
 import com.finebi.cube.conf.pack.data.*;
 import com.finebi.cube.conf.pack.group.BIBusinessGroup;
 import com.finebi.cube.conf.singletable.SingleTableUpdateManager;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.BIUser;
+import com.fr.bi.base.key.BIKey;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIGroupDuplicateException;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
+import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
+import com.fr.bi.etl.analysis.data.AnalysisETLSourceFactory;
+import com.fr.bi.etl.analysis.data.AnalysisETLSourceField;
+import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.exception.BIKeyAbsentException;
+import com.fr.bi.exception.BIKeyDuplicateException;
+import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.constant.BIJSONConstant;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.exception.BITableAbsentException;
+import com.fr.bi.stable.utils.BISerializableUtils;
+import com.fr.bi.stable.utils.DateUtils;
+import com.fr.bi.web.service.action.PartCubeDataLoader;
+import com.fr.fs.web.service.ServiceUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
+import com.fr.web.utils.WebUtils;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 先注释掉普通用户看管理员的部分
@@ -32,6 +52,7 @@ import java.util.Set;
 public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnalysisBusiPackManager> implements BIAnalysisBusiPackManagerProvider {
 
     private static final String TAG = "AnalysisBusiPackManager";
+    private static final long serialVersionUID = -5566625380376195712L;
 
     public SingleUserAnalysisBusiPackManager getUserAnalysisBusiPackManager(long userId) {
         try {
@@ -104,6 +125,10 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     @Override
     public void endBuildingCube(long userId, Set<CubeTableSource> absentTable) {
+
+    }
+    @Override
+    public void updatePackage(long userId, BIBusinessPackage newBiBusinessPackage) throws BIPackageDuplicateException, BIPackageAbsentException {
 
     }
 
@@ -317,5 +342,74 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
     @Override
     public Set<BIBusinessPackage> getPackages4CubeGenerate(long userId) {
         return null;
+    }
+
+    @Override
+    public void parseSinglePackageJSON(long userId, BIPackageID packageId,JSONArray tableIdsJA, JSONObject usedFieldsJO, JSONObject tableDataJO) throws Exception {
+
+    }
+
+    @Override
+    public void packageAddTableSource(long userId, BIPackageID packageId,String tableId,CubeTableSource source,boolean enSureFields) throws BIKeyDuplicateException , BIPackageAbsentException, BITableAbsentException{
+
+    }
+    @Override
+    public JSONObject saveAnalysisETLTable(final long userId, String tableId, String newId, String tableName, String describe, String tableJSON) throws Exception {
+        AnalysisBusiTable table = null;
+        CubeTableSource source = null;
+        if (StringUtils.isEmpty(newId)) {
+            table = new AnalysisBusiTable(tableId, userId);
+            table.setDescribe(describe);
+            JSONObject jo = new JSONObject(tableJSON);
+            JSONArray items = jo.getJSONArray(Constants.ITEMS);
+            BIAnalysisETLManagerCenter.getAliasManagerProvider().setAliasName(tableId, tableName, userId);
+            source = AnalysisETLSourceFactory.createTableSource(items, userId);
+            table.setSource(source);
+        } else {
+            table = new AnalysisBusiTable(newId, userId);
+            BIAnalysisETLManagerCenter.getAliasManagerProvider().setAliasName(newId, tableName, userId);
+            AnalysisBusiTable oldTable = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
+            source = oldTable.getSource();
+            table.setSource(source);
+            table.setDescribe(oldTable.getDescribe());
+        }
+        BIAnalysisETLManagerCenter.getBusiPackManager().addTable(table);
+        BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, source);
+        Set<BusinessTable> businessTables =  BIAnalysisETLManagerCenter.getBusiPackManager().getAllTables(userId);
+        if (businessTables != null){
+            for (BusinessTable t : businessTables){
+                AnalysisCubeTableSource s = (AnalysisCubeTableSource) BIAnalysisETLManagerCenter.getDataSourceManager().getTableSource(t);
+                s.refreshWidget();
+                t.setSource(s);
+            }
+        }
+        BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().refresh();
+        try{
+            BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().checkTableIndex((AnalysisCubeTableSource) source, new BIUser(userId));
+        } catch (Exception e){
+            BILoggerFactory.getLogger().error("etl update failed");
+        }
+        BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
+        JSONObject result = new JSONObject();
+        JSONObject packages = BIAnalysisETLManagerCenter.getBusiPackManager().createPackageJSON(userId);
+        JSONObject translations = new JSONObject();
+        translations.put(table.getID().getIdentity(), tableName);
+        JSONObject tableJSONWithFieldsInfo = table.createJSONWithFieldsInfo(userId);
+        JSONObject tableFields = tableJSONWithFieldsInfo.getJSONObject("tableFields");
+        JSONObject tables = new JSONObject();
+        tables.put(table.getID().getIdentity(), tableFields);
+        JSONObject fields = tableJSONWithFieldsInfo.getJSONObject("fieldsInfo");
+        result.put("packages", packages);
+        result.put("translations", translations);
+        result.put("tables", tables);
+        result.put("fields", fields);
+        new Thread (){
+            public void  run () {
+                BIAnalysisETLManagerCenter.getAliasManagerProvider().persistData(userId);
+                BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userId);
+                BIAnalysisETLManagerCenter.getDataSourceManager().persistData(userId);
+            }
+        }.start();
+        return result;
     }
 }

@@ -15,6 +15,7 @@ import java.util.Map;
 public class BIStringFormulaDetailTarget extends AbstractFormularDetailTarget {
 
 
+    private static final long serialVersionUID = 1110777676905525240L;
 
     /**
      * 计算值

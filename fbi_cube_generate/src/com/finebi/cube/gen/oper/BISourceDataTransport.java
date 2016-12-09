@@ -102,9 +102,9 @@ public abstract class BISourceDataTransport extends BIProcessor {
             BICubeLocation to = new BICubeLocation(tempConf.getRootURI().getPath().toString(), tableSource.getSourceID());
                 BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
         } catch (IOException e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         } catch (URISyntaxException e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
         BILoggerFactory.getLogger().info("table name: " + tableSource.getTableName() + " update copy files cost time:" + DateUtils.timeCostFrom(t));
     }

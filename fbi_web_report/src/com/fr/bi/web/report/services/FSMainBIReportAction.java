@@ -37,7 +37,7 @@ public class FSMainBIReportAction extends ActionNoSessionCMD {
         long templateCreateUserId = Long.parseLong(createUserId);
         BIReportNode node = null;
         if (id != null) {
-            node = BIDAOUtils.findByID(Long.parseLong(id), templateCreateUserId);
+            node = BIDAOUtils.getBIDAOManager().findByID(Long.parseLong(id), templateCreateUserId);
         }
 
         dealWithEntryResourceRequest(req, res, currentLoginUserId, node);
@@ -53,7 +53,7 @@ public class FSMainBIReportAction extends ActionNoSessionCMD {
         if (node == null) {
             throw new Exception("can't find the report! might be delete or move!");
         }
-        JSONObject reportSetting = BIReadReportUtils.getBIReportNodeJSON(node);
+        JSONObject reportSetting = BIReadReportUtils.getBIReadReportManager().getBIReportNodeJSON(node);
 
         BIWebUtils.dealWithWebPage(req, res, new BIWeblet(node), reportSetting, node);
 

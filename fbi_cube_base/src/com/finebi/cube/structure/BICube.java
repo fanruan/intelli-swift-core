@@ -27,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class BICube implements Cube {
     private static BILogger logger = BILoggerFactory.getLogger(BICube.class);
+    private static final long serialVersionUID = -5241804642657280524L;
     private ICubeResourceRetrievalService resourceRetrievalService;
     private ICubeResourceDiscovery discovery;
     private BICubeVersion cubeVersion;

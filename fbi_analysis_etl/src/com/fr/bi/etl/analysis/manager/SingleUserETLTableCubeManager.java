@@ -24,7 +24,7 @@ import java.io.File;
  *
  */
 public class SingleUserETLTableCubeManager implements Release {
-	
+
 	private QueueThread<UserETLUpdateTask> updateTask;
 	
 	private ThreadUnitedQueue<ETLTableObject> tq = new ThreadUnitedQueue<ETLTableObject>();
@@ -59,7 +59,7 @@ public class SingleUserETLTableCubeManager implements Release {
 		}
 		addTask();
 	}
-	
+
 	public void addTask(){
 		if(updateTask == null){
 			synchronized (this) {

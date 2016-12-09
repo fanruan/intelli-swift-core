@@ -16,6 +16,7 @@ import java.util.Map;
  */
 public class ASCSort extends AbstractSort {
 
+    private static final long serialVersionUID = 2402978192042794234L;
     protected transient IComparator comparator = ComparatorFacotry.getComparator(getSortType());
 
     @Override

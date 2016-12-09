@@ -171,7 +171,7 @@ public class BIExcelDataModel extends AbstractDataModel {
             columnNames = excel2007Util.getColumnNames();
             columnTypes = excel2007Util.getColumnTypes();
         } catch (Exception e){
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
     }
 
@@ -187,7 +187,7 @@ public class BIExcelDataModel extends AbstractDataModel {
             columnNames = excel2003Util.getColumnNames();
             columnTypes = excel2003Util.getColumnTypes();
         }catch (Exception e){
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
     }
 
@@ -200,7 +200,7 @@ public class BIExcelDataModel extends AbstractDataModel {
             columnNames = excelCSVUtil.getColumnNames();
             columnTypes = excelCSVUtil.getColumnTypes();
         }catch (Exception e){
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
     }
 }

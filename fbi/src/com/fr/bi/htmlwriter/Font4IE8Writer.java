@@ -73,7 +73,7 @@ public class Font4IE8Writer {
             writer.flush();
             writer.close();
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
 
     }

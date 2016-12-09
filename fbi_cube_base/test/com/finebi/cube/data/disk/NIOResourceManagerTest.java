@@ -99,6 +99,7 @@ public class NIOResourceManagerTest extends TestCase {
             writer1 = (BIStringNIOWriter) discovery.getCubeWriter(locationW);
             writer1.recordSpecificValue(1,"b");
             writer1.forceRelease();
+            writer1.forceRelease();
             writer2 = (BIStringNIOWriter) discovery.getCubeWriter(locationW);
             writer2.recordSpecificValue(1,"b");
 //            writer2.forceRelease();

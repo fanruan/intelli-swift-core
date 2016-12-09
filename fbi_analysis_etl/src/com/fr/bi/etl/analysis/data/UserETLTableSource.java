@@ -21,6 +21,7 @@ import java.util.*;
  * Created by 小灰灰 on 2015/12/24.
  */
 public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, UserCubeTableSource> implements UserCubeTableSource {
+    private static final long serialVersionUID = -5120502339337403130L;
     private long userId;
     @BICoreField
     private List<AnalysisETLSourceField> fieldList;

@@ -4,12 +4,13 @@ import com.fr.bi.conf.manager.update.SingleUserBIUpdateSettingManager;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
  * Created by Young's on 2016/4/23.
  */
-public interface BIUpdateFrequencyManagerProvider {
+public interface BIUpdateFrequencyManagerProvider extends Serializable{
     String XML_TAG = "BIUpdateFrequencyManagerProvider";
 
     SingleUserBIUpdateSettingManager getUpdateSettingManager(long userId);

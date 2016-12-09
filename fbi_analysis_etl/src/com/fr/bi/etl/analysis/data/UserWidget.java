@@ -20,6 +20,7 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.json.JSONException;
 import com.fr.stable.StringUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,20 +29,21 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by 小灰灰 on 2016/4/12.
  */
-public class UserWidget {
+public class UserWidget implements Serializable {
 
+    private static final long serialVersionUID = 2202469219214676310L;
     private int maxRow = Integer.MAX_VALUE;
     @BICoreField
     private BIWidget widget;
     @BICoreField
     private long userId;
     @BIIgnoreField
-    private Object lock = new Object();
+    private LockObject lock = new LockObject();
 
     @BIIgnoreField
-    private UserSession session;
+    private transient UserSession session;
     @BIIgnoreField
-    private transient Map<Integer, List> tempValue = new ConcurrentHashMap<Integer, List>();
+    private /*transient*/ Map<Integer, List> tempValue = new ConcurrentHashMap<Integer, List>();
 
     public UserWidget(BIWidget widget, long userId) {
         this.widget = widget;
@@ -181,6 +183,8 @@ public class UserWidget {
     }
 
     private class UserSession extends BISession {
+
+        private static final long serialVersionUID = -6365288173994213351L;
 
         public UserSession() {
             super(StringUtils.EMPTY, new BIWeblet(), userId);

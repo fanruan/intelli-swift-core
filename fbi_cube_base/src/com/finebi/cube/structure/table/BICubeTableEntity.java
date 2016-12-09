@@ -28,6 +28,7 @@ import java.util.*;
  */
 public class BICubeTableEntity implements CubeTableEntityService {
 
+    private static final long serialVersionUID = -6166087552875875738L;
     protected ITableKey tableKey;
     protected ICubeResourceRetrievalService resourceRetrievalService;
     protected ICubeTableColumnManagerService columnManager;

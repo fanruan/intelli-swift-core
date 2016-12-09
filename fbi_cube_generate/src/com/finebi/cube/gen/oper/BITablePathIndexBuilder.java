@@ -132,7 +132,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
                 try {
                     biLogManager.infoRelation(columnKeyInfo, costTime, UserControl.getInstance().getSuperManagerID());
                 } catch (Exception e) {
-                    BILoggerFactory.getLogger().error(e.getMessage());
+                    BILoggerFactory.getLogger().error(e.getMessage(),e);
                 }
             } catch (Exception e) {
                 try {

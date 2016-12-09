@@ -14,7 +14,7 @@ import java.io.Serializable;
  * <p/>
  * Created by Connery on 2015/12/15.
  */
-public class BIBasicIdentity extends BIIdentity<String> implements Serializable, XMLable, JSONTransform {
+public class BIBasicIdentity extends BIIdentity<String> implements XMLable, JSONTransform {
 
     private static final long serialVersionUID = -397193333867039832L;
 

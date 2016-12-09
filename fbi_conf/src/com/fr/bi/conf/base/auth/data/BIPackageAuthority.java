@@ -3,10 +3,13 @@ package com.fr.bi.conf.base.auth.data;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
 
+import java.io.Serializable;
+
 /**
  * Created by kary on 16/5/9.
  */
-public class BIPackageAuthority implements JSONTransform {
+public class BIPackageAuthority implements JSONTransform ,Serializable{
+    private static final long serialVersionUID = -3499375080947835983L;
     private String roleName;
     private int roleType;
     private JSONObject filter;

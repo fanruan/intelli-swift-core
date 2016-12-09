@@ -7,6 +7,8 @@ package com.finebi.cube.exception;
  * @since 4.0
  */
 public class BIFragmentAbsentException extends Exception {
+    private static final long serialVersionUID = -3830673718010133635L;
+
     public BIFragmentAbsentException() {
     }
 

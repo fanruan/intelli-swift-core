@@ -22,6 +22,7 @@ import java.util.Set;
 public class AnalysisTempTableSource extends AbstractCubeTableSource implements AnalysisCubeTableSource {
 
     private static final String UNSUPPORT = "Temp Source do not support";
+    private static final long serialVersionUID = -1685272601094693644L;
 
     private List<AnalysisCubeTableSource> sourceList;
 

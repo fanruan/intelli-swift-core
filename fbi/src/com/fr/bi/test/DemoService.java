@@ -50,14 +50,14 @@ public class DemoService extends NoSessionIDService {
         }
         if (ComparatorUtils.equals(cmd, "mvc")) {
             Map<String, Object> map = new HashMap<String, Object>();
-            List<BIReportNode> list = BISuperManagetDAOManager.getInstance().listAll();
+            List<BIReportNode> list = BISuperManagetDAOManager.getBISuperManagetDAOManager().listAll();
             String sessionID = SessionDealWith.generateSessionID(req, res, new BIWeblet(new BIReportNode()));
             BISession biSessionInfor = (BISession) SessionDealWith.getSessionIDInfor(sessionID);
             biSessionInfor.setShareReq(true);
             map.put("sessionID", sessionID);
             if (!list.isEmpty()) {
                 BIReportNode node = list.get(0);
-                JSONObject reportSetting = BIReadReportUtils.getBIReportNodeJSON(node);
+                JSONObject reportSetting = BIReadReportUtils.getBIReadReportManager().getBIReportNodeJSON(node);
                 map.put("popConfig", reportSetting);
             } else {
                 map.put("popConfig", "null");

@@ -73,7 +73,7 @@ public class ExcelCSVUtil {
                             String val = it.nextToken();
                             currentRowData.add(val);
                         } catch (Exception e) {
-                            BILoggerFactory.getLogger().error(e.getMessage());
+                            BILoggerFactory.getLogger().error(e.getMessage(),e);
                         }
                     }
                     tempRowDataList.add(currentRowData.toArray());
@@ -81,7 +81,7 @@ public class ExcelCSVUtil {
                     row++;
                 }
             } catch (Exception e) {
-                BILoggerFactory.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().error(e.getMessage(),e);
             } finally {
                 if (r != null) {
                     r.close();

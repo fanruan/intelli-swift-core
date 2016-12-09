@@ -73,7 +73,7 @@ public class BIGetImportedExcelData {
                 dataJa.put( oneJa );
             }
         }catch (Exception e){
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
             return jo;
         }
 

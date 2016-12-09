@@ -14,6 +14,8 @@ import java.util.Map;
  * Created by User on 2016/6/22.
  */
 public class EmptyDimensionTargetValueFilter extends AbstractDimensionFilter {
+    private static final long serialVersionUID = -1807365077452962838L;
+
     @Override
     public List<String> getUsedTargets() {
         return new ArrayList<String>();

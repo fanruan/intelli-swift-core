@@ -121,11 +121,41 @@ public class AnalysisETLModule extends AbstractModule {
     private void registerManager() {
         StableFactory.registerMarkedObject(BIAnalysisBusiPackManagerProvider.XML_TAG, getBusiPackProvider());
         StableFactory.registerMarkedObject(BIAnalysisDataSourceManagerProvider.XML_TAG, getDataSourceProvider());
-        StableFactory.registerMarkedObject(UserETLCubeManagerProvider.class.getName(), new UserETLCubeManager());
-        StableFactory.registerMarkedObject(BIAnalysisETLAliasManager.class.getName(), new BIAnalysisETLAliasManager());
+        StableFactory.registerMarkedObject(UserETLCubeManager.class.getName(), new UserETLCubeManager());
+        StableFactory.registerMarkedObject(UserETLCubeManagerProvider.class.getName(), getUserETLCubeManagerProvider());
+        StableFactory.registerMarkedObject(BIAliasManagerProvider.class.getName(),/* new BIAnalysisETLAliasManager()*/getBIAliasManagerProvider());
         StableFactory.registerMarkedObject(UserETLCubeDataLoaderCreator.class.getName(), UserETLCubeDataLoaderCreator.getInstance());
     }
-
+    private BIAliasManagerProvider getBIAliasManagerProvider() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                BIAnalysisETLAliasManager provider = new BIAnalysisETLAliasManager();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (BIAliasManagerProvider) RPC.getProxy(BIAnalysisETLAliasManager.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return new BIAnalysisETLAliasManager();
+        }
+    }
+    private UserETLCubeManagerProvider getUserETLCubeManagerProvider() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                UserETLCubeManager provider = new UserETLCubeManager();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (UserETLCubeManagerProvider) RPC.getProxy(UserETLCubeManager.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return new UserETLCubeManager();
+        }
+    }
     private BIAnalysisBusiPackManagerProvider getBusiPackProvider() {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isSelf()) {
@@ -133,7 +163,7 @@ public class AnalysisETLModule extends AbstractModule {
                 RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
                 return provider;
             } else {
-                return (BIAnalysisBusiPackManagerProvider) RPC.getProxy(BIAnalysisBusiPackManagerProvider.class,
+                return (BIAnalysisBusiPackManagerProvider) RPC.getProxy(AnalysisBusiPackManager.class,
                         ClusterAdapter.getManager().getHostManager().getIp(),
                         ClusterAdapter.getManager().getHostManager().getPort());
             }
@@ -149,7 +179,7 @@ public class AnalysisETLModule extends AbstractModule {
                 RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
                 return provider;
             } else {
-                return (BIAnalysisDataSourceManagerProvider) RPC.getProxy(BIAnalysisDataSourceManagerProvider.class,
+                return (BIAnalysisDataSourceManagerProvider) RPC.getProxy(AnalysisDataSourceManager.class,
                         ClusterAdapter.getManager().getHostManager().getIp(),
                         ClusterAdapter.getManager().getHostManager().getPort());
             }

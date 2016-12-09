@@ -5,14 +5,16 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by sheldon on 14-9-11.
  * 创建复杂报表的expander
  */
-public class ComplexExpander {
+public class ComplexExpander implements Serializable{
     public static final CrossExpander ALL_EXPANDER = new CrossExpander(NodeExpander.ALL_EXPANDER, NodeExpander.ALL_EXPANDER);
+    private static final long serialVersionUID = -5063794516307710346L;
 
 
     private ArrayList<NodeExpander> x_expanders = new ArrayList<NodeExpander>();

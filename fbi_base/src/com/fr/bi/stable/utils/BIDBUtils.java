@@ -387,8 +387,8 @@ public class BIDBUtils {
 
 
     public static PersistentTable getDBTable(String dbName, String tableName) {
-        com.fr.data.impl.Connection connection = BIConnectionManager.getInstance().getConnection(dbName);
-        String schema = BIConnectionManager.getInstance().getSchema(dbName);
+        com.fr.data.impl.Connection connection = BIConnectionManager.getBIConnectionManager().getConnection(dbName);
+        String schema = BIConnectionManager.getBIConnectionManager().getSchema(dbName);
         Connection conn = null;
         try {
             conn = connection.createConnection();
@@ -454,7 +454,7 @@ public class BIDBUtils {
      * @return
      */
     public static SQLStatement getSQLStatement(String dbName, String tableName) {
-        com.fr.data.impl.Connection connection = BIConnectionManager.getInstance().getConnection(dbName);
+        com.fr.data.impl.Connection connection = BIConnectionManager.getBIConnectionManager().getConnection(dbName);
         if (connection instanceof JDBCDatabaseConnection) {
             BIConnectOptimizationUtils utils = BIConnectOptimizationUtilsFactory.getOptimizationUtils((JDBCDatabaseConnection) (connection));
             connection = utils.optimizeConnection((JDBCDatabaseConnection) (connection));
@@ -463,7 +463,7 @@ public class BIDBUtils {
         try {
             Connection conn = sql.getSqlConn();
             Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
-            Table table = new Table(BIConnectionManager.getInstance().getSchema(dbName), tableName);
+            Table table = new Table(BIConnectionManager.getBIConnectionManager().getSchema(dbName), tableName);
             sql.setFrom(dialect.table2SQL(table));
             sql.setSchema(table.getSchema());
             sql.setTableName(table.getName());
@@ -474,12 +474,12 @@ public class BIDBUtils {
     }
 
     public static SQLStatement getSQLStatementByConditions(String dbName, String tableName, String where) {
-        com.fr.data.impl.Connection connection = BIConnectionManager.getInstance().getConnection(dbName);
+        com.fr.data.impl.Connection connection = BIConnectionManager.getBIConnectionManager().getConnection(dbName);
         SQLStatement sql = new SQLStatement(connection);
         try {
             Connection conn = sql.getSqlConn();
             Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
-            Table table = new Table(BIConnectionManager.getInstance().getSchema(dbName), tableName);
+            Table table = new Table(BIConnectionManager.getBIConnectionManager().getSchema(dbName), tableName);
             sql.setFrom(dialect.table2SQL(table));
             sql.setWhere(where);
 
@@ -490,12 +490,12 @@ public class BIDBUtils {
     }
 
     public static SQLStatement getDistinctSQLStatement(String dbName, String tableName, String fieldName) {
-        com.fr.data.impl.Connection connection = BIConnectionManager.getInstance().getConnection(dbName);
+        com.fr.data.impl.Connection connection = BIConnectionManager.getBIConnectionManager().getConnection(dbName);
         SqlSettedStatement sql = new SqlSettedStatement(connection);
         try {
             Connection conn = sql.getSqlConn();
             Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
-            Table table = new Table(BIConnectionManager.getInstance().getSchema(dbName), tableName);
+            Table table = new Table(BIConnectionManager.getBIConnectionManager().getSchema(dbName), tableName);
             DistinctColumnSelect select = new DistinctColumnSelect(table, fieldName, dialect);
             sql.setSql(select.toSQL());
         } catch (Throwable e) {

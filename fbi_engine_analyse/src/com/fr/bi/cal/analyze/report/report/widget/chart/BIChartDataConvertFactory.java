@@ -131,7 +131,7 @@ public class BIChartDataConvertFactory {
             }
             return new JSONObject().put("types", types).put("data", convertedData).put("options", options);
         } catch (JSONException e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
         return new JSONObject();
     }

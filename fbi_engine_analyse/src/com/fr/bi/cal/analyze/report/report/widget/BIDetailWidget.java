@@ -33,12 +33,13 @@ import com.fr.report.poly.TemplateBlock;
 import java.util.*;
 
 public class BIDetailWidget extends BIAbstractWidget {
+    private static final long serialVersionUID = 3558768164064392671L;
     @BICoreField
     private BIDetailSetting data;
     @BICoreField
     private BIDetailTarget[] dimensions = new BIDetailTarget[0];
     @BIIgnoreField
-    private transient BIDetailTarget[] usedDimensions;
+    private /*transient*/ BIDetailTarget[] usedDimensions;
     @BICoreField
     private Map<String, TargetFilter> targetFilterMap = new LinkedHashMap<String, TargetFilter>();
     @BICoreField
@@ -165,7 +166,7 @@ public class BIDetailWidget extends BIAbstractWidget {
             try {
                 parseDimensions(jo, userId);
             } catch (Exception e) {
-                BILoggerFactory.getLogger().info(e.getMessage());
+                BILoggerFactory.getLogger().info(e.getMessage(),e);
             }
         }
         if (jo.has("filter_value")) {

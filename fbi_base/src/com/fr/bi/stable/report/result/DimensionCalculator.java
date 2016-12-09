@@ -9,6 +9,7 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.stable.FCloneable;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
 /**
  * Created by 小灰灰 on 2015/6/30.
  */
-public interface DimensionCalculator extends FCloneable {
+public interface DimensionCalculator extends FCloneable,Serializable {
 
      BusinessField getField();
 

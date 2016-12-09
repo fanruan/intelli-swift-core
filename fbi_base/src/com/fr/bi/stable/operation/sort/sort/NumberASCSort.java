@@ -10,6 +10,7 @@ import com.fr.bi.stable.operation.sort.comp.IComparator;
  */
 public class NumberASCSort extends AbstractSort {
 
+    private static final long serialVersionUID = -6963533308379983292L;
     protected transient IComparator comparator = ComparatorFacotry.getComparator(getSortType());
 
     @Override

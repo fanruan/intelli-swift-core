@@ -4,12 +4,15 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONParser;
 
+import java.io.Serializable;
+
 /**
  * Created by User on 2016/9/6.
  * 维度指标上的chart setting属性
  */
-public class ChartSetting implements JSONParser {
+public class ChartSetting implements JSONParser,Serializable {
 
+    private static final long serialVersionUID = 7279584470550326442L;
     private JSONArray cordon = new JSONArray();
     private JSONObject settings = new JSONObject();
     private JSONObject styleOfChart = new JSONObject();

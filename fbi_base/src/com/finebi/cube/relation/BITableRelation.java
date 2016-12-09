@@ -12,6 +12,8 @@ import com.fr.json.JSONTransform;
  * @author Daniel-pc
  */
 public class BITableRelation extends BIBasicRelation<BusinessTable, BusinessField> implements JSONTransform {
+    private static final long serialVersionUID = -5731277590164682748L;
+
     public BITableRelation() {
     }
 

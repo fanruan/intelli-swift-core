@@ -149,7 +149,7 @@ public class Excel2007Util {
                 }
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
 
     }

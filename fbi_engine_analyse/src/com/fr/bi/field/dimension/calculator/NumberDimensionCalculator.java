@@ -26,6 +26,7 @@ import java.util.Map;
  */
 public class NumberDimensionCalculator extends AbstractDimensionCalculator {
     private transient ICubeColumnIndexReader customMap;
+    private static final long serialVersionUID = -1047271246017361490L;
 
     public NumberDimensionCalculator(BIDimension dimension, BusinessField column, List<BITableSourceRelation> relations) {
         super(dimension, column, relations);

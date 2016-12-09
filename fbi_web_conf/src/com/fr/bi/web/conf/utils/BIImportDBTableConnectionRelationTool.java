@@ -56,7 +56,7 @@ public class BIImportDBTableConnectionRelationTool {
             try {
                 connMap.put(connectionName, dbc.createConnection());
             } catch (Exception e) {
-                BILoggerFactory.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().error(e.getMessage(),e);
                 return false;
             }
         }

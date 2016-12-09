@@ -9,6 +9,7 @@ import com.fr.bi.stable.data.source.CubeTableSource;
  * @since 4.0
  */
 public class BITableKey implements ITableKey {
+    private static final long serialVersionUID = -4307699484676276880L;
     private String sourceID;
 
     public BITableKey(String sourceID) {

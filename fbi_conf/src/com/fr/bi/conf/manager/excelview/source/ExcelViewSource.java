@@ -5,14 +5,16 @@ import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
 import com.fr.stable.ColumnRow;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * Created by Young's on 2016/4/20.
  */
-public class ExcelViewSource implements JSONTransform {
+public class ExcelViewSource implements JSONTransform ,Serializable{
 
     private static final String XML_TAG = "ExcelViewSource";
+    private static final long serialVersionUID = 6025416043576287469L;
 
     private Map<String, ColumnRow> positions = new HashMap<String, ColumnRow>();
     private List<List<String>> excel;

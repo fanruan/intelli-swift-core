@@ -43,8 +43,7 @@ public class BIRemoveBusinessPackagesAction extends AbstractBIConfigureAction {
         try {
             BICubeConfigureCenter.getPackageManager().persistData(userId);
             BIConfigureManagerCenter.getAuthorityManager().persistData(userId);
-            BICubeManager biCubeManager= StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG,BICubeManager.class);
-            biCubeManager.resetCubeGenerationHour(userId);
+            StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG,BICubeManagerProvider.class).resetCubeGenerationHour(userId);
         } catch (Exception e) {
             FRContext.getLogger().log(Level.WARNING, e.getMessage(), e);
         }

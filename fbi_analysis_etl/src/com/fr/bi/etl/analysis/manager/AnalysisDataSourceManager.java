@@ -24,6 +24,8 @@ import java.util.Set;
  * Created by 小灰灰 on 2015/12/14.
  */
 public class AnalysisDataSourceManager extends BISystemDataManager<DataSourceCompoundService> implements BIAnalysisDataSourceManagerProvider {
+    private static final long serialVersionUID = -6247770461074364282L;
+
     public DataSourceCompoundService getInstance() {
         try {
             return getValue(UserControl.getInstance().getSuperManagerID());

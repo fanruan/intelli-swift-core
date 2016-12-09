@@ -7,6 +7,7 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -21,7 +22,7 @@ import java.util.TreeSet;
  * @see ICubeRelationManagerService
  * @since 4.0
  */
-public interface CubeTableEntityService extends CubeTableEntityGetterService {
+public interface CubeTableEntityService extends CubeTableEntityGetterService,Serializable {
 
     void recordTableStructure(List<ICubeFieldSource> fields);
 

@@ -99,7 +99,7 @@ public class CubeBuildStuffSupplement extends CubeBuildSpecific {
         try {
             BIFileUtils.moveFile(tempConf.getRootURI().getPath().toString(), advancedConf.getRootURI().getPath().toString());
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
         return true;
     }

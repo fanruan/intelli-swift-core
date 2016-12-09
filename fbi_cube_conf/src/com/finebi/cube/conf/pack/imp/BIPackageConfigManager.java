@@ -166,7 +166,14 @@ public class BIPackageConfigManager implements Release {
             currentPackageManager.addPackage(biBasicBusinessPackage);
         }
     }
-
+    public void updatePackage(BIBusinessPackage newBasicBusinessPackage) throws BIPackageDuplicateException, BIPackageAbsentException {
+        synchronized (currentPackageManager) {
+            if(currentPackageManager.containPackage(newBasicBusinessPackage)){
+                currentPackageManager.removePackage(newBasicBusinessPackage.getID());
+            }
+            currentPackageManager.addPackage(newBasicBusinessPackage);
+        }
+    }
     public Boolean containPackage(BIBusinessPackage biBasicBusinessPackage) {
         return currentPackageManager.containPackage(biBasicBusinessPackage);
     }

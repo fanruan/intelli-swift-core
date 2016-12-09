@@ -96,7 +96,7 @@ public class ResourceHelper {
                     buffer.append(TemplateUtils.renderTemplate(file, map));
                 }
             } catch (Exception e) {
-                BILoggerFactory.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().error(e.getMessage(),e);
             }
             return buffer.toString();
         }

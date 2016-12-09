@@ -149,7 +149,7 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
                 this.biTableSourceRelationPathSet.add(convertPath(path));
                 this.cubeGenerateRelationPathSet.add(new BICubeGenerateRelationPath(convertPath(path)));
             } catch (BITablePathConfusionException e) {
-                BILoggerFactory.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().error(e.getMessage(),e);
             }
         }
 
@@ -184,9 +184,9 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
                     generatedRelations.add(relation);
                 }
             } catch (BITableAbsentException e) {
-                BILoggerFactory.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().error(e.getMessage(),e);
             } catch (BIRelationAbsentException e) {
-                BILoggerFactory.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().error(e.getMessage(),e);
             }
         }
         return generatedRelations;
@@ -325,7 +325,7 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
                 copyFilesFromOldCubes(tempResourceRetrieval, advancedResourceRetrieval, source);
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
         return true;
     }
@@ -345,7 +345,7 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
         try {
             BIFileUtils.moveFile(tempConf.getRootURI().getPath().toString(), advancedConf.getRootURI().getPath().toString());
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
         return true;
     }

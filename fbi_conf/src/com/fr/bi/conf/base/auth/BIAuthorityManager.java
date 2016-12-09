@@ -14,13 +14,15 @@ import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * Created by young
  */
-public class BIAuthorityManager {
+public class BIAuthorityManager implements Serializable{
 
+    private static final long serialVersionUID = 4326589720210810024L;
     private long version = new Date().getTime();   //版本
 
     private Map<BIPackageID, List<BIPackageAuthority>> packagesAuth = new HashMap<BIPackageID, List<BIPackageAuthority>>();

@@ -117,7 +117,7 @@ public class CubeBuildStuffComplete extends AbstractCubeBuildStuff implements Se
                     set.add(relationPath);
                 }
             } catch (Exception e) {
-                BILoggerFactory.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().error(e.getMessage(),e);
             }
         }
         set = removeDuplicateRelationPaths(set);

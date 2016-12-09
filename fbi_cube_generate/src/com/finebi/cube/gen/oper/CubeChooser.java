@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
  */
 public class CubeChooser implements Cube {
     private static final Logger logger = LoggerFactory.getLogger(CubeChooser.class);
+    private static final long serialVersionUID = -115599916764191095L;
 
     /**
      * 当前生成的cube

@@ -7,6 +7,8 @@ import java.util.Map;
 
 public class BIStringDetailTarget extends BIAbstractDetailTarget {
 
+    private static final long serialVersionUID = -7873616597951451126L;
+
     /**
      * 获取显示值
      *

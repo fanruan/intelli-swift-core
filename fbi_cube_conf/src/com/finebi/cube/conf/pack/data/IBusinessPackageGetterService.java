@@ -5,6 +5,7 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.exception.BITableAbsentException;
 
+import java.io.Serializable;
 import java.util.Set;
 
 /**
@@ -13,7 +14,7 @@ import java.util.Set;
  * @author Connery
  * @since 4.0
  */
-public interface IBusinessPackageGetterService<T extends BusinessTable> {
+public interface IBusinessPackageGetterService<T extends BusinessTable>extends Serializable {
 
     BIUser getOwner();
 

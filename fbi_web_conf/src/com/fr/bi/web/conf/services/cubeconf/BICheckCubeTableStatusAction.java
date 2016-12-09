@@ -32,7 +32,7 @@ public class BICheckCubeTableStatusAction extends AbstractBIConfigureAction {
             jo.put("isGenerated", !cubeManager.hasTask(userId));
         } catch (Exception e) {
             jo.put("isGenerated", true);
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
         WebUtils.printAsJSON(res, jo);
     }

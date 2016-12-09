@@ -22,6 +22,7 @@ import java.util.Arrays;
  */
 public class IndexGenerator implements CubeGenerator, java.util.concurrent.Callable<Object>, CubeGenerateStatusProvider {
 
+    private static final long serialVersionUID = -128732121637843698L;
     protected CubeTableSource source;
 
     protected TableCubeFile cube;

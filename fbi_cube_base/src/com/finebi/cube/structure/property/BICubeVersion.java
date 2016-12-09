@@ -15,6 +15,7 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
 public class BICubeVersion extends BICubeLongProperty implements ICubeVersion {
 
 
+    private static final long serialVersionUID = 2962981930016269040L;
     private static String CUBE_VERSION = "version";
 
     public BICubeVersion(ICubeResourceLocation currentLocation, ICubeResourceDiscovery discovery) {

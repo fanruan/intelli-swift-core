@@ -6,12 +6,14 @@ import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 
-public interface ICubeDataLoader extends Release {
+import java.io.Serializable;
+
+public interface ICubeDataLoader extends Release,Serializable {
 
     /**
      * 根据业务包获取BITableIndex
      *
-     * @param td
+     * @param tableSource
      * @return
      */
 

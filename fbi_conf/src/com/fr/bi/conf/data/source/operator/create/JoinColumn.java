@@ -12,6 +12,7 @@ import com.fr.stable.xml.XMLableReader;
  */
 public class JoinColumn implements XMLable, JSONTransform {
     public static final String XML_TAG = "JoinColumn";
+    private static final long serialVersionUID = -1591456831573421474L;
 
     public JoinColumn(String name, boolean isLeft, String columnName) {
         this.name = name;

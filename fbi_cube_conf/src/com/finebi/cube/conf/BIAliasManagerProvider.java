@@ -15,7 +15,7 @@ public interface BIAliasManagerProvider {
     String XML_TAG = "BITransManager";
 
     UserAliasManager getTransManager(long userId);
-
+    void setTransManager(long userId,UserAliasManager value);
     void setAliasName(String id, String name, long userId);
 
     String getAliasName(String id, long userId);

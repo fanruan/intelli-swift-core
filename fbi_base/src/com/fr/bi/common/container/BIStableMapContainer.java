@@ -9,6 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by Connery on 2015/12/7.
  */
 public abstract class BIStableMapContainer<K, V> extends BIMapContainer<K, V> {
+    private static final long serialVersionUID = -1122269646637219594L;
+
     @Override
     protected Map<K, V> initContainer() {
         return new ConcurrentHashMap<K, V>();
