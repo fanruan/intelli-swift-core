@@ -42,6 +42,7 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
                 this.wrappers[BICst.REGION.DIMENSION1] = this._createDetailDimensionRegion(BI.i18nText("BI-Data"));
                 break;
             case BICst.WIDGET.CROSS_TABLE:
+            case BICst.WIDGET.RECT_TREE:
                 this.wrappers[BICst.REGION.DIMENSION1] = this._createDimensionRegionWrapper(BI.i18nText("BI-Row_Header"), BICst.REGION.DIMENSION1);
                 this.wrappers[BICst.REGION.DIMENSION2] = this._createDimensionRegionWrapper(BI.i18nText("BI-Column_Header"), BICst.REGION.DIMENSION2);
                 this.wrappers[BICst.REGION.TARGET1] = this._createTargetRegionWrapper(BI.i18nText("BI-Target"), BICst.REGION.TARGET1);

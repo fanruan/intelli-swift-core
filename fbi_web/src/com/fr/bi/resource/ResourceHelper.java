@@ -2753,6 +2753,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/detailchart/chart.comparearea.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.pie.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.multipie.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.recttree.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.radar.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.scatter.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.fallaxis.js",

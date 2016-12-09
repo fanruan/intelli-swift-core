@@ -1,18 +1,18 @@
 /**
  * 图表控件
- * @class BI.MultiPieChart
+ * @class BI.RectTreeChart
  * @extends BI.Widget
  */
-BI.MultiPieChart = BI.inherit(BI.AbstractChart, {
+BI.RectTreeChart = BI.inherit(BI.AbstractChart, {
 
     _defaultConfig: function () {
-        return BI.extend(BI.MultiPieChart.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-multi-pie-chart"
+        return BI.extend(BI.RectTreeChart.superclass._defaultConfig.apply(this, arguments), {
+            baseCls: "bi-rect-tree-chart"
         })
     },
 
     _init: function () {
-        BI.MultiPieChart.superclass._init.apply(this, arguments);
+        BI.RectTreeChart.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.combineChart = BI.createWidget({
             type: "bi.combine_chart",
@@ -21,7 +21,7 @@ BI.MultiPieChart = BI.inherit(BI.AbstractChart, {
             element: this.element
         });
         this.combineChart.on(BI.CombineChart.EVENT_CHANGE, function (obj) {
-            self.fireEvent(BI.MultiPieChart.EVENT_CHANGE, obj);
+            self.fireEvent(BI.RectTreeChart.EVENT_CHANGE, obj);
         });
         this.combineChart.on(BI.CombineChart.EVENT_ITEM_CLICK, function (obj) {
             self.fireEvent(BI.AbstractChart.EVENT_ITEM_CLICK, obj)
@@ -33,12 +33,11 @@ BI.MultiPieChart = BI.inherit(BI.AbstractChart, {
         delete config.zoom;
         config.colors = this.config.chartColor;
         config.plotOptions.style = formatChartStyle();
-        formatChartPieStyle();
 
         this.formatChartLegend(config, this.config.legend);
 
-        config.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${VALUE}${PERCENT}";
-        config.chartType = "multiPie";
+        config.plotOptions.tooltip.formatter.identifier = "${NAME}${SERIES}${VALUE}";
+        config.chartType = "treeMap";
         delete config.xAxis;
         delete config.yAxis;
 
@@ -69,24 +68,6 @@ BI.MultiPieChart = BI.inherit(BI.AbstractChart, {
                 default:
                     return "normal";
             }
-        }
-
-        function formatChartPieStyle() {
-            switch (self.config.MultiPieChartType) {
-                case BICst.CHART_SHAPE.EQUAL_ARC_ROSE:
-                    config.plotOptions.roseType = "sameArc";
-                    break;
-                case BICst.CHART_SHAPE.NOT_EQUAL_ARC_ROSE:
-                    config.plotOptions.roseType = "differentArc";
-                    break;
-                case BICst.CHART_SHAPE.NORMAL:
-                default:
-                    delete config.plotOptions.roseType;
-                    break;
-            }
-            config.plotOptions.innerRadius = self.config.innerRadius + "%";
-            config.plotOptions.startAngle = 270;
-            config.plotOptions.endAngle = (270 + self.config.totalAngle) % 360;
         }
 
     },
@@ -131,7 +112,7 @@ BI.MultiPieChart = BI.inherit(BI.AbstractChart, {
         BI.each(items, function (idx, axisItems) {
             var type = [];
             BI.each(axisItems, function (id, item) {
-                type.push(BICst.WIDGET.MULTI_PIE);
+                type.push(BICst.WIDGET.RECT_TREE);
             });
             types.push(type);
         });
@@ -147,5 +128,5 @@ BI.MultiPieChart = BI.inherit(BI.AbstractChart, {
         this.combineChart.magnify();
     }
 });
-BI.MultiPieChart.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut('bi.multi_pie_chart', BI.MultiPieChart);
+BI.RectTreeChart.EVENT_CHANGE = "EVENT_CHANGE";
+$.shortcut('bi.rect_tree_chart', BI.RectTreeChart);

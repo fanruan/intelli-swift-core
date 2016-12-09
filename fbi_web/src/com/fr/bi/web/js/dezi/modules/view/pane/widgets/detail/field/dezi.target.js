@@ -361,7 +361,7 @@ BIDezi.TargetView = BI.inherit(BI.View, {
             wType === BICst.WIDGET.COMPARE_AREA ||
             wType === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART ||
             wType === BICst.WIDGET.SCATTER ||
-            wType === BICst.WIDGET.BUBBLE || wType === BICst.WIDGET.MULTI_PIE) {
+            wType === BICst.WIDGET.BUBBLE || wType === BICst.WIDGET.MULTI_PIE || wType === BICst.WIDGET.RECT_TREE) {
             this.usedCheck.setVisible(false);
             this.usedRadio.setVisible(true);
             return;
