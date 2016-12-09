@@ -474,22 +474,22 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
                         return new Date(currY, 11, 31).getTime();
 
                     case BICst.MULTI_DATE_MONTH_PREV:
-                        return _getBeforeMultiMonth(value).getTime();
+                        return new Date().getBeforeMultiMonth(value).getTime();
                     case BICst.MULTI_DATE_MONTH_AFTER:
-                        return _getAfterMultiMonth(value).getTime();
+                        return new Date().getAfterMultiMonth(value).getTime();
                     case BICst.MULTI_DATE_MONTH_BEGIN:
                         return new Date(currY, currM, 1).getTime();
                     case BICst.MULTI_DATE_MONTH_END:
                         return new Date(currY, currM, (date.getLastDateOfMonth()).getDate()).getTime();
 
                     case BICst.MULTI_DATE_QUARTER_PREV:
-                        return _getBeforeMulQuarter(value).getTime();
+                        return new Date().getBeforeMulQuarter(value).getTime();
                     case BICst.MULTI_DATE_QUARTER_AFTER:
-                        return _getAfterMulQuarter(value).getTime();
+                        return new Date().getAfterMulQuarter(value).getTime();
                     case BICst.MULTI_DATE_QUARTER_BEGIN:
-                        return _getQuarterStartDate().getTime();
+                        return new Date().getQuarterStartDate().getTime();
                     case BICst.MULTI_DATE_QUARTER_END:
-                        return _getQuarterEndDate().getTime();
+                        return new Date().getQuarterEndDate().getTime();
 
                     case BICst.MULTI_DATE_WEEK_PREV:
                         return date.getOffsetDate(-7 * value).getTime();
@@ -506,55 +506,6 @@ BI.AllReportsFilter = BI.inherit(BI.Widget, {
                         return new Date(value.year, value.month, value.day).getTime();
 
                 }
-            }
-            //获得n个季度后的日期
-            function _getAfterMulQuarter(n) {
-                var dt = new Date();
-                dt.setMonth(dt.getMonth() + n * 3);
-                return dt;
-            }
-            //获得n个季度前的日期
-            function _getBeforeMulQuarter(n) {
-                var dt = new Date();
-                dt.setMonth(dt.getMonth() - n * 3);
-                return dt;
-            }
-            //得到本季度的起始月份
-            function _getQuarterStartMonth() {
-                var quarterStartMonth = 0;
-                var nowMonth = new Date().getMonth();
-                if (nowMonth < 3) {
-                    quarterStartMonth = 0;
-                }
-                if (2 < nowMonth && nowMonth < 6) {
-                    quarterStartMonth = 3;
-                }
-                if (5 < nowMonth && nowMonth < 9) {
-                    quarterStartMonth = 6;
-                }
-                if (nowMonth > 8) {
-                    quarterStartMonth = 9;
-                }
-                return quarterStartMonth;
-            }
-            //获得本季度的起始日期
-            function _getQuarterStartDate() {
-                return new Date(new Date().getFullYear(), _getQuarterStartMonth(), 1);
-            }
-            //得到本季度的结束日期
-            function _getQuarterEndDate() {
-                var quarterEndMonth = _getQuarterStartMonth() + 2;
-                return new Date(new Date().getFullYear(), quarterEndMonth, new Date().getMonthDays(quarterEndMonth));
-            }
-            function _getAfterMultiMonth(n) {
-                var dt = new Date();
-                dt.setMonth(dt.getMonth() + n | 0);
-                return dt;
-            }
-            function _getBeforeMultiMonth(n) {
-                var dt = new Date();
-                dt.setMonth(dt.getMonth() - n | 0);
-                return dt;
             }
         }
 

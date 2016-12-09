@@ -59,8 +59,10 @@ BI.DimensionsManager = BI.inherit(BI.Widget, {
             type: "bi.chart_type"
         });
         this.chartType.on(BI.ChartType.EVENT_CHANGE, function () {
-            self.tab.setSelect(this.getValue());
-            self.model.setType(this.getValue());
+            var val = this.getValue();
+            self.model.setType(val.type);
+            self.model.setSubType(val.subType);
+            self.tab.setSelect(val.type);
             self.fireEvent(BI.DimensionsManager.EVENT_CHANGE, arguments);
         });
         return this.chartType;
@@ -96,11 +98,7 @@ BI.DimensionsManager = BI.inherit(BI.Widget, {
         this.model.populate();
         var views = this.model.getViews();
         var widgetType = this.model.getType();
-        if(widgetType === BICst.WIDGET.MAP){
-            this.chartType.setValue(BI.Utils.getWidgetSubTypeByID(o.wId));
-        }else{
-            this.chartType.setValue(widgetType);
-        }
+        this.chartType.setValue({type: widgetType, subType: BI.Utils.getWidgetSubTypeByID(o.wId)});
         this.tab.setSelect(widgetType);
         this.tab.populate(views);
     }

@@ -16,7 +16,7 @@ BI.DataImageImageSet = BI.inherit(BI.Widget, {
         BI.DataImageImageSet.superclass._init.apply(this, arguments);
         var o = this.options;
         this.wId = BI.Utils.getWidgetIDByDimensionID(o.dId);
-        this._img = BI.Utils.getImagesByID(this.wId);
+        this._img = BI.Utils.getImagesByWidgetID(this.wId);
         this._createTab();
     },
 
@@ -123,7 +123,7 @@ BI.DataImageImageSet = BI.inherit(BI.Widget, {
         this.imageGroup = BI.createWidget({
             type: "bi.button_group",
             cls: "image-group",
-            items: this.convert2Images(BI.Utils.getImagesByID(this.wId)),
+            items: this.convert2Images(BI.Utils.getImagesByWidgetID(this.wId)),
             width: 380,
             layouts: [{
                 type: "bi.inline",
@@ -167,7 +167,7 @@ BI.DataImageImageSet = BI.inherit(BI.Widget, {
     },
 
     populate: function () {
-        var img = BI.Utils.getImagesByID(this.wId);
+        var img = BI.Utils.getImagesByWidgetID(this.wId);
         if(!BI.isEqual(this._img, img)) {
             this._img = img;
             this.imageGroup && this.imageGroup.populate(this.convert2Images(this._img));

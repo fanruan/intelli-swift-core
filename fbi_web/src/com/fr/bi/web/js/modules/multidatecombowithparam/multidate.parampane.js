@@ -157,19 +157,19 @@ BI.MultiDateParamPane = BI.inherit(BI.Widget, {
             case BICst.MULTI_DATE_YEAR_END:
                 return new Date(currY, 11, 31);
             case BICst.MULTI_DATE_MONTH_PREV:
-                return BI.Utils.getBeforeMultiMonth(value);
+                return new Date().getBeforeMultiMonth(value);
             case BICst.MULTI_DATE_MONTH_AFTER:
-                return BI.Utils.getAfterMultiMonth(value);
+                return new Date().getAfterMultiMonth(value);
             case BICst.MULTI_DATE_MONTH_BEGIN:
                 return new Date(currY, currM, 1);
             case BICst.MULTI_DATE_MONTH_END:
                 return new Date(currY, currM, (date.getLastDateOfMonth()).getDate());
             case BICst.MULTI_DATE_QUARTER_PREV:
-                return BI.Utils.getBeforeMulQuarter(value);
+                return new Date().getBeforeMulQuarter(value);
             case BICst.MULTI_DATE_QUARTER_AFTER:
-                return BI.Utils.getAfterMulQuarter(value);
+                return new Date().getAfterMulQuarter(value);
             case BICst.MULTI_DATE_QUARTER_BEGIN:
-                return BI.Utils.getQuarterStartDate();
+                return new Date().getQuarterStartDate();
             case BICst.MULTI_DATE_QUARTER_END:
                 return BI.Utils.getQuarterEndDate();
             case BICst.MULTI_DATE_WEEK_PREV:

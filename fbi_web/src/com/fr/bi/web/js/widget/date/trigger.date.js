@@ -171,32 +171,32 @@ BI.DateTrigger = BI.inherit(BI.Trigger, {
                 break;
             case BICst.MULTI_DATE_QUARTER_PREV:
                 var text = value + BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_QUARTER_PREV];
-                date = this._getBeforeMulQuarter(value);
+                date = new Date().getBeforeMulQuarter(value);
                 _setInnerValue(date, text);
                 break;
             case BICst.MULTI_DATE_QUARTER_AFTER:
                 var text = value + BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_QUARTER_AFTER];
-                date = this._getAfterMulQuarter(value);
+                date = new Date().getAfterMulQuarter(value);
                 _setInnerValue(date, text);
                 break;
             case BICst.MULTI_DATE_QUARTER_BEGIN:
                 var text = BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_QUARTER_BEGIN];
-                date = this._getQuarterStartDate();
+                date = new Date().getQuarterStartDate();
                 _setInnerValue(date, text);
                 break;
             case BICst.MULTI_DATE_QUARTER_END:
                 var text = BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_QUARTER_END];
-                date = this._getQuarterEndDate();
+                date = new Date().getQuarterEndDate();
                 _setInnerValue(date, text);
                 break;
             case BICst.MULTI_DATE_MONTH_PREV:
                 var text = value + BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_MONTH_PREV];
-                date = this._getBeforeMultiMonth(value);
+                date = new Date().getBeforeMultiMonth(value);
                 _setInnerValue(date, text);
                 break;
             case BICst.MULTI_DATE_MONTH_AFTER:
                 var text = value + BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_MONTH_AFTER];
-                date = this._getAfterMultiMonth(value);
+                date = new Date().getAfterMultiMonth(value);
                 _setInnerValue(date, text);
                 break;
             case BICst.MULTI_DATE_MONTH_BEGIN:
@@ -247,55 +247,6 @@ BI.DateTrigger = BI.inherit(BI.Trigger, {
                 }
                 break;
         }
-    },
-    //获得n个季度后的日期
-    _getAfterMulQuarter: function (n) {
-        var dt = new Date();
-        dt.setMonth(dt.getMonth() + n * 3);
-        return dt;
-    },
-    //获得n个季度前的日期
-    _getBeforeMulQuarter: function (n) {
-        var dt = new Date();
-        dt.setMonth(dt.getMonth() - n * 3);
-        return dt;
-    },
-    //得到本季度的起始月份
-    _getQuarterStartMonth: function () {
-        var quarterStartMonth = 0;
-        var nowMonth = new Date().getMonth();
-        if (nowMonth < 3) {
-            quarterStartMonth = 0;
-        }
-        if (2 < nowMonth && nowMonth < 6) {
-            quarterStartMonth = 3;
-        }
-        if (5 < nowMonth && nowMonth < 9) {
-            quarterStartMonth = 6;
-        }
-        if (nowMonth > 8) {
-            quarterStartMonth = 9;
-        }
-        return quarterStartMonth;
-    },
-    //获得本季度的起始日期
-    _getQuarterStartDate: function () {
-        return new Date(new Date().getFullYear(), this._getQuarterStartMonth(), 1);
-    },
-    //得到本季度的结束日期
-    _getQuarterEndDate: function () {
-        var quarterEndMonth = this._getQuarterStartMonth() + 2;
-        return new Date(new Date().getFullYear(), quarterEndMonth, new Date().getMonthDays(quarterEndMonth));
-    },
-    _getAfterMultiMonth: function (n) {
-        var dt = new Date();
-        dt.setMonth(dt.getMonth() + n | 0);
-        return dt;
-    },
-    _getBeforeMultiMonth: function (n) {
-        var dt = new Date();
-        dt.setMonth(dt.getMonth() - n | 0);
-        return dt;
     },
 
     getKey: function () {

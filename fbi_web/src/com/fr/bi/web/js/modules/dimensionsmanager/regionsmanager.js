@@ -21,11 +21,6 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         this.regions = {};
         this.wrappers = {};
-        if ((o.regionType + "").indexOf(BICst.DI_TU) !== -1) {
-            this.wrappers[BICst.REGION.DIMENSION1] = this._createDimensionRegionWrapper(BI.i18nText("BI-Region_Name"), BICst.REGION.DIMENSION1);
-            this.wrappers[BICst.REGION.TARGET1] = this._createTargetRegionWrapper(BI.i18nText("BI-Target"), BICst.REGION.TARGET1);
-            this.wrappers[BICst.REGION.TARGET2] = this._createTargetRegionWrapper(BI.i18nText("BI-Region_Suspension_Target"), BICst.REGION.TARGET2)
-        }
         switch (o.regionType) {
             case BICst.WIDGET.TABLE:
                 this.wrappers[BICst.REGION.DIMENSION1] = this._createDimensionRegionWrapper(BI.i18nText("BI-Row_Header"), BICst.REGION.DIMENSION1);
@@ -441,7 +436,7 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
         var views = {}, o = this.options;
         BI.each(this.wrappers, function (type, wrapper) {
             var ids = [];
-            if(o.regionType === BICst.WIDGET.TREE || o.regionType === BICst.WIDGET.TREE_LABEL || o.regionType === BICst.WIDGET.DETAIL) {
+            if (o.regionType === BICst.WIDGET.TREE || o.regionType === BICst.WIDGET.TREE_LABEL || o.regionType === BICst.WIDGET.DETAIL) {
                 views[type] = wrapper.getValue();
             } else {
                 BI.each(wrapper.getRegions(), function (idx, region) {
@@ -449,9 +444,9 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
                     views[idx] = region.getValue();
                 });
             }
-            var emptyIds =  wrapper.getEmptyRegionValue();
-            var next = (BI.parseInt(BI.max(ids)) + 1)  || BI.parseInt(wrapper.getWrapperType());
-            if(BI.isNotEmptyArray(emptyIds)) {
+            var emptyIds = wrapper.getEmptyRegionValue();
+            var next = (BI.parseInt(BI.max(ids)) + 1) || BI.parseInt(wrapper.getWrapperType());
+            if (BI.isNotEmptyArray(emptyIds)) {
                 views[next] = emptyIds;
             }
         });
@@ -461,7 +456,7 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
 
     populate: function (views) {
         var self = this, o = this.options;
-        if(o.regionType === BICst.WIDGET.TREE || o.regionType === BICst.WIDGET.TREE_LABEL || o.regionType === BICst.WIDGET.DETAIL) {
+        if (o.regionType === BICst.WIDGET.TREE || o.regionType === BICst.WIDGET.TREE_LABEL || o.regionType === BICst.WIDGET.DETAIL) {
             BI.each(views, function (type, dimensions) {
                 self.wrappers[type].populate(dimensions);
             });
@@ -472,7 +467,7 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
             this._bindRegionEvent();
         }
         function getType(type) {
-            var first = type.toString().slice(0,1);
+            var first = type.toString().slice(0, 1);
             var length = type.toString().length - 1;
             return BI.parseFloat(first + "e" + length);
         }
