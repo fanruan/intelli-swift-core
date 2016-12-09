@@ -201,13 +201,7 @@ BICst.DASHBOARD_WIDGETS = [[{
     text: BI.i18nText("BI-Pie_Chart"),
     title: BI.i18nText("BI-Pie_Chart"),
     value: BICst.WIDGET.PIE,
-    cls: "drag-pie-icon",
-    children: [{
-        text: BI.i18nText("BI-Pie_Chart"),
-        title: BI.i18nText("BI-Pie_Chart"),
-        value: BICst.WIDGET.PIE,
-        cls: "drag-pie-icon",
-    }]
+    cls: "drag-pie-icon"
 }, {
     text: BI.i18nText("BI-Donut_Chart"),
     title: BI.i18nText("BI-Donut_Chart"),
