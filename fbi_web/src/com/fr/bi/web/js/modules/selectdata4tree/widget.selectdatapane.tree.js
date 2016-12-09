@@ -18,7 +18,7 @@ BI.TreeSelectDataPane = BI.inherit(BI.Widget, {
             type: "bi.package_select_data_service",
             element: this.element,
             wId: o.wId,
-            showRelativeTables: false,
+            showRelativeTables: true,
             showExcelView: false,
             showDateGroup: true,
             tablesCreator: function (packageId, isRelation) {
