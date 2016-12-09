@@ -207,11 +207,6 @@ BICst.DASHBOARD_WIDGETS = [[{
         title: BI.i18nText("BI-Pie_Chart"),
         value: BICst.WIDGET.PIE,
         cls: "drag-pie-icon",
-    }, {
-        text: BI.i18nText("BI-Multi_Pie_Chart"),
-        title: BI.i18nText("BI-Multi_Pie_Chart"),
-        value: BICst.WIDGET.MULTI_PIE,
-        cls: "drag-multi-pie-icon",
     }]
 }, {
     text: BI.i18nText("BI-Donut_Chart"),
@@ -270,11 +265,6 @@ BICst.DASHBOARD_WIDGETS = [[{
     title: BI.i18nText("BI-Scatter"),
     value: BICst.WIDGET.SCATTER,
     cls: "drag-scatter-icon"
-}, {
-    text: BI.i18nText("BI-Rect_Tree_Chart"),
-    title: BI.i18nText("BI-Rect_Tree_Chart"),
-    value: BICst.WIDGET.RECT_TREE,
-    cls: "drag-rect-tree-icon"
 }], [{
     text: BI.i18nText("BI-Detail_Table"),
     title: BI.i18nText("BI-Detail_Table"),
