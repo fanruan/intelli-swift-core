@@ -54,6 +54,9 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
             height: this.constants.DIMENSION_BUTTON_HEIGHT,
             cls: "bi-dimension-name",
             errorText: BI.i18nText("BI-Field_Name_Can_Not_Be_Same"),
+            title: function () {
+                return self.editor.getValue();
+            },
             allowBlank: false,
             validationChecker: function (v) {
                 return self._checkDimensionName(v);
