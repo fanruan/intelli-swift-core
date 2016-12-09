@@ -281,11 +281,11 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                             dims[d].used = false;
                         });
                     }
-                    //对比柱状/面积/条形图,范围面积,瀑布,气泡,力学,散点,漏斗,多层饼图这些指标区域是单选的
+                    //对比柱状/面积/条形图,范围面积,瀑布,气泡,力学,散点,漏斗,多层饼, 矩形树图这些指标区域是单选的
                     if(type === BICst.WIDGET.COMPARE_AXIS || type === BICst.WIDGET.COMPARE_AREA ||
                         type === BICst.WIDGET.COMPARE_BAR || type === BICst.WIDGET.RANGE_AREA || type === BICst.WIDGET.FALL_AXIS||
                         type === BICst.WIDGET.BUBBLE || type === BICst.WIDGET.FORCE_BUBBLE || type === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART ||
-                        type === BICst.WIDGET.SCATTER || type === BICst.WIDGET.MULTI_PIE){
+                        type === BICst.WIDGET.SCATTER || type === BICst.WIDGET.MULTI_PIE || type === BICst.WIDGET.RECT_TREE){
                         var preTar1Select = [], preTar2Select = [], preTar3Select = [];
                         BI.each(preDims, function (dId, dim) {
                             if (dim.used === true) {

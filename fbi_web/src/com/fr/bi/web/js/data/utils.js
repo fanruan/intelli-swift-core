@@ -311,7 +311,7 @@ Data.Utils = {
                         return {
                             "x": x,
                             "y": (BI.isFinite(obj.s.c[id].s[0]) ? obj.s.c[id].s[0] : 0),
-                            "value": value,
+                            "initialX": value,
                             seriesName: seriesName,
                             targetIds: [targetIds[0]]
                         };
@@ -335,7 +335,7 @@ Data.Utils = {
                         return {
                             x: x,
                             y: (BI.isFinite(item.s[idx]) ? item.s[idx] : 0),
-                            value: value,
+                            initialX: value,
                             seriesName: widget.dimensions[targetIds[idx]].name,
                             targetIds: [targetIds[idx]]
                         };
@@ -594,7 +594,7 @@ Data.Utils = {
                     dId = obj.targetIds;
                     clicked = [{
                         dId: obj.dId || dimIds[0],
-                        value: [obj.value || obj.x]
+                        value: [obj.initialX || obj.x]
                     }];
                     if (BI.isNotNull(seriesDid)) {
                         clicked.push({

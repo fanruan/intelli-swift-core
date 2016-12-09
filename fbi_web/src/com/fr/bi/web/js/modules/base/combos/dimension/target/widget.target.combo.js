@@ -381,6 +381,8 @@ BI.TargetCombo = BI.inherit(BI.AbstractDimensionTargetCombo, {
                 break;
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.PIE:
+            case BICst.WIDGET.MULTI_PIE:
+            case BICst.WIDGET.RECT_TREE:
                 BI.removeAt(item[0], this.constants.CHART_TYPE_POSITION);
                 item[this.constants.CordonPos][0] = {
                         text: BI.i18nText("BI-Style_And_NumberLevel"),
