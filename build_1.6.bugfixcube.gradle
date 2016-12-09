@@ -1,7 +1,4 @@
 apply plugin:'java'
-
-//应用jacoco plugin
-apply plugin : 'jacoco'
 tasks.withType(JavaCompile){
 	options.encoding = 'UTF-8'
 }
@@ -57,21 +54,6 @@ def list=[
 sourceSets{
 	main.java.srcDirs=list
 	
-	/*test.java.srcDirs = [
-			"fbi_analysis_etl/test",
-			"fbi_base/test",
-			//err"fbi_cluster/test",
-			"fbi_conf/test",
-			//long"fbi_cube_base/test",
-			"fbi_cube_conf/test",
-			//err"fbi_cube_generate/test",
-			//err"fbi_datasource_api/test",
-			//err"fbi_engine_analyse/test",
-			//err"fbi_engine_base/test",
-			//err"fbi_engine_generate/test",
-			"fbi_web/test",
-			"fbi_web_conf/test",
-	]*/
 	instrumentTest.java.srcDirs=[
 		//"fbi/test",
 		"fbi_base/test",
@@ -94,16 +76,6 @@ sourceSets{
 	]
 
 
-}
-
-test {
-	//这条很重要，设置忽略fail掉的测试用例。否则会导致项目构建失败
-	ignoreFailures = true
-	jacoco {
-		append = false
-		//二进制代码覆盖测试报告文件存放路径
-		destinationFile = file("reports/jacoco/jacoco.exec")
-	}
 }
 
 configurations{
