@@ -3089,6 +3089,10 @@
                 }
             });
 
+            //联动过来的维度的过滤条件
+            BI.each(linkages, function(lTId, link) {
+                filterValues = filterValues.concat(self.getDimensionsFilterByTargetId(lTId));
+            });
 
             //日期类型的过滤条件
             var dimensions = widget.dimensions;
@@ -3262,6 +3266,38 @@
                 tIds.push(self.getTableIDByDimensionID(dId));
             });
             return this.isTableInRelativeTables(tIds, tableId);
+        },
+
+        getDimensionsFilterByTargetId: function(tId) {
+            var self = this;
+            var dimensionIds = this.getAllDimDimensionIDs(this.getWidgetIDByDimensionID(tId));
+            var dFilters = [];
+            BI.each(dimensionIds, function(i, dId) {
+                var dimensionMap = self.getDimensionMapByDimensionID(dId);
+                if (BI.isNotNull(dimensionMap[tId])) {
+                    var dFilterValue = self.getDimensionFilterValueByID(dId);
+                    if (BI.isNotEmptyObject(dFilterValue)) {
+                        parseDimensionFilter4Linkage(dFilterValue, dimensionMap[tId]._src, dId);
+                        dFilters.push(dFilterValue);
+                    }
+                }
+            });
+            return dFilters;
+
+            function parseDimensionFilter4Linkage(dFilter, src, dId) {
+                if (dFilter.filter_type === BICst.FILTER_TYPE.AND ||
+                    dFilter.filter_type === BICst.FILTER_TYPE.OR) {
+                    BI.each(dFilter.filter_value, function(i, fValue) {
+                        parseDimensionFilter4Linkage(fValue, src, dId);
+                    });
+                } else {
+                    if (dFilter.target_id === dId) {
+                        dFilter._src = src;
+                    } else {
+                        dFilter.filter_type = BICst.FILTER_TYPE.EMPTY_CONDITION;
+                    }
+                }
+            }
         }
 
     });

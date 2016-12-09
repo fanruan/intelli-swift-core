@@ -371,7 +371,6 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
             items: ".bi-dimension-region",
             cancel: ".bi-complex-empty-region",
             update: function (event, ui) {
-                var sortedRegion = sortArea.element.sortable("toArray");
                 regionWrapper.sortRegion();
                 self.fireEvent(BI.RegionsManager.EVENT_CHANGE);
             },
