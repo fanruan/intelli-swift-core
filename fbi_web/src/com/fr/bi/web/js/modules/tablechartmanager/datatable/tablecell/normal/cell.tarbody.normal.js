@@ -12,6 +12,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         BI.TargetBodyNormalCell.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var dId = o.dId;
+        var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
         var text = o.text;
         var iconCls = "", color = "";
         var format = styleSettings.format, numLevel = styleSettings.numLevel, num_separators = styleSettings.numSeparators;
@@ -96,7 +97,6 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         var self = this;
         var o = this.options;
         var dId = o.dId, clicked = o.clicked;
-        var valueStyle = BI.Utils.getWSTableValueStyleByID(BI.Utils.getWidgetIDByDimensionID(dId));
         if (BI.isNotNull(dId)) {
             var widgetId = BI.Utils.getWidgetIDByDimensionID(dId);
             var linkage = BI.Utils.getWidgetLinkageByID(widgetId);
