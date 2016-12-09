@@ -9,6 +9,7 @@ import com.fr.bi.stable.operation.sort.comp.IComparator;
  * Created by Young's on 2016/3/3.
  */
 public class NumberDSCSort extends AbstractSort {
+    private static final long serialVersionUID = -3652624067791601680L;
     protected transient IComparator comparator = ComparatorFacotry.getComparator(getSortType());
 
 

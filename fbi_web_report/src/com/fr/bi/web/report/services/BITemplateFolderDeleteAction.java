@@ -56,14 +56,14 @@ public class BITemplateFolderDeleteAction extends ActionNoSessionCMD {
     private String removeReportById(long userId, long reportId) throws Exception {
         String userName = BISessionUtils.getCurrentEditingUserByReport(reportId, userId);
         if(userName == null) {
-            BIDAOUtils.deleteBIReportById(userId, reportId);
+            BIDAOUtils.getBIDAOManager().deleteBIReportById(userId, reportId);
             UserControl.getInstance().getOpenDAO(BISharedReportDAO.class).removeSharedByReport(reportId, userId);
         }
         return userName;
     }
 
     private List<String> removeFolderById(long userId, String folderId) throws Exception {
-        List<BIReportNode> reports = BIDAOUtils.findByParentID(userId, folderId);
+        List<BIReportNode> reports = BIDAOUtils.getBIDAOManager().findByParentID(userId, folderId);
         List<BITemplateFolderNode> folders = HSQLBITemplateFolderDAO.getInstance().findTemplateFolderByParentId(folderId);
         List<String> lockedList = new ArrayList<String>();
         if(reports != null) {

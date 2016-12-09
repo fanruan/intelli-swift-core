@@ -18,6 +18,7 @@ import java.util.List;
  * @author Connery
  */
 public class PersistentTable implements  IPersistentTable {
+    private static final long serialVersionUID = 5516973769561307468L;
     private List<PersistentField> fieldList = new ArrayList<PersistentField>();
     private String remark;
     private String schema;

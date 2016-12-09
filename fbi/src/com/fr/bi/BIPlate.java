@@ -101,7 +101,7 @@ public class BIPlate extends AbstractFSPlate {
         try {
             loadResources();
             BICubeConfigureCenter.getAliasManager().getTransManager(UserControl.getInstance().getSuperManagerID());
-            BIConnectionManager.getInstance();
+            BIConnectionManager.getBIConnectionManager();
             BICubeConfigureCenter.getTableRelationManager().getAllTablePath(UserControl.getInstance().getSuperManagerID());
             BICubeConfigureCenter.getDataSourceManager().getAllBusinessTable();
             BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSettings(UserControl.getInstance().getSuperManagerID());
@@ -382,6 +382,7 @@ public class BIPlate extends AbstractFSPlate {
                 BITableMapper.BI_SHARED_REPORT_NODE.TABLE_MAPPER,
                 BITableMapper.BI_CREATED_TEMPLATE_FOLDER.TABLE_MAPPER,
                 BITableMapper.BI_REPORT_NODE_LOCK.TABLE_MAPPER,
+                BITableMapper.BI_BUSINESS_PACK_CONFIG_LOCK.TABLE_MAPPER,
                 BIReportEntry.TABLE_MAPPER
         };
     }

@@ -33,71 +33,9 @@ public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
         String newId = WebUtils.getHTTPRequestParameter(req, "new_id");
         String tableName = WebUtils.getHTTPRequestParameter(req, "name");
         String describe = WebUtils.getHTTPRequestParameter(req, "describe");
-        AnalysisBusiTable table = null;
-        CubeTableSource source = null;
-        if (StringUtils.isEmpty(newId)) {
-            table = new AnalysisBusiTable(tableId, userId);
-            table.setDescribe(describe);
-            String tableJSON = WebUtils.getHTTPRequestParameter(req, "table");
-            JSONObject jo = new JSONObject(tableJSON);
-            JSONArray items = jo.getJSONArray(Constants.ITEMS);
-            BIAnalysisETLManagerCenter.getAliasManagerProvider().setAliasName(tableId, tableName, userId);
-            source = AnalysisETLSourceFactory.createTableSource(items, userId);
-            table.setSource(source);
-        } else {
-            table = new AnalysisBusiTable(newId, userId);
-            BIAnalysisETLManagerCenter.getAliasManagerProvider().setAliasName(newId, tableName, userId);
-            AnalysisBusiTable oldTable = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
-            source = oldTable.getSource();
-            table.setSource(source);
-            table.setDescribe(oldTable.getDescribe());
-        }
-        BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("*********Add AnalysisETL table*******");
-        BIAnalysisETLManagerCenter.getBusiPackManager().addTable(table);
-        BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("The added table is: " + logTable(table));
-        BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("*********Add AnalysisETL table*******");
-        BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, source);
-        Set<BusinessTable> businessTables = BIAnalysisETLManagerCenter.getBusiPackManager().getAllTables(userId);
-        if (businessTables != null) {
-            for (BusinessTable t : businessTables) {
-                AnalysisCubeTableSource s = (AnalysisCubeTableSource) BIAnalysisETLManagerCenter.getDataSourceManager().getTableSource(t);
-                try {
-                    s.refreshWidget();
-                    t.setSource(s);
-                } catch (Exception e) {
-                    BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).error("Refresh AnalysisETLTableSource Widget failed" + "\n" + "The Failed table is: " + logTable(table));
-                }
-
-            }
-        }
-        BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().refresh();
-        try {
-            BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().checkTableIndex((AnalysisCubeTableSource) source, new BIUser(userId));
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().error("etl update failed");
-        }
-        BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
-        JSONObject result = new JSONObject();
-        JSONObject packages = BIAnalysisETLManagerCenter.getBusiPackManager().createPackageJSON(userId);
-        JSONObject translations = new JSONObject();
-        translations.put(table.getID().getIdentity(), tableName);
-        JSONObject tableJSONWithFieldsInfo = table.createJSONWithFieldsInfo(userId);
-        JSONObject tableFields = tableJSONWithFieldsInfo.getJSONObject("tableFields");
-        JSONObject tables = new JSONObject();
-        tables.put(table.getID().getIdentity(), tableFields);
-        JSONObject fields = tableJSONWithFieldsInfo.getJSONObject("fieldsInfo");
-        result.put("packages", packages);
-        result.put("translations", translations);
-        result.put("tables", tables);
-        result.put("fields", fields);
+        String tableJSON = WebUtils.getHTTPRequestParameter(req, "table");
+        JSONObject result = BIAnalysisETLManagerCenter.getBusiPackManager().saveAnalysisETLTable(userId,tableId,newId,tableName,describe,tableJSON);
         WebUtils.printAsJSON(res, result);
-        new Thread() {
-            public void run() {
-                BIAnalysisETLManagerCenter.getAliasManagerProvider().persistData(userId);
-                BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userId);
-                BIAnalysisETLManagerCenter.getDataSourceManager().persistData(userId);
-            }
-        }.start();
     }
 
     @Override

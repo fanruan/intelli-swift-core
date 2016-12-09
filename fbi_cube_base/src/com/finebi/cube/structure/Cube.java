@@ -9,6 +9,8 @@ import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.CubeColumnReaderService;
 
+import java.io.Serializable;
+
 /**
  * Cube基础数据部分主接口。
  * CUBE整体包括对外提供的服务的内部抽象结构，数据位置检索，数据存储，三个部分。
@@ -33,11 +35,11 @@ import com.finebi.cube.structure.column.CubeColumnReaderService;
  * @see ICubeResourceRetrievalService 数据位置检索
  * @since 4.0
  */
-public interface Cube extends ICubeVersion {
+public interface Cube extends ICubeVersion,Serializable {
     /**
      * 获得表的操作接口
      *
-     * @param tableSource 数据源
+     * @param tableKey 数据源
      * @return 表的操作对象
      */
     CubeTableEntityGetterService getCubeTable(ITableKey tableKey);

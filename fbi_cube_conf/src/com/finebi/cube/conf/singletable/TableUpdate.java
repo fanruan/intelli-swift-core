@@ -18,6 +18,7 @@ import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLReadable;
 import com.fr.stable.xml.XMLableReader;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -26,13 +27,13 @@ import java.util.*;
  * @author Connery
  * @since 4.0
  */
-public class TableUpdate implements JSONTransform {
+public class TableUpdate implements JSONTransform,Serializable {
 
     public static final String XML_TAG = "single_table_update_action";
+    private static final long serialVersionUID = 3888325590714796861L;
     /**
      *
      */
-    private static final long serialVersionUID = 4567464822949359389L;
     private int update_type = DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL;
     private int update_schedule = DBConstant.SINGLE_TABLE_UPDATE.TOGETHER;
     private BusinessTable tableKey;

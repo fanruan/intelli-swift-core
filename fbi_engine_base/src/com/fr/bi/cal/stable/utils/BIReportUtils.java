@@ -37,7 +37,7 @@ public class BIReportUtils {
     }
 
     public static Set<BusinessField> getUsedFieldByReportNode(BIReportNode node, long userId) throws Exception {
-        JSONObject reportSetting = BIReadReportUtils.getBIReportNodeJSON(node);
+        JSONObject reportSetting = BIReadReportUtils.getBIReadReportManager().getBIReportNodeJSON(node);
         JSONObject widgets = reportSetting.getJSONObject("widgets");
         Set<BusinessField> fields = new HashSet<BusinessField>();
         Iterator it = widgets.keys();

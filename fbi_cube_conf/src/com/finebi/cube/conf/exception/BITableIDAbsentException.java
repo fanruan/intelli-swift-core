@@ -7,6 +7,8 @@ package com.finebi.cube.conf.exception;
  * @since 4.0
  */
 public class BITableIDAbsentException extends Exception {
+    private static final long serialVersionUID = -634339157421511108L;
+
     public BITableIDAbsentException() {
     }
 

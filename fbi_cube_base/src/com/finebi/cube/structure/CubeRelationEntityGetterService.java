@@ -2,13 +2,15 @@ package com.finebi.cube.structure;
 
 import com.finebi.cube.exception.BIResourceInvalidException;
 
+import java.io.Serializable;
+
 /**
  * This class created on 2016/3/2.
  *
  * @author Connery
  * @since 4.0
  */
-public interface CubeRelationEntityGetterService extends ICubeIndexDataGetterService ,ICubeVersion{
+public interface CubeRelationEntityGetterService extends ICubeIndexDataGetterService ,ICubeVersion,Serializable{
     /**
      * 获取反向的关联
       * @param row 子表行号

@@ -36,6 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Daniel-pc
  */
 public class TableWidget extends BISummaryWidget {
+    private static final long serialVersionUID = -4736577206434772688L;
     /**
      * 保存列字段等内容
      */

@@ -1,15 +1,22 @@
 package com.fr.bi.cal;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
+import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.base.provider.AllUserTravel;
+import com.fr.bi.cal.generate.CubeBuildManager;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.Status;
+import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.utils.BIUserUtils;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
 import com.fr.general.GeneralContext;
 import com.fr.stable.EnvChangedListener;
+import com.fr.stable.StringUtils;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -188,4 +195,25 @@ public class BICubeManager implements BICubeManagerProvider {
     public boolean isReplacing(long userId) {
         return getCubeManager(userId).isReplacing();
     }
+    @Override
+    public boolean cubeTaskBuild(long userId, String baseTableSourceId, int updateType) {
+        try {
+            if (StringUtils.isEmpty(baseTableSourceId)) {
+                new CubeBuildManager().CubeBuildStaff(userId);
+            } else {
+                new CubeBuildManager().CubeBuildSingleTable(userId, baseTableSourceId, updateType);
+            }
+            BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
+            BIConfigureManagerCenter.getCubeConfManager().updateMultiPathLastCubeStatus(BIReportConstant.MULTI_PATH_STATUS.NOT_NEED_GENERATE_CUBE);
+            BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
+        } catch (Exception e) {
+            CubeGenerationManager.getCubeManager().setStatus(userId, Status.WRONG);
+            BILoggerFactory.getLogger(this.getClass()).error("cube task build failed" + "\n");
+            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+            CubeGenerationManager.getCubeManager().setStatus(userId, Status.END);
+            return false;
+        }
+        return true;
+    }
+
 }

@@ -74,7 +74,7 @@ public class BIChartSettingAction extends AbstractBIDeziAction {
         try {
             BIChartSettingFactory.parseChartSetting((MultiChartWidget)widget, configs.getJSONArray("data"), configs.optJSONObject("options"), configs.getJSONArray("types"));
         }catch (Exception e){
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
 
 

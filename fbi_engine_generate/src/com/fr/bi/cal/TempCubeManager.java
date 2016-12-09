@@ -134,7 +134,7 @@ public class TempCubeManager implements Release {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
-                        BILoggerFactory.getLogger().error(e.getMessage());
+                        BILoggerFactory.getLogger().error(e.getMessage(),e);
                     }
                 }
                 if (release != null) {

@@ -28,10 +28,11 @@ import java.util.Map;
 
 
 public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BIDetailTarget {
+    private static final long serialVersionUID = -8312854279862416396L;
     @BICoreField
     protected TargetFilter filter;
     @BIIgnoreField
-    protected ICubeColumnDetailGetter columnDetailGetter;
+    protected transient ICubeColumnDetailGetter columnDetailGetter;
     protected ISort sort = new NoSort();
     @BICoreField
     protected IGroup group = new NoGroup();

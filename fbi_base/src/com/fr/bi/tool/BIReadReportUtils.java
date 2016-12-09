@@ -7,14 +7,31 @@ import com.fr.bi.fs.BIFileRepository;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.json.JSONObject;
 import com.fr.stable.CodeUtils;
+import com.fr.stable.bridge.StableFactory;
 
 import java.io.File;
 
 /**
  * Created by Young's on 2016/9/23.
  */
-public class BIReadReportUtils {
-    public static JSONObject getBIReportNodeJSON(BIReportNode node) throws Exception {
+public class BIReadReportUtils implements BIReadReportProvider{
+    public static final String XML_TAG = "BIReadReportUtils";
+    private static BIReadReportUtils manager;
+
+    public static BIReadReportProvider getBIReadReportManager(){
+        return StableFactory.getMarkedObject(BIReadReportProvider.XML_TAG,BIReadReportProvider.class);
+    }
+
+    public static BIReadReportUtils getInstance() {
+        synchronized (BIReadReportUtils.class) {
+            if (manager == null) {
+                manager = new BIReadReportUtils();
+            }
+            return manager;
+        }
+    }
+    @Override
+    public JSONObject getBIReportNodeJSON(BIReportNode node) throws Exception {
         String nodePath = CodeUtils.decodeText(node.getPath());
         /**
          * 兼容以前的绝对路径

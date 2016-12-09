@@ -258,7 +258,7 @@ public class BIUserTableRelationManager implements Release {
                     try {
                         oldAnalyserHandler.addRelation(relation);
                     } catch (BIRelationDuplicateException e) {
-                        BILoggerFactory.getLogger().error(e.getMessage());
+                        BILoggerFactory.getLogger().error(e.getMessage(),e);
                     }
                 }
             }

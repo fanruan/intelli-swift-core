@@ -16,6 +16,7 @@ import java.util.Map;
  * Created by 小灰灰 on 2015/9/24.
  */
 public abstract class AbstractFormularDetailTarget extends BIAbstractDetailTarget {
+    private static final long serialVersionUID = 6845292721989686697L;
     protected String expression = StringUtils.EMPTY;
 
     /**

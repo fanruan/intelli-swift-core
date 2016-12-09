@@ -74,4 +74,6 @@ public interface BICubeManagerProvider {
 
     boolean isReplacing(long userId);
 
+    boolean cubeTaskBuild(long userId, String baseTableSourceId, int updateType);
+
 }

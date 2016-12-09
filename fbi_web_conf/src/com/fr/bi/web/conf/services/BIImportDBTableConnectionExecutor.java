@@ -39,7 +39,7 @@ public class BIImportDBTableConnectionExecutor {
             if (!(tool.putConnection(connectionName, connMap))) {
                 continue;
             }
-            Map<String, Set<BIDBTableField>> currentTableRelationMap = tool.getAllRelationOfConnection(connMap.get(connectionName), BIConnectionManager.getInstance().getSchema(currentTable.getDbName()), currentTable.getTableName());
+            Map<String, Set<BIDBTableField>> currentTableRelationMap = tool.getAllRelationOfConnection(connMap.get(connectionName), BIConnectionManager.getBIConnectionManager().getSchema(currentTable.getDbName()), currentTable.getTableName());
             Iterator<Map.Entry<String, Set<BIDBTableField>>> rIt = currentTableRelationMap.entrySet().iterator();
             while (rIt.hasNext()) {
                 Map.Entry<String, Set<BIDBTableField>> currentTableRelation = rIt.next();

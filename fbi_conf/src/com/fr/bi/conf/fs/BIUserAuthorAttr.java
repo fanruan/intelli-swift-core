@@ -144,7 +144,7 @@ public class BIUserAuthorAttr implements XMLable {
                             }
                         }
                     } catch (JSONException e) {
-                        FRContext.getLogger().error(e.getMessage());
+                        FRContext.getLogger().error(e.getMessage(),e);
                     }
                 }
             }

@@ -12,6 +12,8 @@ import java.util.List;
 
 public class BIDateDimension extends BIAbstractDimension {
 
+    private static final long serialVersionUID = 45713218397075589L;
+
     /**
      * 转化string
      *

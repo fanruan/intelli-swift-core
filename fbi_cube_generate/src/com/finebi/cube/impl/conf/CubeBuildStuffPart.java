@@ -46,7 +46,7 @@ public class CubeBuildStuffPart extends AbstractCubeBuildStuff implements CubeBu
             setRelationPath();
             calculateRelationDepends();
         } catch (BITableAbsentException e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
     }
 
@@ -116,7 +116,7 @@ public class CubeBuildStuffPart extends AbstractCubeBuildStuff implements CubeBu
                 BIFileUtils.copyFolder(new File(advancedConf.getRootURI().getPath()), new File(tempConf.getRootURI().getPath()));
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
         return true;
     }

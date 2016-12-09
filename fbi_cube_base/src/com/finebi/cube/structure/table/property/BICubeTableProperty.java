@@ -501,7 +501,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
             }
             removedList.add(removedListReader.getSpecificValue(i));
         } catch (BIResourceInvalidException e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
         return removedList;
     }

@@ -9,6 +9,7 @@ import com.fr.general.ComparatorUtils;
  */
 public class IndexKey implements BIKey {
 
+    private static final long serialVersionUID = -915805431898194913L;
     private String index;
 
     public IndexKey(String index) {

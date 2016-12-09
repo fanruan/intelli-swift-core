@@ -44,7 +44,7 @@ public abstract class AbstractSession extends SessionIDInfor implements ReportSe
         try {
             this.parameterMap4Execute.put(Constants.P.PRIVILEGE_USERNAME, UserControl.getInstance().getUser(userId).getUsername());
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
         updateTime();
     }

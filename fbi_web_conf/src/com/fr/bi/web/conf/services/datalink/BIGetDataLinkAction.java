@@ -19,7 +19,7 @@ public class BIGetDataLinkAction extends AbstractBIConfigureAction {
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
         JSONObject jo = new JSONObject();
-        WebUtils.printAsJSON(res, jo.put("links", BIConnectionManager.getInstance().createJSON()));
+        WebUtils.printAsJSON(res, jo.put("links", BIConnectionManager.getBIConnectionManager().createJSON()));
     }
 
 }

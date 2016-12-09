@@ -7,6 +7,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
+import java.io.Serializable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -16,7 +17,8 @@ import java.util.concurrent.TimeUnit;
  * @author Connery
  * @since 4.0
  */
-public class CubeTableCache {
+public class CubeTableCache implements Serializable{
+    private static final long serialVersionUID = 6212177397218229617L;
     private LoadingCache<CubeTableSource, ICubeTableService> cache;
     private BIUserCubeManager userCubeManager;
 

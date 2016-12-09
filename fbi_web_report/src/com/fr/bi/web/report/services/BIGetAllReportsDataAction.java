@@ -62,7 +62,7 @@ public class BIGetAllReportsDataAction extends ActionNoSessionCMD {
             for (int i = 0; i < userList.size(); i++) {
                 User u = userList.get(i);
                 users.put(u.createEditInfoJSONConfig());
-                List<BIReportNode> singleUserReports = BIDAOUtils.findByUserID(u.getId());
+                List<BIReportNode> singleUserReports = BIDAOUtils.getBIDAOManager().findByUserID(u.getId());
                 for (int j = 0; j < singleUserReports.size(); j++) {
                     BIReportNode node = singleUserReports.get(j);
                     //TODO 在这里去check status不合适，然而在模板管理的地方删除模板也不好处理bi模板的状态问题

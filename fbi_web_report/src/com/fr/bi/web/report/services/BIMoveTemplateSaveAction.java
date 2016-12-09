@@ -31,9 +31,9 @@ public class BIMoveTemplateSaveAction extends ActionNoSessionCMD {
                 node.setParentId(toFolder);
                 HSQLBITemplateFolderDAO.getInstance().saveOrUpdate(node);
             } else {
-                BIReportNode reportNode = BIDAOUtils.findByID( Long.parseLong(id), userId);
+                BIReportNode reportNode = BIDAOUtils.getBIDAOManager().findByID( Long.parseLong(id), userId);
                 reportNode.setParentid(toFolder);
-                BIDAOUtils.saveOrUpDate(reportNode, userId);
+                BIDAOUtils.getBIDAOManager().saveOrUpDate(reportNode, userId);
             }
         }
     }

@@ -28,6 +28,7 @@ import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.stable.utils.SQLRegUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
+import com.fr.data.core.db.dialect.SybaseDialect;
 import com.fr.data.core.db.dml.Table;
 import com.fr.data.impl.Connection;
 import com.fr.data.impl.DBTableData;
@@ -238,11 +239,11 @@ public class DBTableSource extends AbstractTableSource {
     }
 
     protected TableData createPreviewTableData() throws Exception {
-        Connection connection = BIConnectionManager.getInstance().getConnection(dbName);
+        Connection connection = BIConnectionManager.getBIConnectionManager().getConnection(dbName);
         java.sql.Connection conn = connection.createConnection();
         Dialect dialect = DialectFactory.generateDialect(conn);
-        Table table = new Table(BIConnectionManager.getInstance().getSchema(dbName), tableName);
-        String query = "SELECT *  FROM " + dialect.table2SQL(table);
+        Table table = new Table(BIConnectionManager.getBIConnectionManager().getSchema(dbName), tableName);
+        String query = dialect instanceof SybaseDialect ? "SELECT *  FROM " + dialect.table2SQL(table) : dialect.getTopNRowSql(BIBaseConstant.PREVIEW_COUNT, table);
         return new DBTableData(connection, query);
     }
 
@@ -295,10 +296,10 @@ public class DBTableSource extends AbstractTableSource {
 
     @Override
     public TableData createTableData(List<String> fields, ICubeDataLoader loader, long userId) throws Exception {
-        Connection connection = BIConnectionManager.getInstance().getConnection(dbName);
+        Connection connection = BIConnectionManager.getBIConnectionManager().getConnection(dbName);
         java.sql.Connection conn = connection.createConnection();
         Dialect dialect = DialectFactory.generateDialect(conn);
-        Table table = new Table(BIConnectionManager.getInstance().getSchema(dbName), tableName);
+        Table table = new Table(BIConnectionManager.getBIConnectionManager().getSchema(dbName), tableName);
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < fields.size(); i++) {
             if (i != 0) {
@@ -380,10 +381,10 @@ public class DBTableSource extends AbstractTableSource {
     }
 
     protected String getSqlString(List<ICubeFieldSource> fields) throws Exception {
-        Connection connection = BIConnectionManager.getInstance().getConnection(dbName);
+        Connection connection = BIConnectionManager.getBIConnectionManager().getConnection(dbName);
         java.sql.Connection conn = connection.createConnection();
         Dialect dialect = DialectFactory.generateDialect(conn);
-        Table table = new Table(BIConnectionManager.getInstance().getSchema(dbName), tableName);
+        Table table = new Table(BIConnectionManager.getBIConnectionManager().getSchema(dbName), tableName);
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < fields.size(); i++) {
             if (i != 0) {

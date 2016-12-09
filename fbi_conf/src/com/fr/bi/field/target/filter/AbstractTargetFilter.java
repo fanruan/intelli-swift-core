@@ -9,6 +9,8 @@ import com.fr.json.JSONObject;
  * Created by 小灰灰 on 2016/1/8.
  */
 public abstract class AbstractTargetFilter implements TargetFilter{
+    private static final long serialVersionUID = -1013629229133312951L;
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();

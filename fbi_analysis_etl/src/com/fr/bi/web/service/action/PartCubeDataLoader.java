@@ -29,6 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class PartCubeDataLoader implements ICubeDataLoader {
     private static final String EXCEPTION = "ONLY PARAMETER TYPE ITableSource SUPPORT HERE";
+    private static final long serialVersionUID = 3782372087226629098L;
 
     private long userId;
 

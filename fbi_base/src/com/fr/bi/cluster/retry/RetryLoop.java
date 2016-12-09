@@ -81,6 +81,7 @@ public class RetryLoop {
 
     public void reset() {
         retryCount = 0;
+        isDone = false;
         startTime = System.currentTimeMillis();
     }
 
@@ -94,6 +95,9 @@ public class RetryLoop {
         boolean throwException = false;
         if (exception instanceof KeeperException.ConnectionLossException) {
 //            wrapper.getZookeeperHandler().reconnect();
+        }
+        if (exception instanceof KeeperException.NodeExistsException || exception instanceof IllegalArgumentException) {
+            throw exception;
         }
         if (retryPolicy.allowRetry(retryCount++, System.currentTimeMillis() - startTime, sleeper)) {
             throwException = false;

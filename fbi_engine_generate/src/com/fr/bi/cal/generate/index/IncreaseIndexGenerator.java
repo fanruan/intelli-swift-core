@@ -11,6 +11,8 @@ import com.fr.bi.stable.data.source.CubeTableSource;
  * Created by 小灰灰 on 2015/10/15.
  */
 public class IncreaseIndexGenerator extends IndexGenerator {
+    private static final long serialVersionUID = 1698139566789702950L;
+
     public IncreaseIndexGenerator(CubeTableSource source, long userId, int version) {
         super(source, userId, version);
     }

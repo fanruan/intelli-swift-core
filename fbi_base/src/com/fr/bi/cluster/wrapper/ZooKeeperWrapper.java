@@ -1,5 +1,6 @@
 package com.fr.bi.cluster.wrapper;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cluster.retry.RetryLoop;
 import com.fr.bi.cluster.retry.RetryPolicy;
 import org.apache.zookeeper.CreateMode;
@@ -45,13 +46,13 @@ public class ZooKeeperWrapper {
     }
 
     public String create(final String path, final byte[] content, final List<ACL> acl, final CreateMode mode) throws Exception {
-        RetryLoop.retry(new Callable<String>() {
+
+        return RetryLoop.retry(new Callable<String>() {
             @Override
             public String call() throws Exception {
                 return zookeeperHandler.getZooKeeper().create(path, content, acl, mode);
             }
         }, this);
-        return null;
     }
 
     public void delete(final String path, final int version) throws Exception {
@@ -65,73 +66,83 @@ public class ZooKeeperWrapper {
     }
 
     public List<String> getChildren(final String path, final Boolean isWatcher) throws Exception {
-        RetryLoop.retry(new Callable<List<String>>() {
+
+        return RetryLoop.retry(new Callable<List<String>>() {
             @Override
             public List<String> call() throws Exception {
                 return zookeeperHandler.getZooKeeper().getChildren(path, isWatcher);
             }
         }, this);
-        return null;
+    }
+
+    public List<String> getChildren(final String path, final Watcher watcher) throws Exception {
+
+        return RetryLoop.retry(new Callable<List<String>>() {
+            @Override
+            public List<String> call() throws Exception {
+                return zookeeperHandler.getZooKeeper().getChildren(path, watcher);
+            }
+        }, this);
     }
 
     public Stat exists(final String path, final Boolean isWatcher) throws Exception {
-        RetryLoop.retry(new Callable<Stat>() {
+
+        return RetryLoop.retry(new Callable<Stat>() {
             @Override
             public Stat call() throws Exception {
                 return zookeeperHandler.getZooKeeper().exists(path, isWatcher);
             }
         }, this);
-        return null;
     }
 
     public Stat exists(final String path, final Watcher watcher) throws Exception {
-        RetryLoop.retry(new Callable<Stat>() {
+
+        return RetryLoop.retry(new Callable<Stat>() {
             @Override
             public Stat call() throws Exception {
                 return zookeeperHandler.getZooKeeper().exists(path, watcher);
             }
         }, this);
-        return null;
     }
 
     public Stat setData(final String path, final byte data[], final int version) throws Exception {
-        RetryLoop.retry(new Callable<Stat>() {
+
+        return RetryLoop.retry(new Callable<Stat>() {
             @Override
             public Stat call() throws Exception {
                 return zookeeperHandler.getZooKeeper().setData(path, data, version);
             }
         }, this);
-        return null;
     }
 
     public byte[] getData(final String path, final boolean watch, final Stat stat) throws Exception {
-        RetryLoop.retry(new Callable<byte[]>() {
+
+        return RetryLoop.retry(new Callable<byte[]>() {
             @Override
             public byte[] call() throws Exception {
                 return zookeeperHandler.getZooKeeper().getData(path, watch, stat);
             }
         }, this);
-        return new byte[0];
     }
 
     public byte[] getData(final String path, final Watcher watcher, final Stat stat) throws Exception {
-        RetryLoop.retry(new Callable<byte[]>() {
+
+        return RetryLoop.retry(new Callable<byte[]>() {
             @Override
             public byte[] call() throws Exception {
                 return zookeeperHandler.getZooKeeper().getData(path, watcher, stat);
             }
         }, this);
-        return new byte[0];
     }
 
     public Long getSessionId() throws Exception {
-        RetryLoop.retry(new Callable<Long>() {
+
+        return RetryLoop.retry(new Callable<Long>() {
             @Override
             public Long call() throws Exception {
                 return zookeeperHandler.getZooKeeper().getSessionId();
             }
         }, this);
-        return (long) 0;
     }
 
 }

@@ -21,6 +21,7 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.EnvChangedListener;
 import com.fr.stable.StringUtils;
+import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
@@ -32,8 +33,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by 小灰灰 on 2016/3/18.
  */
-public class BIConnectionManager extends XMLFileManager {
-    private static final String XML_TAG = "BIConnectionManager";
+public class BIConnectionManager extends XMLFileManager implements BIConnectionProvider{
+    public static final String XML_TAG = "BIConnectionManager";
     private Map<String, BIConnection> connMap = new ConcurrentHashMap<String, BIConnection>();
     private Map<String, JDBCDatabaseConnection> availableConnection = new HashMap<String, JDBCDatabaseConnection>();
     private static BIConnectionManager manager;
@@ -42,6 +43,7 @@ public class BIConnectionManager extends XMLFileManager {
 
     }
 
+    @Override
     public void updateAvailableConnection() {
         availableConnection.clear();
         DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
@@ -55,6 +57,10 @@ public class BIConnectionManager extends XMLFileManager {
         }
     }
 
+    public static BIConnectionProvider getBIConnectionManager(){
+        return StableFactory.getMarkedObject(BIConnectionProvider.XML_TAG,BIConnectionProvider.class);
+    }
+
     public static BIConnectionManager getInstance() {
         synchronized (BIConnectionManager.class) {
             if (manager == null) {
@@ -66,6 +72,7 @@ public class BIConnectionManager extends XMLFileManager {
         }
     }
 
+    @Override
     public String getSchema(String name) {
         if (connMap.containsKey(name)) {
             return connMap.get(name).getSchema();
@@ -80,6 +87,7 @@ public class BIConnectionManager extends XMLFileManager {
         return null;
     }
 
+    @Override
     public Connection getConnection(String name) {
         return DatasourceManager.getInstance().getConnection(name);
     }
@@ -88,11 +96,12 @@ public class BIConnectionManager extends XMLFileManager {
         GeneralContext.addEnvChangedListener(new EnvChangedListener() {
             @Override
             public void envChanged() {
-                BIConnectionManager.getInstance().envChanged();
+                BIConnectionManager.getBIConnectionManager().envChanged();
             }
         });
     }
 
+    @Override
     public void envChanged() {
         readXMLFile();
     }
@@ -126,6 +135,7 @@ public class BIConnectionManager extends XMLFileManager {
         writer.end();
     }
 
+    @Override
     public void updateConnection(String linkData, String oldName) throws Exception {
         JSONObject linkDataJo = new JSONObject(linkData);
         String newName = linkDataJo.optString("name");
@@ -151,6 +161,7 @@ public class BIConnectionManager extends XMLFileManager {
         }
     }
 
+    @Override
     public void removeConnection(String name) {
         if (StringUtils.isEmpty(name)) {
             return;
@@ -213,6 +224,7 @@ public class BIConnectionManager extends XMLFileManager {
 //        return jsonObject;
 //    }
 
+    @Override
     public JSONObject createJSON() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         DatasourceManagerProvider datasourceManager = DatasourceManager.getInstance();
@@ -242,11 +254,13 @@ public class BIConnectionManager extends XMLFileManager {
         return jsonObject;
     }
 
-    private boolean isMicrosoftAccessDatabase(JDBCDatabaseConnection c) {
+    @Override
+    public boolean isMicrosoftAccessDatabase(JDBCDatabaseConnection c) {
         return "sun.jdbc.odbc.JdbcOdbcDriver".equals(c.getDriver()) && c.getURL().indexOf("Microsoft Access Driver") > 0;
     }
 
-    private boolean needSchema(Connection c) {
+    @Override
+    public boolean needSchema(Connection c) {
         java.sql.Connection conn = null;
         if (testConnection(c)) {
             try {

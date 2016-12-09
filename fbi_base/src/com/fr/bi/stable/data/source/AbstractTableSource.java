@@ -335,7 +335,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
         try {
             return super.clone();
         } catch (CloneNotSupportedException e) {
-            BILoggerFactory.getLogger().info(e.getMessage());
+            BILoggerFactory.getLogger().info(e.getMessage(),e);
         }
         return null;
     }

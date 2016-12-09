@@ -15,6 +15,7 @@ import com.fr.stable.xml.XMLableReader;
 @BIMandatedObject(factory = IFactoryService.CONF_XML)
 public class BIUser implements XMLable, Cloneable {
 
+    private static final long serialVersionUID = 6224757609479019110L;
     public static BIUser DEFALUT = new BIUser(-0l);
     protected BINumberIdentity userId;
 
@@ -33,9 +34,9 @@ public class BIUser implements XMLable, Cloneable {
         this.userId = generateID(userId);
     }
 
-    public void setUserId(BINumberIdentity userId) {
-        this.userId = userId;
-    }
+//    public void setUserId(BINumberIdentity userId) {
+//        this.userId = userId;
+//    }
 
     private BINumberIdentity generateID(long userId) {
         return new BINumberIdentity(userId);

@@ -57,7 +57,7 @@ public class BIMapInfoManager {
             editFileNames(innerMapPath, "map", "map", "MAP_", 0, true);
             editFileNames(customMapPath, "image", "image", "MAP_", 0, false);
         } catch (JSONException e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
     }
 

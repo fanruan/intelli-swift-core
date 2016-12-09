@@ -20,6 +20,7 @@ import com.fr.report.poly.TemplateBlock;
  */
 public class ChartWidget extends BISummaryWidget {
 
+    private static final long serialVersionUID = 3490619480480483810L;
     private BIChartSetting data;
 
     public ChartWidget(BIChartSetting data) {

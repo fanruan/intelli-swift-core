@@ -8,6 +8,8 @@ package com.finebi.cube.exception;
  */
 public class BITopicAbsentException extends Exception {
 
+    private static final long serialVersionUID = -7399488885360252069L;
+
     public BITopicAbsentException() {
     }
 

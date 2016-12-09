@@ -16,6 +16,7 @@ import com.fr.stable.xml.XMLableReader;
 import java.util.Arrays;
 
 public abstract class GeneralFilter extends AbstractTargetFilter {
+    private static final long serialVersionUID = 8545483866694515142L;
     private static String XML_TAG = "GeneralFilter";
     @BICoreField
     protected TargetFilter[] childs;

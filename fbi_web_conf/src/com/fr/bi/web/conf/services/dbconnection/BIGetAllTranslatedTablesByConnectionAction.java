@@ -63,7 +63,7 @@ public class BIGetAllTranslatedTablesByConnectionAction extends
             com.fr.data.impl.Connection dbc = DatasourceManager.getInstance().getConnection(connectionName);
             TableProcedure[] tps = new TableProcedure[0];
             TableProcedure[] views = new TableProcedure[0];
-            String schemaName = BIConnectionManager.getInstance().getSchema(connectionName);
+            String schemaName = BIConnectionManager.getBIConnectionManager().getSchema(connectionName);
             try {
                 if (schemaName != null) {
                     jo.put("schema", schemaName);
@@ -80,7 +80,7 @@ public class BIGetAllTranslatedTablesByConnectionAction extends
                 }
             } catch (Exception e) {
                 jo.put("error", e.getMessage());
-                BILoggerFactory.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().error(e.getMessage(),e);
             }
 
             TableProcedure[] result = ArrayUtils.addAll(tps, views);

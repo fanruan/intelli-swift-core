@@ -3,13 +3,15 @@ package com.finebi.cube.relation;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 
+import java.io.Serializable;
+
 /**
  * This class created on 2016/3/9.
  *
  * @author Connery
  * @since 4.0
  */
-public abstract class BIBasicRelation<T, F> {
+public abstract class BIBasicRelation<T, F> implements Serializable{
     public static final String XML_TAG = "BIBasicRelation";
     private static final long serialVersionUID = -1939057877078469485L;
     protected F primaryField;

@@ -4,9 +4,11 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
+import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.conf.pack.data.*;
 import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.conf.trans.UserAliasManager;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.BIBusinessPackagePersistThread;
 import com.fr.bi.base.BIBusinessPackagePersistThreadHolder;
@@ -68,7 +70,7 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
             BICubeConfigureCenter.getDataSourceManager().persistData(userId);
             BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
     }
 
@@ -101,7 +103,9 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
         BIBusinessPackage pack = (BIBusinessPackage) EditPackageConfiguration(packageName, groupName, packageId, userId);
         Set<BusinessTable> oldTables = new HashSet<BusinessTable>();
         oldTables.addAll(pack.getBusinessTables());
-        pack.parseJSON(createTablesJsonObject(tableIdsJO, usedFieldsJO, tableDataJO));
+        BISystemPackageConfigurationProvider packageConfigProvider = BICubeConfigureCenter.getPackageManager();
+        packageConfigProvider.parseSinglePackageJSON(userId,pack.getID(),tableIdsJO, usedFieldsJO, tableDataJO);
+        pack = (BIBusinessPackage) packageConfigProvider.getPackage(userId,pack.getID());
 
         for (int i = 0; i < tableIdsJO.length(); i++) {
             String tableId = tableIdsJO.optJSONObject(i).optString("id");
@@ -116,7 +120,8 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
                      */
                     if (reuseTableSource(tableSource) && reuseTableSource(storeTableSource)) {
                         if (reuseTableSource(storeTableSource)) {
-                            BICubeConfigureCenter.getDataSourceManager().addTableSource(table, storeTableSource);
+//                            BICubeConfigureCenter.getDataSourceManager().addTableSource(table, storeTableSource);
+                            packageConfigProvider.packageAddTableSource(userId,pack.getID(),tableId,storeTableSource,false);
                         }
                     } else {
                         /**
@@ -124,22 +129,24 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
                          * 因为如果数据库连接断掉，那么字段没有的。
                          */
                         if (ComparatorUtils.equals(storeTableSource.getSourceID(), tableSource.getSourceID())) {
-                            addTableSource(table, storeTableSource);
+//                            addTableSource(table, storeTableSource);
+                            packageConfigProvider.packageAddTableSource(userId,pack.getID(),tableId,storeTableSource,false);
                         } else {
                             /**
                              * 否则必须确保保存的TableSource是完整的。
                              * 如果首次添加ETL连接断掉，依然没有字段。
                              */
-                            ensureFieldInitial(tableSource);
-                            addTableSource(table, tableSource);
+//                            ensureFieldInitial(tableSource);
+//                            addTableSource(table, tableSource);
+                            packageConfigProvider.packageAddTableSource(userId,pack.getID(),tableId,tableSource,true);
                         }
                     }
                 } else {
                     CubeTableSource tableSource = TableSourceFactory.createTableSource(tableJson, userId);
-                    ensureFieldInitial(tableSource);
-                    addTableSource(table, tableSource);
+//                    ensureFieldInitial(tableSource);
+//                    addTableSource(table, tableSource);
+                    packageConfigProvider.packageAddTableSource(userId,pack.getID(),tableId,tableSource,true);
                 }
-
             } else {
                 BILoggerFactory.getLogger().error("table : id = " + tableId + " in pack: " + packageName + " save failed");
             }
@@ -151,7 +158,9 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
         saveUpdateSetting(updateSettingJO, userId);
         BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
 
-        //实时生成excel cube
+//      更新远程的pack到本地
+        pack = (BIBusinessPackage) packageConfigProvider.getPackage(userId,pack.getID());
+        //实时生成excel cube，应该通过RPC接口远程进行生成
         updateExcelTables(userId, getExcelTable(oldTables, pack.getBusinessTables()));
 
         BIBusinessPackagePersistThreadHolder.getInstance().getBiBusinessPackagePersistThread().triggerWork(new BIBusinessPackagePersistThread.Action() {//单独的线程写业务包配置文件，web端立即返回
@@ -201,7 +210,9 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
 
     private void updateExcelTables(long userId, List<CubeTableSource> excelSources) {
         for (CubeTableSource source : excelSources) {
-            new CubeBuildManager().CubeBuildSingleTable(userId, source.getSourceID(), DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
+//            new CubeBuildManager().CubeBuildSingleTable(userId, source.getSourceID(), DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
+//            通过RPC接口远程进行cube生成
+            CubeGenerationManager.getCubeManager().cubeTaskBuild(userId, source.getSourceID(), DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL);
         }
     }
 
@@ -232,14 +243,16 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
         return pack;
     }
 
+    // TODO: 2016/10/28 别名的操作使用了接口获取container，但是container的操作全在本地内存，未更新到远程
     private void saveTranslations(JSONObject translations, long userId) throws Exception {
         Iterator<String> tranIds = translations.keys();
-        BICubeConfigureCenter.getAliasManager().getTransManager(userId).clear();
+        UserAliasManager userAliasManager =  new UserAliasManager(userId);
         while (tranIds.hasNext()) {
             String tranId = tranIds.next();
             String tranName = translations.optString(tranId);
-            BICubeConfigureCenter.getAliasManager().getTransManager(userId).setTransName(tranId, tranName);
+            userAliasManager.setTransName(tranId, tranName);
         }
+        BICubeConfigureCenter.getAliasManager().setTransManager(userId,userAliasManager);
     }
 
     private void saveRelations(JSONObject relationsJO, long userId) throws JSONException {
@@ -293,8 +306,9 @@ public class BIUpdateTablesInPackageAction extends AbstractBIConfigureAction {
             }
             BIConfigureManagerCenter.getUpdateFrequencyManager().saveUpdateSetting(sourceTableId, source, userId);
         }
-        BICubeManager biCubeManager = StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG, BICubeManager.class);
-        biCubeManager.resetCubeGenerationHour(userId);
+//        BICubeManager biCubeManager = StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG, BICubeManager.class);
+//        biCubeManager.resetCubeGenerationHour(userId);
+        StableFactory.getMarkedObject(BICubeManagerProvider.XML_TAG, BICubeManagerProvider.class).resetCubeGenerationHour(userId);
     }
 
     private JSONObject createTablesJsonObject(JSONArray tableIdsJA, JSONObject usedFieldsJO, JSONObject tableDataJO) throws Exception {

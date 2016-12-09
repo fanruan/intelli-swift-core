@@ -296,7 +296,7 @@ public class Excel2003Util implements HSSFListener {
             ColumnRow start = ColumnRow.valueOf(s), end = ColumnRow.valueOf(e);
             mergeCells.put(start, end);
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
     }
 

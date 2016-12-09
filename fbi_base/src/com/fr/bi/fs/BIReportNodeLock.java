@@ -6,6 +6,8 @@ package com.fr.bi.fs;
 import com.fr.data.dao.DAOBean;
 import com.fr.general.ComparatorUtils;
 
+import java.util.Date;
+
 /**
  * @author Daniel
  *
@@ -67,19 +69,25 @@ public class BIReportNodeLock extends DAOBean {
 		this.sessionId = sessionId;
 		this.userId = userId;
 		this.reportId = reportId;
+		this.lockedTime = System.currentTimeMillis();
 	}
-
+	//
 	//访问的sessionId
 	private String sessionId;
 	//创建者
 	private long userId;
 	//报表id
 	private long reportId;
-	
+
+	//锁占用时间
+	private long lockedTime = System.currentTimeMillis();
 	public String getSessionId(){
 		return sessionId;
 	}
 
+	public void updateLockedTime(){
+		this.lockedTime = System.currentTimeMillis();
+	}
 	/**
 	 * 
 	 */
@@ -102,6 +110,25 @@ public class BIReportNodeLock extends DAOBean {
 		return true;
 	}
 
-	
+	public long getUserId() {
+		return userId;
+	}
 
+	public long getReportId() {
+		return reportId;
+	}
+
+	public long getLockedTime() {
+		return lockedTime;
+	}
+
+	@Override
+	public String toString() {
+		return "BIReportNodeLock{" +
+				"sessionId='" + sessionId + '\'' +
+				", userId=" + userId +
+				", reportId=" + reportId +
+				", lockedTime=" + new Date(lockedTime).toString() +
+				'}';
+	}
 }

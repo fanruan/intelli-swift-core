@@ -7,6 +7,8 @@ package com.finebi.cube.exception;
  * @since 4.0
  */
 public class BIThresholdUnsatisfiedException extends Exception {
+    private static final long serialVersionUID = -3472804150537983L;
+
     public BIThresholdUnsatisfiedException() {
     }
 

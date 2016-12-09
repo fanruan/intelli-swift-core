@@ -7,6 +7,8 @@ package com.finebi.cube.exception;
  * @since 4.0
  */
 public class BIRegisterIsForbiddenException extends Exception {
+    private static final long serialVersionUID = 2635840024308093664L;
+
     public BIRegisterIsForbiddenException() {
     }
 

@@ -21,6 +21,7 @@ import com.fr.json.JSONObject;
 import com.fr.json.JSONTransform;
 import com.fr.stable.StringUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,7 @@ import java.util.List;
 public class TableColumnFieldsFilterOperator extends AbstractTableColumnFilterOperator {
 
     public static final String XML_TAG = "TableColumnFieldsFilterOperator";
+    private static final long serialVersionUID = -1316456467896209243L;
     @BICoreField
     private List<FilterItem> filterList;
     /**
@@ -125,7 +127,8 @@ public class TableColumnFieldsFilterOperator extends AbstractTableColumnFilterOp
         }
     }
 
-    private class FilterItem implements JSONTransform, BICoreService {
+    private class FilterItem implements JSONTransform, BICoreService,Serializable {
+        private static final long serialVersionUID = -4607266075895422310L;
         @BICoreField
         private List<TargetFilter> filter;
         @BICoreField

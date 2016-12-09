@@ -42,7 +42,7 @@ public class BIWebSQLPreviewUtils {
             jo.put("field_names", fieldNameArray);
             jo.put("data", dataArray);
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
             jo.put("error", e.getMessage());
         }
         return jo;

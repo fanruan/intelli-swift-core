@@ -31,6 +31,7 @@ import java.util.Map;
 
 public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension implements BIDimension {
 
+    private static final long serialVersionUID = -1049362619688281145L;
     @BICoreField
     protected DimensionFilter filter;
     @BICoreField

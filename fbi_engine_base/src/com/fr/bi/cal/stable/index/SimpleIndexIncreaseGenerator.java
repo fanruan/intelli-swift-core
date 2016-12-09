@@ -90,12 +90,12 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
             return rowCount;
         }
         DBTableSource source = (DBTableSource) dataSource;
-        Connection connection = BIConnectionManager.getInstance().getConnection(source.getDbName());
+        Connection connection = BIConnectionManager.getBIConnectionManager().getConnection(source.getDbName());
         SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
         String columnName = getColumnName(connection, sqlStatement, mSql);
         try {
             Dialect dialect = DialectFactory.generateDialect(sqlStatement.getSqlConn(), connection.getDriver());
-            Table table = new Table(BIConnectionManager.getInstance().getSchema(source.getDbName()), source.getTableName());
+            Table table = new Table(BIConnectionManager.getBIConnectionManager().getSchema(source.getDbName()), source.getTableName());
             String modifySql = "SELECT *" + " FROM " + dialect.table2SQL(table) + " t" + " WHERE " + "t." + columnName + " IN " + "(" + mSql + ")";
             sqlStatement.setSql(modifySql);
         } catch (Exception e) {
@@ -141,7 +141,7 @@ public class SimpleIndexIncreaseGenerator extends SimpleIndexGenerator {
             return;
         }
         DBTableSource source = (DBTableSource) dataSource;
-        Connection connection = BIConnectionManager.getInstance().getConnection(source.getDbName());
+        Connection connection = BIConnectionManager.getBIConnectionManager().getConnection(source.getDbName());
         SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
         sqlStatement.setSql(rSql);
         String columnName = getColumnName(connection, sqlStatement, rSql);

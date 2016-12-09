@@ -8,6 +8,8 @@ package com.finebi.cube.exception;
  * @since 4.0
  */
 public class IllegalCubeResourceLocationException extends Exception {
+    private static final long serialVersionUID = -8132584566480132119L;
+
     public IllegalCubeResourceLocationException(String message) {
         super(message);
     }

@@ -122,7 +122,7 @@ public class BIReportEntry extends BaseEntry {
         //这边的reportName还是不要用保存的了，因为用户会修改的
         String reportName = this.reportName;
         try {
-            List<BIReportNode> nodeList = BIDAOUtils.findByUserID(this.createBy);
+            List<BIReportNode> nodeList = BIDAOUtils.getBIDAOManager().findByUserID(this.createBy);
             for(int i = 0; i < nodeList.size(); i++){
                 BIReportNode node = nodeList.get(i);
                 if(node.getId() == this.reportId) {

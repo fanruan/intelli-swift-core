@@ -42,6 +42,7 @@ import java.util.List;
  */
 public abstract class BIAbstractWidget implements BIWidget {
 
+    private static final long serialVersionUID = 1959074307747827366L;
     private String blockName;
     private Rectangle rect = new Rectangle();
     @BICoreField

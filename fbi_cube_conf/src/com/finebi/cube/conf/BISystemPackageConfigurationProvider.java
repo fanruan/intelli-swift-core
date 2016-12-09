@@ -10,9 +10,11 @@ import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIGroupDuplicateException;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
+import com.fr.bi.exception.BIKeyDuplicateException;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITableAbsentException;
+import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -38,7 +40,7 @@ public interface BISystemPackageConfigurationProvider {
     /**
      * 完成生成cube
      *
-     * @param userId用户id
+     * @param userId       用户id
      * @param absentTables 本次生成后仍然缺少的表
      */
     void finishGenerateCubes(long userId, Set<CubeTableSource> absentTables);
@@ -105,6 +107,15 @@ public interface BISystemPackageConfigurationProvider {
      * @throws BIPackageDuplicateException
      */
     void addPackage(long userId, BIBusinessPackage biBusinessPackage) throws BIPackageDuplicateException;
+
+    /**
+     * 更新一个业务包
+     *
+     * @param userId               用户ID
+     * @param newBiBusinessPackage 旧业务包
+     * @throws BIPackageAbsentException
+     */
+    void updatePackage(long userId, BIBusinessPackage newBiBusinessPackage) throws BIPackageDuplicateException, BIPackageAbsentException;
 
     /**
      * 是否包含业务包
@@ -358,4 +369,9 @@ public interface BISystemPackageConfigurationProvider {
      * @return
      */
     boolean isTableNoChange(long userId);
+
+    void parseSinglePackageJSON(long userId, BIPackageID packageId, JSONArray tableIdsJA, JSONObject usedFieldsJO, JSONObject tableDataJO) throws Exception;
+
+    void packageAddTableSource(long userId, BIPackageID packageId, String tableId, CubeTableSource source, boolean enSureFields) throws BIPackageAbsentException, BITableAbsentException, BIKeyDuplicateException;
+
 }

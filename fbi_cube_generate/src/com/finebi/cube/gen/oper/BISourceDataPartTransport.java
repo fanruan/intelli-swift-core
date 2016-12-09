@@ -275,7 +275,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 if (f == null) return null;
                 if (tableSource.getType() == BIBaseConstant.TABLETYPE.DB) {
                     String dbName = ((DBTableSource) tableSource).getDbName();
-                    Table table = new Table(BIConnectionManager.getInstance().getSchema(dbName), tableSource.getTableName());
+                    Table table = new Table(BIConnectionManager.getBIConnectionManager().getSchema(dbName), tableSource.getTableName());
                     finalSql = "SELECT *" + " FROM " + dialect.table2SQL(table) + " t" + " WHERE " + "t." + columnName + " IN " + "(" + sql + ")";
                 }
                 if (tableSource.getType() == BIBaseConstant.TABLETYPE.SQL) {

@@ -25,7 +25,7 @@ public class UseFieldGetter {
         Set<BusinessField> fields = new HashSet<BusinessField>();
         try {
             //Todo 权限过滤用到的字段
-            List<BIReportNode> sysNodeList = BIDAOUtils.findByUserID(user.getUserId());
+            List<BIReportNode> sysNodeList = BIDAOUtils.getBIDAOManager().findByUserID(user.getUserId());
             dealWithBIReportNodeList(sysNodeList, fields, user.getUserId());
         } catch (Throwable e) {
         }

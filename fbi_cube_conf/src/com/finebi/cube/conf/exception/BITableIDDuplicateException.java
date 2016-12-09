@@ -7,6 +7,8 @@ package com.finebi.cube.conf.exception;
  * @since 4.0
  */
 public class BITableIDDuplicateException extends Exception {
+    private static final long serialVersionUID = -2540680208395326321L;
+
     public BITableIDDuplicateException() {
     }
 

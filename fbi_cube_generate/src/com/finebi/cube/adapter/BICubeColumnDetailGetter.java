@@ -12,6 +12,7 @@ import com.fr.bi.stable.io.newio.NIOConstant;
  * Created by 小灰灰 on 2016/6/24.
  */
 public class BICubeColumnDetailGetter implements ICubeColumnDetailGetter {
+    private static final long serialVersionUID = -3389205614212915623L;
     CubeColumnReaderService service;
 
     public BICubeColumnDetailGetter(CubeColumnReaderService service) {
@@ -33,6 +34,8 @@ public class BICubeColumnDetailGetter implements ICubeColumnDetailGetter {
         PrimitiveType type = getPrimitiveType();
         if (type == PrimitiveType.DOUBLE) {
             return new PrimitiveDoubleGetter() {
+                private static final long serialVersionUID = 7141828639662850151L;
+
                 @Override
                 public double getValue(int row) {
                     double value = ((BICubeDoubleColumn) service).getOriginalValueByRow(row);
@@ -41,6 +44,8 @@ public class BICubeColumnDetailGetter implements ICubeColumnDetailGetter {
             };
         } else if (type == PrimitiveType.LONG) {
             return new PrimitiveLongGetter() {
+                private static final long serialVersionUID = 3658058739271903945L;
+
                 @Override
                 public long getValue(int row) {
                     long value = ((BICubeLongColumn) service).getOriginalValueByRow(row);

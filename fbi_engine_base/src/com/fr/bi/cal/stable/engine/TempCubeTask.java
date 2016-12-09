@@ -2,13 +2,16 @@ package com.fr.bi.cal.stable.engine;
 
 import com.fr.general.ComparatorUtils;
 
+import java.io.Serializable;
+
 /**
  * 实时报表cube管理 key值
  *
  * @author guy
  */
-public class TempCubeTask {
+public class TempCubeTask implements Serializable{
 
+    private static final long serialVersionUID = 955669582040025503L;
     private long userId;
     private String md5;
     private String tableId;

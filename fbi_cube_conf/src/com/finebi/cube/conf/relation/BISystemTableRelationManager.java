@@ -28,6 +28,7 @@ import java.util.Set;
  * Created by Connery on 2016/1/12.
  */
 public class BISystemTableRelationManager extends BISystemDataManager<BIUserTableRelationManager> implements BITableRelationConfigurationProvider {
+    private static final long serialVersionUID = 7984645297624233358L;
     private static String OBJ_TAG = "UserTableRelationManager";
 
 

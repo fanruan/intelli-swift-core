@@ -304,7 +304,7 @@ public abstract class CubeBuildSpecific extends AbstractCubeBuildStuff implement
                 copyTableFile(tempResourceRetrieval, advancedResourceRetrieval, source);
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
         return true;
     }

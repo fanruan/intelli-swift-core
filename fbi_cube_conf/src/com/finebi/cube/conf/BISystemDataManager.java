@@ -14,6 +14,8 @@ import com.finebi.cube.common.log.BILoggerFactory;
  */
 public abstract class BISystemDataManager<MANAGER> extends BIStableMapContainer<Long, MANAGER> {
 
+    private static final long serialVersionUID = -7890676855475278578L;
+
     @Override
     public MANAGER constructValue(Long key) {
         MANAGER manager = constructUserManagerValue(key);

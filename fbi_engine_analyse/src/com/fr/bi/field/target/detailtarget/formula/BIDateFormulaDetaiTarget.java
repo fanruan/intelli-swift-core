@@ -11,6 +11,8 @@ import java.util.Date;
 public class BIDateFormulaDetaiTarget extends BIStringFormulaDetailTarget {
 
 
+    private static final long serialVersionUID = -2512749611288290502L;
+
     @Override
     public Object createShowValue(Object value) {
         Date date = (Date) value;

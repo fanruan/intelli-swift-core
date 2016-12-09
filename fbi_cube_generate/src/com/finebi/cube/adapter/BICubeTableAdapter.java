@@ -41,6 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 4.0
  */
 public class BICubeTableAdapter implements ICubeTableService {
+    private static final long serialVersionUID = 4703907908750398733L;
     private Cube cube;
     private BITableKey tableKey;
     private CubeTableEntityGetterService primaryTable;

@@ -18,6 +18,7 @@ import java.util.Set;
  * Created by 小灰灰 on 2015/12/24.
  */
 public class UserBaseTableSource extends AnalysisBaseTableSource implements UserCubeTableSource {
+    private static final long serialVersionUID = 1151614375203260317L;
     private UserWidget userWidget;
     @BICoreField
     private long userId;

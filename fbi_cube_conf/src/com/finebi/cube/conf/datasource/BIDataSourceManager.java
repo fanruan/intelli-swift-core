@@ -26,6 +26,8 @@ import java.util.Set;
  * @since 4.0
  */
 public class BIDataSourceManager extends BISystemDataManager<DataSourceCompoundService> implements BIDataSourceManagerProvider {
+    private static final long serialVersionUID = -8516278258593929935L;
+
     @Override
     public DataSourceCompoundService constructUserManagerValue(Long userId) {
         return BIFactoryHelper.getObject(DataSourceCompoundService.class);

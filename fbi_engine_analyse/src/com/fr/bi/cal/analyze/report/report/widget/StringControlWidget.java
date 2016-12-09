@@ -34,6 +34,7 @@ import java.util.*;
 public class StringControlWidget extends TableWidget {
 
     private static final int STEP = 100;
+    private static final long serialVersionUID = 8869194713947245611L;
     private int data_type = -2;
     private int times = -1;
     private String selected_values;

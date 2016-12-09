@@ -9,6 +9,7 @@ import com.fr.bi.common.inter.Release;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.stable.collections.array.IntArray;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -20,7 +21,7 @@ import java.util.Set;
  * @author Connery
  * @since 4.0
  */
-public interface CubeTableEntityGetterService extends Release, ICubeVersion, ICubeResourceForceRelease {
+public interface CubeTableEntityGetterService extends Release, ICubeVersion ,ICubeResourceForceRelease,Serializable {
 
 
     /**

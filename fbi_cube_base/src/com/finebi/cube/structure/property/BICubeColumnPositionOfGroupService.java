@@ -10,6 +10,7 @@ import com.finebi.cube.structure.ICubeColumnPositionOfGroupService;
  */
 public class BICubeColumnPositionOfGroupService extends BICubeIntegerProperty implements ICubeColumnPositionOfGroupService{
     private static final String GROUP_POSITION = "group.position";
+    private static final long serialVersionUID = 5420482621443141261L;
 
     public BICubeColumnPositionOfGroupService(ICubeResourceLocation currentLocation, ICubeResourceDiscovery discovery) {
         super(currentLocation, discovery);

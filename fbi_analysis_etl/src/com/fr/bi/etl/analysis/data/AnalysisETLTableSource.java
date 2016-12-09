@@ -19,8 +19,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator, AnalysisCubeTableSource> implements AnalysisCubeTableSource {
 
+    private static final long serialVersionUID = -5120907831984540281L;
     @BIIgnoreField
-    private transient Map<Long, UserCubeTableSource> userBaseTableMap = new ConcurrentHashMap<Long, UserCubeTableSource>();
+    private /*transient*/ Map<Long, UserCubeTableSource> userBaseTableMap = new ConcurrentHashMap<Long, UserCubeTableSource>();
 
     private int invalidIndex = -1;
 

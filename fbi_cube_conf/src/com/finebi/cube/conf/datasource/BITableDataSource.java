@@ -11,6 +11,7 @@ import com.fr.bi.exception.BIKeyDuplicateException;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.general.ComparatorUtils;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -21,6 +22,8 @@ import java.util.Set;
  */
 @BIMandatedObject(factory = IFactoryService.CONF_XML, implement = TableDataSourceService.class)
 public class BITableDataSource extends BIBasicDataSource<BusinessTable, CubeTableSource> implements TableDataSourceService {
+
+    private static final long serialVersionUID = 2477384818633192281L;
 
     @Override
     boolean isEqual(CubeTableSource firstSource, CubeTableSource secondSource) {
@@ -65,7 +68,10 @@ public class BITableDataSource extends BIBasicDataSource<BusinessTable, CubeTabl
 
     @Override
     public Set<BusinessTable> getAllBusinessTable() {
-        return container.keySet();
+        Set<BusinessTable> clone = new HashSet<BusinessTable>();
+        clone.addAll(container.keySet());
+        return clone;
+//        return container.keySet();
     }
 
     @Override

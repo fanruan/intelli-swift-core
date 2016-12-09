@@ -13,6 +13,7 @@ import com.fr.json.JSONObject;
  * Created by GUY on 2015/4/9.
  */
 public class BIDetailReportSetting implements BIDetailSetting {
+    private static final long serialVersionUID = -675827399089527747L;
     @BICoreField
     protected String[] view;
 
@@ -32,7 +33,7 @@ public class BIDetailReportSetting implements BIDetailSetting {
                     view[i] = dimIds.getString(i);
                 }
             } catch (Exception e){
-                BILoggerFactory.getLogger().info(e.getMessage());
+                BILoggerFactory.getLogger().info(e.getMessage(),e);
             }
             if (views.has("style")) {
                 JSONObject style = views.getJSONObject("style");

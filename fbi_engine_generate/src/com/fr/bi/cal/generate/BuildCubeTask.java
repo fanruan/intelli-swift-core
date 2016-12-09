@@ -32,6 +32,9 @@ import com.finebi.cube.structure.Cube;
 import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
+import com.fr.bi.cluster.utils.ClusterEnv;
+import com.fr.bi.cluster.zookeeper.ZooKeeperManager;
+import com.fr.bi.cluster.zookeeper.watcher.BICubeStatusWatcher;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
@@ -64,6 +67,7 @@ import java.util.concurrent.Future;
  */
 public class BuildCubeTask implements CubeTask {
     private static final Logger logger = LoggerFactory.getLogger(BuildCubeTask.class);
+    private static final long serialVersionUID = 1960384670748165510L;
     private CubeBuildStuff cubeBuildStuff;
     protected BIUser biUser;
     protected ICubeResourceRetrievalService retrievalService;
@@ -187,6 +191,17 @@ public class BuildCubeTask implements CubeTask {
             for (int i = 0; i < retryNTimes; i++) {
                 if (Thread.currentThread().isInterrupted()) {
                     break;
+                }
+//                集群模式通过zookeeper通知slaver释放资源
+                if(ClusterEnv.isCluster()) {
+                    try {
+                        ZooKeeperManager.getInstance().getZooKeeper().setData(BICubeStatusWatcher.CUBE_STATUS, "finish".getBytes(), -1);
+                    } catch (Exception e) {
+                        BILoggerFactory.getLogger().error("notify cube build finish message failed! retry again ", e);
+                        continue;
+                    }
+//                等待所有机器释放nio资源
+                    Thread.sleep(100);
                 }
                 BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
                 replaceSuccess = cubeBuildStuff.replaceOldCubes();
