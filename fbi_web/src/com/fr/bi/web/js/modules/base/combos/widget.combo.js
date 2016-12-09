@@ -69,6 +69,7 @@ BI.WidgetCombo = BI.inherit(BI.Widget, {
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
             case BICst.WIDGET.PIE:
             case BICst.WIDGET.MULTI_PIE:
+            case BICst.WIDGET.RECT_TREE:
             case BICst.WIDGET.DONUT:
             case BICst.WIDGET.MAP:
             case BICst.WIDGET.GIS_MAP:

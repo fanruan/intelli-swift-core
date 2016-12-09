@@ -270,6 +270,11 @@ BICst.DASHBOARD_WIDGETS = [[{
     title: BI.i18nText("BI-Scatter"),
     value: BICst.WIDGET.SCATTER,
     cls: "drag-scatter-icon"
+}, {
+    text: BI.i18nText("BI-Rect_Tree_Chart"),
+    title: BI.i18nText("BI-Rect_Tree_Chart"),
+    value: BICst.WIDGET.RECT_TREE,
+    cls: "drag-rect-tree-icon"
 }], [{
     text: BI.i18nText("BI-Detail_Table"),
     title: BI.i18nText("BI-Detail_Table"),
@@ -1706,4 +1711,5 @@ BICst.INIT_CHART_MAP[BICst.WIDGET.FORCE_BUBBLE] = {type: "bi.force_bubble_chart"
 BICst.INIT_CHART_MAP[BICst.WIDGET.SCATTER] = {type: "bi.scatter_chart", events: [BI.ScatterChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.MAP] = {type: "bi.map_chart", events: [BI.MapChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.GIS_MAP] = {type: "bi.gis_map_chart", events: [BI.GISMapChart.EVENT_CHANGE]};
-BICst.INIT_CHART_MAP[BICst.WIDGET.MULTI_PIE] = {type: "bi.multi_pie_chart", events: [BI.GISMapChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.MULTI_PIE] = {type: "bi.multi_pie_chart", events: [BI.MultiPieChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.RECT_TREE] = {type: "bi.rect_tree_chart", events: [BI.GISMapChart.EVENT_CHANGE]};

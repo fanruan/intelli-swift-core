@@ -109,6 +109,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var self = this, o = this.options;
         var targetIds = this._getShowTarget();
         var drillcataDimId = this._getDrillDimensionId(BI.Utils.getDrillByID(o.wId)[self.cataDid]);
+        var drillseriDimId = this._getDrillDimensionId(BI.Utils.getDrillByID(o.wId)[self.seriesDid]);
         var cataGroup = BI.Utils.getDimensionGroupByID(self.cataDid);
         if (BI.isNotNull(drillcataDimId)) {
             cataGroup = BI.Utils.getDimensionGroupByID(drillcataDimId);
@@ -136,7 +137,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         initialX: value,
                         y: (BI.isFinite(item.s[0]) ? item.s[0] : 0),
                         parents: parents,
-                        dId: self.dimIds[currentLayer],
+                        dId: self.allDimIds[currentLayer],
                         targetIds: [targetIds[0]],
                     };
                     if (BI.has(item, "c")) {
@@ -145,7 +146,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                             initialX: value,
                             y: (BI.isFinite(item.s[0]) ? item.s[0] : 0),
                             parents: parents,
-                            dId: self.dimIds[currentLayer],
+                            dId: self.allDimIds[currentLayer],
                             targetIds: [targetIds[0]],
                         }]));
                     }
@@ -810,6 +811,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 var da = this._formatDataForGISMap(data);
                 return BI.isEmptyArray(da) ? da : [da];
             case BICst.WIDGET.MULTI_PIE:
+            case BICst.WIDGET.RECT_TREE:
                 var da = this._formatDataForMultiPie(data);
                 return BI.isEmptyArray(da) ? da : [da];
 
@@ -850,6 +852,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 });
             }
         });
+        this.allDimIds = BI.concat(this.dimIds, this.crossDimIds);
     },
 
     _calculateValue: function (data, type) {
@@ -1060,6 +1063,18 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     value: [BI.Utils.getClickedValue4Group(obj.initialX || obj.x, clickeddId)]
                 })
                 break;
+            case BICst.WIDGET.RECT_TREE:
+                dId = obj.targetIds;
+                clicked = BI.map(obj.parents, function(idx, parent){
+                    return {
+                        dId: parent.dId,
+                        value: [BI.Utils.getClickedValue4Group(parent.initialX || parent.x, parent.dId)]
+                    }
+                });
+                BI.isNotNull(obj.parents) && clicked.push({
+                    dId: clickeddId,
+                    value: [BI.Utils.getClickedValue4Group(obj.initialX || obj.x, clickeddId)]
+                })
             default:
                 dId = obj.targetIds;
                 if (BI.isNotNull(this.cataDid)) {

@@ -403,14 +403,16 @@ public class BIReportConstant {
 
         public static final int FUNNEL = 0x20;            //漏斗图
 
+        public static final int RECT_TREE = 0x21;                //多层饼图
 
-        public static final int STRING = 0x21;            //文本控件
-        public static final int NUMBER = 0x22;            //数值控件
-        public static final int TREE = 0x23;              //树控件
-        public static final int LIST_LABEL = 0x24;        //文本标签
-        public static final int TREE_LABEL = 0x25;        //树标签
-        public static final int SINGLE_SLIDER = 0x26;       //数值滑块
-        public static final int INTERVAL_SLIDER = 0x27;     //数值区间滑块
+
+        public static final int STRING = 0x22;            //文本控件
+        public static final int NUMBER = 0x23;            //数值控件
+        public static final int TREE = 0x24;              //树控件
+        public static final int LIST_LABEL = 0x25;        //文本标签
+        public static final int TREE_LABEL = 0x26;        //树标签
+        public static final int SINGLE_SLIDER = 0x27;       //数值滑块
+        public static final int INTERVAL_SLIDER = 0x28;     //数值区间滑块
 
         //仅前台使用的部分类型
         public static final int DATE = 0x30;
