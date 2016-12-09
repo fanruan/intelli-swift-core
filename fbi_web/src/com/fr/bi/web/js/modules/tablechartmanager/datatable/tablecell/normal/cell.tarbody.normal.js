@@ -12,7 +12,6 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         BI.TargetBodyNormalCell.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var dId = o.dId;
-        var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
         var text = o.text;
         var iconCls = "", color = "";
         var format = styleSettings.format, numLevel = styleSettings.numLevel, num_separators = styleSettings.numSeparators;
@@ -124,7 +123,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 title: text,
                 height: o.height,
                 cls: "target-cell-text",
-                textAlign: valueStyle.textAlign || "right",
+                textAlign: "right",
                 rgap: 5
             });
         } else {
@@ -133,7 +132,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 text: text,
                 title: text,
                 height: 25,
-                textAlign: valueStyle.textAlign || "right",
+                textAlign: "right",
                 cls: "target-linkage-label",
                 rgap: 5
             });
