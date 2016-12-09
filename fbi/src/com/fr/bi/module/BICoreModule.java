@@ -118,12 +118,9 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BILogManagerProvider.XML_TAG, getBILogManager());
         StableFactory.registerMarkedObject(BIUserLoginInformationProvider.XML_TAG, new BISystemUserLoginInformationManager());
         StableFactory.registerMarkedObject(BIConnectionProvider.XML_TAG,getConnectionManager());
-//        StableFactory.registerMarkedObject(BIExcelViewManagerProvider.XML_TAG, getExcelViewManager());
-//        StableFactory.registerMarkedObject(BICubeConfManagerProvider.XML_TAG, getBICubeConfManager());
         StableFactory.registerMarkedObject(UpdateFrequencyManager.XML_TAG, new UpdateFrequencyManager());
         StableFactory.registerMarkedObject(BIExcelViewManagerProvider.XML_TAG, getExcelViewManager());
         StableFactory.registerMarkedObject(BICubeConfManagerProvider.XML_TAG, getBICubeConfManager());
-//        StableFactory.registerMarkedObject(UpdateFrequencyManager.XML_TAG, getUpdateFrequencyManager());该对象无处被调用
         StableFactory.registerMarkedObject(SingleTableUpdateManager.XML_TAG, new SingleTableUpdateManager());
         StableFactory.registerMarkedObject(BICubeTimeTaskCreatorProvider.XML_TAG, new BICubeTimeTaskCreatorManager());
 
