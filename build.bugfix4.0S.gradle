@@ -109,7 +109,7 @@ test {
 	//这条很重要，设置忽略fail掉的测试用例。否则会导致项目构建失败
 	ignoreFailures = true
 	jacoco {
-		append = false
+		append = true
 		//二进制代码覆盖测试报告文件存放路径
 		destinationFile = file("reports/jacoco/jacoco.exec")
 	}
