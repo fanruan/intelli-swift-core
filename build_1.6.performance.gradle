@@ -153,8 +153,8 @@ task copyFile(type:Copy,dependsOn:compileJava){
 task compressJS(dependsOn:'copyFile'){
 	ant.taskdef(name:'yuicompress',classname:'com.yahoo.platform.yui.compressor.YUICompressTask',onerror:'report'){
 		classpath{
-			pathelement(path:"${BI_HOME}/lib4build/YUIAnt.jar")
-			pathelement(path:"${BI_HOME}/lib4build/yuicompressor-2.4.6.jar")
+			pathelement(path:"../${BI_HOME}/lib4build/YUIAnt.jar")
+			pathelement(path:"../${BI_HOME}/lib4build/yuicompressor-2.4.6.jar")
 			
 		}
 	}
@@ -185,7 +185,7 @@ task addTime(dependsOn:'compressJS'){
 task obfuse(dependsOn:'build')<<{
 	ant.delete(dir:"JAR/tmp/1.6")
 	ant.mkdir(dir:"JAR/tmp/1.6")
-	ant.taskdef(name:'yguard',classname:'com.yworks.yguard.YGuardTask',classpath:"${BI_HOME}/lib4build/yguard.jar")
+	ant.taskdef(name:'yguard',classname:'com.yworks.yguard.YGuardTask',classpath:"../${BI_HOME}/lib4build/yguard.jar")
 	ant.yguard(){
 		inoutpair(in:"build/libs/${jarname}",out:"JAR/tmp/1.6/${jarname}")
 		rename(){
