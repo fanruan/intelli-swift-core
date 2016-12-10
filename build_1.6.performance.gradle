@@ -119,7 +119,7 @@ dependencies {
 }
 //声明外部依赖
 dependencies{
-	compile fileTree(dir:"${BI_HOME}/lib",include:'**/*.jar',exclude:"direct/*.jar")
+	compile fileTree(dir:"${BI_HOME}/BI_lib",include:'**/*.jar',exclude:"direct/*.jar")
 	testCompile 'junit:junit:4.12'
 }
 //指明无法编译文件所在路径
@@ -245,7 +245,7 @@ task copyjar(dependsOn:'obfuse')<<{
 		delete(file:"${baseDir}/bi_jar/*.*")
 		copy(todir:"${baseDir}/bi_jar"){
 			fileset(file:"${baseDir}/JAR/CN/${jarname}")
-			fileset(dir:"${baseDir}/../../bilib/report",includes:"fr-*.jar")
+			fileset(dir:"${baseDir}/../BI_lib/report",includes:"fr-*.jar")
 		}
 		zip(destfile:"${baseDir}/bi_jar_zip/BI4.0jar_jdk1.6.zip"){
 			zipfileset(dir:"${baseDir}/bi_jar")
