@@ -27,9 +27,12 @@ BI.SelectDimensionDataCombo = BI.inherit(BI.Widget, {
             itemsCreator: BI.bind(this._itemsCreator, this),
             valueFormatter: function (v) {
                 var text = v;
-                if (BI.Utils.getDimensionTypeByID(o.dId) === BICst.TARGET_TYPE.DATE && (v + "").length > 4) {
+                if (BI.isNotNull(v) && BI.Utils.getDimensionTypeByID(o.dId) === BICst.TARGET_TYPE.DATE && (v + "").length > 4) {
                     var date = new Date(BI.parseInt(v));
                     text = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
+                }
+                if(BI.Utils.getDimensionGroupByID(o.dId) === BICst.GROUP.M){
+                    text = BI.parseInt(v) + 1;
                 }
                 return text;
             },
@@ -115,10 +118,11 @@ BI.SelectDimensionDataCombo = BI.inherit(BI.Widget, {
                     title: text
                 })
             } else {
+                var text = (BI.isNotNull(group) && group.type === BICst.GROUP.M) ? BI.parseInt(value) + 1 : value;
                 result.push({
-                    text: value,
+                    text: text,
                     value: value,
-                    title: value
+                    title: text
                 })
             }
         });
