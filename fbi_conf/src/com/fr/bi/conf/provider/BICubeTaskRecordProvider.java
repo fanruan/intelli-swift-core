@@ -1,5 +1,6 @@
 package com.fr.bi.conf.provider;
 
+import com.fr.bi.conf.records.BICubeTaskRecord;
 import com.fr.bi.conf.records.SingleUserBICubeTaskRecordManager;
 
 /**
@@ -9,17 +10,14 @@ import com.fr.bi.conf.records.SingleUserBICubeTaskRecordManager;
  * @since Advanced FineBI Analysis 1.0
  */
 public interface BICubeTaskRecordProvider {
-    String XML_TAG = "BICubeOperationRecordManagerProvider";
+    String XML_TAG = "BICubeTaskRecordProvider";
 
-    void saveErrorTableLogs(long userId);
-
-    void saveErrorPathLogs(long userId);
+    void saveCubeTaskRecord(long userId, BICubeTaskRecord record);
 
     void clear(long userId);
 
-    SingleUserBICubeTaskRecordManager getTaskRecordManager(long userId);
+    SingleUserBICubeTaskRecordManager getSingleUserBICubeTaskRecordManager(long userId);
 
-    void saveAllSingleSourceLayers(long userId);
-
-    void saveAllPaths(long userId);
+    @Deprecated
+    void persistData(long userId);
 }

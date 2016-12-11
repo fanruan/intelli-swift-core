@@ -316,6 +316,11 @@ public class SingleUserBIRecord implements BIRecord {
         return pathLog;
     }
 
+    @Override
+    public Date getCubeStart() {
+        return cube_start;
+    }
+
     private void BITableLogSort(List<BITableLog> log) {
         Collections.sort(log, new Comparator<BITableLog>() {
             @Override

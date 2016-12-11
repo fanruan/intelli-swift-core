@@ -153,4 +153,5 @@ public interface BIRecord extends JSONCreator {
 
     Set<BIConnectionErrorLog> getErrorPaths();
 
+    Date getCubeStart();
 }

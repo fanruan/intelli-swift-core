@@ -26,6 +26,8 @@ public interface BILogManagerProvider {
      */
     void logStart(long userId);
 
+    long getStart(long userId);
+
     /**
      * 关联日志开始
      */
@@ -39,6 +41,8 @@ public interface BILogManagerProvider {
     /**
      * 日志开始
      */
+    long getEndTime(long userId);
+
     void logIndexStart(long userId);
 
     /**
@@ -168,4 +172,6 @@ public interface BILogManagerProvider {
     Set<BITableErrorLog> getErrorTables(long userId);
 
     Set<BIConnectionErrorLog> getErrorPaths(long userId);
+
+
 }

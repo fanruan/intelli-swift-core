@@ -48,6 +48,11 @@ public class BILogManager implements BILogManagerProvider {
         getInstance(userId).recordStart();
     }
 
+    @Override
+    public long getStart(long userId) {
+        return getInstance(userId).getCubeStart().getTime();
+    }
+
     /**
      * 关联日志开始
      */
@@ -62,6 +67,14 @@ public class BILogManager implements BILogManagerProvider {
     @Override
     public void logEnd(long userId) {
         getInstance(userId).recordEnd();
+    }
+
+    @Override
+    public long getEndTime(long userId) {
+        if (null==getInstance(userId).getCubeEnd()){
+            return new Date().getTime();
+        }
+        return getInstance(userId).getCubeEnd().getTime();
     }
 
 

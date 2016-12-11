@@ -4,11 +4,16 @@ import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
+import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.common.inter.BrokenTraversal;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
+import com.fr.bi.conf.provider.BILogManagerProvider;
+import com.fr.bi.conf.records.BICubeTaskRecord;
+import com.fr.bi.conf.records.SingleUserBICubeTaskRecordManager;
 import com.fr.bi.stable.constant.Status;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.structure.queue.QueueThread;
@@ -20,6 +25,7 @@ import com.fr.general.DateUtils;
 
 import java.io.File;
 import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Created by GUY on 2015/3/16.
@@ -69,6 +75,11 @@ public class CubeRunner {
                     setStatue(Status.WRONG);
                 } finally {
                     finish(cubeTask);
+                    try {
+                        recordLogs(cubeTask,BIConfigureManagerCenter.getLogManager());
+                    } catch (Exception e) {
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
+                    }
                     setStatue(Status.NULL);
                     BILoggerFactory.getLogger().info(BIDateUtils.getCurrentDateTime() + " Build OLAP database Cost:" + DateUtils.timeCostFrom(start));
                 }
@@ -213,5 +224,16 @@ public class CubeRunner {
         return BIFileUtils.checkDir(new File(BIPathUtils.createBasePath()));
     }
 
+    private void recordLogs(CubeTask cubeTask, BILogManagerProvider logManager) {
+        BICubeTaskRecord record=new BICubeTaskRecord(cubeTask.getTaskType(),logManager.getStart(biUser.getUserId()),logManager.getEndTime(biUser.getUserId()), getStatue());
+        record.setErrorTableLogs(logManager.getErrorTables(biUser.getUserId()));
+        Set<BITableSourceRelationPath> allRelationPathSet = logManager.getAllRelationPathSet(biUser.getUserId());
+        record.setAllRelationPaths(allRelationPathSet);
+        record.setErrorPathLogs(logManager.getErrorPaths(biUser.getUserId()));
+        Set<CubeTableSource> allTableSourceSet = logManager.getAllTableSourceSet(biUser.getUserId());
+        record.setAllSingleSourceLayers(allTableSourceSet);
+        BIConfigureManagerCenter.getCubeTaskRecordManager().saveCubeTaskRecord(biUser.getUserId(),record);
+        BIConfigureManagerCenter.getCubeTaskRecordManager().persistData(biUser.getUserId());
 
+    }
 }

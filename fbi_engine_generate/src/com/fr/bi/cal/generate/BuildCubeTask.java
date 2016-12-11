@@ -154,12 +154,13 @@ public class BuildCubeTask implements CubeTask {
                 }
             }
 
-
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         } finally {
         }
     }
+
+
 
     protected void checkTaskFinish() {
         /**
