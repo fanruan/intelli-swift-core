@@ -31,9 +31,8 @@ public class BITableKeyUtils {
     public static long getLastUpdateTime(CubeTableSource tableSource, ICubeConfiguration cubeConfiguration) {
         ICubeResourceRetrievalService retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         BICube cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
-        ITableKey iTableKey = new BITableKey(tableSource);
         CubeTableEntityService tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
-        if (cube.exist(iTableKey) && tableEntityService.isLastExecuteTimeAvailable()) {
+        if (isTableExisted(tableSource, cubeConfiguration) && tableEntityService.isLastExecuteTimeAvailable()) {
             return tableEntityService.getLastExecuteTime().getTime();
         } else {
             return 0;

@@ -414,7 +414,7 @@ public class BuildCubeTask implements CubeTask {
         } else {
             cubeBuildStuff.copyFileFromOldCubes();
         }
-        BILoggerFactory.getLogger().info("copy files cost time: " + DateUtils.timeCostFrom(t));
+        logger.info("copy files cost time: " + DateUtils.timeCostFrom(t));
     }
 
     public static IMessage generateMessageDataSourceStart() {
