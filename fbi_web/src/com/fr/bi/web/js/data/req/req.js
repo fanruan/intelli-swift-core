@@ -53,6 +53,12 @@ Data.Req = BIReq = {
         }, complete);
     },
 
+    reqTablesDetailInfoByTables4Refresh: function (tables, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "refresh_table_fields", {tables: tables}, function (res) {
+            callback(res);
+        }, complete);
+    },
+
     reqPackage: function (callback) {
         BI.requestAsync("fr_bi_configure", "get_accessable_packages", "", function (res) {
             callback(res);

@@ -52,9 +52,12 @@ BI.UpdateTableData = BI.inherit(BI.BarPopoverSection, {
         } else {
             var items = [];
             BI.each(tables, function (i, table) {
+                var updateSetting = self.model.getUpdateSettingBySourceTableId(table.md5);
+                var updateType = BI.isNotNull(updateSetting) ? updateSetting.update_type : BI.UpdateSingleTableSetting.ALL;
                 items.push({
                     text: table.table_name,
-                    value: table.md5
+                    value: table.md5,
+                    iconCls: self._getIconByType(updateType)
                 })
             });
             var tButtons = BI.createWidget({
@@ -62,7 +65,7 @@ BI.UpdateTableData = BI.inherit(BI.BarPopoverSection, {
                 cls: "tables-group",
                 width: 150,
                 items: BI.createItems(items, {
-                    type: "bi.text_button",
+                    type: "bi.icon_change_text_button",
                     height: 30,
                     cls: "table-tab-button",
                     textAlign: "left",
@@ -89,6 +92,11 @@ BI.UpdateTableData = BI.inherit(BI.BarPopoverSection, {
                         });
                         setting.on(BI.UpdateSingleTableSetting.EVENT_CUBE_SAVE, function (obj) {
                             self.fireEvent(BI.UpdateTableData.EVENT_CUBE_SAVE, obj);
+                        });
+                        setting.on(BI.UpdateSingleTableSetting.EVENT_CHANGE, function() {
+                            var updateType = this.getValue().update_type;
+                            var button = tButtons.getSelectedButtons()[0];
+                            button.setIcon(self._getIconByType(updateType));
                         });
                         self.settings[id] = setting;
                         return BI.createWidget({
@@ -117,6 +125,19 @@ BI.UpdateTableData = BI.inherit(BI.BarPopoverSection, {
                 }]
 
             });
+        }
+    },
+
+    _getIconByType: function(type) {
+        switch (type) {
+            case BICst.SINGLE_TABLE_UPDATE_TYPE.ALL:
+               return "single-table-update-full-font";
+            case BICst.SINGLE_TABLE_UPDATE_TYPE.PART:
+                return "single-table-update-increase-font";
+            case BICst.SINGLE_TABLE_UPDATE_TYPE.NEVER:
+                return "";
+            default:
+                return "single-table-update-full-font";
         }
     },
 

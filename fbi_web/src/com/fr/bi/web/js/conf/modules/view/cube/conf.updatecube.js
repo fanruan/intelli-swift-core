@@ -82,7 +82,7 @@ BIConf.UpdateCubePaneView = BI.inherit(BI.View, {
         var self = this;
         this.interval = setInterval(function () {
             self._checkCubeStatus();
-        }, 5000)
+        }, 2000)
     },
 
     _clearCheckInterval: function () {

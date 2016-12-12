@@ -16,14 +16,18 @@ import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
+import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.report.poly.TemplateBlock;
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -244,6 +248,9 @@ public class TableWidget extends BISummaryWidget {
             settings = new DetailChartSetting();
             settings.parseJSON(jo);
         }
+        changeCalculateTargetStartGroup();
+
+
     }
 
     public void setComplexExpander(ComplexExpander complexExpander) {
@@ -262,7 +269,7 @@ public class TableWidget extends BISummaryWidget {
         }
     }
 
-    public DetailChartSetting getChatSetting() {
+    public DetailChartSetting getChartSetting() {
         return settings;
     }
 
@@ -289,5 +296,29 @@ public class TableWidget extends BISummaryWidget {
 
     public boolean hasHorizonNextPage() {
         return pageSpinner[BIReportConstant.TABLE_PAGE.HORIZON_NEXT] > 0;
+    }
+
+    private void changeCalculateTargetStartGroup() {
+        boolean changed = false;
+        BISummaryTarget[] targets = getTargets();
+        if (this.getViewDimensions().length <= 1) {
+            for (int i = 0; i < targets.length; i++) {
+                BISummaryTarget target = targets[i];
+                if (target instanceof BIConfiguredCalculateTarget) {
+                    BIConfiguredCalculateTarget configuredCalculateTarget = (BIConfiguredCalculateTarget) target;
+                    if ((configuredCalculateTarget.getStart_group() == 1)) {
+                        configuredCalculateTarget.setStart_group(0);
+                        changed = true;
+                    }
+                }
+            }
+            if (changed) {
+                Map<String, TargetGettingKey> targetMap = new ConcurrentHashMap<String, TargetGettingKey>();
+                for (int i = 0; i < targets.length; i++) {
+                    targets[i].setTargetMap(targetMap);
+                    targetMap.put(targets[i].getValue(), targets[i].createSummaryCalculator().createTargetGettingKey());
+                }
+            }
+        }
     }
 }

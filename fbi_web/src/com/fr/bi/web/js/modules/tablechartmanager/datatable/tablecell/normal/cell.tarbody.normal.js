@@ -15,7 +15,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
         var text = o.text;
         var iconCls = "", color = "";
-        var format = styleSettings.format, numLevel = styleSettings.numLevel, num_separators = styleSettings.num_separators;
+        var format = styleSettings.format, numLevel = styleSettings.numLevel, num_separators = styleSettings.numSeparators;
         text = BI.TargetBodyNormalCell.parseNumByLevel(text, numLevel);
         var iconStyle = styleSettings.iconStyle, mark = styleSettings.mark;
         iconCls = this._getIconByStyleAndMark(text, iconStyle, mark);
@@ -97,6 +97,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         var self = this;
         var o = this.options;
         var dId = o.dId, clicked = o.clicked;
+        var valueStyle = BI.Utils.getWSTableValueStyleByID(BI.Utils.getWidgetIDByDimensionID(dId));
         if (BI.isNotNull(dId)) {
             var widgetId = BI.Utils.getWidgetIDByDimensionID(dId);
             var linkage = BI.Utils.getWidgetLinkageByID(widgetId);
@@ -112,7 +113,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
 
         if (text === Infinity) {
             text = "N/0";
-        } else if (BI.Utils.getDimensionSettingsByID(dId).numLevel === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && BI.isNotNull(text)) {
+        } else if (BI.Utils.getDimensionSettingsByID(dId).numLevel === BICst.TARGET_STYLE.NUM_LEVEL.PERCENT && BI.isKey(text)) {
             text += "%";
         }
 
@@ -121,9 +122,9 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 type: "bi.label",
                 text: text,
                 title: text,
-                height: 25,
+                height: o.height,
                 cls: "target-cell-text",
-                textAlign: "right",
+                textAlign: valueStyle.textAlign || "right",
                 rgap: 5
             });
         } else {
@@ -132,7 +133,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 text: text,
                 title: text,
                 height: 25,
-                textAlign: "right",
+                textAlign: valueStyle.textAlign || "right",
                 cls: "target-linkage-label",
                 rgap: 5
             });

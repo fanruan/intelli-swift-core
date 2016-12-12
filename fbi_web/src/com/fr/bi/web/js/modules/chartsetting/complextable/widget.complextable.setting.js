@@ -376,7 +376,7 @@ BI.ComplexTableSetting = BI.inherit(BI.Widget, {
         this.freezeDim.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.ComplexTableSetting.EVENT_CHANGE);
         });
-        //联动传递指标过滤条件
+        //联动传递过滤条件
         this.transferFilter = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Bind_Target_Condition"),
@@ -460,7 +460,7 @@ BI.ComplexTableSetting = BI.inherit(BI.Widget, {
             openColNode: this.openColNode.isSelected(),
             maxRow: this.maxRow.getValue(),
             maxCol: this.maxCol.getValue(),
-            rowHeight: this.rowHeight.getValue(),
+            rowHeight: BI.parseFloat(this.rowHeight.getValue()),
 
             freezeDim: this.freezeDim.isSelected(),
             transferFilter: this.transferFilter.isSelected()

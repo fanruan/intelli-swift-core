@@ -61,6 +61,8 @@ BICst.WIDGET.Widths[BICst.WIDGET.RANGE_AREA] = 6;
 BICst.WIDGET.Widths[BICst.WIDGET.COMBINE_CHART] = 6;
 BICst.WIDGET.Widths[BICst.WIDGET.MULTI_AXIS_COMBINE_CHART] = 6;
 BICst.WIDGET.Widths[BICst.WIDGET.PIE] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.MULTI_PIE] = 6;
+BICst.WIDGET.Widths[BICst.WIDGET.RECT_TREE] = 6;
 BICst.WIDGET.Widths[BICst.WIDGET.DONUT] = 6;
 BICst.WIDGET.Widths[BICst.WIDGET.DASHBOARD] = 6;
 BICst.WIDGET.Widths[BICst.WIDGET.MAP] = 6;
@@ -112,6 +114,8 @@ BICst.WIDGET.Heights[BICst.WIDGET.RANGE_AREA] = 4;
 BICst.WIDGET.Heights[BICst.WIDGET.COMBINE_CHART] = 4;
 BICst.WIDGET.Heights[BICst.WIDGET.MULTI_AXIS_COMBINE_CHART] = 4;
 BICst.WIDGET.Heights[BICst.WIDGET.PIE] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.MULTI_PIE] = 4;
+BICst.WIDGET.Heights[BICst.WIDGET.RECT_TREE] = 4;
 BICst.WIDGET.Heights[BICst.WIDGET.DONUT] = 4;
 BICst.WIDGET.Heights[BICst.WIDGET.DASHBOARD] = 4;
 BICst.WIDGET.Heights[BICst.WIDGET.MAP] = 4;
@@ -482,8 +486,9 @@ BICst.DEFAULT_CHART_SETTING = {
     showDataLabel: false,
     miniShowDataLabel: true,
     showDataTable: false,
-    leftYSeparator: false,
-    rightY2Separator: false,
+    leftYSeparator: true,
+    rightYSeparator: true,
+    rightY2Separator: true,
     leftYShowLabel: true,
     rightYShowLabel: true,
     right2YShowLabel: true,
@@ -528,10 +533,13 @@ BICst.DEFAULT_CHART_SETTING = {
         interval: {}
     },
     DataLabelSetting: {
+        showBlockName: true,
         showCategoryName: true,
         showSeriesName: true,
+        showSize:true,
         showValue: true,
         showPercentage: false,
+        showTractionLine: true,
         position: BICst.DATA_LABEL.POSITION_OUTER,
         textStyle: {}
     }

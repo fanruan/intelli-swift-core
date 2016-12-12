@@ -9,6 +9,7 @@ import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
+import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
@@ -57,8 +58,10 @@ public class BIFieldPathIndexBuilder extends BITablePathIndexBuilder {
             tablePathReader = buildTableRelationPathReader();
             targetPathEntity = buildTargetRelationPathWriter();
             GroupValueIndexOrHelper helper = new GroupValueIndexOrHelper();
+            GroupValueIndex allShowIndex = getAllShowIndex();
             for (int row = 0; row < primaryFieldRowCount; row++) {
                 GroupValueIndex frontGroupValueIndex = primaryColumnReader.getBitmapIndex(row);
+                frontGroupValueIndex = frontGroupValueIndex.AND(allShowIndex);
                 GroupValueIndex resultGroupValueIndex = BITablePathIndexBuilder.getTableLinkedOrGVI(frontGroupValueIndex, tablePathReader);
                 targetPathEntity.addRelationIndex(row, resultGroupValueIndex);
                 helper.add(resultGroupValueIndex);
@@ -107,6 +110,16 @@ public class BIFieldPathIndexBuilder extends BITablePathIndexBuilder {
         BICubeTablePath tableRelationPath = new BICubeTablePath();
         tableRelationPath.copyFrom(relationPath);
         return tableRelationPath;
+    }
+
+    public GroupValueIndex getAllShowIndex() throws BITablePathEmptyException {
+        ITableKey primaryTableKey = relationPath.getFirstRelation().getPrimaryTable();
+        CubeTableEntityGetterService primaryTable = cubeChooser.getCubeTable(primaryTableKey);
+        if (null != primaryTable.getRemovedList() && primaryTable.getRemovedList().size != 0) {
+            return GVIFactory.createGroupValueIndexBySimpleIndex(primaryTable.getRemovedList()).NOT(primaryTable.getRowCount());
+        } else {
+            return GVIFactory.createAllShowIndexGVI(primaryTable.getRowCount());
+        }
     }
 
 }

@@ -12,6 +12,13 @@
   font-size: 14px;
   color: #808080;
 }
+.bi-target-region .drag-tool {
+  border-right: 1px solid #9fd3ae;
+  cursor: move;
+}
+.bi-target-region .targets-container {
+  min-height: 37px;
+}
 .bi-target-region .targets-container .target-container {
   background: #e1f4e7;
   -webkit-border-radius: 2px;
@@ -33,4 +40,13 @@
   opacity: 0.05;
   filter: alpha(opacity=5);
   z-index: 1;
+}
+.bi-target-region .bi-empty-region {
+  border-color: #9fd3ae;
+}
+.bi-target-region .ui-sortable-helper {
+  background: #e1f4e7;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
 }

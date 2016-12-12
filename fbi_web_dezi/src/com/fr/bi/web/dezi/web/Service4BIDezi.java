@@ -4,8 +4,8 @@ import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.web.base.utils.BIServiceUtil;
 import com.fr.bi.web.dezi.*;
 import com.fr.bi.web.dezi.services.*;
-import com.fr.bi.web.dezi.services.image.BISaveUploadImageAction;
 import com.fr.bi.web.dezi.services.image.BIGetImageSizeAction;
+import com.fr.bi.web.dezi.services.image.BISaveUploadImageAction;
 import com.fr.bi.web.dezi.services.report.BIUpdateSessionAction;
 import com.fr.bi.web.report.services.BIInitDeziPaneAction;
 import com.fr.fs.FSContext;
@@ -58,9 +58,8 @@ public class Service4BIDezi implements Service {
 
             new BISaveUploadImageAction(),
 
-            new BIGetImageSizeAction(),
+            new BIGetImageSizeAction()
 
-            new BICheckReportEditAction()
 
     };
 

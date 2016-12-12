@@ -164,12 +164,12 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
                     cls: "attr-names"
                 }, this.tableSyleGroup, {
                     type: "bi.vertical_adapt",
-                    items: [this.customTableStyle],
+                    items: [this.isCustomTableStyle],
                     cls: "attr-names",
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.tableStyleSetting],
+                    items: [this.customTableStyle],
                     height: this.constant.SINGLE_LINE_HEIGHT
                 }]
             },
@@ -305,7 +305,7 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
             customTableStyle: this.customTableStyle.getValue(),
 
             showNumber: this.showNumber.isSelected(),
-            rowHeight: this.rowHeight.getValue(),
+            rowHeight: BI.parseFloat(this.rowHeight.getValue()),
 
             freezeFirstColumn: this.freezeFirstColumn.isSelected()
         }

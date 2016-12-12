@@ -20,10 +20,15 @@ BI.ComplexEmptyRegion = BI.inherit(BI.Widget, {
         var emptyRegion = BI.createWidget({
             type: "bi.vertical",
             element: this.element,
+            cls: "dimensions-container",
             height: 40,
             items: [commentTip],
             vgap: 5,
             hgap: 5
+        });
+        emptyRegion.element.sortable({
+            connectWith: ".dimensions-container",
+            items: ".dimension-container"
         });
         emptyRegion.element.droppable({
             accept: ".select-data-level0-item-button, .select-data-level1-item-button",
@@ -91,10 +96,10 @@ BI.ComplexEmptyRegion = BI.inherit(BI.Widget, {
         });
     },
 
-    _fieldDragStart: function (fields) {
-        this.fields = fields;
-        var onlyCounter = !BI.some(fields, function (i, fieldId) {
-            return BI.Utils.getFieldTypeByID(fieldId) !== BICst.COLUMN.COUNTER;
+    _fieldDragStart: function (dims) {
+        this.dimensions = dims;
+        var onlyCounter = !BI.some(dims, function (i, dim) {
+            return dim.type === BICst.TARGET_TYPE.NUMBER || dim.type === BICst.TARGET_TYPE.STRING || dim.type === BICst.TARGET_TYPE.DATE;
         });
         if (onlyCounter) {
             this._showForbiddenMask();
@@ -102,16 +107,29 @@ BI.ComplexEmptyRegion = BI.inherit(BI.Widget, {
     },
 
     _fieldDragStop: function () {
-        this.fields = null;
+        this.dimensions = null;
         this._hideForbiddenMask();
     },
 
     _getFieldDropOverHelper: function () {
         //可以放置的字段 + 不可放置的字段
-        var total = this.fields.length;
+        var total = this.dimensions.length;
         var counters = 0;
-        BI.each(this.fields, function (i, fieldId) {
-            if (BI.Utils.getFieldTypeByID(fieldId) === BICst.COLUMN.COUNTER) {
+        var _set = [BICst.TARGET_TYPE.FORMULA,
+            BICst.TARGET_TYPE.MONTH_ON_MONTH_RATE,
+            BICst.TARGET_TYPE.MONTH_ON_MONTH_VALUE,
+            BICst.TARGET_TYPE.RANK,
+            BICst.TARGET_TYPE.RANK_IN_GROUP,
+            BICst.TARGET_TYPE.SUM_OF_ABOVE,
+            BICst.TARGET_TYPE.SUM_OF_ABOVE_IN_GROUP,
+            BICst.TARGET_TYPE.SUM_OF_ALL,
+            BICst.TARGET_TYPE.SUM_OF_ALL_IN_GROUP,
+            BICst.TARGET_TYPE.YEAR_ON_YEAR_RATE,
+            BICst.TARGET_TYPE.YEAR_ON_YEAR_VALUE,
+            BICst.TARGET_TYPE.COUNTER
+        ];
+        BI.each(this.dimensions, function (i, dim) {
+            if (BI.contains(_set, dim.type)) {
                 counters++;
             }
         });
@@ -184,6 +202,21 @@ BI.ComplexEmptyRegion = BI.inherit(BI.Widget, {
 
     _hideForbiddenMask: function () {
         BI.isNotNull(this.forbiddenMask) && this.forbiddenMask.setVisible(false);
+    },
+
+    getValue: function () {
+        return  BI.ComplexEmptyRegion.ID;
+    },
+
+    getDimensions: function () {
+        var self = this, o = this.options || {};
+        var result = [];
+        var dimensions = $(".dimension-container", this.element);
+        BI.each(dimensions, function (i, dom) {
+            var dId = $(dom).data("dId");
+            result.push(dId);
+        });
+        return result;
     }
 });
 BI.extend(BI.ComplexEmptyRegion, {

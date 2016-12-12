@@ -84,8 +84,8 @@ BIDezi.ListLabelDetailView = BI.inherit(BI.View, {
         this.title = BI.createWidget({
             type: "bi.label",
             textAlign: "left",
-            height: 22,
-            width: 400,
+            cls: "widget-top-name",
+            height: 25,
             text: this.model.get("name")
         });
         var complete = BI.createWidget({
@@ -185,7 +185,7 @@ BIDezi.ListLabelDetailView = BI.inherit(BI.View, {
                 },
                 left: 0,
                 right: this.constants.DETAIL_PANE_HORIZONTAL_GAP,
-                top: this.constants.DETAIL_GAP_NORMAL,
+                top: 0,
                 bottom: this.constants.DETAIL_GAP_NORMAL
             }]
         });

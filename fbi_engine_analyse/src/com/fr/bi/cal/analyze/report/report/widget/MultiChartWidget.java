@@ -29,6 +29,7 @@ public class MultiChartWidget extends TableWidget {
             JSONObject vjo = jo.optJSONObject("view");
             parseView(vjo);
             JSONArray ja = new JSONArray();
+            JSONArray rectJa = new JSONArray();
             Iterator it = vjo.keys();
             List<String> sorted = new ArrayList<String>();
             while (it.hasNext()) {
@@ -36,14 +37,29 @@ public class MultiChartWidget extends TableWidget {
             }
             Collections.sort(sorted, new ChinesePinyinComparator());
             for(String region : sorted){
-                if(ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION1) ||
-                        ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION2)){
+//                if(ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION1) ||
+//                        ComparatorUtils.equals(region, BIReportConstant.REGION.DIMENSION2)){
+//                    continue;
+//                }
+                int regionValue = Integer.parseInt(region);
+                if(regionValue >= Integer.parseInt(BIReportConstant.REGION.DIMENSION1) &&
+                        regionValue < Integer.parseInt(BIReportConstant.REGION.TARGET1)) {
+                    if(jo.optInt("type") == BIReportConstant.WIDGET.RECT_TREE){
+                        JSONArray tmp =  vjo.getJSONArray(region);
+                        for(int j = 0; j < tmp.length(); j++){
+                            rectJa.put(tmp.getString(j));
+                        }
+                    }
                     continue;
                 }
                 JSONArray tmp =  vjo.getJSONArray(region);
                 for(int j = 0; j < tmp.length(); j++){
                     ja.put(tmp.getString(j));
                 }
+            }
+            if(jo.optInt("type") == BIReportConstant.WIDGET.RECT_TREE){
+                vjo.remove(BIReportConstant.REGION.DIMENSION2);
+                vjo.put(BIReportConstant.REGION.DIMENSION1, rectJa);
             }
             vjo.remove(BIReportConstant.REGION.TARGET2);
             vjo.remove(BIReportConstant.REGION.TARGET3);

@@ -573,7 +573,7 @@ var _Routes = {
     "/center_adapt": "CenterAdaptView",
     "/absolute_center_adapt": "AbsoluteCenterAdaptView",
     "/float_center_adapt": "CenterVerticalAdaptView",
-    "/flexbox_center_adapt": "FlexboxCenterAdaptView",
+    "/flex_center": "FlexboxCenterAdaptView",
     "/inline_center_adapt": "InlineCenterAdaptView",
     "/vertical_adapt": "VerticalAdaptView",
     "/inline_vertical_adapt": "InlineVerticalAdaptView",
@@ -1036,8 +1036,8 @@ _Models.layout = [{
     text: "bi.absolute_center_adapt",
     value: "absolute_center_adapt"
 }, {
-    text: "bi.flexbox_center_adapt",
-    value: "flexbox_center_adapt"
+    text: "bi.flex_center",
+    value: "flex_center"
 }, {
     text: "bi.inline_center_adapt",
     value: "inline_center_adapt"

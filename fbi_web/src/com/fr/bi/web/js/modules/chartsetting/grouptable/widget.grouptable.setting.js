@@ -328,7 +328,7 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
         this.freezeDim.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
-        //联动传递指标过滤条件
+        //联动传递过滤条件
         this.transferFilter = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Bind_Target_Condition"),
@@ -337,7 +337,7 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
                 dynamic: true
             }
         });
-        this.transferFilter.on(BI.Checkbox.EVENT_CHANGE, function () {
+        this.transferFilter.on(BI.Controller.EVENT_CHANGE, function () {
             self.fireEvent(BI.GroupTableSetting.EVENT_CHANGE);
         });
         var otherAttr = BI.createWidget({
@@ -408,7 +408,7 @@ BI.GroupTableSetting = BI.inherit(BI.Widget, {
             showRowTotal: this.showRowTotal.isSelected(),
             openRowNode: this.openRowNode.isSelected(),
             maxRow: this.maxRow.getValue(),
-            rowHeight: this.rowHeight.getValue(),
+            rowHeight: BI.parseFloat(this.rowHeight.getValue()),
 
             freezeDim: this.freezeDim.isSelected(),
             transferFilter: this.transferFilter.isSelected()

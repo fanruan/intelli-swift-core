@@ -45,8 +45,7 @@ public class BISetCubeGenerateAction extends AbstractBIConfigureAction {
             BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
         } catch (Exception e) {
             CubeGenerationManager.getCubeManager().setStatus(userId, Status.WRONG);
-            BILoggerFactory.getLogger(this.getClass()).error("cube task build failed" + "\n");
-            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+            BILoggerFactory.getLogger(this.getClass()).error("cube task build failed" + "\n"+e.getMessage(), e);
             CubeGenerationManager.getCubeManager().setStatus(userId, Status.END);
             return false;
         }

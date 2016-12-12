@@ -41,6 +41,9 @@ BIShow.TargetView = BI.inherit(BI.View, {
             type: "bi.sign_editor",
             height: this.constants.TARGET_BUTTON_HEIGHT,
             cls: "bi-target-name",
+            title: function () {
+                return self.editor.getValue();
+            },
             validationChecker: function () {
                 return self._checkDimensionName(self.editor.getValue());
             }

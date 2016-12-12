@@ -99,7 +99,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
         });
 
-        this.pieChartType = BI.createWidget({
+        this.radarChartType = BI.createWidget({
             type: "bi.button_group",
             items: BI.createItems(BICst.RADAR_CHART_STYLE_GROUP, {
                 type: "bi.icon_button",
@@ -114,7 +114,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                 height: constant.SINGLE_LINE_HEIGHT
             }]
         });
-        this.pieChartType.on(BI.ButtonGroup.EVENT_CHANGE, function () {
+        this.radarChartType.on(BI.ButtonGroup.EVENT_CHANGE, function () {
             self.fireEvent(BI.RadarChartSetting.EVENT_CHANGE);
         });
 
@@ -159,7 +159,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
                     cls: "attr-names",
                 }, {
                     type: "bi.vertical_adapt",
-                    items: [this.pieChartType]
+                    items: [this.radarChartType]
                 }, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Widget_Background_Colour"),
@@ -510,7 +510,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             }]
         });
 
-        //联动传递指标过滤条件
+        //联动传递过滤条件
         this.transferFilter = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Bind_Target_Condition"),
@@ -563,7 +563,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
         this.chartColor.setValue(BI.Utils.getWSChartColorByID(wId));
         this.chartStyle.setValue(BI.Utils.getWSChartStyleByID(wId));
-        this.pieChartType.setValue(BI.Utils.getWSPieChartTypeByID(wId));
+        this.radarChartType.setValue(BI.Utils.getWSRadarChartTypeByID(wId));
 
         this.leftYNumberFormat.setValue(BI.Utils.getWSChartLeftYNumberFormatByID(wId));
         this.leftYNumberLevel.setValue(BI.Utils.getWSChartLeftYNumberLevelByID(wId));
@@ -603,7 +603,7 @@ BI.RadarChartSetting = BI.inherit(BI.AbstractChartSetting, {
             widgetBG: this.widgetBG.getValue(),
             chartColor: this.chartColor.getValue()[0],
             chartStyle: this.chartStyle.getValue()[0],
-            pieChartType: this.pieChartType.getValue()[0],
+            radarChartType: this.radarChartType.getValue()[0],
 
             leftYNumberFormat: this.leftYNumberFormat.getValue()[0],
             leftYNumberLevel: this.leftYNumberLevel.getValue()[0],

@@ -1,6 +1,17 @@
 apply plugin:'java'
+
+//应用jacoco plugin
+apply plugin : 'jacoco'
 tasks.withType(JavaCompile){
 	options.encoding = 'UTF-8'
+}
+
+//每次构建前先删掉build目录和reports目录
+ant.delete(dir:"build")
+ant.delete(dir:"reports")
+
+repositories {
+    mavenCentral()
 }
 //sourceCompatibility=1.5
 //BI工程的根目录
@@ -13,10 +24,6 @@ version='4.0'
 FileTree files =fileTree(dir:'./',include:'build.*.gradle')
 def buildDir=files[0].path.substring(0,files[0].path.lastIndexOf ('\\'))
 def branchName=buildDir.substring(buildDir.lastIndexOf ('\\')+1)
-//删除test文件下的文件
-ant{
-	delete(dir:"**/test/")
-}
 jar{
 //指定生成jar包的名称
 	baseName='fr-bi-server'
@@ -46,6 +53,22 @@ def list=[
 //指定源码所在位置：
 sourceSets{
 	main.java.srcDirs=list
+	
+	test.java.srcDirs = [
+			"fbi_analysis_etl/test",
+			"fbi_base/test",
+			//err"fbi_cluster/test",
+			"fbi_conf/test",
+			//long"fbi_cube_base/test",
+			"fbi_cube_conf/test",
+			//err"fbi_cube_generate/test",
+			//err"fbi_datasource_api/test",
+			//err"fbi_engine_analyse/test",
+			//err"fbi_engine_base/test",
+			//err"fbi_engine_generate/test",
+			"fbi_web/test",
+			"fbi_web_conf/test",
+	]
 	instrumentTest.java.srcDirs=[
 		//"fbi/test",
 		"fbi_base/test",
@@ -69,9 +92,7 @@ sourceSets{
 
 
 }
-repositories{
-    mavenCentral()
-}
+
 configurations{
 	ftpAntTask
 }
@@ -82,6 +103,16 @@ dependencies {
             dependencies "oro:oro:2.0.8:jar"
         }
     }
+}
+
+test {
+	//这条很重要，设置忽略fail掉的测试用例。否则会导致项目构建失败
+	ignoreFailures = true
+	jacoco {
+		append = true
+		//二进制代码覆盖测试报告文件存放路径
+		destinationFile = file("reports/jacoco/jacoco.exec")
+	}
 }
 //声明外部依赖
 dependencies{
@@ -108,14 +139,6 @@ def dataContent ={def dir ->
 
 //将非.java文件复制到classes文件夹下 参与打包
 task copyFile(type:Copy,dependsOn:compileJava){
-	//删除test文件夹
-	ant{
-		echo('--------------------------------delete test---------------------------')
-		delete(defaultexcludes:'false'){
-			fileset(dir:'.',includes:'**/test/')
-
-		}
-	}
 	list.each{ def srcDir->
 		copy{
 			with dataContent.call("${srcDir}") 
@@ -191,7 +214,6 @@ task obfuse(dependsOn:'build')<<{
 		}
 	}
 	ant.delete(file:'yguardlog.xml')
-	ant.delete(dir:"build")
 }
 
 ant{

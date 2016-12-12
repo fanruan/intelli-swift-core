@@ -2,6 +2,7 @@ package com.fr.bi.stable.operation.group.group;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
 import com.fr.bi.stable.operation.group.AbstractGroup;
@@ -24,24 +25,35 @@ public class CustomNumberGroup extends AbstractGroup {
 
     @Override
     public ICubeColumnIndexReader createGroupedMap(ICubeColumnIndexReader baseMap) {
-        if (isNullGroup()) {return baseMap;}
+        if (isNullGroup()) {
+            return baseMap;
+        }
         CubeLinkedHashMap newMap = new CubeLinkedHashMap();
         CubeLinkedHashMap ungroupMap = new CubeLinkedHashMap();
         GroupValueIndexOrHelper[] newMapArray = new GroupValueIndexOrHelper[groups.length];
-        for(int i = 0; i < newMapArray.length; i++){
+        for (int i = 0; i < newMapArray.length; i++) {
             newMapArray[i] = new GroupValueIndexOrHelper();
         }
         Iterator iter = baseMap.iterator();
         GroupValueIndexOrHelper otherHelper = null;
-        for (int i = 0; i < groups.length; i++){
-            if (groups[i].isOtherGroup()){
+        for (int i = 0; i < groups.length; i++) {
+            if (groups[i].isOtherGroup()) {
                 otherHelper = newMapArray[i];
                 break;
             }
         }
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
-            if (entry.getKey() == null){
+            if (entry.getKey() == null || ComparatorUtils.equals(entry.getKey(), "")) {
+                if (otherHelper != null) {
+                    otherHelper.add((GroupValueIndex) entry.getValue());
+                    continue;
+                }
+                if (newMap.get("") == null) {
+                    newMap.put("", entry.getValue());
+                } else {
+                    newMap.put("", GVIUtils.OR((GroupValueIndex)entry.getValue(), (GroupValueIndex) newMap.get("")));
+                }
                 continue;
             }
             double key = ((Number) entry.getKey()).doubleValue();
@@ -55,21 +67,21 @@ public class CustomNumberGroup extends AbstractGroup {
                 }
             }
             if (!find) {
-                if (otherHelper != null){
+                if (otherHelper != null) {
                     otherHelper.add(gvi);
                 } else {
                     String name = entry.getKey().toString();
-                    ungroupMap.put(name,  gvi);
+                    ungroupMap.put(name, gvi);
                 }
             }
         }
-        for(int i = 0; i < groups.length; ++i){
+        for (int i = 0; i < groups.length; ++i) {
             newMap.put(groups[i].getValue(), newMapArray[i].compute());
         }
         Iterator it = ungroupMap.iterator();
-        while (it.hasNext()){
+        while (it.hasNext()) {
             Map.Entry entry = (Map.Entry) it.next();
-            if (newMap.containsKey(entry.getKey())){
+            if (newMap.containsKey(entry.getKey())) {
                 GroupValueIndex result = newMap.getIndex(entry.getKey()).OR((GroupValueIndex) entry.getValue());
                 newMap.put(entry.getKey(), result);
             } else {
@@ -87,9 +99,9 @@ public class CustomNumberGroup extends AbstractGroup {
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
         super.parseJSON(jo);
-        if(jo.has("group_value")){
+        if (jo.has("group_value")) {
             JSONObject valueJson = jo.optJSONObject("group_value");
-            if(valueJson.has("group_nodes")){
+            if (valueJson.has("group_nodes")) {
                 JSONArray ja = valueJson.getJSONArray("group_nodes");
                 int len = ja.length();
                 if (valueJson.has("use_other")) {

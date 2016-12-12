@@ -215,16 +215,17 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                 wType !== BICst.WIDGET.COMPLEX_TABLE) {
                 var dims = BI.deepClone(changed.dimensions), preDims = BI.deepClone(prev.dimensions);
                 var view = this.get("view");
-                if(wType !== BICst.WIDGET.MAP){
+                if(wType !== BICst.WIDGET.MAP && wType !== BICst.WIDGET.MULTI_PIE){
                     //地图不参与分类和系列的单选复选join
                     //分类和系列join
                     var preDim1Select = [], preDim2Select = [];
                     BI.each(preDims, function (dId, dim) {
                         if (dim.used === true) {
-                            if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.DIMENSION1) {
+                            var regionType = BI.Utils.getRegionTypeByDimensionID(dId);
+                            if (regionType >= BICst.REGION.DIMENSION1 && regionType < BICst.REGION.DIMENSION2) {
                                 preDim1Select.push(dId);
                             }
-                            if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.DIMENSION2) {
+                            if (regionType >= BICst.REGION.DIMENSION2 && regionType < BICst.REGION.TARGET1) {
                                 preDim2Select.push(dId);
                             }
                         }
@@ -233,7 +234,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                     BI.each(dims, function (dId, dim) {
                         var rType = BI.Utils.getRegionTypeByDimensionID(dId);
                         if (dim.used === true) {
-                            if (rType === BICst.REGION.DIMENSION1) {
+                            if (rType >= BICst.REGION.DIMENSION1 && rType < BICst.REGION.DIMENSION2) {
                                 if(!preDim1Select.contains(dId)){
                                     //添加维度
                                     if(BI.isNotEmptyArray(preDim1Select) && BI.size(dims) !== BI.size(preDims)){
@@ -244,7 +245,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                                     }
                                 }
                             }
-                            if (rType === BICst.REGION.DIMENSION2) {
+                            if (rType >= BICst.REGION.DIMENSION2 && rType < BICst.REGION.TARGET1) {
                                 if(!preDim2Select.contains(dId)){
                                     if(BI.isNotEmptyArray(preDim2Select) && BI.size(dims) !== BI.size(preDims)){
                                         dims[dId].used = false;
@@ -280,21 +281,22 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                             dims[d].used = false;
                         });
                     }
-                    //对比柱状/面积/条形图,范围面积,瀑布,气泡,力学,散点,漏斗这些指标区域是单选的
+                    //对比柱状/面积/条形图,范围面积,瀑布,气泡,力学,散点,漏斗,多层饼, 矩形树图这些指标区域是单选的
                     if(type === BICst.WIDGET.COMPARE_AXIS || type === BICst.WIDGET.COMPARE_AREA ||
                         type === BICst.WIDGET.COMPARE_BAR || type === BICst.WIDGET.RANGE_AREA || type === BICst.WIDGET.FALL_AXIS||
                         type === BICst.WIDGET.BUBBLE || type === BICst.WIDGET.FORCE_BUBBLE || type === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART ||
-                        type === BICst.WIDGET.SCATTER){
+                        type === BICst.WIDGET.SCATTER || type === BICst.WIDGET.MULTI_PIE || type === BICst.WIDGET.RECT_TREE){
                         var preTar1Select = [], preTar2Select = [], preTar3Select = [];
                         BI.each(preDims, function (dId, dim) {
                             if (dim.used === true) {
-                                if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.TARGET1) {
+                                var regionType = BI.Utils.getRegionTypeByDimensionID(dId);
+                                if (regionType >= BICst.REGION.TARGET1 && regionType < BICst.REGION.TARGET2) {
                                     preTar1Select.push(dId);
                                 }
-                                if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.TARGET2) {
+                                if (regionType >= BICst.REGION.TARGET2 && regionType < BICst.REGION.TARGET3) {
                                     preTar2Select.push(dId);
                                 }
-                                if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.TARGET3) {
+                                if (regionType >= BICst.REGION.TARGET3) {
                                     preTar3Select.push(dId);
                                 }
                             }
@@ -303,7 +305,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                         BI.each(dims, function (dId, dim) {
                             var rType = BI.Utils.getRegionTypeByDimensionID(dId);
                             if (dim.used === true) {
-                                if (rType === BICst.REGION.TARGET1) {
+                                if (rType >= BICst.REGION.TARGET1 && rType < BICst.REGION.TARGET2) {
                                     if(!preTar1Select.contains(dId)){
                                         //添加指标
                                         if(BI.isNotEmptyArray(preTar1Select) && BI.size(dims) !== BI.size(preDims)){
@@ -314,7 +316,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                                         }
                                     }
                                 }
-                                if (rType === BICst.REGION.TARGET2) {
+                                if (rType >= BICst.REGION.TARGET2 && rType < BICst.REGION.TARGET3) {
                                     if(!preTar2Select.contains(dId)){
                                         if(BI.isNotEmptyArray(preTar2Select) && BI.size(dims) !== BI.size(preDims)){
                                             dims[dId].used = false;
@@ -323,7 +325,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                                         }
                                     }
                                 }
-                                if (rType === BICst.REGION.TARGET3) {
+                                if (rType >= BICst.REGION.TARGET3) {
                                     if(!preTar3Select.contains(dId)){
                                         if(BI.isNotEmptyArray(preTar3Select) && BI.size(dims) !== BI.size(preDims)){
                                             dims[dId].used = false;
@@ -355,10 +357,11 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                         var preTar2Select = [], preTar1Select = [];
                         BI.each(preDims, function (dId, dim) {
                             if (dim.used === true) {
-                                if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.TARGET1) {
+                                var rType = BI.Utils.getRegionTypeByDimensionID(dId);
+                                if (rType >= BICst.REGION.TARGET1 && rType < BICst.REGION.TARGET2) {
                                     preTar1Select.push(dId);
                                 }
-                                if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.TARGET2) {
+                                if (rType >= BICst.REGION.TARGET2 && rType < BICst.REGION.TARGET3) {
                                     preTar2Select.push(dId);
                                 }
                             }
@@ -367,7 +370,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                         BI.each(dims, function (dId, dim) {
                             var rType = BI.Utils.getRegionTypeByDimensionID(dId);
                             if (dim.used === true) {
-                                if (rType === BICst.REGION.TARGET1) {
+                                if (rType >= BICst.REGION.TARGET1 && rType < BICst.REGION.TARGET2) {
                                     if(!preTar1Select.contains(dId)){
                                         if(BI.isNotEmptyArray(preTar1Select) && BI.size(dims) !== BI.size(preDims)){
                                         }else{
@@ -375,7 +378,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                                         }
                                     }
                                 }
-                                if (rType === BICst.REGION.TARGET2) {
+                                if (rType >= BICst.REGION.TARGET2 && rType < BICst.REGION.TARGET3) {
                                     if(!preTar2Select.contains(dId)){
                                         if(BI.isNotEmptyArray(preTar2Select) && BI.size(dims) !== BI.size(preDims)){
                                             dims[dId].used = false;
@@ -461,7 +464,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                             BI.each(preView[region], function (i, dId) {
                                 BI.Utils.isDimensionUsable(dId) && (isPreSelect = true);
                             });
-                            if (isPreSelect === true || (region === BICst.REGION.DIMENSION2 && hasMultiTarget)) {
+                            if (isPreSelect === true || (region >= BICst.REGION.DIMENSION2 && region < BICst.REGION.TARGET1 && hasMultiTarget)) {
                                 BI.each(adds, function(i, add){
                                     dimensions[add].used = false;
                                 });

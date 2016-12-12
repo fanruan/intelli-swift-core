@@ -133,7 +133,7 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
             }]
         });
 
-        //联动传递指标过滤条件
+        //联动传递过滤条件
         this.transferFilter = BI.createWidget({
             type: "bi.multi_select_item",
             value: BI.i18nText("BI-Bind_Target_Condition"),
@@ -174,7 +174,7 @@ BI.GISMapSetting = BI.inherit(BI.AbstractChartSetting, {
 
         this.widgetBG.setValue(BI.Utils.getWSWidgetBGByID(wId));
         this.showDataLabel.setSelected(BI.Utils.getWSChartShowDataLabelByID(wId));
-        this.dataLabelSetting.setSelected(BI.Utils.getWSChartDataLabelSettingByID(wId));
+        this.dataLabelSetting.setValue(BI.Utils.getWSChartDataLabelSettingByID(wId));
         this.dataLabelSetting.setVisible(BI.Utils.getWSChartShowDataLabelByID(wId));
 
         this.transferFilter.setSelected(BI.Utils.getWSTransferFilterByID(wId));

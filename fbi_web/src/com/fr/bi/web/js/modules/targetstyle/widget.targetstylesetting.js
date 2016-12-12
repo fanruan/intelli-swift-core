@@ -43,16 +43,6 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
         var self = this, o = this.options;
         var dId = o.dId;
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
-        if(BI.isEmptyObject(styleSettings)) {
-            styleSettings = {
-                format: BICst.TARGET_STYLE.FORMAT.NORMAL,
-                numLevel: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
-                unit: "",
-                iconStyle: BICst.TARGET_STYLE.ICON_STYLE.NONE,
-                mark: 0,
-                conditions: []
-            }
-        }
 
         this.format = BI.createWidget({
             type: "bi.segment",
@@ -63,6 +53,7 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
 
         this.format.on(BI.Segment.EVENT_CHANGE, function () {
             example.setText(self._switchLabel());
+            example.setTitle(self._switchLabel());
         });
 
         this.separators = BI.createWidget({
@@ -75,6 +66,7 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
 
         this.separators.on(BI.Controller.EVENT_CHANGE, function () {
             example.setText(self._switchLabel());
+            example.setTitle(self._switchLabel());
         });
 
         this.numLevel = BI.createWidget({
@@ -87,6 +79,7 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
             BI.isNotNull(self.mark) && self.mark.setLevel(this.getValue()[0]);
             self.conditions.setNumLevel(this.getValue()[0]);
             example.setText(self._switchLabel());
+            example.setTitle(self._switchLabel());
         });
 
         this.unit = BI.createWidget({
@@ -99,6 +92,7 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
 
         this.unit.on(BI.SignEditor.EVENT_CONFIRM, function () {
             example.setText(self._switchLabel());
+            example.setTitle(self._switchLabel());
         });
 
         this.iconStyle = BI.createWidget({
@@ -149,27 +143,18 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
 
         var example = BI.createWidget({
             type: "bi.label",
-            height: 25
+            height: 25,
+            width: 110
         });
 
         example.setText(this._switchLabel());
+        example.setTitle(this._switchLabel());
 
         BI.createWidget({
             type: "bi.vertical",
             element: center,
             cls: "bi-target-style-setting",
             items: [{
-                type: "bi.left",
-                items: [{
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Format"),
-                    cls: "style-name",
-                    height: this.constants.LABEL_HEIGHT,
-                    width: this.constants.LABEL_WIDTH,
-                    textAlign: "left"
-                }, this.format, this.separators, example],
-                hgap: 5
-            }, {
                 type: "bi.left",
                 items: [{
                     type: "bi.label",
@@ -185,6 +170,17 @@ BI.TargetStyleSetting = BI.inherit(BI.BarPopoverSection, {
                     width: 50,
                     cls: "style-name"
                 }, this.unit],
+                hgap: 5
+            }, {
+                type: "bi.left",
+                items: [{
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Format"),
+                    cls: "style-name",
+                    height: this.constants.LABEL_HEIGHT,
+                    width: this.constants.LABEL_WIDTH,
+                    textAlign: "left"
+                }, this.format, this.separators, example],
                 hgap: 5
             }, {
                 type: "bi.left",

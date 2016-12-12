@@ -67,9 +67,7 @@ BI.ComplexRegionWrapper = BI.inherit(BI.Widget, {
         var self = this;
         var emptyRegion = this.center.getNodeById(BI.ComplexEmptyRegion.ID);
         if (BI.isNotNull(emptyRegion)) {
-            this.center.removeItems([emptyRegion]);
-            this.center.addItems([emptyRegion]);
-            return;
+            this.center.removeItems([emptyRegion.getValue()]);
         }
         emptyRegion = BI.createWidget({
             type: "bi.complex_empty_region",
@@ -78,6 +76,7 @@ BI.ComplexRegionWrapper = BI.inherit(BI.Widget, {
         emptyRegion.on(BI.ComplexEmptyRegion.EVENT_CHANGE, function (data) {
             self._addRegionAndDimension(data);
         });
+        this.emptyRegion = emptyRegion;
         this.center.addItems([emptyRegion]);
     },
 
@@ -85,14 +84,8 @@ BI.ComplexRegionWrapper = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var wrapperType = o.wrapperType;
         var regionTypes = BI.keys(this.regions);
-        var newRegionType;
-        if (regionTypes.length === 0) {
-            if (wrapperType === BI.RegionsManager.COMPLEX_REGION_CATEGORY) {
-                newRegionType = BICst.REGION.DIMENSION1;
-            } else {
-                newRegionType = BICst.REGION.DIMENSION2;
-            }
-        } else {
+        var newRegionType = o.wrapperType;
+        if (regionTypes.length !== 0) {
             //找到最大的 +1
             newRegionType = BI.parseInt(BI.sortBy(regionTypes)[regionTypes.length - 1]) + 1;
         }
@@ -111,12 +104,16 @@ BI.ComplexRegionWrapper = BI.inherit(BI.Widget, {
     
     //排序 
     sortRegion: function() {
-        var self = this;
+        var self = this, o = this.options;
         var sortedRegions = this.center.element.sortable("toArray");
         var originalRegionKeys = BI.keys(this.regions);
-        var originalRegions = BI.deepClone(this.regions);
+        var originalRegions = {};
+        BI.each(this.regions, function (idx, region) {
+            originalRegions[region.getRegionType()] = region;
+        });
+        self.regions = {};
         BI.each(sortedRegions, function(i, regionType) {
-             self.regions[regionType] = originalRegions[originalRegionKeys[i]];
+            self.regions[regionType] = originalRegions[originalRegionKeys[i]];
         });
     },
 
@@ -139,7 +136,11 @@ BI.ComplexRegionWrapper = BI.inherit(BI.Widget, {
             delete this.regions[type];
         }
     },
-    
+
+    getWrapperType: function () {
+        return this.options.wrapperType;
+    },
+
     getCenterArea: function() {
         return this.center;  
     },
@@ -148,6 +149,10 @@ BI.ComplexRegionWrapper = BI.inherit(BI.Widget, {
         return this.regions;
     },
 
+    getEmptyRegionValue: function () {
+        return this.emptyRegion && this.emptyRegion.getDimensions();
+    },
+    
     populate: function () {
 
     }

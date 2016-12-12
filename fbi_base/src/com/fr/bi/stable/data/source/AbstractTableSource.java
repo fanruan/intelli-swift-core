@@ -84,6 +84,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
     public void refreshDBTable() {
         PersistentTable tempTable = dbTable;
         try {
+            dbTable=null;
             dbTable = (PersistentTable) getPersistentTable();
         } catch (Exception e) {
             BILoggerFactory.getLogger(AbstractTableSource.class).error(e.getMessage(), e);

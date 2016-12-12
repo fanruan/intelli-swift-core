@@ -36,12 +36,6 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
         var self = this, o = this.options;
         var dId = o.dId;
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
-        if(BI.isEmptyObject(styleSettings)) {
-            styleSettings = {
-                format: BICst.TARGET_STYLE.FORMAT.NORMAL,
-                numLevel: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL
-            }
-        }
 
         this.format = BI.createWidget({
             type: "bi.segment",
@@ -52,6 +46,7 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
 
         this.format.on(BI.Segment.EVENT_CHANGE, function () {
             example.setText(self._switchLabel());
+            example.setTitle(self._switchLabel());
         });
 
         this.separators = BI.createWidget({
@@ -75,6 +70,7 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
 
         this.numLevel.on(BI.Segment.EVENT_CHANGE, function(){
             example.setText(self._switchLabel());
+            example.setTitle(self._switchLabel());
         });
 
         this.unit = BI.createWidget({
@@ -87,30 +83,23 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
 
         this.unit.on(BI.SignEditor.EVENT_CONFIRM, function () {
             example.setText(self._switchLabel());
+            example.setTitle(self._switchLabel());
         });
 
         var example = BI.createWidget({
             type: "bi.label",
-            height: 25
+            height: 25,
+            width: 100
         });
 
         example.setText(this._switchLabel());
+        example.setTitle(this._switchLabel());
 
         BI.createWidget({
             type: "bi.left",
             element: center,
             cls: "bi-target-style-setting",
             items: [{
-                type: "bi.left",
-                items: [{
-                    type: "bi.label",
-                    text: BI.i18nText("BI-Format"),
-                    cls: "style-name",
-                    height: this.constants.LABEL_HEIGHT,
-                    textAlign: "left"
-                }, this.format, this.separators, example],
-                hgap: 5
-            }, {
                 type: "bi.left",
                 items: [{
                     type: "bi.label",
@@ -125,6 +114,16 @@ BI.TargetStyleSettingForMap = BI.inherit(BI.BarPopoverSection, {
                     width: 50,
                     cls: "style-name"
                 }, this.unit],
+                hgap: 5
+            }, {
+                type: "bi.left",
+                items: [{
+                    type: "bi.label",
+                    text: BI.i18nText("BI-Format"),
+                    cls: "style-name",
+                    height: this.constants.LABEL_HEIGHT,
+                    textAlign: "left"
+                }, this.format, this.separators, example],
                 hgap: 5
             }],
             hgap: 10,

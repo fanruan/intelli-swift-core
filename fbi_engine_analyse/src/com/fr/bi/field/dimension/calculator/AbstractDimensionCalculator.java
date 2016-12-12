@@ -156,6 +156,18 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
             usedColumnKey = new IndexKey(primaryField.getFieldName());
         }
         ICubeColumnIndexReader getter = loader.getTableIndex(usedTableSource).loadGroup(usedColumnKey, getRelationList(), useRealData, groupLimit);
+//        GroupValueIndex nullGroupValueIndex = loader.getTableIndex(usedTableSource).getNullGroupValueIndex(usedColumnKey);
+//        CubeLinkedHashMap newGetter = new CubeLinkedHashMap();
+//        newGetter.put("", nullGroupValueIndex);
+//        Iterator iter = getter.iterator();
+//        while (iter.hasNext()) {
+//            Map.Entry entry = (Map.Entry) iter.next();
+//            Object key = entry.getKey();
+//            if (key == null) {
+//                continue;
+//            }
+//            newGetter.put(key, entry.getValue());
+//        }
         getter = dimension.getGroup().createGroupedMap(getter);
         if (useRealData && isNoGroup() && getSortType() != BIReportConstant.SORT.CUSTOM) {
             return getSortType() != BIReportConstant.SORT.DESC ? getter.iterator() : getter.previousIterator();
@@ -167,7 +179,7 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
         return getGroup().getType() == BIReportConstant.GROUP.NO_GROUP || getGroup().getType() == BIReportConstant.GROUP.ID_GROUP;
     }
 
-    private CubeTableSource getTableSourceFromField() {
+    protected CubeTableSource getTableSourceFromField() {
         return field.getTableBelongTo().getTableSource();
     }
 
@@ -223,5 +235,8 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
         return dimension.getSelfToSelfRelationPath();
     }
 
-
+    @Override
+    public void setRelationList(List<BITableSourceRelation> list) {
+        relations = list;
+    }
 }

@@ -1,5 +1,5 @@
 @import "../../../bibase";
-
+@container-min-height: 37px;
 .bi-target-region {
   border: 1px solid @color-target-region-border;
   & .region-north {
@@ -10,7 +10,12 @@
       color: @color-bi-text-gray;
     }
   }
+  & .drag-tool{
+    border-right: 1px solid @color-target-region-border;
+    cursor: move;
+  }
   & .targets-container {
+    min-height: @container-min-height;
     & .target-container {
       background: @color-target-background;
       .border-radius(2px);
@@ -28,5 +33,12 @@
     background: @color-bi-background-black;
     .opacity(0.05);
     z-index: 1;
+  }
+  & .bi-empty-region {
+    border-color: @color-target-region-border;
+  }
+  & .ui-sortable-helper {
+    background: @color-target-background;
+    .border-radius(2px);
   }
 }

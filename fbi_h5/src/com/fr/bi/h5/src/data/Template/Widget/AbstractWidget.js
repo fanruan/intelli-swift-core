@@ -763,7 +763,7 @@ class AbstractWidget {
             }
         });
 
-        //联动传递指标过滤条件  找到联动链上的所有的组件，获取当前点击的指标的过滤条件  感觉有点浮夸的功能
+        //联动传递过滤条件  找到联动链上的所有的组件，获取当前点击的指标的过滤条件  感觉有点浮夸的功能
         var allLinksWIds = [];
 
         getLinkedIds(allLinksWIds);

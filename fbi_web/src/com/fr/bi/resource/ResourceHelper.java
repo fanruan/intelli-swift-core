@@ -723,6 +723,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/dimensionsmanager/regions/map/region.point.map.sub.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regions/map/region.point.map.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regions/region.target.css",
+                "com/fr/bi/web/css/modules/dimensionsmanager/regions/region.wrapper.css",
+                "com/fr/bi/web/css/modules/dimensionsmanager/regions/region.empty.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/dimensionsmanager.css",
 
@@ -994,6 +996,7 @@ public class ResourceHelper {
                 //更新设置
                 "com/fr/bi/web/css/extend/update/update.tabledata.css",
                 "com/fr/bi/web/css/extend/update/singletable/update.singletable.setting.css",
+                "com/fr/bi/web/css/extend/update/singletable/iconchangetext.button.css",
                 "com/fr/bi/web/css/extend/update/singletable/preview/update.previewpane.css",
 
                 //指标弹出明细表
@@ -1075,8 +1078,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/maptypecombo/popup.maptype.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/charttype/charttype.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regions/abstract.region.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regions/region.dimension.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regions/region.target.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regions/abstract.wrapper.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regions/abstract.region.wrapper.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regions/region.detail.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regions/region.tree.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regions/complex/region.dimension.complex.js",
@@ -1089,6 +1092,14 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/dimensionsmanager/model.dimensionsmanager.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/dimensionsmanager.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/dimensionsmanager.control.js",
+
+                //新的Region
+                "com/fr/bi/web/js/modules/dimensionsmanager/regions/dimension/region.wrapper.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regions/dimension/region.empty.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regions/dimension/region.dimension.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regions/target/region.wrapper.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regions/target/region.empty.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regions/target/region.target.js",
 
                 "com/fr/bi/web/js/modules/tablechartmanager/tablechartmanager.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/errorpane/tablechart.errorpane.js",
@@ -1633,6 +1644,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/showtitle/showtitle.detailed.setting.popup.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/table/table.detailed.setting.combo.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/table/table.detailed.setting.popup.js",
+                "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/table/table.detailed.setting.texttoolbar.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/tooltip/tooltip.detailed.setting.combo.js",
                 "com/fr/bi/web/js/modules/chartsetting/charts/detailedsetting/tooltip/tooltip.detailed.setting.popup.js",
 
@@ -1800,6 +1812,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/extend/update/update.tabledata.model.js",
                 "com/fr/bi/web/js/extend/update/singletable/item/item.singletable.timesetting.js",
                 "com/fr/bi/web/js/extend/update/singletable/button/updatetype.button.js",
+                "com/fr/bi/web/js/extend/update/singletable/button/iconchangetext.button.js",
                 "com/fr/bi/web/js/extend/update/singletable/update.singletable.setting.js",
                 "com/fr/bi/web/js/extend/update/singletable/update.singletable.setting.model.js",
                 "com/fr/bi/web/js/extend/update/singletable/preview/update.previewpane.js",
@@ -1923,6 +1936,9 @@ public class ResourceHelper {
 
                 "com/fr/bi/web/css/base/wrapper/inline.center.css",
                 "com/fr/bi/web/css/base/wrapper/inline.vertical.css",
+                "com/fr/bi/web/css/base/wrapper/flex.center.css",
+                "com/fr/bi/web/css/base/wrapper/flex.horizontal.css",
+                "com/fr/bi/web/css/base/wrapper/flex.vertical.center.css",
 
                 "com/fr/bi/web/css/base/view/floatboxview.css",
                 "com/fr/bi/web/css/base/view/popupview.css",
@@ -2480,7 +2496,6 @@ public class ResourceHelper {
 
                 "com/fr/bi/web/js/base/wrapper/layout.js",
                 "com/fr/bi/web/js/base/wrapper/layout/layout.absolute.js",
-                "com/fr/bi/web/js/base/wrapper/layout/layout.flexible.js",
                 "com/fr/bi/web/js/base/wrapper/layout/layout.adaptive.js",
                 "com/fr/bi/web/js/base/wrapper/layout/layout.border.js",
                 "com/fr/bi/web/js/base/wrapper/layout/layout.card.js",
@@ -2500,7 +2515,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/float.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/absolute.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/inline.center.js",
-                "com/fr/bi/web/js/base/wrapper/layout/adapt/flexbox.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.leftrightvertical.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.horizontal.js",
                 "com/fr/bi/web/js/base/wrapper/layout/adapt/adapt.vertical.js",
@@ -2513,6 +2527,11 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.float.center.js",
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.horizontal.js",
                 "com/fr/bi/web/js/base/wrapper/layout/middle/middle.vertical.js",
+
+                "com/fr/bi/web/js/base/wrapper/layout/flex/flex.center.js",
+                "com/fr/bi/web/js/base/wrapper/layout/flex/flex.horizontal.js",
+                "com/fr/bi/web/js/base/wrapper/layout/flex/flex.vertical.center.js",
+
                 "com/fr/bi/web/js/data/utils.js",
                 //filter
                 "com/fr/bi/web/js/data/filter/filtervalue.factory.js",
@@ -2735,6 +2754,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/widget/detailchart/chart.comparebar.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.comparearea.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.pie.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.multipie.js",
+                "com/fr/bi/web/js/widget/detailchart/chart.recttree.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.radar.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.scatter.js",
                 "com/fr/bi/web/js/widget/detailchart/chart.fallaxis.js",

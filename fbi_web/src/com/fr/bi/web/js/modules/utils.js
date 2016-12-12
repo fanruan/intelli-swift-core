@@ -762,11 +762,29 @@
             return BI.isNotNull(ws.isCustomTableStyle) ? ws.isCustomTableStyle :
                 BICst.DEFAULT_CHART_SETTING.isCustomTableStyle;
         },
-
+        //表格样式
         getWSCustomTableStyleByID: function (wid) {
             var ws = this.getWidgetSettingsByID(wid);
             return BI.isNotNull(ws.customTableStyle) ? ws.customTableStyle :
                 {};
+        },
+
+        getWSTableNameStyleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            if(ws.customTableStyle) {
+                return BI.isNotNull(ws.customTableStyle.tableNameStyle) ? ws.customTableStyle.tableNameStyle :
+                    {};
+            }
+            return {}
+        },
+
+        getWSTableValueStyleByID: function (wid) {
+            var ws = this.getWidgetSettingsByID(wid);
+            if(ws.customTableStyle) {
+                return BI.isNotNull(ws.customTableStyle.tableValueStyle) ? ws.customTableStyle.tableValueStyle :
+                    {};
+            }
+            return {}
         },
 
         getWSShowNumberByID: function (wid) {
@@ -1727,7 +1745,15 @@
 
         getDimensionSettingsByID: function (did) {
             if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
-                return Data.SharingPool.get("dimensions", did, "settings") || {};
+                return Data.SharingPool.get("dimensions", did, "settings") || {
+                        format: BICst.TARGET_STYLE.FORMAT.NORMAL,
+                        numLevel: BICst.TARGET_STYLE.NUM_LEVEL.NORMAL,
+                        unit: "",
+                        iconStyle: BICst.TARGET_STYLE.ICON_STYLE.NONE,
+                        mark: 0,
+                        conditions: [],
+                        numSeparators: true,
+                    };
             }
             return {};
         },
@@ -2001,6 +2027,10 @@
                     return "drag-bar-compare-icon";
                 case BICst.WIDGET.PIE:
                     return "drag-pie-icon";
+                case BICst.WIDGET.MULTI_PIE:
+                    return "drag-multi-pie-icon";
+                case BICst.WIDGET.RECT_TREE:
+                    return "drag-rect-tree-icon";
                 case BICst.WIDGET.MAP:
                     return "drag-map-china-icon";
                 case BICst.WIDGET.GIS_MAP:
@@ -2444,6 +2474,7 @@
         getDataByDimensionID: function (dId, callback) {
             var wid = this.getWidgetIDByDimensionID(dId);
             var dimension = Data.SharingPool.get("dimensions", dId);
+            dimension.filter_value = {};
             dimension.used = true;
             var widget = Data.SharingPool.get("widgets", wid);
             widget.page = -1;
@@ -2997,7 +3028,7 @@
                 }
             });
 
-            //联动传递指标过滤条件  找到联动链上的所有的组件，获取当前点击的指标的过滤条件  感觉有点浮夸的功能
+            //联动传递过滤条件  找到联动链上的所有的组件，获取当前点击的指标的过滤条件  感觉有点浮夸的功能
             var allLinksWIds = [];
 
             function getLinkedIds(wid, links) {
@@ -3062,6 +3093,10 @@
                 }
             });
 
+            //联动过来的维度的过滤条件
+            BI.each(linkages, function(lTId, link) {
+                filterValues = filterValues.concat(self.getDimensionsFilterByTargetId(lTId));
+            });
 
             //日期类型的过滤条件
             var dimensions = widget.dimensions;
@@ -3235,6 +3270,38 @@
                 tIds.push(self.getTableIDByDimensionID(dId));
             });
             return this.isTableInRelativeTables(tIds, tableId);
+        },
+
+        getDimensionsFilterByTargetId: function(tId) {
+            var self = this;
+            var dimensionIds = this.getAllDimDimensionIDs(this.getWidgetIDByDimensionID(tId));
+            var dFilters = [];
+            BI.each(dimensionIds, function(i, dId) {
+                var dimensionMap = self.getDimensionMapByDimensionID(dId);
+                if (BI.isNotNull(dimensionMap[tId])) {
+                    var dFilterValue = self.getDimensionFilterValueByID(dId);
+                    if (BI.isNotEmptyObject(dFilterValue)) {
+                        parseDimensionFilter4Linkage(dFilterValue, dimensionMap[tId]._src, dId);
+                        dFilters.push(dFilterValue);
+                    }
+                }
+            });
+            return dFilters;
+
+            function parseDimensionFilter4Linkage(dFilter, src, dId) {
+                if (dFilter.filter_type === BICst.FILTER_TYPE.AND ||
+                    dFilter.filter_type === BICst.FILTER_TYPE.OR) {
+                    BI.each(dFilter.filter_value, function(i, fValue) {
+                        parseDimensionFilter4Linkage(fValue, src, dId);
+                    });
+                } else {
+                    if (dFilter.target_id === dId) {
+                        dFilter._src = src;
+                    } else {
+                        dFilter.filter_type = BICst.FILTER_TYPE.EMPTY_CONDITION;
+                    }
+                }
+            }
         }
 
     });

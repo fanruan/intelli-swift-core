@@ -42,5 +42,12 @@ public interface ICubeValueEntryGetter {
      */
     int getPositionOfGroupByRow(int row);
 
+    /**
+     * 根据值获取在分组中的位置
+     * @param value
+     * @return
+     */
+    int getPositionOfGroupByValue(Object value);
+
     int getGroupSize();
 }

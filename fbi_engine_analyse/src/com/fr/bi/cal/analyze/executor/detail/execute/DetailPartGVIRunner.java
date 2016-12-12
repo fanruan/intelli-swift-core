@@ -39,7 +39,7 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
         this.session = session;
         paras = new DetailParas(widget, gvi, loader);
         Object[] lastValue = session.getDetailLastValue(paras.getSortKey(), paging.getCurrentPage());
-        index = new DetailSortGviIndex(lastValue, paras.getCubeIndexGetters(), paras.getAsc());
+        index = new DetailSortGviIndex(lastValue, paras.getCubeIndexGetters(), paras.getAsc(), gvi);
         if (lastValue != null && lastValue.length > 0){
             row = paging.getStartRow() - session.getDetailLastIndex(paras.getSortKey(), paging.getCurrentPage());
         }
@@ -80,7 +80,7 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
                 checkAndSetSession();
                 PageStatus x = checkPage();
                 if (x != null) {
-                    return x.getStatus();
+                    return x.isAfter();
                 }
                 Object[] ob = getRowValue(rowIndex);
                 boolean end = action.actionPerformed(new BIRowValue(row, ob));
@@ -126,7 +126,7 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
                 checkAndSetSession();
                 PageStatus x = checkPage();
                 if (x != null) {
-                    return x.getStatus();
+                    return x.isAfter();
                 }
                 set.add(new BIRowValue(row, getRowValue(rowIndex)));
                 return false;
@@ -145,7 +145,7 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
     private enum PageStatus{
         BEFORE(false),AFTER(true);
 
-        public boolean getStatus() {
+        public boolean isAfter() {
             return status;
         }
 

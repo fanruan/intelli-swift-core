@@ -152,6 +152,7 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
                 });
                 break;
             case BICst.WIDGET.PIE:
+            case BICst.WIDGET.MULTI_PIE:
                 this.chartSetting = BI.createWidget({
                     type: "bi.pie_chart_setting",
                     wId: wId
@@ -240,6 +241,8 @@ BI.ChartSetting = BI.inherit(BI.Widget, {
                 this.chartSetting.on(BI.MapSetting.EVENT_CHANGE, function () {
                     self.fireEvent(BI.ChartSetting.EVENT_CHANGE, this.getValue());
                 });
+            case BICst.WIDGET.RECT_TREE:
+                this.chartSetting = BI.createWidget();
                 break;
         }
         this.chartSetting.populate();

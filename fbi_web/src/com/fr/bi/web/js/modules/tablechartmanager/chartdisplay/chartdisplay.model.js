@@ -30,6 +30,16 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     },
 
+    _assertValue: function (v) {
+        if (BI.isNull(v)) {
+            return;
+        }
+        if (!BI.isFinite(v)) {
+            return 0;
+        }
+        return v;
+    },
+
     _formatDataForMap: function (data, currentLayer) {
         var self = this, o = this.options;
         var targetIds = this._getShowTarget();
@@ -37,20 +47,20 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         currentLayer++;
         if (BI.has(data, "c")) {
             var obj = (data.c)[0];
-            var view = BI.Utils.getWidgetViewByID(o.wId);
             var columnSizeArray = BI.makeArray(BI.isNull(obj) ? 0 : BI.size(obj.s), 0);
             result = BI.map(columnSizeArray, function (idx, value) {
                 var type = null;
-                if (BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], targetIds[idx])) {
+                var regionType = BI.Utils.getRegionTypeByDimensionID(targetIds[idx]);
+                if (regionType >= BICst.REGION.TARGET2 && regionType < BICst.REGION.TARGET3) {
                     type = BICst.WIDGET.BUBBLE;
                 }
                 var adjustData = [];
                 BI.each(data.c, function (id, item) {
                     var res = {};
-                    if (BI.isNull(assertValue(item.s[idx]))) {
+                    if (BI.isNull(self._assertValue(item.s[idx]))) {
                         return;
                     }
-                    if (BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], targetIds[idx])) {
+                    if (regionType >= BICst.REGION.TARGET2 && regionType < BICst.REGION.TARGET3) {
                         switch (type) {
                             case BICst.WIDGET.BUBBLE:
                             case BICst.WIDGET.AXIS:
@@ -93,15 +103,67 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             });
         }
         return result;
+    },
 
-        function assertValue(v) {
-            if (BI.isNull(v)) {
-                return;
+    _formatDataForMultiPie: function(da){
+        var self = this, o = this.options;
+        var targetIds = this._getShowTarget();
+        var drillcataDimId = this._getDrillDimensionId(BI.Utils.getDrillByID(o.wId)[self.cataDid]);
+        var drillseriDimId = this._getDrillDimensionId(BI.Utils.getDrillByID(o.wId)[self.seriesDid]);
+        var cataGroup = BI.Utils.getDimensionGroupByID(self.cataDid);
+        if (BI.isNotNull(drillcataDimId)) {
+            cataGroup = BI.Utils.getDimensionGroupByID(drillcataDimId);
+        }
+        var obj = {};
+        obj.data = _formatChidren(da, 0, []);
+        obj.name = BI.Utils.getDimensionNameByID(targetIds[0]);
+        return [obj];
+
+        function _formatChidren(data, currentLayer, parents){
+            if (BI.has(data, "c")) {
+                var adjustData = [];
+                BI.each(data.c, function (id, item) {
+                    var res = {};
+                    if (BI.isNull(self._assertValue(item.s[0]))) {
+                        return;
+                    }
+                    var value = item.n, x = item.n;
+                    if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
+                        var date = new Date(BI.parseInt(x));
+                        x = date.print("%Y-%X-%d");
+                    }
+                    res = {
+                        x: x,
+                        initialX: value,
+                        y: (BI.isFinite(item.s[0]) ? item.s[0] : 0),
+                        parents: parents,
+                        dId: self.allDimIds[currentLayer],
+                        targetIds: [targetIds[0]],
+                    };
+                    if (BI.has(item, "c")) {
+                        res.children = _formatChidren(item, currentLayer + 1, BI.concat(parents, [{
+                            x: x,
+                            initialX: value,
+                            y: (BI.isFinite(item.s[0]) ? item.s[0] : 0),
+                            parents: parents,
+                            dId: self.allDimIds[currentLayer],
+                            targetIds: [targetIds[0]],
+                        }]));
+                    }
+                    adjustData.push(res);
+                });
+                return adjustData;
             }
-            if (!BI.isFinite(v)) {
-                return 0;
+            if(BI.has(data, "s")){
+                return BI.map(data.s, function (idx, value) {
+                    return {
+                        x: BI.Utils.getDimensionNameByID(targetIds[0]),
+                        y: (BI.isFinite(value) ? value : 0),
+                        targetIds: [targetIds[idx]]
+                    };
+                });
             }
-            return v;
+            return [];
         }
     },
 
@@ -174,10 +236,10 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         if (BI.isEmptyArray(data)) {
             return [];
         }
-        var view = BI.Utils.getWidgetViewByID(o.wId);
         var array = [];
         BI.each(this.targetIds, function (idx, tId) {
-            if (BI.has(view, BICst.REGION.TARGET1) && BI.contains(view[BICst.REGION.TARGET1], tId)) {
+            var regionType = BI.Utils.getRegionTypeByDimensionID(tId);
+            if (regionType >= BICst.REGION.TARGET1 && regionType < BICst.REGION.TARGET2) {
                 array.length === 0 && array.push([]);
                 if (self._checkSeriesExist()) {
                     array[0] = data;
@@ -185,24 +247,24 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     array[0].push(data[idx])
                 }
             }
-            if (BI.has(view, BICst.REGION.TARGET2) && BI.contains(view[BICst.REGION.TARGET2], tId)) {
+            if (regionType >= BICst.REGION.TARGET2 && regionType < BICst.REGION.TARGET3) {
                 while (array.length < 2) {
                     array.push([]);
                 }
                 if (self._checkSeriesExist()) {
                     array[1] = data;
                 } else {
-                    array[1].push(data[idx])
+                    array[1].push(data[idx]);
                 }
             }
-            if (BI.has(view, BICst.REGION.TARGET3) && BI.contains(view[BICst.REGION.TARGET3], tId)) {
+            if (regionType >= BICst.REGION.TARGET3) {
                 while (array.length < 3) {
                     array.push([]);
                 }
                 if (self._checkSeriesExist()) {
                     array[2] = data;
                 } else {
-                    array[2].push(data[idx])
+                    array[2].push(data[idx]);
                 }
             }
         });
@@ -211,9 +273,13 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
 
     _checkSeriesExist: function () {
         var o = this.options;
-        var view = BI.Utils.getWidgetViewByID(o.wId);
-        var result = BI.find(view[BICst.REGION.DIMENSION2], function (idx, dId) {
-            return BI.Utils.isDimensionUsable(dId);
+        var views = BI.filter(BI.Utils.getWidgetViewByID(o.wId), function (idx, view) {
+            return idx >= BICst.REGION.DIMENSION2 && idx < BICst.REGION.TARGET1;
+        });
+        var result = BI.find(views, function (idx, view) {
+            return BI.find(view, function (i, dId) {
+                return BI.Utils.isDimensionUsable(dId);
+            });
         });
         return BI.isNotNull(result);
     },
@@ -231,7 +297,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var objs = BI.map(data.c, function (idx, item) {
             var obj = {};
             var name = item.n, seriesName = item.n;
+            var drillcataDimId = self._getDrillDimensionId(BI.Utils.getDrillByID(o.wId)[self.cataDid]);
             var dGroup = BI.Utils.getDimensionGroupByID(self.cataDid);
+            if (BI.isNotNull(drillcataDimId)) {
+                dGroup = BI.Utils.getDimensionGroupByID(drillcataDimId);
+            }
             if (BI.isNotNull(dGroup) && dGroup.type === BICst.GROUP.YMD) {
                 var date = new Date(BI.parseInt(name));
                 name = date.print("%Y-%X-%d");
@@ -264,7 +334,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var objs = BI.map(data.c, function (idx, item) {
             var obj = {};
             var name = item.n, seriesName = item.n;
+            var drillcataDimId = self._getDrillDimensionId(BI.Utils.getDrillByID(o.wId)[self.cataDid]);
             var dGroup = BI.Utils.getDimensionGroupByID(self.cataDid);
+            if (BI.isNotNull(drillcataDimId)) {
+                dGroup = BI.Utils.getDimensionGroupByID(drillcataDimId);
+            }
             if (BI.isNotNull(dGroup) && dGroup.type === BICst.GROUP.YMD) {
                 var date = new Date(BI.parseInt(name));
                 name = date.print("%Y-%X-%d");
@@ -328,7 +402,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         return {
                             "x": x,
                             "y": (BI.isNull(seriesValue) || BI.isFinite(seriesValue)) ? seriesValue : 0,
-                            "value": value,
+                            "initialX": value,
                             seriesName: seriesName,
                             targetIds: [targetIds[0]]
                         };
@@ -338,7 +412,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     data = [{
                         "x": "",
                         "y": (BI.isNull(leftSeriesValue) || BI.isFinite(leftSeriesValue)) ? leftSeriesValue : 0,
-                        "value": "",
+                        "initialX": "",
                         seriesName: seriesName,
                         targetIds: [targetIds[0]]
                     }]
@@ -363,7 +437,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     return {
                         x: x,
                         y: (BI.isNull(seriesValue) || BI.isFinite(seriesValue)) ? seriesValue : 0,
-                        value: value,
+                        initialX: value,
                         seriesName: BI.Utils.getDimensionNameByID(targetIds[idx]),
                         targetIds: [targetIds[idx]]
                     };
@@ -736,6 +810,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.GIS_MAP:
                 var da = this._formatDataForGISMap(data);
                 return BI.isEmptyArray(da) ? da : [da];
+            case BICst.WIDGET.MULTI_PIE:
+            case BICst.WIDGET.RECT_TREE:
+                var da = this._formatDataForMultiPie(data);
+                return BI.isEmptyArray(da) ? da : [da];
+
         }
     },
 
@@ -760,7 +839,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 BI.each(drArray, function (i, dr) {
                     var tempDrId = dr.dId;
                     if (i === drArray.length - 1) {
-                        if (BI.Utils.getRegionTypeByDimensionID(drId) === BICst.REGION.DIMENSION1) {
+                        var rType = BI.Utils.getRegionTypeByDimensionID(drId);
+                        if (rType >= BICst.REGION.DIMENSION1 && rType < BICst.REGION.DIMENSION2) {
                             self.dimIds.splice(dIndex, 0, tempDrId);
                         } else {
                             self.crossDimIds.splice(cIndex, 0, tempDrId);
@@ -772,6 +852,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 });
             }
         });
+        this.allDimIds = BI.concat(this.dimIds, this.crossDimIds);
     },
 
     _calculateValue: function (data, type) {
@@ -968,12 +1049,38 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     value: [BI.Utils.getClickedValue4Group(obj.x, clickeddId)]
                 }];
                 break;
+            case BICst.WIDGET.MULTI_PIE:
+                //多层饼图点击中心空白没有数据返回，此时给它当前使用的指标id
+                dId = obj.targetIds || this.targetIds;
+                clicked = BI.map(obj.parents, function(idx, parent){
+                    return {
+                        dId: parent.dId,
+                        value: [BI.Utils.getClickedValue4Group(parent.initialX || parent.x, parent.dId)]
+                    }
+                });
+                BI.isNotNull(obj.parents) && clicked.push({
+                    dId: clickeddId,
+                    value: [BI.Utils.getClickedValue4Group(obj.initialX || obj.x, clickeddId)]
+                })
+                break;
+            case BICst.WIDGET.RECT_TREE:
+                dId = obj.targetIds;
+                clicked = BI.map(obj.parents, function(idx, parent){
+                    return {
+                        dId: parent.dId,
+                        value: [BI.Utils.getClickedValue4Group(parent.initialX || parent.x, parent.dId)]
+                    }
+                });
+                BI.isNotNull(obj.parents) && clicked.push({
+                    dId: clickeddId,
+                    value: [BI.Utils.getClickedValue4Group(obj.initialX || obj.x, clickeddId)]
+                })
             default:
                 dId = obj.targetIds;
                 if (BI.isNotNull(this.cataDid)) {
                     clicked = [{
                         dId: clickeddId,
-                        value: [BI.Utils.getClickedValue4Group(obj.value || obj.x, clickeddId)]
+                        value: [BI.Utils.getClickedValue4Group(obj.initialX || obj.x, clickeddId)]
                     }];
                 }
                 if (BI.isNotNull(this.seriesDid)) {

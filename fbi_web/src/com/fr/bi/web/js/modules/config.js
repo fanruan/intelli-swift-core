@@ -1131,11 +1131,11 @@ BICst.CHART_VALUE_AXIS_STYLE = [{
 //表格（分组表、交叉表和复杂表）类型
 BICst.TABLE_FORM_GROUP = [{
     cls: "table-open-row-style-font",
-    title: BI.i18nText("BI-TABLE_TYPE_TREE_SHOW"),
+    title: BI.i18nText("BI-TABLE_TYPE_MULTI_COLUMN_SHOW"),
     value: BICst.TABLE_FORM.OPEN_ROW
 }, {
     cls: "table-open-col-style-font",
-    title: BI.i18nText("BI-TABLE_TYPE_MULTI_COLUMN_SHOW"),
+    title: BI.i18nText("BI-TABLE_TYPE_TREE_SHOW"),
     value: BICst.TABLE_FORM.OPEN_COL
 }];
 
@@ -1695,3 +1695,5 @@ BICst.INIT_CHART_MAP[BICst.WIDGET.FORCE_BUBBLE] = {type: "bi.force_bubble_chart"
 BICst.INIT_CHART_MAP[BICst.WIDGET.SCATTER] = {type: "bi.scatter_chart", events: [BI.ScatterChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.MAP] = {type: "bi.map_chart", events: [BI.MapChart.EVENT_CHANGE]};
 BICst.INIT_CHART_MAP[BICst.WIDGET.GIS_MAP] = {type: "bi.gis_map_chart", events: [BI.GISMapChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.MULTI_PIE] = {type: "bi.multi_pie_chart", events: [BI.MultiPieChart.EVENT_CHANGE]};
+BICst.INIT_CHART_MAP[BICst.WIDGET.RECT_TREE] = {type: "bi.rect_tree_chart", events: [BI.GISMapChart.EVENT_CHANGE]};

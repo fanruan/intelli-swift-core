@@ -374,6 +374,12 @@ BI.extend(BI.Utils, {
         }, complete);
     },
 
+    getTablesDetailInfoByTables4Refresh: function(tables, callback, complete) {
+        Data.Req.reqTablesDetailInfoByTables4Refresh(tables, function (res) {
+            callback(res);
+        }, complete);
+    },
+
     getRelationAndTransByTables: function (data, callback, complete) {
         Data.Req.reqRelationAndTransByTables(data, function (rt) {
             callback(rt);

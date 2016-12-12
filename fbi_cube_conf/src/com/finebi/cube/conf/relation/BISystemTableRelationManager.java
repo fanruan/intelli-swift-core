@@ -1,5 +1,6 @@
 package com.finebi.cube.conf.relation;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BISystemDataManager;
 import com.finebi.cube.conf.BITableRelationConfigurationProvider;
@@ -11,7 +12,6 @@ import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.exception.*;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
@@ -153,7 +153,7 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
     }
 
     @Override
-    public void finishGenerateCubes(long userId,Set<BITableSourceRelation> absentRelation) {
+    public void finishGenerateCubes(long userId, Set<BITableSourceRelation> absentRelation) {
         userId = UserControl.getInstance().getSuperManagerID();
         getUserGroupConfigManager(userId).finishGenerateCubes(absentRelation);
     }
@@ -221,6 +221,23 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
         return getUserGroupConfigManager(userId).getAnalysisAllUnavailablePath(juniorTable, primaryTable);
     }
 
+    /**
+     * 是不是关联只是减少了。
+     *
+     * @return
+     */
+    public boolean isRelationReduced(long userId) {
+        return getUserGroupConfigManager(userId).isRelationReduced();
+    }
+
+    public boolean isRelationIncreased(long userId) {
+        return getUserGroupConfigManager(userId).isRelationIncreased();
+
+    }
+    public boolean isRelationNoChange(long userId){
+        return getUserGroupConfigManager(userId).isRelationNoChange();
+
+    }
     @Override
     public Set<BITableRelationPath> getAllTablePath(long userId) throws BITableRelationConfusionException, BITablePathConfusionException {
         userId = UserControl.getInstance().getSuperManagerID();
@@ -234,7 +251,7 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
                 BusinessTable juniorTable = juniorTableIt.next();
                 try {
                     Set<BITableRelationPath> paths = getAllPath(userId, juniorTable, superTable);
-                    if(!paths.isEmpty()){
+                    if (!paths.isEmpty()) {
                         resultPaths.addAll(paths);
                     }
                 } catch (Exception e) {

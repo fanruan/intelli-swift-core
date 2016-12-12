@@ -80,7 +80,7 @@ BI.BubbleDataLabelDetailedSettingPopup = BI.inherit(BI.Widget, {
             element: this.element,
             items: BI.createItems([
                 showWrapper,
-                positionWrapper,
+                // positionWrapper,
                 textStyleWrapper
             ]),
             hgap: 5
