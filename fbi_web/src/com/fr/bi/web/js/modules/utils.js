@@ -1860,6 +1860,13 @@
             return settings.data_label || {};
         },
 
+        getSeriesAccumulationByID: function (did) {
+            if (BI.isNotNull(Data.SharingPool.cat("dimensions", did))) {
+                return Data.SharingPool.get("dimensions", did, "seriesAccumulate") || [];
+            }
+            return [];
+        },
+
         isDimensionByDimensionID: function (dId) {
             var wId = this.getWidgetIDByDimensionID(dId);
             var views = this.getWidgetViewByID(wId);

@@ -251,6 +251,13 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
                 case BICst.DIMENSION_STRING_COMBO.DELETE:
                     self._deleteDimension();
                     break;
+                case BICst.DIMENSION_STRING_COMBO.SERIES_ACCUMULATION_ATTRIBUTE:
+                    if (s === BICst.DIMENSION_STRING_COMBO.NO_SERIES) {
+
+                    } else {
+                        self._buildSeriesAccumulationPane();
+                    }
+                    break;
                 case BICst.DIMENSION_STRING_COMBO.INFO:
                     break;
             }
@@ -423,6 +430,20 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
         });
         popup.on(BI.CordonPopup.EVENT_CHANGE, function (v) {
             self.model.set("cordon", v);
+        });
+        BI.Popovers.create(id, popup).open(id);
+        popup.populate();
+    },
+
+    _buildSeriesAccumulationPane: function () {
+        var self = this, id = this.model.get("id");
+        BI.Popovers.remove(id);
+        var popup = BI.createWidget({
+            type: "bi.series_accumulation_popup",
+            dId: this.model.get("id")
+        });
+        popup.on(BI.SeriesAccumulationPopup.EVENT_CHANGE, function (v) {
+            self.model.set("seriesAccumulate", v);
         });
         BI.Popovers.create(id, popup).open(id);
         popup.populate();
