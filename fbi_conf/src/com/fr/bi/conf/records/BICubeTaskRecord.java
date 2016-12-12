@@ -18,7 +18,7 @@ import java.util.Set;
 public class BICubeTaskRecord {
     private CubeTaskType taskType;
     private long startTime;
-    private long costTime;
+    private long endTime;
     private Status finalResult;
     private Set<CubeTableSource> allSingleSourceLayers;
     private Set<BITableSourceRelationPath> allRelationPaths;
@@ -27,8 +27,11 @@ public class BICubeTaskRecord {
     public BICubeTaskRecord(CubeTaskType taskType, long startTime, long costTime, Status finalResult) {
         this.taskType = taskType;
         this.startTime = startTime;
-        this.costTime = costTime;
+        this.endTime = costTime;
         this.finalResult = finalResult;
+    }
+
+    public BICubeTaskRecord() {
     }
 
     public Set<BIConnectionErrorLog> getErrorPathLogs() {
@@ -49,8 +52,8 @@ public class BICubeTaskRecord {
         return startTime;
     }
 
-    public long getCostTime() {
-        return costTime;
+    public long getEndTime() {
+        return endTime;
     }
 
     public Status getFinalResult() {
@@ -80,5 +83,19 @@ public class BICubeTaskRecord {
 
     public Set<BITableErrorLog> getErrorTableLogs() {
         return errorTableLogs;
+    }
+
+    @Override
+    public String toString() {
+        return "BICubeTaskRecord{" +
+                "taskType=" + taskType +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", finalResult=" + finalResult +
+                ", allSingleSourceLayers=" + allSingleSourceLayers +
+                ", allRelationPaths=" + allRelationPaths +
+                ", errorTableLogs=" + errorTableLogs +
+                ", errorPathLogs=" + errorPathLogs +
+                '}';
     }
 }

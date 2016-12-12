@@ -27,6 +27,10 @@ public class BIConnectionErrorLog extends BIConnectionLog implements ErrorLog {
         return jo;
     }
 
+    public String getError_text() {
+        return error_text;
+    }
+
     @Override
     public long getTime() {
         return 0;

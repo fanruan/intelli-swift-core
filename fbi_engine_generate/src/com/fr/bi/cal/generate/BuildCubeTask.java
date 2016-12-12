@@ -153,7 +153,6 @@ public class BuildCubeTask implements CubeTask {
                     BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
                 }
             }
-
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         } finally {
