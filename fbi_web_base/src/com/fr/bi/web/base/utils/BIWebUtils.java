@@ -8,10 +8,12 @@ import com.fr.bi.cal.analyze.base.CubeIndexManager;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.analyze.session.BISessionUtils;
 import com.fr.bi.conf.VT4FBI;
+import com.fr.bi.conf.fs.BIUserAuthorAttr;
 import com.fr.bi.conf.fs.FBIConfig;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.Status;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.conf.BISystemEnvUtils;
@@ -214,20 +216,36 @@ public class BIWebUtils {
         map.put("reg", VT4FBI.toJSONObject());
         map.put("description", node.getDescription());
         map.put("plateConfig", plateConfig);
-        //cube版本号 和 权限版本号
+        //cube版本号、权限版本号、多路径版本号
         map.put("__version__", BIConfigureManagerCenter.getCubeConfManager().getPackageLastModify() + ""
-                + BIConfigureManagerCenter.getAuthorityManager().getAuthVersion() + "" + BIConfigureManagerCenter.getCubeConfManager().getMultiPathVersion() + "" + userId);
+                + BIConfigureManagerCenter.getAuthorityManager().getAuthVersion() + ""
+                + BIConfigureManagerCenter.getCubeConfManager().getMultiPathVersion() + "" + userId);
+        //jar包版本
+        map.put("__v__", GeneralUtils.readBuildNO());
         boolean biEdit = pop == null || ComparatorUtils.equals(edit, "_bi_edit_");
         boolean isEdit = sessionIDInfo.setEdit(biEdit);
         if (biEdit && !isEdit) {
             map.put("lockedBy", BISessionUtils.getCurrentEditingUserByReport(node.getId(), node.getUserId()));
         }
-        if (!hasPrivilege(isEdit, userId, map) && !ComparatorUtils.equals(node.getDescription(), "fine_excel")) {
-            String ma = Inter.getLocText(isEdit ? "BI-User_Has_No_Edit_Privilege" : "BI-User_Has_No_View_Privilege", locale);
-            map.put("message", ma);
+
+        //无任何权限
+        if (ComparatorUtils.equals(getUserEditViewAuth(userId), BIReportConstant.REPORT_AUTH.NONE)) {
+            String message = Inter.getLocText(biEdit ? "BI-User_Has_No_Edit_Privilege" : "BI-User_Has_No_View_Privilege", locale);
+            map.put("message", message);
             writeData(req, res, "/com/fr/bi/web/html/bi_no_privilege.html", map);
             return;
         }
+
+        //仅有可查看权限
+        if (biEdit && ComparatorUtils.equals(getUserEditViewAuth(userId), BIReportConstant.REPORT_AUTH.VIEW)) {
+            String message = Inter.getLocText("BI-User_Has_No_Edit_Privilege", locale);
+            map.put("message", message);
+            writeData(req, res, "/com/fr/bi/web/html/bi_no_privilege.html", map);
+            return;
+        }
+
+        map.put("onlyViewAuth", ComparatorUtils.equals(getUserEditViewAuth(userId), BIReportConstant.REPORT_AUTH.VIEW));
+
         /**
          * Connery:用于预览用户于模板的操作
          * */
@@ -375,5 +393,47 @@ public class BIWebUtils {
         sb.append(B);
 
         return sb.toString();
+    }
+
+    /**
+     * 当前用户是否具有 编辑/查看 权限
+     * 一般逻辑：具有编辑权限，一定具有查看权限
+     * 返回：edit: true / view: true /
+     *
+     * @param userId
+     * @return
+     */
+    public static int getUserEditViewAuth(long userId) throws Exception {
+
+        //管理员、无限编辑用户
+        if (ComparatorUtils.equals(userId, UserControl.getInstance().getSuperManagerID()) ||
+                ComparatorUtils.equals(FBIConfig.getInstance().getUserAuthorAttr().getBIAuthUserLimitByMode(BIUserAuthorAttr.EDIT), BIUserAuthorAttr.NO_LIMIT)) {
+            return BIReportConstant.REPORT_AUTH.EDIT;
+        }
+
+        //编辑
+        JSONArray editUsers = FBIConfig.getInstance().getUserAuthorAttr().getUserAuthJaByMode(BIUserAuthorAttr.EDIT, StringUtils.EMPTY);
+        for (int i = 0; i < editUsers.length(); i++) {
+            JSONObject jo = editUsers.getJSONObject(i);
+            if (ComparatorUtils.equals(jo.getString("username"), UserControl.getInstance().getUser(userId).getUsername())) {
+                return BIReportConstant.REPORT_AUTH.EDIT;
+            }
+        }
+
+        //无限查看用户
+        if (ComparatorUtils.equals(FBIConfig.getInstance().getUserAuthorAttr().getBIAuthUserLimitByMode(BIUserAuthorAttr.VIEW), BIUserAuthorAttr.NO_LIMIT)) {
+            return BIReportConstant.REPORT_AUTH.VIEW;
+        }
+
+        //查看
+        JSONArray viewUsers = FBIConfig.getInstance().getUserAuthorAttr().getUserAuthJaByMode(BIUserAuthorAttr.VIEW, StringUtils.EMPTY);
+        for (int i = 0; i < viewUsers.length(); i++) {
+            JSONObject jo = viewUsers.getJSONObject(i);
+            if (ComparatorUtils.equals(jo.getString("username"), UserControl.getInstance().getUser(userId).getUsername())) {
+                return BIReportConstant.REPORT_AUTH.VIEW;
+            }
+        }
+
+        return BIReportConstant.REPORT_AUTH.NONE;
     }
 }
