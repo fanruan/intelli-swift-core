@@ -62,13 +62,25 @@ BIDezi.DimensionModel = BI.inherit(BI.Model, {
             }
             if (this.get("type") === BICst.TARGET_TYPE.NUMBER) {
                 var sort = this.get("sort");
-                if (this.get("group").type === BICst.GROUP.ID_GROUP) {
+                var group = this.get("group");
+                if (group.type === BICst.GROUP.ID_GROUP) {
                     if (!BI.has(sort, "type") || sort.type === BICst.SORT.CUSTOM) {
                         self.set("sort", {type: BICst.SORT.ASC, sort_target: this.get("id")})
                     }
                 }
-                if (BI.isNotNull(prev.group) && prev.group.type === BICst.GROUP.ID_GROUP && (change.group.type === BICst.GROUP.AUTO_GROUP || change.group.type === BICst.GROUP.CUSTOM_NUMBER_GROUP)) {
+                if (BI.isNotNull(prev.group) && prev.group.type === BICst.GROUP.ID_GROUP && change.group.type === BICst.GROUP.AUTO_GROUP) {
                     self.set("sort", {type: BICst.SORT.CUSTOM});
+                }
+                if (change.group.type === BICst.GROUP.CUSTOM_NUMBER_GROUP) {
+                    var details = [];
+                    var group_value = group.group_value || {};
+                    BI.each(group_value.group_nodes, function (i, grp) {
+                        details.push(grp.group_name);
+                    });
+                    if (BI.isNotNull(group_value.use_other)) {
+                        details.push(group_value.use_other);
+                    }
+                    self.set("sort", {type: BICst.SORT.CUSTOM, details: details});
                 }
             }
         }
