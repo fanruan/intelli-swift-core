@@ -3,6 +3,8 @@ package com.fr.bi.conf.data.source;
 import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
@@ -151,7 +153,11 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
         }
         Iterator<S> it = parents.iterator();
         while (it.hasNext()) {
-            List<Set<CubeTableSource>> parent = it.next().createGenerateTablesList();
+            CubeTableSource parentSource = it.next();
+            if (reuseTableSource(parentSource)) {
+                parentSource = getActualDBTableSource(parentSource);
+            }
+            List<Set<CubeTableSource>> parent = parentSource.createGenerateTablesList();
             if (!parent.isEmpty()) {
                 for (int i = 0; i < parent.size(); i++) {
                     generateTable.add(i, parent.get(i));
@@ -353,5 +359,19 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
             source.getSourceUsedBaseSource(set, helper);
         }
         return set;
+    }
+
+    private boolean reuseTableSource(CubeTableSource tableSource) {
+        return tableSource instanceof DBTableSource && !(tableSource instanceof ServerTableSource);
+    }
+
+    private CubeTableSource getActualDBTableSource(CubeTableSource tableSource) {
+        for (BusinessTable table : BICubeConfigureCenter.getDataSourceManager().getAllBusinessTable()) {
+            if (table.getTableSource().equals(tableSource)) {
+                return table.getTableSource();
+            }
+            break;
+        }
+        return tableSource;
     }
 }
