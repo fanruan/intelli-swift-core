@@ -55,7 +55,7 @@ public class BILoggerFactory {
                 "\n" +
                 "log4j.appender.ServerDailyRollingFile.DatePattern='.'yyyy-MM-dd\n" +
                 "\n" +
-                "log4j.appender.ServerDailyRollingFile.File=records/notify-subscription.log\n" +
+                "log4j.appender.ServerDailyRollingFile.File=logs/notify-subscription.log\n" +
                 "\n" +
                 "log4j.appender.ServerDailyRollingFile.layout=org.apache.log4j.PatternLayout\n" +
                 "\n" +

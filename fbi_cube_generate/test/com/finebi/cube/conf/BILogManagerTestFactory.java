@@ -87,7 +87,7 @@ public class BILogManagerTestFactory {
                 list.add(relation);
             }
             return new RelationColumnKey(field, list);
-        }
+        }else
         return null;
     }
 }

@@ -159,8 +159,6 @@ public class BuildCubeTask implements CubeTask {
         }
     }
 
-
-
     protected void checkTaskFinish() {
         /**
          * Cube生成任务失败。但是Cube的局部可能还在继续生成。
