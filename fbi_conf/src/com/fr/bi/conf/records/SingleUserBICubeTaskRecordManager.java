@@ -11,9 +11,15 @@ import java.util.*;
 public class SingleUserBICubeTaskRecordManager {
     private final static String XML_TAG = "SingleUserBICubeTaskRecordManager";
     private List<BICubeTaskRecord> cubeTaskRecords = new ArrayList<BICubeTaskRecord>();
+    private int maxLogNums = 200;
 
     public void saveTaskRecord(BICubeTaskRecord record) {
-        this.cubeTaskRecords.add(record);
+        synchronized (this) {
+            if (cubeTaskRecords.size() > (maxLogNums > 0 ? maxLogNums : 0)) {
+                cubeTaskRecords.remove(0);
+            }
+            cubeTaskRecords.add(record);
+        }
     }
 
     public void clear() {
