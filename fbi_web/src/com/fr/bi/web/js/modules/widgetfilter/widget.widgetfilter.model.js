@@ -288,5 +288,17 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
             }
         }
         return sStart + "-" + sEnd;
+    },
+
+    getDateText: function (filterValue) {
+        var value = filterValue || {};
+        var sStart = "";
+        if (BI.isNotNull(value.year) && BI.isNotNull(value.month) && BI.isNotNull(value.day)) {
+            sStart = value.year + "/" + (value.month + 1) + "/" + value.day;
+        } else {
+            var date = this._parseComplexDate(value);
+            sStart = BI.isNotNull(date) ? (date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate()) : "";
+        }
+        return sStart;
     }
 });
