@@ -143,7 +143,7 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
     }
 
     @Override
-    public void persistData(long userId) {
+    public synchronized void persistData(long userId) {
         persistUserData(userId);
     }
 
@@ -232,10 +232,10 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
     }
 
     private void setEdit(JSONObject jo) throws Exception {
-        if (jo.has(Constants.PACK_ID)){
+        if (jo.has(Constants.PACK_ID)) {
             JSONObject pack = jo.getJSONObject(Constants.PACK_ID);
             JSONArray tables = pack.getJSONArray("tables");
-            for (int i = 0; i < tables.length(); i++){
+            for (int i = 0; i < tables.length(); i++) {
                 tables.getJSONObject(i).put("inedible", true);
             }
         }
@@ -290,6 +290,7 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     /**
      * 先到管理员那找下，再找自己的吧
+     *
      * @param tableId
      * @param userId
      * @return
@@ -300,7 +301,7 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 //        try{
 //            return getUserAnalysisBusiPackManager(UserControl.getInstance().getSuperManagerID()).getTable(tableId);
 //        } catch (BITableAbsentException e){
-            return getUserAnalysisBusiPackManager(userId).getTable(tableId);
+        return getUserAnalysisBusiPackManager(userId).getTable(tableId);
 //        }
     }
 

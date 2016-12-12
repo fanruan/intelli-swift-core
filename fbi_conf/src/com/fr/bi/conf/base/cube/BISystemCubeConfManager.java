@@ -144,7 +144,7 @@ public class BISystemCubeConfManager extends BISystemDataManager<BICubeConfManag
     }
 
     @Override
-    public void persistData(long userId) {
+    public synchronized void persistData(long userId) {
         super.persistUserData(userId);
     }
 }

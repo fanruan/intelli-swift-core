@@ -94,7 +94,7 @@ public class BISystemPackageConfigurationManager extends BISystemDataManager<BIU
     }
 
     @Override
-    public void persistData(long userId) {
+    public synchronized void persistData(long userId) {
         persistUserData(userId);
     }
 

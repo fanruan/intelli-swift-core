@@ -63,7 +63,7 @@ public class BIAliasManager extends BISystemDataManager<UserAliasManager> implem
     }
 
     @Override
-    public void persistData(long userId) {
+    public synchronized void persistData(long userId) {
         persistUserData(userId);
     }
 
