@@ -142,7 +142,13 @@ BI.ReportListViewItem = BI.inherit(BI.BasicButton, {
             stopPropagation: true
         });
         renameIcon.on(BI.IconButton.EVENT_CHANGE, function () {
-            self.editor.focus();
+            BI.requestAsync("fr_bi", "check_report_edit", {id: o.id, createBy: o.createBy}, function(res) {
+                if (BI.isNotNull(res.result) && res.result.length > 0) {
+                    BI.Msg.toast(BI.i18nText("BI-Report_Editing_Cannot_Rename", res.result), "warning");
+                } else {
+                    self.editor.focus();
+                }
+            });
         });
 
         var deleteIcon = BI.createWidget({
@@ -157,7 +163,13 @@ BI.ReportListViewItem = BI.inherit(BI.BasicButton, {
             deleteIcon.setWarningTitle(BI.i18nText("BI-Hangout_Report_Can_Not_Delete"));
         }
         deleteIcon.on(BI.IconButton.EVENT_CHANGE, function () {
-            o.onDeleteReport.apply(this, arguments);
+            BI.requestAsync("fr_bi", "check_report_edit", {id: o.id, createBy: o.createBy}, function(res) {
+                if (BI.isNotNull(res.result) && res.result.length > 0) {
+                    BI.Msg.toast(BI.i18nText("BI-Report_Editing_Cannot_Remove", res.result), "warning");
+                } else {
+                    o.onDeleteReport.apply(self, arguments);
+                }
+            });
         });
 
         var timeText = BI.createWidget({
