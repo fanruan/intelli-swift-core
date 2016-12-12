@@ -25,7 +25,13 @@ BI.FolderCardViewItem = BI.inherit(BI.Single, {
         });
 
         renameButton.on(BI.IconButton.EVENT_CHANGE, function () {
-            self.editor.focus();
+            BI.requestAsync("fr_bi", "check_report_edit", {id: o.id}, function(res) {
+                if (BI.isNotNull(res.result) && res.result.length > 0) {
+                    BI.Msg.toast(BI.i18nText("BI-Folder_Editing_Cannot_Rename", res.result), "warning");
+                } else {
+                    self.editor.focus();
+                }
+            });
         });
 
         var deleteButton = BI.createWidget({
@@ -38,7 +44,13 @@ BI.FolderCardViewItem = BI.inherit(BI.Single, {
         });
 
         deleteButton.on(BI.IconButton.EVENT_CHANGE, function () {
-            o.onDeleteFolder.apply(this, arguments);
+            BI.requestAsync("fr_bi", "check_report_edit", {id: o.id}, function(res) {
+                if (BI.isNotNull(res.result) && res.result.length > 0) {
+                    BI.Msg.toast(BI.i18nText("BI-Folder_Editing_Cannot_Remove", res.result), "warning");
+                } else {
+                    o.onDeleteFolder.apply(self, arguments);
+                }
+            });
         });
 
         this.checkbox = BI.createWidget({
