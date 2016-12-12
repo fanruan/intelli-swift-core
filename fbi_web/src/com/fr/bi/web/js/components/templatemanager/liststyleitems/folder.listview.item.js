@@ -59,7 +59,13 @@ BI.FolderListViewItem = BI.inherit(BI.BasicButton, {
             stopPropagation: true
         });
         renameIcon.on(BI.IconButton.EVENT_CHANGE, function () {
-            self.editor.focus();
+            BI.requestAsync("fr_bi", "check_report_edit", {id: o.id}, function (res) {
+                if (BI.isNotNull(res.result) && res.result.length > 0) {
+                    BI.Msg.toast(BI.i18nText("BI-Folder_Editing_Cannot_Rename", res.result), "warning");
+                } else {
+                    self.editor.focus();
+                }
+            });
         });
 
         var deleteIcon = BI.createWidget({
@@ -70,7 +76,13 @@ BI.FolderListViewItem = BI.inherit(BI.BasicButton, {
             stopPropagation: true
         });
         deleteIcon.on(BI.IconButton.EVENT_CHANGE, function () {
-            o.onDeleteFolder.apply(this, arguments);
+            BI.requestAsync("fr_bi", "check_report_edit", {id: o.id}, function (res) {
+                if (BI.isNotNull(res.result) && res.result.length > 0) {
+                    BI.Msg.toast(BI.i18nText("BI-Folder_Editing_Cannot_Remove", res.result), "warning");
+                } else {
+                    o.onDeleteFolder.apply(self, arguments);
+                }
+            });
         });
 
         var timeText = BI.createWidget({
@@ -123,7 +135,7 @@ BI.FolderListViewItem = BI.inherit(BI.BasicButton, {
                     width: 40
                 },
                 width: 40
-            },{
+            }, {
                 el: this.editor,
                 width: 230
             }, {
@@ -147,7 +159,7 @@ BI.FolderListViewItem = BI.inherit(BI.BasicButton, {
         });
     },
 
-    doClick: function(){
+    doClick: function () {
         var self = this, o = this.options;
         BI.FolderListViewItem.superclass.doClick.apply(this, arguments);
         o.onClickItem.apply(self, arguments);
