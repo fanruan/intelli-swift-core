@@ -44,6 +44,7 @@ public class BIExcelExportAction extends AbstractBIDeziAction {
             ErrorHandlerHelper.getErrorHandler().error(req, res, "Reportlet SessionID: \"" + sessionID + "\" time out.");
             return;
         }
+        String reportId = WebUtils.getHTTPRequestParameter(req, "reportId");
 
         String blockid = WebUtils.getHTTPRequestParameter(req, "name");
         if (StringUtils.isEmpty(blockid)) {
