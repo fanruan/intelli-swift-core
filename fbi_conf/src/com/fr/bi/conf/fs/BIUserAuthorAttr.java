@@ -71,6 +71,19 @@ public class BIUserAuthorAttr implements XMLable {
         } else if (ComparatorUtils.equals(MOBILE_AUTH_TAG, tagName)) {
             reader.readXMLObject(getBiAuthReaderByMode(MOBILE));
         }
+        refreshUsersByLimit();
+    }
+
+    private void refreshUsersByLimit() {
+        if (biEditUserLimit < biEditUserJo.length()) {
+            biEditUserJo = new JSONObject();
+        }
+        if (biViewUserLimit < biViewUserJo.length()) {
+            biViewUserJo = new JSONObject();
+        }
+        if (biMobileUserLimit < biMobileUserJo.length()) {
+            biMobileUserJo = new JSONObject();
+        }
     }
 
     public long getBIAuthUserLimitByMode(int mode) {
@@ -139,9 +152,9 @@ public class BIUserAuthorAttr implements XMLable {
                         JSONObject userJo = getBIAuthUserJoByMode(mode);
                         if (StringUtils.isNotEmpty(userName)) {
                             //等于-1代表不限制
-                            if (getBIAuthUserLimitByMode(mode) == NO_LIMIT || userJo.length() < getBIAuthUserLimitByMode(mode)) {
+//                            if (getBIAuthUserLimitByMode(mode) == NO_LIMIT || userJo.length() < getBIAuthUserLimitByMode(mode)) {
                                 userJo.put(userName, fullName);
-                            }
+//                            }
                         }
                     } catch (JSONException e) {
                         FRContext.getLogger().error(e.getMessage());
