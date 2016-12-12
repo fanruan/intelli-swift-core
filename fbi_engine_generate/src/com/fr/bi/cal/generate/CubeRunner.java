@@ -1,6 +1,7 @@
 package com.fr.bi.cal.generate;
 
 import com.finebi.cube.api.BICubeManager;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
 import com.finebi.cube.relation.BITableSourceRelationPath;
@@ -21,7 +22,6 @@ import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Iterator;
@@ -41,7 +41,7 @@ public class CubeRunner {
     protected BIUser biUser;
     QueueThread<CubeTask> cubeThread = new QueueThread<CubeTask>();
     private CubeBuildStuffComplete object;
-    private static final Logger logger = LoggerFactory.getLogger(CubeRunner.class);
+    private static final Logger logger = BILoggerFactory.getLogger(CubeRunner.class);
 
     public CubeRunner(long userId) {
         biUser = new BIUser(userId);

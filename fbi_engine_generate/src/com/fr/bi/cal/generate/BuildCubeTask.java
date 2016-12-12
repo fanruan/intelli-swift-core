@@ -49,7 +49,6 @@ import com.fr.fs.control.UserControl;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONObject;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.Future;
@@ -63,7 +62,7 @@ import java.util.concurrent.Future;
  * edit by kary
  */
 public class BuildCubeTask implements CubeTask {
-    private static final Logger logger = LoggerFactory.getLogger(BuildCubeTask.class);
+    private static final Logger logger = BILoggerFactory.getLogger(BuildCubeTask.class);
     private CubeBuildStuff cubeBuildStuff;
     protected BIUser biUser;
     protected ICubeResourceRetrievalService retrievalService;
