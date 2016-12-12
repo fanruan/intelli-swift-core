@@ -40,8 +40,7 @@ ExcelTableDataDisplayManagerView = BI.inherit(BI.View, {
             width: 30
         });
         button.on(BI.Button.EVENT_CHANGE, function () {
-            excel.setExcelId(self.excelId);
-            excel.populate();
+            excel.populate(self.excelId);
         });
         BI.createWidget({
             type: "bi.vertical",

@@ -38,17 +38,14 @@ BI.ExcelViewSettingExcel = BI.inherit(BI.Widget, {
                         });
                     case self._constants.SHOW_EXCEL:
                         self.table = BI.createWidget({
-                            type: "bi.excel_table",
-                            isNeedMerge: true,
-                            mergeRule: function (row1, row2) {
-                                var o1 = row1.options;
-                                var o2 = row2.options;
-                                if (BI.isNull(o1) || BI.isNull(o2)) {
-                                    return false;
-                                } else {
-                                    return self._checkIsMerge(o1.column, o1.row, o2.column, o2.row);
-                                }
-                            }
+                            type: "bi.excel_view_display_manager"
+                        });
+                        self.table.on(BI.ExcelViewDisplayManager.CLICK, function () {
+                            var currentCellId = self.table.getCurrentCellId();
+                            var index = currentCellId.search(/[0-9]+/);
+                            var col = currentCellId.slice(0, index);
+                            var row = currentCellId.slice(index);
+                            self.fireEvent(BI.ExcelViewSettingExcel.EVENT_CHANGE, BI.parseInt(row) - 1, BI.abc2Int(col) - 1);
                         });
                         return self.table;
                 }
@@ -57,63 +54,18 @@ BI.ExcelViewSettingExcel = BI.inherit(BI.Widget, {
         this.tab.setSelect(this._constants.SHOW_TIP);
     },
 
-    _checkIsMerge: function (column1, row1, column2, row2) {
-        var flag = false;
-        var mergeInfos = this.options.mergeInfos;
-        if (BI.isNotNull(mergeInfos[0])) {
-            BI.some(mergeInfos, function (i, mergeInfo) {
-                var start = mergeInfo[0];
-                var end = mergeInfo[1];
-                var w = BI.parseInt(end[0]) - BI.parseInt(start[0]);
-                var h = BI.parseInt(end[1]) - BI.parseInt(start[1]);
-                var region = new BI.Region(BI.parseInt(start[0]), BI.parseInt(start[1]), w, h);
-                return flag = region.isPointInside(column1, row1) && region.isPointInside(column2, row2);
-            });
-        }
-        return flag
-    },
-
-    _formatItems: function (items) {
-        var map = this.map = {};
-        var store = this.store = {};//储存选中的cell
-        var self = this;
-        return BI.map(items, function (i, row) {
-            map[i] = {};
-            store[i] = {};
-            return BI.map(row, function (j, cell) {
-                map[i][j] = BI.createWidget({
-                    type: "bi.excel_view_setting_cell",
-                    text: cell,
-                    row: i,
-                    column: j,
-                    height: 18,
-                    handler: function () {
-                        //if (!this.isSelected()) {
-                        self.fireEvent(BI.ExcelViewSettingExcel.EVENT_CHANGE, i, j);
-                        //}
-                    }
-                });
-                return map[i][j];
-            });
-        });
-    },
-
     setValue: function (positions) {
         var self = this;
-        BI.each(this.store, function (i, cols) {
-            BI.each(cols, function (j, col) {
-                col.setSelected(false);
-                col.setTitle("");
-            });
-            self.store[i] = {};
+        BI.each(this.store, function (i, cellId) {
+            self.table.setTdSelectById(false, cellId);
         });
+        this.store = [];
         BI.each(positions, function (fieldId, mark) {
             var col = mark.col, row = mark.row;
-            var el = self.map[row][col];
-            el.setSelected(true);
-            el.setTitle(self._getFieldNameByFieldId(fieldId));
-            self.store[row][col] = el;
-        })
+            var cellId = BI.int2Abc(BI.parseInt(col) + 1) + (BI.parseInt(row) + 1);
+            self.table.setTdSelectById(true, cellId);
+            self.store.push(cellId);
+        });
     },
 
     _getFieldNameByFieldId: function (fieldId) {
@@ -125,16 +77,17 @@ BI.ExcelViewSettingExcel = BI.inherit(BI.Widget, {
 
     },
 
-    populate: function (items, mergeInfos) {
-        if (BI.isEmptyArray(items)) {
+    setExcel: function (excelId, callback) {
+        if (BI.isEmptyString(excelId)) {
             this.tab.setSelect(this._constants.SHOW_TIP);
             return;
         }
-        this.attr("mergeInfos", mergeInfos);
         this.tab.setSelect(this._constants.SHOW_EXCEL);
-        this.table.attr("columnSize", BI.makeArray(items[0].length, ""));
-        this.table.attr("mergeCols", BI.makeArray(items[0].length));
-        this.table.populate(this._formatItems(items));
+        this.table.setExcel(excelId, callback);
+    },
+
+    populate: function () {
+
     }
 });
 BI.ExcelViewSettingExcel.EVENT_CHANGE = "ExcelViewSettingExcel.EVENT_CHANGE";

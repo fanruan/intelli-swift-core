@@ -191,6 +191,12 @@ Data.Req = BIReq = {
         }, complete)
     },
 
+    reqGetExcelHTMLView: function (data, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "get_excel_html_view", data, function (res) {
+            callback(res);
+        }, complete)
+    },
+
     reqSaveFileGetExcelViewData: function (data, callback, complete) {
         BI.requestAsync("fr_bi_configure", "save_file_get_excel_view_data", data, function (res) {
             callback(res);

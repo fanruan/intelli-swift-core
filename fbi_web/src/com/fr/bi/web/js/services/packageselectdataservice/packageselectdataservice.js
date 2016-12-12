@@ -144,7 +144,10 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 tables = self._getTablesStructureByPackId(pid, {isRelation: isRelation, isSearching: true});
                 var items = [];
                 BI.each(tables, function (i, table) {
-                    var fields = self._getFieldsStructureByTableId(table.id || table.value, {keyword: keyword, isSearching: true});
+                    var fields = self._getFieldsStructureByTableId(table.id || table.value, {
+                        keyword: keyword,
+                        isSearching: true
+                    });
                     BI.each(fields, function (i, filed) {
                         field2TableMap[filed.id || filed.value] = table;
                     });
@@ -438,28 +441,28 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             //Excel View
             var excelView = BI.Utils.getExcelViewByTableId(tableId);
             if (BI.isNotNull(excelView) && BI.isNotEmptyObject(excelView.positions)) {
-                var excel = excelView.excel;
-                var positions = excelView.positions;
-                var items = [];
-                BI.each(excel, function (i, row) {
-                    var item = [];
-                    BI.each(row, function (j, cell) {
-                        item.push({text: cell})
-                    });
-                    items.push(item);
+                // var excel = excelView.excel;
+                // var positions = excelView.positions;
+                // var items = [];
+                // BI.each(excel, function (i, row) {
+                //     var item = [];
+                //     BI.each(row, function (j, cell) {
+                //         item.push({text: cell})
+                //     });
+                //     items.push(item);
+                // });
+                // BI.each(positions, function (id, position) {
+                //     viewFields.push(id);
+                //     items[position.row][position.col].value = id;
+                // });
+                // if (viewFields.length > 0) {
+                fieldStructure.push({
+                    id: BI.UUID(),
+                    pId: tableId,
+                    type: "bi.excel_view",
+                    tableId: tableId
                 });
-                BI.each(positions, function (id, position) {
-                    viewFields.push(id);
-                    items[position.row][position.col].value = id;
-                });
-                if (viewFields.length > 0) {
-                    fieldStructure.push({
-                        id: BI.UUID(),
-                        pId: tableId,
-                        type: "bi.excel_view",
-                        tableId: tableId
-                    });
-                }
+                // }
             }
         }
 
@@ -478,7 +481,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
             });
             return fieldStructure;
         }
-        if(fields.length === 0){
+        if (fields.length === 0) {
             fieldStructure.push({
                 type: "bi.label",
                 value: BI.UUID(),

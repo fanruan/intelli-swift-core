@@ -32,14 +32,6 @@ BI.ExcelTableDataDisplayManager = BI.inherit(BI.Widget, {
         this.excel.populate(items, header);
     },
 
-    getExcelId: function () {
-        this.model.getExcelId();
-    },
-
-    setExcelId: function (excelId) {
-        this.model.setExcelId(excelId);
-    },
-
     getFileName: function () {
         return this.model.getFileName();
     },
@@ -52,9 +44,9 @@ BI.ExcelTableDataDisplayManager = BI.inherit(BI.Widget, {
         return this.model.getHeader();
     },
 
-    populate: function () {
+    populate: function (excelId) {
         var self = this;
-        this.model.populate(function () {
+        this.model.populate(excelId, function () {
             self._populateExcel();
         })
     }

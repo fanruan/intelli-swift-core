@@ -1,0 +1,13 @@
+@import "../../../bibase";
+@resource-url : '${servletURL}?op=resource&resource=';
+
+.bi-excel-view-display-manager {
+  td{
+    &:hover {
+      background: @color-bi-background-virtual-blue;
+    }
+    &.excel-td-select {
+      background: url('@{resource-url}/com/fr/bi/web/images/background/left_top_triangle_blue.png') no-repeat right top;
+    }
+  }
+}

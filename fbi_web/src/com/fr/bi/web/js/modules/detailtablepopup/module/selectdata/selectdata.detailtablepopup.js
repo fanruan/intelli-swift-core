@@ -205,20 +205,20 @@ BI.DetailTablePopupSelectData = BI.inherit(BI.Widget, {
         var excelView = BI.Utils.getExcelViewByTableId(tableId);
         var viewFields = [];
         if (BI.isNotNull(excelView) && BI.isNotEmptyObject(excelView.positions)) {
-            var excel = excelView.excel;
-            var positions = excelView.positions;
-            var items = [];
-            BI.each(excel, function (i, row) {
-                var item = [];
-                BI.each(row, function (j, cell) {
-                    item.push({text: cell})
-                });
-                items.push(item);
-            });
-            BI.each(positions, function (id, position) {
-                viewFields.push(id);
-                items[position.row][position.col].value = id;
-            });
+            // var excel = excelView.excel;
+            // var positions = excelView.positions;
+            // var items = [];
+            // BI.each(excel, function (i, row) {
+            //     var item = [];
+            //     BI.each(row, function (j, cell) {
+            //         item.push({text: cell})
+            //     });
+            //     items.push(item);
+            // });
+            // BI.each(positions, function (id, position) {
+            //     viewFields.push(id);
+            //     items[position.row][position.col].value = id;
+            // });
             fieldStructure.push({
                 id: BI.UUID(),
                 pId: tableId,
@@ -367,11 +367,11 @@ BI.DetailTablePopupSelectData = BI.inherit(BI.Widget, {
                 });
                 return help.element;
             },
-            start: function(event, ui) {
+            start: function (event, ui) {
                 //通知region
                 BI.Broadcasts.send(BICst.BROADCAST.FIELD_DRAG_START, self.searcher.getValue());
             },
-            stop: function(event, ui) {
+            stop: function (event, ui) {
                 BI.Broadcasts.send(BICst.BROADCAST.FIELD_DRAG_STOP);
             }
         }

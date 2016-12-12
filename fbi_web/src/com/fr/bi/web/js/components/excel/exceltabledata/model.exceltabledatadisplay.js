@@ -19,14 +19,6 @@ BI.ExcelTableDataDisplayModel = BI.inherit(BI.Widget, {
         this.fileName = "";
     },
 
-    setExcelId: function (excelId) {
-        this.excelId = excelId;
-    },
-
-    getExcelId: function () {
-        return this.excelId;
-    },
-
     getFileName: function () {
         return this.fileName;
     },
@@ -39,8 +31,9 @@ BI.ExcelTableDataDisplayModel = BI.inherit(BI.Widget, {
         return this.header;
     },
 
-    populate: function (callback) {
+    populate: function (excelId,callback) {
         var self = this;
+        this.excelId = excelId;
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: BICst.BODY_ELEMENT,

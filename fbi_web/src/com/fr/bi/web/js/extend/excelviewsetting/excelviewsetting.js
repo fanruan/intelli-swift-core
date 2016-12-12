@@ -51,9 +51,8 @@ BI.ExcelViewSetting = BI.inherit(BI.Widget, {
         save.on(BI.Button.EVENT_CHANGE, function () {
             self.fireEvent(BI.ExcelViewSetting.EVENT_SAVE, {
                 name: self.model.getExcelName(),
-                excel: self.model.getExcelData(),
-                positions: self.tree.getMarkedFields(),
-                mergeInfos: self.model.getExcelMergeInfos()
+                excelFullName: self.model.getExcelFullName(),
+                positions: self.tree.getMarkedFields()
             });
         });
 
@@ -154,9 +153,9 @@ BI.ExcelViewSetting = BI.inherit(BI.Widget, {
             type: "bi.excel_view_setting_excel",
             all_fields: this.model.getAllFields()
         });
-        this.excel.populate(this.model.getExcelData(), this.model.getExcelMergeInfos());
-        this.excel.setValue(this.model.getPositions());
-
+        this.excel.setExcel(this.model.getExcelFullName(), function () {
+            self.excel.setValue(self.model.getPositions());
+        });
         this.excel.on(BI.ExcelViewSettingExcel.EVENT_CHANGE, function (row, col) {
             var ids = self.tree.getValue();
             if (BI.isNotEmptyArray(ids)) {
@@ -236,17 +235,21 @@ BI.ExcelViewSetting = BI.inherit(BI.Widget, {
     },
 
     _refreshAfterUpload: function () {
+        var self = this;
         this.excelName.setText(this.model.getExcelName());
         this.uploadButton.setText(BI.i18nText("BI-Excel_Reupload"));
-        this.excel.populate(this.model.getExcelData(), this.model.getExcelMergeInfos());
-        this.populate();
+        this.excel.setExcel(this.model.getExcelFullName(), function () {
+            self.populate();
+        });
     },
 
     _clearConf: function () {
+        var self = this;
         this.excelName.setText(this.model.getExcelName());
         this.uploadButton.setText(BI.i18nText("BI-Upload_Data"));
-        this.excel.populate(this.model.getExcelData(), this.model.getExcelMergeInfos());
-        this.populate();
+        this.excel.setExcel(this.model.getExcelFullName(), function () {
+            self.populate();
+        });
     },
 
     populate: function () {

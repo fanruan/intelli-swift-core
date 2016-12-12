@@ -2263,6 +2263,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/components/share/sharetome.css",
                 "com/fr/bi/web/css/components/share/sharetome.singleuser.css",
 
+                //excelview
+                "com/fr/bi/web/css/components/excel/excelview/excelviewdisplaymanager.css"
         };
     }
 
@@ -3054,7 +3056,6 @@ public class ResourceHelper {
 
                 //excelview
                 "com/fr/bi/web/js/components/excel/excelview/excelviewdisplaymanager.js",
-                "com/fr/bi/web/js/components/excel/excelview/model.excelviewdisplay.js",
 
                 //exceltabledata
                 "com/fr/bi/web/js/components/excel/exceltabledata/exceltabledatadisplaymanager.js",

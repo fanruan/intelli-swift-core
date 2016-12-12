@@ -5,23 +5,9 @@ BI.ExcelViewDisplayManager = BI.inherit(BI.Widget, {
 
     _defaultConfig: function () {
         return BI.extend(BI.ExcelViewDisplayManager.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "",
-            excelId: "",
-            formatItems: function (items) {
-                var map = {};
-                return BI.map(items, function (i, row) {
-                    map[i] = {};
-                    return BI.map(row, function (j, cell) {
-                        map[i][j] = BI.createWidget({
-                            type: "bi.label",
-                            text: cell,
-                            height: 18
-                        });
-                        return map[i][j];
-                    });
-                });
-            }
-        });
+            baseCls: "bi-excel-view-display-manager",
+            excelId: ""
+        })
     },
 
     _init: function () {
@@ -29,89 +15,109 @@ BI.ExcelViewDisplayManager = BI.inherit(BI.Widget, {
 
         var self = this, o = this.options;
 
-        this.model = new BI.ExcelViewDisplayModel({
-            excelId: o.excelId
+        this.excelId = o.excelId;
+
+        this.currentId = "";
+        this.idSuffix = "";
+        this.resultMap = {};
+
+        this.styleExcel = BI.createWidget({
+            type: "bi.layout",
+            scrollable: true,
+            element: this.element
         });
-        this.excel = BI.createWidget({
-            type: "bi.excel_table",
-            element: this.element,
-            isNeedMerge: true,
-            mergeRule: function (row1, row2) {
-                var o1 = row1.options;
-                var o2 = row2.options;
-                if (BI.isNull(o1) || BI.isNull(o2)) {
-                    return false;
-                } else {
-                    return self._checkIsMerge(o1.column, o1.row, o2.column, o2.row);
-                }
+        this.styleExcel.element.click(function (event) {
+            var target = event.target;
+            if (target.tagName === "TD") {
+                var id = target.id;
+                self.currentId = id.split("-")[0];
+                self.fireEvent(BI.ExcelViewDisplayManager.CLICK);
             }
-        })
-    },
-
-    _checkIsMerge: function (column1, row1, column2, row2) {
-        var flag = false;
-        var mergeInfos = this.mergeInfos;
-        if (BI.isNotNull(mergeInfos[0])) {
-            BI.some(mergeInfos, function (i, mergeInfo) {
-                var start = mergeInfo[0];
-                var end = mergeInfo[1];
-                var w = BI.parseInt(end[0]) - BI.parseInt(start[0]);
-                var h = BI.parseInt(end[1]) - BI.parseInt(start[1]);
-                var region = new BI.Region(BI.parseInt(start[0]), BI.parseInt(start[1]), w, h);
-                return flag = region.isPointInside(column1, row1) && region.isPointInside(column2, row2);
-            });
-        }
-        return flag
-    },
-
-    _formatItems: function (items) {
-        var map = {};
-        return BI.map(items, function (i, row) {
-            map[i] = {};
-            return BI.map(row, function (j, cell) {
-                cell.attr("row", i);
-                cell.attr("column", j);
-                map[i][j] = cell;
-                return map[i][j];
-            });
         });
     },
 
-    _populateExcel: function () {
-        var o = this.options;
-        var items = this.model.getItems();
-        this.mergeInfos = this.model.getMergeInfos();
-        this.excel.attr("columnSize", BI.makeArray(items[0].length, ""));
-        this.excel.attr("mergeCols", BI.makeArray(items[0].length));
-        this.excel.populate(this._formatItems(o.formatItems(items)));
+    _getExcelTable: function () {
+        return this.styleExcel.element.find(".x-table");
     },
 
-    getExcelId: function () {
-        return this.model.getExcelId();
+    _populate: function () {
+        var self = this, flag = true;
+        var table = this._getExcelTable();
+        var tds = table.find("td").toArray();
+        BI.each(tds, function (i, td) {
+            var id = td.id;
+            var cellId = id.split("-")[0];
+            if (flag) {
+                self.idSuffix = id.slice(cellId.length);
+                flag = false;
+            }
+            var value = td.innerText;
+            if (BI.isNotEmptyString(value)) {
+                self.resultMap[cellId] = value;
+            }
+        });
     },
 
-    setExcelId: function (excelId) {
-        this.model.setExcelId(excelId);
+    _getTdById: function (id) {
+        var table = this._getExcelTable();
+        return table.find("#" + id + this.idSuffix);
     },
 
-    getFileName: function () {
-        return this.model.getFileName();
+    setTdDraggable: function (id, draggable) {
+        var td = this._getTdById(id);
+        td.draggable(draggable)
     },
 
-    getExcelData: function () {
-        return this.model.getItems();
+    setTdSelectById: function (enable, id) {
+        var td = this._getTdById(id);
+        if (enable) {
+            td.removeClass("excel-td-select").addClass("excel-td-select");
+            td.removeClass("select-data-level0-item-button").addClass("select-data-level0-item-button");
+        } else {
+            td.removeClass("excel-td-select");
+            td.removeClass("select-data-level0-item-button");
+        }
     },
 
-    getMergeInfos: function () {
-        return this.model.getMergeInfos();
+    getCurrentCellId: function () {
+        return this.currentId;
+    },
+
+    getValueByCellId: function (id) {
+        return this.resultMap[id] || "";
+    },
+
+    getAllValue: function () {
+        return this.resultMap;
+    },
+
+    setValue: function () {
+
+    },
+
+    setExcel: function (excelId, callback) {
+        var self = this;
+        if (this.excelId !== excelId) {
+            this.excelId = excelId;
+            var mask = BI.createWidget({
+                type: "bi.loading_mask",
+                masker: BICst.BODY_ELEMENT,
+                text: BI.i18nText("BI-Loading")
+            });
+            BI.Utils.getExcelHTMLView(this.excelId, function (data) {
+                self.styleExcel.empty();
+                self.styleExcel.element.append(data.excelHTML);
+                self._populate();
+                callback();
+            }, function () {
+                mask.destroy();
+            })
+        }
     },
 
     populate: function () {
-        var self = this, o = this.options;
-        this.model.populate(function () {
-            self._populateExcel();
-        });
 
     }
 });
+BI.ExcelViewDisplayManager.CLICK = "BI.ExcelViewDisplayManager.CLICK";
 $.shortcut("bi.excel_view_display_manager", BI.ExcelViewDisplayManager);
