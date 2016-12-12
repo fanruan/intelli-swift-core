@@ -443,7 +443,7 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
             dId: this.model.get("id")
         });
         popup.on(BI.SeriesAccumulationPopup.EVENT_CHANGE, function (v) {
-            self.model.set("seriesAccumulate", v);
+            self.model.set("seriesAccumulation", v);
         });
         BI.Popovers.create(id, popup).open(id);
         popup.populate();
