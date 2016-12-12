@@ -370,7 +370,6 @@ public abstract class AbstractETLTableSource<O extends IETLOperator, S extends C
             if (table.getTableSource().equals(tableSource)) {
                 return table.getTableSource();
             }
-            break;
         }
         return tableSource;
     }
