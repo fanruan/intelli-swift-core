@@ -18,6 +18,6 @@ public class BIInitAllReportAction extends ActionNoSessionCMD {
 
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res) throws Exception {
-        WebUtils.writeOutTemplate("/com/fr/bi/web/html/plateform/bi_all_report.html", res, new HashMap());
+        WebUtils.writeOutTemplate("/com/fr/bi/web/html/platform/bi_all_report.html", res, new HashMap());
     }
 }

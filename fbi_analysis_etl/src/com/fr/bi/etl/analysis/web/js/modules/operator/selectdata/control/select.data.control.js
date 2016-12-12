@@ -123,8 +123,8 @@ BI.AnalysisETLOperatorSelectDataController = BI.inherit(BI.MVCController, {
         BI.Layers.hide(widget.getName());
     },
 
-    _refreshState : function (widget, model) {
-        this._refreshSelectDataPane(widget, model);
+    _refreshState : function (widget, model, parentModel) {
+        this._refreshSelectDataPane(widget, model, parentModel);
         this._refreshButtonState(widget, model);
         this._refreshCenterState(widget, model);
         this.refreshPopData(this._editing ? ETLCst.ANALYSIS_ETL_PAGES.SELECT_DATA : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL, widget, model);
@@ -135,7 +135,7 @@ BI.AnalysisETLOperatorSelectDataController = BI.inherit(BI.MVCController, {
         widget.center.populate(model.update(), BI.extend(this.options, {
             showContent: false,
         }))
-        this._refreshState(widget, model);
+        this._refreshState(widget, model, model.parentModel);
         widget.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, model.getValue(ETLCst.FIELDS))
     }
 })
