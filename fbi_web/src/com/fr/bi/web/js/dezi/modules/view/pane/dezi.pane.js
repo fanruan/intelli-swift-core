@@ -116,6 +116,7 @@ BIDezi.PaneView = BI.inherit(BI.View, {
             iconCls1: "toolbar-global-export",
             iconCls2: "pull-down-font",
             text: BI.i18nText("BI-Export"),
+            readonly: true,
             height: 30,
             width: 80,
         });
