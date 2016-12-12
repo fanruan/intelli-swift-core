@@ -143,7 +143,7 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
     }
 
     @Override
-    public synchronized void persistData(long userId) {
+    public void persistData(long userId) {
         persistUserData(userId);
     }
 

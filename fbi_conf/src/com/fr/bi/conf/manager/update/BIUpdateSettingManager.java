@@ -80,7 +80,7 @@ public class BIUpdateSettingManager extends BISystemDataManager<SingleUserBIUpda
     }
 
     @Override
-    public synchronized void persistData(long userId) {
+    public void persistData(long userId) {
         persistUserData(userId);
     }
 }

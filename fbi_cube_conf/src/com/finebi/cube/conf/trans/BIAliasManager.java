@@ -52,7 +52,7 @@ public class BIAliasManager extends BISystemDataManager<UserAliasManager> implem
     public JSONObject getAliasJSON(long userID) {
         try {
             JSONObject jo = getTransManager(userID).createJSON();
-            if (userID != UserControl.getInstance().getSuperManagerID()){
+            if (userID != UserControl.getInstance().getSuperManagerID()) {
                 jo.join(getTransManager(UserControl.getInstance().getSuperManagerID()).createJSON());
             }
             return jo;
@@ -63,7 +63,7 @@ public class BIAliasManager extends BISystemDataManager<UserAliasManager> implem
     }
 
     @Override
-    public synchronized void persistData(long userId) {
+    public void persistData(long userId) {
         persistUserData(userId);
     }
 

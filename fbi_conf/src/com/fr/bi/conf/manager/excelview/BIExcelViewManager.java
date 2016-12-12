@@ -66,7 +66,7 @@ public class BIExcelViewManager extends BISystemDataManager<SingleUserBIExcelVie
     }
 
     @Override
-    public synchronized void persistData(long userId) {
+    public void persistData(long userId) {
         persistUserData(userId);
     }
 }

@@ -48,7 +48,7 @@ public class BISystemTableRelationManager extends BISystemDataManager<BIUserTabl
     }
 
     @Override
-    public synchronized void persistData(long userId) {
+    public void persistData(long userId) {
         userId = UserControl.getInstance().getSuperManagerID();
         persistUserData(userId);
     }
