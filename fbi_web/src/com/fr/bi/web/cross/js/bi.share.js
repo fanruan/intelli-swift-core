@@ -8,10 +8,12 @@ FS.THEME.config4MenuTree.insertNodes = [
             }
         }
     },
-    {
-        text: BI.i18nText('FS-Generic-I_Created'),
-        title: BI.i18nText('FS-Generic-I_Created'),
-        src: FR.servletURL + "?op=fr_bi&cmd=bi_init_created_by_me"
+    function () {
+        return {
+            text: BI.i18nText('FS-Generic-I_Created'),
+            title: BI.i18nText('FS-Generic-I_Created'),
+            src: FR.servletURL + "?op=fr_bi&cmd=bi_init_created_by_me"
+        }
     },
     function () {
         if (!FS.config.isAdmin) {
