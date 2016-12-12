@@ -216,9 +216,12 @@ public class BIWebUtils {
         map.put("reg", VT4FBI.toJSONObject());
         map.put("description", node.getDescription());
         map.put("plateConfig", plateConfig);
-        //cube版本号 和 权限版本号
+        //cube版本号、权限版本号、多路径版本号
         map.put("__version__", BIConfigureManagerCenter.getCubeConfManager().getPackageLastModify() + ""
-                + BIConfigureManagerCenter.getAuthorityManager().getAuthVersion() + "" + BIConfigureManagerCenter.getCubeConfManager().getMultiPathVersion() + "" + userId);
+                + BIConfigureManagerCenter.getAuthorityManager().getAuthVersion() + ""
+                + BIConfigureManagerCenter.getCubeConfManager().getMultiPathVersion() + "" + userId);
+        //jar包版本
+        map.put("__v__", GeneralUtils.readBuildNO());
         boolean biEdit = pop == null || ComparatorUtils.equals(edit, "_bi_edit_");
         boolean isEdit = sessionIDInfo.setEdit(biEdit);
         if (biEdit && !isEdit) {

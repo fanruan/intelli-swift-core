@@ -6,6 +6,7 @@ import com.fr.bi.web.base.utils.BIWebUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
+import com.fr.general.GeneralUtils;
 import com.fr.web.core.ActionNoSessionCMD;
 import com.fr.web.utils.WebUtils;
 
@@ -26,6 +27,7 @@ public class BIInitCreatedByMeAction extends ActionNoSessionCMD {
     public void actionCMD(HttpServletRequest req, HttpServletResponse res) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);
         Map info = new java.util.HashMap();
+        info.put("__v__", GeneralUtils.readBuildNO());
         if (ComparatorUtils.equals(BIWebUtils.getUserEditViewAuth(userId), BIReportConstant.REPORT_AUTH.EDIT)) {
             boolean isAdmin = userId == UserControl.getInstance().getSuperManagerID();
             info.put("isAdmin", isAdmin);
