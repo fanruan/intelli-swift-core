@@ -24,6 +24,8 @@ BIDezi.PaneView = BI.inherit(BI.View, {
     _createNorth: function () {
         var self = this;
 
+        var globalExport = this._createGlobalExport();
+
         var zclip = BI.createWidget({
             type: "bi.copy_link_item"
         });
@@ -81,25 +83,53 @@ BIDezi.PaneView = BI.inherit(BI.View, {
             invisible: !!Data.SharingPool.get("hideTop"),
             cls: "dashboard-toolbar",
             items: [{
-                el: zclip,
+                el: globalExport,
                 top: 0,
-                left: 110
+                left: 110,
             }, {
-                el: this.undoButton,
+                el: zclip,
                 top: 0,
                 left: 210
             }, {
+                el: this.undoButton,
+                top: 0,
+                left: 310
+            }, {
                 el: this.redoButton,
                 top: 0,
-                left: 290
+                left: 390
             }, {
                 el: viewChange,
                 top: 0,
-                left: 370
+                left: 470
             }, {
                 el: this.globalStyle,
                 top: 0,
-                left: 470
+                left: 570
+            }]
+        })
+    },
+
+    _createGlobalExport: function () {
+        var trigger = BI.createWidget({
+            type: "bi.icon_text_icon_item",
+            iconCls1: "toolbar-global-export",
+            iconCls2: "pull-down-font",
+            text: BI.i18nText("BI-Export"),
+            height: 30,
+            width: 80,
+        });
+
+        return BI.createWidget({
+            type: "bi.static_combo",
+            el: trigger,
+            textAlign: 'center',
+            items: [{
+                text: BI.i18nText("BI-Excel_Export"),
+                value: BICst.EXPORT.EXCEL,
+            }, {
+                text: BI.i18nText("BI-PDF_Export"),
+                value: BICst.EXPORT.PDF,
             }]
         })
     },
