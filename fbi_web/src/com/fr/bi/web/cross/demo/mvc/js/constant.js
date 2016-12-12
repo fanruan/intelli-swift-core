@@ -425,8 +425,6 @@ var _JS = [
 
     "detail/mvc.excelviewdisplaymanager.js",
 
-    "detail/mvc.exceltabledatadisplaymanager.js",
-
     "detail/mvc.adaptivetable.js",
 
     "detail/mvc.adaptivetable2.js",

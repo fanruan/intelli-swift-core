@@ -3078,10 +3078,6 @@ public class ResourceHelper {
                 //excelview
                 "com/fr/bi/web/js/components/excel/excelview/excelviewdisplaymanager.js",
 
-                //exceltabledata
-                "com/fr/bi/web/js/components/excel/exceltabledata/exceltabledatadisplaymanager.js",
-                "com/fr/bi/web/js/components/excel/exceltabledata/model.exceltabledatadisplay.js",
-
                 //数据预处理表格
                 "com/fr/bi/web/js/components/pretreatedtable/pretreatedtable.js",
 
