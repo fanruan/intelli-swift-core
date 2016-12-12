@@ -441,28 +441,28 @@
             var result = {};
             BI.each(views, function (viewType, view) {
                 viewType = BI.parseInt(viewType);
-                if (viewType < BICst.REGION.DIMENSION2) {
+                if (viewType < BI.parseInt(BICst.REGION.DIMENSION2)) {
                     result[BICst.REGION.DIMENSION1] = result[BICst.REGION.DIMENSION1] || [];
-                    result[BICst.REGION.DIMENSION1].push(viewType);
+                    result[BICst.REGION.DIMENSION1].push(viewType + "");
                     return;
                 }
-                if (viewType < BICst.REGION.TARGET1) {
+                if (viewType < BI.parseInt(BICst.REGION.TARGET1)) {
                     result[BICst.REGION.DIMENSION2] = result[BICst.REGION.DIMENSION2] || [];
-                    result[BICst.REGION.DIMENSION2].push(viewType);
+                    result[BICst.REGION.DIMENSION2].push(viewType + "");
                     return;
                 }
-                if (viewType < BICst.REGION.TARGET2) {
+                if (viewType < BI.parseInt(BICst.REGION.TARGET2)) {
                     result[BICst.REGION.TARGET1] = result[BICst.REGION.TARGET1] || [];
-                    result[BICst.REGION.TARGET1].push(viewType);
+                    result[BICst.REGION.TARGET1].push(viewType + "");
                     return;
                 }
-                if (viewType < BICst.REGION.TARGET3) {
+                if (viewType < BI.parseInt(BICst.REGION.TARGET3)) {
                     result[BICst.REGION.TARGET2] = result[BICst.REGION.TARGET2] || [];
-                    result[BICst.REGION.TARGET2].push(viewType);
+                    result[BICst.REGION.TARGET2].push(viewType + "");
                     return;
                 }
                 result[BICst.REGION.TARGET3] = result[BICst.REGION.TARGET3] || [];
-                result[BICst.REGION.TARGET3].push(viewType);
+                result[BICst.REGION.TARGET3].push(viewType + "");
             });
             return result;
         },

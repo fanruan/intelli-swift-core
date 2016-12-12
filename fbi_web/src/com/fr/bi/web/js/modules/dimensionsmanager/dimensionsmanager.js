@@ -73,20 +73,124 @@ BI.DimensionsManager = BI.inherit(BI.Widget, {
         return this.tab = BI.createWidget({
             type: "bi.tab",
             defaultShowIndex: false,
-            cardCreator: function (v) {
-                var manager = BI.createWidget({
-                    type: "bi.regions_manager",
-                    dimensionCreator: o.dimensionCreator,
-                    regionType: v,
-                    wId: o.wId
-                });
-                manager.on(BI.RegionsManager.EVENT_CHANGE, function () {
-                    self.model.setViews(manager.getValue());
-                    self.fireEvent(BI.DimensionsManager.EVENT_CHANGE, arguments);
-                });
-                return manager;
-            }
+            cardCreator: BI.bind(this._createRegionsManager, this)
         })
+    },
+
+    _createRegionsManager: function (widgetType) {
+        var self = this, o = this.options;
+        var type = "bi.table_regions_manager";
+        switch (widgetType){
+            case BICst.WIDGET.TABLE:
+                type = "bi.table_regions_manager";
+                break;
+            case BICst.WIDGET.CROSS_TABLE:
+                type = "bi.cross_table_regions_manager";
+                break;
+            case BICst.WIDGET.COMPLEX_TABLE:
+                type = "bi.complex_table_regions_manager";
+                break;
+            case BICst.WIDGET.DETAIL:
+                type = "bi.detail_table_regions_manager";
+                break;
+            case BICst.WIDGET.AXIS:
+                type = "bi.axis_regions_manager";
+                break;
+            case BICst.WIDGET.ACCUMULATE_AXIS:
+                type = "bi.accumulate_axis_regions_manager";
+                break;
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
+                type = "bi.percent_accumulate_axis_regions_manager";
+                break;
+            case BICst.WIDGET.COMPARE_AXIS:
+                type = "bi.compare_axis_regions_manager";
+                break;
+            case BICst.WIDGET.FALL_AXIS:
+                type = "bi.fall_axis_regions_manager";
+                break;
+            case BICst.WIDGET.BAR:
+                type = "bi.bar_regions_manager";
+                break;
+            case BICst.WIDGET.ACCUMULATE_BAR:
+                type = "bi.accumulate_bar_regions_manager";
+                break;
+            case BICst.WIDGET.COMPARE_BAR:
+                type = "bi.compare_bar_regions_manager";
+                break;
+            case BICst.WIDGET.PIE:
+                type = "bi.pie_regions_manager";
+                break;
+            case BICst.WIDGET.MULTI_PIE:
+                type = "bi.multi_pie_regions_manager";
+                break;
+            case BICst.WIDGET.MAP:
+                type = "bi.map_regions_manager";
+                break;
+            case BICst.WIDGET.GIS_MAP:
+                type = "bi.gis_map_regions_manager";
+                break;
+            case BICst.WIDGET.DASHBOARD:
+                type = "bi.dashboard_regions_manager";
+                break;
+            case BICst.WIDGET.DONUT:
+                type = "bi.donut_regions_manager";
+                break;
+            case BICst.WIDGET.BUBBLE:
+                type = "bi.bubble_regions_manager";
+                break;
+            case BICst.WIDGET.FORCE_BUBBLE:
+                type = "bi.force_bubble_regions_manager";
+                break;
+            case BICst.WIDGET.SCATTER:
+                type = "bi.scatter_regions_manager";
+                break;
+            case BICst.WIDGET.RADAR:
+                type = "bi.radar_regions_manager";
+                break;
+            case BICst.WIDGET.ACCUMULATE_RADAR:
+                type = "bi.accumulate_radar_regions_manager";
+                break;
+            case BICst.WIDGET.LINE:
+                type = "bi.line_regions_manager";
+                break;
+            case BICst.WIDGET.AREA:
+                type = "bi.area_regions_manager";
+                break;
+            case BICst.WIDGET.ACCUMULATE_AREA:
+                type = "bi.accumulate_area_regions_manager";
+                break;
+            case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
+                type = "bi.percent_accumulate_area_regions_manager";
+                break;
+            case BICst.WIDGET.COMPARE_AREA:
+                type = "bi.compare_area_regions_manager";
+                break;
+            case BICst.WIDGET.RANGE_AREA:
+                type = "bi.range_area_regions_manager";
+                break;
+            case BICst.WIDGET.COMBINE_CHART:
+                type = "bi.combine_chart_regions_manager";
+                break;
+            case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
+                type = "bi.multi_axis_combine_chart_regions_manager";
+                break;
+            case BICst.WIDGET.FUNNEL:
+                type = "bi.funnel_regions_manager";
+                break;
+            default:
+                type = "bi.table_regions_manager";
+                break;
+        }
+        var manager = BI.createWidget({
+            type: type,
+            dimensionCreator: o.dimensionCreator,
+            wId: o.wId
+        });
+        manager.on(BI.RegionsManager.EVENT_CHANGE, function () {
+            self.model.setViews(manager.getValue());
+            self.fireEvent(BI.DimensionsManager.EVENT_CHANGE, arguments);
+        });
+        return manager;
     },
 
     getValue: function () {
