@@ -236,6 +236,8 @@ var _JS = [
 
     "widget/mvc.zclip.js",
 
+    "widget/mvc.sortablegroup.js",
+
     <!--布局类控件-->
 
     "layout/mvc.table.js",
@@ -563,6 +565,7 @@ var _Routes = {
     "/color_picker_editor": "ColorPickerEditorView",
     "/multifile": "MultifileView",
     "/zclip": "ZclipView",
+    "/sortablegroup": "SortableGroupView",
 
     //布局
     "/table": "TableView",
@@ -1025,6 +1028,9 @@ _Models.widget = [{
 }, {
     text: "bi.zero_clip",
     value: "zclip"
+}, {
+    text: "bi.sortable_group",
+    value: "sortablegroup"
 }];
 _Models.layout = [{
     text: "bi.center_adapt",
