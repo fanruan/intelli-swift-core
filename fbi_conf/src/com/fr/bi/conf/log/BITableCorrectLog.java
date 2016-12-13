@@ -1,5 +1,6 @@
 package com.fr.bi.conf.log;
 
+import com.fr.bi.stable.constant.BILogConstant;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -94,6 +95,11 @@ public class BITableCorrectLog extends BITableLog {
     public long getTotalTime() {
         long t = getValueFromDB + indexTime;
         return Math.max(t, 0L);
+    }
+
+    @Override
+    public int getLogType() {
+        return BILogConstant.TABLE_LOG_TYPE.CORRECT;
     }
 
 }

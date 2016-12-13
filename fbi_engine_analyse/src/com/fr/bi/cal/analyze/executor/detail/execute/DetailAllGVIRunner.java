@@ -37,12 +37,12 @@ public class DetailAllGVIRunner extends AbstractGVIRunner {
                     while (itT.hasNext()) {
                         BIDetailTarget dimension = itT.next();
 
-                        List<BITableSourceRelation> relations = BIConfUtils.convert2TableSourceRelation(dimension.getRelationList(target, biUser.getUserId()));
+                        List<BITableSourceRelation> relations = BIConfUtils.convert2TableSourceRelation(dimension.getRelationList(target, userId));
 
                         long row = ((ConnectionRowGetter) (paras.getRowMap().get(new CollectionKey<BITableSourceRelation>(relations))))
                                 .getConnectedRow(rowIndex);
                         values.put(dimension.getValue(), dimension.createDetailValue(
-                                row, values, loader, biUser.getUserId()));
+                                row, values, loader, userId));
                     }
 
                     HashSet<String> calledTargets = new HashSet<String>();

@@ -61,6 +61,7 @@ BIDezi.YearQuarterDetailModel = BI.inherit(BI.Model, {
     local: function () {
         if (this.has("addDimension")) {
             var dimension = this.get("addDimension");
+            var view = this.get("view");
             var src = dimension.src;
             var dId = dimension.dId;
             var dimensions = this.get("dimensions");
@@ -71,8 +72,12 @@ BIDezi.YearQuarterDetailModel = BI.inherit(BI.Model, {
                     _src: src._src,
                     type: src.type
                 };
+                if (!view[BICst.REGION.DIMENSION1]) {
+                    view[BICst.REGION.DIMENSION1] = [];
+                }
+                view[BICst.REGION.DIMENSION1].push(dId);
+                this.set({"dimensions": dimensions, view: view});
             }
-            this.set("dimensions", dimensions);
             return true;
         }
         return false;
