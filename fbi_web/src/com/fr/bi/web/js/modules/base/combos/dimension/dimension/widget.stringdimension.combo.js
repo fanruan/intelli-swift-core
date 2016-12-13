@@ -117,7 +117,7 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
         var items = BI.DimensionStringCombo.superclass._rebuildItems.apply(this, arguments), o = this.options;
         var rType = BI.Utils.getRegionTypeByDimensionID(o.dId);
         var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
-        if(rType >= BICst.REGION.DIMENSION2 && BI.contains(chartTypes, wType)) {
+        if(BI.Utils.isDimensionRegion2ByRegionType(rType) && BI.contains(chartTypes, wType)) {
             items[1].push({
                 el: {
                     text: BI.i18nText("BI-Series_Accumulation_Attribute"),

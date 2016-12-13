@@ -173,7 +173,7 @@ BI.GroupStatisticModel = BI.inherit(BI.Widget, {
                 }
             };
 
-            regionType == BICst.REGION.DIMENSION1 ? dimensions[id]["group"] = assertDimensionSummary(type) : dimensions[id]["group"] = assertTargetSummary(type);
+            BI.Utils.isDimensionRegion1ByRegionType(regionType) ? dimensions[id]["group"] = assertDimensionSummary(type) : dimensions[id]["group"] = assertTargetSummary(type);
             view[regionType] || (view[regionType] = []);
             view[regionType].push(id);
             currentID.push(id);

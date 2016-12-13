@@ -127,7 +127,7 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
                     }
                 });
                 var regionType = BI.Utils.getRegionTypeByDimensionID(drillDid);
-                value = ((regionType >= BICst.REGION.DIMENSION1 && regionType < BICst.REGION.DIMENSION2) ? (v.initialX || v.x) : v.seriesName);
+                value = ((BI.Utils.isDimensionRegion1ByRegionType(regionType)) ? (v.initialX || v.x) : v.seriesName);
                 break;
         }
         return value;

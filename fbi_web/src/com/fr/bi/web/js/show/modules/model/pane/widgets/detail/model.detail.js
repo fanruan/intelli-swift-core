@@ -31,7 +31,7 @@ BIShow.DetailModel = BI.inherit(BI.Model, {
         if (key1 === "dimensions") {
             var views = this.get("view"), dimensions = this.get("dimensions");
             BI.each(views, function (region, arr) {
-                if ((region === BICst.REGION.DIMENSION1 || region === BICst.REGION.DIMENSION2) && arr.contains(key2)) {
+                if ((BI.Utils.isDimensionRegion1ByRegionType(region) || BI.Utils.isDimensionRegion2ByRegionType(region)) && arr.contains(key2)) {
                     var linkageValues = BI.Utils.getLinkageValuesByID(self.get("id"));
                     self.set("clicked", linkageValues);
                 }
@@ -117,10 +117,10 @@ BIShow.DetailModel = BI.inherit(BI.Model, {
                     var preDim1Select = [], preDim2Select = [];
                     BI.each(preDims, function (dId, dim) {
                         if (dim.used === true) {
-                            if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.DIMENSION1) {
+                            if (BI.Utils.isDimensionRegion1ByRegionType(BI.Utils.getRegionTypeByDimensionID(dId))) {
                                 preDim1Select.push(dId);
                             }
-                            if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.DIMENSION2) {
+                            if (BI.Utils.isDimensionRegion2ByRegionType(BI.Utils.getRegionTypeByDimensionID(dId))) {
                                 preDim2Select.push(dId);
                             }
                         }
@@ -129,7 +129,7 @@ BIShow.DetailModel = BI.inherit(BI.Model, {
                     BI.each(dims, function (dId, dim) {
                         var rType = BI.Utils.getRegionTypeByDimensionID(dId);
                         if (dim.used === true) {
-                            if (rType === BICst.REGION.DIMENSION1) {
+                            if (BI.Utils.isDimensionRegion1ByRegionType(rType)) {
                                 if (!preDim1Select.contains(dId)) {
                                     //添加维度
                                     if (BI.isNotEmptyArray(preDim1Select) && BI.size(dims) !== BI.size(preDims)) {
@@ -140,7 +140,7 @@ BIShow.DetailModel = BI.inherit(BI.Model, {
                                     }
                                 }
                             }
-                            if (rType === BICst.REGION.DIMENSION2) {
+                            if (BI.Utils.isDimensionRegion2ByRegionType(rType)) {
                                 if (!preDim2Select.contains(dId)) {
                                     if (BI.isNotEmptyArray(preDim2Select) && BI.size(dims) !== BI.size(preDims)) {
                                         dims[dId].used = false;
@@ -188,13 +188,13 @@ BIShow.DetailModel = BI.inherit(BI.Model, {
                         preTar3Select = [];
                         BI.each(preDims, function (dId, dim) {
                             if (dim.used === true) {
-                                if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.TARGET1) {
+                                if (BI.Utils.isTargetRegion1ByRegionType(BI.Utils.getRegionTypeByDimensionID(dId))) {
                                     preTar1Select.push(dId);
                                 }
-                                if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.TARGET2) {
+                                if (BI.Utils.isTargetRegion2ByRegionType(BI.Utils.getRegionTypeByDimensionID(dId))) {
                                     preTar2Select.push(dId);
                                 }
-                                if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.TARGET3) {
+                                if (BI.Utils.isTargetRegion3ByRegionType(BI.Utils.getRegionTypeByDimensionID(dId))) {
                                     preTar3Select.push(dId);
                                 }
                             }
@@ -205,7 +205,7 @@ BIShow.DetailModel = BI.inherit(BI.Model, {
                         BI.each(dims, function (dId, dim) {
                             var rType = BI.Utils.getRegionTypeByDimensionID(dId);
                             if (dim.used === true) {
-                                if (rType === BICst.REGION.TARGET1) {
+                                if (BI.Utils.isTargetRegion1ByRegionType(rType)) {
                                     if (!preTar1Select.contains(dId)) {
                                         //添加指标
                                         if (BI.isNotEmptyArray(preTar1Select) && BI.size(dims) !== BI.size(preDims)) {
@@ -216,7 +216,7 @@ BIShow.DetailModel = BI.inherit(BI.Model, {
                                         }
                                     }
                                 }
-                                if (rType === BICst.REGION.TARGET2) {
+                                if (BI.Utils.isTargetRegion2ByRegionType(rType)) {
                                     if (!preTar2Select.contains(dId)) {
                                         if (BI.isNotEmptyArray(preTar2Select) && BI.size(dims) !== BI.size(preDims)) {
                                             dims[dId].used = false;
@@ -225,7 +225,7 @@ BIShow.DetailModel = BI.inherit(BI.Model, {
                                         }
                                     }
                                 }
-                                if (rType === BICst.REGION.TARGET3) {
+                                if (BI.Utils.isTargetRegion3ByRegionType(rType)) {
                                     if (!preTar3Select.contains(dId)) {
                                         if (BI.isNotEmptyArray(preTar3Select) && BI.size(dims) !== BI.size(preDims)) {
                                             dims[dId].used = false;
@@ -258,10 +258,10 @@ BIShow.DetailModel = BI.inherit(BI.Model, {
                         preTar1Select = [];
                         BI.each(preDims, function (dId, dim) {
                             if (dim.used === true) {
-                                if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.TARGET1) {
+                                if (BI.Utils.isTargetRegion1ByRegionType(BI.Utils.getRegionTypeByDimensionID(dId))) {
                                     preTar1Select.push(dId);
                                 }
-                                if (BI.Utils.getRegionTypeByDimensionID(dId) === BICst.REGION.TARGET2) {
+                                if (BI.Utils.isTargetRegion2ByRegionType(BI.Utils.getRegionTypeByDimensionID(dId))) {
                                     preTar2Select.push(dId);
                                 }
                             }
@@ -271,14 +271,14 @@ BIShow.DetailModel = BI.inherit(BI.Model, {
                         BI.each(dims, function (dId, dim) {
                             var rType = BI.Utils.getRegionTypeByDimensionID(dId);
                             if (dim.used === true) {
-                                if (rType === BICst.REGION.TARGET1) {
+                                if (BI.Utils.isTargetRegion1ByRegionType(rType)) {
                                     if (!preTar1Select.contains(dId)) {
                                         if (!(BI.isNotEmptyArray(preTar1Select) && BI.size(dims) !== BI.size(preDims))) {
                                             tar1Change = true;
                                         }
                                     }
                                 }
-                                if (rType === BICst.REGION.TARGET2) {
+                                if (BI.Utils.isTargetRegion2ByRegionType(rType)) {
                                     if (!preTar2Select.contains(dId)) {
                                         if (BI.isNotEmptyArray(preTar2Select) && BI.size(dims) !== BI.size(preDims)) {
                                             dims[dId].used = false;
@@ -326,7 +326,7 @@ BIShow.DetailModel = BI.inherit(BI.Model, {
                 var dimensions = BI.deepClone(this.get("dimensions"));
                 //region1、2中的维度增加的时候，先看原先中是否有已勾选了的，如果有将拖入的used设置为false
                 BI.each(view, function (region, dims) {
-                    if (region < BICst.REGION.TARGET1) {
+                    if (BI.Utils.isDimensionRegionByRegionType(region)) {
                         var adds = [], isPreSelect = false;
                         BI.each(dims, function (i, dim) {
                             if (BI.isNotNull(preView[region]) && !preView[region].contains(dim)) {
@@ -350,7 +350,7 @@ BIShow.DetailModel = BI.inherit(BI.Model, {
                     wType === BICst.WIDGET.BUBBLE || wType === BICst.WIDGET.FORCE_BUBBLE || wType === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART ||
                     wType === BICst.WIDGET.SCATTER) {
                     BI.each(view, function (region, dims) {
-                        if (region >= BICst.REGION.TARGET1) {
+                        if (BI.Utils.isTargetRegionByRegionType(region)) {
                             var adds = [], isPreSelect = false;
                             BI.each(dims, function (i, dim) {
                                 if (BI.isNotNull(preView[region]) && !preView[region].contains(dim)) {
@@ -372,7 +372,7 @@ BIShow.DetailModel = BI.inherit(BI.Model, {
                 }
                 if (wType === BICst.WIDGET.MAP) {
                     BI.each(view, function (region, dims) {
-                        if (region === BICst.REGION.TARGET2) {
+                        if (BI.Utils.isTargetRegion2ByRegionType(region)) {
                             var adds = [], isPreSelect = false;
                             BI.each(dims, function (i, dim) {
                                 if (BI.isNotNull(preView[region]) && !preView[region].contains(dim)) {
@@ -429,7 +429,7 @@ BIShow.DetailModel = BI.inherit(BI.Model, {
                 if (!BI.contains(view[regionType], dId)) {
                     view[regionType].push(dId);
                 }
-                if (regionType >= BICst.REGION.TARGET1) {//拖的是指标
+                if (BI.Utils.isTargetRegionByRegionType(regionType)) {//拖的是指标
                     if (BI.isNotEmptyString(fId)) {
                         var targetTableId = BI.Utils.getTableIdByFieldID(fId);
                         BI.each(dimensions, function (idx, dimension) {
@@ -451,7 +451,7 @@ BIShow.DetailModel = BI.inherit(BI.Model, {
                         });
                     }
                 }
-                if (regionType < BICst.REGION.TARGET1) {//拖的是维度
+                if (BI.Utils.isDimensionRegionByRegionType(regionType)) {//拖的是维度
                     dimensions[dId].dimension_map = {};
                     if (BI.isNotEmptyString(fId)) {
                         var dimensionTableId = BI.Utils.getTableIdByFieldID(fId);

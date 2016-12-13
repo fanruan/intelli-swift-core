@@ -175,19 +175,19 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
         var views = BI.Utils.getWidgetViewByID(this.wId);
         var drill = BI.Utils.getDrillByID(this.wId);
         BI.each(views, function (type, view) {
-            if(type >= BICst.REGION.DIMENSION1 && type < BICst.REGION.DIMENSION2) {
+            if(BI.Utils.isDimensionRegion1ByRegionType(type)) {
                 BI.each(view, function (idx, dId) {
                     BI.Utils.isDimensionUsable(dId) && (self.dimIds.push(dId));
                 })
             }
-            if(type >= BICst.REGION.DIMENSION2 && type < BICst.REGION.TARGET1) {
+            if(BI.Utils.isDimensionRegion2ByRegionType(type)) {
                 BI.each(view, function (idx, dId) {
                     BI.Utils.isDimensionUsable(dId) && (self.crossDimIds.push(dId));
                 })
             }
 
             //使用中的指标
-            if(type >= BICst.REGION.TARGET1 && type < BICst.REGION.TARGET2) {
+            if(BI.Utils.isTargetRegion1ByRegionType(type)) {
                 BI.each(view, function (i, dId) {
                     BI.Utils.isDimensionUsable(dId) && (self.targetIds.push(dId));
                 });
@@ -208,7 +208,7 @@ BI.SummaryTableModel = BI.inherit(FR.OB, {
                     var tempDrId = dr.dId;
                     if (i === drArray.length - 1) {
                         var rType = BI.Utils.getRegionTypeByDimensionID(drId);
-                        if ( rType >= BICst.REGION.DIMENSION1 && rType < BICst.REGION.DIMENSION2) {
+                        if (BI.Utils.isDimensionRegion1ByRegionType(rType)) {
                             self.dimIds.splice(dIndex, 0, tempDrId);
                         } else {
                             self.crossDimIds.splice(cIndex, 0, tempDrId);

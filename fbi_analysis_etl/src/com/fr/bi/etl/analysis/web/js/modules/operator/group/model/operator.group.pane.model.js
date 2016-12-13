@@ -136,7 +136,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
                     };
             }
         };
-        regionType == BICst.REGION.DIMENSION1 ? dimensions[id]["group"] = assertDimensionSummary(type) : dimensions[id]["group"] = assertTargetSummary(type);
+        BI.Utils.isDimensionRegion1ByRegionType(regionType) ? dimensions[id]["group"] = assertDimensionSummary(type) : dimensions[id]["group"] = assertTargetSummary(type);
         view[regionType] || (view[regionType] = []);
         view[regionType].push(id);
         this.set(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY, dimensions)
@@ -174,7 +174,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.MVCModel, {
     },
 
     _getFieldType : function (dimension, idx) {
-        if(idx === BICst.REGION.TARGET1) {
+        if(BI.Utils.isTargetRegion1ByRegionType(idx)) {
             if(BI.isNotNull(dimension.group) && dimension.group.type === BICst.SUMMARY_TYPE.APPEND){
                  return BICst.COLUMN.STRING;
             }

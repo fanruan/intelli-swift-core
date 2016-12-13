@@ -174,15 +174,14 @@ Data.Utils = {
                     return true;
                 }
             });
-            return BI.parseInt(region) >= BI.parseInt(BICst.REGION.DIMENSION1) &&
-                BI.parseInt(BICst.REGION.TARGET1) > BI.parseInt(region);
+            return BI.Utils.isDimensionRegionByRegionType(region);
         }
 
         function getShowTarget() {
             var view = widget.view;
             var targetIds = [];
             BI.each(view, function (regionType, arr) {
-                if (regionType >= BICst.REGION.TARGET1) {
+                if (BI.Utils.isTargetRegionByRegionType(regionType)) {
                     targetIds = BI.concat(targetIds, arr);
                 }
             });
@@ -266,7 +265,8 @@ Data.Utils = {
                     BI.each(drArray, function (i, dr) {
                         var tempDrId = dr.dId;
                         if (i === drArray.length - 1) {
-                            if (getRegionTypeByDimensionID(drId) === BICst.REGION.DIMENSION1) {
+                            var regionType = getRegionTypeByDimensionID(drId);
+                            if (BI.Utils.isDimensionRegion1ByRegionType(regionType)) {
                                 dimIds.splice(dIndex, 0, tempDrId);
                             } else {
                                 crossDimIds.splice(cIndex, 0, tempDrId);
