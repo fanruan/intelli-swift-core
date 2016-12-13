@@ -65,7 +65,6 @@ public class CubeBuildStuffSpecificTable extends CubeBuildSpecific {
      * 过滤关联，关联一端的表此次不更新，并且不存在，那么移除
      *
      * @param relationInConstruction
-     * @param absentRelation
      * @return
      */
     private Set<BITableSourceRelation> removeRelationAbsentTable(CubeTableSource specificTable, Set<BITableSourceRelation> relationInConstruction, Set<CubeTableSource> absentTable) {
@@ -333,7 +332,7 @@ public class CubeBuildStuffSpecificTable extends CubeBuildSpecific {
     }
 
     public String getCubeTaskId() {
-        return BIStringUtils.append(DBConstant.CUBE_UPDATE_TYPE.SINGLETABLE_UPDATE, specificTable.getSourceID(), specificBasicTableID);
+        return BIStringUtils.append(specificTable.getSourceID(), specificBasicTableID);
     }
 
     @Override

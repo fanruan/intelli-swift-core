@@ -118,8 +118,8 @@ Data.Req = BIReq = {
         }, complete);
     },
 
-    reqCubeStatusCheck: function (callback, complete) {
-        BI.requestAsync("fr_bi_configure", "get_cube_generate_status", {}, function (res) {
+    reqCubeStatusCheck: function (table, callback, complete) {
+        BI.requestAsync("fr_bi_configure", "check_cube_table_status", {table:table}, function (res) {
             callback(res);
         }, complete)
     },
