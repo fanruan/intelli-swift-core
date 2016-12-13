@@ -289,7 +289,6 @@ BIDezi.DetailView = BI.inherit(BI.View, {
                         });
                     }
                 }
-
                 //self.addSubVessel(dId, dimensionsVessel[dId]).skipTo(regionType + "/" + dId, dId, "dimensions." + dId);
                 return dimensionsVessel[dId];
             }

@@ -106,6 +106,36 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
         return items;
     },*/
 
+    _rebuildItems: function () {
+        var chartTypes = [
+            BICst.WIDGET.ACCUMULATE_AREA,
+            BICst.WIDGET.ACCUMULATE_AXIS,
+            BICst.WIDGET.ACCUMULATE_BAR,
+            BICst.WIDGET.ACCUMULATE_RADAR
+        ];
+        var items = BI.DimensionStringCombo.superclass._rebuildItems.apply(this, arguments), o = this.options;
+        var rType = BI.Utils.getRegionTypeByDimensionID(o.dId);
+        var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
+        if(rType >= BICst.REGION.DIMENSION2 && BI.contains(chartTypes, wType)) {
+            items[1].push({
+                el: {
+                    text: BI.i18nText("BI-Series_Accumulation_Attribute"),
+                    cls: "",
+                    value: BICst.DIMENSION_STRING_COMBO.SERIES_ACCUMULATION_ATTRIBUTE
+                },
+                children:[{
+                    text: BI.i18nText("BI-No_Accumulation"),
+                    value: BICst.DIMENSION_STRING_COMBO.NO_SERIES
+                },{
+                    text: BI.i18nText("BI-Series_Accumulation"),
+                    value: BICst.DIMENSION_STRING_COMBO.SERIES_ACCUMULATION
+                }]
+            });
+        }
+        return items
+    },
+
+
     typeConfig: function(){
         return this.config;
     },

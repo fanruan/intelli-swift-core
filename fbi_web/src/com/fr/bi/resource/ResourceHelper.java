@@ -845,6 +845,11 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/calculatetarget/calculatetargetpopup.css",
                 "com/fr/bi/web/css/modules/calculatetarget/pane.calculate.target.rank.css",
 
+                //系列堆积
+                "com/fr/bi/web/css/modules/seriesaccumulation/container.accumulation.css",
+                "com/fr/bi/web/css/modules/seriesaccumulation/group.accumulation.css",
+                "com/fr/bi/web/css/modules/seriesaccumulation/series.accumulation.css",
+
                 //去数据库选表
                 "com/fr/bi/web/css/modules/selecttable/widget.selecttable.pane.css",
                 "com/fr/bi/web/css/modules/selecttable/widget.datalinktab.css",
@@ -1209,6 +1214,12 @@ public class ResourceHelper {
 
                 //树标签控件
                 "com/fr/bi/web/js/modules/selecttreelabel/widget.selecttreelabel.js",
+
+                //系列堆积设置
+                "com/fr/bi/web/js/modules/seriesaccumulation/series.accumulation.js",
+                "com/fr/bi/web/js/modules/seriesaccumulation/series.accumulation.popup.js",
+                "com/fr/bi/web/js/modules/seriesaccumulation/group/group.accumulation.js",
+                "com/fr/bi/web/js/modules/seriesaccumulation/group/container.accumulation.js",
 
                 "com/fr/bi/web/js/extend/excel/upload/excel.upload.js",
                 "com/fr/bi/web/js/extend/excel/upload/excel.upload.model.js",
