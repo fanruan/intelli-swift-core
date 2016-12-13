@@ -6,11 +6,13 @@ import com.finebi.cube.conf.pack.data.BIGroupTagName;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.pack.group.IBusinessGroupGetterService;
 import com.finebi.cube.conf.pack.imp.BISystemPackageConfigurationManager;
+import com.fr.base.FRContext;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.data.pack.exception.BIGroupAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIGroupDuplicateException;
 import com.fr.bi.conf.data.pack.exception.BIPackageAbsentException;
 import com.fr.bi.conf.data.pack.exception.BIPackageDuplicateException;
+import com.fr.dav.LocalEnv;
 import junit.framework.TestCase;
 
 import java.util.Set;
@@ -334,9 +336,47 @@ public class SystemPackageTest extends TestCase {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
-/*
-* todo kary 获取currentPackage
-* */
-    public void testCurrentPackage(){
+
+
+    /*
+    * todo kary 获取currentPackage
+    * */
+    public void testCurrentPackage() {
+    }
+
+    public void testWriteXMLParallel() {
+        try {
+            FRContext.setCurrentEnv(new LocalEnv());
+            manager.addPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("a"));
+            manager.persistData(user.getUserId());
+            Thread t1 = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        manager.addPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("b"));
+                        manager.persistData(user.getUserId());
+                    } catch (BIPackageDuplicateException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            Thread t2 = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        manager.addPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("c"));
+                        manager.persistData(user.getUserId());
+
+                    } catch (BIPackageDuplicateException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            t1.run();
+            t2.run();
+            assertTrue(manager.containPackage(user.getUserId(), BIBusinessPackageTestTool.generatePackage("a")));
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
     }
 }

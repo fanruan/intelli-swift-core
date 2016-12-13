@@ -58,13 +58,7 @@ public abstract class BIAbstractDetailTarget extends BIStyleTarget implements BI
             int r = row.intValue();
             if (r > -1) {
                 initialTableSource(loader);
-                Object name = columnDetailGetter.getValue(r);
-                if (name == null) {
-                    return null;
-                }
-                if (group.getType() == BIReportConstant.GROUP.NO_GROUP) {
-                    return name;
-                }
+                return columnDetailGetter.getValue(r);
             }
         }
         return null;

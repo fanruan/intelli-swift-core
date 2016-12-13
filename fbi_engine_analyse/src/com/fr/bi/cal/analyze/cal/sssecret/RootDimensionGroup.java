@@ -9,6 +9,7 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
+import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
@@ -432,6 +433,12 @@ public class RootDimensionGroup implements IRootDimensionGroup {
                 ckp.setRelationList(BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations()));
                 GroupValueIndex pgvi = ckp.createNoneSortGroupValueMapGetter(ck.getField().getTableBelongTo(), session.getLoader()).getIndex(value);
                 gvi = gvi.AND(pgvi);
+            }
+            if (widget instanceof TableWidget) {
+                GroupValueIndex filterGvi = ((TableWidget) widget).getFilter().createFilterIndex(ck, ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
+                if (filterGvi != null) {
+                    gvi = filterGvi.AND(gvi);
+                }
             }
             v = v.getParent();
         }

@@ -49,7 +49,6 @@ import com.fr.fs.control.UserControl;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONObject;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.Future;
@@ -63,7 +62,7 @@ import java.util.concurrent.Future;
  * edit by kary
  */
 public class BuildCubeTask implements CubeTask {
-    private static final Logger logger = LoggerFactory.getLogger(BuildCubeTask.class);
+    private static final Logger logger = BILoggerFactory.getLogger(BuildCubeTask.class);
     private CubeBuildStuff cubeBuildStuff;
     protected BIUser biUser;
     protected ICubeResourceRetrievalService retrievalService;
@@ -153,8 +152,6 @@ public class BuildCubeTask implements CubeTask {
                     BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
                 }
             }
-
-
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         } finally {
@@ -416,7 +413,7 @@ public class BuildCubeTask implements CubeTask {
         } else {
             cubeBuildStuff.copyFileFromOldCubes();
         }
-        BILoggerFactory.getLogger().info("copy files cost time: " + DateUtils.timeCostFrom(t));
+        logger.info("copy files cost time: " + DateUtils.timeCostFrom(t));
     }
 
     public static IMessage generateMessageDataSourceStart() {
