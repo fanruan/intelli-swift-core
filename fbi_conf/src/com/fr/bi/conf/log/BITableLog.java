@@ -30,6 +30,8 @@ public abstract class BITableLog implements JSONCreator {
 
     public abstract long getTotalTime();
 
+    public abstract int getLogType();
+
     @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = persistentTable.createJSON();
