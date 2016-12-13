@@ -236,6 +236,8 @@ var _JS = [
 
     "widget/mvc.zclip.js",
 
+    "widget/mvc.sortabletable.js",
+
     <!--布局类控件-->
 
     "layout/mvc.table.js",
@@ -561,6 +563,7 @@ var _Routes = {
     "/color_picker_editor": "ColorPickerEditorView",
     "/multifile": "MultifileView",
     "/zclip": "ZclipView",
+    "/sortable_table": "SortableTableView",
 
     //布局
     "/table": "TableView",
@@ -1488,6 +1491,10 @@ _Models.detail = [{
         pId: 27,
         text: "bi.excel_table",
         value: "excel_table"
+    }, {
+        pId: 27,
+        text: "bi.sortable_table",
+        value: "sortable_table"
     }, {
         pId: 27,
         text: "bi.excel_view_display_manager",
