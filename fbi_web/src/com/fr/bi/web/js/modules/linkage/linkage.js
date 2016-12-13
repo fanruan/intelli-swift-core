@@ -540,7 +540,7 @@ BI.Linkage = BI.inherit(BI.Widget, {
                     type: "bi.absolute",
                     cls: "linkage-widget-self"
                 });
-            } else if (BI.Utils.isControlWidgetByWidgetId(wId) || BI.Utils.isRealTimeControlWidgetByWidgetId(wId)) {
+            } else if (BI.Utils.isControlWidgetByWidgetId(wId) || BI.Utils.isInstantControlWidgetByWidgetId(wId)) {
                 var mask = BI.createWidget({
                     type: "bi.absolute",
                     cls: "linkage-widget-control",

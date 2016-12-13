@@ -177,22 +177,22 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
                     return new Date(currY, 11, 31).getTime();
 
                 case BICst.MULTI_DATE_MONTH_PREV:
-                    return BI.Utils.getBeforeMultiMonth(value).getTime();
+                    return new Date().getBeforeMultiMonth(value).getTime();
                 case BICst.MULTI_DATE_MONTH_AFTER:
-                    return BI.Utils.getAfterMultiMonth(value).getTime();
+                    return new Date().getAfterMultiMonth(value).getTime();
                 case BICst.MULTI_DATE_MONTH_BEGIN:
                     return new Date(currY, currM, 1).getTime();
                 case BICst.MULTI_DATE_MONTH_END:
                     return new Date(currY, currM, (date.getLastDateOfMonth()).getDate()).getTime();
 
                 case BICst.MULTI_DATE_QUARTER_PREV:
-                    return BI.Utils.getBeforeMulQuarter(value).getTime();
+                    return new Date().getBeforeMulQuarter(value).getTime();
                 case BICst.MULTI_DATE_QUARTER_AFTER:
-                    return BI.Utils.getAfterMulQuarter(value).getTime();
+                    return new Date().getAfterMulQuarter(value).getTime();
                 case BICst.MULTI_DATE_QUARTER_BEGIN:
-                    return BI.Utils.getQuarterStartDate().getTime();
+                    return new Date().getQuarterStartDate().getTime();
                 case BICst.MULTI_DATE_QUARTER_END:
-                    return BI.Utils.getQuarterEndDate().getTime();
+                    return new Date().getQuarterEndDate().getTime();
 
                 case BICst.MULTI_DATE_WEEK_PREV:
                     return date.getOffsetDate(-7 * value).getTime();
@@ -312,32 +312,32 @@ BI.MultiDateParamTrigger = BI.inherit(BI.Trigger, {
                 break;
             case BICst.MULTI_DATE_QUARTER_PREV:
                 var text = value + BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_QUARTER_PREV];
-                date = BI.Utils.getBeforeMulQuarter(value);
+                date = new Date().getBeforeMulQuarter(value);
                 _setInnerValue(date, text);
                 break;
             case BICst.MULTI_DATE_QUARTER_AFTER:
                 var text = value + BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_QUARTER_AFTER];
-                date = BI.Utils.getAfterMulQuarter(value);
+                date = new Date().getAfterMulQuarter(value);
                 _setInnerValue(date, text);
                 break;
             case BICst.MULTI_DATE_QUARTER_BEGIN:
                 var text = BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_QUARTER_BEGIN];
-                date = BI.Utils.getQuarterStartDate();
+                date = new Date().getQuarterStartDate();
                 _setInnerValue(date, text);
                 break;
             case BICst.MULTI_DATE_QUARTER_END:
                 var text = BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_QUARTER_END];
-                date = BI.Utils.getQuarterEndDate();
+                date = new Date().getQuarterEndDate();
                 _setInnerValue(date, text);
                 break;
             case BICst.MULTI_DATE_MONTH_PREV:
                 var text = value + BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_MONTH_PREV];
-                date = BI.Utils.getBeforeMultiMonth(value);
+                date = new Date().getBeforeMultiMonth(value);
                 _setInnerValue(date, text);
                 break;
             case BICst.MULTI_DATE_MONTH_AFTER:
                 var text = value + BICst.MULTI_DATE_SEGMENT_NUM[BICst.MULTI_DATE_MONTH_AFTER];
-                date = BI.Utils.getAfterMultiMonth(value);
+                date = new Date().getAfterMultiMonth(value);
                 _setInnerValue(date, text);
                 break;
             case BICst.MULTI_DATE_MONTH_BEGIN:

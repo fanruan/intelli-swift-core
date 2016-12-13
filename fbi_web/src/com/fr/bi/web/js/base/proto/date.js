@@ -150,14 +150,75 @@ Date.prototype.equalsTo = function (date) {
     (this.getSeconds() == date.getSeconds()));
 };
 
-/** Set only the year, month, date parts (keep existing time) */
-Date.prototype.setDateOnly = function (date) {
-    var tmp = new Date(date);
-    this.setDate(1);
-    this.setFullYear(tmp.getFullYear());
-    this.setMonth(tmp.getMonth());
-    this.setDate(tmp.getDate());
+//获得n个季度后的日期
+Date.prototype.getAfterMulQuarter = function (n) {
+    var dt = new Date();
+    dt.setMonth(dt.getMonth() + n * 3);
+    return dt;
 };
+//获得n个季度前的日期
+Date.prototype.getBeforeMulQuarter = function (n) {
+    var dt = new Date();
+    dt.setMonth(dt.getMonth() - n * 3);
+    return dt;
+};
+//得到本季度的起始月份
+Date.prototype.getQuarterStartMonth = function () {
+    var quarterStartMonth = 0;
+    var nowMonth = new Date().getMonth();
+    if (nowMonth < 3) {
+        quarterStartMonth = 0;
+    }
+    if (2 < nowMonth && nowMonth < 6) {
+        quarterStartMonth = 3;
+    }
+    if (5 < nowMonth && nowMonth < 9) {
+        quarterStartMonth = 6;
+    }
+    if (nowMonth > 8) {
+        quarterStartMonth = 9;
+    }
+    return quarterStartMonth;
+};
+//获得本季度的起始日期
+Date.prototype.getQuarterStartDate = function () {
+    return new Date(new Date().getFullYear(), this.getQuarterStartMonth(), 1);
+};
+//得到本季度的结束日期
+Date.prototype.getQuarterEndDate = function () {
+    var quarterEndMonth = this.getQuarterStartMonth() + 2;
+    return new Date(new Date().getFullYear(), quarterEndMonth, new Date().getMonthDays(quarterEndMonth));
+};
+Date.prototype.getAfterMultiMonth = function (n) {
+    var dt = new Date();
+    dt.setMonth(dt.getMonth() + n | 0);
+    return dt;
+};
+Date.prototype.getBeforeMultiMonth = function (n) {
+    var dt = new Date();
+    dt.setMonth(dt.getMonth() - n | 0);
+    return dt;
+};
+
+//指定日期n个月之前或之后的日期
+Date.prototype.getOffsetMonth = function (date, n) {
+    var day = date.getDate();
+    var monthDay = new Date(date.getFullYear(), date.getMonth() + parseInt(n), 1).getMonthDays();
+    if (day > monthDay) {
+        day = monthDay;
+    }
+    date.setDate(day);
+    date.setMonth(date.getMonth() + parseInt(n));
+    return date;
+};
+
+//指定日期n个季度之前或之后的日期
+Date.prototype.getOffsetQuarter = function (date, n) {
+    var dt = new Date(date);
+    dt.setMonth(dt.getMonth() + n * 3);
+    return dt;
+};
+
 /** Prints the date in a string according to the given format. */
 Date.prototype.print = function (str) {
     var m = this.getMonth();

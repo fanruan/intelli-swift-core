@@ -1026,7 +1026,7 @@ class AbstractWidget {
                     break;
                 case BICst.YEAR_QUARTER:
                     ydate = _getOffsetQuarter(ydate, sPrevOrAfter * value.svalue);
-                    start = _getQuarterStartDate(ydate);
+                    start = new Date().getQuarterStartDate(ydate);
                     end = _getQuarterEndDate(ydate);
                     break;
                 case BICst.YEAR_MONTH:
