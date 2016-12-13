@@ -290,6 +290,12 @@ BI.extend(BI.Utils, {
         }, complete)
     },
 
+    getExcelHTMLView: function (fileId, callback, complete) {
+        Data.Req.reqGetExcelHTMLView({fileId: fileId}, function (res) {
+            callback(res);
+        }, complete)
+    },
+
     saveFileGetExcelViewData: function (fileId, callback, complete) {
         Data.Req.reqSaveFileGetExcelViewData({fileId: fileId}, function (res) {
             callback(res);

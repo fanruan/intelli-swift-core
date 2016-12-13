@@ -18,6 +18,7 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
         this.mergeInfos = [];
         this.positions = {};
         this.excelName = "";
+        this.excelFullName = "";
         var table = o.table;
         var tableFields = table.fields;
         var tableId = table.id;
@@ -28,9 +29,8 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
         var view = o.view;
         if (BI.isNotNull(view)) {
             this.excelName = view.name;
-            this.excel = view.excel;
+            this.excelFullName = view.excelFullName;
             this.positions = view.positions;
-            this.mergeInfos = view.mergeInfos;
         }
 
         this.tables = [];
@@ -107,32 +107,21 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
     },
 
     setFile: function (file, callback) {
-        var self = this;
         this.file = file;
         this.excelName = file.filename;
+        this.excelFullName = file.attach_id + this.excelName;
         var mask = BI.createWidget({
             type: "bi.loading_mask",
             masker: BICst.BODY_ELEMENT,
             text: BI.i18nText("BI-Loading")
         });
         this.clearRowCol();
-        BI.Utils.saveFileGetExcelViewData(file.attach_id, function (data) {
-            self.excel = [];
-            self.mergeInfos = data.mergeInfos;
-            var row = [];
-            BI.each(data.fields, function (i, fs) {
-                BI.each(fs, function (j, field) {
-                    row.push(field.field_name);
-                });
-            });
-            self.excel.push(row);
-            BI.each(data.data, function (i, d) {
-                self.excel.push(d);
-            });
-            callback();
+        BI.requestAsync("fr_bi_configure", "save_upload_excel", {
+            fileId: file.attach_id
         }, function () {
+            callback();
             mask.destroy();
-        })
+        });
     },
 
     setRowColOnField: function (field, row, col) {
@@ -145,14 +134,6 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
 
     getPositions: function () {
         return this.positions;
-    },
-
-    getExcelData: function () {
-        return this.excel;
-    },
-
-    getExcelMergeInfos: function () {
-        return this.mergeInfos;
     },
 
     getAllFields: function () {
@@ -181,6 +162,14 @@ BI.ExcelViewSettingModel = BI.inherit(BI.Widget, {
         if (index > -1) {
             return fields[index + 1];
         }
+    },
+
+    getExcelFullName: function () {
+        return this.excelFullName || "";
+    },
+
+    setExcelFullName: function (name) {
+        this.excelFullName = name;
     },
 
     getExcelName: function () {
