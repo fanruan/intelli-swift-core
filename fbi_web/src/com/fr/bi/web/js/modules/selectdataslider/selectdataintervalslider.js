@@ -54,9 +54,11 @@ BI.SelectDataIntervalSlider = BI.inherit(BI.Widget, {
         if (dimensions.length == 0) {
             this.widget.reset()
         } else {
-            BI.Utils.getWidgetDataByID(o.wId, function (jsonData) {
-                var minAndMax = self._getMinAndMaxFromData(jsonData);
-                self.widget.populate(minAndMax[0], minAndMax[1], value);
+            BI.Utils.getWidgetDataByID(o.wId, {
+                success: function (jsonData) {
+                    var minAndMax = self._getMinAndMaxFromData(jsonData);
+                    self.widget.populate(minAndMax[0], minAndMax[1], value);
+                }
             }, {page: -1})
         }
     }

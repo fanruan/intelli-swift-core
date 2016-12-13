@@ -3202,11 +3202,20 @@
             return widget;
         },
 
-        getWidgetDataByID: function (wid, callback, options) {
-            Data.Req.reqWidgetSettingByData({widget: BI.extend(this.getWidgetCalculationByID(wid), options)}, function (data) {
-                callback(data);
-            });
-        },
+        getWidgetDataByID: (function () {
+            var cache = {};
+            return function (wid, callbacks, options) {
+                cache[wid] = callbacks;
+                Data.Req.reqWidgetSettingByData({widget: BI.extend(this.getWidgetCalculationByID(wid), options)}, function (data) {
+                    if (cache[wid] === callbacks) {
+                        callbacks.success(data);
+                    } else {
+                        callbacks.error && callbacks.error(data);
+                    }
+                    callbacks.done && callbacks.done(data);
+                });
+            }
+        })(),
 
         /**
          * 组件与表的关系

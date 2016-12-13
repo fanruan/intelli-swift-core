@@ -290,29 +290,33 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
     _populateNoDimsChange: function () {
         var self = this, wId = this.options.wId;
         this.loading();
-        BI.Utils.getWidgetDataByID(wId, function (jsonData) {
-            self.loaded();
-            if (BI.isNotNull(jsonData.error)) {
-                self.errorPane.setErrorInfo(jsonData.error);
-                self.errorPane.setVisible(true);
-                return;
-            }
-            if (BI.isNull(jsonData.data) || BI.isNull(jsonData.page)) {
-                self.errorPane.setErrorInfo("invalid json data!");
-                self.errorPane.setVisible(true);
-                return;
-            }
-            self.model.setDataAndPage(jsonData);
-            try {
-                if (self.model._isColRegionExist()) {
-                    self._prepareData();
-                } else {
-                    self._prepareGroupTableData()
+        BI.Utils.getWidgetDataByID(wId, {
+            success: function (jsonData) {
+                if (BI.isNotNull(jsonData.error)) {
+                    self.errorPane.setErrorInfo(jsonData.error);
+                    self.errorPane.setVisible(true);
+                    return;
                 }
-                self._refreshTable();
-            } catch (e) {
-                self.errorPane.setErrorInfo("error happens during populate table: " + e);
-                self.errorPane.setVisible(true);
+                if (BI.isNull(jsonData.data) || BI.isNull(jsonData.page)) {
+                    self.errorPane.setErrorInfo("invalid json data!");
+                    self.errorPane.setVisible(true);
+                    return;
+                }
+                self.model.setDataAndPage(jsonData);
+                try {
+                    if (self.model._isColRegionExist()) {
+                        self._prepareData();
+                    } else {
+                        self._prepareGroupTableData()
+                    }
+                    self._refreshTable();
+                } catch (e) {
+                    self.errorPane.setErrorInfo("error happens during populate table: " + e);
+                    self.errorPane.setVisible(true);
+                }
+            },
+            done: function () {
+                self.loaded();
             }
         }, this.model.getExtraInfo());
     },
@@ -320,32 +324,36 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
     _onPageChange: function (callback) {
         var self = this, wId = this.options.wId;
         this.loading();
-        BI.Utils.getWidgetDataByID(wId, function (jsonData) {
-            self.loaded();
-            if (BI.isNotNull(jsonData.error)) {
-                self.errorPane.setErrorInfo(jsonData.error);
-                self.errorPane.setVisible(true);
-                return;
-            }
-            if (BI.isNull(jsonData.data) || BI.isNull(jsonData.page)) {
-                self.errorPane.setErrorInfo("invalid json data!");
-                self.errorPane.setVisible(true);
-                return;
-            }
-            self.model.setDataAndPage(jsonData);
-            try {
-                self.model.createTableAttrs();
-                callback(self.model.getItems(), self.model.getHeader(), self.model.getCrossItems(), self.model.getCrossHeader());
-            } catch (e) {
-                self.errorPane.setErrorInfo("error happens during populate for table: " + e);
-                self.errorPane.setVisible(true);
-            }
-            self.fireEvent(BI.ComplexTable.EVENT_CHANGE, {
-                _page_: {
-                    h: self.table.getHPage(),
-                    v: self.table.getVPage()
+        BI.Utils.getWidgetDataByID(wId, {
+            success: function (jsonData) {
+                if (BI.isNotNull(jsonData.error)) {
+                    self.errorPane.setErrorInfo(jsonData.error);
+                    self.errorPane.setVisible(true);
+                    return;
                 }
-            });
+                if (BI.isNull(jsonData.data) || BI.isNull(jsonData.page)) {
+                    self.errorPane.setErrorInfo("invalid json data!");
+                    self.errorPane.setVisible(true);
+                    return;
+                }
+                self.model.setDataAndPage(jsonData);
+                try {
+                    self.model.createTableAttrs();
+                    callback(self.model.getItems(), self.model.getHeader(), self.model.getCrossItems(), self.model.getCrossHeader());
+                } catch (e) {
+                    self.errorPane.setErrorInfo("error happens during populate for table: " + e);
+                    self.errorPane.setVisible(true);
+                }
+                self.fireEvent(BI.ComplexTable.EVENT_CHANGE, {
+                    _page_: {
+                        h: self.table.getHPage(),
+                        v: self.table.getVPage()
+                    }
+                });
+            },
+            done: function () {
+                self.loaded();
+            }
         }, this.model.getExtraInfo());
     },
 
@@ -476,35 +484,39 @@ BI.ComplexTable = BI.inherit(BI.Pane, {
         this.model.setPageOperator(BICst.TABLE_PAGE_OPERATOR.REFRESH);
         this.model.resetETree();
         this.loading();
-        BI.Utils.getWidgetDataByID(widgetId, function (jsonData) {
-            self.loaded();
-            if (BI.isNotNull(jsonData.error)) {
-                self.errorPane.setErrorInfo(jsonData.error);
-                self.errorPane.setVisible(true);
-                return;
+        BI.Utils.getWidgetDataByID(widgetId, {
+            success: function (jsonData) {
+                if (BI.isNotNull(jsonData.error)) {
+                    self.errorPane.setErrorInfo(jsonData.error);
+                    self.errorPane.setVisible(true);
+                    return;
+                }
+                if (BI.isNull(jsonData.data) || BI.isNull(jsonData.page)) {
+                    self.errorPane.setErrorInfo("invalid json data!");
+                    self.errorPane.setVisible(true);
+                    return;
+                }
+                self.model.setDataAndPage(jsonData);
+                // try {
+                //考虑只有行表头情况
+                if (!self.model._isColRegionExist() || !self.model._isRowRegionExist()) {
+                    self._prepareGroupTableData();
+                } else {
+                    self._prepareData();
+                }
+                if (self.model.getTableForm() !== self.tableForm) {
+                    self._createTable();
+                }
+                self.table.setVPage(1);
+                self._populateTable();
+                // } catch (e) {
+                //     self.errorPane.setErrorInfo("error happens during populate table: " + e);
+                //     self.errorPane.setVisible(true);
+                // }
+            },
+            done: function () {
+                self.loaded();
             }
-            if (BI.isNull(jsonData.data) || BI.isNull(jsonData.page)) {
-                self.errorPane.setErrorInfo("invalid json data!");
-                self.errorPane.setVisible(true);
-                return;
-            }
-            self.model.setDataAndPage(jsonData);
-            // try {
-            //考虑只有行表头情况
-            if (!self.model._isColRegionExist() || !self.model._isRowRegionExist()) {
-                self._prepareGroupTableData();
-            } else {
-                self._prepareData();
-            }
-            if (self.model.getTableForm() !== self.tableForm) {
-                self._createTable();
-            }
-            self.table.setVPage(1);
-            self._populateTable();
-            // } catch (e) {
-            //     self.errorPane.setErrorInfo("error happens during populate table: " + e);
-            //     self.errorPane.setVisible(true);
-            // }
         }, this.model.getExtraInfo());
     },
 

@@ -246,7 +246,7 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
                 return true;
             }
         });
-            if (!isValid) {
+        if (!isValid) {
             var columnSize = this.table.getCalculateColumnSize();
             if (this.model.isNeed2Freeze()) {
                 var regionColumnSize = this.table.getCalculateRegionColumnSize();
@@ -304,41 +304,45 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
     _populateNoDimsChange: function () {
         var self = this, wId = this.options.wId;
         this.loading();
-        BI.Utils.getWidgetDataByID(wId, function (jsonData) {
-            self.loaded();
-            if (BI.isNotNull(jsonData.error)) {
-                self.errorPane.setErrorInfo(jsonData.error);
-                self.errorPane.setVisible(true);
-                return;
-            }
-            if (BI.isNull(jsonData.data) || BI.isNull(jsonData.page)) {
-                self.errorPane.setErrorInfo("invalid json data!");
-                self.errorPane.setVisible(true);
-                return;
-            }
-            self.model.setDataAndPage(jsonData);
-            var widgetType = BI.Utils.getWidgetTypeByID(wId);
-            try {
-                switch (widgetType) {
-                    case BICst.WIDGET.TABLE:
-                        self._prepareData4GroupTable();
-                        break;
-                    case BICst.WIDGET.CROSS_TABLE:
-                        //如果没有列表头，还是以分组表展示——后台传这样的数据
-                        if (BI.isNotNull(self.model.getData().t)) {
-                            self._prepareData4CrossTable();
-                        } else {
-                            self._prepareData4GroupTable();
-                        }
-                        break;
-                    case BICst.WIDGET.COMPLEX_TABLE:
-                        self._populateComplexTable();
-                        break;
+        BI.Utils.getWidgetDataByID(wId, {
+            success: function (jsonData) {
+                if (BI.isNotNull(jsonData.error)) {
+                    self.errorPane.setErrorInfo(jsonData.error);
+                    self.errorPane.setVisible(true);
+                    return;
                 }
-                self._refreshTable();
-            } catch (e) {
-                self.errorPane.setErrorInfo("error happens during populate table: " + e);
-                self.errorPane.setVisible(true);
+                if (BI.isNull(jsonData.data) || BI.isNull(jsonData.page)) {
+                    self.errorPane.setErrorInfo("invalid json data!");
+                    self.errorPane.setVisible(true);
+                    return;
+                }
+                self.model.setDataAndPage(jsonData);
+                var widgetType = BI.Utils.getWidgetTypeByID(wId);
+                try {
+                    switch (widgetType) {
+                        case BICst.WIDGET.TABLE:
+                            self._prepareData4GroupTable();
+                            break;
+                        case BICst.WIDGET.CROSS_TABLE:
+                            //如果没有列表头，还是以分组表展示——后台传这样的数据
+                            if (BI.isNotNull(self.model.getData().t)) {
+                                self._prepareData4CrossTable();
+                            } else {
+                                self._prepareData4GroupTable();
+                            }
+                            break;
+                        case BICst.WIDGET.COMPLEX_TABLE:
+                            self._populateComplexTable();
+                            break;
+                    }
+                    self._refreshTable();
+                } catch (e) {
+                    self.errorPane.setErrorInfo("error happens during populate table: " + e);
+                    self.errorPane.setVisible(true);
+                }
+            },
+            done: function () {
+                self.loaded();
             }
         }, this.model.getExtraInfo());
     },
@@ -346,44 +350,48 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
     _onPageChange: function (callback) {
         var self = this, wId = this.options.wId;
         this.loading();
-        BI.Utils.getWidgetDataByID(wId, function (jsonData) {
-            self.loaded();
-            if (BI.isNotNull(jsonData.error)) {
-                self.errorPane.setErrorInfo(jsonData.error);
-                self.errorPane.setVisible(true);
-                return;
-            }
-            if (BI.isNull(jsonData.data) || BI.isNull(jsonData.page)) {
-                self.errorPane.setErrorInfo("invalid json data!");
-                self.errorPane.setVisible(true);
-                return;
-            }
-            self.model.setDataAndPage(jsonData);
-            var widgetType = BI.Utils.getWidgetTypeByID(wId);
-            try {
-                switch (widgetType) {
-                    case BICst.WIDGET.TABLE:
-                        self.model.createGroupTableAttrs(BI.bind(self._onClickHeaderOperator, self), BI.bind(self._populateNoDimsChange, self), BI.bind(self._onClickBodyCellOperator, self));
-                        break;
-                    case BICst.WIDGET.CROSS_TABLE:
-                        if (BI.isNotNull(self.model.getData().t)) {
-                            self.model.createCrossTableAttrs(BI.bind(self._onClickHeaderOperator, self), BI.bind(self._populateNoDimsChange, self), BI.bind(self._onClickBodyCellOperator, self));
-                        } else {
+        BI.Utils.getWidgetDataByID(wId, {
+            success: function (jsonData) {
+                if (BI.isNotNull(jsonData.error)) {
+                    self.errorPane.setErrorInfo(jsonData.error);
+                    self.errorPane.setVisible(true);
+                    return;
+                }
+                if (BI.isNull(jsonData.data) || BI.isNull(jsonData.page)) {
+                    self.errorPane.setErrorInfo("invalid json data!");
+                    self.errorPane.setVisible(true);
+                    return;
+                }
+                self.model.setDataAndPage(jsonData);
+                var widgetType = BI.Utils.getWidgetTypeByID(wId);
+                try {
+                    switch (widgetType) {
+                        case BICst.WIDGET.TABLE:
                             self.model.createGroupTableAttrs(BI.bind(self._onClickHeaderOperator, self), BI.bind(self._populateNoDimsChange, self), BI.bind(self._onClickBodyCellOperator, self));
-                        }
-                        break;
+                            break;
+                        case BICst.WIDGET.CROSS_TABLE:
+                            if (BI.isNotNull(self.model.getData().t)) {
+                                self.model.createCrossTableAttrs(BI.bind(self._onClickHeaderOperator, self), BI.bind(self._populateNoDimsChange, self), BI.bind(self._onClickBodyCellOperator, self));
+                            } else {
+                                self.model.createGroupTableAttrs(BI.bind(self._onClickHeaderOperator, self), BI.bind(self._populateNoDimsChange, self), BI.bind(self._onClickBodyCellOperator, self));
+                            }
+                            break;
+                    }
+                    callback(self.model.getItems(), self.model.getHeader(), self.model.getCrossItems(), self.model.getCrossHeader());
+                } catch (e) {
+                    self.errorPane.setErrorInfo("error happens during populate for table: " + e);
+                    self.errorPane.setVisible(true);
                 }
-                callback(self.model.getItems(), self.model.getHeader(), self.model.getCrossItems(), self.model.getCrossHeader());
-            } catch (e) {
-                self.errorPane.setErrorInfo("error happens during populate for table: " + e);
-                self.errorPane.setVisible(true);
+                self.fireEvent(BI.SummaryTable.EVENT_CHANGE, {
+                    _page_: {
+                        h: self.table.getHPage(),
+                        v: self.table.getVPage()
+                    }
+                });
+            },
+            done: function () {
+                self.loaded();
             }
-            self.fireEvent(BI.SummaryTable.EVENT_CHANGE, {
-                _page_: {
-                    h: self.table.getHPage(),
-                    v: self.table.getVPage()
-                }
-            });
         }, this.model.getExtraInfo());
     },
 
@@ -534,47 +542,51 @@ BI.SummaryTable = BI.inherit(BI.Pane, {
         this.model.setPageOperator(BICst.TABLE_PAGE_OPERATOR.REFRESH);
         this.model.resetETree();
         this.loading();
-        BI.Utils.getWidgetDataByID(widgetId, function (jsonData) {
-            self.loaded();
-            if (BI.isNotNull(jsonData.error)) {
-                self.errorPane.setErrorInfo(jsonData.error);
-                self.errorPane.setVisible(true);
-                return;
-            }
-            if (BI.isNull(jsonData.data) || BI.isNull(jsonData.page)) {
-                self.errorPane.setErrorInfo("invalid json data!");
-                self.errorPane.setVisible(true);
-                return;
-            }
-            self.model.setDataAndPage(jsonData);
-            var widgetType = BI.Utils.getWidgetTypeByID(widgetId);
-            // try {
-            switch (widgetType) {
-                case BICst.WIDGET.TABLE:
-                    self._prepareData4GroupTable();
-                    break;
-                case BICst.WIDGET.CROSS_TABLE:
-                    //如果没有列表头，还是以分组表展示——后台传这样的数据
-                    if (BI.isNotNull(self.model.getData().t)) {
-                        self._prepareData4CrossTable();
-                    } else {
+        BI.Utils.getWidgetDataByID(widgetId, {
+            success: function (jsonData) {
+                if (BI.isNotNull(jsonData.error)) {
+                    self.errorPane.setErrorInfo(jsonData.error);
+                    self.errorPane.setVisible(true);
+                    return;
+                }
+                if (BI.isNull(jsonData.data) || BI.isNull(jsonData.page)) {
+                    self.errorPane.setErrorInfo("invalid json data!");
+                    self.errorPane.setVisible(true);
+                    return;
+                }
+                self.model.setDataAndPage(jsonData);
+                var widgetType = BI.Utils.getWidgetTypeByID(widgetId);
+                // try {
+                switch (widgetType) {
+                    case BICst.WIDGET.TABLE:
                         self._prepareData4GroupTable();
-                    }
-                    break;
-                case BICst.WIDGET.COMPLEX_TABLE:
-                    self._populateComplexTable();
-                    break;
+                        break;
+                    case BICst.WIDGET.CROSS_TABLE:
+                        //如果没有列表头，还是以分组表展示——后台传这样的数据
+                        if (BI.isNotNull(self.model.getData().t)) {
+                            self._prepareData4CrossTable();
+                        } else {
+                            self._prepareData4GroupTable();
+                        }
+                        break;
+                    case BICst.WIDGET.COMPLEX_TABLE:
+                        self._populateComplexTable();
+                        break;
+                }
+                if (self.model.getTableForm() !== self.tableForm) {
+                    self._createTable();
+                }
+                self.table.setVPage(1);
+                self._populateTable();
+                // } catch (e) {
+                //     self.errorPane.setErrorInfo("error happens during populate table: " + e);
+                //     console.error(e);
+                //     self.errorPane.setVisible(true);
+                // }
+            },
+            done: function () {
+                self.loaded();
             }
-            if (self.model.getTableForm() !== self.tableForm) {
-                self._createTable();
-            }
-            self.table.setVPage(1);
-            self._populateTable();
-            // } catch (e) {
-            //     self.errorPane.setErrorInfo("error happens during populate table: " + e);
-            //     console.error(e);
-            //     self.errorPane.setVisible(true);
-            // }
         }, this.model.getExtraInfo());
     },
 

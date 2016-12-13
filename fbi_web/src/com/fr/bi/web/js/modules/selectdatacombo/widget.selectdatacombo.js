@@ -40,21 +40,26 @@ BI.SelectDataCombo = BI.inherit(BI.Widget, {
         if (dimensions.length === 0) {
             callback([]);
         } else {
-            BI.Utils.getWidgetDataByID(o.wId, function (data) {
-                if (options.type == BI.MultiSelectCombo.REQ_GET_ALL_DATA) {
+            BI.Utils.getWidgetDataByID(o.wId, {
+                success: function (data) {
+                    if (options.type == BI.MultiSelectCombo.REQ_GET_ALL_DATA) {
+                        callback({
+                            items: self._createItemsByData(data)
+                        });
+                        return;
+                    }
+                    if (options.type == BI.MultiSelectCombo.REQ_GET_DATA_LENGTH) {
+                        callback({count: data.value});
+                        return;
+                    }
                     callback({
-                        items: self._createItemsByData(data)
+                        items: self._createItemsByData(data),
+                        hasNext: data.hasNext
                     });
-                    return;
+                },
+                done: function () {
+
                 }
-                if (options.type == BI.MultiSelectCombo.REQ_GET_DATA_LENGTH) {
-                    callback({count: data.value});
-                    return;
-                }
-                callback({
-                    items: self._createItemsByData(data),
-                    hasNext: data.hasNext
-                });
             }, {text_options: options});
         }
     },
@@ -86,7 +91,7 @@ BI.SelectDataCombo = BI.inherit(BI.Widget, {
         this.combo.setValue(value);
     },
 
-    setEnable: function(v){
+    setEnable: function (v) {
         this.combo.setEnable(v);
     },
 

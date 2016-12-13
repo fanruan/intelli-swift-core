@@ -105,7 +105,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         return result;
     },
 
-    _formatDataForMultiPie: function(da){
+    _formatDataForMultiPie: function (da) {
         var self = this, o = this.options;
         var targetIds = this._getShowTarget();
         var drillcataDimId = this._getDrillDimensionId(BI.Utils.getDrillByID(o.wId)[self.cataDid]);
@@ -119,7 +119,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         obj.name = BI.Utils.getDimensionNameByID(targetIds[0]);
         return [obj];
 
-        function _formatChidren(data, currentLayer, parents){
+        function _formatChidren(data, currentLayer, parents) {
             if (BI.has(data, "c")) {
                 var adjustData = [];
                 BI.each(data.c, function (id, item) {
@@ -154,7 +154,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 });
                 return adjustData;
             }
-            if(BI.has(data, "s")){
+            if (BI.has(data, "s")) {
                 return BI.map(data.s, function (idx, value) {
                     return {
                         x: BI.Utils.getDimensionNameByID(targetIds[0]),
@@ -938,79 +938,81 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         if (o.status === BICst.WIDGET_STATUS.DETAIL) {
             realData = BI.Utils.isShowWidgetRealDataByID(o.wId) || false;
         }
-        BI.Utils.getWidgetDataByID(o.wId, function (jsonData) {
-            if (BI.isNotNull(jsonData.error)) {
-                callback(jsonData);
-                return;
-            }
-            var data = self.parseChartData(jsonData.data);
-            self._calculateValue(data, type);
-            var types = [];
-            var targetIds = self._getShowTarget();
-            var count = 0;
-            BI.each(data, function (idx, da) {
-                var t = [];
-                BI.each(da, function (id, d) {
-                    if (type === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART || type === BICst.WIDGET.COMBINE_CHART) {
-                        var chart = BI.Utils.getDimensionStyleOfChartByID(targetIds[count] || targetIds[0]) || {};
-                        t.push(chart.type || BICst.WIDGET.AXIS);
-                    } else {
-                        t.push(type);
-                    }
-                    count++;
-                });
-                types.push(t);
-            });
-            if (BI.isEmptyArray(types)) {
-                types.push([type]);
-            }
-            BI.each(data, function (idx, item) {
-                var i = BI.UUID();
-                var type = types[idx];
-                BI.each(item, function (id, it) {
-                    (type[id] === BICst.WIDGET.ACCUMULATE_AREA || type[id] === BICst.WIDGET.ACCUMULATE_AXIS) && BI.extend(it, {stack: i});
-                });
-            });
-            if (type === BICst.WIDGET.MAP) {
-                var subType = BI.Utils.getWidgetSubTypeByID(o.wId);
-                if (BI.isNull(subType)) {
-                    BI.find(MapConst.INNER_MAP_INFO.MAP_LAYER, function (path, layer) {
-                        if (layer === 0) {
-                            subType = path;
-                            return true;
+        BI.Utils.getWidgetDataByID(o.wId, {
+            success: function (jsonData) {
+                if (BI.isNotNull(jsonData.error)) {
+                    callback(jsonData);
+                    return;
+                }
+                var data = self.parseChartData(jsonData.data);
+                self._calculateValue(data, type);
+                var types = [];
+                var targetIds = self._getShowTarget();
+                var count = 0;
+                BI.each(data, function (idx, da) {
+                    var t = [];
+                    BI.each(da, function (id, d) {
+                        if (type === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART || type === BICst.WIDGET.COMBINE_CHART) {
+                            var chart = BI.Utils.getDimensionStyleOfChartByID(targetIds[count] || targetIds[0]) || {};
+                            t.push(chart.type || BICst.WIDGET.AXIS);
+                        } else {
+                            t.push(type);
                         }
+                        count++;
                     });
-                }
-                var name = MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType];
-                if (BI.isNull(name)) {
-                    name = MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME[subType]
-                }
-                options.initDrillPath = [name];
-                var drill = BI.values(BI.Utils.getDrillByID(o.wId))[0];
-                BI.each(drill, function (idx, dri) {
-                    options.initDrillPath.push(dri.values[0].value[0]);
+                    types.push(t);
                 });
-                options.geo = {
-                    data: MapConst.INNER_MAP_INFO.MAP_PATH[subType] || MapConst.CUSTOM_MAP_INFO.MAP_PATH[subType],
-                    name: MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType] || MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME[subType]
+                if (BI.isEmptyArray(types)) {
+                    types.push([type]);
                 }
+                BI.each(data, function (idx, item) {
+                    var i = BI.UUID();
+                    var type = types[idx];
+                    BI.each(item, function (id, it) {
+                        (type[id] === BICst.WIDGET.ACCUMULATE_AREA || type[id] === BICst.WIDGET.ACCUMULATE_AXIS) && BI.extend(it, {stack: i});
+                    });
+                });
+                if (type === BICst.WIDGET.MAP) {
+                    var subType = BI.Utils.getWidgetSubTypeByID(o.wId);
+                    if (BI.isNull(subType)) {
+                        BI.find(MapConst.INNER_MAP_INFO.MAP_LAYER, function (path, layer) {
+                            if (layer === 0) {
+                                subType = path;
+                                return true;
+                            }
+                        });
+                    }
+                    var name = MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType];
+                    if (BI.isNull(name)) {
+                        name = MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME[subType]
+                    }
+                    options.initDrillPath = [name];
+                    var drill = BI.values(BI.Utils.getDrillByID(o.wId))[0];
+                    BI.each(drill, function (idx, dri) {
+                        options.initDrillPath.push(dri.values[0].value[0]);
+                    });
+                    options.geo = {
+                        data: MapConst.INNER_MAP_INFO.MAP_PATH[subType] || MapConst.CUSTOM_MAP_INFO.MAP_PATH[subType],
+                        name: MapConst.INNER_MAP_INFO.MAP_TYPE_NAME[subType] || MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME[subType]
+                    }
+                }
+                if (type === BICst.WIDGET.GIS_MAP) {
+                    options.geo = {
+                        "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
+                        "attribution": "<a><img src=\"http://webapi.amap.com/theme/v1.3/mapinfo_05.png\">&copy; 2016 AutoNavi</a>"
+                    };
+                }
+                //var opts = Data.Utils.getWidgetData(jsonData.data, {
+                //    type: BI.Utils.getWidgetTypeByID(o.wId),
+                //    sub_type: BI.Utils.getWidgetSubTypeByID(o.wId),
+                //    view: BI.Utils.getWidgetViewByID(o.wId),
+                //    clicked: BI.Utils.getClickedByID(o.wId),
+                //    settings: BI.Utils.getWidgetSettingsByID(o.wId),
+                //    dimensions: BI.Utils.getWidgetDimensionsByID(o.wId)
+                //});
+                //callback(opts.types, opts.data, opts.options);
+                callback(types, data, options);
             }
-            if (type === BICst.WIDGET.GIS_MAP) {
-                options.geo = {
-                    "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
-                    "attribution": "<a><img src=\"http://webapi.amap.com/theme/v1.3/mapinfo_05.png\">&copy; 2016 AutoNavi</a>"
-                };
-            }
-            //var opts = Data.Utils.getWidgetData(jsonData.data, {
-            //    type: BI.Utils.getWidgetTypeByID(o.wId),
-            //    sub_type: BI.Utils.getWidgetSubTypeByID(o.wId),
-            //    view: BI.Utils.getWidgetViewByID(o.wId),
-            //    clicked: BI.Utils.getClickedByID(o.wId),
-            //    settings: BI.Utils.getWidgetSettingsByID(o.wId),
-            //    dimensions: BI.Utils.getWidgetDimensionsByID(o.wId)
-            //});
-            //callback(opts.types, opts.data, opts.options);
-            callback(types, data, options);
         }, {
             expander: {
                 x: {
@@ -1052,7 +1054,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             case BICst.WIDGET.MULTI_PIE:
                 //多层饼图点击中心空白没有数据返回，此时给它当前使用的指标id
                 dId = obj.targetIds || this.targetIds;
-                clicked = BI.map(obj.parents, function(idx, parent){
+                clicked = BI.map(obj.parents, function (idx, parent) {
                     return {
                         dId: parent.dId,
                         value: [BI.Utils.getClickedValue4Group(parent.initialX || parent.x, parent.dId)]
@@ -1065,7 +1067,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 break;
             case BICst.WIDGET.RECT_TREE:
                 dId = obj.targetIds;
-                clicked = BI.map(obj.parents, function(idx, parent){
+                clicked = BI.map(obj.parents, function (idx, parent) {
                     return {
                         dId: parent.dId,
                         value: [BI.Utils.getClickedValue4Group(parent.initialX || parent.x, parent.dId)]
