@@ -46,7 +46,7 @@ BI.TreeSelectDataPane = BI.inherit(BI.Widget, {
                     if (BI.Utils.getFieldIsUsableByID(fid) === true) {
                         result.push({
                             id: fid,
-                            type: isRelation ? "bi.select_string_level1_item" : "bi.select_string_level0_item"
+                            type: "bi.select_string_level0_item"
                         })
                     }
                 });
