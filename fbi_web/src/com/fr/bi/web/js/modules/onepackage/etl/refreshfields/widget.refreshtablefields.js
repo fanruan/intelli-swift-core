@@ -70,7 +70,7 @@ BI.RefreshTableLoadingMask = BI.inherit(BI.Widget, {
         }, {
             type: "bi.label",
             cls: "loading-comment",
-            text: BI.i18nText("BI-Test_Connection_Loading"),
+            text: BI.i18nText("BI-Refreshing"),
             height: 30
         }, {
             type: "bi.center_adapt",

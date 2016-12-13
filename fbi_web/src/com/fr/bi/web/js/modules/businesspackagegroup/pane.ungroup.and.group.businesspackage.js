@@ -69,10 +69,6 @@ BI.BusinessUngroupAndGroupPane = BI.inherit(BI.Widget, {
             self.fireEvent(BI.BusinessUngroupAndGroupPane.EVENT_PACKAGE_DELETE, obj)
         });
 
-        this.groupedPane.on(BI.BusinessPackageGroupPane.EVENT_GROUP_NAME_CHANGE, function () {
-            self.fireEvent(BI.BusinessUngroupAndGroupPane.EVENT_GROUP_NAME_CHANGE)
-        });
-
         this.groupedPane.on(BI.BusinessPackageGroupPane.EVENT_GROUP_NAME_CONFIRM, function () {
             self.fireEvent(BI.BusinessUngroupAndGroupPane.EVENT_GROUP_NAME_CONFIRM)
         });
@@ -245,7 +241,6 @@ BI.BusinessUngroupAndGroupPane.EVENT_CHANGE = "EVENT_CHANGE";
 BI.BusinessUngroupAndGroupPane.EVENT_CLICK_DELETE = "EVENT_CLICK_DELETE";
 BI.BusinessUngroupAndGroupPane.EVENT_PACKAGE_DELETE = "EVENT_PACKAGE_DELETE";
 BI.BusinessUngroupAndGroupPane.EVENT_CLICK_ADD = "EVENT_CLICK_ADD";
-BI.BusinessUngroupAndGroupPane.EVENT_GROUP_NAME_CHANGE = "EVENT_GROUP_NAME_CHANGE";
 BI.BusinessUngroupAndGroupPane.EVENT_GROUP_NAME_CONFIRM = "EVENT_GROUP_NAME_CONFIRM";
 BI.BusinessUngroupAndGroupPane.EVENT_EDITOR_CONFIRM = "EVENT_EDITOR_CONFIRM";
 $.shortcut("bi.business_package_ungroup_and_group_pane", BI.BusinessUngroupAndGroupPane);
