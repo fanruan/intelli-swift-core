@@ -494,7 +494,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
 
     _initImmediateButtonStatus: function () {
         var self = this;
-        var tableInfo =this.getTableInfo();
+        var tableInfo =this._getTableInfo();
         BI.Utils.reqCubeStatusCheck(tableInfo, function (data) {
                 if (!data.hasTask) {
                     self._immediateButtonAvailable();
@@ -518,7 +518,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
         self.immediateButton.setText(BI.i18nText("BI-Cube_is_Generating"));
     },
 
-    getTableInfo: function () {
+    _getTableInfo: function () {
         var tableInfo = {
             baseTable: this.model.table,
             isETL: false
@@ -531,7 +531,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
     },
 
     _getTaskStatus: function () {
-        var tableInfo = this.getTableInfo();
+        var tableInfo = this._getTableInfo();
         var self = this;
         BI.Utils.reqCubeStatusCheck(tableInfo, function (data) {
                 if (!data.hasTask) {
