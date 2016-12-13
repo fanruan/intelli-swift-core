@@ -86,7 +86,7 @@ public class BIGetCubeTaskLogsDemoAction extends AbstractBIConfigureAction {
         //正在跑的任务
         if (cubeManager.hasTask(userId)) {
             CubeTask currentTask = cubeManager.getGeneratingTask(userId);
-//        taskId=BIStringUtils.append(DBConstant.CUBE_UPDATE_TYPE.SINGLETABLE_UPDATE, specificTable.getSourceID(), specificBasicTableID)
+//        taskId=BIStringUtils.append(specificTable.getSourceID(), specificBasicTableID)
             //获取是全局还是单表，要是单表的话是哪一张
             currentTask.getTaskId();
             Iterator<CubeTask> iterator = cubeManager.getWaitingTaskIterator(-999);

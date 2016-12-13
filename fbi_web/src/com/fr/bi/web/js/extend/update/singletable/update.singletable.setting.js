@@ -494,7 +494,15 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
 
     _initImmediateButtonStatus: function () {
         var self = this;
-        BI.Utils.reqCubeStatusCheck(function (data) {
+        var tableInfo = {
+            baseTable: self.model.table,
+            isETL: false
+        };
+        if (self.model.options.currentTable.connection_name == "__FR_BI_ETL__") {
+            tableInfo.isETL = true;
+            tableInfo.ETLTable = self.model.currentTable;
+        }
+        BI.Utils.reqCubeStatusCheck(tableInfo, function (data) {
                 if (!data.hasTask) {
                     self._immediateButtonAvailable();
                 } else {
@@ -519,7 +527,15 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
 
     _getTaskStatus: function () {
         var self = this;
-        BI.Utils.reqCubeStatusCheck(function (data) {
+        var tableInfo = {
+            baseTable: self.model.table,
+            isETL: false
+        };
+        if (self.model.options.currentTable.connection_name == "__FR_BI_ETL__") {
+            tableInfo.isETL = true;
+            tableInfo.ETLTable = self.model.currentTable;
+        }
+        BI.Utils.reqCubeStatusCheck(tableInfo, function (data) {
                 if (!data.hasTask) {
                     self._immediateButtonAvailable();
                     self._clearCheckInterval();
