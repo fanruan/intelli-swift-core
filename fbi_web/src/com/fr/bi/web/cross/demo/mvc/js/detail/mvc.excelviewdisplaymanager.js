@@ -14,7 +14,6 @@ ExcelVDisplayManagerView = BI.inherit(BI.View, {
     },
 
     _render: function (vessel) {
-        debugger;
         var self = this;
 
         var uploadButton = BI.createWidget({
