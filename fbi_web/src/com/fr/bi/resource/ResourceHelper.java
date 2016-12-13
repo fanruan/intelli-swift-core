@@ -1071,6 +1071,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/dimensionsmanager/charttype/charttype.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/header/region.header.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/header/region.header.calculatetarget.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/header/region.header.detail.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/header/region.header.tree.js",
 
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/dimensionregions/abstract.region.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/dimensionregions/region.empty.dimension.js",
@@ -1113,8 +1115,20 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.radar.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.range.area.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.scatter.js",
+
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.string.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.number.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.date.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.tree.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.detailtable.js",
+
                 "com/fr/bi/web/js/modules/dimensionsmanager/model.dimensionsmanager.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/dimensionsmanager.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/dimensionsmanager.string.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/dimensionsmanager.number.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/dimensionsmanager.date.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/dimensionsmanager.detailtable.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/dimensionsmanager.tree.js",
 
 
                 "com/fr/bi/web/js/modules/tablechartmanager/tablechartmanager.js",

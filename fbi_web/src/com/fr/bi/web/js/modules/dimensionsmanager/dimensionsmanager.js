@@ -80,7 +80,7 @@ BI.DimensionsManager = BI.inherit(BI.Widget, {
     _createRegionsManager: function (widgetType) {
         var self = this, o = this.options;
         var type = "bi.table_regions_manager";
-        switch (widgetType){
+        switch (widgetType) {
             case BICst.WIDGET.TABLE:
                 type = "bi.table_regions_manager";
                 break;
@@ -89,9 +89,6 @@ BI.DimensionsManager = BI.inherit(BI.Widget, {
                 break;
             case BICst.WIDGET.COMPLEX_TABLE:
                 type = "bi.complex_table_regions_manager";
-                break;
-            case BICst.WIDGET.DETAIL:
-                type = "bi.detail_table_regions_manager";
                 break;
             case BICst.WIDGET.AXIS:
                 type = "bi.axis_regions_manager";
