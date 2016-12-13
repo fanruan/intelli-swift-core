@@ -36,7 +36,7 @@ BI.SortableTable = BI.inherit(BI.Widget, {
 
         BI.each(o.header, function(idx, header){
             BI.each(header, function(id, obj){
-                obj.cls = obj.cls + " drag-header"
+                obj.cls = (obj.cls || "") + " drag-header"
             })
         })
 
@@ -44,7 +44,7 @@ BI.SortableTable = BI.inherit(BI.Widget, {
             type: "bi.table_view",
             element: this.element,
             isNeedResize: o.isNeedResize,
-            isResizeAdapt: false,
+            isResizeAdapt: o.isResizeAdapt,
 
             columnSize: o.columnSize,
             headerRowSize: o.headerRowSize,
@@ -259,15 +259,17 @@ BI.SortableTable = BI.inherit(BI.Widget, {
 
     populate: function (items, headers) {
         var self = this, o = this.options;
-        o.header = headers;
-        o.items = items;
-        BI.each(o.header, function(idx, header){
-            BI.each(header, function(id, obj){
-                obj.cls = obj.cls + " drag-header"
+        BI.nextTick(function(){
+            o.header = headers;
+            o.items = items;
+            BI.each(o.header, function(idx, header){
+                BI.each(header, function(id, obj){
+                    obj.cls = (obj.cls || "") + " drag-header"
+                })
             })
-        })
-        this.table.populate.apply(this.table, arguments);
-        this._initDrag();
+            self.table.populate.apply(self.table, arguments);
+            self._initDrag();
+        });
     },
 
     destroy: function () {
