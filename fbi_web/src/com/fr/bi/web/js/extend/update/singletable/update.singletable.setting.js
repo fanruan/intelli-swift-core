@@ -110,7 +110,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
                 baseTable: self.model.table,
                 isETL: false
             };
-            if (self.model.options.currentTable.connection_name == "__FR_BI_ETL__") {
+            if (self.model.options.currentTable.connection_name == BICst.CONNECTION.ETL_CONNECTION) {
                 tableInfo.isETL = true;
                 tableInfo.ETLTable = self.model.currentTable;
             }
@@ -523,7 +523,7 @@ BI.UpdateSingleTableSetting = BI.inherit(BI.Widget, {
             baseTable: this.model.table,
             isETL: false
         };
-        if (this.model.options.currentTable.connection_name == "__FR_BI_ETL__") {
+        if (this.model.options.currentTable.connection_name == BICst.CONNECTION.ETL_CONNECTION) {
             tableInfo.isETL = true;
             tableInfo.ETLTable = this.model.currentTable;
         }
