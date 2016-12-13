@@ -13,6 +13,7 @@ BI.TextValueComboPopup = BI.inherit(BI.Pane, {
             type: "bi.button_group",
             items: BI.createItems(o.items, {
                 type: "bi.single_select_item",
+                textAlign: o.textAlign,
                 height: 30
             }),
             chooseType: o.chooseType,

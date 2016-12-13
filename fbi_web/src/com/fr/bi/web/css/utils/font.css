@@ -1341,6 +1341,21 @@
   content: "\e617";
   color: #808080;
 }
+.toolbar-global-export .b-font:before {
+  content: "\e6da";
+  color: #808080;
+}
+.toolbar-global-export:hover .b-font:before,
+.toolbar-global-export:focus .b-font:before,
+.toolbar-global-export.hover .b-font:before {
+  content: "\e6da";
+  color: #808080;
+}
+.toolbar-global-export.native .b-font:before,
+.toolbar-global-export.disabled .b-font:before {
+  content: "\e6da";
+  color: #808080;
+}
 .toolbar-copy-link-font .b-font:before {
   content: "\e6de";
   color: #808080;

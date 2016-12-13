@@ -427,8 +427,6 @@ var _JS = [
 
     "detail/mvc.excelviewdisplaymanager.js",
 
-    "detail/mvc.exceltabledatadisplaymanager.js",
-
     "detail/mvc.adaptivetable.js",
 
     "detail/mvc.adaptivetable2.js",
@@ -670,7 +668,6 @@ var _Routes = {
     "/adaptive_table2": "AdaptiveTable2View",
     "/excel_table": "ExcelTableView",
     "/excel_view_display_manager":"ExcelVDisplayManagerView",
-    "/excel_table_data_display_manager":"ExcelTableDataDisplayManagerView",
     "/custom_scroll_table": "CustomScrollTableView",
     "/page_table": "PageTableView",
     "/page_table2": "PageTable2View",
@@ -1501,10 +1498,6 @@ _Models.detail = [{
         pId: 27,
         text: "bi.excel_view_display_manager",
         value: "excel_view_display_manager"
-    }, {
-        pId:27,
-        text:"bi.excel_table_data_display_manager",
-        value:"excel_table_data_display_manager"
     },{
         pId: 32,
         text: "bi.sequence_table",

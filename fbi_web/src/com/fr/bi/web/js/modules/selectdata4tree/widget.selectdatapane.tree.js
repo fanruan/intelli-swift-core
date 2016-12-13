@@ -18,7 +18,7 @@ BI.TreeSelectDataPane = BI.inherit(BI.Widget, {
             type: "bi.package_select_data_service",
             element: this.element,
             wId: o.wId,
-            showRelativeTables: false,
+            showRelativeTables: true,
             showExcelView: false,
             showDateGroup: true,
             tablesCreator: function (packageId, opt) {
@@ -62,7 +62,7 @@ BI.TreeSelectDataPane = BI.inherit(BI.Widget, {
                         }else{
                             result.push({
                                 id: fid,
-                                type: opt.isRelation ? "bi.select_string_level1_item" : "bi.select_string_level0_item"
+                                type: "bi.select_string_level0_item"
                             });
                         }
                     }

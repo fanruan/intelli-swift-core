@@ -1,0 +1,9 @@
+/****添加计算宽度的--运算符直接需要space****/
+/****** common color(常用颜色,可用于普遍场景) *****/
+/**** custom color(自定义颜色,用于特定场景) ****/
+.bi-excel-view-display-manager td:hover {
+  background: #d8f3fe;
+}
+.bi-excel-view-display-manager td.excel-td-select {
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/background/left_top_triangle_blue.png') no-repeat right top;
+}

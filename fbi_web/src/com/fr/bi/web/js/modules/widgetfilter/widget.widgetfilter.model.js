@@ -47,22 +47,22 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
                 return new Date(currY, 11, 31);
 
             case BICst.MULTI_DATE_MONTH_PREV:
-                return BI.Utils.getBeforeMultiMonth(value);
+                return new Date().getBeforeMultiMonth(value);
             case BICst.MULTI_DATE_MONTH_AFTER:
-                return BI.Utils.getAfterMultiMonth(value);
+                return new Date().getAfterMultiMonth(value);
             case BICst.MULTI_DATE_MONTH_BEGIN:
                 return new Date(currY, currM, 1);
             case BICst.MULTI_DATE_MONTH_END:
                 return new Date(currY, currM, (date.getLastDateOfMonth()).getDate());
 
             case BICst.MULTI_DATE_QUARTER_PREV:
-                return BI.Utils.getBeforeMulQuarter(value);
+                return new Date().getBeforeMulQuarter(value);
             case BICst.MULTI_DATE_QUARTER_AFTER:
-                return BI.Utils.getAfterMulQuarter(value);
+                return new Date().getAfterMulQuarter(value);
             case BICst.MULTI_DATE_QUARTER_BEGIN:
-                return BI.Utils.getQuarterStartDate();
+                return new Date().getQuarterStartDate();
             case BICst.MULTI_DATE_QUARTER_END:
-                return BI.Utils.getQuarterEndDate();
+                return new Date().getQuarterEndDate();
 
             case BICst.MULTI_DATE_WEEK_PREV:
                 return date.getOffsetDate(-7 * value);
@@ -304,5 +304,17 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
             }
         }
         return sStart + "-" + sEnd;
+    },
+
+    getDateText: function (filterValue) {
+        var value = filterValue || {};
+        var sStart = "";
+        if (BI.isNotNull(value.year) && BI.isNotNull(value.month) && BI.isNotNull(value.day)) {
+            sStart = value.year + "/" + (value.month + 1) + "/" + value.day;
+        } else {
+            var date = this._parseComplexDate(value);
+            sStart = BI.isNotNull(date) ? (date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate()) : "";
+        }
+        return sStart;
     }
 });

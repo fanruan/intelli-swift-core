@@ -206,7 +206,7 @@ BIDezi.IntervalSliderDetailView = BI.inherit(BI.View, {
         var self = this;
         var dimensionsVessel = {};
         this.dimensionsManager = BI.createWidget({
-            type: "bi.dimensions_manager_control",
+            type: "bi.number_dimensions_manager",
             wId: this.model.get("id"),
             dimensionCreator: function (dId, regionType, op) {
                 if (!dimensionsVessel[dId]) {
@@ -227,16 +227,7 @@ BIDezi.IntervalSliderDetailView = BI.inherit(BI.View, {
             }
         });
 
-        this.dimensionsManager.on(BI.DimensionsManagerControl.EVENT_CHANGE, function () {
-            var values = this.getValue();
-            var dimArr = values.view[BICst.REGION.DIMENSION1];
-            values.view[BICst.REGION.DIMENSION1] = [BI.last(dimArr)];
-            var dimensions = self.model.get("dimensions");
-            var newDimensions = {};
-            newDimensions[BI.last(dimArr)] = dimensions[BI.last(dimArr)];
-            values.dimensions = newDimensions;
-            self.model.set(values);
-            this.populate();
+        this.dimensionsManager.on(BI.NumberDimensionsManager.EVENT_CHANGE, function () {
         });
         return this.dimensionsManager;
     },
@@ -260,6 +251,9 @@ BIDezi.IntervalSliderDetailView = BI.inherit(BI.View, {
         if (BI.has(changed, "dimensions")) {
             this.combo.populate();
             this._refreshDimensions();
+        }
+        if (BI.has(changed, "dimensions") || BI.has(changed, "view")) {
+            this.dimensionsManager.populate();
         }
     },
 

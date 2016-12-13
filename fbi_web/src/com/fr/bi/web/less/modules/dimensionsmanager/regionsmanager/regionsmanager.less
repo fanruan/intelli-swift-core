@@ -1,0 +1,32 @@
+@import "../../../bibase";
+
+.bi-regions-manager {
+  & > .center-element {
+    max-height: 200px;
+    max-width: 280px;
+  }
+
+  & .dimension-region-manager {
+    border: 1px solid @color-dimension-region-border;
+    & .dimension-region {
+      border: 1px solid @color-dimension-region-border;
+      .border-radius(2px);
+    }
+    & .drag-tool {
+      border-right: 1px solid @color-dimension-region-border;
+      cursor: move;
+    }
+  }
+
+  & .target-region-manager {
+    border: 1px solid @color-target-region-border;
+    & .target-region {
+      border: 1px solid @color-target-region-border;
+      .border-radius(2px);
+    }
+    & .drag-tool {
+      border-right: 1px solid @color-target-region-border;
+      cursor: move;
+    }
+  }
+}

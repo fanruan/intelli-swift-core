@@ -22,8 +22,8 @@ BI.MapTypeCombo = BI.inherit(BI.Widget, {
         BI.MapTypeCombo.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         var items = [];
-        BI.each(MapConst.INNER_MAP_INFO.MAP_TYPE_NAME, function(key, value){
-            if(MapConst.INNER_MAP_INFO.MAP_LAYER[key] < self._CONST.SHOW_MAP_LAYER){
+        BI.each(MapConst.INNER_MAP_INFO.MAP_TYPE_NAME, function (key, value) {
+            if (MapConst.INNER_MAP_INFO.MAP_LAYER[key] < self._CONST.SHOW_MAP_LAYER) {
                 items.push({
                     text: value,
                     value: key,
@@ -32,7 +32,7 @@ BI.MapTypeCombo = BI.inherit(BI.Widget, {
                 });
             }
         });
-        BI.each(MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME, function(key, value){
+        BI.each(MapConst.CUSTOM_MAP_INFO.MAP_TYPE_NAME, function (key, value) {
             items.push({
                 text: value,
                 value: key,
@@ -92,7 +92,7 @@ BI.MapTypeCombo = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
-        return this.mapTypeCombo.getValue();
+        return {type: BICst.WIDGET.MAP, subType: this.mapTypeCombo.getValue()};
     }
 });
 BI.MapTypeCombo.EVENT_CHANGE = "EVENT_CHANGE";

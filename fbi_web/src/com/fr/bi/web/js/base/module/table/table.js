@@ -325,8 +325,8 @@ BI.Table = BI.inherit(BI.Widget, {
                 if (size.width > sumSize / 5 * 4) {
                     size.width = sumSize / 5 * 4;
                 }
-                if (size.width < sumSize / 5) {
-                    size.width = sumSize / 5;
+                if (size.width < 10) {
+                    size.width = 10;
                 }
                 resizer.element.css({
                     "left": position.left + "px",

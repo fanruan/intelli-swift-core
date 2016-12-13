@@ -64,14 +64,14 @@ BIDezi.StringDetailModel = BI.inherit(BI.Model, {
             var view = this.get("view");
             //维度指标基本属性
             if (!dimensions[dId]) {
+                dimensions = {};
                 dimensions[dId] = {
                     name: src.name,
                     _src: src._src,
                     type: src.type,
                     sort: {type: BICst.SORT.ASC, target_id: dId}
                 };
-                view[BICst.REGION.DIMENSION1] = view[BICst.REGION.DIMENSION1] || [];
-                view[BICst.REGION.DIMENSION1].push(dId);
+                view[BICst.REGION.DIMENSION1] = [dId];
                 this.set({
                     "dimensions": dimensions,
                     "view": view

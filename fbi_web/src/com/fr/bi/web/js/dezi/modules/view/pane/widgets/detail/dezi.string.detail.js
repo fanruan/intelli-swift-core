@@ -197,7 +197,7 @@ BIDezi.StringDetailView = BI.inherit(BI.View, {
         var self = this;
         var dimensionsVessel = {};
         this.dimensionsManager = BI.createWidget({
-            type: "bi.dimensions_manager_control",
+            type: "bi.string_dimensions_manager",
             wId: this.model.get("id"),
             dimensionCreator: function (dId, regionType, op) {
                 if (!dimensionsVessel[dId]) {
@@ -218,16 +218,7 @@ BIDezi.StringDetailView = BI.inherit(BI.View, {
             }
         });
 
-        this.dimensionsManager.on(BI.DimensionsManagerControl.EVENT_CHANGE, function () {
-            var values = this.getValue();
-            var dimArr = values.view[BICst.REGION.DIMENSION1];
-            values.view[BICst.REGION.DIMENSION1] = [BI.last(dimArr)];
-            var dimensions = self.model.get("dimensions");
-            var newDimensions = {};
-            newDimensions[BI.last(dimArr)] = dimensions[BI.last(dimArr)];
-            values.dimensions = newDimensions;
-            self.model.set(values);
-            this.populate();
+        this.dimensionsManager.on(BI.StringDimensionsManager.EVENT_CHANGE, function () {
         });
         return this.dimensionsManager;
     },
@@ -264,6 +255,9 @@ BIDezi.StringDetailView = BI.inherit(BI.View, {
         if (BI.has(changed, "dimensions")) {
             this.combo.setValue();
         }
+        if (BI.has(changed, "dimensions") || BI.has(changed, "view")) {
+            this.dimensionsManager.populate();
+        }
         if (BI.has(changed, "dimensions")) {
             this._refreshDimensions();
             this._checkDataBind();
@@ -271,9 +265,9 @@ BIDezi.StringDetailView = BI.inherit(BI.View, {
     },
 
     _checkDataBind: function () {
-        if(BI.size(this.model.get("dimensions")) > 0){
+        if (BI.size(this.model.get("dimensions")) > 0) {
             this.combo.setEnable(true);
-        }else{
+        } else {
             this.combo.setEnable(false);
         }
     },

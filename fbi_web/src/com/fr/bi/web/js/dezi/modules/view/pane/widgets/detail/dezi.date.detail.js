@@ -197,7 +197,7 @@ BIDezi.DateDetailView = BI.inherit(BI.View, {
         var self = this;
         var dimensionsVessel = {};
         this.dimensionsManager = BI.createWidget({
-            type: "bi.dimensions_manager_control",
+            type: "bi.date_dimensions_manager",
             wId: this.model.get("id"),
             dimensionCreator: function (dId, regionType, op) {
                 if (!dimensionsVessel[dId]) {
@@ -218,10 +218,9 @@ BIDezi.DateDetailView = BI.inherit(BI.View, {
             }
         });
 
-        this.dimensionsManager.on(BI.DimensionsManagerControl.EVENT_CHANGE, function () {
+        this.dimensionsManager.on(BI.DateDimensionsManager.EVENT_CHANGE, function () {
             var values = this.getValue();
             self.model.set(values);
-            this.populate();
         });
         return this.dimensionsManager;
     },
@@ -252,8 +251,8 @@ BIDezi.DateDetailView = BI.inherit(BI.View, {
     },
 
     change: function (changed, prev) {
-        if (BI.has(changed, "dimensions")) {
-
+        if (BI.has(changed, "dimensions") || BI.has(changed, "view")) {
+            this.dimensionsManager.populate();
         }
     },
 

@@ -15,9 +15,10 @@ public class ExcelViewSource implements JSONTransform {
     private static final String XML_TAG = "ExcelViewSource";
 
     private Map<String, ColumnRow> positions = new HashMap<String, ColumnRow>();
-    private List<List<String>> excel;
+//    private List<List<String>> excel;
     private String excelName;
-    private List<List<List<String>>> mergeInfos;
+    private String excelFullName;
+//    private List<List<List<String>>> mergeInfos;
 
     public Map<String, ColumnRow> getPositions() {
         return positions;
@@ -27,32 +28,37 @@ public class ExcelViewSource implements JSONTransform {
         this.positions = positions;
     }
 
-    public List<List<String>> getExcel() {
-        return excel;
-    }
-
-    public void setExcel(List<List<String>> excel) {
-        this.excel = excel;
-    }
-
-    public List<List<List<String>>> getMergeInfos() {
-        return mergeInfos;
-    }
-
-    public void setMergeInfos(List<List<List<String>>> mergeInfos) {
-        this.mergeInfos = mergeInfos;
-    }
+//    public List<List<String>> getExcel() {
+//        return excel;
+//    }
+//
+//    public void setExcel(List<List<String>> excel) {
+//        this.excel = excel;
+//    }
+//
+//    public List<List<List<String>>> getMergeInfos() {
+//        return mergeInfos;
+//    }
+//
+//    public void setMergeInfos(List<List<List<String>>> mergeInfos) {
+//        this.mergeInfos = mergeInfos;
+//    }
 
     public ExcelViewSource() {
 
     }
 
-    public ExcelViewSource(Map<String, ColumnRow> positions, List<List<String>> excel, String excelName, List<List<List<String>>> mergeInfos) {
-        this.positions = positions;
-        this.excel = excel;
-        this.excelName = excelName;
-        this.mergeInfos = mergeInfos;
+    public ExcelViewSource(Map<String, ColumnRow> positions,String excelName,String excelFullName){
+        this.positions=positions;
+        this.excelName=excelName;
+        this.excelFullName=excelFullName;
     }
+//    public ExcelViewSource(Map<String, ColumnRow> positions, List<List<String>> excel, String excelName, List<List<List<String>>> mergeInfos) {
+//        this.positions = positions;
+//        this.excel = excel;
+//        this.excelName = excelName;
+//        this.mergeInfos = mergeInfos;
+//    }
 
     @Override
     public JSONObject createJSON() throws Exception {
@@ -67,34 +73,35 @@ public class ExcelViewSource implements JSONTransform {
             positions.put(map.getKey(), pos);
         }
         jo.put("positions", positions);
-        JSONArray excel = new JSONArray();
-        for (int i = 0; i < this.excel.size(); i++) {
-            JSONArray row = new JSONArray();
-            List<String> rowList = this.excel.get(i);
-            for (int j = 0; j < rowList.size(); j++) {
-                row.put(rowList.get(j));
-            }
-            excel.put(row);
-        }
-        jo.put("excel", excel);
+//        JSONArray excel = new JSONArray();
+//        for (int i = 0; i < this.excel.size(); i++) {
+//            JSONArray row = new JSONArray();
+//            List<String> rowList = this.excel.get(i);
+//            for (int j = 0; j < rowList.size(); j++) {
+//                row.put(rowList.get(j));
+//            }
+//            excel.put(row);
+//        }
+//        jo.put("excel", excel);
         jo.put("name", this.excelName);
-        if (this.mergeInfos != null) {
-            JSONArray mergeInfos = new JSONArray();
-            for (int i = 0; i < this.mergeInfos.size(); i++) {
-                JSONArray mergeInfo = new JSONArray();
-                List<List<String>> mergeInfoList = this.mergeInfos.get(i);
-                for (int j = 0; j < mergeInfoList.size(); j++) {
-                    JSONArray flag = new JSONArray();
-                    List<String> flagList = mergeInfoList.get(j);
-                    for (int k = 0; k < flagList.size(); k++) {
-                        flag.put(flagList.get(k));
-                    }
-                    mergeInfo.put(flag);
-                }
-                mergeInfos.put(mergeInfo);
-            }
-            jo.put("mergeInfos", mergeInfos);
-        }
+        jo.put("excelFullName",this.excelFullName);
+//        if (this.mergeInfos != null) {
+//            JSONArray mergeInfos = new JSONArray();
+//            for (int i = 0; i < this.mergeInfos.size(); i++) {
+//                JSONArray mergeInfo = new JSONArray();
+//                List<List<String>> mergeInfoList = this.mergeInfos.get(i);
+//                for (int j = 0; j < mergeInfoList.size(); j++) {
+//                    JSONArray flag = new JSONArray();
+//                    List<String> flagList = mergeInfoList.get(j);
+//                    for (int k = 0; k < flagList.size(); k++) {
+//                        flag.put(flagList.get(k));
+//                    }
+//                    mergeInfo.put(flag);
+//                }
+//                mergeInfos.put(mergeInfo);
+//            }
+//            jo.put("mergeInfos", mergeInfos);
+//        }
         return jo;
     }
 
@@ -110,40 +117,42 @@ public class ExcelViewSource implements JSONTransform {
             }
         }
 
-        if (jo.has("excel")) {
-            JSONArray excel = jo.getJSONArray("excel");
-            this.excel = new ArrayList<List<String>>();
-            for (int i = 0; i < excel.length(); i++) {
-                JSONArray row = excel.getJSONArray(i);
-                List<String> rowList = new ArrayList<String>();
-                for (int j = 0; j < row.length(); j++) {
-                    rowList.add(j, row.getString(j));
-                }
-                this.excel.add(i, rowList);
-            }
-        }
+//        if (jo.has("excel")) {
+//            JSONArray excel = jo.getJSONArray("excel");
+//            this.excel = new ArrayList<List<String>>();
+//            for (int i = 0; i < excel.length(); i++) {
+//                JSONArray row = excel.getJSONArray(i);
+//                List<String> rowList = new ArrayList<String>();
+//                for (int j = 0; j < row.length(); j++) {
+//                    rowList.add(j, row.getString(j));
+//                }
+//                this.excel.add(i, rowList);
+//            }
+//        }
 
         if (jo.has("name")) {
             this.excelName = jo.getString("name");
         }
-
-        if (jo.has("mergeInfos")) {
-            JSONArray mergeInfos = jo.getJSONArray("mergeInfos");
-            this.mergeInfos = new ArrayList<List<List<String>>>();
-            for (int i = 0; i < mergeInfos.length(); i++) {
-                JSONArray mergeInfo = mergeInfos.getJSONArray(i);
-                List<List<String>> mergeInfoList = new ArrayList<List<String>>();
-                for (int j = 0; j < mergeInfo.length(); j++) {
-                    JSONArray flag = mergeInfo.getJSONArray(j);
-                    List<String> flagList = new ArrayList<String>();
-                    for (int k = 0; k < flag.length(); k++) {
-                        flagList.add(k, flag.getString(k));
-                    }
-                    mergeInfoList.add(j, flagList);
-                }
-                this.mergeInfos.add(i, mergeInfoList);
-            }
+        if(jo.has("excelFullName")){
+            this.excelFullName=jo.getString("excelFullName");
         }
+//        if (jo.has("mergeInfos")) {
+//            JSONArray mergeInfos = jo.getJSONArray("mergeInfos");
+//            this.mergeInfos = new ArrayList<List<List<String>>>();
+//            for (int i = 0; i < mergeInfos.length(); i++) {
+//                JSONArray mergeInfo = mergeInfos.getJSONArray(i);
+//                List<List<String>> mergeInfoList = new ArrayList<List<String>>();
+//                for (int j = 0; j < mergeInfo.length(); j++) {
+//                    JSONArray flag = mergeInfo.getJSONArray(j);
+//                    List<String> flagList = new ArrayList<String>();
+//                    for (int k = 0; k < flag.length(); k++) {
+//                        flagList.add(k, flag.getString(k));
+//                    }
+//                    mergeInfoList.add(j, flagList);
+//                }
+//                this.mergeInfos.add(i, mergeInfoList);
+//            }
+//        }
     }
 
 //    @Override

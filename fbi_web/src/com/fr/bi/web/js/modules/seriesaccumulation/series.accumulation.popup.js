@@ -1,23 +1,21 @@
 /**
  * Created by fay on 2016/12/2.
  */
-BI.SeriesAccumulationPanel = BI.inherit(BI.SeriesAccumulationPanel, {
+BI.SeriesAccumulationPopup = BI.inherit(BI.BarPopoverSection, {
     _defaultConfig: function () {
-        return BI.extend(BI.DataLabelPopup.superclass._defaultConfig.apply(this, arguments), {
-            width: 600,
-            height: 500
+        return BI.extend(BI.SeriesAccumulationPopup.superclass._defaultConfig.apply(this, arguments), {
         })
     },
 
     _init: function () {
-        BI.DataLabelPopup.superclass._init.apply(this, arguments);
+        BI.SeriesAccumulationPopup.superclass._init.apply(this, arguments);
     },
 
     rebuildNorth: function (north) {
         BI.createWidget({
             type: "bi.label",
             element: north,
-            text: BI.i18nText("BI-Data_Label"),
+            text: BI.i18nText("BI-Series_Accumulation_Setting"),
             height: 50,
             textAlign: "left",
             lgap: 10
@@ -27,8 +25,8 @@ BI.SeriesAccumulationPanel = BI.inherit(BI.SeriesAccumulationPanel, {
 
     rebuildCenter: function (center) {
         var o = this.options;
-        this.dataLabelPane = BI.createWidget({
-            type: "bi.data_label",
+        this.seriesAccumulationPane = BI.createWidget({
+            type: "bi.series_accumulation",
             element: center,
             dId: o.dId
         });
@@ -36,13 +34,13 @@ BI.SeriesAccumulationPanel = BI.inherit(BI.SeriesAccumulationPanel, {
     },
 
     populate: function () {
-        this.dataLabelPane.populate();
+        this.seriesAccumulationPane.populate();
     },
 
     end: function () {
-        this.fireEvent(BI.DataLabelPopup.EVENT_CHANGE, this.dataLabelPane.getValue());
+        this.fireEvent(BI.SeriesAccumulationPopup.EVENT_CHANGE, this.seriesAccumulationPane.getValue());
     }
 });
 
-BI.SeriesAccumulationPanel.EVENT_CHANGE = "EVENT_CHANGE";
-$.shortcut("bi.series_accumulation_panel", BI.SeriesAccumulationPanel);
+BI.SeriesAccumulationPopup.EVENT_CHANGE = "EVENT_CHANGE";
+$.shortcut("bi.series_accumulation_popup", BI.SeriesAccumulationPopup);
