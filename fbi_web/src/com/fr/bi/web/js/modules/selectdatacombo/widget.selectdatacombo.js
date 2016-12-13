@@ -56,9 +56,6 @@ BI.SelectDataCombo = BI.inherit(BI.Widget, {
                         items: self._createItemsByData(data),
                         hasNext: data.hasNext
                     });
-                },
-                done: function () {
-
                 }
             }, {text_options: options});
         }
@@ -89,10 +86,6 @@ BI.SelectDataCombo = BI.inherit(BI.Widget, {
     setValue: function (v) {
         var value = this._assertValue(v);
         this.combo.setValue(value);
-    },
-
-    setEnable: function (v) {
-        this.combo.setEnable(v);
     },
 
     getValue: function () {
