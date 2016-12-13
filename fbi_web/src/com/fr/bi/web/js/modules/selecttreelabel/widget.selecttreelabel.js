@@ -19,11 +19,13 @@ BI.SelectTreeLabel = BI.inherit(BI.Widget, {
                 var data = {};
                 data.floors = op.floor;
                 data.parentValues = op.parentValues;
-                if(BI.isEmptyObject(op)) {
+                if (BI.isEmptyObject(op)) {
                     callback({});
                 } else {
-                    BI.Utils.getWidgetDataByID(o.wId, function (jsonData) {
-                        callback(jsonData);
+                    BI.Utils.getWidgetDataByID(o.wId, {
+                        success: function (jsonData) {
+                            callback(jsonData);
+                        }
                     }, {tree_options: data})
                 }
             }
@@ -37,7 +39,7 @@ BI.SelectTreeLabel = BI.inherit(BI.Widget, {
     setValue: function (v) {
         var self = this, o = this.options;
         var dimensions = BI.Utils.getAllDimDimensionIDs(o.wId);
-        if(BI.isEmptyArray(dimensions)) {
+        if (BI.isEmptyArray(dimensions)) {
             return self.treeLabel.populate({
                 items: [],
                 titles: [],
@@ -59,13 +61,15 @@ BI.SelectTreeLabel = BI.inherit(BI.Widget, {
             id: "",
             value: []
         }];
-        BI.Utils.getWidgetDataByID(o.wId, function (jsonData) {
-            self.treeLabel.populate({
-                items: jsonData.items,
-                titles: titles,
-                selectedValue: v
-            });
-        }, { tree_options: data});
+        BI.Utils.getWidgetDataByID(o.wId, {
+            success: function (jsonData) {
+                self.treeLabel.populate({
+                    items: jsonData.items,
+                    titles: titles,
+                    selectedValue: v
+                });
+            }
+        }, {tree_options: data});
     },
 
     getValue: function () {

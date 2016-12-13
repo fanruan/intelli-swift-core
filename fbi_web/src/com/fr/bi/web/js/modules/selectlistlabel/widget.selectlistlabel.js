@@ -29,20 +29,22 @@ BI.SelectListLabel = BI.inherit(BI.Widget, {
             self.listLabel.populate([]);
         } else {
             var labels = BI.Utils.getDimensionNameByID(dimensions[0]);
-            BI.Utils.getWidgetDataByID(o.wId, function (data) {
-                var result = [];
-                BI.each(data.value, function (idx, dt) {
-                    result.push({
-                        value: dt,
-                        text: dt,
-                        title: dt
-                    })
-                });
-                self.listLabel.populate({
-                    title: labels,
-                    items: result
-                });
-                self.setValue(BI.Utils.getWidgetValueByID(o.wId));
+            BI.Utils.getWidgetDataByID(o.wId, {
+                success: function (data) {
+                    var result = [];
+                    BI.each(data.value, function (idx, dt) {
+                        result.push({
+                            value: dt,
+                            text: dt,
+                            title: dt
+                        })
+                    });
+                    self.listLabel.populate({
+                        title: labels,
+                        items: result
+                    });
+                    self.setValue(BI.Utils.getWidgetValueByID(o.wId));
+                }
             }, {text_options: {times: 1}});
         }
     },

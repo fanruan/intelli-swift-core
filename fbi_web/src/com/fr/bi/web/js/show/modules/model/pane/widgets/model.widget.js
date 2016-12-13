@@ -7,6 +7,7 @@ BIShow.WidgetModel = BI.inherit(BI.Model, {
             type: BICst.WIDGET.TABLE,
             dimensions: {},
             view: {},
+            settings: {},
             _page_: {}  //一个只前台使用的当前page属性 不要随便拿了用
         })
     },
