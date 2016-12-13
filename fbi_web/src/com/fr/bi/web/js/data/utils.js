@@ -2731,7 +2731,7 @@ Data.Utils = {
 
             configs.plotOptions.dataLabels.enabled = config.show_data_label;
             configs.plotOptions.tooltip.formatter.identifier = "${CATEGORY}${SERIES}${VALUE}${PERCENT}";
-
+            configs.plotOptions.dataLabels.style = config.chart_font;
             configs.chartType = "pie";
             delete configs.xAxis;
             delete configs.yAxis;
@@ -2797,6 +2797,7 @@ Data.Utils = {
             configs.plotOptions.dataLabels.align = "outside";
             configs.plotOptions.dataLabels.connectorWidth = "outside";
             configs.plotOptions.dataLabels.formatter.identifier = "${VALUE}${PERCENT}";
+            configs.plotOptions.dataLabels.style = config.chart_font;
             delete configs.xAxis;
             delete configs.yAxis;
             return BI.extend(configs, {
