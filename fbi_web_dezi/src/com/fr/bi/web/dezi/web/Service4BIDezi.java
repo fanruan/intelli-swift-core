@@ -38,7 +38,6 @@ public class Service4BIDezi implements Service {
             new BIUpdateSessionAction(),
 
             new BIWidgetSettingAction(),
-            new BIChartSettingAction(),
             new BIReportSavingAction(),
             new BIGetFieldMinMaxValueAction(),
 
