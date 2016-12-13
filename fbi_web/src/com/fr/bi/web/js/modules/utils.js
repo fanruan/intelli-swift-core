@@ -1914,6 +1914,14 @@
             return BI.parseInt(region) >= BI.parseInt(BICst.REGION.TARGET1) && _set.contains(type);
         },
 
+        isDimensionByRegionType: function (type) {
+            return BI.parseInt(type) < BI.parseInt(BICst.REGION.TARGET1);
+        },
+
+        isTargetByRegionType: function (type) {
+            return BI.parseInt(type) >= BI.parseInt(BICst.REGION.TARGET1);
+        },
+
         isDimensionType: function (type) {
             return type === BICst.TARGET_TYPE.STRING || type === BICst.TARGET_TYPE.DATE || type === BICst.TARGET_TYPE.NUMBER;
         },

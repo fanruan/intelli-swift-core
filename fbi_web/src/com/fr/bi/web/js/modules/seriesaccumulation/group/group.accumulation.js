@@ -129,6 +129,7 @@ BI.AccumulationGroup = BI.inherit(BI.Widget, {
         BI.each(this.getAllContainers(), function (idx, group) {
             if(BI.isNotEmptyArray(group.getValue())) {
                 result.push({
+                    title: group.getTitle(),
                     index: group.getIndex(),
                     items: group.getValue()
                 });
