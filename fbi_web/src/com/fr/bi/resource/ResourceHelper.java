@@ -715,17 +715,14 @@ public class ResourceHelper {
                 //详细设置相关模块
                 "com/fr/bi/web/css/modules/dimensionsmanager/charttype/combo/combo.tabletype.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/charttype/charttype.css",
-                "com/fr/bi/web/css/modules/dimensionsmanager/regions/region.dimension.css",
-                "com/fr/bi/web/css/modules/dimensionsmanager/regions/complex/region.dimension.complex.css",
-                "com/fr/bi/web/css/modules/dimensionsmanager/regions/complex/region.wrapper.complex.css",
-                "com/fr/bi/web/css/modules/dimensionsmanager/regions/complex/region.empty.complex.css",
-                "com/fr/bi/web/css/modules/dimensionsmanager/regions/map/region.point.map.main.css",
-                "com/fr/bi/web/css/modules/dimensionsmanager/regions/map/region.point.map.sub.css",
-                "com/fr/bi/web/css/modules/dimensionsmanager/regions/map/region.point.map.css",
-                "com/fr/bi/web/css/modules/dimensionsmanager/regions/region.target.css",
-                "com/fr/bi/web/css/modules/dimensionsmanager/regions/region.wrapper.css",
-                "com/fr/bi/web/css/modules/dimensionsmanager/regions/region.empty.css",
-                "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager.css",
+                "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/header/region.header.css",
+                "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/dimensionregions/region.empty.dimension.css",
+                "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/dimensionregions/region.dimension.css",
+                "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.empty.target.css",
+                "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.target.css",
+                "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/regionwrapper.dimension.css",
+                "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/regionwrapper.target.css",
+                "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/regionsmanager.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/dimensionsmanager.css",
 
 
@@ -844,6 +841,11 @@ public class ResourceHelper {
                 //计算指标
                 "com/fr/bi/web/css/modules/calculatetarget/calculatetargetpopup.css",
                 "com/fr/bi/web/css/modules/calculatetarget/pane.calculate.target.rank.css",
+
+                //系列堆积
+                "com/fr/bi/web/css/modules/seriesaccumulation/container.accumulation.css",
+                "com/fr/bi/web/css/modules/seriesaccumulation/group.accumulation.css",
+                "com/fr/bi/web/css/modules/seriesaccumulation/series.accumulation.css",
 
                 //去数据库选表
                 "com/fr/bi/web/css/modules/selecttable/widget.selecttable.pane.css",
@@ -999,16 +1001,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/extend/update/singletable/iconchangetext.button.css",
                 "com/fr/bi/web/css/extend/update/singletable/preview/update.previewpane.css",
 
-                //指标弹出明细表
-                "com/fr/bi/web/css/modules/detailtablepopup/module/selectdata/treeitem/item.level0.css",
-                "com/fr/bi/web/css/modules/detailtablepopup/module/selectdata/treeitem/item.level1.css",
-                "com/fr/bi/web/css/modules/detailtablepopup/module/detailtable/cell/cell.detailtable.detailtablepopup.css",
-                "com/fr/bi/web/css/modules/detailtablepopup/module/detailtable/cell/header.detailtable.detailtablepopup.css",
-                "com/fr/bi/web/css/modules/detailtablepopup/module/detailtable/detailtable.detailtablepopup.css",
-                "com/fr/bi/web/css/modules/detailtablepopup/module/dimensionsmanager/dimensionsmanager.detailtablepopup.css",
-                "com/fr/bi/web/css/modules/detailtablepopup/module/view/view.detailtablepopup.css",
-                "com/fr/bi/web/css/modules/detailtablepopup/detailtablepopup.css",
-
                 //选择字段服务
                 "com/fr/bi/web/css/services/packageselectdataservice/relationtable/node.relationtables.css",
 
@@ -1077,29 +1069,53 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/maptypecombo/combo.maptype.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/charttype/combo/maptypecombo/popup.maptype.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/charttype/charttype.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regions/abstract.region.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regions/abstract.wrapper.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regions/abstract.region.wrapper.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regions/region.detail.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regions/region.tree.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regions/complex/region.dimension.complex.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regions/complex/region.wrapper.complex.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regions/complex/region.empty.complex.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regions/map/region.point.map.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regions/map/region.point.map.sub.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regions/map/region.point.map.main.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/header/region.header.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/header/region.header.calculatetarget.js",
+
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/dimensionregions/abstract.region.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/dimensionregions/region.empty.dimension.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/dimensionregions/region.dimension.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.empty.target.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.target.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/region.wrapper.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/regionwrapper.dimension.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/regionwrapper.target.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.table.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.crosstable.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.complextable.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.table.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.accumulate.area.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.accumulate.axis.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.accumulate.bar.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.accumulate.radar.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.area.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.axis.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.bar.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.bubble.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.combine.chart.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.compare.area.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.compare.axis.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.compare.bar.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.dashboard.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.donut.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.fall.axis.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.force.bubble.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.funnel.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.gis.map.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.line.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.map.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.multi.axis.combine.chart.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.multi.pie.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.percent.accumulate.area.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.percent.accumulate.axis.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.pie.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.radar.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.range.area.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.scatter.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/model.dimensionsmanager.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/dimensionsmanager.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/dimensionsmanager.control.js",
 
-                //新的Region
-                "com/fr/bi/web/js/modules/dimensionsmanager/regions/dimension/region.wrapper.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regions/dimension/region.empty.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regions/dimension/region.dimension.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regions/target/region.wrapper.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regions/target/region.empty.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regions/target/region.target.js",
 
                 "com/fr/bi/web/js/modules/tablechartmanager/tablechartmanager.js",
                 "com/fr/bi/web/js/modules/tablechartmanager/errorpane/tablechart.errorpane.js",
@@ -1209,6 +1225,12 @@ public class ResourceHelper {
 
                 //树标签控件
                 "com/fr/bi/web/js/modules/selecttreelabel/widget.selecttreelabel.js",
+
+                //系列堆积设置
+                "com/fr/bi/web/js/modules/seriesaccumulation/series.accumulation.js",
+                "com/fr/bi/web/js/modules/seriesaccumulation/series.accumulation.popup.js",
+                "com/fr/bi/web/js/modules/seriesaccumulation/group/group.accumulation.js",
+                "com/fr/bi/web/js/modules/seriesaccumulation/group/container.accumulation.js",
 
                 "com/fr/bi/web/js/extend/excel/upload/excel.upload.js",
                 "com/fr/bi/web/js/extend/excel/upload/excel.upload.model.js",
@@ -1817,27 +1839,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/extend/update/singletable/update.singletable.setting.model.js",
                 "com/fr/bi/web/js/extend/update/singletable/preview/update.previewpane.js",
                 "com/fr/bi/web/js/extend/update/singletable/preview/update.previewpane.model.js",
-
-                //指标弹出明细表
-                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treenode/abstract.node.level.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treeitem/item.level0.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treeitem/item.level1.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treeitem/item.level2.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treenode/node.level0.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/treenode/node.level1.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/selectdata/selectdata.detailtablepopup.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/dimensionsmanager/region.detailtablepopup.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/dimensionsmanager/dimensionsmanager.detailtablepopup.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/detailtable/cell/cell.detailtable.detailtablepopup.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/detailtable/cell/header.detailtable.detailtablepopup.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/detailtable/model.detailtable.detailtablepopup.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/detailtable/detailtable.detailtablepopup.js",
-
-                "com/fr/bi/web/js/modules/detailtablepopup/module/model/field/model.detailtablepopup.detail.dimension.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/model/model.detailtablepopup.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/view/field/view.detailtablepopup.detail.dimension.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/module/view/view.detailtablepopup.js",
-                "com/fr/bi/web/js/modules/detailtablepopup/detailtablepopup.js",
 
 
                 //业务包选择字段服务

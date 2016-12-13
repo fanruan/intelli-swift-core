@@ -4652,6 +4652,7 @@ Data.Utils = {
             configs.colors = config.chart_color;
             configs.style = formatChartStyle();
             formatCordon();
+            formatChartLineStyle();
             switch (config.chart_legend) {
                 case BICst.CHART_LEGENDS.BOTTOM:
                     configs.legend.enabled = true;
@@ -4721,6 +4722,8 @@ Data.Utils = {
 
             _formatDataLabel(items, configs, config.chart_font);
 
+            configs.chartType = "area";
+
             return BI.extend(configs, {
                 series: items
             });
@@ -4732,6 +4735,24 @@ Data.Utils = {
                     case BICst.CHART_STYLE.STYLE_NORMAL:
                     default:
                         return "normal";
+                }
+            }
+
+            function formatChartLineStyle() {
+                switch (config.chart_line_type) {
+                    case BICst.CHART_SHAPE.RIGHT_ANGLE:
+                        configs.plotOptions.curve = false;
+                        configs.plotOptions.step = true;
+                        break;
+                    case BICst.CHART_SHAPE.CURVE:
+                        configs.plotOptions.curve = true;
+                        configs.plotOptions.step = false;
+                        break;
+                    case BICst.CHART_SHAPE.NORMAL:
+                    default:
+                        configs.plotOptions.curve = false;
+                        configs.plotOptions.step = false;
+                        break;
                 }
             }
 

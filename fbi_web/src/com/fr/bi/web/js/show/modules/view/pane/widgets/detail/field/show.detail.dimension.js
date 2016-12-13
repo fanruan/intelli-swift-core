@@ -48,6 +48,9 @@ BIShow.DetailDimensionView = BI.inherit(BI.View, {
         this.editor = BI.createWidget({
             type: "bi.sign_editor",
             height: this.constants.DIMENSION_BUTTON_HEIGHT,
+            title: function () {
+                return self.editor.getValue();
+            },
             cls: "bi-dimension-name",
             title: function () {
                 return self.editor.getValue();

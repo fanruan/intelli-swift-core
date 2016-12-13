@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--基于标准化的boxmodel来统一浏览器，todo -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Page-Enter" content="revealTrans(duration=5.0,transition=3)">
+
+    <title>${reportName}</title>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.css&__v__=${__v__}"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=third.css&__v__=${__v__}"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=base.css&__v__=${__v__}"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=modules.css&__v__=${__v__}"/>
+
+    <!--[if lte IE 8]>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=resource&resource=/com/fr/bi/web/css/utils/bi.ie8.font.css"/>
+    <![endif]-->
+
+    <!--<link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.fs.js"/>-->
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.js&inter=${__locale__}&__v__=${__v__}"></script>
+    <script type="text/javascript" src="${Baidu}"></script>
+    <script type="text/javascript" src="${Google}"></script>
+
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=third.js&__v__=${__v__}"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=base.js&__v__=${__v__}"></script>
+    <script type="text/javascript" src="${servletURL}?op=emb&resource=modules.js&__v__=${__v__}"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            var templateManage = BI.createWidget({
+                type: "bi.template_manager",
+                element: $('body'),
+                isAdmin: ${isAdmin}
+            });
+            templateManage.on(BI.TemplateManager.EVENT_FOLDER_RENAME, function (id, name, pId, type) {
+                //重命名或者新建文件夹
+                BI.requestAsync("fr_bi", "template_folder_rename", {
+                    id: id,
+                    pId: pId,
+                    name: name,
+                    type: type
+                })
+            });
+            templateManage.on(BI.TemplateManager.EVENT_DELETE, function (id, type, callback) {
+                //删除
+                BI.requestAsync("fr_bi", "template_folder_delete", {
+                    id: id,
+                    type: type
+                }, function (data) {
+                    if(data.length > 0) {
+                        var msg = "";
+                        switch (type) {
+                            case BI.TemplateManagerButtonGroup.DELETE_FOLDER:
+                                msg = BI.i18nText("BI-Some_Reports_Editing_Can_Not_Delete");
+                                //删除文件夹的时候还是重新拿一下数据
+                                refreshFolderAndReportData();
+                                break;
+                            case BI.TemplateManagerButtonGroup.DELETE_REPORT:
+                                msg = BI.i18nText("BI-Report_Editing_Can_Not_Delete", data[0]);
+                                break;
+                        }
+                        BI.Msg.toast(msg, "warning");
+                    } else {
+                        callback();
+                    }
+                })
+            });
+            templateManage.on(BI.TemplateManager.EVENT_MOVE, function (selectedFolders, toFolder) {
+                //移动
+                BI.requestAsync("fr_bi", "template_folder_move", {
+                    selected_folders: selectedFolders,
+                    to_folder: toFolder
+                })
+            });
+            templateManage.on(BI.TemplateManager.EVENT_SHARE, function (reports, users, isEdit) {
+                //分享
+                BI.requestAsync("fr_bi", "template_folder_share", {
+                    reports: FR.encrypt(FR.jsonEncode(reports), "neilsx"),
+                    users: FR.encrypt(FR.jsonEncode(users), "neilsx"),
+                    edit_shared: isEdit === true
+                }, function (res) {
+                    if(BI.isNotNull(res.result)) {
+                        BI.Msg.toast(BI.i18nText("BI-Share_Successfully"));
+                        if(isEdit !== true) {
+                            refreshFolderAndReportData();
+                        }
+                    }
+                });
+            });
+            templateManage.on(BI.TemplateManager.EVENT_HANGOUT, function (id, status) {
+                BI.requestAsync("fr_bi", "report_hangout", {
+                    id: id,
+                    status: status
+                }, function(res) {
+                    if(BI.isNotNull(res.result)) {
+                        switch (status) {
+                            case BICst.REPORT_STATUS.APPLYING:
+                                BI.Msg.toast(BI.i18nText("BI-Hanging_Out_Report_Success"));
+                                break;
+                            case BICst.REPORT_STATUS.NORMAL:
+                                BI.Msg.toast(BI.i18nText("BI-Cancel_Hanging_Out"));
+                                break;
+                        }
+                    }
+                });
+            });
+
+            refreshFolderAndReportData();
+
+            function refreshFolderAndReportData(){
+                BI.requestAsync('fr_bi', 'get_folder_report_list', {}, function (list) {
+                    templateManage.resetModel(list);
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+
+</body>
+</html>

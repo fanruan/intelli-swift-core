@@ -40,6 +40,9 @@ BIShow.TargetView = BI.inherit(BI.View, {
         this.editor = BI.createWidget({
             type: "bi.sign_editor",
             height: this.constants.TARGET_BUTTON_HEIGHT,
+            title: function () {
+                return self.editor.getValue();
+            },
             cls: "bi-target-name",
             title: function () {
                 return self.editor.getValue();
