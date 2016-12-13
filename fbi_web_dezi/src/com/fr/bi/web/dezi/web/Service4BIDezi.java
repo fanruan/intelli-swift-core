@@ -36,19 +36,13 @@ public class Service4BIDezi implements Service {
 
     private static AbstractBIDeziAction[] actions = {
             new BIUpdateSessionAction(),
-            new BIRemoveWidgetAction(),
 
             new BIWidgetSettingAction(),
             new BIChartSettingAction(),
             new BIReportSavingAction(),
             new BIGetFieldMinMaxValueAction(),
 
-            new BIGetAccessablePackagesAction(),
-            new BIGetAccessableGroupPackagesAction(),
-
             new BIExcelExportAction(),
-
-            new BIGetPreviewTableDataAction(),
 
             new BIStartGenerateTempCubeAction(),
             new BIGetTempCubeGeneratingStatusAction(),
