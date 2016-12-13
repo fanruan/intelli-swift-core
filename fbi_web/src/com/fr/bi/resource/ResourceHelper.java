@@ -2235,6 +2235,9 @@ public class ResourceHelper {
                 //自适应表
                 "com/fr/bi/web/css/widget/adaptivetable/adaptivetable.css",
 
+                //列可拖拽排序表
+                "com/fr/bi/web/css/widget/sortabletable/sortabletable.css",
+
                 //Excel表
                 "com/fr/bi/web/css/widget/exceltable/exceltable.cell.css",
                 "com/fr/bi/web/css/widget/exceltable/exceltable.header.cell.css",
@@ -3025,6 +3028,9 @@ public class ResourceHelper {
 
                 //自适应表
                 "com/fr/bi/web/js/widget/adaptivetable/adaptivetable.js",
+
+                //列可拖拽排序表
+                "com/fr/bi/web/js/widget/sortabletable/sortabletable.js",
 
                 //Excel表
                 "com/fr/bi/web/js/widget/exceltable/exceltable.cell.js",

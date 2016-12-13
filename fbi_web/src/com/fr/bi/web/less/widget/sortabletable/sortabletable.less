@@ -1,9 +1,12 @@
 @import "../../bibase";
 
 .bi-sortable-table{
-  & .bi_preview_table_drag_clone {
+  & .sortable_table_drag_clone {
     background: @background-color-light-blue;
     top: 0px;
     opacity: (0.5);
+  }
+  & .drag-header{
+    cursor: move;
   }
 }

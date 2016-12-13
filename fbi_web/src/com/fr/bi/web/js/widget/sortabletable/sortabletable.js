@@ -34,6 +34,12 @@ BI.SortableTable = BI.inherit(BI.Widget, {
         BI.SortableTable.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
 
+        BI.each(o.header, function(idx, header){
+            BI.each(header, function(id, obj){
+                obj.cls = obj.cls + " drag-header"
+            })
+        })
+
         this.table = BI.createWidget(o.el, {
             type: "bi.table_view",
             element: this.element,
@@ -84,39 +90,52 @@ BI.SortableTable = BI.inherit(BI.Widget, {
         this._initDrag();
 
         self.element.droppable({
-            accept: "." + ETLCst.ANALYSIS_DRAG_CLASS,
+            accept: ".drag-header",
             drop: function (e, ui) {
                 //e.pageX鼠标距文档左边缘位置，包含滚动条
-                // ui.helper.offset().left元素距文档左边缘位置，不包括滚动条
+                //ui.helper.offset().left元素距文档左边缘位置，不包括滚动条
                 //ui.position.left 距离drop元素左边缘距离
                 //self.table.getRightHorizontalScroll() 表格滚动条水平偏移
-                //var absolutePosition = ui.position.left + self.table.getRightHorizontalScroll() + (e.pageX - ui.helper.offset().left);
-                var absolutePosition = ui.position.left + self.table.getRightHorizontalScroll();
-                var insertIndex = self._getNearIndexFromArray(self.dropHelper.dropPosition, absolutePosition)
-                //这个insertIndex是包含原元素的index
-                //调整item顺序，重新populate
                 //getCalculateColumnSize获取每个column宽度
                 //getCalculateRegionColumnSize获取整个columns宽度
                 //getCalculateRegionRowSize获取整个rows高度
+
+                //var absolutePosition = ui.position.left + self.table.getRightHorizontalScroll() + (e.pageX - ui.helper.offset().left);
+                var absolutePosition = ui.position.left + self.table.getRightHorizontalScroll();
+                var columnSizes = self.table.getCalculateColumnSize()
+                var dropPosition = [];
+                BI.each(columnSizes, function(idx, columnSize){
+                    if(idx === 0){
+                        dropPosition.push(0)
+                    }else{
+                        dropPosition.push(dropPosition[idx - 1] + columnSizes[idx - 1])
+                    }
+                });
+                var insertIndex = self._getNearIndexFromArray(dropPosition, absolutePosition)
+                //这个insertIndex是包含原元素的index
+                //调整item顺序，重新populate
+                self._exchangeItemsAndHeaderPosition(ui.helper.data("index"), insertIndex)
+                self.populate(o.items, o.header);
             }
         });
     },
 
     _initDrag: function(){
         var self = this;
-        var columnsSizes = this.table.getCalculateColumnSize();
-        var RowsSize = this.table.getCalculateRegionRowSize();
-        BI.each(this.table.getColumns().header, function(idx, header){
+        BI.each(this.table.getColumns().header[0], function(idx, header){
             header.element.draggable({
                 axis: "x",      //拖拽路径
-                revert: "invalid",
+                revert: false,
                 cursor: BICst.cursorUrl,
                 cursorAt: {left: 5, top: 5},
                 containment: self.table.element,   //约束拖拽区域
                 helper: function () {
+                    var RowsSize = self.table.getCalculateRegionRowSize();
+                    var columnsSizes = self.table.getCalculateColumnSize();
                     var clone = BI.createWidget({
                         type: "bi.layout",
-                        cls: "bi_preview_table_drag_clone",
+                        cls: "sortable_table_drag_clone",
+                        data: {index: idx},
                         width: columnsSizes[idx],
                         height: RowsSize[0]
                     })
@@ -129,6 +148,20 @@ BI.SortableTable = BI.inherit(BI.Widget, {
 
     _adjustColumns: function () {
         this.table.setRegionColumnSize(["fill"]);
+    },
+
+    _exchangeItemsAndHeaderPosition: function (sourceIndex, targetIndex) {
+        var o = this.options;
+        var header = BI.unzip(o.header);
+        var items = BI.unzip(o.items);
+        var sourceHeader = header[sourceIndex];
+        var sourceitems = items[sourceIndex];
+        header[sourceIndex] = header[targetIndex];
+        items[sourceIndex] = items[targetIndex];
+        header[targetIndex] = sourceHeader;
+        items[targetIndex] = sourceitems;
+        o.header = BI.unzip(header);
+        o.items = BI.unzip(items);
     },
 
     _getNearIndexFromArray: function (array, v) {
@@ -150,8 +183,6 @@ BI.SortableTable = BI.inherit(BI.Widget, {
 
     setColumnSize: function (columnSize) {
         this.table.setColumnSize(columnSize);
-        this._adjustRegion();
-        this._resizeHeader();
     },
 
     getColumnSize: function () {
@@ -164,13 +195,10 @@ BI.SortableTable = BI.inherit(BI.Widget, {
 
     setHeaderColumnSize: function (columnSize) {
         this.table.setHeaderColumnSize(columnSize);
-        this._adjustRegion();
-        this._resizeHeader();
     },
 
     setRegionColumnSize: function (columnSize) {
         this.table.setRegionColumnSize(columnSize);
-        this._resizeHeader();
     },
 
     getRegionColumnSize: function () {
@@ -229,19 +257,17 @@ BI.SortableTable = BI.inherit(BI.Widget, {
         return this.table.getColumns();
     },
 
-    populate: function (items) {
+    populate: function (items, headers) {
         var self = this, o = this.options;
+        o.header = headers;
+        o.items = items;
+        BI.each(o.header, function(idx, header){
+            BI.each(header, function(id, obj){
+                obj.cls = obj.cls + " drag-header"
+            })
+        })
         this.table.populate.apply(this.table, arguments);
         this._initDrag();
-        if (o.isNeedFreeze === true) {
-            BI.nextTick(function () {
-                if (self.element.is(":visible")) {
-                    self._initRegionSize();
-                    self.table.resize();
-                    self._resizeHeader();
-                }
-            });
-        }
     },
 
     destroy: function () {
