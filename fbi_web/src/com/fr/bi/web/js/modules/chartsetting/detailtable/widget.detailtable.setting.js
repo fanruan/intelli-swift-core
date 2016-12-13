@@ -162,7 +162,7 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
                     type: "bi.label",
                     text: BI.i18nText("BI-Table_Style"),
                     cls: "attr-names"
-                }, this.tableSyleGroup, {
+                }, this.tableSyleGroup, /*{
                     type: "bi.vertical_adapt",
                     items: [this.isCustomTableStyle],
                     cls: "attr-names",
@@ -171,7 +171,7 @@ BI.DetailTableSetting = BI.inherit(BI.Widget, {
                     type: "bi.vertical_adapt",
                     items: [this.customTableStyle],
                     height: this.constant.SINGLE_LINE_HEIGHT
-                }]
+                }*/]
             },
             height: this.constant.SINGLE_LINE_HEIGHT,
             lhgap: this.constant.SIMPLE_H_GAP

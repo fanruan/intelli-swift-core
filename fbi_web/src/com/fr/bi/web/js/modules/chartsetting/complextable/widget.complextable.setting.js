@@ -192,7 +192,7 @@ BI.ComplexTableSetting = BI.inherit(BI.Widget, {
                 text: BI.i18nText("BI-Table_Style"),
                 cls: "attr-names",
                 height: this.constant.SINGLE_LINE_HEIGHT
-            }, this.tableStyleGroup, {
+            }, this.tableStyleGroup, /*{
                 type: "bi.vertical_adapt",
                 items: [this.isCustomTableStyle],
                 cls: "attr-names",
@@ -201,7 +201,7 @@ BI.ComplexTableSetting = BI.inherit(BI.Widget, {
                 type: "bi.vertical_adapt",
                 items: [this.customTableStyle],
                 height: this.constant.SINGLE_LINE_HEIGHT
-            }],
+            }*/],
             hgap: this.constant.SIMPLE_H_GAP
         });
 

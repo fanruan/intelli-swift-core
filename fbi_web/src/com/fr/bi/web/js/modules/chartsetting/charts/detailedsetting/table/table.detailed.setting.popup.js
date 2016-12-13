@@ -24,7 +24,7 @@ BI.TableDetailedSettingPopup = BI.inherit(BI.Widget, {
             type: "bi.table_detailed_setting_text_toolbar",
             cls: "detailed-setting-popup"
         });
-        this.tableName.on(BI.DataLabelTextToolBar.EVENT_CHANGE, function () {
+        this.tableName.on(BI.TableDetailSettingTextToolBar.EVENT_CHANGE, function () {
             self.fireEvent(BI.TableDetailedSettingPopup.EVENT_CHANGE)
         });
         var tableNameWrapper = this._createWrapper(BI.i18nText("BI-Field_Name"), this.tableName);
@@ -46,7 +46,7 @@ BI.TableDetailedSettingPopup = BI.inherit(BI.Widget, {
             type: "bi.table_detailed_setting_text_toolbar",
             cls: "detailed-setting-popup"
         });
-        this.tableValue.on(BI.DataLabelTextToolBar.EVENT_CHANGE, function () {
+        this.tableValue.on(BI.TableDetailSettingTextToolBar.EVENT_CHANGE, function () {
             self.fireEvent(BI.TableDetailedSettingPopup.EVENT_CHANGE)
         });
         var tableValueWrapper = this._createWrapper(BI.i18nText("BI-Field_Value"), this.tableValue);

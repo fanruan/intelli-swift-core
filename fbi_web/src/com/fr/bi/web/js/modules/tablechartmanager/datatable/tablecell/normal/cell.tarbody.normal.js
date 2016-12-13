@@ -13,6 +13,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         var dId = o.dId;
         var styleSettings = BI.Utils.getDimensionSettingsByID(dId);
+        var tableValueStyle = BI.Utils.getWSTableValueStyleByID(BI.Utils.getWidgetIDByDimensionID(dId));
         var text = o.text;
         var iconCls = "", color = "";
         var format = styleSettings.format, numLevel = styleSettings.numLevel, num_separators = styleSettings.numSeparators;
@@ -37,8 +38,9 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         });
         text = BI.TargetBodyNormalCell.parseFloatByDot(text, format, num_separators);
         var textLabel = this._createTargetText(text);
+        // textLabel.setStyle(BI.extend(tableValueStyle, {"background": "black"}));
         if (BI.isNotEmptyString(color)) {
-            textLabel.element.css("color", color);
+            textLabel.setStyle({"color": color});
         }
         if (BI.isNotEmptyString(iconCls)) {
 
@@ -97,7 +99,6 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         var self = this;
         var o = this.options;
         var dId = o.dId, clicked = o.clicked;
-        var valueStyle = BI.Utils.getWSTableValueStyleByID(BI.Utils.getWidgetIDByDimensionID(dId));
         if (BI.isNotNull(dId)) {
             var widgetId = BI.Utils.getWidgetIDByDimensionID(dId);
             var linkage = BI.Utils.getWidgetLinkageByID(widgetId);
@@ -124,7 +125,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 title: text,
                 height: o.height,
                 cls: "target-cell-text",
-                textAlign: valueStyle.textAlign || "right",
+                textAlign: "right",
                 rgap: 5
             });
         } else {
@@ -133,7 +134,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 text: text,
                 title: text,
                 height: 25,
-                textAlign: valueStyle.textAlign || "right",
+                textAlign: "right",
                 cls: "target-linkage-label",
                 rgap: 5
             });
