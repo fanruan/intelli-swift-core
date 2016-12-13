@@ -584,4 +584,10 @@ public class BIReportConstant {
         }
     }
 
+    public static final class REPORT_AUTH {
+        public static final int NONE = 0;
+        public static final int EDIT = 1;
+        public static final int VIEW = 2;
+    }
+
 }

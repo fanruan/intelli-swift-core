@@ -17,7 +17,6 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
         BI.DimensionsManagerModel.superclass._init.apply(this, arguments);
         this.viewMap = {};
         this.dimensionsMap = {};
-        this.populate();
     },
 
     _join: function (newType) {
@@ -44,7 +43,7 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
         });
         //从viewMap中删除已被删除的dimension
         BI.each(this.viewMap[newType], function (regionId, dIds) {
-            BI.remove(dIds, function(i, dId){
+            BI.remove(dIds, function (i, dId) {
                 var result = BI.find(self.viewMap[self.type], function (regionId, ds) {
                     return BI.contains(ds, dId);
                 });
@@ -65,12 +64,12 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
             newType === BICst.WIDGET.COMPLEX_TABLE) {
             //去掉被删掉的，添加新的
             var oldMap = this.dimensionsMap[newType];
-            BI.each(oldMap, function(id, map){
-                if(BI.isNull(dimensions[id])) {
+            BI.each(oldMap, function (id, map) {
+                if (BI.isNull(dimensions[id])) {
                     delete oldMap[id];
                 }
             });
-            BI.each(dimensions, function(id, map){
+            BI.each(dimensions, function (id, map) {
                 oldMap[id] = BI.deepClone(map);
             });
             return;
@@ -83,7 +82,7 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
             BI.each(dIds, function (i, dId) {
                 if (regionId === BICst.REGION.DIMENSION1) {
                     if (dim1Found === true) {
-                        if(newType !== BICst.WIDGET.MAP){
+                        if (newType !== BICst.WIDGET.MAP) {
                             dimensions[dId].used = false;
                         }
                         self.dimensionsMap[newType][dId] = dimensions[dId];
@@ -95,7 +94,7 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
                     return;
                 }
                 if (regionId === BICst.REGION.DIMENSION2) {
-                    if(usedTargets.length > 1) {
+                    if (usedTargets.length > 1) {
                         BI.Utils.isDimensionUsable(dId) && (dim2Found = true);
                         self.dimensionsMap[newType][dId] = dimensions[dId];
                     } else {
@@ -110,11 +109,11 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
                     }
                     return;
                 }
-                if((newType === BICst.WIDGET.COMPARE_AXIS || newType === BICst.WIDGET.COMPARE_AREA ||
-                    newType === BICst.WIDGET.COMPARE_BAR || newType === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART||
-                    newType === BICst.WIDGET.RANGE_AREA || newType === BICst.WIDGET.FALL_AXIS||
+                if ((newType === BICst.WIDGET.COMPARE_AXIS || newType === BICst.WIDGET.COMPARE_AREA ||
+                    newType === BICst.WIDGET.COMPARE_BAR || newType === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART ||
+                    newType === BICst.WIDGET.RANGE_AREA || newType === BICst.WIDGET.FALL_AXIS ||
                     newType === BICst.WIDGET.BUBBLE || newType === BICst.WIDGET.FORCE_BUBBLE ||
-                    newType === BICst.WIDGET.SCATTER) && regionId >= BICst.REGION.TARGET1){
+                    newType === BICst.WIDGET.SCATTER) && regionId >= BICst.REGION.TARGET1) {
                     if (regionId === BICst.REGION.TARGET1) {
                         if (tar1Found === true) {
                             dimensions[dId].used = false;
@@ -152,38 +151,37 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
                 self.dimensionsMap[newType][dId] = dimensions[dId];
             });
         });
-        if(newType === BICst.WIDGET.PIE || newType === BICst.WIDGET.DONUT || newType === BICst.WIDGET.DASHBOARD){
+        if (newType === BICst.WIDGET.PIE || newType === BICst.WIDGET.DONUT || newType === BICst.WIDGET.DASHBOARD) {
             var selecttargetCount = 0;
-            BI.any(self.viewMap[newType][BICst.REGION.TARGET1], function(idx, dId){
-                if(self.dimensionsMap[newType][dId].used === true){
+            BI.any(self.viewMap[newType][BICst.REGION.TARGET1], function (idx, dId) {
+                if (self.dimensionsMap[newType][dId].used === true) {
                     selecttargetCount++;
                 }
-                if(selecttargetCount > 1){
+                if (selecttargetCount > 1) {
                     return true;
                 }
             });
-            if(selecttargetCount > 1){
-                BI.each(self.viewMap[newType][BICst.REGION.DIMENSION1], function(idx, dId){
+            if (selecttargetCount > 1) {
+                BI.each(self.viewMap[newType][BICst.REGION.DIMENSION1], function (idx, dId) {
                     self.dimensionsMap[newType][dId].used = false;
                 });
             }
         }
         var oldDims = self.dimensionsMap[newType];
-        BI.each(oldDims, function(id, dim){
-            if(BI.isNull(dimensions[id])){
+        BI.each(oldDims, function (id, dim) {
+            if (BI.isNull(dimensions[id])) {
                 delete oldDims[id];
             }
         });
     },
 
     setType: function (type) {
-        var t = type;
-        if((type + "").indexOf(BICst.DI_TU) !== -1){
-            this.sub_type = t;
-            t = BICst.WIDGET.MAP;
-        }
-        this._join(t);
-        this.type = t;
+        this._join(type);
+        this.type = type;
+    },
+
+    setSubType: function (type) {
+        this.subType = type;
     },
 
     getType: function () {
@@ -205,13 +203,18 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
             view: this.viewMap[this.type] || {},
             dimensions: this.dimensionsMap[this.type] || {}
         };
-        this.type === BICst.WIDGET.MAP && BI.extend(v, {sub_type: this.sub_type});
+        if (BI.isNotNull(this.subType)) {
+            return BI.extend(v, {
+                sub_type: this.subType
+            })
+        }
         return v;
     },
 
     populate: function () {
         var o = this.options;
         this.type = BI.Utils.getWidgetTypeByID(o.wId);
+        this.subType = BI.Utils.getWidgetSubTypeByID(o.wId);
         this.viewMap[this.type] = BI.Utils.getWidgetViewByID(o.wId);
         this.dimensionsMap[this.type] = BI.Utils.getWidgetDimensionsByID(o.wId);
     }

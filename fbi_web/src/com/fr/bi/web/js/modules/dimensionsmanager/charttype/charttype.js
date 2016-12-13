@@ -78,19 +78,19 @@ BI.ChartType = BI.inherit(BI.Widget, {
     },
 
     getValue: function () {
-        return this.buttonTree.getValue()[0];
+        var val = this.buttonTree.getValue()[0];
+        if (BI.isObject(val)) {
+            return val;
+        }
+        return {type: val};
     },
 
     setValue: function (v) {
-        if(BI.isNull(v)){
-            BI.find(MapConst.INNER_MAP_INFO.MAP_LAYER, function(path, layer){
-                if(layer === 0){
-                    v = path;
-                    return true;
-                }
-            });
+        if (BI.isNull(v.subType)) {
+            this.buttonTree.setValue(v.type);
+        } else {
+            this.buttonTree.setValue(v.subType);
         }
-        this.buttonTree.setValue(v);
     }
 });
 BI.ChartType.EVENT_CHANGE = "EVENT_CHANGE";
