@@ -297,7 +297,6 @@ BIDezi.DetailView = BI.inherit(BI.View, {
         this.dimensionsManager.on(BI.DimensionsManager.EVENT_CHANGE, function () {
             var values = this.getValue();
             self.model.set(values);
-            this.populate();
         });
         return this.dimensionsManager;
     },

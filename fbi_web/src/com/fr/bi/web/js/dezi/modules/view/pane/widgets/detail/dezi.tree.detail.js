@@ -189,11 +189,10 @@ BIDezi.TreeDetailView = BI.inherit(BI.View, {
         var self = this;
         var dimensionsVessel = {};
         this.dimensionsManager = BI.createWidget({
-            type: "bi.dimensions_manager_control",
+            type: "bi.tree_dimensions_manager",
             wId: this.model.get("id"),
             dimensionCreator: function (dId, regionType, op) {
-                var relationItem = op.relationItem;
-                if (BI.isNotNull(relationItem)) {
+                if (op && BI.isNotNull(op.relationItem)) {
                     self.model.set("setRelation", {
                         dId: dId,
                         relationItem: op.relationItem
@@ -219,10 +218,9 @@ BIDezi.TreeDetailView = BI.inherit(BI.View, {
             }
         });
 
-        this.dimensionsManager.on(BI.DimensionsManagerControl.EVENT_CHANGE, function () {
+        this.dimensionsManager.on(BI.TreeDimensionsManager.EVENT_CHANGE, function () {
             var values = this.getValue();
             self.model.set(values);
-            this.populate();
         });
 
 
@@ -249,6 +247,9 @@ BIDezi.TreeDetailView = BI.inherit(BI.View, {
 
 
     change: function (changed, prev) {
+        if (BI.has(changed, "dimensions") || BI.has(changed, "view")) {
+            this.dimensionsManager.populate();
+        }
         if (BI.has(changed, "value")) {
             this.combo.setValue(this.model.get("value"))
         }

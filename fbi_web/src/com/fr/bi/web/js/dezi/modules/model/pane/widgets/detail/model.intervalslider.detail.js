@@ -48,7 +48,6 @@ BIDezi.IntervalSliderDetailModel = BI.inherit(BI.Model, {
         if (key1 === "dimensions") {
             BI.Broadcasts.send(BICst.BROADCAST.SRC_PREFIX + old._src.id);
             BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX + this.get("id"));
-            //ȫ��ά����ɾ�¼�
             BI.Broadcasts.send(BICst.BROADCAST.DIMENSIONS_PREFIX);
         }
     },
@@ -60,7 +59,6 @@ BIDezi.IntervalSliderDetailModel = BI.inherit(BI.Model, {
             var dId = dimension.dId;
             var dimensions = this.get("dimensions");
             var view = this.get("view");
-            //ά��ָ���������
             if (!dimensions[dId]) {
                 dimensions[dId] = {
                     name: src.name,
@@ -69,7 +67,6 @@ BIDezi.IntervalSliderDetailModel = BI.inherit(BI.Model, {
                     group: {
                         type: BICst.GROUP.ID_GROUP
                     }
-                    // sort: {type: BICst.SORT.ASC, target_id: dId}
                 };
                 view[BICst.REGION.DIMENSION1] = view[BICst.REGION.DIMENSION1] || [];
                 view[BICst.REGION.DIMENSION1].push(dId);
