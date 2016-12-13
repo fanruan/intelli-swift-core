@@ -212,7 +212,7 @@ BIDezi.NumberDetailView = BI.inherit(BI.View, {
                             src: op
                         });
                     }
-                    // self.addSubVessel(dId, dimensionsVessel[dId]).skipTo(regionType + "/" + dId, dId, "dimensions." + dId);
+                    self.addSubVessel(dId, dimensionsVessel[dId]).skipTo(regionType + "/" + dId, dId, "dimensions." + dId);
                 }
                 return dimensionsVessel[dId];
             }
