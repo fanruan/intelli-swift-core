@@ -49,7 +49,9 @@ public abstract class BISystemDataManager<MANAGER> extends BIStableMapContainer<
     public void persistUserData(long key) {
         try {
             XMLConfigureGenerator generator = new XMLConfigureGenerator(persistUserDataName(key) + ".xml", getValue(key), managerTag());
-            FRContext.getCurrentEnv().writeResource(generator);
+            synchronized (generator) {
+                FRContext.getCurrentEnv().writeResource(generator);
+            }
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }

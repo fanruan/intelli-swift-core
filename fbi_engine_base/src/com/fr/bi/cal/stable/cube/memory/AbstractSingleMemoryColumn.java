@@ -206,7 +206,7 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
 
     @Override
     public long getGroupCount(BIKey key) {
-        return 0;
+        return initGetter(key).sizeOfGroup();
     }
 
     @Override
