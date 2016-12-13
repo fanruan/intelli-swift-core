@@ -2722,6 +2722,7 @@
                 Data.Req.reqWidgetSettingByData({widget: BI.extend(this.getWidgetCalculationByID(wid), options)}, function (data) {
                     if (cache[wid] === callbacks) {
                         callbacks.success(data);
+                        delete cache[wid];
                     } else {
                         callbacks.error && callbacks.error(data);
                     }
