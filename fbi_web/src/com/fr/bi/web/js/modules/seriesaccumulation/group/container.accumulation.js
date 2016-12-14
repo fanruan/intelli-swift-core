@@ -19,8 +19,6 @@ BI.AccumulationContainer = BI.inherit(BI.Widget, {
         this.group = BI.createWidget({
             type: "bi.vertical",
             cls: "items-container",
-            scrolly: o.scrolly,
-            height: "100%",
             lgap: 20,
             rgap: 30,
             vgap: 10
@@ -42,22 +40,16 @@ BI.AccumulationContainer = BI.inherit(BI.Widget, {
 
                 }
             },
-            scroll: false,
             helper: function (event, ui) {
                 var drag = BI.createWidget();
                 drag.element.append(ui.html());
                 BI.createWidget({
-                    type: "bi.absolute",
-                    element: self.element.parent().parent(),
-                    items: [{
-                        el: drag,
-                        top: 0,
-                        left:0,
-                        bottom: 0
-                    }]
+                    type: "bi.default",
+                    element: o.helperContainer ? o.helperContainer : self.element,
+                    items: [drag]
                 })
                 return drag.element;
-            },
+            } ,
             items: ".accumulate-item",
             update: function (event, ui) {
             },
@@ -77,12 +69,11 @@ BI.AccumulationContainer = BI.inherit(BI.Widget, {
             }, this.group],
             element: this.element
         });
-
     },
 
     _createHeader: function () {
         var self = this, o = this.options;
-        var title = BI.createWidget({
+        this.title = BI.createWidget({
             type: "bi.label",
             text: o.title,
             title: o.title
@@ -102,7 +93,7 @@ BI.AccumulationContainer = BI.inherit(BI.Widget, {
             type: "bi.left_right_vertical_adapt",
             items: {
                 left: [{
-                    el: title,
+                    el: this.title,
                     lgap: 10
                 }],
                 right: [{
@@ -130,6 +121,10 @@ BI.AccumulationContainer = BI.inherit(BI.Widget, {
 
     getIndex: function () {
         return this.options.index;
+    },
+
+    getTitle: function () {
+        return this.title.getText();
     },
 
     getValue: function () {

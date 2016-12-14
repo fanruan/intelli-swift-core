@@ -335,6 +335,7 @@ BI.ChartDisplay = BI.inherit(BI.Pane, {
                         bigDataMode: BI.Utils.getWSChartBigDataModeByID(o.wId),
                         dataLabelSetting: BI.Utils.getWSChartDataLabelSettingByID(o.wId),
                     }, {
+                        seriesAccumulation: self.model.getSeriesAccumulation(o.wId),
                         cordon: self.model.getCordon(),
                         tooltip: self.model.getToolTip(type),
                         lnglat: BI.isNotNull(lnglat) ? lnglat.type : lnglat
