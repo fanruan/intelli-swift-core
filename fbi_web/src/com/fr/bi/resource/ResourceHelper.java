@@ -3024,6 +3024,7 @@ public class ResourceHelper {
 
                 //列可拖拽排序表
                 "com/fr/bi/web/js/widget/sortabletable/sortabletable.js",
+                "com/fr/bi/web/js/widget/sortabletable/drag.button.js",
 
                 //Excel表
                 "com/fr/bi/web/js/widget/exceltable/exceltable.cell.js",
