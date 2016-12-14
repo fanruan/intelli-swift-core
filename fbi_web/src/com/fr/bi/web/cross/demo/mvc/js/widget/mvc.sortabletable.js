@@ -132,7 +132,7 @@ SortableTableView = BI.inherit(BI.View, {
             type: "bi.sortable_table",
             rowSize: 25,
             headerRowSize: 30,
-            //isResizeAdapt: false,
+            isResizeAdapt: false,
             items: items,
             header: header
         });
