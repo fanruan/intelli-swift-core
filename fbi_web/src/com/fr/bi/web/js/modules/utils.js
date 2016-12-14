@@ -3244,11 +3244,16 @@
         getWidgetDataByID: (function () {
             var cache = {};
             return function (wid, callbacks, options) {
-                cache[wid] = callbacks;
+                options || (options = {});
+                var key = BI.UUID();
+                if (!BI.Utils.isControlWidgetByWidgetId(wid)) {
+                    key = wid;
+                }
+                cache[key] = callbacks;
                 Data.Req.reqWidgetSettingByData({widget: BI.extend(this.getWidgetCalculationByID(wid), options)}, function (data) {
-                    if (cache[wid] === callbacks) {
+                    if (cache[key] === callbacks) {
                         callbacks.success(data);
-                        delete cache[wid];
+                        delete cache[key];
                     } else {
                         callbacks.error && callbacks.error(data);
                     }
