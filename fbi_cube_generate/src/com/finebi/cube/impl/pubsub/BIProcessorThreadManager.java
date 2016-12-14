@@ -13,8 +13,8 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @since 4.0
  */
 public class BIProcessorThreadManager {
-    private ExecutorService executorService;
-    private static BIProcessorThreadManager instance;
+    protected ExecutorService executorService;
+    protected static BIProcessorThreadManager instance;
 
     public static BIProcessorThreadManager getInstance() {
         if (instance != null) {
@@ -28,7 +28,7 @@ public class BIProcessorThreadManager {
         }
     }
 
-    private BIProcessorThreadManager() {
+    protected BIProcessorThreadManager() {
         executorService = Executors.newFixedThreadPool(PerformancePlugManager.getInstance().getBiThreadPoolSize());
     }
 
