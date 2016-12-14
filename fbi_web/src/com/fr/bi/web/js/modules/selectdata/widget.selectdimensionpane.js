@@ -323,7 +323,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
             var dims = [], tars = [], calcTars = [];
             var views = widget.view;
             BI.each(views, function (i, dim) {
-                if (i >= BI.parseInt(BICst.REGION.DIMENSION1) && i < (BI.parseInt(BICst.REGION.TARGET1))) {
+                if (BI.Utils.isDimensionRegionByRegionType(i)) {
                     BI.each(dim, function (idx, dimId) {
                         widget.dimensions[dimId].dId = dimId;
                         dims.push(widget.dimensions[dimId]);

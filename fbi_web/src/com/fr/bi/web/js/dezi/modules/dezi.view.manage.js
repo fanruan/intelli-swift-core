@@ -235,8 +235,7 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.RADAR:
             case BICst.WIDGET.ACCUMULATE_RADAR:
             case BICst.WIDGET.FUNNEL:
-                if (BI.parseInt(region) >= BI.parseInt(BICst.REGION.DIMENSION1) &&
-                    BI.parseInt(BICst.REGION.TARGET1) > BI.parseInt(region)) {
+                if (BI.Utils.isDimensionRegionByRegionType(region)) {
                     view = "BIDezi.DimensionView";
                     break;
                 }

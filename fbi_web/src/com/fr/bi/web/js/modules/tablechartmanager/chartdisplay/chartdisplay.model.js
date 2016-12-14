@@ -20,7 +20,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         });
         this.targetIds = [];
         BI.each(view, function (regionType, arr) {
-            if (regionType >= BICst.REGION.TARGET1) {
+            if (BI.Utils.isTargetRegionByRegionType(regionType)) {
                 self.targetIds = BI.concat(self.targetIds, arr);
             }
         });
@@ -51,7 +51,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             result = BI.map(columnSizeArray, function (idx, value) {
                 var type = null;
                 var regionType = BI.Utils.getRegionTypeByDimensionID(targetIds[idx]);
-                if (regionType >= BICst.REGION.TARGET2 && regionType < BICst.REGION.TARGET3) {
+                if (BI.Utils.isTargetRegion2ByRegionType(regionType)) {
                     type = BICst.WIDGET.BUBBLE;
                 }
                 var adjustData = [];
@@ -60,7 +60,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     if (BI.isNull(self._assertValue(item.s[idx]))) {
                         return;
                     }
-                    if (regionType >= BICst.REGION.TARGET2 && regionType < BICst.REGION.TARGET3) {
+                    if (BI.Utils.isTargetRegion2ByRegionType(regionType)) {
                         switch (type) {
                             case BICst.WIDGET.BUBBLE:
                             case BICst.WIDGET.AXIS:
@@ -239,7 +239,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         var array = [];
         BI.each(this.targetIds, function (idx, tId) {
             var regionType = BI.Utils.getRegionTypeByDimensionID(tId);
-            if (regionType >= BICst.REGION.TARGET1 && regionType < BICst.REGION.TARGET2) {
+            if (BI.Utils.isTargetRegion1ByRegionType(regionType)) {
                 array.length === 0 && array.push([]);
                 if (self._checkSeriesExist()) {
                     array[0] = data;
@@ -247,7 +247,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     array[0].push(data[idx])
                 }
             }
-            if (regionType >= BICst.REGION.TARGET2 && regionType < BICst.REGION.TARGET3) {
+            if (BI.Utils.isTargetRegion2ByRegionType(regionType)) {
                 while (array.length < 2) {
                     array.push([]);
                 }
@@ -257,7 +257,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     array[1].push(data[idx]);
                 }
             }
-            if (regionType >= BICst.REGION.TARGET3) {
+            if (BI.Utils.isTargetRegion3ByRegionType(regionType)) {
                 while (array.length < 3) {
                     array.push([]);
                 }
@@ -274,7 +274,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
     _checkSeriesExist: function () {
         var o = this.options;
         var views = BI.filter(BI.Utils.getWidgetViewByID(o.wId), function (idx, view) {
-            return idx >= BICst.REGION.DIMENSION2 && idx < BICst.REGION.TARGET1;
+            return BI.Utils.isDimensionRegion2ByRegionType(idx);
         });
         var result = BI.find(views, function (idx, view) {
             return BI.find(view, function (i, dId) {
@@ -492,7 +492,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         BI.each(BI.Utils.getDatalabelByWidgetID(o.wId), function (id, dataLabel) {
             var filter = null;
             var filterArray = [];
-            if (BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1) {
+            if (BI.has(dataLabel, "target_id") && BI.Utils.isDimensionRegion1ByRegionType(BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id))) {
                 if (!BI.Utils.isDimensionUsable(dataLabel.target_id)) {
                     return;
                 }
@@ -549,11 +549,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     if (hasSeries === true) {
                         //有系列
                         //分类
-                        if (BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1) {
+                        if (BI.has(dataLabel, "target_id") && BI.Utils.isDimensionRegion1ByRegionType(BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id))) {
                             formatDataLabelForClassify(series, filter, BI.pluck(series.data, "x"), dataLabel);
                         }
                         //系列
-                        if (BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION2) {
+                        if (BI.has(dataLabel, "target_id") && BI.Utils.isDimensionRegion2ByRegionType(BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id))) {
                             var filterArray = filter.getFilterResult(allSeries);
                             if (BI.contains(filterArray, series.name)) {
                                 BI.each(series.data, function (id, da) {
@@ -562,7 +562,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                             }
                         }
                         //自身
-                        if (BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) >= BICst.REGION.TARGET1) {
+                        if (BI.has(dataLabel, "target_id") && BI.Utils.isTargetRegionByRegionType(BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id))) {
                             //范围为全系列
                             if (dataLabel.filter_range === BICst.DATA_LABEL_RANGE.ALL) {
                                 formatDataLabelForSelf(series, filter, allValueArray, dataLabel);
@@ -587,11 +587,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         //当前指标所在系列
                         if (series.name === BI.Utils.getDimensionNameByID(dId)) {
                             //分类
-                            if (BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) === BICst.REGION.DIMENSION1) {
+                            if (BI.has(dataLabel, "target_id") && BI.Utils.isDimensionRegion1ByRegionType(BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id))) {
                                 formatDataLabelForClassify(series, filter, BI.pluck(series.data, "x"), dataLabel);
                             }
                             //指标自身
-                            if (BI.has(dataLabel, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id) >= BICst.REGION.TARGET1) {
+                            if (BI.has(dataLabel, "target_id") && BI.Utils.isTargetRegionByRegionType(BI.Utils.getRegionTypeByDimensionID(dataLabel.target_id))) {
                                 formatDataLabelForSelf(series, filter, seriesArrayMap[series.name], dataLabel);
                             }
                             return true;
@@ -648,11 +648,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     if (hasSeries === true) {
                         //有系列
                         //分类
-                        if (BI.has(dataImage, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataImage.target_id) === BICst.REGION.DIMENSION1) {
+                        if (BI.has(dataImage, "target_id") && BI.Utils.isDimensionRegion1ByRegionType(BI.Utils.getRegionTypeByDimensionID(dataImage.target_id))) {
                             formatDataImageForClassify(series, filter, BI.pluck(series.data, "x"), dataImage);
                         }
                         //系列
-                        if (BI.has(dataImage, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataImage.target_id) === BICst.REGION.DIMENSION2) {
+                        if (BI.has(dataImage, "target_id") && BI.Utils.isDimensionRegion2ByRegionType(BI.Utils.getRegionTypeByDimensionID(dataImage.target_id))) {
                             var filterArray = filter.getFilterResult(allSeries);
                             if (BI.contains(filterArray, series.name)) {
                                 BI.each(series.data, function (id, da) {
@@ -661,7 +661,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                             }
                         }
                         //自身
-                        if (BI.has(dataImage, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataImage.target_id) >= BICst.REGION.TARGET1) {
+                        if (BI.has(dataImage, "target_id") && BI.Utils.isTargetRegionByRegionType(BI.Utils.getRegionTypeByDimensionID(dataImage.target_id))) {
                             BI.each(series.data, function (id, da) {
                                 self._createDataImage(da, dataImage);
                             })
@@ -670,11 +670,11 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         //当前指标所在系列
                         if (series.name === BI.Utils.getDimensionNameByID(dId)) {
                             //分类
-                            if (BI.has(dataImage, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataImage.target_id) === BICst.REGION.DIMENSION1) {
+                            if (BI.has(dataImage, "target_id") && BI.Utils.isDimensionRegion1ByRegionType(BI.Utils.getRegionTypeByDimensionID(dataImage.target_id))) {
                                 formatDataImageForClassify(series, filter, BI.pluck(series.data, "x"), dataImage);
                             }
                             //指标自身
-                            if (BI.has(dataImage, "target_id") && BI.Utils.getRegionTypeByDimensionID(dataImage.target_id) >= BICst.REGION.TARGET1) {
+                            if (BI.has(dataImage, "target_id") && BI.Utils.isTargetRegionByRegionType(BI.Utils.getRegionTypeByDimensionID(dataImage.target_id))) {
                                 BI.each(series.data, function (id, da) {
                                     self._createDataImage(da, dataImage);
                                 })
@@ -840,7 +840,7 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     var tempDrId = dr.dId;
                     if (i === drArray.length - 1) {
                         var rType = BI.Utils.getRegionTypeByDimensionID(drId);
-                        if (rType >= BICst.REGION.DIMENSION1 && rType < BICst.REGION.DIMENSION2) {
+                        if (BI.Utils.isDimensionRegion1ByRegionType(rType)) {
                             self.dimIds.splice(dIndex, 0, tempDrId);
                         } else {
                             self.crossDimIds.splice(cIndex, 0, tempDrId);

@@ -63,7 +63,7 @@ BI.AbstractRegionShow = BI.inherit(BI.Widget, {
                 var helper = ui.helper;
                 var data = helper.data("data");
                 var regionType = self._getRegionType();
-                if (regionType >= BICst.REGION.TARGET1) {
+                if (BI.Utils.isTargetRegionByRegionType(regionType)) {
                     data = BI.filter(data, function (i, dimension) {
                         return dimension.type === BICst.TARGET_TYPE.NUMBER || dimension.type === BICst.TARGET_TYPE.COUNTER
                     });

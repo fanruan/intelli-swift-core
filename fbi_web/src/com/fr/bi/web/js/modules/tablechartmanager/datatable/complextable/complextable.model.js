@@ -176,7 +176,7 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         var sortedRegions = BI.sortBy(regionIds);
         //行表头、列表头都只需要第一个分组中使用中的维度
         BI.some(sortedRegions, function (i, sRegion) {
-            if (BI.parseInt(sRegion) < BI.parseInt(BICst.REGION.DIMENSION2) &&
+            if (BI.Utils.isDimensionRegion1ByRegionType(sRegion) &&
                 view[sRegion].length > 0) {
                 BI.each(view[sRegion], function (j, dId) {
                     BI.Utils.isDimensionUsable(dId) && (self.dimIds.push(dId));
@@ -185,8 +185,7 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
             }
         });
         BI.some(sortedRegions, function (i, sRegion) {
-            if (BI.parseInt(BICst.REGION.DIMENSION2) <= BI.parseInt(sRegion) &&
-                BI.parseInt(sRegion) < BI.parseInt(BICst.REGION.TARGET1) &&
+            if (BI.Utils.isDimensionRegion2ByRegionType(sRegion) &&
                 view[sRegion].length > 0) {
                 BI.each(view[sRegion], function (j, dId) {
                     BI.Utils.isDimensionUsable(dId) && (self.crossDimIds.push(dId));
@@ -206,7 +205,7 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         var rowRegions = {};
         var view = BI.Utils.getWidgetViewByID(this.wId);
         BI.each(view, function (regionId, dIds) {
-            if (BI.parseInt(regionId) < BI.parseInt(BICst.REGION.DIMENSION2) &&
+            if (BI.Utils.isDimensionRegion1ByRegionType(regionId) &&
                 dIds.length > 0) {
                 BI.each(dIds, function (i, dId) {
                     if (BI.Utils.isDimensionUsable(dId)) {
@@ -226,8 +225,7 @@ BI.ComplexTableModel = BI.inherit(FR.OB, {
         var colRegions = {};
         var view = BI.Utils.getWidgetViewByID(this.wId);
         BI.each(view, function (regionId, dIds) {
-            if (BI.parseInt(BICst.REGION.DIMENSION2) <= BI.parseInt(regionId) &&
-                BI.parseInt(regionId) < BI.parseInt(BICst.REGION.TARGET1) &&
+            if (BI.Utils.isDimensionRegion2ByRegionType(regionId) &&
                 dIds.length > 0) {
                 BI.each(dIds, function(i, dId) {
                     if (BI.Utils.isDimensionUsable(dId)) {

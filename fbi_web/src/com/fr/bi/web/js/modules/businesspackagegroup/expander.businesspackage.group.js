@@ -51,10 +51,6 @@ BI.BusinessPackageExpander = BI.inherit(BI.Widget, {
             self.fireEvent(BI.BusinessPackageExpander.EVENT_CLICK_DELETE);
         });
 
-        this.node.on(BI.ArrowNodeDelete.EVENT_CHANGE, function () {
-            self.fireEvent(BI.BusinessPackageExpander.EVENT_NODE_VALUE_CHANGE);
-        });
-
         this.node.on(BI.ArrowNodeDelete.EVENT_CONFIRM, function () {
             self.fireEvent(BI.BusinessPackageExpander.EVENT_NODE_VALUE_CONFIRM);
         })
@@ -183,7 +179,6 @@ BI.BusinessPackageExpander = BI.inherit(BI.Widget, {
 BI.BusinessPackageExpander.EVENT_CHANGE = "EVENT_CHANGE";
 BI.BusinessPackageExpander.EVENT_CLICK_DELETE = "EVENT_CLICK_DELETE";
 BI.BusinessPackageExpander.EVENT_PACKAGE_DELETE = "EVENT_PACKAGE_DELETE";
-BI.BusinessPackageExpander.EVENT_NODE_VALUE_CHANGE = "EVENT_NODE_VALUE_CHANGE";
 BI.BusinessPackageExpander.EVENT_NODE_VALUE_CONFIRM = "EVENT_NODE_VALUE_CONFIRM";
 BI.BusinessPackageExpander.EVENT_CLICK_ADD = "EVENT_CLICK_ADD";
 BI.BusinessPackageExpander.EVENT_EDITOR_CONFIRM = "EVENT_EDITOR_CONFIRM";

@@ -4056,6 +4056,7 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
         DIV_CONTAINER.style.visibility = "hidden";
         DIV_CONTAINER.style.whiteSpace = "nowrap";
         DIV_CONTAINER.style.position = 'absolute';
+        DIV_CONTAINER.style.display = '';
 
         for(var property in style){
             if(typeof(style[property]) != "function" && property != 'color'){
@@ -4073,8 +4074,10 @@ define('utils/BaseUtils',['require','./ColorUtils','../Constants','VanCharts'],f
 
         var width = DIV_CONTAINER.offsetWidth || 0;
         var height = DIV_CONTAINER.offsetHeight || 0;
+        var size = {width:width, height:height};
 
-        return {width:width, height:height};
+        DIV_CONTAINER.style.display = 'none';
+        return size;
     }
 
     function _getSvgTextDim(text, style) {
@@ -15223,7 +15226,7 @@ define('chart/Series',['require','../utils/BaseUtils','../utils/QueryUtils','../
             }
 
             function horizontalFix(start, end, step, labelDim){
-                for(var x = startX; (step < 0 ? x > end : x < end); x += step){
+                for(var x = start; (step < 0 ? x > end : x < end); x += step){
                     var labelPos = {x:x, y: pos.y};
                     if(!manager.isOverlapped(BaseUtils.makeBounds(labelPos, labelDim))){
                         return labelPos;
@@ -18670,6 +18673,10 @@ define('chart/Line',['require','../Constants','../utils/BaseUtils','../utils/Que
             this._updateMarker(point.graphic, point.marker);
         },
 
+        updatePointGraphic:function(point){
+            this._updateMarkerPointGraphic(point);
+        },
+
         _createPointGraphic:function(point){
             return point.graphic = this._createMarker(point.marker);
         },
@@ -18936,10 +18943,6 @@ define('chart/Line',['require','../Constants','../utils/BaseUtils','../utils/Que
                     this.areaPath.style(this._getStyle(this.series, this.options));
                 }
             }
-        },
-
-        updatePointGraphic:function(point){
-            this._updateMarkerPointGraphic(point);
         },
 
         remove:function(){
@@ -25496,35 +25499,35 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
 
         //即使自动旋转，也能保证这里clip出来的边界够用
         updateClipBounds: function (clipBounds) {
-
-            if(!this.options.showLabel){
-                return;
-            }
-
+            var startSize, endSize, t_s, t_e;
             var isHorizontal = this.isHorizontal(), isReversed = this.isAxisReversed(), cfg = this.options;
 
-            var startSize, endSize, t_s, t_e;
+            if(this.options.showLabel){
+                var tick = this._getStartAndEndTick();
+                var startDim = this._getTickDim(this._getTickContent(tick[0], cfg.formatter));
+                var endDim =this._getTickDim(this._getTickContent(tick[1], cfg.formatter));
 
-            var tick = this._getStartAndEndTick();
-            var startDim = this._getTickDim(this._getTickContent(tick[0], cfg.formatter));
-            var endDim =this._getTickDim(this._getTickContent(tick[1], cfg.formatter));
+                if(isReversed){
+                    t_s = endDim;
+                    t_e = startDim;
+                }else{
+                    t_s = startDim;
+                    t_e = endDim;
+                }
+                startSize = isHorizontal ? t_s.width : t_s.height;
+                endSize = isHorizontal ? t_e.width : t_e.height;
 
-            if(isReversed){
-                t_s = endDim;
-                t_e = startDim;
+                //标签与四周保证有个边距
+                startSize = Math.round(startSize/2) + PADDING;
+                endSize = Math.round(endSize/2) + PADDING;
+
+                if(this.showArrow()){
+                    endSize = Math.max(endSize, ARROW_SIZE);
+                }
+
             }else{
-                t_s = startDim;
-                t_e = endDim;
-            }
-            startSize = isHorizontal ? t_s.width : t_s.height;
-            endSize = isHorizontal ? t_e.width : t_e.height;
-
-            //标签与四周保证有个边距
-            startSize = Math.round(startSize/2) + PADDING;
-            endSize = Math.round(endSize/2) + PADDING;
-
-            if(this.showArrow()){
-                endSize = Math.max(endSize, ARROW_SIZE);
+                startSize = 0;
+                endSize = this.showArrow() ? ARROW_SIZE : 0;
             }
 
             var plotBounds = this.vanchart.getPlotBounds();
@@ -26946,8 +26949,9 @@ define('component/BaseAxis',['require','../Constants','../utils/BaseUtils','../u
             if (!this.titleGroup) {
                 this.titleGroup = R.vgroup().add();
                 axisGroup.append(this.titleGroup.renderG);
-                this.titleGroup.attr({'transform': BaseUtils.makeTranslate(titleBounds)});
             }
+
+            this.titleGroup.attr({'transform': BaseUtils.makeTranslate(titleBounds)});
             var titleGroup = this.titleGroup;
 
             if (!titleGroup.text) {
@@ -27690,7 +27694,9 @@ define('component/DateAxis',['require','./Base','./BaseAxis','../utils/BaseUtils
                 if(byAxis == this && sery.visible){
                     this.getTrendLineForecast(series[i]);
                     var data = sery.points;
-                    gap = this.getValueFromData(data[1]) - this.getValueFromData(data[0]) || 0;
+                    if (data.length > 1) {
+                        gap = this.getValueFromData(data[1]) - this.getValueFromData(data[0]) || 0;
+                    }
                     for(var i = 0,len = data.length; i < len; i++){
                         var value = this.getValueFromData(data[i]);
 

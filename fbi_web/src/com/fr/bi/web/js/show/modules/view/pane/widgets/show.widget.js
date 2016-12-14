@@ -66,6 +66,10 @@ BIShow.WidgetView = BI.inherit(BI.View, {
         this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function (widget) {
             self.model.set(widget);
         });
+        this.tableChart.on(BI.TableChartManager.EVENT_CHANGE, function (obj) {
+            self._onClickChart(obj);
+        });
+
         this.widget = BI.createWidget({
             type: "bi.absolute",
             element: vessel,

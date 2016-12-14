@@ -452,7 +452,7 @@ BI.GroupStatistic = BI.inherit(BI.Widget, {
     },
 
     _getDimensionTypeByRegionAndDimensionType: function (regionType, type) {
-        if(BI.parseInt(regionType) == BICst.REGION.DIMENSION1 ){
+        if(BI.Utils.isDimensionRegion1ByRegionType(regionType)){
             switch (BI.parseInt(type)) {
                 case BICst.TARGET_TYPE.DATE:
                     return "bi.date_group_dimension";
@@ -464,7 +464,7 @@ BI.GroupStatistic = BI.inherit(BI.Widget, {
                     return "bi.number_group_dimension";
             }
         }
-        if(BI.parseInt(regionType) == BICst.REGION.TARGET1 ) {
+        if(BI.Utils.isTargetRegion1ByRegionType(regionType)) {
             switch (BI.parseInt(type)) {
                 case BICst.TARGET_TYPE.DATE :
                     return "bi.date_statistic_dimension";
@@ -496,7 +496,7 @@ BI.GroupStatistic = BI.inherit(BI.Widget, {
     _createDimension:function(id, regionType, fieldType){
         var self = this;
         var currentRegion = this.regions[regionType], cls = "bi-string-target-container";
-        if (BI.parseInt(regionType) === BI.parseInt(BICst.REGION.DIMENSION1)){
+        if (BI.Utils.isDimensionRegion1ByRegionType(regionType)){
             cls = "bi-string-dimension-container";
         }
 

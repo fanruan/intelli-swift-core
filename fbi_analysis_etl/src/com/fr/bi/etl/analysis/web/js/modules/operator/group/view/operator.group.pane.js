@@ -141,7 +141,7 @@ BI.AnalysisETLOperatorGroupPane = FR.extend(BI.MVCWidget, {
     createDimension:function(id, regionType, dm){
         var self = this;
         var cls = "bi-string-target-container";
-        if (BI.parseInt(regionType) === BI.parseInt(BICst.REGION.DIMENSION1)){
+        if (BI.Utils.isDimensionRegionByRegionType(regionType)){
             cls = "bi-string-dimension-container";
         }
         var dimension = BI.createWidget({

@@ -82,12 +82,12 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
                 BI.isNotNull(self.dropArea) && self.dropArea.destroy();
                 var helper = ui.helper;
                 var data = helper.data("data");
-                if (BI.parseInt(o.viewType) < BICst.REGION.TARGET1) {
+                if (BI.Utils.isDimensionRegionByRegionType(o.viewType)) {
                     data = BI.filter(data, function (i, dimension) {
                         return BI.Utils.isDimensionType(dimension.type);
                     });
                 }
-                if (BI.parseInt(o.viewType) >= BICst.REGION.TARGET1) {
+                if (BI.Utils.isTargetRegionByRegionType(o.viewType)) {
                     data = BI.filter(data, function (i, dimension) {
                         return BI.Utils.isTargetType(dimension.type);
                     });

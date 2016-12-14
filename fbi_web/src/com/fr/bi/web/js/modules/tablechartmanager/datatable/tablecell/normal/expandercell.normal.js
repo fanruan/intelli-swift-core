@@ -60,7 +60,7 @@ BI.NormalExpanderCell = BI.inherit(BI.Widget, {
         var cls = "expander-cell-text";
         //交叉表的item
         var regionType = BI.Utils.getRegionTypeByDimensionID(o.dId);
-        if (regionType === BICst.REGION.DIMENSION2) {
+        if (BI.Utils.isDimensionRegion2ByRegionType(regionType)) {
             cls += " cross-item-cell"
         }
         items.push({

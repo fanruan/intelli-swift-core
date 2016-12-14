@@ -56,24 +56,23 @@ BI.TableChartManagerAspect = function () {
         var cls = true;
         var dim1Size = 0, dim2Size = 0, tar1Size = 0, tar2Size = 0, tar3Size = 0;
         BI.each(view, function (vId, v) {
-            if (BI.parseInt(vId) < BI.parseInt(BICst.REGION.DIMENSION2)) {
+            if (BI.Utils.isDimensionRegion1ByRegionType(vId)) {
                 BI.each(v, function (i, dId) {
                     BI.Utils.isDimensionUsable(dId) && BI.Utils.isDimensionValidByDimensionID(dId) && dim1Size++;
                 });
-            } else if (BI.parseInt(BICst.REGION.DIMENSION2) <= BI.parseInt(vId) &&
-                BI.parseInt(vId) < BI.parseInt(BICst.REGION.TARGET1)) {
+            } else if (BI.Utils.isDimensionRegion2ByRegionType(vId)) {
                 BI.each(v, function (i, dId) {
                     BI.Utils.isDimensionUsable(dId) && dim2Size++;
                 });
-            } else if (BI.parseInt(vId) >= BI.parseInt(BICst.REGION.TARGET1) && BI.parseInt(vId) < BI.parseInt(BICst.REGION.TARGET2)) {
+            } else if (BI.Utils.isTargetRegion1ByRegionType(vId)) {
                 BI.each(v, function (i, dId) {
                     BI.Utils.isDimensionUsable(dId) && tar1Size++;
                 });
-            } else if (BI.parseInt(vId) >= BI.parseInt(BICst.REGION.TARGET2) && BI.parseInt(vId) < BI.parseInt(BICst.REGION.TARGET3)) {
+            } else if (BI.Utils.isTargetRegion2ByRegionType(vId)) {
                 BI.each(v, function (i, dId) {
                     BI.Utils.isDimensionUsable(dId) && tar2Size++;
                 });
-            } else if (BI.parseInt(vId) >= BI.parseInt(BICst.REGION.TARGET3)) {
+            } else if (BI.Utils.isTargetRegion3ByRegionType(vId)) {
                 BI.each(v, function (i, dId) {
                     BI.Utils.isDimensionUsable(dId) && tar3Size++;
                 });
