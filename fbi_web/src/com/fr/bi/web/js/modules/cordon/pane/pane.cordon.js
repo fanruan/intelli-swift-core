@@ -108,29 +108,29 @@ BI.CordonPane = BI.inherit(BI.Widget, {
             case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
             case BICst.WIDGET.COMBINE_CHART:
             case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
-                if(regionType === BICst.REGION.TARGET1){
+                if(BI.Utils.isTargetRegion1ByRegionType(regionType)){
                     this.numberLevel = BI.Utils.getWSChartLeftYNumberLevelByID(wId);
                 }
-                if(regionType === BICst.REGION.TARGET2){
+                if(BI.Utils.isTargetRegion2ByRegionType(regionType)){
                     this.numberLevel = BI.Utils.getWSChartRightYNumberLevelByID(wId);
                 }
-                if(regionType === BICst.REGION.TARGET3){
+                if(BI.Utils.isTargetRegion3ByRegionType(regionType)){
                     this.numberLevel = BI.Utils.getWSRightYAxis2NumLevelByID(wId);
                 }
                 break;
             case BICst.WIDGET.BAR:
             case BICst.WIDGET.ACCUMULATE_BAR:
             case BICst.WIDGET.COMPARE_BAR:
-                if(regionType === BICst.REGION.TARGET1 || regionType === BICst.REGION.TARGET2){
+                if(BI.Utils.isTargetRegion1ByRegionType(regionType) || BI.Utils.isTargetRegion2ByRegionType(regionType)){
                     this.numberLevel = BI.Utils.getWSXAxisNumLevelByID(wId);
                 }
                 break;
             case BICst.WIDGET.SCATTER:
             case BICst.WIDGET.BUBBLE:
-                if(regionType === BICst.REGION.TARGET1){
+                if(BI.Utils.isTargetRegion1ByRegionType(regionType)){
                     this.numberLevel = BI.Utils.getWSChartLeftYNumberLevelByID(wId);
                 }
-                if(regionType === BICst.REGION.TARGET2){
+                if(BI.Utils.isTargetRegion2ByRegionType(regionType)){
                     this.numberLevel = BI.Utils.getWSXAxisNumLevelByID(wId);
                 }
                 break;

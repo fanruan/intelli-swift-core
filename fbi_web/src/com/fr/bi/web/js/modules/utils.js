@@ -441,22 +441,22 @@
             var result = {};
             BI.each(views, function (viewType, view) {
                 viewType = BI.parseInt(viewType);
-                if (viewType < BI.parseInt(BICst.REGION.DIMENSION2)) {
+                if (BI.Utils.isDimensionRegion1ByRegionType(viewType)) {
                     result[BICst.REGION.DIMENSION1] = result[BICst.REGION.DIMENSION1] || [];
                     result[BICst.REGION.DIMENSION1].push(viewType + "");
                     return;
                 }
-                if (viewType < BI.parseInt(BICst.REGION.TARGET1)) {
+                if (BI.Utils.isDimensionRegion2ByRegionType(viewType)) {
                     result[BICst.REGION.DIMENSION2] = result[BICst.REGION.DIMENSION2] || [];
                     result[BICst.REGION.DIMENSION2].push(viewType + "");
                     return;
                 }
-                if (viewType < BI.parseInt(BICst.REGION.TARGET2)) {
+                if (BI.Utils.isTargetRegion1ByRegionType(viewType)) {
                     result[BICst.REGION.TARGET1] = result[BICst.REGION.TARGET1] || [];
                     result[BICst.REGION.TARGET1].push(viewType + "");
                     return;
                 }
-                if (viewType < BI.parseInt(BICst.REGION.TARGET3)) {
+                if (BI.Utils.isTargetRegion2ByRegionType(viewType)) {
                     result[BICst.REGION.TARGET2] = result[BICst.REGION.TARGET2] || [];
                     result[BICst.REGION.TARGET2].push(viewType + "");
                     return;
@@ -1617,7 +1617,7 @@
             var result = [];
             var views = Data.SharingPool.get("widgets", wid, "view");
             BI.each(views, function (i, dim) {
-                if (i >= BI.parseInt(BICst.REGION.DIMENSION1) && i < (BI.parseInt(BICst.REGION.TARGET1))) {
+                if (BI.Utils.isDimensionRegionByRegionType(i)) {
                     result = result.concat(dim);
                 }
             });
@@ -1628,7 +1628,7 @@
             var result = [];
             var views = Data.SharingPool.get("widgets", wid, "view");
             BI.each(views, function (i, tar) {
-                if (i >= (BI.parseInt(BICst.REGION.TARGET1))) {
+                if (BI.Utils.isTargetRegionByRegionType(i)) {
                     result = result.concat(tar);
                 }
             });
@@ -1893,8 +1893,21 @@
                     return true;
                 }
             });
-            return BI.parseInt(region) >= BI.parseInt(BICst.REGION.DIMENSION1) &&
-                BI.parseInt(BICst.REGION.TARGET1) > BI.parseInt(region);
+            return BI.Utils.isDimensionRegionByRegionType(region);
+        },
+
+        isDimensionRegionByRegionType: function (regionType) {
+            return BI.parseInt(regionType) < BI.parseInt(BICst.REGION.TARGET1);
+        },
+
+        isDimensionRegion1ByRegionType: function (regionType) {
+            return BI.parseInt(regionType) >= BI.parseInt(BICst.REGION.DIMENSION1)
+                && BI.parseInt(regionType) < BI.parseInt(BICst.REGION.DIMENSION2);
+        },
+
+        isDimensionRegion2ByRegionType: function (regionType) {
+            return BI.parseInt(regionType) >= BI.parseInt(BICst.REGION.DIMENSION2)
+                && BI.parseInt(regionType) < BI.parseInt(BICst.REGION.TARGET1);
         },
 
         isTargetByDimensionID: function (dId) {
@@ -1911,7 +1924,33 @@
                     return true;
                 }
             });
-            return BI.parseInt(region) >= BI.parseInt(BICst.REGION.TARGET1) && _set.contains(type);
+            return BI.Utils.isTargetRegionByRegionType(region) && _set.contains(type);
+        },
+
+        isTargetRegionByRegionType: function (regionType) {
+            return BI.parseInt(regionType) >= BI.parseInt(BICst.REGION.TARGET1);
+        },
+
+        isTargetRegion1ByRegionType: function (regionType) {
+            return BI.parseInt(regionType) >= BI.parseInt(BICst.REGION.TARGET1)
+                && BI.parseInt(regionType) < BI.parseInt(BICst.REGION.TARGET2);
+        },
+
+        isTargetRegion2ByRegionType: function (regionType) {
+            return BI.parseInt(regionType) >= BI.parseInt(BICst.REGION.TARGET2)
+                && BI.parseInt(regionType) < BI.parseInt(BICst.REGION.TARGET3);
+        },
+
+        isTargetRegion3ByRegionType: function (regionType) {
+            return BI.parseInt(regionType) >= BI.parseInt(BICst.REGION.TARGET3);
+        },
+
+        isDimensionByRegionType: function (type) {
+            return BI.parseInt(type) < BI.parseInt(BICst.REGION.TARGET1);
+        },
+
+        isTargetByRegionType: function (type) {
+            return BI.parseInt(type) >= BI.parseInt(BICst.REGION.TARGET1);
         },
 
         isDimensionType: function (type) {
@@ -1962,7 +2001,7 @@
                     return true;
                 }
             });
-            return BI.parseInt(region) >= BI.parseInt(BICst.REGION.TARGET1) && _set.contains(type);
+            return BI.Utils.isTargetRegionByRegionType(region) && _set.contains(type);
         },
 
         isSrcUsedBySrcID: function (srcId) {
@@ -3202,11 +3241,21 @@
             return widget;
         },
 
-        getWidgetDataByID: function (wid, callback, options) {
-            Data.Req.reqWidgetSettingByData({widget: BI.extend(this.getWidgetCalculationByID(wid), options)}, function (data) {
-                callback(data);
-            });
-        },
+        getWidgetDataByID: (function () {
+            var cache = {};
+            return function (wid, callbacks, options) {
+                cache[wid] = callbacks;
+                Data.Req.reqWidgetSettingByData({widget: BI.extend(this.getWidgetCalculationByID(wid), options)}, function (data) {
+                    if (cache[wid] === callbacks) {
+                        callbacks.success(data);
+                        delete cache[wid];
+                    } else {
+                        callbacks.error && callbacks.error(data);
+                    }
+                    callbacks.done && callbacks.done(data);
+                });
+            }
+        })(),
 
         /**
          * 组件与表的关系

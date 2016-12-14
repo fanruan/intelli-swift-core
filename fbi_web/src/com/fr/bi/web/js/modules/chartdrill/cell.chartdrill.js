@@ -127,7 +127,7 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
                     }
                 });
                 var regionType = BI.Utils.getRegionTypeByDimensionID(drillDid);
-                value = ((regionType >= BICst.REGION.DIMENSION1 && regionType < BICst.REGION.DIMENSION2) ? (v.initialX || v.x) : v.seriesName);
+                value = ((BI.Utils.isDimensionRegion1ByRegionType(regionType)) ? (v.initialX || v.x) : v.seriesName);
                 break;
         }
         return value;
@@ -150,7 +150,9 @@ BI.ChartDrillCell = BI.inherit(BI.Widget, {
     setValue: function(value){
         var o = this.options;
         o.value = this._getShowValue(value);
-        this.label.setValue(this._formatValue(o.value));
+        var v = this._formatValue(o.value);
+        this.label.setValue(v);
+        this.label.setTitle(v);
     },
 
     populate: function(){

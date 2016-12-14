@@ -32,7 +32,7 @@ BI.DimensionsManagerShowModel = BI.inherit(BI.Widget, {
                     return BI.contains(ds, dId);
                 });
                 if (BI.isNull(find)) {
-                    if (regionId < BICst.REGION.TARGET1) {
+                    if (BI.Utils.isDimensionRegionByRegionType(regionId)) {
                         self.viewMap[newType][BICst.REGION.DIMENSION1] = self.viewMap[newType][BICst.REGION.DIMENSION1] || [];
                         self.viewMap[newType][BICst.REGION.DIMENSION1].push(dId);
                     } else {
@@ -80,7 +80,7 @@ BI.DimensionsManagerShowModel = BI.inherit(BI.Widget, {
             var dim1Found = false, dim2Found = false;
             var tar1Found = false, tar2Found = false, tar3Found = false;
             BI.each(dIds, function (i, dId) {
-                if (regionId === BICst.REGION.DIMENSION1) {
+                if (BI.Utils.isDimensionRegion1ByRegionType(regionId)) {
                     if (dim1Found === true) {
                         dimensions[dId].used = false;
                         self.dimensionsMap[newType][dId] = dimensions[dId];
@@ -91,7 +91,7 @@ BI.DimensionsManagerShowModel = BI.inherit(BI.Widget, {
                     }
                     return;
                 }
-                if (regionId === BICst.REGION.DIMENSION2) {
+                if (BI.Utils.isDimensionRegion2ByRegionType(regionId)) {
                     if(usedTargets.length > 1) {
                         BI.Utils.isDimensionUsable(dId) && (dim2Found = true);
                         self.dimensionsMap[newType][dId] = dimensions[dId];
@@ -111,8 +111,8 @@ BI.DimensionsManagerShowModel = BI.inherit(BI.Widget, {
                     newType === BICst.WIDGET.COMPARE_BAR || newType === BICst.WIDGET.MULTI_AXIS_COMBINE_CHART||
                     newType === BICst.WIDGET.RANGE_AREA || newType === BICst.WIDGET.FALL_AXIS||
                     newType === BICst.WIDGET.BUBBLE || newType === BICst.WIDGET.FORCE_BUBBLE ||
-                    newType === BICst.WIDGET.SCATTER) && regionId >= BICst.REGION.TARGET1){
-                    if (regionId === BICst.REGION.TARGET1) {
+                    newType === BICst.WIDGET.SCATTER) && BI.Utils.isTargetRegionByRegionType(regionId)){
+                    if (BI.Utils.isTargetRegion1ByRegionType(regionId)) {
                         if (tar1Found === true) {
                             dimensions[dId].used = false;
                             self.dimensionsMap[newType][dId] = dimensions[dId];
@@ -123,7 +123,7 @@ BI.DimensionsManagerShowModel = BI.inherit(BI.Widget, {
                         }
                         return;
                     }
-                    if (regionId === BICst.REGION.TARGET2) {
+                    if (BI.Utils.isTargetRegion2ByRegionType(regionId)) {
                         if (tar2Found === true) {
                             dimensions[dId].used = false;
                             self.dimensionsMap[newType][dId] = dimensions[dId];
@@ -134,7 +134,7 @@ BI.DimensionsManagerShowModel = BI.inherit(BI.Widget, {
                         }
                         return;
                     }
-                    if (regionId === BICst.REGION.TARGET3) {
+                    if (BI.Utils.isTargetRegion3ByRegionType(regionId)) {
                         if (tar3Found === true) {
                             dimensions[dId].used = false;
                             self.dimensionsMap[newType][dId] = dimensions[dId];

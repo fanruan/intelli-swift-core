@@ -140,10 +140,10 @@ BI.ChartDrill = BI.inherit(BI.Widget, {
         var upDrillID = null, dId = null;
         BI.each(drillMap, function (drId, ds) {
             var rType = BI.Utils.getRegionTypeByDimensionID(drId);
-            if (rType === BICst.REGION.DIMENSION1 && ds.length > 0) {
+            if (BI.Utils.isDimensionRegion1ByRegionType(rType) && ds.length > 0) {
                 dId = ds[ds.length - 1].dId;
             }
-            if (rType === BICst.REGION.DIMENSION2 && ds.length > 0) {
+            if (BI.Utils.isDimensionRegion2ByRegionType(rType) && ds.length > 0) {
                 dId = ds[ds.length - 1].dId;
             }
             if (ds.length > 0 && (dId === drId || ds[ds.length - 1].dId === dId)) {

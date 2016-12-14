@@ -445,7 +445,7 @@ public class CubeIndexLoader {
             pg = new PageIteratorGroup(rowMap, columnMap);
             session.setPageIteratorGroup(useRealData, widgetName, pg);
         }
-        if (hasAllCalCalculatorTargets(usedTargets)){
+        if (hasAllCalCalculatorTargets(usedTargets)) {
             return getAllCalCrossRoot(rowDimension, colDimension, sumTarget, page, useRealData, session, expander, widget, usedTargets, targetGettingKey, calculateTargets, pg);
         }
         NodeAndPageInfo leftInfo = getLeftInfo(rowDimension, sumTarget, page, useRealData, expander, widget, session, usedTargets, calculateTargets, pg);
@@ -467,7 +467,8 @@ public class CubeIndexLoader {
     }
 
     private NewCrossRoot getAllCalCrossRoot(BIDimension[] rowDimension, BIDimension[] colDimension, BISummaryTarget[] sumTarget, int page, boolean useRealData, BISession session, CrossExpander expander, BISummaryWidget widget, BISummaryTarget[] usedTargets, List targetGettingKey, LinkedList calculateTargets, PageIteratorGroup pg) {
-        NewCrossRoot n;NodeAndPageInfo leftInfo = getLeftInfo(rowDimension, sumTarget, page, useRealData, expander, widget, session, usedTargets, calculateTargets, pg);
+        NewCrossRoot n;
+        NodeAndPageInfo leftInfo = getLeftInfo(rowDimension, sumTarget, page, useRealData, expander, widget, session, usedTargets, calculateTargets, pg);
         Map<GroupKey, IRootDimensionGroup> rowMap = new ConcurrentHashMap<GroupKey, IRootDimensionGroup>();
         Map<GroupKey, IRootDimensionGroup> columnMap = new ConcurrentHashMap<GroupKey, IRootDimensionGroup>();
         NodeAndPageInfo leftAllInfo = getLeftInfo(rowDimension, sumTarget, -1, useRealData, expander, widget, session, usedTargets, calculateTargets, new PageIteratorGroup(rowMap, columnMap));
@@ -951,7 +952,7 @@ public class CubeIndexLoader {
                 if (mergerInfo == null) {
                     GroupValueIndex gvi = widget.createFilterGVI(row, targetKey, session.getLoader(), session.getUserId()).AND(session.createFilterGvi(targetKey));
                     NoneDimensionGroup root = NoneDimensionGroup.createDimensionGroup(summary.createTableKey(), gvi, session.getLoader());
-                    RootDimensionGroup rootDimensionGroup = new RootDimensionGroup(root, row, expander, session, useRealData);
+                    RootDimensionGroup rootDimensionGroup = new RootDimensionGroup(root, row, expander, session, useRealData, widget);
                     List<TargetAndKey> list = new ArrayList<TargetAndKey>();
                     list.add(new TargetAndKey(summary, tkey));
                     mergerInfo = new MergerInfo(bdt, gvi, rootDimensionGroup, root, targetKey, list, session, rowDimension, expander, widget, groupKey);
@@ -974,7 +975,7 @@ public class CubeIndexLoader {
         BusinessTable tableBelongTo = row[0].getField().getTableBelongTo();
         GroupValueIndex gvi = widget.createFilterGVI(row, tableBelongTo, session.getLoader(), session.getUserId()).AND(session.createFilterGvi(tableBelongTo));
         NoneDimensionGroup root = NoneDimensionGroup.createDimensionGroup(BIBusinessTable.createEmptyTable(), gvi, session.getLoader());
-        RootDimensionGroup rootDimensionGroup = new RootDimensionGroup(root, row, expander, session, useRealData);
+        RootDimensionGroup rootDimensionGroup = new RootDimensionGroup(root, row, expander, session, useRealData, widget);
         List<TargetAndKey> list = new ArrayList<TargetAndKey>();
         list.add(new TargetAndKey(summary, summary.createTargetGettingKey()));
         GroupKey groupKey = new GroupKey(summary.createTableKey(), row);

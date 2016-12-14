@@ -222,7 +222,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
             self.sharedItems.push(sharedToMe);
             var sharedReports = [];
             BI.each(res, function(idx, item){
-                if(item.isMine === true){
+                if(item.isMine === true || !BI.has(item, "buildUrl")){
                     self.templateItems.push(item);
                 }else{
                     self.sharedItems.push(item);
@@ -323,7 +323,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
             var dims = [], tars = [], calcTars = [];
             var views = widget.view;
             BI.each(views, function (i, dim) {
-                if (i >= BI.parseInt(BICst.REGION.DIMENSION1) && i < (BI.parseInt(BICst.REGION.TARGET1))) {
+                if (BI.Utils.isDimensionRegionByRegionType(i)) {
                     BI.each(dim, function (idx, dimId) {
                         widget.dimensions[dimId].dId = dimId;
                         dims.push(widget.dimensions[dimId]);
