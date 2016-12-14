@@ -71,7 +71,7 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
             status: o.status 
         });
         chart.on(BI.ChartDisplay.EVENT_CHANGE, function () {
-            self.fireEvent(BI.TableChartManager.EVENT_CLICK_CHART, arguments);
+            self.fireEvent(BI.TableChartManager.EVENT_CHANGE, arguments);
         });
         return chart;
     },
@@ -121,5 +121,4 @@ BI.TableChartManager = BI.inherit(BI.Widget, {
     }
 });
 BI.TableChartManager.EVENT_CHANGE = "TableChartManager.EVENT_CHANGE";
-BI.TableChartManager.EVENT_CLICK_CHART = "EVENT_CLICK_CHART";
 $.shortcut('bi.table_chart_manager', BI.TableChartManager);
