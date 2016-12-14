@@ -183,7 +183,8 @@ BI.SortableTable = BI.inherit(BI.Widget, {
             if(idx === 0){
                 dropPosition.push(0)
             }else{
-                dropPosition.push(dropPosition[idx - 1] + columnSizes[idx - 1])
+                //+ 1边框偏移值
+                dropPosition.push(dropPosition[idx - 1] + columnSizes[idx - 1] + 1)
             }
         });
         return dropPosition;
@@ -218,10 +219,17 @@ BI.SortableTable = BI.inherit(BI.Widget, {
     },
 
     _getNearIndexFromArray: function (array, v) {
+        var self = this;
         var index = 0;
         BI.some(array, function (idx, item) {
             if (idx === array.length - 1) {
                 index = idx;
+                //如果是最后一列，且鼠标位置超出最后一列的中间位置，表示插入到最后
+                var len = self.table.getCalculateRegionColumnSize()[0];
+                var columnSizes = self.table.getCalculateColumnSize();
+                if(v > len - columnSizes[idx] / 2){
+                    index++;
+                }
             } else {
                 if (v < array[idx + 1]) {
                     var avg = (item + array[idx + 1]) / 2;
