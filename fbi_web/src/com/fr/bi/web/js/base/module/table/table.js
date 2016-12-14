@@ -270,25 +270,25 @@ BI.Table = BI.inherit(BI.Widget, {
         this.topLeft = BI.createWidget({
             type: "bi.adaptive",
             cls: "top-left",
-            // scrollable: false,
+            scrollable: false,
             items: [this.scrollTopLeft]
         });
         this.topRight = BI.createWidget({
             type: "bi.adaptive",
             cls: "top-right",
-            // scrollable: false,
+            scrollable: false,
             items: [this.scrollTopRight]
         });
         this.bottomLeft = BI.createWidget({
             type: "bi.adaptive",
             cls: "bottom-left",
-            //scrollable: false,
+            // scrollable: false,
             items: [this.scrollBottomLeft]
         });
         this.bottomRight = BI.createWidget({
             type: "bi.adaptive",
             cls: "bottom-right",
-            //scrollable: false,
+            scrollable: false,
             items: [this.scrollBottomRight]
         });
 
@@ -1052,7 +1052,7 @@ BI.Table = BI.inherit(BI.Widget, {
             type: "bi.adaptive",
             cls: "bottom-right",
             element: this.element,
-            // scrollable: false,
+            scrollable: false,
             items: [this.scrollBottomRight]
         });
 
