@@ -1,6 +1,7 @@
 package com.fr.bi.conf.log;
 
 import com.fr.bi.conf.report.widget.RelationColumnKey;
+import com.fr.bi.stable.constant.BILogConstant;
 import com.fr.json.JSONObject;
 
 public class BIConnectionCorrectLog extends BIConnectionLog {
@@ -37,6 +38,11 @@ public class BIConnectionCorrectLog extends BIConnectionLog {
     @Override
     public long getTime() {
         return seconds;
+    }
+
+    @Override
+    public int getType() {
+        return BILogConstant.PATH_LOG_TYPE.CORRECT;
     }
 
 }

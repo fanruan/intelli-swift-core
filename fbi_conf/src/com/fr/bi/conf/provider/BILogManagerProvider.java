@@ -2,7 +2,9 @@ package com.fr.bi.conf.provider;
 
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
+import com.fr.bi.conf.log.BIConnectionErrorLog;
 import com.fr.bi.conf.log.BIRecord;
+import com.fr.bi.conf.log.BITableErrorLog;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -24,6 +26,8 @@ public interface BILogManagerProvider {
      */
     void logStart(long userId);
 
+    long getStart(long userId);
+
     /**
      * 关联日志开始
      */
@@ -37,6 +41,8 @@ public interface BILogManagerProvider {
     /**
      * 日志开始
      */
+    long getEndTime(long userId);
+
     void logIndexStart(long userId);
 
     /**
@@ -140,14 +146,9 @@ public interface BILogManagerProvider {
      */
     void loopRelation(Set<ArrayKey<BITableSourceRelation>> set, long userId);
 
-    /**
-     * 获取所有需要更新的relation信息
-     */
+
     void relationPathSet(Set<BITableSourceRelationPath> biTableSourceRelationHashSet, long userId);
 
-    /**
-     * 获取所有需要更新的tableSource信息
-     */
     void cubeTableSourceSet(Set<CubeTableSource> cubeTableSources, long userId);
 
     JSONObject createJSON(long userId) throws Exception;
@@ -157,4 +158,20 @@ public interface BILogManagerProvider {
     Date getConfigVersion(long userId);
 
     void clearLog(long userId);
+
+    /**
+     * 获取所有需要更新的relation信息
+     */
+    Set<BITableSourceRelationPath> getAllRelationPathSet(long userId);
+
+    /**
+     * 获取所有需要更新的tableSource信息
+     */
+    Set<CubeTableSource> getAllTableSourceSet(long userId);
+
+    Set<BITableErrorLog> getErrorTables(long userId);
+
+    Set<BIConnectionErrorLog> getErrorPaths(long userId);
+
+
 }

@@ -8,7 +8,6 @@ import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.cal.result.operator.*;
 import com.fr.bi.cal.analyze.cal.sssecret.*;
 import com.fr.bi.cal.analyze.cal.store.GroupKey;
-import com.fr.bi.cal.analyze.cal.store.UserRightColumnKey;
 import com.fr.bi.cal.analyze.cal.utils.CommonUtils;
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
 import com.fr.bi.cal.analyze.exception.NoneRegisterationException;
@@ -442,7 +441,7 @@ public class CubeIndexLoader {
             pg = new PageIteratorGroup(rowMap, columnMap);
             session.setPageIteratorGroup(useRealData, widgetName, pg);
         }
-        if (hasAllCalCalculatorTargets(usedTargets)){
+        if (hasAllCalCalculatorTargets(usedTargets)) {
             NodeAndPageInfo leftInfo = getLeftInfo(rowDimension, sumTarget, page, useRealData, expander, widget, session, usedTargets, calculateTargets, pg);
             Map<GroupKey, IRootDimensionGroup> rowMap = new ConcurrentHashMap<GroupKey, IRootDimensionGroup>();
             Map<GroupKey, IRootDimensionGroup> columnMap = new ConcurrentHashMap<GroupKey, IRootDimensionGroup>();
@@ -483,21 +482,21 @@ public class CubeIndexLoader {
     }
 
     private void cutChilds(List<Node> childs, List<Node> childs1) {
-        if (!childs1.isEmpty()){
+        if (!childs1.isEmpty()) {
             Node start = childs1.get(0);
             Node end = childs1.get(childs1.size() - 1);
             Iterator<Node> it = childs.iterator();
             boolean shouldDelete = true;
-            while (it.hasNext()){
+            while (it.hasNext()) {
                 Node n = it.next();
-                if (ComparatorUtils.equals(n.getData(), start.getData())){
+                if (ComparatorUtils.equals(n.getData(), start.getData())) {
                     shouldDelete = false;
                     cutChilds(n.getChilds(), start.getChilds());
                 }
-                if (shouldDelete){
+                if (shouldDelete) {
                     it.remove();
                 }
-                if (ComparatorUtils.equals(n.getData(), end.getData())){
+                if (ComparatorUtils.equals(n.getData(), end.getData())) {
                     shouldDelete = true;
                     cutChilds(n.getChilds(), end.getChilds());
                 }
@@ -506,8 +505,8 @@ public class CubeIndexLoader {
     }
 
     private boolean hasAllCalCalculatorTargets(BISummaryTarget[] calculateTargets) {
-        for (BISummaryTarget target : calculateTargets){
-            if (target.calculateAllPage()){
+        for (BISummaryTarget target : calculateTargets) {
+            if (target.calculateAllPage()) {
                 return true;
             }
         }
@@ -850,7 +849,7 @@ public class CubeIndexLoader {
         } else {
             LoaderUtils.classifyTarget(usedTargets, calculateTargets, noneCalculateTargets, session);
         }
-        if (needCreateNewIter){
+        if (needCreateNewIter) {
             if (rowLength != 0 && summaryLength == 0) {
                 createPageGroupNodeWithNoSummary(widget, usedTargets, sumTarget, rowDimension, useRealData, expander, rowMap, isCross, session, rowLength);
             } else {
@@ -881,6 +880,7 @@ public class CubeIndexLoader {
         GroupKey groupKey = new GroupKey(summary.createTableKey(), row);
         return new GroupKey[]{groupKey};
     }
+
     private GroupKey[] createGroupKeysWithSummary(BISummaryWidget widget, BISummaryTarget[] usedTargets, BIDimension[] rowDimension, List<TargetCalculator[]> cs) {
         int summaryLength = usedTargets.length;
         int rowLength = rowDimension.length;
@@ -903,14 +903,14 @@ public class CubeIndexLoader {
                 BusinessTable targetKey = summary.createTableKey();
                 LoaderUtils.fillRowDimension(widget, row, rowDimension, rowLength, bdt);
                 GroupKey groupKey = new GroupKey(targetKey, row);
-                if (!map.containsKey(groupKey)){
+                if (!map.containsKey(groupKey)) {
                     map.put(groupKey, new ArrayList<TargetCalculator>());
                 }
                 map.get(groupKey).add(summary);
             }
         }
         List<GroupKey> keyList = new ArrayList<GroupKey>();
-        for (Entry<GroupKey, List<TargetCalculator>> entry : map.entrySet()){
+        for (Entry<GroupKey, List<TargetCalculator>> entry : map.entrySet()) {
             keyList.add(entry.getKey());
             cs.add(entry.getValue().toArray(new TargetCalculator[entry.getValue().size()]));
         }
@@ -944,13 +944,13 @@ public class CubeIndexLoader {
                 GroupKey groupKey = new GroupKey(targetKey, row);
                 MergerInfo mergerInfo = map.get(groupKey);
                 TargetGettingKey tkey = new TargetGettingKey(summary.createTargetKey(), target.getValue());
-                if (mergerInfo == null){
+                if (mergerInfo == null) {
                     GroupValueIndex gvi = widget.createFilterGVI(row, targetKey, session.getLoader(), session.getUserId()).AND(session.createFilterGvi(targetKey));
                     NoneDimensionGroup root = NoneDimensionGroup.createDimensionGroup(summary.createTableKey(), gvi, session.getLoader());
                     RootDimensionGroup rootDimensionGroup = new RootDimensionGroup(root, row, rowDimension, expander, session, widget, useRealData);
                     List<TargetAndKey> list = new ArrayList<TargetAndKey>();
                     list.add(new TargetAndKey(summary, tkey));
-                    mergerInfo = new MergerInfo(bdt, gvi, rootDimensionGroup, root, targetKey, list, session, rowDimension, expander,  widget, groupKey);
+                    mergerInfo = new MergerInfo(bdt, gvi, rootDimensionGroup, root, targetKey, list, session, rowDimension, expander, widget, groupKey);
                     map.put(groupKey, mergerInfo);
                     mergerInfoList.add(mergerInfo);
                 } else {
@@ -967,7 +967,7 @@ public class CubeIndexLoader {
             row[i] = rowDimension[i].createCalculator(rowDimension[i].getStatisticElement(), new ArrayList<BITableSourceRelation>());
         }
         TargetCalculator summary = CountCalculator.NONE_TARGET_COUNT_CAL;
-        BusinessTable tableBelongTo =row[0].getField().getTableBelongTo();
+        BusinessTable tableBelongTo = row[0].getField().getTableBelongTo();
         GroupValueIndex gvi = widget.createFilterGVI(row, tableBelongTo, session.getLoader(), session.getUserId()).AND(session.createFilterGvi(tableBelongTo));
         NoneDimensionGroup root = NoneDimensionGroup.createDimensionGroup(BIBusinessTable.createEmptyTable(), gvi, session.getLoader());
         RootDimensionGroup rootDimensionGroup = new RootDimensionGroup(root, row, rowDimension, expander, session, widget, useRealData);

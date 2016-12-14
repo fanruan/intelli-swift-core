@@ -40,7 +40,7 @@ public class CubeBuildManager {
         List<CubeBuildStuff> cubeBuildList = buildSingleTable(userId, baseTableSourceId, updateType);
         BILoggerFactory.getLogger().info("Update relevant table size:" + cubeBuildList.size());
         for (CubeBuildStuff cubeBuild : cubeBuildList) {
-            cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId);
+                cubeManager.addTask(new BuildCubeTask(new BIUser(userId), cubeBuild), userId);
         }
     }
 
