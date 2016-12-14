@@ -293,6 +293,44 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         return formatter
     },
 
+    formatSeriesAccumulation: function (items, accumulations) {
+        if(BI.isEmpty(accumulations) || BI.isEmpty(items)) {
+            return items;
+        }
+        var result = [];
+        for(var i = 0; i < accumulations.length; i++) {
+            var values = [];
+            BI.each(accumulations[i], function (idx, accumulation) {
+                var temp = [];
+                BI.each(items[i], function (id, data) {
+                    if(BI.contains(accumulation.items, data.name)) {
+                        BI.each(data.data, function (t, da) {
+                            var flag = true;
+                            da.seriesName = accumulation.index;
+                            BI.each(temp, function (t, item) {
+                                if(item.x === da.x) {
+                                    item.y = item.y + da.y;
+                                    flag = false;
+                                }
+                            })
+                            if(flag) {
+                                temp.push(da);
+                            }
+                        })
+                    }
+                })
+                values.push({
+                    name: accumulation.title,
+                    stack: "",
+                    data: temp
+                });
+            })
+            result.push(values);
+
+        };
+        return result;
+    },
+
     setDataLabelContent: function (chartOptions) {
         var setting = chartOptions.dataLabelSetting, identifier = '';
         if(setting.showCategoryName) {

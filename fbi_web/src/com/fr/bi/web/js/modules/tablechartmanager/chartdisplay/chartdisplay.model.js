@@ -1097,6 +1097,21 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
         } else {
             return {dId: dId, clicked: clicked};
         }
-    }
+    },
+
+    getSeriesAccumulation: function (wId) {
+        var views = BI.Utils.getWidgetViewByID(wId);
+        var accumulations = [];
+        BI.each(views, function (idx, view) {
+            if(idx >= BICst.REGION.DIMENSION2 && idx < BICst.REGION.TARGET1) {
+                BI.any(view, function (id, did) {
+                    if(BI.Utils.isDimensionUsable(did) && BI.isNotEmptyArray(BI.Utils.getSeriesAccumulationByID(did))) {
+                        return accumulations.push(BI.Utils.getSeriesAccumulationByID(did));
+                    }
+                })
+            }
+        })
+        return accumulations;
+    },
 
 });
