@@ -17,6 +17,24 @@ BIDezi.DimensionModel = BI.inherit(BI.Model, {
 
     _init: function () {
         BIDezi.DimensionModel.superclass._init.apply(this, arguments);
+
+        //这边做一个map, 用作日期类型分组改变时，将相应过滤条件的类型切换掉
+        this.YMDChangeMap = {};
+        this.otherChangeMap = {};
+
+        this.YMDChangeMap[BICst.DIMENSION_FILTER_DATE.BELONG_VALUE] = BICst.DIMENSION_FILTER_STRING.BELONG_VALUE;
+        this.YMDChangeMap[BICst.DIMENSION_FILTER_DATE.NOT_BELONG_VALUE] = BICst.DIMENSION_FILTER_STRING.NOT_BELONG_VALUE;
+        this.YMDChangeMap[BICst.DIMENSION_FILTER_DATE.BEGIN_WITH] = BICst.DIMENSION_FILTER_STRING.BEGIN_WITH;
+        this.YMDChangeMap[BICst.DIMENSION_FILTER_DATE.END_WITH] = BICst.DIMENSION_FILTER_STRING.END_WITH;
+        this.YMDChangeMap[BICst.DIMENSION_FILTER_DATE.CONTAIN] = BICst.DIMENSION_FILTER_STRING.CONTAIN;
+        this.YMDChangeMap[BICst.DIMENSION_FILTER_DATE.NOT_CONTAIN] = BICst.DIMENSION_FILTER_STRING.NOT_CONTAIN;
+
+        this.otherChangeMap[BICst.DIMENSION_FILTER_STRING.BELONG_VALUE] = BICst.DIMENSION_FILTER_DATE.BELONG_VALUE;
+        this.otherChangeMap[BICst.DIMENSION_FILTER_STRING.NOT_BELONG_VALUE] = BICst.DIMENSION_FILTER_DATE.NOT_BELONG_VALUE;
+        this.otherChangeMap[BICst.DIMENSION_FILTER_STRING.BEGIN_WITH] = BICst.DIMENSION_FILTER_DATE.BEGIN_WITH;
+        this.otherChangeMap[BICst.DIMENSION_FILTER_STRING.END_WITH] = BICst.DIMENSION_FILTER_DATE.END_WITH;
+        this.otherChangeMap[BICst.DIMENSION_FILTER_STRING.CONTAIN] = BICst.DIMENSION_FILTER_DATE.CONTAIN;
+        this.otherChangeMap[BICst.DIMENSION_FILTER_STRING.NOT_CONTAIN] = BICst.DIMENSION_FILTER_DATE.NOT_CONTAIN;
     },
 
     refresh: function () {
@@ -81,6 +99,42 @@ BIDezi.DimensionModel = BI.inherit(BI.Model, {
                         details.push(group_value.use_other);
                     }
                     self.set("sort", {type: BICst.SORT.CUSTOM, details: details});
+                }
+            }
+            if (this.get("type") === BICst.TARGET_TYPE.DATE) {
+                var filter = this.get("filter_value");
+                checkFilter(filter);
+                this.set("filter_value", filter);
+            }
+        }
+
+
+        function checkFilter(filter) {
+            if(BI.isNull(filter)){
+                return;
+            }
+            var filterType = filter.filter_type, filterValue = filter.filter_value;
+            if (filterType === BICst.FILTER_TYPE.AND || filterType === BICst.FILTER_TYPE.OR) {
+                BI.each(filterValue, function (i, value) {
+                    checkFilter(value);
+                });
+                return;
+            }
+            if(BI.has(filter, "target_id") && filter.target_id === self.get("id")){
+                switch (groupObject.type) {
+                    case BICst.GROUP.Y:
+                    case BICst.GROUP.M:
+                    case BICst.GROUP.W:
+                    case BICst.GROUP.S:
+                        if(BI.has(self.YMDChangeMap, filter.filter_type)){
+                            filter.filter_type = self.YMDChangeMap[filter.filter_type];
+                        }
+                        break;
+                    case BICst.GROUP.YMD:
+                        if(BI.has(self.otherChangeMap, filter.filter_type)){
+                            filter.filter_type = self.otherChangeMap[filter.filter_type];
+                        }
+                        break;
                 }
             }
         }
