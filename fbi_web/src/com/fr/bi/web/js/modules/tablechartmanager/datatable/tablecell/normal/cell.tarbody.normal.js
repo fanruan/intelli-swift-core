@@ -107,7 +107,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
         BI.each(linkage, function (i, link) {
             if (link.from === dId && BI.isEmpty(link.cids)) {
                 linkedWidgets.push(link);
-            } else if (link.cids && link.cids.contains(dId)) {
+            } else if (link.cids && link.cids[0] === dId) {
                 linkedFrom.push(link);
             }
         });
