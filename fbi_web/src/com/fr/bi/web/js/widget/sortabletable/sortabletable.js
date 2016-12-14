@@ -114,8 +114,8 @@ BI.SortableTable = BI.inherit(BI.Widget, {
                 var insertIndex = self._getNearIndexFromArray(dropPosition, absolutePosition)
                 //这个insertIndex是包含原元素的index
                 //调整item顺序，重新populate
-                self._exchangeItemsAndHeaderPosition(ui.helper.data("index"), insertIndex)
-                self.populate(o.items, o.header);
+                var flag = self._exchangeItemsAndHeaderPosition(ui.helper.data("index"), insertIndex)
+                flag === true && self.populate(o.items, o.header);
             }
         });
     },
@@ -128,14 +128,14 @@ BI.SortableTable = BI.inherit(BI.Widget, {
                 revert: false,
                 cursor: BICst.cursorUrl,
                 cursorAt: {left: 5, top: 5},
-                containment: self.table.element,   //约束拖拽区域
+                containment: self.element,   //约束拖拽区域
                 helper: function () {
                     var RowsSize = self.table.getCalculateRegionRowSize();
                     var columnsSizes = self.table.getCalculateColumnSize();
                     var clone = BI.createWidget({
                         type: "bi.layout",
                         cls: "sortable_table_drag_clone",
-                        data: {index: idx},
+                        data: {index: BI.parseInt(idx)},
                         width: columnsSizes[idx],
                         height: RowsSize[0]
                     })
@@ -152,16 +152,21 @@ BI.SortableTable = BI.inherit(BI.Widget, {
 
     _exchangeItemsAndHeaderPosition: function (sourceIndex, targetIndex) {
         var o = this.options;
+        if(sourceIndex === targetIndex){
+            return false;
+        }
         var header = BI.unzip(o.header);
         var items = BI.unzip(o.items);
         var sourceHeader = header[sourceIndex];
         var sourceitems = items[sourceIndex];
-        header[sourceIndex] = header[targetIndex];
-        items[sourceIndex] = items[targetIndex];
-        header[targetIndex] = sourceHeader;
-        items[targetIndex] = sourceitems;
+        header.splice(targetIndex, 0, sourceHeader);
+        items.splice(targetIndex, 0, sourceitems);
+        var deleteIndex = (sourceIndex < targetIndex) ? sourceIndex : sourceIndex + 1;
+        BI.removeAt(header, deleteIndex);
+        BI.removeAt(items, deleteIndex);
         o.header = BI.unzip(header);
         o.items = BI.unzip(items);
+        return true;
     },
 
     _getNearIndexFromArray: function (array, v) {
@@ -267,7 +272,7 @@ BI.SortableTable = BI.inherit(BI.Widget, {
                     obj.cls = (obj.cls || "") + " drag-header"
                 })
             })
-            self.table.populate.apply(self.table, arguments);
+            self.table.populate(o.items, o.header);
             self._initDrag();
         });
     },
