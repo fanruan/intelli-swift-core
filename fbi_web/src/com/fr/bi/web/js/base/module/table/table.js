@@ -282,7 +282,7 @@ BI.Table = BI.inherit(BI.Widget, {
         this.bottomLeft = BI.createWidget({
             type: "bi.adaptive",
             cls: "bottom-left",
-            //scrollable: false,
+            // scrollable: false,
             items: [this.scrollBottomLeft]
         });
         this.bottomRight = BI.createWidget({
