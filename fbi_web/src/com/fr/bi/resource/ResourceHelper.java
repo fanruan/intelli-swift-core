@@ -549,7 +549,6 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/customgroup/model.customgroup.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/customsort/model.customsort.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/numbercustomgroup/model.number.custom.group.js",
-                "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/scope/model.scope.js",
                 "com/fr/bi/web/js/dezi/modules/view/dezi.view.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/dezi.pane.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.widget.js",
@@ -599,8 +598,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.target.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/customgroup/dezi.customgroup.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/customsort/dezi.customsort.js",
-                "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/numbercustomgroup/dezi.number.custom.group.js",
-                "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/scope/dezi.scope.js"
+                "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/numbercustomgroup/dezi.number.custom.group.js"
         };
     }
 
