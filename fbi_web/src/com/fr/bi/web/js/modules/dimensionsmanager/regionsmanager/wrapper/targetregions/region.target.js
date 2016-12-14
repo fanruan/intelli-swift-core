@@ -24,6 +24,15 @@ BI.TargetRegion = BI.inherit(BI.AbstractRegion, {
     _getSortableHelperClass: function () {
         return "target-sortable-helper";
     },
+
+    _fieldDragStart: function () {
+        var onlyCounter = !BI.some(this.dimensions, function (i, dim) {
+            return BI.Utils.isTargetType();
+        });
+        if (onlyCounter) {
+            this._showForbiddenMask();
+        }
+    },
 });
 BI.TargetRegion.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.target_region", BI.TargetRegion);

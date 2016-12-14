@@ -136,9 +136,11 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
         });
 
         BI.Broadcasts.on(BICst.BROADCAST.FIELD_DRAG_START, function (fields) {
-            self._fieldDragStart(fields);
+            self.dimensions = fields;
+            self._fieldDragStart();
         });
         BI.Broadcasts.on(BICst.BROADCAST.FIELD_DRAG_STOP, function () {
+            self.dimensions = null;
             self._fieldDragStop();
         });
     },
@@ -236,10 +238,9 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
         }
     },
 
-    _fieldDragStart: function (dims) {
-        this.dimensions = dims;
-        var onlyCounter = !BI.some(dims, function (i, dim) {
-            return dim.type === BICst.TARGET_TYPE.NUMBER || dim.type === BICst.TARGET_TYPE.STRING || dim.type === BICst.TARGET_TYPE.DATE;
+    _fieldDragStart: function () {
+        var onlyCounter = !BI.some(this.dimensions, function (i, dim) {
+            return BI.Utils.isDimensionType(dim.type);
         });
         if (onlyCounter) {
             this._showForbiddenMask();
@@ -247,7 +248,6 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
     },
 
     _fieldDragStop: function () {
-        this.dimensions = null;
         this._hideForbiddenMask();
     },
 

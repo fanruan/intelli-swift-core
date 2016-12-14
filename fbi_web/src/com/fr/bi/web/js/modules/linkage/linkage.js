@@ -208,12 +208,13 @@ BI.Linkage = BI.inherit(BI.Widget, {
 
             var linkedWIds = self.model.getLinkedWidgetsByTargetIdAndCalculateIds(tId, cIds);
             BI.each(linkedWIds, function (i, wId) {
+                var widgetType = BI.Utils.getWidgetTypeByID(wId);
                 targetContainer.addItem({
                     type: "bi.htape",
                     items: [{
                         el: {
                             type: "bi.center_adapt",
-                            cls: BI.Utils.getWidgetIconClsByWidgetId(wId) + " widget-type-icon",
+                            cls: BICst.WIDGET_ICON_CLS_MAP[widgetType] + " widget-type-icon",
                             items: [{
                                 type: "bi.icon",
                                 width: 20,
@@ -306,12 +307,13 @@ BI.Linkage = BI.inherit(BI.Widget, {
                 });
                 var linkedWIds = self.model.getLinkedWidgetsByTargetId(tId);
                 BI.each(linkedWIds, function (i, wId) {
+                    var widgetType = BI.Utils.getWidgetTypeByID(wId);
                     targetContainer.addItem({
                         type: "bi.htape",
                         items: [{
                             el: {
                                 type: "bi.center_adapt",
-                                cls: BI.Utils.getWidgetIconClsByWidgetId(wId) + " widget-type-icon",
+                                cls: BICst.WIDGET_ICON_CLS_MAP[widgetType] + " widget-type-icon",
                                 items: [{
                                     type: "bi.icon",
                                     width: 20,
