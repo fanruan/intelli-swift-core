@@ -68,7 +68,7 @@ BI.SortableTable = BI.inherit(BI.Widget, {
                 //getCalculateRegionColumnSize获取整个columns宽度
                 //getCalculateRegionRowSize获取整个rows高度
 
-                var absolutePosition = ui.position.left + self.table.getRightHorizontalScroll();
+                var absolutePosition = ui.position.left + self.table.getRightHorizontalScroll() + (e.pageX - ui.helper.offset().left);
                 var dropPosition = self._getColumnsLeftBorderDistance();
                 var insertIndex = self._getNearIndexFromArray(dropPosition, absolutePosition)
                 //这个insertIndex是包含原元素的index
@@ -152,7 +152,7 @@ BI.SortableTable = BI.inherit(BI.Widget, {
                 cursorAt: {left: 5, top: 5},
                 containment: self.element,   //约束拖拽区域
                 drag: function(e, ui){
-                    self._showInsertHelpLine(ui.position.left);
+                    self._showInsertHelpLine(e, ui);
                 },
                 stop: function(){
                     BI.each(self.insertLine, function(idx, line){
@@ -189,8 +189,8 @@ BI.SortableTable = BI.inherit(BI.Widget, {
         return dropPosition;
     },
 
-    _showInsertHelpLine: function(left){
-        var absolutePosition = left + this.table.getRightHorizontalScroll();
+    _showInsertHelpLine: function(e, ui){
+        var absolutePosition =  ui.position.left + this.table.getRightHorizontalScroll() + (e.pageX - ui.helper.offset().left);
         var dropPosition = this._getColumnsLeftBorderDistance();
         var insertIndex = this._getNearIndexFromArray(dropPosition, absolutePosition);
         BI.each(this.insertLine, function(idx, line){
