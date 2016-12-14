@@ -60,7 +60,7 @@ BI.TreeSelectDataPane = BI.inherit(BI.Widget, {
                         }else{
                             result.push({
                                 id: fid,
-                                type: opt.isRelation ? "bi.select_string_level1_item" : "bi.select_string_level0_item"
+                                type: "bi.select_string_level0_item"
                             });
                         }
                     }
