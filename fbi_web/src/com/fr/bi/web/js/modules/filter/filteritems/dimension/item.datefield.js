@@ -93,7 +93,6 @@ BI.DimensionDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
             case BICst.GROUP.M:
             case BICst.GROUP.W:
             case BICst.GROUP.S:
-                o.filter_type === BICst.DIMENSION_FILTER_DATE.BELONG_VALUE && (o.filter_type = BICst.DIMENSION_FILTER_STRING.BELONG_VALUE);
                 items = BICst.DIMENSION_FILTER_STRING_COMBO;
                 break;
             case BICst.GROUP.YMD:

@@ -1076,6 +1076,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/selectdata4detail/treenode/node.level0.js",
                 "com/fr/bi/web/js/modules/selectdata4detail/treenode/node.level1.js",
                 "com/fr/bi/web/js/modules/selectdata4detail/widget.selectdatapane.detail.js",
+                "com/fr/bi/web/js/modules/selectdata4detail/treeitem/item.match.search.js",
 
                 //树控件选字段
                 "com/fr/bi/web/js/modules/selectdata4tree/treenode/abstract.node.level.js",

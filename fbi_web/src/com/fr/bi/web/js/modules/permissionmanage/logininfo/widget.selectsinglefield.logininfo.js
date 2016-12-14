@@ -44,8 +44,8 @@ BI.LoginInfoSelectSingleField = BI.inherit(BI.Widget, {
             tablesCreator: function (packageId) {
                 return self._getTablesStructureByPackId(packageId);
             },
-            fieldsCreator: function (tableId, isRelation) {
-                return self._getFieldsStructureByTableId(tableId);
+            fieldsCreator: function (tableId, opt) {
+                return self._getFieldsStructureByTableId(tableId, opt);
             }
         });
         this.selectDataPane.on(BI.PackageSelectDataService.EVENT_CLICK_ITEM, function(){
