@@ -222,7 +222,7 @@ BI.DetailSelectDimensionPane = BI.inherit(BI.Widget, {
             self.sharedItems.push(sharedToMe);
             var sharedReports = [];
             BI.each(res, function(idx, item){
-                if(item.isMine === true){
+                if(item.isMine === true || !BI.has(item, "buildUrl")){
                     self.templateItems.push(item);
                 }else{
                     self.sharedItems.push(item);
