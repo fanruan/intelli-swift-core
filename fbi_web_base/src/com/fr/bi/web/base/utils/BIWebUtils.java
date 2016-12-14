@@ -405,9 +405,8 @@ public class BIWebUtils {
      */
     public static int getUserEditViewAuth(long userId) throws Exception {
 
-        //管理员、无限编辑用户
-        if (ComparatorUtils.equals(userId, UserControl.getInstance().getSuperManagerID()) ||
-                ComparatorUtils.equals(FBIConfig.getInstance().getUserAuthorAttr().getBIAuthUserLimitByMode(BIUserAuthorAttr.EDIT), BIUserAuthorAttr.NO_LIMIT)) {
+        //管理员
+        if (ComparatorUtils.equals(userId, UserControl.getInstance().getSuperManagerID())) {
             return BIReportConstant.REPORT_AUTH.EDIT;
         }
 
@@ -418,11 +417,6 @@ public class BIWebUtils {
             if (ComparatorUtils.equals(jo.getString("username"), UserControl.getInstance().getUser(userId).getUsername())) {
                 return BIReportConstant.REPORT_AUTH.EDIT;
             }
-        }
-
-        //无限查看用户
-        if (ComparatorUtils.equals(FBIConfig.getInstance().getUserAuthorAttr().getBIAuthUserLimitByMode(BIUserAuthorAttr.VIEW), BIUserAuthorAttr.NO_LIMIT)) {
-            return BIReportConstant.REPORT_AUTH.VIEW;
         }
 
         //查看

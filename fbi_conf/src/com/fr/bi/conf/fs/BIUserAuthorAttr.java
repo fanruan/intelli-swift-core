@@ -75,15 +75,40 @@ public class BIUserAuthorAttr implements XMLable {
     }
 
     private void refreshUsersByLimit() {
-        if (biEditUserLimit < biEditUserJo.length()) {
+        if (!ComparatorUtils.equals(biEditUserLimit, NO_LIMIT) && biEditUserLimit < biEditUserJo.length()) {
             biEditUserJo = new JSONObject();
         }
-        if (biViewUserLimit < biViewUserJo.length()) {
+        if (!ComparatorUtils.equals(biViewUserLimit, NO_LIMIT) && biViewUserLimit < biViewUserJo.length()) {
             biViewUserJo = new JSONObject();
         }
-        if (biMobileUserLimit < biMobileUserJo.length()) {
+        if (!ComparatorUtils.equals(biMobileUserLimit, NO_LIMIT) && biMobileUserLimit < biMobileUserJo.length()) {
             biMobileUserJo = new JSONObject();
         }
+    }
+
+    public void removeUserByMode(String userName, int mode) {
+        switch (mode) {
+            case EDIT:
+                biEditUserJo.remove(userName);
+                break;
+            case VIEW:
+                biViewUserJo.remove(userName);
+                break;
+            case MOBILE:
+                biMobileUserJo.remove(userName);
+                break;
+        }
+    }
+
+    public boolean addUserByMode(String userName, String fullName, int mode) throws Exception {
+        long limitedCount = getBIAuthUserLimitByMode(mode);
+        JSONObject userAuth = getBIAuthUserJoByMode(mode);
+        if (limitedCount > 0 && !userAuth.has(userName)
+                && userAuth.length() >= limitedCount) {
+            return false;
+        }
+        userAuth.put(userName, fullName);
+        return true;
     }
 
     public long getBIAuthUserLimitByMode(int mode) {
@@ -102,8 +127,8 @@ public class BIUserAuthorAttr implements XMLable {
     public JSONObject createAuthLimitJo() throws JSONException {
         JSONObject limitJo = new JSONObject();
         limitJo.put("edit", biEditUserLimit);
-        limitJo.put("view", biViewUserLimit );
-        limitJo.put("mobile", biMobileUserLimit );
+        limitJo.put("view", biViewUserLimit);
+        limitJo.put("mobile", biMobileUserLimit);
 
         return limitJo;
     }
@@ -153,7 +178,7 @@ public class BIUserAuthorAttr implements XMLable {
                         if (StringUtils.isNotEmpty(userName)) {
                             //等于-1代表不限制
 //                            if (getBIAuthUserLimitByMode(mode) == NO_LIMIT || userJo.length() < getBIAuthUserLimitByMode(mode)) {
-                                userJo.put(userName, fullName);
+                            userJo.put(userName, fullName);
 //                            }
                         }
                     } catch (JSONException e) {
@@ -252,7 +277,6 @@ public class BIUserAuthorAttr implements XMLable {
         writerBIUserAuthXMLByMode(writer, "biMobileAuth", MOBILE);
         writer.end();
     }
-
 
 
     /**
