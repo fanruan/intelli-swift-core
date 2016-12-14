@@ -8,6 +8,7 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
         return BI.extend(BIDezi.DetailModel.superclass._defaultConfig.apply(this, arguments), {
             name: "",
             dimensions: {},
+            scopes: {},
             view: {},
             type: BICst.WIDGET.TABLE,
             settings: {},
@@ -616,6 +617,15 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
                     view: view
                 });
             }
+            return true;
+        }
+        if (this.has("addScope")) {
+            var scope = this.get("addScope");
+            var scopes = this.get("scopes");
+            scopes[scope.regionType] = {};
+            this.set({
+                scopes: scopes
+            });
             return true;
         }
         return false;

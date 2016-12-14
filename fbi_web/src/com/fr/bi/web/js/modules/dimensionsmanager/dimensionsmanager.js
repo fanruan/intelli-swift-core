@@ -181,6 +181,7 @@ BI.DimensionsManager = BI.inherit(BI.Widget, {
         var manager = BI.createWidget({
             type: type,
             dimensionCreator: o.dimensionCreator,
+            scopeCreator: o.scopeCreator,
             wId: o.wId
         });
         manager.on(BI.RegionsManager.EVENT_CHANGE, function () {
