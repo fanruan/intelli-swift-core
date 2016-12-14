@@ -619,15 +619,6 @@ BIDezi.DetailModel = BI.inherit(BI.Model, {
             }
             return true;
         }
-        if (this.has("addScope")) {
-            var scope = this.get("addScope");
-            var scopes = this.get("scopes");
-            scopes[scope.regionType] = {};
-            this.set({
-                scopes: scopes
-            });
-            return true;
-        }
         return false;
     }
 });

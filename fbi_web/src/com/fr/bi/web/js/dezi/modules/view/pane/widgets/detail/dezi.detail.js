@@ -271,7 +271,6 @@ BIDezi.DetailView = BI.inherit(BI.View, {
     _createTypeAndData: function () {
         var self = this;
         var dimensionsVessel = {};
-        var regionSettingsVessel = {};
         this.dimensionsManager = BI.createWidget({
             type: "bi.dimensions_manager",
             wId: this.model.get("id"),
@@ -292,22 +291,6 @@ BIDezi.DetailView = BI.inherit(BI.View, {
                 }
                 //self.addSubVessel(dId, dimensionsVessel[dId]).skipTo(regionType + "/" + dId, dId, "dimensions." + dId);
                 return dimensionsVessel[dId];
-            },
-            scopeCreator: function (regionType, op) {
-                if (!regionSettingsVessel[regionType]) {
-                    regionSettingsVessel[regionType] = BI.createWidget({
-                        type: "bi.layout"
-                    });
-                    self.addSubVessel(regionType, regionSettingsVessel[regionType]);
-                    var regions = self.model.cat("scopes");
-                    if (!BI.has(regions, regionType)) {
-                        self.model.set("addScope", {
-                            regionType: regionType
-                        });
-                    }
-                }
-                self.skipTo(regionType, regionType, "scopes." + regionType);
-                return regionSettingsVessel[regionType];
             }
         });
 
@@ -341,19 +324,11 @@ BIDezi.DetailView = BI.inherit(BI.View, {
         });
     },
 
-    _refreshRegions: function () {
-        var self = this;
-        BI.each(self.model.cat("scopes"), function (regionType) {
-            self.skipTo(regionType, regionType, "scopes." + regionType, {});
-        });
-    },
-
     refresh: function () {
         var self = this;
 
         this.dimensionsManager.populate();
         this._refreshDimensions();
-        this._refreshRegions();
         this.tableChartPopupulate();
         this.tab.setSelect(BICst.DETAIL_TAB_TYPE_DATA)
     }

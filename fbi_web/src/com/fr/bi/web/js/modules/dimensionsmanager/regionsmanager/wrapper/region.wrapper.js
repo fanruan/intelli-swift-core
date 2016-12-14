@@ -91,6 +91,9 @@ BI.RegionWrapper = BI.inherit(BI.Widget, {
         return dragTool;
     },
 
+    _createRegionWrapper: function (regionType, dIds) {
+    },
+
     _createRegion: function (regionType, dIds) {
     },
 
@@ -104,7 +107,7 @@ BI.RegionWrapper = BI.inherit(BI.Widget, {
         this.views = classification[o.viewType] || [];
         var items = [];
         BI.each(this.views, function (i, region) {
-            items.push(self._createRegion(region, view[region]))
+            items.push(self._createRegionWrapper(region, view[region]))
         });
         var emptyRegion = this._createEmptyRegion();
         if (BI.isNotNull(emptyRegion)) {

@@ -8,7 +8,6 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
         "/pane": "BIDezi.PaneView",
         "/pane/:id/:type": "getWidget",
         "/pane/:id/:type/detail": "getDetail",
-        "/pane/:id/:type/detail/:scope": "getScope",
         "/pane/:id/:type/detail/:scope/:dId": "getDimensionOrTarget",
 
 
@@ -279,19 +278,6 @@ BIDezi.Views = new (BI.inherit(BI.WRouter, {
                 break;
             default:
                 view = "BIDezi.DimensionView";
-                break;
-        }
-        return view;
-    },
-
-    getScope: function (id, type, scope) {
-        var view = "";
-        switch (BI.parseInt(type)) {
-            case BICst.WIDGET.COMBINE_CHART:
-                view = "BIDezi.ScopeView";
-                break;
-            default:
-                view = "BIDezi.ScopeView";
                 break;
         }
         return view;

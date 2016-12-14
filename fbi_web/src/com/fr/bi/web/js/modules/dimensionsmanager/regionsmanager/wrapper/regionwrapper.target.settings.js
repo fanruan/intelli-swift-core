@@ -7,7 +7,7 @@ BI.TargetRegionSettingsWrapper = BI.inherit(BI.TargetRegionWrapper, {
 
     _defaultConfig: function () {
         return BI.extend(BI.TargetRegionSettingsWrapper.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-target-scope-settings-wrapper",
+            baseCls: "bi-target-region-settings-wrapper",
             scopeCreator: BI.emptyFn,
             wId: "",
         });

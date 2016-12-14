@@ -549,6 +549,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/customgroup/model.customgroup.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/customsort/model.customsort.js",
                 "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/field/numbercustomgroup/model.number.custom.group.js",
+                "com/fr/bi/web/js/dezi/modules/model/pane/widgets/detail/scope/model.scope.js",
                 "com/fr/bi/web/js/dezi/modules/view/dezi.view.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/dezi.pane.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/dezi.widget.js",
@@ -598,7 +599,8 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/dezi.target.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/customgroup/dezi.customgroup.js",
                 "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/customsort/dezi.customsort.js",
-                "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/numbercustomgroup/dezi.number.custom.group.js"
+                "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/field/numbercustomgroup/dezi.number.custom.group.js",
+                "com/fr/bi/web/js/dezi/modules/view/pane/widgets/detail/scope/dezi.scope.js"
         };
     }
 
@@ -1136,6 +1138,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/dimensionregions/region.dimension.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.empty.target.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.target.css",
+                "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.target.settings.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/regionwrapper.dimension.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/regionwrapper.target.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/regionsmanager.css",
@@ -1349,14 +1352,18 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/header/region.header.detail.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/header/region.header.tree.js",
 
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/scopes/scope.target.combine.chart.js",
+
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/dimensionregions/abstract.region.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/dimensionregions/region.empty.dimension.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/dimensionregions/region.dimension.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.empty.target.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.target.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.target.settings.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/region.wrapper.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/regionwrapper.dimension.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/regionwrapper.target.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/regionwrapper.target.settings.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.table.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/regionsmanager.crosstable.js",

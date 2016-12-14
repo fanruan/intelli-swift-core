@@ -6,7 +6,7 @@
 BI.TargetSettingsRegion = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.TargetSettingsRegion.superclass._defaultConfig.apply(this, arguments), {
-            baseCls: "bi-target-settings-scope",
+            baseCls: "bi-target-settings-region",
             dimensionCreator: BI.emptyFn,
             scopeCreator: BI.emptyFn,
             wId: "",
@@ -46,14 +46,13 @@ BI.TargetSettingsRegion = BI.inherit(BI.Widget, {
                 width: 20
             }]
         });
-        this._createRegionSettings()
     },
 
     _createRegionSettings: function () {
         var self = this, o = this.options;
         return BI.createWidget({
             type: "bi.absolute",
-            cls: "target-scope-settings-container",
+            cls: "target-region-settings-container",
             items: [{
                 el: o.scopeCreator(o.regionType),
                 left: 0,
