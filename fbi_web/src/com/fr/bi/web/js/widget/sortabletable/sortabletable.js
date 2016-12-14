@@ -31,11 +31,6 @@ BI.SortableTable = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
 
         this.insertLine = [];
-        BI.each(o.header, function(idx, header){
-            BI.each(header, function(id, obj){
-                obj.cls = (obj.cls || "") + " drag-header"
-            })
-        })
 
         this.table = BI.createWidget({
             type: "bi.table_view",
@@ -130,16 +125,17 @@ BI.SortableTable = BI.inherit(BI.Widget, {
         var self = this, c = this._const;
         BI.each(this.table.getColumns().header[0], function(idx, header){
             var dragButton = BI.createWidget({
+                type: "bi.triangle_drag_button",
+                cls: "drag-header",
+                width: c.dragButtonWidth,
+                height: c.dragButtonHeight,
+                lineCount: c.lineCount
+            });
+            BI.createWidget({
                 type: "bi.absolute",
                 element: header,
                 items: [{
-                    el: {
-                        type: "bi.triangle_drag_button",
-                        cls: "drag-header",
-                        width: c.dragButtonWidth,
-                        height: c.dragButtonHeight,
-                        lineCount: c.lineCount,
-                    },
+                    el: dragButton,
                     top: 0,
                     left: 0
                 }]
