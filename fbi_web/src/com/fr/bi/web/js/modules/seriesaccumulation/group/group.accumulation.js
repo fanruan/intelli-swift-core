@@ -4,7 +4,8 @@
 BI.AccumulationGroup = BI.inherit(BI.Widget, {
     _defaultConfig: function () {
         return BI.extend(BI.AccumulationGroup.superclass._defaultConfig.apply(this, arguments), {
-            cls: "bi-accumulation-group"
+            cls: "bi-accumulation-group",
+            dId: ""
         })
     },
 
@@ -15,6 +16,7 @@ BI.AccumulationGroup = BI.inherit(BI.Widget, {
             type: "bi.accumulate_container",
             width: "42%",
             height: "100%",
+            isShowBt: this.isShowTypeButton(),
             scrolly: true
         });
         this.defaultGroup.element.sortable({
@@ -88,10 +90,21 @@ BI.AccumulationGroup = BI.inherit(BI.Widget, {
         var item = BI.createWidget({
             type: "bi.accumulate_container",
             index: next,
+            isShowBt: this.isShowTypeButton(),
             title: BI.i18nText("BI-Accumulation_Group") + next
         })
         this.group.addItems([item]);
         return item;
+    },
+
+    isShowTypeButton: function () {
+        var self = this, o = this.options;
+        var types = [BICst.WIDGET.COMBINE_CHART, BICst.WIDGET.MULTI_AXIS_COMBINE_CHART];
+        var type = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
+        if(BI.contains(types, type)) {
+            return true;
+        }
+        return false;
     },
     
     populate: function (items) {

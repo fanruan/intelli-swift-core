@@ -1195,6 +1195,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/seriesaccumulation/container.accumulation.css",
                 "com/fr/bi/web/css/modules/seriesaccumulation/group.accumulation.css",
                 "com/fr/bi/web/css/modules/seriesaccumulation/series.accumulation.css",
+                "com/fr/bi/web/css/modules/seriesaccumulation/type.select.button.css",
 
 
                 //表格样式
@@ -1502,6 +1503,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/seriesaccumulation/series.accumulation.popup.js",
                 "com/fr/bi/web/js/modules/seriesaccumulation/group/group.accumulation.js",
                 "com/fr/bi/web/js/modules/seriesaccumulation/group/container.accumulation.js",
+                "com/fr/bi/web/js/modules/seriesaccumulation/group/type.select.button.js",
 
                 "com/fr/bi/web/js/modules/date/interval.date.js",
                 "com/fr/bi/web/js/modules/date/interval.date.param.js",

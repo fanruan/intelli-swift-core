@@ -112,7 +112,10 @@ BI.DimensionStringCombo = BI.inherit(BI.AbstractDimensionCombo, {
             BICst.WIDGET.ACCUMULATE_AREA,
             BICst.WIDGET.ACCUMULATE_AXIS,
             BICst.WIDGET.ACCUMULATE_BAR,
-            BICst.WIDGET.ACCUMULATE_RADAR
+            BICst.WIDGET.PERCENT_ACCUMULATE_AREA,
+            BICst.WIDGET.PERCENT_ACCUMULATE_AXIS,
+            // BICst.WIDGET.COMBINE_CHART,
+            // BICst.WIDGET.MULTI_AXIS_COMBINE_CHART
         ];
         var items = BI.DimensionStringCombo.superclass._rebuildItems.apply(this, arguments), o = this.options;
         var rType = BI.Utils.getRegionTypeByDimensionID(o.dId);
