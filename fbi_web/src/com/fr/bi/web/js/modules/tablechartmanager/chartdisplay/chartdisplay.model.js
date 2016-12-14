@@ -233,9 +233,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             if (BI.isNotNull(drillcataDimId)) {
                 dGroup = BI.Utils.getDimensionGroupByID(drillcataDimId);
             }
-            if (BI.isNotNull(dGroup) && dGroup.type === BICst.GROUP.YMD) {
-                var date = new Date(BI.parseInt(name));
-                name = date.print("%Y-%X-%d");
+            if (BI.isNotNull(dGroup)) {
+                name = self._getFormatDateText(dGroup.type, name);
             }
             obj.data = [{
                 x: (BI.isFinite(item.s[1]) ? item.s[1] : 0),
@@ -267,9 +266,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             if (BI.isNotNull(drillcataDimId)) {
                 dGroup = BI.Utils.getDimensionGroupByID(drillcataDimId);
             }
-            if (BI.isNotNull(dGroup) && dGroup.type === BICst.GROUP.YMD) {
-                var date = new Date(BI.parseInt(name));
-                name = date.print("%Y-%X-%d");
+            if (BI.isNotNull(dGroup)) {
+                name = self._getFormatDateText(dGroup.type, name);
             }
             obj.name = name;
             obj.data = [{
@@ -280,6 +278,25 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
             }];
             return obj;
         })];
+    },
+
+    _getFormatDateText: function(type, text){
+        switch (type) {
+            case BICst.GROUP.S:
+                text = BICst.FULL_QUARTER_NAMES[text - 1];
+                break;
+            case BICst.GROUP.M:
+                text = BICst.FULL_MONTH_NAMES[text];
+                break;
+            case BICst.GROUP.W:
+                text = BICst.FULL_WEEK_NAMES[text - 1];
+                break;
+            case BICst.GROUP.YMD:
+                var date = new Date(BI.parseInt(text));
+                text = date.print("%Y-%X-%d");
+                break;
+        }
+        return text;
     },
 
     _getDrillDimensionId: function (drill) {
@@ -312,18 +329,16 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     };
                 }
                 var name = tObj.n, seriesName = tObj.n;
-                if (BI.isNotNull(seriesGroup) && seriesGroup.type === BICst.GROUP.YMD) {
-                    var date = new Date(BI.parseInt(name));
-                    name = date.print("%Y-%X-%d");
+                if (BI.isNotNull(seriesGroup)) {
+                    name = self._getFormatDateText(seriesGroup.type, name);
                 }
                 var data = [];
                 if (BI.has(left, "c")) {
                     data = BI.map(left.c, function (idx, obj) {
                         var value = obj.n, x = obj.n;
                         var seriesValue = obj.s.c[id].s[0];
-                        if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
-                            var date = new Date(BI.parseInt(x));
-                            x = date.print("%Y-%X-%d");
+                        if (BI.isNotNull(cataGroup)) {
+                            x = self._getFormatDateText(cataGroup.type, x);
                         }
                         return {
                             "x": x,
@@ -356,9 +371,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                 var adjustData = BI.map(data.c, function (id, item) {
                     var value = item.n, x = item.n;
                     var seriesValue = item.s[idx];
-                    if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
-                        var date = new Date(BI.parseInt(x));
-                        x = date.print("%Y-%X-%d");
+                    if (BI.isNotNull(cataGroup)) {
+                        x = self._getFormatDateText(cataGroup.type, x);
                     }
                     return {
                         x: x,
@@ -385,50 +399,6 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                     }]
                 };
             });
-        }
-        return [];
-    },
-
-    _formatDataForDashBoard: function (data) {
-        var self = this, o = this.options;
-        var targetIds = this._getShowTarget();
-        var cataGroup = BI.Utils.getDimensionGroupByID(self.cataDid);
-        var drillcataDimId = this._getDrillDimensionId(BI.Utils.getDrillByID(o.wId)[self.cataDid]);
-        if (BI.isNotNull(drillcataDimId)) {
-            cataGroup = BI.Utils.getDimensionGroupByID(drillcataDimId);
-        }
-        if (BI.has(data, "c")) {
-            var adjustData = BI.map(data.c, function (id, item) {
-                var seriesName = item.n;
-                if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
-                    var date = new Date(BI.parseInt(seriesName));
-                    seriesName = date.print("%Y-%X-%d");
-                }
-                var data = [{
-                    x: BI.Utils.getDimensionNameByID(targetIds[0]),
-                    y: (BI.isFinite(item.s[0]) ? item.s[0] : 0),
-                    seriesName: item.n,
-                    targetIds: [targetIds[0]]
-                }];
-                var obj = {};
-                obj.data = data;
-                obj.name = seriesName;
-                return obj;
-            });
-            return BI.isEmptyArray(adjustData) ? [] : [adjustData];
-        }
-        if (BI.has(data, "s")) {
-            var obj = {};
-            obj.name = "";
-            obj.data = BI.map(data.s, function (idx, value) {
-                return {
-                    x: BI.Utils.getDimensionNameByID(targetIds[idx]),
-                    y: (BI.isFinite(value) ? value : 0),
-                    seriesName: BI.Utils.getDimensionNameByID(targetIds[idx]),
-                    targetIds: [targetIds[idx]]
-                };
-            });
-            return BI.isEmptyArray(obj.data) ? [] : [[obj]];
         }
         return [];
     },

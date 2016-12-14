@@ -22,8 +22,8 @@ BI.SelectStringPane = BI.inherit(BI.Widget, {
             showRelativeTables: true,
             showExcelView: false,
             showDateGroup: false,
-            tablesCreator: function (packageIdOrTableId, isRelation) {
-                if (isRelation === true) {
+            tablesCreator: function (packageIdOrTableId, opt) {
+                if (opt.isRelation === true) {
                     var tIds = BI.Utils.getPrimaryRelationTablesByTableID(packageIdOrTableId);
                     return BI.map(tIds, function (i, id) {
                         return {
@@ -38,7 +38,8 @@ BI.SelectStringPane = BI.inherit(BI.Widget, {
                     }
                 })
             },
-            fieldsCreator: function (tableId, isRelation) {
+            fieldsCreator: function (tableId, opt) {
+                opt = opt || {};
                 var ids = BI.Utils.getStringFieldIDsOfTableID(tableId);
                 var result = [];
                 BI.each(ids, function (i, fid) {

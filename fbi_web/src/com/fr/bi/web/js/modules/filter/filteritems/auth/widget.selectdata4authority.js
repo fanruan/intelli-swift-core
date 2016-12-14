@@ -35,7 +35,7 @@ BI.AuthoritySelectData = BI.inherit(BI.Widget, {
             tablesCreator: function (packageId) {
                 return self._getTablesStructureByPackId(packageId);
             },
-            fieldsCreator: function (tableId, isRelation) {
+            fieldsCreator: function (tableId, opt) {
                 return self._getFieldsStructureByTableId(tableId);
             }
         });
