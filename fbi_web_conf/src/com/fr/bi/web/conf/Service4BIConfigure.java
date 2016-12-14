@@ -8,6 +8,7 @@ import com.fr.bi.web.conf.services.cubetask.*;
 import com.fr.bi.web.conf.services.datalink.*;
 import com.fr.bi.web.conf.services.dbconnection.*;
 import com.fr.bi.web.conf.services.packs.*;
+import com.fr.bi.web.conf.services.session.BIConfUpdateSession;
 import com.fr.fs.FSContext;
 import com.fr.fs.base.FSManager;
 import com.fr.fs.control.UserControl;
@@ -18,7 +19,8 @@ import com.fr.fs.web.service.AbstractFSAuthService;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.privilege.base.PrivilegeVote;
-import com.fr.stable.fun.impl.NoSessionIDService;
+import com.fr.stable.fun.Service;
+import com.fr.stable.web.RequestCMDReceiver;
 import com.fr.web.core.WebActionsDispatcher;
 import com.fr.web.utils.WebUtils;
 
@@ -30,9 +32,9 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Daniel-pc
  */
-public class Service4BIConfigure extends NoSessionIDService {
+public class Service4BIConfigure implements Service {
 
-    private static AbstractBIConfigureAction[] actions = new AbstractBIConfigureAction[]{
+    private static RequestCMDReceiver[] actions = new AbstractBIConfigureAction[]{
             new BIInitConfigurePaneAction(),
 
             new BIGetPackageGroupAction(),
@@ -118,7 +120,9 @@ public class Service4BIConfigure extends NoSessionIDService {
             new BIGetThreadPoolSizeAction(),
             new BISetThreadPoolSizeAction(),
             new BISimpleAPIDemoAction(),
-            new BIGetCubeTaskLogsDemoAction()
+            new BIGetCubeTaskLogsDemoAction(),
+
+            new BIConfUpdateSession()
     };
 
     /**
@@ -131,17 +135,8 @@ public class Service4BIConfigure extends NoSessionIDService {
         return "fr_bi_configure";
     }
 
-    /**
-     * 处理HTTP请求
-     *
-     * @param req HTTP请求
-     * @param res HTTP响应
-     * @param op  op参数值
-     * @throws Exception
-     */
     @Override
-    public void process(HttpServletRequest req, HttpServletResponse res,
-                        String op) throws Exception {
+    public void process(HttpServletRequest req, HttpServletResponse res, String op, String sessionID) throws Exception {
         FSContext.initData();
         res.setHeader("Pragma", "No-cache");
         res.setHeader("Cache-Control", "no-cache, no-store");
@@ -155,7 +150,7 @@ public class Service4BIConfigure extends NoSessionIDService {
         }
         long userId = ServiceUtils.getCurrentUserID(req);
         if (UserControl.getInstance().hasModulePrivilege(userId, FSConstants.MODULEID.BI)) {
-            WebActionsDispatcher.dealForActionNoSessionIDCMD(req, res, actions);
+            WebActionsDispatcher.dealForActionCMD(req, res, sessionID, actions);
         }
     }
 

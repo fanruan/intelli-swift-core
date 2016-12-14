@@ -1,5 +1,9 @@
 BI.extend(BI.Utils, {
 
+    getConfSessionID: function() {
+        return Data.SharingPool.get("sessionID");
+    },
+
     getCurrentPackage4Conf: function () {
         return BI.firstObject(Data.SharingPool.get(BICst.CURRENT_EDITING_PACKAGE));
     },
