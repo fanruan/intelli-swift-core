@@ -15,11 +15,11 @@ import java.util.Map;
  */
 public class BIAnalyWorkBookExecutor {
 
-    private BIAnalyReport res;
-    private BITemplateReport tr;
+    private BIAnalyReport[] res;
+    private BITemplateReport[] tr;
     private WorkBook workBook;
     private Map parameterMap;
-    private String reportName;
+    private String[] reportName;
 
 
     public BIAnalyWorkBookExecutor(WorkBook workBook, Map parameterMap) {
@@ -33,25 +33,33 @@ public class BIAnalyWorkBookExecutor {
 
         book = new BIAnalyResultWorkBook(parameterMap);
         dealWithExecutedAttr(book);
-        if (res != null) {
-            book.addReport(reportName, res);
+        if (res.length != 0) {
+            for(int i = 0; i < res.length; i ++) {
+                book.addReport(reportName[i], res[i]);
+            }
         }
         return book;
     }
 
     protected void _execute() {
-        if (tr != null) {
-            res = tr.execute4BI(parameterMap);
+        if (tr.length != 0) {
+            for (int i = 0; i < tr.length; i++){
+                res[i] = tr[i].execute4BI(parameterMap);
+            }
         }
     }
 
     void init(WorkBook workBook, Map parameterMap) {
+        int size = workBook.getReportCount();
         this.workBook = workBook;
         this.parameterMap = parameterMap;
-        //只有1个
-        tr = (BITemplateReport) workBook.getTemplateReport(0);
-        reportName = workBook.getReportName(0);
-
+        this.res = new BIAnalyReport[size];
+        this.tr = new BITemplateReport[size];
+        this.reportName = new String[size];
+        for (int i = 0; i < size; i++) {
+            tr[i] = (BITemplateReport) workBook.getTemplateReport(i);
+            reportName[i] = workBook.getReportName(i);
+        }
     }
 
     protected void dealWithExecutedAttr(ResultWorkBook resultBook) {

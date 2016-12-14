@@ -50,7 +50,7 @@ BIDezi.PaneView = BI.inherit(BI.View, {
         globalExport.on(BI.StaticCombo.EVENT_CHANGE, function (v) {
             switch (v) {
                 case BICst.EXPORT.EXCEL:
-                    window.location = FR.servletURL + "?op=fr_bi_dezi&cmd=bi_export_excel&sessionID=" + Data.SharingPool.get("sessionID")
+                    window.location = FR.servletURL + "?op=fr_bi_dezi&cmd=bi_global_export&sessionID=" + Data.SharingPool.get("sessionID")
                         + "&reportId=" + window.encodeURIComponent(Data.SharingPool.get("reportId"));
                     break;
                 case BICst.EXPORT.PDF:
