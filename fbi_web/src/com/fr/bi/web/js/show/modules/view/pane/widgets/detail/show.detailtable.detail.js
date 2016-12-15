@@ -44,8 +44,7 @@ BIShow.DetailTableDetailView = BI.inherit(BI.BarFloatSection, {
             type: "bi.dimensions_manager_show",
             wId: this.model.get("id"),
             dimensionCreator: function (dId, regionType, op) {
-                var relationItem = op.relationItem;
-                if (BI.isNotNull(relationItem)) {
+                if (BI.isNotNull(op) && BI.isNotNull(op.relationItem)) {
                     self.model.set("setRelation", {
                         dId: dId,
                         relationItem: op.relationItem
