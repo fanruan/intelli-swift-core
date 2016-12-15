@@ -433,6 +433,11 @@ public class BIReportConstant {
         public static final int NONE = -1;
     }
 
+    public static final class EXPORT {
+        public static final int EXCEL = 0x1;
+        public static final int PDF = 0x2;
+    }
+
     public static final class REGION {
         public static final String DIMENSION1 = "10000";
 
