@@ -9,6 +9,7 @@ import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.exception.BICubeRelationAbsentException;
 import com.finebi.cube.exception.IllegalRelationPathException;
 import com.finebi.cube.impl.pubsub.BIProcessor;
+import com.finebi.cube.impl.pubsub.BIProcessorThreadManager;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.structure.*;
@@ -52,6 +53,12 @@ public class BITablePathIndexBuilder extends BIProcessor {
         this.cube = cube;
         this.cubeChooser = new CubeChooser(cube, integrityCube);
         this.relationPath = relationPath;
+        initThreadPool();
+    }
+
+    @Override
+    protected void initThreadPool() {
+        executorService = BIProcessorThreadManager.getInstance().getExecutorService();
     }
 
     @Override
