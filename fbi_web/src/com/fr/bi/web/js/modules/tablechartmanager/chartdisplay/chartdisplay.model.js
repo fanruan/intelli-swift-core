@@ -128,9 +128,8 @@ BI.ChartDisplayModel = BI.inherit(FR.OB, {
                         return;
                     }
                     var value = item.n, x = item.n;
-                    if (BI.isNotNull(cataGroup) && cataGroup.type === BICst.GROUP.YMD) {
-                        var date = new Date(BI.parseInt(x));
-                        x = date.print("%Y-%X-%d");
+                    if (BI.isNotNull(cataGroup)) {
+                        x = self._getFormatDateText(cataGroup.type, x);
                     }
                     res = {
                         x: x,
