@@ -217,7 +217,7 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
         opt = opt || {};
         var self = this, o = this.options;
         var tablesStructure = [];
-        var currentTables = o.tablesCreator(packageId);
+        var currentTables = o.tablesCreator(packageId, opt);
         var currentTablesIds = BI.pluck(currentTables, "id");
         var relationAndCurrentTables = currentTables;
         if (opt.isRelation === true) {
