@@ -184,7 +184,9 @@ BI.DimensionsManager = BI.inherit(BI.Widget, {
             wId: o.wId
         });
         manager.on(BI.RegionsManager.EVENT_CHANGE, function () {
-            self.model.setViews(manager.getValue());
+            var val = this.getValue();
+            self.model.setViews(val.view);
+            self.model.setScopes(val.scopes);
             self.fireEvent(BI.DimensionsManager.EVENT_CHANGE, arguments);
         });
         return manager;

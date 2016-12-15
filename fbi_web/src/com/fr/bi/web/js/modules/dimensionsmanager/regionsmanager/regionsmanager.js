@@ -26,7 +26,9 @@ BI.RegionsManager = BI.inherit(BI.Widget, {
         BI.each(this.wrappers, function (type, wrap) {
             BI.extend(views, wrap.getValue());
         });
-        return views;
+        return {
+            view: views
+        };
     },
 
     populate: function () {

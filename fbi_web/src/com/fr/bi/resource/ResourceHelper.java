@@ -1394,10 +1394,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/scopes/scope.target.combine.chart.js",
 
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/dimensionregions/abstract.region.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/dimensionregions/region.empty.dimension.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/dimensionregions/region.dimension.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.empty.target.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/dimensionregions/region.empty.dimension.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.target.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.empty.target.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.target.settings.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/region.wrapper.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/regionwrapper.dimension.js",

@@ -30,5 +30,4 @@ BI.TargetEmptyRegion = BI.inherit(BI.AbstractRegion, {
         return "target-sortable-helper";
     }
 });
-BI.TargetEmptyRegion.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.target_empty_region", BI.TargetEmptyRegion);
