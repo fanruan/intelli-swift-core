@@ -276,7 +276,7 @@ BI.ThreadRun = BI.inherit(FR.OB, {
         this.triggerIndex = this.options.triggerIndex;
     },
 
-    getTriggerIndex(){
+    getTriggerIndex: function(){
         return this.triggerIndex;
     },
 
