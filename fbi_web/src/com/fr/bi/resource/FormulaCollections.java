@@ -13,10 +13,7 @@ import com.fr.stable.StableUtils;
 import com.fr.stable.script.Function;
 import com.fr.stable.script.FunctionDef;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 从后台获取所有的公式名字
@@ -34,6 +31,7 @@ public class FormulaCollections {
         List<String> names = new ArrayList<String>();
         JSONArray formulaJSONs = new JSONArray();
         names.addAll(findFunction());
+        Collections.sort(names);
         for (String formulaName : names) {
             String className = "com.fr.function." + formulaName;
             Class formulaClass = null;
@@ -106,17 +104,17 @@ public class FormulaCollections {
             int functionDefCount = funtionManager.getFunctionDefCount();
 
             for (int i = 0; i < functionDefCount; i++) {
-                try{
+                try {
                     names.add(funtionManager.getFunctionDef(i).getName());
-                }catch (Throwable throwable){
+                } catch (Throwable throwable) {
                     BILoggerFactory.getLogger().info(throwable.getMessage());
                 }
             }
         }
         FunctionDef[] fs = new FunctionDef[0];
-        try{
+        try {
             fs = ExtraClassManager.getInstance().getFunctionDef();
-        } catch (Throwable throwable){
+        } catch (Throwable throwable) {
             BILoggerFactory.getLogger().info(throwable.getMessage());
         }
         int count = fs.length;

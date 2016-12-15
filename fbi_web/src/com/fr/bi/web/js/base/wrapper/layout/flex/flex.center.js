@@ -18,13 +18,13 @@ BI.FlexCenterLayout = BI.inherit(BI.Layout, {
     },
 
     _addElement: function (i, item) {
-        var o = this.options, w = BI.createWidget(item);
+        var o = this.options;
+        var w = BI.FlexCenterLayout.superclass._addElement.apply(this, arguments);
         w.element.css({"position": "relative"}).appendTo(this.wrapper);
         return w;
     },
 
     addItem: function (item) {
-        BI.FlexCenterLayout.superclass.addItem.apply(this, arguments);
         var w = this._addElement(this.options.items.length, item);
         this.options.items.push(item);
         w.element.appendTo(this.wrapper);
@@ -32,17 +32,11 @@ BI.FlexCenterLayout = BI.inherit(BI.Layout, {
     },
 
     resize: function () {
-        console.log("flex_center布局不需要resize");
+        // console.log("flex_center布局不需要resize");
     },
 
     populate: function (items) {
         BI.FlexCenterLayout.superclass.populate.apply(this, arguments);
-        var self = this;
-        BI.each(items, function (i, item) {
-            if (!!item) {
-                self._addElement(i, item);
-            }
-        });
     }
 });
 $.shortcut('bi.flex_center', BI.FlexCenterLayout);

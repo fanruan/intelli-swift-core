@@ -21,7 +21,7 @@ BI.FloatCenterLayout = BI.inherit(BI.Layout, {
     },
 
     resize: function () {
-        console.log("floatcenter布局不需要resize");
+        // console.log("floatcenter布局不需要resize");
     },
 
     addItem: function (item) {
@@ -29,8 +29,7 @@ BI.FloatCenterLayout = BI.inherit(BI.Layout, {
         throw new Error("不能添加元素")
     },
 
-    populate: function (items) {
-        BI.FloatCenterLayout.superclass.populate.apply(this, arguments);
+    stroke: function (items) {
         var self = this, o = this.options;
         this.clear();
         var list = [], width = 100 / items.length;
@@ -64,6 +63,10 @@ BI.FloatCenterLayout = BI.inherit(BI.Layout, {
             element: this.element,
             items: list
         });
+    },
+
+    populate: function (items) {
+        BI.FloatCenterLayout.superclass.populate.apply(this, arguments);
     }
 });
 $.shortcut('bi.float_center', BI.FloatCenterLayout);
