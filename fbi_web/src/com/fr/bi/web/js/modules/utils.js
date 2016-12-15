@@ -1955,7 +1955,7 @@
                 || this.isCalculateTargetType(type);
         },
 
-        isCounterType: function () {
+        isCounterType: function (type) {
             return type === BICst.TARGET_TYPE.COUNTER;
         },
 
