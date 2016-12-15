@@ -490,6 +490,47 @@ public class ResourceHelper {
 
     public static String[] getDeziJs() {
         return new String[]{
+
+                //分组统计
+                "com/fr/bi/web/js/modules/onepackage/etl/statistic/customgroup/customgroup.statistic.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/statistic/field/abstract.dimension.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/statistic/field/date.group.dimension.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/statistic/field/date.statistic.dimension.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/statistic/field/number.group.dimension.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/statistic/field/number.statistic.dimension.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/statistic/field/string.statistic.dimension.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/statistic/field/string.group.dimension.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/statistic/numbercustomgroup/numbercustomgroup.statistic.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/statistic/widget.statistic.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/statistic/region/region.string.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/statistic/widget.statistic.model.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/group.select.fields.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/group.select.fields.item.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/group.select.fields.item.group.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/number/widget.customgroup.number.combo.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/number/widget.customgroup.number.group.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/number/widget.customgroup.number.item.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/number/widget.customgroup.number.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/number/widget.customgroup.number.other.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/number/widget.customgroup.number.panel.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/number/widget.customgroup.number.tab.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/customgroup/widget.group2other.customgroup.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/customgroup/widget.customgroup.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/customgroup/widget.combo.customgroup.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/customgroup/widget.search.customgroup.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/customgroup/widget.node.arrow.delete.customgroup.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/customgroup/widget.expander.group.customgroup.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/customgroup/widget.button.field.customgroup.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/customgroup/widget.pane.group.customgroup.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/customgroup/widget.pane.allfields.customgroup.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/customgroup/widget.pane.searcher.customgroup.js",
+                "com/fr/bi/web/js/modules/onepackage/etl/group/customgroup/widget.view.searcher.customgroup.js",
+
+                //部分字段
+                "com/fr/bi/web/js/modules/onepackage/etl/partfield/partfield/widget.selectpartfieldlist.js",
+
+
+
                 "com/fr/bi/web/js/dezi/dezi.start.js",
                 "com/fr/bi/web/js/dezi/model.js",
                 "com/fr/bi/web/js/dezi/view.js",
