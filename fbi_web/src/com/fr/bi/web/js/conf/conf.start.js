@@ -10,8 +10,6 @@ BI.extend(BIConf, {
     _init: function (options) {
         var self = this;
         this.supportSheets = options.supportSheets;
-        this.sessionID = options.sessionID;
-        Data.SharingPool.put("sessionID", this.sessionID);
 
         var AppRouter = BI.Router.extend({
             routes: {
@@ -32,29 +30,8 @@ BI.extend(BIConf, {
 
             }
         });
-        this._initSessionBeater();
+
         this.router = new AppRouter;
         BI.history.start();
-    },
-
-    _initSessionBeater: function () {
-        setInterval(function () {
-            BI.requestAsync("fr_bi_configure", "update_session", {
-                sessionID: Data.SharingPool.get("sessionID"),
-                _t: new Date()
-            }, BI.emptyFn);
-        }, 30000);
-        $(window).unload(function () {
-            $(window).unbind('unload');
-            FR.ajax({
-                async: false,
-                url: FR.servletURL,
-                data: {
-                    op: 'closesessionid',
-                    sessionID: Data.SharingPool.get("sessionID"),
-                    _t: new Date()
-                }
-            })
-        })
     }
 });
