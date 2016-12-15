@@ -34,8 +34,8 @@ BI.TargetRegion = BI.inherit(BI.AbstractRegion, {
     },
 
     _fieldDragStart: function () {
-        var onlyCounter = !BI.some(this.dimensions, function (i, dim) {
-            return BI.Utils.isTargetType();
+        var onlyCounter = !BI.some(this.dimensions, function (i, dimension) {
+            return BI.Utils.isTargetType(dimension.type);
         });
         if (onlyCounter) {
             this._showForbiddenMask();
