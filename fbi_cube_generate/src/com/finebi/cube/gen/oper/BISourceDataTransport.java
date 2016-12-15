@@ -4,6 +4,7 @@ import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.impl.pubsub.BIProcessor;
+import com.finebi.cube.impl.pubsub.BIProcessorThreadManager;
 import com.finebi.cube.location.BICubeLocation;
 import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.Cube;
@@ -48,6 +49,12 @@ public abstract class BISourceDataTransport extends BIProcessor {
         this.cube = cube;
         tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
         this.version = version;
+        initThreadPool();
+    }
+
+    @Override
+    protected void initThreadPool() {
+        this.executorService = BIProcessorThreadManager.getInstance().getTransportExecutorService();
     }
 
     @Override
@@ -100,7 +107,7 @@ public abstract class BISourceDataTransport extends BIProcessor {
         try {
             BICubeLocation from = new BICubeLocation(advancedConf.getRootURI().getPath().toString(), tableSource.getSourceID());
             BICubeLocation to = new BICubeLocation(tempConf.getRootURI().getPath().toString(), tableSource.getSourceID());
-                BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
+            BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
         } catch (IOException e) {
             BILoggerFactory.getLogger().error(e.getMessage());
         } catch (URISyntaxException e) {
