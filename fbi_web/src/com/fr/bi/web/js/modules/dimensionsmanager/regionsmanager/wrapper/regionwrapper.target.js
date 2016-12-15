@@ -22,7 +22,7 @@ BI.TargetRegionWrapper = BI.inherit(BI.RegionWrapper, {
         return "bi-target-empty-region";
     },
 
-    _createRegion: function (regionType, dIds) {
+    _createRegionWrapper: function (regionType, dIds) {
         var self = this, o = this.options;
         if (!this.wrapper[regionType]) {
             var wrapper = this.wrapper[regionType] = BI.createWidget({
@@ -33,20 +33,7 @@ BI.TargetRegionWrapper = BI.inherit(BI.RegionWrapper, {
                 }
             });
 
-            var region = this.regions[regionType] = BI.createWidget({
-                type: "bi.target_region",
-                dimensionCreator: function (dId, op) {
-                    return o.dimensionCreator(dId, regionType, op)
-                },
-                containment: o.containment,
-                helperContainer: this.center,
-                wId: o.wId,
-                viewType: o.viewType,
-                regionType: regionType
-            });
-            region.on(BI.AbstractRegion.EVENT_CHANGE, function () {
-                self.fireEvent(BI.RegionWrapper.EVENT_CHANGE, arguments);
-            });
+            var region = this.regions[regionType] = this._createRegion(regionType, dIds);
 
             BI.createWidget({
                 type: "bi.default",
@@ -67,6 +54,26 @@ BI.TargetRegionWrapper = BI.inherit(BI.RegionWrapper, {
         }
         this.regions[regionType].populate();
         return this.wrapper[regionType];
+    },
+
+    _createRegion: function (regionType, dIds) {
+        var self = this, o = this.options;
+
+        var region = BI.createWidget({
+            type: "bi.target_region",
+            dimensionCreator: function (dId, op) {
+                return o.dimensionCreator(dId, regionType, op)
+            },
+            containment: o.containment,
+            helperContainer: this.center,
+            wId: o.wId,
+            viewType: o.viewType,
+            regionType: regionType
+        });
+        region.on(BI.AbstractRegion.EVENT_CHANGE, function () {
+            self.fireEvent(BI.RegionWrapper.EVENT_CHANGE, arguments);
+        });
+        return region;
     },
 
     _createEmptyRegion: function () {

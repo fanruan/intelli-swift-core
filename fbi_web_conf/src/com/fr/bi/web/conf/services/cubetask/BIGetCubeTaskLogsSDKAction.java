@@ -7,6 +7,7 @@ import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.utils.BITableKeyUtils;
+import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.records.BICubeTaskRecord;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -24,7 +25,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import static com.finebi.cube.utils.CubeUpdateUtils.toSet;
 
 /**
  * This class created on 16-12-11.
@@ -32,7 +32,7 @@ import static com.finebi.cube.utils.CubeUpdateUtils.toSet;
  * @author Kary
  * @since Advanced FineBI Analysis 1.0
  */
-public class BIGetCubeTaskLogsDemoAction extends AbstractBIConfigureAction {
+public class BIGetCubeTaskLogsSDKAction extends AbstractBIConfigureAction {
 
     @Override
     protected void actionCMDPrivilegePassed(HttpServletRequest req, HttpServletResponse res) throws Exception {
@@ -86,7 +86,7 @@ public class BIGetCubeTaskLogsDemoAction extends AbstractBIConfigureAction {
         //正在跑的任务
         if (cubeManager.hasTask(userId)) {
             CubeTask currentTask = cubeManager.getGeneratingTask(userId);
-//        taskId=BIStringUtils.append(DBConstant.CUBE_UPDATE_TYPE.SINGLETABLE_UPDATE, specificTable.getSourceID(), specificBasicTableID)
+//        taskId=BIStringUtils.append(specificTable.getSourceID(), specificBasicTableID)
             //获取是全局还是单表，要是单表的话是哪一张
             currentTask.getTaskId();
             Iterator<CubeTask> iterator = cubeManager.getWaitingTaskIterator(-999);
@@ -107,7 +107,7 @@ public class BIGetCubeTaskLogsDemoAction extends AbstractBIConfigureAction {
         ICubeConfiguration cubeConfiguration = BICubeConfiguration.getConf(Long.toString(userId));
         for (BusinessTable businessTable : BICubeConfigureCenter.getPackageManager().getAllTables(userId)) {
             CubeTableSource source = businessTable.getTableSource();
-            Set<CubeTableSource> tableLayers = toSet(source.createGenerateTablesList());
+            Set<CubeTableSource> tableLayers = CubeUpdateUtils.toSet(source.createGenerateTablesList());
             for (CubeTableSource layer : tableLayers) {
                 long updateTime = BITableKeyUtils.getLastUpdateTime(layer, cubeConfiguration);
                 System.out.println(BIStringUtils.append("tableName:" + layer.getTableName(), "lastUpdateTime:" + new Date(updateTime)));

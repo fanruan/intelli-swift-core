@@ -156,7 +156,7 @@ BI.StateEditor = BI.inherit(BI.Single, {
     },
 
     focus: function () {
-        if(this.options.disabled === false){
+        if (this.options.disabled === false) {
             this._showInput();
             this.editor.focus();
         }
@@ -201,7 +201,7 @@ BI.StateEditor = BI.inherit(BI.Single, {
         this.editor.setValue(k);
     },
 
-    setEnable: function(v){
+    setEnable: function (v) {
         this.text.setEnable(v);
         this.editor.setEnable(v);
     },
@@ -219,26 +219,44 @@ BI.StateEditor = BI.inherit(BI.Single, {
         if (BI.isNumber(v)) {
             if (v === BI.Selection.All) {
                 this.text.setText(BI.i18nText("BI-Select_All"));
+                this.text.setTitle("");
                 this.text.element.removeClass("state-editor-infinite-text");
             } else if (v === BI.Selection.Multi) {
                 this.text.setText(BI.i18nText("BI-Select_Part"));
+                this.text.setTitle("");
                 this.text.element.removeClass("state-editor-infinite-text");
             } else {
                 this.text.setText(BI.i18nText("BI-Unrestricted"));
+                this.text.setTitle("");
                 this.text.element.addClass("state-editor-infinite-text");
             }
             return;
         }
-        if (!BI.isArray(v) || v.length === 1) {
-            this.text.setText(v);
-            this.text.setTitle(v);
-            this.text.element.removeClass("state-editor-infinite-text");
-        } else if (BI.isEmpty(v)) {
-            this.text.setText(BI.i18nText("BI-Unrestricted"));
-            this.text.element.addClass("state-editor-infinite-text");
-        } else {
-            this.text.setText(BI.i18nText("BI-Select_Part"));
-            this.text.element.removeClass("state-editor-infinite-text");
+        if (BI.isString(v)) {
+            if (BI.isEmpty(v)) {
+                this.text.setText(BI.i18nText("BI-Unrestricted"));
+                this.text.setTitle("");
+                this.text.element.addClass("state-editor-infinite-text");
+            } else {
+                this.text.setText(v);
+                this.text.setTitle(v);
+                this.text.element.removeClass("state-editor-infinite-text");
+            }
+            return;
+        }
+        if (BI.isArray(v)) {
+            if (BI.isEmpty(v)) {
+                this.text.setText(BI.i18nText("BI-Unrestricted"));
+                this.text.element.addClass("state-editor-infinite-text");
+            } else if (v.length === 1) {
+                this.text.setText(v[0]);
+                this.text.setTitle(v[0]);
+                this.text.element.removeClass("state-editor-infinite-text");
+            } else {
+                this.text.setText(BI.i18nText("BI-Select_Part"));
+                this.text.setTitle("");
+                this.text.element.removeClass("state-editor-infinite-text");
+            }
         }
     }
 });

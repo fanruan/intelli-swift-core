@@ -41,7 +41,7 @@ public class BIRemoveTableInUseCheckAction extends AbstractBIConfigureAction {
                 }
             }
         }
-        WebUtils.printAsJSON(res, new JSONObject().put("is_use", isInUse));
+        WebUtils.printAsJSON(res, new JSONObject().put("inUse", isInUse));
     }
 
     private boolean isWidgetUseTable(String tableId, JSONObject widget) throws Exception {
