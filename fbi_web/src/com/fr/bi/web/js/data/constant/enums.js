@@ -273,6 +273,13 @@ BICst.DATA_LABEL = {
     POSITION_CENTER: 3,
 };
 
+BICst.ACCUMULATE_TYPE = {
+    COLUMN: 1,
+    AREA_NORMAL: 2,
+    AREA_CURVE: 3,
+    AREA_RIGHT_ANGLE: 4
+};
+
 BICst.CHART_STYLE = {
     //风格
     STYLE_NORMAL: 1,       //普通风格
