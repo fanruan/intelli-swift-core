@@ -68,9 +68,9 @@ public class BIGetAllAuthUserListAction extends ActionNoSessionCMD {
      * @param username 用户
      */
     private boolean isUserAllowedBILogin(String username, int mode) {
-        if (FBIConfig.getInstance().getUserAuthorAttr().getBIAuthUserLimitByMode(mode) == 0) {
-            return true;
-        }
+//        if (FBIConfig.getInstance().getUserAuthorAttr().getBIAuthUserLimitByMode(mode) == 0) {
+//            return true;
+//        }
         if (FBIConfig.getInstance().getUserAuthorAttr().getBIAuthUserJoByMode(mode).has(username)) {
             return true;
         }

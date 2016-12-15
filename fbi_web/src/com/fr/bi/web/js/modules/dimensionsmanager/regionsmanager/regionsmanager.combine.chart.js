@@ -19,6 +19,7 @@ BI.CombineChartRegionsManager = BI.inherit(BI.RegionsManager, {
         BI.CombineChartRegionsManager.superclass._init.apply(this, arguments);
         var self = this, o = this.options;
         this.wrappers = {};
+        this.scopes = {};
         var d1Header = this._createDimension1RegionHeader();
         var d2Header = this._createDimension2RegionHeader();
         var t1Header = this._createTarget1RegionHeader();
@@ -167,16 +168,14 @@ BI.CombineChartRegionsManager = BI.inherit(BI.RegionsManager, {
     _createTarget1RegionWrapper: function () {
         var self = this, o = this.options;
         var region = BI.createWidget({
-            type: "bi.target_region",
+            type: "bi.target_settings_region_wrapper",
             containment: this,
-            dimensionCreator: function (dId, op) {
-                return o.dimensionCreator(dId, BICst.REGION.TARGET1, op)
-            },
+            dimensionCreator: o.dimensionCreator,
+            scopeCreator: BI.bind(this._createTargetScope, this),
             wId: o.wId,
-            viewType: BICst.REGION.TARGET1,
-            regionType: BICst.REGION.TARGET1
+            viewType: BICst.REGION.TARGET1
         });
-        region.on(BI.AbstractRegion.EVENT_CHANGE, function () {
+        region.on(BI.RegionWrapper.EVENT_CHANGE, function () {
             self.fireEvent(BI.RegionsManager.EVENT_CHANGE, arguments);
         });
         return region;
@@ -185,19 +184,41 @@ BI.CombineChartRegionsManager = BI.inherit(BI.RegionsManager, {
     _createTarget2RegionWrapper: function () {
         var self = this, o = this.options;
         var region = BI.createWidget({
-            type: "bi.target_region",
+            type: "bi.target_settings_region_wrapper",
             containment: this,
-            dimensionCreator: function (dId, op) {
-                return o.dimensionCreator(dId, BICst.REGION.TARGET2, op)
-            },
+            dimensionCreator: o.dimensionCreator,
+            scopeCreator: BI.bind(this._createTargetScope, this),
             wId: o.wId,
-            viewType: BICst.REGION.TARGET2,
-            regionType: BICst.REGION.TARGET2
+            viewType: BICst.REGION.TARGET2
         });
-        region.on(BI.AbstractRegion.EVENT_CHANGE, function () {
+        region.on(BI.RegionWrapper.EVENT_CHANGE, function () {
             self.fireEvent(BI.RegionsManager.EVENT_CHANGE, arguments);
         });
         return region;
+    },
+
+    _createTargetScope: function (regionType) {
+        var self = this, o = this.options;
+        if (!this.scopes[regionType]) {
+            this.scopes[regionType] = BI.createWidget({
+                type: "bi.combine_chart_target_scope",
+                regionType: regionType,
+                wId: o.wId
+            });
+        }
+        this.scopes[regionType].populate();
+        return this.scopes[regionType];
+    },
+
+    populate: function () {
+        BI.CombineChartRegionsManager.superclass.populate.apply(this, arguments);
+        var self = this, o = this.options;
+        var view = BI.Utils.getWidgetViewByID(o.wId);
+        BI.each(this.scopes, function (regionType, scope) {
+            if (view[regionType] && view[regionType].length > 0) {
+                scope.populate();
+            }
+        })
     }
 });
 

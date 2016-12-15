@@ -1950,21 +1950,16 @@
         },
 
         isTargetType: function (type) {
-            return type === BICst.TARGET_TYPE.NUMBER || type === BICst.TARGET_TYPE.COUNTER || type === BICst.TARGET_TYPE.FORMULA ||
-                type === BICst.TARGET_TYPE.YEAR_ON_YEAR_RATE ||
-                type === BICst.TARGET_TYPE.MONTH_ON_MONTH_RATE ||
-                type === BICst.TARGET_TYPE.YEAR_ON_YEAR_VALUE ||
-                type === BICst.TARGET_TYPE.MONTH_ON_MONTH_VALUE ||
-                type === BICst.TARGET_TYPE.SUM_OF_ABOVE ||
-                type === BICst.TARGET_TYPE.SUM_OF_ABOVE_IN_GROUP ||
-                type === BICst.TARGET_TYPE.SUM_OF_ALL ||
-                type === BICst.TARGET_TYPE.SUM_OF_ALL_IN_GROUP ||
-                type === BICst.TARGET_TYPE.RANK ||
-                type === BICst.TARGET_TYPE.RANK_IN_GROUP;
+            return type === BICst.TARGET_TYPE.NUMBER
+                || this.isCounterType(type)
+                || this.isCalculateTargetType(type);
         },
 
-        isCalculateTargetByDimensionID: function (dId) {
-            var type = this.getDimensionTypeByID(dId);
+        isCounterType: function () {
+            return type === BICst.TARGET_TYPE.COUNTER;
+        },
+
+        isCalculateTargetType: function (type) {
             var _set = [BICst.TARGET_TYPE.FORMULA,
                 BICst.TARGET_TYPE.MONTH_ON_MONTH_RATE,
                 BICst.TARGET_TYPE.MONTH_ON_MONTH_VALUE,
@@ -1978,6 +1973,11 @@
                 BICst.TARGET_TYPE.YEAR_ON_YEAR_VALUE
             ];
             return _set.contains(type);
+        },
+
+        isCalculateTargetByDimensionID: function (dId) {
+            var type = this.getDimensionTypeByID(dId);
+            return this.isCalculateTargetType(type);
         },
 
         isCounterTargetByDimensionID: function (dId) {
@@ -2054,81 +2054,7 @@
 
         getWidgetIconClsByWidgetId: function (wId) {
             var widgetType = BI.Utils.getWidgetTypeByID(wId);
-            switch (widgetType) {
-                case BICst.WIDGET.TABLE:
-                    return "drag-group-icon";
-                case BICst.WIDGET.CROSS_TABLE:
-                    return "drag-cross-icon";
-                case BICst.WIDGET.COMPLEX_TABLE:
-                    return "drag-complex-icon";
-                case BICst.WIDGET.DETAIL:
-                    return "drag-detail-icon";
-                case BICst.WIDGET.AXIS:
-                    return "drag-axis-icon";
-                case BICst.WIDGET.ACCUMULATE_AXIS:
-                    return "drag-axis-accu-icon";
-                case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
-                    return "drag-axis-percent-accu-icon";
-                case BICst.WIDGET.COMPARE_AXIS:
-                    return "drag-axis-compare-icon";
-                case BICst.WIDGET.FALL_AXIS:
-                    return "drag-axis-fall-icon";
-                case BICst.WIDGET.BAR:
-                    return "drag-bar-icon";
-                case BICst.WIDGET.ACCUMULATE_BAR:
-                    return "drag-bar-accu-icon";
-                case BICst.WIDGET.COMPARE_BAR:
-                    return "drag-bar-compare-icon";
-                case BICst.WIDGET.PIE:
-                    return "drag-pie-icon";
-                case BICst.WIDGET.MULTI_PIE:
-                    return "drag-multi-pie-icon";
-                case BICst.WIDGET.RECT_TREE:
-                    return "drag-rect-tree-icon";
-                case BICst.WIDGET.MAP:
-                    return "drag-map-china-icon";
-                case BICst.WIDGET.GIS_MAP:
-                    return "drag-map-gis-icon";
-                case BICst.WIDGET.DASHBOARD:
-                    return "drag-dashboard-icon";
-                case BICst.WIDGET.DONUT:
-                    return "drag-donut-icon";
-                case BICst.WIDGET.BUBBLE:
-                    return "drag-bubble-icon";
-                case BICst.WIDGET.FORCE_BUBBLE:
-                    return "drag-bubble-force-icon";
-                case BICst.WIDGET.SCATTER:
-                    return "drag-scatter-icon";
-                case BICst.WIDGET.RADAR:
-                    return "drag-radar-icon";
-                case BICst.WIDGET.ACCUMULATE_RADAR:
-                    return "drag-radar-accu-icon";
-                case BICst.WIDGET.LINE:
-                    return "drag-line-icon";
-                case BICst.WIDGET.AREA:
-                    return "drag-area-icon";
-                case BICst.WIDGET.ACCUMULATE_AREA:
-                    return "drag-area-accu-icon";
-                case BICst.WIDGET.PERCENT_ACCUMULATE_AREA:
-                    return "drag-area-percent-accu-icon";
-                case BICst.WIDGET.COMPARE_AREA:
-                    return "drag-area-compare-icon";
-                case BICst.WIDGET.RANGE_AREA:
-                    return "drag-area-range-icon";
-                case BICst.WIDGET.COMBINE_CHART:
-                    return "drag-combine-icon";
-                case BICst.WIDGET.MULTI_AXIS_COMBINE_CHART:
-                    return "drag-combine-mult-icon";
-                case BICst.WIDGET.FUNNEL:
-                    return "drag-funnel-icon";
-                case BICst.WIDGET.IMAGE:
-                    return "drag-image-icon";
-                case BICst.WIDGET.WEB:
-                    return "drag-web-icon";
-                case BICst.WIDGET.CONTENT:
-                    return "drag-input-icon";
 
-            }
         },
 
 
@@ -3236,11 +3162,16 @@
         getWidgetDataByID: (function () {
             var cache = {};
             return function (wid, callbacks, options) {
-                cache[wid] = callbacks;
+                options || (options = {});
+                var key = BI.UUID();
+                if (!BI.Utils.isControlWidgetByWidgetId(wid)) {
+                    key = wid;
+                }
+                cache[key] = callbacks;
                 Data.Req.reqWidgetSettingByData({widget: BI.extend(this.getWidgetCalculationByID(wid), options)}, function (data) {
-                    if (cache[wid] === callbacks) {
+                    if (cache[key] === callbacks) {
                         callbacks.success(data);
-                        delete cache[wid];
+                        delete cache[key];
                     } else {
                         callbacks.error && callbacks.error(data);
                     }

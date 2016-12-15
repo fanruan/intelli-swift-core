@@ -1327,18 +1327,18 @@
   color: #e85050;
 }
 .toolbar-save-font .b-font:before {
-  content: "\e617";
+  content: "\e67f";
   color: #808080;
 }
 .toolbar-save-font:hover .b-font:before,
 .toolbar-save-font:focus .b-font:before,
 .toolbar-save-font.hover .b-font:before {
-  content: "\e617";
+  content: "\e67f";
   color: #808080;
 }
 .toolbar-save-font.native .b-font:before,
 .toolbar-save-font.disabled .b-font:before {
-  content: "\e617";
+  content: "\e67f";
   color: #808080;
 }
 .toolbar-global-export .b-font:before {
