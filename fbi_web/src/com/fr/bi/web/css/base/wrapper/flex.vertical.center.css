@@ -43,6 +43,6 @@
   -ms-flex-wrap: nowrap;
   -o-flex-wrap: nowrap;
   flex-wrap: nowrap;
-  height: 100%;
+  min-height: 100%;
   float: left;
 }

@@ -151,7 +151,6 @@ BI.DivisionLayout = BI.inherit(BI.Layout, {
 
     populate: function (items) {
         BI.DivisionLayout.superclass.populate.apply(this, arguments);
-        this.stroke(items);
         this.render();
     }
 });

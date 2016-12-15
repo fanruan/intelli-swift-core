@@ -42,17 +42,25 @@ BI.HorizontalLayout = BI.inherit(BI.Layout, {
 
     _addElement: function (i, item) {
         var o = this.options;
-        var w = BI.createWidget(item);
-        w.element.css({"position": "relative", "margin": "0px auto"});
+        var td;
         var width = o.columnSize[i] <= 1 ? (o.columnSize[i] * 100 + "%") : o.columnSize[i];
-        var td = BI.createWidget({
-            type: "bi.default",
-            tagName: "td",
-            attributes: {
-                width: width
-            },
-            items: [w]
-        });
+        if (!this.hasWidget(this.getName() + i)) {
+            var w = BI.createWidget(item);
+            w.element.css({"position": "relative", "margin": "0px auto"});
+            td = BI.createWidget({
+                type: "bi.default",
+                tagName: "td",
+                attributes: {
+                    width: width
+                },
+                items: [w]
+            });
+            this.addWidget(this.getName() + i, td);
+        } else {
+            td = this.getWidgetByName(this.getName() + i);
+            td.element.attr("width", width);
+        }
+
         if (i === 0) {
             td.element.addClass("first-element");
         }
@@ -109,11 +117,10 @@ BI.HorizontalLayout = BI.inherit(BI.Layout, {
     },
 
     resize: function () {
-        console.log("horizontal layout do not need to resize");
+        // console.log("horizontal layout do not need to resize");
     },
 
     addItem: function (item) {
-        BI.HorizontalLayout.superclass.addItem.apply(this, arguments);
         var w = this._addElement(this.options.items.length, item);
         this.options.items.push(item);
         w.element.appendTo(this.tr.element);
@@ -122,12 +129,6 @@ BI.HorizontalLayout = BI.inherit(BI.Layout, {
 
     populate: function (items) {
         BI.HorizontalLayout.superclass.populate.apply(this, arguments);
-        var self = this;
-        BI.each(items, function (i, item) {
-            if (!!item) {
-                self._addElement(i, item);
-            }
-        });
         this.render();
     }
 });
@@ -159,7 +160,7 @@ BI.HorizontalCellLayout = BI.inherit(BI.Layout, {
 
     _addElement: function (i, item) {
         var o = this.options;
-        var w = BI.createWidget(item);
+        var w = BI.HorizontalCellLayout.superclass._addElement.apply(this, arguments);
         w.element.css({"position": "relative", "display": "table-cell", "vertical-align": "middle"});
         if (o.hgap + o.lgap > 0) {
             w.element.css({
@@ -181,30 +182,15 @@ BI.HorizontalCellLayout = BI.inherit(BI.Layout, {
                 "margin-bottom": o.vgap + o.bgap + "px"
             })
         }
-        this.addWidget(w);
         return w;
     },
 
     resize: function () {
-        console.log("horizontal do not need to resize");
-    },
-
-    addItem: function (item) {
-        BI.HorizontalCellLayout.superclass.addItem.apply(this, arguments);
-        var w = this._addElement(item);
-        this.options.items.push(item);
-        w.element.appendTo(this.element);
-        return w;
+        // console.log("horizontal do not need to resize");
     },
 
     populate: function (items) {
         BI.HorizontalCellLayout.superclass.populate.apply(this, arguments);
-        var self = this;
-        BI.each(items, function (i, item) {
-            if (!!item) {
-                self._addElement(i, item);
-            }
-        });
         this.render();
     }
 });

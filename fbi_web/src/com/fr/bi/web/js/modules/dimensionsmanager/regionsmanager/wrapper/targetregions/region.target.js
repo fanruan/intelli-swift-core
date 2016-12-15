@@ -25,14 +25,21 @@ BI.TargetRegion = BI.inherit(BI.AbstractRegion, {
         return "target-sortable-helper";
     },
 
+    _dropDataFilter: function (data) {
+        var self = this, o = this.options;
+        data = BI.filter(data, function (i, dimension) {
+            return BI.Utils.isTargetType(dimension.type);
+        });
+        return data;
+    },
+
     _fieldDragStart: function () {
-        var onlyCounter = !BI.some(this.dimensions, function (i, dim) {
-            return BI.Utils.isTargetType();
+        var onlyCounter = !BI.some(this.dimensions, function (i, dimension) {
+            return BI.Utils.isTargetType(dimension.type);
         });
         if (onlyCounter) {
             this._showForbiddenMask();
         }
     },
 });
-BI.TargetRegion.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut("bi.target_region", BI.TargetRegion);

@@ -23,11 +23,10 @@ BI.CardLayout = BI.inherit(BI.Layout, {
     },
 
     resize: function () {
-        console.log("default布局不需要resize");
+        // console.log("default布局不需要resize");
     },
 
-    populate: function (items) {
-        BI.CardLayout.superclass.populate.apply(this, arguments);
+    stroke: function (items) {
         var self = this;
         this.clear();
         this.showIndex = void 0;
@@ -43,6 +42,10 @@ BI.CardLayout = BI.inherit(BI.Layout, {
                 w.invisible();
             }
         });
+    },
+
+    populate: function (items) {
+        BI.CardLayout.superclass.populate.apply(this, arguments);
         this.render();
         this.options.defaultShowName && this.showCardByName(this.options.defaultShowName);
     },

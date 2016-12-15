@@ -210,15 +210,28 @@ BI.CombineChartRegionsManager = BI.inherit(BI.RegionsManager, {
         return this.scopes[regionType];
     },
 
+    getValue: function () {
+        var val = BI.CombineChartRegionsManager.superclass.getValue.apply(this, arguments);
+        var scopes = {};
+        BI.each(this.scopes, function (regionType, scope) {
+            scopes[regionType] = scope.getValue();
+        });
+        val.scopes = scopes;
+        return val;
+    },
+
     populate: function () {
         BI.CombineChartRegionsManager.superclass.populate.apply(this, arguments);
         var self = this, o = this.options;
         var view = BI.Utils.getWidgetViewByID(o.wId);
-        BI.each(this.scopes, function (regionType, scope) {
-            if (view[regionType] && view[regionType].length > 0) {
-                scope.populate();
+        BI.each(view, function (regionType) {
+            if (BI.Utils.isTargetRegionByRegionType(regionType)) {
+                self._createTargetScope(regionType);
             }
-        })
+        });
+        BI.remove(this.scopes, function (regionType) {
+            return !view[regionType] || view[regionType].length === 0
+        });
     }
 });
 

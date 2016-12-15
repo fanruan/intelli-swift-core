@@ -97,7 +97,6 @@ BI.HTapeLayout = BI.inherit(BI.Layout, {
 
     populate: function (items) {
         BI.HTapeLayout.superclass.populate.apply(this, arguments);
-        this.stroke(items);
         this.render();
     }
 });
@@ -203,7 +202,6 @@ BI.VTapeLayout = BI.inherit(BI.Layout, {
 
     populate: function (items) {
         BI.VTapeLayout.superclass.populate.apply(this, arguments);
-        this.stroke(items);
         this.render();
     }
 });

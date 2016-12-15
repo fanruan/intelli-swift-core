@@ -41,17 +41,25 @@ BI.HorizontalAdaptLayout = BI.inherit(BI.Layout, {
     },
 
     _addElement: function (i, item) {
-        var o = this.options, w = BI.createWidget(item);
-        w.element.css({"position": "relative", left: "0", top: "0", "margin": "0px auto"});
+        var o = this.options;
+        var td;
         var width = o.columnSize[i] <= 1 ? (o.columnSize[i] * 100 + "%") : o.columnSize[i];
-        var td = BI.createWidget({
-            type: "bi.default",
-            tagName: "td",
-            attributes: {
-                width: width
-            },
-            items: [w]
-        });
+        if (!this.hasWidget(this.getName() + i)) {
+            var w = BI.createWidget(item);
+            w.element.css({"position": "relative", "top": "0", "left": "0", "margin": "0px auto"});
+            td = BI.createWidget({
+                type: "bi.default",
+                tagName: "td",
+                attributes: {
+                    width: width
+                },
+                items: [w]
+            });
+            this.addWidget(this.getName() + i, td);
+        } else {
+            td = this.getWidgetByName(this.getName() + i);
+            td.element.attr("width", width);
+        }
         td.element.css({"max-width": o.columnSize[i] + "px"});
         if (i === 0) {
             td.element.addClass("first-element");
@@ -83,7 +91,6 @@ BI.HorizontalAdaptLayout = BI.inherit(BI.Layout, {
                 "margin-bottom": o.vgap + o.bgap + (item.bgap || 0) + "px"
             })
         }
-        this.addWidget(td);
         return td;
     },
 
@@ -102,17 +109,16 @@ BI.HorizontalAdaptLayout = BI.inherit(BI.Layout, {
     empty: function () {
         BI.each(this.widgets, function (i, wi) {
             wi.destroy();
-        })
+        });
         this.widgets = {};
         this.tr.empty();
     },
 
     resize: function () {
-        console.log("horizontal_adapt布局不需要resize");
+        // console.log("horizontal_adapt布局不需要resize");
     },
 
     addItem: function (item) {
-        BI.HorizontalAdaptLayout.superclass.addItem.apply(this, arguments);
         var w = this._addElement(this.options.items.length, item);
         this.options.items.push(item);
         w.element.appendTo(this.tr.element);
@@ -121,12 +127,6 @@ BI.HorizontalAdaptLayout = BI.inherit(BI.Layout, {
 
     populate: function (items) {
         BI.HorizontalAdaptLayout.superclass.populate.apply(this, arguments);
-        var self = this;
-        BI.each(items, function (i, item) {
-            if (!!item) {
-                self._addElement(i, item);
-            }
-        });
         this.render();
     }
 });
