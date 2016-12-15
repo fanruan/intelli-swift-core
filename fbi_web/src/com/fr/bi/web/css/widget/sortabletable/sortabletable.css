@@ -9,3 +9,6 @@
 .bi-sortable-table .drag-header {
   cursor: move;
 }
+.bi-sortable-table .insert-help-line {
+  background-color: #009de3;
+}
