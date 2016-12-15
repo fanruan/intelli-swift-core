@@ -1000,23 +1000,23 @@ if (!window.BI) {
     //浏览器相关方法
     _.extend(BI, {
         isIE: function () {
-            return $.browser.msie;
+            return /(msie|trident)/i.test(navigator.userAgent.toLowerCase());
         },
 
         isChrome: function () {
-            return $.browser.chrome;
+            return /(chrome)/i.test(navigator.userAgent.toLowerCase());
         },
 
         isFireFox: function () {
-            return $.browser.mozilla;
+            return /(firefox)/i.test(navigator.userAgent.toLowerCase());
         },
 
         isOpera: function () {
-            return $.browser.opera;
+            return /(opera)/i.test(navigator.userAgent.toLowerCase());
         },
 
         isSafari: function () {
-            return $.browser.safari;
+            return /(safari)/i.test(navigator.userAgent.toLowerCase());
         },
 
         isKhtml: function () {

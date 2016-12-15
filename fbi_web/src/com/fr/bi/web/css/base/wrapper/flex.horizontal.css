@@ -43,7 +43,7 @@
   -ms-flex-wrap: nowrap;
   -o-flex-wrap: nowrap;
   flex-wrap: nowrap;
-  height: 100%;
+  min-height: 100%;
   float: left;
 }
 .bi-flex-horizontal-layout .flex-horizontal-layout-wrapper.middle {
