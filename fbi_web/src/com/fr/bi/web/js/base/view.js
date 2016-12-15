@@ -204,7 +204,6 @@ BI.View = BI.inherit(BI.V, {
         var action = options.action || new BI.ShowAction();
         var cardLayout = this._cardLayouts[layout];
         if (!cardLayout) {
-            throw new Error("没有创建子面板");
             return this;
         }
         cardLayout.setVisible(true);

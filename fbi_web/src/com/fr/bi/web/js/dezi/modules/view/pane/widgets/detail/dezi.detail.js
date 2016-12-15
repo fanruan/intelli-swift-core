@@ -308,6 +308,10 @@ BIDezi.DetailView = BI.inherit(BI.View, {
             this.model.get("addDimension");
             return true;
         }
+        if (this.model.has("addRegion")) {
+            this.model.get("addRegion");
+            return true;
+        }
         return false;
     },
 

@@ -374,7 +374,7 @@ BI.extend(BI.Utils, {
         }, complete);
     },
 
-    getTablesDetailInfoByTables4Refresh: function(tables, callback, complete) {
+    getTablesDetailInfoByTables4Refresh: function (tables, callback, complete) {
         Data.Req.reqTablesDetailInfoByTables4Refresh(tables, function (res) {
             callback(res);
         }, complete);
@@ -386,8 +386,8 @@ BI.extend(BI.Utils, {
         }, complete)
     },
 
-    reqCubeStatusCheck: function (callback, complete) {
-        Data.Req.reqCubeStatusCheck(function (data) {
+    reqCubeStatusCheck: function (table, callback, complete) {
+        Data.Req.reqCubeStatusCheck(table,function (data) {
             callback(data);
         }, complete)
     },
