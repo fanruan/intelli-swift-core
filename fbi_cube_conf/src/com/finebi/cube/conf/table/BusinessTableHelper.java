@@ -2,14 +2,17 @@ package com.finebi.cube.conf.table;
 
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * This class created on 2016/5/26.
@@ -76,6 +79,18 @@ public class BusinessTableHelper {
                 return field;
             }
         }
-        throw new BIFieldAbsentException("The field the name is:" + fieldName + " is absent in table:" + table.getTableName() + " table ID:" + table.getID().getIdentityValue());
+        String tableId = table.getID().getIdentityValue();
+        String tableName = BICubeConfigureCenter.getAliasManager().getAliasName(tableId, UserControl.getInstance().getSuperManagerID());
+        throw new BIFieldAbsentException("-- warning from BI -- Please check business package : ' " + getPackageNameByTableId(tableId) + " ' , table : ' " + tableName + " ' (id : " + tableId + ") , the field ' " + fieldName + " ' is missing ! " + " try to click the refresh button !");
+    }
+
+    private static String getPackageNameByTableId(String tableId) {
+        Set<IBusinessPackageGetterService> allPackages = BICubeConfigureCenter.getPackageManager().getAllPackages(UserControl.getInstance().getSuperManagerID());
+        for (IBusinessPackageGetterService pack : allPackages) {
+            if (pack.getBusinessTables().contains(new BIBusinessTable(new BITableID(tableId)))) {
+                return pack.getName().getName();
+            }
+        }
+        return null;
     }
 }
