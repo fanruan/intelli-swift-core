@@ -129,7 +129,10 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
                 tables = self._getTablesStructureByPackId(pid, {isRelation: isRelation, isSearching: true});
                 var items = [];
                 BI.each(tables, function (i, table) {
-                    var fields = self._getFieldsStructureByTableId(table.id || table.value, {keyword: keyword, isSearching: true});
+                    var fields = self._getFieldsStructureByTableId(table.id || table.value, {
+                        keyword: keyword,
+                        isSearching: true
+                    });
                     BI.each(fields, function (i, filed) {
                         field2TableMap[filed.id || filed.value] = table;
                     });
@@ -189,10 +192,11 @@ BI.PackageSelectDataService = BI.inherit(BI.Widget, {
      * @returns {Array}
      * @private
      */
-    _getTablesStructureByPackId: function (packageId) {
+    _getTablesStructureByPackId: function (packageId, opt) {
+        opt || (opt = {});
         var o = this.options;
         var tablesStructure = [];
-        var currentTables = o.tablesCreator(packageId);
+        var currentTables = o.tablesCreator(packageId, opt);
         BI.each(currentTables, function (i, table) {
             tablesStructure.push(BI.extend({
                 id: table.id,
