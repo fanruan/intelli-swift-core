@@ -84,7 +84,7 @@ BI.AccumulationContainer = BI.inherit(BI.Widget, {
             text: "test"
         })
         var selectType = BI.createWidget({
-            type: "bi.select_type_button",
+            type: "bi.select_accumulate_type_button",
             el: button,
             popup: {
                 el: this.popup

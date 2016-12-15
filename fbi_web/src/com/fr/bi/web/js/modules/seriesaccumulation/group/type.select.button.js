@@ -1,30 +1,30 @@
 /**
  * Created by fay on 2016/12/14.
  */
-BI.SelectTypeButton = BI.inherit(BI.Widget, {
+BI.SelectAccumulateTypeButton = BI.inherit(BI.Widget, {
     _constant: {
         SELECT_ITEMS: [{
             text: BI.i18nText("BI-Stacked_Chart"),
-            value: 4
+            value: BICst.ACCUMULATE_TYPE.COLUMN
         }, {
-            text: BI.i18nText("BI-Accumulate_Area") + "(折线)",
-            value: BICst.CHART_SHAPE.NORMAL
+            text: BI.i18nText("BI-Accumulate_Area") + "(" + BI.i18nText("BI-Polyline") + ")",
+            value: BICst.ACCUMULATE_TYPE.AREA_NORMAL
         }, {
-            text: BI.i18nText("BI-Accumulate_Area") + "(曲线)",
-            value: BICst.CHART_SHAPE.CURVE
+            text: BI.i18nText("BI-Accumulate_Area") + "(" + BI.i18nText("BI-Curve") + ")",
+            value: BICst.ACCUMULATE_TYPE.AREA_CURVE
         }, {
-            text: BI.i18nText("BI-Accumulate_Area") + "(直角折线)",
-            value: BICst.CHART_SHAPE.RIGHT_ANGLE
+            text: BI.i18nText("BI-Accumulate_Area") + "(" + BI.i18nText("BI-Right_Angled_Polyline") + ")",
+            value: BICst.ACCUMULATE_TYPE.AREA_RIGHT_ANGLE
         }]
     },
     _defaultConfig: function () {
-        return BI.extend(BI.SelectTypeButton.superclass._defaultConfig.apply(this, arguments), {
+        return BI.extend(BI.SelectAccumulateTypeButton.superclass._defaultConfig.apply(this, arguments), {
             cls: "bi-select-type"
         })
     },
 
     _init: function () {
-        BI.SelectTypeButton.superclass._init.apply(this, arguments);
+        BI.SelectAccumulateTypeButton.superclass._init.apply(this, arguments);
         var self = this;
         var typeIcon = BI.createWidget({
             type: "bi.icon_button",
@@ -44,7 +44,7 @@ BI.SelectTypeButton = BI.inherit(BI.Widget, {
                 el: typeIcon,
                 lgap: 10,
                 rgap: 10
-            },{
+            }, {
                 el: triggerIcon,
                 rgap: 5
             }]
@@ -83,4 +83,5 @@ BI.SelectTypeButton = BI.inherit(BI.Widget, {
 
     }
 });
-$.shortcut("bi.select_type_button", BI.SelectTypeButton);
+
+$.shortcut("bi.select_accumulate_type_button", BI.SelectAccumulateTypeButton);
