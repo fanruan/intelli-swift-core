@@ -1180,6 +1180,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.target.settings.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/regionwrapper.dimension.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/regionwrapper.target.css",
+                "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/regionwrapper.target.settings.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/regionsmanager.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/dimensionsmanager.css",
 
