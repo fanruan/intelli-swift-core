@@ -210,7 +210,7 @@ BI.TargetBodyNormalCell = BI.inherit(BI.Widget, {
                 }
                 return {};
             }
-
+            
             function isContainsDiffLinkages(linkages) {
                 for(var i = 0; i < linkages.length; i++) {
                     for(var j = i + 1; j < linkages.length; j++) {
