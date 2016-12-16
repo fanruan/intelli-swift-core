@@ -10,7 +10,8 @@ BI.SortableTable = BI.inherit(BI.Widget, {
         perColumnSize: 100,
         dragButtonWidth: 24,
         dragButtonHeight: 24,
-        lineCount: 6
+        lineCount: 6,
+        lineWidth: 3
     },
 
     _defaultConfig: function () {
@@ -34,7 +35,6 @@ BI.SortableTable = BI.inherit(BI.Widget, {
 
         this.table = BI.createWidget({
             type: "bi.table_view",
-            element: this.element,
             isNeedResize: false,
             isResizeAdapt: false,
             columnSize: [],
@@ -46,23 +46,40 @@ BI.SortableTable = BI.inherit(BI.Widget, {
             items: o.items
         });
         this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
+            self._initDrag();
+            self._createDashedLines();
             self._createInsertLine();
             self.fireEvent(BI.Table.EVENT_TABLE_AFTER_INIT, arguments);
         });
+        this.table.on(BI.Table.EVENT_TABLE_RESIZE, function () {
+            self._createDashedLines();
+            self._createInsertLine();
+            self.fireEvent(BI.Table.EVENT_TABLE_RESIZE, arguments);
+        });
 
-        this._initDrag();
+        this.table.element.mousemove(function(e){
+            BI.each(self.dragHelpers, function(idx, dragHelper){
+                var visible = (idx === self._getMouseInColumnIndex(e));
+                dragHelper.setVisible(visible);
+                BI.each(self.dragHelpersLines[idx], function(id, line){
+                    line.setVisible(visible);
+                })
+            })
+        })
 
-        self.element.droppable({
+        this.table.element.hover(function(e){
+        }, function(e){
+            BI.each(self.dragHelpers, function(idx, dragHelper){
+                dragHelper.setVisible(false);
+                BI.each(self.dragHelpersLines[idx], function(id, line){
+                    line.setVisible(false);
+                })
+            })
+        });
+
+        this.element.droppable({
             accept: ".drag-header",
             drop: function (e, ui) {
-                //e.pageX鼠标距文档左边缘位置，包含滚动条
-                //ui.helper.offset().left元素距文档左边缘位置，不包括滚动条
-                //ui.position.left 距离drop元素左边缘距离
-                //self.table.getRightHorizontalScroll() 表格滚动条水平偏移
-                //getCalculateColumnSize获取每个column宽度
-                //getCalculateRegionColumnSize获取整个columns宽度
-                //getCalculateRegionRowSize获取整个rows高度
-
                 var absolutePosition = ui.position.left + self.table.getRightHorizontalScroll() + (e.pageX - ui.helper.offset().left);
                 var dropPosition = self._getColumnsLeftBorderDistance();
                 var insertIndex = self._getNearIndexFromArray(dropPosition, absolutePosition)
@@ -73,8 +90,16 @@ BI.SortableTable = BI.inherit(BI.Widget, {
                     BI.nextTick(function(){
                         self.populate(o.items, o.header);
                     });
+                    self.fireEvent(BI.SortableTable.EVENT_CHANGE, ui.helper.data("index"), insertIndex);
                 }
             }
+        });
+
+        BI.createWidget({
+            type: "bi.vertical",
+            scrollx: false,
+            element: this.element,
+            items: [this.table]
         });
     },
 
@@ -85,11 +110,11 @@ BI.SortableTable = BI.inherit(BI.Widget, {
     _createInsertLine: function(){
         var self = this;
         var dropPosition = this._getColumnsLeftBorderDistance();
+        var height = this.table.getClientRegionRowSize()[0];
         var lineObj = {
             type: "bi.layout",
             cls: "insert-help-line",
-            invisible: true,
-            width: 3
+            invisible: true
         };
         this.insertLine = [BI.createWidget(lineObj)];
         var hearders = this.table.getColumns().header[0];
@@ -99,37 +124,94 @@ BI.SortableTable = BI.inherit(BI.Widget, {
         });
         BI.createWidget({
             type: "bi.absolute",
-            element: this.element,
+            element: this.table.element,
             items: BI.map(self.insertLine, function(idx, line){
                 if(idx === self.insertLine.length - 1){
                     return {
                         el: line,
                         top: 0,
-                        width: 3,
-                        bottom: 0,
+                        height: height,
                         right: 0
                     }
                 }
                 return {
                     el: line,
                     top: 0,
-                    bottom: 0,
-                    width: 3,
+                    height: height,
                     left: dropPosition[idx]
                 }
             })
         })
     },
 
+    _createDashedLines: function(){
+        var self = this, c = this._const, o = this.options;
+        var RowsSize = this.table.getClientRegionRowSize();
+        var columnsSizes = this.table.getCalculateColumnSize();
+        var dropPosition = this._getColumnsLeftBorderDistance();
+        var len = this.table.getCalculateRegionColumnSize()[0];
+        this.dragHelpersLines = [];
+        BI.each(this.table.getColumns().header[0], function(idx, header){
+            self.dragHelpersLines.push([BI.createWidget({
+                type:"bi.horizontal_dash_line",      //上
+                width: columnsSizes[idx],
+                height: c.lineWidth,
+                invisible: true
+            }),BI.createWidget({
+                type:"bi.vertical_dash_line",        //右
+                width: c.lineWidth,
+                height: RowsSize[0],
+                invisible: true
+            }),BI.createWidget({
+                type:"bi.horizontal_dash_line",      //下
+                width: columnsSizes[idx],
+                height: c.lineWidth,
+                invisible: true
+            }),BI.createWidget({                //左
+                type:"bi.vertical_dash_line",
+                width: c.lineWidth,
+                height: RowsSize[0],
+                invisible: true
+            })]);
+        });
+        var length = this.dragHelpersLines.length;
+        BI.createWidget({
+            type: "bi.absolute",
+            element: self.table,
+            items: BI.flatten(BI.map(this.dragHelpersLines, function(idx, children){
+                return BI.map(children, function(id, child){
+                    var baseObj = {
+                        el: child,
+                        width: id % 2 === 0 ? columnsSizes[idx] : c.lineWidth,
+                        height: id % 2 === 0 ? c.lineWidth : RowsSize[0]
+                    }
+                    if(id === 0 || id === children.length - 1){     //上和左
+                        return BI.extend({
+                            top: 0,
+                            left: dropPosition[idx],
+                        }, baseObj)
+                    }else{
+                        return BI.extend({                                    //右和下
+                            bottom: 0,
+                            right:  idx === length - 1 ? 0 : len - dropPosition[idx + 1],
+                        }, baseObj)
+                    }
+                });
+            }))
+        })
+    },
+
     _initDrag: function(){
-        var self = this, c = this._const;
+        var self = this, c = this._const, o = this.options;
+        this.dragHelpers = [];
         BI.each(this.table.getColumns().header[0], function(idx, header){
             var dragButton = BI.createWidget({
                 type: "bi.triangle_drag_button",
                 cls: "drag-header",
                 width: c.dragButtonWidth,
                 height: c.dragButtonHeight,
-                lineCount: c.lineCount
+                lineCount: c.lineCount,
+                invisible: true
             });
             BI.createWidget({
                 type: "bi.absolute",
@@ -156,7 +238,7 @@ BI.SortableTable = BI.inherit(BI.Widget, {
                     })
                 },
                 helper: function () {
-                    var RowsSize = self.table.getCalculateRegionRowSize();
+                    var RowsSize = self.table.getClientRegionRowSize();
                     var columnsSizes = self.table.getCalculateColumnSize();
                     var clone = BI.createWidget({
                         type: "bi.layout",
@@ -169,7 +251,20 @@ BI.SortableTable = BI.inherit(BI.Widget, {
                     return clone.element;
                 }
             })
+            self.dragHelpers.push(dragButton);
         });
+    },
+
+    _getMouseInColumnIndex: function(e){
+        var dropPosition = this._getColumnsLeftBorderDistance();
+        var columnsSizes = this.table.getCalculateColumnSize();
+        var tableHeight = this.table.getClientRegionRowSize()[0];
+        var tableOffsetLeft = e.pageX - this.table.element.offset().left;
+        var tableOffsetTop = this.table.element.offset().top;
+        return BI.find(BI.makeArray(dropPosition.length, null), function(idx){
+            return !(tableOffsetLeft < dropPosition[idx] || tableOffsetLeft > dropPosition[idx] + columnsSizes[idx]
+            || e.pageY < tableOffsetTop || e.pageY >= tableOffsetTop + tableHeight);
+        })
     },
 
     _getColumnsLeftBorderDistance: function(){
@@ -192,6 +287,9 @@ BI.SortableTable = BI.inherit(BI.Widget, {
         var insertIndex = this._getNearIndexFromArray(dropPosition, absolutePosition);
         BI.each(this.insertLine, function(idx, line){
             line.setVisible(insertIndex === idx);
+        })
+        BI.each(this.dragHelpers, function(idx, helper){
+            helper.setVisible(false);
         })
     },
 
@@ -238,13 +336,15 @@ BI.SortableTable = BI.inherit(BI.Widget, {
         return index;
     },
 
+    getColumns: function(){
+        return this.table.getColumns();
+    },
+
     populate: function (items, headers) {
         var self = this, o = this.options;
         o.header = headers;
         o.items = items;
         self.table.populate(o.items, o.header);
-        this._createInsertLine();
-        self._initDrag();
     },
 
     destroy: function () {
@@ -252,4 +352,6 @@ BI.SortableTable = BI.inherit(BI.Widget, {
         BI.SortableTable.superclass.destroy.apply(this, arguments);
     }
 });
+
+BI.SortableTable.EVENT_CHANGE = "EVENT_CHANGE";
 $.shortcut('bi.sortable_table', BI.SortableTable);

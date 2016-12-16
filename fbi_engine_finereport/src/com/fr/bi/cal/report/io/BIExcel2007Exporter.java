@@ -51,7 +51,7 @@ public class BIExcel2007Exporter extends StreamExcel2007Exporter {
                     this.innerExportReport(new BIExcelExporterBlock(innerReport[i], offset.x, offset.y,
                                     Math.min(columnCount - offset.x, ExportConstants.MAX_COLS_2007),
                                     Math.min(rowCount - offset.y, ExportConstants.MAX_ROWS_2007)),
-                            book.getReportExportAttr(), book.getReportName(0) + (c == 1 ? "" : "_" + c),
+                            book.getReportExportAttr(), book.getReportName(i) + (c == 1 ? "" : "_" + c),
                             (SXSSFWorkbook) workbookWrapper.getWorkbook(), cellList, cellFormulaList, 0);
                     offset.y += ExportConstants.MAX_ROWS_2007;
                     c++;
