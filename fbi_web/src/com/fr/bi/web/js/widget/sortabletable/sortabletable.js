@@ -23,8 +23,7 @@ BI.SortableTable = BI.inherit(BI.Widget, {
             rowSize: 25,
 
             header: [],
-            items: [], //二维数组
-            autoRefresh: true //自动刷新
+            items: [] //二维数组
         });
     },
 
@@ -87,11 +86,10 @@ BI.SortableTable = BI.inherit(BI.Widget, {
                 //这个insertIndex是包含原元素的index
                 //调整item顺序，重新populate
                 var flag = self._exchangeItemsAndHeaderPosition(ui.helper.data("index"), insertIndex)
-                if(flag === true && o.autoRefresh === true){
+                if(flag === true){
                     BI.nextTick(function(){
                         self.populate(o.items, o.header);
                     });
-                }else{
                     self.fireEvent(BI.SortableTable.EVENT_CHANGE, ui.helper.data("index"), insertIndex);
                 }
             }
@@ -155,22 +153,22 @@ BI.SortableTable = BI.inherit(BI.Widget, {
         this.dragHelpersLines = [];
         BI.each(this.table.getColumns().header[0], function(idx, header){
             self.dragHelpersLines.push([BI.createWidget({
-                type:"bi.horizontal_line",      //上
+                type:"bi.horizontal_dash_line",      //上
                 width: columnsSizes[idx],
                 height: c.lineWidth,
                 invisible: true
             }),BI.createWidget({
-                type:"bi.vertical_line",        //右
+                type:"bi.vertical_dash_line",        //右
                 width: c.lineWidth,
                 height: RowsSize[0],
                 invisible: true
             }),BI.createWidget({
-                type:"bi.horizontal_line",      //下
+                type:"bi.horizontal_dash_line",      //下
                 width: columnsSizes[idx],
                 height: c.lineWidth,
                 invisible: true
             }),BI.createWidget({                //左
-                type:"bi.vertical_line",
+                type:"bi.vertical_dash_line",
                 width: c.lineWidth,
                 height: RowsSize[0],
                 invisible: true

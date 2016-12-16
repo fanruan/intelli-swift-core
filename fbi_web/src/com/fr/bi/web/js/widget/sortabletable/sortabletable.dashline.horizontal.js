@@ -1,20 +1,20 @@
-BI.VerticalLine = BI.inherit(BI.Widget, {
+BI.HorizontalDashLine = BI.inherit(BI.Widget, {
 
 
     _defaultConfig: function () {
-        return BI.extend(BI.VerticalLine.superclass._defaultConfig.apply(this, arguments), {
-            baseCls:"bi-svg-line-vertical",
+        return BI.extend(BI.HorizontalDashLine.superclass._defaultConfig.apply(this, arguments), {
+            baseCls:"bi-svg-line-horizontal",
             gap:5,
             line:8,
             stroke: "#009de3",
             fill:"white",
-            height:200,
-            width:3
+            height:3,
+            width:200
         })
     },
 
     _init: function () {
-        BI.VerticalLine.superclass._init.apply(this, arguments);
+        BI.HorizontalDashLine.superclass._init.apply(this, arguments);
         var o = this.options;
         this.svg = BI.createWidget({
             type:"bi.svg",
@@ -26,10 +26,11 @@ BI.VerticalLine = BI.inherit(BI.Widget, {
     },
 
     setLength : function (w) {
-        if(w === this.options.height){
+        if(w === this.options.width){
             return;
         }
-        BI.VerticalLine.superclass.setHeight.apply(this, arguments);
+        BI.HorizontalDashLine.superclass.setWidth.apply(this, arguments);
+        var o = this.options;
         this.setMove()
     },
 
@@ -46,10 +47,10 @@ BI.VerticalLine = BI.inherit(BI.Widget, {
     _createPath : function (startPos) {
         var o = this.options;
         var path ="";
-        for(var j = 0; j < o.width; j++) {
-            for(var i = startPos - o.line; i < o.height; i+= o.line) {
-                path +="M"+ j + "," + (i + j)
-                path +="L" + j + "," + (i + j + o.line)
+        for(var j = 0; j < o.height; j++) {
+            for(var i = startPos - o.line; i < o.width; i+= o.line) {
+                path +="M" + (i + j)+ ","+ j
+                path +="L" + (i + j + o.line) + "," + j
                 i+= o.gap
             }
         }
@@ -57,4 +58,4 @@ BI.VerticalLine = BI.inherit(BI.Widget, {
     }
 
 })
-$.shortcut("bi.vertical_line", BI.VerticalLine);
+$.shortcut("bi.horizontal_dash_line", BI.HorizontalDashLine);
