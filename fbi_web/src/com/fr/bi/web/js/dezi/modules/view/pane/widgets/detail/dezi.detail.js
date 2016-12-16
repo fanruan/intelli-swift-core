@@ -296,6 +296,10 @@ BIDezi.DetailView = BI.inherit(BI.View, {
 
         this.dimensionsManager.on(BI.DimensionsManager.EVENT_CHANGE, function () {
             var values = this.getValue();
+            var view = values.view, scopes = values.scopes || {};
+            BI.remove(scopes, function (regionType) {
+                return BI.isNull(view[regionType]) || view[regionType].length === 0;
+            });
             self.model.set(values);
             //即使区域没有变化也要刷新一次
             this.populate();
