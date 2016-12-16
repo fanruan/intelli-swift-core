@@ -43,7 +43,7 @@ BI.AnalysisETLPreviewTableHeaderDeleteCell = BI.inherit(BI.Widget, {
         });
         var deleteButton =  BI.createWidget({
             type:"bi.icon_button",
-            cls:"delete-field-font bi-shake-icon",
+            cls:"delete-field-font",
             height: o.height,
             width: o.height,
             handler : function () {

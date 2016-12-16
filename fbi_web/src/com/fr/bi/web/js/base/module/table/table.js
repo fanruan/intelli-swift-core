@@ -1968,6 +1968,14 @@ BI.Table = BI.inherit(BI.Widget, {
         return [this.scrollBottomRight.element[0].clientWidth];
     },
 
+    getClientRegionRowSize: function () {
+        var o = this.options;
+        if (o.isNeedFreeze) {
+            return [this.scrollBottomLeft.element[0].clientHeight, this.scrollBottomRight.element[0].clientHeight];
+        }
+        return [this.scrollBottomRight.element[0].clientHeight];
+    },
+
     getScrollRegionColumnSize: function () {
         var o = this.options;
         if (o.isNeedFreeze) {
