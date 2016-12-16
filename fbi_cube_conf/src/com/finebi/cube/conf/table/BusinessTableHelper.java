@@ -1,5 +1,6 @@
 package com.finebi.cube.conf.table;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
@@ -85,12 +86,17 @@ public class BusinessTableHelper {
     }
 
     private static String getPackageNameByTableId(String tableId) {
-        Set<IBusinessPackageGetterService> allPackages = BICubeConfigureCenter.getPackageManager().getAllPackages(UserControl.getInstance().getSuperManagerID());
-        for (IBusinessPackageGetterService pack : allPackages) {
-            if (pack.getBusinessTables().contains(new BIBusinessTable(new BITableID(tableId)))) {
-                return pack.getName().getName();
+        try {
+            Set<IBusinessPackageGetterService> allPackages = BICubeConfigureCenter.getPackageManager().getAllPackages(UserControl.getInstance().getSuperManagerID());
+            for (IBusinessPackageGetterService pack : allPackages) {
+                if (pack.getBusinessTables().contains(new BIBusinessTable(new BITableID(tableId)))) {
+                    return pack.getName().getName();
+                }
             }
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(BusinessTableHelper.class).error(e.getMessage(), e);
         }
         return null;
+
     }
 }
