@@ -25,28 +25,33 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
         var o = this.options;
 
         this.table = BI.createWidget({
-            type: "bi.table_view",
+            type: "bi.sortable_table",
             isNeedResize: false,
             isResizeAdapt: false,
             isNeedFreeze: false,
             freezeCols: [],
             rowSize: o.rowSize,
             headerRowSize: o.headerRowSize,
+            autoRefresh: false,
             header: this._createHeader(),
             items: this._createCell()
         })
 
+        this.table.on(BI.SortableTable.EVENT_CHANGE, function(oldIndex, insertIndex){
+            self.fireEvent(BI.AnalysisETLPreviewTable.EVENT_SORT_COLUMN, oldIndex, insertIndex)
+        });
+
 
         var self = this;
-        this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
-            self._adjustColumns();
-        });
+        //this.table.on(BI.Table.EVENT_TABLE_AFTER_INIT, function () {
+        //    self._adjustColumns();
+        //});
+        //
+        //this.table.on(BI.Table.EVENT_TABLE_RESIZE, function () {
+        //    self._adjustColumns();
+        //});
 
-        this.table.on(BI.Table.EVENT_TABLE_RESIZE, function () {
-            self._adjustColumns();
-        });
-
-        this._initDrag();
+        //this._initDrag();
         this.label = BI.createWidget({
             type: "bi.label",
             cls: o.baseCls + "-null-label",
@@ -394,38 +399,35 @@ BI.AnalysisETLPreviewTable = BI.inherit(BI.Widget, {
 
     populate: function (items, header, operator) {
         var self = this;
-        BI.nextTick(function (e) {
-            self.options.operator = operator
-            if (BI.isNull(header)) {
-                header = self.options.header;
-            }
-            if (BI.isNull(items)) {
-                items = self.options.items;
-            }
-            self.options.header = header;
-            self.options.items = items;
-            var showTable = self._showCard()
-            if (showTable === false) {
-                return;
-            }
-            self.table.populate(self._createCell(), self._createHeader())
-            self.dragHepler.reInitDrag()
-            if (BI.isNotNull(self.dropHelper.scrollLeft)) {
-                self.table.setRightHorizontalScroll(self.dropHelper.scrollLeft);
-            }
-            self.dragHepler.hide()
-            BI.each(self.table.headerItems[0], function (idx, item) {
-                item.on(BI.AnalysisETLPreviewTable.DELETE_EVENT, function () {
-                    self.fireEvent(BI.AnalysisETLPreviewTable.DELETE_EVENT, idx)
-                })
-                item.on(BI.AnalysisETLPreviewTable.EVENT_FILTER, function () {
-                    self.fireEvent(BI.AnalysisETLPreviewTable.EVENT_FILTER, arguments)
-                })
-                item.on(BI.AnalysisETLPreviewTable.EVENT_RENAME, function (name) {
-                    self.fireEvent(BI.AnalysisETLPreviewTable.EVENT_RENAME, idx, name)
-                })
+        self.options.operator = operator
+        if (BI.isNull(header)) {
+            header = self.options.header;
+        }
+        if (BI.isNull(items)) {
+            items = self.options.items;
+        }
+        self.options.header = header;
+        self.options.items = items;
+        var showTable = self._showCard()
+        if (showTable === false) {
+            return;
+        }
+        self.table.populate(self._createCell(), self._createHeader())
+        //self.dragHepler.reInitDrag()
+        //if (BI.isNotNull(self.dropHelper.scrollLeft)) {
+        //    self.table.setRightHorizontalScroll(self.dropHelper.scrollLeft);
+        //}
+        //self.dragHepler.hide()
+        BI.each(self.table.getColumns().header[0], function (idx, item) {
+            item.on(BI.AnalysisETLPreviewTable.DELETE_EVENT, function () {
+                self.fireEvent(BI.AnalysisETLPreviewTable.DELETE_EVENT, idx)
             })
-
+            item.on(BI.AnalysisETLPreviewTable.EVENT_FILTER, function () {
+                self.fireEvent(BI.AnalysisETLPreviewTable.EVENT_FILTER, arguments)
+            })
+            item.on(BI.AnalysisETLPreviewTable.EVENT_RENAME, function (name) {
+                self.fireEvent(BI.AnalysisETLPreviewTable.EVENT_RENAME, idx, name)
+            })
         })
     }
 })

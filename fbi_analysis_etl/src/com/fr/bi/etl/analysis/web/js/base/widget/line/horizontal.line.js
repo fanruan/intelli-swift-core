@@ -80,4 +80,4 @@ BI.HorizontalLine = BI.inherit(BI.Widget, {
     }
 
 })
-$.shortcut("bi.horizontal_line", BI.HorizontalLine);
+//$.shortcut("bi.horizontal_line", BI.HorizontalLine);

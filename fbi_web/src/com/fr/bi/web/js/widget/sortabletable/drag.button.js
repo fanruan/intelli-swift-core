@@ -4,7 +4,7 @@ BI.TriangleDragButton = BI.inherit(BI.Widget, {
             baseCls:  "bi-triangle-drag-button",
             height : 30,
             width : 30,
-            lineCount:5,
+            lineCount:6,
             stroke: "#009de3",
             fill:"white",
             drag : null

@@ -10,5 +10,5 @@
   cursor: move;
 }
 .bi-sortable-table .insert-help-line {
-  background-color: #009de3;
+  border-right: 3px dashed #009de3;
 }
