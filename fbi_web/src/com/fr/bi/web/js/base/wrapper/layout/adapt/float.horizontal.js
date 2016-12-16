@@ -20,10 +20,10 @@ BI.FloatHorizontalLayout = BI.inherit(BI.Layout, {
     },
 
     resize: function () {
-        console.log("float_horizontal_adapt布局不需要resize");
+        // console.log("float_horizontal_adapt布局不需要resize");
     },
 
-    _addElement: function (item) {
+    _addElement: function (i, item) {
         var self = this, o = this.options;
         var left = BI.createWidget({
             type: "bi.vertical",
@@ -57,22 +57,8 @@ BI.FloatHorizontalLayout = BI.inherit(BI.Layout, {
         return left;
     },
 
-    addItem: function (item) {
-        BI.HorizontalAutoLayout.superclass.addItem.apply(this, arguments);
-        var w = this._addElement(item);
-        this.options.items.push(item);
-        w.element.appendTo(this.element);
-        return w;
-    },
-
     populate: function (items) {
         BI.HorizontalAutoLayout.superclass.populate.apply(this, arguments);
-        var self = this;
-        BI.each(items, function (i, item) {
-            if (!!item) {
-                self._addElement(item);
-            }
-        });
     }
 });
 $.shortcut('bi.horizontal_float', BI.FloatHorizontalLayout);

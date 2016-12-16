@@ -7,6 +7,7 @@ BI.AccumulationContainer = BI.inherit(BI.Widget, {
             title: BI.i18nText("BI-Accumulation_Group"),
             cls: "bi-accumulation-container",
             scrolly: false,
+            isShowBt: false,
             index: 0
         })
     },
@@ -83,12 +84,13 @@ BI.AccumulationContainer = BI.inherit(BI.Widget, {
             text: "test"
         })
         var selectType = BI.createWidget({
-            type: "bi.combo",
+            type: "bi.select_accumulate_type_button",
             el: button,
             popup: {
                 el: this.popup
             }
         });
+        selectType.setVisible(o.isShowBt);
         return BI.createWidget({
             type: "bi.left_right_vertical_adapt",
             items: {

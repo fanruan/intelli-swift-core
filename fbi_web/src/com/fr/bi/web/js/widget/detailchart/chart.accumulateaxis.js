@@ -145,7 +145,7 @@ BI.AccumulateAxisChart = BI.inherit(BI.AbstractChart, {
         options || (options = {});
 
         //按照系列分组堆积
-        //items = this.formatSeriesAccumulation(items, options.seriesAccumulation);
+        items = this.formatSeriesAccumulation(items, options.seriesAccumulation);
 
         var self = this, c = this.constants;
         this.config = self.getChartConfig(options);

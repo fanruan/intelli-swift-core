@@ -17,6 +17,7 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
         BI.DimensionsManagerModel.superclass._init.apply(this, arguments);
         this.viewMap = {};
         this.dimensionsMap = {};
+        this.scopes = {};
     },
 
     _join: function (newType) {
@@ -178,6 +179,7 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
     setType: function (type) {
         this._join(type);
         this.type = type;
+        this.scopes = {};
     },
 
     setSubType: function (type) {
@@ -193,6 +195,10 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
         this.dimensionsMap[this.type] = BI.Utils.getWidgetDimensionsByID(this.options.wId);
     },
 
+    setScopes: function (scopes) {
+        this.scopes = scopes || {};
+    },
+
     getViews: function () {
         return this.viewMap[this.type];
     },
@@ -201,7 +207,8 @@ BI.DimensionsManagerModel = BI.inherit(FR.OB, {
         var v = {
             type: this.type,
             view: this.viewMap[this.type] || {},
-            dimensions: this.dimensionsMap[this.type] || {}
+            dimensions: this.dimensionsMap[this.type] || {},
+            scopes: this.scopes
         };
         if (BI.isNotNull(this.subType)) {
             return BI.extend(v, {

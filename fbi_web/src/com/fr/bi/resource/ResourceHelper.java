@@ -1180,6 +1180,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.target.settings.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/regionwrapper.dimension.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/regionwrapper.target.css",
+                "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/wrapper/regionwrapper.target.settings.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/regionsmanager/regionsmanager.css",
                 "com/fr/bi/web/css/modules/dimensionsmanager/dimensionsmanager.css",
 
@@ -1237,6 +1238,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/css/modules/seriesaccumulation/container.accumulation.css",
                 "com/fr/bi/web/css/modules/seriesaccumulation/group.accumulation.css",
                 "com/fr/bi/web/css/modules/seriesaccumulation/series.accumulation.css",
+                "com/fr/bi/web/css/modules/seriesaccumulation/type.select.button.css",
 
 
                 //表格样式
@@ -1394,10 +1396,10 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/scopes/scope.target.combine.chart.js",
 
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/dimensionregions/abstract.region.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/dimensionregions/region.empty.dimension.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/dimensionregions/region.dimension.js",
-                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.empty.target.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/dimensionregions/region.empty.dimension.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.target.js",
+                "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.empty.target.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/targetregions/region.target.settings.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/region.wrapper.js",
                 "com/fr/bi/web/js/modules/dimensionsmanager/regionsmanager/wrapper/regionwrapper.dimension.js",
@@ -1548,6 +1550,7 @@ public class ResourceHelper {
                 "com/fr/bi/web/js/modules/seriesaccumulation/series.accumulation.popup.js",
                 "com/fr/bi/web/js/modules/seriesaccumulation/group/group.accumulation.js",
                 "com/fr/bi/web/js/modules/seriesaccumulation/group/container.accumulation.js",
+                "com/fr/bi/web/js/modules/seriesaccumulation/group/type.select.button.js",
 
                 "com/fr/bi/web/js/modules/date/interval.date.js",
                 "com/fr/bi/web/js/modules/date/interval.date.param.js",

@@ -82,16 +82,7 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
                 BI.isNotNull(self.dropArea) && self.dropArea.destroy();
                 var helper = ui.helper;
                 var data = helper.data("data");
-                if (BI.Utils.isDimensionRegionByRegionType(o.viewType)) {
-                    data = BI.filter(data, function (i, dimension) {
-                        return BI.Utils.isDimensionType(dimension.type);
-                    });
-                }
-                if (BI.Utils.isTargetRegionByRegionType(o.viewType)) {
-                    data = BI.filter(data, function (i, dimension) {
-                        return BI.Utils.isTargetType(dimension.type);
-                    });
-                }
+                data = self._dropDataFilter(data);
                 BI.each(data, function (i, dimension) {
                     if (!BI.has(dimension, "used")) {
                         dimension.used = true;
@@ -161,6 +152,23 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
     },
 
     _getSortableHelperClass: function () {
+    },
+
+    _dropDataFilter: function (data) {
+        return data;
+    },
+
+    _fieldDragStart: function () {
+        var onlyCounter = !BI.some(this.dimensions, function (i, dim) {
+            return BI.Utils.isDimensionType(dim.type);
+        });
+        if (onlyCounter) {
+            this._showForbiddenMask();
+        }
+    },
+
+    _fieldDragStop: function () {
+        this._hideForbiddenMask();
     },
 
     _dropHook: function () {
@@ -236,19 +244,6 @@ BI.AbstractRegion = BI.inherit(BI.Widget, {
                 hgap: 5
             });
         }
-    },
-
-    _fieldDragStart: function () {
-        var onlyCounter = !BI.some(this.dimensions, function (i, dim) {
-            return BI.Utils.isDimensionType(dim.type);
-        });
-        if (onlyCounter) {
-            this._showForbiddenMask();
-        }
-    },
-
-    _fieldDragStop: function () {
-        this._hideForbiddenMask();
     },
 
     _showForbiddenMask: function () {

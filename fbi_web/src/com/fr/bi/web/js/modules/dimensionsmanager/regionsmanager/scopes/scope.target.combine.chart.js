@@ -38,6 +38,10 @@ BI.CombineChartTargetScope = BI.inherit(BI.Widget, {
         });
     },
 
+    getValue: function () {
+        return {};
+    },
+
     populate: function () {
 
     }

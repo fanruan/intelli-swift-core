@@ -298,9 +298,9 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
             return items;
         }
         var result = [];
-        for(var i = 0; i < accumulations.length; i++) {
+        for(var i = 0; i < items.length; i++) {
             var values = [];
-            BI.each(accumulations[i], function (idx, accumulation) {
+            BI.each(accumulations, function (idx, accumulation) {
                 var temp = [];
                 BI.each(items[i], function (id, data) {
                     if(BI.contains(accumulation.items, data.name)) {
@@ -326,7 +326,6 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                 });
             })
             result.push(values);
-
         };
         return result;
     },
