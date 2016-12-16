@@ -306,6 +306,10 @@ BIDezi.WidgetView = BI.inherit(BI.View, {
             self.model.set(widget);
         });
 
+        this.tableChart.on(BI.TableChartManager.EVENT_CLICK_CHART, function (widget) {
+            self.chartDrill.populate(widget);
+        });
+
         this.widget = BI.createWidget({
             type: "bi.absolute",
             element: vessel,
