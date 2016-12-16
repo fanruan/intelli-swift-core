@@ -1050,93 +1050,96 @@ if (!window.BI) {
     //BI请求
     _.extend(BI, {
 
-        ajax: function (option) {
-            option || (option = {});
-            //encode
-            encodeBIParam(option.data);
+        ajax: (function(){
+            var loading;
+            return function (option) {
+                option || (option = {});
+                //encode
+                encodeBIParam(option.data);
 
-            if (BI.isNull(BI.REQUEST_LOADING)) {
-                BI.REQUEST_LOADING = BI.createWidget({
-                    type: "bi.request_loading"
-                });
-            }
+                var async = true;
+                if (BI.isNotNull(option.async)) {
+                    async = option.async;
+                }
 
-            var async = true;
-            if (BI.isNotNull(option.async)) {
-                async = option.async;
-            }
-
-            FR.ajax({
-                url: option.url,
-                type: "POST",
-                data: option.data,
-                async: async,
-                error: function () {
-                    //失败 取消、重新加载
-                    BI.REQUEST_LOADING.setCallback(function () {
-                        decodeBIParam(option.data);
-                        BI.ajax(option);
+                if (BI.isNull(loading)) {
+                    loading = BI.createWidget({
+                        type: "bi.request_loading"
                     });
-                    BI.REQUEST_LOADING.showError();
-                },
-                complete: function (res, status) {
-                    //登录超时
-                    if (BI.isNotNull(res.responseText) &&
-                        res.responseText.indexOf("fs-login-content") > -1 &&
-                        res.responseText.indexOf("fs-login-input-password-confirm") === -1) {
-                        if (BI.isNotNull(BI.Popovers.get(BI.LoginTimeOut.POPOVER_ID))) {
-                            BI.Popovers.remove(BI.LoginTimeOut.POPOVER_ID);
-                        }
-                        var loginTimeout = BI.createWidget({
-                            type: "bi.login_timeout"
-                        });
-                        loginTimeout.on(BI.LoginTimeOut.EVENT_LOGIN, function () {
+                }
+
+                FR.ajax({
+                    url: option.url,
+                    type: "POST",
+                    data: option.data,
+                    async: async,
+                    error: function () {
+                        //失败 取消、重新加载
+                        loading.setCallback(function () {
                             decodeBIParam(option.data);
                             BI.ajax(option);
-                            BI.Popovers.close(BI.LoginTimeOut.POPOVER_ID);
                         });
-                        BI.Popovers.create(BI.LoginTimeOut.POPOVER_ID, loginTimeout, {
-                            width: 600,
-                            height: 400
-                        }).open(BI.LoginTimeOut.POPOVER_ID);
+                        loading.showError();
+                    },
+                    complete: function (res, status) {
+                        //登录超时
+                        if (BI.isNotNull(res.responseText) &&
+                            res.responseText.indexOf("fs-login-content") > -1 &&
+                            res.responseText.indexOf("fs-login-input-password-confirm") === -1) {
+                            if (BI.isNotNull(BI.Popovers.get(BI.LoginTimeOut.POPOVER_ID))) {
+                                BI.Popovers.remove(BI.LoginTimeOut.POPOVER_ID);
+                            }
+                            var loginTimeout = BI.createWidget({
+                                type: "bi.login_timeout"
+                            });
+                            loginTimeout.on(BI.LoginTimeOut.EVENT_LOGIN, function () {
+                                decodeBIParam(option.data);
+                                BI.ajax(option);
+                                BI.Popovers.close(BI.LoginTimeOut.POPOVER_ID);
+                            });
+                            BI.Popovers.create(BI.LoginTimeOut.POPOVER_ID, loginTimeout, {
+                                width: 600,
+                                height: 400
+                            }).open(BI.LoginTimeOut.POPOVER_ID);
 
-                    } else if (BI.isNotNull(res.responseText) &&
-                        res.responseText.indexOf("script") > -1 &&
-                        res.responseText.indexOf("Session Timeout...") > -1) {
-                        //登录失效
-                        BI.REQUEST_LOADING.setCallback(function () {
-                            location.reload();
-                        });
-                        BI.REQUEST_LOADING.showError();
+                        } else if (BI.isNotNull(res.responseText) &&
+                            res.responseText.indexOf("script") > -1 &&
+                            res.responseText.indexOf("Session Timeout...") > -1) {
+                            //登录失效
+                            loading.setCallback(function () {
+                                location.reload();
+                            });
+                            loading.showError();
 
-                    } else if (status === "success" && BI.isFunction(option.success)) {
-                        option.success(FR.jsonDecode(res.responseText));
+                        } else if (status === "success" && BI.isFunction(option.success)) {
+                            option.success(FR.jsonDecode(res.responseText));
+                        }
+                        if (BI.isFunction(option.complete)) {
+                            option.complete(FR.jsonDecode(res.responseText), status);
+                        }
                     }
-                    if (BI.isFunction(option.complete)) {
-                        option.complete(FR.jsonDecode(res.responseText), status);
+                });
+
+                function encodeBIParam(data) {
+                    for (var key in data) {
+                        if (_.isObject(data[key])) {
+                            data[key] = window.encodeURIComponent(FR.jsonEncode(data[key]));
+                        } else {
+                            data[key] = window.encodeURIComponent(data[key]);
+                        }
                     }
                 }
-            });
 
-            function encodeBIParam(data) {
-                for (var key in data) {
-                    if (_.isObject(data[key])) {
-                        data[key] = window.encodeURIComponent(FR.jsonEncode(data[key]));
-                    } else {
-                        data[key] = window.encodeURIComponent(data[key]);
+                function decodeBIParam(data) {
+                    for (var key in data) {
+                        data[key] = window.decodeURIComponent(data[key]);
+                        if (_.isObject(data[key])) {
+                            data[key] = FR.jsonDecode(data[key]);
+                        }
                     }
                 }
             }
-
-            function decodeBIParam(data) {
-                for (var key in data) {
-                    data[key] = window.decodeURIComponent(data[key]);
-                    if (_.isObject(data[key])) {
-                        data[key] = FR.jsonDecode(data[key]);
-                    }
-                }
-            }
-        },
+        })(),
 
         /**
          * 异步ajax请求
