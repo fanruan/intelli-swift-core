@@ -383,7 +383,7 @@ public class BISession extends BIAbstractSession {
 
                 widget.setWidgetName(widget.getWidgetName() + Math.random());
                 BIPolyWorkSheet ws = widget.createWorkSheet(this);
-                wb.addReport(ws);
+                wb.addReport(widgetName, ws);
             }
         }
 
