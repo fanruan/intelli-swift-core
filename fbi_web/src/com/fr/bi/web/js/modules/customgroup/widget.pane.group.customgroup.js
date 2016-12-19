@@ -16,6 +16,7 @@ BI.CustomGroupFieldPane = BI.inherit(BI.Widget, {
         BI.CustomGroupFieldPane.superclass._init.apply(this, arguments);
         this.groupMap = {};
         this.fieldMap = {};
+        this.fieldReserveMap = {};
         this.groupWidgetMap = {};
         this.chosenFieldMap = {};
         this.fieldInGroupMap = {};
@@ -55,25 +56,18 @@ BI.CustomGroupFieldPane = BI.inherit(BI.Widget, {
             self.groupMap[group_id] = item.value;
             self.fieldInGroupMap[group_id] = {};
             BI.each(item.content, function (i_in, item_in) {
-                var field_id;
+                var field_id = self.fieldReserveMap[item_in.value];
                 /**
                  * 分组值不会有重复，不需要查重给相同id
                  */
-                // var id = BI.findKey(self.fieldMap, function (key, value) {
-                //     return value === item_in.value
-                // });
 
-                if (!BI.isNotNull(item_in.id)) {
-                    // if (!BI.isNotNull(id)) {
+                if (!BI.isNotNull(field_id)) {
                     field_id = self._createGroupFieldID(group_id, BI.UUID());
-                    // } else {
-                    // field_id = self._createGroupFieldID(group_id, self._getFieldID(id))
-                    // }
-                    item_in.id = field_id;
                 } else {
-                    field_id = item_in.id;
+                    field_id = self._createGroupFieldID(group_id, self._getFieldID(field_id))
                 }
                 self.fieldMap[field_id] = item_in.value;
+                self.fieldReserveMap[item_in.value] = field_id;
                 self.fieldInGroupMap[group_id][field_id] = item_in.value;
 
                 if (!self.groupOfFieldMap[self._getFieldID(field_id)]) {
