@@ -300,10 +300,11 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         var result = [];
         for(var i = 0; i < items.length; i++) {
             var values = [];
-            BI.each(accumulations, function (idx, accumulation) {
+            BI.each(accumulations.slice(1), function (idx, accumulation) {
                 var temp = [];
                 BI.each(items[i], function (id, data) {
                     if(BI.contains(accumulation.items, data.name)) {
+                        data.flag = true;
                         BI.each(data.data, function (t, da) {
                             var flag = true;
                             da.seriesName = accumulation.index;
@@ -321,10 +322,32 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
                 })
                 values.push({
                     name: accumulation.title,
-                    stack: "",
                     data: temp
                 });
             })
+            var temp = [];
+            // 默认分组
+            BI.each(items[i], function (idx, data) {
+                if(!data.flag) {
+                    BI.each(data.data, function (t, da) {
+                        var flag = true;
+                        da.seriesName = accumulations[0].index;
+                        BI.each(temp, function (t, item) {
+                            if(item.x === da.x) {
+                                item.y = item.y + da.y;
+                                flag = false;
+                            }
+                        })
+                        if(flag) {
+                            temp.push(da);
+                        }
+                    })
+                }
+            })
+            values.push({
+                name: accumulations[0].title,
+                data: temp
+            });
             result.push(values);
         };
         return result;

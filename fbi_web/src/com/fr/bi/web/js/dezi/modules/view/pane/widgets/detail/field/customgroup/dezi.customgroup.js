@@ -16,7 +16,11 @@ BIDezi.CustomGroupView = BI.inherit(BI.BarFloatSection, {
         var self = this;
         var value = self.customgroup.getValue();
         value.type = BICst.GROUP.CUSTOM_GROUP;
-        this.model.set(value || {});
+        BI.Msg.confirm("", BI.i18nText("BI-Ensure_Custom_Group"), function (v) {
+            if (v === true) {
+                self.model.set(value || {});
+            }
+        });
 
     },
 

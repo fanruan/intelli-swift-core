@@ -57,6 +57,16 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
     },
 
     _rebuildItems :function(){
+        var chartTypes = [
+            BICst.WIDGET.ACCUMULATE_AREA,
+            BICst.WIDGET.ACCUMULATE_AXIS,
+            BICst.WIDGET.ACCUMULATE_BAR,
+            BICst.WIDGET.ACCUMULATE_RADAR,
+            BICst.WIDGET.PERCENT_ACCUMULATE_AREA,
+            BICst.WIDGET.PERCENT_ACCUMULATE_AXIS,
+            BICst.WIDGET.COMBINE_CHART,
+            // BICst.WIDGET.MULTI_AXIS_COMBINE_CHART
+        ];
         var items = BI.DimensionNumberCombo.superclass._rebuildItems.apply(this, arguments), o = this.options;
         if(BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId)) === BICst.WIDGET.GIS_MAP){
         }else{
@@ -64,7 +74,9 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
             var customSort = items[0][this.constants.customSortPos];
             group.type === BICst.GROUP.ID_GROUP ? customSort.disabled = true : customSort.disabled = false;
         }
-        switch (BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId))) {
+        var rType = BI.Utils.getRegionTypeByDimensionID(o.dId);
+        var wType = BI.Utils.getWidgetTypeByID(BI.Utils.getWidgetIDByDimensionID(o.dId));
+        switch (wType) {
             case BICst.WIDGET.AXIS:
             case BICst.WIDGET.ACCUMULATE_AXIS:
             case BICst.WIDGET.PERCENT_ACCUMULATE_AXIS:
@@ -94,6 +106,22 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 BI.removeAt(items, this.constants.CordonPos);
                 break;
 
+        }
+        if(BI.Utils.isDimensionRegion2ByRegionType(rType) && BI.contains(chartTypes, wType)) {
+            items.splice(2, 0, [{
+                el: {
+                    text: BI.i18nText("BI-Series_Accumulation_Attribute"),
+                    cls: "",
+                    value: BICst.DIMENSION_NUMBER_COMBO.SERIES_ACCUMULATION_ATTRIBUTE
+                },
+                children:[{
+                    text: BI.i18nText("BI-No_Accumulation"),
+                    value: BICst.DIMENSION_NUMBER_COMBO.NO_SERIES
+                },{
+                    text: BI.i18nText("BI-Series_Accumulation"),
+                    value: BICst.DIMENSION_NUMBER_COMBO.SERIES_ACCUMULATION
+                }]
+            }]);
         }
         return items;
     },
