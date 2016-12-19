@@ -116,10 +116,12 @@ BI.DimensionNumberCombo = BI.inherit(BI.AbstractDimensionCombo, {
                 },
                 children:[{
                     text: BI.i18nText("BI-No_Accumulation"),
-                    value: BICst.DIMENSION_NUMBER_COMBO.NO_SERIES
+                    value: BICst.DIMENSION_NUMBER_COMBO.NO_SERIES,
+                    cls: "dot-e-font"
                 },{
                     text: BI.i18nText("BI-Series_Accumulation"),
-                    value: BICst.DIMENSION_NUMBER_COMBO.SERIES_ACCUMULATION
+                    value: BICst.DIMENSION_NUMBER_COMBO.SERIES_ACCUMULATION,
+                    cls: "dot-e-font"
                 }]
             }]);
         }

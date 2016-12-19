@@ -111,7 +111,7 @@ BIDezi.DimensionModel = BI.inherit(BI.Model, {
         if (BI.isNotNull(change.group)) {
             var groupObject = self.get("group");
             var accumulations = self.get("seriesAccumulation");
-            if(groupObject.type === BICst.GROUP.CUSTOM_GROUP && BI.isNotNull(accumulations)) {
+            if(groupObject.type === BICst.GROUP.CUSTOM_GROUP && BI.isNotEmptyArray(accumulations)) {
                 groupsItems = groupObject.details;
 
                 var allItems = [];
