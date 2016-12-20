@@ -22,7 +22,9 @@ BI.AccumulationContainer = BI.inherit(BI.Widget, {
             cls: "items-container",
             lgap: 20,
             rgap: 30,
-            vgap: 10
+            vgap: 10,
+            width:"100%",
+            height: "100%"
         });
         this.group.element.sortable({
             connectWith: ".items-container",
@@ -42,13 +44,16 @@ BI.AccumulationContainer = BI.inherit(BI.Widget, {
                 }
             },
             helper: function (event, ui) {
-                var drag = BI.createWidget();
-                drag.element.append(ui.html());
+                var drag = BI.createWidget({
+                    type: "bi.layout",
+                    cls: "accumulate-item"
+                });
+                drag.element.append(ui.html()).css({"margin": "10px 20px"});
                 BI.createWidget({
                     type: "bi.default",
-                    element: o.helperContainer ? o.helperContainer : self.element,
+                    element: o.helperContainer ? o.helperContainer.element : self.group.element,
                     items: [drag]
-                })
+                });
                 return drag.element;
             } ,
             items: ".accumulate-item",
@@ -67,7 +72,10 @@ BI.AccumulationContainer = BI.inherit(BI.Widget, {
             items: [{
                 el: header,
                 height: 40
-            }, this.group],
+            }, BI.createWidget({
+                type: "bi.default",
+                items: [this.group]
+            })],
             element: this.element
         });
     },
@@ -83,14 +91,14 @@ BI.AccumulationContainer = BI.inherit(BI.Widget, {
             type: "bi.button",
             text: "test"
         })
-        var selectType = BI.createWidget({
+        this.selectType = BI.createWidget({
             type: "bi.select_accumulate_type_button",
             el: button,
             popup: {
                 el: this.popup
             }
         });
-        selectType.setVisible(o.isShowBt);
+        this.selectType.setVisible(o.isShowBt);
         return BI.createWidget({
             type: "bi.left_right_vertical_adapt",
             items: {
@@ -99,7 +107,7 @@ BI.AccumulationContainer = BI.inherit(BI.Widget, {
                     lgap: 10
                 }],
                 right: [{
-                    el: selectType,
+                    el: this.selectType,
                     rgap: 10
                 }]
             },
@@ -107,14 +115,16 @@ BI.AccumulationContainer = BI.inherit(BI.Widget, {
         });
     },
 
-    populate: function (items) {
+    populate: function (data) {
         var self = this;
-        BI.each(items, function (idx, item) {
+        this.selectType.setValue(data.type);
+        BI.each(data.items || [], function (idx, item) {
             self.group.addItem(BI.createWidget({
                 type: "bi.label",
                 cls: "accumulate-item",
                 text: item,
                 height: 30,
+                textHeight: 30,
                 vtap: 10,
                 htap: 5
             }));
@@ -127,6 +137,10 @@ BI.AccumulationContainer = BI.inherit(BI.Widget, {
 
     getTitle: function () {
         return this.title.getText();
+    },
+
+    getAccumulateType: function () {
+        return this.selectType.getValue();
     },
 
     getValue: function () {
