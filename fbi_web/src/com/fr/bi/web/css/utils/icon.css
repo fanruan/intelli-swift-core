@@ -1463,6 +1463,21 @@
   _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_string.png');
   _background: none;
 }
+.drag-string-list-icon .x-icon,
+.drag-string-list-icon:hover .x-icon,
+.drag-string-list-icon:active .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_string_list.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_string_list.png');
+  _background: none;
+}
+.drag-string-list-icon.native .x-icon,
+.drag-string-list-icon.disabled .x-icon {
+  display: block;
+  background: url('${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_string_list.png') no-repeat 0px 0px;
+  _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='${servletURL}?op=resource&resource=/com/fr/bi/web/images/icon/drag/pure/icon_string_list.png');
+  _background: none;
+}
 .drag-number-icon .x-icon,
 .drag-number-icon:hover .x-icon,
 .drag-number-icon:active .x-icon {

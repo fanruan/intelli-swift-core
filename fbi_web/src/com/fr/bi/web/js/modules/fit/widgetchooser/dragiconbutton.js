@@ -33,6 +33,8 @@ BI.DragIconButton = BI.inherit(BI.Widget, {
                 return BI.i18nText("BI-Detail_Table");
             case BICst.WIDGET.STRING:
                 return BI.i18nText("BI-Text_Control");
+            case BICst.WIDGET.STRING_LIST:
+                return BI.i18nText("BI-String_List");
             case BICst.WIDGET.DATE:
                 return BI.i18nText("BI-Date_Range_Control");
             case BICst.WIDGET.NUMBER:

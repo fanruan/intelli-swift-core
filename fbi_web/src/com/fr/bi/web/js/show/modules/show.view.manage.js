@@ -102,6 +102,9 @@ BIShow.Views = new (BI.inherit(BI.WRouter, {
             case BICst.WIDGET.LIST_LABEL:
                 view = "BIShow.ListLabelView";
                 break;
+            case BICst.WIDGET.STRING_LIST:
+                view = "BIShow.StringListView";
+                break;
             case BICst.WIDGET.TREE_LABEL:
                 view = "BIShow.TreeLabelView";
                 break;

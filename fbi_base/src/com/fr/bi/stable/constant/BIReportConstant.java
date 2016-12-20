@@ -413,6 +413,7 @@ public class BIReportConstant {
         public static final int TREE_LABEL = 0x26;        //树标签
         public static final int SINGLE_SLIDER = 0x27;       //数值滑块
         public static final int INTERVAL_SLIDER = 0x28;     //数值区间滑块
+        public static final int STRING_LIST = 0x3b;         //文本列表
 
         //仅前台使用的部分类型
         public static final int DATE = 0x30;

@@ -190,6 +190,7 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
         }
         switch (widgetType) {
             case BICst.WIDGET.STRING:
+            case BICst.WIDGET.STRING_LIST:
             case BICst.WIDGET.LIST_LABEL:
                 if (BI.isNull(widgetValue.value) || widgetValue.value.length === 0) {
                     return text;
@@ -258,7 +259,7 @@ BI.WidgetFilterModel = BI.inherit(FR.OB, {
                 BI.each(widgetValue, function (name, children) {
                     var childNodes = getChildrenNode(children);
                     text += name + (childNodes === "" ? "" : (":" + childNodes)) + "; ";
-                    if(childNodes === BICst.LIST_LABEL_TYPE.ALL) {
+                    if (childNodes === BICst.LIST_LABEL_TYPE.ALL) {
                         text = "";
                     }
                 });

@@ -469,7 +469,8 @@ var _JS = [
     "detail/mvc.listlabel.js",
     "detail/mvc.treelabel.js",
     "detail/mvc.singleslider.js",
-    "detail/mvc.intervalslider.js"
+    "detail/mvc.intervalslider.js",
+    "detail/mvc.stringlist.js"
 ];
 
 
@@ -667,7 +668,7 @@ var _Routes = {
     "/adaptive_table": "AdaptiveTableView",
     "/adaptive_table2": "AdaptiveTable2View",
     "/excel_table": "ExcelTableView",
-    "/excel_view_display_manager":"ExcelVDisplayManagerView",
+    "/excel_view_display_manager": "ExcelVDisplayManagerView",
     "/custom_scroll_table": "CustomScrollTableView",
     "/page_table": "PageTableView",
     "/page_table2": "PageTable2View",
@@ -692,7 +693,8 @@ var _Routes = {
     "/list_label": "ListLabelView",
     "/tree_label": "TreeLabelView",
     "/slider": "SliderView",
-    "/interval_slider": "IntervalSliderView"
+    "/interval_slider": "IntervalSliderView",
+    "/string_list": "StringListView"
 };
 
 var _Models = {};
@@ -1216,6 +1218,9 @@ _Models.detail = [{
 }, {
     id: 35,
     text: "区间滑块"
+}, {
+    id: 36,
+    text: "文本列表"
 },
 
 
@@ -1499,7 +1504,7 @@ _Models.detail = [{
         pId: 27,
         text: "bi.excel_view_display_manager",
         value: "excel_view_display_manager"
-    },{
+    }, {
         pId: 32,
         text: "bi.sequence_table",
         value: "sequence_table"
@@ -1579,6 +1584,10 @@ _Models.detail = [{
         pId: 35,
         text: "区间双滑块",
         value: "interval_slider"
+    }, {
+        pId: 36,
+        text: "文本列表",
+        value: "string_list"
     }];
 _Models.component = [];
 _Models.module = [];

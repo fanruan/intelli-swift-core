@@ -526,6 +526,7 @@
 
         isControlWidgetByWidgetType: function (widgetType) {
             return widgetType === BICst.WIDGET.STRING ||
+                widgetType === BICst.WIDGET.STRING_LIST ||
                 widgetType === BICst.WIDGET.NUMBER ||
                 widgetType === BICst.WIDGET.SINGLE_SLIDER ||
                 widgetType === BICst.WIDGET.INTERVAL_SLIDER ||
@@ -548,6 +549,7 @@
         isInstantControlWidgetByWidgetType: function (widgetType) {
             return widgetType === BICst.WIDGET.LIST_LABEL ||
                 widgetType === BICst.WIDGET.TREE_LABEL ||
+                widgetType === BICst.WIDGET.STRING_LIST ||
                 widgetType === BICst.WIDGET.SINGLE_SLIDER ||
                 widgetType === BICst.WIDGET.INTERVAL_SLIDER;
         },
@@ -2690,6 +2692,7 @@
                         var filter = null;
                         switch (self.getWidgetTypeByID(id)) {
                             case BICst.WIDGET.STRING:
+                            case BICst.WIDGET.STRING_LIST:
                             case BICst.WIDGET.LIST_LABEL:
                                 fType = BICst.TARGET_FILTER_STRING.BELONG_VALUE;
                                 filter = {
