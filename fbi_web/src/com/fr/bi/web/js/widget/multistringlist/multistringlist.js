@@ -28,8 +28,8 @@ BI.MultiStringList = BI.inherit(BI.Widget, {
             itemsCreator: o.itemsCreator,
             valueFormatter: o.valueFormatter,
             onLoaded: o.onLoaded,
-            el:{
-                height:""
+            el: {
+                height: ""
             }
         });
         this.popup.on(BI.MultiSelectLoader.EVENT_CHANGE, function () {
@@ -120,15 +120,20 @@ BI.MultiStringList = BI.inherit(BI.Widget, {
         this.trigger.on(BI.MultiSelectTrigger.EVENT_BEFORE_COUNTER_POPUPVIEW, function () {
             this.getCounter().setValue(self.storeValue);
         });
-
+        var div = BI.createWidget({
+            type: "bi.layout"
+        });
         BI.createWidget({
             type: "bi.vtape",
             element: this.element,
             height: "100%",
-            width:"100%",
+            width: "100%",
             items: [{
                 el: this.trigger,
                 height: 25
+            }, {
+                el: div,
+                height: 5
             }, {
                 el: this.popup,
                 height: "fill"
