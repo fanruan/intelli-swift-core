@@ -472,7 +472,10 @@ BIDezi.DimensionView = BI.inherit(BI.View, {
     },
 
     _emptyAccumulation: function () {
-        this.model.set("seriesAccumulation", []);
+        this.model.set("seriesAccumulation", {
+            type: BICst.SERIES_ACCUMULATION.NONE,
+            items: []
+        });
     },
 
     local: function () {

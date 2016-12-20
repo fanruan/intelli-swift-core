@@ -150,6 +150,7 @@ BI.AccumulationGroup = BI.inherit(BI.Widget, {
     },
 
     populate: function (items,allData) {
+        items = items || [];
         var self = this;
         var alreadyHas = [], others = [];
         BI.each(items.slice(1), function (idx, data) {
