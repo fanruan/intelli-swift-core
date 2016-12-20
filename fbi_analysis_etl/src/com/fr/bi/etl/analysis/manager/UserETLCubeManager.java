@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.bi.etl.analysis.manager;
 
@@ -30,16 +30,16 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  */
 public class UserETLCubeManager extends XMLFileManager implements UserETLCubeManagerProvider {
-	
+
 	public static final String XML_TAG = "UserETLCubeManager";
-	
+
 	private Map<String, SingleUserETLTableCubeManager> threadMap = new ConcurrentHashMap<String, SingleUserETLTableCubeManager>();
 
 	/**
 	 * cube路径
 	 */
 	private Map<String, String> cubePathMap = new ConcurrentHashMap<String, String>();
-	
+
 	static {
 		GeneralContext.addEnvChangedListener(new EnvChangedListener() {
             @Override
@@ -51,7 +51,7 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
             }
         });
 	}
-	
+
 
     public void invokeUpdate(String md5, long userId){
         synchronized (threadMap) {
@@ -88,23 +88,29 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
         }
     }
 
-    private SingleUserETLTableCubeManager createManager(AnalysisCubeTableSource source, BIUser user) {
-        UserCubeTableSource ut = source.createUserTableSource(user.getUserId());
-        ut = getRealSource(ut);
-        String md5Key = ut.fetchObjectCore().getID().getIdentityValue();
-        SingleUserETLTableCubeManager manager = threadMap.get(md5Key);
-        if(manager == null){
-            synchronized (threadMap) {
-                manager = threadMap.get(md5Key);
-                if(manager == null){
-                    manager = new SingleUserETLTableCubeManager(ut);
-                    threadMap.put(md5Key, manager);
-                }
-            }
-        }
+	private SingleUserETLTableCubeManager createManager(AnalysisCubeTableSource source, BIUser user) {
+		UserCubeTableSource ut = source.createUserTableSource(user.getUserId());
+		ut = getRealSource(ut);
+		SingleUserETLTableCubeManager manager = new SingleUserETLTableCubeManager(ut);
+		updateThreadMap(ut);
 		manager.addTask();
-        return manager;
-    }
+		return manager;
+	}
+
+	private void updateThreadMap(UserCubeTableSource ut) {
+		synchronized (threadMap) {
+			SingleUserETLTableCubeManager manager = new SingleUserETLTableCubeManager(ut);
+			String md5Key = ut.fetchObjectCore().getID().getIdentityValue();
+			if (threadMap.containsKey(md5Key)) {
+				SingleUserETLTableCubeManager origManager = threadMap.get(md5Key);
+				if (null != origManager) {
+					origManager.releaseCurrentThread();
+					origManager.clear();
+				}
+				threadMap.put(md5Key, manager);
+			}
+		}
+	}
 
     private UserCubeTableSource getRealSource(UserCubeTableSource ut) {
         return isParentTableIndex(ut)? getRealSource(((UserETLTableSource)ut).getParents().get(0)) : ut;
@@ -123,16 +129,16 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
 				manager.releaseCurrentThread();
 			}
 		}
-		
+
 	}
-	
+
 
 	public UserETLCubeManager(){
 		synchronized (cubePathMap) {
 			readXMLFile();
 		}
 	}
-	
+
 	@Override
 	public void setCubePath(String md5Key, String path){
 		synchronized (this) {
@@ -146,13 +152,13 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public void envChanged() {
 		clear();
 	}
-	
-	
+
+
 	@Override
 	public void clear(){
 		synchronized (threadMap) {
@@ -215,7 +221,7 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
 				cubePathMap.put(key, value);
 			}
 		}
-		
+
 	}
 
 
