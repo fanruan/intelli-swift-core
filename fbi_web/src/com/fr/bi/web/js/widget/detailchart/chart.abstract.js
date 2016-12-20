@@ -293,11 +293,13 @@ BI.AbstractChart = BI.inherit(BI.Widget, {
         return formatter
     },
 
-    formatSeriesAccumulation: function (items, accumulations) {
-        if(BI.isEmpty(accumulations) || BI.isEmpty(items)) {
+    formatSeriesAccumulation: function (items, accumulationObj) {
+        var accumulations = accumulationObj.items,
+            type = accumulationObj.type,
+            result = [];
+        if(BI.isEmpty(accumulationObj) || BI.isEmpty(items) || type !== BICst.SERIES_ACCUMULATION.EXIST) {
             return items;
         }
-        var result = [];
         for(var i = 0; i < items.length; i++) {
             var values = [];
             BI.each(accumulations.slice(1), function (idx, accumulation) {

@@ -175,11 +175,13 @@ BI.MultiAxisChart = BI.inherit(BI.AbstractChart, {
         })
     },
 
-    formatSeriesAccumulation: function (items, accumulations) {
-        if(BI.isEmpty(accumulations) || BI.isEmpty(items)) {
+    formatSeriesAccumulation: function (items, accumulationObj) {
+        var accumulations = accumulationObj.items,
+            type = accumulationObj.type,
+            result = [];
+        if(BI.isEmpty(accumulationObj) || BI.isEmpty(items) || type !== BICst.SERIES_ACCUMULATION.EXIST) {
             return items;
         }
-        var result = [];
         BI.each(accumulations, function (idx, accumulation) {
             accumulation.stack = idx + BI.UUID();
         });
