@@ -37,6 +37,7 @@ BI.DynamicTab = FR.extend(BI.MVCWidget, {
         this.tab = BI.createWidget({
             direction: "custom",
             type: "bi.tab",
+            cls: "tab-dynamic-center",
             tab: this.tabButton.tab,
             defaultShowIndex:false,
             cardCreator: BI.bind(this._createTabs, this)
@@ -45,7 +46,11 @@ BI.DynamicTab = FR.extend(BI.MVCWidget, {
             type:"bi.vtape",
             element: this.element,
             items: [{
-                el: this.tab
+                el: {
+                    type: "bi.center",
+                    items: [this.tab],
+                    hgap: 20
+                }
             }, {
                 el:this.tabButton,
                 height: o.height

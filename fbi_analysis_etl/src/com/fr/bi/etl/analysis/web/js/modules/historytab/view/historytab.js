@@ -1,7 +1,7 @@
 BI.HistoryTab = FR.extend(BI.MVCWidget, {
 
     _constant : {
-        width:180
+        width:190
     },
 
     _defaultConfig: function () {
@@ -31,7 +31,8 @@ BI.HistoryTab = FR.extend(BI.MVCWidget, {
             allHistory: o.allHistory,
             layouts: [{
                 type: "bi.vertical",
-                scrolly:true
+                lgap: -1,
+                scrolly: null
             }]
         });
 
@@ -46,29 +47,36 @@ BI.HistoryTab = FR.extend(BI.MVCWidget, {
         BI.createWidget({
             type:"bi.htape",
             element: this.element,
+            bgap: 10,
             items: [{
                 el: this.tab
             }, {
                 el: {
-                    type:"bi.vtape",
-                    cls:"bi-history-tab-button-group",
-                    items : [{
-                        el:{
-                            type:"bi.center_adapt",
-                            cls:"bi-history-tab-title",
-                            items :[{
-                                type:"bi.label",
-                                text: BI.i18nText("BI-History")
-                            }]
-                        },
-                        height:40
-                    },{
-                        el : {
-                            type:"bi.layout"
-                        },
-                        height:10
-                    },{
-                        el : this.tabButton
+                    type: "bi.center",
+                    cls: "histroy-tab-east",
+                    rgap: 10,
+                    vgap: 10,
+                    items: [{
+                        type:"bi.vtape",
+                        cls:"bi-history-tab-button-group",
+                        items : [{
+                            el:{
+                                type:"bi.center_adapt",
+                                cls:"bi-history-tab-title",
+                                items :[{
+                                    type:"bi.label",
+                                    text: BI.i18nText("BI-History")
+                                }]
+                            },
+                            height:40
+                        },{
+                            el : {
+                                type:"bi.layout"
+                            },
+                            height:10
+                        },{
+                            el : this.tabButton
+                        }]
                     }]
                 },
                 width: this._constant.width
