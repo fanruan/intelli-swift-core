@@ -88,17 +88,20 @@ BI.DimensionDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         });
         this.id = o.id;
         var items = [];
+        var values = [];
         switch (BI.Utils.getDimensionGroupByID(o.dId).type) {
             case BICst.GROUP.Y:
             case BICst.GROUP.M:
             case BICst.GROUP.W:
             case BICst.GROUP.S:
                 items = BICst.DIMENSION_FILTER_STRING_COMBO;
-                o.filter_type = BICst.DIMENSION_FILTER_STRING.BELONG_VALUE;
+                values = this.getComboItemsValues(items);
+                o.filter_type = BI.contains(values, o.filter_type) ? o.filter_type : BICst.DIMENSION_FILTER_STRING.BELONG_VALUE;
                 break;
             case BICst.GROUP.YMD:
                 items = BICst.DIMENSION_FILTER_DATE_COMBO;
-                o.filter_type = BICst.DIMENSION_FILTER_DATE.BELONG_VALUE;
+                values = this.getComboItemsValues(items);
+                o.filter_type = BI.contains(values, o.filter_type) ? o.filter_type : BICst.DIMENSION_FILTER_DATE.BELONG_VALUE;
                 break;
         }
         this.filterType = BI.createWidget({
@@ -117,6 +120,14 @@ BI.DimensionDateFieldFilterItem = BI.inherit(BI.AbstractFilterItem, {
         });
         this._refreshFilterWidget(o.filter_type, o.filter_value);
         return [this.fieldButton, this.filterType, this.filterWidgetContainer];
+    },
+
+    getComboItemsValues: function(items){
+        return BI.flatten(BI.map(items, function(idx, item){
+            return BI.map(item, function(id, it){
+                return it.value;
+            })
+        }))
     },
 
     _refreshFilterWidget: function (filterType, initData) {
