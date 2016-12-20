@@ -169,7 +169,7 @@ BIConf.AllBusinessPackagesPaneView = BI.inherit(BI.View, {
         var groupedItems = this.model.get("groups");
         var allPackages = this.model.get("packages");
         this.groupPane.populate(BI.sortBy(groupedItems, "init_time"), BI.sortBy(allPackages, "position"));
-        this.mask.destroy();
+        // this.mask.destroy();
     },
 
     change: function (changed) {
@@ -226,11 +226,11 @@ BIConf.AllBusinessPackagesPaneView = BI.inherit(BI.View, {
 
 
     refresh: function () {
-        this.mask = BI.createWidget({
-            type: "bi.loading_mask",
-            masker: this.element,
-            text: BI.i18nText("BI-Loading")
-        });
+        // this.mask = BI.createWidget({
+        //     type: "bi.loading_mask",
+        //     masker: this.element,
+        //     text: BI.i18nText("BI-Loading")
+        // });
         this.readData(true);
     }
 });
